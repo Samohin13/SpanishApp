@@ -70,6 +70,7 @@ fun FlashcardsScreen(
             when {
                 state.isLoading -> LoadingBody()
                 state.isFinished -> SessionCompleteBody(
+                    total = state.sessionSize,
                     correct = state.correctCount,
                     wrong = state.wrongCount,
                     xp = state.earnedXp,
@@ -98,6 +99,7 @@ private fun LoadingBody() {
 
 @Composable
 private fun SessionCompleteBody(
+    total: Int,
     correct: Int,
     wrong: Int,
     xp: Int,
@@ -105,6 +107,14 @@ private fun SessionCompleteBody(
     onRestart: () -> Unit,
     onExit: () -> Unit
 ) {
+    val motivator = when {
+        total == 0 -> ""
+        correct == total -> "¡Perfecto! Все слова усвоены 🎉"
+        correct >= (total * 0.8) -> "¡Muy bien! Почти всё запомнил"
+        correct >= (total * 0.5) -> "¡Buen trabajo! Движешься вперёд"
+        else -> "¡Sigue así! С каждой сессией становится легче"
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -124,12 +134,21 @@ private fun SessionCompleteBody(
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                motivator,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
             Spacer(Modifier.height(24.dp))
-            StatCard("Правильно", correct.toString())
+            StatCard("Всего карточек", total.toString())
             Spacer(Modifier.height(8.dp))
-            StatCard("Ошибки", wrong.toString())
+            StatCard("Запомнил сразу", correct.toString())
             Spacer(Modifier.height(8.dp))
-            StatCard("Заработано XP", xp.toString())
+            StatCard("Вернёмся позже", wrong.toString())
+            Spacer(Modifier.height(8.dp))
+            StatCard("Получено XP", "+$xp")
         }
 
         Spacer(Modifier.height(32.dp))
