@@ -1,6 +1,7 @@
 package com.spanishapp.ui.flashcards
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -197,7 +198,9 @@ private fun DirectionOption(label: String, selected: Boolean, onClick: () -> Uni
             MaterialTheme.colorScheme.primaryContainer
         else
             MaterialTheme.colorScheme.surface,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier
@@ -205,7 +208,7 @@ private fun DirectionOption(label: String, selected: Boolean, onClick: () -> Uni
                 .padding(horizontal = 12.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            RadioButton(selected = selected, onClick = onClick)
+            RadioButton(selected = selected, onClick = null)
             Spacer(Modifier.width(8.dp))
             Text(label, style = MaterialTheme.typography.bodyLarge)
         }
