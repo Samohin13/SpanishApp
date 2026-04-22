@@ -1,520 +1,551 @@
-package com.spanishapp.ui.home
+package com.spanishapp.ui.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import com.spanishapp.ui.components.*
 import com.spanishapp.ui.theme.AppColors
 
+// ═════════════════════════════════════════════════════════════
+//  XP PROGRESS BAR  —  animated level progress
+// ═════════════════════════════════════════════════════════════
 @Composable
-fun HomeScreen(
-    navController: NavHostController,
-    viewModel: HomeViewModel = hiltViewModel()
+fun XpProgressBar(
+    level: Int,
+    progress: Float,          // 0.0 – 1.0
+    totalXp: Int,
+    modifier: Modifier = Modifier
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val wordOfDay by viewModel.wordOfTheDay.collectAsStateWithLifecycle()
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(1000, easing = FastOutSlowInEasing),
+        label = "xp_progress"
+    )
 
-    // Kick off streak update when screen opens
-    LaunchedEffect(Unit) { viewModel.onSessionStarted() }
-
-    if (state.isLoading) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = AppColors.Terracotta)
-        }
-        return
-    }
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(bottom = 24.dp)
-    ) {
-
-        // ── HEADER ────────────────────────────────────────────
-        item {
-            HomeHeader(
-                displayName   = state.displayName,
-                streak        = state.currentStreak,
-                spanishLevel  = state.spanishLevel,
-                onSettingsClick = { navController.navigate("settings") }
-            )
-        }
-
-        // ── XP BAR ────────────────────────────────────────────
-        item {
-            XpProgressBar(
-                level    = state.appLevel,
-                progress = state.levelProgress,
-                totalXp  = state.totalXp,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(Modifier.height(20.dp))
-        }
-
-        // ── DAILY GOAL ────────────────────────────────────────
-        item {
-            DailyGoalSection(
-                todayMinutes = state.todayMinutes,
-                goalMinutes  = state.dailyGoalMinutes,
-                dueCount     = state.dueWordsCount,
-                onStartSession = { navController.navigate("flashcards") }
-            )
-            Spacer(Modifier.height(20.dp))
-        }
-
-        // ── WORD OF DAY ───────────────────────────────────────
-        wordOfDay?.let { word ->
-            item {
-                SectionHeader(
-                    title = "Слово дня",
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-                Spacer(Modifier.height(8.dp))
-                WordOfDayCard(
-                    spanish     = word.spanish,
-                    russian     = word.russian,
-                    example     = word.example,
-                    wasPracticed= word.wasPracticed,
-                    onSpeak     = { /* TTS handled in ViewModel */ },
-                    onPractice  = { navController.navigate("flashcards") },
-                    modifier    = Modifier.padding(horizontal = 20.dp)
-                )
-                Spacer(Modifier.height(20.dp))
-            }
-        }
-
-        // ── STATS ROW ─────────────────────────────────────────
-        item {
-            StatsRow(
-                wordsLearned     = state.wordsLearned,
-                longestStreak    = state.longestStreak,
-                lessonsCompleted = state.nextLessons.size,
-                modifier         = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(Modifier.height(20.dp))
-        }
-
-        // ── LEVEL UP BANNER ───────────────────────────────────
-        if (state.shouldLevelUp) {
-            item {
-                LevelUpBanner(
-                    currentLevel = state.spanishLevel,
-                    onClick = { navController.navigate("settings") },
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-                Spacer(Modifier.height(20.dp))
-            }
-        }
-
-        // ── MAIN FEATURES ─────────────────────────────────────
-        item {
-            SectionHeader(
-                title = "Заниматься",
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(Modifier.height(8.dp))
-        }
-
-        item {
-            FeaturesGrid(
-                dueCount      = state.dueWordsCount,
-                sessionPlan   = state.sessionPlan,
-                navController = navController,
-                modifier      = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(Modifier.height(20.dp))
-        }
-
-        // ── QUICK ACTIONS ─────────────────────────────────────
-        item {
-            SectionHeader(
-                title       = "Дополнительно",
-                actionLabel = "Все",
-                onAction    = { },
-                modifier    = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(Modifier.height(8.dp))
-        }
-
-        item {
-            QuickActions(
-                navController = navController,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-        }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────
-// HEADER  —  greeting + streak + level badge
-// ─────────────────────────────────────────────────────────────
-@Composable
-private fun HomeHeader(
-    displayName: String,
-    streak: Int,
-    spanishLevel: String,
-    onSettingsClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        AppColors.Terracotta.copy(alpha = 0.08f),
-                        MaterialTheme.colorScheme.background
-                    )
-                )
-            )
-            .padding(start = 20.dp, end = 20.dp, top = 52.dp, bottom = 20.dp)
-    ) {
+    Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(
-                    text  = greetingByTime(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(2.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text  = if (displayName.isNotEmpty()) displayName else "Estudiante",
-                        style = MaterialTheme.typography.headlineLarge,
+                        text  = "$level",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold
                     )
-                    LevelBadge(level = spanishLevel)
                 }
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text  = "Уровень $level",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
             }
+            Text(
+                text  = "$totalXp XP",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                StreakBadge(streak = streak)
-                IconButton(
-                    onClick = onSettingsClick,
-                    modifier = Modifier.size(40.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Настройки",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(22.dp)
+        Spacer(Modifier.height(6.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(animatedProgress)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(AppColors.Gold, AppColors.Terracotta)
+                        )
                     )
-                }
+            )
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  STREAK BADGE  —  fire icon + count
+// ═════════════════════════════════════════════════════════════
+@Composable
+fun StreakBadge(
+    streak: Int,
+    modifier: Modifier = Modifier,
+    large: Boolean = false
+) {
+    val size = if (large) 56.dp else 44.dp
+    val iconSize = if (large) 24.dp else 18.dp
+    val textSize = if (large) 18.sp else 14.sp
+
+    Surface(
+        modifier = modifier,
+        shape    = RoundedCornerShape(12.dp),
+        color    = if (streak > 0)
+            AppColors.Gold.copy(alpha = 0.15f)
+        else
+            MaterialTheme.colorScheme.surfaceVariant,
+        tonalElevation = 0.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = if (streak > 0) "🔥" else "○",
+                fontSize = iconSize.value.sp
+            )
+            Text(
+                text  = "$streak",
+                fontSize = textSize,
+                fontWeight = FontWeight.Bold,
+                color = if (streak > 0) AppColors.GoldDark
+                else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            if (large) {
+                Text(
+                    text  = "дней",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-// DAILY GOAL SECTION
-// ─────────────────────────────────────────────────────────────
+// ═════════════════════════════════════════════════════════════
+//  STAT CARD  —  small metric tile
+// ═════════════════════════════════════════════════════════════
 @Composable
-private fun DailyGoalSection(
-    todayMinutes: Int,
-    goalMinutes: Int,
-    dueCount: Int,
-    onStartSession: () -> Unit
+fun StatCard(
+    label: String,
+    value: String,
+    icon: String,
+    modifier: Modifier = Modifier,
+    accentColor: Color = MaterialTheme.colorScheme.primary
 ) {
     Surface(
-        modifier  = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+        modifier      = modifier,
+        shape         = RoundedCornerShape(16.dp),
+        color         = MaterialTheme.colorScheme.surface,
+        tonalElevation= 0.dp,
+        shadowElevation = 0.dp
+    ) {
+        Box(
+            modifier = Modifier
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.outlineVariant,
+                    RoundedCornerShape(16.dp)
+                )
+                .padding(16.dp)
+        ) {
+            Column {
+                Text(text = icon, fontSize = 20.sp)
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text  = value,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = accentColor
+                )
+                Text(
+                    text  = label,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  DAILY GOAL RING  —  circular progress for today's goal
+// ═════════════════════════════════════════════════════════════
+@Composable
+fun DailyGoalRing(
+    todayMinutes: Int,
+    goalMinutes: Int,
+    modifier: Modifier = Modifier
+) {
+    val progress = (todayMinutes.toFloat() / goalMinutes).coerceIn(0f, 1f)
+    val animProgress by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(1200, easing = FastOutSlowInEasing),
+        label = "goal_ring"
+    )
+    val done = progress >= 1f
+
+    Box(
+        modifier        = modifier.size(80.dp),
+        contentAlignment= Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            progress    = { animProgress },
+            modifier    = Modifier.fillMaxSize(),
+            strokeWidth = 6.dp,
+            color       = if (done) AppColors.Teal else AppColors.Terracotta,
+            trackColor  = MaterialTheme.colorScheme.surfaceVariant
+        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text  = "$todayMinutes",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text  = "мин",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  SECTION HEADER
+// ═════════════════════════════════════════════════════════════
+@Composable
+fun SectionHeader(
+    title: String,
+    actionLabel: String? = null,
+    onAction: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text  = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+        if (actionLabel != null && onAction != null) {
+            TextButton(onClick = onAction) {
+                Text(
+                    text  = actionLabel,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  FEATURE CARD  —  big tappable card for each mode
+// ═════════════════════════════════════════════════════════════
+@Composable
+fun FeatureCard(
+    title: String,
+    subtitle: String,
+    icon: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    badgeText: String? = null,
+    accentColor: Color = MaterialTheme.colorScheme.primary,
+    enabled: Boolean = true
+) {
+    val alpha = if (enabled) 1f else 0.5f
+
+    Surface(
+        onClick   = onClick,
+        enabled   = enabled,
+        modifier  = modifier,
         shape     = RoundedCornerShape(20.dp),
         color     = MaterialTheme.colorScheme.surface,
         tonalElevation = 0.dp
     ) {
         Box(
-            modifier = Modifier.border(
-                1.dp,
-                MaterialTheme.colorScheme.outlineVariant,
-                RoundedCornerShape(20.dp)
-            )
+            modifier = Modifier
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.outlineVariant,
+                    RoundedCornerShape(20.dp)
+                )
         ) {
             Row(
-                modifier = Modifier.padding(20.dp),
+                modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                DailyGoalRing(
-                    todayMinutes = todayMinutes,
-                    goalMinutes  = goalMinutes
-                )
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(accentColor.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = icon, fontSize = 24.sp)
+                }
 
                 Column(modifier = Modifier.weight(1f)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text  = title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        if (badgeText != null) {
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = accentColor.copy(alpha = 0.15f)
+                            ) {
+                                Text(
+                                    text     = badgeText,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    style    = MaterialTheme.typography.labelSmall,
+                                    color    = accentColor,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
                     Text(
-                        text  = "Цель на сегодня",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        text  = if (todayMinutes >= goalMinutes) "Выполнено! 🎉"
-                        else "$dueCount слов к повторению",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        text  = "$todayMinutes из $goalMinutes минут",
+                        text  = subtitle,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
-                if (dueCount > 0) {
-                    FilledTonalButton(
-                        onClick  = onStartSession,
-                        shape    = RoundedCornerShape(12.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  BOTTOM NAVIGATION BAR
+// ═════════════════════════════════════════════════════════════
+data class NavItem(
+    val route: String,
+    val label: String,
+    val icon: ImageVector,
+    val iconSelected: ImageVector
+)
+
+val bottomNavItems = listOf(
+    NavItem("home",       "Главная",  Icons.Outlined.Home,        Icons.Filled.Home),
+    NavItem("flashcards", "Слова",    Icons.Outlined.Style,       Icons.Filled.Style),
+    NavItem("dialogues",  "Диалоги",  Icons.Outlined.Forum,       Icons.Filled.Forum),
+    NavItem("ai_chat",    "ИИ-чат",   Icons.Outlined.SmartToy,    Icons.Filled.SmartToy),
+    NavItem("profile",    "Профиль",  Icons.Outlined.Person,      Icons.Filled.Person)
+)
+
+@Composable
+fun SpanishBottomBar(
+    currentRoute: String,
+    onNavigate: (String) -> Unit
+) {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 0.dp,
+        modifier = Modifier.border(
+            width = 0.5.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+            shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp)
+        )
+    ) {
+        bottomNavItems.forEach { item ->
+            val selected = currentRoute.startsWith(item.route)
+            NavigationBarItem(
+                selected = selected,
+                onClick  = { onNavigate(item.route) },
+                icon = {
+                    Icon(
+                        imageVector = if (selected) item.iconSelected else item.icon,
+                        contentDescription = item.label,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                label = {
+                    Text(
+                        text  = item.label,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor   = MaterialTheme.colorScheme.primary,
+                    selectedTextColor   = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor      = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                )
+            )
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  LEVEL BADGE  —  Spanish proficiency level pill
+// ═════════════════════════════════════════════════════════════
+@Composable
+fun LevelBadge(
+    level: String,
+    modifier: Modifier = Modifier
+) {
+    val color = when (level) {
+        "A1" -> AppColors.Teal
+        "A2" -> AppColors.Teal
+        "B1" -> AppColors.Gold
+        "B2" -> AppColors.Terracotta
+        else -> AppColors.InkLight
+    }
+
+    Surface(
+        modifier = modifier,
+        shape    = RoundedCornerShape(8.dp),
+        color    = color.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text     = level,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+            style    = MaterialTheme.typography.labelSmall,
+            color    = color,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  WORD OF DAY CARD  —  compact home screen card
+// ═════════════════════════════════════════════════════════════
+@Composable
+fun WordOfDayCard(
+    spanish: String,
+    russian: String,
+    example: String,
+    wasPracticed: Boolean,
+    onSpeak: () -> Unit,
+    onPractice: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier  = modifier.fillMaxWidth(),
+        shape     = RoundedCornerShape(20.dp),
+        color     = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text  = "Слово дня",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (wasPracticed) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = AppColors.Teal.copy(alpha = 0.15f)
                     ) {
                         Text(
-                            text  = "Начать",
-                            style = MaterialTheme.typography.labelLarge
+                            text     = "✓ изучено",
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                            style    = MaterialTheme.typography.labelSmall,
+                            color    = AppColors.Teal
                         )
                     }
                 }
             }
-        }
-    }
-}
 
-// ─────────────────────────────────────────────────────────────
-// STATS ROW  —  3 metric tiles
-// ─────────────────────────────────────────────────────────────
-@Composable
-private fun StatsRow(
-    wordsLearned: Int,
-    longestStreak: Int,
-    lessonsCompleted: Int,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        StatCard(
-            label = "слов изучено",
-            value = wordsLearned.toString(),
-            icon  = "📚",
-            accentColor = AppColors.Teal,
-            modifier = Modifier.weight(1f)
-        )
-        StatCard(
-            label = "рекорд стрик",
-            value = "$longestStreak д.",
-            icon  = "🔥",
-            accentColor = AppColors.Gold,
-            modifier = Modifier.weight(1f)
-        )
-        StatCard(
-            label = "уроков",
-            value = lessonsCompleted.toString(),
-            icon  = "✅",
-            accentColor = AppColors.Terracotta,
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
+            Spacer(Modifier.height(8.dp))
 
-// ─────────────────────────────────────────────────────────────
-// LEVEL UP BANNER
-// ─────────────────────────────────────────────────────────────
-@Composable
-private fun LevelUpBanner(
-    currentLevel: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val nextLevel = when (currentLevel) {
-        "A1" -> "A2"; "A2" -> "B1"; "B1" -> "B2"; else -> "C1"
-    }
-
-    Surface(
-        onClick  = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape    = RoundedCornerShape(16.dp),
-        color    = AppColors.Gold.copy(alpha = 0.12f)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text("🏆", fontSize = 28.sp)
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text  = "Готов перейти на $nextLevel?",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AppColors.GoldDark
-                )
-                Text(
-                    text  = "Ты освоил уровень $currentLevel. Попробуй более сложные слова.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Icon(
-                imageVector = Icons.Default.ArrowForward,
-                contentDescription = null,
-                tint = AppColors.GoldDark,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────
-// FEATURES GRID  —  main learning modes
-// ─────────────────────────────────────────────────────────────
-@Composable
-private fun FeaturesGrid(
-    dueCount: Int,
-    sessionPlan: com.spanishapp.domain.algorithm.AdaptiveLearning.SessionPlan,
-    navController: NavHostController,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        // Flashcards — primary action
-        FeatureCard(
-            title     = "Карточки",
-            subtitle  = if (dueCount > 0) "$dueCount слов к повторению · ${sessionPlan.newWords} новых"
-            else "Все повторено на сегодня ✓",
-            icon      = "🃏",
-            onClick   = { navController.navigate("flashcards") },
-            badgeText = if (dueCount > 0) "$dueCount" else null,
-            accentColor = AppColors.Terracotta
-        )
-
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            FeatureCard(
-                title     = "Спряжения",
-                subtitle  = "20 глаголов · 6 времён",
-                icon      = "📝",
-                onClick   = { navController.navigate("conjugation") },
-                accentColor = AppColors.Teal,
-                modifier  = Modifier.weight(1f)
-            )
-            FeatureCard(
-                title     = "Диалоги",
-                subtitle  = "Реальные ситуации",
-                icon      = "💬",
-                onClick   = { navController.navigate("dialogues") },
-                accentColor = AppColors.Gold,
-                modifier  = Modifier.weight(1f)
-            )
-        }
-
-        FeatureCard(
-            title     = "ИИ-репетитор",
-            subtitle  = "Разговорная практика с коррекцией ошибок",
-            icon      = "🤖",
-            onClick   = { navController.navigate("ai_chat") },
-            accentColor = AppColors.Info,
-            badgeText = "Claude"
-        )
-
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            FeatureCard(
-                title     = "Грамматика",
-                subtitle  = "Уроки по уровням",
-                icon      = "📖",
-                onClick   = { navController.navigate("grammar") },
-                accentColor = AppColors.Teal,
-                modifier  = Modifier.weight(1f)
-            )
-            FeatureCard(
-                title     = "Произноше-ние",
-                subtitle  = "Говори и слушай",
-                icon      = "🎤",
-                onClick   = { navController.navigate("pronunciation") },
-                accentColor = AppColors.Terracotta,
-                modifier  = Modifier.weight(1f)
-            )
-        }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────
-// QUICK ACTIONS  —  secondary navigation row
-// ─────────────────────────────────────────────────────────────
-@Composable
-private fun QuickActions(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        listOf(
-            Triple("weak_words", "Слабые\nслова",   "⚠️"),
-            Triple("dictionary", "Словарь",          "🔍"),
-            Triple("quiz",       "Тест",             "🎯"),
-            Triple("achievements","Ачивки",          "🏅")
-        ).forEach { (route, label, icon) ->
-            Surface(
-                onClick  = { navController.navigate(route) },
-                modifier = Modifier.weight(1f),
-                shape    = RoundedCornerShape(14.dp),
-                color    = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(vertical = 12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(icon, fontSize = 20.sp)
-                    Text(
-                        text      = label,
-                        style     = MaterialTheme.typography.labelSmall,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        color     = MaterialTheme.colorScheme.onSurfaceVariant
+                Text(
+                    text  = spanish,
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                IconButton(onClick = onSpeak, modifier = Modifier.size(32.dp)) {
+                    Icon(
+                        imageVector = Icons.Filled.VolumeUp,
+                        contentDescription = "Произнести",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
-        }
-    }
-}
 
-// ─────────────────────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────────────────────
-private fun greetingByTime(): String {
-    val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
-    return when {
-        hour < 6  -> "Доброй ночи,"
-        hour < 12 -> "Доброе утро,"
-        hour < 18 -> "Добрый день,"
-        else      -> "Добрый вечер,"
+            Text(
+                text  = russian,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            if (example.isNotEmpty()) {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text  = "«$example»",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                )
+            }
+
+            if (!wasPracticed) {
+                Spacer(Modifier.height(12.dp))
+                OutlinedButton(
+                    onClick = onPractice,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Добавить в карточки")
+                }
+            }
+        }
     }
 }

@@ -2,13 +2,10 @@ package com.spanishapp.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
-import com.spanishapp.R
 import com.spanishapp.data.db.dao.AchievementDao
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
@@ -17,15 +14,11 @@ import com.spanishapp.domain.algorithm.StreakManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// ═════════════════════════════════════════════════════════════
-//  ACHIEVEMENT MANAGER  —  check and unlock achievements
-// ═════════════════════════════════════════════════════════════
 @Singleton
 class AchievementManager @Inject constructor(
     private val achievementDao: AchievementDao,
@@ -33,11 +26,10 @@ class AchievementManager @Inject constructor(
     private val wordDao: WordDao,
     private val notificationService: NotificationService
 ) {
-    // Default achievements seeded on first launch
     val defaultAchievements = listOf(
         AchievementEntity("first_word",    "Первое слово!",        "Выучи своё первое слово",        "ic_star",   5,  requirement = 1,   requirementType = "words"),
         AchievementEntity("words_10",      "Словарик",             "Выучи 10 слов",                  "ic_book",   10, requirement = 10,  requirementType = "words"),
-        AchievementEntity("words_50",      "Студент",              "Выучи 50 слов",                  "ic_graduate",20,requirement = 50,  requirementType = "words"),
+        AchievementEntity("words_50",      "Студент",              "Выучи 50 слов",                  "ic_grad",   20, requirement = 50,  requirementType = "words"),
         AchievementEntity("words_100",     "Знаток слов",          "Выучи 100 слов",                 "ic_medal",  40, requirement = 100, requirementType = "words"),
         AchievementEntity("words_250",     "Полиглот",             "Выучи 250 слов",                 "ic_globe",  80, requirement = 250, requirementType = "words"),
         AchievementEntity("words_500",     "Виртуоз",              "Выучи 500 слов",                 "ic_trophy", 150,requirement = 500, requirementType = "words"),
@@ -79,14 +71,10 @@ class AchievementManager @Inject constructor(
                 notificationService.showAchievement(achievement.titleRu, achievement.descriptionRu)
             }
         }
-
         return newlyUnlocked
     }
 }
 
-// ═════════════════════════════════════════════════════════════
-//  NOTIFICATION SERVICE
-// ═════════════════════════════════════════════════════════════
 @Singleton
 class NotificationService @Inject constructor(
     @ApplicationContext private val context: Context
@@ -102,75 +90,54 @@ class NotificationService @Inject constructor(
 
     private fun createChannels() {
         val manager = context.getSystemService(NotificationManager::class.java)
-
         listOf(
-            NotificationChannel(CHANNEL_REMINDER,    "Напоминания об учёбе", NotificationManager.IMPORTANCE_DEFAULT)
-                .apply { description = "Ежедневные напоминания о занятиях" },
-            NotificationChannel(CHANNEL_ACHIEVEMENT, "Достижения",           NotificationManager.IMPORTANCE_HIGH)
-                .apply { description = "Уведомления о новых достижениях" },
+            NotificationChannel(CHANNEL_REMINDER,    "Напоминания об учёбе", NotificationManager.IMPORTANCE_DEFAULT),
+            NotificationChannel(CHANNEL_ACHIEVEMENT, "Достижения",           NotificationManager.IMPORTANCE_HIGH),
             NotificationChannel(CHANNEL_STREAK,      "Стрик",                NotificationManager.IMPORTANCE_HIGH)
-                .apply { description = "Предупреждения о потере стрика" }
         ).forEach { manager.createNotificationChannel(it) }
     }
 
     fun showDailyReminder(streak: Int) {
         val messages = listOf(
-            "¡Hola! Пора учить испанский 🇪🇸",
-            "Твой стрик: $streak ${streakEmoji(streak)}. Не прерывай серию!",
-            "5 минут испанского в день — и через год ты беглый! 🚀",
+            "¡Hola! Пора учить испанский",
+            "Твой стрик: $streak дней. Не прерывай серию!",
+            "5 минут испанского в день — и через год ты беглый!",
             "Nuevas palabras te esperan — новые слова ждут тебя!",
-            "¡Ánimo! Сегодняшний урок займёт всего 10 минут 💪"
+            "Сегодняшний урок займёт всего 10 минут"
         )
-
         val n = NotificationCompat.Builder(context, CHANNEL_REMINDER)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle("SpanishApp")
             .setContentText(messages.random())
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
-
-        context.getSystemService(NotificationManager::class.java)
-            .notify(notifId++, n)
+        context.getSystemService(NotificationManager::class.java).notify(notifId++, n)
     }
 
     fun showStreakWarning(streak: Int) {
         val n = NotificationCompat.Builder(context, CHANNEL_STREAK)
-            .setSmallIcon(R.drawable.ic_fire)
-            .setContentTitle("⚠️ Стрик под угрозой!")
-            .setContentText("У тебя стрик $streak дней. Позанимайся сегодня, чтобы не потерять его!")
+            .setSmallIcon(android.R.drawable.ic_dialog_alert)
+            .setContentTitle("Стрик под угрозой!")
+            .setContentText("У тебя стрик $streak дней. Позанимайся сегодня!")
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
-
-        context.getSystemService(NotificationManager::class.java)
-            .notify(notifId++, n)
+        context.getSystemService(NotificationManager::class.java).notify(notifId++, n)
     }
 
     fun showAchievement(title: String, description: String) {
         val n = NotificationCompat.Builder(context, CHANNEL_ACHIEVEMENT)
-            .setSmallIcon(R.drawable.ic_trophy)
-            .setContentTitle("🏆 Достижение разблокировано!")
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle("Достижение разблокировано!")
             .setContentText("$title — $description")
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
-
-        context.getSystemService(NotificationManager::class.java)
-            .notify(notifId++, n)
-    }
-
-    private fun streakEmoji(streak: Int) = when {
-        streak >= 100 -> "🔥🔥🔥"
-        streak >= 30  -> "🔥🔥"
-        streak >= 7   -> "🔥"
-        else          -> "✨"
+        context.getSystemService(NotificationManager::class.java).notify(notifId++, n)
     }
 }
 
-// ═════════════════════════════════════════════════════════════
-//  DAILY REMINDER WORKER  (WorkManager)
-// ═════════════════════════════════════════════════════════════
 @HiltWorker
 class DailyReminderWorker @AssistedInject constructor(
     @Assisted context: Context,
@@ -181,8 +148,6 @@ class DailyReminderWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         val progress = userProgressDao.getProgressOnce() ?: return Result.success()
-
-        // Check if user already studied today
         val todayStart = LocalDate.now().toEpochDay() * 86_400_000L
         val studiedToday = progress.lastStudyDate >= todayStart
 
@@ -193,7 +158,6 @@ class DailyReminderWorker @AssistedInject constructor(
                 notificationService.showDailyReminder(progress.currentStreak)
             }
         }
-
         return Result.success()
     }
 
@@ -201,18 +165,9 @@ class DailyReminderWorker @AssistedInject constructor(
         const val WORK_NAME = "daily_reminder"
 
         fun schedule(context: Context) {
-            val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(
-                repeatInterval = 24,
-                repeatIntervalTimeUnit = TimeUnit.HOURS
-            )
+            val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(24, TimeUnit.HOURS)
                 .setInitialDelay(1, TimeUnit.HOURS)
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiresBatteryNotLow(false)
-                        .build()
-                )
                 .build()
-
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,

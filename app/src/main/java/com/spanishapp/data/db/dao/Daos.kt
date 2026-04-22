@@ -1,14 +1,9 @@
-
-
 package com.spanishapp.data.db.dao
 
 import androidx.room.*
 import com.spanishapp.data.db.entity.*
 import kotlinx.coroutines.flow.Flow
 
-// ─────────────────────────────────────────────────────────────
-// WORD DAO
-// ─────────────────────────────────────────────────────────────
 @Dao
 interface WordDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -20,11 +15,9 @@ interface WordDao {
     @Query("SELECT COUNT(*) FROM words")
     suspend fun getCount(): Int
 
-    // SM-2: words due for review today
     @Query("SELECT * FROM words WHERE next_review <= :now ORDER BY next_review ASC LIMIT :limit")
     fun getDueWords(now: Long = System.currentTimeMillis(), limit: Int = 30): Flow<List<WordEntity>>
 
-    // New words user hasn't seen yet (repetitions = 0)
     @Query("SELECT * FROM words WHERE repetitions = 0 AND level = :level ORDER BY RANDOM() LIMIT :limit")
     fun getNewWords(level: String, limit: Int = 10): Flow<List<WordEntity>>
 
@@ -37,18 +30,12 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE category = :category ORDER BY RANDOM() LIMIT :limit")
     fun getByCategory(category: String, limit: Int = 50): Flow<List<WordEntity>>
 
-    @Query("""
-        SELECT * FROM words
-        WHERE spanish LIKE '%' || :q || '%' OR russian LIKE '%' || :q || '%'
-        ORDER BY CASE WHEN spanish LIKE :q || '%' THEN 0 ELSE 1 END
-        LIMIT 40
-    """)
+    @Query("SELECT * FROM words WHERE spanish LIKE '%' || :q || '%' OR russian LIKE '%' || :q || '%' ORDER BY CASE WHEN spanish LIKE :q || '%' THEN 0 ELSE 1 END LIMIT 40")
     fun search(q: String): Flow<List<WordEntity>>
 
     @Query("SELECT * FROM words WHERE id = :id")
     suspend fun getById(id: Int): WordEntity?
 
-    // Stats
     @Query("SELECT COUNT(*) FROM words WHERE is_learned = 1")
     fun learnedCount(): Flow<Int>
 
@@ -58,14 +45,7 @@ interface WordDao {
     @Query("SELECT DISTINCT category FROM words WHERE word_type = :type ORDER BY category")
     fun categoriesForType(type: String): Flow<List<String>>
 
-    // Weak words: low accuracy, due for review
-    @Query("""
-        SELECT * FROM words
-        WHERE total_reviews > 3
-          AND (correct_reviews * 1.0 / total_reviews) < 0.6
-        ORDER BY (correct_reviews * 1.0 / total_reviews) ASC
-        LIMIT 20
-    """)
+    @Query("SELECT * FROM words WHERE total_reviews > 3 AND (correct_reviews * 1.0 / total_reviews) < 0.6 ORDER BY (correct_reviews * 1.0 / total_reviews) ASC LIMIT 20")
     fun getWeakWords(): Flow<List<WordEntity>>
 
     // ── Flashcards session helpers (suspend, one-shot) ─────────
@@ -113,9 +93,6 @@ interface WordDao {
     suspend fun categoriesForLevel(level: String): List<String>
 }
 
-// ─────────────────────────────────────────────────────────────
-// CONJUGATION DAO
-// ─────────────────────────────────────────────────────────────
 @Dao
 interface ConjugationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -137,9 +114,6 @@ interface ConjugationDao {
     suspend fun getCount(): Int
 }
 
-// ─────────────────────────────────────────────────────────────
-// LESSON DAO
-// ─────────────────────────────────────────────────────────────
 @Dao
 interface LessonDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -164,9 +138,6 @@ interface LessonDao {
     suspend fun getCount(): Int
 }
 
-// ─────────────────────────────────────────────────────────────
-// DIALOGUE DAO
-// ─────────────────────────────────────────────────────────────
 @Dao
 interface DialogueDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -188,9 +159,6 @@ interface DialogueDao {
     suspend fun getCount(): Int
 }
 
-// ─────────────────────────────────────────────────────────────
-// USER PROGRESS DAO
-// ─────────────────────────────────────────────────────────────
 @Dao
 interface UserProgressDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -199,25 +167,22 @@ interface UserProgressDao {
     @Update
     suspend fun update(progress: UserProgressEntity)
 
-    @Query("SELECT * FROM user_progress WHERE user_id = 1")
+    @Query("SELECT * FROM user_progress LIMIT 1")
     fun getProgress(): Flow<UserProgressEntity?>
 
-    @Query("SELECT * FROM user_progress WHERE user_id = 1")
+    @Query("SELECT * FROM user_progress LIMIT 1")
     suspend fun getProgressOnce(): UserProgressEntity?
 
-    @Query("UPDATE user_progress SET total_xp = total_xp + :xp, words_learned = words_learned + :words WHERE user_id = 1")
+    @Query("UPDATE user_progress SET total_xp = total_xp + :xp, words_learned = words_learned + :words")
     suspend fun addXpAndWords(xp: Int, words: Int)
 
-    @Query("UPDATE user_progress SET current_streak = :streak, longest_streak = MAX(longest_streak, :streak), last_study_date = :date WHERE user_id = 1")
+    @Query("UPDATE user_progress SET current_streak = :streak, longest_streak = MAX(longest_streak, :streak), last_study_date = :date")
     suspend fun updateStreak(streak: Int, date: Long)
 
-    @Query("UPDATE user_progress SET total_study_minutes = total_study_minutes + :minutes WHERE user_id = 1")
+    @Query("UPDATE user_progress SET total_study_minutes = total_study_minutes + :minutes")
     suspend fun addStudyTime(minutes: Int)
 }
 
-// ─────────────────────────────────────────────────────────────
-// CHAT MESSAGE DAO
-// ─────────────────────────────────────────────────────────────
 @Dao
 interface ChatMessageDao {
     @Insert
@@ -232,13 +197,10 @@ interface ChatMessageDao {
     @Query("DELETE FROM chat_messages WHERE session_id = :sessionId")
     suspend fun clearSession(sessionId: String)
 
-    @Query("SELECT DISTINCT session_id FROM chat_messages ORDER BY MAX(timestamp) DESC")
-    fun getAllSessions(): Flow<List<String>>
+    @Query("SELECT DISTINCT session_id FROM chat_messages")
+    suspend fun getAllSessions(): List<String>
 }
 
-// ─────────────────────────────────────────────────────────────
-// ACHIEVEMENT DAO
-// ─────────────────────────────────────────────────────────────
 @Dao
 interface AchievementDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -260,9 +222,6 @@ interface AchievementDao {
     suspend fun getCount(): Int
 }
 
-// ─────────────────────────────────────────────────────────────
-// DAILY WORD DAO
-// ─────────────────────────────────────────────────────────────
 @Dao
 interface DailyWordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
