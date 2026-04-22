@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -15,7 +17,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -97,10 +102,9 @@ fun FlashcardsSetupScreen(
             )
 
             SectionTitle("Категория")
-            ChipRow(
+            CategoryCarousel(
                 options = listOf("all") + categories,
                 selected = category,
-                labelFor = { if (it == "all") "Все" else it.replaceFirstChar(Char::titlecase) },
                 onSelect = { category = it }
             )
 
@@ -184,6 +188,89 @@ private fun ChipRow(
                 selected = opt == selected,
                 onClick = { onSelect(opt) },
                 label = { Text(labelFor(opt)) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoryCarousel(
+    options: List<String>,
+    selected: String,
+    onSelect: (String) -> Unit
+) {
+    if (options.isEmpty()) return
+
+    val size = options.size
+    // Pseudo-infinite looped carousel: huge item count, modulo-indexed.
+    val virtualCount = if (size <= 1) size else Int.MAX_VALUE
+    val startIndex = if (size <= 1) 0 else (Int.MAX_VALUE / 2).let { it - it % size }
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = startIndex)
+
+    LazyRow(
+        state = listState,
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items(virtualCount) { idx ->
+            val key = options[idx % size]
+            val info = CategoryMeta.infoFor(key)
+            CategoryCard(
+                info = info,
+                selected = key == selected,
+                onClick = { onSelect(key) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoryCard(
+    info: CategoryInfo,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    val bg = if (selected)
+        MaterialTheme.colorScheme.primaryContainer
+    else
+        MaterialTheme.colorScheme.surfaceVariant
+    val fg = if (selected)
+        MaterialTheme.colorScheme.onPrimaryContainer
+    else
+        MaterialTheme.colorScheme.onSurfaceVariant
+
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = bg,
+        tonalElevation = if (selected) 4.dp else 1.dp,
+        modifier = Modifier
+            .size(width = 96.dp, height = 100.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = info.icon,
+                contentDescription = info.label,
+                tint = fg,
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                info.label,
+                color = fg,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                lineHeight = 14.sp
             )
         }
     }
