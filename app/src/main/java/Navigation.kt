@@ -11,6 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import com.spanishapp.ui.flashcards.FlashcardDirection
+import com.spanishapp.ui.flashcards.FlashcardsScreen
+import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
 import com.spanishapp.ui.home.HomeScreen
 
 object Navigation {
@@ -36,7 +39,32 @@ object Navigation {
                     navArgument("type")  { defaultValue = "all" },
                     navArgument("level") { defaultValue = "A1" }
                 )
-            ) { Placeholder("Карточки") }
+            ) { FlashcardsSetupScreen(navController) }
+
+            composable(
+                "flashcards_session?level={level}&category={category}&direction={direction}&weak={weak}",
+                arguments = listOf(
+                    navArgument("level")     { defaultValue = "A1" },
+                    navArgument("category")  { defaultValue = "all" },
+                    navArgument("direction") { defaultValue = FlashcardDirection.ES_TO_RU.name },
+                    navArgument("weak")      { defaultValue = "false" }
+                )
+            ) { backStackEntry ->
+                val args = backStackEntry.arguments
+                val level = args?.getString("level") ?: "A1"
+                val category = args?.getString("category") ?: "all"
+                val direction = runCatching {
+                    FlashcardDirection.valueOf(args?.getString("direction") ?: "ES_TO_RU")
+                }.getOrDefault(FlashcardDirection.ES_TO_RU)
+                val weak = (args?.getString("weak") ?: "false").toBoolean()
+                FlashcardsScreen(
+                    navController = navController,
+                    level = level,
+                    category = category,
+                    direction = direction,
+                    onlyWeak = weak
+                )
+            }
 
             composable("conjugation?verb={verb}",
                 arguments = listOf(navArgument("verb") { defaultValue = "" })

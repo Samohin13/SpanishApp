@@ -67,6 +67,50 @@ interface WordDao {
         LIMIT 20
     """)
     fun getWeakWords(): Flow<List<WordEntity>>
+
+    // ── Flashcards session helpers (suspend, one-shot) ─────────
+    @Query("""
+        SELECT * FROM words
+        WHERE next_review <= :now
+          AND level = :level
+          AND (:category = 'all' OR category = :category)
+          AND repetitions > 0
+        ORDER BY next_review ASC
+        LIMIT :limit
+    """)
+    suspend fun getDueForSession(
+        level: String,
+        category: String,
+        limit: Int,
+        now: Long = System.currentTimeMillis()
+    ): List<WordEntity>
+
+    @Query("""
+        SELECT * FROM words
+        WHERE repetitions = 0
+          AND level = :level
+          AND (:category = 'all' OR category = :category)
+        ORDER BY RANDOM()
+        LIMIT :limit
+    """)
+    suspend fun getNewForSession(
+        level: String,
+        category: String,
+        limit: Int
+    ): List<WordEntity>
+
+    @Query("""
+        SELECT * FROM words
+        WHERE total_reviews > 2
+          AND (correct_reviews * 1.0 / total_reviews) < 0.6
+          AND (:category = 'all' OR category = :category)
+        ORDER BY (correct_reviews * 1.0 / total_reviews) ASC
+        LIMIT :limit
+    """)
+    suspend fun getWeakForSession(category: String, limit: Int): List<WordEntity>
+
+    @Query("SELECT DISTINCT category FROM words WHERE level = :level ORDER BY category")
+    suspend fun categoriesForLevel(level: String): List<String>
 }
 
 // ─────────────────────────────────────────────────────────────

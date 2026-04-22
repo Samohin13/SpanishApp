@@ -55,6 +55,8 @@ class DatabaseSeeder @Inject constructor(
         parseSection("adjectives", "adjective")
         parseSection("phrases",    "phrase")
 
+        words += ModernVocab.entries
+
         db.wordDao().insertAll(words)
     }
 
