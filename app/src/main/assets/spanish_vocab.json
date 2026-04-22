@@ -1,0 +1,7457 @@
+{
+  "nouns": [
+    {
+      "spanish": "el hombre",
+      "russian": "мужчина",
+      "example": "Hombre",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la mujer",
+      "russian": "женщина",
+      "example": "Mujer",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el niño",
+      "russian": "мальчик / ребёнок",
+      "example": "El niño juega.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la niña",
+      "russian": "девочка",
+      "example": "La niña canta.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el padre",
+      "russian": "отец",
+      "example": "Mi padre trabaja.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la madre",
+      "russian": "мать",
+      "example": "Mi madre cocina.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el hijo",
+      "russian": "сын",
+      "example": "Tengo un hijo.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la hija",
+      "russian": "дочь",
+      "example": "Mi hija estudia.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el hermano",
+      "russian": "брат",
+      "example": "Mi hermano es alto.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la hermana",
+      "russian": "сестра",
+      "example": "Mi hermana es joven.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el abuelo",
+      "russian": "дедушка",
+      "example": "Mi abuelo tiene 70 años.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la abuela",
+      "russian": "бабушка",
+      "example": "La abuela cocina bien.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el tío",
+      "russian": "дядя",
+      "example": "Mi tío vive en Madrid.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la tía",
+      "russian": "тётя",
+      "example": "La tía nos visita.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el primo",
+      "russian": "двоюродный брат",
+      "example": "Mi primo juega fútbol.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la prima",
+      "russian": "двоюродная сестра",
+      "example": "Mi prima estudia arte.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el esposo",
+      "russian": "муж",
+      "example": "Mi esposo trabaja aquí.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la esposa",
+      "russian": "жена",
+      "example": "Mi esposa es médica.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el novio",
+      "russian": "жених / парень",
+      "example": "Mi novio es simpático.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la novia",
+      "russian": "невеста / девушка",
+      "example": "Mi novia baila bien.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el bebé",
+      "russian": "младенец",
+      "example": "El bebé duerme.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el amigo",
+      "russian": "друг",
+      "example": "Tengo muchos amigos.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la amiga",
+      "russian": "подруга",
+      "example": "Mi amiga es divertida.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el vecino",
+      "russian": "сосед",
+      "example": "El vecino es amable.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "la vecina",
+      "russian": "соседка",
+      "example": "La vecina nos saluda.",
+      "level": "A1",
+      "category": "familia_personas"
+    },
+    {
+      "spanish": "el jefe",
+      "russian": "начальник",
+      "example": "Mi jefe es estricto.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el colega",
+      "russian": "коллега",
+      "example": "Los colegas trabajan juntos.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el cliente",
+      "russian": "клиент",
+      "example": "El cliente tiene razón.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el ciudadano",
+      "russian": "гражданин",
+      "example": "El ciudadano vota.",
+      "level": "B1",
+      "category": "sociedad"
+    },
+    {
+      "spanish": "el extranjero",
+      "russian": "иностранец",
+      "example": "El extranjero habla inglés.",
+      "level": "B1",
+      "category": "sociedad"
+    },
+    {
+      "spanish": "la cabeza",
+      "russian": "голова",
+      "example": "Me duele la cabeza.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el ojo",
+      "russian": "глаз",
+      "example": "Tengo ojos marrones.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la nariz",
+      "russian": "нос",
+      "example": "Mi nariz es pequeña.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la boca",
+      "russian": "рот",
+      "example": "Abre la boca.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el oído",
+      "russian": "ухо (орган слуха)",
+      "example": "Tengo dolor de oído.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la oreja",
+      "russian": "ухо (внешнее)",
+      "example": "Le tira de la oreja.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el diente",
+      "russian": "зуб",
+      "example": "Me duele un diente.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la mano",
+      "russian": "рука (кисть)",
+      "example": "Dame la mano.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el brazo",
+      "russian": "рука (рука целиком)",
+      "example": "Me rompí el brazo.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el pie",
+      "russian": "нога (стопа)",
+      "example": "Me duele el pie.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la pierna",
+      "russian": "нога",
+      "example": "Tengo las piernas largas.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el cuello",
+      "russian": "шея",
+      "example": "Tengo dolor de cuello.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la espalda",
+      "russian": "спина",
+      "example": "Me duele la espalda.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el estómago",
+      "russian": "живот / желудок",
+      "example": "Me duele el estómago.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el corazón",
+      "russian": "сердце",
+      "example": "El corazón late fuerte.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el pecho",
+      "russian": "грудь",
+      "example": "Siento dolor en el pecho.",
+      "level": "A2",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la rodilla",
+      "russian": "колено",
+      "example": "Me lastimé la rodilla.",
+      "level": "A2",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el hombro",
+      "russian": "плечо",
+      "example": "Me duele el hombro.",
+      "level": "A2",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el codo",
+      "russian": "локоть",
+      "example": "Me golpeé el codo.",
+      "level": "A2",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el tobillo",
+      "russian": "лодыжка",
+      "example": "Me torcí el tobillo.",
+      "level": "A2",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el dedo",
+      "russian": "палец",
+      "example": "Me corté el dedo.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el pelo",
+      "russian": "волосы",
+      "example": "Tiene el pelo largo.",
+      "level": "A1",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la piel",
+      "russian": "кожа",
+      "example": "Tiene la piel suave.",
+      "level": "A2",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "la sangre",
+      "russian": "кровь",
+      "example": "Tiene miedo a la sangre.",
+      "level": "A2",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el hueso",
+      "russian": "кость",
+      "example": "El hueso es duro.",
+      "level": "A2",
+      "category": "cuerpo"
+    },
+    {
+      "spanish": "el pan",
+      "russian": "хлеб",
+      "example": "Compro pan cada día.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el agua",
+      "russian": "вода",
+      "example": "Bebo mucha agua.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la leche",
+      "russian": "молоко",
+      "example": "La leche es nutritiva.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el café",
+      "russian": "кофе",
+      "example": "Tomo café por la mañana.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el té",
+      "russian": "чай",
+      "example": "Prefiero el té verde.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el jugo",
+      "russian": "сок",
+      "example": "El jugo de naranja es rico.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la cerveza",
+      "russian": "пиво",
+      "example": "Una cerveza fría, por favor.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el vino",
+      "russian": "вино",
+      "example": "El vino tinto es bueno.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la carne",
+      "russian": "мясo",
+      "example": "La carne está bien cocida.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el pollo",
+      "russian": "курица",
+      "example": "El pollo asado es delicioso.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el pescado",
+      "russian": "рыба",
+      "example": "El pescado es sano.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el arroz",
+      "russian": "рис",
+      "example": "El arroz está listo.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la pasta",
+      "russian": "макароны",
+      "example": "Me gusta la pasta italiana.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la sopa",
+      "russian": "суп",
+      "example": "La sopa está caliente.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la ensalada",
+      "russian": "салат",
+      "example": "La ensalada es fresca.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el queso",
+      "russian": "сыр",
+      "example": "El queso manchego es famoso.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el huevo",
+      "russian": "яйцо",
+      "example": "Como huevos al desayuno.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la fruta",
+      "russian": "фрукт",
+      "example": "La fruta es saludable.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la verdura",
+      "russian": "овощ",
+      "example": "Las verduras son nutritivas.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la manzana",
+      "russian": "яблоко",
+      "example": "La manzana es roja.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el tomate",
+      "russian": "помидор",
+      "example": "El tomate es rojo.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la naranja",
+      "russian": "апельсин",
+      "example": "La naranja es dulce.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el limón",
+      "russian": "лимон",
+      "example": "El limón es ácido.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el plátano",
+      "russian": "банан",
+      "example": "El plátano es amarillo.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la uva",
+      "russian": "виноград",
+      "example": "Las uvas son dulces.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la fresa",
+      "russian": "клубника",
+      "example": "Las fresas son rojas.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la cebolla",
+      "russian": "лук",
+      "example": "La cebolla tiene sabor fuerte.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el ajo",
+      "russian": "чеснок",
+      "example": "El ajo da sabor.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la patata",
+      "russian": "картофель",
+      "example": "Las patatas están ricas.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la zanahoria",
+      "russian": "морковь",
+      "example": "La zanahoria es anaranjada.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el pimiento",
+      "russian": "перец (болгарский)",
+      "example": "El pimiento es crujiente.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el aceite",
+      "russian": "масло (растительное)",
+      "example": "Uso aceite de oliva.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la sal",
+      "russian": "соль",
+      "example": "Añade un poco de sal.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el azúcar",
+      "russian": "сахар",
+      "example": "El azúcar es dulce.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la mantequilla",
+      "russian": "масло (сливочное)",
+      "example": "La mantequilla es grasa.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el chocolate",
+      "russian": "шоколад",
+      "example": "El chocolate es delicioso.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el postre",
+      "russian": "десерт",
+      "example": "El postre es dulce.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el desayuno",
+      "russian": "завтрак",
+      "example": "El desayuno es importante.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el almuerzo",
+      "russian": "обед",
+      "example": "El almuerzo es a las dos.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "la cena",
+      "russian": "ужин",
+      "example": "La cena es a las nueve.",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el menú",
+      "russian": "меню",
+      "example": "¿Me das el menú?",
+      "level": "A1",
+      "category": "comida"
+    },
+    {
+      "spanish": "el restaurante",
+      "russian": "ресторан",
+      "example": "Vamos a un restaurante.",
+      "level": "A1",
+      "category": "lugares"
+    },
+    {
+      "spanish": "la cocina",
+      "russian": "кухня",
+      "example": "La cocina es grande.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la receta",
+      "russian": "рецепт",
+      "example": "Sigo la receta.",
+      "level": "A2",
+      "category": "comida"
+    },
+    {
+      "spanish": "el ingrediente",
+      "russian": "ингредиент",
+      "example": "Los ingredientes son frescos.",
+      "level": "A2",
+      "category": "comida"
+    },
+    {
+      "spanish": "el sabor",
+      "russian": "вкус",
+      "example": "El sabor es exquisito.",
+      "level": "A2",
+      "category": "comida"
+    },
+    {
+      "spanish": "la harina",
+      "russian": "мука",
+      "example": "La harina es blanca.",
+      "level": "A2",
+      "category": "comida"
+    },
+    {
+      "spanish": "el vinagre",
+      "russian": "уксус",
+      "example": "El vinagre es ácido.",
+      "level": "A2",
+      "category": "comida"
+    },
+    {
+      "spanish": "la mayonesa",
+      "russian": "майонез",
+      "example": "Pon mayonesa en el sándwich.",
+      "level": "A2",
+      "category": "comida"
+    },
+    {
+      "spanish": "la casa",
+      "russian": "дом",
+      "example": "Mi casa es grande.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el apartamento",
+      "russian": "квартира",
+      "example": "Vivo en un apartamento.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la habitación",
+      "russian": "комната",
+      "example": "Mi habitación es pequeña.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el dormitorio",
+      "russian": "спальня",
+      "example": "El dormitorio tiene dos camas.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el baño",
+      "russian": "ванная",
+      "example": "El baño está limpio.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el salón",
+      "russian": "гостиная",
+      "example": "El salón es cómodo.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el comedor",
+      "russian": "столовая",
+      "example": "Comemos en el comedor.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la puerta",
+      "russian": "дверь",
+      "example": "Cierra la puerta.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la ventana",
+      "russian": "окно",
+      "example": "Abre la ventana.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el suelo",
+      "russian": "пол",
+      "example": "El suelo está frío.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el techo",
+      "russian": "потолок / крыша",
+      "example": "El techo es alto.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la pared",
+      "russian": "стена",
+      "example": "La pared es blanca.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la cama",
+      "russian": "кровать",
+      "example": "La cama es cómoda.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la silla",
+      "russian": "стул",
+      "example": "La silla es dura.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la mesa",
+      "russian": "стол",
+      "example": "La mesa es de madera.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el sofá",
+      "russian": "диван",
+      "example": "El sofá es suave.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el armario",
+      "russian": "шкаф",
+      "example": "El armario está lleno.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la nevera",
+      "russian": "холодильник",
+      "example": "La nevera está fría.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el horno",
+      "russian": "духовка",
+      "example": "El horno está caliente.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la lavadora",
+      "russian": "стиральная машина",
+      "example": "La lavadora funciona bien.",
+      "level": "A2",
+      "category": "casa"
+    },
+    {
+      "spanish": "el espejo",
+      "russian": "зеркало",
+      "example": "El espejo está roto.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la alfombra",
+      "russian": "ковёр",
+      "example": "La alfombra es suave.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la lámpara",
+      "russian": "лампа",
+      "example": "La lámpara ilumina bien.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el ordenador",
+      "russian": "компьютер",
+      "example": "Uso el ordenador todo el día.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el teléfono",
+      "russian": "телефон",
+      "example": "Mi teléfono es nuevo.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el televisor",
+      "russian": "телевизор",
+      "example": "El televisor está encendido.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "la llave",
+      "russian": "ключ",
+      "example": "Tengo la llave.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el jardín",
+      "russian": "сад",
+      "example": "El jardín es bonito.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el garaje",
+      "russian": "гараж",
+      "example": "El coche está en el garaje.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la escalera",
+      "russian": "лестница",
+      "example": "La escalera es empinada.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el ascensor",
+      "russian": "лифт",
+      "example": "El ascensor no funciona.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el piso",
+      "russian": "этаж / квартира",
+      "example": "Vivo en el tercer piso.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el balcón",
+      "russian": "балкон",
+      "example": "El balcón tiene flores.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la ducha",
+      "russian": "душ",
+      "example": "Me doy una ducha.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la bañera",
+      "russian": "ванна",
+      "example": "La bañera está llena.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "el váter",
+      "russian": "унитаз",
+      "example": "El váter está limpio.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la toalla",
+      "russian": "полотенце",
+      "example": "La toalla está mojada.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la almohada",
+      "russian": "подушка",
+      "example": "La almohada es suave.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la manta",
+      "russian": "одеяло",
+      "example": "La manta es cálida.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "las cortinas",
+      "russian": "шторы",
+      "example": "Las cortinas son azules.",
+      "level": "A1",
+      "category": "casa"
+    },
+    {
+      "spanish": "la ropa",
+      "russian": "одежда",
+      "example": "La ropa está limpia.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la camisa",
+      "russian": "рубашка",
+      "example": "La camisa es blanca.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la camiseta",
+      "russian": "футболка",
+      "example": "La camiseta es roja.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "los pantalones",
+      "russian": "брюки",
+      "example": "Los pantalones son azules.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el vestido",
+      "russian": "платье",
+      "example": "El vestido es bonito.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la falda",
+      "russian": "юбка",
+      "example": "La falda es corta.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el abrigo",
+      "russian": "пальто",
+      "example": "El abrigo es cálido.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la chaqueta",
+      "russian": "куртка / пиджак",
+      "example": "La chaqueta es nueva.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el jersey",
+      "russian": "свитер",
+      "example": "El jersey es de lana.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "los zapatos",
+      "russian": "туфли / ботинки",
+      "example": "Los zapatos son cómodos.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "las botas",
+      "russian": "сапоги",
+      "example": "Las botas son de cuero.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "las zapatillas",
+      "russian": "кроссовки",
+      "example": "Las zapatillas son deportivas.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "los calcetines",
+      "russian": "носки",
+      "example": "Los calcetines son negros.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la ropa interior",
+      "russian": "нижнее бельё",
+      "example": "La ropa interior es de algodón.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el cinturón",
+      "russian": "ремень",
+      "example": "El cinturón es de cuero.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el bolso",
+      "russian": "сумка",
+      "example": "El bolso es grande.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la mochila",
+      "russian": "рюкзак",
+      "example": "La mochila es pesada.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el sombrero",
+      "russian": "шляпа",
+      "example": "El sombrero es de paja.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la gorra",
+      "russian": "кепка",
+      "example": "La gorra es roja.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "los guantes",
+      "russian": "перчатки",
+      "example": "Los guantes son de lana.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la bufanda",
+      "russian": "шарф",
+      "example": "La bufanda es larga.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el pañuelo",
+      "russian": "платок / носовой платок",
+      "example": "El pañuelo es de seda.",
+      "level": "A2",
+      "category": "ropa"
+    },
+    {
+      "spanish": "las gafas",
+      "russian": "очки",
+      "example": "Las gafas son nuevas.",
+      "level": "A1",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el traje",
+      "russian": "костюм",
+      "example": "El traje es elegante.",
+      "level": "A2",
+      "category": "ropa"
+    },
+    {
+      "spanish": "la corbata",
+      "russian": "галстук",
+      "example": "La corbata es roja.",
+      "level": "A2",
+      "category": "ropa"
+    },
+    {
+      "spanish": "el coche",
+      "russian": "машина",
+      "example": "El coche es rápido.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el autobús",
+      "russian": "автобус",
+      "example": "El autobús llega tarde.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el metro",
+      "russian": "метро",
+      "example": "El metro es rápido.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el tren",
+      "russian": "поезд",
+      "example": "El tren sale a las ocho.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el avión",
+      "russian": "самолёт",
+      "example": "El avión vuela alto.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el barco",
+      "russian": "корабль",
+      "example": "El barco es grande.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "la bicicleta",
+      "russian": "велосипед",
+      "example": "Monto en bicicleta.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "la moto",
+      "russian": "мотоцикл",
+      "example": "La moto es rápida.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el taxi",
+      "russian": "такси",
+      "example": "Pido un taxi.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el aeropuerto",
+      "russian": "аэропорт",
+      "example": "El aeropuerto es grande.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "la estación",
+      "russian": "станция / вокзал",
+      "example": "La estación está cerca.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el puerto",
+      "russian": "порт",
+      "example": "El puerto es muy activo.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "la calle",
+      "russian": "улица",
+      "example": "La calle es estrecha.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "la avenida",
+      "russian": "проспект",
+      "example": "La avenida es ancha.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el semáforo",
+      "russian": "светофор",
+      "example": "El semáforo está en rojo.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el aparcamiento",
+      "russian": "парковка",
+      "example": "El aparcamiento está lleno.",
+      "level": "A2",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el vuelo",
+      "russian": "рейс / полёт",
+      "example": "El vuelo dura dos horas.",
+      "level": "A2",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el billete",
+      "russian": "билет",
+      "example": "Compro un billete.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el pasaporte",
+      "russian": "паспорт",
+      "example": "Necesito mi pasaporte.",
+      "level": "A1",
+      "category": "viaje"
+    },
+    {
+      "spanish": "la maleta",
+      "russian": "чемодан",
+      "example": "La maleta es pesada.",
+      "level": "A1",
+      "category": "viaje"
+    },
+    {
+      "spanish": "el médico",
+      "russian": "врач",
+      "example": "El médico me ayuda.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el profesor",
+      "russian": "учитель",
+      "example": "El profesor explica bien.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el abogado",
+      "russian": "адвокат",
+      "example": "El abogado defiende al cliente.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el ingeniero",
+      "russian": "инженер",
+      "example": "El ingeniero diseña puentes.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el arquitecto",
+      "russian": "архитектор",
+      "example": "El arquitecto dibuja planos.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el periodista",
+      "russian": "журналист",
+      "example": "El periodista escribe noticias.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el cocinero",
+      "russian": "повар",
+      "example": "El cocinero prepara la comida.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el policía",
+      "russian": "полицейский",
+      "example": "El policía ayuda a la gente.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el bombero",
+      "russian": "пожарный",
+      "example": "El bombero apaga el fuego.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el piloto",
+      "russian": "пилот",
+      "example": "El piloto vuela el avión.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el actor",
+      "russian": "актёр",
+      "example": "El actor trabaja en el cine.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el músico",
+      "russian": "музыкант",
+      "example": "El músico toca bien.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el artista",
+      "russian": "художник / артист",
+      "example": "El artista pinta cuadros.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el escritor",
+      "russian": "писатель",
+      "example": "El escritor es famoso.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el empresario",
+      "russian": "предприниматель",
+      "example": "El empresario tiene éxito.",
+      "level": "B1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el dentista",
+      "russian": "стоматолог",
+      "example": "El dentista revisa mis dientes.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el farmacéutico",
+      "russian": "фармацевт",
+      "example": "El farmacéutico da medicamentos.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el enfermero",
+      "russian": "медбрат",
+      "example": "El enfermero cuida a los pacientes.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el conductor",
+      "russian": "водитель",
+      "example": "El conductor maneja bien.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el camarero",
+      "russian": "официант",
+      "example": "El camarero trae la comida.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el vendedor",
+      "russian": "продавец",
+      "example": "El vendedor es amable.",
+      "level": "A1",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el estudiante",
+      "russian": "студент",
+      "example": "El estudiante estudia mucho.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el secretario",
+      "russian": "секретарь",
+      "example": "El secretario organiza reuniones.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el agricultor",
+      "russian": "фермер",
+      "example": "El agricultor trabaja la tierra.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el mecánico",
+      "russian": "механик",
+      "example": "El mecánico arregla el coche.",
+      "level": "A2",
+      "category": "profesiones"
+    },
+    {
+      "spanish": "el sol",
+      "russian": "солнце",
+      "example": "El sol brilla.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la luna",
+      "russian": "луна",
+      "example": "La luna es llena.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la estrella",
+      "russian": "звезда",
+      "example": "Las estrellas brillan.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el cielo",
+      "russian": "небо",
+      "example": "El cielo es azul.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el mar",
+      "russian": "море",
+      "example": "El mar es profundo.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el río",
+      "russian": "река",
+      "example": "El río es largo.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el lago",
+      "russian": "озеро",
+      "example": "El lago es tranquilo.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la montaña",
+      "russian": "гора",
+      "example": "La montaña es alta.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el bosque",
+      "russian": "лес",
+      "example": "El bosque es denso.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el árbol",
+      "russian": "дерево",
+      "example": "El árbol es grande.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la flor",
+      "russian": "цветок",
+      "example": "La flor es bonita.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la hierba",
+      "russian": "трава",
+      "example": "La hierba es verde.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la playa",
+      "russian": "пляж",
+      "example": "La playa es hermosa.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la tierra",
+      "russian": "земля",
+      "example": "La tierra es fértil.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el fuego",
+      "russian": "огонь",
+      "example": "El fuego calienta.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el agua",
+      "russian": "вода",
+      "example": "El agua es fría.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el aire",
+      "russian": "воздух",
+      "example": "El aire es puro.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la lluvia",
+      "russian": "дождь",
+      "example": "La lluvia es fuerte.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la nieve",
+      "russian": "снег",
+      "example": "La nieve es blanca.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el viento",
+      "russian": "ветер",
+      "example": "El viento es fuerte.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la nube",
+      "russian": "облако",
+      "example": "Las nubes son grises.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el trueno",
+      "russian": "гром",
+      "example": "El trueno asusta.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el relámpago",
+      "russian": "молния",
+      "example": "El relámpago ilumina.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la tormenta",
+      "russian": "буря / гроза",
+      "example": "La tormenta es fuerte.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el desierto",
+      "russian": "пустыня",
+      "example": "El desierto es seco.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la selva",
+      "russian": "джунгли",
+      "example": "La selva es húmeda.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el volcán",
+      "russian": "вулкан",
+      "example": "El volcán está activo.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la isla",
+      "russian": "остров",
+      "example": "La isla es tropical.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la costa",
+      "russian": "побережье",
+      "example": "La costa es rocosa.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la arena",
+      "russian": "песок",
+      "example": "La arena está caliente.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la piedra",
+      "russian": "камень",
+      "example": "La piedra es dura.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el barro",
+      "russian": "грязь / глина",
+      "example": "El barro está mojado.",
+      "level": "A2",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el perro",
+      "russian": "собака",
+      "example": "El perro es fiel.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "el gato",
+      "russian": "кошка",
+      "example": "El gato duerme mucho.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "el caballo",
+      "russian": "лошадь",
+      "example": "El caballo corre rápido.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "la vaca",
+      "russian": "корова",
+      "example": "La vaca da leche.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "el cerdo",
+      "russian": "свинья",
+      "example": "El cerdo come mucho.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "la oveja",
+      "russian": "овца",
+      "example": "La oveja tiene lana.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "la gallina",
+      "russian": "курица",
+      "example": "La gallina pone huevos.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "el pájaro",
+      "russian": "птица",
+      "example": "El pájaro canta.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "el pez",
+      "russian": "рыба",
+      "example": "El pez nada.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "la serpiente",
+      "russian": "змея",
+      "example": "La serpiente es peligrosa.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el lobo",
+      "russian": "волк",
+      "example": "El lobo aúlla.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el oso",
+      "russian": "медведь",
+      "example": "El oso es grande.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el tigre",
+      "russian": "тигр",
+      "example": "El tigre es feroz.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el elefante",
+      "russian": "слон",
+      "example": "El elefante es enorme.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el león",
+      "russian": "лев",
+      "example": "El león ruge.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el mono",
+      "russian": "обезьяна",
+      "example": "El mono trepa.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "la ballena",
+      "russian": "кит",
+      "example": "La ballena es enorme.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el delfín",
+      "russian": "дельфин",
+      "example": "El delfín es inteligente.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el cocodrilo",
+      "russian": "крокодил",
+      "example": "El cocodrilo es peligroso.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "la araña",
+      "russian": "паук",
+      "example": "La araña teje una telaraña.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "la abeja",
+      "russian": "пчела",
+      "example": "La abeja produce miel.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "la mariposa",
+      "russian": "бабочка",
+      "example": "La mariposa es colorida.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "el mosquito",
+      "russian": "комар",
+      "example": "El mosquito pica.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "la hormiga",
+      "russian": "муравей",
+      "example": "La hormiga es trabajadora.",
+      "level": "A2",
+      "category": "animales"
+    },
+    {
+      "spanish": "el ratón",
+      "russian": "мышь",
+      "example": "El ratón es pequeño.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "el conejo",
+      "russian": "кролик",
+      "example": "El conejo es blanco.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "el pato",
+      "russian": "утка",
+      "example": "El pato nada en el lago.",
+      "level": "A1",
+      "category": "animales"
+    },
+    {
+      "spanish": "la ciudad",
+      "russian": "город",
+      "example": "La ciudad es grande.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el pueblo",
+      "russian": "деревня / посёлок",
+      "example": "El pueblo es tranquilo.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el barrio",
+      "russian": "район",
+      "example": "El barrio es moderno.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "la plaza",
+      "russian": "площадь",
+      "example": "La plaza es el centro.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el parque",
+      "russian": "парк",
+      "example": "El parque es bonito.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el mercado",
+      "russian": "рынок",
+      "example": "El mercado está lleno.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "la tienda",
+      "russian": "магазин",
+      "example": "La tienda está abierta.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el supermercado",
+      "russian": "супермаркет",
+      "example": "El supermercado es grande.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el banco",
+      "russian": "банк",
+      "example": "El banco está cerrado.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el hospital",
+      "russian": "больница",
+      "example": "El hospital está cerca.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "la farmacia",
+      "russian": "аптека",
+      "example": "La farmacia vende medicamentos.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "la escuela",
+      "russian": "школа",
+      "example": "La escuela empieza a las ocho.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la universidad",
+      "russian": "университет",
+      "example": "La universidad es prestigiosa.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la biblioteca",
+      "russian": "библиотека",
+      "example": "La biblioteca tiene muchos libros.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el museo",
+      "russian": "музей",
+      "example": "El museo es interesante.",
+      "level": "A1",
+      "category": "cultura"
+    },
+    {
+      "spanish": "el teatro",
+      "russian": "театр",
+      "example": "El teatro es antiguo.",
+      "level": "A1",
+      "category": "cultura"
+    },
+    {
+      "spanish": "el cine",
+      "russian": "кинотеатро",
+      "example": "El cine está cerca.",
+      "level": "A1",
+      "category": "cultura"
+    },
+    {
+      "spanish": "la iglesia",
+      "russian": "церковь",
+      "example": "La iglesia es bonita.",
+      "level": "A1",
+      "category": "cultura"
+    },
+    {
+      "spanish": "el hotel",
+      "russian": "отель",
+      "example": "El hotel es cómodo.",
+      "level": "A1",
+      "category": "viaje"
+    },
+    {
+      "spanish": "la oficina",
+      "russian": "офис",
+      "example": "La oficina está ordenada.",
+      "level": "A1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "la fábrica",
+      "russian": "фабрика",
+      "example": "La fábrica produce coches.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el campo",
+      "russian": "поле / деревня",
+      "example": "El campo es tranquilo.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "la granja",
+      "russian": "ферма",
+      "example": "La granja tiene animales.",
+      "level": "A1",
+      "category": "naturaleza"
+    },
+    {
+      "spanish": "el aeropuerto",
+      "russian": "аэропорт",
+      "example": "El aeropuerto es moderno.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "el cementerio",
+      "russian": "кладбище",
+      "example": "El cementerio es antiguo.",
+      "level": "B1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el estadio",
+      "russian": "стадион",
+      "example": "El estadio es enorme.",
+      "level": "A2",
+      "category": "deporte"
+    },
+    {
+      "spanish": "la piscina",
+      "russian": "бассейн",
+      "example": "La piscina está llena.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el gimnasio",
+      "russian": "спортзал",
+      "example": "El gimnasio está abierto.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "la discoteca",
+      "russian": "дискотека",
+      "example": "La discoteca está llena.",
+      "level": "A2",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "el bar",
+      "russian": "бар",
+      "example": "El bar está en la esquina.",
+      "level": "A1",
+      "category": "ciudad"
+    },
+    {
+      "spanish": "el tiempo",
+      "russian": "время / погода",
+      "example": "El tiempo es bueno hoy.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el día",
+      "russian": "день",
+      "example": "El día es largo.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "la noche",
+      "russian": "ночь",
+      "example": "La noche es tranquila.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "la mañana",
+      "russian": "утро",
+      "example": "La mañana es fresca.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "la tarde",
+      "russian": "вечер / полдень",
+      "example": "La tarde es calurosa.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "la semana",
+      "russian": "неделя",
+      "example": "La semana tiene siete días.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el mes",
+      "russian": "месяц",
+      "example": "El mes tiene treinta días.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el año",
+      "russian": "год",
+      "example": "El año tiene doce meses.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el siglo",
+      "russian": "век",
+      "example": "El siglo XXI.",
+      "level": "B1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el momento",
+      "russian": "момент",
+      "example": "En este momento.",
+      "level": "A2",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el minuto",
+      "russian": "минута",
+      "example": "Espera un minuto.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "la hora",
+      "russian": "час",
+      "example": "Son las tres de la tarde.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el segundo",
+      "russian": "секунда",
+      "example": "En un segundo.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el pasado",
+      "russian": "прошлое",
+      "example": "El pasado no vuelve.",
+      "level": "B1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el presente",
+      "russian": "настоящее",
+      "example": "El presente es ahora.",
+      "level": "B1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el futuro",
+      "russian": "будущее",
+      "example": "El futuro es incierto.",
+      "level": "B1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el lunes",
+      "russian": "понедельник",
+      "example": "El lunes trabajo.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el martes",
+      "russian": "вторник",
+      "example": "El martes tengo clase.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el miércoles",
+      "russian": "среда",
+      "example": "El miércoles descansas.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el jueves",
+      "russian": "четверг",
+      "example": "El jueves como fuera.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el viernes",
+      "russian": "пятница",
+      "example": "El viernes hay fiesta.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el sábado",
+      "russian": "суббота",
+      "example": "El sábado descansas.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el domingo",
+      "russian": "воскресенье",
+      "example": "El domingo es libre.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "enero",
+      "russian": "январь",
+      "example": "En enero hace frío.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "febrero",
+      "russian": "февраль",
+      "example": "Febrero es corto.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "marzo",
+      "russian": "март",
+      "example": "En marzo llega la primavera.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "abril",
+      "russian": "апрель",
+      "example": "Abril tiene lluvias.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "mayo",
+      "russian": "май",
+      "example": "Mayo es hermoso.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "junio",
+      "russian": "июнь",
+      "example": "En junio hace calor.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "julio",
+      "russian": "июль",
+      "example": "Julio es muy caluroso.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "agosto",
+      "russian": "август",
+      "example": "Agosto es vacaciones.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "septiembre",
+      "russian": "сентябрь",
+      "example": "Septiembre es otoño.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "octubre",
+      "russian": "октябрь",
+      "example": "Octubre es fresco.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "noviembre",
+      "russian": "ноябрь",
+      "example": "Noviembre es lluvioso.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "diciembre",
+      "russian": "diciembre",
+      "example": "Diciembre es navidad.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "el libro",
+      "russian": "книга",
+      "example": "El libro es interesante.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el cuaderno",
+      "russian": "тетрадь",
+      "example": "El cuaderno está lleno.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el lápiz",
+      "russian": "карандаш",
+      "example": "El lápiz es afilado.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el bolígrafo",
+      "russian": "ручка",
+      "example": "El bolígrafo no funciona.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la hoja",
+      "russian": "лист бумаги",
+      "example": "La hoja está en blanco.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la mochila",
+      "russian": "рюкзак",
+      "example": "La mochila es pesada.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la clase",
+      "russian": "урок / класс",
+      "example": "La clase empieza a las ocho.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el examen",
+      "russian": "экзамен",
+      "example": "El examen es difícil.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la nota",
+      "russian": "оценка",
+      "example": "Saqué buena nota.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el idioma",
+      "russian": "язык",
+      "example": "Aprendo un nuevo idioma.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la gramática",
+      "russian": "грамматика",
+      "example": "La gramática es difícil.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el vocabulario",
+      "russian": "словарный запас",
+      "example": "Tengo mucho vocabulario.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la pronunciación",
+      "russian": "произношение",
+      "example": "Mi pronunciación mejora.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la lección",
+      "russian": "урок",
+      "example": "La lección es larga.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el diccionario",
+      "russian": "словарь",
+      "example": "Uso el diccionario.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la pizarra",
+      "russian": "доска",
+      "example": "La pizarra está llena.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el aula",
+      "russian": "аудитория",
+      "example": "El aula es grande.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el recreo",
+      "russian": "перемена",
+      "example": "El recreo dura diez minutos.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la asignatura",
+      "russian": "предмет",
+      "example": "Mi asignatura favorita es arte.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "las matemáticas",
+      "russian": "математика",
+      "example": "Las matemáticas son difíciles.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la historia",
+      "russian": "история",
+      "example": "La historia es fascinante.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la ciencia",
+      "russian": "наука",
+      "example": "La ciencia avanza rápido.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la música",
+      "russian": "музыка",
+      "example": "La música me relaja.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el arte",
+      "russian": "искусство",
+      "example": "El arte es inspirador.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la geografía",
+      "russian": "география",
+      "example": "La geografía me gusta.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la física",
+      "russian": "физика",
+      "example": "La física es compleja.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la química",
+      "russian": "химия",
+      "example": "La química es interesante.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la biología",
+      "russian": "биология",
+      "example": "La biología estudia la vida.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el trabajo",
+      "russian": "работа",
+      "example": "El trabajo es duro.",
+      "level": "A1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "la empresa",
+      "russian": "компания",
+      "example": "La empresa es grande.",
+      "level": "A1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el salario",
+      "russian": "зарплата",
+      "example": "Mi salario es bueno.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "la reunión",
+      "russian": "встреча / совещание",
+      "example": "La reunión es larga.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el contrato",
+      "russian": "контракт",
+      "example": "Firmo el contrato.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el informe",
+      "russian": "отчёт",
+      "example": "El informe está listo.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el proyecto",
+      "russian": "проект",
+      "example": "El proyecto es grande.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "la entrevista",
+      "russian": "интервью / собеседование",
+      "example": "La entrevista es mañana.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el currículum",
+      "russian": "резюме",
+      "example": "Mi currículum está actualizado.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el jefe",
+      "russian": "начальник",
+      "example": "Mi jefe es amable.",
+      "level": "A1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el empleado",
+      "russian": "сотрудник",
+      "example": "El empleado trabaja bien.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "la oficina",
+      "russian": "офис",
+      "example": "La oficina está cerca.",
+      "level": "A1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el negocio",
+      "russian": "бизнес",
+      "example": "El negocio va bien.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "la inversión",
+      "russian": "инвестиция",
+      "example": "La inversión es buena.",
+      "level": "B1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "el cliente",
+      "russian": "клиент",
+      "example": "El cliente está satisfecho.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "la salud",
+      "russian": "здоровье",
+      "example": "La salud es lo más importante.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la enfermedad",
+      "russian": "болезнь",
+      "example": "La enfermedad dura poco.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "el dolor",
+      "russian": "боль",
+      "example": "El dolor es fuerte.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la fiebre",
+      "russian": "температура / жар",
+      "example": "Tengo fiebre.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la tos",
+      "russian": "кашель",
+      "example": "Tengo tos seca.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "el resfriado",
+      "russian": "простуда",
+      "example": "Tengo un resfriado.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la gripe",
+      "russian": "грипп",
+      "example": "La gripe es contagiosa.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la medicina",
+      "russian": "лекарство",
+      "example": "La medicina ayuda.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la pastilla",
+      "russian": "таблетка",
+      "example": "Tomo una pastilla.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la operación",
+      "russian": "операция",
+      "example": "La operación es seria.",
+      "level": "B1",
+      "category": "salud"
+    },
+    {
+      "spanish": "el médico",
+      "russian": "врач",
+      "example": "El médico me examina.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la enfermera",
+      "russian": "медсестра",
+      "example": "La enfermera es amable.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "el hospital",
+      "russian": "больница",
+      "example": "Voy al hospital.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "la consulta",
+      "russian": "приём / консультация",
+      "example": "Tengo consulta mañana.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "la receta",
+      "russian": "рецепт (мед.)",
+      "example": "El médico da la receta.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "la vacuna",
+      "russian": "прививка",
+      "example": "La vacuna protege.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "la alergia",
+      "russian": "аллергия",
+      "example": "Tengo alergia al polvo.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "la herida",
+      "russian": "рана",
+      "example": "La herida es pequeña.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "el hueso roto",
+      "russian": "перелом",
+      "example": "Tiene el hueso roto.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "el estrés",
+      "russian": "стресс",
+      "example": "El estrés es malo.",
+      "level": "B1",
+      "category": "salud"
+    },
+    {
+      "spanish": "el fútbol",
+      "russian": "футбол",
+      "example": "El fútbol es popular.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el baloncesto",
+      "russian": "баскетбол",
+      "example": "El baloncesto es divertido.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el tenis",
+      "russian": "теннис",
+      "example": "El tenis es elegante.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "la natación",
+      "russian": "плавание",
+      "example": "La natación es sana.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el atletismo",
+      "russian": "лёгкая атлетика",
+      "example": "El atletismo requiere esfuerzo.",
+      "level": "A2",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el ciclismo",
+      "russian": "велоспорт",
+      "example": "El ciclismo es popular.",
+      "level": "A2",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el partido",
+      "russian": "матч",
+      "example": "El partido es hoy.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el equipo",
+      "russian": "команда",
+      "example": "Mi equipo gana.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el jugador",
+      "russian": "игрок",
+      "example": "El jugador es bueno.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "el entrenador",
+      "russian": "тренер",
+      "example": "El entrenador es estricto.",
+      "level": "A2",
+      "category": "deporte"
+    },
+    {
+      "spanish": "la película",
+      "russian": "фильм",
+      "example": "La película es buena.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "la serie",
+      "russian": "сериал",
+      "example": "La serie tiene muchas temporadas.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "la canción",
+      "russian": "песня",
+      "example": "La canción es bonita.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "el concierto",
+      "russian": "концерт",
+      "example": "El concierto es esta noche.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "el libro",
+      "russian": "книга",
+      "example": "El libro es interesante.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "el juego",
+      "russian": "игра",
+      "example": "El juego es divertido.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "el viaje",
+      "russian": "путешествие",
+      "example": "El viaje es largo.",
+      "level": "A1",
+      "category": "viaje"
+    },
+    {
+      "spanish": "las vacaciones",
+      "russian": "отпуск / каникулы",
+      "example": "Las vacaciones son en agosto.",
+      "level": "A1",
+      "category": "viaje"
+    },
+    {
+      "spanish": "el hobby",
+      "russian": "хобби",
+      "example": "Mi hobby es la fotografía.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "la fotografía",
+      "russian": "фотография",
+      "example": "La fotografía es mi pasión.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "la pintura",
+      "russian": "живопись / картина",
+      "example": "La pintura es bella.",
+      "level": "A2",
+      "category": "arte"
+    },
+    {
+      "spanish": "el dibujo",
+      "russian": "рисунок",
+      "example": "El dibujo es detallado.",
+      "level": "A1",
+      "category": "arte"
+    },
+    {
+      "spanish": "la escultura",
+      "russian": "скульптура",
+      "example": "La escultura es impresionante.",
+      "level": "B1",
+      "category": "arte"
+    },
+    {
+      "spanish": "el baile",
+      "russian": "танец",
+      "example": "El baile es alegre.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "la danza",
+      "russian": "танец (искусство)",
+      "example": "La danza flamenca es española.",
+      "level": "A2",
+      "category": "arte"
+    },
+    {
+      "spanish": "el internet",
+      "russian": "интернет",
+      "example": "El internet es rápido.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "la red",
+      "russian": "сеть",
+      "example": "La red está lenta.",
+      "level": "A2",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "la aplicación",
+      "russian": "приложение",
+      "example": "La aplicación es útil.",
+      "level": "A2",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el correo electrónico",
+      "russian": "электронная почта",
+      "example": "Recibí un correo.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el mensaje",
+      "russian": "сообщение",
+      "example": "Envía un mensaje.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "la contraseña",
+      "russian": "пароль",
+      "example": "La contraseña es segura.",
+      "level": "A2",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "la pantalla",
+      "russian": "экран",
+      "example": "La pantalla está rota.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el teclado",
+      "russian": "клавиатура",
+      "example": "El teclado es inalámbrico.",
+      "level": "A2",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el ratón",
+      "russian": "мышь (компьютер)",
+      "example": "El ratón no funciona.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "la impresora",
+      "russian": "принтер",
+      "example": "La impresora está sin tinta.",
+      "level": "A2",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el cable",
+      "russian": "кабель",
+      "example": "El cable está roto.",
+      "level": "A2",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "la batería",
+      "russian": "аккумулятор",
+      "example": "La batería está cargada.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el cargador",
+      "russian": "зарядное устройство",
+      "example": "No encuentro el cargador.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "la cámara",
+      "russian": "камера",
+      "example": "La cámara es buena.",
+      "level": "A1",
+      "category": "tecnologia"
+    },
+    {
+      "spanish": "el amor",
+      "russian": "любовь",
+      "example": "El amor es eterno.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la amistad",
+      "russian": "дружба",
+      "example": "La amistad es valiosa.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la felicidad",
+      "russian": "счастье",
+      "example": "La felicidad es contagiosa.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la tristeza",
+      "russian": "грусть",
+      "example": "La tristeza pasa pronto.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "el miedo",
+      "russian": "страх",
+      "example": "El miedo es paralizante.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la alegría",
+      "russian": "радость",
+      "example": "La alegría se nota.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "el enojo",
+      "russian": "гнев",
+      "example": "El enojo no ayuda.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la sorpresa",
+      "russian": "удивление",
+      "example": "La sorpresa fue grande.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la esperanza",
+      "russian": "надежда",
+      "example": "La esperanza nunca muere.",
+      "level": "B1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la confianza",
+      "russian": "доверие",
+      "example": "La confianza es fundamental.",
+      "level": "B1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "el sueño",
+      "russian": "сон / мечта",
+      "example": "Tengo muchos sueños.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la ilusión",
+      "russian": "иллюзия / энтузиазм",
+      "example": "Tengo mucha ilusión.",
+      "level": "B1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "la paz",
+      "russian": "мир",
+      "example": "Vivimos en paz.",
+      "level": "B1",
+      "category": "sociedad"
+    },
+    {
+      "spanish": "la guerra",
+      "russian": "война",
+      "example": "La guerra es terrible.",
+      "level": "B1",
+      "category": "sociedad"
+    },
+    {
+      "spanish": "la libertad",
+      "russian": "свобода",
+      "example": "La libertad es un derecho.",
+      "level": "B1",
+      "category": "sociedad"
+    },
+    {
+      "spanish": "la justicia",
+      "russian": "справедливость",
+      "example": "La justicia es necesaria.",
+      "level": "B1",
+      "category": "sociedad"
+    },
+    {
+      "spanish": "el derecho",
+      "russian": "право",
+      "example": "Tengo derecho a hablar.",
+      "level": "B1",
+      "category": "sociedad"
+    },
+    {
+      "spanish": "la opinión",
+      "russian": "мнение",
+      "example": "Mi opinión es importante.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la idea",
+      "russian": "идея",
+      "example": "Es una buena idea.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la pregunta",
+      "russian": "вопрос",
+      "example": "Tengo una pregunta.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la respuesta",
+      "russian": "ответ",
+      "example": "La respuesta es correcta.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el problema",
+      "russian": "проблема",
+      "example": "El problema tiene solución.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la solución",
+      "russian": "решение",
+      "example": "Encontramos la solución.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el resultado",
+      "russian": "результат",
+      "example": "El resultado es bueno.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el éxito",
+      "russian": "успех",
+      "example": "El éxito requiere trabajo.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el fracaso",
+      "russian": "провал",
+      "example": "El fracaso enseña.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la oportunidad",
+      "russian": "возможность",
+      "example": "Es una gran oportunidad.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el cambio",
+      "russian": "перемена",
+      "example": "El cambio es necesario.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la diferencia",
+      "russian": "разница",
+      "example": "Hay una diferencia.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el ejemplo",
+      "russian": "пример",
+      "example": "Dame un ejemplo.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la razón",
+      "russian": "причина / разум",
+      "example": "No hay razón para eso.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el motivo",
+      "russian": "мотив",
+      "example": "El motivo es claro.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el número",
+      "russian": "число",
+      "example": "El número es grande.",
+      "level": "A1",
+      "category": "numeros"
+    },
+    {
+      "spanish": "la cantidad",
+      "russian": "количество",
+      "example": "La cantidad es suficiente.",
+      "level": "A2",
+      "category": "numeros"
+    },
+    {
+      "spanish": "la mitad",
+      "russian": "половина",
+      "example": "Dame la mitad.",
+      "level": "A1",
+      "category": "numeros"
+    },
+    {
+      "spanish": "el tercio",
+      "russian": "треть",
+      "example": "Solo comí un tercio.",
+      "level": "A2",
+      "category": "numeros"
+    },
+    {
+      "spanish": "el porcentaje",
+      "russian": "процент",
+      "example": "El porcentaje sube.",
+      "level": "B1",
+      "category": "numeros"
+    },
+    {
+      "spanish": "la suma",
+      "russian": "сумма",
+      "example": "La suma es correcta.",
+      "level": "A2",
+      "category": "numeros"
+    },
+    {
+      "spanish": "el total",
+      "russian": "итого",
+      "example": "El total es cien euros.",
+      "level": "A2",
+      "category": "numeros"
+    },
+    {
+      "spanish": "la madera",
+      "russian": "дерево (материал)",
+      "example": "La mesa es de madera.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el metal",
+      "russian": "металл",
+      "example": "El metal es duro.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el plástico",
+      "russian": "пластик",
+      "example": "El plástico contamina.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el vidrio",
+      "russian": "стекло",
+      "example": "El vidrio se rompe.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el papel",
+      "russian": "бумага",
+      "example": "El papel es blanco.",
+      "level": "A1",
+      "category": "materiales"
+    },
+    {
+      "spanish": "la tela",
+      "russian": "ткань",
+      "example": "La tela es suave.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el algodón",
+      "russian": "хлопок",
+      "example": "El algodón es natural.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "la lana",
+      "russian": "шерсть",
+      "example": "La lana es cálida.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el cuero",
+      "russian": "кожа (материал)",
+      "example": "El cuero es resistente.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el oro",
+      "russian": "золото",
+      "example": "El oro es valioso.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "la plata",
+      "russian": "серебро",
+      "example": "La plata es brillante.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el hierro",
+      "russian": "железо",
+      "example": "El hierro es pesado.",
+      "level": "A2",
+      "category": "materiales"
+    },
+    {
+      "spanish": "el precio",
+      "russian": "цена",
+      "example": "El precio es alto.",
+      "level": "A1",
+      "category": "comercio"
+    },
+    {
+      "spanish": "la marca",
+      "russian": "бренд / марка",
+      "example": "La marca es conocida.",
+      "level": "A2",
+      "category": "comercio"
+    },
+    {
+      "spanish": "el descuento",
+      "russian": "скидка",
+      "example": "Hay un descuento del 20%.",
+      "level": "A2",
+      "category": "comercio"
+    },
+    {
+      "spanish": "la factura",
+      "russian": "счёт / квитанция",
+      "example": "La factura es alta.",
+      "level": "A2",
+      "category": "comercio"
+    },
+    {
+      "spanish": "el dinero",
+      "russian": "деньги",
+      "example": "No tengo dinero.",
+      "level": "A1",
+      "category": "comercio"
+    },
+    {
+      "spanish": "el euro",
+      "russian": "евро",
+      "example": "Cuesta diez euros.",
+      "level": "A1",
+      "category": "comercio"
+    },
+    {
+      "spanish": "la tarjeta",
+      "russian": "карта",
+      "example": "Pago con tarjeta.",
+      "level": "A1",
+      "category": "comercio"
+    },
+    {
+      "spanish": "el cajero",
+      "russian": "банкомат",
+      "example": "El cajero está roto.",
+      "level": "A2",
+      "category": "comercio"
+    },
+    {
+      "spanish": "el regalo",
+      "russian": "подарок",
+      "example": "El regalo es bonito.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "la fiesta",
+      "russian": "праздник / вечеринка",
+      "example": "La fiesta es mañana.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "la boda",
+      "russian": "свадьба",
+      "example": "La boda es en junio.",
+      "level": "A2",
+      "category": "social"
+    },
+    {
+      "spanish": "el cumpleaños",
+      "russian": "день рождения",
+      "example": "Mi cumpleaños es en mayo.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "la Navidad",
+      "russian": "Рождество",
+      "example": "La Navidad es en diciembre.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "el periódico",
+      "russian": "газета",
+      "example": "Leo el periódico.",
+      "level": "A1",
+      "category": "media"
+    },
+    {
+      "spanish": "la revista",
+      "russian": "журнал",
+      "example": "La revista es interesante.",
+      "level": "A1",
+      "category": "media"
+    },
+    {
+      "spanish": "la noticia",
+      "russian": "новость",
+      "example": "La noticia es importante.",
+      "level": "A2",
+      "category": "media"
+    },
+    {
+      "spanish": "la radio",
+      "russian": "радио",
+      "example": "Escucho la radio.",
+      "level": "A1",
+      "category": "media"
+    },
+    {
+      "spanish": "el programa",
+      "russian": "программа",
+      "example": "El programa es bueno.",
+      "level": "A1",
+      "category": "media"
+    },
+    {
+      "spanish": "la cultura",
+      "russian": "культура",
+      "example": "La cultura española es rica.",
+      "level": "B1",
+      "category": "cultura"
+    },
+    {
+      "spanish": "la tradición",
+      "russian": "традиция",
+      "example": "La tradición es importante.",
+      "level": "B1",
+      "category": "cultura"
+    },
+    {
+      "spanish": "la religión",
+      "russian": "религия",
+      "example": "La religión une a la gente.",
+      "level": "B1",
+      "category": "cultura"
+    },
+    {
+      "spanish": "el idioma",
+      "russian": "язык",
+      "example": "Hablo tres idiomas.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la lengua",
+      "russian": "язык (орган) / язык",
+      "example": "La lengua española.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el acento",
+      "russian": "акцент",
+      "example": "Tiene acento extranjero.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la traducción",
+      "russian": "перевод",
+      "example": "La traducción es difícil.",
+      "level": "B1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el signo",
+      "russian": "знак / знак зодиака",
+      "example": "El signo es importante.",
+      "level": "B1",
+      "category": "general"
+    },
+    {
+      "spanish": "la palabra",
+      "russian": "слово",
+      "example": "Aprendo nuevas palabras.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la frase",
+      "russian": "фраза / предложение",
+      "example": "La frase es corta.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "el texto",
+      "russian": "текст",
+      "example": "El texto es largo.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "la carta",
+      "russian": "письмо",
+      "example": "Escribo una carta.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la dirección",
+      "russian": "адрес",
+      "example": "¿Cuál es tu dirección?",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el número de teléfono",
+      "russian": "номер телефона",
+      "example": "Dame tu número.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "la firma",
+      "russian": "подпись",
+      "example": "Pone su firma.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "el nombre",
+      "russian": "имя",
+      "example": "¿Cuál es tu nombre?",
+      "level": "A1",
+      "category": "personal"
+    },
+    {
+      "spanish": "el apellido",
+      "russian": "фамилия",
+      "example": "Mi apellido es García.",
+      "level": "A1",
+      "category": "personal"
+    },
+    {
+      "spanish": "la edad",
+      "russian": "возраст",
+      "example": "¿Qué edad tienes?",
+      "level": "A1",
+      "category": "personal"
+    },
+    {
+      "spanish": "la nacionalidad",
+      "russian": "национальность",
+      "example": "¿Cuál es tu nacionalidad?",
+      "level": "A1",
+      "category": "personal"
+    },
+    {
+      "spanish": "el pasaporte",
+      "russian": "паспорт",
+      "example": "Necesito el pasaporte.",
+      "level": "A1",
+      "category": "personal"
+    },
+    {
+      "spanish": "la firma",
+      "russian": "подпись",
+      "example": "Necesito tu firma.",
+      "level": "A2",
+      "category": "personal"
+    }
+  ],
+  "verbs": [
+    {
+      "spanish": "hablar",
+      "russian": "говорить",
+      "example": "Hablo español todos los días.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "escuchar",
+      "russian": "слушать",
+      "example": "Escucho música.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "escribir",
+      "russian": "писать",
+      "example": "Escribo una carta.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "leer",
+      "russian": "читать",
+      "example": "Leo un libro.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "entender",
+      "russian": "понимать",
+      "example": "¿Entiendes español?",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "explicar",
+      "russian": "объяснять",
+      "example": "El profesor explica bien.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "preguntar",
+      "russian": "спрашивать",
+      "example": "Quiero preguntar algo.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "responder",
+      "russian": "отвечать",
+      "example": "Respondo a tu pregunta.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "llamar",
+      "russian": "звонить / называть",
+      "example": "Te llamo mañana.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "decir",
+      "russian": "говорить / сказать",
+      "example": "¿Qué dices?",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "contar",
+      "russian": "рассказывать / считать",
+      "example": "Cuéntame tu historia.",
+      "level": "A1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "repetir",
+      "russian": "повторять",
+      "example": "Repite la frase.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "traducir",
+      "russian": "переводить",
+      "example": "Traduzco al ruso.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "comunicar",
+      "russian": "общаться",
+      "example": "Nos comunicamos bien.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "discutir",
+      "russian": "обсуждать / спорить",
+      "example": "Discutimos el tema.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "negociar",
+      "russian": "вести переговоры",
+      "example": "Negociamos el precio.",
+      "level": "B1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "convencer",
+      "russian": "убеждать",
+      "example": "Te voy a convencer.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "mentir",
+      "russian": "лгать",
+      "example": "No me gusta mentir.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "prometer",
+      "russian": "обещать",
+      "example": "Te lo prometo.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "felicitar",
+      "russian": "поздравлять",
+      "example": "Te felicito por tu éxito.",
+      "level": "A2",
+      "category": "social"
+    },
+    {
+      "spanish": "ser",
+      "russian": "быть (постоянно)",
+      "example": "Soy de Rusia.",
+      "level": "A1",
+      "category": "auxiliares"
+    },
+    {
+      "spanish": "estar",
+      "russian": "быть (временно)",
+      "example": "Estoy en casa.",
+      "level": "A1",
+      "category": "auxiliares"
+    },
+    {
+      "spanish": "tener",
+      "russian": "иметь",
+      "example": "Tengo dos hijos.",
+      "level": "A1",
+      "category": "auxiliares"
+    },
+    {
+      "spanish": "haber",
+      "russian": "иметься (вспомогательный)",
+      "example": "He comido ya.",
+      "level": "A1",
+      "category": "auxiliares"
+    },
+    {
+      "spanish": "hacer",
+      "russian": "делать",
+      "example": "¿Qué haces?",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "ir",
+      "russian": "идти",
+      "example": "Voy al trabajo.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "venir",
+      "russian": "приходить",
+      "example": "¿Cuándo vienes?",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "poder",
+      "russian": "мочь",
+      "example": "¿Puedo ayudarte?",
+      "level": "A1",
+      "category": "modal"
+    },
+    {
+      "spanish": "querer",
+      "russian": "хотеть",
+      "example": "Quiero aprender español.",
+      "level": "A1",
+      "category": "modal"
+    },
+    {
+      "spanish": "deber",
+      "russian": "должен",
+      "example": "Debo estudiar.",
+      "level": "A1",
+      "category": "modal"
+    },
+    {
+      "spanish": "saber",
+      "russian": "знать (уметь)",
+      "example": "Sé cocinar.",
+      "level": "A1",
+      "category": "modal"
+    },
+    {
+      "spanish": "conocer",
+      "russian": "знать (быть знакомым)",
+      "example": "Conozco Madrid bien.",
+      "level": "A1",
+      "category": "conocimiento"
+    },
+    {
+      "spanish": "necesitar",
+      "russian": "нуждаться",
+      "example": "Necesito ayuda.",
+      "level": "A1",
+      "category": "modal"
+    },
+    {
+      "spanish": "gustar",
+      "russian": "нравиться",
+      "example": "Me gusta el español.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "encantar",
+      "russian": "обожать",
+      "example": "Me encanta la música.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "odiar",
+      "russian": "ненавидеть",
+      "example": "Odio las mentiras.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "amar",
+      "russian": "любить",
+      "example": "Te amo.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "querer",
+      "russian": "любить",
+      "example": "Te quiero mucho.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "sentir",
+      "russian": "чувствовать",
+      "example": "Siento frío.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "pensar",
+      "russian": "думать",
+      "example": "Pienso en ti.",
+      "level": "A1",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "creer",
+      "russian": "верить / думать",
+      "example": "Creo que sí.",
+      "level": "A1",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "saber",
+      "russian": "знать",
+      "example": "¿Lo sabes?",
+      "level": "A1",
+      "category": "conocimiento"
+    },
+    {
+      "spanish": "recordar",
+      "russian": "помнить",
+      "example": "Recuerdo tu nombre.",
+      "level": "A1",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "olvidar",
+      "russian": "забывать",
+      "example": "No olvides llamarme.",
+      "level": "A1",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "imaginar",
+      "russian": "воображать",
+      "example": "Imagina un mundo mejor.",
+      "level": "A2",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "decidir",
+      "russian": "решать",
+      "example": "Decido ir al cine.",
+      "level": "A2",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "elegir",
+      "russian": "выбирать",
+      "example": "Elige tu respuesta.",
+      "level": "A2",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "comparar",
+      "russian": "сравнивать",
+      "example": "Comparo los precios.",
+      "level": "A2",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "analizar",
+      "russian": "анализировать",
+      "example": "Analizo los datos.",
+      "level": "B1",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "comprender",
+      "russian": "понимать",
+      "example": "No comprendo la pregunta.",
+      "level": "A2",
+      "category": "pensamiento"
+    },
+    {
+      "spanish": "comer",
+      "russian": "есть",
+      "example": "Como a las dos.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "beber",
+      "russian": "пить",
+      "example": "Bebo agua.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "dormir",
+      "russian": "спать",
+      "example": "Duermo ocho horas.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "despertar",
+      "russian": "просыпаться",
+      "example": "Me despierto temprano.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "levantarse",
+      "russian": "вставать",
+      "example": "Me levanto a las siete.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "acostarse",
+      "russian": "ложиться спать",
+      "example": "Me acuesto tarde.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "ducharse",
+      "russian": "принимать душ",
+      "example": "Me ducho por la mañana.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "vestirse",
+      "russian": "одеваться",
+      "example": "Me visto rápido.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "lavarse",
+      "russian": "мыться",
+      "example": "Me lavo las manos.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "peinarse",
+      "russian": "причёсываться",
+      "example": "Me peino el pelo.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "cocinar",
+      "russian": "готовить",
+      "example": "Cocino la cena.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "limpiar",
+      "russian": "убирать",
+      "example": "Limpio la casa.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "comprar",
+      "russian": "покупать",
+      "example": "Compro en el mercado.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "vender",
+      "russian": "продавать",
+      "example": "Vendo mi coche.",
+      "level": "A1",
+      "category": "comercio"
+    },
+    {
+      "spanish": "pagar",
+      "russian": "платить",
+      "example": "Pago con tarjeta.",
+      "level": "A1",
+      "category": "comercio"
+    },
+    {
+      "spanish": "cobrar",
+      "russian": "получать плату",
+      "example": "El banco cobra comisión.",
+      "level": "A2",
+      "category": "comercio"
+    },
+    {
+      "spanish": "gastar",
+      "russian": "тратить",
+      "example": "Gasto mucho dinero.",
+      "level": "A2",
+      "category": "comercio"
+    },
+    {
+      "spanish": "ahorrar",
+      "russian": "экономить",
+      "example": "Ahorro para el viaje.",
+      "level": "A2",
+      "category": "comercio"
+    },
+    {
+      "spanish": "trabajar",
+      "russian": "работать",
+      "example": "Trabajo ocho horas.",
+      "level": "A1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "estudiar",
+      "russian": "учиться",
+      "example": "Estudio español.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "aprender",
+      "russian": "учить",
+      "example": "Aprendo vocabulario.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "enseñar",
+      "russian": "учить (преподавать)",
+      "example": "Enseño matemáticas.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "practicar",
+      "russian": "практиковать",
+      "example": "Practico cada día.",
+      "level": "A1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "jugar",
+      "russian": "играть",
+      "example": "Juego al fútbol.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "ganar",
+      "russian": "выигрывать / зарабатывать",
+      "example": "Ganamos el partido.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "perder",
+      "russian": "проигрывать / терять",
+      "example": "Perdimos el partido.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "correr",
+      "russian": "бежать",
+      "example": "Corro cinco kilómetros.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "caminar",
+      "russian": "ходить",
+      "example": "Camino al trabajo.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "andar",
+      "russian": "ходить",
+      "example": "Ando por el parque.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "saltar",
+      "russian": "прыгать",
+      "example": "El niño salta.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "nadar",
+      "russian": "плавать",
+      "example": "Nado en la piscina.",
+      "level": "A1",
+      "category": "deporte"
+    },
+    {
+      "spanish": "bailar",
+      "russian": "танцевать",
+      "example": "Bailo salsa.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "cantar",
+      "russian": "петь",
+      "example": "Canto en el coro.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "tocar",
+      "russian": "играть (на инструменте) / трогать",
+      "example": "Toco la guitarra.",
+      "level": "A1",
+      "category": "entretenimiento"
+    },
+    {
+      "spanish": "dibujar",
+      "russian": "рисовать",
+      "example": "Dibujo en mi tiempo libre.",
+      "level": "A1",
+      "category": "arte"
+    },
+    {
+      "spanish": "pintar",
+      "russian": "писать красками",
+      "example": "Pinto cuadros.",
+      "level": "A2",
+      "category": "arte"
+    },
+    {
+      "spanish": "fotografiar",
+      "russian": "фотографировать",
+      "example": "Fotografío paisajes.",
+      "level": "A2",
+      "category": "arte"
+    },
+    {
+      "spanish": "viajar",
+      "russian": "путешествовать",
+      "example": "Viajo en verano.",
+      "level": "A1",
+      "category": "viaje"
+    },
+    {
+      "spanish": "llegar",
+      "russian": "прибывать",
+      "example": "Llego mañana.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "salir",
+      "russian": "выходить",
+      "example": "Salgo a las nueve.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "entrar",
+      "russian": "входить",
+      "example": "Entro al edificio.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "subir",
+      "russian": "подниматься",
+      "example": "Subo las escaleras.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "bajar",
+      "russian": "спускаться",
+      "example": "Bajo en el ascensor.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "abrir",
+      "russian": "открывать",
+      "example": "Abre la puerta.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "cerrar",
+      "russian": "закрывать",
+      "example": "Cierra la ventana.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "poner",
+      "russian": "ставить / класть",
+      "example": "Pon la mesa.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "quitar",
+      "russian": "убирать / снимать",
+      "example": "Quita los zapatos.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "llevar",
+      "russian": "нести / носить",
+      "example": "Llevo la mochila.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "traer",
+      "russian": "приносить",
+      "example": "¿Me traes agua?",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "dar",
+      "russian": "давать",
+      "example": "Dame la mano.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "recibir",
+      "russian": "получать",
+      "example": "Recibo un regalo.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "tomar",
+      "russian": "брать / принимать",
+      "example": "Tomo el autobús.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "coger",
+      "russian": "брать",
+      "example": "Coge el paraguas.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "dejar",
+      "russian": "оставлять",
+      "example": "Deja tu bolsa aquí.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "buscar",
+      "russian": "искать",
+      "example": "Busco mis llaves.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "encontrar",
+      "russian": "находить",
+      "example": "Encuentro la solución.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "perder",
+      "russian": "терять",
+      "example": "Perdí mi cartera.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "romper",
+      "russian": "ломать",
+      "example": "Rompí el vaso.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "arreglar",
+      "russian": "чинить",
+      "example": "Arreglo mi bici.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "construir",
+      "russian": "строить",
+      "example": "Construyen un edificio.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "destruir",
+      "russian": "разрушать",
+      "example": "La tormenta destruye casas.",
+      "level": "B1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "crear",
+      "russian": "создавать",
+      "example": "Creo contenido.",
+      "level": "A2",
+      "category": "creatividad"
+    },
+    {
+      "spanish": "diseñar",
+      "russian": "проектировать",
+      "example": "Diseño logos.",
+      "level": "B1",
+      "category": "creatividad"
+    },
+    {
+      "spanish": "inventar",
+      "russian": "изобретать",
+      "example": "Inventan nuevas tecnologías.",
+      "level": "B1",
+      "category": "creatividad"
+    },
+    {
+      "spanish": "organizar",
+      "russian": "организовывать",
+      "example": "Organizo el evento.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "planificar",
+      "russian": "планировать",
+      "example": "Planifico el viaje.",
+      "level": "B1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "preparar",
+      "russian": "готовить (к чему-либо)",
+      "example": "Preparo la cena.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "terminar",
+      "russian": "заканчивать",
+      "example": "Termino el trabajo.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "empezar",
+      "russian": "начинать",
+      "example": "Empiezo a las nueve.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "continuar",
+      "russian": "продолжать",
+      "example": "Continúa leyendo.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "parar",
+      "russian": "останавливать",
+      "example": "Para el coche.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "seguir",
+      "russian": "следовать / продолжать",
+      "example": "Sigue recto.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "mirar",
+      "russian": "смотреть",
+      "example": "Miro la televisión.",
+      "level": "A1",
+      "category": "percepcion"
+    },
+    {
+      "spanish": "ver",
+      "russian": "видеть",
+      "example": "Veo bien.",
+      "level": "A1",
+      "category": "percepcion"
+    },
+    {
+      "spanish": "oír",
+      "russian": "слышать",
+      "example": "Oigo un ruido.",
+      "level": "A1",
+      "category": "percepcion"
+    },
+    {
+      "spanish": "oler",
+      "russian": "нюхать",
+      "example": "Huelo las flores.",
+      "level": "A2",
+      "category": "percepcion"
+    },
+    {
+      "spanish": "tocar",
+      "russian": "трогать",
+      "example": "Toca la tela.",
+      "level": "A1",
+      "category": "percepcion"
+    },
+    {
+      "spanish": "probar",
+      "russian": "пробовать",
+      "example": "Prueba este plato.",
+      "level": "A1",
+      "category": "percepcion"
+    },
+    {
+      "spanish": "ayudar",
+      "russian": "помогать",
+      "example": "Ayudo a mis amigos.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "necesitar",
+      "russian": "нуждаться",
+      "example": "Necesito tu ayuda.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "invitar",
+      "russian": "приглашать",
+      "example": "Te invito a cenar.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "visitar",
+      "russian": "навещать",
+      "example": "Visito a mis padres.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "presentar",
+      "russian": "представлять",
+      "example": "Te presento a mi amigo.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "saludar",
+      "russian": "здороваться",
+      "example": "Saluda a los vecinos.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "despedir",
+      "russian": "прощаться",
+      "example": "Me despido.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "agradecer",
+      "russian": "благодарить",
+      "example": "Te agradezco la ayuda.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "disculpar",
+      "russian": "извиняться",
+      "example": "Disculpa el retraso.",
+      "level": "A1",
+      "category": "social"
+    },
+    {
+      "spanish": "perdonar",
+      "russian": "прощать",
+      "example": "Te perdono.",
+      "level": "A2",
+      "category": "social"
+    },
+    {
+      "spanish": "compartir",
+      "russian": "делиться",
+      "example": "Comparto mi comida.",
+      "level": "A2",
+      "category": "social"
+    },
+    {
+      "spanish": "cuidar",
+      "russian": "ухаживать / беречь",
+      "example": "Cuido a mis hijos.",
+      "level": "A2",
+      "category": "social"
+    },
+    {
+      "spanish": "proteger",
+      "russian": "защищать",
+      "example": "Protejo a mi familia.",
+      "level": "B1",
+      "category": "social"
+    },
+    {
+      "spanish": "respetar",
+      "russian": "уважать",
+      "example": "Respeto tus ideas.",
+      "level": "B1",
+      "category": "social"
+    },
+    {
+      "spanish": "confiar",
+      "russian": "доверять",
+      "example": "Confío en ti.",
+      "level": "B1",
+      "category": "social"
+    },
+    {
+      "spanish": "amar",
+      "russian": "любить",
+      "example": "Amo a mi familia.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "odiar",
+      "russian": "ненавидеть",
+      "example": "Odio la violencia.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "temer",
+      "russian": "бояться",
+      "example": "Temo a las tormentas.",
+      "level": "B1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "preocupar",
+      "russian": "беспокоить",
+      "example": "Me preocupa tu salud.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "alegrar",
+      "russian": "радовать",
+      "example": "Me alegra verte.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "sorprender",
+      "russian": "удивлять",
+      "example": "Me sorprende tu actitud.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "molestar",
+      "russian": "мешать / раздражать",
+      "example": "El ruido me molesta.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "disfrutar",
+      "russian": "наслаждаться",
+      "example": "Disfruto de la vida.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "sufrir",
+      "russian": "страдать",
+      "example": "Sufro de alergia.",
+      "level": "B1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "reír",
+      "russian": "смеяться",
+      "example": "Me río mucho.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "llorar",
+      "russian": "плакать",
+      "example": "Lloro de alegría.",
+      "level": "A1",
+      "category": "emociones"
+    },
+    {
+      "spanish": "gritar",
+      "russian": "кричать",
+      "example": "No grites.",
+      "level": "A2",
+      "category": "emociones"
+    },
+    {
+      "spanish": "nacer",
+      "russian": "рождаться",
+      "example": "Nací en 1990.",
+      "level": "A1",
+      "category": "vida"
+    },
+    {
+      "spanish": "vivir",
+      "russian": "жить",
+      "example": "Vivo en Madrid.",
+      "level": "A1",
+      "category": "vida"
+    },
+    {
+      "spanish": "morir",
+      "russian": "умирать",
+      "example": "El personaje muere.",
+      "level": "B1",
+      "category": "vida"
+    },
+    {
+      "spanish": "crecer",
+      "russian": "расти",
+      "example": "Los niños crecen rápido.",
+      "level": "A2",
+      "category": "vida"
+    },
+    {
+      "spanish": "cambiar",
+      "russian": "изменяться",
+      "example": "El tiempo cambia.",
+      "level": "A2",
+      "category": "vida"
+    },
+    {
+      "spanish": "mejorar",
+      "russian": "улучшаться",
+      "example": "Mi español mejora.",
+      "level": "A2",
+      "category": "vida"
+    },
+    {
+      "spanish": "empeorar",
+      "russian": "ухудшаться",
+      "example": "El tiempo empeora.",
+      "level": "A2",
+      "category": "vida"
+    },
+    {
+      "spanish": "esperar",
+      "russian": "ждать / надеяться",
+      "example": "Espero el autobús.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "tardar",
+      "russian": "опаздывать",
+      "example": "Tarda mucho en llegar.",
+      "level": "A2",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "durar",
+      "russian": "длиться",
+      "example": "La película dura dos horas.",
+      "level": "A2",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "comenzar",
+      "russian": "начинать",
+      "example": "Comenzamos el proyecto.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "acabar",
+      "russian": "заканчивать",
+      "example": "Acabo de llegar.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "intentar",
+      "russian": "пытаться",
+      "example": "Intento hablar español.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "conseguir",
+      "russian": "добиваться",
+      "example": "Consigo mis metas.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "lograr",
+      "russian": "достигать",
+      "example": "Logramos el objetivo.",
+      "level": "B1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "fallar",
+      "russian": "провалиться",
+      "example": "Fallé el examen.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "permitir",
+      "russian": "позволять",
+      "example": "¿Me permites entrar?",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "prohibir",
+      "russian": "запрещать",
+      "example": "Prohíben fumar aquí.",
+      "level": "A2",
+      "category": "reglas"
+    },
+    {
+      "spanish": "obligar",
+      "russian": "обязывать",
+      "example": "Me obligan a trabajar.",
+      "level": "B1",
+      "category": "reglas"
+    },
+    {
+      "spanish": "avisar",
+      "russian": "предупреждать",
+      "example": "Avisa si llegas tarde.",
+      "level": "A2",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "informar",
+      "russian": "информировать",
+      "example": "Te informo del cambio.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "confirmar",
+      "russian": "подтверждать",
+      "example": "Confirma tu asistencia.",
+      "level": "B1",
+      "category": "comunicacion"
+    },
+    {
+      "spanish": "cancelar",
+      "russian": "отменять",
+      "example": "Cancelo la reserva.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "reservar",
+      "russian": "бронировать",
+      "example": "Reservo el hotel.",
+      "level": "A2",
+      "category": "viaje"
+    },
+    {
+      "spanish": "pedir",
+      "russian": "просить / заказывать",
+      "example": "Pido la cuenta.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "ordenar",
+      "russian": "упорядочивать / приказывать",
+      "example": "Ordena tu habitación.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "mandar",
+      "russian": "посылать / приказывать",
+      "example": "Manda el correo.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "enviar",
+      "russian": "отправлять",
+      "example": "Envío el paquete.",
+      "level": "A2",
+      "category": "acciones"
+    },
+    {
+      "spanish": "recibir",
+      "russian": "получать",
+      "example": "Recibo el paquete.",
+      "level": "A1",
+      "category": "acciones"
+    },
+    {
+      "spanish": "entregar",
+      "russian": "сдавать / вручать",
+      "example": "Entrego el informe.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "revisar",
+      "russian": "проверять",
+      "example": "Revisa tu trabajo.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "corregir",
+      "russian": "исправлять",
+      "example": "Corrijo los errores.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "evaluar",
+      "russian": "оценивать",
+      "example": "El profesor evalúa.",
+      "level": "B1",
+      "category": "educacion"
+    },
+    {
+      "spanish": "aprobar",
+      "russian": "сдавать (экзамен) / одобрять",
+      "example": "Apruebo el examen.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "suspender",
+      "russian": "провалить (экзамен)",
+      "example": "Suspendo matemáticas.",
+      "level": "A2",
+      "category": "educacion"
+    },
+    {
+      "spanish": "ganar",
+      "russian": "зарабатывать",
+      "example": "Gano buen salario.",
+      "level": "A1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "cobrar",
+      "russian": "получать деньги",
+      "example": "Cobro el viernes.",
+      "level": "A2",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "contratar",
+      "russian": "нанимать",
+      "example": "La empresa contrata personal.",
+      "level": "B1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "despedir",
+      "russian": "увольнять",
+      "example": "Le despiden del trabajo.",
+      "level": "B1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "renunciar",
+      "russian": "уволиться",
+      "example": "Renuncio a mi trabajo.",
+      "level": "B1",
+      "category": "trabajo"
+    },
+    {
+      "spanish": "invertir",
+      "russian": "инвестировать",
+      "example": "Invierto en bolsa.",
+      "level": "B1",
+      "category": "finanzas"
+    },
+    {
+      "spanish": "pedir prestado",
+      "russian": "занимать (деньги)",
+      "example": "Pido prestado dinero.",
+      "level": "A2",
+      "category": "finanzas"
+    },
+    {
+      "spanish": "prestar",
+      "russian": "давать в долг / одалживать",
+      "example": "¿Me prestas tu bolígrafo?",
+      "level": "A2",
+      "category": "finanzas"
+    },
+    {
+      "spanish": "conducir",
+      "russian": "водить",
+      "example": "Conduzco bien.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "manejar",
+      "russian": "управлять",
+      "example": "Manejo el coche.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "volar",
+      "russian": "летать",
+      "example": "El avión vuela.",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "navegar",
+      "russian": "плавать / navegar",
+      "example": "Navego por internet.",
+      "level": "A2",
+      "category": "transporte"
+    },
+    {
+      "spanish": "cruzar",
+      "russian": "переходить",
+      "example": "Cruza la calle.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "girar",
+      "russian": "поворачивать",
+      "example": "Gira a la derecha.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "aparcar",
+      "russian": "парковать",
+      "example": "Aparco el coche.",
+      "level": "A2",
+      "category": "transporte"
+    },
+    {
+      "spanish": "caerse",
+      "russian": "падать",
+      "example": "Me caigo de la bicicleta.",
+      "level": "A2",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "levantarse",
+      "russian": "подниматься",
+      "example": "Me levanto del suelo.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "sentarse",
+      "russian": "садиться",
+      "example": "Siéntate, por favor.",
+      "level": "A1",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "colocarse",
+      "russian": "размещаться",
+      "example": "Colócate en la fila.",
+      "level": "A2",
+      "category": "movimiento"
+    },
+    {
+      "spanish": "ponerse",
+      "russian": "надевать",
+      "example": "Me pongo el abrigo.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "quitarse",
+      "russian": "снимать (одежду)",
+      "example": "Me quito los zapatos.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "bañarse",
+      "russian": "купаться",
+      "example": "Me baño en el mar.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "maquillarse",
+      "russian": "краситься",
+      "example": "Se maquilla rápido.",
+      "level": "A2",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "afeitarse",
+      "russian": "бриться",
+      "example": "Me afeito cada mañana.",
+      "level": "A2",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "cepillarse",
+      "russian": "чистить (зубы/волосы)",
+      "example": "Me cepillo los dientes.",
+      "level": "A1",
+      "category": "cotidiano"
+    },
+    {
+      "spanish": "curar",
+      "russian": "лечить",
+      "example": "El médico me cura.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "vacunar",
+      "russian": "вакцинировать",
+      "example": "Me vacunan contra la gripe.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "operar",
+      "russian": "оперировать",
+      "example": "Le operan del corazón.",
+      "level": "B1",
+      "category": "salud"
+    },
+    {
+      "spanish": "recetar",
+      "russian": "прописывать (лекарство)",
+      "example": "El médico receta pastillas.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "mejorar",
+      "russian": "выздоравливать",
+      "example": "El paciente mejora.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "enfermar",
+      "russian": "заболевать",
+      "example": "Me enfermo en invierno.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "adelgazar",
+      "russian": "худеть",
+      "example": "Quiero adelgazar.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "engordar",
+      "russian": "толстеть",
+      "example": "No quiero engordar.",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "respirar",
+      "russian": "дышать",
+      "example": "Respira profundo.",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "relajarse",
+      "russian": "расслабляться",
+      "example": "Me relajo en el baño.",
+      "level": "A2",
+      "category": "salud"
+    }
+  ],
+  "adjectives": [
+    {
+      "spanish": "grande",
+      "russian": "большой",
+      "example": "El edificio es grande.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "pequeño",
+      "russian": "маленький",
+      "example": "El niño es pequeño.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "largo",
+      "russian": "длинный",
+      "example": "El camino es largo.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "corto",
+      "russian": "короткий",
+      "example": "El vestido es corto.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "alto",
+      "russian": "высокий",
+      "example": "El árbol es alto.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "bajo",
+      "russian": "низкий",
+      "example": "La mesa es baja.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "ancho",
+      "russian": "широкий",
+      "example": "La calle es ancha.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "estrecho",
+      "russian": "узкий",
+      "example": "El pasillo es estrecho.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "grueso",
+      "russian": "толстый",
+      "example": "El libro es grueso.",
+      "level": "A2",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "delgado",
+      "russian": "тонкий / худой",
+      "example": "El papel es delgado.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "gordo",
+      "russian": "толстый (человек)",
+      "example": "El gato está gordo.",
+      "level": "A1",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "flaco",
+      "russian": "худой",
+      "example": "Está muy flaco.",
+      "level": "A2",
+      "category": "tamaño"
+    },
+    {
+      "spanish": "bueno",
+      "russian": "хороший",
+      "example": "El libro es bueno.",
+      "level": "A1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "malo",
+      "russian": "плохой",
+      "example": "El tiempo es malo.",
+      "level": "A1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "mejor",
+      "russian": "лучший",
+      "example": "Es la mejor opción.",
+      "level": "A1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "peor",
+      "russian": "худший",
+      "example": "Es la peor idea.",
+      "level": "A1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "nuevo",
+      "russian": "новый",
+      "example": "Tengo un coche nuevo.",
+      "level": "A1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "viejo",
+      "russian": "старый",
+      "example": "El edificio es viejo.",
+      "level": "A1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "moderno",
+      "russian": "современный",
+      "example": "El diseño es moderno.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "antiguo",
+      "russian": "древний / старинный",
+      "example": "El templo es antiguo.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "original",
+      "russian": "оригинальный",
+      "example": "Es una idea original.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "falso",
+      "russian": "фальшивый / ложный",
+      "example": "Es una noticia falsa.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "verdadero",
+      "russian": "настоящий / истинный",
+      "example": "Es una historia verdadera.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "real",
+      "russian": "реальный",
+      "example": "Es un problema real.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "perfecto",
+      "russian": "идеальный",
+      "example": "El trabajo es perfecto.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "imperfecto",
+      "russian": "несовершенный",
+      "example": "El resultado es imperfecto.",
+      "level": "B1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "excelente",
+      "russian": "отличный",
+      "example": "El restaurante es excelente.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "terrible",
+      "russian": "ужасный",
+      "example": "El accidente fue terrible.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "horrible",
+      "russian": "кошмарный",
+      "example": "El olor es horrible.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "maravilloso",
+      "russian": "чудесный",
+      "example": "El paisaje es maravilloso.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "fantástico",
+      "russian": "фантастический",
+      "example": "¡Es fantástico!",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "increíble",
+      "russian": "невероятный",
+      "example": "La noticia es increíble.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "especial",
+      "russian": "особенный",
+      "example": "Es un día especial.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "normal",
+      "russian": "нормальный",
+      "example": "Todo es normal.",
+      "level": "A1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "diferente",
+      "russian": "другой",
+      "example": "Es totalmente diferente.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "igual",
+      "russian": "одинаковый",
+      "example": "Son iguales.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "único",
+      "russian": "уникальный",
+      "example": "Es un diseño único.",
+      "level": "B1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "común",
+      "russian": "обычный",
+      "example": "Es un caso común.",
+      "level": "B1",
+      "category": "calidad"
+    },
+    {
+      "spanish": "raro",
+      "russian": "редкий / странный",
+      "example": "Es un animal raro.",
+      "level": "A2",
+      "category": "calidad"
+    },
+    {
+      "spanish": "joven",
+      "russian": "молодой",
+      "example": "Es una persona joven.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "mayor",
+      "russian": "пожилой / старший",
+      "example": "Mi abuelo es mayor.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "guapo",
+      "russian": "красивый",
+      "example": "El chico es guapo.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "feo",
+      "russian": "некрасивый",
+      "example": "No es feo.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "inteligente",
+      "russian": "умный",
+      "example": "Es muy inteligente.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "tonto",
+      "russian": "глупый",
+      "example": "No seas tonto.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "simpático",
+      "russian": "симпатичный / приятный",
+      "example": "Es muy simpático.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "antipático",
+      "russian": "неприятный",
+      "example": "Es antipático.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "amable",
+      "russian": "любезный",
+      "example": "Es muy amable.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "grosero",
+      "russian": "грубый",
+      "example": "Es muy grosero.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "generoso",
+      "russian": "щедрый",
+      "example": "Es muy generoso.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "tacaño",
+      "russian": "скупой",
+      "example": "Es demasiado tacaño.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "trabajador",
+      "russian": "трудолюбивый",
+      "example": "Es muy trabajador.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "perezoso",
+      "russian": "ленивый",
+      "example": "No seas perezoso.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "honesto",
+      "russian": "честный",
+      "example": "Es una persona honesta.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "mentiroso",
+      "russian": "лживый",
+      "example": "Es un mentiroso.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "serio",
+      "russian": "серьёзный",
+      "example": "Es muy serio.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "divertido",
+      "russian": "весёлый / забавный",
+      "example": "Es muy divertido.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "nervioso",
+      "russian": "нервный",
+      "example": "Está muy nervioso.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "tranquilo",
+      "russian": "спокойный",
+      "example": "Es muy tranquilo.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "valiente",
+      "russian": "храбрый",
+      "example": "Es muy valiente.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "cobarde",
+      "russian": "трусливый",
+      "example": "No seas cobarde.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "paciente",
+      "russian": "терпеливый",
+      "example": "Es muy paciente.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "impaciente",
+      "russian": "нетерпеливый",
+      "example": "Es muy impaciente.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "curioso",
+      "russian": "любознательный",
+      "example": "Es muy curioso.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "aburrido",
+      "russian": "скучный",
+      "example": "La clase es aburrida.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "interesante",
+      "russian": "интересный",
+      "example": "La historia es interesante.",
+      "level": "A1",
+      "category": "personas"
+    },
+    {
+      "spanish": "activo",
+      "russian": "активный",
+      "example": "Es muy activo.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "pasivo",
+      "russian": "пассивный",
+      "example": "No seas pasivo.",
+      "level": "B1",
+      "category": "personas"
+    },
+    {
+      "spanish": "creativo",
+      "russian": "творческий",
+      "example": "Es muy creativo.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "responsable",
+      "russian": "ответственный",
+      "example": "Es muy responsable.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "irresponsable",
+      "russian": "безответственный",
+      "example": "Es irresponsable.",
+      "level": "B1",
+      "category": "personas"
+    },
+    {
+      "spanish": "educado",
+      "russian": "воспитанный",
+      "example": "Es muy educado.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "maleducado",
+      "russian": "невоспитанный",
+      "example": "Es maleducado.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "tímido",
+      "russian": "застенчивый",
+      "example": "Es bastante tímido.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "extrovertido",
+      "russian": "экстраверт",
+      "example": "Es muy extrovertido.",
+      "level": "B1",
+      "category": "personas"
+    },
+    {
+      "spanish": "introvertido",
+      "russian": "интроверт",
+      "example": "Es muy introvertido.",
+      "level": "B1",
+      "category": "personas"
+    },
+    {
+      "spanish": "sociable",
+      "russian": "общительный",
+      "example": "Es una persona sociable.",
+      "level": "A2",
+      "category": "personas"
+    },
+    {
+      "spanish": "independiente",
+      "russian": "независимый",
+      "example": "Es muy independiente.",
+      "level": "B1",
+      "category": "personas"
+    },
+    {
+      "spanish": "feliz",
+      "russian": "счастливый",
+      "example": "Estoy muy feliz.",
+      "level": "A1",
+      "category": "estados"
+    },
+    {
+      "spanish": "triste",
+      "russian": "грустный",
+      "example": "Está muy triste.",
+      "level": "A1",
+      "category": "estados"
+    },
+    {
+      "spanish": "enfadado",
+      "russian": "злой / сердитый",
+      "example": "Estoy enfadado.",
+      "level": "A1",
+      "category": "estados"
+    },
+    {
+      "spanish": "contento",
+      "russian": "довольный",
+      "example": "Estoy contento.",
+      "level": "A1",
+      "category": "estados"
+    },
+    {
+      "spanish": "emocionado",
+      "russian": "взволнованный",
+      "example": "Estoy emocionado.",
+      "level": "A2",
+      "category": "estados"
+    },
+    {
+      "spanish": "asustado",
+      "russian": "испуганный",
+      "example": "Está asustado.",
+      "level": "A2",
+      "category": "estados"
+    },
+    {
+      "spanish": "sorprendido",
+      "russian": "удивлённый",
+      "example": "Estoy sorprendido.",
+      "level": "A2",
+      "category": "estados"
+    },
+    {
+      "spanish": "cansado",
+      "russian": "уставший",
+      "example": "Estoy cansado.",
+      "level": "A1",
+      "category": "estados"
+    },
+    {
+      "spanish": "aburrido",
+      "russian": "скучающий",
+      "example": "Estoy aburrido.",
+      "level": "A1",
+      "category": "estados"
+    },
+    {
+      "spanish": "enamorado",
+      "russian": "влюблённый",
+      "example": "Estoy enamorado.",
+      "level": "A2",
+      "category": "estados"
+    },
+    {
+      "spanish": "celoso",
+      "russian": "ревнивый",
+      "example": "Está muy celoso.",
+      "level": "A2",
+      "category": "estados"
+    },
+    {
+      "spanish": "orgulloso",
+      "russian": "гордый",
+      "example": "Estoy orgulloso de ti.",
+      "level": "A2",
+      "category": "estados"
+    },
+    {
+      "spanish": "avergonzado",
+      "russian": "стыдящийся",
+      "example": "Estoy avergonzado.",
+      "level": "A2",
+      "category": "estados"
+    },
+    {
+      "spanish": "preocupado",
+      "russian": "обеспокоенный",
+      "example": "Estoy preocupado.",
+      "level": "A1",
+      "category": "estados"
+    },
+    {
+      "spanish": "aliviado",
+      "russian": "успокоенный",
+      "example": "Estoy aliviado.",
+      "level": "B1",
+      "category": "estados"
+    },
+    {
+      "spanish": "frustrado",
+      "russian": "разочарованный",
+      "example": "Estoy frustrado.",
+      "level": "B1",
+      "category": "estados"
+    },
+    {
+      "spanish": "animado",
+      "russian": "воодушевлённый",
+      "example": "Estoy animado.",
+      "level": "A2",
+      "category": "estados"
+    },
+    {
+      "spanish": "deprimido",
+      "russian": "подавленный",
+      "example": "Está deprimido.",
+      "level": "B1",
+      "category": "estados"
+    },
+    {
+      "spanish": "caliente",
+      "russian": "горячий",
+      "example": "El café está caliente.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "frío",
+      "russian": "холодный",
+      "example": "El agua está fría.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "tibio",
+      "russian": "тёплый (чуть)",
+      "example": "El agua está tibia.",
+      "level": "A2",
+      "category": "fisico"
+    },
+    {
+      "spanish": "cálido",
+      "russian": "тёплый",
+      "example": "El clima es cálido.",
+      "level": "A2",
+      "category": "fisico"
+    },
+    {
+      "spanish": "fresco",
+      "russian": "свежий",
+      "example": "El aire es fresco.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "duro",
+      "russian": "твёрдый",
+      "example": "El suelo es duro.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "blando",
+      "russian": "мягкий",
+      "example": "El sofá es blando.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "suave",
+      "russian": "нежный / мягкий",
+      "example": "La tela es suave.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "áspero",
+      "russian": "шершавый",
+      "example": "La superficie es áspera.",
+      "level": "A2",
+      "category": "fisico"
+    },
+    {
+      "spanish": "pesado",
+      "russian": "тяжёлый",
+      "example": "La maleta es pesada.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "ligero",
+      "russian": "лёгкий",
+      "example": "La mochila es ligera.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "liso",
+      "russian": "гладкий",
+      "example": "La pared es lisa.",
+      "level": "A2",
+      "category": "fisico"
+    },
+    {
+      "spanish": "rugoso",
+      "russian": "шероховатый",
+      "example": "La corteza es rugosa.",
+      "level": "B1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "húmedo",
+      "russian": "влажный",
+      "example": "El ambiente es húmedo.",
+      "level": "A2",
+      "category": "fisico"
+    },
+    {
+      "spanish": "seco",
+      "russian": "сухой",
+      "example": "El clima es seco.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "mojado",
+      "russian": "мокрый",
+      "example": "Estoy mojado.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "limpio",
+      "russian": "чистый",
+      "example": "La ropa está limpia.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "sucio",
+      "russian": "грязный",
+      "example": "El perro está sucio.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "lleno",
+      "russian": "полный",
+      "example": "El vaso está lleno.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "vacío",
+      "russian": "пустой",
+      "example": "El vaso está vacío.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "abierto",
+      "russian": "открытый",
+      "example": "La tienda está abierta.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "cerrado",
+      "russian": "закрытый",
+      "example": "La puerta está cerrada.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "roto",
+      "russian": "сломанный",
+      "example": "El vaso está roto.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "nuevo",
+      "russian": "новый",
+      "example": "El libro está nuevo.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "usado",
+      "russian": "подержанный",
+      "example": "El coche está usado.",
+      "level": "A2",
+      "category": "fisico"
+    },
+    {
+      "spanish": "encendido",
+      "russian": "включённый",
+      "example": "La luz está encendida.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "apagado",
+      "russian": "выключенный",
+      "example": "El televisor está apagado.",
+      "level": "A1",
+      "category": "fisico"
+    },
+    {
+      "spanish": "rojo",
+      "russian": "красный",
+      "example": "El coche es rojo.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "azul",
+      "russian": "синий / голубой",
+      "example": "El cielo es azul.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "verde",
+      "russian": "зелёный",
+      "example": "La hierba es verde.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "amarillo",
+      "russian": "жёлтый",
+      "example": "El sol es amarillo.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "negro",
+      "russian": "чёрный",
+      "example": "El gato es negro.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "blanco",
+      "russian": "белый",
+      "example": "La nieve es blanca.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "gris",
+      "russian": "серый",
+      "example": "El cielo está gris.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "marrón",
+      "russian": "коричневый",
+      "example": "El oso es marrón.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "naranja",
+      "russian": "оранжевый",
+      "example": "La naranja es naranja.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "rosa",
+      "russian": "розовый",
+      "example": "Las flores son rosas.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "morado",
+      "russian": "фиолетовый",
+      "example": "La uva es morada.",
+      "level": "A1",
+      "category": "colores"
+    },
+    {
+      "spanish": "lila",
+      "russian": "сиреневый",
+      "example": "La lavanda es lila.",
+      "level": "A2",
+      "category": "colores"
+    },
+    {
+      "spanish": "beige",
+      "russian": "бежевый",
+      "example": "La pared es beige.",
+      "level": "A2",
+      "category": "colores"
+    },
+    {
+      "spanish": "dorado",
+      "russian": "золотой",
+      "example": "El anillo es dorado.",
+      "level": "A2",
+      "category": "colores"
+    },
+    {
+      "spanish": "plateado",
+      "russian": "серебристый",
+      "example": "El coche es plateado.",
+      "level": "A2",
+      "category": "colores"
+    },
+    {
+      "spanish": "transparente",
+      "russian": "прозрачный",
+      "example": "El vaso es transparente.",
+      "level": "A2",
+      "category": "colores"
+    },
+    {
+      "spanish": "rápido",
+      "russian": "быстрый",
+      "example": "El coche es rápido.",
+      "level": "A1",
+      "category": "velocidad"
+    },
+    {
+      "spanish": "lento",
+      "russian": "медленный",
+      "example": "El tren es lento.",
+      "level": "A1",
+      "category": "velocidad"
+    },
+    {
+      "spanish": "temprano",
+      "russian": "ранний",
+      "example": "Llego temprano.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "tarde",
+      "russian": "поздний",
+      "example": "Llego tarde.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "pronto",
+      "russian": "скоро",
+      "example": "Vengo pronto.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "reciente",
+      "russian": "недавний",
+      "example": "Es una noticia reciente.",
+      "level": "A2",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "antiguo",
+      "russian": "прежний / старый",
+      "example": "Mi antiguo trabajo.",
+      "level": "A2",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "futuro",
+      "russian": "будущий",
+      "example": "El proyecto futuro.",
+      "level": "A2",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "presente",
+      "russian": "нынешний",
+      "example": "El momento presente.",
+      "level": "A2",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "pasado",
+      "russian": "прошлый",
+      "example": "El año pasado.",
+      "level": "A2",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "próximo",
+      "russian": "следующий",
+      "example": "La próxima semana.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "último",
+      "russian": "последний",
+      "example": "El último tren.",
+      "level": "A1",
+      "category": "tiempo"
+    },
+    {
+      "spanish": "primero",
+      "russian": "первый",
+      "example": "El primer día.",
+      "level": "A1",
+      "category": "orden"
+    },
+    {
+      "spanish": "segundo",
+      "russian": "второй",
+      "example": "El segundo piso.",
+      "level": "A1",
+      "category": "orden"
+    },
+    {
+      "spanish": "siguiente",
+      "russian": "следующий",
+      "example": "El siguiente paso.",
+      "level": "A2",
+      "category": "orden"
+    },
+    {
+      "spanish": "anterior",
+      "russian": "предыдущий",
+      "example": "El capítulo anterior.",
+      "level": "A2",
+      "category": "orden"
+    },
+    {
+      "spanish": "mucho",
+      "russian": "много",
+      "example": "Tengo mucho trabajo.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "poco",
+      "russian": "мало",
+      "example": "Tengo poco tiempo.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "bastante",
+      "russian": "достаточно",
+      "example": "Es bastante bueno.",
+      "level": "A2",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "demasiado",
+      "russian": "слишком много",
+      "example": "Es demasiado caro.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "suficiente",
+      "russian": "достаточный",
+      "example": "No tengo suficiente dinero.",
+      "level": "A2",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "todo",
+      "russian": "весь",
+      "example": "Come todo.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "nada",
+      "russian": "ничего",
+      "example": "No hay nada.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "algo",
+      "russian": "что-то",
+      "example": "Hay algo en la mesa.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "ninguno",
+      "russian": "ни один",
+      "example": "No hay ningún problema.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "varios",
+      "russian": "несколько",
+      "example": "Hay varios problemas.",
+      "level": "A2",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "algunos",
+      "russian": "некоторые",
+      "example": "Algunos estudiantes.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "cada",
+      "russian": "каждый",
+      "example": "Cada día aprendo algo.",
+      "level": "A1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "ambos",
+      "russian": "оба",
+      "example": "Ambos son correctos.",
+      "level": "B1",
+      "category": "cantidad"
+    },
+    {
+      "spanish": "importante",
+      "russian": "важный",
+      "example": "Es importante estudiar.",
+      "level": "A1",
+      "category": "valor"
+    },
+    {
+      "spanish": "necesario",
+      "russian": "необходимый",
+      "example": "Es necesario comer.",
+      "level": "A1",
+      "category": "valor"
+    },
+    {
+      "spanish": "útil",
+      "russian": "полезный",
+      "example": "Es muy útil.",
+      "level": "A1",
+      "category": "valor"
+    },
+    {
+      "spanish": "inútil",
+      "russian": "бесполезный",
+      "example": "Es completamente inútil.",
+      "level": "A2",
+      "category": "valor"
+    },
+    {
+      "spanish": "posible",
+      "russian": "возможный",
+      "example": "Es posible hacerlo.",
+      "level": "A1",
+      "category": "valor"
+    },
+    {
+      "spanish": "imposible",
+      "russian": "невозможный",
+      "example": "Es imposible.",
+      "level": "A1",
+      "category": "valor"
+    },
+    {
+      "spanish": "fácil",
+      "russian": "лёгкий",
+      "example": "El ejercicio es fácil.",
+      "level": "A1",
+      "category": "valor"
+    },
+    {
+      "spanish": "difícil",
+      "russian": "трудный",
+      "example": "El examen es difícil.",
+      "level": "A1",
+      "category": "valor"
+    },
+    {
+      "spanish": "complicado",
+      "russian": "сложный",
+      "example": "El problema es complicado.",
+      "level": "A2",
+      "category": "valor"
+    },
+    {
+      "spanish": "sencillo",
+      "russian": "простой",
+      "example": "La solución es sencilla.",
+      "level": "A2",
+      "category": "valor"
+    },
+    {
+      "spanish": "seguro",
+      "russian": "безопасный / уверенный",
+      "example": "El barrio es seguro.",
+      "level": "A1",
+      "category": "valor"
+    },
+    {
+      "spanish": "peligroso",
+      "russian": "опасный",
+      "example": "La situación es peligrosa.",
+      "level": "A2",
+      "category": "valor"
+    },
+    {
+      "spanish": "urgente",
+      "russian": "срочный",
+      "example": "Es un caso urgente.",
+      "level": "A2",
+      "category": "valor"
+    },
+    {
+      "spanish": "opcional",
+      "russian": "необязательный",
+      "example": "Es completamente opcional.",
+      "level": "B1",
+      "category": "valor"
+    },
+    {
+      "spanish": "caro",
+      "russian": "дорогой",
+      "example": "El hotel es caro.",
+      "level": "A1",
+      "category": "precio"
+    },
+    {
+      "spanish": "barato",
+      "russian": "дешёвый",
+      "example": "La ropa es barata.",
+      "level": "A1",
+      "category": "precio"
+    },
+    {
+      "spanish": "gratuito",
+      "russian": "бесплатный",
+      "example": "La entrada es gratuita.",
+      "level": "A2",
+      "category": "precio"
+    },
+    {
+      "spanish": "económico",
+      "russian": "экономичный",
+      "example": "El coche es económico.",
+      "level": "A2",
+      "category": "precio"
+    },
+    {
+      "spanish": "lujoso",
+      "russian": "роскошный",
+      "example": "El apartamento es lujoso.",
+      "level": "A2",
+      "category": "precio"
+    },
+    {
+      "spanish": "accesible",
+      "russian": "доступный",
+      "example": "El precio es accesible.",
+      "level": "B1",
+      "category": "precio"
+    }
+  ],
+  "phrases": [
+    {
+      "spanish": "¡Hola!",
+      "russian": "Привет!",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Buenos días",
+      "russian": "Доброе утро",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Buenas tardes",
+      "russian": "Добрый день / вечер",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Buenas noches",
+      "russian": "Добрый вечер / спокойной ночи",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "¿Cómo estás?",
+      "russian": "Как ты?",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "¿Cómo te llamas?",
+      "russian": "Как тебя зовут?",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Me llamo...",
+      "russian": "Меня зовут...",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Mucho gusto",
+      "russian": "Очень приятно",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Encantado/a",
+      "russian": "Рад(а) познакомиться",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "¿De dónde eres?",
+      "russian": "Откуда ты?",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Soy de Rusia",
+      "russian": "Я из России",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "¿Cuántos años tienes?",
+      "russian": "Сколько тебе лет?",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Tengo 25 años",
+      "russian": "Мне 25 лет",
+      "level": "A1",
+      "category": "saludos"
+    },
+    {
+      "spanish": "Hasta luego",
+      "russian": "До свидания",
+      "level": "A1",
+      "category": "despedidas"
+    },
+    {
+      "spanish": "Hasta pronto",
+      "russian": "До скорого",
+      "level": "A1",
+      "category": "despedidas"
+    },
+    {
+      "spanish": "Adiós",
+      "russian": "Пока / До свидания",
+      "level": "A1",
+      "category": "despedidas"
+    },
+    {
+      "spanish": "Hasta mañana",
+      "russian": "До завтра",
+      "level": "A1",
+      "category": "despedidas"
+    },
+    {
+      "spanish": "Nos vemos",
+      "russian": "Увидимся",
+      "level": "A1",
+      "category": "despedidas"
+    },
+    {
+      "spanish": "Cuídate",
+      "russian": "Береги себя",
+      "level": "A1",
+      "category": "despedidas"
+    },
+    {
+      "spanish": "Por favor",
+      "russian": "Пожалуйста",
+      "level": "A1",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "Gracias",
+      "russian": "Спасибо",
+      "level": "A1",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "Muchas gracias",
+      "russian": "Большое спасибо",
+      "level": "A1",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "De nada",
+      "russian": "Пожалуйста (ответ)",
+      "level": "A1",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "Perdón",
+      "russian": "Извините",
+      "level": "A1",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "Lo siento",
+      "russian": "Мне жаль / Извините",
+      "level": "A1",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "Disculpe",
+      "russian": "Простите",
+      "level": "A1",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "No hay de qué",
+      "russian": "Не за что",
+      "level": "A2",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "Con mucho gusto",
+      "russian": "С удовольствием",
+      "level": "A2",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "¿Me puede ayudar?",
+      "russian": "Вы можете мне помочь?",
+      "level": "A1",
+      "category": "cortesia"
+    },
+    {
+      "spanish": "¿Qué es esto?",
+      "russian": "Что это?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Cuánto cuesta?",
+      "russian": "Сколько стоит?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Dónde está...?",
+      "russian": "Где находится...?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿A qué hora...?",
+      "russian": "В котором часу...?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Por qué?",
+      "russian": "Почему?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Para qué?",
+      "russian": "Зачем? / Для чего?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Cómo se dice...?",
+      "russian": "Как сказать...?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Qué significa...?",
+      "russian": "Что значит...?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Hablas español?",
+      "russian": "Ты говоришь по-испански?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Puedes repetir?",
+      "russian": "Можешь повторить?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Más despacio, por favor?",
+      "russian": "Помедленнее, пожалуйста?",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "No entiendo",
+      "russian": "Я не понимаю",
+      "level": "A1",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "¿Me lo puede escribir?",
+      "russian": "Можете написать это?",
+      "level": "A2",
+      "category": "preguntas"
+    },
+    {
+      "spanish": "Una mesa para dos",
+      "russian": "Столик на двоих",
+      "level": "A1",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "La carta, por favor",
+      "russian": "Меню, пожалуйста",
+      "level": "A1",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "¿Qué recomienda?",
+      "russian": "Что вы рекомендуете?",
+      "level": "A1",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "Quiero pedir...",
+      "russian": "Я хочу заказать...",
+      "level": "A1",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "La cuenta, por favor",
+      "russian": "Счёт, пожалуйста",
+      "level": "A1",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "Está delicioso",
+      "russian": "Это вкусно",
+      "level": "A1",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "¿Hay mesa libre?",
+      "russian": "Есть свободный столик?",
+      "level": "A1",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "Sin gluten, por favor",
+      "russian": "Без глютена, пожалуйста",
+      "level": "A2",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "Soy alérgico/a a...",
+      "russian": "У меня аллергия на...",
+      "level": "A2",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "Para llevar",
+      "russian": "На вынос",
+      "level": "A2",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "¿Está incluido el servicio?",
+      "russian": "Обслуживание включено?",
+      "level": "B1",
+      "category": "restaurante"
+    },
+    {
+      "spanish": "¿Cuánto cuesta esto?",
+      "russian": "Сколько это стоит?",
+      "level": "A1",
+      "category": "compras"
+    },
+    {
+      "spanish": "¿Tiene algo más barato?",
+      "russian": "Есть что-то дешевле?",
+      "level": "A1",
+      "category": "compras"
+    },
+    {
+      "spanish": "Me lo llevo",
+      "russian": "Я возьму это",
+      "level": "A1",
+      "category": "compras"
+    },
+    {
+      "spanish": "¿Puedo probármelo?",
+      "russian": "Можно это примерить?",
+      "level": "A1",
+      "category": "compras"
+    },
+    {
+      "spanish": "¿Tienen la talla M?",
+      "russian": "Есть размер M?",
+      "level": "A1",
+      "category": "compras"
+    },
+    {
+      "spanish": "Pago en efectivo",
+      "russian": "Плачу наличными",
+      "level": "A1",
+      "category": "compras"
+    },
+    {
+      "spanish": "¿Aceptan tarjeta?",
+      "russian": "Принимаете карту?",
+      "level": "A1",
+      "category": "compras"
+    },
+    {
+      "spanish": "¿Hay descuento?",
+      "russian": "Есть скидка?",
+      "level": "A1",
+      "category": "compras"
+    },
+    {
+      "spanish": "Necesito el recibo",
+      "russian": "Мне нужен чек",
+      "level": "A2",
+      "category": "compras"
+    },
+    {
+      "spanish": "¿Puedo cambiar esto?",
+      "russian": "Можно это обменять?",
+      "level": "A2",
+      "category": "compras"
+    },
+    {
+      "spanish": "¿Dónde está la estación?",
+      "russian": "Где находится вокзал?",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "¿Cómo llego a...?",
+      "russian": "Как добраться до...?",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "Gire a la derecha",
+      "russian": "Поверните направо",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "Gire a la izquierda",
+      "russian": "Поверните налево",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "Todo recto",
+      "russian": "Прямо",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "¿A cuánto está?",
+      "russian": "Как далеко это?",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "Está cerca",
+      "russian": "Это близко",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "Está lejos",
+      "russian": "Это далеко",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "Un billete de ida",
+      "russian": "Билет в одну сторону",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "Un billete de ida y vuelta",
+      "russian": "Билет туда и обратно",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "¿A qué hora sale el tren?",
+      "russian": "Во сколько отходит поезд?",
+      "level": "A1",
+      "category": "transporte"
+    },
+    {
+      "spanish": "He perdido el tren",
+      "russian": "Я опоздал(а) на поезд",
+      "level": "A2",
+      "category": "transporte"
+    },
+    {
+      "spanish": "Tengo una reserva",
+      "russian": "У меня есть бронь",
+      "level": "A1",
+      "category": "hotel"
+    },
+    {
+      "spanish": "¿Está incluido el desayuno?",
+      "russian": "Завтрак включён?",
+      "level": "A1",
+      "category": "hotel"
+    },
+    {
+      "spanish": "¿Me puede despertar a las 7?",
+      "russian": "Разбудите меня в 7?",
+      "level": "A2",
+      "category": "hotel"
+    },
+    {
+      "spanish": "La llave de mi habitación",
+      "russian": "Ключ от моего номера",
+      "level": "A1",
+      "category": "hotel"
+    },
+    {
+      "spanish": "Hay un problema con...",
+      "russian": "Есть проблема с...",
+      "level": "A2",
+      "category": "hotel"
+    },
+    {
+      "spanish": "¿Puedo hacer el check-out?",
+      "russian": "Могу я выселиться?",
+      "level": "A2",
+      "category": "hotel"
+    },
+    {
+      "spanish": "Me duele la cabeza",
+      "russian": "У меня болит голова",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "Necesito un médico",
+      "russian": "Мне нужен врач",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "Soy alérgico/a a la penicilina",
+      "russian": "У меня аллергия на пенициллин",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "Tengo fiebre",
+      "russian": "У меня температура",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "¿Dónde está la farmacia?",
+      "russian": "Где аптека?",
+      "level": "A1",
+      "category": "salud"
+    },
+    {
+      "spanish": "Necesito una receta",
+      "russian": "Мне нужен рецепт",
+      "level": "A2",
+      "category": "salud"
+    },
+    {
+      "spanish": "¡Buena suerte!",
+      "russian": "Удачи!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Buen provecho!",
+      "russian": "Приятного аппетита!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Salud!",
+      "russian": "Будьте здоровы! / За здоровье!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Felicidades!",
+      "russian": "Поздравляю!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Ánimo!",
+      "russian": "Не падай духом! / Давай!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Qué bueno!",
+      "russian": "Как хорошо!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Qué pena!",
+      "russian": "Как жаль!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Qué suerte!",
+      "russian": "Какая удача!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡No me digas!",
+      "russian": "Не может быть!",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Claro que sí!",
+      "russian": "Конечно, да!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¡Por supuesto!",
+      "russian": "Разумеется!",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "De acuerdo",
+      "russian": "Согласен / Хорошо",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Está bien",
+      "russian": "Хорошо / Ладно",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Vale",
+      "russian": "Ок (Испания)",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¿En serio?",
+      "russian": "Серьёзно?",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "No sé",
+      "russian": "Не знаю",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "A veces",
+      "russian": "Иногда",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Siempre",
+      "russian": "Всегда",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Nunca",
+      "russian": "Никогда",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tal vez",
+      "russian": "Может быть",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Quizás",
+      "russian": "Может быть",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Más o menos",
+      "russian": "Более или менее",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "En realidad",
+      "russian": "На самом деле",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Al final",
+      "russian": "В конце концов",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Por eso",
+      "russian": "Поэтому",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Sin embargo",
+      "russian": "Однако",
+      "level": "B1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Además",
+      "russian": "Кроме того",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Por otro lado",
+      "russian": "С другой стороны",
+      "level": "B1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener ganas de",
+      "russian": "Хотеть чего-то",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener razón",
+      "russian": "Быть правым",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener prisa",
+      "russian": "Торопиться",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener hambre",
+      "russian": "Быть голодным",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener sed",
+      "russian": "Хотеть пить",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener sueño",
+      "russian": "Хотеть спать",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener frío",
+      "russian": "Мёрзнуть",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener calor",
+      "russian": "Быть жарко",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener miedo",
+      "russian": "Бояться",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Tener cuidado",
+      "russian": "Быть осторожным",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Estar de acuerdo",
+      "russian": "Соглашаться",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Estar de vacaciones",
+      "russian": "Быть в отпуске",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Estar de moda",
+      "russian": "Быть в моде",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Darse cuenta",
+      "russian": "Осознавать",
+      "level": "B1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Llevarse bien",
+      "russian": "Ладить",
+      "level": "B1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Ponerse de acuerdo",
+      "russian": "Договориться",
+      "level": "B1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Echar de menos",
+      "russian": "Скучать по кому-то",
+      "level": "B1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "A lo mejor",
+      "russian": "Может быть",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "De vez en cuando",
+      "russian": "Время от времени",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "A menudo",
+      "russian": "Часто",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Pocas veces",
+      "russian": "Редко",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "En seguida",
+      "russian": "Сейчас же",
+      "level": "A2",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Por favor, habla más despacio",
+      "russian": "Говори помедленнее, пожалуйста",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "No hablo bien español",
+      "russian": "Я плохо говорю по-испански",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "Estoy aprendiendo español",
+      "russian": "Я учу испанский",
+      "level": "A1",
+      "category": "expresiones"
+    },
+    {
+      "spanish": "¿Puedes ayudarme?",
+      "russian": "Можешь помочь мне?",
+      "level": "A1",
+      "category": "expresiones"
+    }
+  ]
+}
