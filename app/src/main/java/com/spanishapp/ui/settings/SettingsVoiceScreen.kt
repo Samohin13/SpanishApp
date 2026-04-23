@@ -25,7 +25,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.spanishapp.data.prefs.VoiceCategory
 import com.spanishapp.data.prefs.VoicePersona
 import com.spanishapp.data.prefs.VoicePersonas
 import com.spanishapp.data.prefs.VoicePreferences
@@ -157,46 +156,85 @@ fun SettingsVoiceScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
+                // Diagnostics / warning banner
                 when {
                     !isReady -> InfoBanner("Загружаем синтез речи...")
                     diag.total == 0 -> WarningBanner(
                         title = "Нет испанских голосов",
-                        body = "На устройстве не установлен ни один испанский голос. " +
-                            "Открой настройки Android TTS → Google → Установить голоса → Español.",
-                        actionLabel = "Открыть настройки Android TTS",
+                        body = "Установи испанский голос: Android TTS → Google → Установить → Español.",
+                        actionLabel = "Открыть настройки TTS",
                         onAction = openTtsSettings
                     )
                     diag.male == 0 -> WarningBanner(
                         title = "Мужской голос не найден",
-                        body = "Найдено голосов: ${diag.total} (женских: ${diag.female}, неопределённых: ${diag.unknown}). " +
-                            "Мужские персонажи звучат как женский голос с изменённым тоном — это может показаться роботизированным. " +
-                            "Установи мужской испанский голос в настройках Android TTS (Google → Español → варианты с пометкой «male»).",
-                        actionLabel = "Открыть настройки Android TTS",
+                        body = "Найдено: ${diag.total} голос(а) · женских: ${diag.female} · неопределённых: ${diag.unknown}. " +
+                            "Pablo и Carlos будут звучать через женский голос с заниженным тоном. " +
+                            "Для лучшего результата установи Español male через Google TTS.",
+                        actionLabel = "Открыть настройки TTS",
                         onAction = openTtsSettings
                     )
                     diag.total < 2 -> InfoBanner(
-                        "Доступен только один испанский голос — персонажи различаются по высоте тона. " +
-                            "Установи дополнительные голоса в настройках Android."
+                        "Только один испанский голос. Персонажи различаются по тону и темпу."
                     )
                     else -> DiagnosticsBanner(diag)
                 }
 
                 Text(
-                    "Нажми на карточку — выбрать и услышать. Удерживай — тонкая настройка.",
+                    "Нажми — выбрать и услышать. Удерживай — тонкая настройка.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                VoiceCategory.values().forEach { cat ->
-                    CategoryBlock(
-                        category = cat,
-                        personas = VoicePersonas.ALL.filter { it.category == cat },
-                        selectedId = settings.personaId,
-                        onPersonaClick = viewModel::selectPersona,
-                        onPersonaLongClick = { tunePersona = it }
-                    )
-                    Spacer(Modifier.height(16.dp))
+                // 2×2 grid of persona cards
+                val personas = VoicePersonas.ALL
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        personas.getOrNull(0)?.let { p ->
+                            PersonaCard(
+                                persona = p,
+                                selected = p.id == settings.personaId,
+                                modifier = Modifier.weight(1f),
+                                onClick = { viewModel.selectPersona(p) },
+                                onLongClick = { tunePersona = p }
+                            )
+                        }
+                        personas.getOrNull(1)?.let { p ->
+                            PersonaCard(
+                                persona = p,
+                                selected = p.id == settings.personaId,
+                                modifier = Modifier.weight(1f),
+                                onClick = { viewModel.selectPersona(p) },
+                                onLongClick = { tunePersona = p }
+                            )
+                        }
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        personas.getOrNull(2)?.let { p ->
+                            PersonaCard(
+                                persona = p,
+                                selected = p.id == settings.personaId,
+                                modifier = Modifier.weight(1f),
+                                onClick = { viewModel.selectPersona(p) },
+                                onLongClick = { tunePersona = p }
+                            )
+                        }
+                        personas.getOrNull(3)?.let { p ->
+                            PersonaCard(
+                                persona = p,
+                                selected = p.id == settings.personaId,
+                                modifier = Modifier.weight(1f),
+                                onClick = { viewModel.selectPersona(p) },
+                                onLongClick = { tunePersona = p }
+                            )
+                        }
+                    }
                 }
             }
 
@@ -241,8 +279,6 @@ private fun TunePersonaSheet(
     onPreview: (rate: Float, pitch: Float) -> Unit,
     onReset: () -> Unit
 ) {
-    // Show current rate/pitch only if this is the currently selected persona,
-    // otherwise show the persona's defaults as starting point.
     val isSelected = settings.personaId == persona.id
     var rate by remember(persona.id, isSelected) {
         mutableStateOf(if (isSelected) settings.speechRate else persona.rate)
@@ -321,8 +357,7 @@ private fun TunePersonaSheet(
             if (!isSelected) {
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Изменения сохраняются только для выбранного персонажа. " +
-                        "Сначала выбери «${persona.displayName}» на экране, затем удерживай для настройки.",
+                    "Сначала выбери «${persona.displayName}», затем удерживай для настройки.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -343,7 +378,7 @@ private fun DiagnosticsBanner(diag: SettingsVoiceViewModel.VoiceDiagnostics) {
             .padding(bottom = 12.dp)
     ) {
         Text(
-            "Найдено голосов: ${diag.total} · женских: ${diag.female} · мужских: ${diag.male}" +
+            "Голосов: ${diag.total} · женских: ${diag.female} · мужских: ${diag.male}" +
                 if (diag.unknown > 0) " · неопределённых: ${diag.unknown}" else "",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -405,33 +440,6 @@ private fun InfoBanner(text: String) {
     }
 }
 
-@Composable
-private fun CategoryBlock(
-    category: VoiceCategory,
-    personas: List<VoicePersona>,
-    selectedId: String,
-    onPersonaClick: (VoicePersona) -> Unit,
-    onPersonaLongClick: (VoicePersona) -> Unit
-) {
-    Text(
-        category.title,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
-    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        personas.forEach { p ->
-            PersonaCard(
-                persona = p,
-                selected = p.id == selectedId,
-                modifier = Modifier.weight(1f),
-                onClick = { onPersonaClick(p) },
-                onLongClick = { onPersonaLongClick(p) }
-            )
-        }
-    }
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PersonaCard(
@@ -448,12 +456,12 @@ private fun PersonaCard(
     val border = if (!selected) BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) else null
 
     Surface(
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(16.dp),
         color = bg,
         tonalElevation = if (selected) 4.dp else 0.dp,
         border = border,
         modifier = modifier
-            .heightIn(min = 84.dp)
+            .heightIn(min = 100.dp)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick
@@ -462,20 +470,21 @@ private fun PersonaCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+                .padding(horizontal = 14.dp, vertical = 14.dp),
             verticalArrangement = Arrangement.Center
         ) {
             Text(
                 persona.displayName,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = fg
             )
-            Spacer(Modifier.height(2.dp))
+            Spacer(Modifier.height(4.dp))
             Text(
-                persona.description,
+                persona.tagline,
                 style = MaterialTheme.typography.bodySmall,
-                color = if (selected) fg else MaterialTheme.colorScheme.onSurfaceVariant,
+                color = if (selected) fg.copy(alpha = 0.8f)
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2
             )
         }
