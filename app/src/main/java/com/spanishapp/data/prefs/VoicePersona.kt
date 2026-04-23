@@ -22,9 +22,9 @@ object VoicePersonas {
             id          = "sofia",
             displayName = "Sofía",
             tagline     = "Живая и современная",
-            description = "Говорит бодро и чётко. Хороша для быстрого запоминания новых слов.",
+            description = "Говорит бодро и чётко. Хороша для быстрого запоминания слов.",
             slot        = VoiceSlot.FEMALE_1,
-            pitch       = 1.18f,
+            pitch       = 1.12f,
             rate        = 1.05f
         ),
         VoicePersona(
@@ -33,16 +33,16 @@ object VoicePersonas {
             tagline     = "Дружелюбный репетитор",
             description = "Живой и разговорный. Объясняет легко, без пафоса.",
             slot        = VoiceSlot.MALE_1,
-            pitch       = 0.92f,
+            pitch       = 1.00f,
             rate        = 1.00f
         ),
         VoicePersona(
             id          = "carmen",
             displayName = "Carmen",
             tagline     = "Опытный преподаватель",
-            description = "Спокойная, чёткая дикция. Идеальна для изучения произношения.",
+            description = "Спокойная, чёткая дикция. Идеальна для работы над произношением.",
             slot        = VoiceSlot.FEMALE_2,
-            pitch       = 0.98f,
+            pitch       = 0.96f,
             rate        = 0.88f
         ),
         VoicePersona(
@@ -51,7 +51,7 @@ object VoicePersonas {
             tagline     = "Профессор испанистики",
             description = "Неторопливый и вдумчивый. Каждое слово — с расстановкой.",
             slot        = VoiceSlot.MALE_2,
-            pitch       = 0.82f,
+            pitch       = 1.00f,
             rate        = 0.80f
         ),
     )
