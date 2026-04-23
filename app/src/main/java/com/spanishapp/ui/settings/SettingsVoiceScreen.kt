@@ -1,15 +1,17 @@
 package com.spanishapp.ui.settings
 
 import android.speech.tts.Voice
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,7 +32,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val SAMPLE_TEXT = "Hola, ¿cómo estás? Me llamo Carlos. Aprender español es muy divertido."
+private const val SAMPLE_TEXT = "Hola, ¿cómo estás? Aprender español es muy divertido."
+
+private val FEMALE_NAMES = listOf("Sofía", "Carmen", "Valentina")
+private val MALE_NAMES   = listOf("Pablo",  "Carlos",  "Diego")
 
 // ── ViewModel ────────────────────────────────────────────────
 
@@ -48,52 +53,40 @@ class SettingsVoiceViewModel @Inject constructor(
 
     val isTtsReady: StateFlow<Boolean> = tts.isReady
 
-    data class VoiceItem(
+    data class NamedVoice(
         val voice: Voice,
-        val displayName: String,   // "Женский голос 1" / "Мужской голос 2"
-        val detail: String,        // "Испания · Офлайн"
+        val name: String,    // "Sofía", "Pablo" …
+        val detail: String,  // "Испания · Офлайн"
         val isMale: Boolean
     )
 
-    private val _voices = MutableStateFlow<List<VoiceItem>>(emptyList())
-    val voices: StateFlow<List<VoiceItem>> = _voices.asStateFlow()
+    private val _voices = MutableStateFlow<List<NamedVoice>>(emptyList())
+    val voices: StateFlow<List<NamedVoice>> = _voices.asStateFlow()
 
     fun loadVoices() {
         val all = tts.availableSpanishVoices()
         if (all.isEmpty()) { _voices.value = emptyList(); return }
 
-        // Sort: highest quality first, then alphabetical
         val sorted = all.sortedWith(
             compareByDescending<Voice> { it.quality }.thenBy { it.name }
         )
 
-        val female = sorted.filter { classifyGender(it) == Gender.FEMALE }
-        val male   = sorted.filter { classifyGender(it) == Gender.MALE }
-        val other  = sorted.filter { classifyGender(it) == Gender.UNKNOWN }
+        val female = sorted.filter { classify(it) == Gender.FEMALE }.take(3)
+        val male   = sorted.filter { classify(it) == Gender.MALE   }.take(3)
 
-        // Up to 3 female + 3 male; fill with "other" if a gender is missing
-        val pickedFemale = female.take(3)
-        val pickedMale   = male.take(3)
-        val remaining    = 6 - pickedFemale.size - pickedMale.size
-        val pickedOther  = other.take(remaining.coerceAtLeast(0))
-
-        val items = mutableListOf<VoiceItem>()
-
-        pickedFemale.forEachIndexed { i, v ->
-            items += VoiceItem(v, "Женский голос ${i + 1}", voiceDetail(v), isMale = false)
+        val result = mutableListOf<NamedVoice>()
+        female.forEachIndexed { i, v ->
+            result += NamedVoice(v, FEMALE_NAMES[i], detail(v), isMale = false)
         }
-        pickedMale.forEachIndexed { i, v ->
-            items += VoiceItem(v, "Мужской голос ${i + 1}", voiceDetail(v), isMale = true)
+        male.forEachIndexed { i, v ->
+            result += NamedVoice(v, MALE_NAMES[i], detail(v), isMale = true)
         }
-        pickedOther.forEachIndexed { i, v ->
-            items += VoiceItem(v, "Голос ${pickedFemale.size + pickedMale.size + i + 1}", voiceDetail(v), isMale = false)
-        }
-
-        _voices.value = items
+        _voices.value = result
     }
 
-    fun selectVoice(voiceName: String?) = viewModelScope.launch {
+    fun selectAndPreview(voiceName: String?) = viewModelScope.launch {
         voicePrefs.setVoiceName(voiceName)
+        tts.speakNow(SAMPLE_TEXT, voiceName, settings.value.speechRate, settings.value.pitch)
     }
 
     fun previewCurrent() {
@@ -101,20 +94,12 @@ class SettingsVoiceViewModel @Inject constructor(
         tts.speakNow(SAMPLE_TEXT, s.voiceName, s.speechRate, s.pitch)
     }
 
-    fun previewVoice(voiceName: String?) {
-        val s = settings.value
-        tts.speakNow(SAMPLE_TEXT, voiceName, s.speechRate, s.pitch)
-    }
+    fun reset() = viewModelScope.launch { voicePrefs.setVoiceName(null) }
 
-    fun setRate(r: Float) = viewModelScope.launch { voicePrefs.setRate(r) }
-    fun setPitch(p: Float) = viewModelScope.launch { voicePrefs.setPitch(p) }
-
-    fun reset() = viewModelScope.launch { voicePrefs.resetToDefaults() }
-
-    private fun voiceDetail(v: Voice): String {
-        val country = v.locale?.displayCountry?.takeIf { it.isNotBlank() } ?: v.locale?.language ?: "?"
-        val network = if (v.isNetworkConnectionRequired) "Сеть" else "Офлайн"
-        return "$country · $network"
+    private fun detail(v: Voice): String {
+        val country = v.locale?.displayCountry?.takeIf { it.isNotBlank() } ?: "Español"
+        val net     = if (v.isNetworkConnectionRequired) "Сеть" else "Офлайн"
+        return "$country · $net"
     }
 
     private enum class Gender { FEMALE, MALE, UNKNOWN }
@@ -122,7 +107,7 @@ class SettingsVoiceViewModel @Inject constructor(
     private val FEMALE_CODES = setOf("sfea","sfeb","sfef","sfeg","eea","eeb","eef","eeg","esc","esf","esh","esi")
     private val MALE_CODES   = setOf("sfec","sfed","sfeh","sfei","eec","eed","eeh","eei","esd","esg","esj","esk")
 
-    private fun classifyGender(v: Voice): Gender {
+    private fun classify(v: Voice): Gender {
         val n = v.name.lowercase()
         if (n.contains("female")) return Gender.FEMALE
         if (n.contains("male"))   return Gender.MALE
@@ -149,6 +134,11 @@ fun SettingsVoiceScreen(
 
     LaunchedEffect(isReady) { if (isReady) vm.loadVoices() }
 
+    // Pair female + male side-by-side: row[i] = (female[i], male[i])
+    val female = voices.filter { !it.isMale }
+    val male   = voices.filter {  it.isMale }
+    val rowCount = maxOf(female.size, male.size)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -164,96 +154,70 @@ fun SettingsVoiceScreen(
             )
         }
     ) { padding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // Scrollable content
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
             ) {
-                // ── Voice list ──────────────────────────────
-                SectionHeader("Голос")
-
-                // Auto option
-                VoiceRow(
-                    name    = "Авто (по умолчанию)",
-                    detail  = "Системный выбор",
-                    selected = settings.voiceName == null,
-                    onSelect = { vm.selectVoice(null) },
-                    onPreview = { vm.previewVoice(null) }
+                Text(
+                    "Выбери голос",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    "Нажми — выбрать и услышать",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 20.dp)
                 )
 
                 if (!isReady) {
-                    Text(
-                        "Загружаем голоса…",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 } else if (voices.isEmpty()) {
                     Text(
-                        "Испанские голоса не найдены. Установи их через Настройки Android → Язык → Синтез речи → Google.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        "Испанские голоса не найдены.\nНастройки Android → Язык → Синтез речи → Google → Español.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 } else {
-                    voices.forEach { item ->
-                        VoiceRow(
-                            name     = item.displayName,
-                            detail   = item.detail,
-                            selected = settings.voiceName == item.voice.name,
-                            onSelect = {
-                                vm.selectVoice(item.voice.name)
-                                vm.previewVoice(item.voice.name)
-                            },
-                            onPreview = { vm.previewVoice(item.voice.name) }
-                        )
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        repeat(rowCount) { i ->
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                female.getOrNull(i)?.let { nv ->
+                                    VoiceCard(
+                                        nv        = nv,
+                                        selected  = settings.voiceName == nv.voice.name,
+                                        modifier  = Modifier.weight(1f),
+                                        onClick   = { vm.selectAndPreview(nv.voice.name) }
+                                    )
+                                } ?: Spacer(Modifier.weight(1f))
+
+                                male.getOrNull(i)?.let { nv ->
+                                    VoiceCard(
+                                        nv        = nv,
+                                        selected  = settings.voiceName == nv.voice.name,
+                                        modifier  = Modifier.weight(1f),
+                                        onClick   = { vm.selectAndPreview(nv.voice.name) }
+                                    )
+                                } ?: Spacer(Modifier.weight(1f))
+                            }
+                        }
                     }
                 }
-
-                Spacer(Modifier.height(8.dp))
-                HorizontalDivider()
-                Spacer(Modifier.height(8.dp))
-
-                // ── Rate slider ─────────────────────────────
-                SectionHeader("Скорость речи")
-                SliderRow(
-                    value      = settings.speechRate,
-                    range      = 0.5f..1.5f,
-                    steps      = 9,
-                    leftLabel  = "0.5×",
-                    rightLabel = "1.5×",
-                    centerLabel = "${"%.1f".format(settings.speechRate)}×",
-                    onChange   = vm::setRate
-                )
-
-                Spacer(Modifier.height(8.dp))
-                HorizontalDivider()
-                Spacer(Modifier.height(8.dp))
-
-                // ── Pitch slider ────────────────────────────
-                SectionHeader("Высота тона")
-                SliderRow(
-                    value      = settings.pitch,
-                    range      = 0.5f..2.0f,
-                    steps      = 14,
-                    leftLabel  = "0.5",
-                    rightLabel = "2.0",
-                    centerLabel = "%.1f".format(settings.pitch),
-                    onChange   = vm::setPitch
-                )
-
-                Spacer(Modifier.height(16.dp))
             }
 
-            // ── Sticky bottom button ────────────────────────
+            // Sticky bottom
             Surface(tonalElevation = 6.dp, modifier = Modifier.fillMaxWidth()) {
                 Button(
                     onClick = vm::previewCurrent,
@@ -272,86 +236,50 @@ fun SettingsVoiceScreen(
     }
 }
 
-// ── Composables ───────────────────────────────────────────────
+// ── Card ─────────────────────────────────────────────────────
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun SectionHeader(text: String) {
-    Text(
-        text,
-        style     = MaterialTheme.typography.titleSmall,
-        fontWeight = FontWeight.SemiBold,
-        color     = MaterialTheme.colorScheme.primary,
-        modifier  = Modifier.padding(top = 12.dp, bottom = 4.dp)
-    )
-}
-
-@Composable
-private fun VoiceRow(
-    name: String,
-    detail: String,
+private fun VoiceCard(
+    nv: SettingsVoiceViewModel.NamedVoice,
     selected: Boolean,
-    onSelect: () -> Unit,
-    onPreview: () -> Unit
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onSelect)
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RadioButton(
-            selected = selected,
-            onClick  = onSelect
-        )
-        Column(modifier = Modifier.weight(1f).padding(start = 4.dp)) {
-            Text(name, style = MaterialTheme.typography.bodyLarge)
-            Text(
-                detail,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        IconButton(onClick = onPreview) {
-            Icon(
-                Icons.Filled.PlayArrow,
-                contentDescription = "Прослушать",
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
+    val bg     = if (selected) MaterialTheme.colorScheme.primaryContainer
+                 else MaterialTheme.colorScheme.surface
+    val fg     = if (selected) MaterialTheme.colorScheme.onPrimaryContainer
+                 else MaterialTheme.colorScheme.onSurface
+    val border = if (!selected) BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) else null
 
-@Composable
-private fun SliderRow(
-    value: Float,
-    range: ClosedFloatingPointRange<Float>,
-    steps: Int,
-    leftLabel: String,
-    rightLabel: String,
-    centerLabel: String,
-    onChange: (Float) -> Unit
-) {
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+    Surface(
+        shape         = RoundedCornerShape(20.dp),
+        color         = bg,
+        tonalElevation = if (selected) 4.dp else 0.dp,
+        border        = border,
+        modifier      = modifier
+            .heightIn(min = 100.dp)
+            .combinedClickable(onClick = onClick)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(leftLabel,   style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(centerLabel, style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary)
-            Text(rightLabel,  style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                nv.name,
+                style      = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color      = fg
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                nv.detail,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (selected) fg.copy(alpha = 0.7f)
+                        else MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
-        Slider(
-            value        = value,
-            onValueChange = onChange,
-            valueRange   = range,
-            steps        = steps,
-            modifier     = Modifier.fillMaxWidth()
-        )
     }
 }
