@@ -33,23 +33,20 @@ class VoicePreferences @Inject constructor(
     }
 
     val settings: Flow<VoiceSettings> = context.voiceDataStore.data.map { p ->
-        val persona = VoicePersonas.byId(p[K.PERSONA_ID])
+        val personaId = p[K.PERSONA_ID] ?: VoicePersonas.DEFAULT_ID
         VoiceSettings(
-            personaId  = persona.id,
+            personaId  = personaId,
             voiceName  = p[K.VOICE_NAME],
-            speechRate = p[K.RATE] ?: persona.rate,
-            pitch      = p[K.PITCH] ?: persona.pitch
+            speechRate = p[K.RATE] ?: 0.9f,
+            pitch      = p[K.PITCH] ?: 1.0f
         )
     }
 
-    /** Pick a persona: reset rate/pitch to persona defaults and store the resolved TTS voice. */
+    /** Pick a persona: store the resolved TTS voice. */
     suspend fun selectPersona(personaId: String, resolvedVoiceName: String?) {
-        val persona = VoicePersonas.byId(personaId)
         context.voiceDataStore.edit { p ->
-            p[K.PERSONA_ID] = persona.id
+            p[K.PERSONA_ID] = personaId
             if (resolvedVoiceName != null) p[K.VOICE_NAME] = resolvedVoiceName else p.remove(K.VOICE_NAME)
-            p[K.RATE]  = persona.rate
-            p[K.PITCH] = persona.pitch
         }
     }
 
