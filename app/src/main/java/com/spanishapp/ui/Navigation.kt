@@ -27,6 +27,7 @@ import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
 import com.spanishapp.ui.profile.AchievementsScreen
 import com.spanishapp.ui.profile.ProfileScreen
+import com.spanishapp.ui.settings.SettingsScreen
 
 object Navigation {
 
@@ -106,7 +107,7 @@ object Navigation {
 
             composable("profile") { ProfileScreen(navController) }
             composable("achievements") { AchievementsScreen(navController) }
-            composable("settings") { Placeholder("Настройки") }
+            composable("settings") { SettingsScreen(navController) }
             composable("dictionary") { DictionaryScreen(navController) }
             composable("weak_words") { WeakWordsScreen(navController) }
         }

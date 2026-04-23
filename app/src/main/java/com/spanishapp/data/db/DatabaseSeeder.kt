@@ -90,10 +90,12 @@ class DatabaseSeeder @Inject constructor(
         val today = LocalDate.now().toString()
         if (db.dailyWordDao().getForDate(today) != null) return
 
-        // Pick a random A1 word for day 1
-        val count = db.wordDao().getCount()
-        if (count == 0) return
-        val randomId = (1..minOf(count, 50)).random()
-        db.dailyWordDao().upsert(DailyWordEntity(date = today, wordId = randomId))
+        // Use date as seed so every user gets same word per day,
+        // but each day is different. Pick from A1 words for beginners.
+        val a1Words = db.wordDao().getA1WordIds()
+        if (a1Words.isEmpty()) return
+        val dayOfYear = LocalDate.now().dayOfYear
+        val wordId = a1Words[dayOfYear % a1Words.size]
+        db.dailyWordDao().upsert(DailyWordEntity(date = today, wordId = wordId))
     }
 }
