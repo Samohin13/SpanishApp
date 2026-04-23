@@ -69,7 +69,7 @@ private val TENSE_NAMES = mapOf(
     "preterito"  to "Прошедшее (индефинидо)",
     "imperfecto" to "Прошедшее (имперфект)",
     "futuro"     to "Будущее",
-    "condicional"to "Условное",
+    "condicional" to "Условное",
     "subjuntivo" to "Сослагательное"
 )
 
