@@ -111,6 +111,8 @@ fun SettingsVoiceScreen(
     val diag by viewModel.diag.collectAsState()
     val ctx = LocalContext.current
 
+    // Refresh on first composition and whenever TTS becomes ready
+    LaunchedEffect(Unit)    { if (isReady) viewModel.refreshVoices() }
     LaunchedEffect(isReady) { if (isReady) viewModel.refreshVoices() }
 
     val openTtsSettings = {
@@ -162,16 +164,20 @@ fun SettingsVoiceScreen(
                     diag.total == 0 -> WarningBanner(
                         title = "Нет испанских голосов",
                         body = "Установи испанский голос: Android TTS → Google → Установить → Español.",
-                        actionLabel = "Открыть настройки TTS",
-                        onAction = openTtsSettings
+                        primaryLabel = "Открыть настройки TTS",
+                        onPrimary = openTtsSettings,
+                        secondaryLabel = "Проверить снова",
+                        onSecondary = viewModel::refreshVoices
                     )
                     diag.male == 0 -> WarningBanner(
                         title = "Мужской голос не найден",
                         body = "Найдено: ${diag.total} голос(а) · женских: ${diag.female} · неопределённых: ${diag.unknown}. " +
                             "Pablo и Carlos будут звучать через женский голос с заниженным тоном. " +
-                            "Для лучшего результата установи Español male через Google TTS.",
-                        actionLabel = "Открыть настройки TTS",
-                        onAction = openTtsSettings
+                            "Установи испанский мужской голос через Google TTS, затем нажми «Проверить снова».",
+                        primaryLabel = "Открыть настройки TTS",
+                        onPrimary = openTtsSettings,
+                        secondaryLabel = "Проверить снова",
+                        onSecondary = viewModel::refreshVoices
                     )
                     diag.total < 2 -> InfoBanner(
                         "Только один испанский голос. Персонажи различаются по тону и темпу."
@@ -391,8 +397,10 @@ private fun DiagnosticsBanner(diag: SettingsVoiceViewModel.VoiceDiagnostics) {
 private fun WarningBanner(
     title: String,
     body: String,
-    actionLabel: String,
-    onAction: () -> Unit
+    primaryLabel: String,
+    onPrimary: () -> Unit,
+    secondaryLabel: String? = null,
+    onSecondary: (() -> Unit)? = null
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
@@ -415,8 +423,15 @@ private fun WarningBanner(
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
             Spacer(Modifier.height(8.dp))
-            FilledTonalButton(onClick = onAction) {
-                Text(actionLabel)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilledTonalButton(onClick = onPrimary) {
+                    Text(primaryLabel)
+                }
+                if (secondaryLabel != null && onSecondary != null) {
+                    OutlinedButton(onClick = onSecondary) {
+                        Text(secondaryLabel)
+                    }
+                }
             }
         }
     }
