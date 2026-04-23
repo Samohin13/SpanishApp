@@ -11,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -220,16 +219,16 @@ fun SettingsVoiceScreen(
             // Sticky bottom
             Surface(tonalElevation = 6.dp, modifier = Modifier.fillMaxWidth()) {
                 Button(
-                    onClick = vm::previewCurrent,
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                         .height(52.dp),
                     shape = RoundedCornerShape(14.dp)
                 ) {
-                    Icon(Icons.Filled.PlayArrow, null)
+                    Icon(Icons.Filled.Check, null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Прослушать пример", style = MaterialTheme.typography.titleMedium)
+                    Text("Применить", style = MaterialTheme.typography.titleMedium)
                 }
             }
         }
