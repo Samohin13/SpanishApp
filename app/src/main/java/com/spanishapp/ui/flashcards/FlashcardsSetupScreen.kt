@@ -11,11 +11,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +36,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private val LEVELS = listOf("A1", "A2", "B1", "B2")
+private const val UNLOCK_THRESHOLD = 0.8f
+
+data class LevelInfo(
+    val key: String,
+    val unlocked: Boolean,
+    val masteredRatio: Float, // 0..1
+    val masteredCount: Int,
+    val totalCount: Int
+)
 
 private val DIRECTIONS = listOf(
     "ES → RU" to FlashcardDirection.ES_TO_RU,
@@ -48,9 +59,33 @@ class FlashcardsSetupViewModel @Inject constructor(
     private val _categories = MutableStateFlow<List<String>>(emptyList())
     val categories: StateFlow<List<String>> = _categories.asStateFlow()
 
+    private val _levels = MutableStateFlow<List<LevelInfo>>(emptyList())
+    val levels: StateFlow<List<LevelInfo>> = _levels.asStateFlow()
+
     fun loadCategories(level: String) {
         viewModelScope.launch {
             _categories.value = wordDao.categoriesForLevel(level)
+        }
+    }
+
+    fun loadLevels() {
+        viewModelScope.launch {
+            val result = mutableListOf<LevelInfo>()
+            var prevMastered = true
+            for (lvl in LEVELS) {
+                val total = wordDao.countByLevel(lvl)
+                val mastered = if (total > 0) wordDao.countMasteredByLevel(lvl) else 0
+                val ratio = if (total > 0) mastered.toFloat() / total else 0f
+                result += LevelInfo(
+                    key = lvl,
+                    unlocked = prevMastered,
+                    masteredRatio = ratio,
+                    masteredCount = mastered,
+                    totalCount = total
+                )
+                prevMastered = ratio >= UNLOCK_THRESHOLD
+            }
+            _levels.value = result
         }
     }
 }
@@ -67,11 +102,18 @@ fun FlashcardsSetupScreen(
     var onlyWeak by remember { mutableStateOf(false) }
 
     val categories by viewModel.categories.collectAsState()
+    val levels by viewModel.levels.collectAsState()
+    val snackbarHost = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) { viewModel.loadLevels() }
 
     LaunchedEffect(level) {
         category = "all"
         viewModel.loadCategories(level)
     }
+
+    val selectedLevelInfo = levels.firstOrNull { it.key == level }
 
     Scaffold(
         topBar = {
@@ -83,7 +125,8 @@ fun FlashcardsSetupScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHost) }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -95,11 +138,24 @@ fun FlashcardsSetupScreen(
         ) {
 
             SectionTitle("Уровень")
-            ChipRow(
-                options = LEVELS,
+            LevelRow(
+                levels = levels,
                 selected = level,
-                onSelect = { level = it }
+                onSelect = { info ->
+                    if (info.unlocked) {
+                        level = info.key
+                    } else {
+                        val prev = LEVELS.getOrNull(LEVELS.indexOf(info.key) - 1) ?: "A1"
+                        val pct = ((levels.firstOrNull { it.key == prev }?.masteredRatio ?: 0f) * 100).toInt()
+                        scope.launch {
+                            snackbarHost.showSnackbar(
+                                "Открой все слова $prev, чтобы разблокировать ${info.key} (прогресс $pct%)"
+                            )
+                        }
+                    }
+                }
             )
+            selectedLevelInfo?.let { LevelProgressBar(it) }
 
             SectionTitle("Категория")
             CategoryCarousel(
@@ -171,25 +227,129 @@ private fun SectionTitle(text: String) {
 }
 
 @Composable
-private fun ChipRow(
-    options: List<String>,
+private fun LevelRow(
+    levels: List<LevelInfo>,
     selected: String,
-    labelFor: (String) -> String = { it },
-    onSelect: (String) -> Unit
+    onSelect: (LevelInfo) -> Unit
 ) {
+    // Fallback: while levels are loading, render placeholder chips so layout doesn't jump.
+    val display = if (levels.isNotEmpty()) levels
+    else LEVELS.mapIndexed { i, k -> LevelInfo(k, i == 0, 0f, 0, 0) }
+
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        options.forEach { opt ->
-            FilterChip(
-                selected = opt == selected,
-                onClick = { onSelect(opt) },
-                label = { Text(labelFor(opt)) }
+        display.forEach { info ->
+            LevelChip(
+                info = info,
+                selected = info.key == selected,
+                modifier = Modifier.weight(1f),
+                onClick = { onSelect(info) }
             )
         }
+    }
+}
+
+@Composable
+private fun LevelChip(
+    info: LevelInfo,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val bg = when {
+        !info.unlocked -> MaterialTheme.colorScheme.surfaceVariant
+        selected       -> MaterialTheme.colorScheme.primary
+        else           -> MaterialTheme.colorScheme.surface
+    }
+    val fg = when {
+        !info.unlocked -> MaterialTheme.colorScheme.onSurfaceVariant
+        selected       -> MaterialTheme.colorScheme.onPrimary
+        else           -> MaterialTheme.colorScheme.onSurface
+    }
+    val border = if (!selected && info.unlocked)
+        androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+    else null
+
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = bg,
+        tonalElevation = if (selected) 3.dp else 0.dp,
+        border = border,
+        modifier = modifier
+            .height(56.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            if (!info.unlocked) {
+                Icon(
+                    Icons.Filled.Lock,
+                    contentDescription = "Заблокирован",
+                    tint = fg,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(4.dp))
+            }
+            Text(
+                info.key,
+                color = fg,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+    }
+}
+
+@Composable
+private fun LevelProgressBar(info: LevelInfo) {
+    val pct = (info.masteredRatio * 100).toInt().coerceIn(0, 100)
+    val nextLevel = LEVELS.getOrNull(LEVELS.indexOf(info.key) + 1)
+    val hint = when {
+        info.totalCount == 0 -> "Нет слов на этом уровне"
+        info.masteredRatio >= UNLOCK_THRESHOLD && nextLevel != null ->
+            "Уровень ${info.key} пройден — $nextLevel открыт"
+        info.masteredRatio >= UNLOCK_THRESHOLD ->
+            "Уровень ${info.key} пройден! 🎉"
+        nextLevel != null ->
+            "Освоено ${info.masteredCount} из ${info.totalCount} · до открытия $nextLevel осталось ${(UNLOCK_THRESHOLD * info.totalCount).toInt() - info.masteredCount} слов"
+        else ->
+            "Освоено ${info.masteredCount} из ${info.totalCount}"
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                "Прогресс уровня ${info.key}",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                "$pct%",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        LinearProgressIndicator(
+            progress = { info.masteredRatio.coerceIn(0f, 1f) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+        )
+        Text(
+            hint,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

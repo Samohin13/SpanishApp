@@ -91,6 +91,18 @@ interface WordDao {
 
     @Query("SELECT DISTINCT category FROM words WHERE level = :level ORDER BY category")
     suspend fun categoriesForLevel(level: String): List<String>
+
+    // ── Level mastery (for unlock progression) ────────────────
+    @Query("SELECT COUNT(*) FROM words WHERE level = :level")
+    suspend fun countByLevel(level: String): Int
+
+    @Query("""
+        SELECT COUNT(*) FROM words
+        WHERE level = :level
+          AND repetitions > 0
+          AND interval >= :minIntervalDays
+    """)
+    suspend fun countMasteredByLevel(level: String, minIntervalDays: Int = 7): Int
 }
 
 @Dao
