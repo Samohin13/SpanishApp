@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
+import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
@@ -78,7 +79,7 @@ object Navigation {
             composable(
                 "conjugation?verb={verb}",
                 arguments = listOf(navArgument("verb") { defaultValue = "" })
-            ) { Placeholder("Спряжения") }
+            ) { ConjugationScreen(navController) }
 
             composable("conjugation_quiz") { Placeholder("Викторина спряжений") }
             composable("dialogues") { Placeholder("Диалоги") }
