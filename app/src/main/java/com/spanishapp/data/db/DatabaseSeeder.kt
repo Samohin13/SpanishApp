@@ -18,6 +18,13 @@ class DatabaseSeeder @Inject constructor(
     private val db: AppDatabase,
     private val achievementManager: AchievementManager
 ) {
+    companion object {
+        // Увеличивай эту константу каждый раз, когда добавляешь слова в JSON.
+        // Seeder сравнивает реальное количество с этим числом и досевает недостающие.
+        // Текущий JSON: 1415 слов + ModernVocab ~55 = ~1470 итого → порог 1400
+        const val VOCAB_TARGET = 1400
+    }
+
     suspend fun seedIfNeeded() = withContext(Dispatchers.IO) {
         seedWords()
         seedConjugations()
@@ -28,8 +35,11 @@ class DatabaseSeeder @Inject constructor(
     }
 
     // ── Vocabulary from assets/spanish_vocab.json ────────────
+    // Использует IGNORE-стратегию вставки — безопасно вызывать повторно.
+    // Досевает слова если в БД меньше чем VOCAB_TARGET.
     private suspend fun seedWords() {
-        if (db.wordDao().getCount() > 0) return
+        val current = db.wordDao().getCount()
+        if (current >= VOCAB_TARGET) return
 
         val json = context.assets.open("spanish_vocab.json")
             .bufferedReader().readText()
@@ -37,6 +47,7 @@ class DatabaseSeeder @Inject constructor(
         val words = mutableListOf<WordEntity>()
 
         fun parseSection(key: String, type: String) {
+            if (!root.has(key)) return
             val arr = root.getJSONArray(key)
             for (i in 0 until arr.length()) {
                 val obj = arr.getJSONObject(i)
@@ -51,13 +62,16 @@ class DatabaseSeeder @Inject constructor(
             }
         }
 
-        parseSection("nouns",      "noun")
-        parseSection("verbs",      "verb")
-        parseSection("adjectives", "adjective")
-        parseSection("phrases",    "phrase")
+        parseSection("nouns",        "noun")
+        parseSection("verbs",        "verb")
+        parseSection("adjectives",   "adjective")
+        parseSection("phrases",      "phrase")
+        parseSection("adverbs",      "adverb")
+        parseSection("prepositions", "preposition")
 
         words += ModernVocab.entries
 
+        // insertAll с IGNORE — не перезапишет уже существующие слова (прогресс сохранится)
         db.wordDao().insertAll(words)
     }
 
@@ -97,8 +111,6 @@ class DatabaseSeeder @Inject constructor(
         val today = LocalDate.now().toString()
         if (db.dailyWordDao().getForDate(today) != null) return
 
-        // Use date as seed so every user gets same word per day,
-        // but each day is different. Pick from A1 words for beginners.
         val a1Words = db.wordDao().getA1WordIds()
         if (a1Words.isEmpty()) return
         val dayOfYear = LocalDate.now().dayOfYear
