@@ -1,12 +1,9 @@
 package com.spanishapp.ui.settings
 
-import android.content.Intent
-import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -53,29 +50,6 @@ class SettingsVoiceViewModel @Inject constructor(
 
     val isTtsReady: StateFlow<Boolean> = tts.isReady
 
-    data class VoiceDiagnostics(
-        val total: Int,
-        val female: Int,
-        val male: Int,
-        val unknown: Int
-    ) {
-        val maleDetected: Boolean get() = male > 0
-    }
-
-    private val _diag = MutableStateFlow(VoiceDiagnostics(0, 0, 0, 0))
-    val diag: StateFlow<VoiceDiagnostics> = _diag.asStateFlow()
-
-    fun refreshVoices() {
-        val voices = tts.availableSpanishVoices()
-        val c = VoiceSlotResolver.classifyStrict(voices)
-        _diag.value = VoiceDiagnostics(
-            total   = voices.size,
-            female  = c.female.size,
-            male    = c.male.size,
-            unknown = c.unknown.size
-        )
-    }
-
     private fun resolvedVoiceNameFor(persona: VoicePersona): String? =
         VoiceSlotResolver.resolve(persona.slot, tts.availableSpanishVoices())?.name
 
@@ -107,31 +81,6 @@ fun SettingsVoiceScreen(
     viewModel: SettingsVoiceViewModel = hiltViewModel()
 ) {
     val settings by viewModel.settings.collectAsState()
-    val isReady by viewModel.isTtsReady.collectAsState()
-    val diag by viewModel.diag.collectAsState()
-    val ctx = LocalContext.current
-
-    // Refresh on first composition and whenever TTS becomes ready
-    LaunchedEffect(Unit)    { if (isReady) viewModel.refreshVoices() }
-    LaunchedEffect(isReady) { if (isReady) viewModel.refreshVoices() }
-
-    val openTtsSettings = {
-        runCatching {
-            ctx.startActivity(
-                Intent("com.android.settings.TTS_SETTINGS")
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
-        }.onFailure {
-            runCatching {
-                ctx.startActivity(
-                    Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
-            }
-        }
-        Unit
-    }
-
     var tunePersona by remember { mutableStateOf<VoicePersona?>(null) }
 
     Scaffold(
@@ -156,47 +105,25 @@ fun SettingsVoiceScreen(
                     .weight(1f)
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
             ) {
-                // Diagnostics / warning banner
-                when {
-                    !isReady -> InfoBanner("Загружаем синтез речи...")
-                    diag.total == 0 -> WarningBanner(
-                        title = "Нет испанских голосов",
-                        body = "Установи испанский голос: Android TTS → Google → Установить → Español.",
-                        primaryLabel = "Открыть настройки TTS",
-                        onPrimary = openTtsSettings,
-                        secondaryLabel = "Проверить снова",
-                        onSecondary = viewModel::refreshVoices
-                    )
-                    diag.male == 0 -> WarningBanner(
-                        title = "Мужской голос не найден",
-                        body = "Найдено: ${diag.total} голос(а) · женских: ${diag.female} · неопределённых: ${diag.unknown}. " +
-                            "Pablo и Carlos будут звучать через женский голос с заниженным тоном. " +
-                            "Установи испанский мужской голос через Google TTS, затем нажми «Проверить снова».",
-                        primaryLabel = "Открыть настройки TTS",
-                        onPrimary = openTtsSettings,
-                        secondaryLabel = "Проверить снова",
-                        onSecondary = viewModel::refreshVoices
-                    )
-                    diag.total < 2 -> InfoBanner(
-                        "Только один испанский голос. Персонажи различаются по тону и темпу."
-                    )
-                    else -> DiagnosticsBanner(diag)
-                }
-
                 Text(
-                    "Нажми — выбрать и услышать. Удерживай — тонкая настройка.",
+                    "Выбери голос для озвучки",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    "Нажми — выбрать и услышать · Удерживай — тонкая настройка",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
 
-                // 2×2 grid of persona cards
                 val personas = VoicePersonas.ALL
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         personas.getOrNull(0)?.let { p ->
@@ -219,7 +146,7 @@ fun SettingsVoiceScreen(
                         }
                     }
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         personas.getOrNull(2)?.let { p ->
@@ -300,7 +227,7 @@ private fun TunePersonaSheet(
                 .padding(horizontal = 20.dp, vertical = 8.dp)
         ) {
             Text(
-                "Настройка · ${persona.displayName}",
+                persona.displayName,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -317,10 +244,7 @@ private fun TunePersonaSheet(
                 value = rate,
                 range = 0.5f..1.5f,
                 steps = 9,
-                onChange = {
-                    rate = it
-                    if (isSelected) onRateChange(it)
-                }
+                onChange = { rate = it; if (isSelected) onRateChange(it) }
             )
             Spacer(Modifier.height(12.dp))
             SliderRow(
@@ -329,14 +253,10 @@ private fun TunePersonaSheet(
                 value = pitch,
                 range = 0.5f..2.0f,
                 steps = 14,
-                onChange = {
-                    pitch = it
-                    if (isSelected) onPitchChange(it)
-                }
+                onChange = { pitch = it; if (isSelected) onPitchChange(it) }
             )
 
             Spacer(Modifier.height(20.dp))
-
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(
                     onClick = { onPreview(rate, pitch) },
@@ -347,11 +267,7 @@ private fun TunePersonaSheet(
                     Text("Прослушать")
                 }
                 OutlinedButton(
-                    onClick = {
-                        rate = persona.rate
-                        pitch = persona.pitch
-                        if (isSelected) onReset()
-                    },
+                    onClick = { rate = persona.rate; pitch = persona.pitch; if (isSelected) onReset() },
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(Icons.Filled.Restore, null)
@@ -368,90 +284,8 @@ private fun TunePersonaSheet(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
             Spacer(Modifier.height(20.dp))
         }
-    }
-}
-
-@Composable
-private fun DiagnosticsBanner(diag: SettingsVoiceViewModel.VoiceDiagnostics) {
-    Surface(
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 12.dp)
-    ) {
-        Text(
-            "Голосов: ${diag.total} · женских: ${diag.female} · мужских: ${diag.male}" +
-                if (diag.unknown > 0) " · неопределённых: ${diag.unknown}" else "",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(12.dp)
-        )
-    }
-}
-
-@Composable
-private fun WarningBanner(
-    title: String,
-    body: String,
-    primaryLabel: String,
-    onPrimary: () -> Unit,
-    secondaryLabel: String? = null,
-    onSecondary: (() -> Unit)? = null
-) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.errorContainer,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 12.dp)
-    ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Text(
-                title,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onErrorContainer
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                body,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onErrorContainer
-            )
-            Spacer(Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilledTonalButton(onClick = onPrimary) {
-                    Text(primaryLabel)
-                }
-                if (secondaryLabel != null && onSecondary != null) {
-                    OutlinedButton(onClick = onSecondary) {
-                        Text(secondaryLabel)
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun InfoBanner(text: String) {
-    Surface(
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 12.dp)
-    ) {
-        Text(
-            text,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(12.dp)
-        )
     }
 }
 
@@ -464,43 +298,39 @@ private fun PersonaCard(
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
-    val bg = if (selected) MaterialTheme.colorScheme.primaryContainer
-             else MaterialTheme.colorScheme.surface
-    val fg = if (selected) MaterialTheme.colorScheme.onPrimaryContainer
-             else MaterialTheme.colorScheme.onSurface
+    val bg     = if (selected) MaterialTheme.colorScheme.primaryContainer
+                 else MaterialTheme.colorScheme.surface
+    val fg     = if (selected) MaterialTheme.colorScheme.onPrimaryContainer
+                 else MaterialTheme.colorScheme.onSurface
     val border = if (!selected) BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) else null
 
     Surface(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         color = bg,
         tonalElevation = if (selected) 4.dp else 0.dp,
         border = border,
         modifier = modifier
-            .heightIn(min = 100.dp)
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            )
+            .heightIn(min = 110.dp)
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 14.dp, vertical = 14.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center
         ) {
             Text(
                 persona.displayName,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = fg
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(6.dp))
             Text(
                 persona.tagline,
-                style = MaterialTheme.typography.bodySmall,
-                color = if (selected) fg.copy(alpha = 0.8f)
-                        else MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (selected) fg.copy(alpha = 0.75f)
+                        else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -529,11 +359,6 @@ private fun SliderRow(
                 color = MaterialTheme.colorScheme.primary
             )
         }
-        Slider(
-            value = value,
-            onValueChange = onChange,
-            valueRange = range,
-            steps = steps
-        )
+        Slider(value = value, onValueChange = onChange, valueRange = range, steps = steps)
     }
 }
