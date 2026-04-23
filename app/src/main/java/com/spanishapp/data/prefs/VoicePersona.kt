@@ -8,7 +8,10 @@ data class VoicePersona(
     val id: String,
     val displayName: String,
     val cloudVoiceName: String,   // Google Cloud TTS Neural2 voice name
-    val isMale: Boolean
+    val isMale: Boolean,
+    // Android TTS fallback — used when Google Cloud TTS is unavailable
+    val fallbackPitch: Float = 1.0f,
+    val fallbackRate: Float  = 0.9f
 )
 
 object VoicePersonas {
@@ -17,13 +20,13 @@ object VoicePersonas {
 
     val ALL: List<VoicePersona> = listOf(
         // ── Female (Spain Spanish) ──────────────────────────────
-        VoicePersona("sofia",     "Sofía",     "es-ES-Neural2-A", isMale = false),
-        VoicePersona("carmen",    "Carmen",    "es-ES-Neural2-C", isMale = false),
-        VoicePersona("valentina", "Valentina", "es-ES-Neural2-E", isMale = false),
+        VoicePersona("sofia",     "Sofía",     "es-ES-Neural2-A", isMale = false, fallbackPitch = 1.20f, fallbackRate = 0.95f),
+        VoicePersona("carmen",    "Carmen",    "es-ES-Neural2-C", isMale = false, fallbackPitch = 1.10f, fallbackRate = 0.90f),
+        VoicePersona("valentina", "Valentina", "es-ES-Neural2-E", isMale = false, fallbackPitch = 1.15f, fallbackRate = 1.00f),
         // ── Male (Spain + LatAm for vocal variety) ──────────────
-        VoicePersona("pablo",  "Pablo",  "es-ES-Neural2-B", isMale = true),
-        VoicePersona("carlos", "Carlos", "es-ES-Neural2-F", isMale = true),
-        VoicePersona("diego",  "Diego",  "es-US-Neural2-B", isMale = true),
+        VoicePersona("pablo",  "Pablo",  "es-ES-Neural2-B", isMale = true, fallbackPitch = 0.80f, fallbackRate = 0.95f),
+        VoicePersona("carlos", "Carlos", "es-ES-Neural2-F", isMale = true, fallbackPitch = 0.72f, fallbackRate = 0.90f),
+        VoicePersona("diego",  "Diego",  "es-US-Neural2-B", isMale = true, fallbackPitch = 0.85f, fallbackRate = 1.00f),
     )
 
     fun byId(id: String?): VoicePersona =

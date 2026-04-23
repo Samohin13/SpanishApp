@@ -94,28 +94,29 @@ class SpanishTts @Inject constructor(
 
     /**
      * Speak with explicit voice. Uses Google Cloud TTS if enabled and voiceName is a Neural2 name,
-     * otherwise falls back to Android TTS.
+     * otherwise falls back to Android TTS with persona-based pitch/rate.
      */
     fun speakNow(text: String, voiceName: String?, rate: Float, pitch: Float) {
         if (cloudTts.isEnabled && voiceName != null && voiceName.contains("Neural2")) {
             cloudTts.speak(text, voiceName) {
-                speakAndroidTts(text, voiceName, rate, pitch)
+                speakAndroidTts(text, voiceName)
             }
             return
         }
-        speakAndroidTts(text, voiceName, rate, pitch)
+        speakAndroidTts(text, voiceName)
     }
 
-    private fun speakAndroidTts(text: String, voiceName: String?, rate: Float, pitch: Float) {
+    private fun speakAndroidTts(text: String, voiceName: String?) {
         val t = tts ?: return
         if (!_isReady.value) return
         t.stop()
-        if (voiceName != null) {
-            val v = t.voices?.firstOrNull { it.name == voiceName && it.locale?.language == "es" }
-            if (v != null) t.voice = v
-        }
-        t.setSpeechRate(rate.coerceIn(0.3f, 2.0f))
-        t.setPitch(pitch.coerceIn(0.5f, 2.0f))
+        // Look up persona to apply gender-differentiated pitch/rate in fallback mode
+        val persona = com.spanishapp.data.prefs.VoicePersonas.ALL
+            .firstOrNull { it.cloudVoiceName == voiceName }
+        val r = persona?.fallbackRate  ?: current.speechRate
+        val p = persona?.fallbackPitch ?: current.pitch
+        t.setSpeechRate(r.coerceIn(0.3f, 2.0f))
+        t.setPitch(p.coerceIn(0.5f, 2.0f))
         t.speak(text, TextToSpeech.QUEUE_FLUSH, null, "now_${System.currentTimeMillis()}")
     }
 
@@ -126,15 +127,20 @@ class SpanishTts @Inject constructor(
     fun speak(text: String, slow: Boolean = false) {
         val voiceName = current.voiceName
         if (cloudTts.isEnabled && voiceName != null && voiceName.contains("Neural2")) {
-            cloudTts.speak(text, voiceName) { speakAndroidFallback(text, slow) }
+            cloudTts.speak(text, voiceName) { speakAndroidFallback(text, voiceName, slow) }
             return
         }
-        speakAndroidFallback(text, slow)
+        speakAndroidFallback(text, voiceName, slow)
     }
 
-    private fun speakAndroidFallback(text: String, slow: Boolean) {
+    private fun speakAndroidFallback(text: String, voiceName: String?, slow: Boolean) {
         if (!_isReady.value) return
-        val rate = if (slow) (current.speechRate * 0.66f) else current.speechRate
+        val persona = com.spanishapp.data.prefs.VoicePersonas.ALL
+            .firstOrNull { it.cloudVoiceName == voiceName }
+        val baseRate = persona?.fallbackRate ?: current.speechRate
+        val pitch    = persona?.fallbackPitch ?: current.pitch
+        val rate = if (slow) (baseRate * 0.66f) else baseRate
+        tts?.setPitch(pitch.coerceIn(0.5f, 2.0f))
         tts?.setSpeechRate(rate.coerceIn(0.3f, 2.0f))
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "utterance_$text")
     }
