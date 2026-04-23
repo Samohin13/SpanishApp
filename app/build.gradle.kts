@@ -20,6 +20,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val key = project.findProperty("ANTHROPIC_KEY")?.toString() ?: ""
         buildConfigField("String", "ANTHROPIC_API_KEY", "\"$key\"")
+        val googleTtsKey = project.findProperty("GOOGLE_TTS_KEY")?.toString() ?: ""
+        buildConfigField("String", "GOOGLE_TTS_API_KEY", "\"$googleTtsKey\"")
     }
 
     buildTypes {

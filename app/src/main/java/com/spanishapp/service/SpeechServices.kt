@@ -30,7 +30,8 @@ import kotlin.coroutines.resume
 @Singleton
 class SpanishTts @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val voicePrefs: VoicePreferences
+    private val voicePrefs: VoicePreferences,
+    private val cloudTts: GoogleCloudTtsService
 ) {
     private var tts: TextToSpeech? = null
     private val _isReady = MutableStateFlow(false)
@@ -92,11 +93,20 @@ class SpanishTts @Inject constructor(
     }
 
     /**
-     * Speak a sample with explicit voice/rate/pitch, bypassing the async Flow update.
-     * Use for live previews where we need to guarantee the new persona's settings are applied
-     * before the utterance starts (stops any currently-playing utterance first).
+     * Speak with explicit voice. Uses Google Cloud TTS if enabled and voiceName is a Neural2 name,
+     * otherwise falls back to Android TTS.
      */
     fun speakNow(text: String, voiceName: String?, rate: Float, pitch: Float) {
+        if (cloudTts.isEnabled && voiceName != null && voiceName.contains("Neural2")) {
+            cloudTts.speak(text, voiceName) {
+                speakAndroidTts(text, voiceName, rate, pitch)
+            }
+            return
+        }
+        speakAndroidTts(text, voiceName, rate, pitch)
+    }
+
+    private fun speakAndroidTts(text: String, voiceName: String?, rate: Float, pitch: Float) {
         val t = tts ?: return
         if (!_isReady.value) return
         t.stop()
@@ -110,10 +120,19 @@ class SpanishTts @Inject constructor(
     }
 
     /**
-     * Speak Spanish text aloud.
+     * Speak Spanish text aloud using stored settings.
      * @param slow If true, applies a 0.66x multiplier on top of the user's preferred rate.
      */
     fun speak(text: String, slow: Boolean = false) {
+        val voiceName = current.voiceName
+        if (cloudTts.isEnabled && voiceName != null && voiceName.contains("Neural2")) {
+            cloudTts.speak(text, voiceName) { speakAndroidFallback(text, slow) }
+            return
+        }
+        speakAndroidFallback(text, slow)
+    }
+
+    private fun speakAndroidFallback(text: String, slow: Boolean) {
         if (!_isReady.value) return
         val rate = if (slow) (current.speechRate * 0.66f) else current.speechRate
         tts?.setSpeechRate(rate.coerceIn(0.3f, 2.0f))
@@ -139,9 +158,10 @@ class SpanishTts @Inject constructor(
             cont.invokeOnCancellation { tts?.stop() }
         }
 
-    fun stop() { tts?.stop() }
+    fun stop() { cloudTts.stop(); tts?.stop() }
 
     fun shutdown() {
+        cloudTts.stop()
         tts?.stop()
         tts?.shutdown()
         _isReady.value = false
