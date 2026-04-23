@@ -25,6 +25,7 @@ import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
+import com.spanishapp.ui.grammar.GrammarScreen
 import com.spanishapp.ui.profile.AchievementsScreen
 import com.spanishapp.ui.profile.ProfileScreen
 import com.spanishapp.ui.settings.SettingsScreen
@@ -92,7 +93,7 @@ object Navigation {
                 arguments = listOf(navArgument("id") { type = NavType.Companion.IntType })
             ) { Placeholder("Диалог") }
 
-            composable("grammar") { Placeholder("Грамматика") }
+            composable("grammar") { GrammarScreen(navController) }
             composable(
                 "grammar/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.Companion.IntType })

@@ -23,6 +23,7 @@ class DatabaseSeeder @Inject constructor(
         seedConjugations()
         seedUserProgress()
         seedAchievements()
+        seedLessons()
         seedDailyWord()
     }
 
@@ -83,6 +84,12 @@ class DatabaseSeeder @Inject constructor(
     private suspend fun seedAchievements() {
         if (db.achievementDao().getCount() > 0) return
         db.achievementDao().insertAll(achievementManager.defaultAchievements)
+    }
+
+    // ── Grammar lessons ───────────────────────────────────────
+    private suspend fun seedLessons() {
+        if (db.lessonDao().getCount() > 0) return
+        db.lessonDao().insertAll(GrammarContent.getAll())
     }
 
     // ── Word of the day ───────────────────────────────────────
