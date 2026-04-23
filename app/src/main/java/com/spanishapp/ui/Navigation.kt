@@ -25,6 +25,8 @@ import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
+import com.spanishapp.ui.profile.AchievementsScreen
+import com.spanishapp.ui.profile.ProfileScreen
 
 object Navigation {
 
@@ -102,8 +104,8 @@ object Navigation {
                 arguments = listOf(navArgument("type") { defaultValue = "mixed" })
             ) { Placeholder("Тест") }
 
-            composable("profile") { Placeholder("Профиль") }
-            composable("achievements") { Placeholder("Достижения") }
+            composable("profile") { ProfileScreen(navController) }
+            composable("achievements") { AchievementsScreen(navController) }
             composable("settings") { Placeholder("Настройки") }
             composable("dictionary") { DictionaryScreen(navController) }
             composable("weak_words") { WeakWordsScreen(navController) }
