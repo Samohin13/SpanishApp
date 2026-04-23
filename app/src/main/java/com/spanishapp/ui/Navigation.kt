@@ -20,6 +20,8 @@ import androidx.navigation.navArgument
 import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
+import com.spanishapp.ui.dictionary.DictionaryScreen
+import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
 
 object Navigation {
@@ -101,8 +103,8 @@ object Navigation {
             composable("profile") { Placeholder("Профиль") }
             composable("achievements") { Placeholder("Достижения") }
             composable("settings") { Placeholder("Настройки") }
-            composable("dictionary") { Placeholder("Словарь") }
-            composable("weak_words") { Placeholder("Слабые слова") }
+            composable("dictionary") { DictionaryScreen(navController) }
+            composable("weak_words") { WeakWordsScreen(navController) }
         }
     }
 
