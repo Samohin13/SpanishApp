@@ -23,13 +23,11 @@ android {
         applicationId = "com.spanishapp"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val key = localProps.getProperty("ANTHROPIC_KEY") ?: ""
         buildConfigField("String", "ANTHROPIC_API_KEY", "\"$key\"")
-        val googleTtsKey = localProps.getProperty("GOOGLE_TTS_KEY") ?: ""
-        buildConfigField("String", "GOOGLE_TTS_API_KEY", "\"$googleTtsKey\"")
     }
 
     buildTypes {

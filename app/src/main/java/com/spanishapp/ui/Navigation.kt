@@ -21,8 +21,6 @@ import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
 import com.spanishapp.ui.home.HomeScreen
-import com.spanishapp.ui.settings.SettingsScreen
-import com.spanishapp.ui.settings.SettingsVoiceScreen
 
 object Navigation {
 
@@ -102,8 +100,7 @@ object Navigation {
 
             composable("profile") { Placeholder("Профиль") }
             composable("achievements") { Placeholder("Достижения") }
-            composable("settings") { SettingsScreen(navController) }
-            composable("settings_voice") { SettingsVoiceScreen(navController) }
+            composable("settings") { Placeholder("Настройки") }
             composable("dictionary") { Placeholder("Словарь") }
             composable("weak_words") { Placeholder("Слабые слова") }
         }
