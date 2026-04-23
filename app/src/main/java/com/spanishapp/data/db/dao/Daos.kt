@@ -18,6 +18,9 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE next_review <= :now ORDER BY next_review ASC LIMIT :limit")
     fun getDueWords(now: Long = System.currentTimeMillis(), limit: Int = 30): Flow<List<WordEntity>>
 
+    @Query("SELECT * FROM words ORDER BY spanish ASC LIMIT :limit")
+    fun getAllWords(limit: Int = 2000): Flow<List<WordEntity>>
+
     @Query("SELECT * FROM words WHERE repetitions = 0 AND level = :level ORDER BY RANDOM() LIMIT :limit")
     fun getNewWords(level: String, limit: Int = 10): Flow<List<WordEntity>>
 

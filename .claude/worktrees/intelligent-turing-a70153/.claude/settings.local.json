@@ -14,7 +14,8 @@
       "Bash(./gradlew installDebug)",
       "Read(//c/Program Files/Android/Android Studio/**)",
       "Read(//c/Program Files/Google/Android Studio/**)",
-      "Bash(/c/Users/bravo/AppData/Local/Android/Sdk/platform-tools/adb.exe shell *)"
+      "Bash(/c/Users/bravo/AppData/Local/Android/Sdk/platform-tools/adb.exe shell *)",
+      "Bash(.\\\\gradlew.bat assembleDebug --no-daemon)"
     ]
   }
 }

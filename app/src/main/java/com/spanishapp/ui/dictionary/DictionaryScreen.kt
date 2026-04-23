@@ -58,10 +58,10 @@ class DictionaryViewModel @Inject constructor(
         .flatMapLatest { f ->
             when {
                 f.query.length >= 2 -> wordDao.search(f.query)
-                f.level == "all" && f.type == "all" -> wordDao.getDueWords(limit = 500)
+                f.level == "all" && f.type == "all" -> wordDao.getAllWords()
                 f.level != "all" && f.type != "all" -> wordDao.getByLevelAndType(f.level, f.type)
-                f.level != "all" -> wordDao.getNewWords(f.level, limit = 500)
-                else -> wordDao.getByType(f.type, limit = 500)
+                f.level != "all" -> wordDao.getNewWords(f.level, limit = 2000)
+                else -> wordDao.getByType(f.type, limit = 2000)
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
