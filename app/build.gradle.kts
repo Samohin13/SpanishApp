@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,12 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+}
+
+// Load local.properties explicitly (project.findProperty doesn't read it reliably)
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
 }
 
 android {
@@ -15,12 +23,12 @@ android {
         applicationId = "com.spanishapp"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val key = project.findProperty("ANTHROPIC_KEY")?.toString() ?: ""
+        val key = localProps.getProperty("ANTHROPIC_KEY") ?: ""
         buildConfigField("String", "ANTHROPIC_API_KEY", "\"$key\"")
-        val googleTtsKey = project.findProperty("GOOGLE_TTS_KEY")?.toString() ?: ""
+        val googleTtsKey = localProps.getProperty("GOOGLE_TTS_KEY") ?: ""
         buildConfigField("String", "GOOGLE_TTS_API_KEY", "\"$googleTtsKey\"")
     }
 
