@@ -372,7 +372,7 @@ data class NavItem(
 val bottomNavItems = listOf(
     NavItem("home",       "Главная",  Icons.Outlined.Home,        Icons.Filled.Home),
     NavItem("flashcards", "Слова",    Icons.Outlined.Style,       Icons.Filled.Style),
-    NavItem("dialogues",  "Диалоги",  Icons.Outlined.Forum,       Icons.Filled.Forum),
+    NavItem("games",      "Игры",     Icons.Outlined.SportsEsports, Icons.Filled.SportsEsports),
     NavItem("ai_chat",    "ИИ-чат",   Icons.Outlined.SmartToy,    Icons.Filled.SmartToy),
     NavItem("profile",    "Профиль",  Icons.Outlined.Person,      Icons.Filled.Person)
 )

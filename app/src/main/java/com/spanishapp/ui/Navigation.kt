@@ -30,6 +30,12 @@ import com.spanishapp.ui.quiz.QuizScreen
 import com.spanishapp.ui.profile.AchievementsScreen
 import com.spanishapp.ui.profile.ProfileScreen
 import com.spanishapp.ui.settings.SettingsScreen
+import com.spanishapp.ui.games.GamesScreen
+import com.spanishapp.ui.games.ArticlesGameScreen
+import com.spanishapp.ui.games.SpeedGameScreen
+import com.spanishapp.ui.games.AnagramGameScreen
+import com.spanishapp.ui.dialogues.DialoguesScreen
+import com.spanishapp.ui.onboarding.OnboardingScreen
 
 object Navigation {
 
@@ -47,8 +53,13 @@ object Navigation {
             popEnterTransition = { slideInHorizontally(tween(260)) { -it / 5 } + fadeIn(tween(260)) },
             popExitTransition = { slideOutHorizontally(tween(260)) { it / 5 } + fadeOut(tween(260)) }
         ) {
+            // ── Главная ───────────────────────────────────────
             composable("home") { HomeScreen(navController) }
 
+            // ── Онбординг ─────────────────────────────────────
+            composable("onboarding") { OnboardingScreen(navController) }
+
+            // ── Карточки ──────────────────────────────────────
             composable(
                 "flashcards?type={type}&level={level}",
                 arguments = listOf(
@@ -82,36 +93,54 @@ object Navigation {
                 )
             }
 
+            // ── Спряжения ─────────────────────────────────────
             composable(
                 "conjugation?verb={verb}",
                 arguments = listOf(navArgument("verb") { defaultValue = "" })
             ) { ConjugationScreen(navController) }
 
             composable("conjugation_quiz") { Placeholder("Викторина спряжений") }
-            composable("dialogues") { Placeholder("Диалоги") }
+
+            // ── Диалоги ───────────────────────────────────────
+            composable("dialogues") { DialoguesScreen(navController) }
             composable(
                 "dialogue/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.Companion.IntType })
             ) { Placeholder("Диалог") }
 
+            // ── Грамматика ────────────────────────────────────
             composable("grammar") { GrammarScreen(navController) }
             composable(
                 "grammar/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.Companion.IntType })
             ) { Placeholder("Урок грамматики") }
 
+            // ── ИИ-чат ────────────────────────────────────────
             composable("ai_chat") { AiChatScreen(navController) }
+
+            // ── Произношение ──────────────────────────────────
             composable("pronunciation") { Placeholder("Произношение") }
+
+            // ── Тест ─────────────────────────────────────────
             composable(
                 "quiz?type={type}",
                 arguments = listOf(navArgument("type") { defaultValue = "mixed" })
             ) { QuizScreen(navController) }
 
-            composable("profile") { ProfileScreen(navController) }
+            // ── Игры ──────────────────────────────────────────
+            composable("games")         { GamesScreen(navController) }
+            composable("game_articles") { ArticlesGameScreen(navController) }
+            composable("game_speed")    { SpeedGameScreen(navController) }
+            composable("game_anagram")  { AnagramGameScreen(navController) }
+
+            // ── Профиль / Достижения / Настройки ─────────────
+            composable("profile")      { ProfileScreen(navController) }
             composable("achievements") { AchievementsScreen(navController) }
-            composable("settings") { SettingsScreen(navController) }
-            composable("dictionary") { DictionaryScreen(navController) }
-            composable("weak_words") { WeakWordsScreen(navController) }
+            composable("settings")     { SettingsScreen(navController) }
+
+            // ── Словарь ───────────────────────────────────────
+            composable("dictionary")  { DictionaryScreen(navController) }
+            composable("weak_words")  { WeakWordsScreen(navController) }
         }
     }
 
