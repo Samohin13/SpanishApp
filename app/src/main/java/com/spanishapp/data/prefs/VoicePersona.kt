@@ -20,13 +20,13 @@ object VoicePersonas {
 
     val ALL: List<VoicePersona> = listOf(
         // ── Female (Spain Spanish) ──────────────────────────────
-        VoicePersona("sofia",     "Sofía",     "es-ES-Neural2-A", isMale = false, fallbackPitch = 1.20f, fallbackRate = 0.95f),
-        VoicePersona("carmen",    "Carmen",    "es-ES-Neural2-C", isMale = false, fallbackPitch = 1.10f, fallbackRate = 0.90f),
-        VoicePersona("valentina", "Valentina", "es-ES-Neural2-E", isMale = false, fallbackPitch = 1.15f, fallbackRate = 1.00f),
+        VoicePersona("sofia",     "Sofía",     "es-ES-Neural2-A", isMale = false, fallbackPitch = 1.80f, fallbackRate = 1.00f),
+        VoicePersona("carmen",    "Carmen",    "es-ES-Neural2-C", isMale = false, fallbackPitch = 1.40f, fallbackRate = 0.90f),
+        VoicePersona("valentina", "Valentina", "es-ES-Neural2-E", isMale = false, fallbackPitch = 1.60f, fallbackRate = 1.10f),
         // ── Male (Spain + LatAm for vocal variety) ──────────────
-        VoicePersona("pablo",  "Pablo",  "es-ES-Neural2-B", isMale = true, fallbackPitch = 0.80f, fallbackRate = 0.95f),
-        VoicePersona("carlos", "Carlos", "es-ES-Neural2-F", isMale = true, fallbackPitch = 0.72f, fallbackRate = 0.90f),
-        VoicePersona("diego",  "Diego",  "es-US-Neural2-B", isMale = true, fallbackPitch = 0.85f, fallbackRate = 1.00f),
+        VoicePersona("pablo",  "Pablo",  "es-ES-Neural2-B", isMale = true, fallbackPitch = 0.70f, fallbackRate = 0.95f),
+        VoicePersona("carlos", "Carlos", "es-ES-Neural2-F", isMale = true, fallbackPitch = 0.50f, fallbackRate = 0.90f),
+        VoicePersona("diego",  "Diego",  "es-US-Neural2-B", isMale = true, fallbackPitch = 0.60f, fallbackRate = 1.05f),
     )
 
     fun byId(id: String?): VoicePersona =

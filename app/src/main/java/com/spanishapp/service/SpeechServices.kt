@@ -98,7 +98,9 @@ class SpanishTts @Inject constructor(
      */
     fun speakNow(text: String, voiceName: String?, rate: Float, pitch: Float) {
         if (cloudTts.isEnabled && voiceName != null && voiceName.contains("Neural2")) {
+            android.widget.Toast.makeText(context, "☁️ Cloud TTS: $voiceName", android.widget.Toast.LENGTH_SHORT).show()
             cloudTts.speak(text, voiceName) {
+                android.widget.Toast.makeText(context, "⚠️ Cloud TTS упал, fallback", android.widget.Toast.LENGTH_LONG).show()
                 speakAndroidTts(text, voiceName)
             }
             return
@@ -108,13 +110,20 @@ class SpanishTts @Inject constructor(
 
     private fun speakAndroidTts(text: String, voiceName: String?) {
         val t = tts ?: return
-        if (!_isReady.value) return
+        if (!_isReady.value) {
+            android.widget.Toast.makeText(context, "❌ Android TTS not ready", android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
         t.stop()
-        // Look up persona to apply gender-differentiated pitch/rate in fallback mode
         val persona = com.spanishapp.data.prefs.VoicePersonas.ALL
             .firstOrNull { it.cloudVoiceName == voiceName }
         val r = persona?.fallbackRate  ?: current.speechRate
         val p = persona?.fallbackPitch ?: current.pitch
+        android.widget.Toast.makeText(
+            context,
+            "📱 Android TTS: ${persona?.displayName ?: "?"}  pitch=$p  rate=$r",
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
         t.setSpeechRate(r.coerceIn(0.3f, 2.0f))
         t.setPitch(p.coerceIn(0.5f, 2.0f))
         t.speak(text, TextToSpeech.QUEUE_FLUSH, null, "now_${System.currentTimeMillis()}")
