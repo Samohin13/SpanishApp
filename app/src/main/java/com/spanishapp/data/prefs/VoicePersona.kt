@@ -24,14 +24,16 @@ object VoicePersonas {
     const val DEFAULT_ID = "maria"
 
     val ALL: List<VoicePersona> = listOf(
-        VoicePersona("lucia",     "Lucía",     VoiceCategory.GIRL,  "Лёгкая, энергичная",    VoiceSlot.FEMALE_1, pitch = 1.20f, rate = 1.05f),
-        VoicePersona("sofia",     "Sofía",     VoiceCategory.GIRL,  "Мягкая, нежная",        VoiceSlot.FEMALE_2, pitch = 1.15f, rate = 0.95f),
-        VoicePersona("maria",     "María",     VoiceCategory.WOMAN, "Учитель, спокойная",    VoiceSlot.FEMALE_1, pitch = 1.00f, rate = 0.90f),
+        // Females: pitch > 1.0 to stay bright
+        VoicePersona("lucia",     "Lucía",     VoiceCategory.GIRL,  "Лёгкая, энергичная",    VoiceSlot.FEMALE_1, pitch = 1.30f, rate = 1.05f),
+        VoicePersona("sofia",     "Sofía",     VoiceCategory.GIRL,  "Мягкая, нежная",        VoiceSlot.FEMALE_2, pitch = 1.20f, rate = 0.95f),
+        VoicePersona("maria",     "María",     VoiceCategory.WOMAN, "Учитель, спокойная",    VoiceSlot.FEMALE_1, pitch = 1.05f, rate = 0.90f),
         VoicePersona("valentina", "Valentina", VoiceCategory.WOMAN, "Уверенная, дикторская", VoiceSlot.FEMALE_2, pitch = 0.95f, rate = 0.90f),
-        VoicePersona("mateo",     "Mateo",     VoiceCategory.BOY,   "Весёлый, быстрый",      VoiceSlot.MALE_1,   pitch = 1.15f, rate = 1.05f),
-        VoicePersona("diego",     "Diego",     VoiceCategory.BOY,   "Разговорный, живой",    VoiceSlot.MALE_2,   pitch = 1.10f, rate = 1.00f),
-        VoicePersona("carlos",    "Carlos",    VoiceCategory.MAN,   "Серьёзный, дикторский", VoiceSlot.MALE_1,   pitch = 0.95f, rate = 0.90f),
-        VoicePersona("santiago",  "Santiago",  VoiceCategory.MAN,   "Низкий, глубокий",      VoiceSlot.MALE_2,   pitch = 0.85f, rate = 0.90f),
+        // Males: pitch well below 1.0 to force a masculine timbre even on a female base voice
+        VoicePersona("mateo",     "Mateo",     VoiceCategory.BOY,   "Весёлый, быстрый",      VoiceSlot.MALE_1,   pitch = 0.75f, rate = 1.05f),
+        VoicePersona("diego",     "Diego",     VoiceCategory.BOY,   "Разговорный, живой",    VoiceSlot.MALE_2,   pitch = 0.70f, rate = 1.00f),
+        VoicePersona("carlos",    "Carlos",    VoiceCategory.MAN,   "Серьёзный, дикторский", VoiceSlot.MALE_1,   pitch = 0.60f, rate = 0.90f),
+        VoicePersona("santiago",  "Santiago",  VoiceCategory.MAN,   "Низкий, глубокий",      VoiceSlot.MALE_2,   pitch = 0.55f, rate = 0.88f),
     )
 
     fun byId(id: String?): VoicePersona =

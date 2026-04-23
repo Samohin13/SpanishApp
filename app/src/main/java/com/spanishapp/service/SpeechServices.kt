@@ -92,6 +92,24 @@ class SpanishTts @Inject constructor(
     }
 
     /**
+     * Speak a sample with explicit voice/rate/pitch, bypassing the async Flow update.
+     * Use for live previews where we need to guarantee the new persona's settings are applied
+     * before the utterance starts (stops any currently-playing utterance first).
+     */
+    fun speakNow(text: String, voiceName: String?, rate: Float, pitch: Float) {
+        val t = tts ?: return
+        if (!_isReady.value) return
+        t.stop()
+        if (voiceName != null) {
+            val v = t.voices?.firstOrNull { it.name == voiceName && it.locale?.language == "es" }
+            if (v != null) t.voice = v
+        }
+        t.setSpeechRate(rate.coerceIn(0.3f, 2.0f))
+        t.setPitch(pitch.coerceIn(0.5f, 2.0f))
+        t.speak(text, TextToSpeech.QUEUE_FLUSH, null, "now_${System.currentTimeMillis()}")
+    }
+
+    /**
      * Speak Spanish text aloud.
      * @param slow If true, applies a 0.66x multiplier on top of the user's preferred rate.
      */

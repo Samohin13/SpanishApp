@@ -1,14 +1,17 @@
 package com.spanishapp.ui.settings
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -55,19 +58,22 @@ class SettingsVoiceViewModel @Inject constructor(
         _voiceCount.value = tts.availableSpanishVoices().size
     }
 
+    private fun resolvedVoiceNameFor(persona: VoicePersona): String? =
+        VoiceSlotResolver.resolve(persona.slot, tts.availableSpanishVoices())?.name
+
     fun selectPersona(persona: VoicePersona) = viewModelScope.launch {
-        val resolved = VoiceSlotResolver.resolve(persona.slot, tts.availableSpanishVoices())
-        voicePrefs.selectPersona(persona.id, resolved?.name)
-        // Speak a preview right after selection so user hears the persona immediately
-        tts.speak(SAMPLE_TEXT)
+        val voiceName = resolvedVoiceNameFor(persona)
+        voicePrefs.selectPersona(persona.id, voiceName)
+        tts.speakNow(SAMPLE_TEXT, voiceName, persona.rate, persona.pitch)
+    }
+
+    fun previewCustom(persona: VoicePersona, rate: Float, pitch: Float) {
+        val voiceName = resolvedVoiceNameFor(persona)
+        tts.speakNow(SAMPLE_TEXT, voiceName, rate, pitch)
     }
 
     fun setRate(r: Float) = viewModelScope.launch { voicePrefs.setRate(r) }
     fun setPitch(p: Float) = viewModelScope.launch { voicePrefs.setPitch(p) }
-
-    fun preview() {
-        tts.speak(SAMPLE_TEXT)
-    }
 
     fun resetToPersonaDefaults() = viewModelScope.launch {
         val persona = VoicePersonas.byId(settings.value.personaId)
@@ -86,9 +92,9 @@ fun SettingsVoiceScreen(
     val isReady by viewModel.isTtsReady.collectAsState()
     val voiceCount by viewModel.voiceCount.collectAsState()
 
-    LaunchedEffect(isReady) {
-        if (isReady) viewModel.refreshVoices()
-    }
+    LaunchedEffect(isReady) { if (isReady) viewModel.refreshVoices() }
+
+    var tunePersona by remember { mutableStateOf<VoicePersona?>(null) }
 
     Scaffold(
         topBar = {
@@ -114,84 +120,166 @@ fun SettingsVoiceScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                if (!isReady) {
-                    InfoBanner("Загружаем синтез речи...")
-                } else if (voiceCount == 0) {
-                    InfoBanner(
-                        "На устройстве не установлены испанские голоса.\n" +
-                            "Настройки Android → Язык → Синтез речи → Google → Установить язык → Español."
+                when {
+                    !isReady -> InfoBanner("Загружаем синтез речи...")
+                    voiceCount == 0 -> InfoBanner(
+                        "На устройстве нет испанских голосов.\n" +
+                            "Настройки Android → Язык → Синтез речи → Google → Установить → Español."
                     )
-                } else if (voiceCount < 2) {
-                    InfoBanner(
-                        "Доступен только один испанский голос — персонажи звучат " +
-                            "одним голосом с разной высотой тона. Установи дополнительные голоса " +
-                            "в настройках Android для большего разнообразия."
+                    voiceCount < 2 -> InfoBanner(
+                        "Доступен только один испанский голос — персонажи различаются по высоте тона. " +
+                            "Установи дополнительные голоса в настройках Android."
                     )
                 }
+
+                Text(
+                    "Нажми на карточку — выбрать и услышать. Удерживай — тонкая настройка.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
 
                 VoiceCategory.values().forEach { cat ->
                     CategoryBlock(
                         category = cat,
                         personas = VoicePersonas.ALL.filter { it.category == cat },
                         selectedId = settings.personaId,
-                        onPersonaClick = viewModel::selectPersona
+                        onPersonaClick = viewModel::selectPersona,
+                        onPersonaLongClick = { tunePersona = it }
                     )
                     Spacer(Modifier.height(16.dp))
-                }
-
-                HorizontalDivider(Modifier.padding(vertical = 8.dp))
-
-                Text(
-                    "Тонкая настройка",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    "Корректируй скорость и тембр поверх выбранного персонажа.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 2.dp, bottom = 12.dp)
-                )
-
-                SliderRow(
-                    label = "Скорость",
-                    valueLabel = "${"%.2f".format(settings.speechRate)}x",
-                    value = settings.speechRate,
-                    range = 0.5f..1.5f,
-                    steps = 9,
-                    onChange = viewModel::setRate
-                )
-                Spacer(Modifier.height(12.dp))
-                SliderRow(
-                    label = "Тон",
-                    valueLabel = "%.2f".format(settings.pitch),
-                    value = settings.pitch,
-                    range = 0.5f..2.0f,
-                    steps = 14,
-                    onChange = viewModel::setPitch
-                )
-
-                Spacer(Modifier.height(8.dp))
-                TextButton(onClick = viewModel::resetToPersonaDefaults) {
-                    Text("Сбросить к параметрам персонажа")
                 }
             }
 
             Surface(tonalElevation = 6.dp, modifier = Modifier.fillMaxWidth()) {
                 Button(
-                    onClick = viewModel::preview,
-                    enabled = isReady,
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                         .height(52.dp),
                     shape = RoundedCornerShape(14.dp)
                 ) {
-                    Icon(Icons.Filled.PlayArrow, null)
+                    Icon(Icons.Filled.Check, null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Прослушать пример", style = MaterialTheme.typography.titleMedium)
+                    Text("Применить", style = MaterialTheme.typography.titleMedium)
                 }
             }
+        }
+
+        tunePersona?.let { persona ->
+            TunePersonaSheet(
+                persona = persona,
+                settings = settings,
+                onDismiss = { tunePersona = null },
+                onRateChange = viewModel::setRate,
+                onPitchChange = viewModel::setPitch,
+                onPreview = { r, p -> viewModel.previewCustom(persona, r, p) },
+                onReset = viewModel::resetToPersonaDefaults
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TunePersonaSheet(
+    persona: VoicePersona,
+    settings: VoiceSettings,
+    onDismiss: () -> Unit,
+    onRateChange: (Float) -> Unit,
+    onPitchChange: (Float) -> Unit,
+    onPreview: (rate: Float, pitch: Float) -> Unit,
+    onReset: () -> Unit
+) {
+    // Show current rate/pitch only if this is the currently selected persona,
+    // otherwise show the persona's defaults as starting point.
+    val isSelected = settings.personaId == persona.id
+    var rate by remember(persona.id, isSelected) {
+        mutableStateOf(if (isSelected) settings.speechRate else persona.rate)
+    }
+    var pitch by remember(persona.id, isSelected) {
+        mutableStateOf(if (isSelected) settings.pitch else persona.pitch)
+    }
+
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+        ) {
+            Text(
+                "Настройка · ${persona.displayName}",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                persona.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(20.dp))
+
+            SliderRow(
+                label = "Скорость",
+                valueLabel = "${"%.2f".format(rate)}x",
+                value = rate,
+                range = 0.5f..1.5f,
+                steps = 9,
+                onChange = {
+                    rate = it
+                    if (isSelected) onRateChange(it)
+                }
+            )
+            Spacer(Modifier.height(12.dp))
+            SliderRow(
+                label = "Тон",
+                valueLabel = "%.2f".format(pitch),
+                value = pitch,
+                range = 0.5f..2.0f,
+                steps = 14,
+                onChange = {
+                    pitch = it
+                    if (isSelected) onPitchChange(it)
+                }
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(
+                    onClick = { onPreview(rate, pitch) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Filled.PlayArrow, null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("Прослушать")
+                }
+                OutlinedButton(
+                    onClick = {
+                        rate = persona.rate
+                        pitch = persona.pitch
+                        if (isSelected) onReset()
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Filled.Restore, null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("Сброс")
+                }
+            }
+
+            if (!isSelected) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "Изменения сохраняются только для выбранного персонажа. " +
+                        "Сначала выбери «${persona.displayName}» на экране, затем удерживай для настройки.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(Modifier.height(20.dp))
         }
     }
 }
@@ -219,7 +307,8 @@ private fun CategoryBlock(
     category: VoiceCategory,
     personas: List<VoicePersona>,
     selectedId: String,
-    onPersonaClick: (VoicePersona) -> Unit
+    onPersonaClick: (VoicePersona) -> Unit,
+    onPersonaLongClick: (VoicePersona) -> Unit
 ) {
     Text(
         category.title,
@@ -233,18 +322,21 @@ private fun CategoryBlock(
                 persona = p,
                 selected = p.id == selectedId,
                 modifier = Modifier.weight(1f),
-                onClick = { onPersonaClick(p) }
+                onClick = { onPersonaClick(p) },
+                onLongClick = { onPersonaLongClick(p) }
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PersonaCard(
     persona: VoicePersona,
     selected: Boolean,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     val bg = if (selected) MaterialTheme.colorScheme.primaryContainer
              else MaterialTheme.colorScheme.surface
@@ -259,7 +351,10 @@ private fun PersonaCard(
         border = border,
         modifier = modifier
             .heightIn(min = 84.dp)
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
     ) {
         Column(
             modifier = Modifier
