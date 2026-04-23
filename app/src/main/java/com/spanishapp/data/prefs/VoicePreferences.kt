@@ -53,6 +53,10 @@ class VoicePreferences @Inject constructor(
         }
     }
 
+    suspend fun setVoiceName(name: String?) = update { p ->
+        if (name != null) p[K.VOICE_NAME] = name else p.remove(K.VOICE_NAME)
+    }
+
     suspend fun setRate(r: Float) = update { it[K.RATE] = r }
     suspend fun setPitch(p: Float) = update { it[K.PITCH] = p }
 
