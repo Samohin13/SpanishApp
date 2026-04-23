@@ -8,9 +8,16 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.speech.tts.Voice
+import com.spanishapp.data.prefs.VoicePreferences
+import com.spanishapp.data.prefs.VoiceSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Locale
 import javax.inject.Inject
@@ -22,11 +29,15 @@ import kotlin.coroutines.resume
 // ═════════════════════════════════════════════════════════════
 @Singleton
 class SpanishTts @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val voicePrefs: VoicePreferences
 ) {
     private var tts: TextToSpeech? = null
     private val _isReady = MutableStateFlow(false)
     val isReady: StateFlow<Boolean> = _isReady
+
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private var current: VoiceSettings = VoiceSettings()
 
     // Supported Spanish locales in priority order
     private val preferredLocales = listOf(
@@ -36,7 +47,22 @@ class SpanishTts @Inject constructor(
         Locale("es")          // Generic
     )
 
-    init { initialize() }
+    init {
+        initialize()
+        scope.launch {
+            voicePrefs.settings.collect { s ->
+                current = s
+                applyCurrent()
+            }
+        }
+    }
+
+    /** All installed Spanish voices. Available only after [isReady] becomes true. */
+    fun availableSpanishVoices(): List<Voice> =
+        tts?.voices
+            ?.filter { it.locale?.language == "es" }
+            ?.sortedBy { it.name }
+            ?: emptyList()
 
     private fun initialize() {
         tts = TextToSpeech(context) { status ->
@@ -47,20 +73,32 @@ class SpanishTts @Inject constructor(
                 } ?: Locale("es")
 
                 tts?.language = locale
-                tts?.setSpeechRate(0.9f)     // slightly slower for learners
-                tts?.setPitch(1.0f)
                 _isReady.value = true
+                applyCurrent()
             }
+        }
+    }
+
+    private fun applyCurrent() {
+        val t = tts ?: return
+        if (!_isReady.value) return
+        t.setSpeechRate(current.speechRate.coerceIn(0.3f, 2.0f))
+        t.setPitch(current.pitch.coerceIn(0.5f, 2.0f))
+        val name = current.voiceName
+        if (name != null) {
+            val v = t.voices?.firstOrNull { it.name == name && it.locale?.language == "es" }
+            if (v != null) t.voice = v
         }
     }
 
     /**
      * Speak Spanish text aloud.
-     * @param slow If true, speaks at 0.6x speed for pronunciation practice
+     * @param slow If true, applies a 0.66x multiplier on top of the user's preferred rate.
      */
     fun speak(text: String, slow: Boolean = false) {
         if (!_isReady.value) return
-        tts?.setSpeechRate(if (slow) 0.6f else 0.9f)
+        val rate = if (slow) (current.speechRate * 0.66f) else current.speechRate
+        tts?.setSpeechRate(rate.coerceIn(0.3f, 2.0f))
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "utterance_$text")
     }
 
@@ -77,7 +115,8 @@ class SpanishTts @Inject constructor(
                     if (utteranceId == id && cont.isActive) cont.resume(Unit)
                 }
             })
-            tts?.setSpeechRate(if (slow) 0.6f else 0.9f)
+            val rate = if (slow) (current.speechRate * 0.66f) else current.speechRate
+            tts?.setSpeechRate(rate.coerceIn(0.3f, 2.0f))
             tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, id)
             cont.invokeOnCancellation { tts?.stop() }
         }
