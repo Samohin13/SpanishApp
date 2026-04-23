@@ -1,9 +1,12 @@
 package com.spanishapp.ui.settings
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -51,11 +54,27 @@ class SettingsVoiceViewModel @Inject constructor(
 
     val isTtsReady: StateFlow<Boolean> = tts.isReady
 
-    private val _voiceCount = MutableStateFlow(0)
-    val voiceCount: StateFlow<Int> = _voiceCount.asStateFlow()
+    data class VoiceDiagnostics(
+        val total: Int,
+        val female: Int,
+        val male: Int,
+        val unknown: Int
+    ) {
+        val maleDetected: Boolean get() = male > 0
+    }
+
+    private val _diag = MutableStateFlow(VoiceDiagnostics(0, 0, 0, 0))
+    val diag: StateFlow<VoiceDiagnostics> = _diag.asStateFlow()
 
     fun refreshVoices() {
-        _voiceCount.value = tts.availableSpanishVoices().size
+        val voices = tts.availableSpanishVoices()
+        val c = VoiceSlotResolver.classifyStrict(voices)
+        _diag.value = VoiceDiagnostics(
+            total   = voices.size,
+            female  = c.female.size,
+            male    = c.male.size,
+            unknown = c.unknown.size
+        )
     }
 
     private fun resolvedVoiceNameFor(persona: VoicePersona): String? =
@@ -90,9 +109,27 @@ fun SettingsVoiceScreen(
 ) {
     val settings by viewModel.settings.collectAsState()
     val isReady by viewModel.isTtsReady.collectAsState()
-    val voiceCount by viewModel.voiceCount.collectAsState()
+    val diag by viewModel.diag.collectAsState()
+    val ctx = LocalContext.current
 
     LaunchedEffect(isReady) { if (isReady) viewModel.refreshVoices() }
+
+    val openTtsSettings = {
+        runCatching {
+            ctx.startActivity(
+                Intent("com.android.settings.TTS_SETTINGS")
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }.onFailure {
+            runCatching {
+                ctx.startActivity(
+                    Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+            }
+        }
+        Unit
+    }
 
     var tunePersona by remember { mutableStateOf<VoicePersona?>(null) }
 
@@ -122,14 +159,26 @@ fun SettingsVoiceScreen(
             ) {
                 when {
                     !isReady -> InfoBanner("Загружаем синтез речи...")
-                    voiceCount == 0 -> InfoBanner(
-                        "На устройстве нет испанских голосов.\n" +
-                            "Настройки Android → Язык → Синтез речи → Google → Установить → Español."
+                    diag.total == 0 -> WarningBanner(
+                        title = "Нет испанских голосов",
+                        body = "На устройстве не установлен ни один испанский голос. " +
+                            "Открой настройки Android TTS → Google → Установить голоса → Español.",
+                        actionLabel = "Открыть настройки Android TTS",
+                        onAction = openTtsSettings
                     )
-                    voiceCount < 2 -> InfoBanner(
+                    diag.male == 0 -> WarningBanner(
+                        title = "Мужской голос не найден",
+                        body = "Найдено голосов: ${diag.total} (женских: ${diag.female}, неопределённых: ${diag.unknown}). " +
+                            "Мужские персонажи звучат как женский голос с изменённым тоном — это может показаться роботизированным. " +
+                            "Установи мужской испанский голос в настройках Android TTS (Google → Español → варианты с пометкой «male»).",
+                        actionLabel = "Открыть настройки Android TTS",
+                        onAction = openTtsSettings
+                    )
+                    diag.total < 2 -> InfoBanner(
                         "Доступен только один испанский голос — персонажи различаются по высоте тона. " +
                             "Установи дополнительные голоса в настройках Android."
                     )
+                    else -> DiagnosticsBanner(diag)
                 }
 
                 Text(
@@ -280,6 +329,60 @@ private fun TunePersonaSheet(
             }
 
             Spacer(Modifier.height(20.dp))
+        }
+    }
+}
+
+@Composable
+private fun DiagnosticsBanner(diag: SettingsVoiceViewModel.VoiceDiagnostics) {
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp)
+    ) {
+        Text(
+            "Найдено голосов: ${diag.total} · женских: ${diag.female} · мужских: ${diag.male}" +
+                if (diag.unknown > 0) " · неопределённых: ${diag.unknown}" else "",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(12.dp)
+        )
+    }
+}
+
+@Composable
+private fun WarningBanner(
+    title: String,
+    body: String,
+    actionLabel: String,
+    onAction: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.errorContainer,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp)
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                body,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+            Spacer(Modifier.height(8.dp))
+            FilledTonalButton(onClick = onAction) {
+                Text(actionLabel)
+            }
         }
     }
 }

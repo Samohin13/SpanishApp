@@ -24,16 +24,17 @@ object VoicePersonas {
     const val DEFAULT_ID = "maria"
 
     val ALL: List<VoicePersona> = listOf(
-        // Females: pitch > 1.0 to stay bright
-        VoicePersona("lucia",     "Lucía",     VoiceCategory.GIRL,  "Лёгкая, энергичная",    VoiceSlot.FEMALE_1, pitch = 1.30f, rate = 1.05f),
-        VoicePersona("sofia",     "Sofía",     VoiceCategory.GIRL,  "Мягкая, нежная",        VoiceSlot.FEMALE_2, pitch = 1.20f, rate = 0.95f),
-        VoicePersona("maria",     "María",     VoiceCategory.WOMAN, "Учитель, спокойная",    VoiceSlot.FEMALE_1, pitch = 1.05f, rate = 0.90f),
-        VoicePersona("valentina", "Valentina", VoiceCategory.WOMAN, "Уверенная, дикторская", VoiceSlot.FEMALE_2, pitch = 0.95f, rate = 0.90f),
-        // Males: pitch well below 1.0 to force a masculine timbre even on a female base voice
-        VoicePersona("mateo",     "Mateo",     VoiceCategory.BOY,   "Весёлый, быстрый",      VoiceSlot.MALE_1,   pitch = 0.75f, rate = 1.05f),
-        VoicePersona("diego",     "Diego",     VoiceCategory.BOY,   "Разговорный, живой",    VoiceSlot.MALE_2,   pitch = 0.70f, rate = 1.00f),
-        VoicePersona("carlos",    "Carlos",    VoiceCategory.MAN,   "Серьёзный, дикторский", VoiceSlot.MALE_1,   pitch = 0.60f, rate = 0.90f),
-        VoicePersona("santiago",  "Santiago",  VoiceCategory.MAN,   "Низкий, глубокий",      VoiceSlot.MALE_2,   pitch = 0.55f, rate = 0.88f),
+        // Females — natural bright range
+        VoicePersona("lucia",     "Lucía",     VoiceCategory.GIRL,  "Лёгкая, энергичная",    VoiceSlot.FEMALE_1, pitch = 1.15f, rate = 1.05f),
+        VoicePersona("sofia",     "Sofía",     VoiceCategory.GIRL,  "Мягкая, нежная",        VoiceSlot.FEMALE_2, pitch = 1.08f, rate = 0.95f),
+        VoicePersona("maria",     "María",     VoiceCategory.WOMAN, "Учитель, добрая",       VoiceSlot.FEMALE_1, pitch = 1.00f, rate = 0.88f),
+        VoicePersona("valentina", "Valentina", VoiceCategory.WOMAN, "Уверенная, спокойная",  VoiceSlot.FEMALE_2, pitch = 0.95f, rate = 0.88f),
+        // Males — natural lower range to stay human (pitch below ~0.80 on a female
+        // base voice starts sounding robotic). Character comes from rate + slot.
+        VoicePersona("mateo",     "Mateo",     VoiceCategory.BOY,   "Живой, бодрый",         VoiceSlot.MALE_1,   pitch = 0.93f, rate = 1.00f),
+        VoicePersona("diego",     "Diego",     VoiceCategory.BOY,   "Разговорный, тёплый",   VoiceSlot.MALE_2,   pitch = 0.90f, rate = 0.95f),
+        VoicePersona("carlos",    "Carlos",    VoiceCategory.MAN,   "Профессор, добрый",     VoiceSlot.MALE_1,   pitch = 0.85f, rate = 0.83f),
+        VoicePersona("santiago",  "Santiago",  VoiceCategory.MAN,   "Учитель, спокойный",    VoiceSlot.MALE_2,   pitch = 0.82f, rate = 0.82f),
     )
 
     fun byId(id: String?): VoicePersona =

@@ -14,8 +14,29 @@ import com.spanishapp.data.prefs.VoiceSlot
  */
 object VoiceSlotResolver {
 
-    private val FEMALE_CODE_PREFIXES = listOf("eea", "eeb", "eef", "eeg", "esc", "esd", "esh", "esi")
-    private val MALE_CODE_PREFIXES   = listOf("eec", "eed", "eeh", "eei", "esf", "esg", "esj", "esk")
+    // Empirical Google-TTS Spanish code prefixes. These are the common codes
+    // seen on Android devices; not all are present on every phone.
+    private val FEMALE_CODE_PREFIXES = listOf(
+        "eea", "eeb", "eef", "eeg", "esc", "esf", "esh", "esi", "esl", "esm"
+    )
+    private val MALE_CODE_PREFIXES = listOf(
+        "eec", "eed", "eeh", "eei", "esd", "esg", "esj", "esk", "esn", "eso"
+    )
+
+    data class Classification(val female: List<String>, val male: List<String>, val unknown: List<String>)
+
+    /** Strict classification — no fallback, only voices we confidently identified. */
+    fun classifyStrict(voices: List<Voice>): Classification {
+        val female = mutableListOf<String>()
+        val male   = mutableListOf<String>()
+        val unknown = mutableListOf<String>()
+        for (v in voices) when (genderOf(v)) {
+            Gender.FEMALE  -> female += v.name
+            Gender.MALE    -> male   += v.name
+            Gender.UNKNOWN -> unknown += v.name
+        }
+        return Classification(female, male, unknown)
+    }
 
     fun resolve(slot: VoiceSlot, voices: List<Voice>): Voice? {
         if (voices.isEmpty()) return null
