@@ -20,7 +20,10 @@
       "Bash(dir \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\res\")",
       "Bash(dir \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\java\\\\com\\\\spanishapp\")",
       "Read(//c/Users/bravo/OneDrive/Рабочий стол/**)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(where python *)",
+      "Bash(\"C:\\\\Program Files\\\\Python313\\\\python.exe\" -c \"print\\('ok'\\)\")",
+      "Bash(\"C:\\\\Program Files\\\\Python313\\\\python.exe\" expand_vocab.py)"
     ]
   }
 }

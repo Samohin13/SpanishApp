@@ -93,7 +93,7 @@ class ArticlesGameViewModel @Inject constructor(
     init { loadPool() }
 
     private fun loadPool() = viewModelScope.launch {
-        val words = wordDao.getAllWordsOnce(300)
+        val words = wordDao.getRandomWords(300)
         pool = words
             .filter { it.wordType == "noun" || it.wordType == "sustantivo" }
             .mapNotNull { word ->

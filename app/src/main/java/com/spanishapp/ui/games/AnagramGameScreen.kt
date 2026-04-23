@@ -61,7 +61,7 @@ class AnagramGameViewModel @Inject constructor(
     init { loadPool() }
 
     private fun loadPool() = viewModelScope.launch {
-        pool = wordDao.getAllWordsOnce(300)
+        pool = wordDao.getRandomWords(300)
             .filter { w ->
                 val s = w.spanish.trim()
                 s.length in 3..9           // слова 3–9 букв, удобно для игры

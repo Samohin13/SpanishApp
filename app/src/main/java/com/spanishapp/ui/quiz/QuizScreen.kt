@@ -103,7 +103,7 @@ class QuizViewModel @Inject constructor(
 
 // Add quiz helper to DAO via extension call
 suspend fun WordDao.getQuizWords(limit: Int): List<WordEntity> =
-    getAllWordsOnce(limit)
+    getRandomWords(limit)
 
 // ── Screen ────────────────────────────────────────────────────
 

@@ -65,7 +65,7 @@ class SpeedGameViewModel @Inject constructor(
     init { loadPool() }
 
     private fun loadPool() = viewModelScope.launch {
-        pool = wordDao.getAllWordsOnce(200)
+        pool = wordDao.getRandomWords(200)
             .filter { it.russian.isNotBlank() }
             .shuffled()
             .take(15)
