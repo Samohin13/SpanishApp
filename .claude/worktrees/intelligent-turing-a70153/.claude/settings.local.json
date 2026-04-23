@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls CLAUDE.md)",
+      "Bash(head -50 CLAUDE.md)",
+      "Bash(./gradlew :app:compileDebugKotlin)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Read(//c/c/Users/bravo/AndroidStudioProjects/SpanishApp2/**)",
+      "Bash(git commit *)",
+      "Bash(adb devices *)",
+      "Bash(/c/Users/bravo/AppData/Local/Android/Sdk/platform-tools/adb.exe devices *)",
+      "Bash(./gradlew installDebug)",
+      "Read(//c/Program Files/Android/Android Studio/**)",
+      "Read(//c/Program Files/Google/Android Studio/**)",
+      "Bash(/c/Users/bravo/AppData/Local/Android/Sdk/platform-tools/adb.exe shell *)"
+    ]
+  }
+}
