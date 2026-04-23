@@ -273,12 +273,6 @@ private fun VoiceCard(
                 color      = fg
             )
             Spacer(Modifier.height(4.dp))
-            Text(
-                nv.detail,
-                style = MaterialTheme.typography.bodySmall,
-                color = if (selected) fg.copy(alpha = 0.7f)
-                        else MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
