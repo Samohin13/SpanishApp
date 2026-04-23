@@ -26,6 +26,7 @@ import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
 import com.spanishapp.ui.grammar.GrammarScreen
+import com.spanishapp.ui.quiz.QuizScreen
 import com.spanishapp.ui.profile.AchievementsScreen
 import com.spanishapp.ui.profile.ProfileScreen
 import com.spanishapp.ui.settings.SettingsScreen
@@ -104,7 +105,7 @@ object Navigation {
             composable(
                 "quiz?type={type}",
                 arguments = listOf(navArgument("type") { defaultValue = "mixed" })
-            ) { Placeholder("Тест") }
+            ) { QuizScreen(navController) }
 
             composable("profile") { ProfileScreen(navController) }
             composable("achievements") { AchievementsScreen(navController) }

@@ -24,6 +24,9 @@ interface WordDao {
     @Query("SELECT id FROM words WHERE level = 'A1' ORDER BY id")
     suspend fun getA1WordIds(): List<Int>
 
+    @Query("SELECT * FROM words WHERE total_reviews > 0 ORDER BY RANDOM() LIMIT :limit")
+    suspend fun getAllWordsOnce(limit: Int): List<WordEntity>
+
     @Query("SELECT * FROM words WHERE repetitions = 0 AND level = :level ORDER BY RANDOM() LIMIT :limit")
     fun getNewWords(level: String, limit: Int = 10): Flow<List<WordEntity>>
 
