@@ -12,7 +12,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="SpanishApp"
+        android:label="HablaRu"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpanishApp"
@@ -21,7 +21,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="SpanishApp"
+            android:label="HablaRu"
             android:theme="@style/Theme.SpanishApp.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
