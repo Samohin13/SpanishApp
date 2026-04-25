@@ -23,7 +23,11 @@
       "Bash(python -c ' *)",
       "Bash(where python *)",
       "Bash(\"C:\\\\Program Files\\\\Python313\\\\python.exe\" -c \"print\\('ok'\\)\")",
-      "Bash(\"C:\\\\Program Files\\\\Python313\\\\python.exe\" expand_vocab.py)"
+      "Bash(\"C:\\\\Program Files\\\\Python313\\\\python.exe\" expand_vocab.py)",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\res\\\\drawable\")",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\java\\\\com\\\\spanishapp\\\\data\\\\prefs\")",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\java\\\\com\\\\spanishapp\\\\ui\\\\pronunciation\")",
+      "Bash(find /c/Users/bravo/AndroidStudioProjects/SpanishApp2/app/src/main/java/com/spanishapp -name \"*.kt\" -exec wc -l {} +)"
     ]
   }
 }
