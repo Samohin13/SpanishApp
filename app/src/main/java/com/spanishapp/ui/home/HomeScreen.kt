@@ -434,15 +434,6 @@ private fun FeaturesGrid(
             )
         }
 
-        FeatureCard(
-            title     = "ИИ-репетитор",
-            subtitle  = "Разговорная практика с коррекцией ошибок",
-            icon      = "🤖",
-            onClick   = { navController.navigate("ai_chat") },
-            accentColor = AppColors.Info,
-            badgeText = "Claude"
-        )
-
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             FeatureCard(
                 title     = "Грамматика",

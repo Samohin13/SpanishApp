@@ -196,8 +196,8 @@ private fun WelcomePage() {
         listOf(
             "🃏 Карточки с интервальным повторением",
             "🎮 Игры: артикли, скорость, анаграммы",
-            "🤖 ИИ-репетитор на базе Claude",
-            "🎙️ Озвучка испанских слов"
+            "🎙️ Тренажёр произношения",
+            "🔊 Озвучка испанских слов"
         ).forEach { feature ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
