@@ -215,7 +215,8 @@ fun ArticlesGameScreen(
 private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
     val word = state.word ?: return
     val cleanWord = stripArticle(word.spanish)   // убираем артикль из отображения
-    val emoji = categoryEmoji(word.category)
+    @Suppress("UNUSED_VARIABLE")
+    val emoji = ""  // заменён на WordEmoji внутри карточки
 
     Column(
         modifier = Modifier
