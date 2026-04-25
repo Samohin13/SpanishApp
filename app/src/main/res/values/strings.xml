@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HablaRu</string>
+    <string name="widget_description">Слово дня на испанском</string>
 </resources>

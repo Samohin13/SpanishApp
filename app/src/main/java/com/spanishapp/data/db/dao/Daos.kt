@@ -31,6 +31,10 @@ interface WordDao {
     @Query("SELECT * FROM words ORDER BY RANDOM() LIMIT :limit")
     suspend fun getRandomWords(limit: Int): List<WordEntity>
 
+    // Для виджета (синхронный вызов на allowMainThreadQueries)
+    @Query("SELECT * FROM words WHERE level = :level ORDER BY id ASC")
+    fun getWordsByLevelSync(level: String): List<WordEntity>
+
     @Query("SELECT * FROM words WHERE repetitions = 0 AND level = :level ORDER BY RANDOM() LIMIT :limit")
     fun getNewWords(level: String, limit: Int = 10): Flow<List<WordEntity>>
 
