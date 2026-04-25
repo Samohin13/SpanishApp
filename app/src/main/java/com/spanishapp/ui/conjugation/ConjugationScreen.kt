@@ -1,5 +1,6 @@
 package com.spanishapp.ui.conjugation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,8 +10,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -42,8 +45,17 @@ class ConjugationViewModel @Inject constructor(
     private val tts: SpanishTts
 ) : ViewModel() {
 
-    val verbs: StateFlow<List<String>> = dao.getAllVerbs()
+    private val _allVerbs: StateFlow<List<String>> = dao.getAllVerbs()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
+
+    val verbs: StateFlow<List<String>> = combine(_allVerbs, _query) { all, q ->
+        if (q.isBlank()) all else all.filter { it.contains(q.trim(), ignoreCase = true) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun setQuery(q: String) { _query.value = q }
 
     private val _selectedVerb = MutableStateFlow<String?>(null)
     val selectedVerb: StateFlow<String?> = _selectedVerb.asStateFlow()
@@ -84,6 +96,7 @@ fun ConjugationScreen(
     vm: ConjugationViewModel = hiltViewModel()
 ) {
     val verbs        by vm.verbs.collectAsState()
+    val query        by vm.query.collectAsState()
     val selectedVerb by vm.selectedVerb.collectAsState()
     val conjugations by vm.conjugations.collectAsState()
 
@@ -105,10 +118,35 @@ fun ConjugationScreen(
             )
         }
     ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            // ── Search bar ────────────────────────────────────
+            OutlinedTextField(
+                value = query,
+                onValueChange = vm::setQuery,
+                placeholder = { Text("Поиск глагола…") },
+                leadingIcon  = { Icon(Icons.Default.Search, null) },
+                trailingIcon = {
+                    AnimatedVisibility(query.isNotEmpty()) {
+                        IconButton(onClick = { vm.setQuery("") }) {
+                            Icon(Icons.Default.Close, null)
+                        }
+                    }
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+
         LazyColumn(
             contentPadding = PaddingValues(
                 start = 16.dp, end = 16.dp,
-                top = padding.calculateTopPadding() + 8.dp,
+                top = 4.dp,
                 bottom = 24.dp
             ),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -116,7 +154,7 @@ fun ConjugationScreen(
             // ── Hint ─────────────────────────────────────────
             item {
                 Text(
-                    "Нажми на глагол чтобы раскрыть таблицу",
+                    "${verbs.size} глаголов · нажми чтобы раскрыть таблицу",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 4.dp)
@@ -135,6 +173,7 @@ fun ConjugationScreen(
                 )
             }
         }
+        } // end Column
     }
 }
 
