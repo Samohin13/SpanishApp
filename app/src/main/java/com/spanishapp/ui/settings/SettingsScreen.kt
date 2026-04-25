@@ -10,6 +10,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -20,10 +21,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
+import com.spanishapp.data.prefs.AppPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,11 +35,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val userProgressDao: UserProgressDao
+    private val userProgressDao: UserProgressDao,
+    private val appPreferences: AppPreferences
 ) : ViewModel() {
 
     private val _progress = MutableStateFlow(UserProgressEntity())
     val progress: StateFlow<UserProgressEntity> = _progress.asStateFlow()
+
+    val ttsEnabled: StateFlow<Boolean> = appPreferences.ttsEnabled
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
 
     init {
         viewModelScope.launch {
@@ -54,6 +62,10 @@ class SettingsViewModel @Inject constructor(
             )
         )
     }
+
+    fun toggleTts(enabled: Boolean) = viewModelScope.launch {
+        appPreferences.setTtsEnabled(enabled)
+    }
 }
 
 // ── Screen ────────────────────────────────────────────────────
@@ -64,7 +76,8 @@ fun SettingsScreen(
     navController: NavHostController,
     vm: SettingsViewModel = hiltViewModel()
 ) {
-    val progress by vm.progress.collectAsState()
+    val progress  by vm.progress.collectAsState()
+    val ttsEnabled by vm.ttsEnabled.collectAsState()
 
     var name        by remember(progress.displayName) { mutableStateOf(progress.displayName) }
     var level       by remember(progress.currentLevel) { mutableStateOf(progress.currentLevel) }
@@ -114,6 +127,42 @@ fun SettingsScreen(
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
+
+            // ── Sound toggle ──────────────────────────────────
+            SettingsSection("Звук") {
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 1.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                "🔊 Озвучка (TTS)",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                if (ttsEnabled) "Включена — слова озвучиваются"
+                                else "Выключена — без звука",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Switch(
+                            checked = ttsEnabled,
+                            onCheckedChange = { vm.toggleTts(it) }
+                        )
+                    }
+                }
             }
 
             // ── Spanish level ─────────────────────────────────
