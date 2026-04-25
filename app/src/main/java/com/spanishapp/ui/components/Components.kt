@@ -15,18 +15,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spanishapp.ui.theme.AppColors
 
-// ─────────────────────────────────────────────────────────────
-//  XP PROGRESS BAR
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  XP PROGRESS BAR  —  широкая, яркая, с анимацией
+// ═══════════════════════════════════════════════════════════════
 @Composable
 fun XpProgressBar(
     level: Int,
@@ -35,81 +37,82 @@ fun XpProgressBar(
     modifier: Modifier = Modifier
 ) {
     val animProgress by animateFloatAsState(
-        targetValue   = progress,
-        animationSpec = tween(900, easing = FastOutSlowInEasing),
+        targetValue   = progress.coerceIn(0f, 1f),
+        animationSpec = tween(1100, easing = FastOutSlowInEasing),
         label         = "xp"
     )
 
-    Surface(
-        modifier      = modifier.fillMaxWidth(),
-        shape         = RoundedCornerShape(16.dp),
-        color         = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    Row(
+        modifier          = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Row(
-            modifier            = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment   = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        // Уровень — круглый жетон с градиентом
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .shadow(6.dp, CircleShape)
+                .clip(CircleShape)
+                .background(
+                    Brush.linearGradient(
+                        listOf(AppColors.Amber, AppColors.Coral)
+                    )
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            // Level circle
-            Box(
-                modifier         = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.radialGradient(listOf(AppColors.Gold, AppColors.Terracotta))
-                    ),
-                contentAlignment = Alignment.Center
+            Text(
+                text       = "$level",
+                fontSize   = 18.sp,
+                fontWeight = FontWeight.Black,
+                color      = Color.White
+            )
+        }
+
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                modifier              = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment     = Alignment.CenterVertically
             ) {
                 Text(
-                    text       = "$level",
+                    "Уровень $level",
                     style      = MaterialTheme.typography.labelLarge,
-                    color      = Color.White,
+                    color      = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    "✨ $totalXp XP",
+                    style      = MaterialTheme.typography.labelLarge,
+                    color      = AppColors.AmberDark,
                     fontWeight = FontWeight.ExtraBold
                 )
             }
-
-            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Row(
-                    modifier              = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        "Уровень $level",
-                        style      = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        "$totalXp XP",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = AppColors.GoldDark,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+            // Трек
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(6.dp)
-                        .clip(RoundedCornerShape(3.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(animProgress)
-                            .clip(RoundedCornerShape(3.dp))
-                            .background(
-                                Brush.horizontalGradient(listOf(AppColors.Gold, AppColors.Terracotta))
+                        .fillMaxHeight()
+                        .fillMaxWidth(animProgress)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(AppColors.Amber, AppColors.Coral)
                             )
-                    )
-                }
+                        )
+                )
             }
         }
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  STREAK BADGE
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  STREAK BADGE  —  огонь стрика
+// ═══════════════════════════════════════════════════════════════
 @Composable
 fun StreakBadge(
     streak: Int,
@@ -117,29 +120,121 @@ fun StreakBadge(
     large: Boolean = false
 ) {
     val active = streak > 0
-    Surface(
-        modifier = modifier,
-        shape    = RoundedCornerShape(12.dp),
-        color    = if (active) AppColors.Gold.copy(alpha = 0.13f)
-                   else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+    val bgColor = if (active)
+        Brush.linearGradient(listOf(AppColors.Amber, AppColors.Coral))
+    else
+        Brush.linearGradient(listOf(
+            MaterialTheme.colorScheme.surfaceVariant,
+            MaterialTheme.colorScheme.surfaceVariant
+        ))
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(bgColor)
+            .padding(horizontal = if (large) 14.dp else 10.dp, vertical = if (large) 8.dp else 6.dp)
     ) {
         Row(
-            modifier              = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
             verticalAlignment     = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = if (active) "🔥" else "○", fontSize = if (large) 22.sp else 16.sp)
+            Text(
+                text     = if (active) "🔥" else "💤",
+                fontSize = if (large) 20.sp else 14.sp
+            )
             Text(
                 text       = "$streak",
                 fontSize   = if (large) 18.sp else 14.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color      = if (active) AppColors.GoldDark
+                fontWeight = FontWeight.Black,
+                color      = if (active) Color.White
                              else MaterialTheme.colorScheme.onSurfaceVariant
             )
             if (large) {
                 Text(
-                    "дн.",
-                    style = MaterialTheme.typography.bodySmall,
+                    "дней",
+                    fontSize = 12.sp,
+                    color    = Color.White.copy(alpha = 0.85f),
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  STAT CARD  —  метрика с крупным числом
+// ═══════════════════════════════════════════════════════════════
+@Composable
+fun StatCard(
+    label: String,
+    value: String,
+    icon: String,
+    modifier: Modifier = Modifier,
+    accentColor: Color = MaterialTheme.colorScheme.primary
+) {
+    Surface(
+        modifier      = modifier,
+        shape         = RoundedCornerShape(20.dp),
+        color         = accentColor.copy(alpha = 0.09f),
+        tonalElevation = 0.dp
+    ) {
+        Column(
+            modifier            = Modifier.padding(horizontal = 14.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(icon, fontSize = 24.sp)
+            Text(
+                text       = value,
+                style      = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Black,
+                color      = accentColor
+            )
+            Text(
+                text  = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DAILY GOAL RING  —  кольцо дневной цели
+// ═══════════════════════════════════════════════════════════════
+@Composable
+fun DailyGoalRing(
+    todayMinutes: Int,
+    goalMinutes: Int,
+    modifier: Modifier = Modifier
+) {
+    val progress     = (todayMinutes.toFloat() / goalMinutes.coerceAtLeast(1)).coerceIn(0f, 1f)
+    val animProgress by animateFloatAsState(
+        targetValue   = progress,
+        animationSpec = tween(1100, easing = FastOutSlowInEasing),
+        label         = "ring"
+    )
+    val done    = progress >= 1f
+    val ringColor = if (done) AppColors.Jade else AppColors.Coral
+
+    Box(modifier = modifier.size(68.dp), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(
+            progress    = { animProgress },
+            modifier    = Modifier.fillMaxSize(),
+            strokeWidth = 6.dp,
+            color       = ringColor,
+            trackColor  = MaterialTheme.colorScheme.surfaceVariant
+        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text       = if (done) "✓" else "$todayMinutes",
+                style      = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Black,
+                color      = ringColor
+            )
+            if (!done) {
+                Text(
+                    text  = "мин",
+                    style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -147,88 +242,9 @@ fun StreakBadge(
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  STAT CARD  —  compact metric tile
-// ─────────────────────────────────────────────────────────────
-@Composable
-fun StatCard(
-    label: String,
-    value: String,
-    icon: String,
-    modifier: Modifier  = Modifier,
-    accentColor: Color  = MaterialTheme.colorScheme.primary
-) {
-    Surface(
-        modifier      = modifier,
-        shape         = RoundedCornerShape(18.dp),
-        color         = accentColor.copy(alpha = 0.07f)
-    ) {
-        Column(
-            modifier            = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(icon, fontSize = 22.sp)
-            Text(
-                text       = value,
-                style      = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.ExtraBold,
-                color      = accentColor
-            )
-            Text(
-                text  = label,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────
-//  DAILY GOAL RING
-// ─────────────────────────────────────────────────────────────
-@Composable
-fun DailyGoalRing(
-    todayMinutes: Int,
-    goalMinutes: Int,
-    modifier: Modifier = Modifier
-) {
-    val progress    = (todayMinutes.toFloat() / goalMinutes).coerceIn(0f, 1f)
-    val animProgress by animateFloatAsState(
-        targetValue   = progress,
-        animationSpec = tween(1000, easing = FastOutSlowInEasing),
-        label         = "ring"
-    )
-    val done = progress >= 1f
-
-    Box(modifier = modifier.size(72.dp), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(
-            progress    = { animProgress },
-            modifier    = Modifier.fillMaxSize(),
-            strokeWidth = 5.dp,
-            color       = if (done) AppColors.Teal else AppColors.Terracotta,
-            trackColor  = MaterialTheme.colorScheme.surfaceVariant
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text       = "$todayMinutes",
-                style      = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.ExtraBold
-            )
-            Text(
-                text  = "мин",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
 //  SECTION HEADER
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
 @Composable
 fun SectionHeader(
     title: String,
@@ -243,111 +259,126 @@ fun SectionHeader(
     ) {
         Text(
             text       = title,
-            style      = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            style      = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.ExtraBold,
+            color      = MaterialTheme.colorScheme.onBackground
         )
         if (actionLabel != null && onAction != null) {
             TextButton(onClick = onAction, contentPadding = PaddingValues(horizontal = 8.dp)) {
                 Text(
-                    text  = actionLabel,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    text       = actionLabel,
+                    style      = MaterialTheme.typography.labelLarge,
+                    color      = AppColors.Coral,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  HERO FEATURE CARD  —  primary wide card with gradient
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  HERO FEATURE CARD  —  главная карточка с насыщенным градиентом
+// ═══════════════════════════════════════════════════════════════
 @Composable
 fun HeroFeatureCard(
     title: String,
     subtitle: String,
     icon: String,
     onClick: () -> Unit,
-    modifier: Modifier  = Modifier,
-    badgeText: String?  = null,
-    gradientStart: Color = AppColors.Terracotta,
-    gradientEnd: Color   = AppColors.TerracottaDark
+    modifier: Modifier   = Modifier,
+    badgeText: String?   = null,
+    gradientStart: Color = AppColors.Coral,
+    gradientEnd: Color   = AppColors.CoralDark
 ) {
-    Surface(
-        onClick  = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape    = RoundedCornerShape(22.dp),
-        color    = Color.Transparent
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(12.dp, RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(24.dp))
+            .background(Brush.linearGradient(listOf(gradientStart, gradientEnd)))
+            .clickable(onClick = onClick)
     ) {
+        // Декоративный круг в углу
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.linearGradient(listOf(gradientStart, gradientEnd))
-                )
-                .padding(20.dp)
-        ) {
-            Row(
-                verticalAlignment     = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Icon bubble
-                Box(
-                    modifier         = Modifier
-                        .size(56.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.White.copy(alpha = 0.2f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(icon, fontSize = 28.sp)
-                }
+                .size(120.dp)
+                .align(Alignment.TopEnd)
+                .offset(x = 30.dp, y = (-30).dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.06f))
+        )
+        Box(
+            modifier = Modifier
+                .size(80.dp)
+                .align(Alignment.BottomEnd)
+                .offset(x = 20.dp, y = 20.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.05f))
+        )
 
-                Column(modifier = Modifier.weight(1f)) {
-                    Row(
-                        verticalAlignment     = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text       = title,
-                            style      = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color      = Color.White
-                        )
-                        if (badgeText != null) {
-                            Surface(
-                                shape = RoundedCornerShape(8.dp),
-                                color = Color.White.copy(alpha = 0.25f)
-                            ) {
-                                Text(
-                                    text     = badgeText,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                                    style    = MaterialTheme.typography.labelMedium,
-                                    color    = Color.White,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
+        Row(
+            modifier              = Modifier.padding(22.dp),
+            verticalAlignment     = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(18.dp)
+        ) {
+            // Иконка
+            Box(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(Color.White.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(icon, fontSize = 32.sp)
+            }
+
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(
+                    verticalAlignment     = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text       = title,
+                        style      = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Black,
+                        color      = Color.White
+                    )
+                    if (badgeText != null) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color.White.copy(alpha = 0.28f))
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                text       = badgeText,
+                                style      = MaterialTheme.typography.labelMedium,
+                                color      = Color.White,
+                                fontWeight = FontWeight.ExtraBold
+                            )
                         }
                     }
-                    Text(
-                        text  = subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
                 }
-
-                Icon(
-                    Icons.Default.ArrowForwardIos,
-                    contentDescription = null,
-                    tint     = Color.White.copy(alpha = 0.7f),
-                    modifier = Modifier.size(16.dp)
+                Text(
+                    text  = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.82f)
                 )
             }
+
+            Icon(
+                Icons.Default.ArrowForwardIos,
+                contentDescription = null,
+                tint     = Color.White.copy(alpha = 0.7f),
+                modifier = Modifier.size(16.dp)
+            )
         }
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  COMPACT FEATURE CARD  —  small grid cell
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  FEATURE CARD  —  ячейка 2×2 сетки
+// ═══════════════════════════════════════════════════════════════
 @Composable
 fun FeatureCard(
     title: String,
@@ -359,16 +390,29 @@ fun FeatureCard(
     accentColor: Color  = MaterialTheme.colorScheme.primary,
     enabled: Boolean    = true
 ) {
-    Surface(
-        onClick   = onClick,
-        enabled   = enabled,
-        modifier  = modifier,
-        shape     = RoundedCornerShape(20.dp),
-        color     = accentColor.copy(alpha = 0.08f),
-        tonalElevation = 0.dp
+    Box(
+        modifier = modifier
+            .shadow(if (enabled) 4.dp else 0.dp, RoundedCornerShape(22.dp))
+            .clip(RoundedCornerShape(22.dp))
+            .background(
+                if (enabled) MaterialTheme.colorScheme.surface
+                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            )
+            .clickable(enabled = enabled, onClick = onClick)
     ) {
+        // Верхняя цветная полоска
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .background(
+                    if (enabled) accentColor
+                    else accentColor.copy(alpha = 0.2f)
+                )
+        )
+
         Column(
-            modifier            = Modifier.padding(16.dp),
+            modifier            = Modifier.padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(
@@ -377,41 +421,45 @@ fun FeatureCard(
                 verticalAlignment     = Alignment.Top
             ) {
                 Box(
-                    modifier         = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(13.dp))
-                        .background(accentColor.copy(alpha = 0.15f)),
+                    modifier = Modifier
+                        .size(46.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(
+                            if (enabled) accentColor.copy(alpha = 0.12f)
+                            else MaterialTheme.colorScheme.surfaceVariant
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(icon, fontSize = 22.sp)
                 }
                 if (badgeText != null) {
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = accentColor.copy(alpha = 0.18f)
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(accentColor.copy(alpha = 0.15f))
+                            .padding(horizontal = 6.dp, vertical = 3.dp)
                     ) {
                         Text(
-                            text     = badgeText,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
-                            style    = MaterialTheme.typography.labelSmall,
-                            color    = accentColor,
-                            fontWeight = FontWeight.Bold
+                            text       = badgeText,
+                            style      = MaterialTheme.typography.labelSmall,
+                            color      = accentColor,
+                            fontWeight = FontWeight.ExtraBold
                         )
                     }
                 }
             }
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Text(
                     text       = title,
                     style      = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.ExtraBold,
                     color      = if (enabled) MaterialTheme.colorScheme.onSurface
-                                 else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                                 else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
                 )
                 Text(
-                    text  = subtitle,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text     = subtitle,
+                    style    = MaterialTheme.typography.labelMedium,
+                    color    = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2
                 )
             }
@@ -419,9 +467,179 @@ fun FeatureCard(
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  BOTTOM NAVIGATION BAR
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  LEVEL BADGE
+// ═══════════════════════════════════════════════════════════════
+@Composable
+fun LevelBadge(level: String, modifier: Modifier = Modifier) {
+    val (bgColor, textColor) = when (level) {
+        "A1" -> Pair(AppColors.Jade.copy(alpha = 0.15f),   AppColors.JadeDark)
+        "A2" -> Pair(AppColors.Sky.copy(alpha = 0.15f),    AppColors.Sky)
+        "B1" -> Pair(AppColors.Amber.copy(alpha = 0.18f),  AppColors.AmberDark)
+        "B2" -> Pair(AppColors.Coral.copy(alpha = 0.15f),  AppColors.CoralDark)
+        "C1" -> Pair(AppColors.Violet.copy(alpha = 0.15f), AppColors.VioletDark)
+        else -> Pair(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(bgColor)
+            .padding(horizontal = 9.dp, vertical = 4.dp)
+    ) {
+        Text(
+            text       = level,
+            style      = MaterialTheme.typography.labelMedium,
+            color      = textColor,
+            fontWeight = FontWeight.ExtraBold
+        )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  WORD OF DAY CARD  —  красивая карточка слова дня
+// ═══════════════════════════════════════════════════════════════
+@Composable
+fun WordOfDayCard(
+    spanish: String,
+    russian: String,
+    example: String,
+    wasPracticed: Boolean,
+    onSpeak: () -> Unit,
+    onPractice: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(8.dp, RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(24.dp))
+            .background(
+                Brush.linearGradient(
+                    0f   to AppColors.Violet,
+                    0.7f to AppColors.VioletDark,
+                    1f   to Color(0xFF3D1A8C)
+                )
+            )
+    ) {
+        // Декор
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .align(Alignment.TopEnd)
+                .offset(x = 25.dp, y = (-25).dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.05f))
+        )
+
+        Column(
+            modifier            = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            // Шапка
+            Row(
+                modifier              = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment     = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment     = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text("✨", fontSize = 14.sp)
+                    Text(
+                        "Слово дня",
+                        style      = MaterialTheme.typography.labelLarge,
+                        color      = Color.White.copy(alpha = 0.75f),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                if (wasPracticed) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color.White.copy(alpha = 0.18f))
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            "✓ изучено",
+                            style      = MaterialTheme.typography.labelSmall,
+                            color      = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+
+            // Слово + кнопка озвучки
+            Row(
+                verticalAlignment     = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text       = spanish,
+                    style      = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Black,
+                    color      = Color.White
+                )
+                Box(
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.18f))
+                        .clickable(onClick = onSpeak),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Filled.VolumeUp,
+                        contentDescription = "Произнести",
+                        tint     = Color.White,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+
+            Text(
+                text       = russian,
+                style      = MaterialTheme.typography.bodyLarge,
+                color      = Color.White.copy(alpha = 0.9f),
+                fontWeight = FontWeight.SemiBold
+            )
+
+            if (example.isNotEmpty()) {
+                Text(
+                    text      = "« $example »",
+                    style     = MaterialTheme.typography.bodyMedium,
+                    color     = Color.White.copy(alpha = 0.65f),
+                    fontStyle = FontStyle.Italic
+                )
+            }
+
+            if (!wasPracticed) {
+                Spacer(Modifier.height(2.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color.White.copy(alpha = 0.18f))
+                        .clickable(onClick = onPractice)
+                        .padding(vertical = 13.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Тренировать слово →",
+                        style      = MaterialTheme.typography.labelLarge,
+                        color      = Color.White,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BOTTOM NAVIGATION BAR  —  плавающая, с тенью
+// ═══════════════════════════════════════════════════════════════
 data class NavItem(
     val route: String,
     val label: String,
@@ -442,201 +660,79 @@ fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
-    Surface(
-        color         = MaterialTheme.colorScheme.surface,
-        tonalElevation = 0.dp,
-        shadowElevation = 8.dp
-    ) {
-        NavigationBar(
-            containerColor = Color.Transparent,
-            tonalElevation = 0.dp
-        ) {
-            bottomNavItems.forEach { item ->
-                val selected = currentRoute.startsWith(item.route)
-                NavigationBarItem(
-                    selected = selected,
-                    onClick  = { onNavigate(item.route) },
-                    icon = {
-                        Icon(
-                            imageVector    = if (selected) item.iconSelected else item.icon,
-                            contentDescription = item.label,
-                            modifier       = Modifier.size(24.dp)
-                        )
-                    },
-                    label = {
-                        Text(
-                            text  = item.label,
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor   = AppColors.Terracotta,
-                        selectedTextColor   = AppColors.Terracotta,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        indicatorColor      = AppColors.Terracotta.copy(alpha = 0.1f)
-                    )
-                )
-            }
-        }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────
-//  LEVEL BADGE
-// ─────────────────────────────────────────────────────────────
-@Composable
-fun LevelBadge(level: String, modifier: Modifier = Modifier) {
-    val color = when (level) {
-        "A1" -> AppColors.Teal
-        "A2" -> AppColors.Info
-        "B1" -> AppColors.Gold
-        "B2" -> AppColors.Terracotta
-        else -> AppColors.InkLight
-    }
-    Surface(
-        modifier = modifier,
-        shape    = RoundedCornerShape(8.dp),
-        color    = color.copy(alpha = 0.15f)
-    ) {
-        Text(
-            text     = level,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-            style    = MaterialTheme.typography.labelSmall,
-            color    = color,
-            fontWeight = FontWeight.ExtraBold
-        )
-    }
-}
-
-// ─────────────────────────────────────────────────────────────
-//  WORD OF DAY CARD
-// ─────────────────────────────────────────────────────────────
-@Composable
-fun WordOfDayCard(
-    spanish: String,
-    russian: String,
-    example: String,
-    wasPracticed: Boolean,
-    onSpeak: () -> Unit,
-    onPractice: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape    = RoundedCornerShape(22.dp),
-        color    = Color.Transparent
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    Brush.linearGradient(
-                        listOf(
-                            AppColors.Terracotta.copy(alpha = 0.12f),
-                            AppColors.Gold.copy(alpha = 0.08f)
-                        )
-                    )
-                )
-                .padding(20.dp)
+                .shadow(20.dp, RoundedCornerShape(28.dp))
+                .clip(RoundedCornerShape(28.dp))
+                .background(MaterialTheme.colorScheme.surface)
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                // Header row
-                Row(
-                    modifier              = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment     = Alignment.CenterVertically
-                ) {
-                    Row(
-                        verticalAlignment     = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text("📅", fontSize = 14.sp)
-                        Text(
-                            "Слово дня",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                    if (wasPracticed) {
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = AppColors.Teal.copy(alpha = 0.15f)
-                        ) {
+            NavigationBar(
+                containerColor = Color.Transparent,
+                tonalElevation = 0.dp,
+                modifier       = Modifier.height(64.dp)
+            ) {
+                bottomNavItems.forEach { item ->
+                    val selected = currentRoute.startsWith(item.route)
+                    NavigationBarItem(
+                        selected = selected,
+                        onClick  = { onNavigate(item.route) },
+                        icon = {
+                            AnimatedContent(
+                                targetState = selected,
+                                transitionSpec = {
+                                    scaleIn(tween(200)) + fadeIn(tween(200)) togetherWith
+                                    scaleOut(tween(200)) + fadeOut(tween(200))
+                                },
+                                label = "nav_icon"
+                            ) { isSelected ->
+                                if (isSelected) {
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .background(AppColors.Coral.copy(alpha = 0.12f))
+                                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector        = item.iconSelected,
+                                            contentDescription = item.label,
+                                            tint               = AppColors.Coral,
+                                            modifier           = Modifier.size(22.dp)
+                                        )
+                                    }
+                                } else {
+                                    Icon(
+                                        imageVector        = item.icon,
+                                        contentDescription = item.label,
+                                        tint               = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier           = Modifier.size(22.dp)
+                                    )
+                                }
+                            }
+                        },
+                        label = {
                             Text(
-                                "✓ изучено",
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                                style    = MaterialTheme.typography.labelSmall,
-                                color    = AppColors.Teal,
-                                fontWeight = FontWeight.Bold
+                                text       = item.label,
+                                style      = MaterialTheme.typography.labelSmall,
+                                fontWeight = if (selected) FontWeight.ExtraBold else FontWeight.Normal,
+                                color      = if (selected) AppColors.Coral
+                                             else MaterialTheme.colorScheme.onSurfaceVariant
                             )
-                        }
-                    }
-                }
-
-                // Word + speak button
-                Row(
-                    verticalAlignment     = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Text(
-                        text       = spanish,
-                        style      = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.ExtraBold,
-                        color      = AppColors.TerracottaDark
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor   = AppColors.Coral,
+                            selectedTextColor   = AppColors.Coral,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            indicatorColor      = Color.Transparent
+                        )
                     )
-                    IconButton(
-                        onClick  = onSpeak,
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(AppColors.Terracotta.copy(alpha = 0.1f))
-                    ) {
-                        Icon(
-                            Icons.Filled.VolumeUp,
-                            contentDescription = "Произнести",
-                            tint     = AppColors.Terracotta,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                }
-
-                Text(
-                    text  = russian,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Medium
-                )
-
-                if (example.isNotEmpty()) {
-                    Text(
-                        text      = "«$example»",
-                        style     = MaterialTheme.typography.bodySmall,
-                        color     = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
-                    )
-                }
-
-                if (!wasPracticed) {
-                    Spacer(Modifier.height(4.dp))
-                    Button(
-                        onClick  = onPractice,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(44.dp),
-                        shape    = RoundedCornerShape(12.dp),
-                        colors   = ButtonDefaults.buttonColors(
-                            containerColor = AppColors.Terracotta
-                        )
-                    ) {
-                        Text(
-                            "Тренировать слово",
-                            style      = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
                 }
             }
         }

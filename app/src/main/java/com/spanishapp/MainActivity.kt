@@ -79,7 +79,8 @@ fun SpanishAppRoot() {
     ) { paddingValues ->
         Navigation.SpanishNavHost(
             navController = navController,
-            modifier = Modifier.padding(paddingValues)
+            // Используем только top padding (status bar), bottom — у каждого экрана свой
+            modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
         )
     }
 }

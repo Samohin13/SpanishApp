@@ -1,211 +1,273 @@
 package com.spanishapp.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// ─────────────────────────────────────────────────────────────
-// COLORS
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  ESPAÑA VIVA — Design System
+//  Тёплый, живой, притягивающий. Один язык для детей и взрослых.
+// ═══════════════════════════════════════════════════════════════
+
 object AppColors {
-    // Spanish flag palette — warm terracotta + gold
-    val Terracotta     = Color(0xFFD85A30)
-    val TerracottaLight= Color(0xFFF0997B)
-    val TerracottaDark = Color(0xFF993C1D)
 
-    val Gold           = Color(0xFFEF9F27)
-    val GoldLight      = Color(0xFFFAC775)
-    val GoldDark       = Color(0xFFBA7517)
+    // ── Coral — главный бренд-цвет ────────────────────────────
+    val Coral           = Color(0xFFFF5340)   // яркий, как фламенко
+    val CoralLight      = Color(0xFFFF8575)
+    val CoralDark       = Color(0xFFCC2E1D)
+    val CoralSurface    = Color(0xFFFFF1EF)   // очень светлый фон с коралловым оттенком
 
-    val Teal           = Color(0xFF1D9E75)
-    val TealLight      = Color(0xFF9FE1CB)
-    val TealDark       = Color(0xFF0F6E56)
+    // ── Amber — солнце, стрик, достижения ─────────────────────
+    val Amber           = Color(0xFFFFB800)
+    val AmberLight      = Color(0xFFFFD166)
+    val AmberDark       = Color(0xFFCC8F00)
+    val AmberSurface    = Color(0xFFFFF9E6)
 
-    val Ink            = Color(0xFF1A1A18)
-    val InkMedium      = Color(0xFF3D3D3A)
-    val InkLight       = Color(0xFF73726C)
+    // ── Jade — успех, прогресс, правильно ─────────────────────
+    val Jade            = Color(0xFF00C896)
+    val JadeLight       = Color(0xFF70E4C4)
+    val JadeDark        = Color(0xFF009970)
+    val JadeSurface     = Color(0xFFE8FAF5)
 
-    val Cream          = Color(0xFFF9F7F2)
-    val CreamDark      = Color(0xFFEFEDE8)
-    val Surface        = Color(0xFFFFFFFF)
+    // ── Violet — AI, премиум, особые фичи ─────────────────────
+    val Violet          = Color(0xFF7C4DFF)
+    val VioletLight     = Color(0xFFAB8AFF)
+    val VioletDark      = Color(0xFF5A2ECC)
+    val VioletSurface   = Color(0xFFF2EEFF)
 
-    // Semantic
-    val Success        = Color(0xFF1D9E75)
-    val Warning        = Color(0xFFEF9F27)
-    val Error          = Color(0xFFE24B4A)
-    val Info           = Color(0xFF378ADD)
+    // ── Sky — информация, ссылки ───────────────────────────────
+    val Sky             = Color(0xFF2D8EFF)
+    val SkySurface      = Color(0xFFEEF5FF)
 
-    // XP / Level bar
-    val XpStart        = Color(0xFFEF9F27)
-    val XpEnd          = Color(0xFFD85A30)
+    // ── Нейтралы — тёплые, не холодные ───────────────────────
+    val Ink             = Color(0xFF1A0F0A)   // почти чёрный с теплотой
+    val InkMid          = Color(0xFF5C3D2E)   // тёплый коричнево-серый
+    val InkLight        = Color(0xFFA07B6A)   // средний тёплый серый
+    val InkFaint        = Color(0xFFD9C5BC)   // светлый тёплый серый
 
-    // Dark mode surfaces
-    val DarkBackground = Color(0xFF141412)
-    val DarkSurface    = Color(0xFF1E1E1B)
-    val DarkSurface2   = Color(0xFF282824)
-    val DarkInk        = Color(0xFFF0EEE8)
+    // ── Фоны — кремово-тёплые ─────────────────────────────────
+    val Cream           = Color(0xFFFFFAF7)   // основной фон (не холодный белый)
+    val CreamMid        = Color(0xFFF5ECE6)   // поверхности, карточки
+    val CreamDeep       = Color(0xFFEEE2DA)   // бордюры, разделители
+
+    // ── Тёмный режим ──────────────────────────────────────────
+    val DarkBg          = Color(0xFF120C0A)   // очень тёмный тёплый чёрный
+    val DarkSurf        = Color(0xFF1E1512)   // тёмная поверхность
+    val DarkSurf2       = Color(0xFF2A1F1B)   // чуть светлее
+    val DarkSurf3       = Color(0xFF382A25)   // карточки
+    val DarkText        = Color(0xFFF7F0EC)   // тёплый белый для текста
+
+    // ── Семантика ─────────────────────────────────────────────
+    val Success         = Jade
+    val Warning         = Amber
+    val Error           = Coral
+    val Info            = Sky
+
+    // ── XP градиент ───────────────────────────────────────────
+    val XpGradientStart = Amber
+    val XpGradientEnd   = Coral
+
+    // ── Совместимость (старые имена, чтобы не сломать другие экраны) ──
+    val Terracotta      = Coral
+    val TerracottaLight = CoralLight
+    val TerracottaDark  = CoralDark
+    val Gold            = Amber
+    val GoldLight       = AmberLight
+    val GoldDark        = AmberDark
+    val Teal            = Jade
+    val TealLight       = JadeLight
+    val TealDark        = JadeDark
+    val InkMedium       = InkMid
+    val Surface         = Color(0xFFFFFFFF)
+    val CreamDark       = CreamMid
+    val DarkBackground  = DarkBg
+    val DarkSurface     = DarkSurf
+    val DarkSurface2    = DarkSurf2
+    val DarkInk         = DarkText
 }
 
-// ─────────────────────────────────────────────────────────────
-// TYPOGRAPHY  —  Nunito (rounded, friendly for learning app)
-// Add Nunito to res/font/ or use Google Fonts
-// ─────────────────────────────────────────────────────────────
-// If you don't have Nunito yet, use this fallback until you add the font file:
+// ═══════════════════════════════════════════════════════════════
+//  TYPOGRAPHY  —  Крупная, жирная, дружелюбная
+// ═══════════════════════════════════════════════════════════════
 val AppTypography = Typography(
     displayLarge = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize   = 36.sp,
-        lineHeight = 44.sp,
-        letterSpacing = (-0.5).sp
+        fontWeight    = FontWeight.Black,
+        fontSize      = 42.sp,
+        lineHeight    = 50.sp,
+        letterSpacing = (-1).sp
     ),
     displayMedium = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize   = 28.sp,
-        lineHeight = 36.sp,
-        letterSpacing = (-0.25).sp
+        fontWeight    = FontWeight.ExtraBold,
+        fontSize      = 34.sp,
+        lineHeight    = 42.sp,
+        letterSpacing = (-0.5).sp
     ),
     headlineLarge = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize   = 24.sp,
-        lineHeight = 32.sp
+        fontWeight    = FontWeight.Bold,
+        fontSize      = 28.sp,
+        lineHeight    = 36.sp,
+        letterSpacing = (-0.25).sp
     ),
     headlineMedium = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize   = 20.sp,
-        lineHeight = 28.sp
+        fontWeight    = FontWeight.Bold,
+        fontSize      = 24.sp,
+        lineHeight    = 32.sp
+    ),
+    headlineSmall = TextStyle(
+        fontWeight    = FontWeight.Bold,
+        fontSize      = 20.sp,
+        lineHeight    = 28.sp
     ),
     titleLarge = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize   = 18.sp,
-        lineHeight = 24.sp
+        fontWeight    = FontWeight.ExtraBold,
+        fontSize      = 18.sp,
+        lineHeight    = 26.sp
     ),
     titleMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize   = 16.sp,
-        lineHeight = 22.sp,
+        fontWeight    = FontWeight.Bold,
+        fontSize      = 16.sp,
+        lineHeight    = 22.sp,
         letterSpacing = 0.1.sp
+    ),
+    titleSmall = TextStyle(
+        fontWeight    = FontWeight.SemiBold,
+        fontSize      = 14.sp,
+        lineHeight    = 20.sp
     ),
     bodyLarge = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize   = 16.sp,
-        lineHeight = 24.sp
+        fontWeight    = FontWeight.Normal,
+        fontSize      = 16.sp,
+        lineHeight    = 25.sp
     ),
     bodyMedium = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize   = 14.sp,
-        lineHeight = 20.sp
+        fontWeight    = FontWeight.Normal,
+        fontSize      = 14.sp,
+        lineHeight    = 22.sp
     ),
     bodySmall = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize   = 12.sp,
-        lineHeight = 16.sp
+        fontWeight    = FontWeight.Normal,
+        fontSize      = 12.sp,
+        lineHeight    = 18.sp
     ),
     labelLarge = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize   = 14.sp,
-        lineHeight = 20.sp,
+        fontWeight    = FontWeight.SemiBold,
+        fontSize      = 14.sp,
+        lineHeight    = 20.sp,
         letterSpacing = 0.1.sp
     ),
+    labelMedium = TextStyle(
+        fontWeight    = FontWeight.Medium,
+        fontSize      = 12.sp,
+        lineHeight    = 16.sp,
+        letterSpacing = 0.3.sp
+    ),
     labelSmall = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize   = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+        fontWeight    = FontWeight.Medium,
+        fontSize      = 11.sp,
+        lineHeight    = 15.sp,
+        letterSpacing = 0.4.sp
     )
 )
 
-// ─────────────────────────────────────────────────────────────
-// LIGHT COLOR SCHEME
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  LIGHT COLOR SCHEME
+// ═══════════════════════════════════════════════════════════════
 private val LightColors = lightColorScheme(
-    primary          = AppColors.Terracotta,
-    onPrimary        = Color.White,
-    primaryContainer = AppColors.TerracottaLight,
-    onPrimaryContainer = AppColors.TerracottaDark,
+    primary             = AppColors.Coral,
+    onPrimary           = Color.White,
+    primaryContainer    = AppColors.CoralSurface,
+    onPrimaryContainer  = AppColors.CoralDark,
 
-    secondary        = AppColors.Teal,
-    onSecondary      = Color.White,
-    secondaryContainer = AppColors.TealLight,
-    onSecondaryContainer = AppColors.TealDark,
+    secondary           = AppColors.Jade,
+    onSecondary         = Color.White,
+    secondaryContainer  = AppColors.JadeSurface,
+    onSecondaryContainer = AppColors.JadeDark,
 
-    tertiary         = AppColors.Gold,
-    onTertiary       = AppColors.Ink,
-    tertiaryContainer= AppColors.GoldLight,
-    onTertiaryContainer = AppColors.GoldDark,
+    tertiary            = AppColors.Amber,
+    onTertiary          = AppColors.Ink,
+    tertiaryContainer   = AppColors.AmberSurface,
+    onTertiaryContainer = AppColors.AmberDark,
 
-    background       = AppColors.Cream,
-    onBackground     = AppColors.Ink,
-    surface          = AppColors.Surface,
-    onSurface        = AppColors.Ink,
-    surfaceVariant   = AppColors.CreamDark,
-    onSurfaceVariant = AppColors.InkMedium,
+    background          = AppColors.Cream,
+    onBackground        = AppColors.Ink,
 
-    error            = AppColors.Error,
-    onError          = Color.White,
+    surface             = Color.White,
+    onSurface           = AppColors.Ink,
+    surfaceVariant      = AppColors.CreamMid,
+    onSurfaceVariant    = AppColors.InkMid,
 
-    outline          = AppColors.InkLight.copy(alpha = 0.3f),
-    outlineVariant   = AppColors.InkLight.copy(alpha = 0.15f)
+    surfaceContainer        = AppColors.CreamMid,
+    surfaceContainerHigh    = AppColors.CreamDeep,
+    surfaceContainerHighest = AppColors.CreamDeep,
+
+    error               = AppColors.Coral,
+    onError             = Color.White,
+
+    outline             = AppColors.InkFaint,
+    outlineVariant      = AppColors.CreamDeep
 )
 
-// ─────────────────────────────────────────────────────────────
-// DARK COLOR SCHEME
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  DARK COLOR SCHEME
+// ═══════════════════════════════════════════════════════════════
 private val DarkColors = darkColorScheme(
-    primary          = AppColors.TerracottaLight,
-    onPrimary        = AppColors.TerracottaDark,
-    primaryContainer = AppColors.TerracottaDark,
-    onPrimaryContainer = AppColors.TerracottaLight,
+    primary             = AppColors.CoralLight,
+    onPrimary           = AppColors.CoralDark,
+    primaryContainer    = AppColors.CoralDark,
+    onPrimaryContainer  = AppColors.CoralLight,
 
-    secondary        = AppColors.TealLight,
-    onSecondary      = AppColors.TealDark,
-    secondaryContainer = AppColors.TealDark,
-    onSecondaryContainer = AppColors.TealLight,
+    secondary           = AppColors.JadeLight,
+    onSecondary         = AppColors.JadeDark,
+    secondaryContainer  = AppColors.JadeDark,
+    onSecondaryContainer = AppColors.JadeLight,
 
-    tertiary         = AppColors.GoldLight,
-    onTertiary       = AppColors.GoldDark,
-    tertiaryContainer= AppColors.GoldDark,
-    onTertiaryContainer = AppColors.GoldLight,
+    tertiary            = AppColors.AmberLight,
+    onTertiary          = AppColors.AmberDark,
+    tertiaryContainer   = AppColors.AmberDark,
+    onTertiaryContainer = AppColors.AmberLight,
 
-    background       = AppColors.DarkBackground,
-    onBackground     = AppColors.DarkInk,
-    surface          = AppColors.DarkSurface,
-    onSurface        = AppColors.DarkInk,
-    surfaceVariant   = AppColors.DarkSurface2,
-    onSurfaceVariant = AppColors.DarkInk.copy(alpha = 0.7f),
+    background          = AppColors.DarkBg,
+    onBackground        = AppColors.DarkText,
 
-    error            = Color(0xFFFF8A80),
-    onError          = Color(0xFF690005),
+    surface             = AppColors.DarkSurf,
+    onSurface           = AppColors.DarkText,
+    surfaceVariant      = AppColors.DarkSurf2,
+    onSurfaceVariant    = AppColors.DarkText.copy(alpha = 0.7f),
 
-    outline          = Color.White.copy(alpha = 0.2f),
-    outlineVariant   = Color.White.copy(alpha = 0.1f)
+    surfaceContainer        = AppColors.DarkSurf2,
+    surfaceContainerHigh    = AppColors.DarkSurf3,
+    surfaceContainerHighest = AppColors.DarkSurf3,
+
+    error               = Color(0xFFFF8A80),
+    onError             = Color(0xFF690005),
+
+    outline             = Color.White.copy(alpha = 0.15f),
+    outlineVariant      = Color.White.copy(alpha = 0.08f)
 )
 
-// ─────────────────────────────────────────────────────────────
-// THEME COMPOSABLE
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  THEME
+// ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColors else LightColors
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = if (darkTheme) DarkColors else LightColors,
         typography  = AppTypography,
         shapes      = Shapes(
-            extraSmall = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
-            small      = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
-            medium     = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-            large      = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
-            extraLarge = androidx.compose.foundation.shape.RoundedCornerShape(32.dp)
+            extraSmall = RoundedCornerShape(8.dp),
+            small      = RoundedCornerShape(12.dp),
+            medium     = RoundedCornerShape(18.dp),
+            large      = RoundedCornerShape(24.dp),
+            extraLarge = RoundedCornerShape(32.dp)
         ),
         content = content
     )
