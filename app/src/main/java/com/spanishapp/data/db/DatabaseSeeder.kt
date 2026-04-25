@@ -3,6 +3,7 @@ package com.spanishapp.data.db
 import android.content.Context
 import com.spanishapp.data.db.entity.*
 import com.spanishapp.data.repository.ConjugationData
+import com.spanishapp.data.repository.ConjugationData2
 import com.spanishapp.service.AchievementManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +81,7 @@ class DatabaseSeeder @Inject constructor(
     // ── Conjugation tables ────────────────────────────────────
     private suspend fun seedConjugations() {
         if (db.conjugationDao().getCount() > 0) return
-        db.conjugationDao().insertAll(ConjugationData.getAll())
+        db.conjugationDao().insertAll(ConjugationData.getAll() + ConjugationData2.getAll())
     }
 
     // ── Default user profile ──────────────────────────────────
