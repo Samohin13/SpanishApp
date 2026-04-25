@@ -2,4 +2,15 @@
 <resources>
 
     <style name="Theme.SpanishApp" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Splash Screen Theme (SplashScreen API, Android 12+) -->
+    <style name="Theme.SpanishApp.Splash" parent="Theme.SplashScreen">
+        <!-- Цвет фона сплеш-экрана -->
+        <item name="windowSplashScreenBackground">#FF5722</item>
+        <!-- Иконка в центре (adaptive icon) -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <!-- Тема которая применяется после скрытия сплеша -->
+        <item name="postSplashScreenTheme">@style/Theme.SpanishApp</item>
+    </style>
+
 </resources>
