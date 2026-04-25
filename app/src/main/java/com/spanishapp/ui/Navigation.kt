@@ -20,7 +20,7 @@ import androidx.navigation.navArgument
 import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
-// import com.spanishapp.ui.chat.AiChatScreen  // временно скрыт
+import com.spanishapp.ui.chat.AiChatScreen
 import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.conjugation.ConjugationQuizScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
@@ -118,8 +118,8 @@ object Navigation {
                 arguments = listOf(navArgument("id") { type = NavType.Companion.IntType })
             ) { Placeholder("Урок грамматики") }
 
-            // ── ИИ-чат (временно скрыт) ──────────────────────
-            // composable("ai_chat") { AiChatScreen(navController) }
+            // ── ИИ-чат ───────────────────────────────────────
+            composable("ai_chat") { AiChatScreen(navController) }
 
             // ── Произношение ──────────────────────────────────
             composable("pronunciation") { PronunciationScreen(navController) }

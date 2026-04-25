@@ -359,7 +359,7 @@ private fun QuickActions(
         Triple("weak_words",   "Слабые слова", "⚠️"),
         Triple("dictionary",   "Словарь",      "🔍"),
         Triple("quiz",         "Тест",         "🎯"),
-        Triple("achievements", "Достижения",   "🏅")
+        Triple("ai_chat",      "ИИ-репетитор", "🤖")
     )
     Row(
         modifier              = modifier.fillMaxWidth(),
