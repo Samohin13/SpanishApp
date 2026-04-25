@@ -21,8 +21,8 @@ class DatabaseSeeder @Inject constructor(
     companion object {
         // Увеличивай эту константу каждый раз, когда добавляешь слова в JSON.
         // Seeder сравнивает реальное количество с этим числом и досевает недостающие.
-        // Текущий JSON: 1415 слов + ModernVocab ~55 = ~1470 итого → порог 1400
-        const val VOCAB_TARGET = 1400
+        // Текущий JSON: 1415 слов + ModernVocab ~55 + ExtendedVocab ~1000 = ~2470 итого → порог 2400
+        const val VOCAB_TARGET = 2400
     }
 
     suspend fun seedIfNeeded() = withContext(Dispatchers.IO) {
@@ -71,6 +71,7 @@ class DatabaseSeeder @Inject constructor(
         parseSection("prepositions", "preposition")
 
         words += ModernVocab.entries
+        words += ExtendedVocab.entries
 
         // insertAll с IGNORE — не перезапишет уже существующие слова (прогресс сохранится)
         db.wordDao().insertAll(words)
