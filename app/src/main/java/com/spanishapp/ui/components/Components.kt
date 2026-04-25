@@ -370,11 +370,11 @@ data class NavItem(
 )
 
 val bottomNavItems = listOf(
-    NavItem("home",       "Главная",  Icons.Outlined.Home,        Icons.Filled.Home),
-    NavItem("flashcards", "Слова",    Icons.Outlined.Style,       Icons.Filled.Style),
+    NavItem("home",       "Главная",  Icons.Outlined.Home,          Icons.Filled.Home),
+    NavItem("flashcards", "Слова",    Icons.Outlined.Style,         Icons.Filled.Style),
     NavItem("games",      "Игры",     Icons.Outlined.SportsEsports, Icons.Filled.SportsEsports),
-    NavItem("ai_chat",    "ИИ-чат",   Icons.Outlined.SmartToy,    Icons.Filled.SmartToy),
-    NavItem("profile",    "Профиль",  Icons.Outlined.Person,      Icons.Filled.Person)
+    NavItem("dictionary", "Словарь",  Icons.Outlined.MenuBook,      Icons.Filled.MenuBook),
+    NavItem("profile",    "Профиль",  Icons.Outlined.Person,        Icons.Filled.Person)
 )
 
 @Composable
