@@ -1,5 +1,6 @@
 package com.spanishapp.ui.settings
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,10 +9,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
@@ -22,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.data.prefs.AppPreferences
+import com.spanishapp.data.prefs.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -44,6 +48,13 @@ class SettingsViewModel @Inject constructor(
 
     val ttsEnabled: StateFlow<Boolean> = appPreferences.ttsEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
+
+    val themeMode: StateFlow<ThemeMode> = appPreferences.themeMode
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ThemeMode.AUTO)
+
+    fun setTheme(mode: ThemeMode) = viewModelScope.launch {
+        appPreferences.setThemeMode(mode)
+    }
 
     init {
         viewModelScope.launch {
@@ -76,8 +87,10 @@ fun SettingsScreen(
     navController: NavHostController,
     vm: SettingsViewModel = hiltViewModel()
 ) {
-    val progress  by vm.progress.collectAsState()
+    val progress   by vm.progress.collectAsState()
     val ttsEnabled by vm.ttsEnabled.collectAsState()
+    val themeMode  by vm.themeMode.collectAsState()
+    val context    = LocalContext.current
 
     var name        by remember(progress.displayName) { mutableStateOf(progress.displayName) }
     var level       by remember(progress.currentLevel) { mutableStateOf(progress.currentLevel) }
@@ -237,6 +250,96 @@ fun SettingsScreen(
                                 RadioButton(selected = goalMinutes == min,
                                             onClick = { goalMinutes = min })
                             }
+                        }
+                    }
+                }
+            }
+
+            // ── Theme ─────────────────────────────────────────
+            SettingsSection("Тема оформления") {
+                val themeOptions = listOf(
+                    ThemeMode.AUTO  to "🌗 Авто (как в системе)",
+                    ThemeMode.LIGHT to "☀️ Светлая",
+                    ThemeMode.DARK  to "🌙 Тёмная"
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    themeOptions.forEach { (mode, label) ->
+                        Surface(
+                            onClick = { vm.setTheme(mode) },
+                            shape = RoundedCornerShape(14.dp),
+                            color = if (themeMode == mode)
+                                MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surface,
+                            tonalElevation = if (themeMode == mode) 0.dp else 1.dp,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    label,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = if (themeMode == mode) FontWeight.SemiBold
+                                                 else FontWeight.Normal
+                                )
+                                RadioButton(
+                                    selected = themeMode == mode,
+                                    onClick = { vm.setTheme(mode) }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ── Share ─────────────────────────────────────────
+            SettingsSection("Поделиться") {
+                Surface(
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_SUBJECT, "HablaRu — учи испанский!")
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "Привет! Я учу испанский с приложением HablaRu 🇪🇸\n" +
+                                "Карточки, игры, тренажёр произношения — всё бесплатно!\n" +
+                                "Попробуй и ты!"
+                            )
+                        }
+                        context.startActivity(Intent.createChooser(intent, "Поделиться HablaRu"))
+                    },
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 1.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Share,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Column {
+                            Text(
+                                "Поделиться приложением",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                "Расскажи друзьям про HablaRu",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }
