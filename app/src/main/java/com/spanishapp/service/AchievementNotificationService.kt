@@ -4,18 +4,11 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import androidx.hilt.work.HiltWorker
-import androidx.work.*
 import com.spanishapp.data.db.dao.AchievementDao
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.AchievementEntity
-import com.spanishapp.domain.algorithm.StreakManager
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.time.LocalDate
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -138,41 +131,3 @@ class NotificationService @Inject constructor(
     }
 }
 
-@HiltWorker
-class DailyReminderWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted workerParams: WorkerParameters,
-    private val userProgressDao: UserProgressDao,
-    private val notificationService: NotificationService
-) : CoroutineWorker(context, workerParams) {
-
-    override suspend fun doWork(): Result {
-        val progress = userProgressDao.getProgressOnce() ?: return Result.success()
-        val todayStart = LocalDate.now().toEpochDay() * 86_400_000L
-        val studiedToday = progress.lastStudyDate >= todayStart
-
-        if (!studiedToday) {
-            if (StreakManager.isStreakAtRisk(progress.lastStudyDate) && progress.currentStreak > 2) {
-                notificationService.showStreakWarning(progress.currentStreak)
-            } else {
-                notificationService.showDailyReminder(progress.currentStreak)
-            }
-        }
-        return Result.success()
-    }
-
-    companion object {
-        const val WORK_NAME = "daily_reminder"
-
-        fun schedule(context: Context) {
-            val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(24, TimeUnit.HOURS)
-                .setInitialDelay(1, TimeUnit.HOURS)
-                .build()
-            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
-                request
-            )
-        }
-    }
-}
