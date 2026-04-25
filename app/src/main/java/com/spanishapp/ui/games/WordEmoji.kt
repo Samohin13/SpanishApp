@@ -7,6 +7,36 @@ package com.spanishapp.ui.games
  */
 object WordEmoji {
 
+    /** Возвращает эмодзи: сначала по слову, затем по категории, иначе 📖 */
+    private fun fallbackByCategory(category: String): String = when (category.lowercase()) {
+        "animales"       -> "🐾"
+        "comida"         -> "🍽️"
+        "familia"        -> "👨‍👩‍👧"
+        "ropa"           -> "👗"
+        "casa"           -> "🏠"
+        "transporte"     -> "🚗"
+        "naturaleza"     -> "🌿"
+        "ciudad"         -> "🏙️"
+        "salud"          -> "❤️"
+        "trabajo"        -> "💼"
+        "deporte"        -> "⚽"
+        "tecnologia"     -> "💻"
+        "redes_sociales" -> "📱"
+        "emociones"      -> "😊"
+        "educacion"      -> "📚"
+        "tiempo"         -> "⏰"
+        "cuerpo"         -> "🧍"
+        "colores"        -> "🎨"
+        "profesiones"    -> "🧑‍💼"
+        "viajes"         -> "✈️"
+        "entretenimiento"-> "🎬"
+        "finanzas"       -> "💰"
+        "compras"        -> "🛒"
+        "comunicacion"   -> "💬"
+        "expresiones"    -> "🗣️"
+        else             -> "📖"
+    }
+
     /** Возвращает эмодзи для конкретного слова или null если не найден */
     fun forWord(spanish: String): String? {
         val key = stripArticle(spanish).lowercase().trim()
@@ -15,7 +45,7 @@ object WordEmoji {
 
     /** Возвращает эмодзи: сначала по слову, затем по категории, иначе 📖 */
     fun forWordOrCategory(spanish: String, category: String): String {
-        return forWord(spanish) ?: categoryEmoji(category)
+        return forWord(spanish) ?: fallbackByCategory(category)
     }
 
     // ── Словарь: испанское слово → эмодзи ─────────────────────
