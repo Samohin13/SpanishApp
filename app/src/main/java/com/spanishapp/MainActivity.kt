@@ -4,27 +4,42 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.spanishapp.data.prefs.AppPreferences
+import com.spanishapp.data.prefs.ThemeMode
 import com.spanishapp.ui.Navigation
 import com.spanishapp.ui.components.SpanishBottomBar
 import com.spanishapp.ui.theme.SpanishAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var appPreferences: AppPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()   // SplashScreen API — должен быть ПЕРВЫМ вызовом
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SpanishAppTheme {
+            val themeMode by appPreferences.themeMode.collectAsStateWithLifecycle(ThemeMode.AUTO)
+            val systemDark = isSystemInDarkTheme()
+            val darkTheme = when (themeMode) {
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK  -> true
+                ThemeMode.AUTO  -> systemDark
+            }
+            SpanishAppTheme(darkTheme = darkTheme) {
                 SpanishAppRoot()
             }
         }

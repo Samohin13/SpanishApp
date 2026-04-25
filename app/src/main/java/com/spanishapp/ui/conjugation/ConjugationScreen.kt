@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
@@ -113,6 +114,12 @@ fun ConjugationScreen(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { navController.navigate("conjugation_quiz") }) {
+                        Icon(Icons.Default.Quiz, contentDescription = "Викторина",
+                             tint = AppColors.Teal)
                     }
                 }
             )

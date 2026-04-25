@@ -22,6 +22,7 @@ import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
 // import com.spanishapp.ui.chat.AiChatScreen  // временно скрыт
 import com.spanishapp.ui.conjugation.ConjugationScreen
+import com.spanishapp.ui.conjugation.ConjugationQuizScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
@@ -101,7 +102,7 @@ object Navigation {
                 arguments = listOf(navArgument("verb") { defaultValue = "" })
             ) { ConjugationScreen(navController) }
 
-            composable("conjugation_quiz") { Placeholder("Викторина спряжений") }
+            composable("conjugation_quiz") { ConjugationQuizScreen(navController) }
 
             // ── Диалоги ───────────────────────────────────────
             composable("dialogues") { DialoguesScreen(navController) }
