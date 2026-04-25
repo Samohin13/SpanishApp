@@ -32,6 +32,7 @@ class DatabaseSeeder @Inject constructor(
         seedAchievements()
         seedLessons()
         seedDailyWord()
+        seedDialogues()
     }
 
     // ── Vocabulary from assets/spanish_vocab.json ────────────
@@ -104,6 +105,12 @@ class DatabaseSeeder @Inject constructor(
     private suspend fun seedLessons() {
         if (db.lessonDao().getCount() > 0) return
         db.lessonDao().insertAll(GrammarContent.getAll())
+    }
+
+    // ── Dialogues ─────────────────────────────────────────────
+    private suspend fun seedDialogues() {
+        if (db.dialogueDao().getCount() > 0) return
+        db.dialogueDao().insertAll(DialogueContent.getAll())
     }
 
     // ── Word of the day ───────────────────────────────────────

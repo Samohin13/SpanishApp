@@ -53,6 +53,22 @@ private val games = listOf(
         description = "Собери слово из\nперемешанных букв",
         color       = AppColors.Gold,
         isReady     = true
+    ),
+    GameCard(
+        route       = "quiz",
+        emoji       = "🎯",
+        title       = "Тест",
+        description = "10 вопросов с 4 вариантами\nПроверь знание переводов",
+        color       = AppColors.Info,
+        isReady     = true
+    ),
+    GameCard(
+        route       = "dialogues",
+        emoji       = "💬",
+        title       = "Диалоги",
+        description = "Ситуационные диалоги\nВ кафе, аэропорту, магазине…",
+        color       = androidx.compose.ui.graphics.Color(0xFF7C5CBF),
+        isReady     = true
     )
 )
 
