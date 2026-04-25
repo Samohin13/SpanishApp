@@ -11,144 +11,162 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // ═══════════════════════════════════════════════════════════════
-//  ESPAÑA VIVA — Design System
-//  Тёплый, живой, притягивающий. Один язык для детей и взрослых.
+//  SOBREMESA — Design System
+//  Сдержанно. Тепло. Со вкусом. В меру объёмно.
 // ═══════════════════════════════════════════════════════════════
 
 object AppColors {
 
-    // ── Coral — главный бренд-цвет ────────────────────────────
-    val Coral           = Color(0xFFFF5340)   // яркий, как фламенко
-    val CoralLight      = Color(0xFFFF8575)
-    val CoralDark       = Color(0xFFCC2E1D)
-    val CoralSurface    = Color(0xFFFFF1EF)   // очень светлый фон с коралловым оттенком
+    // ── Нейтрали — основа всего ────────────────────────────────
+    // Фоны — тёплая бумага, не холодный белый
+    val Paper           = Color(0xFFFAF7F2)   // основной фон, цвет старой бумаги
+    val Surface         = Color(0xFFFFFFFF)   // карточки
+    val SurfaceMuted    = Color(0xFFF2EEE7)   // вторичные поверхности
+    val Border          = Color(0xFFE8E2D8)   // тонкие разделители
 
-    // ── Amber — солнце, стрик, достижения ─────────────────────
-    val Amber           = Color(0xFFFFB800)
-    val AmberLight      = Color(0xFFFFD166)
-    val AmberDark       = Color(0xFFCC8F00)
-    val AmberSurface    = Color(0xFFFFF9E6)
+    // Текст — тёплые тёмные, без чёрного
+    val Ink             = Color(0xFF1C1917)   // основной текст
+    val InkMid          = Color(0xFF57534E)   // вторичный
+    val InkLight        = Color(0xFF8C8278)   // подсказки
+    val InkFaint        = Color(0xFFC8BFB3)   // отключённое
 
-    // ── Jade — успех, прогресс, правильно ─────────────────────
-    val Jade            = Color(0xFF00C896)
-    val JadeLight       = Color(0xFF70E4C4)
-    val JadeDark        = Color(0xFF009970)
-    val JadeSurface     = Color(0xFFE8FAF5)
+    // ── Акценты — приглушённые, благородные ───────────────────
+    // Терракота — главный акцент. Мягкий, не кричащий.
+    val Terracotta      = Color(0xFFB8442D)
+    val TerracottaSoft  = Color(0xFFE8C4B8)
+    val TerracottaBg    = Color(0xFFF7EDE7)
+    val TerracottaDark  = Color(0xFF8E2F1E)
 
-    // ── Violet — AI, премиум, особые фичи ─────────────────────
-    val Violet          = Color(0xFF7C4DFF)
-    val VioletLight     = Color(0xFFAB8AFF)
-    val VioletDark      = Color(0xFF5A2ECC)
-    val VioletSurface   = Color(0xFFF2EEFF)
+    // Олива — успех, прогресс. Средиземноморский зелёный.
+    val Olive           = Color(0xFF6B7D5A)
+    val OliveSoft       = Color(0xFFC8D2BD)
+    val OliveBg         = Color(0xFFF1F3EC)
+    val OliveDark       = Color(0xFF4A5840)
 
-    // ── Sky — информация, ссылки ───────────────────────────────
-    val Sky             = Color(0xFF2D8EFF)
-    val SkySurface      = Color(0xFFEEF5FF)
+    // Охра — стрик, золото, достижения. Дижон.
+    val Ochre           = Color(0xFFB8851F)
+    val OchreSoft       = Color(0xFFE8D396)
+    val OchreBg         = Color(0xFFF7F0DC)
+    val OchreDark       = Color(0xFF8C6418)
 
-    // ── Нейтралы — тёплые, не холодные ───────────────────────
-    val Ink             = Color(0xFF1A0F0A)   // почти чёрный с теплотой
-    val InkMid          = Color(0xFF5C3D2E)   // тёплый коричнево-серый
-    val InkLight        = Color(0xFFA07B6A)   // средний тёплый серый
-    val InkFaint        = Color(0xFFD9C5BC)   // светлый тёплый серый
+    // Индиго — информация, премиум. Тёмно-синий.
+    val Indigo          = Color(0xFF3D4A75)
+    val IndigoSoft      = Color(0xFFC4CBDC)
+    val IndigoBg        = Color(0xFFEDF0F5)
+    val IndigoDark      = Color(0xFF2A3354)
 
-    // ── Фоны — кремово-тёплые ─────────────────────────────────
-    val Cream           = Color(0xFFFFFAF7)   // основной фон (не холодный белый)
-    val CreamMid        = Color(0xFFF5ECE6)   // поверхности, карточки
-    val CreamDeep       = Color(0xFFEEE2DA)   // бордюры, разделители
-
-    // ── Тёмный режим ──────────────────────────────────────────
-    val DarkBg          = Color(0xFF120C0A)   // очень тёмный тёплый чёрный
-    val DarkSurf        = Color(0xFF1E1512)   // тёмная поверхность
-    val DarkSurf2       = Color(0xFF2A1F1B)   // чуть светлее
-    val DarkSurf3       = Color(0xFF382A25)   // карточки
-    val DarkText        = Color(0xFFF7F0EC)   // тёплый белый для текста
+    // ── Тёмная тема ───────────────────────────────────────────
+    val DarkBg          = Color(0xFF14110E)   // тёплый чёрный
+    val DarkSurf        = Color(0xFF1F1B17)
+    val DarkSurfMuted   = Color(0xFF2A2520)
+    val DarkBorder      = Color(0xFF3D362F)
+    val DarkInk         = Color(0xFFF5F0E8)
+    val DarkInkMid      = Color(0xFFB8B0A4)
+    val DarkInkLight    = Color(0xFF8C8278)
 
     // ── Семантика ─────────────────────────────────────────────
-    val Success         = Jade
-    val Warning         = Amber
-    val Error           = Coral
-    val Info            = Sky
+    val Success         = Olive
+    val Warning         = Ochre
+    val Error           = Terracotta
+    val Info            = Indigo
 
-    // ── XP градиент ───────────────────────────────────────────
-    val XpGradientStart = Amber
-    val XpGradientEnd   = Coral
-
-    // ── Совместимость (старые имена, чтобы не сломать другие экраны) ──
-    val Terracotta      = Coral
-    val TerracottaLight = CoralLight
-    val TerracottaDark  = CoralDark
-    val Gold            = Amber
-    val GoldLight       = AmberLight
-    val GoldDark        = AmberDark
-    val Teal            = Jade
-    val TealLight       = JadeLight
-    val TealDark        = JadeDark
+    // ── Совместимость со старым кодом ─────────────────────────
+    val TerracottaLight = TerracottaSoft
+    val Gold            = Ochre
+    val GoldLight       = OchreSoft
+    val GoldDark        = OchreDark
+    val Teal            = Olive
+    val TealLight       = OliveSoft
+    val TealDark        = OliveDark
+    val Coral           = Terracotta
+    val CoralLight      = TerracottaSoft
+    val CoralDark       = TerracottaDark
+    val CoralSurface    = TerracottaBg
+    val Amber           = Ochre
+    val AmberLight      = OchreSoft
+    val AmberDark       = OchreDark
+    val AmberSurface    = OchreBg
+    val Jade            = Olive
+    val JadeLight       = OliveSoft
+    val JadeDark        = OliveDark
+    val JadeSurface     = OliveBg
+    val Violet          = Indigo
+    val VioletLight     = IndigoSoft
+    val VioletDark      = IndigoDark
+    val VioletSurface   = IndigoBg
+    val Sky             = Indigo
+    val SkySurface      = IndigoBg
     val InkMedium       = InkMid
-    val Surface         = Color(0xFFFFFFFF)
-    val CreamDark       = CreamMid
+    val Cream           = Paper
+    val CreamMid        = SurfaceMuted
+    val CreamDark       = SurfaceMuted
+    val CreamDeep       = Border
     val DarkBackground  = DarkBg
     val DarkSurface     = DarkSurf
-    val DarkSurface2    = DarkSurf2
-    val DarkInk         = DarkText
+    val DarkSurface2    = DarkSurfMuted
+    val DarkSurf2       = DarkSurfMuted
+    val DarkSurf3       = DarkBorder
+    val DarkText        = DarkInk
+    val XpGradientStart = Ochre
+    val XpGradientEnd   = Terracotta
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  TYPOGRAPHY  —  Крупная, жирная, дружелюбная
+//  TYPOGRAPHY  —  Сдержанная, читаемая, без перегиба
 // ═══════════════════════════════════════════════════════════════
 val AppTypography = Typography(
     displayLarge = TextStyle(
-        fontWeight    = FontWeight.Black,
-        fontSize      = 42.sp,
-        lineHeight    = 50.sp,
-        letterSpacing = (-1).sp
-    ),
-    displayMedium = TextStyle(
-        fontWeight    = FontWeight.ExtraBold,
-        fontSize      = 34.sp,
-        lineHeight    = 42.sp,
+        fontWeight    = FontWeight.Bold,
+        fontSize      = 32.sp,
+        lineHeight    = 40.sp,
         letterSpacing = (-0.5).sp
     ),
-    headlineLarge = TextStyle(
+    displayMedium = TextStyle(
         fontWeight    = FontWeight.Bold,
         fontSize      = 28.sp,
         lineHeight    = 36.sp,
-        letterSpacing = (-0.25).sp
+        letterSpacing = (-0.4).sp
+    ),
+    headlineLarge = TextStyle(
+        fontWeight    = FontWeight.SemiBold,
+        fontSize      = 24.sp,
+        lineHeight    = 32.sp,
+        letterSpacing = (-0.2).sp
     ),
     headlineMedium = TextStyle(
-        fontWeight    = FontWeight.Bold,
-        fontSize      = 24.sp,
-        lineHeight    = 32.sp
-    ),
-    headlineSmall = TextStyle(
-        fontWeight    = FontWeight.Bold,
+        fontWeight    = FontWeight.SemiBold,
         fontSize      = 20.sp,
         lineHeight    = 28.sp
     ),
-    titleLarge = TextStyle(
-        fontWeight    = FontWeight.ExtraBold,
+    headlineSmall = TextStyle(
+        fontWeight    = FontWeight.SemiBold,
         fontSize      = 18.sp,
         lineHeight    = 26.sp
     ),
+    titleLarge = TextStyle(
+        fontWeight    = FontWeight.SemiBold,
+        fontSize      = 17.sp,
+        lineHeight    = 24.sp
+    ),
     titleMedium = TextStyle(
-        fontWeight    = FontWeight.Bold,
-        fontSize      = 16.sp,
-        lineHeight    = 22.sp,
-        letterSpacing = 0.1.sp
+        fontWeight    = FontWeight.SemiBold,
+        fontSize      = 15.sp,
+        lineHeight    = 22.sp
     ),
     titleSmall = TextStyle(
-        fontWeight    = FontWeight.SemiBold,
+        fontWeight    = FontWeight.Medium,
         fontSize      = 14.sp,
         lineHeight    = 20.sp
     ),
     bodyLarge = TextStyle(
         fontWeight    = FontWeight.Normal,
         fontSize      = 16.sp,
-        lineHeight    = 25.sp
+        lineHeight    = 24.sp
     ),
     bodyMedium = TextStyle(
         fontWeight    = FontWeight.Normal,
         fontSize      = 14.sp,
-        lineHeight    = 22.sp
+        lineHeight    = 21.sp
     ),
     bodySmall = TextStyle(
         fontWeight    = FontWeight.Normal,
@@ -156,7 +174,7 @@ val AppTypography = Typography(
         lineHeight    = 18.sp
     ),
     labelLarge = TextStyle(
-        fontWeight    = FontWeight.SemiBold,
+        fontWeight    = FontWeight.Medium,
         fontSize      = 14.sp,
         lineHeight    = 20.sp,
         letterSpacing = 0.1.sp
@@ -165,94 +183,92 @@ val AppTypography = Typography(
         fontWeight    = FontWeight.Medium,
         fontSize      = 12.sp,
         lineHeight    = 16.sp,
-        letterSpacing = 0.3.sp
+        letterSpacing = 0.2.sp
     ),
     labelSmall = TextStyle(
         fontWeight    = FontWeight.Medium,
         fontSize      = 11.sp,
         lineHeight    = 15.sp,
-        letterSpacing = 0.4.sp
+        letterSpacing = 0.3.sp
     )
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  LIGHT COLOR SCHEME
+//  LIGHT
 // ═══════════════════════════════════════════════════════════════
 private val LightColors = lightColorScheme(
-    primary             = AppColors.Coral,
+    primary             = AppColors.Terracotta,
     onPrimary           = Color.White,
-    primaryContainer    = AppColors.CoralSurface,
-    onPrimaryContainer  = AppColors.CoralDark,
+    primaryContainer    = AppColors.TerracottaBg,
+    onPrimaryContainer  = AppColors.TerracottaDark,
 
-    secondary           = AppColors.Jade,
+    secondary           = AppColors.Olive,
     onSecondary         = Color.White,
-    secondaryContainer  = AppColors.JadeSurface,
-    onSecondaryContainer = AppColors.JadeDark,
+    secondaryContainer  = AppColors.OliveBg,
+    onSecondaryContainer = AppColors.OliveDark,
 
-    tertiary            = AppColors.Amber,
-    onTertiary          = AppColors.Ink,
-    tertiaryContainer   = AppColors.AmberSurface,
-    onTertiaryContainer = AppColors.AmberDark,
+    tertiary            = AppColors.Ochre,
+    onTertiary          = Color.White,
+    tertiaryContainer   = AppColors.OchreBg,
+    onTertiaryContainer = AppColors.OchreDark,
 
-    background          = AppColors.Cream,
+    background          = AppColors.Paper,
     onBackground        = AppColors.Ink,
 
-    surface             = Color.White,
+    surface             = AppColors.Surface,
     onSurface           = AppColors.Ink,
-    surfaceVariant      = AppColors.CreamMid,
+    surfaceVariant      = AppColors.SurfaceMuted,
     onSurfaceVariant    = AppColors.InkMid,
 
-    surfaceContainer        = AppColors.CreamMid,
-    surfaceContainerHigh    = AppColors.CreamDeep,
-    surfaceContainerHighest = AppColors.CreamDeep,
+    surfaceContainer        = AppColors.SurfaceMuted,
+    surfaceContainerHigh    = AppColors.Border,
+    surfaceContainerHighest = AppColors.Border,
 
-    error               = AppColors.Coral,
+    error               = AppColors.Terracotta,
     onError             = Color.White,
 
-    outline             = AppColors.InkFaint,
-    outlineVariant      = AppColors.CreamDeep
+    outline             = AppColors.Border,
+    outlineVariant      = AppColors.SurfaceMuted
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  DARK COLOR SCHEME
+//  DARK
 // ═══════════════════════════════════════════════════════════════
 private val DarkColors = darkColorScheme(
-    primary             = AppColors.CoralLight,
-    onPrimary           = AppColors.CoralDark,
-    primaryContainer    = AppColors.CoralDark,
-    onPrimaryContainer  = AppColors.CoralLight,
+    primary             = Color(0xFFE07A5F),
+    onPrimary           = AppColors.TerracottaDark,
+    primaryContainer    = AppColors.TerracottaDark,
+    onPrimaryContainer  = AppColors.TerracottaSoft,
 
-    secondary           = AppColors.JadeLight,
-    onSecondary         = AppColors.JadeDark,
-    secondaryContainer  = AppColors.JadeDark,
-    onSecondaryContainer = AppColors.JadeLight,
+    secondary           = AppColors.OliveSoft,
+    onSecondary         = AppColors.OliveDark,
+    secondaryContainer  = AppColors.OliveDark,
+    onSecondaryContainer = AppColors.OliveSoft,
 
-    tertiary            = AppColors.AmberLight,
-    onTertiary          = AppColors.AmberDark,
-    tertiaryContainer   = AppColors.AmberDark,
-    onTertiaryContainer = AppColors.AmberLight,
+    tertiary            = AppColors.OchreSoft,
+    onTertiary          = AppColors.OchreDark,
+    tertiaryContainer   = AppColors.OchreDark,
+    onTertiaryContainer = AppColors.OchreSoft,
 
     background          = AppColors.DarkBg,
-    onBackground        = AppColors.DarkText,
+    onBackground        = AppColors.DarkInk,
 
     surface             = AppColors.DarkSurf,
-    onSurface           = AppColors.DarkText,
-    surfaceVariant      = AppColors.DarkSurf2,
-    onSurfaceVariant    = AppColors.DarkText.copy(alpha = 0.7f),
+    onSurface           = AppColors.DarkInk,
+    surfaceVariant      = AppColors.DarkSurfMuted,
+    onSurfaceVariant    = AppColors.DarkInkMid,
 
-    surfaceContainer        = AppColors.DarkSurf2,
-    surfaceContainerHigh    = AppColors.DarkSurf3,
-    surfaceContainerHighest = AppColors.DarkSurf3,
+    surfaceContainer        = AppColors.DarkSurfMuted,
+    surfaceContainerHigh    = AppColors.DarkBorder,
+    surfaceContainerHighest = AppColors.DarkBorder,
 
-    error               = Color(0xFFFF8A80),
+    error               = Color(0xFFE07A5F),
     onError             = Color(0xFF690005),
 
-    outline             = Color.White.copy(alpha = 0.15f),
-    outlineVariant      = Color.White.copy(alpha = 0.08f)
+    outline             = AppColors.DarkBorder,
+    outlineVariant      = AppColors.DarkSurfMuted
 )
 
-// ═══════════════════════════════════════════════════════════════
-//  THEME
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishAppTheme(
@@ -265,9 +281,9 @@ fun SpanishAppTheme(
         shapes      = Shapes(
             extraSmall = RoundedCornerShape(8.dp),
             small      = RoundedCornerShape(12.dp),
-            medium     = RoundedCornerShape(18.dp),
-            large      = RoundedCornerShape(24.dp),
-            extraLarge = RoundedCornerShape(32.dp)
+            medium     = RoundedCornerShape(16.dp),
+            large      = RoundedCornerShape(20.dp),
+            extraLarge = RoundedCornerShape(28.dp)
         ),
         content = content
     )

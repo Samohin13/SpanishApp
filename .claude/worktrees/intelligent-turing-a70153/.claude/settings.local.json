@@ -28,7 +28,9 @@
       "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\java\\\\com\\\\spanishapp\\\\data\\\\prefs\")",
       "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\java\\\\com\\\\spanishapp\\\\ui\\\\pronunciation\")",
       "Bash(find /c/Users/bravo/AndroidStudioProjects/SpanishApp2/app/src/main/java/com/spanishapp -name \"*.kt\" -exec wc -l {} +)",
-      "Bash(dir /s /b \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\java\\\\com\\\\spanishapp\\\\ui\\\\*.kt\")"
+      "Bash(dir /s /b \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\java\\\\com\\\\spanishapp\\\\ui\\\\*.kt\")",
+      "WebFetch(domain:espato.ru)",
+      "WebSearch"
     ]
   }
 }
