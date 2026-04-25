@@ -310,7 +310,7 @@ private fun LearningModes(
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             FeatureCard(
                 title       = "Спряжения",
-                subtitle    = "58 глаголов · 6 времён",
+                subtitle    = "160 глаголов · 6 времён",
                 icon        = "📝",
                 onClick     = { navController.navigate("conjugation") },
                 accentColor = AppColors.Teal,
