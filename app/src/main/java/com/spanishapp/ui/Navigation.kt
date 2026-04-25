@@ -34,6 +34,7 @@ import com.spanishapp.ui.games.GamesScreen
 import com.spanishapp.ui.games.ArticlesGameScreen
 import com.spanishapp.ui.games.SpeedGameScreen
 import com.spanishapp.ui.games.AnagramGameScreen
+import com.spanishapp.ui.games.VerbFormGameScreen
 import com.spanishapp.ui.dialogues.DialoguesScreen
 import com.spanishapp.ui.onboarding.OnboardingScreen
 
@@ -129,9 +130,10 @@ object Navigation {
 
             // ── Игры ──────────────────────────────────────────
             composable("games")         { GamesScreen(navController) }
-            composable("game_articles") { ArticlesGameScreen(navController) }
-            composable("game_speed")    { SpeedGameScreen(navController) }
-            composable("game_anagram")  { AnagramGameScreen(navController) }
+            composable("game_articles")   { ArticlesGameScreen(navController) }
+            composable("game_speed")      { SpeedGameScreen(navController) }
+            composable("game_anagram")    { AnagramGameScreen(navController) }
+            composable("game_verb_form")  { VerbFormGameScreen(navController) }
 
             // ── Профиль / Достижения / Настройки ─────────────
             composable("profile")      { ProfileScreen(navController) }

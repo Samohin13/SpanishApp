@@ -135,6 +135,9 @@ interface ConjugationDao {
     @Query("SELECT * FROM conjugations WHERE is_irregular = 1 ORDER BY RANDOM() LIMIT :limit")
     fun getIrregular(limit: Int = 20): Flow<List<ConjugationEntity>>
 
+    @Query("SELECT * FROM conjugations")
+    suspend fun getAll(): List<ConjugationEntity>
+
     @Query("SELECT COUNT(*) FROM conjugations")
     suspend fun getCount(): Int
 }

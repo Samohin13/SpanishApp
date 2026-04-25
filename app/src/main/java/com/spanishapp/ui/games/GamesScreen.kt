@@ -69,6 +69,14 @@ private val games = listOf(
         description = "Ситуационные диалоги\nВ кафе, аэропорту, магазине…",
         color       = androidx.compose.ui.graphics.Color(0xFF7C5CBF),
         isReady     = true
+    ),
+    GameCard(
+        route       = "game_verb_form",
+        emoji       = "🔧",
+        title       = "Правильная форма",
+        description = "Вставь глагол в нужном\nвремени и лице",
+        color       = androidx.compose.ui.graphics.Color(0xFF2E7D32),
+        isReady     = true
     )
 )
 
