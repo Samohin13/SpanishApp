@@ -21,26 +21,28 @@ class AiChatRepository @Inject constructor(
 ) {
 
     companion object {
-        private const val API_URL = "https://api.anthropic.com/v1/messages"
-        private const val MODEL   = "claude-sonnet-4-20250514"
+        // Gemini 1.5 Flash — бесплатно: 15 RPM, 1500 RPD
+        private const val MODEL = "gemini-1.5-flash"
+        private fun apiUrl() =
+            "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
+            "?key=${BuildConfig.GEMINI_API_KEY}"
 
-        // System prompt: AI is a Spanish tutor
         private val SYSTEM_PROMPT = """
             Eres un tutor de español amigable y paciente para hablantes de ruso.
-            
+
             REGLAS:
             1. Responde SIEMPRE en español, pero incluye traducción al ruso entre [corchetes] para palabras difíciles.
             2. Si el usuario escribe en ruso, responde primero en español y luego explica en ruso.
-            3. Corrige los errores gramaticales del usuario de forma AMABLE: 
+            3. Corrige los errores gramaticales del usuario de forma AMABLE:
                - Primero valida lo que dijo bien.
                - Luego muestra la versión corregida con ✏️
                - Explica brevemente el error en ruso.
             4. Adapta el nivel: si el usuario parece principiante (A1/A2), usa frases simples.
             5. Haz preguntas para mantener la conversación activa.
             6. Al final de cada respuesta, incluye una "Palabra del día" relevante al tema.
-            
+
             FORMATO DE CORRECCIÓN (JSON al final del mensaje si hay errores):
-            CORRECTIONS_JSON:[{"original":"texto con error","corrected":"texto correcto","explanation":"explicación en ruso"}]
+            CORRECTIONS_JSON:[{"original":"texto con error","corrected":"texto correcto","explanation":"объяснение на русском"}]
         """.trimIndent()
     }
 
@@ -59,39 +61,37 @@ class AiChatRepository @Inject constructor(
                 ChatMessageEntity(role = "user", content = userText, sessionId = sessionId)
             )
 
-            // Build conversation history for API
+            // Build conversation history
             val history = chatMessageDao.getSessionOnce(sessionId)
-                .takeLast(20)  // last 20 messages for context window
-                .map { buildMessageJson(it) }
+                .takeLast(20)
 
-            val body = buildRequestBody(history)
+            val body = buildGeminiRequest(history)
 
             val request = Request.Builder()
-                .url(API_URL)
+                .url(apiUrl())
                 .post(body)
-                .header("x-api-key", BuildConfig.ANTHROPIC_API_KEY)
-                .header("anthropic-version", "2023-06-01")
-                .header("content-type", "application/json")
+                .header("Content-Type", "application/json")
                 .build()
 
             val response = okHttpClient.newCall(request).execute()
 
             if (!response.isSuccessful) {
-                return@withContext Result.failure(Exception("API error: ${response.code}"))
+                val errBody = response.body?.string() ?: ""
+                return@withContext Result.failure(Exception("Gemini error ${response.code}: $errBody"))
             }
 
-            val responseJson = Json.parseToJsonElement(response.body!!.string()).jsonObject
-            val assistantText = responseJson["content"]!!
+            val json = Json.parseToJsonElement(response.body!!.string()).jsonObject
+            val assistantText = json["candidates"]!!
+                .jsonArray[0]
+                .jsonObject["content"]!!
+                .jsonObject["parts"]!!
                 .jsonArray[0]
                 .jsonObject["text"]!!
                 .jsonPrimitive.content
 
-            // Extract corrections JSON if present
             val correctionJson = extractCorrections(assistantText)
-            val cleanText = assistantText
-                .substringBefore("CORRECTIONS_JSON:").trim()
+            val cleanText = assistantText.substringBefore("CORRECTIONS_JSON:").trim()
 
-            // Save assistant response
             chatMessageDao.insert(
                 ChatMessageEntity(
                     role           = "assistant",
@@ -107,7 +107,7 @@ class AiChatRepository @Inject constructor(
         }
     }
 
-    // ── Grammar check only (no conversation saved) ───────────
+    // ── Grammar check only ────────────────────────────────────
     suspend fun checkGrammar(spanishText: String): Result<GrammarCheckResult> =
         withContext(Dispatchers.IO) {
             try {
@@ -122,68 +122,79 @@ class AiChatRepository @Inject constructor(
                       ],
                       "overallFeedbackRu": "общий отзыв на русском"
                     }
-                    
+
                     Texto a analizar: "$spanishText"
                 """.trimIndent()
 
-                val msgList = listOf(
-                    buildJsonObject {
-                        put("role", "user")
-                        put("content", prompt)
-                    }
-                )
-
-                val body = buildRequestBody(msgList, maxTokens = 500)
+                val fakeMsg = ChatMessageEntity(role = "user", content = prompt)
+                val body = buildGeminiRequest(listOf(fakeMsg), withSystem = false)
 
                 val request = Request.Builder()
-                    .url(API_URL)
+                    .url(apiUrl())
                     .post(body)
-                    .header("x-api-key", BuildConfig.ANTHROPIC_API_KEY)
-                    .header("anthropic-version", "2023-06-01")
-                    .header("content-type", "application/json")
+                    .header("Content-Type", "application/json")
                     .build()
 
                 val response = okHttpClient.newCall(request).execute()
-                val responseText = Json.parseToJsonElement(response.body!!.string())
+                val raw = Json.parseToJsonElement(response.body!!.string())
+                    .jsonObject["candidates"]!!
+                    .jsonArray[0]
                     .jsonObject["content"]!!
+                    .jsonObject["parts"]!!
                     .jsonArray[0]
                     .jsonObject["text"]!!
                     .jsonPrimitive.content
 
-                val result = Json.decodeFromString<GrammarCheckResult>(responseText)
+                // Strip possible markdown code block
+                val jsonText = raw
+                    .removePrefix("```json").removePrefix("```")
+                    .removeSuffix("```").trim()
+
+                val result = Json { ignoreUnknownKeys = true }
+                    .decodeFromString<GrammarCheckResult>(jsonText)
                 Result.success(result)
             } catch (e: Exception) {
                 Result.failure(e)
             }
         }
 
-    // ── New conversation session ──────────────────────────────
+    // ── Clear session ─────────────────────────────────────────
     suspend fun clearSession(sessionId: String) {
         chatMessageDao.clearSession(sessionId)
     }
 
-    // ── Helpers ───────────────────────────────────────────────
-    private fun buildRequestBody(
-        messages: List<JsonObject>,
-        maxTokens: Int = 1000
+    // ── Build Gemini REST body ────────────────────────────────
+    private fun buildGeminiRequest(
+        messages: List<ChatMessageEntity>,
+        withSystem: Boolean = true
     ): RequestBody {
         val json = buildJsonObject {
-            put("model", MODEL)
-            put("max_tokens", maxTokens)
-            put("system", SYSTEM_PROMPT)
-            putJsonArray("messages") {
-                messages.forEach { add(it) }
+            // System instruction (Gemini 1.5 supports it)
+            if (withSystem) {
+                putJsonObject("system_instruction") {
+                    putJsonObject("parts") {
+                        put("text", SYSTEM_PROMPT)
+                    }
+                }
             }
-        }.toString()
-
-        return json.toRequestBody("application/json".toMediaType())
-    }
-
-    private fun buildMessageJson(entity: ChatMessageEntity): JsonObject =
-        buildJsonObject {
-            put("role", entity.role)
-            put("content", entity.content)
+            putJsonArray("contents") {
+                messages.forEach { msg ->
+                    addJsonObject {
+                        // Gemini uses "user" / "model" roles
+                        put("role", if (msg.role == "assistant") "model" else "user")
+                        putJsonArray("parts") {
+                            addJsonObject { put("text", msg.content) }
+                        }
+                    }
+                }
+            }
+            putJsonObject("generationConfig") {
+                put("maxOutputTokens", 1000)
+                put("temperature", 0.7)
+            }
         }
+        return json.toString().toRequestBody("application/json".toMediaType())
+    }
 
     private fun extractCorrections(text: String): String {
         val marker = "CORRECTIONS_JSON:"
@@ -192,8 +203,6 @@ class AiChatRepository @Inject constructor(
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-// Grammar check result model
 // ─────────────────────────────────────────────────────────────
 @Serializable
 data class GrammarCheckResult(
