@@ -28,9 +28,23 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// ── Уровни скорости ───────────────────────────────────────────
+
+enum class SpeedLevel(
+    val label: String,
+    val emoji: String,
+    val description: String,
+    val timeLimitMs: Long
+) {
+    SLOW(   "Медленно", "🐢", "12 секунд на ответ", 12_000L),
+    NORMAL( "Нормально","⚡", "6 секунд на ответ",   6_000L),
+    FAST(   "Быстро",   "🔥", "3 секунды на ответ",  3_000L)
+}
+
 // ── State & ViewModel ─────────────────────────────────────────
 
 data class SpeedState(
+    val speedLevel: SpeedLevel? = null,      // null = ещё не выбрано
     val word: WordEntity? = null,
     val options: List<String> = emptyList(),
     val correctIndex: Int = 0,
@@ -39,7 +53,7 @@ data class SpeedState(
     val score: Int = 0,
     val streak: Int = 0,
     val totalAnswered: Int = 0,
-    val timeLeft: Float = 1f,         // 0.0 → 1.0 (полная шкала = 5 сек)
+    val timeLeft: Float = 1f,
     val isFinished: Boolean = false,
     val isLoading: Boolean = true,
     val totalQuestions: Int = 15
@@ -58,8 +72,7 @@ class SpeedGameViewModel @Inject constructor(
     private var timerJob: Job? = null
 
     companion object {
-        const val QUESTION_TIME_MS = 5_000L   // 5 секунд на ответ
-        const val TICK_MS          = 50L
+        const val TICK_MS = 50L
     }
 
     init { loadPool() }
@@ -70,6 +83,12 @@ class SpeedGameViewModel @Inject constructor(
             .shuffled()
             .take(15)
         poolIndex = 0
+        // Ждём выбора уровня скорости — не показываем вопрос
+        _state.value = _state.value.copy(isLoading = false)
+    }
+
+    fun selectSpeed(level: SpeedLevel) {
+        _state.value = _state.value.copy(speedLevel = level)
         showNext()
     }
 
@@ -101,23 +120,21 @@ class SpeedGameViewModel @Inject constructor(
     }
 
     private fun startTimer() {
+        val timeLimitMs = _state.value.speedLevel?.timeLimitMs ?: SpeedLevel.NORMAL.timeLimitMs
         timerJob = viewModelScope.launch {
-            val steps = QUESTION_TIME_MS / TICK_MS
+            val steps = timeLimitMs / TICK_MS
             for (i in steps downTo 0) {
                 _state.value = _state.value.copy(timeLeft = i / steps.toFloat())
                 delay(TICK_MS)
             }
-            // Время вышло — засчитываем как неверный
-            if (_state.value.selectedIndex == null) {
-                timeUp()
-            }
+            if (_state.value.selectedIndex == null) timeUp()
         }
     }
 
     private fun timeUp() = viewModelScope.launch {
         val s = _state.value
         _state.value = s.copy(
-            selectedIndex = -1,   // -1 = таймаут
+            selectedIndex = -1,
             isCorrect = false,
             streak = 0,
             totalAnswered = s.totalAnswered + 1
@@ -133,7 +150,11 @@ class SpeedGameViewModel @Inject constructor(
         timerJob?.cancel()
 
         val correct = index == s.correctIndex
-        val bonus = if (s.timeLeft > 0.6f) 15 else if (s.timeLeft > 0.3f) 10 else 5
+        val bonus = when {
+            s.timeLeft > 0.66f -> 15
+            s.timeLeft > 0.33f -> 10
+            else               -> 5
+        }
 
         _state.value = s.copy(
             selectedIndex = index,
@@ -181,7 +202,7 @@ fun SpeedGameScreen(
                     }
                 },
                 actions = {
-                    if (!state.isFinished) {
+                    if (!state.isFinished && state.speedLevel != null) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -207,9 +228,94 @@ fun SpeedGameScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                state.isLoading  -> CircularProgressIndicator(color = AppColors.Terracotta)
-                state.isFinished -> SpeedResult(state, vm::restart) { navController.popBackStack() }
+                state.isLoading   -> CircularProgressIndicator(color = AppColors.Terracotta)
+                state.isFinished  -> SpeedResult(state, vm::restart) { navController.popBackStack() }
+                // Экран выбора скорости — пока не выбран уровень
+                state.speedLevel == null -> SpeedLevelSelector(vm::selectSpeed)
                 state.word != null -> SpeedQuestion(state, vm::select)
+            }
+        }
+    }
+}
+
+// ── Выбор уровня скорости ─────────────────────────────────────
+
+@Composable
+private fun SpeedLevelSelector(onSelect: (SpeedLevel) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("⚡", fontSize = 64.sp)
+        Spacer(Modifier.height(16.dp))
+        Text(
+            "Выбери скорость",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            "Чем быстрее — тем больше очков за правильный ответ",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
+        )
+
+        SpeedLevel.entries.forEach { level ->
+            val color = when (level) {
+                SpeedLevel.SLOW   -> AppColors.Teal
+                SpeedLevel.NORMAL -> AppColors.Gold
+                SpeedLevel.FAST   -> AppColors.Terracotta
+            }
+            Surface(
+                onClick = { onSelect(level) },
+                shape = RoundedCornerShape(18.dp),
+                color = color.copy(alpha = 0.1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(level.emoji, fontSize = 32.sp)
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            level.label,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = color
+                        )
+                        Text(
+                            level.description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    // Бонус за скорость
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = color.copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            when (level) {
+                                SpeedLevel.SLOW   -> "+5–15"
+                                SpeedLevel.NORMAL -> "+5–15"
+                                SpeedLevel.FAST   -> "+5–15"
+                            },
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = color
+                        )
+                    }
+                }
             }
         }
     }
@@ -220,14 +326,15 @@ fun SpeedGameScreen(
 @Composable
 private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
     val word = state.word ?: return
+    val emoji = categoryEmoji(word.category)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Прогресс-бар сессии
+        // Прогресс сессии
         LinearProgressIndicator(
             progress  = { state.totalAnswered / state.totalQuestions.toFloat() },
             modifier  = Modifier.fillMaxWidth().height(5.dp),
@@ -238,9 +345,9 @@ private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
         // Таймер-бар (меняет цвет)
         val timerColor by animateColorAsState(
             targetValue = when {
-                state.timeLeft > 0.5f -> AppColors.Teal
+                state.timeLeft > 0.5f  -> AppColors.Teal
                 state.timeLeft > 0.25f -> AppColors.Gold
-                else -> MaterialTheme.colorScheme.error
+                else                   -> MaterialTheme.colorScheme.error
             },
             label = "timer_color"
         )
@@ -251,9 +358,9 @@ private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
             trackColor = timerColor.copy(alpha = 0.15f)
         )
 
-        Spacer(Modifier.weight(0.3f))
+        Spacer(Modifier.weight(0.2f))
 
-        // Слово
+        // Карточка слова с эмодзи
         AnimatedContent(targetState = word.spanish, label = "speed_word") { spanish ->
             Surface(
                 shape = RoundedCornerShape(24.dp),
@@ -261,15 +368,17 @@ private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(28.dp),
+                    modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Text(emoji, fontSize = 48.sp)
+                    Spacer(Modifier.height(8.dp))
                     Text(
                         "Переведи:",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(4.dp))
                     Text(
                         spanish,
                         style = MaterialTheme.typography.displaySmall,
@@ -280,7 +389,7 @@ private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
             }
         }
 
-        Spacer(Modifier.weight(0.3f))
+        Spacer(Modifier.weight(0.2f))
 
         // Варианты ответов
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -323,25 +432,16 @@ private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
             }
         }
 
-        Spacer(Modifier.weight(0.2f))
+        Spacer(Modifier.weight(0.1f))
     }
 }
 
 // ── Результат ─────────────────────────────────────────────────
 
 @Composable
-private fun SpeedResult(
-    state: SpeedState,
-    onRetry: () -> Unit,
-    onBack: () -> Unit
-) {
-    val total   = state.totalAnswered
-    val correct = state.score.let {
-        // Оценка: score / average_bonus (≈10)
-        // Показываем количество правильных из totalAnswered
-        state.totalAnswered - (if (state.streak == 0 && state.score == 0) total else 0)
-    }
-    val pct = if (total > 0) state.score * 100 / (total * 15) else 0
+private fun SpeedResult(state: SpeedState, onRetry: () -> Unit, onBack: () -> Unit) {
+    val total = state.totalAnswered
+    val pct   = if (total > 0) state.score * 100 / (total * 15) else 0
 
     val emoji   = when { pct >= 80 -> "🏆"; pct >= 60 -> "🎉"; pct >= 40 -> "👍"; else -> "💪" }
     val message = when { pct >= 80 -> "Молниеносно!"; pct >= 60 -> "Отлично!"; pct >= 40 -> "Неплохо!"; else -> "Тренируйся ещё!" }
@@ -353,38 +453,26 @@ private fun SpeedResult(
     ) {
         Text(emoji, fontSize = 72.sp)
         Spacer(Modifier.height(16.dp))
-        Text(
-            "$total вопросов",
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            message,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
+        Text("$total вопросов", style = MaterialTheme.typography.displayMedium,
+             fontWeight = FontWeight.Bold)
+        Text(message, style = MaterialTheme.typography.titleMedium,
+             color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         Spacer(Modifier.height(12.dp))
         Surface(shape = RoundedCornerShape(12.dp), color = AppColors.Gold.copy(alpha = 0.15f)) {
-            Text(
-                "⭐ ${state.score} очков",
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = AppColors.GoldDark
-            )
+            Text("⭐ ${state.score} очков",
+                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                 color = AppColors.GoldDark)
         }
         Spacer(Modifier.height(32.dp))
-        Button(
-            onClick = onRetry,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
-            shape = RoundedCornerShape(14.dp)
-        ) { Text("Ещё раз", style = MaterialTheme.typography.titleMedium) }
+        Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(52.dp),
+               shape = RoundedCornerShape(14.dp)) {
+            Text("Ещё раз", style = MaterialTheme.typography.titleMedium)
+        }
         Spacer(Modifier.height(10.dp))
-        OutlinedButton(
-            onClick = onBack,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
-            shape = RoundedCornerShape(14.dp)
-        ) { Text("К играм") }
+        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp),
+                       shape = RoundedCornerShape(14.dp)) {
+            Text("К играм")
+        }
     }
 }

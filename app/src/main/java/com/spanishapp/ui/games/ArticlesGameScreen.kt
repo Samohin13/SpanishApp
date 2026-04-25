@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,18 +29,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// ── Определение артикля по окончанию слова ────────────────────
+// ── Helpers ───────────────────────────────────────────────────
 
-/** Возвращает "el" или "la" на основе окончания испанского слова.
- *  Null — слово не подходит для игры (неопределяемый род). */
+/** Убирает артикль из начала испанского слова, если он есть */
+fun stripArticle(spanish: String): String {
+    val prefixes = listOf("el ", "la ", "un ", "una ", "los ", "las ", "unos ", "unas ")
+    val s = spanish.trim()
+    return prefixes.firstOrNull { s.startsWith(it, ignoreCase = true) }
+        ?.let { s.substring(it.length) } ?: s
+}
+
+/** Возвращает "el" или "la" на основе окончания испанского слова (без артикля).
+ *  Null — слово не подходит для игры. */
 fun guessArticle(spanish: String): String? {
-    val w = spanish.lowercase().trim()
+    val w = stripArticle(spanish).lowercase().trim()
     return when {
-        // Явные исключения — мужской
-        w in listOf("el día", "el mapa", "el idioma", "el problema", "el tema",
-                    "día", "mapa", "idioma", "problema", "tema", "sistema",
+        w in listOf("día", "mapa", "idioma", "problema", "tema", "sistema",
                     "programa", "clima", "drama", "planeta", "poema") -> "el"
-        // Женский по окончанию
         w.endsWith("ión")  -> "la"
         w.endsWith("ción") -> "la"
         w.endsWith("sión") -> "la"
@@ -50,7 +54,6 @@ fun guessArticle(spanish: String): String? {
         w.endsWith("tud")  -> "la"
         w.endsWith("umbre")-> "la"
         w.endsWith("a") && !w.endsWith("ma") && !w.endsWith("pa") -> "la"
-        // Мужской по окончанию
         w.endsWith("o")    -> "el"
         w.endsWith("or")   -> "el"
         w.endsWith("és")   -> "el"
@@ -59,21 +62,51 @@ fun guessArticle(spanish: String): String? {
         w.endsWith("aje")  -> "el"
         w.endsWith("al")   -> "el"
         w.endsWith("ar")   -> "el"
-        w.endsWith("és")   -> "el"
-        else -> null   // пропускаем — неопределённый род
+        else -> null
     }
+}
+
+/** Эмодзи-иконка по категории слова */
+fun categoryEmoji(category: String): String = when (category.lowercase()) {
+    "animales"    -> "🐾"
+    "comida"      -> "🍽️"
+    "familia"     -> "👨‍👩‍👧"
+    "ropa"        -> "👗"
+    "casa"        -> "🏠"
+    "transporte"  -> "🚗"
+    "naturaleza"  -> "🌿"
+    "ciudad"      -> "🏙️"
+    "salud"       -> "❤️"
+    "trabajo"     -> "💼"
+    "deporte"     -> "⚽"
+    "tecnologia"  -> "💻"
+    "redes_sociales" -> "📱"
+    "emociones"   -> "😊"
+    "educacion"   -> "📚"
+    "tiempo"      -> "⏰"
+    "cuerpo"      -> "🧍"
+    "colores"     -> "🎨"
+    "numeros"     -> "🔢"
+    "animales_domesticos" -> "🐶"
+    "profesiones" -> "🧑‍💼"
+    "viajes"      -> "✈️"
+    "entretenimiento" -> "🎬"
+    "finanzas"    -> "💰"
+    "compras"     -> "🛒"
+    "comunicacion"-> "💬"
+    else          -> "📖"
 }
 
 // ── State & ViewModel ─────────────────────────────────────────
 
 data class ArticlesState(
     val word: WordEntity? = null,
-    val correctArticle: String = "",           // "el" или "la"
-    val selectedArticle: String? = null,       // что нажал пользователь
+    val correctArticle: String = "",
+    val selectedArticle: String? = null,
     val score: Int = 0,
     val streak: Int = 0,
     val totalAnswered: Int = 0,
-    val isCorrect: Boolean? = null,            // результат последнего ответа
+    val isCorrect: Boolean? = null,
     val isFinished: Boolean = false,
     val isLoading: Boolean = true
 )
@@ -86,7 +119,6 @@ class ArticlesGameViewModel @Inject constructor(
     private val _state = MutableStateFlow(ArticlesState())
     val state: StateFlow<ArticlesState> = _state.asStateFlow()
 
-    // Пул слов для игры — только существительные с определяемым артиклем
     private var pool: List<Pair<WordEntity, String>> = emptyList()
     private var poolIndex = 0
 
@@ -101,10 +133,9 @@ class ArticlesGameViewModel @Inject constructor(
                 if (article != null) word to article else null
             }
             .shuffled()
-            .take(20)          // сессия = 20 слов
+            .take(20)
 
         if (pool.isEmpty()) {
-            // fallback — берём любые слова, пробуем определить
             pool = words.mapNotNull { word ->
                 val article = guessArticle(word.spanish)
                 if (article != null) word to article else null
@@ -133,7 +164,6 @@ class ArticlesGameViewModel @Inject constructor(
     fun select(article: String) = viewModelScope.launch {
         val s = _state.value
         if (s.selectedArticle != null || s.word == null) return@launch
-
         val correct = article == s.correctArticle
         _state.value = s.copy(
             selectedArticle = article,
@@ -142,7 +172,7 @@ class ArticlesGameViewModel @Inject constructor(
             streak = if (correct) s.streak + 1 else 0,
             totalAnswered = s.totalAnswered + 1
         )
-        delay(900)    // показать результат
+        delay(900)
         poolIndex++
         showNext()
     }
@@ -175,7 +205,6 @@ fun ArticlesGameScreen(
                     }
                 },
                 actions = {
-                    // Счёт и стрик
                     if (!state.isFinished) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -215,6 +244,8 @@ fun ArticlesGameScreen(
 @Composable
 private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
     val word = state.word ?: return
+    val cleanWord = stripArticle(word.spanish)   // убираем артикль из отображения
+    val emoji = categoryEmoji(word.category)
 
     Column(
         modifier = Modifier
@@ -237,7 +268,7 @@ private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Spacer(Modifier.weight(0.4f))
+        Spacer(Modifier.weight(0.2f))
 
         // Инструкция
         Text(
@@ -246,24 +277,29 @@ private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // Слово
-        AnimatedContent(targetState = word.spanish, label = "word") { spanish ->
+        // Карточка слова с эмодзи-визуалом
+        AnimatedContent(targetState = cleanWord, label = "word") { w ->
             Surface(
                 shape = RoundedCornerShape(24.dp),
                 color = AppColors.Teal.copy(alpha = 0.08f),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(32.dp),
+                    modifier = Modifier.padding(28.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    // Большой эмодзи как визуальный образ
+                    Text(emoji, fontSize = 56.sp)
+                    Spacer(Modifier.height(12.dp))
+
+                    // Слово БЕЗ артикля — пользователь должен угадать
                     Text(
-                        "__ $spanish",
+                        "__ $w",
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(6.dp))
                     Text(
                         word.russian,
                         style = MaterialTheme.typography.bodyMedium,
@@ -274,7 +310,7 @@ private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
             }
         }
 
-        Spacer(Modifier.weight(0.4f))
+        Spacer(Modifier.weight(0.3f))
 
         // Кнопки артиклей — 2×2 сетка
         val articles = listOf("el", "la", "un", "una")
@@ -362,16 +398,11 @@ private fun ArticlesResult(
     val pct     = if (total > 0) correct * 100 / total else 0
 
     val emoji = when {
-        pct >= 90 -> "🏆"
-        pct >= 70 -> "🎉"
-        pct >= 50 -> "👍"
-        else      -> "💪"
+        pct >= 90 -> "🏆"; pct >= 70 -> "🎉"; pct >= 50 -> "👍"; else -> "💪"
     }
     val message = when {
-        pct >= 90 -> "Артикли освоены!"
-        pct >= 70 -> "Отличный результат!"
-        pct >= 50 -> "Неплохо, продолжай!"
-        else      -> "Ещё раз — и станет лучше!"
+        pct >= 90 -> "Артикли освоены!"; pct >= 70 -> "Отличный результат!"
+        pct >= 50 -> "Неплохо, продолжай!"; else -> "Ещё раз — и станет лучше!"
     }
 
     Column(
@@ -381,47 +412,29 @@ private fun ArticlesResult(
     ) {
         Text(emoji, fontSize = 72.sp)
         Spacer(Modifier.height(16.dp))
-        Text(
-            "$correct / $total",
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            "правильных ответов",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Text("$correct / $total", style = MaterialTheme.typography.displayMedium,
+             fontWeight = FontWeight.Bold)
+        Text("правильных ответов", style = MaterialTheme.typography.bodyMedium,
+             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(8.dp))
-        Text(
-            message,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
+        Text(message, style = MaterialTheme.typography.titleMedium,
+             color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         Spacer(Modifier.height(8.dp))
-        Surface(
-            shape = RoundedCornerShape(12.dp),
-            color = AppColors.Gold.copy(alpha = 0.15f)
-        ) {
-            Text(
-                "⭐ ${state.score} очков",
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = AppColors.GoldDark
-            )
+        Surface(shape = RoundedCornerShape(12.dp), color = AppColors.Gold.copy(alpha = 0.15f)) {
+            Text("⭐ ${state.score} очков",
+                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                 color = AppColors.GoldDark)
         }
         Spacer(Modifier.height(32.dp))
-        Button(
-            onClick  = onRetry,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
-            shape    = RoundedCornerShape(14.dp)
-        ) { Text("Ещё раз", style = MaterialTheme.typography.titleMedium) }
+        Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(52.dp),
+               shape = RoundedCornerShape(14.dp)) {
+            Text("Ещё раз", style = MaterialTheme.typography.titleMedium)
+        }
         Spacer(Modifier.height(10.dp))
-        OutlinedButton(
-            onClick  = onBack,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
-            shape    = RoundedCornerShape(14.dp)
-        ) { Text("К играм") }
+        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp),
+                       shape = RoundedCornerShape(14.dp)) {
+            Text("К играм")
+        }
     }
 }

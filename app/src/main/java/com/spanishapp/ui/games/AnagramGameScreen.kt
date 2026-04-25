@@ -2,8 +2,6 @@ package com.spanishapp.ui.games
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -33,13 +31,14 @@ import javax.inject.Inject
 
 data class AnagramState(
     val word: WordEntity? = null,
-    val shuffledLetters: List<Char> = emptyList(),   // все буквы для выбора
-    val usedIndices: List<Int> = emptyList(),          // какие индексы нажаты
-    val inputLetters: List<Char> = emptyList(),        // собранное слово
-    val isCorrect: Boolean? = null,                    // null=ещё не проверено
+    val shuffledLetters: List<Char> = emptyList(),
+    val usedIndices: List<Int> = emptyList(),
+    val inputLetters: List<Char> = emptyList(),
+    val isCorrect: Boolean? = null,
     val score: Int = 0,
     val totalAnswered: Int = 0,
-    val hint: Boolean = false,                         // показать подсказку (translation)
+    val hint: Boolean = false,          // показать перевод
+    val showExample: Boolean = false,   // показать пример-подсказку
     val isFinished: Boolean = false,
     val isLoading: Boolean = true
 ) {
@@ -64,8 +63,8 @@ class AnagramGameViewModel @Inject constructor(
         pool = wordDao.getRandomWords(300)
             .filter { w ->
                 val s = w.spanish.trim()
-                s.length in 3..9           // слова 3–9 букв, удобно для игры
-                    && !s.contains(' ')    // без пробелов
+                s.length in 3..9
+                    && !s.contains(' ')
                     && s.all { it.isLetter() || it == 'ñ' || it == 'ü' }
             }
             .shuffled()
@@ -81,7 +80,6 @@ class AnagramGameViewModel @Inject constructor(
         }
         val word = pool[poolIndex]
         val letters = word.spanish.lowercase().toMutableList()
-        // Перемешиваем, гарантируем что не совпадает с оригиналом
         var shuffled = letters.shuffled()
         var attempts = 0
         while (shuffled.joinToString("") == word.spanish.lowercase() && attempts < 10) {
@@ -90,13 +88,14 @@ class AnagramGameViewModel @Inject constructor(
         }
 
         _state.value = _state.value.copy(
-            word           = word,
+            word            = word,
             shuffledLetters = shuffled,
-            usedIndices    = emptyList(),
-            inputLetters   = emptyList(),
-            isCorrect      = null,
-            hint           = false,
-            isLoading      = false
+            usedIndices     = emptyList(),
+            inputLetters    = emptyList(),
+            isCorrect       = null,
+            hint            = false,
+            showExample     = false,
+            isLoading       = false
         )
     }
 
@@ -108,16 +107,12 @@ class AnagramGameViewModel @Inject constructor(
         val newUsed  = s.usedIndices + index
         val newInput = s.inputLetters + letter
         _state.value = s.copy(usedIndices = newUsed, inputLetters = newInput)
-        // Автопроверка когда набрали все буквы
-        if (newInput.size == s.shuffledLetters.size) {
-            checkAnswer()
-        }
+        if (newInput.size == s.shuffledLetters.size) checkAnswer()
     }
 
     fun removeLast() {
         val s = _state.value
         if (s.isCorrect != null || s.usedIndices.isEmpty()) return
-        val lastUsed = s.usedIndices.last()
         _state.value = s.copy(
             usedIndices  = s.usedIndices.dropLast(1),
             inputLetters = s.inputLetters.dropLast(1)
@@ -137,9 +132,8 @@ class AnagramGameViewModel @Inject constructor(
         showNext()
     }
 
-    fun showHint() {
-        _state.value = _state.value.copy(hint = true)
-    }
+    fun showHint()    { _state.value = _state.value.copy(hint = true) }
+    fun showExample() { _state.value = _state.value.copy(showExample = true) }
 
     fun skip() = viewModelScope.launch {
         val s = _state.value
@@ -197,7 +191,10 @@ fun AnagramGameScreen(
             when {
                 state.isLoading  -> CircularProgressIndicator(color = AppColors.Gold)
                 state.isFinished -> AnagramResult(state, vm::restart) { navController.popBackStack() }
-                state.word != null -> AnagramQuestion(state, vm::tapLetter, vm::removeLast, vm::checkAnswer, vm::showHint, vm::skip)
+                state.word != null -> AnagramQuestion(
+                    state, vm::tapLetter, vm::removeLast,
+                    vm::checkAnswer, vm::showHint, vm::showExample, vm::skip
+                )
             }
         }
     }
@@ -212,16 +209,18 @@ private fun AnagramQuestion(
     onRemove: () -> Unit,
     onCheck: () -> Unit,
     onHint: () -> Unit,
+    onExample: () -> Unit,
     onSkip: () -> Unit
 ) {
     val word = state.word ?: return
+    val emoji = categoryEmoji(word.category)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Прогресс
         LinearProgressIndicator(
@@ -236,7 +235,7 @@ private fun AnagramQuestion(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Spacer(Modifier.weight(0.2f))
+        Spacer(Modifier.weight(0.1f))
 
         Text(
             "Собери испанское слово:",
@@ -244,25 +243,65 @@ private fun AnagramQuestion(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // Перевод (подсказка или «?»)
-        Surface(
-            shape = RoundedCornerShape(12.dp),
-            color = AppColors.Gold.copy(alpha = 0.1f)
+        // Эмодзи категории как визуальная подсказка
+        Text(emoji, fontSize = 52.sp)
+
+        // Подсказки: перевод и пример
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // Подсказка: перевод
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = AppColors.Gold.copy(alpha = 0.1f)
             ) {
-                Text(
-                    if (state.hint) word.russian else "❓ Подсказка",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AppColors.GoldDark
-                )
-                if (!state.hint) {
-                    TextButton(onClick = onHint, contentPadding = PaddingValues(4.dp)) {
-                        Text("Показать", style = MaterialTheme.typography.labelSmall)
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    if (state.hint) {
+                        Text(
+                            word.russian,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = AppColors.GoldDark
+                        )
+                    } else {
+                        Text("🔤", fontSize = 14.sp)
+                        TextButton(onClick = onHint, contentPadding = PaddingValues(0.dp)) {
+                            Text("Перевод", style = MaterialTheme.typography.labelSmall,
+                                 color = AppColors.GoldDark)
+                        }
+                    }
+                }
+            }
+
+            // Подсказка: пример предложения (если есть)
+            if (word.example.isNotBlank()) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = AppColors.Teal.copy(alpha = 0.1f)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        if (state.showExample) {
+                            Text(
+                                "«${word.example}»",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = AppColors.Teal
+                            )
+                        } else {
+                            Text("💡", fontSize = 14.sp)
+                            TextButton(onClick = onExample, contentPadding = PaddingValues(0.dp)) {
+                                Text("Пример", style = MaterialTheme.typography.labelSmall,
+                                     color = AppColors.Teal)
+                            }
+                        }
                     }
                 }
             }
@@ -281,9 +320,7 @@ private fun AnagramQuestion(
             modifier = Modifier.fillMaxWidth()
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 val display = if (state.inputLetters.isEmpty()) "_ _ _"
@@ -309,42 +346,49 @@ private fun AnagramQuestion(
             )
         }
 
-        Spacer(Modifier.weight(0.2f))
+        Spacer(Modifier.weight(0.1f))
 
-        // Буквы для выбора
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 4.dp)
+        // ── Буквы в два ряда по центру ────────────────────────
+        val letters = state.shuffledLetters
+        val rowSize = (letters.size + 1) / 2   // верхний ряд немного больше если нечётное
+        val topRow    = letters.subList(0, rowSize)
+        val bottomRow = letters.subList(rowSize, letters.size)
+        val topIndices    = (0 until rowSize).toList()
+        val bottomIndices = (rowSize until letters.size).toList()
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(state.shuffledLetters) { index, letter ->
-                val used = index in state.usedIndices
-                Surface(
-                    onClick = { onTap(index) },
-                    shape   = RoundedCornerShape(12.dp),
-                    color   = if (used) MaterialTheme.colorScheme.surfaceVariant
-                              else AppColors.Gold.copy(alpha = 0.15f),
-                    enabled = !used && state.isCorrect == null,
-                    modifier = Modifier.size(50.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            letter.uppercaseChar().toString(),
-                            fontSize   = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color      = if (used) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                                         else AppColors.GoldDark
-                        )
-                    }
+            // Верхний ряд
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.wrapContentWidth()
+            ) {
+                topRow.forEachIndexed { localIdx, letter ->
+                    val globalIdx = topIndices[localIdx]
+                    LetterTile(letter, globalIdx, state, onTap)
+                }
+            }
+            // Нижний ряд
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.wrapContentWidth()
+            ) {
+                bottomRow.forEachIndexed { localIdx, letter ->
+                    val globalIdx = bottomIndices[localIdx]
+                    LetterTile(letter, globalIdx, state, onTap)
                 }
             }
         }
+
+        Spacer(Modifier.weight(0.1f))
 
         // Кнопки управления
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Удалить последнюю букву
             OutlinedButton(
                 onClick  = onRemove,
                 enabled  = state.inputLetters.isNotEmpty() && state.isCorrect == null,
@@ -353,8 +397,6 @@ private fun AnagramQuestion(
             ) {
                 Icon(Icons.Default.Backspace, null, modifier = Modifier.size(20.dp))
             }
-
-            // Проверить
             Button(
                 onClick  = onCheck,
                 enabled  = state.inputLetters.isNotEmpty() && state.isCorrect == null,
@@ -363,8 +405,6 @@ private fun AnagramQuestion(
             ) {
                 Text("Проверить", style = MaterialTheme.typography.titleSmall)
             }
-
-            // Пропустить
             OutlinedButton(
                 onClick  = onSkip,
                 enabled  = state.isCorrect == null,
@@ -377,14 +417,38 @@ private fun AnagramQuestion(
     }
 }
 
+@Composable
+private fun LetterTile(
+    letter: Char,
+    globalIndex: Int,
+    state: AnagramState,
+    onTap: (Int) -> Unit
+) {
+    val used = globalIndex in state.usedIndices
+    Surface(
+        onClick = { onTap(globalIndex) },
+        shape   = RoundedCornerShape(12.dp),
+        color   = if (used) MaterialTheme.colorScheme.surfaceVariant
+                  else AppColors.Gold.copy(alpha = 0.15f),
+        enabled = !used && state.isCorrect == null,
+        modifier = Modifier.size(52.dp)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                letter.uppercaseChar().toString(),
+                fontSize   = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color      = if (used) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                             else AppColors.GoldDark
+            )
+        }
+    }
+}
+
 // ── Результат ─────────────────────────────────────────────────
 
 @Composable
-private fun AnagramResult(
-    state: AnagramState,
-    onRetry: () -> Unit,
-    onBack: () -> Unit
-) {
+private fun AnagramResult(state: AnagramState, onRetry: () -> Unit, onBack: () -> Unit) {
     val correct = state.score / 15
     val total   = state.totalAnswered
     val pct     = if (total > 0) correct * 100 / total else 0
@@ -399,11 +463,8 @@ private fun AnagramResult(
     ) {
         Text(emoji, fontSize = 72.sp)
         Spacer(Modifier.height(16.dp))
-        Text(
-            "$correct / $total",
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Bold
-        )
+        Text("$correct / $total", style = MaterialTheme.typography.displayMedium,
+             fontWeight = FontWeight.Bold)
         Text("собрано верно", style = MaterialTheme.typography.bodyMedium,
              color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(8.dp))
@@ -411,13 +472,10 @@ private fun AnagramResult(
              color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         Spacer(Modifier.height(12.dp))
         Surface(shape = RoundedCornerShape(12.dp), color = AppColors.Gold.copy(alpha = 0.15f)) {
-            Text(
-                "⭐ ${state.score} очков",
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = AppColors.GoldDark
-            )
+            Text("⭐ ${state.score} очков",
+                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
+                 color = AppColors.GoldDark)
         }
         Spacer(Modifier.height(32.dp))
         Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(52.dp),
