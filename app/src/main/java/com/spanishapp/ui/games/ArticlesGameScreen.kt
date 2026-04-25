@@ -215,8 +215,7 @@ fun ArticlesGameScreen(
 private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
     val word = state.word ?: return
     val cleanWord = stripArticle(word.spanish)   // убираем артикль из отображения
-    @Suppress("UNUSED_VARIABLE")
-    val emoji = ""  // заменён на WordEmoji внутри карточки
+
 
     Column(
         modifier = Modifier
@@ -256,22 +255,9 @@ private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(28.dp),
+                    modifier = Modifier.padding(32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Эмодзи точно для данного слова
-                    val wordEmoji = WordEmoji.forWordOrCategory(word.spanish, word.category)
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = AppColors.Teal.copy(alpha = 0.1f),
-                        modifier = Modifier.size(96.dp)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(wordEmoji, fontSize = 52.sp)
-                        }
-                    }
-                    Spacer(Modifier.height(16.dp))
-
                     // Слово БЕЗ артикля
                     Text(
                         "__ $w",
@@ -279,7 +265,7 @@ private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(Modifier.height(6.dp))
+                    Spacer(Modifier.height(8.dp))
                     Text(
                         word.russian,
                         style = MaterialTheme.typography.bodyMedium,

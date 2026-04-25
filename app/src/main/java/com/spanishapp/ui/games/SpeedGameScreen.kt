@@ -326,8 +326,6 @@ private fun SpeedLevelSelector(onSelect: (SpeedLevel) -> Unit) {
 @Composable
 private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
     val word = state.word ?: return
-    @Suppress("UNUSED_VARIABLE")
-    val emoji = ""  // не используется — заменён на WordEmoji внутри карточки
 
     Column(
         modifier = Modifier
@@ -361,7 +359,7 @@ private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
 
         Spacer(Modifier.weight(0.2f))
 
-        // Карточка слова с эмодзи
+        // Карточка слова
         AnimatedContent(targetState = word.spanish, label = "speed_word") { spanish ->
             Surface(
                 shape = RoundedCornerShape(24.dp),
@@ -369,26 +367,15 @@ private fun SpeedQuestion(state: SpeedState, onSelect: (Int) -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier.padding(28.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val wordEmoji = WordEmoji.forWordOrCategory(word.spanish, word.category)
-                    Surface(
-                        shape = RoundedCornerShape(18.dp),
-                        color = AppColors.Terracotta.copy(alpha = 0.1f),
-                        modifier = Modifier.size(80.dp)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(wordEmoji, fontSize = 42.sp)
-                        }
-                    }
-                    Spacer(Modifier.height(10.dp))
                     Text(
                         "Переведи:",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(8.dp))
                     Text(
                         spanish,
                         style = MaterialTheme.typography.displaySmall,
