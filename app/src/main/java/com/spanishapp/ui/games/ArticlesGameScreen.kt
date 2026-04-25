@@ -66,36 +66,6 @@ fun guessArticle(spanish: String): String? {
     }
 }
 
-/** Эмодзи-иконка по категории слова */
-fun categoryEmoji(category: String): String = when (category.lowercase()) {
-    "animales"    -> "🐾"
-    "comida"      -> "🍽️"
-    "familia"     -> "👨‍👩‍👧"
-    "ropa"        -> "👗"
-    "casa"        -> "🏠"
-    "transporte"  -> "🚗"
-    "naturaleza"  -> "🌿"
-    "ciudad"      -> "🏙️"
-    "salud"       -> "❤️"
-    "trabajo"     -> "💼"
-    "deporte"     -> "⚽"
-    "tecnologia"  -> "💻"
-    "redes_sociales" -> "📱"
-    "emociones"   -> "😊"
-    "educacion"   -> "📚"
-    "tiempo"      -> "⏰"
-    "cuerpo"      -> "🧍"
-    "colores"     -> "🎨"
-    "numeros"     -> "🔢"
-    "animales_domesticos" -> "🐶"
-    "profesiones" -> "🧑‍💼"
-    "viajes"      -> "✈️"
-    "entretenimiento" -> "🎬"
-    "finanzas"    -> "💰"
-    "compras"     -> "🛒"
-    "comunicacion"-> "💬"
-    else          -> "📖"
-}
 
 // ── State & ViewModel ─────────────────────────────────────────
 
@@ -288,11 +258,20 @@ private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
                     modifier = Modifier.padding(28.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Большой эмодзи как визуальный образ
-                    Text(emoji, fontSize = 56.sp)
-                    Spacer(Modifier.height(12.dp))
+                    // Эмодзи точно для данного слова
+                    val wordEmoji = WordEmoji.forWordOrCategory(word.spanish, word.category)
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = AppColors.Teal.copy(alpha = 0.1f),
+                        modifier = Modifier.size(96.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(wordEmoji, fontSize = 52.sp)
+                        }
+                    }
+                    Spacer(Modifier.height(16.dp))
 
-                    // Слово БЕЗ артикля — пользователь должен угадать
+                    // Слово БЕЗ артикля
                     Text(
                         "__ $w",
                         style = MaterialTheme.typography.displaySmall,

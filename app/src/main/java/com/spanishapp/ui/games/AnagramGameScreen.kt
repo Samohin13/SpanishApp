@@ -213,7 +213,8 @@ private fun AnagramQuestion(
     onSkip: () -> Unit
 ) {
     val word = state.word ?: return
-    val emoji = categoryEmoji(word.category)
+    @Suppress("UNUSED_VARIABLE")
+    val emoji = ""  // заменён на WordEmoji
 
     Column(
         modifier = Modifier
@@ -243,8 +244,17 @@ private fun AnagramQuestion(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // Эмодзи категории как визуальная подсказка
-        Text(emoji, fontSize = 52.sp)
+        // Эмодзи точно для слова — визуальная подсказка
+        val wordEmoji = WordEmoji.forWordOrCategory(word.spanish, word.category)
+        Surface(
+            shape = RoundedCornerShape(18.dp),
+            color = AppColors.Gold.copy(alpha = 0.1f),
+            modifier = Modifier.size(80.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text(wordEmoji, fontSize = 42.sp)
+            }
+        }
 
         // Подсказки: перевод и пример
         Row(
