@@ -1,8 +1,10 @@
 package com.spanishapp.ui.components
 
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -661,38 +663,57 @@ fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 0.dp,
-        modifier       = Modifier.height(72.dp)
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .height(72.dp)
+            .shadow(24.dp, RoundedCornerShape(24.dp), spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+        tonalElevation = 8.dp
     ) {
-        bottomNavItems.forEach { item ->
-            val selected = currentRoute.startsWith(item.route)
-            NavigationBarItem(
-                selected = selected,
-                onClick  = { onNavigate(item.route) },
-                icon = {
-                    Icon(
-                        imageVector        = if (selected) item.iconSelected else item.icon,
-                        contentDescription = item.label,
-                        modifier           = Modifier.size(22.dp)
-                    )
-                },
-                label = {
-                    Text(
-                        text       = item.label,
-                        style      = MaterialTheme.typography.labelSmall,
-                        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
-                    )
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor   = MaterialTheme.colorScheme.primary,
-                    selectedTextColor   = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor      = MaterialTheme.colorScheme.primaryContainer
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            bottomNavItems.forEach { item ->
+                val selected = currentRoute.startsWith(item.route)
+                val animatedSize by animateDpAsState(if (selected) 28.dp else 24.dp, label = "size")
+                val animatedColor by animateColorAsState(
+                    if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    label = "color"
                 )
-            )
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { onNavigate(item.route) }
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = if (selected) item.iconSelected else item.icon,
+                        contentDescription = item.label,
+                        modifier = Modifier.size(animatedSize),
+                        tint = animatedColor
+                    )
+                    if (selected) {
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 4.dp)
+                                .size(4.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary)
+                        )
+                    }
+                }
+            }
         }
     }
 }
