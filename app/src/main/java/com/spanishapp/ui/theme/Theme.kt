@@ -25,6 +25,10 @@ object AppColors {
     val Teal       = Olive
     val Gold       = Ochre
     val GoldDark   = Ochre
+    val Info       = Olive
+    val Success    = Olive
+    val Warning    = Ochre
+    val Error      = Terracotta
 
     // Светлая тема
     val L_Bg            = Color(0xFFFDFCF9)
