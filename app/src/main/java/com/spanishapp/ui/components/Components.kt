@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.cos
 import kotlin.math.sin
 
 // ── NAVIGATION MODELS ─────────────────────────────────────────
@@ -56,10 +57,19 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
     val bgColor = MaterialTheme.colorScheme.background
     
     val infiniteTransition = rememberInfiniteTransition(label = "bg")
+    
+    // Быстрая фаза для активного движения
     val phase by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(20000, easing = LinearEasing), RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(tween(12000, easing = LinearEasing), RepeatMode.Restart),
         label = "phase"
+    )
+    
+    // Глубокая пульсация для "дыхания" (активнее)
+    val pulse by infiniteTransition.animateFloat(
+        initialValue = 0.6f, targetValue = 1.4f,
+        animationSpec = infiniteRepeatable(tween(2500, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "pulse"
     )
 
     Box(modifier = modifier.fillMaxSize().background(bgColor)) {
@@ -67,27 +77,39 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
             val width = size.width
             val height = size.height
             
-            // Neon Spot 1 (Terracotta Glow)
+            // Neon Spot 1 (Terracotta Glow) - Широкая траектория + сильное дыхание
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(Color(0xFFFF1744).copy(alpha = if (isDark) 0.08f else 0.06f), Color.Transparent),
+                    colors = listOf(Color(0xFFFF1744).copy(alpha = if (isDark) 0.12f else 0.1f), Color.Transparent),
                     center = Offset(
-                        x = width * (0.1f + 0.15f * sin(phase * 2 * Math.PI.toFloat())),
-                        y = height * (0.2f + 0.1f * sin(phase * 2 * Math.PI.toFloat()))
+                        x = width * (0.3f + 0.4f * sin(phase * 2 * Math.PI.toFloat())),
+                        y = height * (0.2f + 0.3f * cos(phase * 2 * Math.PI.toFloat()))
                     ),
-                    radius = width * 1.2f
+                    radius = width * 1.5f * pulse
                 )
             )
             
-            // Neon Spot 2 (Ochre Glow)
+            // Neon Spot 2 (Ochre Glow) - Энергичное движение
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(Color(0xFFFFEA00).copy(alpha = if (isDark) 0.06f else 0.05f), Color.Transparent),
+                    colors = listOf(Color(0xFFFFEA00).copy(alpha = if (isDark) 0.08f else 0.07f), Color.Transparent),
                     center = Offset(
-                        x = width * (0.8f + 0.1f * sin((phase + 0.5f) * 2 * Math.PI.toFloat())),
-                        y = height * (0.6f + 0.1f * sin((phase + 0.5f) * 2 * Math.PI.toFloat()))
+                        x = width * (0.7f + 0.4f * cos((phase + 0.3f) * 2 * Math.PI.toFloat())),
+                        y = height * (0.6f + 0.3f * sin((phase + 0.3f) * 2 * Math.PI.toFloat()))
                     ),
-                    radius = width * 1.0f
+                    radius = width * 1.3f * (2f - pulse)
+                )
+            )
+
+            // Neon Spot 3 (Olive Accent) - Еле заметное свечение снизу
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0xFF76FF03).copy(alpha = if (isDark) 0.03f else 0.02f), Color.Transparent),
+                    center = Offset(
+                        x = width * (0.4f + 0.1f * sin((phase + 0.7f) * 2 * Math.PI.toFloat())),
+                        y = height * (0.9f + 0.05f * cos((phase + 0.7f) * 2 * Math.PI.toFloat()))
+                    ),
+                    radius = width * 0.8f
                 )
             )
         }

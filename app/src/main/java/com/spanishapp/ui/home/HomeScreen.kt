@@ -1,6 +1,7 @@
 package com.spanishapp.ui.home
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -176,22 +177,38 @@ private fun RoadmapNode(
 ) {
     val accentColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
     
+    // Энергичная пульсация для неона узлов (в 2 раза быстрее и шире)
+    val infiniteTransition = rememberInfiniteTransition(label = "glow")
+    val pulse by infiniteTransition.animateFloat(
+        initialValue = 0.7f,
+        targetValue = 1.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse"
+    )
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (!isFirst) {
-            Box(modifier = Modifier.height(16.dp).width(3.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
+            Box(modifier = Modifier.height(16.dp).width(3.dp).background(accentColor.copy(alpha = 0.3f), CircleShape))
         }
 
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 8.dp)
-                .shadow(if (isExpanded) 16.dp else 4.dp, RoundedCornerShape(28.dp), spotColor = accentColor.copy(alpha = 0.3f)),
+                .shadow(
+                    elevation = if (isExpanded) 24.dp else 8.dp, 
+                    shape = RoundedCornerShape(28.dp), 
+                    spotColor = if (!unit.isLocked) accentColor.copy(alpha = 0.5f * pulse) else Color.Transparent
+                ),
             shape = RoundedCornerShape(28.dp),
             color = if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f) else MaterialTheme.colorScheme.surface,
-            border = if (isExpanded) borderStroke(2.dp, accentColor.copy(alpha = 0.5f)) else null,
+            border = if (isExpanded) borderStroke(2.dp, accentColor.copy(alpha = 0.6f)) else null,
             onClick = onToggleExpand,
             contentColor = MaterialTheme.colorScheme.onSurface
         ) {
@@ -204,11 +221,15 @@ private fun RoadmapNode(
                     Box(
                         modifier = Modifier
                             .size(72.dp)
-                            .shadow(
-                                elevation = if (!unit.isLocked) 12.dp else 0.dp,
-                                shape = CircleShape,
-                                spotColor = accentColor,
-                                ambientColor = accentColor
+                            .then(
+                                if (!unit.isLocked) {
+                                    Modifier.shadow(
+                                        elevation = 20.dp * pulse,
+                                        shape = CircleShape,
+                                        spotColor = accentColor,
+                                        ambientColor = accentColor
+                                    )
+                                } else Modifier
                             )
                             .clip(CircleShape)
                             .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface),
