@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -44,12 +46,12 @@ val bottomNavItems = listOf(
     NavItem("home",       "Главная",  Icons.Outlined.Home,          Icons.Filled.Home),
     NavItem("flashcards", "Слова",    Icons.Outlined.Style,         Icons.Filled.Style),
     NavItem("games",      "Игры",     Icons.Outlined.SportsEsports, Icons.Filled.SportsEsports),
-    NavItem("dictionary", "Словарь",  Icons.Outlined.MenuBook,      Icons.Filled.MenuBook),
+    NavItem("dictionary", "Словарь",  Icons.AutoMirrored.Outlined.MenuBook, Icons.AutoMirrored.Filled.MenuBook),
     NavItem("profile",    "Профиль",  Icons.Outlined.Person,        Icons.Filled.Person)
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  SPANISH ATOMIC BACKGROUND (4K FEEL)
+//  SPANISH ATOMIC BACKGROUND (FULL SCREEN DYNAMICS)
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
@@ -57,26 +59,29 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
     val bgColor = MaterialTheme.colorScheme.background
     
     val infiniteTransition = rememberInfiniteTransition(label = "atoms")
+    
+    // Фаза для глобального движения
     val phase by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(15000, easing = LinearEasing), RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(tween(40000, easing = LinearEasing), RepeatMode.Restart),
         label = "phase"
     )
 
     val atoms = remember {
-        List(20) { i ->
+        List(25) { i ->
             Atom(
-                xSeed = (0..100).random() / 100f,
-                ySeed = (0..100).random() / 100f,
-                sizeBase = (30..120).random().toFloat(),
-                speed = (0.8f..2.5f).random(),
+                xStart = (0..100).random() / 100f,
+                yStart = (0..100).random() / 100f,
+                sizeBase = (40..150).random().toFloat(),
+                speedX = (-10..10).random() / 50f, // Дрейф по X
+                speedY = (-10..10).random() / 50f, // Дрейф по Y
                 color = when (i % 4) {
-                    0 -> Color(0xFFFF1744)
-                    1 -> Color(0xFFFFEA00)
-                    2 -> Color(0xFF76FF03)
-                    else -> Color(0xFFFF5722)
+                    0 -> Color(0xFFFF1744) // Terracotta Neon
+                    1 -> Color(0xFFFFEA00) // Golden Neon
+                    2 -> Color(0xFF76FF03) // Olive Neon
+                    else -> Color(0xFFFF5722) // Orange Neon
                 },
-                alpha = (0.15f..0.25f).random()
+                alpha = (0.1f..0.25f).random()
             )
         }
     }
@@ -87,21 +92,28 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
             val height = size.height
             
             atoms.forEach { atom ->
-                val angle = phase * 2 * Math.PI.toFloat() * atom.speed + (atom.xSeed * 100)
-                val moveX = sin(angle) * 120.dp.toPx()
-                val moveY = cos(angle * 0.7f) * 120.dp.toPx()
-                val pulse = 1f + 0.3f * sin(phase * 6 * Math.PI.toFloat() * atom.speed)
+                // Рассчитываем позицию с учетом бесконечного дрейфа (wrap around)
+                var x = (width * (atom.xStart + phase * atom.speedX * 5)) % width
+                var y = (height * (atom.yStart + phase * atom.speedY * 5)) % height
+                
+                // Коррекция отрицательного остатка
+                if (x < 0) x += width
+                if (y < 0) y += height
+
+                // Добавляем органическое "дрожание" (wiggle)
+                val wiggleX = sin(phase * 15 * Math.PI.toFloat() * atom.speedX.coerceAtLeast(0.1f)) * 30.dp.toPx()
+                val wiggleY = cos(phase * 12 * Math.PI.toFloat() * atom.speedY.coerceAtLeast(0.1f)) * 30.dp.toPx()
+
+                // Дыхание
+                val pulse = 1f + 0.4f * sin(phase * 20 * Math.PI.toFloat() * (atom.speedX + atom.speedY).coerceAtLeast(0.1f))
 
                 drawCircle(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            atom.color.copy(alpha = if (isDark) atom.alpha else atom.alpha * 0.8f),
+                            atom.color.copy(alpha = if (isDark) atom.alpha else atom.alpha * 0.7f),
                             Color.Transparent
                         ),
-                        center = Offset(
-                            x = (width * atom.xSeed + moveX).coerceIn(-100f, width + 100f),
-                            y = (height * atom.ySeed + moveY).coerceIn(-100f, height + 100f)
-                        ),
+                        center = Offset(x + wiggleX, y + wiggleY),
                         radius = atom.sizeBase.dp.toPx() * pulse
                     )
                 )
@@ -112,10 +124,11 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
 }
 
 private data class Atom(
-    val xSeed: Float,
-    val ySeed: Float,
+    val xStart: Float,
+    val yStart: Float,
     val sizeBase: Float,
-    val speed: Float,
+    val speedX: Float,
+    val speedY: Float,
     val color: Color,
     val alpha: Float
 )
@@ -134,22 +147,21 @@ fun SpanishBottomBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp)
+            .padding(horizontal = 24.dp, vertical = 16.dp)
             .navigationBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Surface(
             modifier = Modifier
                 .height(60.dp)
-                .widthIn(max = 400.dp),
+                .widthIn(max = 420.dp),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
-            tonalElevation = 0.dp,
-            shadowElevation = 8.dp
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
+            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = if(isSystemInDarkTheme()) 0.05f else 0.2f)),
+            shadowElevation = 12.dp
         ) {
             Row(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+                modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -179,7 +191,7 @@ fun SpanishBottomBar(
                             if (selected) {
                                 Box(
                                     modifier = Modifier
-                                        .padding(top = 2.dp)
+                                        .padding(top = 4.dp)
                                         .size(4.dp)
                                         .clip(CircleShape)
                                         .background(color)
