@@ -26,6 +26,7 @@ import com.spanishapp.ui.conjugation.ConjugationQuizScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
+import com.spanishapp.ui.home.LessonIntroScreen
 import com.spanishapp.ui.grammar.GrammarScreen
 import com.spanishapp.ui.quiz.QuizScreen
 import com.spanishapp.ui.profile.AchievementsScreen
@@ -58,6 +59,18 @@ object Navigation {
         ) {
             // ── Главная ───────────────────────────────────────
             composable("home") { HomeScreen(navController) }
+
+            composable(
+                "lesson_intro/{title}/{type}",
+                arguments = listOf(
+                    navArgument("title") { type = NavType.StringType },
+                    navArgument("type") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val title = backStackEntry.arguments?.getString("title") ?: ""
+                val type = backStackEntry.arguments?.getString("type") ?: ""
+                LessonIntroScreen(navController, title, type)
+            }
 
             // ── Онбординг ─────────────────────────────────────
             composable("onboarding") { OnboardingScreen(navController) }

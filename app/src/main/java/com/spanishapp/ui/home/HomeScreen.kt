@@ -144,7 +144,7 @@ fun HomeScreen(
                 unit = selectedUnit!!,
                 onStartLesson = { lesson ->
                     showSheet = false
-                    navController.navigate("flashcards")
+                    navController.navigate("lesson_intro/${lesson.title}/${lesson.type}")
                 }
             )
         }
