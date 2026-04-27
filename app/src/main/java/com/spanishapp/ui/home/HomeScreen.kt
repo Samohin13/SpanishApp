@@ -89,7 +89,7 @@ fun HomeScreen(
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 16.dp, bottom = 120.dp),
+                contentPadding = PaddingValues(top = 12.dp, bottom = 120.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 itemsIndexed(roadmapUnits) { index, unit ->
@@ -123,48 +123,37 @@ private fun HomeTopBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 12.dp)
+            .padding(horizontal = 24.dp, vertical = 8.dp)
             .statusBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Surface(
             modifier = Modifier
-                .height(52.dp)
+                .height(48.dp)
                 .fillMaxWidth(),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
-            shadowElevation = 8.dp
+            // Минималистичное "стекло"
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+            shadowElevation = 0.dp
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = 12.dp),
+                modifier = Modifier.padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    TopBarStat(icon = "✨", value = "$xp", color = Color(0xFFF9A825))
-                    TopBarStat(icon = "🔥", value = "$streak", color = Color(0xFFC62828))
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("✨ $xp", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFFF9A825))
+                    Text("🔥 $streak", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFFC62828))
                 }
 
                 IconButton(
                     onClick = onProfileClick,
-                    modifier = Modifier.size(34.dp).background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
+                    modifier = Modifier.size(28.dp).background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape)
                 ) {
-                    Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun TopBarStat(icon: String, value: String, color: Color) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.background(color.copy(alpha = 0.1f), RoundedCornerShape(12.dp)).padding(horizontal = 8.dp, vertical = 4.dp)
-    ) {
-        Text(icon, fontSize = 12.sp)
-        Spacer(Modifier.width(4.dp))
-        Text(value, fontWeight = FontWeight.ExtraBold, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
@@ -178,65 +167,49 @@ private fun RoadmapNode(
     onStartLesson: (RoadmapLesson) -> Unit
 ) {
     val accentColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
-    val activeColor = RoadmapData.units[0].color 
-
-    val infiniteTransition = rememberInfiniteTransition(label = "glow")
-    val pulse by infiniteTransition.animateFloat(
-        initialValue = 0.85f,
-        targetValue = 1.15f,
-        animationSpec = infiniteRepeatable(tween(3000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "pulse"
-    )
+    // Слово РАЗДЕЛ и цифра ВСЕГДА яркого цвета (напр. Primary)
+    val labelColor = MaterialTheme.colorScheme.primary 
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (!isFirst) {
-            Box(modifier = Modifier.height(16.dp).width(3.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
+            Box(modifier = Modifier.height(12.dp).width(2.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
         }
 
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 6.dp)
-                .shadow(
-                    elevation = if (isExpanded) 16.dp else 4.dp, 
-                    shape = RoundedCornerShape(28.dp), 
-                    spotColor = if (!unit.isLocked) accentColor.copy(alpha = 0.3f * pulse) else Color.Transparent
-                ),
-            shape = RoundedCornerShape(28.dp),
-            color = if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f) else MaterialTheme.colorScheme.surface,
-            border = if (isExpanded) borderStroke(2.dp, accentColor.copy(alpha = 0.4f)) else null,
-            onClick = onToggleExpand,
-            contentColor = MaterialTheme.colorScheme.onSurface
+                .padding(horizontal = 20.dp, vertical = 4.dp),
+            shape = RoundedCornerShape(24.dp),
+            // Прозрачный фон для карточки, чтобы неон просвечивал
+            color = if (unit.isLocked) MaterialTheme.colorScheme.surface.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+            border = if (isExpanded) borderStroke(1.dp, accentColor.copy(alpha = 0.5f)) else null,
+            onClick = onToggleExpand
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    // Иконка
                     Box(
                         modifier = Modifier
-                            .size(68.dp)
-                            .then(
-                                if (!unit.isLocked) {
-                                    Modifier.shadow(elevation = 10.dp * pulse, shape = CircleShape, spotColor = accentColor, ambientColor = accentColor)
-                                } else Modifier
-                            )
+                            .size(60.dp)
                             .clip(CircleShape)
-                            .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface),
+                            .background(if (unit.isLocked) MaterialTheme.colorScheme.surface.copy(alpha = 0.2f) else accentColor.copy(alpha = 0.1f)),
                         contentAlignment = Alignment.Center
                     ) {
                         if (unit.isLocked) {
-                            Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f))
+                            Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
                         } else {
-                            Text(unit.icon, fontSize = 30.sp)
+                            Text(unit.icon, fontSize = 28.sp)
                             CircularProgressIndicator(
                                 progress = { unit.progress },
                                 modifier = Modifier.fillMaxSize(),
                                 color = accentColor,
-                                strokeWidth = 5.dp,
+                                strokeWidth = 4.dp,
                                 trackColor = accentColor.copy(alpha = 0.1f)
                             )
                         }
@@ -245,16 +218,17 @@ private fun RoadmapNode(
                     Spacer(Modifier.width(16.dp))
 
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("РАЗДЕЛ ${unit.id}", style = MaterialTheme.typography.labelSmall, color = activeColor, fontWeight = FontWeight.ExtraBold)
-                        Text(unit.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
+                        Text("РАЗДЕЛ ${unit.id}", style = MaterialTheme.typography.labelSmall, color = labelColor, fontWeight = FontWeight.ExtraBold)
+                        Text(unit.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         Text(unit.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
                     }
 
+                    // Стрелочка ЕСТЬ У ВСЕХ
                     Icon(
                         Icons.Default.ExpandMore,
-                        contentDescription = null,
+                        null,
                         modifier = Modifier.rotate(if (isExpanded) 180f else 0f),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 }
 
@@ -264,11 +238,11 @@ private fun RoadmapNode(
                     exit = shrinkVertically() + fadeOut()
                 ) {
                     Column(
-                        modifier = Modifier.padding(top = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        modifier = Modifier.padding(top = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-                        Spacer(Modifier.height(8.dp))
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
+                        Spacer(Modifier.height(4.dp))
                         unit.lessons.forEach { lesson ->
                             LessonRow(lesson = lesson, color = unit.color, onClick = { onStartLesson(lesson) }, enabled = !unit.isLocked)
                         }
@@ -278,7 +252,7 @@ private fun RoadmapNode(
         }
 
         if (!isLast) {
-            Box(modifier = Modifier.height(24.dp).width(3.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
+            Box(modifier = Modifier.height(16.dp).width(2.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
         }
     }
 }
@@ -287,44 +261,40 @@ private fun RoadmapNode(
 private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit, enabled: Boolean) {
     Surface(
         onClick = if(enabled) onClick else {{}},
-        modifier = Modifier.fillMaxWidth().alpha(if(enabled) 1f else 0.5f),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        modifier = Modifier.fillMaxWidth().alpha(if(enabled) 1f else 0.4f),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val icon = when(lesson.type) {
-                "vocab" -> Icons.Default.MenuBook
-                "grammar" -> Icons.Default.Extension
-                "phrase" -> Icons.Default.ChatBubble
-                else -> Icons.Default.Quiz
-            }
-            
             Box(
-                modifier = Modifier.size(36.dp).clip(CircleShape).background(if (lesson.isCompleted) color else MaterialTheme.colorScheme.surface),
+                modifier = Modifier.size(32.dp).clip(CircleShape).background(if (lesson.isCompleted) color else MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    if (lesson.isCompleted) Icons.Default.Check else icon,
-                    null,
-                    tint = if (lesson.isCompleted) Color.White else if(enabled) color else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(18.dp)
-                )
+                if (lesson.isCompleted) {
+                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                } else {
+                    val icon = when(lesson.type) {
+                        "vocab" -> Icons.Default.MenuBook
+                        "grammar" -> Icons.Default.Extension
+                        "phrase" -> Icons.Default.ChatBubble
+                        else -> Icons.Default.Quiz
+                    }
+                    Icon(icon, null, tint = if(enabled) color else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), modifier = Modifier.size(16.dp))
+                }
             }
             
             Spacer(Modifier.width(12.dp))
             
             Column(modifier = Modifier.weight(1f)) {
-                Text(lesson.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
-                Text(lesson.type.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(lesson.title, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(lesson.type.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f), fontSize = 9.sp)
             }
             
             if(enabled) {
-                Icon(Icons.Default.PlayArrow, null, tint = color.copy(alpha = 0.7f), modifier = Modifier.size(18.dp))
-            } else {
-                Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f), modifier = Modifier.size(14.dp))
+                Icon(Icons.Default.PlayArrow, null, tint = color, modifier = Modifier.size(16.dp))
             }
         }
     }

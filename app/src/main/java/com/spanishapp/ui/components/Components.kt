@@ -19,6 +19,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -51,70 +52,57 @@ val bottomNavItems = listOf(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  SPANISH ATOMIC BACKGROUND (FULL SCREEN DYNAMICS)
+//  SPANISH FULL-SCREEN NEON ENVIRONMENT (NO CLIPPING)
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val isDark = isSystemInDarkTheme()
-    val bgColor = MaterialTheme.colorScheme.background
+    val bgColor = if (isDark) Color(0xFF0A0A0A) else Color(0xFFFDFCF9)
     
-    val infiniteTransition = rememberInfiniteTransition(label = "atoms")
-    
-    // Фаза для глобального движения
+    val infiniteTransition = rememberInfiniteTransition(label = "neon")
     val phase by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(40000, easing = LinearEasing), RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(tween(30000, easing = LinearEasing), RepeatMode.Restart),
         label = "phase"
     )
 
-    val atoms = remember {
-        List(25) { i ->
-            Atom(
+    // Используем 8 огромных "облаков" неона, чтобы залить весь экран
+    val clouds = remember {
+        List(8) { i ->
+            NeonCloud(
                 xStart = (0..100).random() / 100f,
                 yStart = (0..100).random() / 100f,
-                sizeBase = (40..150).random().toFloat(),
-                speedX = (-10..10).random() / 50f, // Дрейф по X
-                speedY = (-10..10).random() / 50f, // Дрейф по Y
-                color = when (i % 4) {
-                    0 -> Color(0xFFFF1744) // Terracotta Neon
-                    1 -> Color(0xFFFFEA00) // Golden Neon
-                    2 -> Color(0xFF76FF03) // Olive Neon
-                    else -> Color(0xFFFF5722) // Orange Neon
+                color = when (i % 3) {
+                    0 -> Color(0xFFC62828) // Terracotta
+                    1 -> Color(0xFFF9A825) // Ochre
+                    else -> Color(0xFF558B2F) // Olive
                 },
-                alpha = (0.1f..0.25f).random()
+                speed = (0.5f..1.2f).random()
             )
         }
     }
 
     Box(modifier = modifier.fillMaxSize().background(bgColor)) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val width = size.width
-            val height = size.height
+            val w = size.width
+            val h = size.height
             
-            atoms.forEach { atom ->
-                // Рассчитываем позицию с учетом бесконечного дрейфа (wrap around)
-                var x = (width * (atom.xStart + phase * atom.speedX * 5)) % width
-                var y = (height * (atom.yStart + phase * atom.speedY * 5)) % height
+            clouds.forEach { cloud ->
+                val angle = phase * 2 * Math.PI.toFloat() * cloud.speed
+                val x = w * cloud.xStart + sin(angle) * (w * 0.4f)
+                val y = h * cloud.yStart + cos(angle * 0.8f) * (h * 0.3f)
                 
-                // Коррекция отрицательного остатка
-                if (x < 0) x += width
-                if (y < 0) y += height
-
-                // Добавляем органическое "дрожание" (wiggle)
-                val wiggleX = sin(phase * 15 * Math.PI.toFloat() * atom.speedX.coerceAtLeast(0.1f)) * 30.dp.toPx()
-                val wiggleY = cos(phase * 12 * Math.PI.toFloat() * atom.speedY.coerceAtLeast(0.1f)) * 30.dp.toPx()
-
-                // Дыхание
-                val pulse = 1f + 0.4f * sin(phase * 20 * Math.PI.toFloat() * (atom.speedX + atom.speedY).coerceAtLeast(0.1f))
+                // Огромный радиус, чтобы пятна перекрывали друг друга
+                val radius = w * 1.5f 
 
                 drawCircle(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            atom.color.copy(alpha = if (isDark) atom.alpha else atom.alpha * 0.7f),
+                            cloud.color.copy(alpha = if (isDark) 0.08f else 0.06f),
                             Color.Transparent
                         ),
-                        center = Offset(x + wiggleX, y + wiggleY),
-                        radius = atom.sizeBase.dp.toPx() * pulse
+                        center = Offset(x, y),
+                        radius = radius
                     )
                 )
             }
@@ -123,21 +111,12 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
     }
 }
 
-private data class Atom(
-    val xStart: Float,
-    val yStart: Float,
-    val sizeBase: Float,
-    val speedX: Float,
-    val speedY: Float,
-    val color: Color,
-    val alpha: Float
-)
+private data class NeonCloud(val xStart: Float, val yStart: Float, val color: Color, val speed: Float)
 
-private fun ClosedRange<Float>.random() = 
-    (Math.random() * (endInclusive - start) + start).toFloat()
+private fun ClosedRange<Float>.random() = (Math.random() * (endInclusive - start) + start).toFloat()
 
 // ═══════════════════════════════════════════════════════════════
-//  ULTRA-SLIM GLASS BOTTOM BAR
+//  MINIMALIST GHOST BOTTOM BAR
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBottomBar(
@@ -147,28 +126,30 @@ fun SpanishBottomBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .padding(horizontal = 24.dp, vertical = 12.dp)
             .navigationBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Surface(
             modifier = Modifier
-                .height(60.dp)
-                .widthIn(max = 420.dp),
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = if(isSystemInDarkTheme()) 0.05f else 0.2f)),
-            shadowElevation = 12.dp
+                .height(64.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(32.dp),
+            // Почти полная прозрачность для эффекта чистого стекла
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+            tonalElevation = 0.dp,
+            shadowElevation = 0.dp,
+            border = androidx.compose.foundation.BorderStroke(0.5.dp, Color.White.copy(alpha = 0.2f))
         ) {
             Row(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+                modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 bottomNavItems.forEach { item ->
                     val selected = currentRoute.startsWith(item.route)
                     val color = if (selected) MaterialTheme.colorScheme.primary 
-                                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
 
                     Box(
                         modifier = Modifier
@@ -185,18 +166,9 @@ fun SpanishBottomBar(
                             Icon(
                                 imageVector = if (selected) item.iconSelected else item.icon,
                                 contentDescription = item.label,
-                                modifier = Modifier.size(if(selected) 26.dp else 22.dp),
+                                modifier = Modifier.size(if(selected) 28.dp else 24.dp),
                                 tint = color
                             )
-                            if (selected) {
-                                Box(
-                                    modifier = Modifier
-                                        .padding(top = 4.dp)
-                                        .size(4.dp)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                )
-                            }
                         }
                     }
                 }
@@ -204,10 +176,6 @@ fun SpanishBottomBar(
         }
     }
 }
-
-// ──────────────────────────────────────────────────────────────
-// COMMON COMPONENTS
-// ──────────────────────────────────────────────────────────────
 
 @Composable
 fun XpProgressBar(level: Int, progress: Float, totalXp: Int, modifier: Modifier = Modifier) {
