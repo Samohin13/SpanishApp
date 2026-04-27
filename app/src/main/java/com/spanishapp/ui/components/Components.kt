@@ -49,7 +49,7 @@ val bottomNavItems = listOf(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  SPANISH ANIMATED BACKGROUND
+//  SPANISH ATOMIC BACKGROUND (4K FEEL)
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
@@ -57,29 +57,26 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
     val bgColor = MaterialTheme.colorScheme.background
     
     val infiniteTransition = rememberInfiniteTransition(label = "atoms")
-    
-    // Глобальная фаза для синхронизации
     val phase by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(20000, easing = LinearEasing), RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(tween(15000, easing = LinearEasing), RepeatMode.Restart),
         label = "phase"
     )
 
-    // Генерация параметров для 12 "атомов" (неона)
-    // Используем remember, чтобы они не перегенерировались каждый кадр
     val atoms = remember {
-        List(12) { i ->
+        List(20) { i ->
             Atom(
                 xSeed = (0..100).random() / 100f,
                 ySeed = (0..100).random() / 100f,
-                sizeBase = (50..250).random().toFloat(),
-                speed = (0.5f..1.5f).random(),
-                color = when (i % 3) {
-                    0 -> Color(0xFFFF1744) // Terracotta
-                    1 -> Color(0xFFFFEA00) // Ochre
-                    else -> Color(0xFF76FF03) // Olive
+                sizeBase = (30..120).random().toFloat(),
+                speed = (0.8f..2.5f).random(),
+                color = when (i % 4) {
+                    0 -> Color(0xFFFF1744)
+                    1 -> Color(0xFFFFEA00)
+                    2 -> Color(0xFF76FF03)
+                    else -> Color(0xFFFF5722)
                 },
-                alpha = (0.04f..0.1f).random()
+                alpha = (0.15f..0.25f).random()
             )
         }
     }
@@ -90,19 +87,20 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
             val height = size.height
             
             atoms.forEach { atom ->
-                val moveX = sin(phase * 2 * Math.PI.toFloat() * atom.speed + atom.xSeed * 10) * 80.dp.toPx()
-                val moveY = cos(phase * 2 * Math.PI.toFloat() * atom.speed + atom.ySeed * 10) * 80.dp.toPx()
-                val pulse = 1f + 0.2f * sin(phase * 4 * Math.PI.toFloat() * atom.speed)
+                val angle = phase * 2 * Math.PI.toFloat() * atom.speed + (atom.xSeed * 100)
+                val moveX = sin(angle) * 120.dp.toPx()
+                val moveY = cos(angle * 0.7f) * 120.dp.toPx()
+                val pulse = 1f + 0.3f * sin(phase * 6 * Math.PI.toFloat() * atom.speed)
 
                 drawCircle(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            atom.color.copy(alpha = if (isDark) atom.alpha * 1.5f else atom.alpha),
+                            atom.color.copy(alpha = if (isDark) atom.alpha else atom.alpha * 0.8f),
                             Color.Transparent
                         ),
                         center = Offset(
-                            x = width * atom.xSeed + moveX,
-                            y = height * atom.ySeed + moveY
+                            x = (width * atom.xSeed + moveX).coerceIn(-100f, width + 100f),
+                            y = (height * atom.ySeed + moveY).coerceIn(-100f, height + 100f)
                         ),
                         radius = atom.sizeBase.dp.toPx() * pulse
                     )
@@ -126,62 +124,67 @@ private fun ClosedRange<Float>.random() =
     (Math.random() * (endInclusive - start) + start).toFloat()
 
 // ═══════════════════════════════════════════════════════════════
-//  UNIFIED BOTTOM BAR
+//  ULTRA-SLIM GLASS BOTTOM BAR
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
-    Surface(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 16.dp)
-            .height(68.dp)
-            .shadow(32.dp, RoundedCornerShape(28.dp), spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp
+            .padding(horizontal = 24.dp, vertical = 20.dp)
+            .navigationBarsPadding(),
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+        Surface(
+            modifier = Modifier
+                .height(60.dp)
+                .widthIn(max = 400.dp),
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
+            tonalElevation = 0.dp,
+            shadowElevation = 8.dp
         ) {
-            bottomNavItems.forEach { item ->
-                val selected = currentRoute.startsWith(item.route)
-                val animatedColor by animateColorAsState(
-                    if (selected) MaterialTheme.colorScheme.primary 
-                    else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                    label = "color"
-                )
+            Row(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                bottomNavItems.forEach { item ->
+                    val selected = currentRoute.startsWith(item.route)
+                    val color = if (selected) MaterialTheme.colorScheme.primary 
+                                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
 
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { onNavigate(item.route) }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = if (selected) item.iconSelected else item.icon,
-                            contentDescription = item.label,
-                            modifier = Modifier.size(24.dp),
-                            tint = animatedColor
-                        )
-                        if (selected) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(top = 4.dp)
-                                    .size(4.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primary)
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { onNavigate(item.route) }
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = if (selected) item.iconSelected else item.icon,
+                                contentDescription = item.label,
+                                modifier = Modifier.size(if(selected) 26.dp else 22.dp),
+                                tint = color
                             )
+                            if (selected) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(top = 2.dp)
+                                        .size(4.dp)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                )
+                            }
                         }
                     }
                 }
@@ -190,9 +193,9 @@ fun SpanishBottomBar(
     }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  OTHER SHARED COMPONENTS (Simplified for brevity)
-// ═══════════════════════════════════════════════════════════════
+// ──────────────────────────────────────────────────────────────
+// COMMON COMPONENTS
+// ──────────────────────────────────────────────────────────────
 
 @Composable
 fun XpProgressBar(level: Int, progress: Float, totalXp: Int, modifier: Modifier = Modifier) {

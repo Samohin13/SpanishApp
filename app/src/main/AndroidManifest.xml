@@ -13,7 +13,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="HablaRu"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_splash_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpanishApp"
         tools:targetApi="34">
