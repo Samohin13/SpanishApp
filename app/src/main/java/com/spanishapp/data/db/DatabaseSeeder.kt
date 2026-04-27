@@ -23,7 +23,7 @@ class DatabaseSeeder @Inject constructor(
     companion object {
         // Порог для досева. Реальное уникальное кол-во слов ~4000.
         // Если в БД меньше этого — запустить досев.
-        const val VOCAB_TARGET = 2000
+        const val VOCAB_TARGET = 3800
 
         // ── Полностью неправильные глаголы ────────────────────
         val IRREGULAR_VERBS = setOf(
