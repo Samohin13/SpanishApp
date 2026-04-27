@@ -21,14 +21,15 @@ object AppColors {
     val Olive      = Color(0xFF558B2F)  // Оливковый (Природа Испании)
     val Ochre      = Color(0xFFF9A825)  // Золотистая охра (Солнце)
     
-    // Единый цвет для баров (Top & Bottom)
-    val BarColorL  = Color(0xFFFFFFFF)  // Чистый белый для светлой темы
-    val BarColorD  = Color(0xFF1C1B1F)  // Глубокий темный для темной темы
+    // Совместимость со старым кодом
+    val Teal       = Olive
+    val Gold       = Ochre
+    val GoldDark   = Ochre
 
     // Светлая тема
-    val L_Bg            = Color(0xFFFDFCF9)   // Тёплый "бумажный" белый
+    val L_Bg            = Color(0xFFFDFCF9)
     val L_Surface       = Color(0xFFFFFFFF)
-    val L_Ink           = Color(0xFF201A1A)   // Почти чёрный с красным подтоном
+    val L_Ink           = Color(0xFF201A1A)
     
     // Тёмная тема
     val D_Bg            = Color(0xFF141212)
@@ -40,8 +41,11 @@ val AppTypography = Typography(
     displayLarge = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 34.sp, letterSpacing = (-1).sp),
     displayMedium = TextStyle(fontWeight = FontWeight.Bold, fontSize = 28.sp, letterSpacing = (-0.5).sp),
     headlineLarge = TextStyle(fontWeight = FontWeight.Bold, fontSize = 22.sp),
-    titleMedium = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
+    headlineMedium = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
+    titleLarge = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
+    titleMedium = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp),
     bodyLarge = TextStyle(fontWeight = FontWeight.Normal, fontSize = 16.sp),
+    bodyMedium = TextStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp),
     labelSmall = TextStyle(fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.sp)
 )
 
@@ -54,26 +58,41 @@ private val LightColors = lightColorScheme(
     secondary = AppColors.Olive,
     onSecondary = Color.White,
     secondaryContainer = Color(0xFFD7E8DE),
+    onSecondaryContainer = Color(0xFF121F16),
     
     tertiary = AppColors.Ochre,
-    onTertiary = Color.Black,
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFFFE082),
+    onTertiaryContainer = Color(0xFF261900),
     
     background = AppColors.L_Bg,
-    surface = AppColors.BarColorL,
+    surface = Color.White,
     onSurface = AppColors.L_Ink,
-    surfaceVariant = Color(0xFFF5EEEE)
+    surfaceVariant = Color(0xFFF5EEEE),
+    onSurfaceVariant = Color(0xFF534343),
+    outline = Color(0xFF857372)
 )
 
 private val DarkColors = darkColorScheme(
     primary = Color(0xFFFFB4A9),
     onPrimary = Color(0xFF690002),
+    primaryContainer = Color(0xFF930006),
+    onPrimaryContainer = Color(0xFFFFDAD4),
     
     secondary = Color(0xFFBACCB3),
     onSecondary = Color(0xFF283420),
+    secondaryContainer = Color(0xFF3E4A35),
+    onSecondaryContainer = Color(0xFFD7E8DE),
+    
+    tertiary = Color(0xFFFFCC00),
+    onTertiary = Color(0xFF422C00),
     
     background = AppColors.D_Bg,
-    surface = AppColors.BarColorD,
-    onSurface = AppColors.D_Ink
+    surface = AppColors.D_Surface,
+    onSurface = AppColors.D_Ink,
+    surfaceVariant = Color(0xFF534343),
+    onSurfaceVariant = Color(0xFFD8C2C1),
+    outline = Color(0xFFA08C8B)
 )
 
 @Composable
@@ -85,6 +104,7 @@ fun SpanishAppTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
         typography = AppTypography,
         shapes = Shapes(
+            small = RoundedCornerShape(12.dp),
             medium = RoundedCornerShape(24.dp),
             large = RoundedCornerShape(32.dp)
         ),
