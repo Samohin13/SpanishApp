@@ -2,13 +2,13 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-04-25, сессия 3 (ConjugationData3 + AI Chat включён)**
+> Последнее обновление: **2026-04-27, сессия 4 (Dictionary upgrade + Oliva palette + 5000 слов)**
 
 ---
 
 ## 0. Быстрое резюме «где мы остановились»
 
-**Последний коммит: `a4653f4` — ветка `SaveGitHub`**
+**Последний коммит: `9af0e6f` — ветка `SaveGitHub`**
 
 **Что работает прямо сейчас (всё закоммичено):**
 - Приложение собирается, запускается на телефоне
@@ -19,14 +19,17 @@
 - **SettingsVoice**: 8 персонажей, ползунки, диагностический баннер
 - **ConjugationData3**: 86 новых глаголов (итого 160 × 6 времён в БД)
 - **AI Chat** включён в навигацию и доступен из HomeScreen (QuickActions → 🤖 ИИ-репетитор)
-- **Все основные экраны реализованы** (не заглушки): Flashcards, Conjugation+Quiz, Dialogues, Grammar, Quiz, Dictionary, WeakWords, Games (4 игры), Profile, Achievements, Settings, Pronunciation
+- **Oliva palette**: зелёный primary, оранжевый accent, кремовый bg; OLED dark #0E0E0C
+- **Словарь 5000+ слов**: VocabExpansion1/2/3, дедупликация по `spanish`
+- **DictionaryScreen v2**: две вкладки (Все слова / Мои списки), пользовательские списки (до 20 × 150 слов), WordDetailSheet, AddToListSheet, CreateListDialog
+- **Room v2**: WordListEntity + WordListEntryEntity + MIGRATION_1_2
 
 **Следующие задачи (roadmap):**
-1. Валидация голосов после установки → если ок, переходим к следующему экрану
+1. **Rebuild + установить** приложение, проверить Dictionary и списки слов
 2. **Streak / Home**: счётчик серии на главном экране
-3. **Word of Day**: слово дня с озвучкой
-4. **Weak Words**: экран слабых слов
-5. **AI Chat**: экран чата с ИИ-репетитором
+3. **Word of Day**: слово дня с озвучкой на HomeScreen
+4. **WeakWords**: экран слабых слов (данные уже в DAO)
+5. **AI Chat**: живой экран чата с Claude
 
 ---
 
@@ -252,7 +255,10 @@ android.enableJetifier=true
 | ba2890d | master (старый) | Add source code to all files |
 | f8c805b | master, SaveGitHub | Add Flashcards feature (setup + SRS session + TTS) |
 | 78ebfb3 | master, SaveGitHub | Wire Flashcards into ui/Navigation.kt + user edits |
-| (pending) | - | Fix: call seedIfNeeded + fully-clickable direction options |
+| f7c557d | SaveGitHub | Dark mode: near-black base + vivid accents, card shadows |
+| 998447e | SaveGitHub | Apply Oliva palette: green primary, orange accent, cream bg |
+| 5175600 | SaveGitHub | Expand dictionary to 5100+ words: add 3 vocab packs |
+| 9af0e6f | SaveGitHub/master | Dictionary: custom word lists + word detail cards + dedup |
 
 ### Ветки на GitHub
 - **master** — основная, тут работаем
