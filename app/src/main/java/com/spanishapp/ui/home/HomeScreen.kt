@@ -204,6 +204,12 @@ private fun RoadmapNode(
                     Box(
                         modifier = Modifier
                             .size(72.dp)
+                            .shadow(
+                                elevation = if (!unit.isLocked) 12.dp else 0.dp,
+                                shape = CircleShape,
+                                spotColor = accentColor,
+                                ambientColor = accentColor
+                            )
                             .clip(CircleShape)
                             .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface),
                         contentAlignment = Alignment.Center

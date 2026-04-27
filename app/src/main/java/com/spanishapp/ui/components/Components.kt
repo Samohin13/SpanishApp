@@ -67,23 +67,27 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
             val width = size.width
             val height = size.height
             
-            // Пятно 1 (Terracotta)
+            // Neon Spot 1 (Terracotta Glow)
             drawCircle(
-                color = Color(0xFFC62828).copy(alpha = if (isDark) 0.04f else 0.05f),
-                radius = width * 0.9f,
-                center = Offset(
-                    x = width * (0.1f + 0.15f * sin(phase * 2 * Math.PI.toFloat())),
-                    y = height * (0.2f + 0.1f * sin(phase * 2 * Math.PI.toFloat()))
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0xFFFF1744).copy(alpha = if (isDark) 0.08f else 0.06f), Color.Transparent),
+                    center = Offset(
+                        x = width * (0.1f + 0.15f * sin(phase * 2 * Math.PI.toFloat())),
+                        y = height * (0.2f + 0.1f * sin(phase * 2 * Math.PI.toFloat()))
+                    ),
+                    radius = width * 1.2f
                 )
             )
             
-            // Пятно 2 (Olive)
+            // Neon Spot 2 (Ochre Glow)
             drawCircle(
-                color = Color(0xFF558B2F).copy(alpha = if (isDark) 0.03f else 0.04f),
-                radius = width * 0.7f,
-                center = Offset(
-                    x = width * (0.8f + 0.1f * sin((phase + 0.5f) * 2 * Math.PI.toFloat())),
-                    y = height * (0.6f + 0.1f * sin((phase + 0.5f) * 2 * Math.PI.toFloat()))
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0xFFFFEA00).copy(alpha = if (isDark) 0.06f else 0.05f), Color.Transparent),
+                    center = Offset(
+                        x = width * (0.8f + 0.1f * sin((phase + 0.5f) * 2 * Math.PI.toFloat())),
+                        y = height * (0.6f + 0.1f * sin((phase + 0.5f) * 2 * Math.PI.toFloat()))
+                    ),
+                    radius = width * 1.0f
                 )
             )
         }
