@@ -52,9 +52,7 @@ object ModernVocab {
         w("bloquear", "заблокировать", "La bloqueé en todas partes.", category = "redes_sociales", type = "verb"),
         w("publicar", "публиковать", "Acabo de publicar una foto.", category = "redes_sociales", type = "verb"),
         w("enviar", "отправить", "Envíame la ubicación.", category = "comunicacion", type = "verb"),
-        w("conectar", "подключаться", "No puedo conectar al wifi.", category = "tecnologia", type = "verb"),
         w("escanear", "сканировать", "Escanea el código QR.", category = "tecnologia", type = "verb"),
-        w("guardar", "сохранить", "Guarda el archivo antes.", category = "tecnologia", type = "verb"),
 
         // ── Стриминг и развлечения ──────────────────────────────
         w("la peli", "киношка (разг.)", "¿Vemos una peli esta noche?", category = "entretenimiento"),
@@ -79,7 +77,6 @@ object ModernVocab {
 
         // ── Быт и работа сейчас ─────────────────────────────────
         w("el teletrabajo", "удалёнка", "Trabajo en teletrabajo.", level = "A2", category = "trabajo"),
-        w("la reunión", "встреча / митинг", "Tengo una reunión online.", level = "A2", category = "trabajo"),
         w("la videollamada", "видеозвонок", "Hacemos una videollamada.", level = "A2", category = "comunicacion"),
         w("la tarjeta", "карта (банковская)", "Pago con tarjeta.", category = "finanzas"),
         w("la transferencia", "перевод (банк.)", "Te hago una transferencia.", level = "A2", category = "finanzas"),

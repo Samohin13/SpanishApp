@@ -21,8 +21,9 @@ class DatabaseSeeder @Inject constructor(
     private val achievementManager: AchievementManager
 ) {
     companion object {
-        // Порог для досева. При добавлении новых паков увеличивать.
-        const val VOCAB_TARGET = 5000
+        // Порог для досева. Реальное уникальное кол-во слов ~4000.
+        // Если в БД меньше этого — запустить досев.
+        const val VOCAB_TARGET = 2000
 
         // ── Полностью неправильные глаголы ────────────────────
         val IRREGULAR_VERBS = setOf(

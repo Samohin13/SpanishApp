@@ -24,7 +24,6 @@ object VocabExpansion1 {
     private val salud = listOf(
         w("el diagnóstico",      "диагноз",              "El diagnóstico fue complicado.",       "B1", "salud"),
         w("el tratamiento",      "лечение",              "El tratamiento dura tres semanas.",     "B1", "salud"),
-        w("la vacuna",           "вакцина",              "La vacuna es obligatoria.",             "B1", "salud"),
         w("el síntoma",          "симптом",              "El dolor es un síntoma habitual.",      "B1", "salud"),
         w("la receta",           "рецепт (мед.)",        "Necesito una receta del médico.",       "B1", "salud"),
         w("el quirófano",        "операционная",         "El paciente está en el quirófano.",     "B2", "salud"),
