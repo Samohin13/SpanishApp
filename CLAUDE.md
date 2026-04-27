@@ -2,13 +2,13 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-04-27, сессия 4 (Dictionary upgrade + Oliva palette + 5000 слов)**
+> Последнее обновление: **2026-04-27, сессия 5 (Listening game + Tatoeba audio integration)**
 
 ---
 
 ## 0. Быстрое резюме «где мы остановились»
 
-**Последний коммит: `9af0e6f` — ветка `SaveGitHub`**
+**Последний коммит: `52c60e2` — ветка `SaveGitHub` + `master`**
 
 **Что работает прямо сейчас (всё закоммичено):**
 - Приложение собирается, запускается на телефоне
@@ -23,9 +23,10 @@
 - **Словарь 5000+ слов**: VocabExpansion1/2/3, дедупликация по `spanish`
 - **DictionaryScreen v2**: две вкладки (Все слова / Мои списки), пользовательские списки (до 20 × 150 слов), WordDetailSheet, AddToListSheet, CreateListDialog
 - **Room v2**: WordListEntity + WordListEntryEntity + MIGRATION_1_2
+- **Listening game 🎧**: 1089 предложений с реальными аудиозаписями носителей языка (Tatoeba), игра "вставь пропущенное слово", автовоспроизведение + кнопка повтора
 
 **Следующие задачи (roadmap):**
-1. **Rebuild + установить** приложение, проверить Dictionary и списки слов
+1. **Rebuild + установить** приложение, проверить игру Аудирование
 2. **Streak / Home**: счётчик серии на главном экране
 3. **Word of Day**: слово дня с озвучкой на HomeScreen
 4. **WeakWords**: экран слабых слов (данные уже в DAO)
@@ -259,6 +260,7 @@ android.enableJetifier=true
 | 998447e | SaveGitHub | Apply Oliva palette: green primary, orange accent, cream bg |
 | 5175600 | SaveGitHub | Expand dictionary to 5100+ words: add 3 vocab packs |
 | 9af0e6f | SaveGitHub/master | Dictionary: custom word lists + word detail cards + dedup |
+| 52c60e2 | SaveGitHub/master | Add Listening game: 1089 Tatoeba sentences + native audio (12.6 MB) |
 
 ### Ветки на GitHub
 - **master** — основная, тут работаем
