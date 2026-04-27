@@ -78,8 +78,11 @@ class DatabaseSeeder @Inject constructor(
         words += VocabExpansion2.entries
         words += VocabExpansion3.entries
 
+        // Дедупликация по испанскому слову (сохраняем первое вхождение)
+        val unique = words.distinctBy { it.spanish.trim().lowercase() }
+
         // insertAll с IGNORE — не перезапишет уже существующие слова (прогресс сохранится)
-        db.wordDao().insertAll(words)
+        db.wordDao().insertAll(unique)
     }
 
     // ── Conjugation tables ────────────────────────────────────

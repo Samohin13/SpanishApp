@@ -265,3 +265,54 @@ interface DailyWordDao {
     @Query("UPDATE daily_words SET was_practiced = 1 WHERE date = :date")
     suspend fun markPracticed(date: String)
 }
+
+// ── Пользовательские списки ────────────────────────────────────
+
+@Dao
+interface WordListDao {
+
+    // ── Списки ────────────────────────────────────────────────
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertList(list: WordListEntity): Long
+
+    @Update
+    suspend fun updateList(list: WordListEntity)
+
+    @Delete
+    suspend fun deleteList(list: WordListEntity)
+
+    @Query("SELECT * FROM word_lists ORDER BY created_at DESC")
+    fun getAllLists(): Flow<List<WordListEntity>>
+
+    @Query("SELECT * FROM word_lists ORDER BY created_at DESC")
+    suspend fun getAllListsOnce(): List<WordListEntity>
+
+    @Query("SELECT COUNT(*) FROM word_lists")
+    suspend fun getListCount(): Int
+
+    @Query("UPDATE word_lists SET word_count = (SELECT COUNT(*) FROM word_list_entries WHERE list_id = :listId) WHERE id = :listId")
+    suspend fun refreshWordCount(listId: Int)
+
+    // ── Слова в списке ────────────────────────────────────────
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addEntry(entry: WordListEntryEntity)
+
+    @Query("DELETE FROM word_list_entries WHERE list_id = :listId AND word_id = :wordId")
+    suspend fun removeEntry(listId: Int, wordId: Int)
+
+    @Query("SELECT w.* FROM words w INNER JOIN word_list_entries e ON w.id = e.word_id WHERE e.list_id = :listId ORDER BY e.added_at DESC")
+    fun getWordsInList(listId: Int): Flow<List<WordEntity>>
+
+    @Query("SELECT w.* FROM words w INNER JOIN word_list_entries e ON w.id = e.word_id WHERE e.list_id = :listId ORDER BY e.added_at DESC")
+    suspend fun getWordsInListOnce(listId: Int): List<WordEntity>
+
+    @Query("SELECT COUNT(*) FROM word_list_entries WHERE list_id = :listId AND word_id = :wordId")
+    suspend fun isWordInList(listId: Int, wordId: Int): Int
+
+    // Возвращает id всех списков, в которых есть это слово
+    @Query("SELECT list_id FROM word_list_entries WHERE word_id = :wordId")
+    suspend fun getListIdsForWord(wordId: Int): List<Int>
+
+    @Query("SELECT COUNT(*) FROM word_list_entries WHERE list_id = :listId")
+    suspend fun countWordsInList(listId: Int): Int
+}

@@ -23,6 +23,7 @@ object AppModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "spanish_app.db")
+            .addMigrations(AppDatabase.MIGRATION_1_2)
             .fallbackToDestructiveMigration()
             .build()
 
@@ -34,6 +35,7 @@ object AppModule {
     @Provides fun provideChatMessageDao(db: AppDatabase): ChatMessageDao = db.chatMessageDao()
     @Provides fun provideAchievementDao(db: AppDatabase): AchievementDao = db.achievementDao()
     @Provides fun provideDailyWordDao(db: AppDatabase): DailyWordDao = db.dailyWordDao()
+    @Provides fun provideWordListDao(db: AppDatabase): WordListDao = db.wordListDao()
 
     // ── OkHttp  (Anthropic API) ────────────────────────────────
     @Provides

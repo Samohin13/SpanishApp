@@ -38,6 +38,32 @@ data class ConjugationEntity(
     val note: String = ""
 )
 
+// ── Пользовательские списки слов ──────────────────────────────
+
+@Entity(tableName = "word_lists")
+data class WordListEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val name: String,
+    @ColumnInfo(name = "color_index") val colorIndex: Int = 0,   // 0-7, цвет иконки
+    @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "word_count") val wordCount: Int = 0       // денормализованный счётчик
+)
+
+@Entity(
+    tableName = "word_list_entries",
+    foreignKeys = [
+        ForeignKey(entity = WordListEntity::class, parentColumns = ["id"], childColumns = ["list_id"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = WordEntity::class,     parentColumns = ["id"], childColumns = ["word_id"], onDelete = ForeignKey.CASCADE)
+    ],
+    indices = [Index(value = ["list_id", "word_id"], unique = true)]
+)
+data class WordListEntryEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "list_id") val listId: Int,
+    @ColumnInfo(name = "word_id") val wordId: Int,
+    @ColumnInfo(name = "added_at") val addedAt: Long = System.currentTimeMillis()
+)
+
 @Entity(tableName = "lessons")
 data class LessonEntity(
     @PrimaryKey val id: Int,
