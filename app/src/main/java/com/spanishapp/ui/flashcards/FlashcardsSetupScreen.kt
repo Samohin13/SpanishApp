@@ -1,5 +1,6 @@
 package com.spanishapp.ui.flashcards
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -116,6 +117,7 @@ fun FlashcardsSetupScreen(
     val selectedLevelInfo = levels.firstOrNull { it.key == level }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 title = { Text("Карточки") },
@@ -123,7 +125,8 @@ fun FlashcardsSetupScreen(
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Filled.ArrowBack, null)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
         snackbarHost = { SnackbarHost(snackbarHost) }

@@ -161,9 +161,11 @@ fun DictionaryScreen(
     var showCreateList by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 title = { Text(if (selectedId == null) "Словарь" else myLists.firstOrNull { it.id == selectedId }?.name ?: "Список") },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = {
                         if (selectedId != null) vm.selectList(null)

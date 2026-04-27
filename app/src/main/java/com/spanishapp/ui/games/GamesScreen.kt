@@ -1,5 +1,6 @@
 package com.spanishapp.ui.games
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -86,8 +87,12 @@ private val games = listOf(
 @Composable
 fun GamesScreen(navController: NavHostController) {
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
-            TopAppBar(title = { Text("Игры") })
+            TopAppBar(
+                title = { Text("Игры") },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            )
         }
     ) { padding ->
         Column(
