@@ -99,13 +99,15 @@ fun HomeScreen(
                             isLast = index == roadmapUnits.size - 1,
                             isExpanded = expandedUnitId == unit.id,
                             onToggleExpand = {
-                                if (!unit.isLocked) {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
-                                }
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
                             },
                             onStartLesson = { lesson ->
-                                navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
+                                if (!unit.isLocked) {
+                                    navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
+                                } else {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
                             }
                         )
                     }
@@ -182,14 +184,13 @@ private fun RoadmapNode(
             Box(modifier = Modifier.height(16.dp).width(3.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
         }
 
-        // Основная карточка блока
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 8.dp)
                 .shadow(if (isExpanded) 16.dp else 4.dp, RoundedCornerShape(28.dp), spotColor = accentColor.copy(alpha = 0.3f)),
             shape = RoundedCornerShape(28.dp),
-            color = if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f) else Color.White,
+            color = if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f) else MaterialTheme.colorScheme.surface,
             border = if (isExpanded) borderStroke(2.dp, accentColor.copy(alpha = 0.5f)) else null,
             onClick = onToggleExpand
         ) {
@@ -203,11 +204,11 @@ private fun RoadmapNode(
                         modifier = Modifier
                             .size(72.dp)
                             .clip(CircleShape)
-                            .background(accentColor.copy(alpha = 0.1f)),
+                            .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else Color.White),
                         contentAlignment = Alignment.Center
                     ) {
                         if (unit.isLocked) {
-                            Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f))
+                            Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
                         } else {
                             Text(unit.icon, fontSize = 32.sp)
                             CircularProgressIndicator(
@@ -271,7 +272,7 @@ private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit) 
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -285,7 +286,7 @@ private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit) 
             }
             
             Box(
-                modifier = Modifier.size(36.dp).clip(CircleShape).background(if (lesson.isCompleted) color else Color.White),
+                modifier = Modifier.size(36.dp).clip(CircleShape).background(if (lesson.isCompleted) color else MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

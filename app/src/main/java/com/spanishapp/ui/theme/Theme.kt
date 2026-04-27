@@ -16,12 +16,11 @@ import androidx.compose.ui.unit.sp
 // ═══════════════════════════════════════════════════════════════
 
 object AppColors {
-    // Испанская палитра (Modern & Balanced)
-    val Terracotta = Color(0xFFC62828)  // Глубокий красный (Кровь и песок)
-    val Olive      = Color(0xFF558B2F)  // Оливковый (Природа Испании)
-    val Ochre      = Color(0xFFF9A825)  // Золотистая охра (Солнце)
+    val Terracotta = Color(0xFFC62828)
+    val Olive      = Color(0xFF558B2F)
+    val Ochre      = Color(0xFFF9A825)
     
-    // Совместимость со старым кодом
+    // Совместимость
     val Teal       = Olive
     val Gold       = Ochre
     val GoldDark   = Ochre
@@ -33,12 +32,13 @@ object AppColors {
     // Светлая тема
     val L_Bg            = Color(0xFFFDFCF9)
     val L_Surface       = Color(0xFFFFFFFF)
-    val L_Ink           = Color(0xFF201A1A)
+    val L_Ink           = Color(0xFF1A1C1E)
     
-    // Тёмная тема
-    val D_Bg            = Color(0xFF141212)
-    val D_Surface       = Color(0xFF1C1B1F)
-    val D_Ink           = Color(0xFFEDE0E0)
+    // Тёмная тема — "Midnight Premium"
+    val D_Bg            = Color(0xFF121212)   // Тёмный серый, по стандартам Material
+    val D_Surface       = Color(0xFF1E1E1E)   // Карточки заметно светлее
+    val D_SurfaceVariant= Color(0xFF2C2C2C)   // Уроки еще светлее
+    val D_Ink           = Color(0xFFE0E0E0)   // Мягкий белый
 }
 
 val AppTypography = Typography(
@@ -58,17 +58,12 @@ private val LightColors = lightColorScheme(
     onPrimary = Color.White,
     primaryContainer = Color(0xFFFFDAD4),
     onPrimaryContainer = Color(0xFF410001),
-    
     secondary = AppColors.Olive,
     onSecondary = Color.White,
     secondaryContainer = Color(0xFFD7E8DE),
     onSecondaryContainer = Color(0xFF121F16),
-    
     tertiary = AppColors.Ochre,
     onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFFFE082),
-    onTertiaryContainer = Color(0xFF261900),
-    
     background = AppColors.L_Bg,
     surface = Color.White,
     onSurface = AppColors.L_Ink,
@@ -78,12 +73,12 @@ private val LightColors = lightColorScheme(
 )
 
 private val DarkColors = darkColorScheme(
-    primary = Color(0xFFFFB4A9),
+    primary = Color(0xFFFFB4A9),       // Нежный розово-красный
     onPrimary = Color(0xFF690002),
     primaryContainer = Color(0xFF930006),
     onPrimaryContainer = Color(0xFFFFDAD4),
     
-    secondary = Color(0xFFBACCB3),
+    secondary = Color(0xFFBACCB3),      // Пастельный оливковый
     onSecondary = Color(0xFF283420),
     secondaryContainer = Color(0xFF3E4A35),
     onSecondaryContainer = Color(0xFFD7E8DE),
@@ -94,9 +89,9 @@ private val DarkColors = darkColorScheme(
     background = AppColors.D_Bg,
     surface = AppColors.D_Surface,
     onSurface = AppColors.D_Ink,
-    surfaceVariant = Color(0xFF534343),
-    onSurfaceVariant = Color(0xFFD8C2C1),
-    outline = Color(0xFFA08C8B)
+    surfaceVariant = AppColors.D_SurfaceVariant,
+    onSurfaceVariant = Color(0xFFB0B0B0),
+    outline = Color(0xFF444444)
 )
 
 @Composable
