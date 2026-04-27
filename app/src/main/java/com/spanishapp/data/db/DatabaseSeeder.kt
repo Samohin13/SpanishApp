@@ -22,9 +22,44 @@ class DatabaseSeeder @Inject constructor(
 ) {
     companion object {
         // Порог для досева. При добавлении новых паков увеличивать.
-        // JSON ~1084 + ModernVocab ~55 + ExtendedVocab ~700 +
-        // VocabExpansion1 ~1100 + VocabExpansion2 ~1100 + VocabExpansion3 ~1100 = ~5100
         const val VOCAB_TARGET = 5000
+
+        // ── Полностью неправильные глаголы ────────────────────
+        val IRREGULAR_VERBS = setOf(
+            "ser","estar","ir","haber","ver","dar","saber",
+            "tener","poder","querer","poner","venir","decir","hacer","traer",
+            "salir","caer","caber","valer","oír","reír","freír","asir",
+            "obtener","mantener","contener","retener","detener","sostener",
+            "componer","proponer","exponer","disponer","oponer","suponer","imponer","reponer",
+            "contradecir","predecir","bendecir","maldecir",
+            "construir","destruir","incluir","excluir","contribuir","distribuir",
+            "disminuir","influir","constituir","sustituir","atribuir","concluir","huir","instruir",
+            "satisfacer","deshacer","rehacer","contraer","distraer","extraer","abstraer","atraer",
+            "proveer","leer","creer","sobresalir","intervenir","convenir","prevenir","provenir",
+            "entretener","abstraerse","distraerse"
+        )
+
+        // ── Глаголы с изменением корня (отклоняющиеся) ────────
+        val STEM_VERBS = setOf(
+            // e→ie
+            "entender","perder","encender","defender","extender",
+            "sentir","preferir","mentir","convertir","divertir","sugerir","requerir",
+            "advertir","herir","consentir","referir","hervir","invertir",
+            "pensar","empezar","comenzar","cerrar","calentar","despertar",
+            "recomendar","atravesar","confesar","negar","sentar","regar","sembrar",
+            "enterrar","gobernar","plegar","apretar","tropezar","nevar",
+            // o→ue
+            "dormir","volver","encontrar","contar","recordar","costar","mostrar",
+            "mover","resolver","devolver","llover","soler","probar","volar","rogar",
+            "oler","morder","envolver","revolver","apostar","almorzar","colgar",
+            "demostrar","consolar","comprobar","renovar","torcer","absolver",
+            // e→i
+            "pedir","repetir","seguir","servir","elegir","conseguir","perseguir",
+            "vestir","medir","sonreír","corregir","competir","impedir","gemir",
+            "rendir","teñir","ceñir","fregar",
+            // u→ue
+            "jugar"
+        )
     }
 
     suspend fun seedIfNeeded() = withContext(Dispatchers.IO) {
@@ -81,8 +116,22 @@ class DatabaseSeeder @Inject constructor(
         // Дедупликация по испанскому слову (сохраняем первое вхождение)
         val unique = words.distinctBy { it.spanish.trim().lowercase() }
 
-        // insertAll с IGNORE — не перезапишет уже существующие слова (прогресс сохранится)
-        db.wordDao().insertAll(unique)
+        // Пометить неправильные и отклоняющиеся глаголы
+        val marked = unique.map { word ->
+            if (word.wordType == "verb") {
+                when (word.spanish.trim().lowercase()) {
+                    in IRREGULAR_VERBS -> word.copy(verbSubtype = "irregular")
+                    in STEM_VERBS      -> word.copy(verbSubtype = "stem")
+                    else               -> word
+                }
+            } else word
+        }
+
+        // Отфильтровать слова, которые уже есть в БД (по нижнему регистру)
+        val existingSet = db.wordDao().getAllSpanishLower().toHashSet()
+        val newOnly = marked.filter { it.spanish.trim().lowercase() !in existingSet }
+
+        if (newOnly.isNotEmpty()) db.wordDao().insertAll(newOnly)
     }
 
     // ── Conjugation tables ────────────────────────────────────

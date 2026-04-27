@@ -22,7 +22,9 @@ data class WordEntity(
     @ColumnInfo(name = "next_review") val nextReview: Long = 0L,
     @ColumnInfo(name = "is_learned") val isLearned: Boolean = false,
     @ColumnInfo(name = "total_reviews") val totalReviews: Int = 0,
-    @ColumnInfo(name = "correct_reviews") val correctReviews: Int = 0
+    @ColumnInfo(name = "correct_reviews") val correctReviews: Int = 0,
+    // "" = обычный, "irregular" = неправильный, "stem" = с изменением корня
+    @ColumnInfo(name = "verb_subtype") val verbSubtype: String = ""
 )
 
 @Entity(tableName = "conjugations")

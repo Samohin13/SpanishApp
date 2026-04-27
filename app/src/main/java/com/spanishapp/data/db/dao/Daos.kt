@@ -19,7 +19,11 @@ interface WordDao {
     fun getDueWords(now: Long = System.currentTimeMillis(), limit: Int = 30): Flow<List<WordEntity>>
 
     @Query("SELECT * FROM words ORDER BY spanish ASC LIMIT :limit")
-    fun getAllWords(limit: Int = 2000): Flow<List<WordEntity>>
+    fun getAllWords(limit: Int = 8000): Flow<List<WordEntity>>
+
+    // Все испанские слова в нижнем регистре — для дедупликации при досеве
+    @Query("SELECT lower(trim(spanish)) FROM words")
+    suspend fun getAllSpanishLower(): List<String>
 
     @Query("SELECT id FROM words WHERE level = 'A1' ORDER BY id")
     suspend fun getA1WordIds(): List<Int>

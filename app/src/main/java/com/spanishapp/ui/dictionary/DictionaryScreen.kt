@@ -58,7 +58,7 @@ class DictionaryViewModel @Inject constructor(
     val words: StateFlow<List<WordEntity>> = _query
         .debounce(200)
         .flatMapLatest { q ->
-            if (q.length >= 2) wDao.search(q) else wDao.getAllWords(limit = 3000)
+            if (q.length >= 2) wDao.search(q) else wDao.getAllWords(limit = 8000)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -514,12 +514,20 @@ private fun WordRow(
             Spacer(Modifier.width(10.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    word.spanish,
-                    style      = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    color      = MaterialTheme.colorScheme.onSurface
-                )
+                // Испанское слово + пометка глагола
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        word.spanish,
+                        style      = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color      = MaterialTheme.colorScheme.onSurface
+                    )
+                    when (word.verbSubtype) {
+                        "irregular" -> VerbBadge("неправ.", Color(0xFFE11D48))
+                        "stem"      -> VerbBadge("откл.", Color(0xFFD97706))
+                    }
+                }
                 Text(
                     word.russian,
                     style = MaterialTheme.typography.bodySmall,
@@ -563,6 +571,24 @@ private fun WordRow(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun VerbBadge(label: String, color: Color) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(color.copy(alpha = 0.12f))
+            .padding(horizontal = 4.dp, vertical = 1.dp)
+    ) {
+        Text(
+            label,
+            style     = MaterialTheme.typography.labelSmall,
+            fontSize  = 8.sp,
+            color     = color,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
