@@ -5,15 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -22,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.*
 
 @Composable
 fun LessonIntroScreen(
@@ -31,16 +29,17 @@ fun LessonIntroScreen(
 ) {
     val haptic = LocalHapticFeedback.current
     
-    // Анимация масштаба для иконки
-    val infiniteTransition = rememberInfiniteTransition(label = "")
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 0.95f,
-        targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = EaseInOutSine),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scale"
+    // Lottie Animation
+    val lottieUrl = when(type) {
+        "vocab" -> "https://lottie.host/575239a2-5b92-491c-99c5-84631383777f/2mInRjJ968.json" // Book/Study
+        "grammar" -> "https://lottie.host/8e3126f5-5730-4e3a-9653-5d51d1822c95/f4mH8i3K0I.json" // Puzzle
+        else -> "https://lottie.host/640103b4-4e14-4112-9e9d-111162d08a0d/7VzD6iE1T2.json" // Trophy/Quiz
+    }
+    
+    val composition by rememberLottieComposition(LottieCompositionSpec.Url(lottieUrl))
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever
     )
 
     val accentColor = when(type) {
@@ -72,23 +71,18 @@ fun LessonIntroScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Эстетичное свечение сзади иконки
-            Box(contentAlignment = Alignment.Center) {
-                Box(
-                    modifier = Modifier
-                        .size(160.dp)
-                        .scale(scale)
-                        .background(accentColor.copy(alpha = 0.1f), CircleShape)
+            // Lottie анимация вместо статического эмодзи
+            Box(
+                modifier = Modifier
+                    .size(200.dp)
+                    .background(accentColor.copy(alpha = 0.05f), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                LottieAnimation(
+                    composition = composition,
+                    progress = { progress },
+                    modifier = Modifier.size(140.dp)
                 )
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape)
-                        .background(accentColor),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(icon, fontSize = 48.sp)
-                }
             }
 
             Spacer(Modifier.height(48.dp))

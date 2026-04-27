@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.*
 import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.domain.algorithm.ReviewButton
 
@@ -134,6 +135,9 @@ private fun SessionCompleteBody(
     onRestart: () -> Unit,
     onExit: () -> Unit
 ) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.Url("https://lottie.host/7ca331be-49c0-4822-835f-1481b4737f7a/2A8XlF5X9r.json"))
+    val progress by animateLottieCompositionAsState(composition)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -144,17 +148,20 @@ private fun SessionCompleteBody(
         if (error != null) {
             Text(error, style = MaterialTheme.typography.bodyLarge)
         } else {
+            // Анимированная иконка триумфа
             Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .size(160.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🎉", fontSize = 48.sp)
+                LottieAnimation(
+                    composition = composition,
+                    progress = { progress },
+                    modifier = Modifier.fillMaxSize()
+                )
             }
             
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(16.dp))
             
             Text(
                 "Отличная работа!",
