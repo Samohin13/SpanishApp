@@ -2,6 +2,7 @@ package com.spanishapp.ui.games
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
