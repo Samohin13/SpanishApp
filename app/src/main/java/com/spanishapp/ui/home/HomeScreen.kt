@@ -1,9 +1,11 @@
 package com.spanishapp.ui.home
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -12,6 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,8 +28,8 @@ import androidx.navigation.NavHostController
 import com.spanishapp.ui.components.*
 
 // ═══════════════════════════════════════════════════════════════
-//  HOME SCREEN — Lumen design system
-//  Никаких бордюров. Только поверхности. Тёмная тема работает.
+//  HOME SCREEN — Premium Modern Design
+//  Использует градиенты, тени и микро-взаимодействия.
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
@@ -33,6 +39,7 @@ fun HomeScreen(
 ) {
     val state     by viewModel.uiState.collectAsStateWithLifecycle()
     val wordOfDay by viewModel.wordOfTheDay.collectAsStateWithLifecycle()
+    val haptic    = LocalHapticFeedback.current
 
     LaunchedEffect(Unit) { viewModel.onSessionStarted() }
 
@@ -40,149 +47,164 @@ fun HomeScreen(
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(
                 color       = MaterialTheme.colorScheme.primary,
-                strokeWidth = 2.5.dp
+                strokeWidth = 3.dp
             )
         }
         return
     }
 
-    LazyColumn(
-        modifier       = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(bottom = 32.dp)
-    ) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentPadding = PaddingValues(bottom = 32.dp)
+        ) {
 
-        // ── ХЕДЕР ────────────────────────────────────────────
-        item {
-            Header(
-                displayName     = state.displayName,
-                streak          = state.currentStreak,
-                spanishLevel    = state.spanishLevel,
-                onSettingsClick = { navController.navigate("settings") }
-            )
-        }
-
-        // ── XP + ЦЕЛЬ ────────────────────────────────────────
-        item {
-            Row(
-                modifier              = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment     = Alignment.CenterVertically
-            ) {
-                XpProgressBar(
-                    level    = state.appLevel,
-                    progress = state.levelProgress,
-                    totalXp  = state.totalXp,
-                    modifier = Modifier.weight(1f)
-                )
-                DailyGoalRing(
-                    todayMinutes = state.todayMinutes,
-                    goalMinutes  = state.dailyGoalMinutes
-                )
-            }
-            Spacer(Modifier.height(28.dp))
-        }
-
-        // ── СТАТИСТИКА ────────────────────────────────────────
-        item {
-            Row(
-                modifier              = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                StatCard(
-                    icon     = "📚",
-                    value    = "${state.wordsLearned}",
-                    label    = "слов",
-                    modifier = Modifier.weight(1f)
-                )
-                StatCard(
-                    icon     = "🔥",
-                    value    = "${state.longestStreak} дн",
-                    label    = "рекорд",
-                    modifier = Modifier.weight(1f)
-                )
-                StatCard(
-                    icon     = "✦",
-                    value    = "${state.totalXp}",
-                    label    = "очки XP",
-                    modifier = Modifier.weight(1f)
-                )
-            }
-            Spacer(Modifier.height(28.dp))
-        }
-
-        // ── СЛОВО ДНЯ ────────────────────────────────────────
-        wordOfDay?.let { word ->
+            // ── ХЕДЕР С ГРАДИЕНТОМ ────────────────────────────────
             item {
-                WordOfDayCard(
-                    spanish      = word.spanish,
-                    russian      = word.russian,
-                    example      = word.example,
-                    wasPracticed = word.wasPracticed,
-                    onSpeak      = { },
-                    onPractice   = { navController.navigate("flashcards") },
-                    modifier     = Modifier.padding(horizontal = 20.dp)
+                Header(
+                    displayName     = state.displayName,
+                    streak          = state.currentStreak,
+                    spanishLevel    = state.spanishLevel,
+                    onSettingsClick = { 
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        navController.navigate("settings") 
+                    }
+                )
+            }
+
+            // ── ТРЕКЕРЫ ПРОГРЕССА ─────────────────────────────────
+            item {
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fadeIn() + expandVertically()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        XpProgressBar(
+                            level    = state.appLevel,
+                            progress = state.levelProgress,
+                            totalXp  = state.totalXp,
+                            modifier = Modifier.weight(1f)
+                        )
+                        DailyGoalRing(
+                            todayMinutes = state.todayMinutes,
+                            goalMinutes  = state.dailyGoalMinutes
+                        )
+                    }
+                }
+                Spacer(Modifier.height(24.dp))
+            }
+
+            // ── КАРТОЧКИ СТАТИСТИКИ ───────────────────────────────
+            item {
+                Row(
+                    modifier              = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    StatCard(
+                        icon     = "📚",
+                        value    = "${state.wordsLearned}",
+                        label    = "слов",
+                        modifier = Modifier.weight(1f)
+                    )
+                    StatCard(
+                        icon     = "🔥",
+                        value    = "${state.longestStreak}",
+                        label    = "дней",
+                        modifier = Modifier.weight(1f)
+                    )
+                    StatCard(
+                        icon     = "✨",
+                        value    = "${state.totalXp}",
+                        label    = "очков",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                Spacer(Modifier.height(28.dp))
+            }
+
+            // ── СЛОВО ДНЯ ────────────────────────────────────────
+            wordOfDay?.let { word ->
+                item {
+                    WordOfDayCard(
+                        spanish      = word.spanish,
+                        russian      = word.russian,
+                        example      = word.example,
+                        wasPracticed = word.wasPracticed,
+                        onSpeak      = { haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove) },
+                        onPractice   = { 
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            navController.navigate("flashcards") 
+                        },
+                        modifier     = Modifier.padding(horizontal = 20.dp)
+                    )
+                    Spacer(Modifier.height(28.dp))
+                }
+            }
+
+            // ── БАННЕР ПОВЫШЕНИЯ УРОВНЯ ──────────────────────────
+            if (state.shouldLevelUp) {
+                item {
+                    LevelUpBanner(
+                        currentLevel = state.spanishLevel,
+                        onClick      = { navController.navigate("settings") },
+                        modifier     = Modifier.padding(horizontal = 20.dp)
+                    )
+                    Spacer(Modifier.height(28.dp))
+                }
+            }
+
+            // ── РАЗДЕЛ: ОБУЧЕНИЕ ──────────────────────────────────
+            item {
+                SectionHeader(
+                    title    = "Твой план на сегодня",
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Spacer(Modifier.height(16.dp))
+            }
+
+            item {
+                LearningModes(
+                    dueCount      = state.dueWordsCount,
+                    sessionPlan   = state.sessionPlan,
+                    navController = navController,
+                    modifier      = Modifier.padding(horizontal = 20.dp)
                 )
                 Spacer(Modifier.height(28.dp))
             }
-        }
 
-        // ── LEVEL UP ─────────────────────────────────────────
-        if (state.shouldLevelUp) {
+            // ── БЫСТРЫЕ ДЕЙСТВИЯ ──────────────────────────────────
             item {
-                LevelUpBanner(
-                    currentLevel = state.spanishLevel,
-                    onClick      = { navController.navigate("settings") },
-                    modifier     = Modifier.padding(horizontal = 20.dp)
+                SectionHeader(
+                    title    = "Дополнительно",
+                    modifier = Modifier.padding(horizontal = 20.dp)
                 )
-                Spacer(Modifier.height(28.dp))
+                Spacer(Modifier.height(16.dp))
             }
-        }
 
-        // ── УЧИТЬСЯ ──────────────────────────────────────────
-        item {
-            SectionHeader(
-                title    = "Учиться",
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(Modifier.height(14.dp))
-        }
-
-        item {
-            LearningModes(
-                dueCount      = state.dueWordsCount,
-                sessionPlan   = state.sessionPlan,
-                navController = navController,
-                modifier      = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(Modifier.height(28.dp))
-        }
-
-        // ── ЕЩЁ ──────────────────────────────────────────────
-        item {
-            SectionHeader(
-                title    = "Ещё",
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-            Spacer(Modifier.height(14.dp))
-        }
-
-        item {
-            QuickActions(
-                navController = navController,
-                modifier      = Modifier.padding(horizontal = 20.dp)
-            )
+            item {
+                QuickActions(
+                    navController = navController,
+                    modifier      = Modifier.padding(horizontal = 20.dp)
+                )
+            }
         }
     }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  HEADER
+//  ОБНОВЛЕННЫЙ ХЕДЕР
 // ═══════════════════════════════════════════════════════════════
 @Composable
 private fun Header(
@@ -194,48 +216,71 @@ private fun Header(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 12.dp, top = 56.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 40.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(
             modifier              = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment     = Alignment.Top
+            verticalAlignment     = Alignment.CenterVertically
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    text  = greetingByTime(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Row(
-                    verticalAlignment     = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Аватар-заглушка с инициалом
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
+                        text = (if (displayName.isNotEmpty()) displayName[0] else 'E').toString(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Column {
+                    Text(
+                        text  = greetingByTime(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
                         text       = if (displayName.isNotEmpty()) displayName else "Estudiante",
-                        style      = MaterialTheme.typography.displayMedium,
+                        style      = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color      = MaterialTheme.colorScheme.onBackground
                     )
-                    LevelBadge(level = spanishLevel)
                 }
             }
 
             IconButton(
                 onClick  = onSettingsClick,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             ) {
                 Icon(
                     Icons.Default.Settings,
                     contentDescription = "Настройки",
                     tint     = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(22.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
 
-        StreakBadge(streak = streak, large = true)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            StreakBadge(streak = streak, large = true)
+            LevelBadge(level = spanishLevel)
+        }
     }
 }
 

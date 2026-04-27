@@ -1,26 +1,28 @@
 package com.spanishapp.ui.flashcards
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,21 +44,37 @@ fun FlashcardsScreen(
     viewModel: FlashcardsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val haptic = LocalHapticFeedback.current
 
     LaunchedEffect(level, category, direction, onlyWeak) {
         viewModel.startSession(level, category, direction, onlyWeak)
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
                 title = {
-                    val pos = (state.currentIndex).coerceAtMost(state.sessionSize)
-                    Text("Карточка $pos / ${state.sessionSize}")
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            "Изучение слов",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        val pos = (state.currentIndex).coerceAtMost(state.sessionSize)
+                        Text(
+                            "$pos из ${state.sessionSize}",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, null)
+                        Icon(Icons.Default.Close, null)
                     }
                 }
             )
@@ -75,15 +93,24 @@ fun FlashcardsScreen(
                     wrong = state.wrongCount,
                     xp = state.earnedXp,
                     error = state.error,
-                    onRestart = viewModel::restart,
+                    onRestart = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.restart()
+                    },
                     onExit = { navController.popBackStack() }
                 )
                 else -> SessionBody(
                     state = state,
-                    onFlip = viewModel::flip,
+                    onFlip = {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        viewModel.flip()
+                    },
                     onSpeak = { viewModel.speakCurrent() },
                     onSpeakExample = viewModel::speakExample,
-                    onAnswer = viewModel::answer
+                    onAnswer = { button ->
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.answer(button)
+                    }
                 )
             }
         }
@@ -93,7 +120,7 @@ fun FlashcardsScreen(
 @Composable
 private fun LoadingBody() {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(strokeWidth = 3.dp)
     }
 }
 
@@ -107,14 +134,6 @@ private fun SessionCompleteBody(
     onRestart: () -> Unit,
     onExit: () -> Unit
 ) {
-    val motivator = when {
-        total == 0 -> ""
-        correct == total -> "¡Perfecto! Все слова усвоены 🎉"
-        correct >= (total * 0.8) -> "¡Muy bien! Почти всё запомнил"
-        correct >= (total * 0.5) -> "¡Buen trabajo! Движешься вперёд"
-        else -> "¡Sigue así! С каждой сессией становится легче"
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -123,76 +142,65 @@ private fun SessionCompleteBody(
         verticalArrangement = Arrangement.Center
     ) {
         if (error != null) {
-            Text(
-                error,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
-            )
+            Text(error, style = MaterialTheme.typography.bodyLarge)
         } else {
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("🎉", fontSize = 48.sp)
+            }
+            
+            Spacer(Modifier.height(24.dp))
+            
             Text(
-                "Сессия завершена!",
-                style = MaterialTheme.typography.headlineSmall,
+                "Отличная работа!",
+                style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                motivator,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
-            Spacer(Modifier.height(24.dp))
-            StatCard("Всего карточек", total.toString())
-            Spacer(Modifier.height(8.dp))
-            StatCard("Запомнил сразу", correct.toString())
-            Spacer(Modifier.height(8.dp))
-            StatCard("Вернёмся позже", wrong.toString())
-            Spacer(Modifier.height(8.dp))
-            StatCard("Получено XP", "+$xp")
+            
+            Spacer(Modifier.height(32.dp))
+
+            ResultRow("Всего карточек", total.toString(), Icons.Default.Style)
+            ResultRow("Правильно", correct.toString(), Icons.Default.CheckCircle, MaterialTheme.colorScheme.primary)
+            ResultRow("Нужно повторить", wrong.toString(), Icons.Default.Error, MaterialTheme.colorScheme.error)
+            ResultRow("Получено опыта", "+$xp XP", Icons.Default.Stars, MaterialTheme.colorScheme.tertiary)
         }
 
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(48.dp))
 
         Button(
             onClick = onRestart,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp)
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp)
         ) {
-            Icon(Icons.Filled.Refresh, null)
-            Spacer(Modifier.width(8.dp))
-            Text("Ещё сессия")
+            Text("Ещё раз", fontWeight = FontWeight.Bold)
         }
-        Spacer(Modifier.height(8.dp))
-        OutlinedButton(
-            onClick = onExit,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-        ) { Text("Выйти") }
+        
+        TextButton(onClick = onExit) {
+            Text("Вернуться на главную", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }
 
 @Composable
-private fun StatCard(label: String, value: String) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        tonalElevation = 2.dp,
-        modifier = Modifier.fillMaxWidth()
+private fun ResultRow(label: String, value: String, icon: ImageVector, color: Color = MaterialTheme.colorScheme.onSurface) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-            Text(
-                value,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        Icon(icon, null, tint = color.copy(alpha = 0.7f), modifier = Modifier.size(20.dp))
+        Spacer(Modifier.width(12.dp))
+        Text(label, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.weight(1f))
+        Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = color)
     }
 }
 
@@ -209,100 +217,114 @@ private fun SessionBody(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val progress by animateFloatAsState(
+            targetValue = if (state.sessionSize > 0) state.currentIndex.toFloat() / state.sessionSize else 0f,
+            animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+            label = "progress"
+        )
+        
         LinearProgressIndicator(
-            progress = {
-                if (state.sessionSize > 0)
-                    state.currentIndex.toFloat() / state.sessionSize else 0f
-            },
+            progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(3.dp))
+                .height(8.dp)
+                .clip(CircleShape),
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.weight(0.5f))
 
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            FlipCard(
-                word = word,
-                direction = state.currentDirection,
-                showBack = state.showBack,
-                onFlip = onFlip,
-                onSpeak = onSpeak,
-                onSpeakExample = onSpeakExample
-            )
-        }
+        FlipCard(
+            word = word,
+            direction = state.currentDirection,
+            showBack = state.showBack,
+            onFlip = onFlip,
+            onSpeak = onSpeak,
+            onSpeakExample = onSpeakExample
+        )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.weight(1f))
 
-        if (!state.showBack) {
-            OutlinedButton(
-                onClick = onFlip,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-            ) {
-                Text("Показать ответ")
+        AnimatedContent(
+            targetState = state.showBack,
+            transitionSpec = {
+                (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
+            },
+            label = "controls"
+        ) { isShowingBack ->
+            if (!isShowingBack) {
+                Button(
+                    onClick = onFlip,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Text("Показать перевод", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    RatingAction(
+                        text = "Забыл",
+                        icon = Icons.Default.Close,
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.weight(1f)
+                    ) { onAnswer(ReviewButton.HARD) }
+
+                    RatingAction(
+                        text = "Помню",
+                        icon = Icons.Default.Check,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.weight(1f)
+                    ) { onAnswer(ReviewButton.GOOD) }
+
+                    RatingAction(
+                        text = "Легко",
+                        icon = Icons.Default.AutoAwesome,
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                        modifier = Modifier.weight(1f)
+                    ) { onAnswer(ReviewButton.EASY) }
+                }
             }
-        } else {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                RatingButton(
-                    text = "Не знаю",
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.errorContainer,
-                    textColor = MaterialTheme.colorScheme.onErrorContainer
-                ) { onAnswer(ReviewButton.HARD) }
-
-                RatingButton(
-                    text = "Знаю",
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    textColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ) { onAnswer(ReviewButton.GOOD) }
-
-                RatingButton(
-                    text = "Легко",
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    textColor = MaterialTheme.colorScheme.onTertiaryContainer
-                ) { onAnswer(ReviewButton.EASY) }
-            }
         }
+        
+        Spacer(Modifier.height(20.dp))
     }
 }
 
 @Composable
-private fun RatingButton(
+private fun RatingAction(
     text: String,
+    icon: ImageVector,
+    containerColor: Color,
+    contentColor: Color,
     modifier: Modifier = Modifier,
-    color: androidx.compose.ui.graphics.Color,
-    textColor: androidx.compose.ui.graphics.Color,
     onClick: () -> Unit
 ) {
-    Surface(
-        shape = RoundedCornerShape(14.dp),
-        color = color,
-        modifier = modifier
-            .height(56.dp)
-            .clickable(onClick = onClick)
+    Card(
+        onClick = onClick,
+        modifier = modifier.height(80.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = containerColor)
     ) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text,
-                color = textColor,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
-            )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(icon, null, tint = contentColor)
+            Spacer(Modifier.height(4.dp))
+            Text(text, color = contentColor, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)
         }
     }
 }
@@ -318,14 +340,17 @@ private fun FlipCard(
 ) {
     val rotation by animateFloatAsState(
         targetValue = if (showBack) 180f else 0f,
-        animationSpec = tween(400),
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
         label = "flip"
     )
 
-    Surface(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(380.dp)
             .graphicsLayer {
                 rotationY = rotation
                 cameraDistance = 12f * density
@@ -334,23 +359,33 @@ private fun FlipCard(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onFlip
-            ),
-        shape = RoundedCornerShape(20.dp),
-        tonalElevation = 4.dp,
-        color = MaterialTheme.colorScheme.surfaceVariant
+            )
     ) {
-        // Front shown when rotation < 90, back after
         if (rotation <= 90f) {
-            CardFront(word, direction, onSpeak)
+            CardSurface {
+                CardFront(word, direction, onSpeak)
+            }
         } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer { rotationY = 180f }
+            CardSurface(
+                modifier = Modifier.graphicsLayer { rotationY = 180f }
             ) {
                 CardBack(word, direction, onSpeak, onSpeakExample)
             }
         }
+    }
+}
+
+@Composable
+private fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        shape = RoundedCornerShape(32.dp),
+        tonalElevation = 8.dp,
+        shadowElevation = 4.dp,
+        color = MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+    ) {
+        content()
     }
 }
 
@@ -365,36 +400,25 @@ private fun CardFront(
         FlashcardDirection.RU_TO_ES -> word.russian
         FlashcardDirection.MIXED -> word.spanish
     }
-    val showSpeakButton = direction == FlashcardDirection.ES_TO_RU
-
+    
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
+        modifier = Modifier.fillMaxSize().padding(32.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             frontText,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.displayMedium,
+            fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
-            fontSize = 32.sp
+            color = MaterialTheme.colorScheme.onSurface
         )
 
-        if (showSpeakButton) {
-            IconButton(
-                onClick = onSpeak,
-                modifier = Modifier.align(Alignment.TopEnd)
-            ) {
-                Icon(Icons.Filled.VolumeUp, "Озвучить")
-            }
-        }
-
         Text(
-            "Нажми, чтобы увидеть перевод",
+            "НАЖМИ, ЧТОБЫ ПЕРЕВЕРНУТЬ",
             modifier = Modifier.align(Alignment.BottomCenter),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+            letterSpacing = 1.sp
         )
     }
 }
@@ -413,52 +437,60 @@ private fun CardBack(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
+        modifier = Modifier.fillMaxSize().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             word.spanish,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold
         )
-        Spacer(Modifier.height(8.dp))
+        
+        Spacer(Modifier.height(16.dp))
+        
         Text(
             answerText,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center
         )
 
         if (word.example.isNotBlank()) {
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(24.dp))
             Surface(
-                shape = RoundedCornerShape(10.dp),
-                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
-                    modifier = Modifier.padding(12.dp),
+                    modifier = Modifier.padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         "“${word.example}”",
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Start
+                        fontStyle = FontStyle.Italic,
+                        modifier = Modifier.weight(1f)
                     )
                     IconButton(onClick = onSpeakExample) {
-                        Icon(Icons.Filled.VolumeUp, "Озвучить пример")
+                        Icon(Icons.Default.VolumeUp, null, tint = MaterialTheme.colorScheme.primary)
                     }
                 }
             }
         }
 
-        Spacer(Modifier.height(12.dp))
-        IconButton(onClick = onSpeak) {
-            Icon(Icons.Filled.VolumeUp, "Озвучить слово")
+        Spacer(Modifier.height(24.dp))
+        
+        FilledIconButton(
+            onClick = onSpeak,
+            modifier = Modifier.size(56.dp),
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        ) {
+            Icon(Icons.Default.VolumeUp, null)
         }
     }
 }

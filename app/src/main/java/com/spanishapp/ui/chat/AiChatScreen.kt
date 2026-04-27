@@ -1,11 +1,14 @@
 package com.spanishapp.ui.chat
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -17,8 +20,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -93,10 +97,10 @@ fun AiChatScreen(
     val isSending by vm.isSending.collectAsState()
     val error     by vm.error.collectAsState()
     var input     by remember { mutableStateOf("") }
+    val haptic    = LocalHapticFeedback.current
 
     val listState = rememberLazyListState()
 
-    // Auto-scroll to bottom on new message
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             listState.animateScrollToItem(messages.size - 1)
@@ -104,16 +108,26 @@ fun AiChatScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
                 title = {
-                    Column {
-                        Text("ИИ-репетитор")
-                        Text(
-                            "Практика испанского с Claude",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primaryContainer),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("✨", fontSize = 18.sp)
+                        }
+                        Spacer(Modifier.width(12.dp))
+                        Column {
+                            Text("ИИ-помощник", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text("онлайн", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                        }
                     }
                 },
                 navigationIcon = {
@@ -122,9 +136,11 @@ fun AiChatScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = vm::newChat) {
-                        Icon(Icons.Default.AddComment, "Новый чат",
-                             tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    IconButton(onClick = { 
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        vm.newChat() 
+                    }) {
+                        Icon(Icons.Default.AddComment, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             )
@@ -135,24 +151,28 @@ fun AiChatScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // ── Messages ────────────────────────────────────
             Box(modifier = Modifier.weight(1f)) {
                 if (messages.isEmpty()) {
-                    WelcomeHint()
+                    WelcomeHint(onSuggestion = { 
+                        vm.send(it)
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    })
                 } else {
                     LazyColumn(
                         state = listState,
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(messages, key = { it.id }) { msg ->
                             ChatBubble(
                                 message = msg,
-                                onSpeak = { vm.speak(msg.content) }
+                                onSpeak = { 
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    vm.speak(msg.content) 
+                                }
                             )
                         }
-                        // Typing indicator
                         if (isSending) {
                             item { TypingIndicator() }
                         }
@@ -160,65 +180,68 @@ fun AiChatScreen(
                 }
             }
 
-            // ── Error ───────────────────────────────────────
             AnimatedVisibility(error != null) {
                 Surface(
                     color = MaterialTheme.colorScheme.errorContainer,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            error ?: "",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                            modifier = Modifier.weight(1f)
-                        )
-                        TextButton(onClick = vm::clearError) { Text("OK") }
+                        Text(error ?: "", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
+                        IconButton(onClick = vm::clearError) { Icon(Icons.Default.AddComment, null) }
                     }
                 }
             }
 
-            // ── Input ────────────────────────────────────────
-            Surface(tonalElevation = 4.dp) {
+            Surface(
+                tonalElevation = 8.dp,
+                shadowElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surface
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
                         .navigationBarsPadding()
                         .imePadding(),
                     verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     OutlinedTextField(
                         value = input,
                         onValueChange = { input = it },
-                        placeholder = { Text("Escribe en español o en ruso…") },
+                        placeholder = { Text("Сообщение...") },
                         modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(20.dp),
-                        minLines = 1,
-                        maxLines = 4,
-                        enabled = !isSending
-                    )
-                    FilledIconButton(
-                        onClick = { vm.send(input); input = "" },
-                        enabled = input.isNotBlank() && !isSending,
-                        modifier = Modifier.size(48.dp),
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = AppColors.Terracotta
+                        shape = RoundedCornerShape(24.dp),
+                        maxLines = 5,
+                        enabled = !isSending,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
                         )
+                    )
+                    
+                    FloatingActionButton(
+                        onClick = { 
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            vm.send(input)
+                            input = "" 
+                        },
+                        containerColor = if (input.isNotBlank()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = if (input.isNotBlank()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(48.dp),
+                        shape = CircleShape,
+                        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
                     ) {
                         if (isSending) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                strokeWidth = 2.dp,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
+                            CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
                         } else {
-                            Icon(Icons.AutoMirrored.Filled.Send, "Отправить")
+                            Icon(Icons.AutoMirrored.Filled.Send, null, modifier = Modifier.size(20.dp))
                         }
                     }
                 }
@@ -227,157 +250,91 @@ fun AiChatScreen(
     }
 }
 
-// ── Chat bubble ───────────────────────────────────────────────
-
 @Composable
 private fun ChatBubble(message: ChatMessageEntity, onSpeak: () -> Unit) {
     val isUser = message.role == "user"
 
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start,
-        verticalAlignment = Alignment.Bottom
+        horizontalAlignment = if (isUser) Alignment.End else Alignment.Start
     ) {
-        if (!isUser) {
-            // Bot avatar
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(AppColors.Terracotta.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) { Text("🤖", fontSize = 16.sp) }
-            Spacer(Modifier.width(6.dp))
-        }
-
-        Column(
-            modifier = Modifier.widthIn(max = 300.dp),
-            horizontalAlignment = if (isUser) Alignment.End else Alignment.Start
+        Surface(
+            shape = RoundedCornerShape(
+                topStart = 20.dp, topEnd = 20.dp,
+                bottomStart = if (isUser) 20.dp else 4.dp,
+                bottomEnd = if (isUser) 4.dp else 20.dp
+            ),
+            color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+            tonalElevation = if (isUser) 0.dp else 2.dp
         ) {
-            Surface(
-                shape = RoundedCornerShape(
-                    topStart = 18.dp, topEnd = 18.dp,
-                    bottomStart = if (isUser) 18.dp else 4.dp,
-                    bottomEnd = if (isUser) 4.dp else 18.dp
-                ),
-                color = if (isUser)
-                    AppColors.Terracotta.copy(alpha = 0.15f)
-                else
-                    MaterialTheme.colorScheme.surfaceVariant
-            ) {
-                Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                    Text(
-                        message.content,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-
-            // TTS button for assistant
-            if (!isUser) {
-                IconButton(
-                    onClick = onSpeak,
-                    modifier = Modifier.size(28.dp)
-                ) {
-                    Icon(
-                        Icons.Default.VolumeUp, null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
+                Text(
+                    message.content,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                )
             }
         }
-
-        if (isUser) {
-            Spacer(Modifier.width(6.dp))
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(AppColors.Teal.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) { Text("👤", fontSize = 16.sp) }
+        
+        if (!isUser) {
+            IconButton(onClick = onSpeak, modifier = Modifier.padding(top = 2.dp).size(32.dp)) {
+                Icon(Icons.Default.VolumeUp, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+            }
         }
     }
 }
-
-// ── Typing indicator ──────────────────────────────────────────
 
 @Composable
 private fun TypingIndicator() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    Surface(
+        shape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 4.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(50))
-                .background(AppColors.Terracotta.copy(alpha = 0.15f)),
-            contentAlignment = Alignment.Center
-        ) { Text("🤖", fontSize = 16.sp) }
-
-        Surface(
-            shape = RoundedCornerShape(18.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                repeat(3) {
-                    Box(
-                        modifier = Modifier
-                            .size(6.dp)
-                            .clip(RoundedCornerShape(50))
-                            .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
-                    )
-                }
+            repeat(3) {
+                val alpha by rememberInfiniteTransition(label = "").animateFloat(
+                    initialValue = 0.3f, targetValue = 1f,
+                    animationSpec = infiniteRepeatable(tween(600, delayMillis = it * 200), RepeatMode.Reverse),
+                    label = ""
+                )
+                Box(Modifier.size(6.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary.copy(alpha = alpha)))
             }
         }
     }
 }
 
-// ── Welcome hint ─────────────────────────────────────────────
-
 @Composable
-private fun WelcomeHint() {
+private fun WelcomeHint(onSuggestion: (String) -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
+        modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("🤖", fontSize = 56.sp)
-        Spacer(Modifier.height(16.dp))
-        Text(
-            "Привет! Я твой репетитор испанского.",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            "Пиши мне на испанском или русском.\nЯ отвечу на испанском и исправлю ошибки.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
+        Box(
+            modifier = Modifier.size(80.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center
+        ) { Text("👋", fontSize = 40.sp) }
+        
         Spacer(Modifier.height(24.dp))
+        
+        Text("¡Hola! Soy tu tutor personal.", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        
+        Spacer(Modifier.height(12.dp))
+        
+        Text("Я помогу тебе практиковать испанский язык. О чем хочешь поговорить?", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+        
+        Spacer(Modifier.height(32.dp))
 
-        // Quick start prompts
-        val prompts = listOf(
-            "Hola, ¿cómo estás?",
-            "Quiero practicar español",
-            "Объясни разницу ser и estar"
-        )
+        val prompts = listOf("¿Cómo se dice 'погода'?", "Cuéntame un chiste", "Practiquemos el pretérito")
         prompts.forEach { prompt ->
             SuggestionChip(
-                onClick = {},
-                label = { Text(prompt, style = MaterialTheme.typography.bodySmall) },
-                modifier = Modifier.padding(vertical = 2.dp)
+                onClick = { onSuggestion(prompt) },
+                label = { Text(prompt) },
+                modifier = Modifier.padding(vertical = 4.dp),
+                shape = CircleShape
             )
         }
     }
