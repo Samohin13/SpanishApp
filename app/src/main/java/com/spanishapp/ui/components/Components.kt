@@ -3,6 +3,7 @@ package com.spanishapp.ui.components
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,17 +15,29 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // ═══════════════════════════════════════════════════════════════
-//  LUMEN — компоненты без бордюров. Только уровни поверхностей.
-//  Тёмная тема — настоящий чёрный, светлая — почти белый.
+//  OLIVA — компоненты. Объём через уровни поверхностей + тени.
+//  Тёмная тема: почти чёрный фон, яркие акценты горят над ним.
 // ═══════════════════════════════════════════════════════════════
+
+// Тень адаптируется: в светлой теме — классическая, в тёмной — тонкий ореол акцента
+@Composable
+private fun cardShadowElevation(isDark: Boolean): Dp = if (isDark) 0.dp else 2.dp
+
+@Composable
+private fun cardSpotColor(isDark: Boolean): Color =
+    if (isDark) Color.Transparent
+    else MaterialTheme.colorScheme.primary.copy(alpha = 0.06f)
 
 // ═══════════════════════════════════════════════════════════════
 //  XP PROGRESS BAR
@@ -149,14 +162,25 @@ fun StatCard(
     modifier: Modifier = Modifier,
     accentColor: Color = MaterialTheme.colorScheme.primary
 ) {
+    val isDark = isSystemInDarkTheme()
+    val shape  = RoundedCornerShape(16.dp)
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .shadow(
+                elevation  = if (isDark) 0.dp else 3.dp,
+                shape      = shape,
+                spotColor  = accentColor.copy(alpha = 0.10f)
+            )
+            .clip(shape)
+            // В тёмной теме: surfaceContainerHigh — выше фона на 2 уровня = виден слой
+            .background(
+                if (isDark) MaterialTheme.colorScheme.surfaceContainerHigh
+                else MaterialTheme.colorScheme.surface
+            )
             .padding(horizontal = 14.dp, vertical = 14.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(icon, fontSize = 18.sp)
+            Text(icon, fontSize = 20.sp)
             Text(
                 text       = value,
                 style      = MaterialTheme.typography.titleLarge,
@@ -252,7 +276,7 @@ fun SectionHeader(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  HERO FEATURE CARD  —  главная карточка, заливка primary
+//  HERO FEATURE CARD — градиентная заливка, тень снизу
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun HeroFeatureCard(
@@ -265,11 +289,27 @@ fun HeroFeatureCard(
     gradientStart: Color = Color.Unspecified,
     gradientEnd: Color   = Color.Unspecified
 ) {
+    val isDark = isSystemInDarkTheme()
+    val shape  = RoundedCornerShape(20.dp)
+    val primary   = MaterialTheme.colorScheme.primary
+    val secondary = MaterialTheme.colorScheme.secondary
+
+    // Градиент: primary → secondary. В тёмной теме — ярче горит.
+    val brush = Brush.linearGradient(
+        colors = listOf(primary, secondary.copy(alpha = 0.85f))
+    )
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.primary)
+            .shadow(
+                elevation  = if (isDark) 8.dp else 6.dp,
+                shape      = shape,
+                spotColor  = primary.copy(alpha = if (isDark) 0.35f else 0.20f),
+                ambientColor = primary.copy(alpha = if (isDark) 0.15f else 0.08f)
+            )
+            .clip(shape)
+            .background(brush)
             .clickable(onClick = onClick)
     ) {
         Row(
@@ -296,19 +336,19 @@ fun HeroFeatureCard(
                         text       = title,
                         style      = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color      = MaterialTheme.colorScheme.onPrimary
+                        color      = Color.White
                     )
                     if (badgeText != null) {
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(Color.White.copy(alpha = 0.22f))
+                                .background(Color.White.copy(alpha = 0.25f))
                                 .padding(horizontal = 7.dp, vertical = 2.dp)
                         ) {
                             Text(
                                 text       = badgeText,
                                 style      = MaterialTheme.typography.labelSmall,
-                                color      = MaterialTheme.colorScheme.onPrimary,
+                                color      = Color.White,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -317,14 +357,14 @@ fun HeroFeatureCard(
                 Text(
                     text  = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f)
+                    color = Color.White.copy(alpha = 0.88f)
                 )
             }
 
             Icon(
                 Icons.Default.ArrowForwardIos,
                 contentDescription = null,
-                tint     = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
+                tint     = Color.White.copy(alpha = 0.80f),
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -332,7 +372,7 @@ fun HeroFeatureCard(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  FEATURE CARD  —  ячейка сетки, без бордюров
+//  FEATURE CARD  —  ячейка сетки с тенью и уровнем поверхности
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun FeatureCard(
@@ -345,14 +385,25 @@ fun FeatureCard(
     accentColor: Color  = Color.Unspecified,
     enabled: Boolean    = true
 ) {
+    val isDark = isSystemInDarkTheme()
     val resolvedAccent = if (accentColor == Color.Unspecified)
         MaterialTheme.colorScheme.primary else accentColor
-    val accentBg       = resolvedAccent.copy(alpha = 0.14f)
+    val accentBg       = resolvedAccent.copy(alpha = if (isDark) 0.18f else 0.12f)
+    val shape          = RoundedCornerShape(18.dp)
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(18.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .shadow(
+                elevation    = if (isDark) 0.dp else 2.dp,
+                shape        = shape,
+                spotColor    = resolvedAccent.copy(alpha = 0.08f)
+            )
+            .clip(shape)
+            // В тёмной теме поднимаем поверхность на уровень выше фона
+            .background(
+                if (isDark) MaterialTheme.colorScheme.surfaceContainerHigh
+                else MaterialTheme.colorScheme.surface
+            )
             .clickable(enabled = enabled, onClick = onClick)
             .padding(16.dp)
     ) {
@@ -439,7 +490,7 @@ fun LevelBadge(level: String, modifier: Modifier = Modifier) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  WORD OF DAY CARD
+//  WORD OF DAY CARD — с тенью и акцентной полоской сверху
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun WordOfDayCard(
@@ -451,12 +502,36 @@ fun WordOfDayCard(
     onPractice: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isDark = isSystemInDarkTheme()
+    val shape  = RoundedCornerShape(20.dp)
+    val primary = MaterialTheme.colorScheme.primary
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .shadow(
+                elevation    = if (isDark) 6.dp else 4.dp,
+                shape        = shape,
+                spotColor    = primary.copy(alpha = if (isDark) 0.25f else 0.12f),
+                ambientColor = primary.copy(alpha = if (isDark) 0.10f else 0.05f)
+            )
+            .clip(shape)
+            .background(
+                if (isDark) MaterialTheme.colorScheme.surfaceContainerHigh
+                else MaterialTheme.colorScheme.surface
+            )
     ) {
+        // Акцентная полоска сверху — визуальный якорь карточки
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(primary, MaterialTheme.colorScheme.secondary)
+                    )
+                )
+        )
         Column(
             modifier            = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)

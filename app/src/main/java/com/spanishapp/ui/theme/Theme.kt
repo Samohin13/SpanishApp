@@ -40,43 +40,45 @@ object AppColors {
     val L_InkFaint      = Color(0xFFB89A85)   // отключённое
 
     // ────────────────────────────────────────────────────────
-    //  DARK MODE  —  эспрессо-фон, мягкие акценты
+    //  DARK MODE  —  почти чёрный с еле слышной теплотой.
+    //  Коричневого НЕТ — только нейтральная тьма + яркие акценты.
+    //  Уровни поверхностей создают глубину без теней.
     // ────────────────────────────────────────────────────────
-    val D_Bg            = Color(0xFF1E1410)   // глубже эспрессо
-    val D_Surface       = Color(0xFF2E2018)   // поверхность карточек
-    val D_Surface2      = Color(0xFF3D2D22)   // вторичные поверхности
-    val D_Surface3      = Color(0xFF503C2E)   // ещё выше
-    val D_Ink           = Color(0xFFF5E6C8)   // тёплый молочный текст
-    val D_InkMid        = Color(0xFFC4A882)   // вторичный
-    val D_InkDim        = Color(0xFF8F7060)   // подсказки
-    val D_InkFaint      = Color(0xFF6B5040)   // отключённое
+    val D_Bg            = Color(0xFF0E0E0C)   // почти чёрный, чуть тёплый
+    val D_Surface       = Color(0xFF181816)   // карточки — заметный шаг
+    val D_Surface2      = Color(0xFF232320)   // вторичные
+    val D_Surface3      = Color(0xFF2E2E2A)   // ещё выше — ощутимый подъём
+    val D_Ink           = Color(0xFFF2EEE8)   // почти белый, чуть тёплый
+    val D_InkMid        = Color(0xFFB0AA9E)   // вторичный
+    val D_InkDim        = Color(0xFF787068)   // подсказки
+    val D_InkFaint      = Color(0xFF504A44)   // отключённое
 
     // ────────────────────────────────────────────────────────
     //  PRIMARY — зелёный оливковый
     // ────────────────────────────────────────────────────────
     val Green           = Color(0xFF8BC34A)   // из палитры
     val GreenDark       = Color(0xFF558B2F)   // тёмный (нажатие)
-    val GreenOnDark     = Color(0xFFA5D66A)   // для dark mode
+    val GreenOnDark     = Color(0xFFB4E05A)   // ярче на почти-чёрном — горит!
     val GreenTintL      = Color(0xFFE8F5D0)   // подложка light
-    val GreenTintD      = Color(0xFF2E4A10)   // подложка dark
+    val GreenTintD      = Color(0xFF1A3005)   // тёмная подложка: почти чёрный с зелёным
 
     // ────────────────────────────────────────────────────────
     //  SECONDARY — оранжевый (акцент)
     // ────────────────────────────────────────────────────────
     val Orange          = Color(0xFFF05A28)   // из палитры
     val OrangeDark      = Color(0xFFBF3600)
-    val OrangeOnDark    = Color(0xFFFF8A65)
+    val OrangeOnDark    = Color(0xFFFF7043)   // насыщенный — виден на чёрном
     val OrangeTintL     = Color(0xFFFFE0D4)
-    val OrangeTintD     = Color(0xFF6A1E00)
+    val OrangeTintD     = Color(0xFF3A1200)   // глубокий тёмный контейнер
 
     // ────────────────────────────────────────────────────────
     //  TERTIARY — жёлтый (стрик, достижения, XP)
     // ────────────────────────────────────────────────────────
     val Yellow          = Color(0xFFF6C445)   // из палитры
     val YellowDark      = Color(0xFFBF8E00)
-    val YellowOnDark    = Color(0xFFFFD966)
+    val YellowOnDark    = Color(0xFFFFCF33)   // золото на чёрном — роскошно
     val YellowTintL     = Color(0xFFFEF3C7)
-    val YellowTintD     = Color(0xFF5C3E00)
+    val YellowTintD     = Color(0xFF2E2000)   // почти чёрный с золотым
 
     // ────────────────────────────────────────────────────────
     //  Псевдонимы (совместимость со старым кодом)
@@ -297,20 +299,23 @@ private val LightColors = lightColorScheme(
 //  DARK — глубокий эспрессо, мягкий зелёный, яркий оранжевый
 // ═══════════════════════════════════════════════════════════════
 private val DarkColors = darkColorScheme(
+    // Зелёный горит на почти-чёрном — выглядит дорого
     primary             = AppColors.GreenOnDark,
-    onPrimary           = Color(0xFF1A3A00),
+    onPrimary           = Color(0xFF0A1F00),
     primaryContainer    = AppColors.GreenTintD,
-    onPrimaryContainer  = AppColors.GreenOnDark,
+    onPrimaryContainer  = Color(0xFFCCF080),
 
+    // Оранжевый — яркий акцент
     secondary           = AppColors.OrangeOnDark,
-    onSecondary         = Color(0xFF3A0E00),
+    onSecondary         = Color(0xFF200800),
     secondaryContainer  = AppColors.OrangeTintD,
-    onSecondaryContainer = AppColors.OrangeOnDark,
+    onSecondaryContainer = Color(0xFFFFB59A),
 
+    // Золото — стрик, XP, трофеи
     tertiary            = AppColors.YellowOnDark,
-    onTertiary          = Color(0xFF2A1800),
+    onTertiary          = Color(0xFF180E00),
     tertiaryContainer   = AppColors.YellowTintD,
-    onTertiaryContainer = AppColors.YellowOnDark,
+    onTertiaryContainer = Color(0xFFFFE580),
 
     background          = AppColors.D_Bg,
     onBackground        = AppColors.D_Ink,
@@ -320,13 +325,14 @@ private val DarkColors = darkColorScheme(
     surfaceVariant      = AppColors.D_Surface2,
     onSurfaceVariant    = AppColors.D_InkMid,
 
+    // 4 уровня поверхностей — создают глубину без теней
     surfaceContainer        = AppColors.D_Surface2,
     surfaceContainerLow     = AppColors.D_Surface,
     surfaceContainerHigh    = AppColors.D_Surface3,
-    surfaceContainerHighest = AppColors.D_Surface3,
+    surfaceContainerHighest = Color(0xFF383832),
 
     error               = AppColors.OrangeOnDark,
-    onError             = Color(0xFF3A0E00),
+    onError             = Color(0xFF200800),
 
     outline             = AppColors.D_Surface3,
     outlineVariant      = AppColors.D_Surface2
