@@ -1,10 +1,7 @@
 package com.spanishapp.ui.components
 
-import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -17,17 +14,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.spanishapp.ui.theme.AppColors
 
 // ═══════════════════════════════════════════════════════════════
-//  XP PROGRESS BAR  —  ровный прогресс, без пафоса
+//  LUMEN — компоненты без бордюров. Только уровни поверхностей.
+//  Тёмная тема — настоящий чёрный, светлая — почти белый.
+// ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
+//  XP PROGRESS BAR
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun XpProgressBar(
@@ -47,20 +47,18 @@ fun XpProgressBar(
         verticalAlignment     = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Уровень — спокойный круглый жетон
         Box(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(AppColors.TerracottaBg)
-                .border(1.dp, AppColors.Border, CircleShape),
+                .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text       = "$level",
                 fontSize   = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color      = AppColors.TerracottaDark
+                color      = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
 
@@ -78,7 +76,7 @@ fun XpProgressBar(
                 Text(
                     "$totalXp XP",
                     style      = MaterialTheme.typography.labelMedium,
-                    color      = AppColors.InkMid,
+                    color      = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.SemiBold
                 )
             }
@@ -87,14 +85,14 @@ fun XpProgressBar(
                     .fillMaxWidth()
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp))
-                    .background(AppColors.SurfaceMuted)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth(animProgress)
                         .clip(RoundedCornerShape(3.dp))
-                        .background(AppColors.Terracotta)
+                        .background(MaterialTheme.colorScheme.primary)
                 )
             }
         }
@@ -102,7 +100,7 @@ fun XpProgressBar(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  STREAK BADGE  —  тёплый чип, без огненных градиентов
+//  STREAK BADGE
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun StreakBadge(
@@ -111,15 +109,15 @@ fun StreakBadge(
     large: Boolean = false
 ) {
     val active = streak > 0
-    val bgColor = if (active) AppColors.OchreBg else AppColors.SurfaceMuted
-    val textColor = if (active) AppColors.OchreDark else AppColors.InkLight
-    val borderColor = if (active) AppColors.OchreSoft else AppColors.Border
+    val bgColor   = if (active) MaterialTheme.colorScheme.tertiaryContainer
+                    else MaterialTheme.colorScheme.surfaceContainerHigh
+    val textColor = if (active) MaterialTheme.colorScheme.onTertiaryContainer
+                    else MaterialTheme.colorScheme.onSurfaceVariant
 
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
             .background(bgColor)
-            .border(1.dp, borderColor, RoundedCornerShape(10.dp))
             .padding(
                 horizontal = if (large) 14.dp else 10.dp,
                 vertical   = if (large) 8.dp else 6.dp
@@ -141,7 +139,7 @@ fun StreakBadge(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  STAT CARD  —  чистая карточка с тонким бордюром
+//  STAT CARD
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun StatCard(
@@ -149,13 +147,12 @@ fun StatCard(
     value: String,
     icon: String,
     modifier: Modifier = Modifier,
-    accentColor: Color = AppColors.Terracotta
+    accentColor: Color = MaterialTheme.colorScheme.primary
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .border(1.dp, AppColors.Border, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(horizontal = 14.dp, vertical = 14.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -169,7 +166,7 @@ fun StatCard(
             Text(
                 text  = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = AppColors.InkLight
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -191,7 +188,8 @@ fun DailyGoalRing(
         label         = "ring"
     )
     val done = progress >= 1f
-    val ringColor = if (done) AppColors.Olive else AppColors.Terracotta
+    val ringColor = if (done) MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.primary
 
     Box(modifier = modifier.size(60.dp), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
@@ -199,7 +197,7 @@ fun DailyGoalRing(
             modifier    = Modifier.fillMaxSize(),
             strokeWidth = 4.dp,
             color       = ringColor,
-            trackColor  = AppColors.SurfaceMuted
+            trackColor  = MaterialTheme.colorScheme.surfaceContainerHighest
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
@@ -210,9 +208,9 @@ fun DailyGoalRing(
             )
             if (!done) {
                 Text(
-                    text  = "мин",
+                    text     = "мин",
                     fontSize = 9.sp,
-                    color = AppColors.InkLight
+                    color    = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -245,7 +243,7 @@ fun SectionHeader(
                 Text(
                     text       = actionLabel,
                     style      = MaterialTheme.typography.labelMedium,
-                    color      = AppColors.Terracotta,
+                    color      = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
                 )
             }
@@ -254,7 +252,7 @@ fun SectionHeader(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  HERO FEATURE CARD  —  главная карточка, мягкая заливка
+//  HERO FEATURE CARD  —  главная карточка, заливка primary
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun HeroFeatureCard(
@@ -264,21 +262,14 @@ fun HeroFeatureCard(
     onClick: () -> Unit,
     modifier: Modifier   = Modifier,
     badgeText: String?   = null,
-    gradientStart: Color = AppColors.Terracotta,
-    gradientEnd: Color   = AppColors.TerracottaDark
+    gradientStart: Color = Color.Unspecified,
+    gradientEnd: Color   = Color.Unspecified
 ) {
-    // Карточка с тёплым кремовым фоном и акцентной полоской
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 2.dp,
-                shape     = RoundedCornerShape(20.dp),
-                spotColor = AppColors.Terracotta.copy(alpha = 0.08f)
-            )
             .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .border(1.dp, AppColors.Border, RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.primary)
             .clickable(onClick = onClick)
     ) {
         Row(
@@ -286,12 +277,11 @@ fun HeroFeatureCard(
             verticalAlignment     = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Иконка в мягком акцентном квадрате
             Box(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(RoundedCornerShape(14.dp))
-                    .background(AppColors.TerracottaBg),
+                    .background(Color.White.copy(alpha = 0.18f)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(icon, fontSize = 26.sp)
@@ -306,19 +296,19 @@ fun HeroFeatureCard(
                         text       = title,
                         style      = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color      = MaterialTheme.colorScheme.onSurface
+                        color      = MaterialTheme.colorScheme.onPrimary
                     )
                     if (badgeText != null) {
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(AppColors.Terracotta)
+                                .background(Color.White.copy(alpha = 0.22f))
                                 .padding(horizontal = 7.dp, vertical = 2.dp)
                         ) {
                             Text(
                                 text       = badgeText,
                                 style      = MaterialTheme.typography.labelSmall,
-                                color      = Color.White,
+                                color      = MaterialTheme.colorScheme.onPrimary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -327,14 +317,14 @@ fun HeroFeatureCard(
                 Text(
                     text  = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = AppColors.InkMid
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f)
                 )
             }
 
             Icon(
                 Icons.Default.ArrowForwardIos,
                 contentDescription = null,
-                tint     = AppColors.InkLight,
+                tint     = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -342,7 +332,7 @@ fun HeroFeatureCard(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  FEATURE CARD  —  ячейка сетки, чистая, с тонким бордюром
+//  FEATURE CARD  —  ячейка сетки, без бордюров
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun FeatureCard(
@@ -352,22 +342,17 @@ fun FeatureCard(
     onClick: () -> Unit,
     modifier: Modifier  = Modifier,
     badgeText: String?  = null,
-    accentColor: Color  = AppColors.Terracotta,
+    accentColor: Color  = Color.Unspecified,
     enabled: Boolean    = true
 ) {
-    val accentBg = when (accentColor) {
-        AppColors.Terracotta -> AppColors.TerracottaBg
-        AppColors.Olive      -> AppColors.OliveBg
-        AppColors.Ochre      -> AppColors.OchreBg
-        AppColors.Indigo     -> AppColors.IndigoBg
-        else -> accentColor.copy(alpha = 0.08f)
-    }
+    val resolvedAccent = if (accentColor == Color.Unspecified)
+        MaterialTheme.colorScheme.primary else accentColor
+    val accentBg       = resolvedAccent.copy(alpha = 0.14f)
 
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .border(1.dp, AppColors.Border, RoundedCornerShape(18.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .clickable(enabled = enabled, onClick = onClick)
             .padding(16.dp)
     ) {
@@ -381,7 +366,10 @@ fun FeatureCard(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(if (enabled) accentBg else AppColors.SurfaceMuted),
+                        .background(
+                            if (enabled) accentBg
+                            else MaterialTheme.colorScheme.surfaceContainerHigh
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(icon, fontSize = 20.sp)
@@ -396,7 +384,7 @@ fun FeatureCard(
                         Text(
                             text       = badgeText,
                             style      = MaterialTheme.typography.labelSmall,
-                            color      = accentColor,
+                            color      = resolvedAccent,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -408,12 +396,12 @@ fun FeatureCard(
                     style      = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     color      = if (enabled) MaterialTheme.colorScheme.onSurface
-                                 else AppColors.InkFaint
+                                 else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text     = subtitle,
                     style    = MaterialTheme.typography.labelSmall,
-                    color    = AppColors.InkLight,
+                    color    = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2
                 )
             }
@@ -422,17 +410,18 @@ fun FeatureCard(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  LEVEL BADGE  —  маленький уровень CEFR
+//  LEVEL BADGE — CEFR
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun LevelBadge(level: String, modifier: Modifier = Modifier) {
+    val cs = MaterialTheme.colorScheme
     val (bgColor, textColor) = when (level) {
-        "A1" -> AppColors.OliveBg     to AppColors.OliveDark
-        "A2" -> AppColors.IndigoBg    to AppColors.IndigoDark
-        "B1" -> AppColors.OchreBg     to AppColors.OchreDark
-        "B2" -> AppColors.TerracottaBg to AppColors.TerracottaDark
-        "C1" -> AppColors.IndigoBg    to AppColors.IndigoDark
-        else -> AppColors.SurfaceMuted to AppColors.InkLight
+        "A1" -> cs.secondaryContainer to cs.onSecondaryContainer
+        "A2" -> cs.primaryContainer   to cs.onPrimaryContainer
+        "B1" -> cs.tertiaryContainer  to cs.onTertiaryContainer
+        "B2" -> cs.primaryContainer   to cs.onPrimaryContainer
+        "C1" -> cs.tertiaryContainer  to cs.onTertiaryContainer
+        else -> cs.surfaceContainerHigh to cs.onSurfaceVariant
     }
     Box(
         modifier = modifier
@@ -450,7 +439,7 @@ fun LevelBadge(level: String, modifier: Modifier = Modifier) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  WORD OF DAY CARD  —  благородная, тёплая, без крикливых градиентов
+//  WORD OF DAY CARD
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun WordOfDayCard(
@@ -465,20 +454,13 @@ fun WordOfDayCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 2.dp,
-                shape     = RoundedCornerShape(20.dp),
-                spotColor = AppColors.Terracotta.copy(alpha = 0.06f)
-            )
             .clip(RoundedCornerShape(20.dp))
-            .background(AppColors.TerracottaBg)
-            .border(1.dp, AppColors.TerracottaSoft.copy(alpha = 0.5f), RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
     ) {
         Column(
             modifier            = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Шапка
             Row(
                 modifier              = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -492,7 +474,7 @@ fun WordOfDayCard(
                     Text(
                         "Слово дня",
                         style      = MaterialTheme.typography.labelMedium,
-                        color      = AppColors.TerracottaDark,
+                        color      = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -500,13 +482,13 @@ fun WordOfDayCard(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(AppColors.OliveBg)
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
                             .padding(horizontal = 8.dp, vertical = 3.dp)
                     ) {
                         Text(
                             "✓ изучено",
                             style      = MaterialTheme.typography.labelSmall,
-                            color      = AppColors.OliveDark,
+                            color      = MaterialTheme.colorScheme.onSecondaryContainer,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -515,7 +497,6 @@ fun WordOfDayCard(
 
             Spacer(Modifier.height(2.dp))
 
-            // Слово + кнопка озвучки
             Row(
                 verticalAlignment     = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -524,20 +505,20 @@ fun WordOfDayCard(
                     text       = spanish,
                     style      = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
-                    color      = AppColors.Ink
+                    color      = MaterialTheme.colorScheme.onSurface
                 )
                 Box(
                     modifier = Modifier
                         .size(34.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                         .clickable(onClick = onSpeak),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         Icons.Filled.VolumeUp,
                         contentDescription = "Произнести",
-                        tint     = AppColors.Terracotta,
+                        tint     = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -546,7 +527,7 @@ fun WordOfDayCard(
             Text(
                 text       = russian,
                 style      = MaterialTheme.typography.bodyLarge,
-                color      = AppColors.InkMid,
+                color      = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Medium
             )
 
@@ -554,7 +535,7 @@ fun WordOfDayCard(
                 Text(
                     text      = "« $example »",
                     style     = MaterialTheme.typography.bodyMedium,
-                    color     = AppColors.InkLight,
+                    color     = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontStyle = FontStyle.Italic
                 )
             }
@@ -565,7 +546,7 @@ fun WordOfDayCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(AppColors.Terracotta)
+                        .background(MaterialTheme.colorScheme.primary)
                         .clickable(onClick = onPractice)
                         .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center
@@ -573,7 +554,7 @@ fun WordOfDayCard(
                     Text(
                         "Тренировать слово",
                         style      = MaterialTheme.typography.labelLarge,
-                        color      = Color.White,
+                        color      = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -583,7 +564,7 @@ fun WordOfDayCard(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  BOTTOM NAVIGATION BAR  —  чистая, с тонкой границей сверху
+//  BOTTOM NAVIGATION BAR — без бордюров, на surface
 // ═══════════════════════════════════════════════════════════════
 data class NavItem(
     val route: String,
@@ -605,56 +586,38 @@ fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .border(
-                BorderStroke(1.dp, AppColors.Border),
-                shape = RoundedCornerShape(0.dp)
-            )
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 0.dp,
+        modifier       = Modifier.height(72.dp)
     ) {
-        // Тонкая верхняя граница
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(AppColors.Border)
-        )
-
-        NavigationBar(
-            containerColor = MaterialTheme.colorScheme.surface,
-            tonalElevation = 0.dp,
-            modifier       = Modifier.height(64.dp)
-        ) {
-            bottomNavItems.forEach { item ->
-                val selected = currentRoute.startsWith(item.route)
-                NavigationBarItem(
-                    selected = selected,
-                    onClick  = { onNavigate(item.route) },
-                    icon = {
-                        Icon(
-                            imageVector        = if (selected) item.iconSelected else item.icon,
-                            contentDescription = item.label,
-                            modifier           = Modifier.size(22.dp)
-                        )
-                    },
-                    label = {
-                        Text(
-                            text       = item.label,
-                            style      = MaterialTheme.typography.labelSmall,
-                            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor   = AppColors.Terracotta,
-                        selectedTextColor   = AppColors.Terracotta,
-                        unselectedIconColor = AppColors.InkLight,
-                        unselectedTextColor = AppColors.InkLight,
-                        indicatorColor      = AppColors.TerracottaBg
+        bottomNavItems.forEach { item ->
+            val selected = currentRoute.startsWith(item.route)
+            NavigationBarItem(
+                selected = selected,
+                onClick  = { onNavigate(item.route) },
+                icon = {
+                    Icon(
+                        imageVector        = if (selected) item.iconSelected else item.icon,
+                        contentDescription = item.label,
+                        modifier           = Modifier.size(22.dp)
                     )
+                },
+                label = {
+                    Text(
+                        text       = item.label,
+                        style      = MaterialTheme.typography.labelSmall,
+                        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor   = MaterialTheme.colorScheme.primary,
+                    selectedTextColor   = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor      = MaterialTheme.colorScheme.primaryContainer
                 )
-            }
+            )
         }
     }
 }

@@ -11,132 +11,172 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // ═══════════════════════════════════════════════════════════════
-//  SOBREMESA — Design System
-//  Сдержанно. Тепло. Со вкусом. В меру объёмно.
+//  LUMEN — Design System
+//  Вдохновлено Linear, Stripe, Notion, Apple.
+//  Глубокие чёрные. Чистые поверхности. Один яркий акцент.
+//  Без бордюров — только уровни.
 // ═══════════════════════════════════════════════════════════════
 
 object AppColors {
 
-    // ── Нейтрали — основа всего ────────────────────────────────
-    // Фоны — тёплая бумага, не холодный белый
-    val Paper           = Color(0xFFFAF7F2)   // основной фон, цвет старой бумаги
-    val Surface         = Color(0xFFFFFFFF)   // карточки
-    val SurfaceMuted    = Color(0xFFF2EEE7)   // вторичные поверхности
-    val Border          = Color(0xFFE8E2D8)   // тонкие разделители
+    // ────────────────────────────────────────────────────────
+    //  LIGHT — нейтрали (Tailwind neutral)
+    // ────────────────────────────────────────────────────────
+    val L_Bg            = Color(0xFFFAFAFA)   // фон
+    val L_Surface       = Color(0xFFFFFFFF)   // карточки
+    val L_Surface2      = Color(0xFFF5F5F5)   // вторичные поверхности
+    val L_Surface3      = Color(0xFFE5E5E5)   // ещё выше
+    val L_Ink           = Color(0xFF0A0A0A)   // текст основной
+    val L_InkMid        = Color(0xFF525252)   // вторичный
+    val L_InkDim        = Color(0xFF737373)   // подсказки
+    val L_InkFaint      = Color(0xFFA3A3A3)   // отключённое
+    val L_Divider       = Color(0xFFEDEDED)   // тонкие линии (только когда нужно)
 
-    // Текст — тёплые тёмные, без чёрного
-    val Ink             = Color(0xFF1C1917)   // основной текст
-    val InkMid          = Color(0xFF57534E)   // вторичный
-    val InkLight        = Color(0xFF8C8278)   // подсказки
-    val InkFaint        = Color(0xFFC8BFB3)   // отключённое
+    // ────────────────────────────────────────────────────────
+    //  DARK — настоящие OLED-чёрные
+    // ────────────────────────────────────────────────────────
+    val D_Bg            = Color(0xFF0A0A0A)   // глубокий чёрный
+    val D_Surface       = Color(0xFF171717)   // карточки
+    val D_Surface2      = Color(0xFF262626)   // вторичные поверхности
+    val D_Surface3      = Color(0xFF404040)   // ещё выше
+    val D_Ink           = Color(0xFFFAFAFA)   // основной текст
+    val D_InkMid        = Color(0xFFA3A3A3)   // вторичный
+    val D_InkDim        = Color(0xFF737373)   // подсказки
+    val D_InkFaint      = Color(0xFF525252)   // отключённое
+    val D_Divider       = Color(0xFF262626)
 
-    // ── Акценты — приглушённые, благородные ───────────────────
-    // Терракота — главный акцент. Мягкий, не кричащий.
-    val Terracotta      = Color(0xFFB8442D)
-    val TerracottaSoft  = Color(0xFFE8C4B8)
-    val TerracottaBg    = Color(0xFFF7EDE7)
-    val TerracottaDark  = Color(0xFF8E2F1E)
+    // ────────────────────────────────────────────────────────
+    //  BRAND — Rose. Один акцент через всё приложение.
+    //  Адаптируется к теме: насыщенный на свету, мягче в тьме.
+    // ────────────────────────────────────────────────────────
+    val Rose            = Color(0xFFE11D48)   // главный — light mode
+    val RoseLight       = Color(0xFFFB7185)   // — dark mode
+    val RoseDeep        = Color(0xFFBE123C)   // нажатое состояние
+    val RoseTintLight   = Color(0xFFFFE4E6)   // подложки в light
+    val RoseTintDark    = Color(0xFF4C1322)   // подложки в dark
 
-    // Олива — успех, прогресс. Средиземноморский зелёный.
-    val Olive           = Color(0xFF6B7D5A)
-    val OliveSoft       = Color(0xFFC8D2BD)
-    val OliveBg         = Color(0xFFF1F3EC)
-    val OliveDark       = Color(0xFF4A5840)
+    // ────────────────────────────────────────────────────────
+    //  ACCENTS — для категорий, спокойные, не кричащие
+    // ────────────────────────────────────────────────────────
+    val Emerald         = Color(0xFF059669)   // успех
+    val EmeraldL        = Color(0xFF34D399)   // dark mode
+    val EmeraldTintL    = Color(0xFFD1FAE5)
+    val EmeraldTintD    = Color(0xFF064E3B)
 
-    // Охра — стрик, золото, достижения. Дижон.
-    val Ochre           = Color(0xFFB8851F)
-    val OchreSoft       = Color(0xFFE8D396)
-    val OchreBg         = Color(0xFFF7F0DC)
-    val OchreDark       = Color(0xFF8C6418)
+    val Amber           = Color(0xFFD97706)   // стрик, золото
+    val AmberL          = Color(0xFFFBBF24)
+    val AmberTintL      = Color(0xFFFEF3C7)
+    val AmberTintD      = Color(0xFF78350F)
 
-    // Индиго — информация, премиум. Тёмно-синий.
-    val Indigo          = Color(0xFF3D4A75)
-    val IndigoSoft      = Color(0xFFC4CBDC)
-    val IndigoBg        = Color(0xFFEDF0F5)
-    val IndigoDark      = Color(0xFF2A3354)
+    val Sky             = Color(0xFF0284C7)   // информация
+    val SkyL            = Color(0xFF38BDF8)
+    val SkyTintL        = Color(0xFFE0F2FE)
+    val SkyTintD        = Color(0xFF0C4A6E)
 
-    // ── Тёмная тема ───────────────────────────────────────────
-    val DarkBg          = Color(0xFF14110E)   // тёплый чёрный
-    val DarkSurf        = Color(0xFF1F1B17)
-    val DarkSurfMuted   = Color(0xFF2A2520)
-    val DarkBorder      = Color(0xFF3D362F)
-    val DarkInk         = Color(0xFFF5F0E8)
-    val DarkInkMid      = Color(0xFFB8B0A4)
-    val DarkInkLight    = Color(0xFF8C8278)
+    val Violet          = Color(0xFF7C3AED)   // премиум, AI
+    val VioletL         = Color(0xFFA78BFA)
+    val VioletTintL     = Color(0xFFEDE9FE)
+    val VioletTintD     = Color(0xFF4C1D95)
 
-    // ── Семантика ─────────────────────────────────────────────
-    val Success         = Olive
-    val Warning         = Ochre
-    val Error           = Terracotta
-    val Info            = Indigo
-
-    // ── Совместимость со старым кодом ─────────────────────────
-    val TerracottaLight = TerracottaSoft
-    val Gold            = Ochre
-    val GoldLight       = OchreSoft
-    val GoldDark        = OchreDark
-    val Teal            = Olive
-    val TealLight       = OliveSoft
-    val TealDark        = OliveDark
-    val Coral           = Terracotta
-    val CoralLight      = TerracottaSoft
-    val CoralDark       = TerracottaDark
-    val CoralSurface    = TerracottaBg
-    val Amber           = Ochre
-    val AmberLight      = OchreSoft
-    val AmberDark       = OchreDark
-    val AmberSurface    = OchreBg
-    val Jade            = Olive
-    val JadeLight       = OliveSoft
-    val JadeDark        = OliveDark
-    val JadeSurface     = OliveBg
-    val Violet          = Indigo
-    val VioletLight     = IndigoSoft
-    val VioletDark      = IndigoDark
-    val VioletSurface   = IndigoBg
-    val Sky             = Indigo
-    val SkySurface      = IndigoBg
-    val InkMedium       = InkMid
-    val Cream           = Paper
-    val CreamMid        = SurfaceMuted
-    val CreamDark       = SurfaceMuted
-    val CreamDeep       = Border
-    val DarkBackground  = DarkBg
-    val DarkSurface     = DarkSurf
-    val DarkSurface2    = DarkSurfMuted
-    val DarkSurf2       = DarkSurfMuted
-    val DarkSurf3       = DarkBorder
-    val DarkText        = DarkInk
-    val XpGradientStart = Ochre
-    val XpGradientEnd   = Terracotta
+    // ────────────────────────────────────────────────────────
+    //  Совместимость со старым кодом
+    // ────────────────────────────────────────────────────────
+    val Terracotta      = Rose
+    val TerracottaLight = RoseLight
+    val TerracottaDark  = RoseDeep
+    val TerracottaSoft  = RoseTintLight
+    val TerracottaBg    = RoseTintLight
+    val Coral           = Rose
+    val CoralLight      = RoseLight
+    val CoralDark       = RoseDeep
+    val CoralSurface    = RoseTintLight
+    val Olive           = Emerald
+    val OliveSoft       = EmeraldTintL
+    val OliveBg         = EmeraldTintL
+    val OliveDark       = Color(0xFF065F46)
+    val Ochre           = Amber
+    val OchreSoft       = AmberTintL
+    val OchreBg         = AmberTintL
+    val OchreDark       = Color(0xFF92400E)
+    val Indigo          = Sky
+    val IndigoSoft      = SkyTintL
+    val IndigoBg        = SkyTintL
+    val IndigoDark      = Color(0xFF075985)
+    val VioletSurface   = VioletTintL
+    val VioletDark      = Color(0xFF5B21B6)
+    val SkySurface      = SkyTintL
+    val Gold            = Amber
+    val GoldLight       = AmberL
+    val GoldDark        = Color(0xFF92400E)
+    val Teal            = Emerald
+    val TealLight       = EmeraldL
+    val TealDark        = Color(0xFF065F46)
+    val Jade            = Emerald
+    val JadeLight       = EmeraldL
+    val JadeDark        = Color(0xFF065F46)
+    val JadeSurface     = EmeraldTintL
+    val AmberSurface    = AmberTintL
+    val Info            = Sky
+    val Success         = Emerald
+    val Warning         = Amber
+    val Error           = Rose
+    val Paper           = L_Bg
+    val Surface         = L_Surface
+    val SurfaceMuted    = L_Surface2
+    val Border          = L_Divider
+    val Ink             = L_Ink
+    val InkMid          = L_InkMid
+    val InkLight        = L_InkDim
+    val InkFaint        = L_InkFaint
+    val InkMedium       = L_InkMid
+    val Cream           = L_Bg
+    val CreamMid        = L_Surface2
+    val CreamDark       = L_Surface2
+    val CreamDeep       = L_Surface3
+    val DarkBg          = D_Bg
+    val DarkSurf        = D_Surface
+    val DarkSurfMuted   = D_Surface2
+    val DarkBorder      = D_Surface2
+    val DarkInk         = D_Ink
+    val DarkInkMid      = D_InkMid
+    val DarkInkLight    = D_InkDim
+    val DarkBackground  = D_Bg
+    val DarkSurface     = D_Surface
+    val DarkSurface2    = D_Surface2
+    val DarkSurf2       = D_Surface2
+    val DarkSurf3       = D_Surface3
+    val DarkText        = D_Ink
+    val XpGradientStart = Amber
+    val XpGradientEnd   = Rose
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  TYPOGRAPHY  —  Сдержанная, читаемая, без перегиба
+//  TYPOGRAPHY — Inter-style: чистая, точная, иерархическая
 // ═══════════════════════════════════════════════════════════════
 val AppTypography = Typography(
     displayLarge = TextStyle(
         fontWeight    = FontWeight.Bold,
-        fontSize      = 32.sp,
-        lineHeight    = 40.sp,
-        letterSpacing = (-0.5).sp
+        fontSize      = 36.sp,
+        lineHeight    = 44.sp,
+        letterSpacing = (-0.8).sp
     ),
     displayMedium = TextStyle(
         fontWeight    = FontWeight.Bold,
-        fontSize      = 28.sp,
-        lineHeight    = 36.sp,
-        letterSpacing = (-0.4).sp
+        fontSize      = 30.sp,
+        lineHeight    = 38.sp,
+        letterSpacing = (-0.6).sp
     ),
     headlineLarge = TextStyle(
         fontWeight    = FontWeight.SemiBold,
         fontSize      = 24.sp,
         lineHeight    = 32.sp,
-        letterSpacing = (-0.2).sp
+        letterSpacing = (-0.3).sp
     ),
     headlineMedium = TextStyle(
         fontWeight    = FontWeight.SemiBold,
         fontSize      = 20.sp,
-        lineHeight    = 28.sp
+        lineHeight    = 28.sp,
+        letterSpacing = (-0.2).sp
     ),
     headlineSmall = TextStyle(
         fontWeight    = FontWeight.SemiBold,
@@ -197,76 +237,78 @@ val AppTypography = Typography(
 //  LIGHT
 // ═══════════════════════════════════════════════════════════════
 private val LightColors = lightColorScheme(
-    primary             = AppColors.Terracotta,
+    primary             = AppColors.Rose,
     onPrimary           = Color.White,
-    primaryContainer    = AppColors.TerracottaBg,
-    onPrimaryContainer  = AppColors.TerracottaDark,
+    primaryContainer    = AppColors.RoseTintLight,
+    onPrimaryContainer  = AppColors.RoseDeep,
 
-    secondary           = AppColors.Olive,
+    secondary           = AppColors.Emerald,
     onSecondary         = Color.White,
-    secondaryContainer  = AppColors.OliveBg,
-    onSecondaryContainer = AppColors.OliveDark,
+    secondaryContainer  = AppColors.EmeraldTintL,
+    onSecondaryContainer = Color(0xFF064E3B),
 
-    tertiary            = AppColors.Ochre,
+    tertiary            = AppColors.Amber,
     onTertiary          = Color.White,
-    tertiaryContainer   = AppColors.OchreBg,
-    onTertiaryContainer = AppColors.OchreDark,
+    tertiaryContainer   = AppColors.AmberTintL,
+    onTertiaryContainer = Color(0xFF78350F),
 
-    background          = AppColors.Paper,
-    onBackground        = AppColors.Ink,
+    background          = AppColors.L_Bg,
+    onBackground        = AppColors.L_Ink,
 
-    surface             = AppColors.Surface,
-    onSurface           = AppColors.Ink,
-    surfaceVariant      = AppColors.SurfaceMuted,
-    onSurfaceVariant    = AppColors.InkMid,
+    surface             = AppColors.L_Surface,
+    onSurface           = AppColors.L_Ink,
+    surfaceVariant      = AppColors.L_Surface2,
+    onSurfaceVariant    = AppColors.L_InkMid,
 
-    surfaceContainer        = AppColors.SurfaceMuted,
-    surfaceContainerHigh    = AppColors.Border,
-    surfaceContainerHighest = AppColors.Border,
+    surfaceContainer        = AppColors.L_Surface2,
+    surfaceContainerLow     = AppColors.L_Surface,
+    surfaceContainerHigh    = AppColors.L_Surface3,
+    surfaceContainerHighest = AppColors.L_Surface3,
 
-    error               = AppColors.Terracotta,
+    error               = AppColors.Rose,
     onError             = Color.White,
 
-    outline             = AppColors.Border,
-    outlineVariant      = AppColors.SurfaceMuted
+    outline             = AppColors.L_Divider,
+    outlineVariant      = AppColors.L_Divider
 )
 
 // ═══════════════════════════════════════════════════════════════
 //  DARK
 // ═══════════════════════════════════════════════════════════════
 private val DarkColors = darkColorScheme(
-    primary             = Color(0xFFE07A5F),
-    onPrimary           = AppColors.TerracottaDark,
-    primaryContainer    = AppColors.TerracottaDark,
-    onPrimaryContainer  = AppColors.TerracottaSoft,
+    primary             = AppColors.RoseLight,
+    onPrimary           = Color.White,
+    primaryContainer    = AppColors.RoseTintDark,
+    onPrimaryContainer  = AppColors.RoseLight,
 
-    secondary           = AppColors.OliveSoft,
-    onSecondary         = AppColors.OliveDark,
-    secondaryContainer  = AppColors.OliveDark,
-    onSecondaryContainer = AppColors.OliveSoft,
+    secondary           = AppColors.EmeraldL,
+    onSecondary         = Color(0xFF064E3B),
+    secondaryContainer  = AppColors.EmeraldTintD,
+    onSecondaryContainer = AppColors.EmeraldL,
 
-    tertiary            = AppColors.OchreSoft,
-    onTertiary          = AppColors.OchreDark,
-    tertiaryContainer   = AppColors.OchreDark,
-    onTertiaryContainer = AppColors.OchreSoft,
+    tertiary            = AppColors.AmberL,
+    onTertiary          = Color(0xFF78350F),
+    tertiaryContainer   = AppColors.AmberTintD,
+    onTertiaryContainer = AppColors.AmberL,
 
-    background          = AppColors.DarkBg,
-    onBackground        = AppColors.DarkInk,
+    background          = AppColors.D_Bg,
+    onBackground        = AppColors.D_Ink,
 
-    surface             = AppColors.DarkSurf,
-    onSurface           = AppColors.DarkInk,
-    surfaceVariant      = AppColors.DarkSurfMuted,
-    onSurfaceVariant    = AppColors.DarkInkMid,
+    surface             = AppColors.D_Surface,
+    onSurface           = AppColors.D_Ink,
+    surfaceVariant      = AppColors.D_Surface2,
+    onSurfaceVariant    = AppColors.D_InkMid,
 
-    surfaceContainer        = AppColors.DarkSurfMuted,
-    surfaceContainerHigh    = AppColors.DarkBorder,
-    surfaceContainerHighest = AppColors.DarkBorder,
+    surfaceContainer        = AppColors.D_Surface2,
+    surfaceContainerLow     = AppColors.D_Surface,
+    surfaceContainerHigh    = AppColors.D_Surface3,
+    surfaceContainerHighest = AppColors.D_Surface3,
 
-    error               = Color(0xFFE07A5F),
+    error               = AppColors.RoseLight,
     onError             = Color(0xFF690005),
 
-    outline             = AppColors.DarkBorder,
-    outlineVariant      = AppColors.DarkSurfMuted
+    outline             = AppColors.D_Divider,
+    outlineVariant      = AppColors.D_Divider
 )
 
 // ═══════════════════════════════════════════════════════════════

@@ -1,9 +1,9 @@
 package com.spanishapp.ui.home
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -12,30 +12,36 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.spanishapp.ui.components.*
-import com.spanishapp.ui.theme.AppColors
+
+// ═══════════════════════════════════════════════════════════════
+//  HOME SCREEN — Lumen design system
+//  Никаких бордюров. Только поверхности. Тёмная тема работает.
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state    by viewModel.uiState.collectAsStateWithLifecycle()
+    val state     by viewModel.uiState.collectAsStateWithLifecycle()
     val wordOfDay by viewModel.wordOfTheDay.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) { viewModel.onSessionStarted() }
 
     if (state.isLoading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = AppColors.Terracotta, strokeWidth = 2.5.dp)
+            CircularProgressIndicator(
+                color       = MaterialTheme.colorScheme.primary,
+                strokeWidth = 2.5.dp
+            )
         }
         return
     }
@@ -44,10 +50,10 @@ fun HomeScreen(
         modifier       = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
-        contentPadding = PaddingValues(bottom = 24.dp)
+        contentPadding = PaddingValues(bottom = 32.dp)
     ) {
 
-        // ── ЧИСТЫЙ ХЕДЕР ─────────────────────────────────────
+        // ── ХЕДЕР ────────────────────────────────────────────
         item {
             Header(
                 displayName     = state.displayName,
@@ -57,7 +63,7 @@ fun HomeScreen(
             )
         }
 
-        // ── XP + ЦЕЛЬ ─────────────────────────────────────────
+        // ── XP + ЦЕЛЬ ────────────────────────────────────────
         item {
             Row(
                 modifier              = Modifier
@@ -89,31 +95,28 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 StatCard(
-                    icon        = "📚",
-                    value       = "${state.wordsLearned}",
-                    label       = "слов",
-                    accentColor = AppColors.Olive,
-                    modifier    = Modifier.weight(1f)
+                    icon     = "📚",
+                    value    = "${state.wordsLearned}",
+                    label    = "слов",
+                    modifier = Modifier.weight(1f)
                 )
                 StatCard(
-                    icon        = "🔥",
-                    value       = "${state.longestStreak} дн",
-                    label       = "рекорд",
-                    accentColor = AppColors.Ochre,
-                    modifier    = Modifier.weight(1f)
+                    icon     = "🔥",
+                    value    = "${state.longestStreak} дн",
+                    label    = "рекорд",
+                    modifier = Modifier.weight(1f)
                 )
                 StatCard(
-                    icon        = "✦",
-                    value       = "${state.totalXp}",
-                    label       = "очки XP",
-                    accentColor = AppColors.Terracotta,
-                    modifier    = Modifier.weight(1f)
+                    icon     = "✦",
+                    value    = "${state.totalXp}",
+                    label    = "очки XP",
+                    modifier = Modifier.weight(1f)
                 )
             }
             Spacer(Modifier.height(28.dp))
         }
 
-        // ── СЛОВО ДНЯ ─────────────────────────────────────────
+        // ── СЛОВО ДНЯ ────────────────────────────────────────
         wordOfDay?.let { word ->
             item {
                 WordOfDayCard(
@@ -129,7 +132,7 @@ fun HomeScreen(
             }
         }
 
-        // ── LEVEL UP ──────────────────────────────────────────
+        // ── LEVEL UP ─────────────────────────────────────────
         if (state.shouldLevelUp) {
             item {
                 LevelUpBanner(
@@ -141,7 +144,7 @@ fun HomeScreen(
             }
         }
 
-        // ── УЧИТЬСЯ ───────────────────────────────────────────
+        // ── УЧИТЬСЯ ──────────────────────────────────────────
         item {
             SectionHeader(
                 title    = "Учиться",
@@ -179,7 +182,7 @@ fun HomeScreen(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  HEADER  —  спокойный, без градиентов
+//  HEADER
 // ═══════════════════════════════════════════════════════════════
 @Composable
 private fun Header(
@@ -203,7 +206,7 @@ private fun Header(
                 Text(
                     text  = greetingByTime(),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = AppColors.InkLight
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Row(
                     verticalAlignment     = Alignment.CenterVertically,
@@ -213,7 +216,7 @@ private fun Header(
                         text       = if (displayName.isNotEmpty()) displayName else "Estudiante",
                         style      = MaterialTheme.typography.displayMedium,
                         fontWeight = FontWeight.Bold,
-                        color      = AppColors.Ink
+                        color      = MaterialTheme.colorScheme.onBackground
                     )
                     LevelBadge(level = spanishLevel)
                 }
@@ -226,7 +229,7 @@ private fun Header(
                 Icon(
                     Icons.Default.Settings,
                     contentDescription = "Настройки",
-                    tint     = AppColors.InkMid,
+                    tint     = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -237,7 +240,7 @@ private fun Header(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  LEVEL UP BANNER  —  ненавязчивый
+//  LEVEL UP BANNER — терциарный контейнер, без бордюра
 // ═══════════════════════════════════════════════════════════════
 @Composable
 private fun LevelUpBanner(
@@ -252,13 +255,12 @@ private fun LevelUpBanner(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppColors.OchreBg)
-            .border(1.dp, AppColors.OchreSoft, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
             .clickable(onClick = onClick)
             .padding(16.dp)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment     = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text("🏆", fontSize = 24.sp)
@@ -267,17 +269,17 @@ private fun LevelUpBanner(
                     "Готов перейти на $nextLevel?",
                     style      = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color      = AppColors.OchreDark
+                    color      = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Text(
                     "Ты освоил $currentLevel — можно повышать сложность",
                     style = MaterialTheme.typography.bodySmall,
-                    color = AppColors.InkMid
+                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f)
                 )
             }
             Icon(
                 Icons.Default.ArrowForward, null,
-                tint     = AppColors.OchreDark,
+                tint     = MaterialTheme.colorScheme.onTertiaryContainer,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -294,16 +296,18 @@ private fun LearningModes(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val cs = MaterialTheme.colorScheme
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
 
+        // Главная карточка — Flashcards с primary-заливкой
         HeroFeatureCard(
-            title         = "Карточки",
-            subtitle      = if (dueCount > 0)
-                                "$dueCount к повторению · ${sessionPlan.newWords} новых"
-                            else "Все повторения на сегодня выполнены",
-            icon          = "🃏",
-            onClick       = { navController.navigate("flashcards") },
-            badgeText     = if (dueCount > 0) "$dueCount" else null
+            title     = "Карточки",
+            subtitle  = if (dueCount > 0)
+                            "$dueCount к повторению · ${sessionPlan.newWords} новых"
+                        else "Все повторения на сегодня выполнены",
+            icon      = "🃏",
+            onClick   = { navController.navigate("flashcards") },
+            badgeText = if (dueCount > 0) "$dueCount" else null
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -312,7 +316,7 @@ private fun LearningModes(
                 subtitle    = "160 глаголов",
                 icon        = "📝",
                 onClick     = { navController.navigate("conjugation") },
-                accentColor = AppColors.Olive,
+                accentColor = cs.secondary,
                 modifier    = Modifier.weight(1f)
             )
             FeatureCard(
@@ -320,7 +324,7 @@ private fun LearningModes(
                 subtitle    = "Реальные ситуации",
                 icon        = "💬",
                 onClick     = { navController.navigate("dialogues") },
-                accentColor = AppColors.Ochre,
+                accentColor = cs.tertiary,
                 modifier    = Modifier.weight(1f)
             )
         }
@@ -330,7 +334,7 @@ private fun LearningModes(
                 subtitle    = "A1 · A2 · B1",
                 icon        = "📖",
                 onClick     = { navController.navigate("grammar") },
-                accentColor = AppColors.Indigo,
+                accentColor = MaterialTheme.colorScheme.primary,
                 modifier    = Modifier.weight(1f)
             )
             FeatureCard(
@@ -338,7 +342,7 @@ private fun LearningModes(
                 subtitle    = "Говори и слушай",
                 icon        = "🎤",
                 onClick     = { navController.navigate("pronunciation") },
-                accentColor = AppColors.Terracotta,
+                accentColor = cs.secondary,
                 modifier    = Modifier.weight(1f)
             )
         }
@@ -346,7 +350,7 @@ private fun LearningModes(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  QUICK ACTIONS  —  чистые маленькие кнопки
+//  QUICK ACTIONS — без бордюров, surfaceContainerHigh
 // ═══════════════════════════════════════════════════════════════
 @Composable
 private fun QuickActions(
@@ -357,7 +361,7 @@ private fun QuickActions(
         Triple("weak_words", "Слабые слова",  "⚠"),
         Triple("quiz",       "Тест",          "✓"),
         Triple("games",      "Игры",          "♟"),
-        Triple("ai_chat",    "ИИ-репетитор",  "✨")
+        Triple("ai_chat",    "ИИ",            "✨")
     )
     Row(
         modifier              = modifier.fillMaxWidth(),
@@ -368,24 +372,28 @@ private fun QuickActions(
                 modifier = Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .border(1.dp, AppColors.Border, RoundedCornerShape(14.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     .clickable { navController.navigate(route) }
-                    .padding(vertical = 14.dp, horizontal = 4.dp),
+                    .padding(vertical = 16.dp, horizontal = 4.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Text(icon, fontSize = 18.sp, color = AppColors.Terracotta, fontWeight = FontWeight.Bold)
                     Text(
-                        text      = label,
-                        style     = MaterialTheme.typography.labelSmall,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        color     = AppColors.InkMid,
+                        text       = icon,
+                        fontSize   = 20.sp,
+                        color      = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text       = label,
+                        style      = MaterialTheme.typography.labelSmall,
+                        textAlign  = TextAlign.Center,
+                        color      = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Medium,
-                        maxLines  = 2
+                        maxLines   = 2
                     )
                 }
             }
