@@ -2,6 +2,7 @@ package com.spanishapp.ui.home
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,13 +44,13 @@ data class RoadmapUnit(
 
 data class RoadmapLesson(
     val title: String,
-    val type: String, // "vocab", "grammar", "quiz"
+    val type: String,
     val category: String = "general",
     val isCompleted: Boolean = false
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  HOME SCREEN (ROADMAP) — Путь обучения
+//  HOME SCREEN (ROADMAP) — Современный путь обучения
 // ═══════════════════════════════════════════════════════════════
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,56 +66,35 @@ fun HomeScreen(
     val sheetState = rememberModalBottomSheetState()
     var showSheet by remember { mutableStateOf(false) }
 
-    // РЕАЛЬНЫЙ КОНТЕНТ ДЛЯ A1
+    // Используем 30 профессиональных блоков
     val roadmapUnits = remember(state.learnedCount, state.totalXp) {
-        listOf(
-            RoadmapUnit("1", "¡Hola!", "Приветствия и база", "👋", false, (state.learnedCount / 10f).coerceAtMost(1f), Color(0xFF4CAF50), 
-                listOf(
-                    RoadmapLesson("Первые слова", "vocab", "familia_personas", state.learnedCount > 5),
-                    RoadmapLesson("Артикли: el, la", "grammar", "general", state.totalXp > 50),
-                    RoadmapLesson("Тест: Основы", "quiz", "general", state.totalXp > 100)
-                )),
-            RoadmapUnit("2", "Mi Familia", "Семья и описание", "🏠", state.learnedCount < 10, (state.learnedCount / 30f).coerceAtMost(1f), Color(0xFFFF9800),
-                listOf(
-                    RoadmapLesson("Члены семьи", "vocab", "familia_personas"),
-                    RoadmapLesson("Глагол Ser", "grammar", "verbs"),
-                    RoadmapLesson("Тест: Семья", "quiz", "familia_personas")
-                )),
-            RoadmapUnit("3", "En el Café", "Заказ еды", "☕", state.learnedCount < 25, 0f, Color(0xFFE91E63),
-                listOf(
-                    RoadmapLesson("Еда и напитки", "vocab", "comida_bebida"),
-                    RoadmapLesson("Глагол Estar", "grammar", "verbs"),
-                    RoadmapLesson("Диалог: В кафе", "quiz", "comida_bebida")
-                )),
-            RoadmapUnit("4", "De Compras", "Шоппинг и одежда", "🛍️", true, 0f, Color(0xFF2196F3)),
-            RoadmapUnit("5", "Mi Rutina", "Мой день", "⏰", true, 0f, Color(0xFF9C27B0))
-        )
+        RoadmapData.units.map { unit ->
+            // Динамическая логика разблокировки (упрощенно)
+            val unitIndex = unit.id.toInt()
+            val unlocked = unitIndex == 1 || (state.learnedCount >= (unitIndex - 1) * 8)
+            unit.copy(
+                isLocked = !unlocked,
+                progress = if (unlocked) (state.learnedCount / (unitIndex * 15f)).coerceIn(0f, 1f) else 0f
+            )
+        }
     }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = { 
-            SpanishBottomBar(
-                currentRoute = "home", 
-                onNavigate = { navController.navigate(it) }
-            ) 
+        topBar = {
+            HomeTopBar(
+                xp = state.totalXp,
+                streak = state.currentStreak,
+                onProfileClick = { navController.navigate("profile") }
+            )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = PaddingValues(bottom = 120.dp)
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(top = 16.dp, bottom = 120.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                item {
-                    HomeHeader(
-                        displayName = state.displayName,
-                        totalXp = state.totalXp,
-                        onProfileClick = { navController.navigate("profile") }
-                    )
-                }
-
                 itemsIndexed(roadmapUnits) { index, unit ->
                     RoadmapNode(
                         unit = unit,
@@ -130,13 +110,6 @@ fun HomeScreen(
                     )
                 }
             }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(20.dp)
-                    .background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.background, Color.Transparent)))
-            )
         }
     }
 
@@ -151,7 +124,6 @@ fun HomeScreen(
                 unit = selectedUnit!!,
                 onStartLesson = { lesson ->
                     showSheet = false
-                    // Передаем параметры в intro, чтобы потом запустить нужную категорию
                     navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
                 }
             )
@@ -160,49 +132,54 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeHeader(
-    displayName: String,
-    totalXp: Int,
+private fun HomeTopBar(
+    xp: Int,
+    streak: Int,
     onProfileClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 32.dp)
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 4.dp,
+        shadowElevation = 2.dp
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 12.dp)
+                .statusBarsPadding(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
-                Text(
-                    "¡Hola, ${if (displayName.isNotEmpty()) displayName else "Estudiante"}!",
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.ExtraBold
-                )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Stars, null, tint = Color(0xFFFFD700), modifier = Modifier.size(16.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        "$totalXp XP • Уровень A1",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+            // XP и Стрик в компактном виде
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                TopBarStat(icon = "✨", value = "$xp", color = Color(0xFFFFD700))
+                TopBarStat(icon = "🔥", value = "$streak", color = Color(0xFFFF5722))
             }
-            
-            Surface(
-                modifier = Modifier.size(52.dp).clip(CircleShape).clickable(onClick = onProfileClick),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                shape = CircleShape
+
+            // Аватар / Профиль
+            IconButton(
+                onClick = onProfileClick,
+                modifier = Modifier
+                    .size(36.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(if (displayName.isNotEmpty()) displayName[0].toString() else "E", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                }
+                Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(20.dp))
             }
         }
+    }
+}
+
+@Composable
+private fun TopBarStat(icon: String, value: String, color: Color) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .background(color.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+    ) {
+        Text(icon, fontSize = 14.sp)
+        Spacer(Modifier.width(6.dp))
+        Text(value, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
@@ -215,63 +192,85 @@ private fun RoadmapNode(
 ) {
     val accentColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
     
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 32.dp),
-        horizontalArrangement = Arrangement.Center
+            .clickable(enabled = !unit.isLocked, onClick = onNodeClick)
+            .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(80.dp)
-        ) {
-            if (!isFirst) {
-                Box(modifier = Modifier.height(30.dp).width(4.dp).background(accentColor.copy(alpha = 0.3f), CircleShape))
-            }
+        if (!isFirst) {
+            Box(modifier = Modifier.height(30.dp).width(3.dp).background(accentColor.copy(alpha = 0.3f)))
+        }
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            // Иконка блока
             Box(
                 modifier = Modifier
-                    .size(72.dp)
-                    .shadow(if (unit.isLocked) 0.dp else 12.dp, CircleShape, spotColor = accentColor)
+                    .size(84.dp)
+                    .shadow(if (unit.isLocked) 0.dp else 10.dp, CircleShape, spotColor = accentColor)
                     .clip(CircleShape)
-                    .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else accentColor)
-                    .clickable(enabled = !unit.isLocked, onClick = onNodeClick),
+                    .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else Color.White)
+                    .border(2.dp, if (unit.isLocked) Color.Transparent else accentColor.copy(alpha = 0.5f), CircleShape)
+                    .padding(4.dp),
                 contentAlignment = Alignment.Center
             ) {
                 if (unit.isLocked) {
                     Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
                 } else {
-                    Text(unit.icon, fontSize = 32.sp)
+                    Box(
+                        modifier = Modifier.fillMaxSize().clip(CircleShape).background(accentColor.copy(alpha = 0.1f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(unit.icon, fontSize = 36.sp)
+                    }
                     CircularProgressIndicator(
                         progress = { unit.progress },
-                        modifier = Modifier.fillMaxSize().padding(2.dp),
-                        color = Color.White,
-                        strokeWidth = 4.dp,
-                        trackColor = Color.White.copy(alpha = 0.2f)
+                        modifier = Modifier.fillMaxSize(),
+                        color = accentColor,
+                        strokeWidth = 5.dp,
+                        trackColor = accentColor.copy(alpha = 0.1f)
                     )
                 }
             }
 
-            if (!isLast) {
-                Box(modifier = Modifier.height(50.dp).width(4.dp).background(accentColor.copy(alpha = 0.3f), CircleShape))
+            Spacer(Modifier.width(20.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "РАЗДЕЛ ${unit.id}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = accentColor,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 1.sp
+                )
+                Text(
+                    unit.title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = if (unit.isLocked) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    unit.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1
+                )
+            }
+            
+            if (!unit.isLocked) {
+                Icon(Icons.Default.ChevronRight, null, tint = MaterialTheme.colorScheme.outlineVariant)
             }
         }
 
-        Column(
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .weight(1f)
-        ) {
-            Text(
-                unit.title,
-                style = MaterialTheme.typography.headlineLarge,
-                color = if (unit.isLocked) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                unit.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        if (!isLast) {
+            Box(modifier = Modifier.height(40.dp).width(3.dp).background(accentColor.copy(alpha = 0.3f)))
         }
     }
 }
@@ -289,21 +288,21 @@ private fun UnitDetailsContent(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier.size(56.dp).clip(RoundedCornerShape(16.dp)).background(unit.color.copy(alpha = 0.1f)),
+                modifier = Modifier.size(64.dp).clip(RoundedCornerShape(20.dp)).background(unit.color.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(unit.icon, fontSize = 28.sp)
+                Text(unit.icon, fontSize = 32.sp)
             }
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.width(20.dp))
             Column {
-                Text(unit.title, style = MaterialTheme.typography.headlineLarge)
-                Text("Раздел ${unit.id} • ${unit.description}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Раздел ${unit.id}", style = MaterialTheme.typography.labelMedium, color = unit.color, fontWeight = FontWeight.Bold)
+                Text(unit.title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             }
         }
 
         Spacer(Modifier.height(32.dp))
         
-        Text("УРОКИ", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary, letterSpacing = 1.sp)
+        Text("СОДЕРЖАНИЕ", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, letterSpacing = 1.sp)
         Spacer(Modifier.height(16.dp))
 
         unit.lessons.forEach { lesson ->
@@ -320,37 +319,34 @@ private fun LessonItem(lesson: RoadmapLesson, color: Color, onClick: () -> Unit)
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-        border = if (lesson.isCompleted) null else androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.2f))
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val icon = when(lesson.type) {
-                "vocab" -> Icons.Default.MenuBook
-                "grammar" -> Icons.Default.Extension
-                else -> Icons.Default.Quiz
+            val (icon, typeName) = when(lesson.type) {
+                "vocab" -> Icons.Default.MenuBook to "СЛОВА"
+                "grammar" -> Icons.Default.Extension to "ГРАММАТИКА"
+                "phrase" -> Icons.Default.ChatBubble to "ФРАЗЫ"
+                else -> Icons.Default.Quiz to "ТЕСТ"
             }
             
             Box(
-                modifier = Modifier.size(40.dp).clip(CircleShape).background(if (lesson.isCompleted) color else Color.Transparent),
+                modifier = Modifier.size(44.dp).clip(CircleShape).background(if (lesson.isCompleted) color else Color.White),
                 contentAlignment = Alignment.Center
             ) {
-                if (lesson.isCompleted) {
-                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(20.dp))
-                } else {
-                    Icon(icon, null, tint = color)
-                }
+                Icon(if (lesson.isCompleted) Icons.Default.Check else icon, null, tint = if (lesson.isCompleted) Color.White else color, modifier = Modifier.size(20.dp))
             }
             
             Spacer(Modifier.width(16.dp))
             
             Column(modifier = Modifier.weight(1f)) {
                 Text(lesson.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text(lesson.type.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(typeName, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, letterSpacing = 0.5.sp)
             }
             
-            Icon(Icons.Default.PlayArrow, null, tint = color)
+            Icon(Icons.Default.PlayArrow, null, tint = color, modifier = Modifier.size(20.dp))
         }
     }
 }

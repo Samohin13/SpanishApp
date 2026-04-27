@@ -30,14 +30,14 @@ object AppColors {
     // ────────────────────────────────────────────────────────
     //  LIGHT MODE  —  кремовый фон, зелёные акценты
     // ────────────────────────────────────────────────────────
-    val L_Bg            = Color(0xFFF8F9FA)   // Светлый, почти белый фон (как в премиум-приложениях)
+    val L_Bg            = Color(0xFFF1F3F5)   // Светло-серый фон для лучшего контраста с белыми карточками
     val L_Surface       = Color(0xFFFFFFFF)
-    val L_Surface2      = Color(0xFFF1F3F5)
-    val L_Surface3      = Color(0xFFE9ECEF)
-    val L_Ink           = Color(0xFF1A1C1E)   // Глубокий темный
-    val L_InkMid        = Color(0xFF44474E)
-    val L_InkDim        = Color(0xFF74777F)
-    val L_InkFaint      = Color(0xFFC4C6D0)
+    val L_Surface2      = Color(0xFFE9ECEF)
+    val L_Surface3      = Color(0xFFDEE2E6)
+    val L_Ink           = Color(0xFF1A1C1E)
+    val L_InkMid        = Color(0xFF495057)
+    val L_InkDim        = Color(0xFF868E96)
+    val L_InkFaint      = Color(0xFFADB5BD)
 
     // ────────────────────────────────────────────────────────
     //  DARK MODE  —  почти чёрный с еле слышной теплотой.
