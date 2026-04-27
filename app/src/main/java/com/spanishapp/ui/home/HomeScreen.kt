@@ -52,7 +52,7 @@ data class RoadmapLesson(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  HOME SCREEN (ROADMAP) — Современный путь обучения
+//  HOME SCREEN (ROADMAP) — Чистый путь обучения
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
@@ -89,7 +89,7 @@ fun HomeScreen(
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 12.dp, bottom = 120.dp),
+                contentPadding = PaddingValues(top = 8.dp, bottom = 100.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 itemsIndexed(roadmapUnits) { index, unit ->
@@ -120,39 +120,25 @@ private fun HomeTopBar(
     streak: Int,
     onProfileClick: () -> Unit
 ) {
-    Box(
+    // Полностью прозрачный верхний бар
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(horizontal = 24.dp, vertical = 12.dp)
             .statusBarsPadding(),
-        contentAlignment = Alignment.Center
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Surface(
-            modifier = Modifier
-                .height(48.dp)
-                .fillMaxWidth(),
-            shape = CircleShape,
-            // Минималистичное "стекло"
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
-            shadowElevation = 0.dp
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("✨ $xp", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFFF9A825))
-                    Text("🔥 $streak", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFFC62828))
-                }
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Text("✨ $xp", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFFF9A825))
+            Text("🔥 $streak", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFFC62828))
+        }
 
-                IconButton(
-                    onClick = onProfileClick,
-                    modifier = Modifier.size(28.dp).background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape)
-                ) {
-                    Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
-                }
-            }
+        IconButton(
+            onClick = onProfileClick,
+            modifier = Modifier.size(36.dp).background(Color(0xFF4CAF50).copy(alpha = 0.1f), CircleShape)
+        ) {
+            Icon(Icons.Default.Person, null, tint = Color(0xFF4CAF50), modifier = Modifier.size(20.dp))
         }
     }
 }
@@ -167,8 +153,8 @@ private fun RoadmapNode(
     onStartLesson: (RoadmapLesson) -> Unit
 ) {
     val accentColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
-    // Слово РАЗДЕЛ и цифра ВСЕГДА яркого цвета (напр. Primary)
-    val labelColor = MaterialTheme.colorScheme.primary 
+    // Слово РАЗДЕЛ всегда строго ЗЕЛЕНОЕ
+    val labelColor = Color(0xFF4CAF50)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -181,11 +167,9 @@ private fun RoadmapNode(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 4.dp),
+                .padding(horizontal = 20.dp, vertical = 6.dp),
             shape = RoundedCornerShape(24.dp),
-            // Прозрачный фон для карточки, чтобы неон просвечивал
-            color = if (unit.isLocked) MaterialTheme.colorScheme.surface.copy(alpha = 0.3f) else MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
-            border = if (isExpanded) borderStroke(1.dp, accentColor.copy(alpha = 0.5f)) else null,
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
             onClick = onToggleExpand
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -193,12 +177,11 @@ private fun RoadmapNode(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Иконка
                     Box(
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(64.dp)
                             .clip(CircleShape)
-                            .background(if (unit.isLocked) MaterialTheme.colorScheme.surface.copy(alpha = 0.2f) else accentColor.copy(alpha = 0.1f)),
+                            .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else accentColor.copy(alpha = 0.1f)),
                         contentAlignment = Alignment.Center
                     ) {
                         if (unit.isLocked) {
@@ -239,10 +222,9 @@ private fun RoadmapNode(
                 ) {
                     Column(
                         modifier = Modifier.padding(top = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
-                        Spacer(Modifier.height(4.dp))
                         unit.lessons.forEach { lesson ->
                             LessonRow(lesson = lesson, color = unit.color, onClick = { onStartLesson(lesson) }, enabled = !unit.isLocked)
                         }
@@ -252,7 +234,7 @@ private fun RoadmapNode(
         }
 
         if (!isLast) {
-            Box(modifier = Modifier.height(16.dp).width(2.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
+            Box(modifier = Modifier.height(12.dp).width(2.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
         }
     }
 }
@@ -261,16 +243,16 @@ private fun RoadmapNode(
 private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit, enabled: Boolean) {
     Surface(
         onClick = if(enabled) onClick else {{}},
-        modifier = Modifier.fillMaxWidth().alpha(if(enabled) 1f else 0.4f),
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+        modifier = Modifier.fillMaxWidth().alpha(if(enabled) 1f else 0.5f),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
     ) {
         Row(
             modifier = Modifier.padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(32.dp).clip(CircleShape).background(if (lesson.isCompleted) color else MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
+                modifier = Modifier.size(32.dp).clip(CircleShape).background(if (lesson.isCompleted) Color(0xFF4CAF50) else MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
                 contentAlignment = Alignment.Center
             ) {
                 if (lesson.isCompleted) {
@@ -282,7 +264,7 @@ private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit, 
                         "phrase" -> Icons.Default.ChatBubble
                         else -> Icons.Default.Quiz
                     }
-                    Icon(icon, null, tint = if(enabled) color else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), modifier = Modifier.size(16.dp))
+                    Icon(icon, null, tint = if(enabled) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), modifier = Modifier.size(16.dp))
                 }
             }
             
@@ -294,11 +276,8 @@ private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit, 
             }
             
             if(enabled) {
-                Icon(Icons.Default.PlayArrow, null, tint = color, modifier = Modifier.size(16.dp))
+                Icon(Icons.Default.PlayArrow, null, tint = Color(0xFF4CAF50).copy(alpha = 0.7f), modifier = Modifier.size(16.dp))
             }
         }
     }
 }
-
-@Composable
-private fun borderStroke(width: androidx.compose.ui.unit.Dp, color: Color) = androidx.compose.foundation.BorderStroke(width, color)

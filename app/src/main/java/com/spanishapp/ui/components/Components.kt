@@ -2,7 +2,6 @@ package com.spanishapp.ui.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,19 +18,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.cos
 import kotlin.math.sin
 
 // ── NAVIGATION MODELS ─────────────────────────────────────────
@@ -52,122 +45,95 @@ val bottomNavItems = listOf(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  SPANISH FULL-SCREEN NEON ENVIRONMENT (NO CLIPPING)
+//  SPANISH LIVING BACKGROUND (FULL FILL, NO CIRCLES)
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val isDark = isSystemInDarkTheme()
-    val bgColor = if (isDark) Color(0xFF0A0A0A) else Color(0xFFFDFCF9)
+    val baseColor = if (isDark) Color(0xFF0F0E0E) else Color(0xFFFDFCF9)
     
-    val infiniteTransition = rememberInfiniteTransition(label = "neon")
-    val phase by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(30000, easing = LinearEasing), RepeatMode.Restart),
-        label = "phase"
+    val infiniteTransition = rememberInfiniteTransition(label = "bg_anim")
+    val offsetAnim by infiniteTransition.animateFloat(
+        initialValue = 0f, targetValue = 1000f,
+        animationSpec = infiniteRepeatable(tween(20000, easing = LinearEasing), RepeatMode.Reverse),
+        label = "offset"
     )
 
-    // Используем 8 огромных "облаков" неона, чтобы залить весь экран
-    val clouds = remember {
-        List(8) { i ->
-            NeonCloud(
-                xStart = (0..100).random() / 100f,
-                yStart = (0..100).random() / 100f,
-                color = when (i % 3) {
-                    0 -> Color(0xFFC62828) // Terracotta
-                    1 -> Color(0xFFF9A825) // Ochre
-                    else -> Color(0xFF558B2F) // Olive
-                },
-                speed = (0.5f..1.2f).random()
-            )
-        }
-    }
+    // Цвета для градиента (мягкие испанские тона)
+    val color1 = Color(0xFFC62828).copy(alpha = if(isDark) 0.12f else 0.05f)
+    val color2 = Color(0xFF558B2F).copy(alpha = if(isDark) 0.10f else 0.04f)
+    val color3 = Color(0xFFF9A825).copy(alpha = if(isDark) 0.08f else 0.03f)
 
-    Box(modifier = modifier.fillMaxSize().background(bgColor)) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val w = size.width
-            val h = size.height
-            
-            clouds.forEach { cloud ->
-                val angle = phase * 2 * Math.PI.toFloat() * cloud.speed
-                val x = w * cloud.xStart + sin(angle) * (w * 0.4f)
-                val y = h * cloud.yStart + cos(angle * 0.8f) * (h * 0.3f)
-                
-                // Огромный радиус, чтобы пятна перекрывали друг друга
-                val radius = w * 1.5f 
-
-                drawCircle(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            cloud.color.copy(alpha = if (isDark) 0.08f else 0.06f),
-                            Color.Transparent
-                        ),
-                        center = Offset(x, y),
-                        radius = radius
+    Box(modifier = modifier.fillMaxSize().background(baseColor)) {
+        // Сплошной живой градиент вместо кругов
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(color1, color2, color3, color1),
+                        start = Offset(offsetAnim, 0f),
+                        end = Offset(1000f - offsetAnim, 2000f)
                     )
                 )
-            }
-        }
+        )
         content()
     }
 }
 
-private data class NeonCloud(val xStart: Float, val yStart: Float, val color: Color, val speed: Float)
-
-private fun ClosedRange<Float>.random() = (Math.random() * (endInclusive - start) + start).toFloat()
-
 // ═══════════════════════════════════════════════════════════════
-//  MINIMALIST GHOST BOTTOM BAR
+//  MINIMALIST GHOST BOTTOM BAR (NO BACKGROUND)
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
+    // Убираем фоновую плашку совсем, оставляем только иконки на прозрачном фоне
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 12.dp)
+            .padding(bottom = 16.dp)
             .navigationBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
-        Surface(
+        Row(
             modifier = Modifier
-                .height(64.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(32.dp),
-            // Почти полная прозрачность для эффекта чистого стекла
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
-            tonalElevation = 0.dp,
-            shadowElevation = 0.dp,
-            border = androidx.compose.foundation.BorderStroke(0.5.dp, Color.White.copy(alpha = 0.2f))
+                .fillMaxWidth(0.9f)
+                .height(60.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                bottomNavItems.forEach { item ->
-                    val selected = currentRoute.startsWith(item.route)
-                    val color = if (selected) MaterialTheme.colorScheme.primary 
-                                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            bottomNavItems.forEach { item ->
+                val selected = currentRoute.startsWith(item.route)
+                val color = if (selected) Color(0xFF4CAF50) // Зеленый для активной иконки
+                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
 
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = { onNavigate(item.route) }
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                imageVector = if (selected) item.iconSelected else item.icon,
-                                contentDescription = item.label,
-                                modifier = Modifier.size(if(selected) 28.dp else 24.dp),
-                                tint = color
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { onNavigate(item.route) }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = if (selected) item.iconSelected else item.icon,
+                            contentDescription = item.label,
+                            modifier = Modifier.size(if(selected) 28.dp else 24.dp),
+                            tint = color
+                        )
+                        if (selected) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(top = 4.dp)
+                                    .size(4.dp)
+                                    .clip(CircleShape)
+                                    .background(color)
                             )
                         }
                     }
@@ -185,26 +151,7 @@ fun XpProgressBar(level: Int, progress: Float, totalXp: Int, modifier: Modifier 
             Text("$level", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
         }
         Box(modifier = Modifier.weight(1f).height(8.dp).clip(CircleShape).background(MaterialTheme.colorScheme.surfaceVariant)) {
-            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(animProgress).clip(CircleShape).background(MaterialTheme.colorScheme.primary))
+            Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(animProgress).clip(CircleShape).background(Color(0xFF4CAF50)))
         }
     }
-}
-
-@Composable
-fun StreakBadge(streak: Int, modifier: Modifier = Modifier, large: Boolean = false) {
-    Row(modifier = modifier.clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)).padding(horizontal = 10.dp, vertical = 6.dp)) {
-        Text("🔥 $streak", fontWeight = FontWeight.Bold, fontSize = if(large) 14.sp else 12.sp)
-    }
-}
-
-@Composable
-fun LevelBadge(level: String, modifier: Modifier = Modifier) {
-    Box(modifier = modifier.clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)).padding(horizontal = 8.dp, vertical = 4.dp)) {
-        Text(level, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary, fontSize = 12.sp)
-    }
-}
-
-@Composable
-fun SectionHeader(title: String, modifier: Modifier = Modifier) {
-    Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground, modifier = modifier)
 }
