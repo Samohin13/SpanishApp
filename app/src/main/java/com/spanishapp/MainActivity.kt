@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -17,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.spanishapp.data.prefs.AppPreferences
 import com.spanishapp.data.prefs.ThemeMode
 import com.spanishapp.ui.Navigation
+import com.spanishapp.ui.components.SpanishBackground
 import com.spanishapp.ui.components.SpanishBottomBar
 import com.spanishapp.ui.theme.SpanishAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,7 +42,9 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.AUTO  -> systemDark
             }
             SpanishAppTheme(darkTheme = darkTheme) {
-                SpanishAppRoot()
+                SpanishBackground {
+                    SpanishAppRoot()
+                }
             }
         }
     }
@@ -60,6 +64,7 @@ fun SpanishAppRoot() {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = Color.Transparent, // Сделаем Scaffold прозрачным для анимации фона
         bottomBar = {
             if (showBottomBar) {
                 SpanishBottomBar(

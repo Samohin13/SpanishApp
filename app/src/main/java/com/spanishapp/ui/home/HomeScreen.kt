@@ -66,10 +66,8 @@ fun HomeScreen(
     val sheetState = rememberModalBottomSheetState()
     var showSheet by remember { mutableStateOf(false) }
 
-    // Используем 30 профессиональных блоков
-    val roadmapUnits = remember(state.learnedCount, state.totalXp) {
+    val roadmapUnits = remember(state.learnedCount) {
         RoadmapData.units.map { unit ->
-            // Динамическая логика разблокировки (упрощенно)
             val unitIndex = unit.id.toInt()
             val unlocked = unitIndex == 1 || (state.learnedCount >= (unitIndex - 1) * 8)
             unit.copy(
@@ -80,7 +78,7 @@ fun HomeScreen(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = Color.Transparent,
         topBar = {
             HomeTopBar(
                 xp = state.totalXp,
@@ -92,7 +90,7 @@ fun HomeScreen(
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 16.dp, bottom = 120.dp),
+                contentPadding = PaddingValues(top = 24.dp, bottom = 120.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 itemsIndexed(roadmapUnits) { index, unit ->
@@ -138,32 +136,30 @@ private fun HomeTopBar(
     onProfileClick: () -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 12.dp)
+            .height(56.dp)
+            .shadow(24.dp, RoundedCornerShape(24.dp), spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 4.dp,
-        shadowElevation = 2.dp
+        shape = RoundedCornerShape(24.dp),
+        tonalElevation = 6.dp
     ) {
         Row(
-            modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 12.dp)
-                .statusBarsPadding(),
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // XP и Стрик в компактном виде
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                TopBarStat(icon = "✨", value = "$xp", color = Color(0xFFFFD700))
-                TopBarStat(icon = "🔥", value = "$streak", color = Color(0xFFFF5722))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                TopBarStat(icon = "✨", value = "$xp", color = Color(0xFFF9A825))
+                TopBarStat(icon = "🔥", value = "$streak", color = Color(0xFFC62828))
             }
 
-            // Аватар / Профиль
             IconButton(
                 onClick = onProfileClick,
-                modifier = Modifier
-                    .size(36.dp)
-                    .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
+                modifier = Modifier.size(32.dp).background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
             ) {
-                Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(20.dp))
+                Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(18.dp))
             }
         }
     }
@@ -173,13 +169,11 @@ private fun HomeTopBar(
 private fun TopBarStat(icon: String, value: String, color: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .background(color.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-            .padding(horizontal = 10.dp, vertical = 6.dp)
+        modifier = Modifier.background(color.copy(alpha = 0.08f), RoundedCornerShape(10.dp)).padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
-        Text(icon, fontSize = 14.sp)
-        Spacer(Modifier.width(6.dp))
-        Text(value, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
+        Text(icon, fontSize = 12.sp)
+        Spacer(Modifier.width(4.dp))
+        Text(value, fontWeight = FontWeight.ExtraBold, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
@@ -193,48 +187,39 @@ private fun RoadmapNode(
     val accentColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
     
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = !unit.isLocked, onClick = onNodeClick)
-            .padding(vertical = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (!isFirst) {
-            Box(modifier = Modifier.height(30.dp).width(3.dp).background(accentColor.copy(alpha = 0.3f)))
+            Box(modifier = Modifier.height(24.dp).width(3.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
         }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(horizontal = 24.dp).fillMaxWidth().clickable(enabled = !unit.isLocked, onClick = onNodeClick),
             horizontalArrangement = Arrangement.Center
         ) {
-            // Иконка блока
             Box(
                 modifier = Modifier
-                    .size(84.dp)
-                    .shadow(if (unit.isLocked) 0.dp else 10.dp, CircleShape, spotColor = accentColor)
+                    .size(88.dp)
+                    .shadow(if (unit.isLocked) 0.dp else 12.dp, CircleShape, spotColor = accentColor.copy(alpha = 0.5f))
                     .clip(CircleShape)
-                    .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else Color.White)
-                    .border(2.dp, if (unit.isLocked) Color.Transparent else accentColor.copy(alpha = 0.5f), CircleShape)
+                    .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f) else Color.White)
+                    .border(2.dp, if (unit.isLocked) Color.Transparent else accentColor.copy(alpha = 0.3f), CircleShape)
                     .padding(4.dp),
                 contentAlignment = Alignment.Center
             ) {
                 if (unit.isLocked) {
-                    Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                    Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f))
                 } else {
-                    Box(
-                        modifier = Modifier.fillMaxSize().clip(CircleShape).background(accentColor.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(unit.icon, fontSize = 36.sp)
+                    Box(modifier = Modifier.fillMaxSize().clip(CircleShape).background(accentColor.copy(alpha = 0.1f)), contentAlignment = Alignment.Center) {
+                        Text(unit.icon, fontSize = 38.sp)
                     }
                     CircularProgressIndicator(
                         progress = { unit.progress },
                         modifier = Modifier.fillMaxSize(),
                         color = accentColor,
-                        strokeWidth = 5.dp,
+                        strokeWidth = 6.dp,
                         trackColor = accentColor.copy(alpha = 0.1f)
                     )
                 }
@@ -243,34 +228,14 @@ private fun RoadmapNode(
             Spacer(Modifier.width(20.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    "РАЗДЕЛ ${unit.id}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = accentColor,
-                    fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = 1.sp
-                )
-                Text(
-                    unit.title,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (unit.isLocked) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    unit.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1
-                )
-            }
-            
-            if (!unit.isLocked) {
-                Icon(Icons.Default.ChevronRight, null, tint = MaterialTheme.colorScheme.outlineVariant)
+                Text("BLOQUE ${unit.id}", style = MaterialTheme.typography.labelSmall, color = accentColor, fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
+                Text(unit.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = if (unit.isLocked) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurface)
+                Text(unit.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
             }
         }
 
         if (!isLast) {
-            Box(modifier = Modifier.height(40.dp).width(3.dp).background(accentColor.copy(alpha = 0.3f)))
+            Box(modifier = Modifier.height(32.dp).width(3.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
         }
     }
 }
@@ -280,31 +245,20 @@ private fun UnitDetailsContent(
     unit: RoadmapUnit,
     onStartLesson: (RoadmapLesson) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp)
-            .padding(bottom = 32.dp)
-    ) {
+    Column(modifier = Modifier.fillMaxWidth().padding(24.dp).padding(bottom = 32.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier.size(64.dp).clip(RoundedCornerShape(20.dp)).background(unit.color.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.size(64.dp).clip(RoundedCornerShape(20.dp)).background(unit.color.copy(alpha = 0.15f)), contentAlignment = Alignment.Center) {
                 Text(unit.icon, fontSize = 32.sp)
             }
             Spacer(Modifier.width(20.dp))
             Column {
                 Text("Раздел ${unit.id}", style = MaterialTheme.typography.labelMedium, color = unit.color, fontWeight = FontWeight.Bold)
-                Text(unit.title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+                Text(unit.title, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
             }
         }
-
         Spacer(Modifier.height(32.dp))
-        
         Text("СОДЕРЖАНИЕ", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, letterSpacing = 1.sp)
         Spacer(Modifier.height(16.dp))
-
         unit.lessons.forEach { lesson ->
             LessonItem(lesson = lesson, color = unit.color, onClick = { onStartLesson(lesson) })
             Spacer(Modifier.height(12.dp))
@@ -318,34 +272,24 @@ private fun LessonItem(lesson: RoadmapLesson, color: Color, onClick: () -> Unit)
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             val (icon, typeName) = when(lesson.type) {
                 "vocab" -> Icons.Default.MenuBook to "СЛОВА"
                 "grammar" -> Icons.Default.Extension to "ГРАММАТИКА"
                 "phrase" -> Icons.Default.ChatBubble to "ФРАЗЫ"
                 else -> Icons.Default.Quiz to "ТЕСТ"
             }
-            
-            Box(
-                modifier = Modifier.size(44.dp).clip(CircleShape).background(if (lesson.isCompleted) color else Color.White),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.size(44.dp).clip(CircleShape).background(if (lesson.isCompleted) color else Color.White), contentAlignment = Alignment.Center) {
                 Icon(if (lesson.isCompleted) Icons.Default.Check else icon, null, tint = if (lesson.isCompleted) Color.White else color, modifier = Modifier.size(20.dp))
             }
-            
             Spacer(Modifier.width(16.dp))
-            
             Column(modifier = Modifier.weight(1f)) {
                 Text(lesson.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text(typeName, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, letterSpacing = 0.5.sp)
             }
-            
             Icon(Icons.Default.PlayArrow, null, tint = color, modifier = Modifier.size(20.dp))
         }
     }
