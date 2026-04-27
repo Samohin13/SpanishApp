@@ -1,18 +1,32 @@
 package com.spanishapp.ui.profile
 
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -71,18 +85,25 @@ fun ProfileScreen(
 ) {
     val state by vm.state.collectAsState()
     val p = state.progress
+    val haptic = LocalHapticFeedback.current
 
     val appLevel  = XpSystem.levelForXp(p.totalXp)
     val progress  = XpSystem.progressToNextLevel(p.totalXp)
-    val xpForNext = XpSystem.xpForNextLevel(p.totalXp)
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                title = { Text("Профиль") },
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+                title = { Text("Мой Профиль", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { navController.navigate("settings") }) {
+                        Icon(Icons.Default.Settings, null)
                     }
                 }
             )
@@ -93,179 +114,170 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(bottom = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // ── Avatar + name ────────────────────────────────
-            AvatarCard(
-                name         = p.displayName.ifBlank { "Estudiante" },
-                level        = p.currentLevel,
-                appLevel     = appLevel,
-                totalXp      = p.totalXp,
-                progress     = progress,
-                xpForNext    = xpForNext
+            // ── Premium Avatar Section ──────────────────────
+            ProfileHeader(
+                name = p.displayName.ifBlank { "Estudiante" },
+                level = p.currentLevel,
+                appLevel = appLevel,
+                progress = progress
             )
 
-            // ── Streak ──────────────────────────────────────
-            StreakCard(current = p.currentStreak, longest = p.longestStreak)
+            Spacer(Modifier.height(24.dp))
 
-            // ── Stats grid ──────────────────────────────────
-            StatsGrid(
-                wordsLearned    = state.learnedCount,
-                totalMinutes    = p.totalStudyMinutes,
-                lessonsCompleted= p.lessonsCompleted,
-                achievementsUnlocked = state.unlockedAchievements,
-                totalAchievements    = state.totalAchievements
+            // ── Weekly Activity (Visual Graph) ──────────────
+            WeeklyActivityChart(
+                modifier = Modifier.padding(horizontal = 24.dp)
             )
 
-            // ── Navigate to achievements ─────────────────────
-            FilledTonalButton(
-                onClick = { navController.navigate("achievements") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp)
+            Spacer(Modifier.height(24.dp))
+
+            // ── Key Stats Row ───────────────────────────────
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("🏅  Все достижения (${state.unlockedAchievements}/${state.totalAchievements})")
+                StatBox(
+                    value = "${state.learnedCount}",
+                    label = "Слов",
+                    icon = "📚",
+                    modifier = Modifier.weight(1f)
+                )
+                StatBox(
+                    value = "${p.currentStreak}",
+                    label = "Дня",
+                    icon = "🔥",
+                    modifier = Modifier.weight(1f)
+                )
+                StatBox(
+                    value = "${p.totalStudyMinutes}",
+                    label = "Мин",
+                    icon = "⏱",
+                    modifier = Modifier.weight(1f)
+                )
             }
+
+            Spacer(Modifier.height(24.dp))
+
+            // ── Achievements Preview ────────────────────────
+            AchievementsSection(
+                unlocked = state.unlockedAchievements,
+                total = state.totalAchievements,
+                onClick = { 
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    navController.navigate("achievements") 
+                },
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
         }
     }
 }
 
-// ── Components ────────────────────────────────────────────────
+@Composable
+private fun ProfileHeader(
+    name: String, level: String, appLevel: Int, progress: Float
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(contentAlignment = Alignment.BottomEnd) {
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(name.take(1).uppercase(), fontSize = 40.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+            }
+            // Level Badge on Avatar
+            Box(
+                modifier = Modifier
+                    .offset(x = (-4).dp, y = (-4).dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(level, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+        Text(name, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.ExtraBold)
+        Text("Уровень $appLevel", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        Spacer(Modifier.height(16.dp))
+        
+        // Progress to next level
+        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+            Spacer(Modifier.height(8.dp))
+            Text("Следующий уровень через ${( (1f-progress)*100).toInt()} XP", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+        }
+    }
+}
 
 @Composable
-private fun AvatarCard(
-    name: String, level: String, appLevel: Int,
-    totalXp: Int, progress: Float, xpForNext: Int
-) {
+private fun StatBox(value: String, label: String, icon: String, modifier: Modifier = Modifier) {
     Surface(
+        modifier = modifier,
         shape = RoundedCornerShape(24.dp),
-        modifier = Modifier.fillMaxWidth()
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp,
+        shadowElevation = 1.dp
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            AppColors.Terracotta.copy(alpha = 0.12f),
-                            MaterialTheme.colorScheme.surface
-                        )
-                    )
-                )
-                .padding(20.dp)
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally,
-                   modifier = Modifier.fillMaxWidth()) {
-                // Avatar circle
-                Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(AppColors.Terracotta.copy(alpha = 0.15f)),
-                    contentAlignment = Alignment.Center
-                ) { Text("👤", fontSize = 40.sp) }
-
-                Spacer(Modifier.height(10.dp))
-                Text(name, style = MaterialTheme.typography.headlineSmall,
-                     fontWeight = FontWeight.Bold)
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 4.dp)
-                ) {
-                    LevelPill(level)
-                    Text("Уровень $appLevel",
-                         style = MaterialTheme.typography.bodySmall,
-                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("· $totalXp XP",
-                         style = MaterialTheme.typography.bodySmall,
-                         color = AppColors.Gold,
-                         fontWeight = FontWeight.Bold)
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                LinearProgressIndicator(
-                    progress = { progress },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp)),
-                    color = AppColors.Gold,
-                    trackColor = AppColors.Gold.copy(alpha = 0.15f)
-                )
-                Text(
-                    "До следующего уровня: $xpForNext XP",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
+            Text(icon, fontSize = 24.sp)
+            Spacer(Modifier.height(4.dp))
+            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold)
+            Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
 
 @Composable
-private fun StreakCard(current: Int, longest: Int) {
+private fun WeeklyActivityChart(modifier: Modifier = Modifier) {
+    val days = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+    val activity = listOf(0.4f, 0.8f, 0.6f, 1f, 0.3f, 0.5f, 0.7f) // Dummy data
+
     Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = AppColors.Gold.copy(alpha = 0.08f),
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 1.dp
     ) {
-        Row(
-            modifier = Modifier.padding(20.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            StreakItem("🔥", "$current дн.", "Текущий стрик")
-            VerticalDivider(modifier = Modifier.height(48.dp))
-            StreakItem("🏆", "$longest дн.", "Рекорд")
-        }
-    }
-}
-
-@Composable
-private fun StreakItem(icon: String, value: String, label: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
-           verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(icon, fontSize = 28.sp)
-        Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        Text(label, style = MaterialTheme.typography.labelSmall,
-             color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-@Composable
-private fun StatsGrid(
-    wordsLearned: Int, totalMinutes: Int,
-    lessonsCompleted: Int, achievementsUnlocked: Int, totalAchievements: Int
-) {
-    val items = listOf(
-        Triple("📚", "$wordsLearned", "слов выучено"),
-        Triple("⏱", "${totalMinutes} мин", "занятий"),
-        Triple("📖", "$lessonsCompleted", "уроков"),
-        Triple("🏅", "$achievementsUnlocked/$totalAchievements", "ачивок")
-    )
-
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        items.chunked(2).forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                row.forEach { (icon, value, label) ->
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        tonalElevation = 1.dp,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(icon, fontSize = 24.sp)
-                            Text(value, style = MaterialTheme.typography.titleMedium,
-                                 fontWeight = FontWeight.Bold)
-                            Text(label, style = MaterialTheme.typography.labelSmall,
-                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text("Активность за неделю", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(20.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth().height(120.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                activity.forEachIndexed { index, value ->
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(
+                            modifier = Modifier
+                                .width(12.dp)
+                                .fillMaxHeight(value)
+                                .clip(CircleShape)
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f))
+                                    )
+                                )
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(days[index], style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -274,15 +286,29 @@ private fun StatsGrid(
 }
 
 @Composable
-private fun LevelPill(level: String) {
-    val color = when (level) {
-        "A1" -> AppColors.Teal; "A2" -> AppColors.Info
-        "B1" -> AppColors.Gold; "B2" -> AppColors.Terracotta
-        else -> MaterialTheme.colorScheme.primary
-    }
-    Surface(shape = RoundedCornerShape(6.dp), color = color.copy(alpha = 0.15f)) {
-        Text(level, modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-             style = MaterialTheme.typography.labelMedium,
-             color = color, fontWeight = FontWeight.Bold)
+private fun AchievementsSection(unlocked: Int, total: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Card(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f))
+    ) {
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier.size(48.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.EmojiEvents, null, tint = Color.White)
+            }
+            Spacer(Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Достижения", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text("Разблокировано $unlocked из $total", style = MaterialTheme.typography.bodySmall)
+            }
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, modifier = Modifier.size(16.dp).graphicsLayer(rotationZ = 180f))
+        }
     }
 }
