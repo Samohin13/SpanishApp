@@ -2,6 +2,7 @@ package com.spanishapp.ui.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -46,41 +47,136 @@ val bottomNavItems = listOf(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  SPANISH LIVING BACKGROUND (FULL FILL, NO CIRCLES)
+//  SPANISH ATOMIC NEON BACKGROUND — живые дышащие атомы
 // ═══════════════════════════════════════════════════════════════
+
+private data class Atom(
+    val x: Float,          // начальная позиция 0..1
+    val y: Float,
+    val baseSize: Float,   // базовый радиус в dp
+    val orbitR: Float,     // радиус орбиты (как далеко плавает)
+    val orbitSpeedX: Float,// скорость по X (разная у каждого)
+    val orbitSpeedY: Float,// скорость по Y
+    val phaseX: Float,     // начальная фаза X
+    val phaseY: Float,     // начальная фаза Y
+    val breathSpeed: Float,// скорость дыхания
+    val breathPhase: Float,// фаза дыхания
+    val color: Color,
+    val alpha: Float
+)
+
+private fun rnd(a: Float, b: Float) = (a + Math.random().toFloat() * (b - a))
+
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val isDark = isSystemInDarkTheme()
-    val baseColor = if (isDark) Color(0xFF0F0E0E) else Color(0xFFFDFCF9)
-    
-    val infiniteTransition = rememberInfiniteTransition(label = "bg_anim")
-    val offsetAnim by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 1000f,
-        animationSpec = infiniteRepeatable(tween(20000, easing = LinearEasing), RepeatMode.Reverse),
-        label = "offset"
+    val baseBg = if (isDark) Color(0xFF0A0909) else Color(0xFFFCF8F0)
+
+    // Палитра Oliva: зелёный, оранжевый, золотой + немного синего и фиолетового для глубины
+    val palette = if (isDark) listOf(
+        Color(0xFF76C442),  // зелёный
+        Color(0xFF76C442),  // зелёный (×2 — доминирует)
+        Color(0xFFFF7043),  // оранжевый
+        Color(0xFFFFCF33),  // золотой
+        Color(0xFF29B6F6),  // голубой акцент
+        Color(0xFF7E57C2),  // фиолетовый
+    ) else listOf(
+        Color(0xFF8BC34A),
+        Color(0xFF8BC34A),
+        Color(0xFFF05A28),
+        Color(0xFFF6C445),
+        Color(0xFF0288D1),
+        Color(0xFF7B1FA2),
     )
 
-    // Цвета для градиента (мягкие испанские тона)
-    val color1 = Color(0xFFC62828).copy(alpha = if(isDark) 0.12f else 0.05f)
-    val color2 = Color(0xFF558B2F).copy(alpha = if(isDark) 0.10f else 0.04f)
-    val color3 = Color(0xFFF9A825).copy(alpha = if(isDark) 0.08f else 0.03f)
+    // 65 атомов: крупные (фон), средние и мелкие — три слоя
+    val atoms = remember {
+        buildList {
+            // 10 огромных (фоновый слой, очень прозрачные)
+            repeat(10) {
+                add(Atom(
+                    x = rnd(0f, 1f), y = rnd(0f, 1f),
+                    baseSize = rnd(220f, 400f),
+                    orbitR = rnd(0.04f, 0.10f),
+                    orbitSpeedX = rnd(0.5f, 1.2f), orbitSpeedY = rnd(0.4f, 1.1f),
+                    phaseX = rnd(0f, 6.28f), phaseY = rnd(0f, 6.28f),
+                    breathSpeed = rnd(0.3f, 0.7f), breathPhase = rnd(0f, 6.28f),
+                    color = palette[(it * 2) % palette.size],
+                    alpha = if (isDark) rnd(0.06f, 0.12f) else rnd(0.04f, 0.08f)
+                ))
+            }
+            // 30 средних
+            repeat(30) { i ->
+                add(Atom(
+                    x = rnd(0f, 1f), y = rnd(0f, 1f),
+                    baseSize = rnd(70f, 180f),
+                    orbitR = rnd(0.05f, 0.18f),
+                    orbitSpeedX = rnd(0.8f, 2.5f), orbitSpeedY = rnd(0.7f, 2.2f),
+                    phaseX = rnd(0f, 6.28f), phaseY = rnd(0f, 6.28f),
+                    breathSpeed = rnd(0.6f, 1.6f), breathPhase = rnd(0f, 6.28f),
+                    color = palette[i % palette.size],
+                    alpha = if (isDark) rnd(0.12f, 0.22f) else rnd(0.07f, 0.14f)
+                ))
+            }
+            // 25 мелких — живые, быстрые
+            repeat(25) { i ->
+                add(Atom(
+                    x = rnd(0f, 1f), y = rnd(0f, 1f),
+                    baseSize = rnd(20f, 65f),
+                    orbitR = rnd(0.06f, 0.22f),
+                    orbitSpeedX = rnd(1.5f, 4f), orbitSpeedY = rnd(1.5f, 3.5f),
+                    phaseX = rnd(0f, 6.28f), phaseY = rnd(0f, 6.28f),
+                    breathSpeed = rnd(1.2f, 3f), breathPhase = rnd(0f, 6.28f),
+                    color = palette[(i + 1) % palette.size],
+                    alpha = if (isDark) rnd(0.18f, 0.32f) else rnd(0.10f, 0.20f)
+                ))
+            }
+        }
+    }
 
-    Box(modifier = modifier.fillMaxSize().background(baseColor)) {
-        // Сплошной живой градиент вместо кругов
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(color1, color2, color3, color1),
-                        start = Offset(offsetAnim, 0f),
-                        end = Offset(1000f - offsetAnim, 2000f)
-                    )
+    val transition = rememberInfiniteTransition(label = "bg")
+    val t by transition.animateFloat(
+        initialValue = 0f, targetValue = (2 * Math.PI).toFloat(),
+        animationSpec = infiniteRepeatable(tween(60000, easing = LinearEasing), RepeatMode.Restart),
+        label = "t"
+    )
+
+    Box(modifier = modifier.fillMaxSize().background(baseBg)) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val w = size.width
+            val h = size.height
+
+            atoms.forEach { atom ->
+                // Орбитальное синусоидальное движение (не линейное, а живое)
+                val cx = atom.x * w + w * atom.orbitR * sin(t * atom.orbitSpeedX + atom.phaseX)
+                val cy = atom.y * h + h * atom.orbitR * sin(t * atom.orbitSpeedY + atom.phaseY)
+
+                // Дыхание — каждый атом в своём ритме
+                val breath = 1f + 0.28f * sin(t * atom.breathSpeed + atom.breathPhase)
+                val radius = atom.baseSize.dp.toPx() * breath
+
+                // Мягкий радиальный градиент — центр ярче, края прозрачные
+                drawCircle(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            atom.color.copy(alpha = atom.alpha),
+                            atom.color.copy(alpha = atom.alpha * 0.4f),
+                            Color.Transparent
+                        ),
+                        center = Offset(cx, cy),
+                        radius = radius.coerceAtLeast(1f)
+                    ),
+                    radius = radius.coerceAtLeast(1f),
+                    center = Offset(cx, cy)
                 )
-        )
+            }
+        }
         content()
     }
 }
+
+private fun ClosedRange<Int>.random() = (Math.random() * (endInclusive - start) + start).toInt()
+private fun ClosedRange<Float>.random() = (Math.random() * (endInclusive - start) + start).toFloat()
 
 // ═══════════════════════════════════════════════════════════════
 //  MINIMALIST GHOST BOTTOM BAR (NO BACKGROUND)
@@ -90,7 +186,6 @@ fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
-    // Убираем фоновую плашку совсем, оставляем только иконки на прозрачном фоне
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,7 +202,7 @@ fun SpanishBottomBar(
         ) {
             bottomNavItems.forEach { item ->
                 val selected = currentRoute.startsWith(item.route)
-                val color = if (selected) Color(0xFF4CAF50) // Зеленый для активной иконки
+                val color = if (selected) Color(0xFF4CAF50)
                             else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
 
                 Box(
