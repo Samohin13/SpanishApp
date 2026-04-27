@@ -56,66 +56,74 @@ fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> 
     val isDark = isSystemInDarkTheme()
     val bgColor = MaterialTheme.colorScheme.background
     
-    val infiniteTransition = rememberInfiniteTransition(label = "bg")
+    val infiniteTransition = rememberInfiniteTransition(label = "atoms")
     
-    // Быстрая фаза для активного движения
+    // Глобальная фаза для синхронизации
     val phase by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(12000, easing = LinearEasing), RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(tween(20000, easing = LinearEasing), RepeatMode.Restart),
         label = "phase"
     )
-    
-    // Глубокая пульсация для "дыхания" (активнее)
-    val pulse by infiniteTransition.animateFloat(
-        initialValue = 0.6f, targetValue = 1.4f,
-        animationSpec = infiniteRepeatable(tween(2500, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "pulse"
-    )
+
+    // Генерация параметров для 12 "атомов" (неона)
+    // Используем remember, чтобы они не перегенерировались каждый кадр
+    val atoms = remember {
+        List(12) { i ->
+            Atom(
+                xSeed = (0..100).random() / 100f,
+                ySeed = (0..100).random() / 100f,
+                sizeBase = (50..250).random().toFloat(),
+                speed = (0.5f..1.5f).random(),
+                color = when (i % 3) {
+                    0 -> Color(0xFFFF1744) // Terracotta
+                    1 -> Color(0xFFFFEA00) // Ochre
+                    else -> Color(0xFF76FF03) // Olive
+                },
+                alpha = (0.04f..0.1f).random()
+            )
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize().background(bgColor)) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
             val height = size.height
             
-            // Neon Spot 1 (Terracotta Glow) - Широкая траектория + сильное дыхание
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(Color(0xFFFF1744).copy(alpha = if (isDark) 0.12f else 0.1f), Color.Transparent),
-                    center = Offset(
-                        x = width * (0.3f + 0.4f * sin(phase * 2 * Math.PI.toFloat())),
-                        y = height * (0.2f + 0.3f * cos(phase * 2 * Math.PI.toFloat()))
-                    ),
-                    radius = width * 1.5f * pulse
-                )
-            )
-            
-            // Neon Spot 2 (Ochre Glow) - Энергичное движение
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(Color(0xFFFFEA00).copy(alpha = if (isDark) 0.08f else 0.07f), Color.Transparent),
-                    center = Offset(
-                        x = width * (0.7f + 0.4f * cos((phase + 0.3f) * 2 * Math.PI.toFloat())),
-                        y = height * (0.6f + 0.3f * sin((phase + 0.3f) * 2 * Math.PI.toFloat()))
-                    ),
-                    radius = width * 1.3f * (2f - pulse)
-                )
-            )
+            atoms.forEach { atom ->
+                val moveX = sin(phase * 2 * Math.PI.toFloat() * atom.speed + atom.xSeed * 10) * 80.dp.toPx()
+                val moveY = cos(phase * 2 * Math.PI.toFloat() * atom.speed + atom.ySeed * 10) * 80.dp.toPx()
+                val pulse = 1f + 0.2f * sin(phase * 4 * Math.PI.toFloat() * atom.speed)
 
-            // Neon Spot 3 (Olive Accent) - Еле заметное свечение снизу
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(Color(0xFF76FF03).copy(alpha = if (isDark) 0.03f else 0.02f), Color.Transparent),
-                    center = Offset(
-                        x = width * (0.4f + 0.1f * sin((phase + 0.7f) * 2 * Math.PI.toFloat())),
-                        y = height * (0.9f + 0.05f * cos((phase + 0.7f) * 2 * Math.PI.toFloat()))
-                    ),
-                    radius = width * 0.8f
+                drawCircle(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            atom.color.copy(alpha = if (isDark) atom.alpha * 1.5f else atom.alpha),
+                            Color.Transparent
+                        ),
+                        center = Offset(
+                            x = width * atom.xSeed + moveX,
+                            y = height * atom.ySeed + moveY
+                        ),
+                        radius = atom.sizeBase.dp.toPx() * pulse
+                    )
                 )
-            )
+            }
         }
         content()
     }
 }
+
+private data class Atom(
+    val xSeed: Float,
+    val ySeed: Float,
+    val sizeBase: Float,
+    val speed: Float,
+    val color: Color,
+    val alpha: Float
+)
+
+private fun ClosedRange<Float>.random() = 
+    (Math.random() * (endInclusive - start) + start).toFloat()
 
 // ═══════════════════════════════════════════════════════════════
 //  UNIFIED BOTTOM BAR
