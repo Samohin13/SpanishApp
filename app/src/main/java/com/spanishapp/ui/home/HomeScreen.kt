@@ -21,10 +21,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,18 +35,27 @@ import com.spanishapp.ui.components.*
 // ── Roadmap Data Model ────────────────────────────────────────
 
 data class RoadmapUnit(
+    val id: String,
     val title: String,
     val description: String,
     val icon: String,
     val isLocked: Boolean = false,
     val progress: Float = 0f,
-    val color: Color
+    val color: Color,
+    val lessons: List<RoadmapLesson> = emptyList()
+)
+
+data class RoadmapLesson(
+    val title: String,
+    val type: String, // "vocab", "grammar", "quiz"
+    val isCompleted: Boolean = false
 )
 
 // ═══════════════════════════════════════════════════════════════
 //  HOME SCREEN (ROADMAP) — Путь обучения
 // ═══════════════════════════════════════════════════════════════
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
@@ -54,15 +63,24 @@ fun HomeScreen(
 ) {
     val state     by viewModel.uiState.collectAsStateWithLifecycle()
     val haptic    = LocalHapticFeedback.current
+    
+    var selectedUnit by remember { mutableStateOf<RoadmapUnit?>(null) }
+    val sheetState = rememberModalBottomSheetState()
+    var showSheet by remember { mutableStateOf(false) }
 
-    // Пример данных дорожной карты (в будущем можно вынести в ViewModel)
-    val roadmapUnits = listOf(
-        RoadmapUnit("Введение", "Основы и приветствия", "👋", false, 1f, MaterialTheme.colorScheme.primary),
-        RoadmapUnit("Семья", "Кто есть кто", "🏠", false, 0.4f, MaterialTheme.colorScheme.secondary),
-        RoadmapUnit("Ресторан", "Заказ еды и напитков", "🥘", true, 0f, MaterialTheme.colorScheme.tertiary),
-        RoadmapUnit("Путешествие", "В аэропорту и отеле", "✈️", true, 0f, MaterialTheme.colorScheme.primary),
-        RoadmapUnit("Работа", "Профессии и офис", "💼", true, 0f, MaterialTheme.colorScheme.secondary)
-    )
+    // Имитация структурированных данных
+    val roadmapUnits = remember {
+        listOf(
+            RoadmapUnit("1", "¡Hola!", "Приветствия и база", "👋", false, 1f, Color(0xFF4CAF50), 
+                listOf(RoadmapLesson("Первые слова", "vocab", true), RoadmapLesson("Глагол Ser", "grammar", true), RoadmapLesson("Тест: Основы", "quiz", true))),
+            RoadmapUnit("2", "Mi Familia", "Семья и описание", "🏠", false, 0.4f, Color(0xFFFF9800),
+                listOf(RoadmapLesson("Члены семьи", "vocab", true), RoadmapLesson("Притяжательные местоимения", "grammar", false), RoadmapLesson("Тест: Семья", "quiz", false))),
+            RoadmapUnit("3", "En el Café", "Заказ еды", "☕", true, 0f, Color(0xFFE91E63),
+                listOf(RoadmapLesson("Еда и напитки", "vocab", false), RoadmapLesson("Вежливые просьбы", "grammar", false), RoadmapLesson("Диалог: В кафе", "quiz", false))),
+            RoadmapUnit("4", "De Compras", "Шоппинг и одежда", "🛍️", true, 0f, Color(0xFF2196F3)),
+            RoadmapUnit("5", "Mi Rutina", "Мой день", "⏰", true, 0f, Color(0xFF9C27B0))
+        )
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -73,34 +91,62 @@ fun HomeScreen(
             ) 
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentPadding = PaddingValues(bottom = 100.dp)
-        ) {
-            // ── ХЕДЕР С ПРОГРЕССОМ ──────────────────────────────
-            item {
-                HomeHeader(
-                    displayName = state.displayName,
-                    onProfileClick = { navController.navigate("profile") }
-                )
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentPadding = PaddingValues(bottom = 120.dp)
+            ) {
+                item {
+                    HomeHeader(
+                        displayName = state.displayName,
+                        totalXp = state.totalXp,
+                        onProfileClick = { navController.navigate("profile") }
+                    )
+                }
+
+                itemsIndexed(roadmapUnits) { index, unit ->
+                    RoadmapNode(
+                        unit = unit,
+                        isFirst = index == 0,
+                        isLast = index == roadmapUnits.size - 1,
+                        onNodeClick = {
+                            if (!unit.isLocked) {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                selectedUnit = unit
+                                showSheet = true
+                            }
+                        }
+                    )
+                }
             }
 
-            // ── ДОРОЖНАЯ КАРТА (ROADMAP) ────────────────────────
-            itemsIndexed(roadmapUnits) { index, unit ->
-                RoadmapNode(
-                    unit = unit,
-                    isFirst = index == 0,
-                    isLast = index == roadmapUnits.size - 1,
-                    onNodeClick = {
-                        if (!unit.isLocked) {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            navController.navigate("flashcards") 
-                        }
-                    }
-                )
-            }
+            // Градиентная тень сверху для "дорогого" эффекта
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
+                    .background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.background, Color.Transparent)))
+            )
+        }
+    }
+
+    // Bottom Sheet с деталями Unit-а
+    if (showSheet && selectedUnit != null) {
+        ModalBottomSheet(
+            onDismissRequest = { showSheet = false },
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surface,
+            dragHandle = { BottomSheetDefaults.DragHandle(color = MaterialTheme.colorScheme.outlineVariant) }
+        ) {
+            UnitDetailsContent(
+                unit = selectedUnit!!,
+                onStartLesson = { lesson ->
+                    showSheet = false
+                    navController.navigate("flashcards")
+                }
+            )
         }
     }
 }
@@ -108,36 +154,45 @@ fun HomeScreen(
 @Composable
 private fun HomeHeader(
     displayName: String,
+    totalXp: Int,
     onProfileClick: () -> Unit
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp)
-            .padding(top = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 24.dp, vertical = 32.dp)
     ) {
-        Column {
-            Text(
-                "¡Hola, ${if (displayName.isNotEmpty()) displayName else "Estudiante"}!",
-                style = MaterialTheme.typography.displayMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                "Твой путь к испанскому языку",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        
-        Surface(
-            modifier = Modifier.size(48.dp).clip(CircleShape).clickable(onClick = onProfileClick),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            shape = CircleShape
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(Icons.Default.Person, null)
+            Column {
+                Text(
+                    "¡Hola, ${if (displayName.isNotEmpty()) displayName else "Estudiante"}!",
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Stars, null, tint = Color(0xFFFFD700), modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        "$totalXp XP • Уровень A1",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            
+            Surface(
+                modifier = Modifier.size(52.dp).clip(CircleShape).clickable(onClick = onProfileClick),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                shape = CircleShape
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(if (displayName.isNotEmpty()) displayName[0].toString() else "E", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                }
             }
         }
     }
@@ -150,112 +205,148 @@ private fun RoadmapNode(
     isLast: Boolean,
     onNodeClick: () -> Unit
 ) {
-    val primaryColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
+    val isCompleted = unit.progress >= 1f
+    val accentColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
     
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp),
-        verticalAlignment = Alignment.Top
+            .padding(horizontal = 32.dp),
+        horizontalArrangement = Arrangement.Center
     ) {
-        // Линия и точка
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(60.dp)
+            modifier = Modifier.width(80.dp)
         ) {
-            // Верхняя линия
             if (!isFirst) {
-                Canvas(modifier = Modifier.height(20.dp).width(2.dp)) {
-                    drawLine(
-                        color = primaryColor.copy(alpha = 0.5f),
-                        start = Offset(size.width / 2, 0f),
-                        end = Offset(size.width / 2, size.height),
-                        strokeWidth = 4.dp.toPx(),
-                        pathEffect = if (unit.isLocked) PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f) else null
-                    )
-                }
-            } else {
-                Spacer(Modifier.height(20.dp))
+                Box(modifier = Modifier.height(30.dp).width(4.dp).background(accentColor.copy(alpha = 0.3f), CircleShape))
             }
 
-            // Круг с иконкой
+            // Основная кнопка уровня
             Box(
                 modifier = Modifier
-                    .size(60.dp)
-                    .shadow(if (unit.isLocked) 0.dp else 8.dp, CircleShape, spotColor = primaryColor)
+                    .size(72.dp)
+                    .shadow(if (unit.isLocked) 0.dp else 12.dp, CircleShape, spotColor = accentColor)
                     .clip(CircleShape)
-                    .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else primaryColor)
+                    .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else accentColor)
                     .clickable(enabled = !unit.isLocked, onClick = onNodeClick),
                 contentAlignment = Alignment.Center
             ) {
                 if (unit.isLocked) {
-                    Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                    Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
                 } else {
-                    Text(unit.icon, fontSize = 28.sp)
-                }
-                
-                // Прогресс вокруг круга
-                if (!unit.isLocked && unit.progress < 1f) {
+                    Text(unit.icon, fontSize = 32.sp)
+                    
+                    // Кольцо прогресса
                     CircularProgressIndicator(
                         progress = { unit.progress },
-                        modifier = Modifier.fillMaxSize(),
-                        color = Color.White.copy(alpha = 0.8f),
-                        strokeWidth = 3.dp,
+                        modifier = Modifier.fillMaxSize().padding(2.dp),
+                        color = Color.White,
+                        strokeWidth = 4.dp,
+                        trackColor = Color.White.copy(alpha = 0.2f)
                     )
                 }
             }
 
-            // Нижняя линия
             if (!isLast) {
-                Canvas(modifier = Modifier.height(60.dp).width(2.dp)) {
-                    drawLine(
-                        color = primaryColor.copy(alpha = 0.5f),
-                        start = Offset(size.width / 2, 0f),
-                        end = Offset(size.width / 2, size.height),
-                        strokeWidth = 4.dp.toPx(),
-                        pathEffect = if (unit.isLocked) PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f) else null
-                    )
-                }
+                Box(modifier = Modifier.height(50.dp).width(4.dp).background(accentColor.copy(alpha = 0.3f), CircleShape))
             }
         }
 
-        Spacer(Modifier.width(16.dp))
-
-        // Карточка описания
-        Card(
+        Column(
             modifier = Modifier
-                .padding(top = 10.dp)
+                .padding(top = 12.dp)
                 .weight(1f)
-                .clickable(enabled = !unit.isLocked, onClick = onNodeClick),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f) else MaterialTheme.colorScheme.surface
-            ),
-            elevation = CardDefaults.cardElevation(if (unit.isLocked) 0.dp else 2.dp)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    unit.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = if (unit.isLocked) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    unit.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                
-                if (!unit.isLocked) {
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        if (unit.progress >= 1f) "Завершено ✨" else "Продолжить →",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = primaryColor,
-                        fontWeight = FontWeight.Bold
-                    )
+            Text(
+                unit.title,
+                style = MaterialTheme.typography.headlineLarge,
+                color = if (unit.isLocked) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                unit.description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun UnitDetailsContent(
+    unit: RoadmapUnit,
+    onStartLesson: (RoadmapLesson) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp)
+            .padding(bottom = 32.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier.size(56.dp).clip(RoundedCornerShape(16.dp)).background(unit.color.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(unit.icon, fontSize = 28.sp)
+            }
+            Spacer(Modifier.width(16.dp))
+            Column {
+                Text(unit.title, style = MaterialTheme.typography.headlineLarge)
+                Text("Раздел ${unit.id} • ${unit.description}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+
+        Spacer(Modifier.height(32.dp))
+        
+        Text("УРОКИ", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary, letterSpacing = 1.sp)
+        Spacer(Modifier.height(16.dp))
+
+        unit.lessons.forEach { lesson ->
+            LessonItem(lesson = lesson, color = unit.color, onClick = { onStartLesson(lesson) })
+            Spacer(Modifier.height(12.dp))
+        }
+    }
+}
+
+@Composable
+private fun LessonItem(lesson: RoadmapLesson, color: Color, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+        border = if (lesson.isCompleted) null else androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.2f))
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val icon = when(lesson.type) {
+                "vocab" -> Icons.Default.MenuBook
+                "grammar" -> Icons.Default.Extension
+                else -> Icons.Default.Quiz
+            }
+            
+            Box(
+                modifier = Modifier.size(40.dp).clip(CircleShape).background(if (lesson.isCompleted) color else Color.Transparent),
+                contentAlignment = Alignment.Center
+            ) {
+                if (lesson.isCompleted) {
+                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                } else {
+                    Icon(icon, null, tint = color)
                 }
             }
+            
+            Spacer(Modifier.width(16.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(lesson.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(lesson.type.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            
+            Icon(Icons.Default.PlayArrow, null, tint = color)
         }
     }
 }
