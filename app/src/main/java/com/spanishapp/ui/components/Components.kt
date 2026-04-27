@@ -20,7 +20,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -179,57 +181,98 @@ private fun ClosedRange<Int>.random() = (Math.random() * (endInclusive - start) 
 private fun ClosedRange<Float>.random() = (Math.random() * (endInclusive - start) + start).toFloat()
 
 // ═══════════════════════════════════════════════════════════════
-//  MINIMALIST GHOST BOTTOM BAR (NO BACKGROUND)
+//  BOTTOM BAR — крупные объёмные иконки
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
+    val green = Color(0xFF4CAF50)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp)
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .padding(horizontal = 12.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .height(60.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+        // Подложка бара — тёмная/светлая капсула с тенью
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape    = RoundedCornerShape(28.dp),
+            color    = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.92f),
+            shadowElevation = 16.dp,
+            tonalElevation  = 4.dp
         ) {
-            bottomNavItems.forEach { item ->
-                val selected = currentRoute.startsWith(item.route)
-                val color = if (selected) Color(0xFF4CAF50)
-                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment     = Alignment.CenterVertically
+            ) {
+                bottomNavItems.forEach { item ->
+                    val selected = currentRoute.startsWith(item.route)
 
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { onNavigate(item.route) }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = if (selected) item.iconSelected else item.icon,
-                            contentDescription = item.label,
-                            modifier = Modifier.size(if(selected) 28.dp else 24.dp),
-                            tint = color
-                        )
-                        if (selected) {
+                    // Плавная анимация масштаба при выборе
+                    val scale by animateFloatAsState(
+                        targetValue = if (selected) 1.15f else 1f,
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+                        label = "scale_${item.route}"
+                    )
+
+                    val iconColor = if (selected) green
+                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { onNavigate(item.route) }
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.graphicsLayer {
+                                scaleX = scale
+                                scaleY = scale
+                            }
+                        ) {
+                            // Пилюля-подсветка вокруг иконки при выборе
                             Box(
                                 modifier = Modifier
-                                    .padding(top = 4.dp)
-                                    .size(4.dp)
-                                    .clip(CircleShape)
-                                    .background(color)
+                                    .then(
+                                        if (selected) Modifier
+                                            .background(
+                                                green.copy(alpha = 0.15f),
+                                                RoundedCornerShape(16.dp)
+                                            )
+                                            .padding(horizontal = 14.dp, vertical = 7.dp)
+                                        else Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector    = if (selected) item.iconSelected else item.icon,
+                                    contentDescription = item.label,
+                                    modifier = Modifier.size(if (selected) 32.dp else 28.dp),
+                                    tint     = iconColor
+                                )
+                            }
+
+                            // Подпись
+                            Text(
+                                text  = item.label,
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 10.sp,
+                                color = iconColor,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                                maxLines = 1
                             )
                         }
                     }
