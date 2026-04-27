@@ -192,7 +192,8 @@ private fun RoadmapNode(
             shape = RoundedCornerShape(28.dp),
             color = if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f) else MaterialTheme.colorScheme.surface,
             border = if (isExpanded) borderStroke(2.dp, accentColor.copy(alpha = 0.5f)) else null,
-            onClick = onToggleExpand
+            onClick = onToggleExpand,
+            contentColor = MaterialTheme.colorScheme.onSurface
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
@@ -204,11 +205,11 @@ private fun RoadmapNode(
                         modifier = Modifier
                             .size(72.dp)
                             .clip(CircleShape)
-                            .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else Color.White),
+                            .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface),
                         contentAlignment = Alignment.Center
                     ) {
                         if (unit.isLocked) {
-                            Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                            Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f))
                         } else {
                             Text(unit.icon, fontSize = 32.sp)
                             CircularProgressIndicator(
@@ -224,9 +225,19 @@ private fun RoadmapNode(
                     Spacer(Modifier.width(16.dp))
 
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("BLOQUE ${unit.id}", style = MaterialTheme.typography.labelSmall, color = accentColor, fontWeight = FontWeight.ExtraBold)
-                        Text(unit.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
-                        Text(unit.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+                        Text("РАЗДЕЛ ${unit.id}", style = MaterialTheme.typography.labelSmall, color = accentColor, fontWeight = FontWeight.ExtraBold)
+                        Text(
+                            unit.title, 
+                            style = MaterialTheme.typography.titleMedium, 
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            unit.description, 
+                            style = MaterialTheme.typography.bodySmall, 
+                            color = MaterialTheme.colorScheme.onSurfaceVariant, 
+                            maxLines = 1
+                        )
                     }
 
                     // Стрелочка разворота
@@ -292,7 +303,7 @@ private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit) 
                 Icon(
                     if (lesson.isCompleted) Icons.Default.Check else icon,
                     null,
-                    tint = if (lesson.isCompleted) Color.White else color,
+                    tint = if (lesson.isCompleted) MaterialTheme.colorScheme.onPrimary else color,
                     modifier = Modifier.size(18.dp)
                 )
             }
@@ -300,7 +311,12 @@ private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit) 
             Spacer(Modifier.width(12.dp))
             
             Column(modifier = Modifier.weight(1f)) {
-                Text(lesson.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                Text(
+                    lesson.title, 
+                    style = MaterialTheme.typography.bodyMedium, 
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
                 Text(lesson.type.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             
