@@ -1,0 +1,7625 @@
+[
+  {
+    "en": "May I speak to Bill?",
+    "es": "¿Puedo hablar con Bill?",
+    "cloze": "con",
+    "difficulty": 5,
+    "audio": "sent_0000.mp3"
+  },
+  {
+    "en": "It is what it is.",
+    "es": "Es lo que es.",
+    "cloze": "lo",
+    "difficulty": 10,
+    "audio": "sent_0001.mp3"
+  },
+  {
+    "en": "Tom told Mary that he'd seen John with Alice.",
+    "es": "Tom le dijo a Mary que había visto a John con Alice.",
+    "cloze": "le",
+    "difficulty": 10,
+    "audio": "sent_0002.mp3"
+  },
+  {
+    "en": "And why not?",
+    "es": "¿Y por qué no?",
+    "cloze": "qué",
+    "difficulty": 13,
+    "audio": "sent_0003.mp3"
+  },
+  {
+    "en": "For what?",
+    "es": "¿Para qué?",
+    "cloze": "Para",
+    "difficulty": 20,
+    "audio": "sent_0004.mp3"
+  },
+  {
+    "en": "It's OK.",
+    "es": "Está bien.",
+    "cloze": "bien",
+    "difficulty": 24,
+    "audio": "sent_0005.mp3"
+  },
+  {
+    "en": "Why me?",
+    "es": "¿Por qué yo?",
+    "cloze": "yo",
+    "difficulty": 26,
+    "audio": "sent_0006.mp3"
+  },
+  {
+    "en": "That's it.",
+    "es": "Eso es.",
+    "cloze": "Eso",
+    "difficulty": 27,
+    "audio": "sent_0007.mp3"
+  },
+  {
+    "en": "Isn't that right?",
+    "es": "¿A que sí?",
+    "cloze": "sí",
+    "difficulty": 29,
+    "audio": "sent_0008.mp3"
+  },
+  {
+    "en": "It's all for the best.",
+    "es": "Es por tu bien.",
+    "cloze": "tu",
+    "difficulty": 31,
+    "audio": "sent_0009.mp3"
+  },
+  {
+    "en": "Here it is.",
+    "es": "Aquí está.",
+    "cloze": "Aquí",
+    "difficulty": 32,
+    "audio": "sent_0010.mp3"
+  },
+  {
+    "en": "I eat here.",
+    "es": "Como aquí.",
+    "cloze": "Como",
+    "difficulty": 35,
+    "audio": "sent_0011.mp3"
+  },
+  {
+    "en": "What is this for?",
+    "es": "¿Para qué es esto?",
+    "cloze": "esto",
+    "difficulty": 38,
+    "audio": "sent_0012.mp3"
+  },
+  {
+    "en": "Go!",
+    "es": "¡Ya!",
+    "cloze": "Ya",
+    "difficulty": 39,
+    "audio": "sent_0013.mp3"
+  },
+  {
+    "en": "Is everything all right?",
+    "es": "¿Todo está bien?",
+    "cloze": "Todo",
+    "difficulty": 40,
+    "audio": "sent_0014.mp3"
+  },
+  {
+    "en": "Here we go.",
+    "es": "Aquí vamos.",
+    "cloze": "vamos",
+    "difficulty": 42,
+    "audio": "sent_0015.mp3"
+  },
+  {
+    "en": "It's very good.",
+    "es": "Está muy bien.",
+    "cloze": "muy",
+    "difficulty": 43,
+    "audio": "sent_0016.mp3"
+  },
+  {
+    "en": "Everything is all right now.",
+    "es": "Ahora está todo bien.",
+    "cloze": "Ahora",
+    "difficulty": 45,
+    "audio": "sent_0017.mp3"
+  },
+  {
+    "en": "There's something in here.",
+    "es": "Aquí hay algo.",
+    "cloze": "algo",
+    "difficulty": 46,
+    "audio": "sent_0018.mp3"
+  },
+  {
+    "en": "I'm fine.",
+    "es": "Estoy bien.",
+    "cloze": "Estoy",
+    "difficulty": 47,
+    "audio": "sent_0019.mp3"
+  },
+  {
+    "en": "What do I have?",
+    "es": "¿Qué tengo?",
+    "cloze": "tengo",
+    "difficulty": 48,
+    "audio": "sent_0020.mp3"
+  },
+  {
+    "en": "Shall we go?",
+    "es": "¿Nos vamos?",
+    "cloze": "Nos",
+    "difficulty": 49,
+    "audio": "sent_0021.mp3"
+  },
+  {
+    "en": "Fine. And you?",
+    "es": "Bien. ¿Y tú?",
+    "cloze": "tú",
+    "difficulty": 50,
+    "audio": "sent_0022.mp3"
+  },
+  {
+    "en": "I have nothing.",
+    "es": "No tengo nada.",
+    "cloze": "nada",
+    "difficulty": 51,
+    "audio": "sent_0023.mp3"
+  },
+  {
+    "en": "Yes, I know.",
+    "es": "Sí, lo sé.",
+    "cloze": "sé",
+    "difficulty": 55,
+    "audio": "sent_0024.mp3"
+  },
+  {
+    "en": "You all right?",
+    "es": "¿Estás bien?",
+    "cloze": "Estás",
+    "difficulty": 56,
+    "audio": "sent_0025.mp3"
+  },
+  {
+    "en": "How's Tom doing?",
+    "es": "¿Cómo está Tom?",
+    "cloze": "Cómo",
+    "difficulty": 59,
+    "audio": "sent_0026.mp3"
+  },
+  {
+    "en": "I don't want any more.",
+    "es": "No quiero nada más.",
+    "cloze": "quiero",
+    "difficulty": 60,
+    "audio": "sent_0027.mp3"
+  },
+  {
+    "en": "Just that?",
+    "es": "¿Sólo eso?",
+    "cloze": "Sólo",
+    "difficulty": 61,
+    "audio": "sent_0028.mp3"
+  },
+  {
+    "en": "I'm from Australia.",
+    "es": "Soy de Australia.",
+    "cloze": "Soy",
+    "difficulty": 62,
+    "audio": "sent_0029.mp3"
+  },
+  {
+    "en": "Thank you!",
+    "es": "¡Gracias!",
+    "cloze": "Gracias",
+    "difficulty": 64,
+    "audio": "sent_0030.mp3"
+  },
+  {
+    "en": "It's all or nothing.",
+    "es": "Es todo o nada.",
+    "cloze": "o",
+    "difficulty": 65,
+    "audio": "sent_0031.mp3"
+  },
+  {
+    "en": "What was that?",
+    "es": "¿Qué fue eso?",
+    "cloze": "fue",
+    "difficulty": 68,
+    "audio": "sent_0032.mp3"
+  },
+  {
+    "en": "I can be good.",
+    "es": "Yo puedo ser bueno.",
+    "cloze": "ser",
+    "difficulty": 69,
+    "audio": "sent_0033.mp3"
+  },
+  {
+    "en": "I have to do something.",
+    "es": "Tengo que hacer algo.",
+    "cloze": "hacer",
+    "difficulty": 70,
+    "audio": "sent_0034.mp3"
+  },
+  {
+    "en": "It's half past eight.",
+    "es": "Son las 8:30.",
+    "cloze": "Son",
+    "difficulty": 71,
+    "audio": "sent_0035.mp3"
+  },
+  {
+    "en": "Not everyone is like you.",
+    "es": "No todos son como tú.",
+    "cloze": "todos",
+    "difficulty": 72,
+    "audio": "sent_0036.mp3"
+  },
+  {
+    "en": "It was nothing.",
+    "es": "No era nada.",
+    "cloze": "era",
+    "difficulty": 73,
+    "audio": "sent_0037.mp3"
+  },
+  {
+    "en": "Aren't you Tom?",
+    "es": "¿No eres tú Tom?",
+    "cloze": "eres",
+    "difficulty": 74,
+    "audio": "sent_0038.mp3"
+  },
+  {
+    "en": "Thanks again for everything.",
+    "es": "Una vez más gracias por todo.",
+    "cloze": "vez",
+    "difficulty": 75,
+    "audio": "sent_0039.mp3"
+  },
+  {
+    "en": "There you are.",
+    "es": "Aquí tienes.",
+    "cloze": "tienes",
+    "difficulty": 76,
+    "audio": "sent_0040.mp3"
+  },
+  {
+    "en": "I believe you.",
+    "es": "Te creo.",
+    "cloze": "creo",
+    "difficulty": 77,
+    "audio": "sent_0041.mp3"
+  },
+  {
+    "en": "Here she is!",
+    "es": "¡Aquí está ella!",
+    "cloze": "ella",
+    "difficulty": 78,
+    "audio": "sent_0042.mp3"
+  },
+  {
+    "en": "That's me.",
+    "es": "Ese soy yo.",
+    "cloze": "Ese",
+    "difficulty": 80,
+    "audio": "sent_0043.mp3"
+  },
+  {
+    "en": "It can be done.",
+    "es": "Se puede hacer.",
+    "cloze": "puede",
+    "difficulty": 82,
+    "audio": "sent_0044.mp3"
+  },
+  {
+    "en": "Do you know the reason?",
+    "es": "¿Sabes por qué?",
+    "cloze": "Sabes",
+    "difficulty": 83,
+    "audio": "sent_0045.mp3"
+  },
+  {
+    "en": "I'm here because I want to be.",
+    "es": "Estoy aquí porque quiero.",
+    "cloze": "porque",
+    "difficulty": 86,
+    "audio": "sent_0046.mp3"
+  },
+  {
+    "en": "I believe in God.",
+    "es": "Yo creo en Dios.",
+    "cloze": "Dios",
+    "difficulty": 87,
+    "audio": "sent_0047.mp3"
+  },
+  {
+    "en": "Whose is this?",
+    "es": "¿De quién es esto?",
+    "cloze": "quién",
+    "difficulty": 88,
+    "audio": "sent_0048.mp3"
+  },
+  {
+    "en": "It's now or never.",
+    "es": "Es ahora o nunca.",
+    "cloze": "nunca",
+    "difficulty": 89,
+    "audio": "sent_0049.mp3"
+  },
+  {
+    "en": "Where am I?",
+    "es": "¿Dónde estoy?",
+    "cloze": "Dónde",
+    "difficulty": 90,
+    "audio": "sent_0050.mp3"
+  },
+  {
+    "en": "What do you want now?",
+    "es": "¿Qué quieres ahora?",
+    "cloze": "quieres",
+    "difficulty": 91,
+    "audio": "sent_0051.mp3"
+  },
+  {
+    "en": "I am at home.",
+    "es": "Estoy en casa.",
+    "cloze": "casa",
+    "difficulty": 92,
+    "audio": "sent_0052.mp3"
+  },
+  {
+    "en": "Once more, please.",
+    "es": "Una vez más, por favor.",
+    "cloze": "favor",
+    "difficulty": 93,
+    "audio": "sent_0053.mp3"
+  },
+  {
+    "en": "Is that your house?",
+    "es": "¿Esa es tu casa?",
+    "cloze": "Esa",
+    "difficulty": 94,
+    "audio": "sent_0054.mp3"
+  },
+  {
+    "en": "I know only this.",
+    "es": "Tan sólo sé esto.",
+    "cloze": "Tan",
+    "difficulty": 96,
+    "audio": "sent_0055.mp3"
+  },
+  {
+    "en": "I can't do that, sir.",
+    "es": "No puedo hacer eso, señor.",
+    "cloze": "señor",
+    "difficulty": 97,
+    "audio": "sent_0056.mp3"
+  },
+  {
+    "en": "I don't know if I have the time.",
+    "es": "No sé si tengo tiempo.",
+    "cloze": "tiempo",
+    "difficulty": 98,
+    "audio": "sent_0057.mp3"
+  },
+  {
+    "en": "That can't be true.",
+    "es": "Eso no puede ser verdad.",
+    "cloze": "verdad",
+    "difficulty": 99,
+    "audio": "sent_0058.mp3"
+  },
+  {
+    "en": "I was at home.",
+    "es": "Estaba en casa.",
+    "cloze": "Estaba",
+    "difficulty": 100,
+    "audio": "sent_0059.mp3"
+  },
+  {
+    "en": "It's better as it is.",
+    "es": "Es mejor así.",
+    "cloze": "mejor",
+    "difficulty": 101,
+    "audio": "sent_0060.mp3"
+  },
+  {
+    "en": "Where are you?",
+    "es": "¿Dónde están?",
+    "cloze": "están",
+    "difficulty": 102,
+    "audio": "sent_0061.mp3"
+  },
+  {
+    "en": "How are you getting along?",
+    "es": "¿Cómo le va?",
+    "cloze": "va",
+    "difficulty": 103,
+    "audio": "sent_0062.mp3"
+  },
+  {
+    "en": "Who is that man?",
+    "es": "¿Quién es ese hombre?",
+    "cloze": "hombre",
+    "difficulty": 104,
+    "audio": "sent_0063.mp3"
+  },
+  {
+    "en": "I want a lot more.",
+    "es": "Quiero mucho más.",
+    "cloze": "mucho",
+    "difficulty": 106,
+    "audio": "sent_0064.mp3"
+  },
+  {
+    "en": "And then?",
+    "es": "¿Y entonces?",
+    "cloze": "entonces",
+    "difficulty": 108,
+    "audio": "sent_0065.mp3"
+  },
+  {
+    "en": "I feel something.",
+    "es": "Siento algo.",
+    "cloze": "Siento",
+    "difficulty": 109,
+    "audio": "sent_0066.mp3"
+  },
+  {
+    "en": "It is impossible for you to do so.",
+    "es": "No puedes hacer eso.",
+    "cloze": "puedes",
+    "difficulty": 111,
+    "audio": "sent_0067.mp3"
+  },
+  {
+    "en": "What is over there?",
+    "es": "¿Qué hay ahí?",
+    "cloze": "ahí",
+    "difficulty": 112,
+    "audio": "sent_0068.mp3"
+  },
+  {
+    "en": "How about you?",
+    "es": "¿Qué hay de ti?",
+    "cloze": "ti",
+    "difficulty": 113,
+    "audio": "sent_0069.mp3"
+  },
+  {
+    "en": "That's the way the cookie crumbles.",
+    "es": "La vida es así.",
+    "cloze": "vida",
+    "difficulty": 114,
+    "audio": "sent_0070.mp3"
+  },
+  {
+    "en": "Is anybody here?",
+    "es": "¿Hay alguien aquí?",
+    "cloze": "alguien",
+    "difficulty": 116,
+    "audio": "sent_0071.mp3"
+  },
+  {
+    "en": "See you then.",
+    "es": "Hasta entonces.",
+    "cloze": "Hasta",
+    "difficulty": 118,
+    "audio": "sent_0072.mp3"
+  },
+  {
+    "en": "So what?",
+    "es": "¿Y a mí qué?",
+    "cloze": "mí",
+    "difficulty": 120,
+    "audio": "sent_0073.mp3"
+  },
+  {
+    "en": "He is alone.",
+    "es": "Él está solo.",
+    "cloze": "solo",
+    "difficulty": 121,
+    "audio": "sent_0074.mp3"
+  },
+  {
+    "en": "I am 19 years old.",
+    "es": "Tengo 19 años.",
+    "cloze": "años",
+    "difficulty": 122,
+    "audio": "sent_0075.mp3"
+  },
+  {
+    "en": "I know nothing about her.",
+    "es": "No sé nada sobre ella.",
+    "cloze": "sobre",
+    "difficulty": 123,
+    "audio": "sent_0076.mp3"
+  },
+  {
+    "en": "I know what you mean.",
+    "es": "Sé lo que quieres decir.",
+    "cloze": "decir",
+    "difficulty": 124,
+    "audio": "sent_0077.mp3"
+  },
+  {
+    "en": "I want one!",
+    "es": "¡Quiero uno!",
+    "cloze": "uno",
+    "difficulty": 125,
+    "audio": "sent_0078.mp3"
+  },
+  {
+    "en": "I'm going to go.",
+    "es": "Voy a ir.",
+    "cloze": "ir",
+    "difficulty": 128,
+    "audio": "sent_0079.mp3"
+  },
+  {
+    "en": "I know things.",
+    "es": "Yo sé cosas.",
+    "cloze": "cosas",
+    "difficulty": 129,
+    "audio": "sent_0080.mp3"
+  },
+  {
+    "en": "I think so, too.",
+    "es": "Yo también lo creo.",
+    "cloze": "también",
+    "difficulty": 130,
+    "audio": "sent_0081.mp3"
+  },
+  {
+    "en": "Sorry about before.",
+    "es": "Siento lo de antes.",
+    "cloze": "antes",
+    "difficulty": 131,
+    "audio": "sent_0082.mp3"
+  },
+  {
+    "en": "Neither am I!",
+    "es": "¡Ni yo!",
+    "cloze": "Ni",
+    "difficulty": 133,
+    "audio": "sent_0083.mp3"
+  },
+  {
+    "en": "I want my stuff.",
+    "es": "Quiero mis cosas.",
+    "cloze": "mis",
+    "difficulty": 134,
+    "audio": "sent_0084.mp3"
+  },
+  {
+    "en": "Do you know what day it is?",
+    "es": "¿Sabes qué día es?",
+    "cloze": "día",
+    "difficulty": 135,
+    "audio": "sent_0085.mp3"
+  },
+  {
+    "en": "It's good to be home.",
+    "es": "Es bueno estar en casa.",
+    "cloze": "estar",
+    "difficulty": 136,
+    "audio": "sent_0086.mp3"
+  },
+  {
+    "en": "Here we are.",
+    "es": "Aquí estamos.",
+    "cloze": "estamos",
+    "difficulty": 137,
+    "audio": "sent_0087.mp3"
+  },
+  {
+    "en": "I'm seeing them tonight.",
+    "es": "Los voy a ver esta noche.",
+    "cloze": "noche",
+    "difficulty": 138,
+    "audio": "sent_0088.mp3"
+  },
+  {
+    "en": "There isn't anybody else.",
+    "es": "No hay nadie más.",
+    "cloze": "nadie",
+    "difficulty": 139,
+    "audio": "sent_0089.mp3"
+  },
+  {
+    "en": "One more time.",
+    "es": "Otra vez.",
+    "cloze": "Otra",
+    "difficulty": 140,
+    "audio": "sent_0090.mp3"
+  },
+  {
+    "en": "It doesn't mean anything!",
+    "es": "¡Eso no quiere decir nada!",
+    "cloze": "quiere",
+    "difficulty": 141,
+    "audio": "sent_0091.mp3"
+  },
+  {
+    "en": "Can you go with us?",
+    "es": "¿Puedes ir con nosotros?",
+    "cloze": "nosotros",
+    "difficulty": 143,
+    "audio": "sent_0092.mp3"
+  },
+  {
+    "en": "I want some more.",
+    "es": "Quiero un poco más.",
+    "cloze": "poco",
+    "difficulty": 144,
+    "audio": "sent_0093.mp3"
+  },
+  {
+    "en": "What does your father do?",
+    "es": "¿Qué hace tu padre?",
+    "cloze": "padre",
+    "difficulty": 145,
+    "audio": "sent_0094.mp3"
+  },
+  {
+    "en": "What's your job?",
+    "es": "¿Qué es tu trabajo?",
+    "cloze": "trabajo",
+    "difficulty": 146,
+    "audio": "sent_0095.mp3"
+  },
+  {
+    "en": "How are your folks?",
+    "es": "¿Cómo está su gente?",
+    "cloze": "gente",
+    "difficulty": 147,
+    "audio": "sent_0096.mp3"
+  },
+  {
+    "en": "Look at that house.",
+    "es": "Mira esa casa.",
+    "cloze": "Mira",
+    "difficulty": 148,
+    "audio": "sent_0097.mp3"
+  },
+  {
+    "en": "Where are you going?",
+    "es": "¿Para dónde vas?",
+    "cloze": "vas",
+    "difficulty": 149,
+    "audio": "sent_0098.mp3"
+  },
+  {
+    "en": "Whatever.",
+    "es": "Lo que sea.",
+    "cloze": "sea",
+    "difficulty": 150,
+    "audio": "sent_0099.mp3"
+  },
+  {
+    "en": "It's well done.",
+    "es": "Está bien hecho.",
+    "cloze": "hecho",
+    "difficulty": 154,
+    "audio": "sent_0100.mp3"
+  },
+  {
+    "en": "What's wrong with me?",
+    "es": "¿Qué me pasa?",
+    "cloze": "pasa",
+    "difficulty": 157,
+    "audio": "sent_0101.mp3"
+  },
+  {
+    "en": "You haven't any money.",
+    "es": "No tienes dinero.",
+    "cloze": "dinero",
+    "difficulty": 158,
+    "audio": "sent_0102.mp3"
+  },
+  {
+    "en": "What does your son do?",
+    "es": "¿Qué hace tu hijo?",
+    "cloze": "hijo",
+    "difficulty": 159,
+    "audio": "sent_0103.mp3"
+  },
+  {
+    "en": "I want somebody else.",
+    "es": "Quiero a otro.",
+    "cloze": "otro",
+    "difficulty": 161,
+    "audio": "sent_0104.mp3"
+  },
+  {
+    "en": "She doesn't want to talk about it.",
+    "es": "Ella no quiere hablar de eso.",
+    "cloze": "hablar",
+    "difficulty": 162,
+    "audio": "sent_0105.mp3"
+  },
+  {
+    "en": "Yes, of course.",
+    "es": "Sí, claro.",
+    "cloze": "claro",
+    "difficulty": 164,
+    "audio": "sent_0106.mp3"
+  },
+  {
+    "en": "You want this stuff, don't you?",
+    "es": "Quieres estas cosas, ¿verdad?",
+    "cloze": "estas",
+    "difficulty": 165,
+    "audio": "sent_0107.mp3"
+  },
+  {
+    "en": "My place is here.",
+    "es": "Mi lugar está aquí.",
+    "cloze": "lugar",
+    "difficulty": 166,
+    "audio": "sent_0108.mp3"
+  },
+  {
+    "en": "You are my best friend.",
+    "es": "Eres mi mejor amigo.",
+    "cloze": "amigo",
+    "difficulty": 168,
+    "audio": "sent_0109.mp3"
+  },
+  {
+    "en": "Wait here for a while.",
+    "es": "Espera aquí un poco.",
+    "cloze": "Espera",
+    "difficulty": 169,
+    "audio": "sent_0110.mp3"
+  },
+  {
+    "en": "What is this shit?",
+    "es": "¿Qué es esta mierda?",
+    "cloze": "mierda",
+    "difficulty": 170,
+    "audio": "sent_0111.mp3"
+  },
+  {
+    "en": "After you.",
+    "es": "Después de ti.",
+    "cloze": "Después",
+    "difficulty": 174,
+    "audio": "sent_0112.mp3"
+  },
+  {
+    "en": "Just a moment, please.",
+    "es": "Un momento, por favor.",
+    "cloze": "momento",
+    "difficulty": 175,
+    "audio": "sent_0113.mp3"
+  },
+  {
+    "en": "That is another matter.",
+    "es": "Eso es otra cosa.",
+    "cloze": "cosa",
+    "difficulty": 178,
+    "audio": "sent_0114.mp3"
+  },
+  {
+    "en": "You're not my type.",
+    "es": "No eres mi tipo.",
+    "cloze": "tipo",
+    "difficulty": 179,
+    "audio": "sent_0115.mp3"
+  },
+  {
+    "en": "Wait until tomorrow morning.",
+    "es": "Espera hasta mañana por la mañana.",
+    "cloze": "mañana",
+    "difficulty": 180,
+    "audio": "sent_0116.mp3"
+  },
+  {
+    "en": "Can we talk?",
+    "es": "¿Podemos hablar?",
+    "cloze": "Podemos",
+    "difficulty": 181,
+    "audio": "sent_0117.mp3"
+  },
+  {
+    "en": "I told her not to go.",
+    "es": "Le dije que no se fuera.",
+    "cloze": "dije",
+    "difficulty": 182,
+    "audio": "sent_0118.mp3"
+  },
+  {
+    "en": "This is what I need.",
+    "es": "Esto es lo que necesito.",
+    "cloze": "necesito",
+    "difficulty": 184,
+    "audio": "sent_0119.mp3"
+  },
+  {
+    "en": "That's something I couldn't do.",
+    "es": "Eso es algo que yo no podría hacer.",
+    "cloze": "podría",
+    "difficulty": 186,
+    "audio": "sent_0120.mp3"
+  },
+  {
+    "en": "I don't agree with him.",
+    "es": "Yo no estoy de acuerdo con él.",
+    "cloze": "acuerdo",
+    "difficulty": 187,
+    "audio": "sent_0121.mp3"
+  },
+  {
+    "en": "Dad isn't home.",
+    "es": "Papá no está en casa.",
+    "cloze": "Papá",
+    "difficulty": 188,
+    "audio": "sent_0122.mp3"
+  },
+  {
+    "en": "I want a friend.",
+    "es": "Quiero tener un amigo.",
+    "cloze": "tener",
+    "difficulty": 189,
+    "audio": "sent_0123.mp3"
+  },
+  {
+    "en": "That's very big of you.",
+    "es": "Eso dice mucho de ti.",
+    "cloze": "dice",
+    "difficulty": 190,
+    "audio": "sent_0124.mp3"
+  },
+  {
+    "en": "It isn't mine.",
+    "es": "No es mío.",
+    "cloze": "mío",
+    "difficulty": 191,
+    "audio": "sent_0125.mp3"
+  },
+  {
+    "en": "Do you believe in God?",
+    "es": "¿Crees en Dios?",
+    "cloze": "Crees",
+    "difficulty": 192,
+    "audio": "sent_0126.mp3"
+  },
+  {
+    "en": "I have a great life.",
+    "es": "Tengo una vida muy buena.",
+    "cloze": "buena",
+    "difficulty": 193,
+    "audio": "sent_0127.mp3"
+  },
+  {
+    "en": "What do you like?",
+    "es": "¿Qué te gusta?",
+    "cloze": "gusta",
+    "difficulty": 194,
+    "audio": "sent_0128.mp3"
+  },
+  {
+    "en": "This is our friend Tom.",
+    "es": "Es nuestro amigo Tom.",
+    "cloze": "nuestro",
+    "difficulty": 195,
+    "audio": "sent_0129.mp3"
+  },
+  {
+    "en": "What's new?",
+    "es": "¿Qué hay de nuevo?",
+    "cloze": "nuevo",
+    "difficulty": 196,
+    "audio": "sent_0130.mp3"
+  },
+  {
+    "en": "That'll be all.",
+    "es": "Eso será todo.",
+    "cloze": "será",
+    "difficulty": 197,
+    "audio": "sent_0131.mp3"
+  },
+  {
+    "en": "What do you think I've been doing?",
+    "es": "¿Qué crees que estaba haciendo?",
+    "cloze": "haciendo",
+    "difficulty": 198,
+    "audio": "sent_0132.mp3"
+  },
+  {
+    "en": "I eat here every day.",
+    "es": "Yo como aquí todos los días.",
+    "cloze": "días",
+    "difficulty": 199,
+    "audio": "sent_0133.mp3"
+  },
+  {
+    "en": "I know your name.",
+    "es": "Yo sé tu nombre.",
+    "cloze": "nombre",
+    "difficulty": 200,
+    "audio": "sent_0134.mp3"
+  },
+  {
+    "en": "I think it's going to be a nice day.",
+    "es": "Creo que voy a tener un buen día.",
+    "cloze": "buen",
+    "difficulty": 201,
+    "audio": "sent_0135.mp3"
+  },
+  {
+    "en": "Please come again.",
+    "es": "Por favor, ven de nuevo.",
+    "cloze": "ven",
+    "difficulty": 203,
+    "audio": "sent_0136.mp3"
+  },
+  {
+    "en": "He left three days ago.",
+    "es": "Él se fue hace tres días.",
+    "cloze": "tres",
+    "difficulty": 204,
+    "audio": "sent_0137.mp3"
+  },
+  {
+    "en": "That's about it.",
+    "es": "Eso es más o menos todo.",
+    "cloze": "menos",
+    "difficulty": 205,
+    "audio": "sent_0138.mp3"
+  },
+  {
+    "en": "It has to be true.",
+    "es": "Debe de ser verdad.",
+    "cloze": "Debe",
+    "difficulty": 206,
+    "audio": "sent_0139.mp3"
+  },
+  {
+    "en": "I had to do something.",
+    "es": "Tenía que hacer algo.",
+    "cloze": "Tenía",
+    "difficulty": 207,
+    "audio": "sent_0140.mp3"
+  },
+  {
+    "en": "I am short of money.",
+    "es": "Estoy mal de dinero.",
+    "cloze": "mal",
+    "difficulty": 208,
+    "audio": "sent_0141.mp3"
+  },
+  {
+    "en": "That has nothing to do with me.",
+    "es": "Eso no tiene nada que ver conmigo.",
+    "cloze": "conmigo",
+    "difficulty": 209,
+    "audio": "sent_0142.mp3"
+  },
+  {
+    "en": "Is your mother at home now?",
+    "es": "¿Ahora está tu madre en casa?",
+    "cloze": "madre",
+    "difficulty": 210,
+    "audio": "sent_0143.mp3"
+  },
+  {
+    "en": "Who else is gone today?",
+    "es": "¿Quién más se fue hoy?",
+    "cloze": "hoy",
+    "difficulty": 211,
+    "audio": "sent_0144.mp3"
+  },
+  {
+    "en": "I want someone to talk to.",
+    "es": "Quiero a alguien con quien hablar.",
+    "cloze": "quien",
+    "difficulty": 212,
+    "audio": "sent_0145.mp3"
+  },
+  {
+    "en": "I love my mum.",
+    "es": "Quiero a mi mamá.",
+    "cloze": "mamá",
+    "difficulty": 214,
+    "audio": "sent_0146.mp3"
+  },
+  {
+    "en": "See you soon!",
+    "es": "¡Hasta luego!",
+    "cloze": "luego",
+    "difficulty": 216,
+    "audio": "sent_0147.mp3"
+  },
+  {
+    "en": "You may go there.",
+    "es": "Puedes ir allí.",
+    "cloze": "allí",
+    "difficulty": 218,
+    "audio": "sent_0148.mp3"
+  },
+  {
+    "en": "What time is it?",
+    "es": "¿Me puedes decir la hora?",
+    "cloze": "hora",
+    "difficulty": 220,
+    "audio": "sent_0149.mp3"
+  },
+  {
+    "en": "How's your wife?",
+    "es": "¿Cómo está tu mujer?",
+    "cloze": "mujer",
+    "difficulty": 221,
+    "audio": "sent_0150.mp3"
+  },
+  {
+    "en": "I saw him but once.",
+    "es": "Sólo le he visto una vez.",
+    "cloze": "visto",
+    "difficulty": 222,
+    "audio": "sent_0151.mp3"
+  },
+  {
+    "en": "It's not important.",
+    "es": "No importa.",
+    "cloze": "importa",
+    "difficulty": 224,
+    "audio": "sent_0152.mp3"
+  },
+  {
+    "en": "I want to go with you.",
+    "es": "Quiero ir contigo.",
+    "cloze": "contigo",
+    "difficulty": 225,
+    "audio": "sent_0153.mp3"
+  },
+  {
+    "en": "It is not as good as it looks.",
+    "es": "No es tan bueno como se ve.",
+    "cloze": "ve",
+    "difficulty": 226,
+    "audio": "sent_0154.mp3"
+  },
+  {
+    "en": "Too late.",
+    "es": "Muy tarde.",
+    "cloze": "tarde",
+    "difficulty": 227,
+    "audio": "sent_0155.mp3"
+  },
+  {
+    "en": "Does anybody hear me?",
+    "es": "¿Alguien me oye?",
+    "cloze": "oye",
+    "difficulty": 228,
+    "audio": "sent_0156.mp3"
+  },
+  {
+    "en": "It's part of the job.",
+    "es": "Es parte del trabajo.",
+    "cloze": "parte",
+    "difficulty": 229,
+    "audio": "sent_0157.mp3"
+  },
+  {
+    "en": "There must be more.",
+    "es": "Debe de haber más.",
+    "cloze": "haber",
+    "difficulty": 230,
+    "audio": "sent_0158.mp3"
+  },
+  {
+    "en": "That's a man's job.",
+    "es": "Eso es trabajo de hombres.",
+    "cloze": "hombres",
+    "difficulty": 231,
+    "audio": "sent_0159.mp3"
+  },
+  {
+    "en": "Is there a problem?",
+    "es": "¿Hay un problema?",
+    "cloze": "problema",
+    "difficulty": 232,
+    "audio": "sent_0160.mp3"
+  },
+  {
+    "en": "Do you really want to know?",
+    "es": "¿De verdad quieres saber?",
+    "cloze": "saber",
+    "difficulty": 234,
+    "audio": "sent_0161.mp3"
+  },
+  {
+    "en": "This is what I wanted.",
+    "es": "Esto es lo que quería.",
+    "cloze": "quería",
+    "difficulty": 235,
+    "audio": "sent_0162.mp3"
+  },
+  {
+    "en": "I still can't believe it!",
+    "es": "¡Aún no lo creo!",
+    "cloze": "Aún",
+    "difficulty": 236,
+    "audio": "sent_0163.mp3"
+  },
+  {
+    "en": "I've been there twice.",
+    "es": "He estado allí dos veces.",
+    "cloze": "veces",
+    "difficulty": 237,
+    "audio": "sent_0164.mp3"
+  },
+  {
+    "en": "You can do it.",
+    "es": "¡Tú puedes hacerlo!",
+    "cloze": "hacerlo",
+    "difficulty": 239,
+    "audio": "sent_0165.mp3"
+  },
+  {
+    "en": "I think he did it.",
+    "es": "Creo que lo hizo él.",
+    "cloze": "hizo",
+    "difficulty": 241,
+    "audio": "sent_0166.mp3"
+  },
+  {
+    "en": "See you around.",
+    "es": "Te veo por ahí.",
+    "cloze": "veo",
+    "difficulty": 242,
+    "audio": "sent_0167.mp3"
+  },
+  {
+    "en": "I don't have as much money as you think.",
+    "es": "No tengo tanto dinero como crees.",
+    "cloze": "tanto",
+    "difficulty": 243,
+    "audio": "sent_0168.mp3"
+  },
+  {
+    "en": "That's a good idea!",
+    "es": "¡Esto es una buena idea!",
+    "cloze": "idea",
+    "difficulty": 246,
+    "audio": "sent_0169.mp3"
+  },
+  {
+    "en": "Maybe Tom didn't see us.",
+    "es": "Quizá Tom no nos ha visto.",
+    "cloze": "Quizá",
+    "difficulty": 249,
+    "audio": "sent_0170.mp3"
+  },
+  {
+    "en": "I owe it all to you.",
+    "es": "Te lo debo todo.",
+    "cloze": "debo",
+    "difficulty": 250,
+    "audio": "sent_0171.mp3"
+  },
+  {
+    "en": "Are you going anywhere?",
+    "es": "¿Vas a alguna parte?",
+    "cloze": "alguna",
+    "difficulty": 251,
+    "audio": "sent_0172.mp3"
+  },
+  {
+    "en": "By the way, where are you from?",
+    "es": "Por cierto, ¿de dónde eres?",
+    "cloze": "cierto",
+    "difficulty": 252,
+    "audio": "sent_0173.mp3"
+  },
+  {
+    "en": "That man is dead.",
+    "es": "Este hombre está muerto.",
+    "cloze": "muerto",
+    "difficulty": 254,
+    "audio": "sent_0174.mp3"
+  },
+  {
+    "en": "He is about forty.",
+    "es": "Él tiene unos 40 años.",
+    "cloze": "unos",
+    "difficulty": 255,
+    "audio": "sent_0175.mp3"
+  },
+  {
+    "en": "How are you these days?",
+    "es": "¿Cómo estás estos días?",
+    "cloze": "estos",
+    "difficulty": 256,
+    "audio": "sent_0176.mp3"
+  },
+  {
+    "en": "You can't go out.",
+    "es": "No puedes salir.",
+    "cloze": "salir",
+    "difficulty": 257,
+    "audio": "sent_0177.mp3"
+  },
+  {
+    "en": "I am a police officer.",
+    "es": "Yo soy policía.",
+    "cloze": "policía",
+    "difficulty": 258,
+    "audio": "sent_0178.mp3"
+  },
+  {
+    "en": "I'm really sorry.",
+    "es": "Realmente lo siento.",
+    "cloze": "Realmente",
+    "difficulty": 259,
+    "audio": "sent_0179.mp3"
+  },
+  {
+    "en": "You are much too kind to me.",
+    "es": "Eres demasiado bueno conmigo.",
+    "cloze": "demasiado",
+    "difficulty": 260,
+    "audio": "sent_0180.mp3"
+  },
+  {
+    "en": "How's your family?",
+    "es": "¿Cómo le va a tu familia?",
+    "cloze": "familia",
+    "difficulty": 261,
+    "audio": "sent_0181.mp3"
+  },
+  {
+    "en": "What can they do for us?",
+    "es": "¿Qué pueden hacer para nosotros?",
+    "cloze": "pueden",
+    "difficulty": 262,
+    "audio": "sent_0182.mp3"
+  },
+  {
+    "en": "It's all in your head.",
+    "es": "Todo está en tu cabeza.",
+    "cloze": "cabeza",
+    "difficulty": 263,
+    "audio": "sent_0183.mp3"
+  },
+  {
+    "en": "They are my friends.",
+    "es": "Ellos son mis amigos.",
+    "cloze": "amigos",
+    "difficulty": 265,
+    "audio": "sent_0184.mp3"
+  },
+  {
+    "en": "Who is this girl?",
+    "es": "¿Quién es esa chica?",
+    "cloze": "chica",
+    "difficulty": 266,
+    "audio": "sent_0185.mp3"
+  },
+  {
+    "en": "I'm on your side.",
+    "es": "Estoy de su lado.",
+    "cloze": "lado",
+    "difficulty": 268,
+    "audio": "sent_0186.mp3"
+  },
+  {
+    "en": "I can't go any further.",
+    "es": "No puedo ir más allá.",
+    "cloze": "allá",
+    "difficulty": 269,
+    "audio": "sent_0187.mp3"
+  },
+  {
+    "en": "Come in.",
+    "es": "Entre.",
+    "cloze": "Entre",
+    "difficulty": 270,
+    "audio": "sent_0188.mp3"
+  },
+  {
+    "en": "Can you spare me a few minutes?",
+    "es": "¿Tienes unos minutos?",
+    "cloze": "minutos",
+    "difficulty": 271,
+    "audio": "sent_0189.mp3"
+  },
+  {
+    "en": "I say it all the time.",
+    "es": "Lo digo todo el tiempo.",
+    "cloze": "digo",
+    "difficulty": 272,
+    "audio": "sent_0190.mp3"
+  },
+  {
+    "en": "Is it anything serious?",
+    "es": "¿Es algo serio?",
+    "cloze": "serio",
+    "difficulty": 274,
+    "audio": "sent_0191.mp3"
+  },
+  {
+    "en": "Look out!",
+    "es": "Cuidado.",
+    "cloze": "Cuidado",
+    "difficulty": 275,
+    "audio": "sent_0192.mp3"
+  },
+  {
+    "en": "Nothing happened.",
+    "es": "No pasó nada.",
+    "cloze": "pasó",
+    "difficulty": 276,
+    "audio": "sent_0193.mp3"
+  },
+  {
+    "en": "We are men.",
+    "es": "Somos hombres.",
+    "cloze": "Somos",
+    "difficulty": 278,
+    "audio": "sent_0194.mp3"
+  },
+  {
+    "en": "Is this love?",
+    "es": "¿Esto es amor?",
+    "cloze": "amor",
+    "difficulty": 279,
+    "audio": "sent_0195.mp3"
+  },
+  {
+    "en": "Someone's at the door.",
+    "es": "Hay alguien en la puerta.",
+    "cloze": "puerta",
+    "difficulty": 280,
+    "audio": "sent_0196.mp3"
+  },
+  {
+    "en": "Do you see what I mean?",
+    "es": "¿Ves lo que quiero decir?",
+    "cloze": "Ves",
+    "difficulty": 281,
+    "audio": "sent_0197.mp3"
+  },
+  {
+    "en": "I'd better be on my way.",
+    "es": "Es mejor que me vaya.",
+    "cloze": "vaya",
+    "difficulty": 282,
+    "audio": "sent_0198.mp3"
+  },
+  {
+    "en": "So quick!",
+    "es": "¡Qué rápido!",
+    "cloze": "rápido",
+    "difficulty": 286,
+    "audio": "sent_0199.mp3"
+  },
+  {
+    "en": "Everybody is counting on you.",
+    "es": "Todo el mundo cuenta contigo.",
+    "cloze": "cuenta",
+    "difficulty": 287,
+    "audio": "sent_0200.mp3"
+  },
+  {
+    "en": "Do you believe in such things?",
+    "es": "¿Crees en esas cosas?",
+    "cloze": "esas",
+    "difficulty": 290,
+    "audio": "sent_0201.mp3"
+  },
+  {
+    "en": "Did you have a good time?",
+    "es": "¿Te lo has pasado bien?",
+    "cloze": "pasado",
+    "difficulty": 292,
+    "audio": "sent_0202.mp3"
+  },
+  {
+    "en": "I thought it was true.",
+    "es": "Yo pensé que era cierto.",
+    "cloze": "pensé",
+    "difficulty": 293,
+    "audio": "sent_0203.mp3"
+  },
+  {
+    "en": "Hello? Are you still here?",
+    "es": "¿Hola? ¿Todavía estás aquí?",
+    "cloze": "Todavía",
+    "difficulty": 294,
+    "audio": "sent_0204.mp3"
+  },
+  {
+    "en": "He must be Tom's brother.",
+    "es": "Debe de ser el hermano de Tom.",
+    "cloze": "hermano",
+    "difficulty": 295,
+    "audio": "sent_0205.mp3"
+  },
+  {
+    "en": "Yes, you must.",
+    "es": "Sí, debes.",
+    "cloze": "debes",
+    "difficulty": 296,
+    "audio": "sent_0206.mp3"
+  },
+  {
+    "en": "Almost.",
+    "es": "Casi.",
+    "cloze": "Casi",
+    "difficulty": 297,
+    "audio": "sent_0207.mp3"
+  },
+  {
+    "en": "I like the way you talk.",
+    "es": "Me gusta la forma que tienes de hablar.",
+    "cloze": "forma",
+    "difficulty": 298,
+    "audio": "sent_0208.mp3"
+  },
+  {
+    "en": "Come again?",
+    "es": "¿Qué has dicho?",
+    "cloze": "dicho",
+    "difficulty": 302,
+    "audio": "sent_0209.mp3"
+  },
+  {
+    "en": "I didn't know that.",
+    "es": "Yo no sabía eso.",
+    "cloze": "sabía",
+    "difficulty": 304,
+    "audio": "sent_0210.mp3"
+  },
+  {
+    "en": "I want a lot.",
+    "es": "Quiero muchas cosas.",
+    "cloze": "muchas",
+    "difficulty": 305,
+    "audio": "sent_0211.mp3"
+  },
+  {
+    "en": "I made it myself.",
+    "es": "Lo hice yo mismo.",
+    "cloze": "hice",
+    "difficulty": 307,
+    "audio": "sent_0212.mp3"
+  },
+  {
+    "en": "You're either with me or you're against me.",
+    "es": "O estás conmigo o estás contra mí.",
+    "cloze": "contra",
+    "difficulty": 308,
+    "audio": "sent_0213.mp3"
+  },
+  {
+    "en": "The car is very fast.",
+    "es": "El auto es muy rápido.",
+    "cloze": "auto",
+    "difficulty": 309,
+    "audio": "sent_0214.mp3"
+  },
+  {
+    "en": "You are in my way.",
+    "es": "Estás en mi camino.",
+    "cloze": "camino",
+    "difficulty": 310,
+    "audio": "sent_0215.mp3"
+  },
+  {
+    "en": "I don't need your help.",
+    "es": "No necesito tu ayuda.",
+    "cloze": "ayuda",
+    "difficulty": 311,
+    "audio": "sent_0216.mp3"
+  },
+  {
+    "en": "Let's go that way.",
+    "es": "Vamos hacia allá.",
+    "cloze": "hacia",
+    "difficulty": 313,
+    "audio": "sent_0217.mp3"
+  },
+  {
+    "en": "I saw him recently.",
+    "es": "Le vi hace poco.",
+    "cloze": "vi",
+    "difficulty": 314,
+    "audio": "sent_0218.mp3"
+  },
+  {
+    "en": "I'm afraid to go alone.",
+    "es": "Tengo miedo de ir solo.",
+    "cloze": "miedo",
+    "difficulty": 315,
+    "audio": "sent_0219.mp3"
+  },
+  {
+    "en": "He went off without saying good-bye.",
+    "es": "Se fue sin decir adiós.",
+    "cloze": "adiós",
+    "difficulty": 316,
+    "audio": "sent_0220.mp3"
+  },
+  {
+    "en": "You go first.",
+    "es": "Tú primero.",
+    "cloze": "primero",
+    "difficulty": 317,
+    "audio": "sent_0221.mp3"
+  },
+  {
+    "en": "I need more power.",
+    "es": "Necesito más poder.",
+    "cloze": "poder",
+    "difficulty": 319,
+    "audio": "sent_0222.mp3"
+  },
+  {
+    "en": "We have two kids.",
+    "es": "Tenemos dos niños.",
+    "cloze": "niños",
+    "difficulty": 320,
+    "audio": "sent_0223.mp3"
+  },
+  {
+    "en": "That would be great!",
+    "es": "¡Eso sería muy bueno!",
+    "cloze": "sería",
+    "difficulty": 321,
+    "audio": "sent_0224.mp3"
+  },
+  {
+    "en": "I like history.",
+    "es": "Me gusta la historia.",
+    "cloze": "historia",
+    "difficulty": 322,
+    "audio": "sent_0225.mp3"
+  },
+  {
+    "en": "Aren't you in town?",
+    "es": "¿Estás en la ciudad?",
+    "cloze": "ciudad",
+    "difficulty": 325,
+    "audio": "sent_0226.mp3"
+  },
+  {
+    "en": "That's not what you said before.",
+    "es": "Eso no es lo que dijiste antes.",
+    "cloze": "dijiste",
+    "difficulty": 326,
+    "audio": "sent_0227.mp3"
+  },
+  {
+    "en": "I have no wife.",
+    "es": "No tengo esposa.",
+    "cloze": "esposa",
+    "difficulty": 329,
+    "audio": "sent_0228.mp3"
+  },
+  {
+    "en": "Where are the boys?",
+    "es": "¿Dónde están los chicos?",
+    "cloze": "chicos",
+    "difficulty": 331,
+    "audio": "sent_0229.mp3"
+  },
+  {
+    "en": "You may go anywhere.",
+    "es": "Puedes ir a cualquier parte.",
+    "cloze": "cualquier",
+    "difficulty": 332,
+    "audio": "sent_0230.mp3"
+  },
+  {
+    "en": "I may be too old.",
+    "es": "Puede que sea demasiado viejo.",
+    "cloze": "viejo",
+    "difficulty": 333,
+    "audio": "sent_0231.mp3"
+  },
+  {
+    "en": "Where should we go?",
+    "es": "¿Dónde debemos ir?",
+    "cloze": "debemos",
+    "difficulty": 334,
+    "audio": "sent_0232.mp3"
+  },
+  {
+    "en": "Please leave my things as they are.",
+    "es": "Por favor, deja mis cosas como están.",
+    "cloze": "deja",
+    "difficulty": 335,
+    "audio": "sent_0233.mp3"
+  },
+  {
+    "en": "I go there every year.",
+    "es": "Yo voy ahí cada año.",
+    "cloze": "año",
+    "difficulty": 336,
+    "audio": "sent_0234.mp3"
+  },
+  {
+    "en": "It's out of my hands now.",
+    "es": "Ya no está en mis manos.",
+    "cloze": "manos",
+    "difficulty": 339,
+    "audio": "sent_0235.mp3"
+  },
+  {
+    "en": "Are you mad?",
+    "es": "¿Estás loco?",
+    "cloze": "loco",
+    "difficulty": 341,
+    "audio": "sent_0236.mp3"
+  },
+  {
+    "en": "I am in trouble.",
+    "es": "Estoy en problemas.",
+    "cloze": "problemas",
+    "difficulty": 342,
+    "audio": "sent_0237.mp3"
+  },
+  {
+    "en": "We are even.",
+    "es": "Estamos a mano.",
+    "cloze": "mano",
+    "difficulty": 343,
+    "audio": "sent_0238.mp3"
+  },
+  {
+    "en": "No one loves war.",
+    "es": "A nadie le gusta la guerra.",
+    "cloze": "guerra",
+    "difficulty": 344,
+    "audio": "sent_0239.mp3"
+  },
+  {
+    "en": "I saw her a week ago.",
+    "es": "La vi hace una semana.",
+    "cloze": "semana",
+    "difficulty": 345,
+    "audio": "sent_0240.mp3"
+  },
+  {
+    "en": "Anything will do.",
+    "es": "Cualquier cosa vale.",
+    "cloze": "vale",
+    "difficulty": 347,
+    "audio": "sent_0241.mp3"
+  },
+  {
+    "en": "Who is coming with me?",
+    "es": "¿Quién viene conmigo?",
+    "cloze": "viene",
+    "difficulty": 349,
+    "audio": "sent_0242.mp3"
+  },
+  {
+    "en": "It takes time.",
+    "es": "Esto toma su tiempo.",
+    "cloze": "toma",
+    "difficulty": 351,
+    "audio": "sent_0243.mp3"
+  },
+  {
+    "en": "That's not the case.",
+    "es": "No es el caso.",
+    "cloze": "caso",
+    "difficulty": 352,
+    "audio": "sent_0244.mp3"
+  },
+  {
+    "en": "Here's some water.",
+    "es": "Aquí hay un poco de agua.",
+    "cloze": "agua",
+    "difficulty": 353,
+    "audio": "sent_0245.mp3"
+  },
+  {
+    "en": "I'll do it later on.",
+    "es": "Lo haré más tarde.",
+    "cloze": "haré",
+    "difficulty": 354,
+    "audio": "sent_0246.mp3"
+  },
+  {
+    "en": "I don't get what you mean.",
+    "es": "No entiendo lo que quieres decir.",
+    "cloze": "entiendo",
+    "difficulty": 356,
+    "audio": "sent_0247.mp3"
+  },
+  {
+    "en": "We only have three hours.",
+    "es": "Solo tenemos tres horas.",
+    "cloze": "horas",
+    "difficulty": 357,
+    "audio": "sent_0248.mp3"
+  },
+  {
+    "en": "We are people.",
+    "es": "Somos personas.",
+    "cloze": "personas",
+    "difficulty": 358,
+    "audio": "sent_0249.mp3"
+  },
+  {
+    "en": "Look straight ahead.",
+    "es": "Mira hacia adelante.",
+    "cloze": "adelante",
+    "difficulty": 360,
+    "audio": "sent_0250.mp3"
+  },
+  {
+    "en": "He is but a child.",
+    "es": "Es sólo un niño.",
+    "cloze": "niño",
+    "difficulty": 361,
+    "audio": "sent_0251.mp3"
+  },
+  {
+    "en": "I'm not ready yet.",
+    "es": "Aún no estoy listo.",
+    "cloze": "listo",
+    "difficulty": 362,
+    "audio": "sent_0252.mp3"
+  },
+  {
+    "en": "Now it's time to say good night.",
+    "es": "Ahora es el momento de decir buenas noches.",
+    "cloze": "noches",
+    "difficulty": 363,
+    "audio": "sent_0253.mp3"
+  },
+  {
+    "en": "Good morning, everybody.",
+    "es": "Buenos días a todos.",
+    "cloze": "Buenos",
+    "difficulty": 364,
+    "audio": "sent_0254.mp3"
+  },
+  {
+    "en": "How am I going to know?",
+    "es": "¿Cómo lo iba a saber?",
+    "cloze": "iba",
+    "difficulty": 365,
+    "audio": "sent_0255.mp3"
+  },
+  {
+    "en": "Shall we go together?",
+    "es": "¿Vamos juntos?",
+    "cloze": "juntos",
+    "difficulty": 366,
+    "audio": "sent_0256.mp3"
+  },
+  {
+    "en": "Give me a little more water.",
+    "es": "Dame un poco más de agua.",
+    "cloze": "Dame",
+    "difficulty": 367,
+    "audio": "sent_0257.mp3"
+  },
+  {
+    "en": "Are you an only child?",
+    "es": "¿Eres hijo único?",
+    "cloze": "único",
+    "difficulty": 368,
+    "audio": "sent_0258.mp3"
+  },
+  {
+    "en": "Whose turn is it next?",
+    "es": "¿Quién sigue?",
+    "cloze": "sigue",
+    "difficulty": 372,
+    "audio": "sent_0259.mp3"
+  },
+  {
+    "en": "This is too big.",
+    "es": "Esto es demasiado grande.",
+    "cloze": "grande",
+    "difficulty": 373,
+    "audio": "sent_0260.mp3"
+  },
+  {
+    "en": "Put your hands up!",
+    "es": "¡Arriba las manos!",
+    "cloze": "Arriba",
+    "difficulty": 374,
+    "audio": "sent_0261.mp3"
+  },
+  {
+    "en": "He is my boss.",
+    "es": "Él es mi jefe.",
+    "cloze": "jefe",
+    "difficulty": 375,
+    "audio": "sent_0262.mp3"
+  },
+  {
+    "en": "The boy talks as if he were a man.",
+    "es": "El niño habla como si fuera un hombre.",
+    "cloze": "habla",
+    "difficulty": 376,
+    "audio": "sent_0263.mp3"
+  },
+  {
+    "en": "I guess that you can't do it.",
+    "es": "Supongo que tú no puedes hacerlo.",
+    "cloze": "Supongo",
+    "difficulty": 377,
+    "audio": "sent_0264.mp3"
+  },
+  {
+    "en": "I think it's the best way.",
+    "es": "Creo que es la mejor manera.",
+    "cloze": "manera",
+    "difficulty": 378,
+    "audio": "sent_0265.mp3"
+  },
+  {
+    "en": "What do you want?",
+    "es": "¿Qué quieren?",
+    "cloze": "quieren",
+    "difficulty": 379,
+    "audio": "sent_0266.mp3"
+  },
+  {
+    "en": "What does this stand for?",
+    "es": "¿Qué significa esto?",
+    "cloze": "significa",
+    "difficulty": 381,
+    "audio": "sent_0267.mp3"
+  },
+  {
+    "en": "Did you have a good weekend?",
+    "es": "¿Has pasado un buen fin de semana?",
+    "cloze": "fin",
+    "difficulty": 383,
+    "audio": "sent_0268.mp3"
+  },
+  {
+    "en": "You are not as short as I.",
+    "es": "No eres tan bajo como yo.",
+    "cloze": "bajo",
+    "difficulty": 384,
+    "audio": "sent_0269.mp3"
+  },
+  {
+    "en": "I know what his name is.",
+    "es": "Sé cómo se llama.",
+    "cloze": "llama",
+    "difficulty": 385,
+    "audio": "sent_0270.mp3"
+  },
+  {
+    "en": "Why can't you come?",
+    "es": "¿Por qué no puedes venir?",
+    "cloze": "venir",
+    "difficulty": 386,
+    "audio": "sent_0271.mp3"
+  },
+  {
+    "en": "I am afraid of dying.",
+    "es": "Tengo miedo de morir.",
+    "cloze": "morir",
+    "difficulty": 387,
+    "audio": "sent_0272.mp3"
+  },
+  {
+    "en": "This is not important.",
+    "es": "Esto no es importante.",
+    "cloze": "importante",
+    "difficulty": 388,
+    "audio": "sent_0273.mp3"
+  },
+  {
+    "en": "Did you do this on your own?",
+    "es": "¿Lo hiciste tú solo?",
+    "cloze": "hiciste",
+    "difficulty": 389,
+    "audio": "sent_0274.mp3"
+  },
+  {
+    "en": "Nobody listens to me.",
+    "es": "Nadie me escucha.",
+    "cloze": "escucha",
+    "difficulty": 391,
+    "audio": "sent_0275.mp3"
+  },
+  {
+    "en": "You must not come in.",
+    "es": "No debes entrar.",
+    "cloze": "entrar",
+    "difficulty": 392,
+    "audio": "sent_0276.mp3"
+  },
+  {
+    "en": "You are not a child any more.",
+    "es": "Ya no eres ningún niño.",
+    "cloze": "ningún",
+    "difficulty": 393,
+    "audio": "sent_0277.mp3"
+  },
+  {
+    "en": "I know it in my heart.",
+    "es": "Sé que está en mi corazón.",
+    "cloze": "corazón",
+    "difficulty": 394,
+    "audio": "sent_0278.mp3"
+  },
+  {
+    "en": "What the hell are you doing?",
+    "es": "¿Qué diablos estás haciendo?",
+    "cloze": "diablos",
+    "difficulty": 395,
+    "audio": "sent_0279.mp3"
+  },
+  {
+    "en": "We need money to do anything.",
+    "es": "Necesitamos dinero para hacer cualquier cosa.",
+    "cloze": "Necesitamos",
+    "difficulty": 396,
+    "audio": "sent_0280.mp3"
+  },
+  {
+    "en": "Look back!",
+    "es": "¡Mira hacia atrás!",
+    "cloze": "atrás",
+    "difficulty": 397,
+    "audio": "sent_0281.mp3"
+  },
+  {
+    "en": "I can do this all day.",
+    "es": "Puedo hacer esto durante todo el día.",
+    "cloze": "durante",
+    "difficulty": 398,
+    "audio": "sent_0282.mp3"
+  },
+  {
+    "en": "What you say is right.",
+    "es": "Lo que dices es cierto.",
+    "cloze": "dices",
+    "difficulty": 399,
+    "audio": "sent_0283.mp3"
+  },
+  {
+    "en": "They're our friends.",
+    "es": "Son nuestros amigos.",
+    "cloze": "nuestros",
+    "difficulty": 400,
+    "audio": "sent_0284.mp3"
+  },
+  {
+    "en": "He's a good person.",
+    "es": "Él es una buena persona.",
+    "cloze": "persona",
+    "difficulty": 401,
+    "audio": "sent_0285.mp3"
+  },
+  {
+    "en": "Put your hands down.",
+    "es": "¡Abajo las manos!",
+    "cloze": "Abajo",
+    "difficulty": 402,
+    "audio": "sent_0286.mp3"
+  },
+  {
+    "en": "What's your daughter's name?",
+    "es": "¿Cómo se llama tu hija?",
+    "cloze": "hija",
+    "difficulty": 404,
+    "audio": "sent_0287.mp3"
+  },
+  {
+    "en": "I am certain that he will quit his job.",
+    "es": "Estoy seguro de que él va a dejar su trabajo.",
+    "cloze": "dejar",
+    "difficulty": 405,
+    "audio": "sent_0288.mp3"
+  },
+  {
+    "en": "She needs help.",
+    "es": "Ella necesita ayuda.",
+    "cloze": "necesita",
+    "difficulty": 406,
+    "audio": "sent_0289.mp3"
+  },
+  {
+    "en": "When do we arrive?",
+    "es": "¿En cuánto tiempo vamos a llegar?",
+    "cloze": "llegar",
+    "difficulty": 407,
+    "audio": "sent_0290.mp3"
+  },
+  {
+    "en": "I do it because I want to.",
+    "es": "Lo hago porque quiero.",
+    "cloze": "hago",
+    "difficulty": 408,
+    "audio": "sent_0291.mp3"
+  },
+  {
+    "en": "That woman over there is my mother.",
+    "es": "La señora de allí es mi madre.",
+    "cloze": "señora",
+    "difficulty": 409,
+    "audio": "sent_0292.mp3"
+  },
+  {
+    "en": "There may be others.",
+    "es": "Puede que haya otros.",
+    "cloze": "haya",
+    "difficulty": 410,
+    "audio": "sent_0293.mp3"
+  },
+  {
+    "en": "You are a doctor.",
+    "es": "Eres un doctor.",
+    "cloze": "doctor",
+    "difficulty": 412,
+    "audio": "sent_0294.mp3"
+  },
+  {
+    "en": "Would you like to come?",
+    "es": "¿Te gustaría venir?",
+    "cloze": "gustaría",
+    "difficulty": 413,
+    "audio": "sent_0295.mp3"
+  },
+  {
+    "en": "I'm not fond of her face.",
+    "es": "No me gusta su cara.",
+    "cloze": "cara",
+    "difficulty": 415,
+    "audio": "sent_0296.mp3"
+  },
+  {
+    "en": "I can't even do that.",
+    "es": "Ni siquiera puedo hacer eso.",
+    "cloze": "siquiera",
+    "difficulty": 416,
+    "audio": "sent_0297.mp3"
+  },
+  {
+    "en": "Terrific!",
+    "es": "¡Genial!",
+    "cloze": "Genial",
+    "difficulty": 417,
+    "audio": "sent_0298.mp3"
+  },
+  {
+    "en": "Of course!",
+    "es": "¡Por supuesto!",
+    "cloze": "supuesto",
+    "difficulty": 419,
+    "audio": "sent_0299.mp3"
+  },
+  {
+    "en": "I'd like something to drink.",
+    "es": "Me gustaría tomar algo.",
+    "cloze": "tomar",
+    "difficulty": 420,
+    "audio": "sent_0300.mp3"
+  },
+  {
+    "en": "Our team did very well.",
+    "es": "Nuestro equipo lo hizo muy bien.",
+    "cloze": "equipo",
+    "difficulty": 421,
+    "audio": "sent_0301.mp3"
+  },
+  {
+    "en": "This isn't fair.",
+    "es": "Esto no es justo.",
+    "cloze": "justo",
+    "difficulty": 422,
+    "audio": "sent_0302.mp3"
+  },
+  {
+    "en": "There's a lot at stake.",
+    "es": "Hay mucho en juego.",
+    "cloze": "juego",
+    "difficulty": 423,
+    "audio": "sent_0303.mp3"
+  },
+  {
+    "en": "No way!",
+    "es": "De ninguna manera.",
+    "cloze": "ninguna",
+    "difficulty": 424,
+    "audio": "sent_0304.mp3"
+  },
+  {
+    "en": "Give me five days.",
+    "es": "Dame cinco días.",
+    "cloze": "cinco",
+    "difficulty": 426,
+    "audio": "sent_0305.mp3"
+  },
+  {
+    "en": "I do what I'm told.",
+    "es": "Yo hago lo que me dicen.",
+    "cloze": "dicen",
+    "difficulty": 427,
+    "audio": "sent_0306.mp3"
+  },
+  {
+    "en": "I love you.",
+    "es": "Te amo.",
+    "cloze": "amo",
+    "difficulty": 428,
+    "audio": "sent_0307.mp3"
+  },
+  {
+    "en": "When will you leave?",
+    "es": "¿Cuándo te vas?",
+    "cloze": "Cuándo",
+    "difficulty": 429,
+    "audio": "sent_0308.mp3"
+  },
+  {
+    "en": "It's too small.",
+    "es": "Es muy pequeño.",
+    "cloze": "pequeño",
+    "difficulty": 430,
+    "audio": "sent_0309.mp3"
+  },
+  {
+    "en": "Give me a few.",
+    "es": "Dame algunos.",
+    "cloze": "algunos",
+    "difficulty": 431,
+    "audio": "sent_0310.mp3"
+  },
+  {
+    "en": "I know him.",
+    "es": "Lo conozco.",
+    "cloze": "conozco",
+    "difficulty": 432,
+    "audio": "sent_0311.mp3"
+  },
+  {
+    "en": "Where is Tom's classroom?",
+    "es": "¿Dónde está la clase de Tom?",
+    "cloze": "clase",
+    "difficulty": 433,
+    "audio": "sent_0312.mp3"
+  },
+  {
+    "en": "She appears to have many friends.",
+    "es": "Parece que ella tiene muchos amigos.",
+    "cloze": "muchos",
+    "difficulty": 436,
+    "audio": "sent_0313.mp3"
+  },
+  {
+    "en": "I'll be with you in a second.",
+    "es": "Estoy contigo en un segundo.",
+    "cloze": "segundo",
+    "difficulty": 438,
+    "audio": "sent_0314.mp3"
+  },
+  {
+    "en": "I'll try my best today, too.",
+    "es": "Hoy también lo haré lo mejor que pueda.",
+    "cloze": "pueda",
+    "difficulty": 440,
+    "audio": "sent_0315.mp3"
+  },
+  {
+    "en": "Tell me what happened.",
+    "es": "Dime qué ha pasado.",
+    "cloze": "Dime",
+    "difficulty": 441,
+    "audio": "sent_0316.mp3"
+  },
+  {
+    "en": "I don't mind anymore.",
+    "es": "Ya me da igual.",
+    "cloze": "igual",
+    "difficulty": 442,
+    "audio": "sent_0317.mp3"
+  },
+  {
+    "en": "We have enough food now.",
+    "es": "Tenemos comida suficiente ahora.",
+    "cloze": "comida",
+    "difficulty": 443,
+    "audio": "sent_0318.mp3"
+  },
+  {
+    "en": "He wants to meet you.",
+    "es": "Él se quiere encontrar con ustedes.",
+    "cloze": "encontrar",
+    "difficulty": 446,
+    "audio": "sent_0319.mp3"
+  },
+  {
+    "en": "Louder, please.",
+    "es": "Más fuerte, por favor.",
+    "cloze": "fuerte",
+    "difficulty": 447,
+    "audio": "sent_0320.mp3"
+  },
+  {
+    "en": "There's no turning back now.",
+    "es": "Ya no hay vuelta atrás.",
+    "cloze": "vuelta",
+    "difficulty": 448,
+    "audio": "sent_0321.mp3"
+  },
+  {
+    "en": "Perhaps he will come.",
+    "es": "Tal vez venga.",
+    "cloze": "venga",
+    "difficulty": 449,
+    "audio": "sent_0322.mp3"
+  },
+  {
+    "en": "I can't believe it!",
+    "es": "¡No me lo puedo creer!",
+    "cloze": "creer",
+    "difficulty": 450,
+    "audio": "sent_0323.mp3"
+  },
+  {
+    "en": "What actually happened?",
+    "es": "¿Qué pasó en realidad?",
+    "cloze": "realidad",
+    "difficulty": 451,
+    "audio": "sent_0324.mp3"
+  },
+  {
+    "en": "You should be more careful.",
+    "es": "Deberías tener más cuidado.",
+    "cloze": "Deberías",
+    "difficulty": 454,
+    "audio": "sent_0325.mp3"
+  },
+  {
+    "en": "May I ask a question?",
+    "es": "¿Puedo hacer una pregunta?",
+    "cloze": "pregunta",
+    "difficulty": 455,
+    "audio": "sent_0326.mp3"
+  },
+  {
+    "en": "I went home.",
+    "es": "Me fui a casa.",
+    "cloze": "fui",
+    "difficulty": 456,
+    "audio": "sent_0327.mp3"
+  },
+  {
+    "en": "You must do work.",
+    "es": "Tienes que trabajar.",
+    "cloze": "trabajar",
+    "difficulty": 460,
+    "audio": "sent_0328.mp3"
+  },
+  {
+    "en": "You'd better not do it.",
+    "es": "¡Mejor no lo hagas!",
+    "cloze": "hagas",
+    "difficulty": 462,
+    "audio": "sent_0329.mp3"
+  },
+  {
+    "en": "Do you have anything to eat?",
+    "es": "¿Tienes algo de comer?",
+    "cloze": "comer",
+    "difficulty": 465,
+    "audio": "sent_0330.mp3"
+  },
+  {
+    "en": "What is your number?",
+    "es": "¿Cuál es tu número?",
+    "cloze": "número",
+    "difficulty": 466,
+    "audio": "sent_0331.mp3"
+  },
+  {
+    "en": "You must do your best.",
+    "es": "Debes dar lo mejor.",
+    "cloze": "dar",
+    "difficulty": 467,
+    "audio": "sent_0332.mp3"
+  },
+  {
+    "en": "This is the very thing that you need.",
+    "es": "Esto es justo la cosa que necesitas.",
+    "cloze": "necesitas",
+    "difficulty": 468,
+    "audio": "sent_0333.mp3"
+  },
+  {
+    "en": "Tom's son's name is John.",
+    "es": "El hijo de Tom se llama John.",
+    "cloze": "John",
+    "difficulty": 469,
+    "audio": "sent_0334.mp3"
+  },
+  {
+    "en": "Give me another chance.",
+    "es": "Dame otra oportunidad.",
+    "cloze": "oportunidad",
+    "difficulty": 470,
+    "audio": "sent_0335.mp3"
+  },
+  {
+    "en": "I'm about to leave.",
+    "es": "Estoy a punto de salir.",
+    "cloze": "punto",
+    "difficulty": 471,
+    "audio": "sent_0336.mp3"
+  },
+  {
+    "en": "It's the same for everyone.",
+    "es": "Es la misma cosa para todos.",
+    "cloze": "misma",
+    "difficulty": 472,
+    "audio": "sent_0337.mp3"
+  },
+  {
+    "en": "He is the last man I want to see.",
+    "es": "Es la última persona que quiero ver.",
+    "cloze": "última",
+    "difficulty": 473,
+    "audio": "sent_0338.mp3"
+  },
+  {
+    "en": "I always eat out.",
+    "es": "Siempre como afuera.",
+    "cloze": "afuera",
+    "difficulty": 474,
+    "audio": "sent_0339.mp3"
+  },
+  {
+    "en": "Women like to talk.",
+    "es": "A las mujeres les gusta hablar.",
+    "cloze": "mujeres",
+    "difficulty": 475,
+    "audio": "sent_0340.mp3"
+  },
+  {
+    "en": "Let me think for a minute.",
+    "es": "Déjame pensar un momento.",
+    "cloze": "pensar",
+    "difficulty": 476,
+    "audio": "sent_0341.mp3"
+  },
+  {
+    "en": "When did they go home?",
+    "es": "¿Cuándo se fueron a casa?",
+    "cloze": "fueron",
+    "difficulty": 477,
+    "audio": "sent_0342.mp3"
+  },
+  {
+    "en": "That was hard to believe.",
+    "es": "Eso era difícil de creer.",
+    "cloze": "difícil",
+    "difficulty": 478,
+    "audio": "sent_0343.mp3"
+  },
+  {
+    "en": "I can do without this.",
+    "es": "Puedo vivir sin esto.",
+    "cloze": "vivir",
+    "difficulty": 479,
+    "audio": "sent_0344.mp3"
+  },
+  {
+    "en": "Step back.",
+    "es": "Da un paso atrás.",
+    "cloze": "paso",
+    "difficulty": 480,
+    "audio": "sent_0345.mp3"
+  },
+  {
+    "en": "Is it bad?",
+    "es": "¿Es malo?",
+    "cloze": "malo",
+    "difficulty": 481,
+    "audio": "sent_0346.mp3"
+  },
+  {
+    "en": "Who were you talking with?",
+    "es": "¿Con quién estabas hablando?",
+    "cloze": "estabas",
+    "difficulty": 482,
+    "audio": "sent_0347.mp3"
+  },
+  {
+    "en": "Do you know where I live?",
+    "es": "¿Sabe usted dónde vivo?",
+    "cloze": "vivo",
+    "difficulty": 483,
+    "audio": "sent_0348.mp3"
+  },
+  {
+    "en": "What is it that you want me to do?",
+    "es": "¿Qué quieres que haga?",
+    "cloze": "haga",
+    "difficulty": 484,
+    "audio": "sent_0349.mp3"
+  },
+  {
+    "en": "It seems like there's no money left.",
+    "es": "Parece que no queda dinero.",
+    "cloze": "queda",
+    "difficulty": 485,
+    "audio": "sent_0350.mp3"
+  },
+  {
+    "en": "We are his sons.",
+    "es": "Nosotros somos sus hijos.",
+    "cloze": "hijos",
+    "difficulty": 486,
+    "audio": "sent_0351.mp3"
+  },
+  {
+    "en": "I have an older brother.",
+    "es": "Tengo un hermano mayor.",
+    "cloze": "mayor",
+    "difficulty": 487,
+    "audio": "sent_0352.mp3"
+  },
+  {
+    "en": "You have to go to the party.",
+    "es": "Tienes que ir a la fiesta.",
+    "cloze": "fiesta",
+    "difficulty": 488,
+    "audio": "sent_0353.mp3"
+  },
+  {
+    "en": "What are they doing?",
+    "es": "¿Qué hacen?",
+    "cloze": "hacen",
+    "difficulty": 489,
+    "audio": "sent_0354.mp3"
+  },
+  {
+    "en": "The job is half done.",
+    "es": "El trabajo está a medio hacer.",
+    "cloze": "medio",
+    "difficulty": 490,
+    "audio": "sent_0355.mp3"
+  },
+  {
+    "en": "I had some things to do.",
+    "es": "Tenía algunas cosas que hacer.",
+    "cloze": "algunas",
+    "difficulty": 491,
+    "audio": "sent_0356.mp3"
+  },
+  {
+    "en": "That's enough.",
+    "es": "Ya basta.",
+    "cloze": "basta",
+    "difficulty": 492,
+    "audio": "sent_0357.mp3"
+  },
+  {
+    "en": "Who said I had a gun?",
+    "es": "¿Quién dijo que yo tenía un arma?",
+    "cloze": "arma",
+    "difficulty": 494,
+    "audio": "sent_0358.mp3"
+  },
+  {
+    "en": "Nobody came.",
+    "es": "Nadie vino.",
+    "cloze": "vino",
+    "difficulty": 495,
+    "audio": "sent_0359.mp3"
+  },
+  {
+    "en": "I hope he'll be OK.",
+    "es": "Espero que esté bien.",
+    "cloze": "esté",
+    "difficulty": 500,
+    "audio": "sent_0360.mp3"
+  },
+  {
+    "en": "He had fifty dollars.",
+    "es": "Él tenía 50 dólares.",
+    "cloze": "dólares",
+    "difficulty": 501,
+    "audio": "sent_0361.mp3"
+  },
+  {
+    "en": "Uncle Tom is my mother's brother.",
+    "es": "El tío Tom es el hermano de mi madre.",
+    "cloze": "tío",
+    "difficulty": 502,
+    "audio": "sent_0362.mp3"
+  },
+  {
+    "en": "Please come as soon as possible.",
+    "es": "Por favor, ven tan pronto como te sea posible.",
+    "cloze": "posible",
+    "difficulty": 503,
+    "audio": "sent_0363.mp3"
+  },
+  {
+    "en": "I had to go there alone.",
+    "es": "Tuve que ir ahí solo.",
+    "cloze": "Tuve",
+    "difficulty": 504,
+    "audio": "sent_0364.mp3"
+  },
+  {
+    "en": "In life there are ups and downs.",
+    "es": "La vida no es fácil.",
+    "cloze": "fácil",
+    "difficulty": 505,
+    "audio": "sent_0365.mp3"
+  },
+  {
+    "en": "Don't worry about me.",
+    "es": "No te preocupes por mí.",
+    "cloze": "preocupes",
+    "difficulty": 506,
+    "audio": "sent_0366.mp3"
+  },
+  {
+    "en": "I can see the light.",
+    "es": "Puedo ver la luz.",
+    "cloze": "luz",
+    "difficulty": 508,
+    "audio": "sent_0367.mp3"
+  },
+  {
+    "en": "They were friends.",
+    "es": "Ellos eran amigos.",
+    "cloze": "eran",
+    "difficulty": 509,
+    "audio": "sent_0368.mp3"
+  },
+  {
+    "en": "What the fuck happened?",
+    "es": "¿Qué carajo pasó?",
+    "cloze": "carajo",
+    "difficulty": 510,
+    "audio": "sent_0369.mp3"
+  },
+  {
+    "en": "The story ends happily.",
+    "es": "La historia tiene un final feliz.",
+    "cloze": "final",
+    "difficulty": 511,
+    "audio": "sent_0370.mp3"
+  },
+  {
+    "en": "He always treats me like a child.",
+    "es": "Él siempre me trata como a un niño.",
+    "cloze": "trata",
+    "difficulty": 513,
+    "audio": "sent_0371.mp3"
+  },
+  {
+    "en": "I'd like to see your sister.",
+    "es": "Me gustaría ver a tu hermana.",
+    "cloze": "hermana",
+    "difficulty": 515,
+    "audio": "sent_0372.mp3"
+  },
+  {
+    "en": "What exactly does that mean?",
+    "es": "¿Qué significa eso exactamente?",
+    "cloze": "exactamente",
+    "difficulty": 516,
+    "audio": "sent_0373.mp3"
+  },
+  {
+    "en": "I don't know either girl.",
+    "es": "No conozco a ninguna de las dos chicas.",
+    "cloze": "chicas",
+    "difficulty": 517,
+    "audio": "sent_0374.mp3"
+  },
+  {
+    "en": "It's pretty good.",
+    "es": "Es bastante bueno.",
+    "cloze": "bastante",
+    "difficulty": 519,
+    "audio": "sent_0375.mp3"
+  },
+  {
+    "en": "What's going on?",
+    "es": "¿Qué está pasando?",
+    "cloze": "pasando",
+    "difficulty": 521,
+    "audio": "sent_0376.mp3"
+  },
+  {
+    "en": "I'm talking on the phone.",
+    "es": "Estoy hablando por teléfono.",
+    "cloze": "teléfono",
+    "difficulty": 524,
+    "audio": "sent_0377.mp3"
+  },
+  {
+    "en": "Which dog is yours?",
+    "es": "¿Cuál es su perro?",
+    "cloze": "perro",
+    "difficulty": 525,
+    "audio": "sent_0378.mp3"
+  },
+  {
+    "en": "We need fire.",
+    "es": "Necesitamos fuego.",
+    "cloze": "fuego",
+    "difficulty": 526,
+    "audio": "sent_0379.mp3"
+  },
+  {
+    "en": "My uncle died a year ago.",
+    "es": "Mi tío murió hace un año.",
+    "cloze": "murió",
+    "difficulty": 527,
+    "audio": "sent_0380.mp3"
+  },
+  {
+    "en": "I don't like it, either.",
+    "es": "A mí tampoco me gusta.",
+    "cloze": "tampoco",
+    "difficulty": 528,
+    "audio": "sent_0381.mp3"
+  },
+  {
+    "en": "It was really close.",
+    "es": "Estuvo muy cerca.",
+    "cloze": "Estuvo",
+    "difficulty": 530,
+    "audio": "sent_0382.mp3"
+  },
+  {
+    "en": "I'll go by car.",
+    "es": "Iré en auto.",
+    "cloze": "Iré",
+    "difficulty": 532,
+    "audio": "sent_0383.mp3"
+  },
+  {
+    "en": "I have had it.",
+    "es": "Yo lo he tenido.",
+    "cloze": "tenido",
+    "difficulty": 533,
+    "audio": "sent_0384.mp3"
+  },
+  {
+    "en": "That's my fault.",
+    "es": "Eso es mi culpa.",
+    "cloze": "culpa",
+    "difficulty": 534,
+    "audio": "sent_0385.mp3"
+  },
+  {
+    "en": "I don't know where to go.",
+    "es": "No sé adónde ir.",
+    "cloze": "adónde",
+    "difficulty": 536,
+    "audio": "sent_0386.mp3"
+  },
+  {
+    "en": "What are you looking for?",
+    "es": "¿Qué estás buscando?",
+    "cloze": "buscando",
+    "difficulty": 537,
+    "audio": "sent_0387.mp3"
+  },
+  {
+    "en": "The sooner, the better.",
+    "es": "Cuanto antes mejor.",
+    "cloze": "Cuanto",
+    "difficulty": 538,
+    "audio": "sent_0388.mp3"
+  },
+  {
+    "en": "Both my parents are at home now.",
+    "es": "Ahora mis padres están en casa.",
+    "cloze": "padres",
+    "difficulty": 539,
+    "audio": "sent_0389.mp3"
+  },
+  {
+    "en": "Leave me in peace!",
+    "es": "¡Déjame en paz!",
+    "cloze": "paz",
+    "difficulty": 540,
+    "audio": "sent_0390.mp3"
+  },
+  {
+    "en": "Who on earth are you?",
+    "es": "¿Quién demonios eres?",
+    "cloze": "demonios",
+    "difficulty": 541,
+    "audio": "sent_0391.mp3"
+  },
+  {
+    "en": "I believe he'll be with us today.",
+    "es": "Creo que hoy estará con nosotros.",
+    "cloze": "estará",
+    "difficulty": 542,
+    "audio": "sent_0392.mp3"
+  },
+  {
+    "en": "Excuse me for being late.",
+    "es": "Perdón por llegar tarde.",
+    "cloze": "Perdón",
+    "difficulty": 544,
+    "audio": "sent_0393.mp3"
+  },
+  {
+    "en": "What are you thinking about?",
+    "es": "¿En qué estás pensando?",
+    "cloze": "pensando",
+    "difficulty": 547,
+    "audio": "sent_0394.mp3"
+  },
+  {
+    "en": "I don't want to wait that long.",
+    "es": "No quiero esperar tanto.",
+    "cloze": "esperar",
+    "difficulty": 548,
+    "audio": "sent_0395.mp3"
+  },
+  {
+    "en": "That's all we know.",
+    "es": "Eso es todo lo que sabemos.",
+    "cloze": "sabemos",
+    "difficulty": 549,
+    "audio": "sent_0396.mp3"
+  },
+  {
+    "en": "Now I remember.",
+    "es": "Ahora recuerdo.",
+    "cloze": "recuerdo",
+    "difficulty": 550,
+    "audio": "sent_0397.mp3"
+  },
+  {
+    "en": "I need a few more days.",
+    "es": "Necesito un par de días más.",
+    "cloze": "par",
+    "difficulty": 551,
+    "audio": "sent_0398.mp3"
+  },
+  {
+    "en": "I can't continue doing this.",
+    "es": "No puedo seguir haciendo esto.",
+    "cloze": "seguir",
+    "difficulty": 553,
+    "audio": "sent_0399.mp3"
+  },
+  {
+    "en": "I wanted to go back to your village.",
+    "es": "Quería volver a tu pueblo.",
+    "cloze": "pueblo",
+    "difficulty": 554,
+    "audio": "sent_0400.mp3"
+  },
+  {
+    "en": "The doctor gave it to her.",
+    "es": "El doctor se lo dio a ella.",
+    "cloze": "dio",
+    "difficulty": 558,
+    "audio": "sent_0401.mp3"
+  },
+  {
+    "en": "Just a minute.",
+    "es": "Sólo un minuto.",
+    "cloze": "minuto",
+    "difficulty": 559,
+    "audio": "sent_0402.mp3"
+  },
+  {
+    "en": "He is the baby of the family.",
+    "es": "Él es el bebé de la familia.",
+    "cloze": "bebé",
+    "difficulty": 560,
+    "audio": "sent_0403.mp3"
+  },
+  {
+    "en": "Is she your only daughter?",
+    "es": "¿Ella es tu única hija?",
+    "cloze": "única",
+    "difficulty": 561,
+    "audio": "sent_0404.mp3"
+  },
+  {
+    "en": "How far is it from here?",
+    "es": "¿Qué tan lejos está de aquí?",
+    "cloze": "lejos",
+    "difficulty": 562,
+    "audio": "sent_0405.mp3"
+  },
+  {
+    "en": "Do you have a plan?",
+    "es": "¿Tienes un plan?",
+    "cloze": "plan",
+    "difficulty": 564,
+    "audio": "sent_0406.mp3"
+  },
+  {
+    "en": "That doesn't make sense.",
+    "es": "Eso no tiene sentido.",
+    "cloze": "sentido",
+    "difficulty": 566,
+    "audio": "sent_0407.mp3"
+  },
+  {
+    "en": "I have to go to sleep.",
+    "es": "Voy a dormir.",
+    "cloze": "dormir",
+    "difficulty": 567,
+    "audio": "sent_0408.mp3"
+  },
+  {
+    "en": "I want you to tell me the truth.",
+    "es": "Quiero que me digas la verdad.",
+    "cloze": "digas",
+    "difficulty": 568,
+    "audio": "sent_0409.mp3"
+  },
+  {
+    "en": "What does this word mean?",
+    "es": "¿Qué significa esta palabra?",
+    "cloze": "palabra",
+    "difficulty": 569,
+    "audio": "sent_0410.mp3"
+  },
+  {
+    "en": "I'm sure I have the right number.",
+    "es": "Estoy seguro de que tengo el número correcto.",
+    "cloze": "correcto",
+    "difficulty": 570,
+    "audio": "sent_0411.mp3"
+  },
+  {
+    "en": "Everything's under control.",
+    "es": "Todo está bajo control.",
+    "cloze": "control",
+    "difficulty": 571,
+    "audio": "sent_0412.mp3"
+  },
+  {
+    "en": "See you again.",
+    "es": "Nos vemos luego.",
+    "cloze": "vemos",
+    "difficulty": 572,
+    "audio": "sent_0413.mp3"
+  },
+  {
+    "en": "You don't understand.",
+    "es": "No lo entiendes.",
+    "cloze": "entiendes",
+    "difficulty": 573,
+    "audio": "sent_0414.mp3"
+  },
+  {
+    "en": "He gave his life for his country.",
+    "es": "Él dio la vida por el país.",
+    "cloze": "país",
+    "difficulty": 574,
+    "audio": "sent_0415.mp3"
+  },
+  {
+    "en": "It's almost six o'clock.",
+    "es": "Son casi las seis.",
+    "cloze": "seis",
+    "difficulty": 575,
+    "audio": "sent_0416.mp3"
+  },
+  {
+    "en": "Tom was the last to arrive.",
+    "es": "Tom fue el último en llegar.",
+    "cloze": "último",
+    "difficulty": 576,
+    "audio": "sent_0417.mp3"
+  },
+  {
+    "en": "This is your only chance.",
+    "es": "Ésta es tu única oportunidad.",
+    "cloze": "Ésta",
+    "difficulty": 577,
+    "audio": "sent_0418.mp3"
+  },
+  {
+    "en": "I don't care what he says.",
+    "es": "No me importa lo que diga él.",
+    "cloze": "diga",
+    "difficulty": 578,
+    "audio": "sent_0419.mp3"
+  },
+  {
+    "en": "Would you please wait for a minute?",
+    "es": "Por favor, ¿podrías esperar un minuto?",
+    "cloze": "podrías",
+    "difficulty": 579,
+    "audio": "sent_0420.mp3"
+  },
+  {
+    "en": "That house is very small.",
+    "es": "Esa casa es muy pequeña.",
+    "cloze": "pequeña",
+    "difficulty": 580,
+    "audio": "sent_0421.mp3"
+  },
+  {
+    "en": "You, be quiet!",
+    "es": "¡Tú cállate!",
+    "cloze": "cállate",
+    "difficulty": 581,
+    "audio": "sent_0422.mp3"
+  },
+  {
+    "en": "It's a good deal.",
+    "es": "Es un buen trato.",
+    "cloze": "trato",
+    "difficulty": 582,
+    "audio": "sent_0423.mp3"
+  },
+  {
+    "en": "When I grow up, I want to be a king.",
+    "es": "Quiero ser rey cuando sea grande.",
+    "cloze": "rey",
+    "difficulty": 583,
+    "audio": "sent_0424.mp3"
+  },
+  {
+    "en": "I'll never ever do that again!",
+    "es": "¡Nunca jamás haré eso de nuevo!",
+    "cloze": "jamás",
+    "difficulty": 587,
+    "audio": "sent_0425.mp3"
+  },
+  {
+    "en": "You don't know anything about me.",
+    "es": "No sabes nada acerca de mí.",
+    "cloze": "acerca",
+    "difficulty": 591,
+    "audio": "sent_0426.mp3"
+  },
+  {
+    "en": "Always tell the truth.",
+    "es": "Di siempre la verdad.",
+    "cloze": "Di",
+    "difficulty": 592,
+    "audio": "sent_0427.mp3"
+  },
+  {
+    "en": "Here is your change.",
+    "es": "Toma, tu cambio.",
+    "cloze": "cambio",
+    "difficulty": 593,
+    "audio": "sent_0428.mp3"
+  },
+  {
+    "en": "What is missing?",
+    "es": "¿Qué falta?",
+    "cloze": "falta",
+    "difficulty": 594,
+    "audio": "sent_0429.mp3"
+  },
+  {
+    "en": "Go to the hospital.",
+    "es": "Ve al hospital.",
+    "cloze": "hospital",
+    "difficulty": 595,
+    "audio": "sent_0430.mp3"
+  },
+  {
+    "en": "Where's the president?",
+    "es": "¿Dónde está el presidente?",
+    "cloze": "presidente",
+    "difficulty": 597,
+    "audio": "sent_0431.mp3"
+  },
+  {
+    "en": "Nice seeing you!",
+    "es": "¡Qué gusto verte!",
+    "cloze": "gusto",
+    "difficulty": 599,
+    "audio": "sent_0432.mp3"
+  },
+  {
+    "en": "Do you know him?",
+    "es": "¿Le conoces?",
+    "cloze": "conoces",
+    "difficulty": 600,
+    "audio": "sent_0433.mp3"
+  },
+  {
+    "en": "I mean what I'm saying.",
+    "es": "Es en serio lo que estoy diciendo.",
+    "cloze": "diciendo",
+    "difficulty": 601,
+    "audio": "sent_0434.mp3"
+  },
+  {
+    "en": "Has he gone already?",
+    "es": "¿Ya se ha ido?",
+    "cloze": "ido",
+    "difficulty": 603,
+    "audio": "sent_0435.mp3"
+  },
+  {
+    "en": "That's strange.",
+    "es": "Eso es extraño.",
+    "cloze": "extraño",
+    "difficulty": 605,
+    "audio": "sent_0436.mp3"
+  },
+  {
+    "en": "We can't wait two weeks.",
+    "es": "No podemos esperar dos semanas.",
+    "cloze": "semanas",
+    "difficulty": 606,
+    "audio": "sent_0437.mp3"
+  },
+  {
+    "en": "Which car is ours?",
+    "es": "¿Cuál es nuestro coche?",
+    "cloze": "coche",
+    "difficulty": 607,
+    "audio": "sent_0438.mp3"
+  },
+  {
+    "en": "You need a lot of water.",
+    "es": "Necesitas mucha agua.",
+    "cloze": "mucha",
+    "difficulty": 609,
+    "audio": "sent_0439.mp3"
+  },
+  {
+    "en": "Pardon me for a moment.",
+    "es": "Disculpe un momento.",
+    "cloze": "Disculpe",
+    "difficulty": 610,
+    "audio": "sent_0440.mp3"
+  },
+  {
+    "en": "I'll tell him that.",
+    "es": "Le diré eso.",
+    "cloze": "diré",
+    "difficulty": 611,
+    "audio": "sent_0441.mp3"
+  },
+  {
+    "en": "What happened last night?",
+    "es": "¿Qué pasó anoche?",
+    "cloze": "anoche",
+    "difficulty": 612,
+    "audio": "sent_0442.mp3"
+  },
+  {
+    "en": "You'll get lost.",
+    "es": "Te vas a perder.",
+    "cloze": "perder",
+    "difficulty": 613,
+    "audio": "sent_0443.mp3"
+  },
+  {
+    "en": "Okay, let's go.",
+    "es": "Vale, vámonos.",
+    "cloze": "vámonos",
+    "difficulty": 614,
+    "audio": "sent_0444.mp3"
+  },
+  {
+    "en": "Look up to the skies.",
+    "es": "Mira al cielo.",
+    "cloze": "cielo",
+    "difficulty": 616,
+    "audio": "sent_0445.mp3"
+  },
+  {
+    "en": "There will be blood.",
+    "es": "Habrá sangre.",
+    "cloze": "Habrá",
+    "difficulty": 617,
+    "audio": "sent_0446.mp3"
+  },
+  {
+    "en": "Are you ready to order?",
+    "es": "¿Tiene lista su orden?",
+    "cloze": "orden",
+    "difficulty": 618,
+    "audio": "sent_0447.mp3"
+  },
+  {
+    "en": "Are you sure?",
+    "es": "¿Está segura?",
+    "cloze": "segura",
+    "difficulty": 619,
+    "audio": "sent_0448.mp3"
+  },
+  {
+    "en": "Is it a boy or a girl?",
+    "es": "¿Es niño o niña?",
+    "cloze": "niña",
+    "difficulty": 621,
+    "audio": "sent_0449.mp3"
+  },
+  {
+    "en": "That's an incredible story.",
+    "es": "Es una historia increíble.",
+    "cloze": "increíble",
+    "difficulty": 623,
+    "audio": "sent_0450.mp3"
+  },
+  {
+    "en": "All men must die.",
+    "es": "Todos los hombres deben morir.",
+    "cloze": "deben",
+    "difficulty": 625,
+    "audio": "sent_0451.mp3"
+  },
+  {
+    "en": "What's my book doing here?",
+    "es": "¿Qué está haciendo aquí mi libro?",
+    "cloze": "libro",
+    "difficulty": 626,
+    "audio": "sent_0452.mp3"
+  },
+  {
+    "en": "I think it strange that there is no one on the street at this time of the day.",
+    "es": "Pienso que es extraño que no haya nadie en la calle a estas horas del día.",
+    "cloze": "calle",
+    "difficulty": 627,
+    "audio": "sent_0453.mp3"
+  },
+  {
+    "en": "I don't like coffee.",
+    "es": "No me gusta el café.",
+    "cloze": "café",
+    "difficulty": 628,
+    "audio": "sent_0454.mp3"
+  },
+  {
+    "en": "Speak your mind.<br>(Say what you think.)",
+    "es": "Di lo que piensas.",
+    "cloze": "piensas",
+    "difficulty": 629,
+    "audio": "sent_0455.mp3"
+  },
+  {
+    "en": "This is how we do it.",
+    "es": "Así es como lo hacemos.",
+    "cloze": "hacemos",
+    "difficulty": 630,
+    "audio": "sent_0456.mp3"
+  },
+  {
+    "en": "It's nothing special.",
+    "es": "No es para nada especial.",
+    "cloze": "especial",
+    "difficulty": 631,
+    "audio": "sent_0457.mp3"
+  },
+  {
+    "en": "We want something new.",
+    "es": "Queremos algo nuevo.",
+    "cloze": "Queremos",
+    "difficulty": 632,
+    "audio": "sent_0458.mp3"
+  },
+  {
+    "en": "Can I leave now?",
+    "es": "¿Puedo irme ya?",
+    "cloze": "irme",
+    "difficulty": 635,
+    "audio": "sent_0459.mp3"
+  },
+  {
+    "en": "No one's perfect.",
+    "es": "Nadie es perfecto.",
+    "cloze": "perfecto",
+    "difficulty": 636,
+    "audio": "sent_0460.mp3"
+  },
+  {
+    "en": "Go find Tom.",
+    "es": "Vete a buscar a Tom.",
+    "cloze": "buscar",
+    "difficulty": 637,
+    "audio": "sent_0461.mp3"
+  },
+  {
+    "en": "This is why I hate him.",
+    "es": "Por eso lo odio.",
+    "cloze": "odio",
+    "difficulty": 638,
+    "audio": "sent_0462.mp3"
+  },
+  {
+    "en": "He goes to the office by car.",
+    "es": "Va a la oficina en coche.",
+    "cloze": "oficina",
+    "difficulty": 640,
+    "audio": "sent_0463.mp3"
+  },
+  {
+    "en": "What are you talking about?",
+    "es": "¿De qué hablas?",
+    "cloze": "hablas",
+    "difficulty": 641,
+    "audio": "sent_0464.mp3"
+  },
+  {
+    "en": "I'm free.",
+    "es": "Yo soy libre.",
+    "cloze": "libre",
+    "difficulty": 642,
+    "audio": "sent_0465.mp3"
+  },
+  {
+    "en": "I'm an agent.",
+    "es": "Soy agente.",
+    "cloze": "agente",
+    "difficulty": 643,
+    "audio": "sent_0466.mp3"
+  },
+  {
+    "en": "New York is a big city.",
+    "es": "Nueva York es una gran ciudad.",
+    "cloze": "gran",
+    "difficulty": 644,
+    "audio": "sent_0467.mp3"
+  },
+  {
+    "en": "You should call your father as soon as possible.",
+    "es": "Deberías llamar a tu padre tan pronto como sea posible.",
+    "cloze": "llamar",
+    "difficulty": 645,
+    "audio": "sent_0468.mp3"
+  },
+  {
+    "en": "Don't you think it a bad thing?",
+    "es": "¿No crees que es una cosa mala?",
+    "cloze": "mala",
+    "difficulty": 646,
+    "audio": "sent_0469.mp3"
+  },
+  {
+    "en": "He was just behind me.",
+    "es": "Él estaba justo detrás de mí.",
+    "cloze": "detrás",
+    "difficulty": 647,
+    "audio": "sent_0470.mp3"
+  },
+  {
+    "en": "Did you see a doctor?",
+    "es": "¿Viste a un doctor?",
+    "cloze": "Viste",
+    "difficulty": 648,
+    "audio": "sent_0471.mp3"
+  },
+  {
+    "en": "He has big hands.",
+    "es": "Tiene unas manos grandes.",
+    "cloze": "grandes",
+    "difficulty": 650,
+    "audio": "sent_0472.mp3"
+  },
+  {
+    "en": "She is his real mother.",
+    "es": "Ella es su madre real.",
+    "cloze": "real",
+    "difficulty": 652,
+    "audio": "sent_0473.mp3"
+  },
+  {
+    "en": "They were together.",
+    "es": "Estaban juntos.",
+    "cloze": "Estaban",
+    "difficulty": 653,
+    "audio": "sent_0474.mp3"
+  },
+  {
+    "en": "Step forward.",
+    "es": "Da un paso al frente.",
+    "cloze": "frente",
+    "difficulty": 655,
+    "audio": "sent_0475.mp3"
+  },
+  {
+    "en": "Have you lost your mind?",
+    "es": "¿Has perdido la cabeza?",
+    "cloze": "perdido",
+    "difficulty": 656,
+    "audio": "sent_0476.mp3"
+  },
+  {
+    "en": "I call her up every day.",
+    "es": "La llamo todos los días.",
+    "cloze": "llamo",
+    "difficulty": 657,
+    "audio": "sent_0477.mp3"
+  },
+  {
+    "en": "They are all dead.",
+    "es": "Todos están muertos.",
+    "cloze": "muertos",
+    "difficulty": 658,
+    "audio": "sent_0478.mp3"
+  },
+  {
+    "en": "I'd like to have a coffee.",
+    "es": "Quisiera tomar café.",
+    "cloze": "Quisiera",
+    "difficulty": 662,
+    "audio": "sent_0479.mp3"
+  },
+  {
+    "en": "It will be fine tomorrow.",
+    "es": "Seguro que mañana hará buen tiempo.",
+    "cloze": "hará",
+    "difficulty": 664,
+    "audio": "sent_0480.mp3"
+  },
+  {
+    "en": "I accompanied him on the trip.",
+    "es": "Fui de viaje con él.",
+    "cloze": "viaje",
+    "difficulty": 665,
+    "audio": "sent_0481.mp3"
+  },
+  {
+    "en": "That's probably a good idea.",
+    "es": "Es probablemente una buena idea.",
+    "cloze": "probablemente",
+    "difficulty": 666,
+    "audio": "sent_0482.mp3"
+  },
+  {
+    "en": "Where's the rest?",
+    "es": "¿Dónde está el resto?",
+    "cloze": "resto",
+    "difficulty": 668,
+    "audio": "sent_0483.mp3"
+  },
+  {
+    "en": "I'll be there tomorrow.",
+    "es": "Estaré allí mañana.",
+    "cloze": "Estaré",
+    "difficulty": 669,
+    "audio": "sent_0484.mp3"
+  },
+  {
+    "en": "Damn.",
+    "es": "Maldición.",
+    "cloze": "Maldición",
+    "difficulty": 670,
+    "audio": "sent_0485.mp3"
+  },
+  {
+    "en": "I'm sorry for what I did.",
+    "es": "Lamento lo que hice.",
+    "cloze": "Lamento",
+    "difficulty": 671,
+    "audio": "sent_0486.mp3"
+  },
+  {
+    "en": "He is no longer a boy.",
+    "es": "Él ya no es un muchacho.",
+    "cloze": "muchacho",
+    "difficulty": 672,
+    "audio": "sent_0487.mp3"
+  },
+  {
+    "en": "I saw a plane.",
+    "es": "Vi un avión.",
+    "cloze": "avión",
+    "difficulty": 673,
+    "audio": "sent_0488.mp3"
+  },
+  {
+    "en": "Tom needs clothes.",
+    "es": "Tom necesita ropa.",
+    "cloze": "ropa",
+    "difficulty": 674,
+    "audio": "sent_0489.mp3"
+  },
+  {
+    "en": "Force the door in.",
+    "es": "Fuerza la puerta.",
+    "cloze": "Fuerza",
+    "difficulty": 675,
+    "audio": "sent_0490.mp3"
+  },
+  {
+    "en": "Tom hasn't called.",
+    "es": "Tom no ha llamado.",
+    "cloze": "llamado",
+    "difficulty": 676,
+    "audio": "sent_0491.mp3"
+  },
+  {
+    "en": "I've never heard of such a thing.",
+    "es": "Jamás había oído tal cosa.",
+    "cloze": "oído",
+    "difficulty": 677,
+    "audio": "sent_0492.mp3"
+  },
+  {
+    "en": "My uncle gave me a book.",
+    "es": "Mi tío me ha dado un libro.",
+    "cloze": "dado",
+    "difficulty": 679,
+    "audio": "sent_0493.mp3"
+  },
+  {
+    "en": "Is it not black?",
+    "es": "¿No es negro?",
+    "cloze": "negro",
+    "difficulty": 681,
+    "audio": "sent_0494.mp3"
+  },
+  {
+    "en": "You may use my new car.",
+    "es": "Puedes usar mi auto nuevo.",
+    "cloze": "usar",
+    "difficulty": 682,
+    "audio": "sent_0495.mp3"
+  },
+  {
+    "en": "I want more information.",
+    "es": "Quiero más información.",
+    "cloze": "información",
+    "difficulty": 683,
+    "audio": "sent_0496.mp3"
+  },
+  {
+    "en": "Do you have any further questions?",
+    "es": "¿Tiene más preguntas?",
+    "cloze": "preguntas",
+    "difficulty": 685,
+    "audio": "sent_0497.mp3"
+  },
+  {
+    "en": "He had a strange dream.",
+    "es": "Él tuvo un sueño extraño.",
+    "cloze": "tuvo",
+    "difficulty": 686,
+    "audio": "sent_0498.mp3"
+  },
+  {
+    "en": "It's secret.",
+    "es": "Es secreto.",
+    "cloze": "secreto",
+    "difficulty": 687,
+    "audio": "sent_0499.mp3"
+  },
+  {
+    "en": "Come back home before it gets dark.",
+    "es": "Vuelve a casa antes de que se haga de noche.",
+    "cloze": "Vuelve",
+    "difficulty": 688,
+    "audio": "sent_0500.mp3"
+  },
+  {
+    "en": "Do come by all means.",
+    "es": "¡Ven por lo que más quieras!",
+    "cloze": "quieras",
+    "difficulty": 690,
+    "audio": "sent_0501.mp3"
+  },
+  {
+    "en": "What would you do in my place?",
+    "es": "¿Qué haría usted en mi lugar?",
+    "cloze": "haría",
+    "difficulty": 691,
+    "audio": "sent_0502.mp3"
+  },
+  {
+    "en": "When is school over?",
+    "es": "¿Cuándo se acaba la escuela?",
+    "cloze": "acaba",
+    "difficulty": 692,
+    "audio": "sent_0503.mp3"
+  },
+  {
+    "en": "Where are the other girls?",
+    "es": "¿Dónde están las otras chicas?",
+    "cloze": "otras",
+    "difficulty": 693,
+    "audio": "sent_0504.mp3"
+  },
+  {
+    "en": "Do you feel sick?",
+    "es": "¿Te sientes mal?",
+    "cloze": "sientes",
+    "difficulty": 695,
+    "audio": "sent_0505.mp3"
+  },
+  {
+    "en": "We should have been more careful.",
+    "es": "Deberíamos haber tenido más cuidado.",
+    "cloze": "Deberíamos",
+    "difficulty": 696,
+    "audio": "sent_0506.mp3"
+  },
+  {
+    "en": "Do as you want.",
+    "es": "Haz lo que quieras.",
+    "cloze": "Haz",
+    "difficulty": 697,
+    "audio": "sent_0507.mp3"
+  },
+  {
+    "en": "I have something to tell you.",
+    "es": "Tengo algo que decirte.",
+    "cloze": "decirte",
+    "difficulty": 698,
+    "audio": "sent_0508.mp3"
+  },
+  {
+    "en": "He has a big mouth.",
+    "es": "Él tiene una boca grande.",
+    "cloze": "boca",
+    "difficulty": 699,
+    "audio": "sent_0509.mp3"
+  },
+  {
+    "en": "I have a bad headache.",
+    "es": "Estoy con un fuerte dolor de cabeza.",
+    "cloze": "dolor",
+    "difficulty": 700,
+    "audio": "sent_0510.mp3"
+  },
+  {
+    "en": "Who is your teacher?",
+    "es": "¿Quién es tu profesor?",
+    "cloze": "profesor",
+    "difficulty": 703,
+    "audio": "sent_0511.mp3"
+  },
+  {
+    "en": "Whose room is this?",
+    "es": "¿De quién es esta habitación?",
+    "cloze": "habitación",
+    "difficulty": 704,
+    "audio": "sent_0512.mp3"
+  },
+  {
+    "en": "The damage is done.",
+    "es": "El daño está hecho.",
+    "cloze": "daño",
+    "difficulty": 705,
+    "audio": "sent_0513.mp3"
+  },
+  {
+    "en": "Don't be an idiot.",
+    "es": "No seas idiota.",
+    "cloze": "seas",
+    "difficulty": 707,
+    "audio": "sent_0514.mp3"
+  },
+  {
+    "en": "No news is good news.",
+    "es": "Si no hay noticias, son buenas noticias.",
+    "cloze": "noticias",
+    "difficulty": 708,
+    "audio": "sent_0515.mp3"
+  },
+  {
+    "en": "Where are all the others?",
+    "es": "¿Dónde están todos los demás?",
+    "cloze": "demás",
+    "difficulty": 709,
+    "audio": "sent_0516.mp3"
+  },
+  {
+    "en": "You're tough.",
+    "es": "Eres duro.",
+    "cloze": "duro",
+    "difficulty": 711,
+    "audio": "sent_0517.mp3"
+  },
+  {
+    "en": "I'll put it on your bill.",
+    "es": "Lo voy a poner en su cuenta.",
+    "cloze": "poner",
+    "difficulty": 712,
+    "audio": "sent_0518.mp3"
+  },
+  {
+    "en": "Let me look at you.",
+    "es": "Deja que te mire.",
+    "cloze": "mire",
+    "difficulty": 714,
+    "audio": "sent_0519.mp3"
+  },
+  {
+    "en": "You must be a fool.",
+    "es": "Debes ser un tonto.",
+    "cloze": "tonto",
+    "difficulty": 715,
+    "audio": "sent_0520.mp3"
+  },
+  {
+    "en": "Is that still my room?",
+    "es": "¿Sigue siendo mi habitación?",
+    "cloze": "siendo",
+    "difficulty": 717,
+    "audio": "sent_0521.mp3"
+  },
+  {
+    "en": "I owe you ten dollars.",
+    "es": "Te debo diez dólares.",
+    "cloze": "diez",
+    "difficulty": 718,
+    "audio": "sent_0522.mp3"
+  },
+  {
+    "en": "That a boy!",
+    "es": "¡Ése es mi chico!",
+    "cloze": "Ése",
+    "difficulty": 719,
+    "audio": "sent_0523.mp3"
+  },
+  {
+    "en": "It's none of your business.",
+    "es": "Esto no es asunto tuyo.",
+    "cloze": "asunto",
+    "difficulty": 721,
+    "audio": "sent_0524.mp3"
+  },
+  {
+    "en": "Your time is up.",
+    "es": "Se te acabó el tiempo.",
+    "cloze": "acabó",
+    "difficulty": 722,
+    "audio": "sent_0525.mp3"
+  },
+  {
+    "en": "Stay here with us.",
+    "es": "Quédate aquí con nosotros.",
+    "cloze": "Quédate",
+    "difficulty": 723,
+    "audio": "sent_0526.mp3"
+  },
+  {
+    "en": "Everyone has a right to say what he thinks.",
+    "es": "Todo el mundo tiene el derecho a decir lo que piensa.",
+    "cloze": "derecho",
+    "difficulty": 724,
+    "audio": "sent_0527.mp3"
+  },
+  {
+    "en": "It's been a pleasure.",
+    "es": "Fue un placer.",
+    "cloze": "placer",
+    "difficulty": 725,
+    "audio": "sent_0528.mp3"
+  },
+  {
+    "en": "She reminds him of his mother.",
+    "es": "Ella le recuerda a su madre.",
+    "cloze": "recuerda",
+    "difficulty": 726,
+    "audio": "sent_0529.mp3"
+  },
+  {
+    "en": "I agreed with him on the plan.",
+    "es": "Estuve de acuerdo con él sobre el plan.",
+    "cloze": "Estuve",
+    "difficulty": 727,
+    "audio": "sent_0530.mp3"
+  },
+  {
+    "en": "I'm trying to help you.",
+    "es": "Te estoy tratando de ayudar.",
+    "cloze": "tratando",
+    "difficulty": 728,
+    "audio": "sent_0531.mp3"
+  },
+  {
+    "en": "I have no future.",
+    "es": "No tengo futuro.",
+    "cloze": "futuro",
+    "difficulty": 730,
+    "audio": "sent_0532.mp3"
+  },
+  {
+    "en": "What will you have?",
+    "es": "¿Qué vas a llevar?",
+    "cloze": "llevar",
+    "difficulty": 731,
+    "audio": "sent_0533.mp3"
+  },
+  {
+    "en": "Our company needs people like you.",
+    "es": "Nuestra compañía necesita gente como tú.",
+    "cloze": "compañía",
+    "difficulty": 732,
+    "audio": "sent_0534.mp3"
+  },
+  {
+    "en": "Everyone is ready.",
+    "es": "Todos están listos.",
+    "cloze": "listos",
+    "difficulty": 734,
+    "audio": "sent_0535.mp3"
+  },
+  {
+    "en": "I don't know what we will do.",
+    "es": "No sé lo que haremos.",
+    "cloze": "haremos",
+    "difficulty": 735,
+    "audio": "sent_0536.mp3"
+  },
+  {
+    "en": "Go back to your seat.",
+    "es": "Vuelve a tu sitio.",
+    "cloze": "sitio",
+    "difficulty": 736,
+    "audio": "sent_0537.mp3"
+  },
+  {
+    "en": "Let me see it.",
+    "es": "Déjame verlo.",
+    "cloze": "verlo",
+    "difficulty": 737,
+    "audio": "sent_0538.mp3"
+  },
+  {
+    "en": "May I have your attention, please?",
+    "es": "¿Podría tener tu atención, por favor?",
+    "cloze": "atención",
+    "difficulty": 739,
+    "audio": "sent_0539.mp3"
+  },
+  {
+    "en": "What made you change your mind?",
+    "es": "¿Qué te ha hecho cambiar de idea?",
+    "cloze": "cambiar",
+    "difficulty": 741,
+    "audio": "sent_0540.mp3"
+  },
+  {
+    "en": "There's no mistake.",
+    "es": "No hay ningún error.",
+    "cloze": "error",
+    "difficulty": 742,
+    "audio": "sent_0541.mp3"
+  },
+  {
+    "en": "It's white.",
+    "es": "Es blanco.",
+    "cloze": "blanco",
+    "difficulty": 743,
+    "audio": "sent_0542.mp3"
+  },
+  {
+    "en": "That's weird.",
+    "es": "Es raro.",
+    "cloze": "raro",
+    "difficulty": 744,
+    "audio": "sent_0543.mp3"
+  },
+  {
+    "en": "I'm speechless.",
+    "es": "Estoy sin palabras.",
+    "cloze": "palabras",
+    "difficulty": 745,
+    "audio": "sent_0544.mp3"
+  },
+  {
+    "en": "She came late as usual.",
+    "es": "Como siempre, ella llegó tarde.",
+    "cloze": "llegó",
+    "difficulty": 746,
+    "audio": "sent_0545.mp3"
+  },
+  {
+    "en": "Pass down the car, please.",
+    "es": "Pase adentro, por favor.",
+    "cloze": "Pase",
+    "difficulty": 748,
+    "audio": "sent_0546.mp3"
+  },
+  {
+    "en": "I just got a good idea.",
+    "es": "Me vino a la mente una buena idea.",
+    "cloze": "mente",
+    "difficulty": 749,
+    "audio": "sent_0547.mp3"
+  },
+  {
+    "en": "It's a good system.",
+    "es": "Es un buen sistema.",
+    "cloze": "sistema",
+    "difficulty": 750,
+    "audio": "sent_0548.mp3"
+  },
+  {
+    "en": "Would you like to go to a movie?",
+    "es": "¿Quieres ir a ver una película?",
+    "cloze": "película",
+    "difficulty": 751,
+    "audio": "sent_0549.mp3"
+  },
+  {
+    "en": "She walks.",
+    "es": "Ella anda.",
+    "cloze": "anda",
+    "difficulty": 752,
+    "audio": "sent_0550.mp3"
+  },
+  {
+    "en": "Tom knew nothing about it.",
+    "es": "Tom no sabía nada de ello.",
+    "cloze": "ello",
+    "difficulty": 753,
+    "audio": "sent_0551.mp3"
+  },
+  {
+    "en": "Business is looking up.",
+    "es": "El negocio va a mejor.",
+    "cloze": "negocio",
+    "difficulty": 754,
+    "audio": "sent_0552.mp3"
+  },
+  {
+    "en": "Do you know if he has a girlfriend?",
+    "es": "¿Sabes si tiene novia?",
+    "cloze": "novia",
+    "difficulty": 755,
+    "audio": "sent_0553.mp3"
+  },
+  {
+    "en": "I believed you.",
+    "es": "Te creí.",
+    "cloze": "creí",
+    "difficulty": 757,
+    "audio": "sent_0554.mp3"
+  },
+  {
+    "en": "It sounds great!",
+    "es": "¡Suena genial!",
+    "cloze": "Suena",
+    "difficulty": 758,
+    "audio": "sent_0555.mp3"
+  },
+  {
+    "en": "It's official.",
+    "es": "Esto es oficial.",
+    "cloze": "oficial",
+    "difficulty": 760,
+    "audio": "sent_0556.mp3"
+  },
+  {
+    "en": "Hold on, please.",
+    "es": "Espere, por favor.",
+    "cloze": "Espere",
+    "difficulty": 761,
+    "audio": "sent_0557.mp3"
+  },
+  {
+    "en": "I need to get some air.",
+    "es": "Necesito algo de aire.",
+    "cloze": "aire",
+    "difficulty": 762,
+    "audio": "sent_0558.mp3"
+  },
+  {
+    "en": "He killed that man.",
+    "es": "Él mató a ese hombre.",
+    "cloze": "mató",
+    "difficulty": 764,
+    "audio": "sent_0559.mp3"
+  },
+  {
+    "en": "He has just come back.",
+    "es": "Él acaba de regresar.",
+    "cloze": "regresar",
+    "difficulty": 766,
+    "audio": "sent_0560.mp3"
+  },
+  {
+    "en": "He didn't see anybody.",
+    "es": "No vio a nadie.",
+    "cloze": "vio",
+    "difficulty": 767,
+    "audio": "sent_0561.mp3"
+  },
+  {
+    "en": "Do it again.",
+    "es": "Hazlo otra vez.",
+    "cloze": "Hazlo",
+    "difficulty": 768,
+    "audio": "sent_0562.mp3"
+  },
+  {
+    "en": "It's Tom's group.",
+    "es": "Es el grupo de Tom.",
+    "cloze": "grupo",
+    "difficulty": 770,
+    "audio": "sent_0563.mp3"
+  },
+  {
+    "en": "Are you fond of music?",
+    "es": "¿Te gusta la música?",
+    "cloze": "música",
+    "difficulty": 773,
+    "audio": "sent_0564.mp3"
+  },
+  {
+    "en": "You must start at once.",
+    "es": "Tienes que empezar ahora mismo.",
+    "cloze": "empezar",
+    "difficulty": 776,
+    "audio": "sent_0565.mp3"
+  },
+  {
+    "en": "I've just come back.",
+    "es": "Acabo de volver.",
+    "cloze": "Acabo",
+    "difficulty": 778,
+    "audio": "sent_0566.mp3"
+  },
+  {
+    "en": "You are stupid.",
+    "es": "Eres un estúpido.",
+    "cloze": "estúpido",
+    "difficulty": 779,
+    "audio": "sent_0567.mp3"
+  },
+  {
+    "en": "It's different for everyone.",
+    "es": "Es diferente para todos.",
+    "cloze": "diferente",
+    "difficulty": 780,
+    "audio": "sent_0568.mp3"
+  },
+  {
+    "en": "He made me a suit.",
+    "es": "Él me hizo un traje.",
+    "cloze": "traje",
+    "difficulty": 781,
+    "audio": "sent_0569.mp3"
+  },
+  {
+    "en": "I met Tom on my way to school.",
+    "es": "Me encontré con Tom de camino a la escuela.",
+    "cloze": "encontré",
+    "difficulty": 784,
+    "audio": "sent_0570.mp3"
+  },
+  {
+    "en": "May I take a message?",
+    "es": "¿Puedo tomar su mensaje?",
+    "cloze": "mensaje",
+    "difficulty": 785,
+    "audio": "sent_0571.mp3"
+  },
+  {
+    "en": "I'm expecting a call.",
+    "es": "Espero una llamada.",
+    "cloze": "llamada",
+    "difficulty": 786,
+    "audio": "sent_0572.mp3"
+  },
+  {
+    "en": "Merry Christmas!",
+    "es": "¡Feliz Navidad!",
+    "cloze": "Navidad",
+    "difficulty": 787,
+    "audio": "sent_0573.mp3"
+  },
+  {
+    "en": "You were my friend.",
+    "es": "Tú eras mi amigo.",
+    "cloze": "eras",
+    "difficulty": 788,
+    "audio": "sent_0574.mp3"
+  },
+  {
+    "en": "Come right in.",
+    "es": "Entra.",
+    "cloze": "Entra",
+    "difficulty": 791,
+    "audio": "sent_0575.mp3"
+  },
+  {
+    "en": "Which floor is it?",
+    "es": "¿Qué piso es?",
+    "cloze": "piso",
+    "difficulty": 792,
+    "audio": "sent_0576.mp3"
+  },
+  {
+    "en": "I've seen that photo before.",
+    "es": "Esa foto la he visto antes.",
+    "cloze": "foto",
+    "difficulty": 793,
+    "audio": "sent_0577.mp3"
+  },
+  {
+    "en": "Did they say how?",
+    "es": "¿Dijeron cómo?",
+    "cloze": "Dijeron",
+    "difficulty": 794,
+    "audio": "sent_0578.mp3"
+  },
+  {
+    "en": "Tom had an accident at work.",
+    "es": "Tom tuvo un accidente en el trabajo.",
+    "cloze": "accidente",
+    "difficulty": 796,
+    "audio": "sent_0579.mp3"
+  },
+  {
+    "en": "What time did you go to bed last night?",
+    "es": "¿A qué hora te fuiste a dormir anoche?",
+    "cloze": "fuiste",
+    "difficulty": 797,
+    "audio": "sent_0580.mp3"
+  },
+  {
+    "en": "We could all be dead tomorrow.",
+    "es": "Mañana podríamos estar todos muertos.",
+    "cloze": "podríamos",
+    "difficulty": 799,
+    "audio": "sent_0581.mp3"
+  },
+  {
+    "en": "Wait in line, please.",
+    "es": "Espere en línea, por favor.",
+    "cloze": "línea",
+    "difficulty": 800,
+    "audio": "sent_0582.mp3"
+  },
+  {
+    "en": "He has his own room.",
+    "es": "Él tiene su habitación propia.",
+    "cloze": "propia",
+    "difficulty": 801,
+    "audio": "sent_0583.mp3"
+  },
+  {
+    "en": "I can see a ship in the distance.",
+    "es": "Puedo ver un barco a lo lejos.",
+    "cloze": "barco",
+    "difficulty": 802,
+    "audio": "sent_0584.mp3"
+  },
+  {
+    "en": "You may or may not win.",
+    "es": "Puedes o no ganar.",
+    "cloze": "ganar",
+    "difficulty": 803,
+    "audio": "sent_0585.mp3"
+  },
+  {
+    "en": "He is just a normal person.",
+    "es": "Él es tan sólo una persona normal.",
+    "cloze": "normal",
+    "difficulty": 804,
+    "audio": "sent_0586.mp3"
+  },
+  {
+    "en": "Do you live here?",
+    "es": "¿Usted vive aquí?",
+    "cloze": "vive",
+    "difficulty": 806,
+    "audio": "sent_0587.mp3"
+  },
+  {
+    "en": "I can do it in half the time.",
+    "es": "Puedo hacerlo en la mitad de tiempo.",
+    "cloze": "mitad",
+    "difficulty": 807,
+    "audio": "sent_0588.mp3"
+  },
+  {
+    "en": "I'm after him.",
+    "es": "Voy tras él.",
+    "cloze": "tras",
+    "difficulty": 809,
+    "audio": "sent_0589.mp3"
+  },
+  {
+    "en": "You should tell him the truth.",
+    "es": "Deberías decirle la verdad.",
+    "cloze": "decirle",
+    "difficulty": 810,
+    "audio": "sent_0590.mp3"
+  },
+  {
+    "en": "Australia is a beautiful country.",
+    "es": "Australia es un lindo país.",
+    "cloze": "lindo",
+    "difficulty": 811,
+    "audio": "sent_0591.mp3"
+  },
+  {
+    "en": "My telephone doesn't work.",
+    "es": "Mi teléfono no funciona.",
+    "cloze": "funciona",
+    "difficulty": 812,
+    "audio": "sent_0592.mp3"
+  },
+  {
+    "en": "I don't watch that programme.",
+    "es": "No veo ese programa.",
+    "cloze": "programa",
+    "difficulty": 813,
+    "audio": "sent_0593.mp3"
+  },
+  {
+    "en": "That is why I came here.",
+    "es": "Por eso vine aquí.",
+    "cloze": "vine",
+    "difficulty": 814,
+    "audio": "sent_0594.mp3"
+  },
+  {
+    "en": "Open your mouth!",
+    "es": "¡Abre la boca!",
+    "cloze": "Abre",
+    "difficulty": 815,
+    "audio": "sent_0595.mp3"
+  },
+  {
+    "en": "Let me have a look at those photos.",
+    "es": "Déjame ver esas fotos.",
+    "cloze": "fotos",
+    "difficulty": 818,
+    "audio": "sent_0596.mp3"
+  },
+  {
+    "en": "I'm going to the city centre.",
+    "es": "Voy al centro de la ciudad.",
+    "cloze": "centro",
+    "difficulty": 819,
+    "audio": "sent_0597.mp3"
+  },
+  {
+    "en": "What am I supposed to do now?",
+    "es": "¿Qué se supone que tengo que hacer ahora?",
+    "cloze": "supone",
+    "difficulty": 820,
+    "audio": "sent_0598.mp3"
+  },
+  {
+    "en": "Take the garbage out.",
+    "es": "Lleva afuera la basura.",
+    "cloze": "basura",
+    "difficulty": 821,
+    "audio": "sent_0599.mp3"
+  },
+  {
+    "en": "I know the situation is very difficult for us.",
+    "es": "Sé que estamos en una situación difícil.",
+    "cloze": "situación",
+    "difficulty": 822,
+    "audio": "sent_0600.mp3"
+  },
+  {
+    "en": "Get well soon!",
+    "es": "¡Que te mejores!",
+    "cloze": "mejores",
+    "difficulty": 823,
+    "audio": "sent_0601.mp3"
+  },
+  {
+    "en": "Is your husband at home?",
+    "es": "¿Está su marido en casa?",
+    "cloze": "marido",
+    "difficulty": 826,
+    "audio": "sent_0602.mp3"
+  },
+  {
+    "en": "Don't take it personally.",
+    "es": "No es nada personal.",
+    "cloze": "personal",
+    "difficulty": 827,
+    "audio": "sent_0603.mp3"
+  },
+  {
+    "en": "I was very hungry.",
+    "es": "Tenía mucha hambre.",
+    "cloze": "hambre",
+    "difficulty": 829,
+    "audio": "sent_0604.mp3"
+  },
+  {
+    "en": "Give him time.",
+    "es": "Dale tiempo.",
+    "cloze": "Dale",
+    "difficulty": 832,
+    "audio": "sent_0605.mp3"
+  },
+  {
+    "en": "I had to walk home.<br>(I had to go back home on foot.)",
+    "es": "Tuve que irmea la casa a pie.",
+    "cloze": "pie",
+    "difficulty": 833,
+    "audio": "sent_0606.mp3"
+  },
+  {
+    "en": "Where can we get what we want?",
+    "es": "¿Dónde podemos conseguir lo que queremos?",
+    "cloze": "conseguir",
+    "difficulty": 834,
+    "audio": "sent_0607.mp3"
+  },
+  {
+    "en": "Are you working?",
+    "es": "¿Estás trabajando?",
+    "cloze": "trabajando",
+    "difficulty": 835,
+    "audio": "sent_0608.mp3"
+  },
+  {
+    "en": "That's not funny.",
+    "es": "Eso no es gracioso.",
+    "cloze": "gracioso",
+    "difficulty": 836,
+    "audio": "sent_0609.mp3"
+  },
+  {
+    "en": "He left me waiting.",
+    "es": "Él me dejó esperando.",
+    "cloze": "dejó",
+    "difficulty": 837,
+    "audio": "sent_0610.mp3"
+  },
+  {
+    "en": "No one man could do it.",
+    "es": "Ningún hombre pudo hacerlo.",
+    "cloze": "pudo",
+    "difficulty": 838,
+    "audio": "sent_0611.mp3"
+  },
+  {
+    "en": "See you next week!",
+    "es": "¡Hasta la próxima semana!",
+    "cloze": "próxima",
+    "difficulty": 841,
+    "audio": "sent_0612.mp3"
+  },
+  {
+    "en": "He was very poor.",
+    "es": "Él era muy pobre.",
+    "cloze": "pobre",
+    "difficulty": 842,
+    "audio": "sent_0613.mp3"
+  },
+  {
+    "en": "Thanks for your reply.",
+    "es": "Gracias por tu respuesta.",
+    "cloze": "respuesta",
+    "difficulty": 843,
+    "audio": "sent_0614.mp3"
+  },
+  {
+    "en": "There are many kinds of coffee.",
+    "es": "Hay muchos tipos de café.",
+    "cloze": "tipos",
+    "difficulty": 844,
+    "audio": "sent_0615.mp3"
+  },
+  {
+    "en": "Tom couldn't feel a thing.",
+    "es": "Tom no podía sentir nada.",
+    "cloze": "sentir",
+    "difficulty": 845,
+    "audio": "sent_0616.mp3"
+  },
+  {
+    "en": "You were right.",
+    "es": "Tú tenías razón.",
+    "cloze": "tenías",
+    "difficulty": 846,
+    "audio": "sent_0617.mp3"
+  },
+  {
+    "en": "I could not see anything.",
+    "es": "No pude ver nada.",
+    "cloze": "pude",
+    "difficulty": 847,
+    "audio": "sent_0618.mp3"
+  },
+  {
+    "en": "I had to give it a shot.",
+    "es": "Tuve que darle una oportunidad.",
+    "cloze": "darle",
+    "difficulty": 848,
+    "audio": "sent_0619.mp3"
+  },
+  {
+    "en": "He has a loud voice.",
+    "es": "Él tiene una voz fuerte.",
+    "cloze": "voz",
+    "difficulty": 849,
+    "audio": "sent_0620.mp3"
+  },
+  {
+    "en": "I met a friend.",
+    "es": "Me encontré con una amiga.",
+    "cloze": "amiga",
+    "difficulty": 850,
+    "audio": "sent_0621.mp3"
+  },
+  {
+    "en": "I like both.",
+    "es": "Me gustan los dos.",
+    "cloze": "gustan",
+    "difficulty": 851,
+    "audio": "sent_0622.mp3"
+  },
+  {
+    "en": "I have weak sight.",
+    "es": "Tengo mala vista.",
+    "cloze": "vista",
+    "difficulty": 852,
+    "audio": "sent_0623.mp3"
+  },
+  {
+    "en": "Your secret is safe with me.",
+    "es": "Tu secreto está a salvo conmigo.",
+    "cloze": "salvo",
+    "difficulty": 853,
+    "audio": "sent_0624.mp3"
+  },
+  {
+    "en": "There's a hotel across the street.",
+    "es": "Hay un hotel al otro lado de la calle.",
+    "cloze": "hotel",
+    "difficulty": 855,
+    "audio": "sent_0625.mp3"
+  },
+  {
+    "en": "They made me wait for nearly half an hour.",
+    "es": "Me hicieron esperar cerca de 30 minutos.",
+    "cloze": "hicieron",
+    "difficulty": 856,
+    "audio": "sent_0626.mp3"
+  },
+  {
+    "en": "Have a nice weekend.",
+    "es": "Ten un buen fin de semana.",
+    "cloze": "Ten",
+    "difficulty": 857,
+    "audio": "sent_0627.mp3"
+  },
+  {
+    "en": "I'm not afraid of death.",
+    "es": "Yo no le temo a la muerte.",
+    "cloze": "temo",
+    "difficulty": 858,
+    "audio": "sent_0628.mp3"
+  },
+  {
+    "en": "Your hair is too long.",
+    "es": "Tu pelo está demasiado largo.",
+    "cloze": "pelo",
+    "difficulty": 860,
+    "audio": "sent_0629.mp3"
+  },
+  {
+    "en": "I'll drive you home.",
+    "es": "Te llevo a casa en coche.",
+    "cloze": "llevo",
+    "difficulty": 861,
+    "audio": "sent_0630.mp3"
+  },
+  {
+    "en": "Where did you go yesterday?",
+    "es": "¿Adónde fuiste ayer?",
+    "cloze": "ayer",
+    "difficulty": 862,
+    "audio": "sent_0631.mp3"
+  },
+  {
+    "en": "I'm still on duty.",
+    "es": "Todavía estoy de servicio.",
+    "cloze": "servicio",
+    "difficulty": 865,
+    "audio": "sent_0632.mp3"
+  },
+  {
+    "en": "Here comes the train.",
+    "es": "Aquí viene el tren.",
+    "cloze": "tren",
+    "difficulty": 866,
+    "audio": "sent_0633.mp3"
+  },
+  {
+    "en": "It was very beautiful.",
+    "es": "Fue muy bonito.",
+    "cloze": "bonito",
+    "difficulty": 868,
+    "audio": "sent_0634.mp3"
+  },
+  {
+    "en": "She is going to have a baby this month.",
+    "es": "Ella va a tener un bebé este mes.",
+    "cloze": "mes",
+    "difficulty": 869,
+    "audio": "sent_0635.mp3"
+  },
+  {
+    "en": "One of us will have to go.",
+    "es": "Uno de nosotros tendrá que ir.",
+    "cloze": "tendrá",
+    "difficulty": 870,
+    "audio": "sent_0636.mp3"
+  },
+  {
+    "en": "I feel my age.",
+    "es": "Yo siento mi edad.",
+    "cloze": "edad",
+    "difficulty": 872,
+    "audio": "sent_0637.mp3"
+  },
+  {
+    "en": "Life is beautiful.",
+    "es": "La vida es hermosa.",
+    "cloze": "hermosa",
+    "difficulty": 874,
+    "audio": "sent_0638.mp3"
+  },
+  {
+    "en": "I'd be honored.",
+    "es": "Sería un honor para mí.",
+    "cloze": "honor",
+    "difficulty": 876,
+    "audio": "sent_0639.mp3"
+  },
+  {
+    "en": "It's just not fair.",
+    "es": "Simplemente no es justo.",
+    "cloze": "Simplemente",
+    "difficulty": 877,
+    "audio": "sent_0640.mp3"
+  },
+  {
+    "en": "What is your name?",
+    "es": "¿Cómo te llamas?",
+    "cloze": "llamas",
+    "difficulty": 878,
+    "audio": "sent_0641.mp3"
+  },
+  {
+    "en": "You may be right.",
+    "es": "Puede que tengas razón.",
+    "cloze": "tengas",
+    "difficulty": 879,
+    "audio": "sent_0642.mp3"
+  },
+  {
+    "en": "He runs very fast.",
+    "es": "Él corre muy rápido.",
+    "cloze": "corre",
+    "difficulty": 880,
+    "audio": "sent_0643.mp3"
+  },
+  {
+    "en": "My sister is shorter than you.",
+    "es": "Mi hermana es más baja que tú.",
+    "cloze": "baja",
+    "difficulty": 881,
+    "audio": "sent_0644.mp3"
+  },
+  {
+    "en": "It is sunny today.",
+    "es": "Hoy hace sol.",
+    "cloze": "sol",
+    "difficulty": 882,
+    "audio": "sent_0645.mp3"
+  },
+  {
+    "en": "Sit up straight.",
+    "es": "Siéntate derecho.",
+    "cloze": "Siéntate",
+    "difficulty": 883,
+    "audio": "sent_0646.mp3"
+  },
+  {
+    "en": "Where's that movie showing?",
+    "es": "¿Dónde dan esa película?",
+    "cloze": "dan",
+    "difficulty": 884,
+    "audio": "sent_0647.mp3"
+  },
+  {
+    "en": "I'm a human.",
+    "es": "Soy un humano.",
+    "cloze": "humano",
+    "difficulty": 885,
+    "audio": "sent_0648.mp3"
+  },
+  {
+    "en": "It's a lot of fun playing outdoors.",
+    "es": "Jugar fuera es muy divertido.",
+    "cloze": "divertido",
+    "difficulty": 886,
+    "audio": "sent_0649.mp3"
+  },
+  {
+    "en": "Have you gone mad?",
+    "es": "¿Te has vuelto loco?",
+    "cloze": "vuelto",
+    "difficulty": 888,
+    "audio": "sent_0650.mp3"
+  },
+  {
+    "en": "Is there any danger?",
+    "es": "¿Hay algún peligro?",
+    "cloze": "peligro",
+    "difficulty": 889,
+    "audio": "sent_0651.mp3"
+  },
+  {
+    "en": "Sit at the table.",
+    "es": "Siéntate a la mesa.",
+    "cloze": "mesa",
+    "difficulty": 890,
+    "audio": "sent_0652.mp3"
+  },
+  {
+    "en": "Who is next?",
+    "es": "¿Quién es el siguiente?",
+    "cloze": "siguiente",
+    "difficulty": 892,
+    "audio": "sent_0653.mp3"
+  },
+  {
+    "en": "How do you make a box?",
+    "es": "¿Cómo haces una caja?",
+    "cloze": "caja",
+    "difficulty": 897,
+    "audio": "sent_0654.mp3"
+  },
+  {
+    "en": "Business is business.",
+    "es": "Los negocios son los negocios.",
+    "cloze": "negocios",
+    "difficulty": 898,
+    "audio": "sent_0655.mp3"
+  },
+  {
+    "en": "My plane leaves at six o'clock.",
+    "es": "Mi avión sale a las seis.",
+    "cloze": "sale",
+    "difficulty": 901,
+    "audio": "sent_0656.mp3"
+  },
+  {
+    "en": "How did he come here?",
+    "es": "¿Cómo ha llegado él hasta aquí?",
+    "cloze": "llegado",
+    "difficulty": 902,
+    "audio": "sent_0657.mp3"
+  },
+  {
+    "en": "I wouldn't be so sure.",
+    "es": "No estaría tan seguro.",
+    "cloze": "estaría",
+    "difficulty": 903,
+    "audio": "sent_0658.mp3"
+  },
+  {
+    "en": "I'm going back.",
+    "es": "Voy de regreso.",
+    "cloze": "regreso",
+    "difficulty": 904,
+    "audio": "sent_0659.mp3"
+  },
+  {
+    "en": "He will be here in half an hour.",
+    "es": "Estará aquí en media hora.",
+    "cloze": "media",
+    "difficulty": 905,
+    "audio": "sent_0660.mp3"
+  },
+  {
+    "en": "Do your own work.",
+    "es": "Haz tu propio trabajo.",
+    "cloze": "propio",
+    "difficulty": 907,
+    "audio": "sent_0661.mp3"
+  },
+  {
+    "en": "May I do it right away?",
+    "es": "¿Lo puedo hacer enseguida?",
+    "cloze": "enseguida",
+    "difficulty": 910,
+    "audio": "sent_0662.mp3"
+  },
+  {
+    "en": "You are a pretty girl.",
+    "es": "Eres una linda chica.",
+    "cloze": "linda",
+    "difficulty": 911,
+    "audio": "sent_0663.mp3"
+  },
+  {
+    "en": "I promise!",
+    "es": "¡Lo prometo!",
+    "cloze": "prometo",
+    "difficulty": 912,
+    "audio": "sent_0664.mp3"
+  },
+  {
+    "en": "My husband likes to sleep.",
+    "es": "A mi esposo le gusta dormir.",
+    "cloze": "esposo",
+    "difficulty": 913,
+    "audio": "sent_0665.mp3"
+  },
+  {
+    "en": "My house is north of the city.",
+    "es": "Mi casa está al norte de la ciudad.",
+    "cloze": "norte",
+    "difficulty": 914,
+    "audio": "sent_0666.mp3"
+  },
+  {
+    "en": "There was an accident.",
+    "es": "Hubo un accidente.",
+    "cloze": "Hubo",
+    "difficulty": 915,
+    "audio": "sent_0667.mp3"
+  },
+  {
+    "en": "It's true that she's dead.",
+    "es": "Es cierto que está muerta.",
+    "cloze": "muerta",
+    "difficulty": 917,
+    "audio": "sent_0668.mp3"
+  },
+  {
+    "en": "Was the book interesting?",
+    "es": "¿El libro era interesante?",
+    "cloze": "interesante",
+    "difficulty": 918,
+    "audio": "sent_0669.mp3"
+  },
+  {
+    "en": "That's what I thought.",
+    "es": "Eso es lo que pensaba.",
+    "cloze": "pensaba",
+    "difficulty": 919,
+    "audio": "sent_0670.mp3"
+  },
+  {
+    "en": "It was tough to finish the work.",
+    "es": "Fue difícil terminar el trabajo.",
+    "cloze": "terminar",
+    "difficulty": 921,
+    "audio": "sent_0671.mp3"
+  },
+  {
+    "en": "I don't know if I'll have time.",
+    "es": "No sé si tendré tiempo.",
+    "cloze": "tendré",
+    "difficulty": 922,
+    "audio": "sent_0672.mp3"
+  },
+  {
+    "en": "This dog is almost human.",
+    "es": "Ese perro parece completamente una persona.",
+    "cloze": "completamente",
+    "difficulty": 923,
+    "audio": "sent_0673.mp3"
+  },
+  {
+    "en": "Do you have an appointment with him?",
+    "es": "¿Tienes cita con él?",
+    "cloze": "cita",
+    "difficulty": 924,
+    "audio": "sent_0674.mp3"
+  },
+  {
+    "en": "I go to school at seven.",
+    "es": "Voy a la escuela a las siete.",
+    "cloze": "siete",
+    "difficulty": 925,
+    "audio": "sent_0675.mp3"
+  },
+  {
+    "en": "How was your birthday?",
+    "es": "¿Cómo estuvo tu cumpleaños?",
+    "cloze": "cumpleaños",
+    "difficulty": 926,
+    "audio": "sent_0676.mp3"
+  },
+  {
+    "en": "I don't believe he is a lawyer.",
+    "es": "Creo que no es abogado.",
+    "cloze": "abogado",
+    "difficulty": 927,
+    "audio": "sent_0677.mp3"
+  },
+  {
+    "en": "What's this key for?",
+    "es": "¿Para qué es esta llave?",
+    "cloze": "llave",
+    "difficulty": 931,
+    "audio": "sent_0678.mp3"
+  },
+  {
+    "en": "That was not necessary.",
+    "es": "Eso no era necesario.",
+    "cloze": "necesario",
+    "difficulty": 934,
+    "audio": "sent_0679.mp3"
+  },
+  {
+    "en": "What is that big new building?",
+    "es": "¿Qué es ese edificio grande y nuevo?",
+    "cloze": "edificio",
+    "difficulty": 935,
+    "audio": "sent_0680.mp3"
+  },
+  {
+    "en": "We should leave.",
+    "es": "Deberíamos irnos.",
+    "cloze": "irnos",
+    "difficulty": 936,
+    "audio": "sent_0681.mp3"
+  },
+  {
+    "en": "How long will we have to wait?",
+    "es": "¿Cuánto tiempo tendremos que esperar?",
+    "cloze": "tendremos",
+    "difficulty": 938,
+    "audio": "sent_0682.mp3"
+  },
+  {
+    "en": "You had better go.",
+    "es": "Es mejor que vayas.",
+    "cloze": "vayas",
+    "difficulty": 939,
+    "audio": "sent_0683.mp3"
+  },
+  {
+    "en": "I give you my word.",
+    "es": "Te doy mi palabra.",
+    "cloze": "doy",
+    "difficulty": 940,
+    "audio": "sent_0684.mp3"
+  },
+  {
+    "en": "What is he up to?",
+    "es": "¿Qué se trae él?",
+    "cloze": "trae",
+    "difficulty": 941,
+    "audio": "sent_0685.mp3"
+  },
+  {
+    "en": "He has gone out.",
+    "es": "Él salió.",
+    "cloze": "salió",
+    "difficulty": 942,
+    "audio": "sent_0686.mp3"
+  },
+  {
+    "en": "I am the law!",
+    "es": "¡Soy la ley!",
+    "cloze": "ley",
+    "difficulty": 943,
+    "audio": "sent_0687.mp3"
+  },
+  {
+    "en": "What was the fight about?",
+    "es": "¿Sobre qué era la pelea?",
+    "cloze": "pelea",
+    "difficulty": 946,
+    "audio": "sent_0688.mp3"
+  },
+  {
+    "en": "Please go to the bank.",
+    "es": "Por favor, ve al banco.",
+    "cloze": "banco",
+    "difficulty": 947,
+    "audio": "sent_0689.mp3"
+  },
+  {
+    "en": "It was a terrible accident.",
+    "es": "Fue un terrible accidente.",
+    "cloze": "terrible",
+    "difficulty": 948,
+    "audio": "sent_0690.mp3"
+  },
+  {
+    "en": "All is quiet.",
+    "es": "Todo está en calma.",
+    "cloze": "calma",
+    "difficulty": 949,
+    "audio": "sent_0691.mp3"
+  },
+  {
+    "en": "I will give it to you.",
+    "es": "Te lo daré.",
+    "cloze": "daré",
+    "difficulty": 951,
+    "audio": "sent_0692.mp3"
+  },
+  {
+    "en": "I'm too poor to buy a new suit.",
+    "es": "Soy demasiado pobre para comprar un traje nuevo.",
+    "cloze": "comprar",
+    "difficulty": 953,
+    "audio": "sent_0693.mp3"
+  },
+  {
+    "en": "It is our destiny.",
+    "es": "Es nuestro destino.",
+    "cloze": "destino",
+    "difficulty": 956,
+    "audio": "sent_0694.mp3"
+  },
+  {
+    "en": "Do you believe that God exists?",
+    "es": "¿Crees que Dios existe?",
+    "cloze": "existe",
+    "difficulty": 958,
+    "audio": "sent_0695.mp3"
+  },
+  {
+    "en": "What was Tom doing here?",
+    "es": "¿Qué hacía aquí Tom?",
+    "cloze": "hacía",
+    "difficulty": 959,
+    "audio": "sent_0696.mp3"
+  },
+  {
+    "en": "Do you have a boyfriend?",
+    "es": "¿Tienes novio?",
+    "cloze": "novio",
+    "difficulty": 960,
+    "audio": "sent_0697.mp3"
+  },
+  {
+    "en": "There's no one in the room.",
+    "es": "No hay nadie en la sala.",
+    "cloze": "sala",
+    "difficulty": 961,
+    "audio": "sent_0698.mp3"
+  },
+  {
+    "en": "I'll give you a present.",
+    "es": "Te daré un regalo.",
+    "cloze": "regalo",
+    "difficulty": 963,
+    "audio": "sent_0699.mp3"
+  },
+  {
+    "en": "I go to church by car.",
+    "es": "Voy a la iglesia en coche.",
+    "cloze": "iglesia",
+    "difficulty": 964,
+    "audio": "sent_0700.mp3"
+  },
+  {
+    "en": "He told the truth.",
+    "es": "Él decía la verdad.",
+    "cloze": "decía",
+    "difficulty": 965,
+    "audio": "sent_0701.mp3"
+  },
+  {
+    "en": "That can be done by anyone.",
+    "es": "Eso lo puede hacer cualquiera.",
+    "cloze": "cualquiera",
+    "difficulty": 966,
+    "audio": "sent_0702.mp3"
+  },
+  {
+    "en": "You did an excellent job.",
+    "es": "Hiciste un excelente trabajo.",
+    "cloze": "excelente",
+    "difficulty": 967,
+    "audio": "sent_0703.mp3"
+  },
+  {
+    "en": "What's your wish?",
+    "es": "¿Cuál es tu deseo?",
+    "cloze": "deseo",
+    "difficulty": 969,
+    "audio": "sent_0704.mp3"
+  },
+  {
+    "en": "Tom is the life of the party.",
+    "es": "Tom es el alma de la fiesta.",
+    "cloze": "alma",
+    "difficulty": 970,
+    "audio": "sent_0705.mp3"
+  },
+  {
+    "en": "Leave a message.",
+    "es": "Deje un mensaje.",
+    "cloze": "Deje",
+    "difficulty": 972,
+    "audio": "sent_0706.mp3"
+  },
+  {
+    "en": "How many children do you have?",
+    "es": "¿Cuántos niños tienes?",
+    "cloze": "Cuántos",
+    "difficulty": 973,
+    "audio": "sent_0707.mp3"
+  },
+  {
+    "en": "I don't have a sword.",
+    "es": "Yo no tengo una espada.",
+    "cloze": "espada",
+    "difficulty": 974,
+    "audio": "sent_0708.mp3"
+  },
+  {
+    "en": "What were we talking about?",
+    "es": "¿De qué estábamos hablando?",
+    "cloze": "estábamos",
+    "difficulty": 975,
+    "audio": "sent_0709.mp3"
+  },
+  {
+    "en": "I can't eat meat.",
+    "es": "No puedo comer carne.",
+    "cloze": "carne",
+    "difficulty": 976,
+    "audio": "sent_0710.mp3"
+  },
+  {
+    "en": "Thank you for the wonderful gift.",
+    "es": "Gracias por este regalo maravilloso.",
+    "cloze": "maravilloso",
+    "difficulty": 977,
+    "audio": "sent_0711.mp3"
+  },
+  {
+    "en": "This is how it happened.",
+    "es": "Así es como sucedió.",
+    "cloze": "sucedió",
+    "difficulty": 979,
+    "audio": "sent_0712.mp3"
+  },
+  {
+    "en": "I didn't hear you.",
+    "es": "Yo no te oí.",
+    "cloze": "oí",
+    "difficulty": 980,
+    "audio": "sent_0713.mp3"
+  },
+  {
+    "en": "It can be dangerous.",
+    "es": "Puede ser peligroso.",
+    "cloze": "peligroso",
+    "difficulty": 981,
+    "audio": "sent_0714.mp3"
+  },
+  {
+    "en": "What's your home address?",
+    "es": "¿Cuál es la dirección de tu casa?",
+    "cloze": "dirección",
+    "difficulty": 982,
+    "audio": "sent_0715.mp3"
+  },
+  {
+    "en": "I want my freedom.",
+    "es": "Quiero mi libertad.",
+    "cloze": "libertad",
+    "difficulty": 983,
+    "audio": "sent_0716.mp3"
+  },
+  {
+    "en": "Bless you!",
+    "es": "¡Jesús!",
+    "cloze": "Jesús",
+    "difficulty": 984,
+    "audio": "sent_0717.mp3"
+  },
+  {
+    "en": "An idea occurred to me.",
+    "es": "Se me ocurrió una idea.",
+    "cloze": "ocurrió",
+    "difficulty": 985,
+    "audio": "sent_0718.mp3"
+  },
+  {
+    "en": "Your dreams have come true.",
+    "es": "Tus sueños se han vuelto realidad.",
+    "cloze": "sueños",
+    "difficulty": 987,
+    "audio": "sent_0719.mp3"
+  },
+  {
+    "en": "I'm sorry I couldn't be more helpful.",
+    "es": "Siento que no pudiera ser de más ayuda.",
+    "cloze": "pudiera",
+    "difficulty": 988,
+    "audio": "sent_0720.mp3"
+  },
+  {
+    "en": "He is a detective.",
+    "es": "Él es detective.",
+    "cloze": "detective",
+    "difficulty": 989,
+    "audio": "sent_0721.mp3"
+  },
+  {
+    "en": "What a surprise!",
+    "es": "¡Qué sorpresa!",
+    "cloze": "sorpresa",
+    "difficulty": 990,
+    "audio": "sent_0722.mp3"
+  },
+  {
+    "en": "This is your fault.",
+    "es": "Esto es culpa tuya.",
+    "cloze": "tuya",
+    "difficulty": 991,
+    "audio": "sent_0723.mp3"
+  },
+  {
+    "en": "I've almost finished.",
+    "es": "Casi he terminado.",
+    "cloze": "terminado",
+    "difficulty": 994,
+    "audio": "sent_0724.mp3"
+  },
+  {
+    "en": "He believed in the truth.",
+    "es": "Él creía en la verdad.",
+    "cloze": "creía",
+    "difficulty": 996,
+    "audio": "sent_0725.mp3"
+  },
+  {
+    "en": "Before long, the moon came out.",
+    "es": "Poco después salió la luna.",
+    "cloze": "luna",
+    "difficulty": 997,
+    "audio": "sent_0726.mp3"
+  },
+  {
+    "en": "Your letter made me happy.",
+    "es": "Tu carta me hizo feliz.",
+    "cloze": "carta",
+    "difficulty": 999,
+    "audio": "sent_0727.mp3"
+  },
+  {
+    "en": "It's good to have you back!",
+    "es": "¡Qué bueno que estés de vuelta!",
+    "cloze": "estés",
+    "difficulty": 1000,
+    "audio": "sent_0728.mp3"
+  },
+  {
+    "en": "Let's see what will happen.",
+    "es": "Veamos qué pasa.",
+    "cloze": "Veamos",
+    "difficulty": 1005,
+    "audio": "sent_0729.mp3"
+  },
+  {
+    "en": "That is not what I meant to say.",
+    "es": "Eso no es lo que quise decir.",
+    "cloze": "quise",
+    "difficulty": 1006,
+    "audio": "sent_0730.mp3"
+  },
+  {
+    "en": "Listen to me carefully.",
+    "es": "Escúchame con atención.",
+    "cloze": "Escúchame",
+    "difficulty": 1007,
+    "audio": "sent_0731.mp3"
+  },
+  {
+    "en": "I like both of them very much.",
+    "es": "Me gustan mucho ambos.",
+    "cloze": "ambos",
+    "difficulty": 1009,
+    "audio": "sent_0732.mp3"
+  },
+  {
+    "en": "I have been to Rome.",
+    "es": "He ido a Roma.",
+    "cloze": "Roma",
+    "difficulty": 1011,
+    "audio": "sent_0733.mp3"
+  },
+  {
+    "en": "I don't have a single enemy.",
+    "es": "Yo no tengo ningún enemigo.",
+    "cloze": "enemigo",
+    "difficulty": 1012,
+    "audio": "sent_0734.mp3"
+  },
+  {
+    "en": "We made it.",
+    "es": "Lo hicimos.",
+    "cloze": "hicimos",
+    "difficulty": 1013,
+    "audio": "sent_0735.mp3"
+  },
+  {
+    "en": "I want something sweet.",
+    "es": "Quiero algo dulce.",
+    "cloze": "dulce",
+    "difficulty": 1015,
+    "audio": "sent_0736.mp3"
+  },
+  {
+    "en": "Why don't you try eating this?",
+    "es": "¿Por qué no pruebas a comer esto?",
+    "cloze": "pruebas",
+    "difficulty": 1016,
+    "audio": "sent_0737.mp3"
+  },
+  {
+    "en": "What was it that you wanted?",
+    "es": "¿Qué era lo que querías?",
+    "cloze": "querías",
+    "difficulty": 1017,
+    "audio": "sent_0738.mp3"
+  },
+  {
+    "en": "My grandfather is a bit hard of hearing.",
+    "es": "Mi abuelo es un poco duro de oído.",
+    "cloze": "abuelo",
+    "difficulty": 1018,
+    "audio": "sent_0739.mp3"
+  },
+  {
+    "en": "I totally agree.",
+    "es": "Estoy totalmente de acuerdo.",
+    "cloze": "totalmente",
+    "difficulty": 1019,
+    "audio": "sent_0740.mp3"
+  },
+  {
+    "en": "What are you looking at?",
+    "es": "¿Qué estás mirando?",
+    "cloze": "mirando",
+    "difficulty": 1020,
+    "audio": "sent_0741.mp3"
+  },
+  {
+    "en": "They may go.",
+    "es": "Puede que vayan.",
+    "cloze": "vayan",
+    "difficulty": 1021,
+    "audio": "sent_0742.mp3"
+  },
+  {
+    "en": "I ran a race with him.",
+    "es": "Hice una carrera con él.",
+    "cloze": "carrera",
+    "difficulty": 1022,
+    "audio": "sent_0743.mp3"
+  },
+  {
+    "en": "Have a nice flight.",
+    "es": "Buen vuelo.",
+    "cloze": "vuelo",
+    "difficulty": 1023,
+    "audio": "sent_0744.mp3"
+  },
+  {
+    "en": "It's right in front of your eyes.",
+    "es": "Está justo ante tus ojos.",
+    "cloze": "ante",
+    "difficulty": 1024,
+    "audio": "sent_0745.mp3"
+  },
+  {
+    "en": "Welcome home.",
+    "es": "Bienvenido a casa.",
+    "cloze": "Bienvenido",
+    "difficulty": 1025,
+    "audio": "sent_0746.mp3"
+  },
+  {
+    "en": "We found him alive.",
+    "es": "Le encontramos con vida.",
+    "cloze": "encontramos",
+    "difficulty": 1027,
+    "audio": "sent_0747.mp3"
+  },
+  {
+    "en": "Haven't we met before?",
+    "es": "¿No nos hemos encontrado antes?",
+    "cloze": "encontrado",
+    "difficulty": 1028,
+    "audio": "sent_0748.mp3"
+  },
+  {
+    "en": "Keep in touch with me.",
+    "es": "Sigue en contacto conmigo.",
+    "cloze": "contacto",
+    "difficulty": 1029,
+    "audio": "sent_0749.mp3"
+  },
+  {
+    "en": "I want to know.",
+    "es": "Quiero saberlo.",
+    "cloze": "saberlo",
+    "difficulty": 1031,
+    "audio": "sent_0750.mp3"
+  },
+  {
+    "en": "Can we save the planet?",
+    "es": "¿Podemos salvar el planeta?",
+    "cloze": "planeta",
+    "difficulty": 1032,
+    "audio": "sent_0751.mp3"
+  },
+  {
+    "en": "We are human.",
+    "es": "Nosotros somos humanos.",
+    "cloze": "humanos",
+    "difficulty": 1033,
+    "audio": "sent_0752.mp3"
+  },
+  {
+    "en": "Sit beside me.",
+    "es": "Siéntate junto a mí.",
+    "cloze": "junto",
+    "difficulty": 1035,
+    "audio": "sent_0753.mp3"
+  },
+  {
+    "en": "What would the doctor say?",
+    "es": "¿Qué diría el doctor?",
+    "cloze": "diría",
+    "difficulty": 1036,
+    "audio": "sent_0754.mp3"
+  },
+  {
+    "en": "Is that a picture of me?",
+    "es": "¿Es ésa una foto mía?",
+    "cloze": "ésa",
+    "difficulty": 1037,
+    "audio": "sent_0755.mp3"
+  },
+  {
+    "en": "I can still hear your voice.",
+    "es": "Todavía puedo oír tu voz.",
+    "cloze": "oír",
+    "difficulty": 1039,
+    "audio": "sent_0756.mp3"
+  },
+  {
+    "en": "Don't sit on the floor.",
+    "es": "No te sientes en el suelo.",
+    "cloze": "suelo",
+    "difficulty": 1040,
+    "audio": "sent_0757.mp3"
+  },
+  {
+    "en": "I'm not here to fight.",
+    "es": "No estoy aquí para pelear.",
+    "cloze": "pelear",
+    "difficulty": 1041,
+    "audio": "sent_0758.mp3"
+  },
+  {
+    "en": "Can I help you?",
+    "es": "¿Puedo ayudarte?",
+    "cloze": "ayudarte",
+    "difficulty": 1042,
+    "audio": "sent_0759.mp3"
+  },
+  {
+    "en": "Does Tom always carry a gun?",
+    "es": "¿Tom siempre lleva una pistola?",
+    "cloze": "pistola",
+    "difficulty": 1043,
+    "audio": "sent_0760.mp3"
+  },
+  {
+    "en": "It's cold.",
+    "es": "Está frío.",
+    "cloze": "frío",
+    "difficulty": 1044,
+    "audio": "sent_0761.mp3"
+  },
+  {
+    "en": "We found trouble everywhere.",
+    "es": "Encontramos problemas por todas partes.",
+    "cloze": "partes",
+    "difficulty": 1046,
+    "audio": "sent_0762.mp3"
+  },
+  {
+    "en": "Every dog has his day.",
+    "es": "A cada santo le llega su día.",
+    "cloze": "llega",
+    "difficulty": 1047,
+    "audio": "sent_0763.mp3"
+  },
+  {
+    "en": "You'll see.",
+    "es": "Ya verás.",
+    "cloze": "verás",
+    "difficulty": 1048,
+    "audio": "sent_0764.mp3"
+  },
+  {
+    "en": "We will leave in an hour.",
+    "es": "Nos iremos en una hora.",
+    "cloze": "iremos",
+    "difficulty": 1050,
+    "audio": "sent_0765.mp3"
+  },
+  {
+    "en": "He left a while ago.",
+    "es": "Se fue hace un rato.",
+    "cloze": "rato",
+    "difficulty": 1051,
+    "audio": "sent_0766.mp3"
+  },
+  {
+    "en": "The sea was calm.",
+    "es": "El mar estaba en calma.",
+    "cloze": "mar",
+    "difficulty": 1052,
+    "audio": "sent_0767.mp3"
+  },
+  {
+    "en": "I need space.",
+    "es": "Necesito espacio.",
+    "cloze": "espacio",
+    "difficulty": 1053,
+    "audio": "sent_0768.mp3"
+  },
+  {
+    "en": "Open the window, please.",
+    "es": "Abre la ventana, por favor.",
+    "cloze": "ventana",
+    "difficulty": 1055,
+    "audio": "sent_0769.mp3"
+  },
+  {
+    "en": "There's no hurry.",
+    "es": "No hay prisa.",
+    "cloze": "prisa",
+    "difficulty": 1056,
+    "audio": "sent_0770.mp3"
+  },
+  {
+    "en": "I met Tom in front of the store.",
+    "es": "Me encontré con Tom en frente de la tienda.",
+    "cloze": "tienda",
+    "difficulty": 1057,
+    "audio": "sent_0771.mp3"
+  },
+  {
+    "en": "I'll give you this camera.",
+    "es": "Te daré esta cámara.",
+    "cloze": "cámara",
+    "difficulty": 1058,
+    "audio": "sent_0772.mp3"
+  },
+  {
+    "en": "It's a pity that you can't come.",
+    "es": "Es una pena que no puedas venir.",
+    "cloze": "puedas",
+    "difficulty": 1059,
+    "audio": "sent_0773.mp3"
+  },
+  {
+    "en": "According to her, he isn't coming.",
+    "es": "Según ella, él no viene.",
+    "cloze": "Según",
+    "difficulty": 1060,
+    "audio": "sent_0774.mp3"
+  },
+  {
+    "en": "It was just a joke.",
+    "es": "Solo era una broma.",
+    "cloze": "broma",
+    "difficulty": 1061,
+    "audio": "sent_0775.mp3"
+  },
+  {
+    "en": "The meeting is tomorrow.",
+    "es": "La reunión es mañana.",
+    "cloze": "reunión",
+    "difficulty": 1062,
+    "audio": "sent_0776.mp3"
+  },
+  {
+    "en": "Come on, wake up.",
+    "es": "Vamos, despierta.",
+    "cloze": "despierta",
+    "difficulty": 1063,
+    "audio": "sent_0777.mp3"
+  },
+  {
+    "en": "Are we allowed to take pictures here?",
+    "es": "¿Podemos sacar fotos aquí?",
+    "cloze": "sacar",
+    "difficulty": 1064,
+    "audio": "sent_0778.mp3"
+  },
+  {
+    "en": "It's second-hand.",
+    "es": "Es de segunda mano.",
+    "cloze": "segunda",
+    "difficulty": 1066,
+    "audio": "sent_0779.mp3"
+  },
+  {
+    "en": "You are as white as a sheet.",
+    "es": "Eres tan blanco como un papel.",
+    "cloze": "papel",
+    "difficulty": 1067,
+    "audio": "sent_0780.mp3"
+  },
+  {
+    "en": "That's crazy.",
+    "es": "Es una locura.",
+    "cloze": "locura",
+    "difficulty": 1068,
+    "audio": "sent_0781.mp3"
+  },
+  {
+    "en": "I had a horrible dream.",
+    "es": "He tenido un sueño horrible.",
+    "cloze": "horrible",
+    "difficulty": 1070,
+    "audio": "sent_0782.mp3"
+  },
+  {
+    "en": "I wonder who has come.",
+    "es": "Me pregunto quién ha llegado.",
+    "cloze": "pregunto",
+    "difficulty": 1072,
+    "audio": "sent_0783.mp3"
+  },
+  {
+    "en": "I'm in jail.",
+    "es": "Estoy en la cárcel.",
+    "cloze": "cárcel",
+    "difficulty": 1073,
+    "audio": "sent_0784.mp3"
+  },
+  {
+    "en": "I have orders.",
+    "es": "Yo tengo órdenes.",
+    "cloze": "órdenes",
+    "difficulty": 1074,
+    "audio": "sent_0785.mp3"
+  },
+  {
+    "en": "I try.",
+    "es": "Lo intento.",
+    "cloze": "intento",
+    "difficulty": 1075,
+    "audio": "sent_0786.mp3"
+  },
+  {
+    "en": "Where's the exit?",
+    "es": "¿Por dónde está la salida?",
+    "cloze": "salida",
+    "difficulty": 1077,
+    "audio": "sent_0787.mp3"
+  },
+  {
+    "en": "Someone knocked on the door.",
+    "es": "Alguien llamó a la puerta.",
+    "cloze": "llamó",
+    "difficulty": 1078,
+    "audio": "sent_0788.mp3"
+  },
+  {
+    "en": "I'll be back soon.",
+    "es": "Volveré luego.",
+    "cloze": "Volveré",
+    "difficulty": 1079,
+    "audio": "sent_0789.mp3"
+  },
+  {
+    "en": "Is that a cat?",
+    "es": "¿Eso es un gato?",
+    "cloze": "gato",
+    "difficulty": 1081,
+    "audio": "sent_0790.mp3"
+  },
+  {
+    "en": "Don't leave me!",
+    "es": "¡No me dejes!",
+    "cloze": "dejes",
+    "difficulty": 1084,
+    "audio": "sent_0791.mp3"
+  },
+  {
+    "en": "I have a headache.",
+    "es": "Me duele la cabeza.",
+    "cloze": "duele",
+    "difficulty": 1085,
+    "audio": "sent_0792.mp3"
+  },
+  {
+    "en": "They may come.",
+    "es": "Puede que vengan.",
+    "cloze": "vengan",
+    "difficulty": 1086,
+    "audio": "sent_0793.mp3"
+  },
+  {
+    "en": "I was expecting it!",
+    "es": "¡Me lo esperaba!",
+    "cloze": "esperaba",
+    "difficulty": 1088,
+    "audio": "sent_0794.mp3"
+  },
+  {
+    "en": "What's the cause?",
+    "es": "¿Cuál es la causa?",
+    "cloze": "causa",
+    "difficulty": 1089,
+    "audio": "sent_0795.mp3"
+  },
+  {
+    "en": "I'll be your teacher.",
+    "es": "Seré tu profesor.",
+    "cloze": "Seré",
+    "difficulty": 1091,
+    "audio": "sent_0796.mp3"
+  },
+  {
+    "en": "It's quarter to eight now.",
+    "es": "Son las ocho menos cuarto.",
+    "cloze": "ocho",
+    "difficulty": 1092,
+    "audio": "sent_0797.mp3"
+  },
+  {
+    "en": "We must die sooner or later.",
+    "es": "Tarde o temprano, debemos morir.",
+    "cloze": "temprano",
+    "difficulty": 1093,
+    "audio": "sent_0798.mp3"
+  },
+  {
+    "en": "The river is dangerous.",
+    "es": "El río es peligroso.",
+    "cloze": "río",
+    "difficulty": 1094,
+    "audio": "sent_0799.mp3"
+  },
+  {
+    "en": "This has nothing to do with me.",
+    "es": "Esto no tiene ninguna relación conmigo.",
+    "cloze": "relación",
+    "difficulty": 1095,
+    "audio": "sent_0800.mp3"
+  },
+  {
+    "en": "I like the way you look.",
+    "es": "Me gusta cómo luces.",
+    "cloze": "luces",
+    "difficulty": 1097,
+    "audio": "sent_0801.mp3"
+  },
+  {
+    "en": "You must be kidding!",
+    "es": "¡Debes estar bromeando!",
+    "cloze": "bromeando",
+    "difficulty": 1098,
+    "audio": "sent_0802.mp3"
+  },
+  {
+    "en": "I wish I were younger.",
+    "es": "Ojalá yo fuera más joven.",
+    "cloze": "Ojalá",
+    "difficulty": 1099,
+    "audio": "sent_0803.mp3"
+  },
+  {
+    "en": "We talked of many things.",
+    "es": "Hablamos de muchas cosas.",
+    "cloze": "Hablamos",
+    "difficulty": 1100,
+    "audio": "sent_0804.mp3"
+  },
+  {
+    "en": "How many books do you have?",
+    "es": "¿Cuántos libros tienes?",
+    "cloze": "libros",
+    "difficulty": 1103,
+    "audio": "sent_0805.mp3"
+  },
+  {
+    "en": "The radio will not work.",
+    "es": "La radio no funciona.",
+    "cloze": "radio",
+    "difficulty": 1104,
+    "audio": "sent_0806.mp3"
+  },
+  {
+    "en": "Mary stayed up late last night.",
+    "es": "Mary estuvo despierta hasta tarde anoche.",
+    "cloze": "despierta",
+    "difficulty": 1105,
+    "audio": "sent_0807.mp3"
+  },
+  {
+    "en": "Won't you come with me?",
+    "es": "¿No vienes conmigo?",
+    "cloze": "vienes",
+    "difficulty": 1108,
+    "audio": "sent_0808.mp3"
+  },
+  {
+    "en": "How many days are there before Christmas?",
+    "es": "¿Cuántos días quedan para Navidad?",
+    "cloze": "quedan",
+    "difficulty": 1109,
+    "audio": "sent_0809.mp3"
+  },
+  {
+    "en": "No one knows Tom's address except him.",
+    "es": "Nadie excepto Tom conoce su dirección.",
+    "cloze": "excepto",
+    "difficulty": 1110,
+    "audio": "sent_0810.mp3"
+  },
+  {
+    "en": "My arm still hurts.",
+    "es": "Todavía me duele el brazo.",
+    "cloze": "brazo",
+    "difficulty": 1111,
+    "audio": "sent_0811.mp3"
+  },
+  {
+    "en": "I have a new red car.",
+    "es": "Tengo un coche rojo nuevo.",
+    "cloze": "rojo",
+    "difficulty": 1113,
+    "audio": "sent_0812.mp3"
+  },
+  {
+    "en": "I have met her before.",
+    "es": "Ya la había conocido.",
+    "cloze": "conocido",
+    "difficulty": 1114,
+    "audio": "sent_0813.mp3"
+  },
+  {
+    "en": "Do you go to university?",
+    "es": "¿Vas a la universidad?",
+    "cloze": "universidad",
+    "difficulty": 1115,
+    "audio": "sent_0814.mp3"
+  },
+  {
+    "en": "The investigation is over.",
+    "es": "La investigación ha terminado.",
+    "cloze": "investigación",
+    "difficulty": 1116,
+    "audio": "sent_0815.mp3"
+  },
+  {
+    "en": "This is the place where the battle took place.",
+    "es": "Éste es el lugar donde tuvo lugar la batalla.",
+    "cloze": "batalla",
+    "difficulty": 1117,
+    "audio": "sent_0816.mp3"
+  },
+  {
+    "en": "We have to go by the rules.",
+    "es": "Debemos seguir las reglas.",
+    "cloze": "reglas",
+    "difficulty": 1118,
+    "audio": "sent_0817.mp3"
+  },
+  {
+    "en": "Who's in charge here?",
+    "es": "¿Quién está a cargo aquí?",
+    "cloze": "cargo",
+    "difficulty": 1119,
+    "audio": "sent_0818.mp3"
+  },
+  {
+    "en": "I feel homesick.",
+    "es": "Extraño mi hogar.",
+    "cloze": "hogar",
+    "difficulty": 1120,
+    "audio": "sent_0819.mp3"
+  },
+  {
+    "en": "They walked around.",
+    "es": "Ellos dieron una vuelta.",
+    "cloze": "dieron",
+    "difficulty": 1122,
+    "audio": "sent_0820.mp3"
+  },
+  {
+    "en": "Didn't you know that?",
+    "es": "¿No lo sabías?",
+    "cloze": "sabías",
+    "difficulty": 1124,
+    "audio": "sent_0821.mp3"
+  },
+  {
+    "en": "I look up to you.",
+    "es": "Yo te respeto.",
+    "cloze": "respeto",
+    "difficulty": 1125,
+    "audio": "sent_0822.mp3"
+  },
+  {
+    "en": "How long does it take to get to the station?",
+    "es": "¿Cuánto tiempo se tarda en llegar a la estación??",
+    "cloze": "estación",
+    "difficulty": 1126,
+    "audio": "sent_0823.mp3"
+  },
+  {
+    "en": "You need a haircut.",
+    "es": "Necesitas un corte de pelo.",
+    "cloze": "corte",
+    "difficulty": 1127,
+    "audio": "sent_0824.mp3"
+  },
+  {
+    "en": "You have to be patient.",
+    "es": "Tienes que ser paciente.",
+    "cloze": "paciente",
+    "difficulty": 1128,
+    "audio": "sent_0825.mp3"
+  },
+  {
+    "en": "I meet her once a week.",
+    "es": "Me encuentro con ella una vez a la semana.",
+    "cloze": "encuentro",
+    "difficulty": 1129,
+    "audio": "sent_0826.mp3"
+  },
+  {
+    "en": "Do you have enough energy?",
+    "es": "¿Tienes suficiente energía?",
+    "cloze": "energía",
+    "difficulty": 1130,
+    "audio": "sent_0827.mp3"
+  },
+  {
+    "en": "He has left his family.",
+    "es": "Él ha dejado a su familia.",
+    "cloze": "dejado",
+    "difficulty": 1131,
+    "audio": "sent_0828.mp3"
+  },
+  {
+    "en": "He's an important person in the FBI.",
+    "es": "Él es una persona importante en el FBI.",
+    "cloze": "FBI",
+    "difficulty": 1133,
+    "audio": "sent_0829.mp3"
+  },
+  {
+    "en": "Mary is Tom's grandmother.",
+    "es": "Mary es la abuela de Tom.",
+    "cloze": "abuela",
+    "difficulty": 1134,
+    "audio": "sent_0830.mp3"
+  },
+  {
+    "en": "There's nothing like a good hot bath.",
+    "es": "No hay nada como un buen baño caliente.",
+    "cloze": "caliente",
+    "difficulty": 1135,
+    "audio": "sent_0831.mp3"
+  },
+  {
+    "en": "This is an ancient law.",
+    "es": "Es una ley vieja.",
+    "cloze": "vieja",
+    "difficulty": 1136,
+    "audio": "sent_0832.mp3"
+  },
+  {
+    "en": "Are you watching it?",
+    "es": "¿Lo estás viendo?",
+    "cloze": "viendo",
+    "difficulty": 1137,
+    "audio": "sent_0833.mp3"
+  },
+  {
+    "en": "We shall see.",
+    "es": "Veremos.",
+    "cloze": "Veremos",
+    "difficulty": 1138,
+    "audio": "sent_0834.mp3"
+  },
+  {
+    "en": "Isn't the answer simple?",
+    "es": "¿No es simple la respuesta?",
+    "cloze": "simple",
+    "difficulty": 1140,
+    "audio": "sent_0835.mp3"
+  },
+  {
+    "en": "Mary can dance well.",
+    "es": "Mary sabe bailar bien.",
+    "cloze": "bailar",
+    "difficulty": 1141,
+    "audio": "sent_0836.mp3"
+  },
+  {
+    "en": "We love it here.",
+    "es": "Nos encanta esta zona.",
+    "cloze": "zona",
+    "difficulty": 1144,
+    "audio": "sent_0837.mp3"
+  },
+  {
+    "en": "You won't be the first.",
+    "es": "No serás el primero.",
+    "cloze": "serás",
+    "difficulty": 1145,
+    "audio": "sent_0838.mp3"
+  },
+  {
+    "en": "Who is on duty?",
+    "es": "¿Quién está de guardia?",
+    "cloze": "guardia",
+    "difficulty": 1146,
+    "audio": "sent_0839.mp3"
+  },
+  {
+    "en": "They love this song.",
+    "es": "Les encanta esta canción.",
+    "cloze": "canción",
+    "difficulty": 1147,
+    "audio": "sent_0840.mp3"
+  },
+  {
+    "en": "His grandfather is still very healthy for his age.",
+    "es": "Su abuelo tiene muy buena salud para su edad.",
+    "cloze": "salud",
+    "difficulty": 1148,
+    "audio": "sent_0841.mp3"
+  },
+  {
+    "en": "I like listening to music.",
+    "es": "Me gusta escuchar música.",
+    "cloze": "escuchar",
+    "difficulty": 1149,
+    "audio": "sent_0842.mp3"
+  },
+  {
+    "en": "Tell me when to stop.",
+    "es": "Dime cuándo parar.",
+    "cloze": "parar",
+    "difficulty": 1150,
+    "audio": "sent_0843.mp3"
+  },
+  {
+    "en": "You'll never be alone.",
+    "es": "Nunca estarás solo.",
+    "cloze": "estarás",
+    "difficulty": 1152,
+    "audio": "sent_0844.mp3"
+  },
+  {
+    "en": "Can you come for dinner tonight?",
+    "es": "¿Puedes venir a cenar esta noche?",
+    "cloze": "cenar",
+    "difficulty": 1153,
+    "audio": "sent_0845.mp3"
+  },
+  {
+    "en": "The soldiers are dead.",
+    "es": "Los soldados están muertos.",
+    "cloze": "soldados",
+    "difficulty": 1155,
+    "audio": "sent_0846.mp3"
+  },
+  {
+    "en": "Get down from your horse.",
+    "es": "Baja del caballo.",
+    "cloze": "caballo",
+    "difficulty": 1156,
+    "audio": "sent_0847.mp3"
+  },
+  {
+    "en": "It'll soon be three o'clock.",
+    "es": "Pronto serán las tres.",
+    "cloze": "serán",
+    "difficulty": 1157,
+    "audio": "sent_0848.mp3"
+  },
+  {
+    "en": "We will never agree.",
+    "es": "Nunca estaremos de acuerdo.",
+    "cloze": "estaremos",
+    "difficulty": 1158,
+    "audio": "sent_0849.mp3"
+  },
+  {
+    "en": "I know you don't care.",
+    "es": "Sé que no te interesa.",
+    "cloze": "interesa",
+    "difficulty": 1159,
+    "audio": "sent_0850.mp3"
+  },
+  {
+    "en": "I didn't believe him at first.",
+    "es": "Al principio no le creí.",
+    "cloze": "principio",
+    "difficulty": 1161,
+    "audio": "sent_0851.mp3"
+  },
+  {
+    "en": "Please relax.",
+    "es": "Por favor cálmate.",
+    "cloze": "cálmate",
+    "difficulty": 1163,
+    "audio": "sent_0852.mp3"
+  },
+  {
+    "en": "Tom must be aware that Mary is John's girlfriend.",
+    "es": "Tom tiene que conocer que Mary es la novia de John.",
+    "cloze": "conocer",
+    "difficulty": 1164,
+    "audio": "sent_0853.mp3"
+  },
+  {
+    "en": "Finally, I found a job.",
+    "es": "Finalmente encontré un trabajo.",
+    "cloze": "Finalmente",
+    "difficulty": 1165,
+    "audio": "sent_0854.mp3"
+  },
+  {
+    "en": "I'm happy to see you.",
+    "es": "Me alegro de verte.",
+    "cloze": "alegro",
+    "difficulty": 1166,
+    "audio": "sent_0855.mp3"
+  },
+  {
+    "en": "Under the table is a cat.",
+    "es": "Hay un gato debajo de la mesa.",
+    "cloze": "debajo",
+    "difficulty": 1167,
+    "audio": "sent_0856.mp3"
+  },
+  {
+    "en": "They could be anywhere by now.",
+    "es": "Ahora ya podrían estar en cualquier sitio.",
+    "cloze": "podrían",
+    "difficulty": 1168,
+    "audio": "sent_0857.mp3"
+  },
+  {
+    "en": "Tom is in the forest.",
+    "es": "Tom está en el bosque.",
+    "cloze": "bosque",
+    "difficulty": 1169,
+    "audio": "sent_0858.mp3"
+  },
+  {
+    "en": "What a fine view!",
+    "es": "¡Qué bonita vista!",
+    "cloze": "bonita",
+    "difficulty": 1170,
+    "audio": "sent_0859.mp3"
+  },
+  {
+    "en": "Here is your bag.",
+    "es": "Aquí está tu bolsa.",
+    "cloze": "bolsa",
+    "difficulty": 1171,
+    "audio": "sent_0860.mp3"
+  },
+  {
+    "en": "What makes you so sad?",
+    "es": "¿Qué te pone tan triste?",
+    "cloze": "pone",
+    "difficulty": 1172,
+    "audio": "sent_0861.mp3"
+  },
+  {
+    "en": "Where can I get a taxi?",
+    "es": "¿Dónde puedo conseguir un taxi?",
+    "cloze": "taxi",
+    "difficulty": 1173,
+    "audio": "sent_0862.mp3"
+  },
+  {
+    "en": "I'm busy at the moment.",
+    "es": "En este momento estoy ocupado.",
+    "cloze": "ocupado",
+    "difficulty": 1174,
+    "audio": "sent_0863.mp3"
+  },
+  {
+    "en": "The boy is kind.",
+    "es": "El niño es amable.",
+    "cloze": "amable",
+    "difficulty": 1175,
+    "audio": "sent_0864.mp3"
+  },
+  {
+    "en": "Didn't I tell you so?",
+    "es": "¿Acaso no te lo dije?",
+    "cloze": "Acaso",
+    "difficulty": 1177,
+    "audio": "sent_0865.mp3"
+  },
+  {
+    "en": "What an imbecile!",
+    "es": "¡Qué imbécil!",
+    "cloze": "imbécil",
+    "difficulty": 1179,
+    "audio": "sent_0866.mp3"
+  },
+  {
+    "en": "Was I wrong?",
+    "es": "¿Estaba equivocado?",
+    "cloze": "equivocado",
+    "difficulty": 1181,
+    "audio": "sent_0867.mp3"
+  },
+  {
+    "en": "The sky brightened.",
+    "es": "El cielo se puso claro.",
+    "cloze": "puso",
+    "difficulty": 1183,
+    "audio": "sent_0868.mp3"
+  },
+  {
+    "en": "I need your advice.",
+    "es": "Necesito su consejo.",
+    "cloze": "consejo",
+    "difficulty": 1185,
+    "audio": "sent_0869.mp3"
+  },
+  {
+    "en": "The public knows that.",
+    "es": "El público lo sabe.",
+    "cloze": "público",
+    "difficulty": 1186,
+    "audio": "sent_0870.mp3"
+  },
+  {
+    "en": "Come here and help me.",
+    "es": "Ven aquí y ayúdame.",
+    "cloze": "ayúdame",
+    "difficulty": 1187,
+    "audio": "sent_0871.mp3"
+  },
+  {
+    "en": "He loves animals.",
+    "es": "Le gustan los animales.",
+    "cloze": "animales",
+    "difficulty": 1188,
+    "audio": "sent_0872.mp3"
+  },
+  {
+    "en": "The sky is blue.",
+    "es": "El cielo es azul.",
+    "cloze": "azul",
+    "difficulty": 1189,
+    "audio": "sent_0873.mp3"
+  },
+  {
+    "en": "Tom is a handsome young man.",
+    "es": "Tom es un joven apuesto.",
+    "cloze": "apuesto",
+    "difficulty": 1190,
+    "audio": "sent_0874.mp3"
+  },
+  {
+    "en": "The school looks like a prison.",
+    "es": "La escuela parece una prisión.",
+    "cloze": "prisión",
+    "difficulty": 1191,
+    "audio": "sent_0875.mp3"
+  },
+  {
+    "en": "Stop gawking.",
+    "es": "Deja de mirar.",
+    "cloze": "mirar",
+    "difficulty": 1192,
+    "audio": "sent_0876.mp3"
+  },
+  {
+    "en": "That boy's intelligent.",
+    "es": "Ese chico es inteligente.",
+    "cloze": "inteligente",
+    "difficulty": 1193,
+    "audio": "sent_0877.mp3"
+  },
+  {
+    "en": "Fantastic!",
+    "es": "¡Fantástico!",
+    "cloze": "Fantástico",
+    "difficulty": 1195,
+    "audio": "sent_0878.mp3"
+  },
+  {
+    "en": "I don't know what I'm going to do next.",
+    "es": "No sé qué es lo próximo que haré.",
+    "cloze": "próximo",
+    "difficulty": 1196,
+    "audio": "sent_0879.mp3"
+  },
+  {
+    "en": "He is playing outdoors.",
+    "es": "Está jugando fuera.",
+    "cloze": "jugando",
+    "difficulty": 1197,
+    "audio": "sent_0880.mp3"
+  },
+  {
+    "en": "I can't see anything with my right eye.",
+    "es": "No veo nada con el ojo derecho.",
+    "cloze": "ojo",
+    "difficulty": 1198,
+    "audio": "sent_0881.mp3"
+  },
+  {
+    "en": "Get out of the classroom.",
+    "es": "Salga de la clase.",
+    "cloze": "Salga",
+    "difficulty": 1199,
+    "audio": "sent_0882.mp3"
+  },
+  {
+    "en": "I don't want anyone to see it.",
+    "es": "No quiero que lo vea nadie.",
+    "cloze": "vea",
+    "difficulty": 1200,
+    "audio": "sent_0883.mp3"
+  },
+  {
+    "en": "They call me captain.",
+    "es": "Me llaman capitán.",
+    "cloze": "llaman",
+    "difficulty": 1201,
+    "audio": "sent_0884.mp3"
+  },
+  {
+    "en": "Where's the entrance?",
+    "es": "¿Dónde queda la entrada?",
+    "cloze": "entrada",
+    "difficulty": 1202,
+    "audio": "sent_0885.mp3"
+  },
+  {
+    "en": "I have no doubts.",
+    "es": "No tengo ninguna duda.",
+    "cloze": "duda",
+    "difficulty": 1203,
+    "audio": "sent_0886.mp3"
+  },
+  {
+    "en": "What do you say to a beer?",
+    "es": "¿Qué tal una cerveza?",
+    "cloze": "cerveza",
+    "difficulty": 1204,
+    "audio": "sent_0887.mp3"
+  },
+  {
+    "en": "Tom has never killed anybody.",
+    "es": "Tom no ha matado nunca a nadie.",
+    "cloze": "matado",
+    "difficulty": 1206,
+    "audio": "sent_0888.mp3"
+  },
+  {
+    "en": "I almost missed the train.",
+    "es": "Casi perdí el tren.",
+    "cloze": "perdí",
+    "difficulty": 1208,
+    "audio": "sent_0889.mp3"
+  },
+  {
+    "en": "Tom thinks he understands women.",
+    "es": "Tom cree entender a las mujeres.",
+    "cloze": "entender",
+    "difficulty": 1209,
+    "audio": "sent_0890.mp3"
+  },
+  {
+    "en": "Will you stay at home?",
+    "es": "¿Te vas a quedar en casa?",
+    "cloze": "quedar",
+    "difficulty": 1211,
+    "audio": "sent_0891.mp3"
+  },
+  {
+    "en": "I'll call you at seven.",
+    "es": "Te llamaré a las siete.",
+    "cloze": "llamaré",
+    "difficulty": 1213,
+    "audio": "sent_0892.mp3"
+  },
+  {
+    "en": "He is my classmate.",
+    "es": "Él es mi compañero de clase.",
+    "cloze": "compañero",
+    "difficulty": 1214,
+    "audio": "sent_0893.mp3"
+  },
+  {
+    "en": "How do you plan to get home?",
+    "es": "¿Cómo tienes pensado llegar a casa?",
+    "cloze": "pensado",
+    "difficulty": 1215,
+    "audio": "sent_0894.mp3"
+  },
+  {
+    "en": "He carries a bag on his back.",
+    "es": "Él lleva una bolsa a la espalda.",
+    "cloze": "espalda",
+    "difficulty": 1216,
+    "audio": "sent_0895.mp3"
+  },
+  {
+    "en": "I let in the cat.",
+    "es": "Dejé entrar al gato.",
+    "cloze": "Dejé",
+    "difficulty": 1217,
+    "audio": "sent_0896.mp3"
+  },
+  {
+    "en": "It is fun to play cards.",
+    "es": "Jugar a las cartas es divertido.",
+    "cloze": "cartas",
+    "difficulty": 1220,
+    "audio": "sent_0897.mp3"
+  },
+  {
+    "en": "I was barely able to work.",
+    "es": "Apenas podía trabajar.",
+    "cloze": "Apenas",
+    "difficulty": 1221,
+    "audio": "sent_0898.mp3"
+  },
+  {
+    "en": "You can read this book.",
+    "es": "Puedes leer este libro.",
+    "cloze": "leer",
+    "difficulty": 1222,
+    "audio": "sent_0899.mp3"
+  },
+  {
+    "en": "Do you have any brothers?",
+    "es": "¿Tienes hermanos?",
+    "cloze": "hermanos",
+    "difficulty": 1223,
+    "audio": "sent_0900.mp3"
+  },
+  {
+    "en": "Can you give me some money?",
+    "es": "¿Puedes darme algo de dinero?",
+    "cloze": "darme",
+    "difficulty": 1224,
+    "audio": "sent_0901.mp3"
+  },
+  {
+    "en": "We must keep calm.",
+    "es": "Debemos mantener la calma.",
+    "cloze": "mantener",
+    "difficulty": 1226,
+    "audio": "sent_0902.mp3"
+  },
+  {
+    "en": "Is it yours?",
+    "es": "¿Es suyo?",
+    "cloze": "suyo",
+    "difficulty": 1227,
+    "audio": "sent_0903.mp3"
+  },
+  {
+    "en": "I know you are rich.",
+    "es": "Sé que eres rico.",
+    "cloze": "rico",
+    "difficulty": 1228,
+    "audio": "sent_0904.mp3"
+  },
+  {
+    "en": "I'd like to see her.",
+    "es": "Quiero verla.",
+    "cloze": "verla",
+    "difficulty": 1229,
+    "audio": "sent_0905.mp3"
+  },
+  {
+    "en": "Please read that book.",
+    "es": "Por favor, lee ese libro.",
+    "cloze": "lee",
+    "difficulty": 1230,
+    "audio": "sent_0906.mp3"
+  },
+  {
+    "en": "Do you follow?",
+    "es": "¿Me sigues?",
+    "cloze": "sigues",
+    "difficulty": 1232,
+    "audio": "sent_0907.mp3"
+  },
+  {
+    "en": "Whose go is it?",
+    "es": "¿A quién le toca?",
+    "cloze": "toca",
+    "difficulty": 1233,
+    "audio": "sent_0908.mp3"
+  },
+  {
+    "en": "Just forget it.",
+    "es": "Olvídalo ya.",
+    "cloze": "Olvídalo",
+    "difficulty": 1234,
+    "audio": "sent_0909.mp3"
+  },
+  {
+    "en": "Action!",
+    "es": "¡Acción!",
+    "cloze": "Acción",
+    "difficulty": 1235,
+    "audio": "sent_0910.mp3"
+  },
+  {
+    "en": "Maybe you didn't hear me.",
+    "es": "Puede que no me hayas oído.",
+    "cloze": "hayas",
+    "difficulty": 1236,
+    "audio": "sent_0911.mp3"
+  },
+  {
+    "en": "Who's in charge?",
+    "es": "¿Quién está al mando?",
+    "cloze": "mando",
+    "difficulty": 1238,
+    "audio": "sent_0912.mp3"
+  },
+  {
+    "en": "I'll leave that to you.",
+    "es": "Te lo dejaré a ti.",
+    "cloze": "dejaré",
+    "difficulty": 1239,
+    "audio": "sent_0913.mp3"
+  },
+  {
+    "en": "I might be a few minutes late.",
+    "es": "Puede que llegue un par de minutos tarde.",
+    "cloze": "llegue",
+    "difficulty": 1240,
+    "audio": "sent_0914.mp3"
+  },
+  {
+    "en": "Thanks anyway.",
+    "es": "Gracias de todas formas.",
+    "cloze": "formas",
+    "difficulty": 1241,
+    "audio": "sent_0915.mp3"
+  },
+  {
+    "en": "Close the door when you leave.",
+    "es": "Cierra la puerta al salir.",
+    "cloze": "Cierra",
+    "difficulty": 1244,
+    "audio": "sent_0916.mp3"
+  },
+  {
+    "en": "Ladies first!",
+    "es": "¡Las damas primero!",
+    "cloze": "damas",
+    "difficulty": 1245,
+    "audio": "sent_0917.mp3"
+  },
+  {
+    "en": "How long is that bridge?",
+    "es": "¿Qué tan largo es ese puente?",
+    "cloze": "puente",
+    "difficulty": 1246,
+    "audio": "sent_0918.mp3"
+  },
+  {
+    "en": "I wish I had a better memory.",
+    "es": "Me gustaría tener mejor memoria.",
+    "cloze": "memoria",
+    "difficulty": 1247,
+    "audio": "sent_0919.mp3"
+  },
+  {
+    "en": "Come back soon.",
+    "es": "Regresa pronto.",
+    "cloze": "Regresa",
+    "difficulty": 1248,
+    "audio": "sent_0920.mp3"
+  },
+  {
+    "en": "Did the car look old?",
+    "es": "¿El coche parecía viejo?",
+    "cloze": "parecía",
+    "difficulty": 1250,
+    "audio": "sent_0921.mp3"
+  },
+  {
+    "en": "Your dress is very nice.",
+    "es": "Tu vestido es muy bonito.",
+    "cloze": "vestido",
+    "difficulty": 1251,
+    "audio": "sent_0922.mp3"
+  },
+  {
+    "en": "Here are your keys.",
+    "es": "Aquí están tus llaves.",
+    "cloze": "llaves",
+    "difficulty": 1252,
+    "audio": "sent_0923.mp3"
+  },
+  {
+    "en": "I have a truck.",
+    "es": "Tengo un camión.",
+    "cloze": "camión",
+    "difficulty": 1254,
+    "audio": "sent_0924.mp3"
+  },
+  {
+    "en": "This is never going to end.",
+    "es": "Esto no va a acabar nunca.",
+    "cloze": "acabar",
+    "difficulty": 1255,
+    "audio": "sent_0925.mp3"
+  },
+  {
+    "en": "It took all evening.",
+    "es": "Llevó toda la tarde.",
+    "cloze": "Llevó",
+    "difficulty": 1257,
+    "audio": "sent_0926.mp3"
+  },
+  {
+    "en": "That's a lot!",
+    "es": "¡Es un montón!",
+    "cloze": "montón",
+    "difficulty": 1258,
+    "audio": "sent_0927.mp3"
+  },
+  {
+    "en": "How long did you stay?",
+    "es": "¿Cuánto tiempo estuviste?",
+    "cloze": "estuviste",
+    "difficulty": 1259,
+    "audio": "sent_0928.mp3"
+  },
+  {
+    "en": "Do you know how this machine operates?",
+    "es": "¿Sabes cómo funciona esta máquina?",
+    "cloze": "máquina",
+    "difficulty": 1260,
+    "audio": "sent_0929.mp3"
+  },
+  {
+    "en": "Isn't there something we can do?",
+    "es": "¿No hay nada que podamos hacer?",
+    "cloze": "podamos",
+    "difficulty": 1262,
+    "audio": "sent_0930.mp3"
+  },
+  {
+    "en": "Die!",
+    "es": "¡Muere!",
+    "cloze": "Muere",
+    "difficulty": 1263,
+    "audio": "sent_0931.mp3"
+  },
+  {
+    "en": "How about a drink?",
+    "es": "¿Qué tal un trago?",
+    "cloze": "trago",
+    "difficulty": 1264,
+    "audio": "sent_0932.mp3"
+  },
+  {
+    "en": "Most people think I'm crazy.",
+    "es": "La mayoría de la gente cree que estoy loco.",
+    "cloze": "mayoría",
+    "difficulty": 1265,
+    "audio": "sent_0933.mp3"
+  },
+  {
+    "en": "I'm so full.",
+    "es": "Estoy tan lleno.",
+    "cloze": "lleno",
+    "difficulty": 1267,
+    "audio": "sent_0934.mp3"
+  },
+  {
+    "en": "Are you not able to speak English?",
+    "es": "¿No puedes hablar inglés?",
+    "cloze": "inglés",
+    "difficulty": 1268,
+    "audio": "sent_0935.mp3"
+  },
+  {
+    "en": "He talks well.",
+    "es": "Tiene don de palabra.",
+    "cloze": "don",
+    "difficulty": 1269,
+    "audio": "sent_0936.mp3"
+  },
+  {
+    "en": "I'm not a soldier.",
+    "es": "No soy un soldado.",
+    "cloze": "soldado",
+    "difficulty": 1270,
+    "audio": "sent_0937.mp3"
+  },
+  {
+    "en": "Today, I saw a star.",
+    "es": "Hoy he visto una estrella.",
+    "cloze": "estrella",
+    "difficulty": 1271,
+    "audio": "sent_0938.mp3"
+  },
+  {
+    "en": "Listen to this.",
+    "es": "Escuche esto.",
+    "cloze": "Escuche",
+    "difficulty": 1272,
+    "audio": "sent_0939.mp3"
+  },
+  {
+    "en": "It is of great value.",
+    "es": "Es de gran valor.",
+    "cloze": "valor",
+    "difficulty": 1273,
+    "audio": "sent_0940.mp3"
+  },
+  {
+    "en": "I ask your forgiveness.",
+    "es": "Pido tu perdón.",
+    "cloze": "Pido",
+    "difficulty": 1274,
+    "audio": "sent_0941.mp3"
+  },
+  {
+    "en": "Tom dropped Mary off in front of John's.",
+    "es": "Tom dejó a Mary delante de la casa de John.",
+    "cloze": "delante",
+    "difficulty": 1275,
+    "audio": "sent_0942.mp3"
+  },
+  {
+    "en": "I'm a hero.",
+    "es": "Soy un héroe.",
+    "cloze": "héroe",
+    "difficulty": 1277,
+    "audio": "sent_0943.mp3"
+  },
+  {
+    "en": "I have faith in you.",
+    "es": "Tengo fe en ti.",
+    "cloze": "fe",
+    "difficulty": 1278,
+    "audio": "sent_0944.mp3"
+  },
+  {
+    "en": "I can't find what I want.",
+    "es": "No soy capaz de encontrar lo que quiero.",
+    "cloze": "capaz",
+    "difficulty": 1279,
+    "audio": "sent_0945.mp3"
+  },
+  {
+    "en": "My uncle comes to see me from time to time.",
+    "es": "Mi tío viene a verme de vez en cuando.",
+    "cloze": "verme",
+    "difficulty": 1280,
+    "audio": "sent_0946.mp3"
+  },
+  {
+    "en": "I want something cold to drink.",
+    "es": "Quiero algo frío para beber.",
+    "cloze": "beber",
+    "difficulty": 1281,
+    "audio": "sent_0947.mp3"
+  },
+  {
+    "en": "Speed isn't everything.",
+    "es": "La velocidad no lo es todo.",
+    "cloze": "velocidad",
+    "difficulty": 1282,
+    "audio": "sent_0948.mp3"
+  },
+  {
+    "en": "I have a nice present to give you.",
+    "es": "Tengo un regalo que darte.",
+    "cloze": "darte",
+    "difficulty": 1283,
+    "audio": "sent_0949.mp3"
+  },
+  {
+    "en": "I think you're right.",
+    "es": "Creo que llevas razón.",
+    "cloze": "llevas",
+    "difficulty": 1284,
+    "audio": "sent_0950.mp3"
+  },
+  {
+    "en": "How was today's game?",
+    "es": "¿Qué tal fue el partido de hoy?",
+    "cloze": "partido",
+    "difficulty": 1285,
+    "audio": "sent_0951.mp3"
+  },
+  {
+    "en": "I wish he were here.",
+    "es": "Quisiera que él estuviera aquí.",
+    "cloze": "estuviera",
+    "difficulty": 1286,
+    "audio": "sent_0952.mp3"
+  },
+  {
+    "en": "I want your opinion.",
+    "es": "Quiero tu opinión.",
+    "cloze": "opinión",
+    "difficulty": 1290,
+    "audio": "sent_0953.mp3"
+  },
+  {
+    "en": "You are free to go out.",
+    "es": "Eres libre de irte.",
+    "cloze": "irte",
+    "difficulty": 1291,
+    "audio": "sent_0954.mp3"
+  },
+  {
+    "en": "Look! There's a cat in the kitchen.",
+    "es": "¡Mira! Hay un gato en la cocina.",
+    "cloze": "cocina",
+    "difficulty": 1292,
+    "audio": "sent_0955.mp3"
+  },
+  {
+    "en": "Would you please open the window?",
+    "es": "¿Podrías abrir la ventana por favor?",
+    "cloze": "abrir",
+    "difficulty": 1293,
+    "audio": "sent_0956.mp3"
+  },
+  {
+    "en": "I like dogs.",
+    "es": "Me gustan los perros.",
+    "cloze": "perros",
+    "difficulty": 1294,
+    "audio": "sent_0957.mp3"
+  },
+  {
+    "en": "Tom can't believe Mary knows why John doesn't like her.",
+    "es": "Tom no puede creer que Mary sepa por qué no le gusta a John.",
+    "cloze": "sepa",
+    "difficulty": 1296,
+    "audio": "sent_0958.mp3"
+  },
+  {
+    "en": "You look stupid.",
+    "es": "Pareces idiota.",
+    "cloze": "Pareces",
+    "difficulty": 1297,
+    "audio": "sent_0959.mp3"
+  },
+  {
+    "en": "Give me something to write with.",
+    "es": "Dame algo para escribir.",
+    "cloze": "escribir",
+    "difficulty": 1298,
+    "audio": "sent_0960.mp3"
+  },
+  {
+    "en": "You are tallest.",
+    "es": "Tú eres la más alta.",
+    "cloze": "alta",
+    "difficulty": 1301,
+    "audio": "sent_0961.mp3"
+  },
+  {
+    "en": "I have never been to the States.",
+    "es": "No he estado nunca en los Estados Unidos.",
+    "cloze": "Estados",
+    "difficulty": 1302,
+    "audio": "sent_0962.mp3"
+  },
+  {
+    "en": "I'll be back in two hours.",
+    "es": "Vuelvo en dos horas.",
+    "cloze": "Vuelvo",
+    "difficulty": 1304,
+    "audio": "sent_0963.mp3"
+  },
+  {
+    "en": "I am looking forward to seeing you.",
+    "es": "Tengo ganas de verte.",
+    "cloze": "ganas",
+    "difficulty": 1306,
+    "audio": "sent_0964.mp3"
+  },
+  {
+    "en": "May I ask you something?",
+    "es": "¿Puedo hacerte una pregunta?",
+    "cloze": "hacerte",
+    "difficulty": 1307,
+    "audio": "sent_0965.mp3"
+  },
+  {
+    "en": "I'm leaving it to you.",
+    "es": "Te lo dejo a ti.",
+    "cloze": "dejo",
+    "difficulty": 1308,
+    "audio": "sent_0966.mp3"
+  },
+  {
+    "en": "Tom came home early yesterday.",
+    "es": "Ayer Tom volvió pronto a casa.",
+    "cloze": "volvió",
+    "difficulty": 1309,
+    "audio": "sent_0967.mp3"
+  },
+  {
+    "en": "You can always count on Tom.",
+    "es": "Siempre puedes contar con Tom.",
+    "cloze": "contar",
+    "difficulty": 1312,
+    "audio": "sent_0968.mp3"
+  },
+  {
+    "en": "They had no food.",
+    "es": "No tenían nada que comer.",
+    "cloze": "tenían",
+    "difficulty": 1313,
+    "audio": "sent_0969.mp3"
+  },
+  {
+    "en": "For what purpose?",
+    "es": "¿Con qué propósito?",
+    "cloze": "propósito",
+    "difficulty": 1314,
+    "audio": "sent_0970.mp3"
+  },
+  {
+    "en": "He doesn't understand you.",
+    "es": "Él no te entiende.",
+    "cloze": "entiende",
+    "difficulty": 1315,
+    "audio": "sent_0971.mp3"
+  },
+  {
+    "en": "What a beautiful ring!",
+    "es": "¡Qué hermoso anillo!",
+    "cloze": "anillo",
+    "difficulty": 1317,
+    "audio": "sent_0972.mp3"
+  },
+  {
+    "en": "I was in London last month.",
+    "es": "Estuve en Londres el mes pasado.",
+    "cloze": "Londres",
+    "difficulty": 1318,
+    "audio": "sent_0973.mp3"
+  },
+  {
+    "en": "May I have a program?",
+    "es": "¿Tendría un programa para mí?",
+    "cloze": "Tendría",
+    "difficulty": 1319,
+    "audio": "sent_0974.mp3"
+  },
+  {
+    "en": "Can you order one for me?",
+    "es": "¿Puedes pedir uno para mí?",
+    "cloze": "pedir",
+    "difficulty": 1320,
+    "audio": "sent_0975.mp3"
+  },
+  {
+    "en": "She's fashionable.",
+    "es": "Ella tiene estilo.",
+    "cloze": "estilo",
+    "difficulty": 1321,
+    "audio": "sent_0976.mp3"
+  },
+  {
+    "en": "Can't you do something to help me?",
+    "es": "¿No puedes hacer algo para ayudarme?",
+    "cloze": "ayudarme",
+    "difficulty": 1322,
+    "audio": "sent_0977.mp3"
+  },
+  {
+    "en": "Give me a hint.",
+    "es": "Dame una pista.",
+    "cloze": "pista",
+    "difficulty": 1323,
+    "audio": "sent_0978.mp3"
+  },
+  {
+    "en": "You haven't changed at all.",
+    "es": "No has cambiado nada.",
+    "cloze": "cambiado",
+    "difficulty": 1324,
+    "audio": "sent_0979.mp3"
+  },
+  {
+    "en": "Don't let the opportunity escape!",
+    "es": "No dejes escapar la oportunidad.",
+    "cloze": "escapar",
+    "difficulty": 1325,
+    "audio": "sent_0980.mp3"
+  },
+  {
+    "en": "He found the box under the table.",
+    "es": "Él encontró la caja debajo de la mesa.",
+    "cloze": "encontró",
+    "difficulty": 1327,
+    "audio": "sent_0981.mp3"
+  },
+  {
+    "en": "We're old friends.",
+    "es": "Somos viejos amigos.",
+    "cloze": "viejos",
+    "difficulty": 1329,
+    "audio": "sent_0982.mp3"
+  },
+  {
+    "en": "My wife is very upset.",
+    "es": "Mi esposa está muy molesta.",
+    "cloze": "molesta",
+    "difficulty": 1330,
+    "audio": "sent_0983.mp3"
+  },
+  {
+    "en": "Does it show?",
+    "es": "¿Se nota?",
+    "cloze": "nota",
+    "difficulty": 1331,
+    "audio": "sent_0984.mp3"
+  },
+  {
+    "en": "What's the difference?",
+    "es": "¿Cuál es la diferencia?",
+    "cloze": "diferencia",
+    "difficulty": 1332,
+    "audio": "sent_0985.mp3"
+  },
+  {
+    "en": "He is hard to get along with.",
+    "es": "Él es difícil de tratar.",
+    "cloze": "tratar",
+    "difficulty": 1333,
+    "audio": "sent_0986.mp3"
+  },
+  {
+    "en": "Every man has his price.",
+    "es": "Todo el mundo tiene un precio.",
+    "cloze": "precio",
+    "difficulty": 1334,
+    "audio": "sent_0987.mp3"
+  },
+  {
+    "en": "There's no point in waiting.",
+    "es": "Esperar no sirve de nada.",
+    "cloze": "sirve",
+    "difficulty": 1336,
+    "audio": "sent_0988.mp3"
+  },
+  {
+    "en": "Glad to see you again.",
+    "es": "Me alegra verte de nuevo.",
+    "cloze": "alegra",
+    "difficulty": 1337,
+    "audio": "sent_0989.mp3"
+  },
+  {
+    "en": "I'm twice your age.",
+    "es": "Yo tengo el doble de tu edad.",
+    "cloze": "doble",
+    "difficulty": 1338,
+    "audio": "sent_0990.mp3"
+  },
+  {
+    "en": "Nice talking with you.",
+    "es": "Fue agradable hablar contigo.",
+    "cloze": "agradable",
+    "difficulty": 1339,
+    "audio": "sent_0991.mp3"
+  },
+  {
+    "en": "We had to stop.",
+    "es": "Tuvimos que parar.",
+    "cloze": "Tuvimos",
+    "difficulty": 1342,
+    "audio": "sent_0992.mp3"
+  },
+  {
+    "en": "Get into the car.",
+    "es": "Sube al auto.",
+    "cloze": "Sube",
+    "difficulty": 1343,
+    "audio": "sent_0993.mp3"
+  },
+  {
+    "en": "I hope they're not talking about me.",
+    "es": "Espero que no estén hablando de mí.",
+    "cloze": "estén",
+    "difficulty": 1344,
+    "audio": "sent_0994.mp3"
+  },
+  {
+    "en": "Where's the emergency exit?",
+    "es": "¿Dónde está la salida de emergencia?",
+    "cloze": "emergencia",
+    "difficulty": 1346,
+    "audio": "sent_0995.mp3"
+  },
+  {
+    "en": "It is never too late to learn.",
+    "es": "Nunca se es demasiado viejo para aprender.",
+    "cloze": "aprender",
+    "difficulty": 1349,
+    "audio": "sent_0996.mp3"
+  },
+  {
+    "en": "Tom likes tea better than coffee.",
+    "es": "A Tom le gusta más el té que el café.",
+    "cloze": "té",
+    "difficulty": 1351,
+    "audio": "sent_0997.mp3"
+  },
+  {
+    "en": "I rewrote my report.",
+    "es": "He vuelto a escribir mi informe.",
+    "cloze": "informe",
+    "difficulty": 1352,
+    "audio": "sent_0998.mp3"
+  },
+  {
+    "en": "He lacks experience.",
+    "es": "Le falta experiencia.",
+    "cloze": "experiencia",
+    "difficulty": 1354,
+    "audio": "sent_0999.mp3"
+  },
+  {
+    "en": "I didn't know which one I should buy.",
+    "es": "No sabía cuál debía comprar.",
+    "cloze": "debía",
+    "difficulty": 1355,
+    "audio": "sent_1000.mp3"
+  },
+  {
+    "en": "You've done all you can.",
+    "es": "Has hecho lo que has podido.",
+    "cloze": "podido",
+    "difficulty": 1356,
+    "audio": "sent_1001.mp3"
+  },
+  {
+    "en": "That was a lie.",
+    "es": "Era mentira.",
+    "cloze": "mentira",
+    "difficulty": 1357,
+    "audio": "sent_1002.mp3"
+  },
+  {
+    "en": "Where's the director?",
+    "es": "¿Dónde está el director?",
+    "cloze": "director",
+    "difficulty": 1358,
+    "audio": "sent_1003.mp3"
+  },
+  {
+    "en": "Forget it. (leave it)",
+    "es": "Déjalo.",
+    "cloze": "Déjalo",
+    "difficulty": 1362,
+    "audio": "sent_1004.mp3"
+  },
+  {
+    "en": "The best defence is a good offence.",
+    "es": "La mejor defensa es un buen ataque.",
+    "cloze": "defensa",
+    "difficulty": 1363,
+    "audio": "sent_1005.mp3"
+  },
+  {
+    "en": "You can rely on her.",
+    "es": "Puedes confiar en ella.",
+    "cloze": "confiar",
+    "difficulty": 1365,
+    "audio": "sent_1006.mp3"
+  },
+  {
+    "en": "Do you have the same thing in a different color?",
+    "es": "¿Tienes lo mismo en un color diferente?",
+    "cloze": "color",
+    "difficulty": 1366,
+    "audio": "sent_1007.mp3"
+  },
+  {
+    "en": "May I ask you some more questions?",
+    "es": "¿Puedo hacerle unas preguntas más?",
+    "cloze": "hacerle",
+    "difficulty": 1368,
+    "audio": "sent_1008.mp3"
+  },
+  {
+    "en": "This is where the accident happened.",
+    "es": "Aquí es donde ocurrió aquel accidente.",
+    "cloze": "aquel",
+    "difficulty": 1369,
+    "audio": "sent_1009.mp3"
+  },
+  {
+    "en": "I met him once.",
+    "es": "Lo conocí una vez.",
+    "cloze": "conocí",
+    "difficulty": 1370,
+    "audio": "sent_1010.mp3"
+  },
+  {
+    "en": "May I try it on?",
+    "es": "¿Me lo puedo probar?",
+    "cloze": "probar",
+    "difficulty": 1371,
+    "audio": "sent_1011.mp3"
+  },
+  {
+    "en": "Tom will go there tomorrow.",
+    "es": "Tom irá allí mañana.",
+    "cloze": "irá",
+    "difficulty": 1373,
+    "audio": "sent_1012.mp3"
+  },
+  {
+    "en": "Speak more slowly.",
+    "es": "Habla más despacio.",
+    "cloze": "despacio",
+    "difficulty": 1376,
+    "audio": "sent_1013.mp3"
+  },
+  {
+    "en": "Nice shot!",
+    "es": "¡Buen tiro!",
+    "cloze": "tiro",
+    "difficulty": 1377,
+    "audio": "sent_1014.mp3"
+  },
+  {
+    "en": "Have a nice vacation.",
+    "es": "Ten unas buenas vacaciones.",
+    "cloze": "vacaciones",
+    "difficulty": 1378,
+    "audio": "sent_1015.mp3"
+  },
+  {
+    "en": "She lost her way.",
+    "es": "Ella perdió el norte.",
+    "cloze": "perdió",
+    "difficulty": 1379,
+    "audio": "sent_1016.mp3"
+  },
+  {
+    "en": "Green suits you.",
+    "es": "El verde te queda.",
+    "cloze": "verde",
+    "difficulty": 1382,
+    "audio": "sent_1017.mp3"
+  },
+  {
+    "en": "They look alike to me.",
+    "es": "Se me parecen.",
+    "cloze": "parecen",
+    "difficulty": 1383,
+    "audio": "sent_1018.mp3"
+  },
+  {
+    "en": "There is no choice.",
+    "es": "No hay opción.",
+    "cloze": "opción",
+    "difficulty": 1386,
+    "audio": "sent_1019.mp3"
+  },
+  {
+    "en": "Do I need an operation?",
+    "es": "¿Necesito una operación?",
+    "cloze": "operación",
+    "difficulty": 1387,
+    "audio": "sent_1020.mp3"
+  },
+  {
+    "en": "Have you spoken with Tom yet?",
+    "es": "¿Has hablado ya con Tom?",
+    "cloze": "hablado",
+    "difficulty": 1389,
+    "audio": "sent_1021.mp3"
+  },
+  {
+    "en": "Go get some water.",
+    "es": "Ve a traer algo de agua.",
+    "cloze": "traer",
+    "difficulty": 1390,
+    "audio": "sent_1022.mp3"
+  },
+  {
+    "en": "Your shoes are here.",
+    "es": "Aquí están tus zapatos.",
+    "cloze": "zapatos",
+    "difficulty": 1393,
+    "audio": "sent_1023.mp3"
+  },
+  {
+    "en": "Every time I read this book, I find something new.",
+    "es": "Cada vez que leo este libro, encuentro algo nuevo.",
+    "cloze": "leo",
+    "difficulty": 1394,
+    "audio": "sent_1024.mp3"
+  },
+  {
+    "en": "These books are new.",
+    "es": "Estos libros son nuevos.",
+    "cloze": "nuevos",
+    "difficulty": 1397,
+    "audio": "sent_1025.mp3"
+  },
+  {
+    "en": "He asked for a beer.",
+    "es": "Pidió una cerveza.",
+    "cloze": "Pidió",
+    "difficulty": 1399,
+    "audio": "sent_1026.mp3"
+  },
+  {
+    "en": "I believe that you will succeed.",
+    "es": "Creo que tendrás éxito.",
+    "cloze": "éxito",
+    "difficulty": 1400,
+    "audio": "sent_1027.mp3"
+  },
+  {
+    "en": "Look at me.",
+    "es": "Mírame.",
+    "cloze": "Mírame",
+    "difficulty": 1402,
+    "audio": "sent_1028.mp3"
+  },
+  {
+    "en": "I can't feel my legs.",
+    "es": "No puedo sentir mis piernas.",
+    "cloze": "piernas",
+    "difficulty": 1403,
+    "audio": "sent_1029.mp3"
+  },
+  {
+    "en": "It is freezing cold.",
+    "es": "Está tan frío como el hielo.",
+    "cloze": "hielo",
+    "difficulty": 1405,
+    "audio": "sent_1030.mp3"
+  },
+  {
+    "en": "Please drop me off at the station.",
+    "es": "Déjeme en la estación, por favor.",
+    "cloze": "Déjeme",
+    "difficulty": 1407,
+    "audio": "sent_1031.mp3"
+  },
+  {
+    "en": "It is probable that she will come.",
+    "es": "Ella probablemente vendrá.",
+    "cloze": "vendrá",
+    "difficulty": 1410,
+    "audio": "sent_1032.mp3"
+  },
+  {
+    "en": "Where have you been?",
+    "es": "¿Dónde habías estado hasta ahora?",
+    "cloze": "habías",
+    "difficulty": 1412,
+    "audio": "sent_1033.mp3"
+  },
+  {
+    "en": "What can it be?",
+    "es": "¿Qué podrá ser?",
+    "cloze": "podrá",
+    "difficulty": 1413,
+    "audio": "sent_1034.mp3"
+  },
+  {
+    "en": "Can I keep this?",
+    "es": "¿Puedo quedarme con esto?",
+    "cloze": "quedarme",
+    "difficulty": 1416,
+    "audio": "sent_1035.mp3"
+  },
+  {
+    "en": "I wish I had a lot of money.",
+    "es": "Ojalá tuviera mucho dinero.",
+    "cloze": "tuviera",
+    "difficulty": 1418,
+    "audio": "sent_1036.mp3"
+  },
+  {
+    "en": "Times have changed.",
+    "es": "Los tiempos han cambiado.",
+    "cloze": "tiempos",
+    "difficulty": 1419,
+    "audio": "sent_1037.mp3"
+  },
+  {
+    "en": "We didn't go very far.",
+    "es": "No fuimos tan lejos.",
+    "cloze": "fuimos",
+    "difficulty": 1425,
+    "audio": "sent_1038.mp3"
+  },
+  {
+    "en": "I like art.",
+    "es": "Me gusta el arte.",
+    "cloze": "arte",
+    "difficulty": 1426,
+    "audio": "sent_1039.mp3"
+  },
+  {
+    "en": "I needed just that.",
+    "es": "Justo eso necesitaba.",
+    "cloze": "necesitaba",
+    "difficulty": 1427,
+    "audio": "sent_1040.mp3"
+  },
+  {
+    "en": "Do you know who they are?",
+    "es": "¿Sabe usted quiénes son ellos?",
+    "cloze": "quiénes",
+    "difficulty": 1428,
+    "audio": "sent_1041.mp3"
+  },
+  {
+    "en": "It's a common mistake.",
+    "es": "Es un error común.",
+    "cloze": "común",
+    "difficulty": 1429,
+    "audio": "sent_1042.mp3"
+  },
+  {
+    "en": "My wife is trying to sleep.",
+    "es": "Mi esposa está intentando dormir.",
+    "cloze": "intentando",
+    "difficulty": 1430,
+    "audio": "sent_1043.mp3"
+  },
+  {
+    "en": "May I run with you?",
+    "es": "¿Puedo correr contigo?",
+    "cloze": "correr",
+    "difficulty": 1433,
+    "audio": "sent_1044.mp3"
+  },
+  {
+    "en": "You have a bright future.",
+    "es": "Tienes un futuro brillante.",
+    "cloze": "brillante",
+    "difficulty": 1434,
+    "audio": "sent_1045.mp3"
+  },
+  {
+    "en": "It's very hot, isn't it?",
+    "es": "Hace mucho calor, ¿verdad?",
+    "cloze": "calor",
+    "difficulty": 1435,
+    "audio": "sent_1046.mp3"
+  },
+  {
+    "en": "I can't stay long. I have plans.",
+    "es": "No puedo quedarme mucho. Tengo planes.",
+    "cloze": "planes",
+    "difficulty": 1436,
+    "audio": "sent_1047.mp3"
+  },
+  {
+    "en": "Is this your first visit?",
+    "es": "¿Esta es su primera visita?",
+    "cloze": "visita",
+    "difficulty": 1438,
+    "audio": "sent_1048.mp3"
+  },
+  {
+    "en": "I have low blood pressure.",
+    "es": "Tengo la presión baja.",
+    "cloze": "presión",
+    "difficulty": 1439,
+    "audio": "sent_1049.mp3"
+  },
+  {
+    "en": "You are hopeless.",
+    "es": "No tienes esperanza.",
+    "cloze": "esperanza",
+    "difficulty": 1441,
+    "audio": "sent_1050.mp3"
+  },
+  {
+    "en": "What's your full name?",
+    "es": "¿Cuál es tu nombre completo?",
+    "cloze": "completo",
+    "difficulty": 1442,
+    "audio": "sent_1051.mp3"
+  },
+  {
+    "en": "We have enough time to catch the train.",
+    "es": "Tenemos suficiente tiempo para subir al tren.",
+    "cloze": "subir",
+    "difficulty": 1443,
+    "audio": "sent_1052.mp3"
+  },
+  {
+    "en": "I'm tired.",
+    "es": "Yo estoy cansado.",
+    "cloze": "cansado",
+    "difficulty": 1444,
+    "audio": "sent_1053.mp3"
+  },
+  {
+    "en": "In case of emergency, call 119.",
+    "es": "En caso de emergencia, llame al 119.",
+    "cloze": "llame",
+    "difficulty": 1445,
+    "audio": "sent_1054.mp3"
+  },
+  {
+    "en": "It's easy to remember.",
+    "es": "Es fácil de recordar.",
+    "cloze": "recordar",
+    "difficulty": 1446,
+    "audio": "sent_1055.mp3"
+  },
+  {
+    "en": "He was cheating.",
+    "es": "Estaba haciendo trampa.",
+    "cloze": "trampa",
+    "difficulty": 1447,
+    "audio": "sent_1056.mp3"
+  },
+  {
+    "en": "Could you turn down the radio?",
+    "es": "¿Puedes bajar la radio?",
+    "cloze": "bajar",
+    "difficulty": 1449,
+    "audio": "sent_1057.mp3"
+  },
+  {
+    "en": "My leg is aching.",
+    "es": "Me duele la pierna.",
+    "cloze": "pierna",
+    "difficulty": 1450,
+    "audio": "sent_1058.mp3"
+  },
+  {
+    "en": "Go with these men.",
+    "es": "Ve con estos señores.",
+    "cloze": "señores",
+    "difficulty": 1451,
+    "audio": "sent_1059.mp3"
+  },
+  {
+    "en": "He took a week off.",
+    "es": "Se tomó una semana libre.",
+    "cloze": "tomó",
+    "difficulty": 1452,
+    "audio": "sent_1060.mp3"
+  },
+  {
+    "en": "That won't happen.",
+    "es": "Eso no pasará.",
+    "cloze": "pasará",
+    "difficulty": 1453,
+    "audio": "sent_1061.mp3"
+  },
+  {
+    "en": "Who did you kill?",
+    "es": "¿A quién mataste?",
+    "cloze": "mataste",
+    "difficulty": 1454,
+    "audio": "sent_1062.mp3"
+  },
+  {
+    "en": "He was wounded in the battle.",
+    "es": "Fue herido en la batalla.",
+    "cloze": "herido",
+    "difficulty": 1457,
+    "audio": "sent_1063.mp3"
+  },
+  {
+    "en": "He fell backward.",
+    "es": "Él se cayó para atrás.",
+    "cloze": "cayó",
+    "difficulty": 1458,
+    "audio": "sent_1064.mp3"
+  },
+  {
+    "en": "I have barely any strength left.",
+    "es": "Apenas tengo fuerzas.",
+    "cloze": "fuerzas",
+    "difficulty": 1459,
+    "audio": "sent_1065.mp3"
+  },
+  {
+    "en": "I was at a cinema.",
+    "es": "Estaba en el cine.",
+    "cloze": "cine",
+    "difficulty": 1461,
+    "audio": "sent_1066.mp3"
+  },
+  {
+    "en": "What does your aunt do?",
+    "es": "¿Qué hace tu tía?",
+    "cloze": "tía",
+    "difficulty": 1463,
+    "audio": "sent_1067.mp3"
+  },
+  {
+    "en": "I am taking a bath now.",
+    "es": "Ahora me estoy dando un baño.",
+    "cloze": "dando",
+    "difficulty": 1465,
+    "audio": "sent_1068.mp3"
+  },
+  {
+    "en": "We were right.",
+    "es": "Teníamos razón.",
+    "cloze": "Teníamos",
+    "difficulty": 1467,
+    "audio": "sent_1069.mp3"
+  },
+  {
+    "en": "Why did you leave Australia?",
+    "es": "¿Por qué dejaste Australia?",
+    "cloze": "dejaste",
+    "difficulty": 1468,
+    "audio": "sent_1070.mp3"
+  },
+  {
+    "en": "It was a very long meeting.",
+    "es": "Fue una reunión muy larga.",
+    "cloze": "larga",
+    "difficulty": 1470,
+    "audio": "sent_1071.mp3"
+  },
+  {
+    "en": "I'm not as rich as I used to be.",
+    "es": "No soy tan rico como solía ser.",
+    "cloze": "solía",
+    "difficulty": 1471,
+    "audio": "sent_1072.mp3"
+  },
+  {
+    "en": "It is up to you.",
+    "es": "Depende de ti.",
+    "cloze": "Depende",
+    "difficulty": 1474,
+    "audio": "sent_1073.mp3"
+  },
+  {
+    "en": "I hate cops like him.",
+    "es": "Odio a los policías como él.",
+    "cloze": "policías",
+    "difficulty": 1475,
+    "audio": "sent_1074.mp3"
+  },
+  {
+    "en": "Do you want to kill me?",
+    "es": "¿Quieres matarme?",
+    "cloze": "matarme",
+    "difficulty": 1477,
+    "audio": "sent_1075.mp3"
+  },
+  {
+    "en": "Put the book on the table.",
+    "es": "Pon el libro en la mesa.",
+    "cloze": "Pon",
+    "difficulty": 1479,
+    "audio": "sent_1076.mp3"
+  },
+  {
+    "en": "I wish there were more people like you.",
+    "es": "Me gustaría que hubiese más gente como usted.",
+    "cloze": "hubiese",
+    "difficulty": 1480,
+    "audio": "sent_1077.mp3"
+  },
+  {
+    "en": "None of my friends drink coffee.",
+    "es": "Ninguno de mis amigos bebe café.",
+    "cloze": "bebe",
+    "difficulty": 1481,
+    "audio": "sent_1078.mp3"
+  },
+  {
+    "en": "Don't be in such a hurry.",
+    "es": "No tengas tanta prisa.",
+    "cloze": "tanta",
+    "difficulty": 1482,
+    "audio": "sent_1079.mp3"
+  },
+  {
+    "en": "I've never been to Paris.",
+    "es": "Nunca estuve en París.",
+    "cloze": "París",
+    "difficulty": 1484,
+    "audio": "sent_1080.mp3"
+  },
+  {
+    "en": "There is no wind today.",
+    "es": "Hoy no hace nada de viento.",
+    "cloze": "viento",
+    "difficulty": 1485,
+    "audio": "sent_1081.mp3"
+  },
+  {
+    "en": "Could you do me a favor?",
+    "es": "¿Podrías hacerme un favor?",
+    "cloze": "hacerme",
+    "difficulty": 1487,
+    "audio": "sent_1082.mp3"
+  },
+  {
+    "en": "I can hardly walk.",
+    "es": "Apenas puedo caminar.",
+    "cloze": "caminar",
+    "difficulty": 1492,
+    "audio": "sent_1083.mp3"
+  },
+  {
+    "en": "It's a cargo ship.",
+    "es": "Es un barco de carga.",
+    "cloze": "carga",
+    "difficulty": 1495,
+    "audio": "sent_1084.mp3"
+  },
+  {
+    "en": "She is a quiet woman.",
+    "es": "Ella es una mujer tranquila.",
+    "cloze": "tranquila",
+    "difficulty": 1496,
+    "audio": "sent_1085.mp3"
+  },
+  {
+    "en": "Are you in a band?",
+    "es": "¿Estás en una banda?",
+    "cloze": "banda",
+    "difficulty": 1497,
+    "audio": "sent_1086.mp3"
+  },
+  {
+    "en": "They will agree on that.",
+    "es": "Ellos estarán de acuerdo en eso.",
+    "cloze": "estarán",
+    "difficulty": 1498,
+    "audio": "sent_1087.mp3"
+  },
+  {
+    "en": "Man is the only animal that uses fire.",
+    "es": "El hombre es el único animal que usa el fuego.",
+    "cloze": "animal",
+    "difficulty": 1499,
+    "audio": "sent_1088.mp3"
+  }
+]

@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
+import com.spanishapp.ui.games.*
 import com.spanishapp.ui.chat.AiChatScreen
 import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.conjugation.ConjugationQuizScreen
@@ -37,6 +38,7 @@ import com.spanishapp.ui.games.ArticlesGameScreen
 import com.spanishapp.ui.games.SpeedGameScreen
 import com.spanishapp.ui.games.AnagramGameScreen
 import com.spanishapp.ui.games.VerbFormGameScreen
+import com.spanishapp.ui.games.ListeningGameScreen
 import com.spanishapp.ui.pronunciation.PronunciationScreen
 import com.spanishapp.ui.dialogues.DialoguesScreen
 import com.spanishapp.ui.onboarding.OnboardingScreen
@@ -87,12 +89,11 @@ object Navigation {
             ) { FlashcardsSetupScreen(navController) }
 
             composable(
-                "flashcards_session?level={level}&category={category}&direction={direction}&weak={weak}",
+                "flashcards_session?level={level}&category={category}&direction={direction}",
                 arguments = listOf(
                     navArgument("level") { defaultValue = "A1" },
                     navArgument("category") { defaultValue = "all" },
-                    navArgument("direction") { defaultValue = FlashcardDirection.ES_TO_RU.name },
-                    navArgument("weak") { defaultValue = "false" }
+                    navArgument("direction") { defaultValue = FlashcardDirection.ES_TO_RU.name }
                 )
             ) { backStackEntry ->
                 val args = backStackEntry.arguments
@@ -101,13 +102,11 @@ object Navigation {
                 val direction = runCatching {
                     FlashcardDirection.valueOf(args?.getString("direction") ?: "ES_TO_RU")
                 }.getOrDefault(FlashcardDirection.ES_TO_RU)
-                val weak = (args?.getString("weak") ?: "false").toBoolean()
                 FlashcardsScreen(
                     navController = navController,
                     level = level,
                     category = category,
-                    direction = direction,
-                    onlyWeak = weak
+                    direction = direction
                 )
             }
 
@@ -147,10 +146,18 @@ object Navigation {
 
             // ── Игры ──────────────────────────────────────────
             composable("games")         { GamesScreen(navController) }
-            composable("game_articles")   { ArticlesGameScreen(navController) }
+            composable("game_articles") { ArticlesMapScreen(navController) }
+            composable(
+                "game_articles_session/{levelId}",
+                arguments = listOf(navArgument("levelId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val levelId = backStackEntry.arguments?.getInt("levelId") ?: 1
+                ArticlesGameScreen(navController, levelId)
+            }
             composable("game_speed")      { SpeedGameScreen(navController) }
             composable("game_anagram")    { AnagramGameScreen(navController) }
-            composable("game_verb_form")  { VerbFormGameScreen(navController) }
+            composable("game_verb_form")    { VerbFormGameScreen(navController) }
+            composable("game_listening")    { ListeningGameScreen(navController) }
 
             // ── Профиль / Достижения / Настройки ─────────────
             composable("profile")      { ProfileScreen(navController) }
