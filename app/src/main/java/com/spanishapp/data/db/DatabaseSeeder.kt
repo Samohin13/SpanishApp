@@ -21,10 +21,10 @@ class DatabaseSeeder @Inject constructor(
     private val achievementManager: AchievementManager
 ) {
     companion object {
-        // Увеличивай эту константу каждый раз, когда добавляешь слова в JSON.
-        // Seeder сравнивает реальное количество с этим числом и досевает недостающие.
-        // Текущий JSON: 1415 слов + ModernVocab ~55 + ExtendedVocab ~1000 = ~2470 итого → порог 2400
-        const val VOCAB_TARGET = 2400
+        // Порог для досева. При добавлении новых паков увеличивать.
+        // JSON ~1084 + ModernVocab ~55 + ExtendedVocab ~700 +
+        // VocabExpansion1 ~1100 + VocabExpansion2 ~1100 + VocabExpansion3 ~1100 = ~5100
+        const val VOCAB_TARGET = 5000
     }
 
     suspend fun seedIfNeeded() = withContext(Dispatchers.IO) {
@@ -74,6 +74,9 @@ class DatabaseSeeder @Inject constructor(
 
         words += ModernVocab.entries
         words += ExtendedVocab.entries
+        words += VocabExpansion1.entries
+        words += VocabExpansion2.entries
+        words += VocabExpansion3.entries
 
         // insertAll с IGNORE — не перезапишет уже существующие слова (прогресс сохранится)
         db.wordDao().insertAll(words)
