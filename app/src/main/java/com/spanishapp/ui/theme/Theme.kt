@@ -30,14 +30,14 @@ object AppColors {
     // ────────────────────────────────────────────────────────
     //  LIGHT MODE  —  кремовый фон, зелёные акценты
     // ────────────────────────────────────────────────────────
-    val L_Bg            = Color(0xFFFFF3D6)   // крем из палитры
-    val L_Surface       = Color(0xFFFFFFFF)   // белые карточки
-    val L_Surface2      = Color(0xFFF5EBCA)   // чуть темнее крема
-    val L_Surface3      = Color(0xFFEDE0BA)   // ещё глубже
-    val L_Ink           = Color(0xFF3B2F2F)   // эспрессо из палитры
-    val L_InkMid        = Color(0xFF6B5040)   // средний
-    val L_InkDim        = Color(0xFF8F6E5A)   // подсказки
-    val L_InkFaint      = Color(0xFFB89A85)   // отключённое
+    val L_Bg            = Color(0xFFF8F9FA)   // Светлый, почти белый фон (как в премиум-приложениях)
+    val L_Surface       = Color(0xFFFFFFFF)
+    val L_Surface2      = Color(0xFFF1F3F5)
+    val L_Surface3      = Color(0xFFE9ECEF)
+    val L_Ink           = Color(0xFF1A1C1E)   // Глубокий темный
+    val L_InkMid        = Color(0xFF44474E)
+    val L_InkDim        = Color(0xFF74777F)
+    val L_InkFaint      = Color(0xFFC4C6D0)
 
     // ────────────────────────────────────────────────────────
     //  DARK MODE  —  почти чёрный с еле слышной теплотой.
@@ -178,22 +178,22 @@ object AppColors {
 // ═══════════════════════════════════════════════════════════════
 val AppTypography = Typography(
     displayLarge = TextStyle(
-        fontWeight    = FontWeight.Bold,
-        fontSize      = 36.sp,
-        lineHeight    = 44.sp,
-        letterSpacing = (-0.8).sp
+        fontWeight    = FontWeight.ExtraBold,
+        fontSize      = 34.sp,
+        lineHeight    = 40.sp,
+        letterSpacing = (-1).sp
     ),
     displayMedium = TextStyle(
         fontWeight    = FontWeight.Bold,
-        fontSize      = 30.sp,
-        lineHeight    = 38.sp,
-        letterSpacing = (-0.6).sp
+        fontSize      = 28.sp,
+        lineHeight    = 34.sp,
+        letterSpacing = (-0.5).sp
     ),
     headlineLarge = TextStyle(
-        fontWeight    = FontWeight.SemiBold,
-        fontSize      = 24.sp,
-        lineHeight    = 32.sp,
-        letterSpacing = (-0.3).sp
+        fontWeight    = FontWeight.Bold,
+        fontSize      = 22.sp,
+        lineHeight    = 28.sp,
+        letterSpacing = 0.sp
     ),
     headlineMedium = TextStyle(
         fontWeight    = FontWeight.SemiBold,
