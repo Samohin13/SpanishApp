@@ -150,8 +150,8 @@ fun ListeningGameScreen(
             LinearProgressIndicator(
                 progress = { (state.currentIndex + 1f) / state.total },
                 modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
-                color = AppColors.Primary,
-                trackColor = AppColors.Primary.copy(alpha = 0.15f)
+                color = AppColors.Olive,
+                trackColor = AppColors.Olive.copy(alpha = 0.15f)
             )
             Spacer(Modifier.height(4.dp))
             Text(
@@ -167,7 +167,7 @@ fun ListeningGameScreen(
                 onClick = { playAudio(ctx, sentence.audio) },
                 modifier = Modifier.size(72.dp),
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = AppColors.Primary
+                    containerColor = AppColors.Olive
                 )
             ) {
                 Icon(
@@ -307,7 +307,7 @@ private fun FinishedScreen(score: Int, total: Int, onRestart: () -> Unit, onBack
         Text(
             "$score из $total правильно ($percent%)",
             style = MaterialTheme.typography.titleLarge,
-            color = AppColors.Primary
+            color = AppColors.Olive
         )
         Spacer(Modifier.height(32.dp))
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
