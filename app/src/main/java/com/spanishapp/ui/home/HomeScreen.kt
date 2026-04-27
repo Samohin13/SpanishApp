@@ -201,9 +201,26 @@ private fun RoadmapNode(
                     Spacer(Modifier.width(16.dp))
 
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("РАЗДЕЛ ${unit.id}", style = MaterialTheme.typography.labelSmall, color = labelColor, fontWeight = FontWeight.ExtraBold)
-                        Text(unit.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                        Text(unit.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+                        Text(
+                            "РАЗДЕЛ ${unit.id}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = labelColor,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 1.sp
+                        )
+                        Text(
+                            unit.title,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            unit.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            lineHeight = 18.sp
+                        )
                     }
 
                     // Стрелочка ЕСТЬ У ВСЕХ
@@ -248,35 +265,50 @@ private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit, 
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
     ) {
         Row(
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(32.dp).clip(CircleShape).background(if (lesson.isCompleted) Color(0xFF4CAF50) else MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
+                modifier = Modifier.size(38.dp).clip(CircleShape).background(if (lesson.isCompleted) Color(0xFF4CAF50) else MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
                 contentAlignment = Alignment.Center
             ) {
                 if (lesson.isCompleted) {
-                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(20.dp))
                 } else {
                     val icon = when(lesson.type) {
-                        "vocab" -> Icons.Default.MenuBook
+                        "vocab"   -> Icons.Default.MenuBook
                         "grammar" -> Icons.Default.Extension
-                        "phrase" -> Icons.Default.ChatBubble
-                        else -> Icons.Default.Quiz
+                        "phrase"  -> Icons.Default.ChatBubble
+                        else      -> Icons.Default.Quiz
                     }
-                    Icon(icon, null, tint = if(enabled) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), modifier = Modifier.size(16.dp))
+                    Icon(icon, null, tint = if(enabled) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), modifier = Modifier.size(20.dp))
                 }
             }
-            
-            Spacer(Modifier.width(12.dp))
+
+            Spacer(Modifier.width(14.dp))
             
             Column(modifier = Modifier.weight(1f)) {
-                Text(lesson.title, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                Text(lesson.type.uppercase(), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f), fontSize = 9.sp)
+                Text(
+                    lesson.title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    when (lesson.type) {
+                        "vocab"   -> "Лексика"
+                        "grammar" -> "Грамматика"
+                        "phrase"  -> "Фразы"
+                        "quiz"    -> "Тест"
+                        else      -> lesson.type
+                    },
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f)
+                )
             }
             
-            if(enabled) {
-                Icon(Icons.Default.PlayArrow, null, tint = Color(0xFF4CAF50).copy(alpha = 0.7f), modifier = Modifier.size(16.dp))
+            if (enabled) {
+                Icon(Icons.Default.PlayArrow, null, tint = Color(0xFF4CAF50).copy(alpha = 0.8f), modifier = Modifier.size(22.dp))
             }
         }
     }
