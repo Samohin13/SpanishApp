@@ -2,24 +2,32 @@ package com.spanishapp.ui.games
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.spanishapp.data.db.dao.ArticleGameDao
 import com.spanishapp.data.db.dao.WordDao
+import com.spanishapp.data.db.entity.ArticleLevelProgressEntity
 import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.ui.theme.AppColors
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +40,6 @@ import javax.inject.Inject
 
 // ── Helpers ───────────────────────────────────────────────────
 
-/** Убирает артикль из начала испанского слова, если он есть */
 fun stripArticle(spanish: String): String {
     val prefixes = listOf("el ", "la ", "un ", "una ", "los ", "las ", "unos ", "unas ")
     val s = spanish.trim()
@@ -40,51 +47,36 @@ fun stripArticle(spanish: String): String {
         ?.let { s.substring(it.length) } ?: s
 }
 
-/** Возвращает "el" или "la" на основе окончания испанского слова (без артикля).
- *  Null — слово не подходит для игры. */
 fun guessArticle(spanish: String): String? {
     val w = stripArticle(spanish).lowercase().trim()
     return when {
-        w in listOf("día", "mapa", "idioma", "problema", "tema", "sistema",
-                    "programa", "clima", "drama", "planeta", "poema") -> "el"
-        w.endsWith("ión")  -> "la"
-        w.endsWith("ción") -> "la"
-        w.endsWith("sión") -> "la"
-        w.endsWith("dad")  -> "la"
-        w.endsWith("tad")  -> "la"
-        w.endsWith("tud")  -> "la"
-        w.endsWith("umbre")-> "la"
+        w in listOf("día", "mapa", "idioma", "problema", "tema", "sistema", "programa", "clima", "drama", "planeta", "poema") -> "el"
+        w.endsWith("ión") || w.endsWith("ción") || w.endsWith("sión") || w.endsWith("dad") || w.endsWith("tad") || w.endsWith("tud") || w.endsWith("umbre") -> "la"
         w.endsWith("a") && !w.endsWith("ma") && !w.endsWith("pa") -> "la"
-        w.endsWith("o")    -> "el"
-        w.endsWith("or")   -> "el"
-        w.endsWith("és")   -> "el"
-        w.endsWith("án")   -> "el"
+        w.endsWith("o") || w.endsWith("or") || w.endsWith("és") || w.endsWith("án") || w.endsWith("aje") || w.endsWith("al") || w.endsWith("ar") -> "el"
         w.endsWith("ón") && !w.endsWith("ción") && !w.endsWith("sión") -> "el"
-        w.endsWith("aje")  -> "el"
-        w.endsWith("al")   -> "el"
-        w.endsWith("ar")   -> "el"
         else -> null
     }
 }
 
-
-// ── State & ViewModel ─────────────────────────────────────────
-
 data class ArticlesState(
+    val levelId: Int = 1,
     val word: WordEntity? = null,
     val correctArticle: String = "",
     val selectedArticle: String? = null,
     val score: Int = 0,
-    val streak: Int = 0,
+    val correctCount: Int = 0,
     val totalAnswered: Int = 0,
     val isCorrect: Boolean? = null,
     val isFinished: Boolean = false,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val error: String? = null
 )
 
 @HiltViewModel
 class ArticlesGameViewModel @Inject constructor(
-    private val wordDao: WordDao
+    private val wordDao: WordDao,
+    private val gameDao: ArticleGameDao
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ArticlesState())
@@ -93,33 +85,42 @@ class ArticlesGameViewModel @Inject constructor(
     private var pool: List<Pair<WordEntity, String>> = emptyList()
     private var poolIndex = 0
 
-    init { loadPool() }
-
-    private fun loadPool() = viewModelScope.launch {
-        val words = wordDao.getRandomWords(300)
-        pool = words
-            .filter { it.wordType == "noun" || it.wordType == "sustantivo" }
-            .mapNotNull { word ->
-                val article = guessArticle(word.spanish)
-                if (article != null) word to article else null
+    fun startLevel(id: Int) = viewModelScope.launch {
+        _state.value = ArticlesState(levelId = id, isLoading = true)
+        
+        try {
+            val limit = 10
+            // Ищем существительные. Если база пуста или слов мало, берем любые.
+            val allWords = wordDao.getRandomWords(500)
+                .filter { it.wordType == "noun" || it.wordType == "sustantivo" || it.wordType == "general" }
+                .mapNotNull { w -> 
+                    val art = guessArticle(w.spanish)
+                    if (art != null) w to art else null 
+                }
+            
+            if (allWords.isEmpty()) {
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    error = "Не удалось загрузить слова. Проверьте базу данных."
+                )
+                return@launch
             }
-            .shuffled()
-            .take(20)
 
-        if (pool.isEmpty()) {
-            pool = words.mapNotNull { word ->
-                val article = guessArticle(word.spanish)
-                if (article != null) word to article else null
-            }.shuffled().take(20)
+            pool = allWords.shuffled().take(limit)
+            poolIndex = 0
+            showNext()
+        } catch (e: Exception) {
+            _state.value = _state.value.copy(isLoading = false, error = e.message)
         }
-
-        poolIndex = 0
-        showNext()
     }
 
     private fun showNext() {
         if (poolIndex >= pool.size) {
-            _state.value = _state.value.copy(isFinished = true)
+            if (pool.isEmpty()) {
+                 _state.value = _state.value.copy(isFinished = true, isLoading = false)
+            } else {
+                 finishLevel()
+            }
             return
         }
         val (word, article) = pool[poolIndex]
@@ -139,61 +140,70 @@ class ArticlesGameViewModel @Inject constructor(
         _state.value = s.copy(
             selectedArticle = article,
             isCorrect = correct,
-            score = if (correct) s.score + 10 else s.score,
-            streak = if (correct) s.streak + 1 else 0,
+            score = if (correct) s.score + 15 else s.score,
+            correctCount = if (correct) s.correctCount + 1 else s.correctCount,
             totalAnswered = s.totalAnswered + 1
         )
-        delay(900)
+        delay(800)
         poolIndex++
         showNext()
     }
 
+    private fun finishLevel() = viewModelScope.launch {
+        val s = _state.value
+        val pct = if (s.totalAnswered > 0) s.correctCount.toFloat() / s.totalAnswered else 0f
+        val stars = when {
+            pct >= 1.0f -> 3
+            pct >= 0.66f -> 2
+            pct >= 0.33f -> 1
+            else -> 0
+        }
+        
+        try {
+            val current = gameDao.getProgress(s.levelId) ?: ArticleLevelProgressEntity(s.levelId)
+            gameDao.upsertProgress(current.copy(
+                stars = maxOf(current.stars, stars),
+                isUnlocked = true,
+                bestScore = maxOf(current.bestScore, s.score)
+            ))
+            
+            if (stars >= 1 && s.levelId < 100) {
+                gameDao.unlockLevel(s.levelId + 1)
+            }
+        } catch (e: Exception) {
+            // Ignore DB errors for now to allow finish
+        }
+        
+        _state.value = s.copy(isFinished = true)
+    }
+
     fun restart() {
-        pool = pool.shuffled()
-        poolIndex = 0
-        _state.value = ArticlesState()
-        loadPool()
+        startLevel(_state.value.levelId)
     }
 }
-
-// ── Screen ────────────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticlesGameScreen(
     navController: NavHostController,
+    levelId: Int,
     vm: ArticlesGameViewModel = hiltViewModel()
 ) {
     val state by vm.state.collectAsState()
+
+    LaunchedEffect(levelId) {
+        vm.startLevel(levelId)
+    }
 
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Артикли 🏷️") },
+                title = { Text("Уровень ${state.levelId}", fontWeight = FontWeight.ExtraBold) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
-                    }
-                },
-                actions = {
-                    if (!state.isFinished) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.padding(end = 12.dp)
-                        ) {
-                            if (state.streak >= 2) {
-                                Text("🔥 ${state.streak}", style = MaterialTheme.typography.titleMedium)
-                            }
-                            Text(
-                                "⭐ ${state.score}",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = AppColors.Gold
-                            )
-                        }
                     }
                 }
             )
@@ -204,206 +214,192 @@ fun ArticlesGameScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                state.isLoading   -> CircularProgressIndicator(color = AppColors.Teal)
+                state.isLoading -> CircularProgressIndicator(color = AppColors.Teal)
+                state.error != null -> ErrorBody(state.error) { vm.startLevel(levelId) }
                 state.isFinished  -> ArticlesResult(state, vm::restart) { navController.popBackStack() }
                 state.word != null -> ArticlesQuestion(state, vm::select)
+                else -> Text("Нет данных для уровня")
             }
         }
     }
 }
 
-// ── Вопрос ────────────────────────────────────────────────────
+@Composable
+private fun ErrorBody(message: String?, onRetry: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Ошибка: ${message ?: "Неизвестно"}", color = MaterialTheme.colorScheme.error)
+        Spacer(Modifier.height(16.dp))
+        Button(onClick = onRetry) {
+            Icon(Icons.Default.Refresh, null)
+            Spacer(Modifier.width(8.dp))
+            Text("Попробовать снова")
+        }
+    }
+}
 
 @Composable
 private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
     val word = state.word ?: return
-    val cleanWord = stripArticle(word.spanish)   // убираем артикль из отображения
-
+    val cleanWord = stripArticle(word.spanish)
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Прогресс
-        val total = 20
         LinearProgressIndicator(
-            progress = { state.totalAnswered / total.toFloat() },
-            modifier  = Modifier.fillMaxWidth().height(6.dp),
+            progress = { state.totalAnswered / 10f },
+            modifier  = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape),
             color     = AppColors.Teal,
-            trackColor = AppColors.Teal.copy(alpha = 0.15f)
+            trackColor = AppColors.Teal.copy(alpha = 0.1f)
         )
-        Text(
-            "${state.totalAnswered + 1} / $total",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Spacer(Modifier.height(32.dp))
 
-        Spacer(Modifier.weight(0.2f))
-
-        // Инструкция
-        Text(
-            "Выбери артикль:",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        // Карточка слова с эмодзи-визуалом
-        AnimatedContent(targetState = cleanWord, label = "word") { w ->
-            Surface(
-                shape = RoundedCornerShape(24.dp),
-                color = AppColors.Teal.copy(alpha = 0.08f),
-                modifier = Modifier.fillMaxWidth()
+        Surface(
+            shape = RoundedCornerShape(32.dp),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+            shadowElevation = 4.dp,
+            border = androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)),
+            modifier = Modifier.fillMaxWidth().weight(1f)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    modifier = Modifier.padding(32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // Слово БЕЗ артикля
-                    Text(
-                        "__ $w",
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        word.russian,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
-
-        Spacer(Modifier.weight(0.3f))
-
-        // Кнопки артиклей — 2×2 сетка
-        val articles = listOf("el", "la", "un", "una")
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            articles.chunked(2).forEach { row ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    row.forEach { article ->
-                        ArticleButton(
-                            article  = article,
-                            state    = state,
-                            modifier = Modifier.weight(1f),
-                            onClick  = { onSelect(article) }
-                        )
+                // Карточка слова
+                val wordEmoji = remember(word.wordType) {
+                    when (word.wordType) {
+                        "verb" -> "🔤"
+                        "adjective" -> "🎨"
+                        "phrase" -> "💬"
+                        else -> "📖"
                     }
                 }
+                Box(
+                    modifier = Modifier
+                        .size(220.dp)
+                        .clip(RoundedCornerShape(32.dp))
+                        .background(
+                            brush = androidx.compose.ui.graphics.Brush.radialGradient(
+                                colors = listOf(
+                                    AppColors.Teal.copy(alpha = 0.25f),
+                                    AppColors.Teal.copy(alpha = 0.08f)
+                                )
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(wordEmoji, fontSize = 80.sp)
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                Text(
+                    "¿... $cleanWord?",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                
+                Text(
+                    word.russian,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 
-        Spacer(Modifier.weight(0.2f))
+        Spacer(Modifier.height(40.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 40.dp),
+            horizontalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            ArticleButton(label = "el", state = state, modifier = Modifier.weight(1f)) { onSelect("el") }
+            ArticleButton(label = "la", state = state, modifier = Modifier.weight(1f)) { onSelect("la") }
+        }
     }
 }
 
 @Composable
-private fun ArticleButton(
-    article: String,
-    state: ArticlesState,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
+private fun ArticleButton(label: String, state: ArticlesState, modifier: Modifier, onClick: () -> Unit) {
     val answered = state.selectedArticle != null
-    val isSelected = state.selectedArticle == article
-    val isCorrect  = state.correctArticle == article
+    val isSelected = state.selectedArticle == label
+    val isCorrect = state.correctArticle == label
+    val scale by animateFloatAsState(if (isSelected) 1.05f else 1f, label = "scale")
 
-    val containerColor = when {
-        !answered  -> MaterialTheme.colorScheme.surface
-        isCorrect  -> AppColors.Teal.copy(alpha = 0.2f)
-        isSelected -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
-        else       -> MaterialTheme.colorScheme.surface
-    }
-    val borderColor = when {
-        !answered  -> MaterialTheme.colorScheme.outlineVariant
-        isCorrect  -> AppColors.Teal
-        isSelected -> MaterialTheme.colorScheme.error
-        else       -> MaterialTheme.colorScheme.outlineVariant
-    }
-    val textColor = when {
-        !answered  -> MaterialTheme.colorScheme.onSurface
-        isCorrect  -> AppColors.Teal
-        isSelected -> MaterialTheme.colorScheme.error
-        else       -> MaterialTheme.colorScheme.onSurfaceVariant
+    val bgColor = when {
+        !answered -> MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+        isCorrect -> AppColors.Teal.copy(alpha = 0.3f)
+        isSelected -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.6f)
+        else -> MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
     }
 
-    OutlinedButton(
-        onClick  = onClick,
-        enabled  = !answered,
-        shape    = RoundedCornerShape(16.dp),
-        colors   = ButtonDefaults.outlinedButtonColors(containerColor = containerColor),
-        border   = ButtonDefaults.outlinedButtonBorder.copy(
-            brush = androidx.compose.ui.graphics.SolidColor(borderColor)
+    Surface(
+        onClick = onClick,
+        enabled = !answered,
+        modifier = modifier.height(84.dp).graphicsLayer { scaleX = scale; scaleY = scale },
+        shape = RoundedCornerShape(24.dp),
+        color = bgColor,
+        border = androidx.compose.foundation.BorderStroke(
+            if (isSelected || (answered && isCorrect)) 3.dp else 1.dp, 
+            if (isCorrect && answered) AppColors.Teal 
+            else if (isSelected) MaterialTheme.colorScheme.error 
+            else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
         ),
-        modifier = modifier.height(64.dp)
+        shadowElevation = if (isSelected) 8.dp else 2.dp
     ) {
-        Text(
-            article,
-            fontSize   = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color      = textColor
-        )
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                label.uppercase(), 
+                style = MaterialTheme.typography.headlineMedium, 
+                fontWeight = FontWeight.ExtraBold,
+                letterSpacing = 2.sp
+            )
+        }
     }
 }
 
-// ── Результат ─────────────────────────────────────────────────
-
 @Composable
-private fun ArticlesResult(
-    state: ArticlesState,
-    onRetry: () -> Unit,
-    onBack: () -> Unit
-) {
-    val correct = state.score / 10
-    val total   = state.totalAnswered
-    val pct     = if (total > 0) correct * 100 / total else 0
-
-    val emoji = when {
-        pct >= 90 -> "🏆"; pct >= 70 -> "🎉"; pct >= 50 -> "👍"; else -> "💪"
-    }
-    val message = when {
-        pct >= 90 -> "Артикли освоены!"; pct >= 70 -> "Отличный результат!"
-        pct >= 50 -> "Неплохо, продолжай!"; else -> "Ещё раз — и станет лучше!"
-    }
+private fun ArticlesResult(state: ArticlesState, onRetry: () -> Unit, onBack: () -> Unit) {
+    val pct = state.correctCount.toFloat() / 10f
+    val stars = when { pct >= 1f -> 3; pct >= 0.66f -> 2; pct >= 0.33f -> 1; else -> 0 }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(emoji, fontSize = 72.sp)
-        Spacer(Modifier.height(16.dp))
-        Text("$correct / $total", style = MaterialTheme.typography.displayMedium,
-             fontWeight = FontWeight.Bold)
-        Text("правильных ответов", style = MaterialTheme.typography.bodyMedium,
-             color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(8.dp))
-        Text(message, style = MaterialTheme.typography.titleMedium,
-             color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(8.dp))
-        Surface(shape = RoundedCornerShape(12.dp), color = AppColors.Gold.copy(alpha = 0.15f)) {
-            Text("⭐ ${state.score} очков",
-                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
-                 color = AppColors.GoldDark)
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            repeat(3) { i ->
+                Icon(
+                    Icons.Default.Star, null,
+                    modifier = Modifier.size(72.dp),
+                    tint = if (i < stars) Color(0xFFFFD700) else Color.LightGray.copy(alpha = 0.4f)
+                )
+            }
         }
         Spacer(Modifier.height(32.dp))
-        Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(52.dp),
-               shape = RoundedCornerShape(14.dp)) {
-            Text("Ещё раз", style = MaterialTheme.typography.titleMedium)
+        Text("Уровень ${state.levelId} пройден!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
+        Text("Верных ответов: ${state.correctCount} из 10", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        
+        Spacer(Modifier.height(56.dp))
+        Button(
+            onClick = onRetry, 
+            modifier = Modifier.fillMaxWidth().height(64.dp), 
+            shape = RoundedCornerShape(20.dp), 
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.Teal)
+        ) {
+            Text("ПОВТОРИТЬ УРОВЕНЬ", fontWeight = FontWeight.Bold, fontSize = 18.sp)
         }
-        Spacer(Modifier.height(10.dp))
-        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp),
-                       shape = RoundedCornerShape(14.dp)) {
-            Text("К играм")
+        Spacer(Modifier.height(16.dp))
+        OutlinedButton(
+            onClick = onBack, 
+            modifier = Modifier.fillMaxWidth().height(64.dp), 
+            shape = RoundedCornerShape(20.dp),
+            border = androidx.compose.foundation.BorderStroke(2.dp, AppColors.Teal)
+        ) {
+            Text("КАРТА УРОВНЕЙ", color = AppColors.Teal, fontWeight = FontWeight.Bold)
         }
     }
 }
