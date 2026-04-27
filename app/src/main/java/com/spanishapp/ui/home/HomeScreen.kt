@@ -1,7 +1,6 @@
 package com.spanishapp.ui.home
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,14 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +44,7 @@ data class RoadmapUnit(
 data class RoadmapLesson(
     val title: String,
     val type: String, // "vocab", "grammar", "quiz"
+    val category: String = "general",
     val isCompleted: Boolean = false
 )
 
@@ -68,15 +65,27 @@ fun HomeScreen(
     val sheetState = rememberModalBottomSheetState()
     var showSheet by remember { mutableStateOf(false) }
 
-    // Имитация структурированных данных
-    val roadmapUnits = remember {
+    // РЕАЛЬНЫЙ КОНТЕНТ ДЛЯ A1
+    val roadmapUnits = remember(state.learnedCount, state.totalXp) {
         listOf(
-            RoadmapUnit("1", "¡Hola!", "Приветствия и база", "👋", false, 1f, Color(0xFF4CAF50), 
-                listOf(RoadmapLesson("Первые слова", "vocab", true), RoadmapLesson("Глагол Ser", "grammar", true), RoadmapLesson("Тест: Основы", "quiz", true))),
-            RoadmapUnit("2", "Mi Familia", "Семья и описание", "🏠", false, 0.4f, Color(0xFFFF9800),
-                listOf(RoadmapLesson("Члены семьи", "vocab", true), RoadmapLesson("Притяжательные местоимения", "grammar", false), RoadmapLesson("Тест: Семья", "quiz", false))),
-            RoadmapUnit("3", "En el Café", "Заказ еды", "☕", true, 0f, Color(0xFFE91E63),
-                listOf(RoadmapLesson("Еда и напитки", "vocab", false), RoadmapLesson("Вежливые просьбы", "grammar", false), RoadmapLesson("Диалог: В кафе", "quiz", false))),
+            RoadmapUnit("1", "¡Hola!", "Приветствия и база", "👋", false, (state.learnedCount / 10f).coerceAtMost(1f), Color(0xFF4CAF50), 
+                listOf(
+                    RoadmapLesson("Первые слова", "vocab", "familia_personas", state.learnedCount > 5),
+                    RoadmapLesson("Артикли: el, la", "grammar", "general", state.totalXp > 50),
+                    RoadmapLesson("Тест: Основы", "quiz", "general", state.totalXp > 100)
+                )),
+            RoadmapUnit("2", "Mi Familia", "Семья и описание", "🏠", state.learnedCount < 10, (state.learnedCount / 30f).coerceAtMost(1f), Color(0xFFFF9800),
+                listOf(
+                    RoadmapLesson("Члены семьи", "vocab", "familia_personas"),
+                    RoadmapLesson("Глагол Ser", "grammar", "verbs"),
+                    RoadmapLesson("Тест: Семья", "quiz", "familia_personas")
+                )),
+            RoadmapUnit("3", "En el Café", "Заказ еды", "☕", state.learnedCount < 25, 0f, Color(0xFFE91E63),
+                listOf(
+                    RoadmapLesson("Еда и напитки", "vocab", "comida_bebida"),
+                    RoadmapLesson("Глагол Estar", "grammar", "verbs"),
+                    RoadmapLesson("Диалог: В кафе", "quiz", "comida_bebida")
+                )),
             RoadmapUnit("4", "De Compras", "Шоппинг и одежда", "🛍️", true, 0f, Color(0xFF2196F3)),
             RoadmapUnit("5", "Mi Rutina", "Мой день", "⏰", true, 0f, Color(0xFF9C27B0))
         )
@@ -122,7 +131,6 @@ fun HomeScreen(
                 }
             }
 
-            // Градиентная тень сверху для "дорогого" эффекта
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -132,7 +140,6 @@ fun HomeScreen(
         }
     }
 
-    // Bottom Sheet с деталями Unit-а
     if (showSheet && selectedUnit != null) {
         ModalBottomSheet(
             onDismissRequest = { showSheet = false },
@@ -144,7 +151,8 @@ fun HomeScreen(
                 unit = selectedUnit!!,
                 onStartLesson = { lesson ->
                     showSheet = false
-                    navController.navigate("lesson_intro/${lesson.title}/${lesson.type}")
+                    // Передаем параметры в intro, чтобы потом запустить нужную категорию
+                    navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
                 }
             )
         }
@@ -205,7 +213,6 @@ private fun RoadmapNode(
     isLast: Boolean,
     onNodeClick: () -> Unit
 ) {
-    val isCompleted = unit.progress >= 1f
     val accentColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
     
     Row(
@@ -222,7 +229,6 @@ private fun RoadmapNode(
                 Box(modifier = Modifier.height(30.dp).width(4.dp).background(accentColor.copy(alpha = 0.3f), CircleShape))
             }
 
-            // Основная кнопка уровня
             Box(
                 modifier = Modifier
                     .size(72.dp)
@@ -236,8 +242,6 @@ private fun RoadmapNode(
                     Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
                 } else {
                     Text(unit.icon, fontSize = 32.sp)
-                    
-                    // Кольцо прогресса
                     CircularProgressIndicator(
                         progress = { unit.progress },
                         modifier = Modifier.fillMaxSize().padding(2.dp),

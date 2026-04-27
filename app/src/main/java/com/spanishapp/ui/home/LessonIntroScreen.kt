@@ -25,7 +25,8 @@ import com.airbnb.lottie.compose.*
 fun LessonIntroScreen(
     navController: NavHostController,
     title: String,
-    type: String
+    type: String,
+    category: String = "all"
 ) {
     val haptic = LocalHapticFeedback.current
     
@@ -48,12 +49,6 @@ fun LessonIntroScreen(
         else -> MaterialTheme.colorScheme.tertiary
     }
 
-    val icon = when(type) {
-        "vocab" -> "📚"
-        "grammar" -> "🧩"
-        else -> "🏆"
-    }
-
     val description = when(type) {
         "vocab" -> "Изучи новые слова и фразы для общения. Мы подобрали самые важные выражения для этой темы."
         "grammar" -> "Разберись, как строятся предложения. Грамматика — это скелет языка."
@@ -71,7 +66,6 @@ fun LessonIntroScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Lottie анимация вместо статического эмодзи
             Box(
                 modifier = Modifier
                     .size(200.dp)
@@ -106,7 +100,6 @@ fun LessonIntroScreen(
 
             Spacer(Modifier.height(48.dp))
 
-            // Карточка с бонусами за урок
             Surface(
                 shape = RoundedCornerShape(24.dp),
                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
@@ -128,8 +121,15 @@ fun LessonIntroScreen(
             Button(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    // Навигация к самой тренировке
-                    val route = if (type == "quiz") "quiz" else "flashcards"
+                    
+                    val route = if (type == "quiz") {
+                        "quiz?type=$category"
+                    } else if (type == "grammar") {
+                        "grammar" // Usually leads to grammar list, but can be specific lesson if needed
+                    } else {
+                        "flashcards_session?level=A1&category=$category&direction=ES_TO_RU&weak=false"
+                    }
+
                     navController.navigate(route) {
                         popUpTo("lesson_intro/{title}/{type}") { inclusive = true }
                     }

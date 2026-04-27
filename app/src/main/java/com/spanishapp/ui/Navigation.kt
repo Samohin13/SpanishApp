@@ -61,15 +61,17 @@ object Navigation {
             composable("home") { HomeScreen(navController) }
 
             composable(
-                "lesson_intro/{title}/{type}",
+                "lesson_intro/{title}/{type}?category={category}",
                 arguments = listOf(
                     navArgument("title") { type = NavType.StringType },
-                    navArgument("type") { type = NavType.StringType }
+                    navArgument("type") { type = NavType.StringType },
+                    navArgument("category") { defaultValue = "all" }
                 )
             ) { backStackEntry ->
                 val title = backStackEntry.arguments?.getString("title") ?: ""
                 val type = backStackEntry.arguments?.getString("type") ?: ""
-                LessonIntroScreen(navController, title, type)
+                val category = backStackEntry.arguments?.getString("category") ?: "all"
+                LessonIntroScreen(navController, title, type, category)
             }
 
             // ── Онбординг ─────────────────────────────────────

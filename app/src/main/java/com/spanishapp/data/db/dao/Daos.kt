@@ -205,7 +205,7 @@ interface UserProgressDao {
     @Query("SELECT * FROM user_progress LIMIT 1")
     suspend fun getProgressOnce(): UserProgressEntity?
 
-    @Query("UPDATE user_progress SET total_xp = total_xp + :xp, words_learned = words_learned + :words")
+    @Query("UPDATE user_progress SET total_xp = total_xp + :xp, words_learned = words_learned + :words, lessons_completed = lessons_completed + 1")
     suspend fun addXpAndWords(xp: Int, words: Int)
 
     @Query("UPDATE user_progress SET current_streak = :streak, longest_streak = MAX(longest_streak, :streak), last_study_date = :date")
