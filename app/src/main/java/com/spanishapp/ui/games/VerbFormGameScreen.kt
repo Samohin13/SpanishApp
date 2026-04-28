@@ -1,8 +1,11 @@
 package com.spanishapp.ui.games
 
 import androidx.compose.animation.*
-import androidx.compose.ui.graphics.Color
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -10,6 +13,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -35,22 +41,20 @@ import javax.inject.Inject
 // ── Вопрос ────────────────────────────────────────────────────
 
 data class VerbQuestion(
-    val sentence: String,          // полное предложение с правильным глаголом (для объяснения)
-    val sentenceWithBlank: String, // предложение с "___"
-    val hint: String,              // подсказка: infinitiv + лицо
-    val correct: String,           // правильная форма
-    val options: List<String>,     // 4 варианта
-    val tenseRu: String            // название времени по-русски
+    val sentence: String,
+    val sentenceWithBlank: String,
+    val hint: String,
+    val correct: String,
+    val options: List<String>,
+    val tenseRu: String
 )
 
-// ── Шаблоны предложений ───────────────────────────────────────
-
 private data class SentenceTemplate(
-    val template: String,   // "Yo ___ en Madrid." — ___ заменяется формой
+    val template: String,
     val verb: String,
     val tense: String,
-    val person: String,     // yo, tú, él, nosotros, vosotros, ellos
-    val hintRu: String,     // "быть (я, настоящее)"
+    val person: String,
+    val hintRu: String,
     val tenseRu: String
 )
 
@@ -68,21 +72,19 @@ private val TEMPLATES = listOf(
     SentenceTemplate("¿Tú ___ a la fiesta?", "ir", "presente", "tú", "ir (tú, настоящее)", "Настоящее"),
     SentenceTemplate("Ellos ___ a Madrid mañana.", "ir", "futuro", "ellos", "ir (ellos, будущее)", "Будущее"),
     SentenceTemplate("Yo ___ hablar español.", "poder", "presente", "yo", "poder (yo, настоящее)", "Настоящее"),
-    SentenceTemplate("¿Tú ___ ayudarme?", "poder", "presente", "tú", "poder (tú, настоящее)", "Настоящее"),
+    SentenceTemplate("¿Tú ___ ayudarме?", "poder", "presente", "tú", "pодer (tú, настоящее)", "Настоящее"),
     SentenceTemplate("Yo ___ estudiar más.", "querer", "presente", "yo", "querer (yo, настоящее)", "Настоящее"),
     SentenceTemplate("Ella ___ un café.", "querer", "presente", "él", "querer (ella, настоящее)", "Настоящее"),
     SentenceTemplate("Ayer yo ___ al trabajo.", "ir", "preterito", "yo", "ir (я, прошедшее)", "Прошедшее"),
     SentenceTemplate("El año pasado ella ___ profesora.", "ser", "preterito", "él", "ser (она, прошедшее)", "Прошедшее"),
     SentenceTemplate("Antes nosotros ___ en París.", "vivir", "imperfecto", "nosotros", "vivir (nosotros, прошедшее незав.)", "Прошедшее незав."),
-    SentenceTemplate("Cuando era niño, ___ mucho.", "jugar", "imperfecto", "él", "jugar (él, прошедшее незав.)", "Прошедшее незав."),
+    SentenceTemplate("Когда era niño, ___ mucho.", "jugar", "imperfecto", "él", "jugar (él, прошедшее незав.)", "Прошедшее незав."),
     SentenceTemplate("Mañana yo ___ temprano.", "levantarse", "futuro", "yo", "levantarse (yo, будущее)", "Будущее"),
     SentenceTemplate("Si tuviera dinero, ___ un viaje.", "hacer", "condicional", "yo", "hacer (yo, условное)", "Условное"),
     SentenceTemplate("Espero que tú ___ bien.", "estar", "subjuntivo", "tú", "estar (tú, сослагат.)", "Сослагательное"),
     SentenceTemplate("Quiero que ella ___ la verdad.", "decir", "subjuntivo", "él", "decir (ella, сослагат.)", "Сослагательное"),
     SentenceTemplate("Yo ___ la tarea ayer.", "hacer", "preterito", "yo", "hacer (yo, прошедшее)", "Прошедшее"),
 )
-
-// ── Утилита: извлечь форму по лицу ───────────────────────────
 
 private fun ConjugationEntity.formByPerson(person: String): String = when (person) {
     "yo"       -> yo
@@ -123,46 +125,27 @@ class VerbFormViewModel @Inject constructor(
 
     private fun loadQuestions() = viewModelScope.launch {
         val conjugations = conjugationDao.getAll()
-        // Индекс: verb+tense → ConjugationEntity
         val conjMap = conjugations.associateBy { "${it.verb}_${it.tense}" }
 
-        val built = TEMPLATES.mapNotNull { tmpl ->
+        questions = TEMPLATES.mapNotNull { tmpl ->
             val conj = conjMap["${tmpl.verb}_${tmpl.tense}"] ?: return@mapNotNull null
             val correct = conj.formByPerson(tmpl.person)
-
-            // Диstractors — другие формы того же глагола или других глаголов
-            val distractors = conjugations
-                .filter { it.verb == tmpl.verb }
-                .flatMap { c ->
-                    listOf(c.yo, c.tu, c.el, c.nosotros, c.ellos)
-                }
-                .filter { it != correct && it.isNotBlank() }
-                .distinct()
-                .shuffled()
-                .take(3)
-
+            val distractors = conjugations.filter { it.verb == tmpl.verb }
+                .flatMap { listOf(it.yo, it.tu, it.el, it.nosotros, it.ellos) }
+                .filter { it != correct && it.isNotBlank() }.distinct().shuffled().take(3)
             if (distractors.size < 3) return@mapNotNull null
-
-            val options = (distractors + correct).shuffled()
-
             VerbQuestion(
-                sentence          = tmpl.template.replace("___", correct),
+                sentence = tmpl.template.replace("___", correct),
                 sentenceWithBlank = tmpl.template,
-                hint              = tmpl.hintRu,
-                correct           = correct,
-                options           = options,
-                tenseRu           = tmpl.tenseRu
+                hint = tmpl.hintRu,
+                correct = correct,
+                options = (distractors + correct).shuffled(),
+                tenseRu = tmpl.tenseRu
             )
         }.shuffled().take(15)
 
-        questions = built
         qIndex = 0
-
-        if (questions.isEmpty()) {
-            _state.value = _state.value.copy(isLoading = false, isFinished = true)
-        } else {
-            showNext()
-        }
+        showNext()
     }
 
     private fun showNext() {
@@ -171,32 +154,30 @@ class VerbFormViewModel @Inject constructor(
             return
         }
         _state.value = _state.value.copy(
-            question       = questions[qIndex],
+            question = questions[qIndex],
             selectedOption = null,
-            isCorrect      = null,
-            isLoading      = false
+            isCorrect = null,
+            isLoading = false
         )
     }
 
     fun select(option: String) = viewModelScope.launch {
-        val s = _state.value
-        if (s.selectedOption != null || s.question == null) return@launch
-        val correct = option == s.question.correct
-        _state.value = s.copy(
+        if (_state.value.selectedOption != null) return@launch
+        val correct = option == _state.value.question?.correct
+        _state.value = _state.value.copy(
             selectedOption = option,
-            isCorrect      = correct,
-            score          = if (correct) s.score + 10 else s.score,
-            streak         = if (correct) s.streak + 1 else 0,
-            totalAnswered  = s.totalAnswered + 1
+            isCorrect = correct,
+            score = if (correct) _state.value.score + 10 else _state.value.score,
+            streak = if (correct) _state.value.streak + 1 else 0,
+            totalAnswered = _state.value.totalAnswered + 1
         )
-        delay(1200)
+        delay(1000)
         qIndex++
         showNext()
     }
 
     fun restart() {
         qIndex = 0
-        questions = questions.shuffled()
         _state.value = VerbFormState()
         loadQuestions()
     }
@@ -216,7 +197,7 @@ fun VerbFormGameScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Правильная форма") },
+                title = { Text("Глаголы", fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -225,19 +206,17 @@ fun VerbFormGameScreen(
                 },
                 actions = {
                     if (!state.isFinished) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier.padding(end = 12.dp)
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = AppColors.Teal.copy(alpha = 0.15f),
+                            modifier = Modifier.padding(end = 16.dp)
                         ) {
-                            if (state.streak >= 2) {
-                                Text("🔥 ${state.streak}", style = MaterialTheme.typography.titleMedium)
-                            }
                             Text(
                                 "⭐ ${state.score}",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = AppColors.Gold
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = AppColors.Teal
                             )
                         }
                     }
@@ -265,180 +244,170 @@ private fun VerbFormQuestion(state: VerbFormState, onSelect: (String) -> Unit) {
     val q = state.question ?: return
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Прогресс
         LinearProgressIndicator(
-            progress  = { state.totalAnswered / state.totalQuestions.toFloat() },
-            modifier  = Modifier.fillMaxWidth().height(6.dp),
+            progress  = { state.totalAnswered / 15f },
+            modifier  = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
             color     = AppColors.Teal,
-            trackColor = AppColors.Teal.copy(alpha = 0.15f)
+            trackColor = AppColors.Teal.copy(alpha = 0.1f)
         )
-        Text(
-            "${state.totalAnswered + 1} / ${state.totalQuestions}",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Spacer(Modifier.height(24.dp))
 
-        Spacer(Modifier.weight(0.15f))
-
-        // Метка времени
+        // Основная карточка
         Surface(
-            shape = RoundedCornerShape(8.dp),
-            color = AppColors.Teal.copy(alpha = 0.12f)
+            shape = RoundedCornerShape(24.dp),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+            border = borderStroke(),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                q.tenseRu,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                style = MaterialTheme.typography.labelMedium,
-                color = AppColors.Teal,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        // Карточка с предложением
-        AnimatedContent(targetState = q.sentenceWithBlank, label = "vf_sentence") { sentence ->
-            Surface(
-                shape = RoundedCornerShape(24.dp),
-                color = AppColors.Teal.copy(alpha = 0.07f),
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier.padding(28.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(28.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                // Метка времени
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = AppColors.Teal.copy(alpha = 0.1f)
                 ) {
-                    // Предложение с выделенным пропуском
-                    val parts = sentence.split("___")
                     Text(
-                        buildAnnotatedString {
-                            if (parts.isNotEmpty()) append(parts[0])
-                            withStyle(SpanStyle(
-                                color = AppColors.Teal,
-                                fontWeight = FontWeight.ExtraBold
-                            )) {
-                                // После ответа показываем правильный глагол
-                                if (state.selectedOption != null) {
-                                    append(q.correct)
-                                } else {
-                                    append("___")
-                                }
-                            }
-                            if (parts.size > 1) append(parts[1])
-                        },
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    // Подсказка
-                    Text(
-                        "💡 ${q.hint}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
+                        q.tenseRu.uppercase(),
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = AppColors.Teal,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp
                     )
                 }
+
+                // Предложение
+                val parts = q.sentenceWithBlank.split("___")
+                Text(
+                    buildAnnotatedString {
+                        if (parts.isNotEmpty()) append(parts[0])
+                        withStyle(SpanStyle(color = AppColors.Teal, fontWeight = FontWeight.ExtraBold)) {
+                            if (state.selectedOption != null) append(q.correct) else append("___")
+                        }
+                        if (parts.size > 1) append(parts[1])
+                    },
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    "💡 ${q.hint}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
             }
         }
 
-        Spacer(Modifier.weight(0.2f))
+        Spacer(Modifier.weight(1f))
 
         // Варианты ответов
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             q.options.forEach { option ->
                 val answered  = state.selectedOption != null
                 val isSelected = state.selectedOption == option
                 val isCorrect  = q.correct == option
 
-                val containerColor = when {
-                    !answered  -> MaterialTheme.colorScheme.surface
-                    isCorrect  -> AppColors.Teal.copy(alpha = 0.2f)
-                    isSelected -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
-                    else       -> MaterialTheme.colorScheme.surface
-                }
-                val borderColor = when {
-                    !answered  -> MaterialTheme.colorScheme.outlineVariant
-                    isCorrect  -> AppColors.Teal
-                    isSelected -> MaterialTheme.colorScheme.error
-                    else       -> MaterialTheme.colorScheme.outlineVariant
-                }
-
-                OutlinedButton(
-                    onClick  = { onSelect(option) },
-                    enabled  = !answered,
-                    shape    = RoundedCornerShape(14.dp),
-                    colors   = ButtonDefaults.outlinedButtonColors(containerColor = containerColor),
-                    border   = ButtonDefaults.outlinedButtonBorder.copy(
-                        brush = androidx.compose.ui.graphics.SolidColor(borderColor)
-                    ),
-                    modifier = Modifier.fillMaxWidth().height(52.dp)
-                ) {
-                    Text(
-                        option,
-                        style      = MaterialTheme.typography.bodyLarge,
-                        fontWeight = if (isCorrect && answered) FontWeight.Bold else FontWeight.Normal,
-                        color      = when {
-                            isCorrect && answered -> AppColors.Teal
-                            isSelected && answered -> MaterialTheme.colorScheme.error
-                            else -> MaterialTheme.colorScheme.onSurface
-                        }
-                    )
-                }
+                VerbOptionItem(
+                    label = option,
+                    answered = answered,
+                    isCorrect = isCorrect,
+                    isSelected = isSelected,
+                    onClick = { onSelect(option) }
+                )
             }
         }
 
-        Spacer(Modifier.weight(0.1f))
+        Spacer(Modifier.weight(0.5f))
     }
 }
 
-// ── Результат ─────────────────────────────────────────────────
+@Composable
+private fun VerbOptionItem(
+    label: String,
+    answered: Boolean,
+    isCorrect: Boolean,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val targetScale = if (isSelected) 1.05f else 1f
+    val scale by animateFloatAsState(targetScale, label = "scale")
+
+    val bgColor = when {
+        !answered -> MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+        isCorrect -> AppColors.Teal.copy(alpha = 0.2f)
+        isSelected -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
+        else -> MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
+    }
+
+    Surface(
+        onClick = onClick,
+        enabled = !answered,
+        modifier = Modifier.fillMaxWidth().height(60.dp).graphicsLayer { scaleX = scale; scaleY = scale },
+        shape = RoundedCornerShape(18.dp),
+        color = bgColor,
+        border = androidx.compose.foundation.BorderStroke(
+            width = if (isSelected || (answered && isCorrect)) 2.dp else 1.dp,
+            color = if (answered && isCorrect) AppColors.Teal 
+                    else if (isSelected) MaterialTheme.colorScheme.error
+                    else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = if (isCorrect && answered) FontWeight.ExtraBold else FontWeight.Medium,
+                color = if (isCorrect && answered) AppColors.Teal else MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
 
 @Composable
-private fun VerbFormResult(
-    state: VerbFormState,
-    onRetry: () -> Unit,
-    onBack: () -> Unit
-) {
-    val correct = state.score / 10
-    val total   = state.totalAnswered
-    val pct     = if (total > 0) correct * 100 / total else 0
-
-    val emoji   = when { pct >= 90 -> "🏆"; pct >= 70 -> "🎉"; pct >= 50 -> "👍"; else -> "💪" }
-    val message = when { pct >= 90 -> "Спрягаешь как носитель!"; pct >= 70 -> "Отлично!"; pct >= 50 -> "Неплохо!"; else -> "Ещё немного практики!" }
-
+private fun VerbFormResult(state: VerbFormState, onRetry: () -> Unit, onBack: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(emoji, fontSize = 72.sp)
+        Text("🎓", fontSize = 72.sp)
         Spacer(Modifier.height(16.dp))
-        Text("$correct / $total", style = MaterialTheme.typography.displayMedium,
-             fontWeight = FontWeight.Bold)
-        Text("правильных ответов", style = MaterialTheme.typography.bodyMedium,
-             color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(8.dp))
-        Text(message, style = MaterialTheme.typography.titleMedium,
-             color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(8.dp))
-        Surface(shape = RoundedCornerShape(12.dp), color = AppColors.Gold.copy(alpha = 0.15f)) {
+        Text("Урок завершен", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+        Surface(shape = RoundedCornerShape(12.dp), color = AppColors.Teal.copy(alpha = 0.15f)) {
             Text("⭐ ${state.score} очков",
                  modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
-                 color = AppColors.GoldDark)
+                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold,
+                 color = AppColors.Teal)
         }
-        Spacer(Modifier.height(32.dp))
-        Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(52.dp),
-               shape = RoundedCornerShape(14.dp)) {
-            Text("Ещё раз", style = MaterialTheme.typography.titleMedium)
+        
+        Spacer(Modifier.height(48.dp))
+
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.fillMaxWidth().height(60.dp),
+            shape = RoundedCornerShape(18.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.Teal)
+        ) {
+            Text("ПОПРОБОВАТЬ СНОВА", fontWeight = FontWeight.ExtraBold)
         }
-        Spacer(Modifier.height(10.dp))
-        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp),
-                       shape = RoundedCornerShape(14.dp)) {
-            Text("К играм")
+        
+        TextButton(onClick = onBack, modifier = Modifier.padding(top = 12.dp)) {
+            Text("ВЫЙТИ В МЕНЮ", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
+
+@Composable
+private fun borderStroke() = androidx.compose.foundation.BorderStroke(
+    1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+)

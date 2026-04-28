@@ -41,14 +41,13 @@ fun FlashcardsScreen(
     level: String,
     category: String,
     direction: FlashcardDirection,
-    onlyWeak: Boolean,
     viewModel: FlashcardsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = LocalHapticFeedback.current
 
-    LaunchedEffect(level, category, direction, onlyWeak) {
-        viewModel.startSession(level, category, direction, onlyWeak)
+    LaunchedEffect(level, category, direction) {
+        viewModel.startSession(level, category, direction)
     }
 
     Scaffold(

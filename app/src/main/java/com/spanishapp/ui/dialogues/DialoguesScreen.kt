@@ -1,7 +1,9 @@
 package com.spanishapp.ui.dialogues
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -10,15 +12,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -73,9 +79,11 @@ fun DialoguesScreen(
     val levels    = listOf("A1", "A2", "B1", "B2")
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Диалоги") },
+                title = { Text("Диалоги", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -85,61 +93,61 @@ fun DialoguesScreen(
         }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-
             // Фильтр уровней
             LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(levels) { lvl ->
+                    val isSelected = level == lvl
                     FilterChip(
-                        selected = level == lvl,
+                        selected = isSelected,
                         onClick  = { vm.setLevel(lvl) },
-                        label    = { Text(lvl) }
+                        label    = { Text(lvl, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal) },
+                        shape    = RoundedCornerShape(12.dp),
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = AppColors.Teal.copy(alpha = 0.15f),
+                            selectedLabelColor = AppColors.Teal
+                        ),
+                        border = FilterChipDefaults.filterChipBorder(
+                            enabled = true,
+                            selected = isSelected,
+                            borderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
+                            selectedBorderColor = AppColors.Teal
+                        )
                     )
                 }
             }
 
             if (dialogues.isEmpty()) {
-                // Пустое состояние — контент ещё не добавлен
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.padding(32.dp)
                     ) {
-                        Text("💬", fontSize = 56.sp)
+                        Text("💬", fontSize = 64.sp)
                         Text(
-                            "Диалоги для уровня $level",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
+                            "Уровень $level в разработке",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
                         )
                         Text(
-                            "Скоро здесь появятся ситуационные диалоги:\nв ресторане, в магазине, в аэропорту и другие.",
+                            "Скоро здесь появятся живые диалоги для практики языка.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            textAlign = TextAlign.Center
                         )
-                        Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = AppColors.Info.copy(alpha = 0.1f)
-                        ) {
-                            Text(
-                                "🚧 В разработке",
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = AppColors.Info
-                            )
-                        }
                     }
                 }
             } else {
                 LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(dialogues, key = { it.id }) { dialogue ->
-                        DialogueCard(
+                        DialogueCardContent(
                             dialogue    = dialogue,
                             onSpeak     = { vm.speak(it) },
                             onComplete  = { vm.markCompleted(dialogue) }
@@ -151,102 +159,94 @@ fun DialoguesScreen(
     }
 }
 
-// ── Карточка диалога ──────────────────────────────────────────
-
 @Composable
-private fun DialogueCard(
+private fun DialogueCardContent(
     dialogue: DialogueEntity,
     onSpeak: (String) -> Unit,
     onComplete: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "rotation")
 
-    // Парсим JSON строки диалога
-    val lines: List<DialogueLine> = remember(dialogue.linesJson) {
-        parseDialogueLines(dialogue.linesJson)
-    }
+    val lines = remember(dialogue.linesJson) { parseDialogueLines(dialogue.linesJson) }
 
     Surface(
-        shape = RoundedCornerShape(18.dp),
-        color = if (dialogue.isCompleted)
-            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
-        else MaterialTheme.colorScheme.surface,
-        tonalElevation = if (dialogue.isCompleted) 0.dp else 1.dp,
+        onClick = { expanded = !expanded },
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp, 
+            if (dialogue.isCompleted) AppColors.Teal.copy(alpha = 0.3f) 
+            else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        ),
         modifier = Modifier.fillMaxWidth().animateContentSize()
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-
-            // Заголовок
+        Column(modifier = Modifier.padding(20.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Иконка ситуации
-                Surface(
-                    shape = CircleShape,
-                    color = AppColors.Teal.copy(alpha = 0.12f),
-                    modifier = Modifier.size(44.dp)
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(AppColors.Teal.copy(alpha = 0.1f), CircleShape),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text("💬", fontSize = 20.sp)
-                    }
+                    Text(if (dialogue.isCompleted) "✅" else "💬", fontSize = 22.sp)
                 }
-                Spacer(Modifier.width(12.dp))
+                
+                Spacer(Modifier.width(16.dp))
+                
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(dialogue.title, style = MaterialTheme.typography.titleMedium,
-                             fontWeight = FontWeight.Bold)
-                        if (dialogue.isCompleted) {
-                            Icon(Icons.Default.CheckCircle, null,
-                                 tint = AppColors.Teal, modifier = Modifier.size(16.dp))
-                        }
-                    }
-                    Text(dialogue.situation, style = MaterialTheme.typography.bodySmall,
-                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                // Кнопка разворота
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(
-                        if (expanded) Icons.Default.PlayArrow else Icons.Default.PlayArrow,
-                        null,
-                        tint = AppColors.Teal
+                    Text(
+                        dialogue.title, 
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (dialogue.isCompleted) AppColors.Teal else MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        dialogue.situation, 
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+                
+                Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    null,
+                    modifier = Modifier.graphicsLayer { rotationZ = rotation },
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
             }
 
-            // Строки диалога
             if (expanded && lines.isNotEmpty()) {
-                Spacer(Modifier.height(12.dp))
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
-                Spacer(Modifier.height(12.dp))
-
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Spacer(Modifier.height(20.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     lines.forEach { line ->
-                        DialogueLineRow(line, onSpeak)
+                        DialogueLineItem(line, onSpeak)
                     }
                 }
 
                 if (!dialogue.isCompleted) {
-                    Spacer(Modifier.height(14.dp))
+                    Spacer(Modifier.height(20.dp))
                     Button(
-                        onClick = onComplete,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
-                    ) { Text("✅ Диалог пройден") }
+                        onClick = { 
+                            onComplete()
+                            expanded = false
+                        },
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = AppColors.Teal)
+                    ) {
+                        Text("ЗАВЕРШИТЬ ПРАКТИКУ", fontWeight = FontWeight.Bold)
+                    }
                 }
             }
         }
     }
 }
 
-// ── Строка диалога ────────────────────────────────────────────
-
-data class DialogueLine(
-    val speaker: String,   // "A" или "B"
-    val es: String,
-    val ru: String
-)
+data class DialogueLine(val speaker: String, val es: String, val ru: String)
 
 fun parseDialogueLines(json: String): List<DialogueLine> = runCatching {
     val arr = JSONArray(json)
@@ -254,79 +254,58 @@ fun parseDialogueLines(json: String): List<DialogueLine> = runCatching {
         val obj = arr.getJSONObject(i)
         DialogueLine(
             speaker = obj.optString("speaker", "A"),
-            es      = obj.optString("es", ""),
-            ru      = obj.optString("ru", "")
+            es      = obj.getString("es"),
+            ru      = obj.getString("ru")
         )
     }
 }.getOrDefault(emptyList())
 
 @Composable
-private fun DialogueLineRow(line: DialogueLine, onSpeak: (String) -> Unit) {
+private fun DialogueLineItem(line: DialogueLine, onSpeak: (String) -> Unit) {
     val isA = line.speaker == "A"
+    
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (isA) Arrangement.Start else Arrangement.End
     ) {
-        if (isA) {
-            // Аватар спикера A
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(AppColors.Teal.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
-            ) { Text("A", fontWeight = FontWeight.Bold, color = AppColors.Teal, fontSize = 12.sp) }
-            Spacer(Modifier.width(8.dp))
-        }
-
-        Surface(
-            shape = RoundedCornerShape(
-                topStart = if (isA) 4.dp else 14.dp,
-                topEnd   = if (isA) 14.dp else 4.dp,
-                bottomStart = 14.dp,
-                bottomEnd   = 14.dp
-            ),
-            color = if (isA) AppColors.Teal.copy(alpha = 0.1f)
-                    else AppColors.Terracotta.copy(alpha = 0.1f),
-            modifier = Modifier.widthIn(max = 280.dp)
+        Column(
+            modifier = Modifier.widthIn(max = 300.dp),
+            horizontalAlignment = if (isA) Alignment.Start else Alignment.End
         ) {
-            Column(modifier = Modifier.padding(10.dp)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        line.es,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.weight(1f)
-                    )
-                    IconButton(
-                        onClick = { onSpeak(line.es) },
-                        modifier = Modifier.size(28.dp)
-                    ) {
-                        Icon(Icons.Default.VolumeUp, null,
-                             modifier = Modifier.size(16.dp),
-                             tint = if (isA) AppColors.Teal else AppColors.Terracotta)
+            Surface(
+                shape = RoundedCornerShape(
+                    topStart = if (isA) 4.dp else 16.dp,
+                    topEnd   = if (isA) 16.dp else 4.dp,
+                    bottomStart = 16.dp,
+                    bottomEnd   = 16.dp
+                ),
+                color = if (isA) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                        else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                modifier = Modifier.clickable { onSpeak(line.es) }
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            line.es,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            Icons.AutoMirrored.Filled.VolumeUp,
+                            null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
+                    Text(
+                        line.ru,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
-                Text(
-                    line.ru,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
-        }
-
-        if (!isA) {
-            Spacer(Modifier.width(8.dp))
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(AppColors.Terracotta.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
-            ) { Text("B", fontWeight = FontWeight.Bold, color = AppColors.Terracotta, fontSize = 12.sp) }
         }
     }
 }

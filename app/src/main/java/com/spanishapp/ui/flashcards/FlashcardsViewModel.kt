@@ -54,12 +54,11 @@ class FlashcardsViewModel @Inject constructor(
         level: String,
         category: String,
         direction: FlashcardDirection,
-        onlyWeak: Boolean,
         sessionSize: Int = 20
     ) {
         mode = direction
         viewModelScope.launch {
-            val cards = buildSessionDeck(level, category, onlyWeak, sessionSize)
+            val cards = buildSessionDeck(level, category, sessionSize)
             if (cards.isEmpty()) {
                 _state.value = FlashcardsUiState(
                     isLoading = false,
@@ -86,12 +85,8 @@ class FlashcardsViewModel @Inject constructor(
     private suspend fun buildSessionDeck(
         level: String,
         category: String,
-        onlyWeak: Boolean,
         sessionSize: Int
     ): List<WordEntity> {
-        if (onlyWeak) {
-            return wordDao.getWeakForSession(category, sessionSize)
-        }
         // Смесь: 70% повторение (due) + 30% новые. Если чего-то не хватает — добираем.
         val reviewBudget = (sessionSize * 0.7).toInt().coerceAtLeast(1)
         val newBudget = sessionSize - reviewBudget
@@ -164,7 +159,6 @@ class FlashcardsViewModel @Inject constructor(
             level = s.level,
             category = s.category,
             direction = mode,
-            onlyWeak = false,
             sessionSize = 20
         )
     }

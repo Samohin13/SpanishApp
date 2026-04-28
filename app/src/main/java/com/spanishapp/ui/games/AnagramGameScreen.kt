@@ -1,16 +1,25 @@
 package com.spanishapp.ui.games
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,8 +47,8 @@ data class AnagramState(
     val isCorrect: Boolean? = null,
     val score: Int = 0,
     val totalAnswered: Int = 0,
-    val hint: Boolean = false,          // показать перевод
-    val showExample: Boolean = false,   // показать пример-подсказку
+    val hint: Boolean = false,
+    val showExample: Boolean = false,
     val isFinished: Boolean = false,
     val isLoading: Boolean = true
 ) {
@@ -64,9 +73,7 @@ class AnagramGameViewModel @Inject constructor(
         pool = wordDao.getRandomWords(300)
             .filter { w ->
                 val s = w.spanish.trim()
-                s.length in 3..9
-                    && !s.contains(' ')
-                    && s.all { it.isLetter() || it == 'ñ' || it == 'ü' }
+                s.length in 3..9 && !s.contains(' ') && s.all { it.isLetter() || it == 'ñ' || it == 'ü' }
             }
             .shuffled()
             .take(12)
@@ -122,6 +129,7 @@ class AnagramGameViewModel @Inject constructor(
 
     fun checkAnswer() = viewModelScope.launch {
         val s = _state.value
+        if (s.inputLetters.size != s.shuffledLetters.size) return@launch
         val correct = s.inputWord.equals(s.targetWord, ignoreCase = true)
         _state.value = s.copy(
             isCorrect     = correct,
@@ -145,7 +153,6 @@ class AnagramGameViewModel @Inject constructor(
     }
 
     fun restart() {
-        pool = pool.shuffled()
         poolIndex = 0
         _state.value = AnagramState()
         loadPool()
@@ -166,7 +173,7 @@ fun AnagramGameScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Анаграмма 🔤") },
+                title = { Text("Анаграмма", fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -175,13 +182,19 @@ fun AnagramGameScreen(
                 },
                 actions = {
                     if (!state.isFinished) {
-                        Text(
-                            "⭐ ${state.score}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = AppColors.Gold,
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = AppColors.Ochre.copy(alpha = 0.15f),
                             modifier = Modifier.padding(end = 16.dp)
-                        )
+                        ) {
+                            Text(
+                                "⭐ ${state.score}",
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = AppColors.Ochre
+                            )
+                        }
                     }
                 }
             )
@@ -192,7 +205,7 @@ fun AnagramGameScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                state.isLoading  -> CircularProgressIndicator(color = AppColors.Gold)
+                state.isLoading  -> CircularProgressIndicator(color = AppColors.Ochre)
                 state.isFinished -> AnagramResult(state, vm::restart) { navController.popBackStack() }
                 state.word != null -> AnagramQuestion(
                     state, vm::tapLetter, vm::removeLast,
@@ -217,203 +230,166 @@ private fun AnagramQuestion(
 ) {
     val word = state.word ?: return
 
-
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Прогресс
         LinearProgressIndicator(
             progress  = { state.totalAnswered / 12f },
-            modifier  = Modifier.fillMaxWidth().height(5.dp),
-            color     = AppColors.Gold,
-            trackColor = AppColors.Gold.copy(alpha = 0.15f)
+            modifier  = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
+            color     = AppColors.Ochre,
+            trackColor = AppColors.Ochre.copy(alpha = 0.1f)
         )
-        Text(
-            "${state.totalAnswered + 1} / 12",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Spacer(Modifier.height(24.dp))
 
-        Spacer(Modifier.weight(0.1f))
-
-        Text(
-            "Собери испанское слово:",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-
-        // Подсказки: перевод и пример
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Подсказка: перевод
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = AppColors.Gold.copy(alpha = 0.1f)
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    if (state.hint) {
-                        Text(
-                            word.russian,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.SemiBold,
-                            color = AppColors.GoldDark
-                        )
-                    } else {
-                        Text("🔤", fontSize = 14.sp)
-                        TextButton(onClick = onHint, contentPadding = PaddingValues(0.dp)) {
-                            Text("Перевод", style = MaterialTheme.typography.labelSmall,
-                                 color = AppColors.GoldDark)
-                        }
-                    }
-                }
-            }
-
-            // Подсказка: пример предложения (если есть)
-            if (word.example.isNotBlank()) {
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = AppColors.Teal.copy(alpha = 0.1f)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        if (state.showExample) {
-                            Text(
-                                "«${word.example}»",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = AppColors.Teal
-                            )
-                        } else {
-                            Text("💡", fontSize = 14.sp)
-                            TextButton(onClick = onExample, contentPadding = PaddingValues(0.dp)) {
-                                Text("Пример", style = MaterialTheme.typography.labelSmall,
-                                     color = AppColors.Teal)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Поле ввода — собранные буквы
-        val resultColor = when (state.isCorrect) {
-            true  -> AppColors.Teal
-            false -> MaterialTheme.colorScheme.error
-            null  -> MaterialTheme.colorScheme.outlineVariant
-        }
-
+        // Основная карточка с заданием
         Surface(
-            shape = RoundedCornerShape(18.dp),
-            color = resultColor.copy(alpha = 0.07f),
+            shape = RoundedCornerShape(24.dp),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+            border = borderStroke(),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
-                contentAlignment = Alignment.Center
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                val display = if (state.inputLetters.isEmpty()) "_ _ _"
-                              else state.inputLetters.joinToString(" ")
-                AnimatedContent(targetState = display, label = "input") { text ->
+                Text(
+                    "СОБЕРИ СЛОВО",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    letterSpacing = 1.2.sp
+                )
+
+                // Поле ввода
+                val resultColor = when (state.isCorrect) {
+                    true  -> AppColors.Teal
+                    false -> MaterialTheme.colorScheme.error
+                    null  -> MaterialTheme.colorScheme.onSurface
+                }
+
+                Text(
+                    text = if (state.inputLetters.isEmpty()) "• • •" else state.inputWord.uppercase(),
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = resultColor,
+                    textAlign = TextAlign.Center
+                )
+
+                if (state.isCorrect != null) {
                     Text(
-                        text,
-                        style = MaterialTheme.typography.displaySmall,
+                        if (state.isCorrect == true) "¡Excelente!" else word.spanish.uppercase(),
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = resultColor,
-                        textAlign = TextAlign.Center
+                        color = resultColor
                     )
                 }
+
+                // Подсказки
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    HintChip(
+                        label = if (state.hint) word.russian else "ПЕРЕВОД",
+                        icon = if (state.hint) null else Icons.Default.Check,
+                        onClick = onHint,
+                        isSelected = state.hint
+                    )
+                    if (word.example.isNotBlank()) {
+                        HintChip(
+                            label = if (state.showExample) word.example else "ПРИМЕР",
+                            onClick = onExample,
+                            isSelected = state.showExample,
+                            color = AppColors.Teal
+                        )
+                    }
+                }
             }
         }
 
-        // Статус ответа
-        AnimatedVisibility(state.isCorrect != null) {
-            Text(
-                if (state.isCorrect == true) "✅ Правильно!" else "❌ ${word.spanish}",
-                style = MaterialTheme.typography.titleMedium,
-                color = if (state.isCorrect == true) AppColors.Teal else MaterialTheme.colorScheme.error
-            )
-        }
+        Spacer(Modifier.weight(1f))
 
-        Spacer(Modifier.weight(0.1f))
-
-        // ── Буквы в два ряда по центру ────────────────────────
-        val letters = state.shuffledLetters
-        val rowSize = (letters.size + 1) / 2   // верхний ряд немного больше если нечётное
-        val topRow    = letters.subList(0, rowSize)
-        val bottomRow = letters.subList(rowSize, letters.size)
-        val topIndices    = (0 until rowSize).toList()
-        val bottomIndices = (rowSize until letters.size).toList()
-
+        // Сетка букв
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            // Верхний ряд
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.wrapContentWidth()
-            ) {
-                topRow.forEachIndexed { localIdx, letter ->
-                    val globalIdx = topIndices[localIdx]
-                    LetterTile(letter, globalIdx, state, onTap)
-                }
-            }
-            // Нижний ряд
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.wrapContentWidth()
-            ) {
-                bottomRow.forEachIndexed { localIdx, letter ->
-                    val globalIdx = bottomIndices[localIdx]
-                    LetterTile(letter, globalIdx, state, onTap)
+            val letters = state.shuffledLetters
+            val rows = letters.chunked(if (letters.size > 6) (letters.size + 1) / 2 else letters.size)
+            
+            rows.forEachIndexed { rowIndex, rowLetters ->
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    rowLetters.forEachIndexed { colIndex, letter ->
+                        val globalIdx = rowIndex * rows[0].size + colIndex
+                        if (globalIdx < letters.size) {
+                            LetterTile(letter, globalIdx, state, onTap)
+                        }
+                    }
                 }
             }
         }
 
-        Spacer(Modifier.weight(0.1f))
+        Spacer(Modifier.weight(1f))
 
         // Кнопки управления
         Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.fillMaxWidth()
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)
         ) {
-            OutlinedButton(
-                onClick  = onRemove,
-                enabled  = state.inputLetters.isNotEmpty() && state.isCorrect == null,
-                shape    = RoundedCornerShape(14.dp),
-                modifier = Modifier.weight(1f).height(50.dp)
+            IconButton(
+                onClick = onRemove,
+                enabled = state.inputLetters.isNotEmpty() && state.isCorrect == null,
+                modifier = Modifier.size(56.dp).background(MaterialTheme.colorScheme.surface.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
             ) {
-                Icon(Icons.Default.Backspace, null, modifier = Modifier.size(20.dp))
+                Icon(Icons.Default.Backspace, null)
             }
+            
             Button(
-                onClick  = onCheck,
-                enabled  = state.inputLetters.isNotEmpty() && state.isCorrect == null,
-                shape    = RoundedCornerShape(14.dp),
-                modifier = Modifier.weight(2f).height(50.dp)
+                onClick = onCheck,
+                enabled = state.inputLetters.size == state.shuffledLetters.size && state.isCorrect == null,
+                modifier = Modifier.weight(1f).height(56.dp),
+                shape = RoundedCornerShape(18.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Ochre)
             ) {
-                Text("Проверить", style = MaterialTheme.typography.titleSmall)
+                Text("ПРОВЕРИТЬ", fontWeight = FontWeight.ExtraBold)
             }
-            OutlinedButton(
-                onClick  = onSkip,
-                enabled  = state.isCorrect == null,
-                shape    = RoundedCornerShape(14.dp),
-                modifier = Modifier.weight(1f).height(50.dp)
+
+            IconButton(
+                onClick = onSkip,
+                enabled = state.isCorrect == null,
+                modifier = Modifier.size(56.dp).background(MaterialTheme.colorScheme.surface.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
             ) {
-                Text("→", fontSize = 18.sp)
+                Text("→", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
+        }
+    }
+}
+
+@Composable
+private fun HintChip(
+    label: String,
+    icon: ImageVector? = null,
+    onClick: () -> Unit,
+    isSelected: Boolean,
+    color: Color = AppColors.Ochre
+) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        color = if (isSelected) color.copy(alpha = 0.1f) else Color.Transparent,
+        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.3f))
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                label,
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = color
+            )
         }
     }
 }
@@ -426,67 +402,70 @@ private fun LetterTile(
     onTap: (Int) -> Unit
 ) {
     val used = globalIndex in state.usedIndices
+    val scale by animateFloatAsState(if (used) 0.9f else 1f, label = "tile")
+    
     Surface(
         onClick = { onTap(globalIndex) },
-        shape   = RoundedCornerShape(12.dp),
-        color   = if (used) MaterialTheme.colorScheme.surfaceVariant
-                  else AppColors.Gold.copy(alpha = 0.15f),
         enabled = !used && state.isCorrect == null,
-        modifier = Modifier.size(52.dp)
+        shape   = RoundedCornerShape(16.dp),
+        color   = if (used) Color.Transparent else MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+        modifier = Modifier
+            .size(54.dp)
+            .graphicsLayer { scaleX = scale; scaleY = scale }
+            .border(
+                width = 1.dp,
+                color = if (used) MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f) 
+                        else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(16.dp)
+            )
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 letter.uppercaseChar().toString(),
-                fontSize   = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color      = if (used) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-                             else AppColors.GoldDark
+                fontSize   = 22.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color      = if (used) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f) 
+                             else MaterialTheme.colorScheme.onSurface
             )
         }
     }
 }
 
-// ── Результат ─────────────────────────────────────────────────
-
 @Composable
 private fun AnagramResult(state: AnagramState, onRetry: () -> Unit, onBack: () -> Unit) {
-    val correct = state.score / 15
-    val total   = state.totalAnswered
-    val pct     = if (total > 0) correct * 100 / total else 0
-
-    val emoji   = when { pct >= 80 -> "🏆"; pct >= 60 -> "🎉"; pct >= 40 -> "👍"; else -> "💪" }
-    val message = when { pct >= 80 -> "Ты мастер слов!"; pct >= 60 -> "Отличный результат!"; pct >= 40 -> "Неплохо!"; else -> "Ещё немного тренировки!" }
-
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(emoji, fontSize = 72.sp)
+        Text("🏁", fontSize = 72.sp)
         Spacer(Modifier.height(16.dp))
-        Text("$correct / $total", style = MaterialTheme.typography.displayMedium,
-             fontWeight = FontWeight.Bold)
-        Text("собрано верно", style = MaterialTheme.typography.bodyMedium,
-             color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Игра окончена", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
-        Text(message, style = MaterialTheme.typography.titleMedium,
-             color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(12.dp))
-        Surface(shape = RoundedCornerShape(12.dp), color = AppColors.Gold.copy(alpha = 0.15f)) {
-            Text("⭐ ${state.score} очков",
-                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold,
-                 color = AppColors.GoldDark)
+        Text(
+            "Твой результат: ${state.score} очков",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        
+        Spacer(Modifier.height(48.dp))
+
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.fillMaxWidth().height(60.dp),
+            shape = RoundedCornerShape(18.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.Ochre)
+        ) {
+            Text("ПОПРОБОВАТЬ СНОВА", fontWeight = FontWeight.ExtraBold)
         }
-        Spacer(Modifier.height(32.dp))
-        Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(52.dp),
-               shape = RoundedCornerShape(14.dp)) {
-            Text("Ещё раз", style = MaterialTheme.typography.titleMedium)
-        }
-        Spacer(Modifier.height(10.dp))
-        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp),
-                       shape = RoundedCornerShape(14.dp)) {
-            Text("К играм")
+        
+        TextButton(onClick = onBack, modifier = Modifier.padding(top = 12.dp)) {
+            Text("ВЫЙТИ В МЕНЮ", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
+
+@Composable
+private fun borderStroke() = androidx.compose.foundation.BorderStroke(
+    1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+)

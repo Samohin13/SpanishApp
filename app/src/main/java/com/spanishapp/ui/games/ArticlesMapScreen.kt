@@ -1,10 +1,8 @@
 package com.spanishapp.ui.games
 
-import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -14,12 +12,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,8 +31,8 @@ import com.spanishapp.data.db.entity.ArticleLevelProgressEntity
 import com.spanishapp.ui.theme.AppColors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.cos
 import kotlin.math.sin
 
 @HiltViewModel
@@ -53,58 +52,77 @@ fun ArticlesMapScreen(
     val levels by vm.levels.collectAsState()
     val scrollState = rememberScrollState()
 
-    // Скорллим вниз (к началу уровней) при первом запуске
+    // Скролл к бычку при запуске
     LaunchedEffect(levels) {
         if (levels.isNotEmpty()) {
-            scrollState.scrollTo(scrollState.maxValue)
+            val lastUnlocked = levels.findLast { it.isUnlocked }?.levelId ?: 1
+            // Примерный расчет позиции: 150dp на каждый уровень
+            val scrollTarget = (levels.size - lastUnlocked) * 160
+            scrollState.scrollTo(scrollTarget)
         }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Путь Артиклей", fontWeight = FontWeight.Bold) },
+                title = { Text("EL CAMINO", fontWeight = FontWeight.Black, letterSpacing = 2.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color(0xFF5D4037))
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFFE6D5B8).copy(alpha = 0.9f),
+                    titleContentColor = Color(0xFF5D4037)
+                )
             )
-        },
-        containerColor = Color(0xFFF4EAD5) // Песочный фон степей
+        }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            // Карта
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFF87CEEB), Color(0xFFF4EAD5), Color(0xFFD2B48C))
+                    )
+                )
+        ) {
+            // Кастомный холст для всей карты
+            val mapHeight = (levels.size * 180).dp
+            
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(vertical = 100.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .drawBehind {
+                        // Рисуем текстуру "старой бумаги" программно
+                        drawRect(Color.Black.copy(alpha = 0.05f))
+                    }
             ) {
-                val reversedLevels = levels.reversed()
-                
-                reversedLevels.forEachIndexed { index, level ->
-                    val actualIndex = levels.size - index
-                    val xOffset = (sin(actualIndex * 0.8f) * 80).dp
-                    
-                    LevelNode(
-                        level = level,
-                        offset = xOffset,
-                        isLast = index == 0,
-                        isFirst = index == reversedLevels.size - 1,
-                        onLevelClick = {
-                            if (level.isUnlocked) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(mapHeight)
+                        .padding(vertical = 100.dp)
+                ) {
+                    // 1. Отрисовка пути (дороги)
+                    PathCanvas(levels)
+
+                    // 2. Отрисовка объектов мира и уровней
+                    levels.reversed().forEach { level ->
+                        val yPos = (levels.size - level.levelId) * 180f
+                        val xOffset = (sin(level.levelId * 0.6f) * 110).dp
+
+                        LevelPoint(
+                            level = level,
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .offset(y = yPos.dp, x = xOffset),
+                            isCurrent = level.isUnlocked && (level.levelId == levels.findLast { it.isUnlocked }?.levelId),
+                            onClick = {
                                 navController.navigate("game_articles_session/${level.levelId}")
                             }
-                        }
-                    )
-                    
-                    if (index < reversedLevels.size - 1) {
-                        PathConnector(
-                            currentOffset = xOffset,
-                            nextOffset = (sin((actualIndex - 1) * 0.8f) * 80).dp
                         )
                     }
                 }
@@ -114,61 +132,103 @@ fun ArticlesMapScreen(
 }
 
 @Composable
-private fun LevelNode(
-    level: ArticleLevelProgressEntity,
-    offset: androidx.compose.ui.unit.Dp,
-    isLast: Boolean,
-    isFirst: Boolean,
-    onLevelClick: () -> Unit
-) {
-    val nodeColor = if (level.isUnlocked) AppColors.Ochre else Color.Gray
-    val biomeText = when {
-        level.levelId <= 20 -> "Степи"
-        level.levelId <= 50 -> "Деревня"
-        level.levelId <= 80 -> "Городок"
-        else -> "Мадрид"
-    }
+private fun PathCanvas(levels: List<ArticleLevelProgressEntity>) {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val path = Path()
+        val points = levels.map { level ->
+            val y = (levels.size - level.levelId) * 180f + 130f
+            val x = size.width / 2 + (sin(level.levelId * 0.6f) * 110).dp.toPx()
+            Offset(x, y.dp.toPx())
+        }.reversed()
 
-    Column(
-        modifier = Modifier
-            .offset(x = offset)
-            .width(100.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (level.levelId % 10 == 0 || isLast || isFirst) {
-            Text(
-                biomeText,
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF8B4513),
-                modifier = Modifier.padding(bottom = 4.dp)
+        if (points.size > 1) {
+            path.moveTo(points[0].x, points[0].y)
+            for (i in 1 until points.size) {
+                val prev = points[i - 1]
+                val curr = points[i]
+                val cp1 = Offset(prev.x, (prev.y + curr.y) / 2)
+                val cp2 = Offset(curr.x, (prev.y + curr.y) / 2)
+                path.cubicTo(cp1.x, cp1.y, cp2.x, cp2.y, curr.x, curr.y)
+            }
+
+            // Тень дороги
+            drawPath(
+                path = path,
+                color = Color(0xFF5D4037).copy(alpha = 0.1f),
+                style = Stroke(width = 45f, cap = StrokeCap.Round)
+            )
+            // Сама дорога (пунктир в стиле карт)
+            drawPath(
+                path = path,
+                color = Color(0xFFE6D5B8),
+                style = Stroke(width = 30f, cap = StrokeCap.Round)
+            )
+            drawPath(
+                path = path,
+                color = Color(0xFF5D4037).copy(alpha = 0.3f),
+                style = Stroke(
+                    width = 6f, 
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f),
+                    cap = StrokeCap.Round
+                )
             )
         }
+    }
+}
 
-        Box(
-            modifier = Modifier
-                .size(64.dp)
-                .shadow(if (level.isUnlocked) 8.dp else 0.dp, CircleShape)
-                .background(if (level.isUnlocked) Color.White else Color(0xFFD1D1D1), CircleShape)
-                .border(3.dp, nodeColor, CircleShape)
-                .clickable(enabled = level.isUnlocked, onClick = onLevelClick),
-            contentAlignment = Alignment.Center
-        ) {
-            if (level.levelId == 1 && level.stars == 0) {
-                // Испанский бычок (заглушка-текст, если нет ресурса)
-                Text("🐂", fontSize = 32.sp)
+@Composable
+private fun LevelPoint(
+    level: ArticleLevelProgressEntity,
+    modifier: Modifier,
+    isCurrent: Boolean,
+    onClick: () -> Unit
+) {
+    val nodeColor = if (level.isUnlocked) Color(0xFFFF9800) else Color(0xFFBDBDBD)
+    val starColor = Color(0xFFFFD700)
+
+    Column(
+        modifier = modifier.width(120.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Декоративные объекты мира (деревья, камни) рядом с уровнем
+        Box(contentAlignment = Alignment.Center) {
+            if (isCurrent) {
+                // Bull is clickable and starts the level
+                Box(modifier = Modifier.clickable { onClick() }) {
+                    BullSprite()
+                }
             } else {
-                Text(level.levelId.toString(), fontWeight = FontWeight.ExtraBold, color = nodeColor, fontSize = 20.sp)
+                Surface(
+                    onClick = onClick,
+                    enabled = level.isUnlocked,
+                    shape = CircleShape,
+                    color = if (level.isUnlocked) Color.White else Color(0xFFE0E0E0),
+                    border = BorderStroke(3.dp, nodeColor),
+                    shadowElevation = 6.dp,
+                    modifier = Modifier.size(54.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            text = level.levelId.toString(),
+                            fontWeight = FontWeight.Black,
+                            color = if (level.isUnlocked) Color(0xFF5D4037) else Color.Gray,
+                            fontSize = 18.sp
+                        )
+                    }
+                }
             }
         }
 
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(top = 4.dp)) {
+        // Звезды
+        Row(
+            modifier = Modifier.padding(top = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
             repeat(3) { i ->
                 Icon(
-                    Icons.Default.Star,
-                    null,
-                    modifier = Modifier.size(14.dp),
-                    tint = if (i < level.stars) Color(0xFFFFD700) else Color.LightGray
+                    Icons.Default.Star, null,
+                    modifier = Modifier.size(16.dp),
+                    tint = if (i < level.stars) starColor else Color.White.copy(alpha = 0.5f)
                 )
             }
         }
@@ -176,29 +236,46 @@ private fun LevelNode(
 }
 
 @Composable
-private fun PathConnector(
-    currentOffset: androidx.compose.ui.unit.Dp,
-    nextOffset: androidx.compose.ui.unit.Dp
-) {
-    Canvas(modifier = Modifier
-        .fillMaxWidth()
-        .height(60.dp)) {
-        val startX = size.width / 2 + currentOffset.toPx()
-        val endX = size.width / 2 + nextOffset.toPx()
-        
-        val path = Path().apply {
-            moveTo(startX, 0f)
-            cubicTo(
-                startX, 30.dp.toPx(),
-                endX, 30.dp.toPx(),
-                endX, 60.dp.toPx()
-            )
+private fun BullSprite() {
+    val infiniteTransition = rememberInfiniteTransition(label = "")
+    val bounce by infiniteTransition.animateFloat(
+        initialValue = 0f, targetValue = -15f,
+        animationSpec = infiniteRepeatable(tween(500, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = ""
+    )
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.offset(y = bounce.dp).clickable { /* Будет обработано родителем */ }
+    ) {
+        // "Рисуем" бычка слоями
+        Box(
+            modifier = Modifier
+                .size(70.dp)
+                .drawBehind {
+                    // Тень под бычком
+                    drawOval(
+                        color = Color.Black.copy(alpha = 0.2f),
+                        topLeft = Offset(10f, size.height - 10f),
+                        size = Size(size.width - 20f, 15f)
+                    )
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Text("🐂", fontSize = 48.sp)
         }
         
-        drawPath(
-            path = path,
-            color = Color(0xFF8B4513).copy(alpha = 0.3f),
-            style = Stroke(width = 8f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 10f), 0f))
-        )
+        Surface(
+            color = Color(0xFFC62828),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.offset(y = (-10).dp)
+        ) {
+            Text(
+                "¡VAMOS!", 
+                color = Color.White, 
+                fontSize = 10.sp, 
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+            )
+        }
     }
 }

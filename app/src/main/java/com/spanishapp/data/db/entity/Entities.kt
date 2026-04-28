@@ -140,3 +140,11 @@ data class DailyWordEntity(
     @ColumnInfo(name = "word_id") val wordId: Int,
     @ColumnInfo(name = "was_practiced") val wasPracticed: Boolean = false
 )
+
+@Entity(tableName = "article_level_progress")
+data class ArticleLevelProgressEntity(
+    @PrimaryKey val levelId: Int, // 1-100
+    val stars: Int = 0, // 0-3
+    val isUnlocked: Boolean = false,
+    @ColumnInfo(name = "best_score") val bestScore: Int = 0
+)

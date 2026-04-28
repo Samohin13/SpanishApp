@@ -1,24 +1,29 @@
 package com.spanishapp.ui.flashcards
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,6 +34,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.spanishapp.data.db.dao.WordDao
+import com.spanishapp.ui.theme.AppColors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,20 +43,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private val LEVELS = listOf("A1", "A2", "B1", "B2")
+private val LEVEL_EMOJIS = mapOf("A1" to "🐣", "A2" to "🐥", "B1" to "🦜", "B2" to "🦅")
 private const val UNLOCK_THRESHOLD = 0.8f
 
 data class LevelInfo(
     val key: String,
     val unlocked: Boolean,
-    val masteredRatio: Float, // 0..1
+    val masteredRatio: Float,
     val masteredCount: Int,
-    val totalCount: Int
-)
-
-private val DIRECTIONS = listOf(
-    "ES → RU" to FlashcardDirection.ES_TO_RU,
-    "RU → ES" to FlashcardDirection.RU_TO_ES,
-    "Смешанный" to FlashcardDirection.MIXED
+    val totalCount: Int,
 )
 
 @HiltViewModel
@@ -100,7 +101,6 @@ fun FlashcardsSetupScreen(
     var level by remember { mutableStateOf("A1") }
     var category by remember { mutableStateOf("all") }
     var direction by remember { mutableStateOf(FlashcardDirection.ES_TO_RU) }
-    var onlyWeak by remember { mutableStateOf(false) }
 
     val categories by viewModel.categories.collectAsState()
     val levels by viewModel.levels.collectAsState()
@@ -108,22 +108,26 @@ fun FlashcardsSetupScreen(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) { viewModel.loadLevels() }
-
     LaunchedEffect(level) {
         category = "all"
         viewModel.loadCategories(level)
     }
 
-    val selectedLevelInfo = levels.firstOrNull { it.key == level }
-
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Карточки") },
+                title = { 
+                    Text(
+                        "Тренировка слов", 
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -136,331 +140,274 @@ fun FlashcardsSetupScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            Spacer(Modifier.height(4.dp))
 
-            SectionTitle("Уровень")
-            LevelRow(
-                levels = levels,
-                selected = level,
-                onSelect = { info ->
-                    if (info.unlocked) {
-                        level = info.key
-                    } else {
-                        val prev = LEVELS.getOrNull(LEVELS.indexOf(info.key) - 1) ?: "A1"
-                        val pct = ((levels.firstOrNull { it.key == prev }?.masteredRatio ?: 0f) * 100).toInt()
-                        scope.launch {
-                            snackbarHost.showSnackbar(
-                                "Открой все слова $prev, чтобы разблокировать ${info.key} (прогресс $pct%)"
-                            )
-                        }
+            // ── Уровни ──────────────────────────────────────────
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                SectionLabel("Сложность")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    val displayLevels = levels.ifEmpty { 
+                        LEVELS.mapIndexed { i, k -> LevelInfo(k, i == 0, 0f, 0, 0) } 
+                    }
+                    displayLevels.forEach { info ->
+                        LevelSelectorItem(
+                            info = info,
+                            isSelected = level == info.key,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                if (info.unlocked) level = info.key
+                                else {
+                                    val prev = LEVELS.getOrNull(LEVELS.indexOf(info.key) - 1) ?: "A1"
+                                    scope.launch { snackbarHost.showSnackbar("Пройди $prev на 80%") }
+                                }
+                            }
+                        )
                     }
                 }
-            )
-            selectedLevelInfo?.let { LevelProgressBar(it) }
-
-            SectionTitle("Категория")
-            CategoryCarousel(
-                options = listOf("all") + categories,
-                selected = category,
-                onSelect = { category = it }
-            )
-
-            SectionTitle("Направление перевода")
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                DIRECTIONS.forEach { (label, value) ->
-                    DirectionOption(
-                        label = label,
-                        selected = direction == value,
-                        onClick = { direction = value }
-                    )
+                
+                levels.firstOrNull { it.key == level }?.let { 
+                    CompactProgressIndicator(it)
                 }
             }
 
-            Surface(
-                tonalElevation = 1.dp,
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
+            // ── Категории ───────────────────────────────────────
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                SectionLabel("Категория")
+                LazyRow(
+                    contentPadding = PaddingValues(end = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        "Только слабые слова",
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Switch(checked = onlyWeak, onCheckedChange = { onlyWeak = it })
+                    items(listOf("all") + categories) { key ->
+                        val info = CategoryMeta.infoFor(key)
+                        CategorySelectionChip(
+                            label = info.label,
+                            icon = info.icon,
+                            isSelected = category == key,
+                            onClick = { category = key }
+                        )
+                    }
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            // ── Режим ──────────────────────────────────────────
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                SectionLabel("Направление")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    val modes = listOf(
+                        Triple("ES → RU", Icons.Default.Translate, FlashcardDirection.ES_TO_RU),
+                        Triple("RU → ES", Icons.Default.Create, FlashcardDirection.RU_TO_ES),
+                        Triple("MIX", Icons.Default.Shuffle, FlashcardDirection.MIXED)
+                    )
+                    modes.forEach { (label, icon, value) ->
+                        ModeSelectorItem(
+                            label = label,
+                            icon = icon,
+                            isSelected = direction == value,
+                            modifier = Modifier.weight(1f),
+                            onClick = { direction = value }
+                        )
+                    }
+                }
+            }
 
+            Spacer(Modifier.weight(1f))
+
+            // ── Кнопка Старт ────────────────────────────────────
             Button(
                 onClick = {
-                    navController.navigate(
-                        "flashcards_session?level=$level&category=$category" +
-                                "&direction=${direction.name}&weak=$onlyWeak"
-                    )
+                    navController.navigate("flashcards_session?level=$level&category=$category&direction=${direction.name}")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(14.dp)
+                    .height(60.dp),
+                shape = RoundedCornerShape(18.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Ochre),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp, pressedElevation = 0.dp)
             ) {
-                Icon(Icons.Filled.PlayArrow, null)
-                Spacer(Modifier.width(8.dp))
-                Text("Начать сессию", style = MaterialTheme.typography.titleMedium)
+                Text("НАЧАТЬ ТРЕНИРОВКУ", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
             }
+            
+            Spacer(Modifier.height(32.dp))
         }
     }
 }
 
 @Composable
-private fun SectionTitle(text: String) {
+private fun SectionLabel(text: String) {
     Text(
-        text,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold
+        text = text.uppercase(),
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+        letterSpacing = 1.2.sp
     )
 }
 
 @Composable
-private fun LevelRow(
-    levels: List<LevelInfo>,
-    selected: String,
-    onSelect: (LevelInfo) -> Unit
-) {
-    // Fallback: while levels are loading, render placeholder chips so layout doesn't jump.
-    val display = if (levels.isNotEmpty()) levels
-    else LEVELS.mapIndexed { i, k -> LevelInfo(k, i == 0, 0f, 0, 0) }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        display.forEach { info ->
-            LevelChip(
-                info = info,
-                selected = info.key == selected,
-                modifier = Modifier.weight(1f),
-                onClick = { onSelect(info) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun LevelChip(
+private fun LevelSelectorItem(
     info: LevelInfo,
-    selected: Boolean,
+    isSelected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val bg = when {
-        !info.unlocked -> MaterialTheme.colorScheme.surfaceVariant
-        selected       -> MaterialTheme.colorScheme.primary
-        else           -> MaterialTheme.colorScheme.surface
-    }
-    val fg = when {
-        !info.unlocked -> MaterialTheme.colorScheme.onSurfaceVariant
-        selected       -> MaterialTheme.colorScheme.onPrimary
-        else           -> MaterialTheme.colorScheme.onSurface
-    }
-    val border = if (!selected && info.unlocked)
-        androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-    else null
+    val targetScale = if (isSelected) 1.05f else 1f
+    val scale by animateFloatAsState(targetScale, label = "scale")
+    val bgColor by animateColorAsState(
+        if (isSelected) AppColors.Ochre else MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+        label = "color"
+    )
 
     Surface(
-        shape = RoundedCornerShape(14.dp),
-        color = bg,
-        tonalElevation = if (selected) 3.dp else 0.dp,
-        border = border,
+        onClick = onClick,
         modifier = modifier
-            .height(56.dp)
-            .clickable(onClick = onClick)
+            .graphicsLayer { scaleX = scale; scaleY = scale }
+            .height(72.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = bgColor,
+        border = if (!isSelected) borderStroke() else null,
+        tonalElevation = if (isSelected) 4.dp else 0.dp
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
         ) {
             if (!info.unlocked) {
-                Icon(
-                    Icons.Filled.Lock,
-                    contentDescription = "Заблокирован",
-                    tint = fg,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(Modifier.width(4.dp))
+                Icon(Icons.Default.Lock, null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            } else {
+                Text(LEVEL_EMOJIS[info.key] ?: "", fontSize = 20.sp)
             }
             Text(
                 info.key,
-                color = fg,
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.ExtraBold,
+                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
             )
         }
     }
 }
 
 @Composable
-private fun LevelProgressBar(info: LevelInfo) {
-    val pct = (info.masteredRatio * 100).toInt().coerceIn(0, 100)
-    val nextLevel = LEVELS.getOrNull(LEVELS.indexOf(info.key) + 1)
-    val hint = when {
-        info.totalCount == 0 -> "Нет слов на этом уровне"
-        info.masteredRatio >= UNLOCK_THRESHOLD && nextLevel != null ->
-            "Уровень ${info.key} пройден — $nextLevel открыт"
-        info.masteredRatio >= UNLOCK_THRESHOLD ->
-            "Уровень ${info.key} пройден! 🎉"
-        nextLevel != null ->
-            "Освоено ${info.masteredCount} из ${info.totalCount} · до открытия $nextLevel осталось ${(UNLOCK_THRESHOLD * info.totalCount).toInt() - info.masteredCount} слов"
-        else ->
-            "Освоено ${info.masteredCount} из ${info.totalCount}"
-    }
-
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                "Прогресс уровня ${info.key}",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                "$pct%",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-        LinearProgressIndicator(
-            progress = { info.masteredRatio.coerceIn(0f, 1f) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp)
-                .clip(RoundedCornerShape(4.dp))
-        )
-        Text(
-            hint,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-private fun CategoryCarousel(
-    options: List<String>,
-    selected: String,
-    onSelect: (String) -> Unit
-) {
-    if (options.isEmpty()) return
-
-    val size = options.size
-    // Pseudo-infinite looped carousel: huge item count, modulo-indexed.
-    val virtualCount = if (size <= 1) size else Int.MAX_VALUE
-    val startIndex = if (size <= 1) 0 else (Int.MAX_VALUE / 2).let { it - it % size }
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = startIndex)
-
-    LazyRow(
-        state = listState,
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        items(virtualCount) { idx ->
-            val key = options[idx % size]
-            val info = CategoryMeta.infoFor(key)
-            CategoryCard(
-                info = info,
-                selected = key == selected,
-                onClick = { onSelect(key) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun CategoryCard(
-    info: CategoryInfo,
-    selected: Boolean,
+private fun CategorySelectionChip(
+    label: String,
+    icon: ImageVector,
+    isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val bg = if (selected)
-        MaterialTheme.colorScheme.primaryContainer
-    else
-        MaterialTheme.colorScheme.surfaceVariant
-    val fg = if (selected)
-        MaterialTheme.colorScheme.onPrimaryContainer
-    else
-        MaterialTheme.colorScheme.onSurfaceVariant
+    val bgColor by animateColorAsState(
+        if (isSelected) AppColors.Ochre.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+        label = "bg"
+    )
+    val contentColor by animateColorAsState(
+        if (isSelected) AppColors.Ochre else MaterialTheme.colorScheme.onSurface,
+        label = "content"
+    )
 
     Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(20.dp),
+        color = bgColor,
+        border = androidx.compose.foundation.BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) AppColors.Ochre else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        ),
+        modifier = Modifier.height(52.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(icon, null, modifier = Modifier.size(20.dp), tint = contentColor)
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                color = contentColor
+            )
+        }
+    }
+}
+
+@Composable
+private fun ModeSelectorItem(
+    label: String,
+    icon: ImageVector,
+    isSelected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val bgColor by animateColorAsState(
+        if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+        label = "bg"
+    )
+
+    Surface(
+        onClick = onClick,
+        modifier = modifier.height(64.dp),
         shape = RoundedCornerShape(16.dp),
-        color = bg,
-        tonalElevation = if (selected) 4.dp else 1.dp,
-        modifier = Modifier
-            .size(width = 96.dp, height = 100.dp)
-            .clickable(onClick = onClick)
+        color = bgColor,
+        border = if (!isSelected) borderStroke() else null
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                imageVector = info.icon,
-                contentDescription = info.label,
-                tint = fg,
-                modifier = Modifier.size(32.dp)
+                icon, null,
+                modifier = Modifier.size(18.dp),
+                tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(Modifier.height(6.dp))
             Text(
-                info.label,
-                color = fg,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 14.sp
+                label,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )
         }
     }
 }
 
 @Composable
-private fun DirectionOption(label: String, selected: Boolean, onClick: () -> Unit) {
-    Surface(
-        tonalElevation = if (selected) 3.dp else 0.dp,
-        shape = RoundedCornerShape(12.dp),
-        color = if (selected)
-            MaterialTheme.colorScheme.primaryContainer
-        else
-            MaterialTheme.colorScheme.surface,
+private fun CompactProgressIndicator(info: LevelInfo) {
+    val pct = (info.masteredRatio * 100).toInt().coerceIn(0, 100)
+    
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .padding(top = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Row(
+        LinearProgressIndicator(
+            progress = { info.masteredRatio.coerceIn(0f, 1f) },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RadioButton(selected = selected, onClick = null)
-            Spacer(Modifier.width(8.dp))
-            Text(label, style = MaterialTheme.typography.bodyLarge)
-        }
+                .weight(1f)
+                .height(6.dp)
+                .clip(CircleShape),
+            color = AppColors.Ochre,
+            trackColor = AppColors.Ochre.copy(alpha = 0.1f)
+        )
+        Text(
+            "$pct%",
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.ExtraBold,
+            color = AppColors.Ochre
+        )
     }
 }
+
+@Composable
+private fun borderStroke() = androidx.compose.foundation.BorderStroke(
+    1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+)

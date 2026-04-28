@@ -1,7 +1,11 @@
 package com.spanishapp.ui.quiz
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -9,6 +13,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,7 +37,7 @@ import javax.inject.Inject
 
 data class QuizQuestion(
     val word: WordEntity,
-    val options: List<String>,   // 4 options in Russian
+    val options: List<String>,
     val correctIndex: Int
 )
 
@@ -59,7 +66,7 @@ class QuizViewModel @Inject constructor(
     init { loadQuiz() }
 
     fun loadQuiz() = viewModelScope.launch {
-        val pool = wordDao.getQuizWords(40)
+        val pool = wordDao.getRandomWords(40)
         if (pool.size < 4) return@launch
 
         val questions = pool.take(10).map { word ->
@@ -80,7 +87,7 @@ class QuizViewModel @Inject constructor(
 
     fun select(index: Int) {
         val s = _state.value
-        if (s.selectedIndex != null) return   // already answered
+        if (s.selectedIndex != null) return
         val correct = s.current?.correctIndex == index
         _state.value = s.copy(
             selectedIndex = index,
@@ -92,18 +99,15 @@ class QuizViewModel @Inject constructor(
     fun next() {
         val s = _state.value
         val nextIndex = s.currentIndex + 1
-        _state.value = if (nextIndex >= s.questions.size)
-            s.copy(isFinished = true)
-        else
-            s.copy(currentIndex = nextIndex, selectedIndex = null)
+        if (nextIndex >= s.questions.size) {
+            _state.value = s.copy(isFinished = true)
+        } else {
+            _state.value = s.copy(currentIndex = nextIndex, selectedIndex = null)
+        }
     }
 
     fun restart() = loadQuiz()
 }
-
-// Add quiz helper to DAO via extension call
-suspend fun WordDao.getQuizWords(limit: Int): List<WordEntity> =
-    getRandomWords(limit)
 
 // ── Screen ────────────────────────────────────────────────────
 
@@ -116,9 +120,11 @@ fun QuizScreen(
     val state by vm.state.collectAsState()
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Тест") },
+                title = { Text("Тест", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -132,14 +138,14 @@ fun QuizScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                state.questions.isEmpty() -> LoadingState()
-                state.isFinished         -> ResultState(
+                state.questions.isEmpty() -> CircularProgressIndicator(color = Color(0xFF2196F3))
+                state.isFinished         -> QuizResult(
                     score   = state.score,
                     total   = state.questions.size,
                     onRetry = vm::restart,
                     onBack  = { navController.popBackStack() }
                 )
-                else -> QuestionState(
+                else -> QuizQuestionContent(
                     state    = state,
                     onSelect = vm::select,
                     onNext   = vm::next
@@ -152,7 +158,7 @@ fun QuizScreen(
 // ── Question ──────────────────────────────────────────────────
 
 @Composable
-private fun QuestionState(
+private fun QuizQuestionContent(
     state: QuizState,
     onSelect: (Int) -> Unit,
     onNext: () -> Unit
@@ -160,161 +166,183 @@ private fun QuestionState(
     val q = state.current ?: return
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Progress
+        // Прогресс
         LinearProgressIndicator(
             progress = { state.progress },
-            modifier = Modifier.fillMaxWidth().height(6.dp).padding(bottom = 4.dp),
-            color    = AppColors.Terracotta,
-            trackColor = AppColors.Terracotta.copy(alpha = 0.15f)
+            modifier  = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
+            color     = Color(0xFF2196F3),
+            trackColor = Color(0xFF2196F3).copy(alpha = 0.1f)
         )
-        Text(
-            "${state.currentIndex + 1} / ${state.questions.size}",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Spacer(Modifier.height(24.dp))
 
-        Spacer(Modifier.weight(0.3f))
-
-        // Question word
+        // Основная карточка
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+            border = borderStroke(),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
-                modifier = Modifier.padding(28.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("Переведи слово:", style = MaterialTheme.typography.bodyMedium,
-                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.height(8.dp))
-                Text(q.word.spanish, style = MaterialTheme.typography.displaySmall,
-                     fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                Text(
+                    "КАК ПЕРЕВОДИТСЯ?",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    letterSpacing = 1.2.sp
+                )
+
+                Text(
+                    q.word.spanish.uppercase(),
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.ExtraBold,
+                    textAlign = TextAlign.Center
+                )
+                
                 if (q.word.example.isNotBlank()) {
-                    Spacer(Modifier.height(8.dp))
-                    Text("«${q.word.example}»",
-                         style = MaterialTheme.typography.bodySmall,
-                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                         textAlign = TextAlign.Center)
-                }
-            }
-        }
-
-        Spacer(Modifier.weight(0.3f))
-
-        // Options
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            q.options.forEachIndexed { i, option ->
-                val answered = state.selectedIndex != null
-                val isSelected = state.selectedIndex == i
-                val isCorrect  = q.correctIndex == i
-
-                val containerColor = when {
-                    !answered           -> MaterialTheme.colorScheme.surface
-                    isCorrect           -> AppColors.Teal.copy(alpha = 0.2f)
-                    isSelected          -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
-                    else                -> MaterialTheme.colorScheme.surface
-                }
-                val borderColor = when {
-                    !answered  -> MaterialTheme.colorScheme.outlineVariant
-                    isCorrect  -> AppColors.Teal
-                    isSelected -> MaterialTheme.colorScheme.error
-                    else       -> MaterialTheme.colorScheme.outlineVariant
-                }
-
-                OutlinedButton(
-                    onClick  = { onSelect(i) },
-                    enabled  = !answered,
-                    shape    = RoundedCornerShape(14.dp),
-                    colors   = ButtonDefaults.outlinedButtonColors(containerColor = containerColor),
-                    border   = ButtonDefaults.outlinedButtonBorder.copy(
-                        brush = androidx.compose.ui.graphics.SolidColor(borderColor)
-                    ),
-                    modifier = Modifier.fillMaxWidth().height(52.dp)
-                ) {
                     Text(
-                        option,
-                        style    = MaterialTheme.typography.bodyLarge,
-                        fontWeight = if (isCorrect && answered) FontWeight.Bold else FontWeight.Normal,
-                        color    = if (isCorrect && answered) AppColors.Teal
-                                   else MaterialTheme.colorScheme.onSurface
+                        "“${q.word.example}”",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
         }
 
-        Spacer(Modifier.weight(0.4f))
+        Spacer(Modifier.weight(1f))
 
-        // Next button
-        AnimatedVisibility(state.selectedIndex != null) {
-            Button(
-                onClick = onNext,
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Text(
-                    if (state.currentIndex + 1 >= state.questions.size) "Результаты"
-                    else "Следующий →",
-                    style = MaterialTheme.typography.titleMedium
+        // Варианты ответов
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            q.options.forEachIndexed { i, option ->
+                val answered = state.selectedIndex != null
+                val isSelected = state.selectedIndex == i
+                val isCorrect  = q.correctIndex == i
+
+                QuizOptionItem(
+                    label = option,
+                    answered = answered,
+                    isCorrect = isCorrect,
+                    isSelected = isSelected,
+                    onClick = { onSelect(i) }
                 )
             }
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        // Кнопка Далее
+        AnimatedVisibility(
+            visible = state.selectedIndex != null,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Button(
+                onClick = onNext,
+                modifier = Modifier.fillMaxWidth().height(56.dp).padding(bottom = 0.dp),
+                shape = RoundedCornerShape(18.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+            ) {
+                Text(
+                    if (state.currentIndex + 1 >= state.questions.size) "РЕЗУЛЬТАТЫ"
+                    else "СЛЕДУЮЩИЙ ВОПРОС",
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+        }
+        
+        if (state.selectedIndex == null) {
+            Spacer(Modifier.height(56.dp)) // Reserve space
+        } else {
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
 
-// ── Result ────────────────────────────────────────────────────
+@Composable
+private fun QuizOptionItem(
+    label: String,
+    answered: Boolean,
+    isCorrect: Boolean,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val targetScale = if (isSelected) 1.05f else 1f
+    val scale by animateFloatAsState(targetScale, label = "scale")
+
+    val bgColor = when {
+        !answered -> MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+        isCorrect -> AppColors.Teal.copy(alpha = 0.2f)
+        isSelected -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
+        else -> MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
+    }
+
+    Surface(
+        onClick = onClick,
+        enabled = !answered,
+        modifier = Modifier.fillMaxWidth().height(60.dp).graphicsLayer { scaleX = scale; scaleY = scale },
+        shape = RoundedCornerShape(18.dp),
+        color = bgColor,
+        border = androidx.compose.foundation.BorderStroke(
+            width = if (isSelected || (answered && isCorrect)) 2.dp else 1.dp,
+            color = if (answered && isCorrect) AppColors.Teal 
+                    else if (isSelected) MaterialTheme.colorScheme.error
+                    else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+        )
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = if (isCorrect && answered) FontWeight.ExtraBold else FontWeight.Medium,
+                color = if (isCorrect && answered) AppColors.Teal else MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
 
 @Composable
-private fun ResultState(score: Int, total: Int, onRetry: () -> Unit, onBack: () -> Unit) {
-    val pct = score * 100 / total
-    val emoji = when {
-        pct >= 90 -> "🏆"
-        pct >= 70 -> "🎉"
-        pct >= 50 -> "👍"
-        else      -> "💪"
-    }
-    val message = when {
-        pct >= 90 -> "Отлично! Ты молодец!"
-        pct >= 70 -> "Хороший результат!"
-        pct >= 50 -> "Неплохо, но есть куда расти"
-        else      -> "Продолжай тренироваться!"
-    }
-
+private fun QuizResult(score: Int, total: Int, onRetry: () -> Unit, onBack: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(emoji, fontSize = 72.sp)
+        Text("🏁", fontSize = 72.sp)
         Spacer(Modifier.height(16.dp))
-        Text("$score / $total", style = MaterialTheme.typography.displayMedium,
-             fontWeight = FontWeight.Bold)
-        Text(message, style = MaterialTheme.typography.titleMedium,
-             color = MaterialTheme.colorScheme.onSurfaceVariant,
-             textAlign = TextAlign.Center)
-        Spacer(Modifier.height(32.dp))
-        Button(onClick = onRetry, modifier = Modifier.fillMaxWidth().height(52.dp),
-               shape = RoundedCornerShape(14.dp)) {
-            Text("Ещё раз", style = MaterialTheme.typography.titleMedium)
+        Text("Тест завершен", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(12.dp))
+        Surface(shape = RoundedCornerShape(12.dp), color = Color(0xFF2196F3).copy(alpha = 0.15f)) {
+            Text("$score из $total верных",
+                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                 style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold,
+                 color = Color(0xFF2196F3))
         }
-        Spacer(Modifier.height(10.dp))
-        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp),
-                       shape = RoundedCornerShape(14.dp)) {
-            Text("На главную")
+        
+        Spacer(Modifier.height(48.dp))
+
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.fillMaxWidth().height(60.dp),
+            shape = RoundedCornerShape(18.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+        ) {
+            Text("ПОПРОБОВАТЬ СНОВА", fontWeight = FontWeight.ExtraBold)
+        }
+        
+        TextButton(onClick = onBack, modifier = Modifier.padding(top = 12.dp)) {
+            Text("ВЫЙТИ В МЕНЮ", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
 
 @Composable
-private fun LoadingState() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        CircularProgressIndicator(color = AppColors.Terracotta)
-        Spacer(Modifier.height(12.dp))
-        Text("Загружаем вопросы…", color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
+private fun borderStroke() = androidx.compose.foundation.BorderStroke(
+    1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+)

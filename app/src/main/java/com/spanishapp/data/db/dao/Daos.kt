@@ -320,3 +320,18 @@ interface WordListDao {
     @Query("SELECT COUNT(*) FROM word_list_entries WHERE list_id = :listId")
     suspend fun countWordsInList(listId: Int): Int
 }
+
+@Dao
+interface ArticleGameDao {
+    @Query("SELECT * FROM article_level_progress ORDER BY levelId ASC")
+    fun getAllProgress(): Flow<List<ArticleLevelProgressEntity>>
+
+    @Query("SELECT * FROM article_level_progress WHERE levelId = :levelId")
+    suspend fun getProgress(levelId: Int): ArticleLevelProgressEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertProgress(progress: ArticleLevelProgressEntity)
+
+    @Query("UPDATE article_level_progress SET isUnlocked = 1 WHERE levelId = :levelId")
+    suspend fun unlockLevel(levelId: Int)
+}

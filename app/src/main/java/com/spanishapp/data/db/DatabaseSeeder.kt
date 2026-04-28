@@ -9,6 +9,7 @@ import com.spanishapp.service.AchievementManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.firstOrNull
 import org.json.JSONObject
 import java.time.LocalDate
 import javax.inject.Inject
@@ -71,6 +72,23 @@ class DatabaseSeeder @Inject constructor(
         seedLessons()
         seedDailyWord()
         seedDialogues()
+        seedArticleGameProgress()
+    }
+
+    private suspend fun seedArticleGameProgress() {
+        val dao = db.articleGameDao()
+        val existing = dao.getAllProgress().firstOrNull() ?: emptyList()
+        if (existing.size >= 100) return
+        
+        val levels = (1..100).map { id ->
+            ArticleLevelProgressEntity(
+                levelId = id,
+                stars = 0,
+                isUnlocked = id == 1,
+                bestScore = 0
+            )
+        }
+        levels.forEach { dao.upsertProgress(it) }
     }
 
     // ── Vocabulary from assets/spanish_vocab.json ────────────

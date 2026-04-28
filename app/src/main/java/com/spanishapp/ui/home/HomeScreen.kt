@@ -79,67 +79,54 @@ fun HomeScreen(
 
     val bgColor = Color(0xFF0D0D0D)
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = 80.dp, bottom = 120.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            itemsIndexed(roadmapUnits) { index, unit ->
-                RoadmapNode(
-                    unit = unit,
-                    isFirst = index == 0,
-                    isLast = index == roadmapUnits.size - 1,
-                    isExpanded = expandedUnitId == unit.id,
-                    onToggleExpand = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
-                    },
-                    onStartLesson = { lesson ->
-                        if (!unit.isLocked) {
-                            navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
-                        }
-                    }
-                )
-            }
-        }
-
-        // Верхнее растворение — контент исчезает под топ-баром
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .align(Alignment.TopCenter)
-                .background(
-                    Brush.verticalGradient(
-                        0f to bgColor,
-                        0.6f to bgColor.copy(alpha = 0.85f),
-                        1f to Color.Transparent
-                    )
-                )
-        )
-
-        // Нижнее растворение — контент исчезает перед боттом-баром
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .align(Alignment.BottomCenter)
-                .background(
-                    Brush.verticalGradient(
-                        0f to Color.Transparent,
-                        0.4f to bgColor.copy(alpha = 0.85f),
-                        1f to bgColor
-                    )
-                )
-        )
-
-        // Floating top bar — поверх градиента
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Топ-бар занимает статус-бар + контентную часть
         HomeTopBar(
             xp = state.totalXp,
             streak = state.currentStreak,
             onProfileClick = { navController.navigate("profile") }
         )
+
+        // Список разделов с нижним растворением
+        Box(modifier = Modifier.weight(1f)) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                itemsIndexed(roadmapUnits) { index, unit ->
+                    RoadmapNode(
+                        unit = unit,
+                        isFirst = index == 0,
+                        isLast = index == roadmapUnits.size - 1,
+                        isExpanded = expandedUnitId == unit.id,
+                        onToggleExpand = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
+                        },
+                        onStartLesson = { lesson ->
+                            if (!unit.isLocked) {
+                                navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
+                            }
+                        }
+                    )
+                }
+            }
+
+            // Нижнее растворение перед Bottom Nav
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            0f to Color.Transparent,
+                            1f to bgColor
+                        )
+                    )
+            )
+        }
     }
 }
 
@@ -149,14 +136,23 @@ private fun HomeTopBar(
     streak: Int,
     onProfileClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .padding(horizontal = 20.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Фон тянется в область статус-бара (батарея, часы, сеть)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF1C1C1E))
+                .statusBarsPadding()  // отступ = высота статус-бара
+        )
+        // Контент топ-бара
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF1C1C1E))
+                .padding(horizontal = 20.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
         // Логотип / название
         Text(
             text = "HablaRu",
@@ -237,7 +233,9 @@ private fun HomeTopBar(
                 )
             }
         }
-    }
+        // Разделитель — тонкая линия снизу, как у Bottom Bar
+        HorizontalDivider(thickness = 0.5.dp, color = Color.White.copy(alpha = 0.12f))
+    }   // Column
 }
 
 @Composable
