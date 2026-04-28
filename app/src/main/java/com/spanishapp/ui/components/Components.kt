@@ -191,89 +191,63 @@ fun SpanishBottomBar(
     val amber = Color(0xFFFF9F0A)
     val inactive = Color(0xFF636366)   // iOS tertiary text
 
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape    = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-        color    = Color(0xFF1C1C1E),
-        border   = androidx.compose.foundation.BorderStroke(
-            0.5.dp, Color.White.copy(alpha = 0.10f)
-        ),
-        shadowElevation = 24.dp,
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        HorizontalDivider(thickness = 0.5.dp, color = Color.White.copy(alpha = 0.12f))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(57.dp)
-                .navigationBarsPadding(),
+                .background(Color(0xFF1C1C1E))
+                .navigationBarsPadding()
+                .height(68.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment     = Alignment.CenterVertically
         ) {
-                bottomNavItems.forEach { item ->
-                    val selected = currentRoute.startsWith(item.route)
+            bottomNavItems.forEach { item ->
+                val selected = currentRoute.startsWith(item.route)
 
-                    val iconColor by animateColorAsState(
-                        targetValue = if (selected) amber else inactive,
-                        animationSpec = tween(200),
-                        label = "color_${item.route}"
-                    )
-                    val scale by animateFloatAsState(
-                        targetValue = if (selected) 1.08f else 1f,
-                        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-                        label = "scale_${item.route}"
-                    )
+                val iconColor by animateColorAsState(
+                    targetValue = if (selected) amber else inactive,
+                    animationSpec = tween(200),
+                    label = "color_${item.route}"
+                )
+                val scale by animateFloatAsState(
+                    targetValue = if (selected) 1.10f else 1f,
+                    animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+                    label = "scale_${item.route}"
+                )
 
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = { onNavigate(item.route) }
-                            ),
-                        contentAlignment = Alignment.Center
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { onNavigate(item.route) }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(3.dp),
-                            modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .then(
-                                        if (selected)
-                                            Modifier
-                                                .background(
-                                                    Brush.verticalGradient(
-                                                        listOf(
-                                                            Color(0xFFFF9F0A).copy(alpha = 0.22f),
-                                                            Color(0xFFFF6B00).copy(alpha = 0.10f)
-                                                        )
-                                                    ),
-                                                    RoundedCornerShape(14.dp)
-                                                )
-                                                .padding(horizontal = 16.dp, vertical = 6.dp)
-                                        else
-                                            Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = if (selected) item.iconSelected else item.icon,
-                                    contentDescription = item.label,
-                                    modifier = Modifier.size(24.dp),
-                                    tint     = iconColor
-                                )
-                            }
-                            Text(
-                                text       = item.label,
-                                fontSize   = 10.sp,
-                                color      = iconColor,
-                                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
-                                maxLines   = 1
-                            )
-                        }
+                        Icon(
+                            imageVector = if (selected) item.iconSelected else item.icon,
+                            contentDescription = item.label,
+                            modifier = Modifier.size(28.dp),
+                            tint     = iconColor
+                        )
+                        Text(
+                            text       = item.label,
+                            fontSize   = 11.sp,
+                            color      = iconColor,
+                            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                            maxLines   = 1
+                        )
                     }
                 }
+            }
         }
     }
 }
