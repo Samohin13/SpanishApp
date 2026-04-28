@@ -18,7 +18,7 @@ data class Exercise(
     val explanation: String = ""
 )
 
-data class LessonContent(
+data class ExercisePlan(
     val title: String,
     val grammarNote: String = "",
     val exercises: List<Exercise>
