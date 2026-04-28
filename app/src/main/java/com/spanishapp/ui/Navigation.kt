@@ -21,12 +21,12 @@ import androidx.navigation.navArgument
 import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
-import com.spanishapp.ui.games.*
 import com.spanishapp.ui.chat.AiChatScreen
 import com.spanishapp.ui.conjugation.ConjugationScreen
-import com.spanishapp.ui.conjugation.ConjugationQuizScreen
+import com.spanishapp.ui.games.*
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
+import com.spanishapp.ui.games.*
 import com.spanishapp.ui.home.HomeScreen
 import com.spanishapp.ui.home.LessonContentScreen
 import com.spanishapp.ui.home.LessonIntroScreen
@@ -36,12 +36,6 @@ import com.spanishapp.ui.quiz.QuizScreen
 import com.spanishapp.ui.profile.AchievementsScreen
 import com.spanishapp.ui.profile.ProfileScreen
 import com.spanishapp.ui.settings.SettingsScreen
-import com.spanishapp.ui.games.GamesScreen
-import com.spanishapp.ui.games.ArticlesGameScreen
-import com.spanishapp.ui.games.SpeedGameScreen
-import com.spanishapp.ui.games.AnagramGameScreen
-import com.spanishapp.ui.games.VerbFormGameScreen
-import com.spanishapp.ui.games.ListeningGameScreen
 import com.spanishapp.ui.pronunciation.PronunciationScreen
 import com.spanishapp.ui.dialogues.DialoguesScreen
 import com.spanishapp.ui.onboarding.OnboardingScreen
@@ -64,6 +58,16 @@ object Navigation {
         ) {
             // ── Главная ───────────────────────────────────────
             composable("home") { HomeScreen(navController) }
+
+            // ── Игры ─────────────────────────────────────────
+            composable("games") { GamesScreen(navController) }
+            composable("game_articles") { ArticlesGameScreen(navController) }
+            composable("game_speed") { SpeedGameScreen(navController) }
+            composable("game_anagrams") { AnagramsGameScreen(navController) }
+            composable("game_math") { MathGameScreen(navController) }
+            composable("game_crossword") { CrosswordGameScreen(navController) }
+            composable("game_sopa") { SopaGameScreen(navController) }
+            composable("game_palabra") { PalabraMaestraScreen(navController) }
 
             composable(
                 "lesson_intro/{unitId}/{lessonIndex}",
@@ -132,7 +136,7 @@ object Navigation {
                 arguments = listOf(navArgument("verb") { defaultValue = "" })
             ) { ConjugationScreen(navController) }
 
-            composable("conjugation_quiz") { ConjugationQuizScreen(navController) }
+            composable("conjugation_quiz") { VerbTrainingScreen(navController) }
 
             // ── Диалоги ───────────────────────────────────────
             composable("dialogues") { DialoguesScreen(navController) }
@@ -159,21 +163,6 @@ object Navigation {
                 "quiz?type={type}",
                 arguments = listOf(navArgument("type") { defaultValue = "mixed" })
             ) { QuizScreen(navController) }
-
-            // ── Игры ──────────────────────────────────────────
-            composable("games")         { GamesScreen(navController) }
-            composable("game_articles") { ArticlesMapScreen(navController) }
-            composable(
-                "game_articles_session/{levelId}",
-                arguments = listOf(navArgument("levelId") { type = NavType.IntType })
-            ) { backStackEntry ->
-                val levelId = backStackEntry.arguments?.getInt("levelId") ?: 1
-                ArticlesGameScreen(navController, levelId)
-            }
-            composable("game_speed")      { SpeedGameScreen(navController) }
-            composable("game_anagram")    { AnagramGameScreen(navController) }
-            composable("game_verb_form")    { VerbFormGameScreen(navController) }
-            composable("game_listening")    { ListeningGameScreen(navController) }
 
             // ── Профиль / Достижения / Настройки ─────────────
             composable("profile")      { ProfileScreen(navController) }

@@ -37,8 +37,8 @@ data class NavItem(
 
 val bottomNavItems = listOf(
     NavItem("home",       "Главная",  Icons.Outlined.Home,          Icons.Filled.Home),
+    NavItem("games",      "Игры",     Icons.Outlined.Gamepad,       Icons.Filled.Gamepad),
     NavItem("flashcards", "Слова",    Icons.Outlined.Style,         Icons.Filled.Style),
-    NavItem("games",      "Игры",     Icons.Outlined.SportsEsports, Icons.Filled.SportsEsports),
     NavItem("dictionary", "Словарь",  Icons.AutoMirrored.Outlined.MenuBook, Icons.AutoMirrored.Filled.MenuBook),
     NavItem("profile",    "Профиль",  Icons.Outlined.Person,        Icons.Filled.Person)
 )

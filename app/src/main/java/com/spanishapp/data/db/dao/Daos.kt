@@ -351,11 +351,23 @@ interface ArticleGameDao {
     fun getAllProgress(): Flow<List<ArticleLevelProgressEntity>>
 
     @Query("SELECT * FROM article_level_progress WHERE levelId = :levelId")
-    suspend fun getProgress(levelId: Int): ArticleLevelProgressEntity?
+    suspend fun getProgress(levelId: String): ArticleLevelProgressEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertProgress(progress: ArticleLevelProgressEntity)
 
     @Query("UPDATE article_level_progress SET isUnlocked = 1 WHERE levelId = :levelId")
-    suspend fun unlockLevel(levelId: Int)
+    suspend fun unlockLevel(levelId: String)
+
+    @Query("SELECT * FROM article_words WHERE level = :level ORDER BY error_weight DESC, RANDOM() LIMIT :limit")
+    suspend fun getWordsForLevel(level: String, limit: Int = 10): List<ArticleWordEntity>
+
+    @Update
+    suspend fun updateWord(word: ArticleWordEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertWords(words: List<ArticleWordEntity>)
+
+    @Query("SELECT COUNT(*) FROM article_words")
+    suspend fun getWordCount(): Int
 }

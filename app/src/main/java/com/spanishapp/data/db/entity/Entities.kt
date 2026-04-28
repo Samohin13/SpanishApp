@@ -150,10 +150,20 @@ data class LessonProgressEntity(
     @ColumnInfo(name = "completed_at") val completedAt: Long = System.currentTimeMillis()
 )
 
+@Entity(tableName = "article_words")
+data class ArticleWordEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val word: String,
+    val article: String,  // "el" или "la"
+    val level: String,    // A1, A2, B1, B2, C1
+    @ColumnInfo(name = "rule_hint") val ruleHint: String,
+    @ColumnInfo(name = "error_weight") var errorWeight: Int = 0
+)
+
 @Entity(tableName = "article_level_progress")
 data class ArticleLevelProgressEntity(
-    @PrimaryKey val levelId: Int, // 1-100
-    val stars: Int = 0, // 0-3
+    @PrimaryKey val levelId: String, // "A1", "A2", "B1", "B2", "C1"
+    val stars: Int = 0,
     val isUnlocked: Boolean = false,
     @ColumnInfo(name = "best_score") val bestScore: Int = 0
 )

@@ -30,7 +30,8 @@
       "Bash(find /c/Users/bravo/AndroidStudioProjects/SpanishApp2/app/src/main/java/com/spanishapp -name \"*.kt\" -exec wc -l {} +)",
       "Bash(dir /s /b \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\\\\app\\\\src\\\\main\\\\java\\\\com\\\\spanishapp\\\\ui\\\\*.kt\")",
       "WebFetch(domain:espato.ru)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(python3 -)"
     ]
   }
 }

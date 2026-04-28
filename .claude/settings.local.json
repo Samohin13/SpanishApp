@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /tmp/anki_inspect/deck5000 /tmp/anki_inspect/deck9000)",
+      "Bash(unzip -p \"/c/Users/bravo/OneDrive/Рабочий стол/Spanisch_5000.apkg\" collection.anki2)",
+      "Bash(python3)",
+      "Bash(python3 -c \"import sqlite3; print\\('ok'\\)\")",
+      "Bash(python -c \"import sqlite3; print\\('ok'\\)\")",
+      "Bash(unzip -l \"/c/Users/bravo/OneDrive/Рабочий стол/Spanisch_5000.apkg\")",
+      "Bash(unzip -l \"/c/Users/bravo/OneDrive/Рабочий стол/9000_Spanish_sentences_-_difficulty_sorted_with_native_audio.apkg\")",
+      "Bash(unzip -p \"/c/Users/bravo/OneDrive/Рабочий стол/9000_Spanish_sentences_-_difficulty_sorted_with_native_audio.apkg\" media)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); items=list\\(d.items\\(\\)\\); print\\(f'Total media files: {len\\(items\\)}'\\); [print\\(f'  {k} -> {v}'\\) for k,v in items[:15]]\")",
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "Bash(git commit *)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer"
+    ]
+  }
+}

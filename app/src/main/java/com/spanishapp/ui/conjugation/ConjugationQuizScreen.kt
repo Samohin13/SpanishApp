@@ -152,7 +152,7 @@ fun ConjugationQuizScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Викторина спряжений") },
+                title = { Text("Verbos") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)

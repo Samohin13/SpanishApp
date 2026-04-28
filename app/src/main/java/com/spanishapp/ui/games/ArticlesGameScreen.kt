@@ -1,206 +1,47 @@
 package com.spanishapp.ui.games
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.spanishapp.data.db.dao.ArticleGameDao
-import com.spanishapp.data.db.dao.WordDao
-import com.spanishapp.data.db.entity.ArticleLevelProgressEntity
-import com.spanishapp.data.db.entity.WordEntity
-import com.spanishapp.ui.theme.AppColors
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-// ── Helpers ───────────────────────────────────────────────────
-
-fun stripArticle(spanish: String): String {
-    val prefixes = listOf("el ", "la ", "un ", "una ", "los ", "las ", "unos ", "unas ")
-    val s = spanish.trim()
-    return prefixes.firstOrNull { s.startsWith(it, ignoreCase = true) }
-        ?.let { s.substring(it.length) } ?: s
-}
-
-fun guessArticle(spanish: String): String? {
-    val w = stripArticle(spanish).lowercase().trim()
-    return when {
-        w in listOf("día", "mapa", "idioma", "problema", "tema", "sistema", "programa", "clima", "drama", "planeta", "poema") -> "el"
-        w.endsWith("ión") || w.endsWith("ción") || w.endsWith("sión") || w.endsWith("dad") || w.endsWith("tad") || w.endsWith("tud") || w.endsWith("umbre") -> "la"
-        w.endsWith("a") && !w.endsWith("ma") && !w.endsWith("pa") -> "la"
-        w.endsWith("o") || w.endsWith("or") || w.endsWith("és") || w.endsWith("án") || w.endsWith("aje") || w.endsWith("al") || w.endsWith("ar") -> "el"
-        w.endsWith("ón") && !w.endsWith("ción") && !w.endsWith("sión") -> "el"
-        else -> null
-    }
-}
-
-data class ArticlesState(
-    val levelId: Int = 1,
-    val word: WordEntity? = null,
-    val correctArticle: String = "",
-    val selectedArticle: String? = null,
-    val score: Int = 0,
-    val correctCount: Int = 0,
-    val totalAnswered: Int = 0,
-    val isCorrect: Boolean? = null,
-    val isFinished: Boolean = false,
-    val isLoading: Boolean = true,
-    val error: String? = null
-)
-
-@HiltViewModel
-class ArticlesGameViewModel @Inject constructor(
-    private val wordDao: WordDao,
-    private val gameDao: ArticleGameDao
-) : ViewModel() {
-
-    private val _state = MutableStateFlow(ArticlesState())
-    val state: StateFlow<ArticlesState> = _state.asStateFlow()
-
-    private var pool: List<Pair<WordEntity, String>> = emptyList()
-    private var poolIndex = 0
-
-    fun startLevel(id: Int) = viewModelScope.launch {
-        _state.value = ArticlesState(levelId = id, isLoading = true)
-        
-        try {
-            val limit = 10
-            // Ищем существительные. Если база пуста или слов мало, берем любые.
-            val allWords = wordDao.getRandomWords(500)
-                .filter { it.wordType == "noun" || it.wordType == "sustantivo" || it.wordType == "general" }
-                .mapNotNull { w -> 
-                    val art = guessArticle(w.spanish)
-                    if (art != null) w to art else null 
-                }
-            
-            if (allWords.isEmpty()) {
-                _state.value = _state.value.copy(
-                    isLoading = false,
-                    error = "Не удалось загрузить слова. Проверьте базу данных."
-                )
-                return@launch
-            }
-
-            pool = allWords.shuffled().take(limit)
-            poolIndex = 0
-            showNext()
-        } catch (e: Exception) {
-            _state.value = _state.value.copy(isLoading = false, error = e.message)
-        }
-    }
-
-    private fun showNext() {
-        if (poolIndex >= pool.size) {
-            if (pool.isEmpty()) {
-                 _state.value = _state.value.copy(isFinished = true, isLoading = false)
-            } else {
-                 finishLevel()
-            }
-            return
-        }
-        val (word, article) = pool[poolIndex]
-        _state.value = _state.value.copy(
-            word = word,
-            correctArticle = article,
-            selectedArticle = null,
-            isCorrect = null,
-            isLoading = false
-        )
-    }
-
-    fun select(article: String) = viewModelScope.launch {
-        val s = _state.value
-        if (s.selectedArticle != null || s.word == null) return@launch
-        val correct = article == s.correctArticle
-        _state.value = s.copy(
-            selectedArticle = article,
-            isCorrect = correct,
-            score = if (correct) s.score + 15 else s.score,
-            correctCount = if (correct) s.correctCount + 1 else s.correctCount,
-            totalAnswered = s.totalAnswered + 1
-        )
-        delay(800)
-        poolIndex++
-        showNext()
-    }
-
-    private fun finishLevel() = viewModelScope.launch {
-        val s = _state.value
-        val pct = if (s.totalAnswered > 0) s.correctCount.toFloat() / s.totalAnswered else 0f
-        val stars = when {
-            pct >= 1.0f -> 3
-            pct >= 0.66f -> 2
-            pct >= 0.33f -> 1
-            else -> 0
-        }
-        
-        try {
-            val current = gameDao.getProgress(s.levelId) ?: ArticleLevelProgressEntity(s.levelId)
-            gameDao.upsertProgress(current.copy(
-                stars = maxOf(current.stars, stars),
-                isUnlocked = true,
-                bestScore = maxOf(current.bestScore, s.score)
-            ))
-            
-            if (stars >= 1 && s.levelId < 100) {
-                gameDao.unlockLevel(s.levelId + 1)
-            }
-        } catch (e: Exception) {
-            // Ignore DB errors for now to allow finish
-        }
-        
-        _state.value = s.copy(isFinished = true)
-    }
-
-    fun restart() {
-        startLevel(_state.value.levelId)
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticlesGameScreen(
     navController: NavHostController,
-    levelId: Int,
-    vm: ArticlesGameViewModel = hiltViewModel()
+    viewModel: ArticlesViewModel = hiltViewModel()
 ) {
-    val state by vm.state.collectAsState()
-
-    LaunchedEffect(levelId) {
-        vm.startLevel(levelId)
-    }
+    val state by viewModel.state.collectAsState()
+    var showLevelSelection by remember { mutableStateOf(true) }
+    val haptic = LocalHapticFeedback.current
 
     Scaffold(
-        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Уровень ${state.levelId}", fontWeight = FontWeight.ExtraBold) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                title = { Text("Artículos Premium") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -210,196 +51,217 @@ fun ArticlesGameScreen(
         }
     ) { padding ->
         Box(
-            modifier = Modifier.fillMaxSize().padding(padding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(Color(0xFFF8F8FA)),
             contentAlignment = Alignment.Center
         ) {
-            when {
-                state.isLoading -> CircularProgressIndicator(color = AppColors.Teal)
-                state.error != null -> ErrorBody(state.error) { vm.startLevel(levelId) }
-                state.isFinished  -> ArticlesResult(state, vm::restart) { navController.popBackStack() }
-                state.word != null -> ArticlesQuestion(state, vm::select)
-                else -> Text("Нет данных для уровня")
+            if (showLevelSelection) {
+                ArticleLevelSelection { level ->
+                    viewModel.startGame(level)
+                    showLevelSelection = false
+                }
+            } else if (state.isGameOver) {
+                ArticleGameOverContent(state.score) {
+                    navController.popBackStack()
+                }
+            } else {
+                ArticlesGameContent(state, viewModel, haptic)
             }
         }
     }
 }
 
 @Composable
-private fun ErrorBody(message: String?, onRetry: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Ошибка: ${message ?: "Неизвестно"}", color = MaterialTheme.colorScheme.error)
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = onRetry) {
-            Icon(Icons.Default.Refresh, null)
-            Spacer(Modifier.width(8.dp))
-            Text("Попробовать снова")
+fun ArticleLevelSelection(onSelect: (String) -> Unit) {
+    Column(
+        modifier = Modifier.padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text("Выберите уровень (CEFR)", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        
+        LevelButton("A1 (Génesis)", "Базовые окончания -o/-a", Color(0xFF43A047)) { onSelect("A1") }
+        LevelButton("A2 (Desafío)", "Частотные аномалии и исключения", Color(0xFF1E88E5)) { onSelect("A2") }
+        LevelButton("B1 (Estructura)", "Морфология суффиксов (-ma, -dad)", Color(0xFF7B1FA2)) { onSelect("B1") }
+        LevelButton("B2 (Dominio)", "Фонетическая эстетика (Á/HA)", Color(0xFFFBC02D)) { onSelect("B2") }
+        LevelButton("C1 (Maestría)", "Семантическая точность (Омонимы)", Color(0xFFD32F2F)) { onSelect("C1") }
+    }
+}
+
+@Composable
+fun LevelButton(title: String, desc: String, color: Color, onClick: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        color = Color.White,
+        shadowElevation = 2.dp
+    ) {
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(12.dp).clip(CircleShape).background(color))
+            Spacer(Modifier.width(16.dp))
+            Column {
+                Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(desc, color = Color.Gray, fontSize = 14.sp)
+            }
         }
     }
 }
 
 @Composable
-private fun ArticlesQuestion(state: ArticlesState, onSelect: (String) -> Unit) {
-    val word = state.word ?: return
-    val cleanWord = stripArticle(word.spanish)
-
+fun ArticlesGameContent(state: ArticlesPremiumState, viewModel: ArticlesViewModel, haptic: HapticFeedback) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        LinearProgressIndicator(
-            progress = { state.totalAnswered / 10f },
-            modifier  = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape),
-            color     = AppColors.Teal,
-            trackColor = AppColors.Teal.copy(alpha = 0.1f)
-        )
-        Spacer(Modifier.height(32.dp))
+        // Stats Header
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Column {
+                Text("XP: ${state.score}", fontWeight = FontWeight.Bold, color = Color(0xFF7B2FBE))
+                if (state.streak > 0) {
+                    Text("Streak: ${state.streak} (x${state.multiplier})", color = Color(0xFFFF9500), fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                }
+            }
+            Text("Уровень: ${state.level}", color = Color.Gray)
+        }
 
-        Surface(
-            shape = RoundedCornerShape(32.dp),
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
-            shadowElevation = 4.dp,
-            border = androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)),
-            modifier = Modifier.fillMaxWidth().weight(1f)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+        // Progress bar
+        LinearProgressIndicator(
+            progress = { state.currentRound.toFloat() / state.totalRounds },
+            modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)),
+            color = Color(0xFF7B2FBE),
+            trackColor = Color(0xFFE5E5EA)
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        // Word Card
+        state.currentWord?.let { word ->
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                color = Color.White,
+                shadowElevation = 4.dp
             ) {
-                // Карточка слова
-                val wordEmoji = remember(word.wordType) {
-                    when (word.wordType) {
-                        "verb" -> "🔤"
-                        "adjective" -> "🎨"
-                        "phrase" -> "💬"
-                        else -> "📖"
+                Column(
+                    modifier = Modifier.padding(40.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        word.word,
+                        fontSize = 44.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1A1A1A),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        // Academic Hint
+        Box(modifier = Modifier.height(80.dp), contentAlignment = Alignment.Center) {
+            if (state.academicHint != null) {
+                Surface(
+                    color = Color(0xFFFFF9C4),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Info, null, tint = Color(0xFFFBC02D))
+                        Spacer(Modifier.width(8.dp))
+                        Text(state.academicHint, fontSize = 14.sp, color = Color(0xFF5D4037))
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .size(220.dp)
-                        .clip(RoundedCornerShape(32.dp))
-                        .background(
-                            brush = androidx.compose.ui.graphics.Brush.radialGradient(
-                                colors = listOf(
-                                    AppColors.Teal.copy(alpha = 0.25f),
-                                    AppColors.Teal.copy(alpha = 0.08f)
-                                )
-                            )
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(wordEmoji, fontSize = 80.sp)
+            } else if (state.lastCorrect != null) {
+                val isCorrect = state.lastCorrect ?: false
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Icon(
+                        if (isCorrect) Icons.Default.Check else Icons.Default.Close,
+                        null,
+                        tint = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336)
+                    )
+                    Text(
+                        if (isCorrect) "¡Excelente!" else "Incorrecto",
+                        fontWeight = FontWeight.Bold,
+                        color = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336)
+                    )
                 }
-
-                Spacer(Modifier.height(24.dp))
-
-                Text(
-                    "¿... $cleanWord?",
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                
-                Text(
-                    word.russian,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
         }
 
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.weight(1f))
 
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 40.dp),
-            horizontalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            ArticleButton(label = "el", state = state, modifier = Modifier.weight(1f)) { onSelect("el") }
-            ArticleButton(label = "la", state = state, modifier = Modifier.weight(1f)) { onSelect("la") }
-        }
-    }
-}
-
-@Composable
-private fun ArticleButton(label: String, state: ArticlesState, modifier: Modifier, onClick: () -> Unit) {
-    val answered = state.selectedArticle != null
-    val isSelected = state.selectedArticle == label
-    val isCorrect = state.correctArticle == label
-    val scale by animateFloatAsState(if (isSelected) 1.05f else 1f, label = "scale")
-
-    val bgColor = when {
-        !answered -> MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
-        isCorrect -> AppColors.Teal.copy(alpha = 0.3f)
-        isSelected -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.6f)
-        else -> MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
-    }
-
-    Surface(
-        onClick = onClick,
-        enabled = !answered,
-        modifier = modifier.height(84.dp).graphicsLayer { scaleX = scale; scaleY = scale },
-        shape = RoundedCornerShape(24.dp),
-        color = bgColor,
-        border = androidx.compose.foundation.BorderStroke(
-            if (isSelected || (answered && isCorrect)) 3.dp else 1.dp, 
-            if (isCorrect && answered) AppColors.Teal 
-            else if (isSelected) MaterialTheme.colorScheme.error 
-            else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-        ),
-        shadowElevation = if (isSelected) 8.dp else 2.dp
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                label.uppercase(), 
-                style = MaterialTheme.typography.headlineMedium, 
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 2.sp
+        // Premium Buttons
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            ArticleButton(
+                label = "EL",
+                gradient = Brush.verticalGradient(listOf(Color(0xFF2196F3), Color(0xFF1976D2))),
+                onClick = { 
+                    viewModel.submitAnswer("el")
+                    triggerHaptic(haptic, state.currentWord?.article == "el")
+                },
+                enabled = state.lastCorrect == null,
+                modifier = Modifier.weight(1f)
+            )
+            ArticleButton(
+                label = "LA",
+                gradient = Brush.verticalGradient(listOf(Color(0xFFFF8A65), Color(0xFFD84315))),
+                onClick = { 
+                    viewModel.submitAnswer("la")
+                    triggerHaptic(haptic, state.currentWord?.article == "la")
+                },
+                enabled = state.lastCorrect == null,
+                modifier = Modifier.weight(1f)
             )
         }
     }
 }
 
 @Composable
-private fun ArticlesResult(state: ArticlesState, onRetry: () -> Unit, onBack: () -> Unit) {
-    val pct = state.correctCount.toFloat() / 10f
-    val stars = when { pct >= 1f -> 3; pct >= 0.66f -> 2; pct >= 0.33f -> 1; else -> 0 }
-
-    Column(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+fun ArticleButton(label: String, gradient: Brush, onClick: () -> Unit, enabled: Boolean, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier.height(80.dp).clickable(enabled = enabled) { onClick() },
+        shape = RoundedCornerShape(20.dp),
+        color = Color.Transparent
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            repeat(3) { i ->
-                Icon(
-                    Icons.Default.Star, null,
-                    modifier = Modifier.size(72.dp),
-                    tint = if (i < stars) Color(0xFFFFD700) else Color.LightGray.copy(alpha = 0.4f)
-                )
-            }
+        Box(
+            modifier = Modifier.fillMaxSize().background(if (enabled) gradient else Brush.verticalGradient(listOf(Color.LightGray, Color.Gray))),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(label, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
         }
-        Spacer(Modifier.height(32.dp))
-        Text("Уровень ${state.levelId} пройден!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
-        Text("Верных ответов: ${state.correctCount} из 10", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+fun triggerHaptic(haptic: HapticFeedback, success: Boolean) {
+    if (success) {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress) // Light "tick"
+    } else {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress) // Double would be nice but limited here
+    }
+}
+
+@Composable
+fun ArticleGameOverContent(score: Int, onFinish: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text("🏆", fontSize = 72.sp)
+        Text("Сессия завершена", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text("Ваш результат: $score XP", color = Color.Gray)
         
-        Spacer(Modifier.height(56.dp))
+        Spacer(Modifier.height(24.dp))
+
         Button(
-            onClick = onRetry, 
-            modifier = Modifier.fillMaxWidth().height(64.dp), 
-            shape = RoundedCornerShape(20.dp), 
-            colors = ButtonDefaults.buttonColors(containerColor = AppColors.Teal)
+            onClick = onFinish,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.width(200.dp).height(50.dp)
         ) {
-            Text("ПОВТОРИТЬ УРОВЕНЬ", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        }
-        Spacer(Modifier.height(16.dp))
-        OutlinedButton(
-            onClick = onBack, 
-            modifier = Modifier.fillMaxWidth().height(64.dp), 
-            shape = RoundedCornerShape(20.dp),
-            border = androidx.compose.foundation.BorderStroke(2.dp, AppColors.Teal)
-        ) {
-            Text("КАРТА УРОВНЕЙ", color = AppColors.Teal, fontWeight = FontWeight.Bold)
+            Text("В меню")
         }
     }
 }
