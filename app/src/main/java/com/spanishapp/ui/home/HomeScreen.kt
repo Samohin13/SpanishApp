@@ -76,41 +76,37 @@ fun HomeScreen(
         }
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            HomeTopBar(
-                xp = state.totalXp,
-                streak = state.currentStreak,
-                onProfileClick = { navController.navigate("profile") }
-            )
-        }
-    ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 8.dp, bottom = 100.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                itemsIndexed(roadmapUnits) { index, unit ->
-                    RoadmapNode(
-                        unit = unit,
-                        isFirst = index == 0,
-                        isLast = index == roadmapUnits.size - 1,
-                        isExpanded = expandedUnitId == unit.id,
-                        onToggleExpand = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
-                        },
-                        onStartLesson = { lesson ->
-                            if (!unit.isLocked) {
-                                navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
-                            }
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(top = 72.dp, bottom = 100.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            itemsIndexed(roadmapUnits) { index, unit ->
+                RoadmapNode(
+                    unit = unit,
+                    isFirst = index == 0,
+                    isLast = index == roadmapUnits.size - 1,
+                    isExpanded = expandedUnitId == unit.id,
+                    onToggleExpand = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
+                    },
+                    onStartLesson = { lesson ->
+                        if (!unit.isLocked) {
+                            navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
                         }
-                    )
-                }
+                    }
+                )
             }
         }
+
+        // Floating top bar — без фона, поверх контента
+        HomeTopBar(
+            xp = state.totalXp,
+            streak = state.currentStreak,
+            onProfileClick = { navController.navigate("profile") }
+        )
     }
 }
 
