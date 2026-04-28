@@ -191,29 +191,23 @@ fun SpanishBottomBar(
     val amber = Color(0xFFFF9F0A)
     val inactive = Color(0xFF636366)   // iOS tertiary text
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .navigationBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        contentAlignment = Alignment.Center
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape    = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        color    = Color(0xFF1C1C1E),
+        border   = androidx.compose.foundation.BorderStroke(
+            0.5.dp, Color.White.copy(alpha = 0.10f)
+        ),
+        shadowElevation = 24.dp,
     ) {
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape    = RoundedCornerShape(26.dp),
-            color    = Color(0xFF1C1C1E),
-            border   = androidx.compose.foundation.BorderStroke(
-                0.5.dp, Color.White.copy(alpha = 0.10f)
-            ),
-            shadowElevation = 32.dp,
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(57.dp)
+                .navigationBarsPadding(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment     = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 6.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment     = Alignment.CenterVertically
-            ) {
                 bottomNavItems.forEach { item ->
                     val selected = currentRoute.startsWith(item.route)
 
@@ -235,8 +229,7 @@ fun SpanishBottomBar(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
                                 onClick = { onNavigate(item.route) }
-                            )
-                            .padding(vertical = 6.dp),
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
@@ -281,7 +274,6 @@ fun SpanishBottomBar(
                         }
                     }
                 }
-            }
         }
     }
 }
