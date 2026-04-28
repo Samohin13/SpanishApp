@@ -232,7 +232,8 @@ private fun HomeTopBar(
                     modifier = Modifier.size(20.dp)
                 )
             }
-        }
+        }   // inner Row (pills)
+        }   // outer Row
         // Разделитель — тонкая линия снизу, как у Bottom Bar
         HorizontalDivider(thickness = 0.5.dp, color = Color.White.copy(alpha = 0.12f))
     }   // Column
