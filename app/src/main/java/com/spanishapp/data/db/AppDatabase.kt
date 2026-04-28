@@ -144,6 +144,17 @@ abstract class AppDatabase : RoomDatabase() {
 
         val MIGRATION_5_6 = object : Migration(5, 6) {
             override fun migrate(db: SupportSQLiteDatabase) {
+                // Пересоздаём lesson_progress — предыдущая миграция могла создать
+                // таблицу с неправильными именами колонок (до добавления @ColumnInfo)
+                db.execSQL("DROP TABLE IF EXISTS lesson_progress")
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS lesson_progress (
+                        lesson_key TEXT PRIMARY KEY NOT NULL,
+                        unit_id INTEGER NOT NULL,
+                        lesson_index INTEGER NOT NULL,
+                        completed_at INTEGER NOT NULL DEFAULT 0
+                    )
+                """)
                 db.execSQL("""
                     CREATE TABLE IF NOT EXISTS article_words (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
