@@ -1,6 +1,7 @@
 package com.spanishapp.ui.settings
 
 import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,12 +9,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -25,13 +28,8 @@ import androidx.navigation.NavHostController
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.data.prefs.AppPreferences
-import com.spanishapp.data.prefs.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,39 +41,30 @@ class SettingsViewModel @Inject constructor(
     private val appPreferences: AppPreferences
 ) : ViewModel() {
 
-    private val _progress = MutableStateFlow(UserProgressEntity())
-    val progress: StateFlow<UserProgressEntity> = _progress.asStateFlow()
+    val progress: StateFlow<UserProgressEntity> = userProgressDao.getProgress()
+        .filterNotNull()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserProgressEntity())
 
     val ttsEnabled: StateFlow<Boolean> = appPreferences.ttsEnabled
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
-
-    val themeMode: StateFlow<ThemeMode> = appPreferences.themeMode
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ThemeMode.AUTO)
-
-    fun setTheme(mode: ThemeMode) = viewModelScope.launch {
-        appPreferences.setThemeMode(mode)
-    }
-
-    init {
-        viewModelScope.launch {
-            val p = userProgressDao.getProgressOnce()
-            if (p != null) _progress.value = p
-        }
-    }
-
-    fun save(name: String, level: String, goalMinutes: Int) = viewModelScope.launch {
-        val p = userProgressDao.getProgressOnce() ?: UserProgressEntity()
-        userProgressDao.update(
-            p.copy(
-                displayName      = name.trim().ifBlank { "Estudiante" },
-                currentLevel     = level,
-                dailyGoalMinutes = goalMinutes.coerceIn(5, 120)
-            )
-        )
-    }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialValue = true)
 
     fun toggleTts(enabled: Boolean) = viewModelScope.launch {
         appPreferences.setTtsEnabled(enabled)
+    }
+
+    fun updateName(name: String) = viewModelScope.launch {
+        val p = progress.value
+        userProgressDao.update(p.copy(displayName = name.trim().ifBlank { "Estudiante" }))
+    }
+
+    fun updateLevel(level: String) = viewModelScope.launch {
+        val p = progress.value
+        userProgressDao.update(p.copy(currentLevel = level))
+    }
+
+    fun updateGoal(minutes: Int) = viewModelScope.launch {
+        val p = progress.value
+        userProgressDao.update(p.copy(dailyGoalMinutes = minutes))
     }
 }
 
@@ -89,31 +78,22 @@ fun SettingsScreen(
 ) {
     val progress   by vm.progress.collectAsState()
     val ttsEnabled by vm.ttsEnabled.collectAsState()
-    val themeMode  by vm.themeMode.collectAsState()
     val context    = LocalContext.current
 
-    var name        by remember(progress.displayName) { mutableStateOf(progress.displayName) }
-    var level       by remember(progress.currentLevel) { mutableStateOf(progress.currentLevel) }
-    var goalMinutes by remember(progress.dailyGoalMinutes) { mutableStateOf(progress.dailyGoalMinutes) }
-
-    val levels = listOf("A1", "A2", "B1", "B2")
-    val goalOptions = listOf(5, 10, 15, 20, 30)
+    // Dialog states
+    var showNameDialog by remember { mutableStateOf(false) }
+    var showLevelDialog by remember { mutableStateOf(false) }
+    var showGoalDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 title = { Text("Настройки") },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        vm.save(name, level, goalMinutes)
-                        navController.popBackStack()
-                    }) {
-                        Icon(Icons.Default.Check, "Сохранить")
                     }
                 }
             )
@@ -124,250 +104,277 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+                .padding(horizontal = 16.dp)
         ) {
-            // ── Name ─────────────────────────────────────────
-            SettingsSection("Профиль") {
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Твоё имя") },
-                    singleLine = true,
-                    shape = RoundedCornerShape(14.dp),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            // ── Sound toggle ──────────────────────────────────
-            SettingsSection("Звук") {
-                Surface(
-                    shape = RoundedCornerShape(14.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 1.dp,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                "🔊 Озвучка (TTS)",
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                if (ttsEnabled) "Включена — слова озвучиваются"
-                                else "Выключена — без звука",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Switch(
-                            checked = ttsEnabled,
-                            onCheckedChange = { vm.toggleTts(it) }
-                        )
-                    }
-                }
-            }
-
-            // ── Spanish level ─────────────────────────────────
-            SettingsSection("Уровень испанского") {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    levels.forEach { lvl ->
-                        val desc = when (lvl) {
-                            "A1" -> "Начинающий — базовые слова и фразы"
-                            "A2" -> "Элементарный — простые разговоры"
-                            "B1" -> "Средний — свободное общение на знакомые темы"
-                            "B2" -> "Выше среднего — сложные тексты и дискуссии"
-                            else -> ""
-                        }
-                        Surface(
-                            onClick = { level = lvl },
-                            shape = RoundedCornerShape(14.dp),
-                            color = if (level == lvl)
-                                MaterialTheme.colorScheme.primaryContainer
-                            else MaterialTheme.colorScheme.surface,
-                            tonalElevation = if (level == lvl) 0.dp else 1.dp,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(lvl, fontWeight = FontWeight.Bold,
-                                         style = MaterialTheme.typography.bodyLarge)
-                                    Text(desc, style = MaterialTheme.typography.bodySmall,
-                                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
-                                RadioButton(selected = level == lvl, onClick = { level = lvl })
-                            }
-                        }
-                    }
-                }
-            }
-
-            // ── Daily goal ────────────────────────────────────
-            SettingsSection("Дневная цель") {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    goalOptions.forEach { min ->
-                        Surface(
-                            onClick = { goalMinutes = min },
-                            shape = RoundedCornerShape(14.dp),
-                            color = if (goalMinutes == min)
-                                MaterialTheme.colorScheme.primaryContainer
-                            else MaterialTheme.colorScheme.surface,
-                            tonalElevation = if (goalMinutes == min) 0.dp else 1.dp,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                val label = when (min) {
-                                    5  -> "5 минут — Лёгкий старт"
-                                    10 -> "10 минут — Рекомендуем"
-                                    15 -> "15 минут — Интенсивно"
-                                    20 -> "20 минут — Серьёзный подход"
-                                    30 -> "30 минут — Профессионал"
-                                    else -> "$min минут"
-                                }
-                                Text(label, style = MaterialTheme.typography.bodyMedium,
-                                     fontWeight = if (goalMinutes == min) FontWeight.SemiBold
-                                                  else FontWeight.Normal)
-                                RadioButton(selected = goalMinutes == min,
-                                            onClick = { goalMinutes = min })
-                            }
-                        }
-                    }
-                }
-            }
-
-            // ── Theme ─────────────────────────────────────────
-            SettingsSection("Тема оформления") {
-                val themeOptions = listOf(
-                    ThemeMode.AUTO  to "🌗 Авто (как в системе)",
-                    ThemeMode.LIGHT to "☀️ Светлая",
-                    ThemeMode.DARK  to "🌙 Тёмная"
-                )
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    themeOptions.forEach { (mode, label) ->
-                        Surface(
-                            onClick = { vm.setTheme(mode) },
-                            shape = RoundedCornerShape(14.dp),
-                            color = if (themeMode == mode)
-                                MaterialTheme.colorScheme.primaryContainer
-                            else MaterialTheme.colorScheme.surface,
-                            tonalElevation = if (themeMode == mode) 0.dp else 1.dp,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    label,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = if (themeMode == mode) FontWeight.SemiBold
-                                                 else FontWeight.Normal
-                                )
-                                RadioButton(
-                                    selected = themeMode == mode,
-                                    onClick = { vm.setTheme(mode) }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            // ── Share ─────────────────────────────────────────
-            SettingsSection("Поделиться") {
-                Surface(
-                    onClick = {
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type = "text/plain"
-                            putExtra(Intent.EXTRA_SUBJECT, "HablaRu — учи испанский!")
-                            putExtra(
-                                Intent.EXTRA_TEXT,
-                                "Привет! Я учу испанский с приложением HablaRu 🇪🇸\n" +
-                                "Карточки, игры, тренажёр произношения — всё бесплатно!\n" +
-                                "Попробуй и ты!"
-                            )
-                        }
-                        context.startActivity(Intent.createChooser(intent, "Поделиться HablaRu"))
-                    },
-                    shape = RoundedCornerShape(14.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 1.dp,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            Icons.Default.Share,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Column {
-                            Text(
-                                "Поделиться приложением",
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                "Расскажи друзьям про HablaRu",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            }
-
-            // ── Save button ───────────────────────────────────
-            Button(
-                onClick = {
-                    vm.save(name, level, goalMinutes)
-                    navController.popBackStack()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp)
+            SettingsHeader("Профиль")
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                ),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(Icons.Default.Check, null)
+                Column {
+                    SettingsItem(
+                        title = "Имя пользователя",
+                        summary = progress.displayName,
+                        icon = Icons.Default.Person,
+                        onClick = { showNameDialog = true }
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                    SettingsItem(
+                        title = "Уровень испанского",
+                        summary = when (progress.currentLevel) {
+                            "A1" -> "A1 — Начинающий"
+                            "A2" -> "A2 — Элементарный"
+                            "B1" -> "B1 — Средний"
+                            "B2" -> "B2 — Выше среднего"
+                            else -> progress.currentLevel
+                        },
+                        icon = Icons.Default.Translate,
+                        onClick = { showLevelDialog = true }
+                    )
+                }
+            }
+
+            SettingsHeader("Обучение")
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column {
+                    SettingsItem(
+                        title = "Дневная цель",
+                        summary = "${progress.dailyGoalMinutes} минут в день",
+                        icon = Icons.Default.Timer,
+                        onClick = { showGoalDialog = true }
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                    SettingsItem(
+                        title = "Озвучка (TTS)",
+                        summary = if (ttsEnabled) "Слова озвучиваются" else "Без звука",
+                        icon = Icons.AutoMirrored.Filled.VolumeUp,
+                        trailing = {
+                            Switch(
+                                checked = ttsEnabled,
+                                onCheckedChange = { vm.toggleTts(it) }
+                            )
+                        },
+                        onClick = { vm.toggleTts(!ttsEnabled) }
+                    )
+                }
+            }
+
+            SettingsHeader("Приложение")
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column {
+                    SettingsItem(
+                        title = "Поделиться",
+                        summary = "Рассказать друзьям про HablaRu",
+                        icon = Icons.Default.Share,
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_SUBJECT, "HablaRu — учи испанский!")
+                                putExtra(
+                                    Intent.EXTRA_TEXT,
+                                    "Привет! Я учу испанский с приложением HablaRu 🇪🇸\n" +
+                                    "Карточки, игры, тренажёр произношения — всё бесплатно!\n" +
+                                    "Попробуй и ты!"
+                                )
+                            }
+                            context.startActivity(Intent.createChooser(intent, "Поделиться HablaRu"))
+                        }
+                    )
+                }
+            }
+            
+            Spacer(Modifier.height(32.dp))
+        }
+    }
+
+    // ── Dialogs ───────────────────────────────────────────────
+
+    if (showNameDialog) {
+        NameEditDialog(
+            initialName = progress.displayName,
+            onDismiss = { showNameDialog = false }) { 
+                vm.updateName(it)
+                showNameDialog = false
+            }
+    }
+
+    if (showLevelDialog) {
+        SingleChoiceDialog(
+            title = "Уровень испанского",
+            options = listOf(
+                "A1" to "Начинающий",
+                "A2" to "Элементарный",
+                "B1" to "Средний",
+                "B2" to "Выше среднего"
+            ),
+            selectedOption = progress.currentLevel,
+            onDismiss = { showLevelDialog = false },
+            onSelect = {
+                vm.updateLevel(it)
+                showLevelDialog = false
+            }
+        )
+    }
+
+    if (showGoalDialog) {
+        SingleChoiceDialog(
+            title = "Дневная цель",
+            options = listOf(
+                "5" to "5 минут — Легко",
+                "10" to "10 минут — Оптимально",
+                "15" to "15 минут — Интенсивно",
+                "20" to "20 минут — Серьёзно",
+                "30" to "30 минут — Профи"
+            ),
+            selectedOption = progress.dailyGoalMinutes.toString(),
+            onDismiss = { showGoalDialog = false },
+            onSelect = {
+                vm.updateGoal(it.toInt())
+                showGoalDialog = false
+            }
+        )
+    }
+
+}
+
+// ── Components ────────────────────────────────────────────────
+
+@Composable
+private fun SettingsHeader(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(start = 16.dp, top = 20.dp, bottom = 8.dp)
+    )
+}
+
+@Composable
+private fun SettingsItem(
+    title: String,
+    summary: String? = null,
+    icon: ImageVector? = null,
+    onClick: (() -> Unit)? = null,
+    trailing: @Composable (() -> Unit)? = null
+) {
+    Surface(
+        onClick = onClick ?: {},
+        enabled = onClick != null,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.width(16.dp))
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                if (summary != null) {
+                    Text(
+                        text = summary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            if (trailing != null) {
                 Spacer(Modifier.width(8.dp))
-                Text("Сохранить", style = MaterialTheme.typography.titleMedium)
+                trailing()
             }
         }
     }
 }
 
 @Composable
-private fun SettingsSection(title: String, content: @Composable () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        content()
-    }
+private fun NameEditDialog(
+    initialName: String,
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit
+) {
+    var text by remember { mutableStateOf(initialName) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Имя пользователя") },
+        text = {
+            OutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { onSave(text) }) { Text("Сохранить") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Отмена") }
+        }
+    )
+}
+
+@Composable
+private fun SingleChoiceDialog(
+    title: String,
+    options: List<Pair<String, String>>,
+    selectedOption: String,
+    onDismiss: () -> Unit,
+    onSelect: (String) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                options.forEach { (key, label) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSelect(key) }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (key == selectedOption),
+                            onClick = { onSelect(key) }
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(label, style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Закрыть") }
+        }
+    )
 }
