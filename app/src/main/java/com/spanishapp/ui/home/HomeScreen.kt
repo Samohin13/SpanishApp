@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -76,10 +77,12 @@ fun HomeScreen(
         }
     }
 
+    val bgColor = Color(0xFF0A0909)
+
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = 72.dp, bottom = 100.dp),
+            contentPadding = PaddingValues(top = 80.dp, bottom = 120.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             itemsIndexed(roadmapUnits) { index, unit ->
@@ -101,7 +104,37 @@ fun HomeScreen(
             }
         }
 
-        // Floating top bar — без фона, поверх контента
+        // Верхнее растворение — контент исчезает под топ-баром
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .align(Alignment.TopCenter)
+                .background(
+                    Brush.verticalGradient(
+                        0f to bgColor,
+                        0.6f to bgColor.copy(alpha = 0.85f),
+                        1f to Color.Transparent
+                    )
+                )
+        )
+
+        // Нижнее растворение — контент исчезает перед боттом-баром
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .align(Alignment.BottomCenter)
+                .background(
+                    Brush.verticalGradient(
+                        0f to Color.Transparent,
+                        0.4f to bgColor.copy(alpha = 0.85f),
+                        1f to bgColor
+                    )
+                )
+        )
+
+        // Floating top bar — поверх градиента
         HomeTopBar(
             xp = state.totalXp,
             streak = state.currentStreak,
@@ -125,16 +158,16 @@ private fun HomeTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            Text("✨ $xp", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFFF9A825))
-            Text("🔥 $streak", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = Color(0xFFC62828))
+        Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+            Text("✨ $xp", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFFF9A825))
+            Text("🔥 $streak", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFFFF5722))
         }
 
         IconButton(
             onClick = onProfileClick,
-            modifier = Modifier.size(36.dp).background(Color(0xFF4CAF50).copy(alpha = 0.1f), CircleShape)
+            modifier = Modifier.size(42.dp).background(Color(0xFF4CAF50).copy(alpha = 0.15f), CircleShape)
         ) {
-            Icon(Icons.Default.Person, null, tint = Color(0xFF4CAF50), modifier = Modifier.size(20.dp))
+            Icon(Icons.Default.Person, null, tint = Color(0xFF4CAF50), modifier = Modifier.size(24.dp))
         }
     }
 }
