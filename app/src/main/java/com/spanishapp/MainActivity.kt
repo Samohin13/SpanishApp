@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SpanishAppTheme {
+            SpanishAppTheme(darkTheme = false) {
                 SpanishBackground {
                     SpanishAppRoot()
                 }
@@ -52,7 +52,7 @@ fun SpanishAppRoot() {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color.Transparent, // Сделаем Scaffold прозрачным для анимации фона
+        containerColor = Color(0xFFF8F8FA),
         bottomBar = {
             if (showBottomBar) {
                 SpanishBottomBar(

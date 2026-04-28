@@ -2,9 +2,10 @@ package com.spanishapp.ui.home
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -16,14 +17,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,23 +49,33 @@ data class RoadmapLesson(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  HOME SCREEN (ROADMAP) — Чистый путь обучения
+//  HOME SCREEN — Figma light design
 // ═══════════════════════════════════════════════════════════════
+
+private val Purple      = Color(0xFF7B2FBE)
+private val PurplePale  = Color(0xFFF3E8FF)
+private val Pink        = Color(0xFFE040FB)
+private val GoldColor   = Color(0xFFFF9500)
+private val OrangeColor = Color(0xFFFF6B00)
+private val TextMain    = Color(0xFF1A1A1A)
+private val TextGray    = Color(0xFF8E8E93)
+private val CardBorder  = Color(0xFFE5E5EA)
+private val LockGray    = Color(0xFFC7C7CC)
+private val BgGray      = Color(0xFFF8F8FA)
+private val SubBg       = Color(0xFFF2F2F7)
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state     by viewModel.uiState.collectAsStateWithLifecycle()
-    val haptic    = LocalHapticFeedback.current
-    
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     var expandedUnitId by remember { mutableStateOf<String?>(null) }
 
     val roadmapUnits = remember(state.learnedCount) {
-        RoadmapData.units.map { unit ->
+        RoadmapData.units.mapIndexed { index, unit ->
             val unitIndex = unit.id.toInt()
-            val unlocked = unitIndex == 1 || (state.learnedCount >= (unitIndex - 1) * 8)
+            val unlocked  = unitIndex == 1 || (state.learnedCount >= (unitIndex - 1) * 8)
             unit.copy(
                 isLocked = !unlocked,
                 progress = if (unlocked) (state.learnedCount / (unitIndex * 15f)).coerceIn(0f, 1f) else 0f
@@ -77,334 +83,306 @@ fun HomeScreen(
         }
     }
 
-    val bgColor = Color(0xFF0D0D0D)
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Топ-бар занимает статус-бар + контентную часть
-        HomeTopBar(
-            xp = state.totalXp,
-            streak = state.currentStreak,
-            onProfileClick = { navController.navigate("profile") }
-        )
-
-        // Список разделов с нижним растворением
-        Box(modifier = Modifier.weight(1f)) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BgGray)
+            .statusBarsPadding(),
+        contentPadding = PaddingValues(bottom = 24.dp)
+    ) {
+        // ── Header row ─────────────────────────────────────────
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(horizontal = 20.dp, vertical = 14.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment     = Alignment.CenterVertically
             ) {
-                itemsIndexed(roadmapUnits) { index, unit ->
-                    RoadmapNode(
-                        unit = unit,
-                        isFirst = index == 0,
-                        isLast = index == roadmapUnits.size - 1,
-                        isExpanded = expandedUnitId == unit.id,
-                        onToggleExpand = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
-                        },
-                        onStartLesson = { lesson ->
-                            if (!unit.isLocked) {
-                                navController.navigate("lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}")
-                            }
-                        }
+                // Profile circle
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(Purple)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { navController.navigate("profile") }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Person,
+                        contentDescription = null,
+                        tint     = Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+
+                // XP + Streak pills
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    StatPill(
+                        emoji = "✨",
+                        value = "${state.totalXp}",
+                        bgColor   = Color(0xFFFFF3E0),
+                        textColor = GoldColor,
+                        borderColor = GoldColor.copy(alpha = 0.3f)
+                    )
+                    StatPill(
+                        emoji = "🔥",
+                        value = "${state.currentStreak}",
+                        bgColor   = Color(0xFFFFF3E0),
+                        textColor = OrangeColor,
+                        borderColor = OrangeColor.copy(alpha = 0.3f)
                     )
                 }
             }
+        }
 
-            // Нижнее растворение перед Bottom Nav
-            Box(
+        // ── Greeting ───────────────────────────────────────────
+        item {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        Brush.verticalGradient(
-                            0f to Color.Transparent,
-                            1f to bgColor
+                    .background(Color.White)
+                    .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 20.dp)
+            ) {
+                Text(
+                    "Привет! 👋",
+                    fontSize   = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    color      = TextMain
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "Продолжай изучать испанский язык",
+                    fontSize = 15.sp,
+                    color    = TextGray
+                )
+            }
+        }
+
+        item { Spacer(Modifier.height(12.dp)) }
+
+        // ── Topic cards ────────────────────────────────────────
+        itemsIndexed(roadmapUnits) { _, unit ->
+            TopicCard(
+                unit       = unit,
+                isExpanded = expandedUnitId == unit.id,
+                onToggle   = {
+                    expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
+                },
+                onLessonClick = { lesson ->
+                    if (!unit.isLocked) {
+                        navController.navigate(
+                            "lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}"
                         )
-                    )
+                    }
+                }
+            )
+            Spacer(Modifier.height(8.dp))
+        }
+    }
+}
+
+// ── Stat pill ──────────────────────────────────────────────────
+
+@Composable
+private fun StatPill(
+    emoji: String,
+    value: String,
+    bgColor: Color,
+    textColor: Color,
+    borderColor: Color
+) {
+    Surface(
+        shape  = RoundedCornerShape(20.dp),
+        color  = bgColor,
+        border = BorderStroke(1.dp, borderColor)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment     = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(emoji, fontSize = 14.sp)
+            Text(
+                value,
+                fontSize   = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color      = textColor
             )
         }
     }
 }
 
+// ── Topic card ─────────────────────────────────────────────────
+
 @Composable
-private fun HomeTopBar(
-    xp: Int,
-    streak: Int,
-    onProfileClick: () -> Unit
+private fun TopicCard(
+    unit: RoadmapUnit,
+    isExpanded: Boolean,
+    onToggle: () -> Unit,
+    onLessonClick: (RoadmapLesson) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        // Фон тянется в область статус-бара (батарея, часы, сеть)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF1C1C1E))
-                .statusBarsPadding()  // отступ = высота статус-бара
-        )
-        // Контент топ-бара
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF1C1C1E))
-                .padding(horizontal = 20.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-        // Логотип / название
-        Text(
-            text = "HablaRu",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = (-0.5).sp,
-            color = Color.White
-        )
+    Surface(
+        modifier  = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape     = RoundedCornerShape(16.dp),
+        color     = Color.White,
+        border    = BorderStroke(1.dp, CardBorder),
+        onClick   = onToggle
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
 
-        // Статистика + профиль
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            // XP пилюля
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = Color(0xFFFFD60A).copy(alpha = 0.15f),
-                border = androidx.compose.foundation.BorderStroke(
-                    0.5.dp, Color(0xFFFFD60A).copy(alpha = 0.35f)
+            // ── Title row ─────────────────────────────────────
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier          = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text       = "${unit.id}. ${unit.title}",
+                    style      = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color      = if (unit.isLocked) TextGray else TextMain,
+                    modifier   = Modifier.weight(1f)
                 )
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text("✨", fontSize = 13.sp)
-                    Text(
-                        "$xp",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFFFD60A)
+                if (unit.isLocked) {
+                    Icon(
+                        Icons.Default.Lock,
+                        contentDescription = null,
+                        tint     = LockGray,
+                        modifier = Modifier.size(16.dp)
                     )
+                    Spacer(Modifier.width(6.dp))
                 }
-            }
-
-            // Streak пилюля
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = Color(0xFFFF6B00).copy(alpha = 0.15f),
-                border = androidx.compose.foundation.BorderStroke(
-                    0.5.dp, Color(0xFFFF6B00).copy(alpha = 0.35f)
-                )
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text("🔥", fontSize = 13.sp)
-                    Text(
-                        "$streak",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFFF9F0A)
-                    )
-                }
-            }
-
-            // Профиль
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .background(Color.White.copy(alpha = 0.08f), CircleShape)
-                    .clickable(
-                        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
-                        indication = null,
-                        onClick = onProfileClick
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
                 Icon(
-                    Icons.Default.Person,
+                    if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                     contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.80f),
+                    tint     = TextGray,
                     modifier = Modifier.size(20.dp)
                 )
             }
-        }   // inner Row (pills)
-        }   // outer Row
-        // Разделитель — тонкая линия снизу, как у Bottom Bar
-        HorizontalDivider(thickness = 0.5.dp, color = Color.White.copy(alpha = 0.12f))
-    }   // Column
-}
 
-@Composable
-private fun RoadmapNode(
-    unit: RoadmapUnit,
-    isFirst: Boolean,
-    isLast: Boolean,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
-    onStartLesson: (RoadmapLesson) -> Unit
-) {
-    val accentColor = if (unit.isLocked) MaterialTheme.colorScheme.outlineVariant else unit.color
-    // Слово РАЗДЕЛ всегда строго ЗЕЛЕНОЕ
-    val labelColor = Color(0xFF4CAF50)
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (!isFirst) {
-            Box(modifier = Modifier.height(12.dp).width(2.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
-        }
-
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 6.dp),
-            shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
-            onClick = onToggleExpand
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+            // ── Progress bar (only for unlocked with progress) ─
+            if (!unit.isLocked && unit.progress > 0f) {
+                Spacer(Modifier.height(10.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
-                            .size(64.dp)
-                            .clip(CircleShape)
-                            .background(if (unit.isLocked) MaterialTheme.colorScheme.surfaceVariant else accentColor.copy(alpha = 0.1f)),
-                        contentAlignment = Alignment.Center
+                            .weight(1f)
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(PurplePale)
                     ) {
-                        if (unit.isLocked) {
-                            Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
-                        } else {
-                            Text(unit.icon, fontSize = 28.sp)
-                            CircularProgressIndicator(
-                                progress = { unit.progress },
-                                modifier = Modifier.fillMaxSize(),
-                                color = accentColor,
-                                strokeWidth = 4.dp,
-                                trackColor = accentColor.copy(alpha = 0.1f)
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.width(16.dp))
-
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            "РАЗДЕЛ ${unit.id}",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = labelColor,
-                            fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = 1.sp
-                        )
-                        Text(
-                            unit.title,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            unit.description,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 2,
-                            lineHeight = 18.sp
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(unit.progress)
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(
+                                    Brush.horizontalGradient(listOf(Purple, Pink))
+                                )
                         )
                     }
-
-                    // Стрелочка ЕСТЬ У ВСЕХ
-                    Icon(
-                        Icons.Default.ExpandMore,
-                        null,
-                        modifier = Modifier.rotate(if (isExpanded) 180f else 0f),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                        "${(unit.progress * 100).toInt()}%",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextGray
                     )
                 }
+            }
 
-                AnimatedVisibility(
-                    visible = isExpanded,
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
+            // ── Expanded lessons ──────────────────────────────
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter   = expandVertically() + fadeIn(),
+                exit    = shrinkVertically() + fadeOut()
+            ) {
+                Column(
+                    modifier            = Modifier.padding(top = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(top = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f))
-                        unit.lessons.forEach { lesson ->
-                            LessonRow(lesson = lesson, color = unit.color, onClick = { onStartLesson(lesson) }, enabled = !unit.isLocked)
-                        }
+                    unit.lessons.forEachIndexed { idx, lesson ->
+                        SubLessonRow(
+                            number   = idx + 1,
+                            lesson   = lesson,
+                            isLocked = unit.isLocked,
+                            onClick  = { onLessonClick(lesson) }
+                        )
                     }
                 }
             }
-        }
-
-        if (!isLast) {
-            Box(modifier = Modifier.height(12.dp).width(2.dp).background(accentColor.copy(alpha = 0.2f), CircleShape))
         }
     }
 }
 
+// ── Sub-lesson row ────────────────────────────────────────────
+
 @Composable
-private fun LessonRow(lesson: RoadmapLesson, color: Color, onClick: () -> Unit, enabled: Boolean) {
+private fun SubLessonRow(
+    number: Int,
+    lesson: RoadmapLesson,
+    isLocked: Boolean,
+    onClick: () -> Unit
+) {
     Surface(
-        onClick = if(enabled) onClick else {{}},
-        modifier = Modifier.fillMaxWidth().alpha(if(enabled) 1f else 0.5f),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+        onClick   = if (!isLocked) onClick else {{}},
+        modifier  = Modifier.fillMaxWidth(),
+        color     = SubBg,
+        shape     = RoundedCornerShape(12.dp)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+            modifier          = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Number circle
             Box(
-                modifier = Modifier.size(38.dp).clip(CircleShape).background(if (lesson.isCompleted) Color(0xFF4CAF50) else MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
+                modifier         = Modifier
+                    .size(28.dp)
+                    .clip(CircleShape)
+                    .background(if (lesson.isCompleted) Purple else CardBorder),
                 contentAlignment = Alignment.Center
             ) {
                 if (lesson.isCompleted) {
-                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(14.dp))
                 } else {
-                    val icon = when(lesson.type) {
-                        "vocab"   -> Icons.Default.MenuBook
-                        "grammar" -> Icons.Default.Extension
-                        "phrase"  -> Icons.Default.ChatBubble
-                        else      -> Icons.Default.Quiz
-                    }
-                    Icon(icon, null, tint = if(enabled) Color(0xFF4CAF50) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), modifier = Modifier.size(20.dp))
+                    Text(
+                        "$number",
+                        fontSize   = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color      = if (isLocked) LockGray else TextGray
+                    )
                 }
             }
 
-            Spacer(Modifier.width(14.dp))
-            
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    lesson.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
+            Spacer(Modifier.width(12.dp))
+
+            Text(
+                text     = lesson.title,
+                modifier = Modifier.weight(1f),
+                style    = MaterialTheme.typography.bodyMedium,
+                color    = if (isLocked) TextGray else TextMain
+            )
+
+            if (isLocked) {
+                Icon(
+                    Icons.Default.Lock,
+                    contentDescription = null,
+                    tint     = LockGray,
+                    modifier = Modifier.size(14.dp)
                 )
-                Text(
-                    when (lesson.type) {
-                        "vocab"   -> "Лексика"
-                        "grammar" -> "Грамматика"
-                        "phrase"  -> "Фразы"
-                        "quiz"    -> "Тест"
-                        else      -> lesson.type
-                    },
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f)
+            } else if (!lesson.isCompleted) {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint     = TextGray,
+                    modifier = Modifier.size(16.dp)
                 )
-            }
-            
-            if (enabled) {
-                Icon(Icons.Default.PlayArrow, null, tint = Color(0xFF4CAF50).copy(alpha = 0.8f), modifier = Modifier.size(22.dp))
             }
         }
     }
