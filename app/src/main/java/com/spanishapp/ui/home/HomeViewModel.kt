@@ -3,6 +3,7 @@ package com.spanishapp.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.*
+import com.spanishapp.data.db.entity.LessonProgressEntity
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.domain.algorithm.AdaptiveLearning
 import com.spanishapp.domain.algorithm.StreakManager
@@ -20,6 +21,7 @@ class HomeViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val lessonDao: LessonDao,
     private val dailyWordDao: DailyWordDao,
+    private val lessonProgressDao: LessonProgressDao,
     private val achievementManager: AchievementManager
 ) : ViewModel() {
 
@@ -28,10 +30,21 @@ class HomeViewModel @Inject constructor(
         userProgressDao.getProgress(),
         wordDao.getDueWords(),
         wordDao.learnedCount(),
-        lessonDao.getNextLessons()
-    ) { progress, dueWords, learnedCount, nextLessons ->
+        lessonDao.getNextLessons(),
+        lessonProgressDao.getAllCompletedKeys()
+    ) { values ->
+        @Suppress("UNCHECKED_CAST")
+        val progress    = values[0] as UserProgressEntity?
+        @Suppress("UNCHECKED_CAST")
+        val dueWords    = values[1] as List<com.spanishapp.data.db.entity.WordEntity>
+        val learnedCount = values[2] as Int
+        @Suppress("UNCHECKED_CAST")
+        val nextLessons = values[3] as List<com.spanishapp.data.db.entity.LessonEntity>
+        @Suppress("UNCHECKED_CAST")
+        val completedKeys = (values[4] as List<String>).toSet()
 
         val p = progress ?: UserProgressEntity()
+
         val plan = AdaptiveLearning.planSession(
             dueWordsCount       = dueWords.size,
             dailyGoalMinutes    = p.dailyGoalMinutes,
@@ -40,32 +53,66 @@ class HomeViewModel @Inject constructor(
             weakWordsCount      = 0
         )
         val shouldLevelUp = AdaptiveLearning.shouldLevelUp(
-            wordsLearned      = p.wordsLearned,
-            lessonsCompleted  = p.lessonsCompleted,
-            currentLevel      = p.currentLevel
+            wordsLearned     = p.wordsLearned,
+            lessonsCompleted = p.lessonsCompleted,
+            currentLevel     = p.currentLevel
         )
 
+        // ── Вычисляем roadmap с реальным прогрессом ──────────
+        val roadmapUnits = buildRoadmapUnits(completedKeys)
+
         HomeUiState(
-            displayName         = p.displayName,
-            totalXp             = p.totalXp,
-            appLevel            = XpSystem.levelForXp(p.totalXp),
-            levelProgress       = XpSystem.progressToNextLevel(p.totalXp),
-            currentStreak       = p.currentStreak,
-            longestStreak       = p.longestStreak,
-            wordsLearned        = p.wordsLearned,
-            learnedCount        = learnedCount,
-            dueWordsCount       = dueWords.size,
-            dailyGoalMinutes    = p.dailyGoalMinutes,
-            todayMinutes        = todayStudyMinutes(p),
-            nextLessons         = nextLessons.map { it.title },
-            sessionPlan         = plan,
-            spanishLevel        = p.currentLevel,
-            shouldLevelUp       = shouldLevelUp,
-            isLoading           = false
+            displayName      = p.displayName,
+            totalXp          = p.totalXp,
+            appLevel         = XpSystem.levelForXp(p.totalXp),
+            levelProgress    = XpSystem.progressToNextLevel(p.totalXp),
+            currentStreak    = p.currentStreak,
+            longestStreak    = p.longestStreak,
+            wordsLearned     = p.wordsLearned,
+            learnedCount     = learnedCount,
+            dueWordsCount    = dueWords.size,
+            dailyGoalMinutes = p.dailyGoalMinutes,
+            todayMinutes     = todayStudyMinutes(p),
+            nextLessons      = nextLessons.map { it.title },
+            sessionPlan      = plan,
+            spanishLevel     = p.currentLevel,
+            shouldLevelUp    = shouldLevelUp,
+            roadmapUnits     = roadmapUnits,
+            isLoading        = false
         )
     }
         .catch { emit(HomeUiState(isLoading = false, error = it.message)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
+
+    // ── Строим roadmap с реальным isLocked / progress / isCompleted ──
+
+    private fun buildRoadmapUnits(completedKeys: Set<String>): List<RoadmapUnit> {
+        return RoadmapData.units.map { unit ->
+            val unitId = unit.id.toInt()
+
+            // Блок 1 открыт всегда; блок N — когда все уроки блока N-1 пройдены
+            val unlocked = unitId == 1 || run {
+                val prevUnit = RoadmapData.units[unitId - 2]
+                prevUnit.lessons.indices.all { idx ->
+                    "u${unitId - 1}_l${idx}" in completedKeys
+                }
+            }
+
+            val lessonsWithProgress = unit.lessons.mapIndexed { idx, lesson ->
+                lesson.copy(isCompleted = "u${unitId}_l${idx}" in completedKeys)
+            }
+
+            val completedCount = lessonsWithProgress.count { it.isCompleted }
+            val progressFraction = if (unit.lessons.isNotEmpty())
+                completedCount.toFloat() / unit.lessons.size else 0f
+
+            unit.copy(
+                isLocked = !unlocked,
+                progress = if (unlocked) progressFraction else 0f,
+                lessons  = lessonsWithProgress
+            )
+        }
+    }
 
     // ── Daily word of the day ─────────────────────────────────
     val wordOfTheDay: StateFlow<WordOfDay?> = flow {
@@ -87,14 +134,13 @@ class HomeViewModel @Inject constructor(
 
             userProgressDao.update(
                 p.copy(
-                    currentStreak  = newStreak,
-                    longestStreak  = maxOf(p.longestStreak, newStreak),
-                    lastStudyDate  = System.currentTimeMillis(),
-                    totalXp        = p.totalXp + bonus
+                    currentStreak = newStreak,
+                    longestStreak = maxOf(p.longestStreak, newStreak),
+                    lastStudyDate = System.currentTimeMillis(),
+                    totalXp       = p.totalXp + bonus
                 )
             )
 
-            // Check achievements after any progress update
             achievementManager.checkAndUnlock()
         }
     }
@@ -102,15 +148,13 @@ class HomeViewModel @Inject constructor(
     private fun todayStudyMinutes(p: UserProgressEntity): Int {
         val todayStart = LocalDate.now().toEpochDay() * 86_400_000L
         return if (p.lastStudyDate >= todayStart) {
-            // We store total minutes but not per-day; use a simple estimate
-            // In production you'd track a per-day session table
             minOf(p.totalStudyMinutes % 1440, p.dailyGoalMinutes)
         } else 0
     }
 }
 
 // ─────────────────────────────────────────────────────────────
-// UI State data classes
+// UI State
 // ─────────────────────────────────────────────────────────────
 data class HomeUiState(
     val displayName: String = "",
@@ -125,9 +169,10 @@ data class HomeUiState(
     val dailyGoalMinutes: Int = 10,
     val todayMinutes: Int = 0,
     val nextLessons: List<String> = emptyList(),
-    val sessionPlan: AdaptiveLearning.SessionPlan = AdaptiveLearning.SessionPlan(5,5,false,false,10),
+    val sessionPlan: AdaptiveLearning.SessionPlan = AdaptiveLearning.SessionPlan(5, 5, false, false, 10),
     val spanishLevel: String = "A1",
     val shouldLevelUp: Boolean = false,
+    val roadmapUnits: List<RoadmapUnit> = emptyList(),  // computed from lesson_progress
     val isLoading: Boolean = true,
     val error: String? = null
 )

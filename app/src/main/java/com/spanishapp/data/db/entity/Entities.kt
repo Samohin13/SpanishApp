@@ -141,6 +141,15 @@ data class DailyWordEntity(
     @ColumnInfo(name = "was_practiced") val wasPracticed: Boolean = false
 )
 
+// Прогресс уроков роадмапа: какие уроки из 30 блоков пройдены
+@Entity(tableName = "lesson_progress")
+data class LessonProgressEntity(
+    @PrimaryKey val lessonKey: String,           // "u1_l0", "u5_l2", …
+    @ColumnInfo(name = "unit_id") val unitId: Int,
+    @ColumnInfo(name = "lesson_index") val lessonIndex: Int,
+    @ColumnInfo(name = "completed_at") val completedAt: Long = System.currentTimeMillis()
+)
+
 @Entity(tableName = "article_level_progress")
 data class ArticleLevelProgressEntity(
     @PrimaryKey val levelId: Int, // 1-100

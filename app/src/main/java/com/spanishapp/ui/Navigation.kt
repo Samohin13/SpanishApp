@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,6 +29,7 @@ import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
 import com.spanishapp.ui.home.LessonIntroScreen
+import com.spanishapp.ui.home.LessonIntroViewModel
 import com.spanishapp.ui.grammar.GrammarScreen
 import com.spanishapp.ui.quiz.QuizScreen
 import com.spanishapp.ui.profile.AchievementsScreen
@@ -63,17 +65,16 @@ object Navigation {
             composable("home") { HomeScreen(navController) }
 
             composable(
-                "lesson_intro/{title}/{type}?category={category}",
+                "lesson_intro/{unitId}/{lessonIndex}",
                 arguments = listOf(
-                    navArgument("title") { type = NavType.StringType },
-                    navArgument("type") { type = NavType.StringType },
-                    navArgument("category") { defaultValue = "all" }
+                    navArgument("unitId") { type = NavType.IntType },
+                    navArgument("lessonIndex") { type = NavType.IntType }
                 )
             ) { backStackEntry ->
-                val title = backStackEntry.arguments?.getString("title") ?: ""
-                val type = backStackEntry.arguments?.getString("type") ?: ""
-                val category = backStackEntry.arguments?.getString("category") ?: "all"
-                LessonIntroScreen(navController, title, type, category)
+                val unitId      = backStackEntry.arguments?.getInt("unitId") ?: 1
+                val lessonIndex = backStackEntry.arguments?.getInt("lessonIndex") ?: 0
+                val vm: LessonIntroViewModel = hiltViewModel()
+                LessonIntroScreen(navController, unitId, lessonIndex, vm)
             }
 
             // ── Онбординг ─────────────────────────────────────

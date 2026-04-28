@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -24,40 +23,46 @@ import com.airbnb.lottie.compose.*
 @Composable
 fun LessonIntroScreen(
     navController: NavHostController,
-    title: String,
-    type: String,
-    category: String = "all"
+    unitId: Int,
+    lessonIndex: Int,
+    viewModel: LessonIntroViewModel
 ) {
     val haptic = LocalHapticFeedback.current
-    
-    // Lottie Animation
-    val lottieUrl = when(type) {
-        "vocab" -> "https://lottie.host/575239a2-5b92-491c-99c5-84631383777f/2mInRjJ968.json" // Book/Study
-        "grammar" -> "https://lottie.host/8e3126f5-5730-4e3a-9653-5d51d1822c95/f4mH8i3K0I.json" // Puzzle
-        else -> "https://lottie.host/640103b4-4e14-4112-9e9d-111162d08a0d/7VzD6iE1T2.json" // Trophy/Quiz
+
+    // Достаём данные из RoadmapData по индексам
+    val unit   = remember(unitId) { RoadmapData.units.getOrNull(unitId - 1) }
+    val lesson = remember(unit, lessonIndex) { unit?.lessons?.getOrNull(lessonIndex) }
+
+    if (unit == null || lesson == null) {
+        navController.popBackStack()
+        return
     }
-    
+
+    val lottieUrl = when (lesson.type) {
+        "vocab"   -> "https://lottie.host/575239a2-5b92-491c-99c5-84631383777f/2mInRjJ968.json"
+        "grammar" -> "https://lottie.host/8e3126f5-5730-4e3a-9653-5d51d1822c95/f4mH8i3K0I.json"
+        else      -> "https://lottie.host/640103b4-4e14-4112-9e9d-111162d08a0d/7VzD6iE1T2.json"
+    }
+
     val composition by rememberLottieComposition(LottieCompositionSpec.Url(lottieUrl))
-    val progress by animateLottieCompositionAsState(
-        composition,
-        iterations = LottieConstants.IterateForever
-    )
+    val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever)
 
-    val accentColor = when(type) {
-        "vocab" -> MaterialTheme.colorScheme.primary
+    val accentColor = when (lesson.type) {
+        "vocab"   -> MaterialTheme.colorScheme.primary
         "grammar" -> MaterialTheme.colorScheme.secondary
-        else -> MaterialTheme.colorScheme.tertiary
+        else      -> MaterialTheme.colorScheme.tertiary
     }
 
-    val description = when(type) {
-        "vocab" -> "Изучи новые слова и фразы для общения. Мы подобрали самые важные выражения для этой темы."
+    val description = when (lesson.type) {
+        "vocab"   -> "Изучи новые слова и фразы для общения. Мы подобрали самые важные выражения для этой темы."
         "grammar" -> "Разберись, как строятся предложения. Грамматика — это скелет языка."
-        else -> "Проверь свои знания! Пройди финальный тест, чтобы открыть следующий раздел."
+        "phrase"  -> "Потренируй готовые разговорные фразы — настоящий язык живых людей."
+        else      -> "Проверь свои знания! Пройди тест, чтобы открыть следующий раздел."
     }
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
+    val cefrBadge = unit.cefrLevel  // "A1", "A2", "B1", "B2"
+
+    Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -66,6 +71,22 @@ fun LessonIntroScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            // CEFR badge
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = accentColor.copy(alpha = 0.12f)
+            ) {
+                Text(
+                    text = cefrBadge,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 4.dp),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = accentColor
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
             Box(
                 modifier = Modifier
                     .size(200.dp)
@@ -79,12 +100,21 @@ fun LessonIntroScreen(
                 )
             }
 
-            Spacer(Modifier.height(48.dp))
+            Spacer(Modifier.height(32.dp))
 
             Text(
-                text = title,
-                style = MaterialTheme.typography.displayMedium,
+                text = lesson.title,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.ExtraBold,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = unit.title,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 
@@ -95,10 +125,10 @@ fun LessonIntroScreen(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
 
-            Spacer(Modifier.height(48.dp))
+            Spacer(Modifier.height(32.dp))
 
             Surface(
                 shape = RoundedCornerShape(24.dp),
@@ -111,27 +141,24 @@ fun LessonIntroScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     RewardItem("✨ +15 XP", "Опыт")
-                    RewardItem("🔥 +1", "Стрик")
-                    RewardItem("🎯 100%", "Цель")
+                    RewardItem("🔓", "Следующий\nурок")
+                    RewardItem("🎯", "Прогресс\nблока")
                 }
             }
 
-            Spacer(Modifier.height(48.dp))
+            Spacer(Modifier.height(32.dp))
 
             Button(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    
-                    val route = if (type == "quiz") {
-                        "quiz?type=$category"
-                    } else if (type == "grammar") {
-                        "grammar" // Usually leads to grammar list, but can be specific lesson if needed
-                    } else {
-                        "flashcards_session?level=A1&category=$category&direction=ES_TO_RU&weak=false"
-                    }
 
+                    // Отмечаем урок выполненным и начисляем XP
+                    viewModel.markLessonComplete(unitId, lessonIndex)
+
+                    // Роутим на нужный экран с правильным CEFR-уровнем
+                    val route = buildActivityRoute(lesson, unit.cefrLevel)
                     navController.navigate(route) {
-                        popUpTo("lesson_intro/{title}/{type}") { inclusive = true }
+                        popUpTo("lesson_intro/{unitId}/{lessonIndex}") { inclusive = true }
                     }
                 },
                 modifier = Modifier
@@ -153,10 +180,22 @@ fun LessonIntroScreen(
     }
 }
 
+// Строим маршрут для нужного типа урока с правильным уровнем
+private fun buildActivityRoute(lesson: RoadmapLesson, cefrLevel: String): String {
+    val cat = lesson.category
+    return when (lesson.type) {
+        "vocab"   -> "flashcards_session?level=$cefrLevel&category=$cat&direction=ES_TO_RU"
+        "phrase"  -> "flashcards_session?level=$cefrLevel&category=$cat&direction=MIXED"
+        "grammar" -> "grammar"
+        "quiz"    -> "quiz?type=$cat"
+        else      -> "flashcards_session?level=$cefrLevel&category=$cat&direction=ES_TO_RU"
+    }
+}
+
 @Composable
 private fun RewardItem(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, fontSize = 18.sp)
+        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
     }
 }

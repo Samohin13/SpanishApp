@@ -334,6 +334,18 @@ interface WordListDao {
 }
 
 @Dao
+interface LessonProgressDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun markComplete(progress: LessonProgressEntity)
+
+    @Query("SELECT lesson_key FROM lesson_progress")
+    fun getAllCompletedKeys(): Flow<List<String>>
+
+    @Query("SELECT COUNT(*) FROM lesson_progress WHERE unit_id = :unitId")
+    suspend fun completedCountForUnit(unitId: Int): Int
+}
+
+@Dao
 interface ArticleGameDao {
     @Query("SELECT * FROM article_level_progress ORDER BY levelId ASC")
     fun getAllProgress(): Flow<List<ArticleLevelProgressEntity>>

@@ -24,9 +24,10 @@ object AppModule {
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "spanish_app.db")
             .addMigrations(
-                AppDatabase.MIGRATION_1_2, 
+                AppDatabase.MIGRATION_1_2,
                 AppDatabase.MIGRATION_2_3,
-                AppDatabase.MIGRATION_3_4
+                AppDatabase.MIGRATION_3_4,
+                AppDatabase.MIGRATION_4_5
             )
             .fallbackToDestructiveMigration()
             .build()
@@ -41,6 +42,7 @@ object AppModule {
     @Provides fun provideDailyWordDao(db: AppDatabase): DailyWordDao = db.dailyWordDao()
     @Provides fun provideWordListDao(db: AppDatabase): WordListDao = db.wordListDao()
     @Provides fun provideArticleGameDao(db: AppDatabase): ArticleGameDao = db.articleGameDao()
+    @Provides fun provideLessonProgressDao(db: AppDatabase): LessonProgressDao = db.lessonProgressDao()
 
     // ── OkHttp  (Anthropic API) ────────────────────────────────
     @Provides

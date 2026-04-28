@@ -19,9 +19,10 @@ import com.spanishapp.data.db.entity.*
         DailyWordEntity::class,
         WordListEntity::class,
         WordListEntryEntity::class,
-        ArticleLevelProgressEntity::class
+        ArticleLevelProgressEntity::class,
+        LessonProgressEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -35,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun dailyWordDao(): DailyWordDao
     abstract fun wordListDao(): WordListDao
     abstract fun articleGameDao(): ArticleGameDao
+    abstract fun lessonProgressDao(): LessonProgressDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -121,6 +123,19 @@ abstract class AppDatabase : RoomDatabase() {
                         stars INTEGER NOT NULL DEFAULT 0,
                         isUnlocked INTEGER NOT NULL DEFAULT 0,
                         best_score INTEGER NOT NULL DEFAULT 0
+                    )
+                """)
+            }
+        }
+
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS lesson_progress (
+                        lesson_key TEXT PRIMARY KEY NOT NULL,
+                        unit_id INTEGER NOT NULL,
+                        lesson_index INTEGER NOT NULL,
+                        completed_at INTEGER NOT NULL DEFAULT 0
                     )
                 """)
             }

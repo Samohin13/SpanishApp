@@ -35,17 +35,18 @@ data class RoadmapUnit(
     val title: String,
     val description: String,
     val icon: String,
-    val isLocked: Boolean = false,
-    val progress: Float = 0f,
+    val cefrLevel: String = "A1",   // A1 / A2 / B1 / B2
+    val isLocked: Boolean = true,   // computed by HomeViewModel from lesson_progress
+    val progress: Float = 0f,       // computed by HomeViewModel
     val color: Color,
     val lessons: List<RoadmapLesson> = emptyList()
 )
 
 data class RoadmapLesson(
     val title: String,
-    val type: String,
+    val type: String,               // vocab / grammar / quiz / phrase
     val category: String = "general",
-    val isCompleted: Boolean = false
+    val isCompleted: Boolean = false  // computed by HomeViewModel from lesson_progress
 )
 
 // ═══════════════════════════════════════════════════════════════
@@ -71,17 +72,6 @@ fun HomeScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var expandedUnitId by remember { mutableStateOf<String?>(null) }
-
-    val roadmapUnits = remember(state.learnedCount) {
-        RoadmapData.units.mapIndexed { index, unit ->
-            val unitIndex = unit.id.toInt()
-            val unlocked  = unitIndex == 1 || (state.learnedCount >= (unitIndex - 1) * 8)
-            unit.copy(
-                isLocked = !unlocked,
-                progress = if (unlocked) (state.learnedCount / (unitIndex * 15f)).coerceIn(0f, 1f) else 0f
-            )
-        }
-    }
 
     LazyColumn(
         modifier = Modifier
@@ -167,18 +157,16 @@ fun HomeScreen(
         item { Spacer(Modifier.height(12.dp)) }
 
         // ── Topic cards ────────────────────────────────────────
-        itemsIndexed(roadmapUnits) { _, unit ->
+        itemsIndexed(state.roadmapUnits) { _, unit ->
             TopicCard(
                 unit       = unit,
                 isExpanded = expandedUnitId == unit.id,
                 onToggle   = {
                     expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
                 },
-                onLessonClick = { lesson ->
+                onLessonClick = { lessonIndex ->
                     if (!unit.isLocked) {
-                        navController.navigate(
-                            "lesson_intro/${lesson.title}/${lesson.type}?category=${lesson.category}"
-                        )
+                        navController.navigate("lesson_intro/${unit.id}/$lessonIndex")
                     }
                 }
             )
@@ -225,7 +213,7 @@ private fun TopicCard(
     unit: RoadmapUnit,
     isExpanded: Boolean,
     onToggle: () -> Unit,
-    onLessonClick: (RoadmapLesson) -> Unit
+    onLessonClick: (Int) -> Unit   // lessonIndex
 ) {
     Surface(
         modifier  = Modifier
@@ -312,7 +300,7 @@ private fun TopicCard(
                             number   = idx + 1,
                             lesson   = lesson,
                             isLocked = unit.isLocked,
-                            onClick  = { onLessonClick(lesson) }
+                            onClick  = { onLessonClick(idx) }
                         )
                     }
                 }
