@@ -124,6 +124,18 @@ interface WordDao {
           AND interval >= :minIntervalDays
     """)
     suspend fun countMasteredByLevel(level: String, minIntervalDays: Int = 7): Int
+
+    @Query("SELECT COUNT(*) FROM words WHERE level = :level AND category = :category")
+    suspend fun countByLevelAndCategory(level: String, category: String): Int
+
+    @Query("""
+        SELECT COUNT(*) FROM words
+        WHERE level = :level
+          AND category = :category
+          AND repetitions > 0
+          AND interval >= :minIntervalDays
+    """)
+    suspend fun countMasteredByLevelAndCategory(level: String, category: String, minIntervalDays: Int = 7): Int
 }
 
 @Dao
