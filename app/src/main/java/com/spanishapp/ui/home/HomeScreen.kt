@@ -2,7 +2,6 @@ package com.spanishapp.ui.home
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,9 +17,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,35 +37,36 @@ data class RoadmapUnit(
     val title: String,
     val description: String,
     val icon: String,
-    val cefrLevel: String = "A1",   // A1 / A2 / B1 / B2
-    val isLocked: Boolean = true,   // computed by HomeViewModel from lesson_progress
-    val progress: Float = 0f,       // computed by HomeViewModel
+    val cefrLevel: String = "A1",
+    val isLocked: Boolean = true,
+    val progress: Float = 0f,
     val color: Color,
     val lessons: List<RoadmapLesson> = emptyList()
 )
 
 data class RoadmapLesson(
     val title: String,
-    val type: String,               // vocab / grammar / quiz / phrase
+    val type: String,
     val category: String = "general",
-    val isCompleted: Boolean = false  // computed by HomeViewModel from lesson_progress
+    val isCompleted: Boolean = false
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  HOME SCREEN — Figma light design
+//  Palette
 // ═══════════════════════════════════════════════════════════════
 
 private val Purple      = Color(0xFF7B2FBE)
-private val PurplePale  = Color(0xFFF3E8FF)
 private val Pink        = Color(0xFFE040FB)
 private val GoldColor   = Color(0xFFFF9500)
 private val OrangeColor = Color(0xFFFF6B00)
 private val TextMain    = Color(0xFF1A1A1A)
 private val TextGray    = Color(0xFF8E8E93)
-private val CardBorder  = Color(0xFFE5E5EA)
 private val LockGray    = Color(0xFFC7C7CC)
-private val BgGray      = Color(0xFFF8F8FA)
-private val SubBg       = Color(0xFFF2F2F7)
+private val BgGray      = Color(0xFFF0F0F5)
+
+// ═══════════════════════════════════════════════════════════════
+//  HOME SCREEN
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
 fun HomeScreen(
@@ -78,9 +81,9 @@ fun HomeScreen(
             .fillMaxSize()
             .background(BgGray)
             .statusBarsPadding(),
-        contentPadding = PaddingValues(bottom = 24.dp)
+        contentPadding = PaddingValues(bottom = 32.dp)
     ) {
-        // ── Header row ─────────────────────────────────────────
+        // ── Header ─────────────────────────────────────────────
         item {
             Row(
                 modifier = Modifier
@@ -90,10 +93,9 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment     = Alignment.CenterVertically
             ) {
-                // Profile circle
                 Box(
                     modifier = Modifier
-                        .size(42.dp)
+                        .size(44.dp)
                         .clip(CircleShape)
                         .background(Purple)
                         .clickable(
@@ -103,30 +105,12 @@ fun HomeScreen(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        Icons.Default.Person,
-                        contentDescription = null,
-                        tint     = Color.White,
-                        modifier = Modifier.size(22.dp)
-                    )
+                    Icon(Icons.Default.Person, null, tint = Color.White, modifier = Modifier.size(22.dp))
                 }
 
-                // XP + Streak pills
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    StatPill(
-                        emoji = "✨",
-                        value = "${state.totalXp}",
-                        bgColor   = Color(0xFFFFF3E0),
-                        textColor = GoldColor,
-                        borderColor = GoldColor.copy(alpha = 0.3f)
-                    )
-                    StatPill(
-                        emoji = "🔥",
-                        value = "${state.currentStreak}",
-                        bgColor   = Color(0xFFFFF3E0),
-                        textColor = OrangeColor,
-                        borderColor = OrangeColor.copy(alpha = 0.3f)
-                    )
+                    StatPill("✨", "${state.totalXp}", Color(0xFFFFF3E0), GoldColor, GoldColor.copy(.3f))
+                    StatPill("🔥", "${state.currentStreak}", Color(0xFFFFF3E0), OrangeColor, OrangeColor.copy(.3f))
                 }
             }
         }
@@ -137,24 +121,15 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White)
-                    .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 20.dp)
+                    .padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 20.dp)
             ) {
-                Text(
-                    "Привет! 👋",
-                    fontSize   = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    color      = TextMain
-                )
+                Text("Привет! 👋", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = TextMain)
                 Spacer(Modifier.height(2.dp))
-                Text(
-                    "Продолжай изучать испанский язык",
-                    fontSize = 15.sp,
-                    color    = TextGray
-                )
+                Text("Продолжай изучать испанский язык", fontSize = 15.sp, color = TextGray)
             }
         }
 
-        item { Spacer(Modifier.height(12.dp)) }
+        item { Spacer(Modifier.height(16.dp)) }
 
         // ── Topic cards ────────────────────────────────────────
         itemsIndexed(state.roadmapUnits) { _, unit ->
@@ -170,7 +145,7 @@ fun HomeScreen(
                     }
                 }
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(12.dp))
         }
     }
 }
@@ -178,130 +153,211 @@ fun HomeScreen(
 // ── Stat pill ──────────────────────────────────────────────────
 
 @Composable
-private fun StatPill(
-    emoji: String,
-    value: String,
-    bgColor: Color,
-    textColor: Color,
-    borderColor: Color
-) {
-    Surface(
-        shape  = RoundedCornerShape(20.dp),
-        color  = bgColor,
-        border = BorderStroke(1.dp, borderColor)
-    ) {
+private fun StatPill(emoji: String, value: String, bgColor: Color, textColor: Color, borderColor: Color) {
+    Surface(shape = RoundedCornerShape(20.dp), color = bgColor,
+        border = androidx.compose.foundation.BorderStroke(1.dp, borderColor)) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment     = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(emoji, fontSize = 14.sp)
-            Text(
-                value,
-                fontSize   = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color      = textColor
-            )
+            Text(value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = textColor)
         }
     }
 }
 
-// ── Topic card ─────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  TOPIC CARD  —  главная карточка блока
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
 private fun TopicCard(
     unit: RoadmapUnit,
     isExpanded: Boolean,
     onToggle: () -> Unit,
-    onLessonClick: (Int) -> Unit   // lessonIndex
+    onLessonClick: (Int) -> Unit
 ) {
-    Surface(
-        modifier  = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape     = RoundedCornerShape(16.dp),
-        color     = Color.White,
-        border    = BorderStroke(1.dp, CardBorder),
-        onClick   = onToggle
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+    val accentColor   = if (unit.isLocked) LockGray else unit.color
+    val completedCount = unit.lessons.count { it.isCompleted }
+    val totalCount     = unit.lessons.size
 
-            // ── Title row ─────────────────────────────────────
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier          = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text       = "${unit.id}. ${unit.title}",
-                    style      = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color      = if (unit.isLocked) TextGray else TextMain,
-                    modifier   = Modifier.weight(1f)
-                )
-                if (unit.isLocked) {
-                    Icon(
-                        Icons.Default.Lock,
-                        contentDescription = null,
-                        tint     = LockGray,
-                        modifier = Modifier.size(16.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 14.dp)
+            .shadow(
+                elevation = if (unit.isLocked) 2.dp else 6.dp,
+                shape = RoundedCornerShape(20.dp),
+                spotColor = accentColor.copy(alpha = 0.35f)
+            )
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color.White)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onToggle
+            )
+    ) {
+        Column {
+
+            // ── Цветная шапка ──────────────────────────────────
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(72.dp)
+                    .background(
+                        if (unit.isLocked)
+                            Brush.horizontalGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
+                        else
+                            Brush.horizontalGradient(
+                                listOf(accentColor, accentColor.copy(alpha = 0.72f))
+                            )
                     )
-                    Spacer(Modifier.width(6.dp))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 18.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Большой эмодзи-иконка блока
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.25f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(unit.icon, fontSize = 22.sp)
+                        }
+
+                        Column {
+                            // Номер блока
+                            Text(
+                                text = "Блок ${unit.id}",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White.copy(alpha = 0.80f)
+                            )
+                            // Название блока
+                            Text(
+                                text = unit.title,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.White,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+
+                    // Правая часть шапки: CEFR + замок/кол-во
+                    Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        CefrBadge(unit.cefrLevel)
+                        if (unit.isLocked) {
+                            Icon(Icons.Default.Lock, null, tint = Color.White.copy(.8f), modifier = Modifier.size(18.dp))
+                        } else {
+                            Text(
+                                "$completedCount/$totalCount",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                    }
                 }
-                Icon(
-                    if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = null,
-                    tint     = TextGray,
-                    modifier = Modifier.size(20.dp)
-                )
             }
 
-            // ── Progress bar (only for unlocked with progress) ─
-            if (!unit.isLocked && unit.progress > 0f) {
-                Spacer(Modifier.height(10.dp))
+            // ── Тело карточки ──────────────────────────────────
+            Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
+
+                // Описание блока
+                Text(
+                    text = unit.description,
+                    fontSize = 13.sp,
+                    color = if (unit.isLocked) TextGray.copy(.6f) else TextGray,
+                    maxLines = 2,
+                    lineHeight = 18.sp
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                // Прогресс-бар + стрелка
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Прогресс-трек
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(6.dp)
-                            .clip(RoundedCornerShape(3.dp))
-                            .background(PurplePale)
+                            .height(7.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(accentColor.copy(alpha = 0.15f))
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(unit.progress)
-                                .clip(RoundedCornerShape(3.dp))
-                                .background(
-                                    Brush.horizontalGradient(listOf(Purple, Pink))
-                                )
+                        if (!unit.isLocked && unit.progress > 0f) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth(unit.progress)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(
+                                        Brush.horizontalGradient(listOf(accentColor, accentColor.copy(.7f)))
+                                    )
+                            )
+                        }
+                    }
+
+                    Spacer(Modifier.width(10.dp))
+
+                    // Процент или "Заблокировано"
+                    if (unit.isLocked) {
+                        Text("Заблокировано", fontSize = 11.sp, color = LockGray)
+                    } else {
+                        Text(
+                            "${(unit.progress * 100).toInt()}%",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = accentColor
                         )
                     }
+
                     Spacer(Modifier.width(10.dp))
-                    Text(
-                        "${(unit.progress * 100).toInt()}%",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = TextGray
+
+                    // Стрелка раскрытия
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = null,
+                        tint     = if (unit.isLocked) LockGray else accentColor,
+                        modifier = Modifier.size(22.dp)
                     )
                 }
-            }
 
-            // ── Expanded lessons ──────────────────────────────
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter   = expandVertically() + fadeIn(),
-                exit    = shrinkVertically() + fadeOut()
-            ) {
-                Column(
-                    modifier            = Modifier.padding(top = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                // ── Развёрнутые уроки ──────────────────────────
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter   = expandVertically(animationSpec = tween(220)) + fadeIn(tween(220)),
+                    exit    = shrinkVertically(animationSpec = tween(180)) + fadeOut(tween(180))
                 ) {
-                    unit.lessons.forEachIndexed { idx, lesson ->
-                        SubLessonRow(
-                            number   = idx + 1,
-                            lesson   = lesson,
-                            isLocked = unit.isLocked,
-                            onClick  = { onLessonClick(idx) }
-                        )
+                    Column(
+                        modifier = Modifier.padding(top = 14.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        HorizontalDivider(color = accentColor.copy(.12f))
+                        Spacer(Modifier.height(2.dp))
+
+                        unit.lessons.forEachIndexed { idx, lesson ->
+                            SubLessonRow(
+                                number    = idx + 1,
+                                lesson    = lesson,
+                                isLocked  = unit.isLocked,
+                                unitColor = accentColor,
+                                onClick   = { onLessonClick(idx) }
+                            )
+                        }
                     }
                 }
             }
@@ -309,68 +365,141 @@ private fun TopicCard(
     }
 }
 
-// ── Sub-lesson row ────────────────────────────────────────────
+// ── CEFR badge ────────────────────────────────────────────────
+
+@Composable
+private fun CefrBadge(level: String) {
+    val (bg, text) = when (level) {
+        "A1" -> Color(0xFF2E7D32) to Color.White
+        "A2" -> Color(0xFF0277BD) to Color.White
+        "B1" -> Color(0xFFE65100) to Color.White
+        "B2" -> Color(0xFF6A1B9A) to Color.White
+        else -> Color(0xFF37474F) to Color.White
+    }
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(bg.copy(alpha = 0.85f))
+            .padding(horizontal = 7.dp, vertical = 2.dp)
+    ) {
+        Text(level, fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, color = text)
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SUB-LESSON ROW  —  строка урока внутри блока
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
 private fun SubLessonRow(
     number: Int,
     lesson: RoadmapLesson,
     isLocked: Boolean,
+    unitColor: Color,
     onClick: () -> Unit
 ) {
+    val typeEmoji = when (lesson.type) {
+        "vocab"   -> "📚"
+        "grammar" -> "📖"
+        "phrase"  -> "💬"
+        else      -> "🎯"  // quiz
+    }
+    val typeLabel = when (lesson.type) {
+        "vocab"   -> "Слова"
+        "grammar" -> "Грамматика"
+        "phrase"  -> "Фразы"
+        else      -> "Тест"
+    }
+    val typeBg = when (lesson.type) {
+        "vocab"   -> Color(0xFFE8F5E9)
+        "grammar" -> Color(0xFFE3F2FD)
+        "phrase"  -> Color(0xFFF3E5F5)
+        else      -> Color(0xFFFFF3E0)
+    }
+    val typeTextColor = when (lesson.type) {
+        "vocab"   -> Color(0xFF2E7D32)
+        "grammar" -> Color(0xFF0277BD)
+        "phrase"  -> Color(0xFF6A1B9A)
+        else      -> Color(0xFFE65100)
+    }
+
     Surface(
         onClick   = if (!isLocked) onClick else {{}},
         modifier  = Modifier.fillMaxWidth(),
-        color     = SubBg,
-        shape     = RoundedCornerShape(12.dp)
+        color     = if (isLocked) Color(0xFFF7F7F7) else Color(0xFFFAFAFF),
+        shape     = RoundedCornerShape(14.dp),
+        shadowElevation = if (isLocked) 0.dp else 1.dp
     ) {
         Row(
-            modifier          = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            modifier          = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Number circle
+            // Круг с номером / галочкой
             Box(
-                modifier         = Modifier
-                    .size(28.dp)
+                modifier = Modifier
+                    .size(36.dp)
                     .clip(CircleShape)
-                    .background(if (lesson.isCompleted) Purple else CardBorder),
+                    .background(
+                        when {
+                            lesson.isCompleted -> unitColor
+                            isLocked           -> Color(0xFFE0E0E0)
+                            else               -> unitColor.copy(alpha = 0.12f)
+                        }
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 if (lesson.isCompleted) {
-                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(14.dp))
+                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(18.dp))
                 } else {
                     Text(
-                        "$number",
-                        fontSize   = 12.sp,
+                        text       = "$number",
+                        fontSize   = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color      = if (isLocked) LockGray else TextGray
+                        color      = if (isLocked) LockGray else unitColor
                     )
                 }
             }
 
             Spacer(Modifier.width(12.dp))
 
-            Text(
-                text     = lesson.title,
-                modifier = Modifier.weight(1f),
-                style    = MaterialTheme.typography.bodyMedium,
-                color    = if (isLocked) TextGray else TextMain
-            )
+            // Название урока
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text       = lesson.title,
+                    fontSize   = 14.sp,
+                    fontWeight = if (lesson.isCompleted) FontWeight.Normal else FontWeight.Medium,
+                    color      = if (isLocked) TextGray.copy(.55f) else TextMain,
+                    maxLines   = 2,
+                    lineHeight = 18.sp
+                )
+            }
 
-            if (isLocked) {
-                Icon(
-                    Icons.Default.Lock,
-                    contentDescription = null,
-                    tint     = LockGray,
-                    modifier = Modifier.size(14.dp)
-                )
-            } else if (!lesson.isCompleted) {
-                Icon(
-                    Icons.Default.ChevronRight,
-                    contentDescription = null,
-                    tint     = TextGray,
-                    modifier = Modifier.size(16.dp)
-                )
+            Spacer(Modifier.width(10.dp))
+
+            // Тип урока — цветной чип
+            if (!isLocked) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(typeBg)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Text(
+                        "$typeEmoji $typeLabel",
+                        fontSize  = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        color     = typeTextColor
+                    )
+                }
+            }
+
+            Spacer(Modifier.width(6.dp))
+
+            // Правый значок
+            when {
+                isLocked           -> Icon(Icons.Default.Lock, null, tint = LockGray, modifier = Modifier.size(15.dp))
+                lesson.isCompleted -> {} // галочка уже в круге
+                else               -> Icon(Icons.Default.ChevronRight, null, tint = unitColor, modifier = Modifier.size(18.dp))
             }
         }
     }
