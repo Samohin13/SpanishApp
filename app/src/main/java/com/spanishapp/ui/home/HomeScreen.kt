@@ -402,24 +402,28 @@ private fun SubLessonRow(
         "vocab"   -> "📚"
         "grammar" -> "📖"
         "phrase"  -> "💬"
+        "content" -> "📝"
         else      -> "🎯"  // quiz
     }
     val typeLabel = when (lesson.type) {
         "vocab"   -> "Слова"
         "grammar" -> "Грамматика"
         "phrase"  -> "Фразы"
+        "content" -> "Теория"
         else      -> "Тест"
     }
     val typeBg = when (lesson.type) {
         "vocab"   -> Color(0xFFE8F5E9)
         "grammar" -> Color(0xFFE3F2FD)
         "phrase"  -> Color(0xFFF3E5F5)
+        "content" -> Color(0xFFE8EAF6)
         else      -> Color(0xFFFFF3E0)
     }
     val typeTextColor = when (lesson.type) {
         "vocab"   -> Color(0xFF2E7D32)
         "grammar" -> Color(0xFF0277BD)
         "phrase"  -> Color(0xFF6A1B9A)
+        "content" -> Color(0xFF283593)
         else      -> Color(0xFFE65100)
     }
 

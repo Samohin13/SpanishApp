@@ -28,6 +28,7 @@ import com.spanishapp.ui.conjugation.ConjugationQuizScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.home.HomeScreen
+import com.spanishapp.ui.home.LessonContentScreen
 import com.spanishapp.ui.home.LessonIntroScreen
 import com.spanishapp.ui.home.LessonIntroViewModel
 import com.spanishapp.ui.grammar.GrammarScreen
@@ -75,6 +76,20 @@ object Navigation {
                 val lessonIndex = backStackEntry.arguments?.getInt("lessonIndex") ?: 0
                 val vm: LessonIntroViewModel = hiltViewModel()
                 LessonIntroScreen(navController, unitId, lessonIndex, vm)
+            }
+
+            // ── Теоретический урок (алфавит, артикли, время...) ──
+            composable(
+                "lesson_content/{unitId}/{lessonIndex}",
+                arguments = listOf(
+                    navArgument("unitId") { type = NavType.IntType },
+                    navArgument("lessonIndex") { type = NavType.IntType }
+                )
+            ) { backStackEntry ->
+                val unitId      = backStackEntry.arguments?.getInt("unitId") ?: 1
+                val lessonIndex = backStackEntry.arguments?.getInt("lessonIndex") ?: 0
+                val vm: LessonIntroViewModel = hiltViewModel()
+                LessonContentScreen(navController, unitId, lessonIndex, vm)
             }
 
             // ── Онбординг ─────────────────────────────────────

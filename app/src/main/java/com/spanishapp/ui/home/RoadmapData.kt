@@ -20,8 +20,8 @@ object RoadmapData {
             description = "Алфавит, звуки, первые слова",
             cefrLevel = "A1", color = Color(0xFF43A047),
             lessons = listOf(
-                RoadmapLesson("Алфавит и произношение",         "vocab",   "general"),
-                RoadmapLesson("Приветствия: Hola / Buenos días","vocab",   "phrases"),
+                RoadmapLesson("Алфавит и произношение",         "content", "general"),
+                RoadmapLesson("Приветствия: Hola / Buenos días","content", "phrases"),
                 RoadmapLesson("Числа 0–20 и возраст",           "vocab",   "general"),
                 RoadmapLesson("Тест: Первый контакт",           "quiz",    "general")
             )
@@ -34,7 +34,7 @@ object RoadmapData {
             lessons = listOf(
                 RoadmapLesson("Глагол SER: soy, eres, es...",   "grammar", "verbs"),
                 RoadmapLesson("Страны и национальности",        "vocab",   "general"),
-                RoadmapLesson("Личные местоимения yo/tú/él",    "grammar", "general"),
+                RoadmapLesson("Личные местоимения yo/tú/él",    "content", "general"),
                 RoadmapLesson("Диалог: Знакомство",             "quiz",    "phrases")
             )
         ),
@@ -59,7 +59,7 @@ object RoadmapData {
                 RoadmapLesson("Комнаты: sala, cocina, dormitorio",      "vocab",   "casa_hogar"),
                 RoadmapLesson("Мебель и предметы",                       "vocab",   "casa_hogar"),
                 RoadmapLesson("Глагол ESTAR: ¿dónde está...?",          "grammar", "verbs"),
-                RoadmapLesson("Предлоги места: en, sobre, debajo",       "grammar", "general")
+                RoadmapLesson("Предлоги места: en, sobre, debajo",       "content", "general")
             )
         ),
 
@@ -69,7 +69,7 @@ object RoadmapData {
             cefrLevel = "A1", color = Color(0xFFA5D63C),
             lessons = listOf(
                 RoadmapLesson("Продукты и блюда",                        "vocab",   "comida_bebida"),
-                RoadmapLesson("Артикли el/la/un/una/los/las",            "grammar", "general"),
+                RoadmapLesson("Артикли el/la/un/una/los/las",            "content", "general"),
                 RoadmapLesson("Глагол GUSTAR: me gusta / me gustan",     "grammar", "verbs"),
                 RoadmapLesson("В кафе: ¿Qué vas a tomar?",              "quiz",    "comida_bebida")
             )
@@ -92,7 +92,7 @@ object RoadmapData {
             description = "Время, дни, глаголы на -AR",
             cefrLevel = "A1", color = Color(0xFFFFB300),
             lessons = listOf(
-                RoadmapLesson("Время: ¿Qué hora es? / Son las...",       "grammar", "general"),
+                RoadmapLesson("Время: ¿Qué hora es? / Son las...",       "content", "general"),
                 RoadmapLesson("Дни недели и месяцы",                     "vocab",   "general"),
                 RoadmapLesson("Глаголы -AR: hablar, trabajar",           "grammar", "verbs"),
                 RoadmapLesson("Мой типичный день",                        "quiz",    "general")

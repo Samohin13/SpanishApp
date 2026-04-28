@@ -152,11 +152,14 @@ fun LessonIntroScreen(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
-                    // Отмечаем урок выполненным и начисляем XP
-                    viewModel.markLessonComplete(unitId, lessonIndex)
+                    val route = buildActivityRoute(lesson, unit.cefrLevel, unitId, lessonIndex)
 
-                    // Роутим на нужный экран с правильным CEFR-уровнем
-                    val route = buildActivityRoute(lesson, unit.cefrLevel)
+                    // Content-уроки сами отмечают себя выполненными (кнопка «Понятно!»)
+                    // Остальные — отмечаем здесь при старте
+                    if (lesson.type != "content") {
+                        viewModel.markLessonComplete(unitId, lessonIndex)
+                    }
+
                     navController.navigate(route) {
                         popUpTo("lesson_intro/{unitId}/{lessonIndex}") { inclusive = true }
                     }
@@ -180,10 +183,15 @@ fun LessonIntroScreen(
     }
 }
 
-// Строим маршрут для нужного типа урока с правильным уровнем
-private fun buildActivityRoute(lesson: RoadmapLesson, cefrLevel: String): String {
+private fun buildActivityRoute(
+    lesson: RoadmapLesson,
+    cefrLevel: String,
+    unitId: Int,
+    lessonIndex: Int
+): String {
     val cat = lesson.category
     return when (lesson.type) {
+        "content" -> "lesson_content/$unitId/$lessonIndex"
         "vocab"   -> "flashcards_session?level=$cefrLevel&category=$cat&direction=ES_TO_RU"
         "phrase"  -> "flashcards_session?level=$cefrLevel&category=$cat&direction=MIXED"
         "grammar" -> "grammar"
