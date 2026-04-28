@@ -72,23 +72,23 @@ private fun rnd(a: Float, b: Float) = (a + Math.random().toFloat() * (b - a))
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val isDark = isSystemInDarkTheme()
-    val baseBg = if (isDark) Color(0xFF0A0909) else Color(0xFFFCF8F0)
+    val baseBg = if (isDark) Color(0xFF0D0D0D) else Color(0xFFFCF8F0)
 
-    // Палитра Oliva: зелёный, оранжевый, золотой + немного синего и фиолетового для глубины
+    // Fire spectrum palette: gold → amber → orange → red
     val palette = if (isDark) listOf(
-        Color(0xFF76C442),  // зелёный
-        Color(0xFF76C442),  // зелёный (×2 — доминирует)
-        Color(0xFFFF7043),  // оранжевый
-        Color(0xFFFFCF33),  // золотой
-        Color(0xFF29B6F6),  // голубой акцент
-        Color(0xFF7E57C2),  // фиолетовый
+        Color(0xFFFFD60A),  // gold
+        Color(0xFFFF9F0A),  // amber  (×2 — доминирует)
+        Color(0xFFFF9F0A),
+        Color(0xFFFF6B00),  // orange
+        Color(0xFFFF4D30),  // coral
+        Color(0xFFFF3B30),  // red
     ) else listOf(
-        Color(0xFF8BC34A),
-        Color(0xFF8BC34A),
-        Color(0xFFF05A28),
-        Color(0xFFF6C445),
-        Color(0xFF0288D1),
-        Color(0xFF7B1FA2),
+        Color(0xFFFFCC00),
+        Color(0xFFFF9500),
+        Color(0xFFFF9500),
+        Color(0xFFFF6B00),
+        Color(0xFFFF4D30),
+        Color(0xFFFF3B30),
     )
 
     // 65 атомов: крупные (фон), средние и мелкие — три слоя
@@ -181,49 +181,52 @@ private fun ClosedRange<Int>.random() = (Math.random() * (endInclusive - start) 
 private fun ClosedRange<Float>.random() = (Math.random() * (endInclusive - start) + start).toFloat()
 
 // ═══════════════════════════════════════════════════════════════
-//  BOTTOM BAR — крупные объёмные иконки
+//  BOTTOM BAR — Premium floating pill (Apple / Samsung style)
 // ═══════════════════════════════════════════════════════════════
 @Composable
 fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
-    val green = Color(0xFF4CAF50)
+    val amber = Color(0xFFFF9F0A)
+    val inactive = Color(0xFF636366)   // iOS tertiary text
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        // Подложка бара — тёмная/светлая капсула с тенью
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            shape    = RoundedCornerShape(28.dp),
-            color    = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.92f),
-            shadowElevation = 16.dp,
-            tonalElevation  = 4.dp
+            shape    = RoundedCornerShape(26.dp),
+            color    = Color(0xFF1C1C1E),
+            border   = androidx.compose.foundation.BorderStroke(
+                0.5.dp, Color.White.copy(alpha = 0.10f)
+            ),
+            shadowElevation = 32.dp,
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 10.dp),
+                    .padding(horizontal = 4.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment     = Alignment.CenterVertically
             ) {
                 bottomNavItems.forEach { item ->
                     val selected = currentRoute.startsWith(item.route)
 
-                    // Плавная анимация масштаба при выборе
+                    val iconColor by animateColorAsState(
+                        targetValue = if (selected) amber else inactive,
+                        animationSpec = tween(200),
+                        label = "color_${item.route}"
+                    )
                     val scale by animateFloatAsState(
-                        targetValue = if (selected) 1.15f else 1f,
+                        targetValue = if (selected) 1.08f else 1f,
                         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
                         label = "scale_${item.route}"
                     )
-
-                    val iconColor = if (selected) green
-                                   else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f)
 
                     Box(
                         modifier = Modifier
@@ -232,47 +235,48 @@ fun SpanishBottomBar(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
                                 onClick = { onNavigate(item.route) }
-                            ),
+                            )
+                            .padding(vertical = 6.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            modifier = Modifier.graphicsLayer {
-                                scaleX = scale
-                                scaleY = scale
-                            }
+                            verticalArrangement = Arrangement.spacedBy(3.dp),
+                            modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }
                         ) {
-                            // Пилюля-подсветка вокруг иконки при выборе
                             Box(
                                 modifier = Modifier
                                     .then(
-                                        if (selected) Modifier
-                                            .background(
-                                                green.copy(alpha = 0.15f),
-                                                RoundedCornerShape(16.dp)
-                                            )
-                                            .padding(horizontal = 14.dp, vertical = 7.dp)
-                                        else Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
+                                        if (selected)
+                                            Modifier
+                                                .background(
+                                                    Brush.verticalGradient(
+                                                        listOf(
+                                                            Color(0xFFFF9F0A).copy(alpha = 0.22f),
+                                                            Color(0xFFFF6B00).copy(alpha = 0.10f)
+                                                        )
+                                                    ),
+                                                    RoundedCornerShape(14.dp)
+                                                )
+                                                .padding(horizontal = 16.dp, vertical = 6.dp)
+                                        else
+                                            Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
                                     ),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
-                                    imageVector    = if (selected) item.iconSelected else item.icon,
+                                    imageVector = if (selected) item.iconSelected else item.icon,
                                     contentDescription = item.label,
-                                    modifier = Modifier.size(if (selected) 32.dp else 28.dp),
+                                    modifier = Modifier.size(24.dp),
                                     tint     = iconColor
                                 )
                             }
-
-                            // Подпись
                             Text(
-                                text  = item.label,
-                                style = MaterialTheme.typography.labelSmall,
-                                fontSize = 10.sp,
-                                color = iconColor,
-                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                                maxLines = 1
+                                text       = item.label,
+                                fontSize   = 10.sp,
+                                color      = iconColor,
+                                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                                maxLines   = 1
                             )
                         }
                     }

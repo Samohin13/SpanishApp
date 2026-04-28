@@ -16,29 +16,45 @@ import androidx.compose.ui.unit.sp
 // ═══════════════════════════════════════════════════════════════
 
 object AppColors {
-    val Terracotta = Color(0xFFC62828)
-    val Olive      = Color(0xFF558B2F)
-    val Ochre      = Color(0xFFF9A825)
-    
-    // Совместимость
-    val Teal       = Olive
-    val Gold       = Ochre
-    val GoldDark   = Ochre
-    val Info       = Olive
-    val Success    = Olive
-    val Warning    = Ochre
-    val Error      = Terracotta
+    // ── Fire spectrum: gold → amber → orange → red ────────────
+    val Gold       = Color(0xFFFFD60A)   // яркое золото
+    val Amber      = Color(0xFFFF9F0A)   // тёплый янтарь
+    val Orange     = Color(0xFFFF6B00)   // глубокий оранж
+    val Coral      = Color(0xFFFF4D30)   // кораллово-красный
+    val Red        = Color(0xFFFF3B30)   // насыщенный красный
 
-    // Светлая тема
-    val L_Bg            = Color(0xFFFDFCF9)
-    val L_Surface       = Color(0xFFFFFFFF)
-    val L_Ink           = Color(0xFF1A1C1E)
-    
-    // Тёмная тема — "Midnight Premium"
-    val D_Bg            = Color(0xFF121212)   // Тёмный серый, по стандартам Material
-    val D_Surface       = Color(0xFF1E1E1E)   // Карточки заметно светлее
-    val D_SurfaceVariant= Color(0xFF2C2C2C)   // Уроки еще светлее
-    val D_Ink           = Color(0xFFE0E0E0)   // Мягкий белый
+    // ── Тёмные поверхности (iOS Dark / Samsung One UI) ────────
+    val BgDeep     = Color(0xFF0D0D0D)   // основной фон
+    val Surface1   = Color(0xFF1C1C1E)   // карточки — iOS dark
+    val Surface2   = Color(0xFF2C2C2E)   // elevated
+    val Surface3   = Color(0xFF3A3A3C)   // ещё выше
+    val Divider    = Color(0x14FFFFFF)   // белый 8% — тонкие границы
+
+    // ── Текст ──────────────────────────────────────────────────
+    val TextPrimary   = Color(0xFFFFFFFF)
+    val TextSecondary = Color(0xFF8E8E93)   // iOS secondary
+    val TextTertiary  = Color(0xFF636366)   // iOS tertiary
+
+    // ── Алиасы для совместимости с остальным кодом ─────────────
+    val Terracotta  = Red
+    val Olive       = Amber
+    val Ochre       = Gold
+    val Teal        = Orange
+    val GoldDark    = Amber
+    val Info        = Amber
+    val Success     = Orange
+    val Warning     = Gold
+    val Error       = Red
+    val Primary     = Amber
+
+    // ── Legacy surface names ────────────────────────────────────
+    val D_Bg             = BgDeep
+    val D_Surface        = Surface1
+    val D_SurfaceVariant = Surface2
+    val D_Ink            = TextPrimary
+    val L_Bg             = Color(0xFFFDFCF9)
+    val L_Surface        = Color(0xFFFFFFFF)
+    val L_Ink            = Color(0xFF1A1C1E)
 }
 
 val AppTypography = Typography(
@@ -73,25 +89,27 @@ private val LightColors = lightColorScheme(
 )
 
 private val DarkColors = darkColorScheme(
-    primary = Color(0xFFFFB4A9),       // Нежный розово-красный
-    onPrimary = Color(0xFF690002),
-    primaryContainer = Color(0xFF930006),
-    onPrimaryContainer = Color(0xFFFFDAD4),
-    
-    secondary = Color(0xFFBACCB3),      // Пастельный оливковый
-    onSecondary = Color(0xFF283420),
-    secondaryContainer = Color(0xFF3E4A35),
-    onSecondaryContainer = Color(0xFFD7E8DE),
-    
-    tertiary = Color(0xFFFFCC00),
-    onTertiary = Color(0xFF422C00),
-    
-    background = AppColors.D_Bg,
-    surface = AppColors.D_Surface,
-    onSurface = AppColors.D_Ink,
-    surfaceVariant = AppColors.D_SurfaceVariant,
-    onSurfaceVariant = Color(0xFFB0B0B0),
-    outline = Color(0xFF444444)
+    primary            = AppColors.Amber,
+    onPrimary          = Color(0xFF1A0A00),
+    primaryContainer   = AppColors.Orange.copy(alpha = 0.25f),
+    onPrimaryContainer = AppColors.Gold,
+
+    secondary          = AppColors.Gold,
+    onSecondary        = Color(0xFF1A1200),
+    secondaryContainer = AppColors.Gold.copy(alpha = 0.15f),
+    onSecondaryContainer = AppColors.Gold,
+
+    tertiary           = AppColors.Coral,
+    onTertiary         = Color(0xFF1A0500),
+
+    background         = AppColors.BgDeep,
+    surface            = AppColors.Surface1,
+    onSurface          = AppColors.TextPrimary,
+    surfaceVariant     = AppColors.Surface2,
+    surfaceContainer   = AppColors.Surface1,
+    onSurfaceVariant   = AppColors.TextSecondary,
+    outline            = AppColors.Divider,
+    error              = AppColors.Red
 )
 
 @Composable

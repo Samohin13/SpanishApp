@@ -77,7 +77,7 @@ fun HomeScreen(
         }
     }
 
-    val bgColor = Color(0xFF0A0909)
+    val bgColor = Color(0xFF0D0D0D)
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -149,25 +149,93 @@ private fun HomeTopBar(
     streak: Int,
     onProfileClick: () -> Unit
 ) {
-    // Полностью прозрачный верхний бар
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 12.dp)
-            .statusBarsPadding(),
+            .statusBarsPadding()
+            .padding(horizontal = 20.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-            Text("✨ $xp", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFFF9A825))
-            Text("🔥 $streak", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFFFF5722))
-        }
+        // Логотип / название
+        Text(
+            text = "HablaRu",
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = (-0.5).sp,
+            color = Color.White
+        )
 
-        IconButton(
-            onClick = onProfileClick,
-            modifier = Modifier.size(42.dp).background(Color(0xFF4CAF50).copy(alpha = 0.15f), CircleShape)
+        // Статистика + профиль
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(Icons.Default.Person, null, tint = Color(0xFF4CAF50), modifier = Modifier.size(24.dp))
+            // XP пилюля
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = Color(0xFFFFD60A).copy(alpha = 0.15f),
+                border = androidx.compose.foundation.BorderStroke(
+                    0.5.dp, Color(0xFFFFD60A).copy(alpha = 0.35f)
+                )
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text("✨", fontSize = 13.sp)
+                    Text(
+                        "$xp",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFFD60A)
+                    )
+                }
+            }
+
+            // Streak пилюля
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = Color(0xFFFF6B00).copy(alpha = 0.15f),
+                border = androidx.compose.foundation.BorderStroke(
+                    0.5.dp, Color(0xFFFF6B00).copy(alpha = 0.35f)
+                )
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text("🔥", fontSize = 13.sp)
+                    Text(
+                        "$streak",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFF9F0A)
+                    )
+                }
+            }
+
+            // Профиль
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .background(Color.White.copy(alpha = 0.08f), CircleShape)
+                    .clickable(
+                        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                        indication = null,
+                        onClick = onProfileClick
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = null,
+                    tint = Color.White.copy(alpha = 0.80f),
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
     }
 }
