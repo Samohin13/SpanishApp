@@ -91,10 +91,10 @@ class CrosswordViewModel @Inject constructor(
     fun startLevel(level: Int) {
         viewModelScope.launch {
             val gridSize = when {
-                level <= 15 -> 10
-                level <= 45 -> 11
-                level <= 75 -> 12
-                else        -> 13
+                level <= 15 -> 12
+                level <= 45 -> 14
+                level <= 75 -> 15
+                else        -> 17
             }
             val words = generateLevelFromDictionary(level, gridSize)
             val initialGrid = mutableMapOf<Pair<Int, Int>, Char?>()
@@ -166,9 +166,9 @@ class CrosswordViewModel @Inject constructor(
         //   • STEP = 60 → каждые 60 слов в DB ≠ соседний уровень.
         //   • WINDOW = 180 → ~60-90 слов проходят length-фильтр,
         //     что даёт генератору тысячи уникальных комбинаций per level.
-        val STEP   = 60
-        val WINDOW = 180
-        val offset = (level - 1) * STEP  // уровень 1→0, 2→60, 100→5940
+        val STEP   = 200
+        val WINDOW = 300
+        val offset = (level - 1) * STEP  // уровень 1→0, 2→200, 25→4800→wrap
 
         val windowWords = wordDao.getWordsOrderedWithOffset(WINDOW, offset % 4800)
             .map { it.spanish.uppercase().trim() to it.russian }
@@ -179,7 +179,7 @@ class CrosswordViewModel @Inject constructor(
             windowWords.shuffled(rng)
         } else {
             // Окно разреженное (конец словаря): берём большой глобальный пул
-            wordDao.getWordsOrderedWithOffset(WINDOW * 3, (offset / 3) % 4000)
+            wordDao.getWordsOrderedWithOffset(WINDOW * 2, (offset / 2) % 4500)
                 .map { it.spanish.uppercase().trim() to it.russian }
                 .filter { (sp, _) -> sp.length in wordLenRange && sp.all { c -> c.isLetter() } }
                 .distinctBy { it.first }

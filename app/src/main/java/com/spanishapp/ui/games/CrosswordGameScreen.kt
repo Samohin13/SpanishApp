@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,16 +20,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import kotlin.math.roundToInt
 
 private val Purple = Color(0xFF7B2FBE)
 private val BgGray = Color(0xFFF8F8FA)
@@ -45,20 +52,28 @@ fun CrosswordGameScreen(
     viewModel: CrosswordViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    var showRules by remember { mutableStateOf(false) }
+
+    if (showRules) {
+        RulesDialog(onDismiss = { showRules = false })
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Crucigrama", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = { 
-                        if (state.showSetup) navController.popBackStack() 
+                    IconButton(onClick = {
+                        if (state.showSetup) navController.popBackStack()
                         else viewModel.resetToMenu()
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                     }
                 },
                 actions = {
+                    IconButton(onClick = { showRules = true }) {
+                        Icon(Icons.Default.HelpOutline, contentDescription = "Правила")
+                    }
                     Surface(
                         color = Gold.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(20.dp),
@@ -94,6 +109,78 @@ fun CrosswordGameScreen(
 }
 
 @Composable
+fun RulesDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                "Как играть",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = TextMain
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                RuleItem(
+                    icon = Icons.Default.TouchApp,
+                    title = "Выбор слова",
+                    body = "Нажмите на любую ячейку кроссворда — она выделится фиолетовым, а снизу появится перевод слова, которое нужно угадать."
+                )
+                RuleItem(
+                    icon = Icons.Default.SwapHoriz,
+                    title = "Смена слова и направления",
+                    body = "Цифра в углу ячейки — это начало слова. Нажмите на такую ячейку, чтобы перейти к этому слову. Если через неё проходят два слова (горизонтальное и вертикальное), каждое нажатие будет переключать направление."
+                )
+                RuleItem(
+                    icon = Icons.Default.Keyboard,
+                    title = "Ввод букв с ударением",
+                    body = "Чтобы ввести Á, É, Í, Ó, Ú, Ü или Ñ, удержите соответствующую клавишу — появится меню с нужным вариантом. Если внизу горит жёлтая подсказка — в текущем слове есть такие буквы."
+                )
+                RuleItem(
+                    icon = Icons.Default.Lightbulb,
+                    title = "Подсказки",
+                    body = "За правильные ответы начисляются монеты. Потратьте их:\n• «Буква» — открывает одну букву (10 монет)\n• «Слово» — открывает всё слово (50 монет)"
+                )
+                RuleItem(
+                    icon = Icons.Default.ZoomIn,
+                    title = "Масштаб и прокрутка",
+                    body = "Сведите или разведите два пальца, чтобы уменьшить или увеличить кроссворд. Перетащите одним пальцем по полю, чтобы прокрутить в нужную сторону."
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(containerColor = Purple),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Понятно", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        },
+        containerColor = Color.White,
+        shape = RoundedCornerShape(20.dp)
+    )
+}
+
+@Composable
+private fun RuleItem(icon: ImageVector, title: String, body: String) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Icon(icon, null, tint = Purple, modifier = Modifier.size(20.dp).padding(top = 2.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(title, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = TextMain)
+            Text(body, fontSize = 13.sp, color = TextGray, lineHeight = 18.sp)
+        }
+    }
+}
+
+@Composable
 fun CrosswordLevelSelection(state: CrosswordGameState, viewModel: CrosswordViewModel) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -116,7 +203,6 @@ fun CrosswordLevelSelection(state: CrosswordGameState, viewModel: CrosswordViewM
             items(100) { index ->
                 val level = index + 1
                 val stars = state.levelStars[level] ?: 0
-                // For demo/sim, let's say levels are unlocked by XP or previous level completion
                 val isLocked = level > (state.levelStars.size + 1) && level > 1
 
                 LevelCell(
@@ -156,10 +242,9 @@ fun LevelCell(level: Int, stars: Int, isLocked: Boolean, onClick: () -> Unit) {
                 }
             }
         }
-        
+
         Spacer(Modifier.height(4.dp))
-        
-        // Stars
+
         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             repeat(3) { i ->
                 Icon(
@@ -175,15 +260,66 @@ fun LevelCell(level: Int, stars: Int, isLocked: Boolean, onClick: () -> Unit) {
 
 @Composable
 fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewModel) {
+    // ── Zoom / Pan state ──────────────────────────────────────────────────
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp.toFloat()
+
+    val cells = state.grid.keys
+    val fitScale = if (cells.isNotEmpty()) {
+        val cols = cells.maxOf { it.first } - cells.minOf { it.first } + 1
+        val rows = cells.maxOf { it.second } - cells.minOf { it.second } + 1
+        val gridPx = maxOf(cols, rows) * 38f + (maxOf(cols, rows) - 1) * 5f
+        ((screenWidthDp - 40f) / gridPx).coerceIn(0.4f, 1.1f)
+    } else 1f
+
+    var scale by remember(state.level) { mutableFloatStateOf(fitScale) }
+    var panX  by remember(state.level) { mutableFloatStateOf(0f) }
+    var panY  by remember(state.level) { mutableFloatStateOf(0f) }
+
     Column(modifier = Modifier.fillMaxSize()) {
-        // 1. Grid Area (Centered)
+        // 1. Grid Area with zoom + pan
         Box(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clipToBounds()
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, pan, zoom, _ ->
+                        scale = (scale * zoom).coerceIn(0.3f, 4f)
+                        panX += pan.x
+                        panY += pan.y
+                    }
+                },
             contentAlignment = Alignment.Center
         ) {
-            CrosswordGrid(state, viewModel)
+            Box(
+                modifier = Modifier.offset { IntOffset(panX.roundToInt(), panY.roundToInt()) }
+            ) {
+                CrosswordGrid(state, viewModel, externalScale = scale)
+            }
+
+            // Zoom hint — показываем кратко при первом старте
+            if (cells.size <= 4) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(8.dp)
+                ) {
+                    Surface(
+                        color = Color.Black.copy(alpha = 0.45f),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(Icons.Default.ZoomIn, null, tint = Color.White, modifier = Modifier.size(14.dp))
+                            Text("Щипок для масштаба", fontSize = 11.sp, color = Color.White)
+                        }
+                    }
+                }
+            }
         }
 
         // 2. Info & Controls
@@ -194,8 +330,9 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
             shadowElevation = 12.dp
         ) {
             Column(modifier = Modifier.padding(bottom = 8.dp)) {
-                // Hint display
                 val currentWord = state.words.find { it.id == state.currentWordId }
+
+                // Translation row
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -213,11 +350,11 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = TextMain,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = TextAlign.Center
                     )
                 }
 
-                // Accent hint — shown only when the current word contains accented letters
+                // Accent hint
                 val accentedChars = currentWord?.spanish
                     ?.filter { it in "ÁÉÍÓÚÜÑ" }
                     ?.toSet()
@@ -251,7 +388,6 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
 
                 Spacer(Modifier.height(8.dp))
 
-                // Keyboard
                 IntegratedSpanishKeyboard(
                     onKey = { viewModel.enterLetter(it) },
                     onDelete = { viewModel.deleteLetter() }
@@ -281,7 +417,7 @@ fun HintChip(icon: ImageVector, label: String, enabled: Boolean, modifier: Modif
 }
 
 @Composable
-fun CrosswordGrid(state: CrosswordGameState, viewModel: CrosswordViewModel) {
+fun CrosswordGrid(state: CrosswordGameState, viewModel: CrosswordViewModel, externalScale: Float = 1f) {
     val cells = state.grid.keys
     if (cells.isEmpty()) return
 
@@ -290,63 +426,57 @@ fun CrosswordGrid(state: CrosswordGameState, viewModel: CrosswordViewModel) {
     val minY = cells.minOf { it.second }
     val maxY = cells.maxOf { it.second }
 
-    val cols = maxX - minX + 1
-    val rows = maxY - minY + 1
-    
-    val maxDim = maxOf(cols, rows)
-    val cellSize = when {
-        maxDim <= 4 -> 64.dp
-        maxDim <= 6 -> 54.dp
-        maxDim <= 8 -> 42.dp
-        maxDim <= 10 -> 34.dp
-        else -> 28.dp
-    }
+    val cellSize = (38 * externalScale).dp
+    val gapSize  = (5  * externalScale).dp
+    val cornerR  = (6  * externalScale).dp
+    val letterSp = (17 * externalScale).sp
+    val numSp    = (8  * externalScale).sp
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(gapSize),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         for (y in minY..maxY) {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(gapSize)) {
                 for (x in minX..maxX) {
-                    val char = state.grid[x to y]
+                    val char   = state.grid[x to y]
                     val isCell = state.grid.containsKey(x to y)
-                    
-                    val isSolved = state.words.any { cw -> 
-                        state.solvedWordIds.contains(cw.id) && 
+
+                    val isSolved = state.words.any { cw ->
+                        state.solvedWordIds.contains(cw.id) &&
                         cw.spanish.indices.any { i ->
                             val wx = if (cw.isVertical) cw.x else cw.x + i
                             val wy = if (cw.isVertical) cw.y + i else cw.y
                             wx == x && wy == y
                         }
                     }
-                    
-                    val isSelected = state.selectedCell == (x to y)
-                    val isError = state.errors.contains(x to y)
-                    val wordStart = state.words.find { it.x == x && it.y == y }
+
+                    val isSelected  = state.selectedCell == (x to y)
+                    val isError     = state.errors.contains(x to y)
+                    val wordStart   = state.words.find { it.x == x && it.y == y }
 
                     Box(
                         modifier = Modifier
                             .size(cellSize)
-                            .clip(RoundedCornerShape(if (maxDim <= 6) 8.dp else 4.dp))
+                            .clip(RoundedCornerShape(cornerR))
                             .background(
                                 when {
-                                    !isCell -> Color.Transparent
+                                    !isCell    -> Color.Transparent
                                     isSelected -> Purple
-                                    isSolved -> SuccessGreen.copy(alpha = 0.2f)
-                                    else -> Color.White
+                                    isSolved   -> SuccessGreen.copy(alpha = 0.2f)
+                                    else       -> Color.White
                                 }
                             )
                             .border(
                                 1.dp,
                                 when {
-                                    !isCell -> Color.Transparent
+                                    !isCell    -> Color.Transparent
                                     isSelected -> Purple
-                                    isError -> Color.Red
-                                    isSolved -> SuccessGreen
-                                    else -> CardBorder
+                                    isError    -> Color.Red
+                                    isSolved   -> SuccessGreen
+                                    else       -> CardBorder
                                 },
-                                RoundedCornerShape(if (maxDim <= 6) 8.dp else 4.dp)
+                                RoundedCornerShape(cornerR)
                             )
                             .clickable(enabled = isCell) { viewModel.onCellClick(x, y) },
                         contentAlignment = Alignment.Center
@@ -355,22 +485,23 @@ fun CrosswordGrid(state: CrosswordGameState, viewModel: CrosswordViewModel) {
                             wordStart?.let {
                                 Text(
                                     it.number.toString(),
-                                    modifier = Modifier.align(Alignment.TopStart).padding(2.dp),
-                                    fontSize = if (maxDim <= 6) 10.sp else 8.sp,
+                                    modifier = Modifier
+                                        .align(Alignment.TopStart)
+                                        .padding((2 * externalScale).dp),
+                                    fontSize = numSp,
                                     fontWeight = FontWeight.Bold,
                                     color = if (isSelected) Color.White.copy(alpha = 0.7f) else TextGray
                                 )
                             }
-                            
                             Text(
                                 text = char?.toString() ?: "",
-                                fontSize = if (maxDim <= 6) 24.sp else if (maxDim <= 8) 20.sp else 18.sp,
+                                fontSize = letterSp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = when {
                                     isSelected -> Color.White
-                                    isError -> Color.Red
-                                    isSolved -> SuccessGreen
-                                    else -> TextMain
+                                    isError    -> Color.Red
+                                    isSolved   -> SuccessGreen
+                                    else       -> TextMain
                                 }
                             )
                         }
@@ -386,7 +517,7 @@ fun CrosswordGrid(state: CrosswordGameState, viewModel: CrosswordViewModel) {
 fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
     val haptic = LocalHapticFeedback.current
     var accentMenuKey by remember { mutableStateOf<Char?>(null) }
-    
+
     val rows = listOf(
         "QWERTYUIOP",
         "ASDFGHJKLÑ",
@@ -428,8 +559,7 @@ fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
                                 onKey(char)
                             }
                         )
-                        
-                        // Accent Popup
+
                         if (accentMenuKey == char) {
                             Popup(
                                 alignment = Alignment.TopCenter,
@@ -474,10 +604,10 @@ fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun KeyItem(
-    text: String, 
-    modifier: Modifier, 
-    color: Color = Color.White, 
-    onLongClick: (() -> Unit)? = null, 
+    text: String,
+    modifier: Modifier,
+    color: Color = Color.White,
+    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     Surface(
@@ -509,10 +639,9 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
         Text("🏆", fontSize = 80.sp)
         Text("¡Excelente!", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = TextMain)
         Text("Кроссворд пройден", fontSize = 18.sp, color = TextGray)
-        
+
         Spacer(Modifier.height(16.dp))
-        
-        // Stars
+
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             repeat(3) { i ->
                 Icon(
@@ -525,7 +654,7 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
         }
 
         Spacer(Modifier.height(32.dp))
-        
+
         Surface(
             color = Gold.copy(alpha = 0.1f),
             shape = RoundedCornerShape(16.dp)
@@ -538,14 +667,13 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
                 fontSize = 20.sp
             )
         }
-        
+
         Spacer(Modifier.height(48.dp))
-        
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Home Button
             OutlinedButton(
                 onClick = onHome,
                 modifier = Modifier.weight(1f).height(56.dp),
@@ -557,7 +685,6 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
                 Text("МЕНЮ", color = Purple, fontWeight = FontWeight.Bold)
             }
 
-            // Next Level Button
             Button(
                 onClick = { viewModel.startLevel(state.level + 1) },
                 modifier = Modifier.weight(1.4f).height(56.dp),
