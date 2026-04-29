@@ -8,7 +8,7 @@
         <!-- Цвет фона сплеш-экрана -->
         <item name="windowSplashScreenBackground">#FF5722</item>
         <!-- Иконка в центре (adaptive icon) -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <!-- Тема которая применяется после скрытия сплеша -->
         <item name="postSplashScreenTheme">@style/Theme.SpanishApp</item>
     </style>

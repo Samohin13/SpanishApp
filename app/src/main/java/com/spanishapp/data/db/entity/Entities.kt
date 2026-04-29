@@ -144,7 +144,7 @@ data class DailyWordEntity(
 // Прогресс уроков роадмапа: какие уроки из 30 блоков пройдены
 @Entity(tableName = "lesson_progress")
 data class LessonProgressEntity(
-    @PrimaryKey val lessonKey: String,           // "u1_l0", "u5_l2", …
+    @PrimaryKey @ColumnInfo(name = "lesson_key") val lessonKey: String,  // "u1_l0", "u5_l2", …
     @ColumnInfo(name = "unit_id") val unitId: Int,
     @ColumnInfo(name = "lesson_index") val lessonIndex: Int,
     @ColumnInfo(name = "completed_at") val completedAt: Long = System.currentTimeMillis()
