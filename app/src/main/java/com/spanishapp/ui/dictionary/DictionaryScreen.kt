@@ -548,7 +548,7 @@ private fun WordRow(
             Spacer(Modifier.width(10.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                // Испанское слово + пометка глагола
+                // Испанское слово + пометки
                 Row(verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
@@ -560,6 +560,9 @@ private fun WordRow(
                     when (word.verbSubtype) {
                         "irregular" -> VerbBadge("неправ.", Color(0xFFE11D48))
                         "stem"      -> VerbBadge("откл.", Color(0xFFD97706))
+                    }
+                    if (word.category.startsWith("adult_")) {
+                        VerbBadge("18+", Color(0xFF9C27B0))
                     }
                 }
                 Text(
