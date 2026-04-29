@@ -78,13 +78,13 @@ class DatabaseSeeder @Inject constructor(
     private suspend fun seedArticleGameProgress() {
         val dao = db.articleGameDao()
         val existing = dao.getAllProgress().firstOrNull() ?: emptyList()
-        if (existing.size >= 100) return
+        if (existing.isNotEmpty()) return
         
-        val levels = (1..100).map { id ->
+        val levels = listOf("A1", "A2", "B1", "B2", "C1").map { level ->
             ArticleLevelProgressEntity(
-                levelId = id,
+                levelId = level,
                 stars = 0,
-                isUnlocked = id == 1,
+                isUnlocked = level == "A1",
                 bestScore = 0
             )
         }

@@ -35,6 +35,19 @@ interface WordDao {
     @Query("SELECT * FROM words ORDER BY RANDOM() LIMIT :limit")
     suspend fun getRandomWords(limit: Int): List<WordEntity>
 
+    // Детерминированная выборка для кроссворда: фиксированный порядок по id,
+    // перемешивается в Kotlin с seed = level → один уровень = один кроссворд всегда
+    @Query("SELECT * FROM words ORDER BY id ASC LIMIT :limit")
+    suspend fun getWordsOrdered(limit: Int): List<WordEntity>
+
+    // Скользящее окно для кроссворда: каждый уровень получает свой уникальный срез
+    @Query("SELECT * FROM words ORDER BY id ASC LIMIT :limit OFFSET :offset")
+    suspend fun getWordsOrderedWithOffset(limit: Int, offset: Int): List<WordEntity>
+
+    // Скользящее окно с фильтром по CEFR-уровню — для кроссворда
+    @Query("SELECT * FROM words WHERE level IN (:levels) ORDER BY id ASC LIMIT :limit OFFSET :offset")
+    suspend fun getWordsByCefrWithOffset(levels: List<String>, limit: Int, offset: Int): List<WordEntity>
+
     // Для виджета (синхронный вызов на allowMainThreadQueries)
     @Query("SELECT * FROM words WHERE level = :level ORDER BY id ASC")
     fun getWordsByLevelSync(level: String): List<WordEntity>
@@ -351,11 +364,23 @@ interface ArticleGameDao {
     fun getAllProgress(): Flow<List<ArticleLevelProgressEntity>>
 
     @Query("SELECT * FROM article_level_progress WHERE levelId = :levelId")
-    suspend fun getProgress(levelId: Int): ArticleLevelProgressEntity?
+    suspend fun getProgress(levelId: String): ArticleLevelProgressEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertProgress(progress: ArticleLevelProgressEntity)
 
     @Query("UPDATE article_level_progress SET isUnlocked = 1 WHERE levelId = :levelId")
-    suspend fun unlockLevel(levelId: Int)
+    suspend fun unlockLevel(levelId: String)
+
+    @Query("SELECT * FROM article_words WHERE level = :level ORDER BY error_weight DESC, RANDOM() LIMIT :limit")
+    suspend fun getWordsForLevel(level: String, limit: Int = 10): List<ArticleWordEntity>
+
+    @Update
+    suspend fun updateWord(word: ArticleWordEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertWords(words: List<ArticleWordEntity>)
+
+    @Query("SELECT COUNT(*) FROM article_words")
+    suspend fun getWordCount(): Int
 }

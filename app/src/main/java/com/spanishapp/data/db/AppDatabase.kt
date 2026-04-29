@@ -20,9 +20,10 @@ import com.spanishapp.data.db.entity.*
         WordListEntity::class,
         WordListEntryEntity::class,
         ArticleLevelProgressEntity::class,
+        ArticleWordEntity::class,
         LessonProgressEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -136,6 +137,32 @@ abstract class AppDatabase : RoomDatabase() {
                         unit_id INTEGER NOT NULL,
                         lesson_index INTEGER NOT NULL,
                         completed_at INTEGER NOT NULL DEFAULT 0
+                    )
+                """)
+            }
+        }
+
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Пересоздаём lesson_progress — предыдущая миграция могла создать
+                // таблицу с неправильными именами колонок (до добавления @ColumnInfo)
+                db.execSQL("DROP TABLE IF EXISTS lesson_progress")
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS lesson_progress (
+                        lesson_key TEXT PRIMARY KEY NOT NULL,
+                        unit_id INTEGER NOT NULL,
+                        lesson_index INTEGER NOT NULL,
+                        completed_at INTEGER NOT NULL DEFAULT 0
+                    )
+                """)
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS article_words (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        word TEXT NOT NULL,
+                        article TEXT NOT NULL,
+                        level TEXT NOT NULL,
+                        rule_hint TEXT NOT NULL,
+                        error_weight INTEGER NOT NULL DEFAULT 0
                     )
                 """)
             }

@@ -1,208 +1,173 @@
 package com.spanishapp.ui.games
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.spanishapp.ui.theme.AppColors
 
-// ── Модель ────────────────────────────────────────────────────
-
-data class GameCard(
-    val route: String,
-    val emoji: String,
-    val title: String,
-    val description: String,
-    val color: Color,
-    val isReady: Boolean = true
-)
-
-private val games = listOf(
-    GameCard(
-        route       = "game_articles",
-        emoji       = "🏷️",
-        title       = "Артикли El/La",
-        description = "Мужской или женский род?",
-        color       = AppColors.Teal
-    ),
-    GameCard(
-        route       = "game_speed",
-        emoji       = "⚡",
-        title       = "На скорость",
-        description = "Успей за таймером",
-        color       = AppColors.Terracotta
-    ),
-    GameCard(
-        route       = "game_anagram",
-        emoji       = "🔤",
-        title       = "Анаграмма",
-        description = "Собери слово",
-        color       = AppColors.Gold
-    ),
-    GameCard(
-        route       = "quiz",
-        emoji       = "🎯",
-        title       = "Тест",
-        description = "10 вопросов",
-        color       = Color(0xFF2196F3)
-    ),
-    GameCard(
-        route       = "dialogues",
-        emoji       = "💬",
-        title       = "Диалоги",
-        description = "Ситуации из жизни",
-        color       = Color(0xFF7C5CBF)
-    ),
-    GameCard(
-        route       = "game_verb_form",
-        emoji       = "🔧",
-        title       = "Глаголы",
-        description = "Формы и времена",
-        color       = Color(0xFF2E7D32)
-    ),
-    GameCard(
-        route       = "game_listening",
-        emoji       = "🎧",
-        title       = "Аудирование",
-        description = "Слушай — вставь слово",
-        color       = Color(0xFF1565C0)
-    )
-)
-
-// ── Экран ─────────────────────────────────────────────────────
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GamesScreen(navController: NavHostController) {
-    Scaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        "Игровая зона", 
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    ) 
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF8F8FA))
+            .statusBarsPadding(),
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            Text(
+                "Master Spanish Premium 🎮",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1A1A1A)
+            )
+            Text(
+                "Адаптивная система обучения в игровом формате",
+                fontSize = 16.sp,
+                color = Color(0xFF8E8E93)
+            )
+            Spacer(Modifier.height(8.dp))
+        }
+
+        item {
+            GameCard(
+                title = "Artículos",
+                description = "Артикли El/La",
+                icon = Icons.Default.Category,
+                color = Color(0xFF7B2FBE),
+                onClick = { navController.navigate("game_articles") }
             )
         }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            Spacer(Modifier.height(4.dp))
 
-            SectionLabel("Выбери активность")
+        item {
+            GameCard(
+                title = "Rápido",
+                description = "Скоростной перевод на время",
+                icon = Icons.Default.Timer,
+                color = Color(0xFFE040FB),
+                onClick = { navController.navigate("game_speed") }
+            )
+        }
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 32.dp)
-            ) {
-                items(games) { game ->
-                    GameHubItem(game) {
-                        navController.navigate(game.route)
-                    }
-                }
-            }
+        item {
+            GameCard(
+                title = "Verbos",
+                description = "Профессиональный тренажер спряжений",
+                icon = Icons.Default.Translate,
+                color = Color(0xFF2196F3),
+                onClick = { navController.navigate("conjugation_quiz") }
+            )
+        }
+
+        item {
+            GameCard(
+                title = "Sopa de Letras",
+                description = "Филворд / Суп из букв",
+                icon = Icons.Default.GridOn,
+                color = Color(0xFF4CAF50),
+                onClick = { navController.navigate("game_sopa") }
+            )
+        }
+
+        item {
+            GameCard(
+                title = "Palabra Maestra",
+                description = "Мастер слова / Орфография",
+                icon = Icons.Default.TextFields,
+                color = Color(0xFFFF9500),
+                onClick = { navController.navigate("game_palabra") }
+            )
+        }
+
+        item {
+            GameCard(
+                title = "Cálculo Auditivo",
+                description = "Математический тренажер / Счёт",
+                icon = Icons.Default.Calculate,
+                color = Color(0xFFF44336),
+                onClick = { navController.navigate("game_math") }
+            )
+        }
+
+        item {
+            GameCard(
+                title = "Crucigrama",
+                description = "Интеллектуальный классический кроссворд",
+                icon = Icons.Default.BorderAll,
+                color = Color(0xFF26A69A),
+                onClick = { navController.navigate("game_crossword") }
+            )
         }
     }
 }
 
 @Composable
-private fun SectionLabel(text: String) {
-    Text(
-        text = text.uppercase(),
-        style = MaterialTheme.typography.labelMedium,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-        letterSpacing = 1.2.sp
-    )
-}
-
-@Composable
-private fun GameHubItem(game: GameCard, onClick: () -> Unit) {
+private fun GameCard(
+    title: String,
+    description: String,
+    icon: ImageVector,
+    color: Color,
+    onClick: () -> Unit
+) {
     Surface(
-        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp),
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
-        border = androidx.compose.foundation.BorderStroke(
-            1.dp, 
-            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-        )
+            .clickable { onClick() },
+        shape = RoundedCornerShape(20.dp),
+        color = Color.White,
+        shadowElevation = 2.dp
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Иконка в круге
             Box(
                 modifier = Modifier
-                    .size(64.dp)
-                    .background(game.color.copy(alpha = 0.15f), RoundedCornerShape(18.dp))
-                    .border(1.dp, game.color.copy(alpha = 0.2f), RoundedCornerShape(18.dp)),
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(game.emoji, fontSize = 32.sp)
+                Icon(icon, null, tint = color, modifier = Modifier.size(28.dp))
             }
-            
-            Spacer(Modifier.height(16.dp))
-            
-            Text(
-                game.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.ExtraBold,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            
-            Text(
-                game.description,
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1A1A1A)
+                )
+                Text(
+                    description,
+                    fontSize = 14.sp,
+                    color = Color(0xFF8E8E93),
+                    lineHeight = 18.sp
+                )
+            }
+
+            Icon(
+                Icons.Default.ChevronRight,
+                null,
+                tint = Color(0xFFC7C7CC),
+                modifier = Modifier.size(20.dp)
             )
         }
     }

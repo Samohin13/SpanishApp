@@ -45,7 +45,7 @@ fun SpanishAppRoot() {
     val currentRoute = navBackStackEntry?.destination?.route ?: "home"
 
     val showBottomBar = currentRoute in listOf(
-        "home", "flashcards", "games", "dictionary", "profile",
+        "home", "games", "flashcards", "dictionary", "profile",
         "grammar", "achievements", "weak_words",
         "conjugation", "quiz", "dialogues", "settings", "pronunciation"
     )
