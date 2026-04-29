@@ -90,7 +90,12 @@ class CrosswordViewModel @Inject constructor(
 
     fun startLevel(level: Int) {
         viewModelScope.launch {
-            val gridSize = if (level > 10) 12 else 10
+            val gridSize = when {
+                level <= 15 -> 10
+                level <= 45 -> 11
+                level <= 75 -> 12
+                else        -> 13
+            }
             val words = generateLevelFromDictionary(level, gridSize)
             val initialGrid = mutableMapOf<Pair<Int, Int>, Char?>()
             words.forEach { cw ->
@@ -117,40 +122,63 @@ class CrosswordViewModel @Inject constructor(
     }
 
     // ── Crossword generation from dictionary ──────────────────────────────
+    //
+    // Design: каждый уровень получает СВОЙ скользящий срез словаря.
+    //   offset  = (level-1) * STEP   →  level 1 = слова 0-299,
+    //                                    level 2 = слова 30-329, …
+    //                                    level 100 = слова 2970-3269
+    // Это гарантирует, что каждый уровень использует РАЗНЫЕ исходные слова,
+    // а не только переставляет одно и то же множество.
+    // Seed = level * prime ─ постоянство: один уровень = один кроссворд всегда.
 
     private suspend fun generateLevelFromDictionary(level: Int, gridSize: Int): List<CrosswordWord> {
-        // Seed is fixed per level → same level always produces the same crossword
         val rng = Random(seed = level.toLong() * 31337L)
 
-        val cefr = when {
-            level <= 20 -> "A1"
-            level <= 50 -> "A2"
-            level <= 80 -> "B1"
-            else -> "B2"
-        }
+        // Complexity thresholds
         val targetWords = when {
             level <= 5  -> 4
-            level <= 15 -> 5
+            level <= 20 -> 5
             else        -> 6
         }
-        val maxWordLen = if (level <= 10) 6 else 8
+        val wordLenRange: IntRange = when {
+            level <= 10 -> 3..5
+            level <= 25 -> 3..6
+            level <= 50 -> 4..7
+            else        -> 4..8
+        }
+        val anchorLenRange: IntRange = when {
+            level <= 15 -> 4..5
+            level <= 50 -> 4..6
+            else        -> 5..7
+        }
 
-        // Deterministic fetch: ORDER BY id ASC, then shuffle with seeded rng
-        val rawWords = wordDao.getWordsOrdered(500)
-            .let { all ->
-                val cefrFiltered = all.filter { it.level == cefr }
-                if (cefrFiltered.size >= 40) cefrFiltered else all
-            }
+        // Sliding window: каждые 30 слов уровень смещается в словарь
+        val WINDOW = 300   // размер окна — достаточно кандидатов для пересечений
+        val STEP   = 30    // сдвиг между уровнями
+        val offset = (level - 1) * STEP  // level 100 → offset 2970; DB ~5000 слов ⇒ OK
+
+        val windowWords = wordDao.getWordsOrderedWithOffset(WINDOW, offset)
             .map { it.spanish.uppercase().trim() to it.russian }
-            .filter { (sp, _) -> sp.length in 3..maxWordLen && sp.all { c -> c.isLetter() } }
+            .filter { (sp, _) -> sp.length in wordLenRange && sp.all { c -> c.isLetter() } }
             .distinctBy { it.first }
-            .shuffled(rng)
 
-        if (rawWords.size < 8) return staticFallback()
+        // Если окно слишком пустое (конец словаря или мало подходящих слов) —
+        // берём глобальный пул с другого конца, не теряя детерминизма.
+        val pool = if (windowWords.size >= 10) {
+            windowWords.shuffled(rng)
+        } else {
+            val globalOffset = ((level * 97) % 80) * STEP  // псевдослучайный другой кусок
+            wordDao.getWordsOrderedWithOffset(WINDOW * 2, globalOffset)
+                .map { it.spanish.uppercase().trim() to it.russian }
+                .filter { (sp, _) -> sp.length in wordLenRange && sp.all { c -> c.isLetter() } }
+                .distinctBy { it.first }
+                .shuffled(rng)
+        }
 
-        // Multiple attempts with the same rng → sequence of attempts is also deterministic
-        repeat(50) {
-            val result = buildCrossword(rawWords, gridSize, targetWords, rng)
+        if (pool.size < 8) return staticFallback()
+
+        repeat(60) {
+            val result = buildCrossword(pool, gridSize, targetWords, anchorLenRange, rng)
             if (result != null) return result
         }
 
@@ -161,9 +189,13 @@ class CrosswordViewModel @Inject constructor(
         pool: List<Pair<String, String>>,
         gridSize: Int,
         targetWords: Int,
+        anchorLenRange: IntRange,
         rng: Random
     ): List<CrosswordWord>? {
-        val first = pool.firstOrNull { it.first.length in 4..6 } ?: return null
+        // Якорное слово — горизонтально по центру сетки
+        val first = pool.firstOrNull { it.first.length in anchorLenRange }
+            ?: pool.firstOrNull { it.first.length in 3..8 }
+            ?: return null
         val startX = (gridSize - first.first.length) / 2
         val startY = gridSize / 2
         val pw1 = PlacedWord(first.first, first.second, startX, startY, false)
@@ -184,7 +216,7 @@ class CrosswordViewModel @Inject constructor(
             CrosswordWord(idx + 1, pw.word, pw.translation, pw.x, pw.y, pw.isVertical, idx + 1)
         }
 
-        // Final safety check — catch any geometric edge-case missed by isValidPlacement
+        // Финальная проверка геометрии через валидатор
         if (!CrosswordValidator.isValid(words, gridSize)) return null
 
         return words

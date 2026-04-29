@@ -40,6 +40,10 @@ interface WordDao {
     @Query("SELECT * FROM words ORDER BY id ASC LIMIT :limit")
     suspend fun getWordsOrdered(limit: Int): List<WordEntity>
 
+    // Скользящее окно для кроссворда: каждый уровень получает свой уникальный срез
+    @Query("SELECT * FROM words ORDER BY id ASC LIMIT :limit OFFSET :offset")
+    suspend fun getWordsOrderedWithOffset(limit: Int, offset: Int): List<WordEntity>
+
     // Для виджета (синхронный вызов на allowMainThreadQueries)
     @Query("SELECT * FROM words WHERE level = :level ORDER BY id ASC")
     fun getWordsByLevelSync(level: String): List<WordEntity>
