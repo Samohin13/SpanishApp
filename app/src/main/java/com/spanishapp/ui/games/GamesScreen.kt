@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -108,10 +107,10 @@ fun GamesScreen(navController: NavHostController) {
 
         item {
             GameCard(
-                title = "Crucigrama: El Traductor",
+                title = "Crucigrama",
                 description = "Интеллектуальный классический кроссворд",
-                icon = Icons.AutoMirrored.Filled.MenuBook,
-                color = Color(0xFF1A1A1A),
+                icon = Icons.Default.BorderAll,
+                color = Color(0xFF26A69A),
                 onClick = { navController.navigate("game_crossword") }
             )
         }
