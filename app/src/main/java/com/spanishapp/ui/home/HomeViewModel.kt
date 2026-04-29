@@ -3,7 +3,6 @@ package com.spanishapp.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.*
-import com.spanishapp.data.db.entity.LessonProgressEntity
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.domain.algorithm.AdaptiveLearning
 import com.spanishapp.domain.algorithm.StreakManager
@@ -32,16 +31,8 @@ class HomeViewModel @Inject constructor(
         wordDao.learnedCount(),
         lessonDao.getNextLessons(),
         lessonProgressDao.getAllCompletedKeys()
-    ) { values ->
-        @Suppress("UNCHECKED_CAST")
-        val progress    = values[0] as UserProgressEntity?
-        @Suppress("UNCHECKED_CAST")
-        val dueWords    = values[1] as List<com.spanishapp.data.db.entity.WordEntity>
-        val learnedCount = values[2] as Int
-        @Suppress("UNCHECKED_CAST")
-        val nextLessons = values[3] as List<com.spanishapp.data.db.entity.LessonEntity>
-        @Suppress("UNCHECKED_CAST")
-        val completedKeys = (values[4] as List<String>).toSet()
+    ) { progress, dueWords, learnedCount, nextLessons, completedKeysList ->
+        val completedKeys = completedKeysList.toSet()
 
         val p = progress ?: UserProgressEntity()
 
