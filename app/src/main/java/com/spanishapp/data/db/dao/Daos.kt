@@ -44,6 +44,10 @@ interface WordDao {
     @Query("SELECT * FROM words ORDER BY id ASC LIMIT :limit OFFSET :offset")
     suspend fun getWordsOrderedWithOffset(limit: Int, offset: Int): List<WordEntity>
 
+    // Скользящее окно с фильтром по CEFR-уровню — для кроссворда
+    @Query("SELECT * FROM words WHERE level IN (:levels) ORDER BY id ASC LIMIT :limit OFFSET :offset")
+    suspend fun getWordsByCefrWithOffset(levels: List<String>, limit: Int, offset: Int): List<WordEntity>
+
     // Для виджета (синхронный вызов на allowMainThreadQueries)
     @Query("SELECT * FROM words WHERE level = :level ORDER BY id ASC")
     fun getWordsByLevelSync(level: String): List<WordEntity>

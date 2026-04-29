@@ -134,41 +134,53 @@ class CrosswordViewModel @Inject constructor(
     private suspend fun generateLevelFromDictionary(level: Int, gridSize: Int): List<CrosswordWord> {
         val rng = Random(seed = level.toLong() * 31337L)
 
-        // Complexity thresholds
+        // ── Шкала сложности 1→100 ──────────────────────────────────────────
+        // Количество слов в кроссворде
         val targetWords = when {
             level <= 5  -> 4
             level <= 20 -> 5
             else        -> 6
         }
+        // Длина слов: короткие на старте, длиннее к концу
         val wordLenRange: IntRange = when {
-            level <= 10 -> 3..5
-            level <= 25 -> 3..6
-            level <= 50 -> 4..7
-            else        -> 4..8
+            level <= 10 -> 3..4   // SOL, MAR, GATO — самые базовые
+            level <= 25 -> 3..5   // + VERDE, COMER
+            level <= 50 -> 4..6   // + CIUDAD, TIEMPO
+            level <= 75 -> 4..7   // + TRABAJO, FAMILIA
+            else        -> 4..8   // + GOBIERNO, HISTORIA
         }
+        // Длина якорного (первого) слова
         val anchorLenRange: IntRange = when {
-            level <= 15 -> 4..5
+            level <= 10 -> 3..4
+            level <= 25 -> 4..5
             level <= 50 -> 4..6
             else        -> 5..7
         }
+        // CEFR-уровни для словарного запаса
+        val cefrLevels: List<String> = when {
+            level <= 20 -> listOf("A1")
+            level <= 45 -> listOf("A1", "A2")
+            level <= 70 -> listOf("A2", "B1")
+            else        -> listOf("B1", "B2")
+        }
 
-        // Sliding window: каждые 30 слов уровень смещается в словарь
-        val WINDOW = 300   // размер окна — достаточно кандидатов для пересечений
-        val STEP   = 30    // сдвиг между уровнями
-        val offset = (level - 1) * STEP  // level 100 → offset 2970; DB ~5000 слов ⇒ OK
+        // ── Скользящее окно внутри CEFR-уровня ────────────────────────────
+        // Каждый уровень игры смещается на 25 слов в своём CEFR-пуле,
+        // гарантируя уникальные слова от уровня к уровню.
+        val WINDOW = 250
+        val STEP   = 25
+        val offset = (level - 1) * STEP
 
-        val windowWords = wordDao.getWordsOrderedWithOffset(WINDOW, offset)
+        val windowWords = wordDao.getWordsByCefrWithOffset(cefrLevels, WINDOW, offset)
             .map { it.spanish.uppercase().trim() to it.russian }
             .filter { (sp, _) -> sp.length in wordLenRange && sp.all { c -> c.isLetter() } }
             .distinctBy { it.first }
 
-        // Если окно слишком пустое (конец словаря или мало подходящих слов) —
-        // берём глобальный пул с другого конца, не теряя детерминизма.
+        // Если в окне мало слов (конец CEFR-пула) — берём начало того же пула
         val pool = if (windowWords.size >= 10) {
             windowWords.shuffled(rng)
         } else {
-            val globalOffset = ((level * 97) % 80) * STEP  // псевдослучайный другой кусок
-            wordDao.getWordsOrderedWithOffset(WINDOW * 2, globalOffset)
+            wordDao.getWordsByCefrWithOffset(cefrLevels, WINDOW * 2, 0)
                 .map { it.spanish.uppercase().trim() to it.russian }
                 .filter { (sp, _) -> sp.length in wordLenRange && sp.all { c -> c.isLetter() } }
                 .distinctBy { it.first }
