@@ -217,6 +217,29 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
                     )
                 }
 
+                // Accent hint — shown only when the current word contains accented letters
+                val accentedChars = currentWord?.spanish
+                    ?.filter { it in "ÁÉÍÓÚÜÑ" }
+                    ?.toSet()
+                    ?.sorted()
+                if (!accentedChars.isNullOrEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(Icons.Default.Info, null, tint = Gold, modifier = Modifier.size(14.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "Удержи клавишу для ввода: ${accentedChars.joinToString(", ")}",
+                            fontSize = 12.sp,
+                            color = Gold
+                        )
+                    }
+                }
+
                 // Hints
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
