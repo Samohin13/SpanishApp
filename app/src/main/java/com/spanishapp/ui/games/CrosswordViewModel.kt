@@ -163,7 +163,6 @@ class CrosswordViewModel @Inject constructor(
         targetWords: Int,
         rng: Random
     ): List<CrosswordWord>? {
-        // Pick a first word 4-6 letters, place it horizontally at grid center
         val first = pool.firstOrNull { it.first.length in 4..6 } ?: return null
         val startX = (gridSize - first.first.length) / 2
         val startY = gridSize / 2
@@ -181,9 +180,14 @@ class CrosswordViewModel @Inject constructor(
 
         if (placed.size < 4) return null
 
-        return placed.mapIndexed { idx, pw ->
+        val words = placed.mapIndexed { idx, pw ->
             CrosswordWord(idx + 1, pw.word, pw.translation, pw.x, pw.y, pw.isVertical, idx + 1)
         }
+
+        // Final safety check — catch any geometric edge-case missed by isValidPlacement
+        if (!CrosswordValidator.isValid(words, gridSize)) return null
+
+        return words
     }
 
     private fun tryAddToGrid(
@@ -254,12 +258,19 @@ class CrosswordViewModel @Inject constructor(
         return hasIntersection
     }
 
-    // Emergency fallback — only reached when dictionary has fewer than 8 suitable words
+    // Emergency fallback — only reached when dictionary has fewer than 8 suitable words.
+    // Layout verified by hand (all intersections correct, grid 10x10):
+    //   PATO horizontal (0,0): P(0,0) A(1,0) T(2,0) O(3,0)
+    //   PLAYA vertical  (0,0): P(0,0) L(0,1) A(0,2) Y(0,3) A(0,4)
+    //   AMOR horizontal (0,2): A(0,2) M(1,2) O(2,2) R(3,2)
+    //   OTRO vertical   (3,0): O(3,0) T(3,1) R(3,2) O(3,3)
+    // Intersections: PATO∩PLAYA@(0,0)=P, PATO∩OTRO@(3,0)=O,
+    //                AMOR∩PLAYA@(0,2)=A, AMOR∩OTRO@(3,2)=R
     private fun staticFallback(): List<CrosswordWord> = listOf(
-        CrosswordWord(1, "MESA",  "Стол",    0, 2, false, 1),
-        CrosswordWord(2, "AMOR",  "Любовь",  1, 0, true,  2),
-        CrosswordWord(3, "ROPA",  "Одежда",  1, 3, false, 3),
-        CrosswordWord(4, "AGUA",  "Вода",    4, 3, true,  4)
+        CrosswordWord(1, "PATO",  "Утка",   0, 0, false, 1),
+        CrosswordWord(2, "PLAYA", "Пляж",   0, 0, true,  2),
+        CrosswordWord(3, "AMOR",  "Любовь", 0, 2, false, 3),
+        CrosswordWord(4, "OTRO",  "Другой", 3, 0, true,  4)
     )
 
     // ── Game interaction ──────────────────────────────────────────────────
