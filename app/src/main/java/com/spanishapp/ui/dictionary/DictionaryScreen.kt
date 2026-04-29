@@ -55,11 +55,19 @@ class DictionaryViewModel @Inject constructor(
     val query: StateFlow<String> = _query.asStateFlow()
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val words: StateFlow<List<WordEntity>> = _query
+    private val _allWords: StateFlow<List<WordEntity>> = _query
         .debounce(200)
         .flatMapLatest { q ->
             if (q.length >= 2) wDao.search(q) else wDao.getAllWords(limit = 8000)
         }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val wordsOnly: StateFlow<List<WordEntity>> = _allWords
+        .map { list -> list.filter { it.wordType != "phrase" } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val phrases: StateFlow<List<WordEntity>> = _allWords
+        .map { list -> list.filter { it.wordType == "phrase" } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     // ── Мои списки ────────────────────────────────────────────
@@ -146,13 +154,14 @@ fun DictionaryScreen(
     vm: DictionaryViewModel = hiltViewModel()
 ) {
     val query      by vm.query.collectAsState()
-    val words      by vm.words.collectAsState()
+    val wordsOnly  by vm.wordsOnly.collectAsState()
+    val phrases    by vm.phrases.collectAsState()
     val myLists    by vm.myLists.collectAsState()
     val listWords  by vm.listWords.collectAsState()
     val selectedId by vm.selectedListId.collectAsState()
     val membership by vm.wordListMembership.collectAsState()
 
-    // Вкладки: 0 = Все слова, 1 = Мои списки
+    // Вкладки: 0 = Все слова, 1 = Фразы, 2 = Мои списки
     var tab by remember { mutableIntStateOf(0) }
 
     // Bottom sheets
@@ -188,6 +197,8 @@ fun DictionaryScreen(
                     Tab(selected = tab == 0, onClick = { tab = 0 },
                         text = { Text("Все слова") })
                     Tab(selected = tab == 1, onClick = { tab = 1 },
+                        text = { Text("Фразы") })
+                    Tab(selected = tab == 2, onClick = { tab = 2 },
                         text = { Text("Мои списки") })
                 }
             }
@@ -215,8 +226,28 @@ fun DictionaryScreen(
                 tab == 0 -> {
                     AllWordsContent(
                         query      = query,
-                        words      = words,
+                        words      = wordsOnly,
                         membership = membership,
+                        countLabel = "слов",
+                        onQuery    = vm::setQuery,
+                        onWordClick = { w ->
+                            vm.loadMembership(w.id)
+                            wordDetail = w
+                        },
+                        onAddToList = { w ->
+                            vm.loadMembership(w.id)
+                            addToListWord = w
+                        },
+                        onSpeak    = { vm.speak(it) }
+                    )
+                }
+                // ── Фразы ─────────────────────────────────
+                tab == 1 -> {
+                    AllWordsContent(
+                        query      = query,
+                        words      = phrases,
+                        membership = membership,
+                        countLabel = "фраз",
                         onQuery    = vm::setQuery,
                         onWordClick = { w ->
                             vm.loadMembership(w.id)
@@ -291,6 +322,7 @@ private fun AllWordsContent(
     query: String,
     words: List<WordEntity>,
     membership: Map<Int, List<Int>>,
+    countLabel: String = "слов",
     onQuery: (String) -> Unit,
     onWordClick: (WordEntity) -> Unit,
     onAddToList: (WordEntity) -> Unit,
@@ -317,7 +349,7 @@ private fun AllWordsContent(
         )
 
         Text(
-            "${words.size} слов",
+            "${words.size} $countLabel",
             style  = MaterialTheme.typography.bodySmall,
             color  = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
