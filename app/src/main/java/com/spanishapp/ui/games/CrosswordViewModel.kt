@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 import javax.inject.Inject
 
 data class CrosswordWord(
@@ -118,6 +119,9 @@ class CrosswordViewModel @Inject constructor(
     // ── Crossword generation from dictionary ──────────────────────────────
 
     private suspend fun generateLevelFromDictionary(level: Int, gridSize: Int): List<CrosswordWord> {
+        // Seed is fixed per level → same level always produces the same crossword
+        val rng = Random(seed = level.toLong() * 31337L)
+
         val cefr = when {
             level <= 20 -> "A1"
             level <= 50 -> "A2"
@@ -131,7 +135,8 @@ class CrosswordViewModel @Inject constructor(
         }
         val maxWordLen = if (level <= 10) 6 else 8
 
-        val rawWords = wordDao.getRandomWords(500)
+        // Deterministic fetch: ORDER BY id ASC, then shuffle with seeded rng
+        val rawWords = wordDao.getWordsOrdered(500)
             .let { all ->
                 val cefrFiltered = all.filter { it.level == cefr }
                 if (cefrFiltered.size >= 40) cefrFiltered else all
@@ -139,12 +144,13 @@ class CrosswordViewModel @Inject constructor(
             .map { it.spanish.uppercase().trim() to it.russian }
             .filter { (sp, _) -> sp.length in 3..maxWordLen && sp.all { c -> c.isLetter() } }
             .distinctBy { it.first }
-            .shuffled()
+            .shuffled(rng)
 
         if (rawWords.size < 8) return staticFallback()
 
+        // Multiple attempts with the same rng → sequence of attempts is also deterministic
         repeat(50) {
-            val result = buildCrossword(rawWords, gridSize, targetWords)
+            val result = buildCrossword(rawWords, gridSize, targetWords, rng)
             if (result != null) return result
         }
 
@@ -154,7 +160,8 @@ class CrosswordViewModel @Inject constructor(
     private fun buildCrossword(
         pool: List<Pair<String, String>>,
         gridSize: Int,
-        targetWords: Int
+        targetWords: Int,
+        rng: Random
     ): List<CrosswordWord>? {
         // Pick a first word 4-6 letters, place it horizontally at grid center
         val first = pool.firstOrNull { it.first.length in 4..6 } ?: return null
@@ -164,10 +171,10 @@ class CrosswordViewModel @Inject constructor(
         val placed = mutableListOf(pw1)
         val usedCells = pw1.cells().toMutableMap()
 
-        val remaining = pool.filter { it.first != first.first }.shuffled()
+        val remaining = pool.filter { it.first != first.first }.shuffled(rng)
         for (candidate in remaining) {
             if (placed.size >= targetWords) break
-            val pw = tryAddToGrid(candidate, placed, usedCells, gridSize) ?: continue
+            val pw = tryAddToGrid(candidate, placed, usedCells, gridSize, rng) ?: continue
             placed.add(pw)
             usedCells.putAll(pw.cells())
         }
@@ -183,24 +190,19 @@ class CrosswordViewModel @Inject constructor(
         candidate: Pair<String, String>,
         placed: List<PlacedWord>,
         usedCells: Map<Pair<Int, Int>, Char>,
-        gridSize: Int
+        gridSize: Int,
+        rng: Random
     ): PlacedWord? {
         val (word, translation) = candidate
-        // Try to intersect with each already-placed word (shuffled for variety)
-        for (anchor in placed.shuffled()) {
+        for (anchor in placed.shuffled(rng)) {
             val newIsVertical = !anchor.isVertical
-            for (anchorIdx in anchor.word.indices.shuffled()) {
+            for (anchorIdx in anchor.word.indices.shuffled(rng)) {
                 val charNeeded = anchor.word[anchorIdx]
                 for (wordIdx in word.indices) {
                     if (word[wordIdx] != charNeeded) continue
-                    // Compute start position for the new word
                     val (nx, ny) = if (anchor.isVertical) {
-                        // anchor vertical: intersection cell = (anchor.x, anchor.y + anchorIdx)
-                        // new word horizontal: x_start = anchor.x - wordIdx, y = anchor.y + anchorIdx
                         (anchor.x - wordIdx) to (anchor.y + anchorIdx)
                     } else {
-                        // anchor horizontal: intersection cell = (anchor.x + anchorIdx, anchor.y)
-                        // new word vertical: x = anchor.x + anchorIdx, y_start = anchor.y - wordIdx
                         (anchor.x + anchorIdx) to (anchor.y - wordIdx)
                     }
                     if (isValidPlacement(word, nx, ny, newIsVertical, usedCells, gridSize)) {
