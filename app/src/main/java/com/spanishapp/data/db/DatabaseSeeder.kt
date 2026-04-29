@@ -22,9 +22,8 @@ class DatabaseSeeder @Inject constructor(
     private val achievementManager: AchievementManager
 ) {
     companion object {
-        // Порог для досева. Реальное уникальное кол-во слов ~4000.
-        // Если в БД меньше этого — запустить досев.
-        const val VOCAB_TARGET = 3800
+        // Порог для досева. Поднят до 9500 (все VocabExpansion 1-13).
+        const val VOCAB_TARGET = 9500
 
         // ── Полностью неправильные глаголы ────────────────────
         val IRREGULAR_VERBS = setOf(
@@ -131,6 +130,16 @@ class DatabaseSeeder @Inject constructor(
         words += VocabExpansion1.entries
         words += VocabExpansion2.entries
         words += VocabExpansion3.entries
+        words += VocabExpansion4.entries
+        words += VocabExpansion5.entries
+        words += VocabExpansion6.entries
+        words += VocabExpansion7.entries
+        words += VocabExpansion8.entries
+        words += VocabExpansion9.entries
+        words += VocabExpansion10.entries
+        words += VocabExpansion11.entries
+        words += VocabExpansion12.entries
+        words += VocabExpansion13.entries
 
         // Дедупликация по испанскому слову (сохраняем первое вхождение)
         val unique = words.distinctBy { it.spanish.trim().lowercase() }
