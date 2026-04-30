@@ -4,13 +4,16 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import kotlinx.coroutines.withTimeoutOrNull
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -99,14 +102,16 @@ private fun TranslatableText(
         lineHeight = 26.sp,
         color = Color(0xFF1A1A1A),
         modifier = modifier.pointerInput(text) {
-            detectTapGestures(
-                onTap = {
-                    highlightRange = null
-                    onTap()
-                },
-                onLongPress = { offset ->
+            awaitEachGesture {
+                val down = awaitFirstDown(requireUnconsumed = false)
+                val longPressMs = viewConfiguration.longPressTimeoutMillis
+                val up = withTimeoutOrNull(longPressMs) {
+                    waitForUpOrCancellation()
+                }
+                if (up == null) {
+                    // Long press — ищем слово под пальцем
                     layoutResult?.let { layout ->
-                        val charPos = layout.getOffsetForPosition(offset)
+                        val charPos = layout.getOffsetForPosition(down.position)
                         val (word, range) = extractWordWithRange(text, charPos)
                         val sentence = extractSentenceAt(text, charPos)
                         if (word.isNotEmpty()) {
@@ -114,8 +119,16 @@ private fun TranslatableText(
                             onLongPress(word, sentence)
                         }
                     }
+                    // Дожидаемся отпускания пальца
+                    do {
+                        val event = awaitPointerEvent()
+                    } while (event.changes.any { it.pressed })
+                } else {
+                    // Tap — убираем подсветку
+                    highlightRange = null
+                    onTap()
                 }
-            )
+            }
         },
         onTextLayout = { layoutResult = it }
     )
