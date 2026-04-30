@@ -4,12 +4,12 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -20,11 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,14 +44,13 @@ private sealed interface ReadState {
 
 // ── Вспомогательные функции ──────────────────────────────────
 
-private fun extractWordWithRange(text: String, offset: Int): Pair<String, IntRange> {
-    if (offset < 0 || offset >= text.length) return "" to 0..0
-    if (!text[offset].isLetter()) return "" to 0..0
+private fun extractWordAt(text: String, offset: Int): String {
+    if (offset < 0 || offset >= text.length || !text[offset].isLetter()) return ""
     var start = offset
     var end = offset
     while (start > 0 && text[start - 1].isLetter()) start--
     while (end < text.length - 1 && text[end + 1].isLetter()) end++
-    return text.substring(start, end + 1) to start..end
+    return text.substring(start, end + 1)
 }
 
 private fun extractSentenceAt(text: String, offset: Int): String {
@@ -65,56 +63,61 @@ private fun extractSentenceAt(text: String, offset: Int): String {
     return text.substring(start, end + 1).trim()
 }
 
-// ── TranslatableText ─────────────────────────────────────────
+// ── SelectableStoryText ───────────────────────────────────────
+// BasicTextField readOnly = нет клавиатуры, но работает
+// нативное выделение (long press + drag) и тап по слову.
 
 @Composable
-private fun TranslatableText(
+private fun SelectableStoryText(
     text: String,
     modifier: Modifier = Modifier,
-    onWordTap: (word: String, sentence: String) -> Unit,
-    onEmptyTap: () -> Unit = {}
+    onWordSelected: (word: String, sentence: String) -> Unit,
+    onDismiss: () -> Unit = {}
 ) {
-    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-    var highlightRange by remember { mutableStateOf<IntRange?>(null) }
+    var tfValue by remember(text) { mutableStateOf(TextFieldValue(text)) }
 
-    val annotated = remember(text, highlightRange) {
-        buildAnnotatedString {
-            append(text)
-            highlightRange?.let { r ->
-                addStyle(
-                    SpanStyle(
-                        background = Color(0xFFE3F2FD),
-                        color = Color(0xFF1565C0)
-                    ),
-                    r.first,
-                    minOf(r.last + 1, text.length)
-                )
-            }
-        }
-    }
-
-    Text(
-        text = annotated,
-        fontSize = 17.sp,
-        lineHeight = 26.sp,
-        color = Color(0xFF1A1A1A),
-        modifier = modifier.pointerInput(Unit) {
-            detectTapGestures { offset ->
-                val layout = layoutResult ?: return@detectTapGestures
-                val charPos = layout.getOffsetForPosition(offset)
-                val (word, range) = extractWordWithRange(text, charPos)
-                if (word.isNotEmpty()) {
-                    highlightRange = range
-                    val sentence = extractSentenceAt(text, charPos)
-                    onWordTap(word, sentence)
-                } else {
-                    highlightRange = null
-                    onEmptyTap()
-                }
-            }
-        },
-        onTextLayout = { layoutResult = it }
+    val selectionColors = TextSelectionColors(
+        handleColor = Color(0xFF7B2FBE),
+        backgroundColor = Color(0xFFBBDEFB)
     )
+
+    CompositionLocalProvider(LocalTextSelectionColors provides selectionColors) {
+        BasicTextField(
+            value = tfValue,
+            onValueChange = { new ->
+                // Блокируем изменение текста (только выделение)
+                tfValue = new.copy(text = text)
+                val sel = new.selection
+                val safeStart = sel.start.coerceIn(0, text.length)
+                val safeEnd   = sel.end.coerceIn(0, text.length)
+
+                if (sel.collapsed) {
+                    // Тап — ищем слово в позиции курсора
+                    val pos = safeStart.coerceAtMost(text.length - 1)
+                    val word = extractWordAt(text, pos)
+                    if (word.isNotEmpty()) {
+                        onWordSelected(word, extractSentenceAt(text, pos))
+                    } else {
+                        onDismiss()
+                    }
+                } else if (safeStart < safeEnd) {
+                    // Диапазон — переводим выделенное
+                    val selected = text.substring(safeStart, safeEnd).trim()
+                    if (selected.isNotBlank()) {
+                        onWordSelected(selected, selected)
+                    }
+                }
+            },
+            readOnly = true,
+            textStyle = TextStyle(
+                fontSize = 17.sp,
+                lineHeight = 26.sp,
+                color = Color(0xFF1A1A1A)
+            ),
+            cursorBrush = SolidColor(Color.Transparent),
+            modifier = modifier.fillMaxWidth()
+        )
+    }
 }
 
 // ── TranslationBanner ────────────────────────────────────────
@@ -143,7 +146,6 @@ private fun TranslationBanner(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Слово + перевод
                     Column(Modifier.weight(1f)) {
                         Text(
                             translation.word,
@@ -170,7 +172,6 @@ private fun TranslationBanner(
                     }
                 }
 
-                // Слова предложения
                 if (translation.sentenceWords.isNotEmpty()) {
                     Spacer(Modifier.height(10.dp))
                     HorizontalDivider(color = Color(0xFF283593))
@@ -259,38 +260,40 @@ fun LibroReadScreen(
             // ── Режим чтения ─────────────────────────────────
             is ReadState.Reading -> {
                 Column(
-                    Modifier.fillMaxSize().padding(padding)
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    // Баннер перевода (сверху, анимированный)
+                    // Баннер перевода
                     TranslationBanner(
                         translation = translation,
                         onDismiss = { vm.dismissTranslation() }
                     )
 
                     Column(Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
-                        // Подсказка для новых пользователей
-                        if (!translation.visible) {
-                            Row(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(Color(0xFFEDE7F6))
-                                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text("💡", fontSize = 14.sp)
-                                Spacer(Modifier.width(6.dp))
-                                Text(
-                                    "Нажмите на слово для перевода",
-                                    fontSize = 12.sp,
-                                    color = Color(0xFF6A1B9A)
-                                )
-                            }
-                            Spacer(Modifier.height(12.dp))
+
+                        // Подсказка
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0xFFEDE7F6))
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("💡", fontSize = 14.sp)
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                "Нажмите на слово или выделите текст — увидите перевод",
+                                fontSize = 12.sp,
+                                color = Color(0xFF6A1B9A)
+                            )
                         }
 
-                        // Карточка с текстом
+                        Spacer(Modifier.height(12.dp))
+
+                        // Карточка с текстом (без скролла внутри)
                         Card(
                             shape = RoundedCornerShape(20.dp),
                             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -308,12 +311,14 @@ fun LibroReadScreen(
                                     )
                                 }
                                 Spacer(Modifier.height(14.dp))
-                                TranslatableText(
+
+                                // Текст с нативным выделением и тапом
+                                SelectableStoryText(
                                     text = libro.text.trim(),
-                                    onWordTap = { word, sentence ->
+                                    onWordSelected = { word, sentence ->
                                         vm.lookupWord(word, sentence)
                                     },
-                                    onEmptyTap = { vm.dismissTranslation() }
+                                    onDismiss = { vm.dismissTranslation() }
                                 )
                             }
                         }
@@ -322,7 +327,8 @@ fun LibroReadScreen(
 
                         // Тема
                         Row(
-                            Modifier.fillMaxWidth()
+                            Modifier
+                                .fillMaxWidth()
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(levelColor.copy(alpha = 0.08f))
                                 .padding(12.dp)
@@ -333,7 +339,6 @@ fun LibroReadScreen(
 
                         Spacer(Modifier.height(16.dp))
 
-                        // Подсказка
                         Text(
                             "Прочитайте рассказ внимательно — затем ответьте на ${libro.questions.size} вопроса. " +
                             "Для зачёта нужно ${LibrosData.PASS_CORRECT} из ${libro.questions.size} правильных ответов.",
@@ -367,7 +372,6 @@ fun LibroReadScreen(
 
                 Column(Modifier.fillMaxSize().padding(padding).padding(20.dp)) {
 
-                    // Прогресс
                     Text(
                         "Вопрос ${s.qIndex + 1} из $totalQ",
                         fontSize = 13.sp,
@@ -383,7 +387,6 @@ fun LibroReadScreen(
 
                     Spacer(Modifier.height(24.dp))
 
-                    // Карточка вопроса
                     Card(
                         shape = RoundedCornerShape(18.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -399,12 +402,11 @@ fun LibroReadScreen(
 
                     Spacer(Modifier.height(20.dp))
 
-                    // Варианты ответа A / B / C
                     val labels = listOf("A", "B", "C")
                     q.options.forEachIndexed { idx, option ->
                         val isSelected = selectedAnswer == idx
-                        val bgColor = if (isSelected) levelColor else Color.White
-                        val textColor = if (isSelected) Color.White else Color(0xFF1A1A1A)
+                        val bgColor    = if (isSelected) levelColor else Color.White
+                        val textColor  = if (isSelected) Color.White else Color(0xFF1A1A1A)
                         val borderColor = if (isSelected) levelColor else Color(0xFFE0E0E0)
 
                         Row(
@@ -429,8 +431,12 @@ fun LibroReadScreen(
                                     .background(if (isSelected) Color.White.copy(alpha = 0.25f) else levelColor.copy(alpha = 0.1f)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(labels[idx], fontWeight = FontWeight.Bold, fontSize = 13.sp,
-                                    color = if (isSelected) Color.White else levelColor)
+                                Text(
+                                    labels[idx],
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 13.sp,
+                                    color = if (isSelected) Color.White else levelColor
+                                )
                             }
                             Spacer(Modifier.width(12.dp))
                             Text(option, fontSize = 15.sp, color = textColor)
@@ -439,7 +445,6 @@ fun LibroReadScreen(
 
                     Spacer(Modifier.weight(1f))
 
-                    // Кнопки навигации по вопросам
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         if (s.qIndex > 0) {
                             OutlinedButton(
