@@ -4,18 +4,13 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -76,13 +71,11 @@ private fun extractSentenceAt(text: String, offset: Int): String {
 private fun TranslatableText(
     text: String,
     modifier: Modifier = Modifier,
-    onLongPress: (word: String, sentence: String) -> Unit,
-    onTap: () -> Unit = {}
+    onWordTap: (word: String, sentence: String) -> Unit,
+    onEmptyTap: () -> Unit = {}
 ) {
     var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
     var highlightRange by remember { mutableStateOf<IntRange?>(null) }
-    // Отдельный скоуп для таймера — не зависит от жестов скролла
-    val scope = rememberCoroutineScope()
 
     val annotated = remember(text, highlightRange) {
         buildAnnotatedString {
@@ -105,35 +98,18 @@ private fun TranslatableText(
         fontSize = 17.sp,
         lineHeight = 26.sp,
         color = Color(0xFF1A1A1A),
-        modifier = modifier.pointerInput(text) {
-            awaitEachGesture {
-                val down = awaitFirstDown(requireUnconsumed = false)
-                val pressPos = down.position
-                var longPressTriggered = false
-
-                // Таймер long press в независимом корутине (500 мс = стандарт Android)
-                val job: Job = scope.launch {
-                    delay(500L)
-                    longPressTriggered = true
-                    layoutResult?.let { layout ->
-                        val charPos = layout.getOffsetForPosition(pressPos)
-                        val (word, range) = extractWordWithRange(text, charPos)
-                        val sentence = extractSentenceAt(text, charPos)
-                        if (word.isNotEmpty()) {
-                            highlightRange = range
-                            onLongPress(word, sentence)
-                        }
-                    }
-                }
-
-                // Ждём подъёма пальца
-                val up = waitForUpOrCancellation()
-                job.cancel()
-
-                // Tap — только если long press не сработал
-                if (up != null && !longPressTriggered) {
+        modifier = modifier.pointerInput(Unit) {
+            detectTapGestures { offset ->
+                val layout = layoutResult ?: return@detectTapGestures
+                val charPos = layout.getOffsetForPosition(offset)
+                val (word, range) = extractWordWithRange(text, charPos)
+                if (word.isNotEmpty()) {
+                    highlightRange = range
+                    val sentence = extractSentenceAt(text, charPos)
+                    onWordTap(word, sentence)
+                } else {
                     highlightRange = null
-                    onTap()
+                    onEmptyTap()
                 }
             }
         },
@@ -306,7 +282,7 @@ fun LibroReadScreen(
                                 Text("💡", fontSize = 14.sp)
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    "Удержите слово для перевода",
+                                    "Нажмите на слово для перевода",
                                     fontSize = 12.sp,
                                     color = Color(0xFF6A1B9A)
                                 )
@@ -334,10 +310,10 @@ fun LibroReadScreen(
                                 Spacer(Modifier.height(14.dp))
                                 TranslatableText(
                                     text = libro.text.trim(),
-                                    onLongPress = { word, sentence ->
+                                    onWordTap = { word, sentence ->
                                         vm.lookupWord(word, sentence)
                                     },
-                                    onTap = { vm.dismissTranslation() }
+                                    onEmptyTap = { vm.dismissTranslation() }
                                 )
                             }
                         }
