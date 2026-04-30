@@ -32,9 +32,42 @@ fun LessonContentScreen(
     val lesson  = remember(unit, lessonIndex) { unit?.lessons?.getOrNull(lessonIndex) }
     val content = LessonContentData.lessons[lessonKey]
 
-    // Если нет статичного контента — идём назад (не должно случиться при правильном роутинге)
-    if (content == null || unit == null || lesson == null) {
-        navController.popBackStack()
+    if (unit == null || lesson == null) {
+        LaunchedEffect(Unit) { navController.popBackStack() }
+        return
+    }
+
+    if (content == null) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(lesson.title, fontSize = 16.sp, fontWeight = FontWeight.Bold) },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                        }
+                    }
+                )
+            }
+        ) { padding ->
+            Box(
+                Modifier.fillMaxSize().padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("🚧", fontSize = 48.sp)
+                    Spacer(Modifier.height(12.dp))
+                    Text("Урок в разработке", fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(6.dp))
+                    Text("Скоро здесь появится теория!", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(Modifier.height(24.dp))
+                    Button(onClick = {
+                        viewModel.markLessonComplete(unitId, lessonIndex)
+                        navController.popBackStack()
+                    }) { Text("Отметить как пройденный") }
+                }
+            }
+        }
         return
     }
 

@@ -58,7 +58,7 @@ class DictionaryViewModel @Inject constructor(
     private val _allWords: StateFlow<List<WordEntity>> = _query
         .debounce(200)
         .flatMapLatest { q ->
-            if (q.length >= 2) wDao.search(q) else wDao.getAllWords(limit = 8000)
+            if (q.length >= 2) wDao.search(q) else wDao.getAllWords()
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
