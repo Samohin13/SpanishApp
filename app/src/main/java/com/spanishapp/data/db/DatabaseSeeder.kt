@@ -22,8 +22,8 @@ class DatabaseSeeder @Inject constructor(
     private val achievementManager: AchievementManager
 ) {
     companion object {
-        // Порог для досева. Поднят до 9500 (все VocabExpansion 1-13).
-        const val VOCAB_TARGET = 9500
+        // Порог для досева. Поднят до 11000 (все VocabExpansion 1-13 + Slang).
+        const val VOCAB_TARGET = 11000
 
         // ── Полностью неправильные глаголы ────────────────────
         val IRREGULAR_VERBS = setOf(
@@ -140,6 +140,7 @@ class DatabaseSeeder @Inject constructor(
         words += VocabExpansion11.entries
         words += VocabExpansion12.entries
         words += VocabExpansion13.entries
+        words += SlangVocab18.entries
 
         // Дедупликация по испанскому слову (сохраняем первое вхождение)
         val unique = words.distinctBy { it.spanish.trim().lowercase() }
