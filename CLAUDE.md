@@ -2,43 +2,42 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-04-29, сессия 6 (Crucigrama — полный рефактор)**
+> Последнее обновление: **2026-04-30, сессия 7 (Libros + перевод по зажатию)**
 
 ---
 
 ## 0. Быстрое резюме «где мы остановились»
 
-**Последний коммит: `830327a` — ветка `master` + `SaveGitHub`**
+**Последний коммит: `c6c8c72` — ветка `master`**
 
 **Что работает прямо сейчас (всё закоммичено):**
-- **Crucigrama** — полностью переработана:
-  - 100 уровней из словаря (детерминированные, уникальные, seed = level × 31337)
-  - Скользящее окно STEP=200/WINDOW=300 — соседние уровни не повторяются
-  - Сетка 12–17 клеток в зависимости от уровня
-  - Пинч-зум (graphicsLayer, без деформации) + пан, автоподбор масштаба
-  - Правила игры (кнопка ?) с описанием всех механик
-  - Подсказка по акцентированным буквам (Á, É, Ñ...)
-  - 16 unit-тестов (CrosswordTest.kt), CrosswordValidator
-  - Исправлен staticFallback (PATO/PLAYA/AMOR/OTRO, все пересечения верны)
+- **Crucigrama** — 100 уровней, зум, pan, тесты (CrosswordTest.kt)
 - Приложение собирается, запускается на телефоне
-- Карточки: экран выбора сессии, флип-анимация, SM-2
-- Карусель категорий с иконками (бесконечный скролл)
-- Уровни A1/A2/B1/B2 с замками и прогресс-барами
-- Итоговый экран сессии — подбадривающий, без "ошибки/правильно"
+- Карточки (SM-2), карусель категорий, уровни A1–B2 с замками
 - **SettingsVoice**: 8 персонажей, ползунки, диагностический баннер
-- **ConjugationData3**: 86 новых глаголов (итого 160 × 6 времён в БД)
-- **AI Chat** включён в навигацию и доступен из HomeScreen (QuickActions → 🤖 ИИ-репетитор)
-- **Oliva palette**: зелёный primary, оранжевый accent, кремовый bg; OLED dark #0E0E0C
-- **Словарь 5000+ слов**: VocabExpansion1/2/3, дедупликация по `spanish`
-- **DictionaryScreen v2**: две вкладки (Все слова / Мои списки), пользовательские списки (до 20 × 150 слов), WordDetailSheet, AddToListSheet, CreateListDialog
-- **Room v2**: WordListEntity + WordListEntryEntity + MIGRATION_1_2
-- **Listening game 🎧**: 1089 предложений с реальными аудиозаписями носителей языка (Tatoeba), игра "вставь пропущенное слово", автовоспроизведение + кнопка повтора
+- **AI Chat** включён в навигацию
+- **Словарь 5000+ слов** + DictionaryScreen v2 (вкладки, пользовательские списки)
+- **Room version = 7**, миграции 1→7 все прописаны
+- **Listening game 🎧**: 1089 предложений Tatoeba
+- **Libros 📚** — 8-я игра, полностью реализована:
+  - 25 рассказов уровня A1 (LibrosData.kt), 4 вопроса на каждый
+  - Фильтр по уровню (A1/A2/B1/B2), карточки с DifficultyDots
+  - Экран чтения → тест (3/4 для зачёта) → результат
+  - Room-таблица `libro_progress` (версия 7, MIGRATION_6_7)
+  - **Перевод по зажатию**: зажать слово → снизу выезжает тёмный бокс с переводом + словами предложения
+  - Unit-тесты: LibroTextHelpersTest (20 тестов, 0 ошибок)
+- **Домашний экран**: 60 микро-уроков A1, 4 блока × 15 уроков
+  - Блок 1 «Взлёт» (фиолетовый), Блок 2 «Мой мир» (бирюзовый)
+  - Блок 3 «Действие» (зелёный), Блок 4 «Выживание» (оранжевый)
+  - LessonContentData полностью переписан (ключи u1_l0 … u4_l13)
+  - Placeholder 🚧 для уроков без контента (кнопка «Отметить как пройденный»)
 
 **Следующие задачи (roadmap):**
 1. **Streak / Home**: счётчик серии на главном экране
 2. **Word of Day**: слово дня с озвучкой на HomeScreen
 3. **WeakWords**: экран слабых слов (данные уже в DAO)
 4. **AI Chat**: живой экран чата с Claude
+5. **Libros A2/B1/B2**: добавить рассказы 26–100 (сейчас только 25 × A1)
 
 ---
 
@@ -252,6 +251,11 @@ android.enableJetifier=true
 9. ✅ **Navigation.kt существовал в двух местах** (`java/Navigation.kt` и `ui/Navigation.kt`) — активный путь `ui/Navigation.kt`. Переименование завершено коммитом 78ebfb3.
 10. ✅ **seedIfNeeded() не вызывался** — добавлен вызов в `SpanishApp.onCreate()` (в последнем незакоммиченном коде на момент паузы)
 11. ✅ **Radio-кнопки направления нельзя было нажать целиком** — исправлено `Modifier.clickable` на всю Surface
+12. ✅ **TextSelectionColors / LocalTextSelectionColors** — НЕ из `material3.*`, импорт должен быть явным или не использовать вовсе
+13. ✅ **detectTapGestures(onLongPress) внутри verticalScroll** — не работает, скролл забирает жест. Решение: убрать verticalScroll с родителя
+14. ✅ **TranslationBanner внутри verticalScroll** — уходит за экран при прокрутке. Решение: Box-оверлей с Alignment.BottomCenter (или TopCenter)
+15. ✅ **BasicTextField(readOnly=true)** — первый тап даёт фокус без onValueChange, перевод требует второго тапа. Не использовать для перевода
+16. ✅ **scope.launch внутри pointerInput** — краши при recomposition. Использовать только detectTapGestures без сторонних корутин
 
 ## 12. История коммитов (GitHub: Samohin13/SpanishApp)
 
@@ -269,6 +273,12 @@ android.enableJetifier=true
 | 5175600 | SaveGitHub | Expand dictionary to 5100+ words: add 3 vocab packs |
 | 9af0e6f | SaveGitHub/master | Dictionary: custom word lists + word detail cards + dedup |
 | 52c60e2 | SaveGitHub/master | Add Listening game: 1089 Tatoeba sentences + native audio (12.6 MB) |
+| 8a8eacb | master | Redesign Flashcards screen to match Figma |
+| d742d6b | master | Full redesign: light theme + purple accent (Figma style) |
+| (сессия 7) | master | 60-lesson A1 catalog: 4 blocks × 15 micro-lessons |
+| (сессия 7) | master | Libros game: 25 A1 stories + quiz + Room progress |
+| 0dc2c39 | master | Fix Libros word translation: overlay banner + verified tap detection |
+| c6c8c72 | master | Libros: long-press → bottom translation box (no scroll conflict) |
 
 ### Ветки на GitHub
 - **master** — основная, тут работаем
@@ -277,15 +287,14 @@ android.enableJetifier=true
 ## 13. Следующие шаги (roadmap)
 
 ### Immediate (следующая сессия)
-1. **Закоммитить и пушить** фиксы seeder + clickable (в процессе на момент паузы)
-2. Пользователь делает `Git → Update Project` → Rebuild → удалить-переустановить приложение
-3. Проверить: карточки показываются, слова появляются, TTS озвучивает
+1. Проверить что Libros перевод по зажатию работает на телефоне (последний коммит c6c8c72)
+2. **Streak на HomeScreen** — счётчик дней подряд
+3. **Word of Day** — слово дня на HomeScreen с озвучкой
 
-### Коммит 2 — настройки голоса
-1. Добавить `VoicePreferences` через DataStore (gender: MALE/FEMALE, rate: 0.6..1.2, pitch: 0.8..1.2)
-2. Создать `SettingsVoiceScreen` — отдельный экран с радио-кнопками пола, слайдерами скорости и тона, превью
-3. Расширить `SpanishTts` — чтение настроек + подбор голоса через `tts.voices` + фильтрацию по `Locale("es")` и имени голоса (`*male*`/`*female*`)
-4. Навигация: добавить route `settings_voice`, подключить в SettingsScreen (или временно из HomeScreen)
+### Средний приоритет
+1. **Libros A2/B1/B2** — добавить рассказы 26–100 в LibrosData.kt (сейчас 25 × A1)
+2. **WeakWords** — экран слабых слов (DAO уже готов)
+3. **AI Chat** — живой экран чата с Claude (репозиторий готов)
 
 ### Коммит 3 — базовые заглушечные экраны в живые
 Порядок по ценности для пользователя:
@@ -322,9 +331,27 @@ android.enableJetifier=true
 ## 15. Как возобновить работу после паузы
 
 1. **Прочитать этот CLAUDE.md целиком** — тут весь контекст
-2. Проверить статус: `git log --oneline -5` — последний коммит `24e8782`
-3. Спросить пользователя результат проверки голосов (баннер в SettingsVoice)
-4. Следующая задача по roadmap — Streak на HomeScreen
+2. Проверить статус: `git log --oneline -5` — последний коммит `c6c8c72`
+3. Следующая задача — **Streak на HomeScreen** (или Libros A2/B1/B2 рассказы)
+
+### Ключевые файлы Libros (сессия 7)
+| Файл | Что делает |
+|---|---|
+| `ui/games/LibrosData.kt` | 25 рассказов A1, `PASS_CORRECT=3`, `getById()`, `getByLevel()` |
+| `ui/games/LibrosScreen.kt` | Список рассказов: фильтр по уровню, карточки с DifficultyDots |
+| `ui/games/LibroReadScreen.kt` | Чтение → тест → результат; зажатие слова → перевод снизу |
+| `ui/games/LibrosViewModel.kt` | `lookupWord()` — ищет слово + слова предложения в WordDao |
+| `data/db/entity/Entities.kt` | `LibroProgressEntity` (libro_progress) |
+| `data/db/dao/Daos.kt` | `LibroProgressDao` |
+| `data/db/AppDatabase.kt` | version=7, MIGRATION_6_7 |
+| `test/.../LibroTextHelpersTest.kt` | 20 unit-тестов для extractWordAt / extractSentenceAt |
+
+### Важные технические решения Libros (чтобы не повторять ошибки)
+- **`detectTapGestures(onLongPress)` конфликтует с `verticalScroll`** — решение: убрать `verticalScroll` с внешнего Column, оставить только внутри текстовой карточки
+- **Бокс перевода должен быть Box-оверлеем** (`Alignment.BottomCenter`), а НЕ внутри скролла
+- **`BasicTextField(readOnly=true)`** требует 2 тапа (первый — фокус) — не использовать для перевода
+- **`scope.launch` внутри `pointerInput`** — не использовать, вызывает краши при recomposition
+- **`withTimeoutOrNull` внутри `awaitEachGesture`** — ненадёжно, `verticalScroll` отменяет через cancel
 
 ### Ключевые файлы SettingsVoice (сессия 2)
 | Файл | Что делает |
