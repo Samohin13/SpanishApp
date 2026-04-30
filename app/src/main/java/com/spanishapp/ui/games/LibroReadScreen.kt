@@ -4,23 +4,32 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 
 private val LibroGreen  = Color(0xFF43A047)
@@ -33,6 +42,171 @@ private sealed interface ReadState {
     data class Quiz(val qIndex: Int, val answers: List<Int?>) : ReadState
     data class Result(val correct: Int, val total: Int) : ReadState
 }
+
+// ── Вспомогательные функции ──────────────────────────────────
+
+private fun extractWordWithRange(text: String, offset: Int): Pair<String, IntRange> {
+    if (offset < 0 || offset >= text.length) return "" to 0..0
+    if (!text[offset].isLetter()) return "" to 0..0
+    var start = offset
+    var end = offset
+    while (start > 0 && text[start - 1].isLetter()) start--
+    while (end < text.length - 1 && text[end + 1].isLetter()) end++
+    return text.substring(start, end + 1) to start..end
+}
+
+private fun extractSentenceAt(text: String, offset: Int): String {
+    if (offset < 0 || offset >= text.length) return ""
+    val delimiters = setOf('.', '!', '?', '\n')
+    var start = offset
+    var end = offset
+    while (start > 0 && text[start - 1] !in delimiters) start--
+    while (end < text.length - 1 && text[end] !in delimiters) end++
+    return text.substring(start, end + 1).trim()
+}
+
+// ── TranslatableText ─────────────────────────────────────────
+
+@Composable
+private fun TranslatableText(
+    text: String,
+    modifier: Modifier = Modifier,
+    onLongPress: (word: String, sentence: String) -> Unit,
+    onTap: () -> Unit = {}
+) {
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+    var highlightRange by remember { mutableStateOf<IntRange?>(null) }
+
+    val annotated = remember(text, highlightRange) {
+        buildAnnotatedString {
+            append(text)
+            highlightRange?.let { r ->
+                addStyle(
+                    SpanStyle(
+                        background = Color(0xFFE3F2FD),
+                        color = Color(0xFF1565C0)
+                    ),
+                    r.first,
+                    minOf(r.last + 1, text.length)
+                )
+            }
+        }
+    }
+
+    Text(
+        text = annotated,
+        fontSize = 17.sp,
+        lineHeight = 26.sp,
+        color = Color(0xFF1A1A1A),
+        modifier = modifier.pointerInput(text) {
+            detectTapGestures(
+                onTap = {
+                    highlightRange = null
+                    onTap()
+                },
+                onLongPress = { offset ->
+                    layoutResult?.let { layout ->
+                        val charPos = layout.getOffsetForPosition(offset)
+                        val (word, range) = extractWordWithRange(text, charPos)
+                        val sentence = extractSentenceAt(text, charPos)
+                        if (word.isNotEmpty()) {
+                            highlightRange = range
+                            onLongPress(word, sentence)
+                        }
+                    }
+                }
+            )
+        },
+        onTextLayout = { layoutResult = it }
+    )
+}
+
+// ── TranslationBanner ────────────────────────────────────────
+
+@Composable
+private fun TranslationBanner(
+    translation: TranslationState,
+    onDismiss: () -> Unit
+) {
+    AnimatedVisibility(
+        visible = translation.visible,
+        enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+        exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut()
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A237E)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        ) {
+            Column(Modifier.padding(14.dp)) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Слово + перевод
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            translation.word,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
+                        if (translation.wordRu.isNotEmpty()) {
+                            Text(
+                                translation.wordRu,
+                                fontSize = 14.sp,
+                                color = Color(0xFFB0BEC5)
+                            )
+                        } else {
+                            Text(
+                                "не найдено в словаре",
+                                fontSize = 13.sp,
+                                color = Color(0xFF78909C)
+                            )
+                        }
+                    }
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.Close, null, tint = Color(0xFF90A4AE))
+                    }
+                }
+
+                // Слова предложения
+                if (translation.sentenceWords.isNotEmpty()) {
+                    Spacer(Modifier.height(10.dp))
+                    HorizontalDivider(color = Color(0xFF283593))
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Слова в предложении:",
+                        fontSize = 11.sp,
+                        color = Color(0xFF78909C),
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        items(translation.sentenceWords) { (es, ru) ->
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF283593))
+                                    .padding(horizontal = 8.dp, vertical = 5.dp)
+                            ) {
+                                Text(es, fontSize = 13.sp, color = Color.White, fontWeight = FontWeight.SemiBold)
+                                Text(ru, fontSize = 11.sp, color = Color(0xFFB0BEC5))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ── Главный экран ─────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +228,7 @@ fun LibroReadScreen(
     )[libro.level] ?: LibroPurple
 
     var state: ReadState by remember { mutableStateOf(ReadState.Reading) }
+    val translation by vm.translation.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -90,70 +265,100 @@ fun LibroReadScreen(
                 Column(
                     Modifier.fillMaxSize().padding(padding)
                         .verticalScroll(rememberScrollState())
-                        .padding(20.dp)
                 ) {
-                    // Карточка с текстом
-                    Card(
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Column(Modifier.padding(20.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("📖", fontSize = 22.sp)
-                                Spacer(Modifier.width(8.dp))
-                                Text(
-                                    "Читаем",
-                                    fontSize = 13.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            Spacer(Modifier.height(14.dp))
-                            Text(
-                                libro.text.trim(),
-                                fontSize = 17.sp,
-                                lineHeight = 26.sp,
-                                color = Color(0xFF1A1A1A)
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.height(16.dp))
-
-                    // Тема
-                    Row(
-                        Modifier.fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(levelColor.copy(alpha = 0.08f))
-                            .padding(12.dp)
-                    ) {
-                        Text("🏷️ Тема: ", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = levelColor)
-                        Text(libro.topic, fontSize = 13.sp, color = Color(0xFF555555))
-                    }
-
-                    Spacer(Modifier.height(16.dp))
-
-                    // Подсказка
-                    Text(
-                        "Прочитайте рассказ внимательно — затем ответьте на ${libro.questions.size} вопроса. " +
-                        "Для зачёта нужно ${LibrosData.PASS_CORRECT} из ${libro.questions.size} правильных ответов.",
-                        fontSize = 13.sp,
-                        color = Color(0xFF8E8E93),
-                        lineHeight = 20.sp
+                    // Баннер перевода (сверху, анимированный)
+                    TranslationBanner(
+                        translation = translation,
+                        onDismiss = { vm.dismissTranslation() }
                     )
 
-                    Spacer(Modifier.height(24.dp))
+                    Column(Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+                        // Подсказка для новых пользователей
+                        if (!translation.visible) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(Color(0xFFEDE7F6))
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("💡", fontSize = 14.sp)
+                                Spacer(Modifier.width(6.dp))
+                                Text(
+                                    "Удержите слово для перевода",
+                                    fontSize = 12.sp,
+                                    color = Color(0xFF6A1B9A)
+                                )
+                            }
+                            Spacer(Modifier.height(12.dp))
+                        }
 
-                    Button(
-                        onClick = {
-                            state = ReadState.Quiz(0, List(libro.questions.size) { null })
-                        },
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
-                        shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = levelColor)
-                    ) {
-                        Text("Начать тест →", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        // Карточка с текстом
+                        Card(
+                            shape = RoundedCornerShape(20.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(Modifier.padding(20.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text("📖", fontSize = 22.sp)
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(
+                                        "Читаем",
+                                        fontSize = 13.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                Spacer(Modifier.height(14.dp))
+                                TranslatableText(
+                                    text = libro.text.trim(),
+                                    onLongPress = { word, sentence ->
+                                        vm.lookupWord(word, sentence)
+                                    },
+                                    onTap = { vm.dismissTranslation() }
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(16.dp))
+
+                        // Тема
+                        Row(
+                            Modifier.fillMaxWidth()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(levelColor.copy(alpha = 0.08f))
+                                .padding(12.dp)
+                        ) {
+                            Text("🏷️ Тема: ", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = levelColor)
+                            Text(libro.topic, fontSize = 13.sp, color = Color(0xFF555555))
+                        }
+
+                        Spacer(Modifier.height(16.dp))
+
+                        // Подсказка
+                        Text(
+                            "Прочитайте рассказ внимательно — затем ответьте на ${libro.questions.size} вопроса. " +
+                            "Для зачёта нужно ${LibrosData.PASS_CORRECT} из ${libro.questions.size} правильных ответов.",
+                            fontSize = 13.sp,
+                            color = Color(0xFF8E8E93),
+                            lineHeight = 20.sp
+                        )
+
+                        Spacer(Modifier.height(24.dp))
+
+                        Button(
+                            onClick = {
+                                vm.dismissTranslation()
+                                state = ReadState.Quiz(0, List(libro.questions.size) { null })
+                            },
+                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = levelColor)
+                        ) {
+                            Text("Начать тест →", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             }
@@ -254,7 +459,6 @@ fun LibroReadScreen(
                         Button(
                             onClick = {
                                 if (isLast) {
-                                    // Подсчёт результата
                                     val correct = s.answers.zip(libro.questions)
                                         .count { (ans, q) -> ans == q.correctIndex }
                                     vm.saveResult(libro.id, correct, totalQ)
@@ -301,17 +505,6 @@ fun LibroReadScreen(
                     )
                     Spacer(Modifier.height(8.dp))
 
-                    // Подробный разбор
-                    libro.questions.forEachIndexed { idx, q ->
-                        val userAns = when (val st = state) {
-                            is ReadState.Result -> {
-                                // answers были в Quiz — не доступны здесь, используем ✓/✗ без деталей
-                                null
-                            }
-                            else -> null
-                        }
-                    }
-
                     if (passed) {
                         Box(
                             Modifier.clip(RoundedCornerShape(12.dp))
@@ -354,9 +547,7 @@ fun LibroReadScreen(
                     if (!passed) {
                         Spacer(Modifier.height(12.dp))
                         OutlinedButton(
-                            onClick = {
-                                state = ReadState.Reading
-                            },
+                            onClick = { state = ReadState.Reading },
                             modifier = Modifier.fillMaxWidth().height(50.dp),
                             shape = RoundedCornerShape(14.dp)
                         ) { Text("Перечитать рассказ") }
