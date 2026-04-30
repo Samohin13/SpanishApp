@@ -384,3 +384,15 @@ interface ArticleGameDao {
     @Query("SELECT COUNT(*) FROM article_words")
     suspend fun getWordCount(): Int
 }
+
+@Dao
+interface LibroProgressDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(progress: LibroProgressEntity)
+
+    @Query("SELECT * FROM libro_progress")
+    fun getAll(): Flow<List<LibroProgressEntity>>
+
+    @Query("SELECT * FROM libro_progress WHERE libro_id = :id")
+    suspend fun getById(id: Int): LibroProgressEntity?
+}

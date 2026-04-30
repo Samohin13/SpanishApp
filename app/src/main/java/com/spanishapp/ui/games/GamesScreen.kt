@@ -114,6 +114,16 @@ fun GamesScreen(navController: NavHostController) {
                 onClick = { navController.navigate("game_crossword") }
             )
         }
+
+        item {
+            GameCard(
+                title = "Libros",
+                description = "Адаптированные рассказы с тестами по уровням",
+                icon = Icons.Default.MenuBook,
+                color = Color(0xFF7B2FBE),
+                onClick = { navController.navigate("game_libros") }
+            )
+        }
     }
 }
 

@@ -167,3 +167,12 @@ data class ArticleLevelProgressEntity(
     val isUnlocked: Boolean = false,
     @ColumnInfo(name = "best_score") val bestScore: Int = 0
 )
+
+// Прогресс чтения: какие рассказы из Libros прочитаны и с каким результатом
+@Entity(tableName = "libro_progress")
+data class LibroProgressEntity(
+    @PrimaryKey @ColumnInfo(name = "libro_id") val libroId: Int,
+    @ColumnInfo(name = "is_completed") val isCompleted: Boolean = false,
+    @ColumnInfo(name = "best_score") val bestScore: Int = 0,   // % правильных (0–100)
+    @ColumnInfo(name = "completed_at") val completedAt: Long = 0L
+)

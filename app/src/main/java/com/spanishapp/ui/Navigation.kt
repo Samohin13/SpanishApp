@@ -24,6 +24,8 @@ import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
 import com.spanishapp.ui.chat.AiChatScreen
 import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.games.*
+import com.spanishapp.ui.games.LibrosScreen
+import com.spanishapp.ui.games.LibroReadScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.games.*
@@ -68,6 +70,15 @@ object Navigation {
             composable("game_crossword") { CrosswordGameScreen(navController) }
             composable("game_sopa") { SopaGameScreen(navController) }
             composable("game_palabra") { PalabraMaestraScreen(navController) }
+            composable("game_libros") { LibrosScreen(navController) }
+            composable(
+                "libro/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("id") ?: 1
+                val vm: LibrosViewModel = hiltViewModel()
+                LibroReadScreen(navController, id, vm)
+            }
 
             composable(
                 "lesson_intro/{unitId}/{lessonIndex}",
