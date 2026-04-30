@@ -4,12 +4,12 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -20,10 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,9 +43,9 @@ private sealed interface ReadState {
     data class Result(val correct: Int, val total: Int) : ReadState
 }
 
-// ── Вспомогательные функции ──────────────────────────────────
+// ── Вспомогательные функции (покрыты тестами в LibroTextHelpersTest) ──
 
-private fun extractWordAt(text: String, offset: Int): String {
+internal fun extractWordAt(text: String, offset: Int): String {
     if (offset < 0 || offset >= text.length || !text[offset].isLetter()) return ""
     var start = offset
     var end = offset
@@ -53,7 +54,7 @@ private fun extractWordAt(text: String, offset: Int): String {
     return text.substring(start, end + 1)
 }
 
-private fun extractSentenceAt(text: String, offset: Int): String {
+internal fun extractSentenceAt(text: String, offset: Int): String {
     if (offset < 0 || offset >= text.length) return ""
     val delimiters = setOf('.', '!', '?', '\n')
     var start = offset
@@ -63,82 +64,89 @@ private fun extractSentenceAt(text: String, offset: Int): String {
     return text.substring(start, end + 1).trim()
 }
 
-// ── SelectableStoryText ───────────────────────────────────────
-// BasicTextField readOnly = нет клавиатуры, но работает
-// нативное выделение (long press + drag) и тап по слову.
-
-@Composable
-private fun SelectableStoryText(
-    text: String,
-    modifier: Modifier = Modifier,
-    onWordSelected: (word: String, sentence: String) -> Unit,
-    onDismiss: () -> Unit = {}
-) {
-    var tfValue by remember(text) { mutableStateOf(TextFieldValue(text)) }
-
-    val selectionColors = TextSelectionColors(
-        handleColor = Color(0xFF7B2FBE),
-        backgroundColor = Color(0xFFBBDEFB)
-    )
-
-    CompositionLocalProvider(LocalTextSelectionColors provides selectionColors) {
-        BasicTextField(
-            value = tfValue,
-            onValueChange = { new ->
-                // Блокируем изменение текста (только выделение)
-                tfValue = new.copy(text = text)
-                val sel = new.selection
-                val safeStart = sel.start.coerceIn(0, text.length)
-                val safeEnd   = sel.end.coerceIn(0, text.length)
-
-                if (sel.collapsed) {
-                    // Тап — ищем слово в позиции курсора
-                    val pos = safeStart.coerceAtMost(text.length - 1)
-                    val word = extractWordAt(text, pos)
-                    if (word.isNotEmpty()) {
-                        onWordSelected(word, extractSentenceAt(text, pos))
-                    } else {
-                        onDismiss()
-                    }
-                } else if (safeStart < safeEnd) {
-                    // Диапазон — переводим выделенное
-                    val selected = text.substring(safeStart, safeEnd).trim()
-                    if (selected.isNotBlank()) {
-                        onWordSelected(selected, selected)
-                    }
-                }
-            },
-            readOnly = true,
-            textStyle = TextStyle(
-                fontSize = 17.sp,
-                lineHeight = 26.sp,
-                color = Color(0xFF1A1A1A)
-            ),
-            cursorBrush = SolidColor(Color.Transparent),
-            modifier = modifier.fillMaxWidth()
-        )
-    }
+private fun wordRangeAt(text: String, offset: Int): IntRange? {
+    if (offset < 0 || offset >= text.length || !text[offset].isLetter()) return null
+    var start = offset
+    var end = offset
+    while (start > 0 && text[start - 1].isLetter()) start--
+    while (end < text.length - 1 && text[end + 1].isLetter()) end++
+    return start..end
 }
 
-// ── TranslationBanner ────────────────────────────────────────
+// ── TappableStoryText ─────────────────────────────────────────
+// detectTapGestures с ТОЛЬКО onTap (без onLongPress) работает внутри
+// verticalScroll: скролл активируется только при движении пальца, а не
+// при быстром нажатии. onLongPress добавлять нельзя — тогда жест
+// потребляет события и блокирует скролл.
+
+@Composable
+private fun TappableStoryText(
+    text: String,
+    highlightRange: IntRange?,
+    modifier: Modifier = Modifier,
+    onWordTap: (word: String, sentence: String) -> Unit,
+    onEmptyTap: () -> Unit
+) {
+    var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+    val annotated = remember(text, highlightRange) {
+        buildAnnotatedString {
+            append(text)
+            highlightRange?.let { r ->
+                addStyle(
+                    SpanStyle(background = Color(0xFFE3F2FD), color = Color(0xFF1565C0)),
+                    r.first,
+                    minOf(r.last + 1, text.length)
+                )
+            }
+        }
+    }
+
+    Text(
+        text = annotated,
+        fontSize = 17.sp,
+        lineHeight = 26.sp,
+        color = Color(0xFF1A1A1A),
+        modifier = modifier.pointerInput(text) {
+            detectTapGestures { offset ->                     // только onTap
+                val layout = layoutResult ?: return@detectTapGestures
+                val charPos = layout.getOffsetForPosition(offset)
+                    .coerceIn(0, maxOf(0, text.length - 1))
+                val word = extractWordAt(text, charPos)
+                if (word.isNotEmpty()) {
+                    onWordTap(word, extractSentenceAt(text, charPos))
+                } else {
+                    onEmptyTap()
+                }
+            }
+        },
+        onTextLayout = { layoutResult = it }
+    )
+}
+
+// ── TranslationBanner ─────────────────────────────────────────
+// Баннер — оверлей поверх контента (Box.align = TopCenter).
+// НЕ внутри Column+verticalScroll, поэтому всегда виден на экране.
 
 @Composable
 private fun TranslationBanner(
     translation: TranslationState,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     AnimatedVisibility(
         visible = translation.visible,
+        modifier = modifier,
         enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
-        exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut()
+        exit  = slideOutVertically(targetOffsetY  = { -it }) + fadeOut()
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 12.dp, vertical = 6.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFF1A237E)),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Column(Modifier.padding(14.dp)) {
                 Row(
@@ -154,17 +162,9 @@ private fun TranslationBanner(
                             color = Color.White
                         )
                         if (translation.wordRu.isNotEmpty()) {
-                            Text(
-                                translation.wordRu,
-                                fontSize = 14.sp,
-                                color = Color(0xFFB0BEC5)
-                            )
+                            Text(translation.wordRu, fontSize = 14.sp, color = Color(0xFFB0BEC5))
                         } else {
-                            Text(
-                                "не найдено в словаре",
-                                fontSize = 13.sp,
-                                color = Color(0xFF78909C)
-                            )
+                            Text("не найдено в словаре", fontSize = 13.sp, color = Color(0xFF78909C))
                         }
                     }
                     IconButton(onClick = onDismiss) {
@@ -227,6 +227,10 @@ fun LibroReadScreen(
     var state: ReadState by remember { mutableStateOf(ReadState.Reading) }
     val translation by vm.translation.collectAsStateWithLifecycle()
 
+    // Диапазон подсвеченного слова — сбрасывается при закрытии баннера
+    var highlightRange by remember { mutableStateOf<IntRange?>(null) }
+    if (!translation.visible) highlightRange = null
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -259,19 +263,26 @@ fun LibroReadScreen(
 
             // ── Режим чтения ─────────────────────────────────
             is ReadState.Reading -> {
-                Column(
-                    Modifier
+                // Box позволяет баннеру лежать поверх скроллируемого контента
+                Box(
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(padding)
-                        .verticalScroll(rememberScrollState())
                 ) {
-                    // Баннер перевода
-                    TranslationBanner(
-                        translation = translation,
-                        onDismiss = { vm.dismissTranslation() }
-                    )
-
-                    Column(Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+                    // Скроллируемый контент
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 20.dp)
+                    ) {
+                        // Резервируем место под баннер когда он виден
+                        AnimatedVisibility(visible = translation.visible) {
+                            Spacer(Modifier.height(110.dp))
+                        }
+                        if (!translation.visible) {
+                            Spacer(Modifier.height(12.dp))
+                        }
 
                         // Подсказка
                         Row(
@@ -285,7 +296,7 @@ fun LibroReadScreen(
                             Text("💡", fontSize = 14.sp)
                             Spacer(Modifier.width(6.dp))
                             Text(
-                                "Нажмите на слово или выделите текст — увидите перевод",
+                                "Нажмите на слово, чтобы увидеть перевод",
                                 fontSize = 12.sp,
                                 color = Color(0xFF6A1B9A)
                             )
@@ -293,7 +304,7 @@ fun LibroReadScreen(
 
                         Spacer(Modifier.height(12.dp))
 
-                        // Карточка с текстом (без скролла внутри)
+                        // Карточка с текстом (без внутреннего скролла)
                         Card(
                             shape = RoundedCornerShape(20.dp),
                             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -311,14 +322,19 @@ fun LibroReadScreen(
                                     )
                                 }
                                 Spacer(Modifier.height(14.dp))
-
-                                // Текст с нативным выделением и тапом
-                                SelectableStoryText(
+                                TappableStoryText(
                                     text = libro.text.trim(),
-                                    onWordSelected = { word, sentence ->
+                                    highlightRange = highlightRange,
+                                    onWordTap = { word, sentence ->
+                                        highlightRange = wordRangeAt(libro.text.trim(),
+                                            libro.text.trim().indexOf(word)
+                                                .coerceAtLeast(0))
                                         vm.lookupWord(word, sentence)
                                     },
-                                    onDismiss = { vm.dismissTranslation() }
+                                    onEmptyTap = {
+                                        highlightRange = null
+                                        vm.dismissTranslation()
+                                    }
                                 )
                             }
                         }
@@ -351,6 +367,7 @@ fun LibroReadScreen(
 
                         Button(
                             onClick = {
+                                highlightRange = null
                                 vm.dismissTranslation()
                                 state = ReadState.Quiz(0, List(libro.questions.size) { null })
                             },
@@ -360,7 +377,19 @@ fun LibroReadScreen(
                         ) {
                             Text("Начать тест →", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
+
+                        Spacer(Modifier.height(24.dp))
                     }
+
+                    // Баннер — поверх контента, всегда прикреплён к верху экрана
+                    TranslationBanner(
+                        translation = translation,
+                        onDismiss = {
+                            highlightRange = null
+                            vm.dismissTranslation()
+                        },
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
                 }
             }
 
@@ -404,10 +433,10 @@ fun LibroReadScreen(
 
                     val labels = listOf("A", "B", "C")
                     q.options.forEachIndexed { idx, option ->
-                        val isSelected = selectedAnswer == idx
-                        val bgColor    = if (isSelected) levelColor else Color.White
-                        val textColor  = if (isSelected) Color.White else Color(0xFF1A1A1A)
-                        val borderColor = if (isSelected) levelColor else Color(0xFFE0E0E0)
+                        val isSelected   = selectedAnswer == idx
+                        val bgColor      = if (isSelected) levelColor else Color.White
+                        val textColor    = if (isSelected) Color.White else Color(0xFF1A1A1A)
+                        val borderColor  = if (isSelected) levelColor else Color(0xFFE0E0E0)
 
                         Row(
                             modifier = Modifier
@@ -454,7 +483,7 @@ fun LibroReadScreen(
                             ) { Text("← Назад") }
                         }
 
-                        val isLast = s.qIndex == totalQ - 1
+                        val isLast    = s.qIndex == totalQ - 1
                         val canProceed = selectedAnswer != null
 
                         Button(
@@ -482,7 +511,7 @@ fun LibroReadScreen(
             // ── Экран результата ─────────────────────────────
             is ReadState.Result -> {
                 val passed = s.correct >= LibrosData.PASS_CORRECT
-                val pct = s.correct * 100 / s.total
+                val pct    = s.correct * 100 / s.total
 
                 Column(
                     modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp),
