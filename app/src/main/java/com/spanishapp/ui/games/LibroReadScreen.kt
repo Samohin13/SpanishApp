@@ -13,7 +13,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -79,6 +81,8 @@ private fun TranslatableText(
 ) {
     var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
     var highlightRange by remember { mutableStateOf<IntRange?>(null) }
+    // Отдельный скоуп для таймера — не зависит от жестов скролла
+    val scope = rememberCoroutineScope()
 
     val annotated = remember(text, highlightRange) {
         buildAnnotatedString {
@@ -104,14 +108,15 @@ private fun TranslatableText(
         modifier = modifier.pointerInput(text) {
             awaitEachGesture {
                 val down = awaitFirstDown(requireUnconsumed = false)
-                val longPressMs = viewConfiguration.longPressTimeoutMillis
-                val up = withTimeoutOrNull(longPressMs) {
-                    waitForUpOrCancellation()
-                }
-                if (up == null) {
-                    // Long press — ищем слово под пальцем
+                val pressPos = down.position
+                var longPressTriggered = false
+
+                // Таймер long press в независимом корутине (500 мс = стандарт Android)
+                val job: Job = scope.launch {
+                    delay(500L)
+                    longPressTriggered = true
                     layoutResult?.let { layout ->
-                        val charPos = layout.getOffsetForPosition(down.position)
+                        val charPos = layout.getOffsetForPosition(pressPos)
                         val (word, range) = extractWordWithRange(text, charPos)
                         val sentence = extractSentenceAt(text, charPos)
                         if (word.isNotEmpty()) {
@@ -119,12 +124,14 @@ private fun TranslatableText(
                             onLongPress(word, sentence)
                         }
                     }
-                    // Дожидаемся отпускания пальца
-                    do {
-                        val event = awaitPointerEvent()
-                    } while (event.changes.any { it.pressed })
-                } else {
-                    // Tap — убираем подсветку
+                }
+
+                // Ждём подъёма пальца
+                val up = waitForUpOrCancellation()
+                job.cancel()
+
+                // Tap — только если long press не сработал
+                if (up != null && !longPressTriggered) {
                     highlightRange = null
                     onTap()
                 }
