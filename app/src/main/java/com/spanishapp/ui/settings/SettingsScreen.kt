@@ -36,6 +36,7 @@ import coil.request.ImageRequest
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -262,11 +263,11 @@ fun SettingsScreen(
                                 CropImageOptions(
                                     imageSourceIncludeGallery = true,
                                     imageSourceIncludeCamera = true,
-                                    guidelines = CropImageOptions.Guidelines.ON,
+                                    guidelines = CropImageView.Guidelines.ON,
                                     aspectRatioX = 1,
                                     aspectRatioY = 1,
                                     fixAspectRatio = true,
-                                    cropShape = CropImageOptions.CropShape.OVAL
+                                    cropShape = CropImageView.CropShape.OVAL
                                 )
                             )
                             cropImageLauncher.launch(options)
