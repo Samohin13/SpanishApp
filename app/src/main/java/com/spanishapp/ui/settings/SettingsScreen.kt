@@ -156,6 +156,13 @@ fun SettingsScreen(
     val progress by vm.progress.collectAsStateWithLifecycle()
     val isPhotoLoading by vm.isPhotoLoading.collectAsStateWithLifecycle()
     val userPhotoUrl by vm.userPhotoUrl.collectAsStateWithLifecycle()
+    val reminders by vm.reminders.collectAsStateWithLifecycle()
+    val soundEffects by vm.soundEffects.collectAsStateWithLifecycle()
+    val ttsEnabled by vm.ttsEnabled.collectAsStateWithLifecycle()
+    val bgMusic by vm.bgMusic.collectAsStateWithLifecycle()
+    val vibration by vm.vibration.collectAsStateWithLifecycle()
+    val themeMode by vm.themeMode.collectAsStateWithLifecycle()
+    val fontSize by vm.fontSize.collectAsStateWithLifecycle()
     
     val context = LocalContext.current
     
