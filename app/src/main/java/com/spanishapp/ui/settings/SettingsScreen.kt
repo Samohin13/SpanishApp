@@ -109,27 +109,42 @@ class SettingsViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // 1. Сжатие (JPEG, 80% качество)
+                // 1. Сжатие
                 val baos = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
                 val data = baos.toByteArray()
 
-                // 2. Загрузка в Firebase Storage
+                // 2. Ссылка на файл
                 val storageRef = storage.reference.child("avatars/${currentUser.uid}.jpg")
-                storageRef.putBytes(data).await()
                 
-                // 3. Получение URL и сохранение локально
-                val downloadUrl = storageRef.downloadUrl.await().toString()
-                authRepository.setUserPhotoUrl(downloadUrl)
+                // 3. Загрузка с проверкой
+                val uploadTask = storageRef.putBytes(data).await()
                 
-                // 4. Обновление в Firestore для синхронизации профиля
-                db.collection("users")
-                    .document(currentUser.uid)
-                    .update("photoUrl", downloadUrl)
-                    .await()
+                if (uploadTask.metadata != null) {
+                    // 4. Получение URL только после успешной загрузки
+                    val downloadUrl = storageRef.downloadUrl.await().toString()
+                    
+                    // 5. Сохранение локально
+                    authRepository.setUserPhotoUrl(downloadUrl)
+                    
+                    // 6. Попытка обновления в Firestore (может не пройти, если API выключен)
+                    try {
+                        db.collection("users")
+                            .document(currentUser.uid)
+                            .set(mapOf("photoUrl" to downloadUrl), com.google.firebase.firestore.SetOptions.merge())
+                            .await()
+                    } catch (e: Exception) {
+                        android.util.Log.e("SettingsVM", "Firestore sync failed: ${e.message}")
+                        // Не блокируем пользователя, если Firestore не настроен, 
+                        // так как локально URL уже сохранен
+                    }
+                } else {
+                    _errorEvent.emit("Загрузка прервана сервером")
+                }
 
             } catch (e: Exception) {
-                _errorEvent.emit("Ошибка при загрузке фото: ${e.localizedMessage}")
+                android.util.Log.e("SettingsVM", "Upload error", e)
+                _errorEvent.emit("Ошибка: ${e.localizedMessage}")
             } finally {
                 _isPhotoLoading.value = false
             }
