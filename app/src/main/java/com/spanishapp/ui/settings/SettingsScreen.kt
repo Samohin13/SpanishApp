@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.spanishapp.ui.settings
 
 import android.Manifest
@@ -213,11 +214,11 @@ fun SettingsScreen(
 
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
-            cropImageLauncher.launch(CropImageContractOptions(null, CropImageOptions(
-                imageSourceIncludeGallery = true, imageSourceIncludeCamera = true,
-                guidelines = CropImageView.Guidelines.ON, aspectRatioX = 1, aspectRatioY = 1,
-                fixAspectRatio = true, cropShape = CropImageView.CropShape.OVAL
-            )))
+                cropImageLauncher.launch(CropImageContractOptions(null, CropImageOptions(
+                    imageSourceIncludeGallery = true, imageSourceIncludeCamera = true,
+                    guidelines = CropImageView.Guidelines.ON, aspectRatioX = 1, aspectRatioY = 1,
+                    fixAspectRatio = true, cropShape = CropImageView.CropShape.OVAL
+                )))
         } else {
             Toast.makeText(context, "Разрешите доступ к камере в настройках", Toast.LENGTH_SHORT).show()
         }
@@ -348,7 +349,7 @@ fun SettingsScreen(
             }
 
             SettingsSection("Помощь и поддержка") {
-                SettingsItem(Icons.Default.HelpOutline, "Центр помощи") { /* Ссылка на FAQ или поддержку */ }
+                SettingsItem(Icons.AutoMirrored.Filled.HelpOutline, "Центр помощи") { /* Ссылка на FAQ или поддержку */ }
                 SettingsItem(Icons.Default.MailOutline, "Связаться с нами") { 
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("mailto:support@spanishapp.com")

@@ -203,14 +203,14 @@ object Navigation {
             composable("dialogues") { DialoguesScreen(navController) }
             composable(
                 "dialogue/{id}",
-                arguments = listOf(navArgument("id") { type = NavType.Companion.IntType })
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { Placeholder("Диалог") }
 
             // ── Грамматика ────────────────────────────────────
             composable("grammar") { GrammarScreen(navController) }
             composable(
                 "grammar/{id}",
-                arguments = listOf(navArgument("id") { type = NavType.Companion.IntType })
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { Placeholder("Урок грамматики") }
 
             // ── ИИ-чат ───────────────────────────────────────
@@ -229,6 +229,7 @@ object Navigation {
             composable("profile")      { ProfileScreen(navController) }
             composable("achievements") { AchievementsScreen(navController) }
             composable("settings")     { SettingsScreen(navController) }
+            composable("settings_voice") { Placeholder("Настройка голоса") }
 
             // ── Словарь ───────────────────────────────────────
             composable("dictionary")  { DictionaryScreen(navController) }
@@ -238,7 +239,7 @@ object Navigation {
 
     @Composable
     private fun Placeholder(name: String) {
-        Box(Modifier.Companion.fillMaxSize(), contentAlignment = Alignment.Companion.Center) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("🚧  $name", style = MaterialTheme.typography.titleMedium)
         }
     }

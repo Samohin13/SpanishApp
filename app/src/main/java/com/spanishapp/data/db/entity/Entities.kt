@@ -59,7 +59,10 @@ data class WordListEntity(
         ForeignKey(entity = WordListEntity::class, parentColumns = ["id"], childColumns = ["list_id"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = WordEntity::class,     parentColumns = ["id"], childColumns = ["word_id"], onDelete = ForeignKey.CASCADE)
     ],
-    indices = [Index(value = ["list_id", "word_id"], unique = true)]
+    indices = [
+        Index(value = ["list_id", "word_id"], unique = true),
+        Index(value = ["word_id"])
+    ]
 )
 data class WordListEntryEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,

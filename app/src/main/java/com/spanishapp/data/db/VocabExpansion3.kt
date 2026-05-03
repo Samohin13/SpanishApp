@@ -121,7 +121,7 @@ object VocabExpansion3 {
         w("la aspiradora",       "пылесос",              "Pasa la aspiradora cada semana.",       "A2", "casa"),
         w("el cubo de basura",   "мусорное ведро",       "Vacía el cubo de basura.",              "A1", "casa"),
         w("la escoba",           "метла",                "Barre con la escoba.",                  "A2", "casa"),
-        w("el fregona",          "швабра",               "Fregar el suelo con la fregona.",       "A2", "casa")
+        w("la fregona",          "швабра",               "Fregar el suelo con la fregona.",       "A2", "casa")
     )
 
     // ── COLORES ───────────────────────────────────────────────────
