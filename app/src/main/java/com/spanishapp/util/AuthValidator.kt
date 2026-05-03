@@ -30,4 +30,15 @@ object AuthValidator {
             else -> null
         }
     }
+
+    fun getNameError(name: String): String? {
+        val namePattern = "^[a-zA-Zа-яА-Я0-9\\s]{2,20}$".toRegex()
+        return when {
+            name.isBlank() -> "Имя не может быть пустым"
+            name.length < 2 -> "Слишком короткое имя"
+            name.length > 20 -> "Максимум 20 символов"
+            !name.matches(namePattern) -> "Используйте только буквы и цифры"
+            else -> null
+        }
+    }
 }

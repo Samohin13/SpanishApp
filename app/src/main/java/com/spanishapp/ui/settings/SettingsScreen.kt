@@ -43,12 +43,52 @@ import android.graphics.BitmapFactory
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 
+import com.spanishapp.util.AuthValidator
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val appPreferences: AppPreferences,
     private val authRepository: AuthRepository
 ) : ViewModel() {
+
+    private val storage = FirebaseStorage.getInstance()
+    private val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
+
+    private val _isPhotoLoading = MutableStateFlow(false)
+    val isPhotoLoading = _isPhotoLoading.asStateFlow()
+
+    private val _nameError = MutableStateFlow<String?>(null)
+    val nameError = _nameError.asStateFlow()
+
+    val userName = authRepository.userName.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "Estudiante")
+    val userPhotoUrl = authRepository.userPhotoUrl.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    fun updateName(name: String) {
+        val error = AuthValidator.getNameError(name)
+        if (error != null) {
+            _nameError.value = error
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                authRepository.setUserName(name)
+                // Firestore sync
+                auth.currentUser?.let { user ->
+                    db.collection("users").document(user.uid).update("name", name).await()
+                }
+                _nameError.value = null
+            } catch (e: Exception) {
+                _nameError.value = "Ошибка сохранения"
+            }
+        }
+    }
+
+    fun clearNameError() {
+        _nameError.value = null
+    }
 
     private val storage = FirebaseStorage.getInstance()
     private val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
@@ -142,6 +182,7 @@ fun SettingsScreen(
             vm.uploadProfilePhoto(bitmap)
         }
     }
+    var showNameDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
@@ -173,7 +214,9 @@ fun SettingsScreen(
                     summary = if (isPhotoLoading) "Загрузка..." else "Обновить аватар",
                     onClick = { photoPickerLauncher.launch("image/*") }
                 )
-                SettingsItem(Icons.Default.Edit, "Изменить имя и никнейм", progress.displayName)
+                SettingsItem(Icons.Default.Edit, "Изменить имя и никнейм", progress.displayName) {
+                    showNameDialog = true
+                }
                 SettingsItem(Icons.Default.BarChart, "Статистика прогресса") { navController.navigate("achievements") }
             }
 
@@ -290,6 +333,49 @@ fun SettingsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showResetDialog = false }) { Text("Отмена") }
+            }
+        )
+    }
+
+    if (showNameDialog) {
+        var tempName by remember { mutableStateOf(progress.displayName) }
+        val nameError by vm.nameError.collectAsStateWithLifecycle()
+
+        AlertDialog(
+            onDismissRequest = { 
+                showNameDialog = false
+                vm.clearNameError()
+            },
+            title = { Text("Изменить имя") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = tempName,
+                        onValueChange = { 
+                            tempName = it
+                            vm.clearNameError()
+                        },
+                        label = { Text("Ваше имя") },
+                        isError = nameError != null,
+                        supportingText = { if (nameError != null) Text(nameError!!, color = MaterialTheme.colorScheme.error) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(onClick = { 
+                    vm.updateName(tempName)
+                    if (AuthValidator.getNameError(tempName) == null) {
+                        showNameDialog = false
+                    }
+                }) { Text("Сохранить") }
+            },
+            dismissButton = {
+                TextButton(onClick = { 
+                    showNameDialog = false
+                    vm.clearNameError()
+                }) { Text("Отмена") }
             }
         )
     }
