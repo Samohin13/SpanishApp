@@ -1,12 +1,14 @@
 package com.spanishapp.ui.settings
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
-import androidx.compose.foundation.background
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -16,34 +18,31 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.data.prefs.AppPreferences
 import com.spanishapp.data.prefs.ThemeMode
 import com.spanishapp.data.repository.AuthRepository
+import com.spanishapp.util.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
-
-import com.spanishapp.util.AuthValidator
+import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -53,7 +52,7 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val storage = FirebaseStorage.getInstance()
-    private val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
     private val _isPhotoLoading = MutableStateFlow(false)
@@ -90,14 +89,6 @@ class SettingsViewModel @Inject constructor(
         _nameError.value = null
     }
 
-    private val storage = FirebaseStorage.getInstance()
-    private val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
-
-    private val _isPhotoLoading = MutableStateFlow(false)
-    val isPhotoLoading = _isPhotoLoading.asStateFlow()
-
-    val userPhotoUrl = authRepository.userPhotoUrl.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
-
     fun uploadProfilePhoto(bitmap: Bitmap) {
         val currentUser = auth.currentUser ?: return
         _isPhotoLoading.value = true
@@ -118,7 +109,7 @@ class SettingsViewModel @Inject constructor(
                 authRepository.setUserPhotoUrl(downloadUrl)
                 
                 // 4. Обновление в Firestore для синхронизации
-                FirebaseFirestore.getInstance().collection("users")
+                db.collection("users")
                     .document(currentUser.uid)
                     .update("photoUrl", downloadUrl)
                     .await()
@@ -155,11 +146,6 @@ class SettingsViewModel @Inject constructor(
     fun deleteAccount() = viewModelScope.launch { authRepository.setLoggedIn(false) }
     fun resetProgress() = viewModelScope.launch { userProgressDao.update(UserProgressEntity()) }
 }
-
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
