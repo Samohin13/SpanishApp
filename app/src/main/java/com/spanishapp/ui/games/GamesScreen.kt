@@ -32,7 +32,7 @@ fun GamesScreen(navController: NavHostController) {
     ) {
         item {
             Text(
-                "Master Spanish Premium 🎮",
+                "Juegos 🎮",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1A1A1A)
