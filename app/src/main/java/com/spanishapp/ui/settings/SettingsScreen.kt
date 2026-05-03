@@ -1,11 +1,15 @@
 package com.spanishapp.ui.settings
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -26,12 +30,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
@@ -67,6 +73,9 @@ class SettingsViewModel @Inject constructor(
     private val _isPhotoLoading = MutableStateFlow(false)
     val isPhotoLoading = _isPhotoLoading.asStateFlow()
 
+    // Локальное временное фото для мгновенного отображения (как в топ приложениях)
+    private val _localPhotoUri = MutableStateFlow<Uri?>(null)
+    
     private val _nameError = MutableStateFlow<String?>(null)
     val nameError = _nameError.asStateFlow()
 
@@ -74,90 +83,71 @@ class SettingsViewModel @Inject constructor(
     val errorEvent = _errorEvent.asSharedFlow()
 
     val userName = authRepository.userName.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "Estudiante")
-    val userPhotoUrl = authRepository.userPhotoUrl.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    
+    // Объединяем URL из репозитория и локальный URI для мгновенного эффекта
+    val userPhotoUrl = combine(authRepository.userPhotoUrl, _localPhotoUri) { remote, local ->
+        local?.toString() ?: remote
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    fun updateName(name: String) {
-        val error = AuthValidator.getNameError(name)
-        if (error != null) {
-            _nameError.value = error
-            return
-        }
-
-        viewModelScope.launch {
-            try {
-                authRepository.setUserName(name)
-                auth.currentUser?.let { user ->
-                    db.collection("users").document(user.uid).update("name", name).await()
-                }
-                _nameError.value = null
-            } catch (e: Exception) {
-                _nameError.value = "Ошибка сохранения"
-            }
-        }
-    }
-
-    fun clearNameError() {
-        _nameError.value = null
-    }
-
-    fun uploadProfilePhoto(bitmap: Bitmap) {
-        val currentUser = auth.currentUser ?: run {
-            viewModelScope.launch { _errorEvent.emit("Пользователь не авторизован") }
-            return
-        }
+    fun uploadProfilePhoto(bitmap: Bitmap, localUri: Uri) {
+        _localPhotoUri.value = localUri // Показываем сразу!
         _isPhotoLoading.value = true
 
         viewModelScope.launch {
             try {
-                // 1. Сжатие
+                // Обеспечиваем вход (многие игры делают так)
+                var currentUser = auth.currentUser
+                if (currentUser == null) {
+                    currentUser = auth.signInAnonymously().await().user
+                }
+                
+                if (currentUser == null) throw Exception("Auth failed")
+
+                // Сжатие
                 val baos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos)
                 val data = baos.toByteArray()
 
-                // 2. Ссылка на файл
+                // Путь в Storage (упрощенный)
                 val storageRef = storage.reference.child("avatars/${currentUser.uid}.jpg")
                 
-                // 3. Загрузка с проверкой
-                val uploadTask = storageRef.putBytes(data).await()
+                // Загрузка
+                storageRef.putBytes(data).await()
                 
-                if (uploadTask.metadata != null) {
-                    // 4. Небольшая пауза для завершения индексации на сервере
-                    kotlinx.coroutines.delay(500)
-                    
-                    // 5. Получение URL только после успешной загрузки
-                    val downloadUrl = storageRef.downloadUrl.await().toString()
-                    
-                    // 6. Сохранение локально
-                    authRepository.setUserPhotoUrl(downloadUrl)
-                    
-                    // 6. Попытка обновления в Firestore (может не пройти, если API выключен)
-                    try {
-                        db.collection("users")
-                            .document(currentUser.uid)
-                            .set(mapOf("photoUrl" to downloadUrl), com.google.firebase.firestore.SetOptions.merge())
-                            .await()
-                    } catch (e: Exception) {
-                        android.util.Log.e("SettingsVM", "Firestore sync failed: ${e.message}")
-                        // Не блокируем пользователя, если Firestore не настроен, 
-                        // так как локально URL уже сохранен
-                    }
-                } else {
-                    _errorEvent.emit("Загрузка прервана сервером")
-                }
+                // Получение ссылки
+                val downloadUrl = storageRef.downloadUrl.await().toString()
+                
+                // Сохранение в настройки и БД
+                authRepository.setUserPhotoUrl(downloadUrl)
+                db.collection("users").document(currentUser.uid)
+                    .set(mapOf("photoUrl" to downloadUrl), com.google.firebase.firestore.SetOptions.merge())
+                
+                Log.d("SettingsVM", "Profile photo updated successfully")
 
             } catch (e: Exception) {
-                android.util.Log.e("SettingsVM", "Upload error", e)
-                _errorEvent.emit("Ошибка: ${e.localizedMessage}")
+                Log.e("SettingsVM", "Upload failed", e)
+                _localPhotoUri.value = null // Откатываем картинку в случае ошибки
+                _errorEvent.emit("Ошибка сохранения в облако: ${e.localizedMessage}")
             } finally {
                 _isPhotoLoading.value = false
             }
         }
     }
 
-    val progress: StateFlow<UserProgressEntity> = userProgressDao.getProgress()
-        .filterNotNull()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserProgressEntity())
-
+    // --- Остальные методы ---
+    fun updateName(name: String) {
+        val error = AuthValidator.getNameError(name)
+        if (error != null) { _nameError.value = error; return }
+        viewModelScope.launch {
+            try {
+                authRepository.setUserName(name)
+                auth.currentUser?.let { db.collection("users").document(it.uid).update("name", name).await() }
+                _nameError.value = null
+            } catch (e: Exception) { _nameError.value = "Ошибка сохранения" }
+        }
+    }
+    fun clearNameError() { _nameError.value = null }
+    val progress: StateFlow<UserProgressEntity> = userProgressDao.getProgress().filterNotNull().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UserProgressEntity())
     val ttsEnabled = appPreferences.ttsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val soundEffects = appPreferences.soundEffectsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val bgMusic = appPreferences.bgMusicEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
@@ -165,15 +155,13 @@ class SettingsViewModel @Inject constructor(
     val reminders = appPreferences.remindersEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val themeMode = appPreferences.themeMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ThemeMode.AUTO)
     val fontSize = appPreferences.fontSize.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "MEDIUM")
-
-    fun toggleTts(enabled: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(enabled) }
-    fun toggleSoundEffects(enabled: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(enabled) }
-    fun toggleBgMusic(enabled: Boolean) = viewModelScope.launch { appPreferences.setBgMusicEnabled(enabled) }
-    fun toggleVibration(enabled: Boolean) = viewModelScope.launch { appPreferences.setVibrationEnabled(enabled) }
-    fun toggleReminders(enabled: Boolean) = viewModelScope.launch { appPreferences.setRemindersEnabled(enabled) }
-    fun setThemeMode(mode: ThemeMode) = viewModelScope.launch { appPreferences.setThemeMode(mode) }
-    fun setFontSize(size: String) = viewModelScope.launch { appPreferences.setFontSize(size) }
-
+    fun toggleTts(e: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(e) }
+    fun toggleSoundEffects(e: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(e) }
+    fun toggleBgMusic(e: Boolean) = viewModelScope.launch { appPreferences.setBgMusicEnabled(e) }
+    fun toggleVibration(e: Boolean) = viewModelScope.launch { appPreferences.setVibrationEnabled(e) }
+    fun toggleReminders(e: Boolean) = viewModelScope.launch { appPreferences.setRemindersEnabled(e) }
+    fun setThemeMode(m: ThemeMode) = viewModelScope.launch { appPreferences.setThemeMode(m) }
+    fun setFontSize(s: String) = viewModelScope.launch { appPreferences.setFontSize(s) }
     fun logout() = viewModelScope.launch { authRepository.setLoggedIn(false) }
     fun deleteAccount() = viewModelScope.launch { authRepository.setLoggedIn(false) }
     fun resetProgress() = viewModelScope.launch { userProgressDao.update(UserProgressEntity()) }
@@ -198,26 +186,29 @@ fun SettingsScreen(
     
     val context = LocalContext.current
 
-    // Подписка на ошибки
     LaunchedEffect(Unit) {
-        vm.errorEvent.collect { error ->
-            Toast.makeText(context, error, Toast.LENGTH_LONG).show()
-        }
+        vm.errorEvent.collect { error -> Toast.makeText(context, error, Toast.LENGTH_LONG).show() }
     }
     
-    // Лаунчер для выбора и ОБРЕЗКИ фото
-    val cropImageLauncher = rememberLauncherForActivityResult(
-        contract = CropImageContract()
-    ) { result ->
+    val cropImageLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             val uri = result.uriContent
             uri?.let {
-                val inputStream = context.contentResolver.openInputStream(it)
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-                if (bitmap != null) {
-                    vm.uploadProfilePhoto(bitmap)
-                }
+                val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(it))
+                if (bitmap != null) vm.uploadProfilePhoto(bitmap, it)
             }
+        }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            cropImageLauncher.launch(CropImageContractOptions(null, CropImageOptions(
+                imageSourceIncludeGallery = true, imageSourceIncludeCamera = true,
+                guidelines = CropImageView.Guidelines.ON, aspectRatioX = 1, aspectRatioY = 1,
+                fixAspectRatio = true, cropShape = CropImageView.CropShape.OVAL
+            )))
+        } else {
+            Toast.makeText(context, "Разрешите доступ к камере в настройках", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -239,230 +230,107 @@ fun SettingsScreen(
         }
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 32.dp)
+            modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(bottom = 32.dp)
         ) {
             // ── Шапка профиля ──
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp), contentAlignment = Alignment.Center) {
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Surface(
-                        modifier = Modifier.size(100.dp),
+                        modifier = Modifier.size(120.dp),
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.surfaceVariant
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        tonalElevation = 4.dp
                     ) {
                         if (isPhotoLoading) {
-                            Box(contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator(modifier = Modifier.size(32.dp))
-                            }
-                        } else {
-                            AsyncImage(
-                                model = ImageRequest.Builder(context)
-                                    .data(userPhotoUrl ?: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = "Аватар",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize().clip(CircleShape)
-                            )
+                            Box(contentAlignment = Alignment.Center) { CircularProgressIndicator(modifier = Modifier.size(40.dp)) }
                         }
+                        
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data(userPhotoUrl ?: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
+                                .crossfade(true)
+                                .diskCachePolicy(CachePolicy.DISABLED) // Чтобы сразу видеть новое фото
+                                .build(),
+                            contentDescription = "Аватар",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize().clip(CircleShape)
+                        )
                     }
                     SmallFloatingActionButton(
                         onClick = { 
-                            val options = CropImageContractOptions(
-                                null, 
-                                CropImageOptions(
-                                    imageSourceIncludeGallery = true,
-                                    imageSourceIncludeCamera = true,
-                                    guidelines = CropImageView.Guidelines.ON,
-                                    aspectRatioX = 1,
-                                    aspectRatioY = 1,
-                                    fixAspectRatio = true,
-                                    cropShape = CropImageView.CropShape.OVAL
-                                )
-                            )
-                            cropImageLauncher.launch(options)
+                            val status = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                            if (status == PackageManager.PERMISSION_GRANTED) {
+                                cropImageLauncher.launch(CropImageContractOptions(null, CropImageOptions(
+                                    imageSourceIncludeGallery = true, imageSourceIncludeCamera = true,
+                                    guidelines = CropImageView.Guidelines.ON, aspectRatioX = 1, aspectRatioY = 1,
+                                    fixAspectRatio = true, cropShape = CropImageView.CropShape.OVAL
+                                )))
+                            } else {
+                                permissionLauncher.launch(Manifest.permission.CAMERA)
+                            }
                         },
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(40.dp),
                         shape = CircleShape,
                         containerColor = MaterialTheme.colorScheme.primary
                     ) {
-                        Icon(Icons.Default.PhotoCamera, null, modifier = Modifier.size(16.dp))
+                        Icon(Icons.Default.PhotoCamera, null, modifier = Modifier.size(20.dp))
                     }
                 }
             }
 
-            // ── Профиль ──
+            // ── Секции настроек ──
             SettingsSection("Профиль") {
-                SettingsItem(Icons.Default.Edit, "Изменить имя и никнейм", progress.displayName) {
-                    showNameDialog = true
-                }
-                SettingsItem(Icons.Default.BarChart, "Статистика прогресса") { navController.navigate("achievements") }
+                SettingsItem(Icons.Default.Edit, "Изменить имя", progress.displayName) { showNameDialog = true }
+                SettingsItem(Icons.Default.BarChart, "Статистика") { navController.navigate("achievements") }
             }
 
-            // ── Уведомления ──
             SettingsSection("Уведомления") {
-                SettingsSwitchItem(Icons.Default.Notifications, "Напоминания о занятиях", reminders) { vm.toggleReminders(it) }
-                SettingsItem(Icons.Default.Timeline, "Ежедневные уведомления и стрики")
+                SettingsSwitchItem(Icons.Default.Notifications, "Напоминания", reminders) { vm.toggleReminders(it) }
             }
 
-            // ── Звук и вибрация ──
             SettingsSection("Звук и вибрация") {
-                SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, "Эффекты звуков", soundEffects) { vm.toggleSoundEffects(it) }
-                SettingsSwitchItem(Icons.Default.RecordVoiceOver, "Голос диктора (TTS)", ttsEnabled) { vm.toggleTts(it) }
-                SettingsSwitchItem(Icons.Default.MusicNote, "Музыка на фоне", bgMusic) { vm.toggleBgMusic(it) }
-                SettingsSwitchItem(Icons.Default.Vibration, "Вибрация и тактильная отдача", vibration) { vm.toggleVibration(it) }
+                SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, "Звуковые эффекты", soundEffects) { vm.toggleSoundEffects(it) }
+                SettingsSwitchItem(Icons.Default.RecordVoiceOver, "Диктор (TTS)", ttsEnabled) { vm.toggleTts(it) }
+                SettingsSwitchItem(Icons.Default.Vibration, "Вибрация", vibration) { vm.toggleVibration(it) }
             }
 
-            // ── Внешний вид ──
-            SettingsSection("Внешний вид") {
-                SettingsItem(Icons.Default.Palette, "Тёмная / светлая тема", themeMode.name)
-                SettingsItem(Icons.Default.TextFields, "Размер шрифта", fontSize)
-            }
-
-            // ── Языки ──
-            SettingsSection("Языки") {
-                SettingsItem(Icons.Default.Language, "Язык интерфейса", "Русский")
-                SettingsItem(Icons.Default.Translate, "Изучаемый язык", "Испанский")
-            }
-
-            // ── Управление аккаунтом ──
-            SettingsSection("Управление аккаунтом") {
-                SettingsItem(Icons.AutoMirrored.Filled.Logout, "Выйти из аккаунта", textColor = MaterialTheme.colorScheme.error) {
-                    showLogoutDialog = true
-                }
-                SettingsItem(Icons.Default.DeleteForever, "Удалить аккаунт", textColor = MaterialTheme.colorScheme.error) {
-                    showDeleteDialog = true
-                }
-            }
-
-            // ── Подписка ──
-            SettingsSection("Подписка") {
-                SettingsItem(Icons.Default.Star, "Управление подпиской", "Бесплатный план")
-                SettingsItem(Icons.Default.Restore, "Восстановление покупок")
-            }
-
-            // ── Конфиденциальность ──
-            SettingsSection("Конфиденциальность и данные") {
-                SettingsItem(Icons.Default.PrivacyTip, "Политика конфиденциальности") {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com"))
-                    context.startActivity(intent)
-                }
-                SettingsItem(Icons.Default.Description, "Условия использования")
-            }
-
-            // ── О приложении ──
-            SettingsSection("О приложении") {
-                SettingsItem(Icons.Default.Info, "Версия приложения", "1.4.1")
-                SettingsItem(Icons.AutoMirrored.Filled.Help, "Помощь и поддержка")
-            }
-
-            // ── Дополнительно ──
-            SettingsSection("Дополнительно") {
-                SettingsItem(Icons.Default.Leaderboard, "Лидерборды и соцсети") { navController.navigate("achievements") }
-                SettingsItem(Icons.Default.Refresh, "Сброс прогресса", textColor = MaterialTheme.colorScheme.error) {
-                    showResetDialog = true
-                }
-                SettingsItem(Icons.Default.Download, "Экспорт данных")
+            SettingsSection("Аккаунт") {
+                SettingsItem(Icons.AutoMirrored.Filled.Logout, "Выйти", textColor = MaterialTheme.colorScheme.error) { showLogoutDialog = true }
+                SettingsItem(Icons.Default.DeleteForever, "Удалить аккаунт", textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }
             }
         }
     }
 
-    // ── Dialogs ──
+    // ── Диалоги ──
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
             title = { Text("Выход") },
-            text = { Text("Вы уверены, что хотите выйти из аккаунта?") },
-            confirmButton = {
-                Button(onClick = { vm.logout(); showLogoutDialog = false }) { Text("Выйти") }
-            },
-            dismissButton = {
-                TextButton(onClick = { showLogoutDialog = false }) { Text("Отмена") }
-            }
-        )
-    }
-
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Удаление аккаунта") },
-            text = { Text("Это действие нельзя отменить. Все ваши данные будут удалены навсегда. Вы уверены?") },
-            confirmButton = {
-                Button(
-                    onClick = { vm.deleteAccount(); showDeleteDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                ) { Text("Удалить") }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Отмена") }
-            }
-        )
-    }
-
-    if (showResetDialog) {
-        AlertDialog(
-            onDismissRequest = { showResetDialog = false },
-            title = { Text("Сброс прогресса") },
-            text = { Text("Весь ваш прогресс обучения будет удален навсегда. Вы уверены?") },
-            confirmButton = {
-                Button(
-                    onClick = { vm.resetProgress(); showResetDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                ) { Text("Сбросить") }
-            },
-            dismissButton = {
-                TextButton(onClick = { showResetDialog = false }) { Text("Отмена") }
-            }
+            text = { Text("Выйти из аккаунта?") },
+            confirmButton = { Button(onClick = { vm.logout(); showLogoutDialog = false }) { Text("Выйти") } },
+            dismissButton = { TextButton(onClick = { showLogoutDialog = false }) { Text("Отмена") } }
         )
     }
 
     if (showNameDialog) {
         var tempName by remember { mutableStateOf(progress.displayName) }
         val nameError by vm.nameError.collectAsStateWithLifecycle()
-
         AlertDialog(
-            onDismissRequest = { 
-                showNameDialog = false
-                vm.clearNameError()
-            },
+            onDismissRequest = { showNameDialog = false; vm.clearNameError() },
             title = { Text("Изменить имя") },
             text = {
-                Column {
-                    OutlinedTextField(
-                        value = tempName,
-                        onValueChange = { 
-                            tempName = it
-                            vm.clearNameError()
-                        },
-                        label = { Text("Ваше имя") },
-                        isError = nameError != null,
-                        supportingText = { if (nameError != null) Text(nameError!!, color = MaterialTheme.colorScheme.error) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                OutlinedTextField(
+                    value = tempName, onValueChange = { tempName = it; vm.clearNameError() },
+                    label = { Text("Имя") }, isError = nameError != null,
+                    supportingText = { if (nameError != null) Text(nameError!!, color = MaterialTheme.colorScheme.error) },
+                    singleLine = true, modifier = Modifier.fillMaxWidth()
+                )
             },
             confirmButton = {
                 Button(onClick = { 
                     vm.updateName(tempName)
-                    if (AuthValidator.getNameError(tempName) == null) {
-                        showNameDialog = false
-                    }
+                    if (AuthValidator.getNameError(tempName) == null) showNameDialog = false
                 }) { Text("Сохранить") }
-            },
-            dismissButton = {
-                TextButton(onClick = { 
-                    showNameDialog = false
-                    vm.clearNameError()
-                }) { Text("Отмена") }
             }
         )
     }
@@ -471,67 +339,29 @@ fun SettingsScreen(
 @Composable
 fun SettingsSection(title: String, content: @Composable ColumnScope.() -> Unit) {
     Column(modifier = Modifier.padding(top = 16.dp)) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-        )
-        Surface(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-        ) {
-            Column(modifier = Modifier.padding(vertical = 4.dp)) {
-                content()
-            }
+        Text(text = title, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+        Surface(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)) {
+            Column(modifier = Modifier.padding(vertical = 4.dp)) { content() }
         }
     }
 }
 
 @Composable
-fun SettingsItem(
-    icon: ImageVector,
-    title: String,
-    summary: String? = null,
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
-    onClick: (() -> Unit)? = null
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = onClick != null) { onClick?.invoke() }
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+fun SettingsItem(icon: ImageVector, title: String, summary: String? = null, textColor: Color = MaterialTheme.colorScheme.onSurface, onClick: (() -> Unit)? = null) {
+    Row(modifier = Modifier.fillMaxWidth().clickable(enabled = onClick != null) { onClick?.invoke() }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         Icon(icon, null, modifier = Modifier.size(24.dp), tint = if (textColor == MaterialTheme.colorScheme.error) textColor else MaterialTheme.colorScheme.primary)
         Spacer(Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.bodyLarge, color = textColor)
-            if (summary != null) {
-                Text(summary, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-            }
+            if (summary != null) Text(summary, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
         }
-        if (onClick != null) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, modifier = Modifier.size(20.dp), tint = Color.LightGray)
-        }
+        if (onClick != null) Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, modifier = Modifier.size(20.dp), tint = Color.LightGray)
     }
 }
 
 @Composable
-fun SettingsSwitchItem(
-    icon: ImageVector,
-    title: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onCheckedChange(!checked) }
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+fun SettingsSwitchItem(icon: ImageVector, title: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth().clickable { onCheckedChange(!checked) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         Icon(icon, null, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
         Spacer(Modifier.width(16.dp))
         Text(title, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)

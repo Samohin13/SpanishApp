@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.*
 import com.spanishapp.data.db.entity.UserProgressEntity
+import com.spanishapp.data.db.entity.WordEntity
+import com.spanishapp.data.db.entity.LessonEntity
+import com.spanishapp.data.repository.AuthRepository
 import com.spanishapp.domain.algorithm.AdaptiveLearning
 import com.spanishapp.domain.algorithm.StreakManager
 import com.spanishapp.domain.algorithm.XpSystem
@@ -21,7 +24,8 @@ class HomeViewModel @Inject constructor(
     private val lessonDao: LessonDao,
     private val dailyWordDao: DailyWordDao,
     private val lessonProgressDao: LessonProgressDao,
-    private val achievementManager: AchievementManager
+    private val achievementManager: AchievementManager,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     // ── UI State ──────────────────────────────────────────────
@@ -30,10 +34,17 @@ class HomeViewModel @Inject constructor(
         wordDao.getDueWords(),
         wordDao.learnedCount(),
         lessonDao.getNextLessons(),
-        lessonProgressDao.getAllCompletedKeys()
-    ) { progress, dueWords, learnedCount, nextLessons, completedKeysList ->
-        val completedKeys = completedKeysList.toSet()
+        lessonProgressDao.getAllCompletedKeys(),
+        authRepository.userPhotoUrl
+    ) { args ->
+        val progress = args[0] as? UserProgressEntity
+        val dueWords = args[1] as List<WordEntity>
+        val learnedCount = args[2] as Int
+        val nextLessons = args[3] as List<LessonEntity>
+        val completedKeysList = args[4] as List<String>
+        val photoUrl = args[5] as? String
 
+        val completedKeys = completedKeysList.toSet()
         val p = progress ?: UserProgressEntity()
 
         val plan = AdaptiveLearning.planSession(
@@ -49,7 +60,6 @@ class HomeViewModel @Inject constructor(
             currentLevel     = p.currentLevel
         )
 
-        // ── Вычисляем roadmap с реальным прогрессом ──────────
         val roadmapUnits = buildRoadmapUnits(completedKeys)
 
         HomeUiState(
@@ -69,19 +79,17 @@ class HomeViewModel @Inject constructor(
             spanishLevel     = p.currentLevel,
             shouldLevelUp    = shouldLevelUp,
             roadmapUnits     = roadmapUnits,
+            userPhotoUrl     = photoUrl,
             isLoading        = false
         )
     }
         .catch { emit(HomeUiState(isLoading = false, error = it.message)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
 
-    // ── Строим roadmap с реальным isLocked / progress / isCompleted ──
-
     private fun buildRoadmapUnits(completedKeys: Set<String>): List<RoadmapUnit> {
         return RoadmapData.units.map { unit ->
             val unitId = unit.id.toInt()
 
-            // Блок 1 открыт всегда; блок N — когда все уроки блока N-1 пройдены
             val unlocked = unitId == 1 || run {
                 val prevUnit = RoadmapData.units[unitId - 2]
                 prevUnit.lessons.indices.all { idx ->
@@ -105,7 +113,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    // ── Daily word of the day ─────────────────────────────────
     val wordOfTheDay: StateFlow<WordOfDay?> = flow {
         val today = LocalDate.now().toString()
         val daily = dailyWordDao.getForDate(today)
@@ -117,7 +124,6 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    // ── Update streak on session start ────────────────────────
     fun onSessionStarted() {
         viewModelScope.launch {
             val p = userProgressDao.getProgressOnce() ?: return@launch
@@ -139,14 +145,12 @@ class HomeViewModel @Inject constructor(
     private fun todayStudyMinutes(p: UserProgressEntity): Int {
         val todayStart = LocalDate.now().toEpochDay() * 86_400_000L
         return if (p.lastStudyDate >= todayStart) {
-            minOf(p.totalStudyMinutes % 1440, p.dailyGoalMinutes)
+            val studiedToday = (System.currentTimeMillis() - p.lastStudyDate) / 60000
+            minOf(studiedToday.toInt(), p.dailyGoalMinutes)
         } else 0
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-// UI State
-// ─────────────────────────────────────────────────────────────
 data class HomeUiState(
     val displayName: String = "",
     val totalXp: Int = 0,
@@ -163,7 +167,8 @@ data class HomeUiState(
     val sessionPlan: AdaptiveLearning.SessionPlan = AdaptiveLearning.SessionPlan(5, 5, false, false, 10),
     val spanishLevel: String = "A1",
     val shouldLevelUp: Boolean = false,
-    val roadmapUnits: List<RoadmapUnit> = emptyList(),  // computed from lesson_progress
+    val roadmapUnits: List<RoadmapUnit> = emptyList(),
+    val userPhotoUrl: String? = null,
     val isLoading: Boolean = true,
     val error: String? = null
 )

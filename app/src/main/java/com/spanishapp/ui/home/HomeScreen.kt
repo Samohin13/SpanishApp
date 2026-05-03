@@ -28,6 +28,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import com.spanishapp.ui.components.*
 
 // ── Roadmap Data Model ────────────────────────────────────────
@@ -93,19 +97,34 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment     = Alignment.CenterVertically
             ) {
-                Box(
+                val context = LocalContext.current
+                Surface(
                     modifier = Modifier
                         .size(44.dp)
-                        .clip(CircleShape)
-                        .background(Purple)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
                             onClick = { navController.navigate("profile") }
                         ),
-                    contentAlignment = Alignment.Center
+                    shape = CircleShape,
+                    color = Purple,
+                    tonalElevation = 2.dp
                 ) {
-                    Icon(Icons.Default.Person, null, tint = Color.White, modifier = Modifier.size(22.dp))
+                    if (state.userPhotoUrl != null) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data(state.userPhotoUrl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Профиль",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize().clip(CircleShape)
+                        )
+                    } else {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(Icons.Default.Person, null, tint = Color.White, modifier = Modifier.size(22.dp))
+                        }
+                    }
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

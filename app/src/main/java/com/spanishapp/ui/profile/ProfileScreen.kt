@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,10 +32,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.spanishapp.data.db.dao.AchievementDao
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.UserProgressEntity
+import com.spanishapp.data.repository.AuthRepository
 import com.spanishapp.domain.algorithm.XpSystem
 import com.spanishapp.ui.components.SpanishBackground
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,19 +51,22 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val wordDao: WordDao,
-    private val achievementDao: AchievementDao
+    private val achievementDao: AchievementDao,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     val state: StateFlow<ProfileUiState> = combine(
         userProgressDao.getProgress(),
         wordDao.learnedCount(),
         achievementDao.unlockedCount(),
-        achievementDao.getAll().map { it.size }
-    ) { progress, learned, unlocked, total ->
+        achievementDao.getAll().map { it.size },
+        authRepository.userPhotoUrl
+    ) { progress, learned, unlocked, total, photoUrl ->
         ProfileUiState(
             progress             = progress ?: UserProgressEntity(),
             learnedCount         = learned,
             unlockedAchievements = unlocked,
-            totalAchievements    = total
+            totalAchievements    = total,
+            photoUrl             = photoUrl
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState())
 }
@@ -67,7 +75,8 @@ data class ProfileUiState(
     val progress: UserProgressEntity = UserProgressEntity(),
     val learnedCount: Int = 0,
     val unlockedAchievements: Int = 0,
-    val totalAchievements: Int = 0
+    val totalAchievements: Int = 0,
+    val photoUrl: String? = null
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,7 +118,13 @@ fun ProfileScreen(
                 .padding(bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfileHeader(name = p.displayName.ifBlank { "Estudiante" }, level = p.currentLevel, appLevel = appLevel, progress = progress)
+            ProfileHeader(
+                name = p.displayName.ifBlank { "Estudiante" }, 
+                level = p.currentLevel, 
+                appLevel = appLevel, 
+                progress = progress,
+                photoUrl = state.photoUrl
+            )
             Spacer(Modifier.height(24.dp))
             WeeklyActivityChart(modifier = Modifier.padding(horizontal = 24.dp))
             Spacer(Modifier.height(24.dp))
@@ -128,11 +143,31 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileHeader(name: String, level: String, appLevel: Int, progress: Float) {
+private fun ProfileHeader(name: String, level: String, appLevel: Int, progress: Float, photoUrl: String?) {
+    val context = LocalContext.current
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(contentAlignment = Alignment.BottomEnd) {
-            Box(modifier = Modifier.size(100.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
-                Text(name.take(1).uppercase(), fontSize = 40.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+            Surface(
+                modifier = Modifier.size(100.dp),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                tonalElevation = 2.dp
+            ) {
+                if (photoUrl != null) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(photoUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Аватар",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize().clip(CircleShape)
+                    )
+                } else {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(name.take(1).uppercase(), fontSize = 40.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    }
+                }
             }
             Box(modifier = Modifier.offset(x = (-4).dp, y = (-4).dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary).padding(horizontal = 8.dp, vertical = 4.dp)) {
                 Text(level, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
