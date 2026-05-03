@@ -13,4 +13,7 @@
         <item name="postSplashScreenTheme">@style/Theme.SpanishApp</item>
     </style>
 
+    <!-- Theme for Image Cropper Activity -->
+    <style name="Theme.App.ImageCropper" parent="Theme.AppCompat.Light.DarkActionBar" />
+
 </resources>
