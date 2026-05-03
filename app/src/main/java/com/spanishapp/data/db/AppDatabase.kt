@@ -24,7 +24,7 @@ import com.spanishapp.data.db.entity.*
         LessonProgressEntity::class,
         LibroProgressEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -180,6 +180,12 @@ abstract class AppDatabase : RoomDatabase() {
                         error_weight INTEGER NOT NULL DEFAULT 0
                     )
                 """)
+            }
+        }
+
+        val MIGRATION_7_8 = object : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_word_list_entries_word_id ON word_list_entries(word_id)")
             }
         }
     }
