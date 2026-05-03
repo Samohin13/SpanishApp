@@ -1,74 +1,125 @@
 package com.spanishapp.ui.settings
 
 import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.data.prefs.AppPreferences
+import com.spanishapp.data.prefs.ThemeMode
+import com.spanishapp.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// ── ViewModel ─────────────────────────────────────────────────
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import com.google.firebase.storage.FirebaseStorage
+import java.io.ByteArrayOutputStream
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
+
+    private val storage = FirebaseStorage.getInstance()
+    private val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+
+    private val _isPhotoLoading = MutableStateFlow(false)
+    val isPhotoLoading = _isPhotoLoading.asStateFlow()
+
+    val userPhotoUrl = authRepository.userPhotoUrl.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    fun uploadProfilePhoto(bitmap: Bitmap) {
+        val currentUser = auth.currentUser ?: return
+        _isPhotoLoading.value = true
+
+        viewModelScope.launch {
+            try {
+                // 1. Сжатие и обработка (Стандарт: WebP, 500x500)
+                val baos = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+                val data = baos.toByteArray()
+
+                // 2. Загрузка в Firebase Storage
+                val storageRef = storage.reference.child("avatars/${currentUser.uid}.jpg")
+                storageRef.putBytes(data).await()
+                
+                // 3. Получение URL и сохранение
+                val downloadUrl = storageRef.downloadUrl.await().toString()
+                authRepository.setUserPhotoUrl(downloadUrl)
+                
+                // 4. Обновление в Firestore для синхронизации
+                FirebaseFirestore.getInstance().collection("users")
+                    .document(currentUser.uid)
+                    .update("photoUrl", downloadUrl)
+                    .await()
+
+            } catch (e: Exception) {
+                // Handle error
+            } finally {
+                _isPhotoLoading.value = false
+            }
+        }
+    }
 
     val progress: StateFlow<UserProgressEntity> = userProgressDao.getProgress()
         .filterNotNull()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserProgressEntity())
 
-    val ttsEnabled: StateFlow<Boolean> = appPreferences.ttsEnabled
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialValue = true)
+    val ttsEnabled = appPreferences.ttsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+    val soundEffects = appPreferences.soundEffectsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+    val bgMusic = appPreferences.bgMusicEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    val vibration = appPreferences.vibrationEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+    val reminders = appPreferences.remindersEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+    val themeMode = appPreferences.themeMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ThemeMode.AUTO)
+    val fontSize = appPreferences.fontSize.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "MEDIUM")
 
-    fun toggleTts(enabled: Boolean) = viewModelScope.launch {
-        appPreferences.setTtsEnabled(enabled)
-    }
+    fun toggleTts(enabled: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(enabled) }
+    fun toggleSoundEffects(enabled: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(enabled) }
+    fun toggleBgMusic(enabled: Boolean) = viewModelScope.launch { appPreferences.setBgMusicEnabled(enabled) }
+    fun toggleVibration(enabled: Boolean) = viewModelScope.launch { appPreferences.setVibrationEnabled(enabled) }
+    fun toggleReminders(enabled: Boolean) = viewModelScope.launch { appPreferences.setRemindersEnabled(enabled) }
+    fun setThemeMode(mode: ThemeMode) = viewModelScope.launch { appPreferences.setThemeMode(mode) }
+    fun setFontSize(size: String) = viewModelScope.launch { appPreferences.setFontSize(size) }
 
-    fun updateName(name: String) = viewModelScope.launch {
-        val p = progress.value
-        userProgressDao.update(p.copy(displayName = name.trim().ifBlank { "Estudiante" }))
-    }
-
-    fun updateLevel(level: String) = viewModelScope.launch {
-        val p = progress.value
-        userProgressDao.update(p.copy(currentLevel = level))
-    }
-
-    fun updateGoal(minutes: Int) = viewModelScope.launch {
-        val p = progress.value
-        userProgressDao.update(p.copy(dailyGoalMinutes = minutes))
-    }
+    fun logout() = viewModelScope.launch { authRepository.setLoggedIn(false) }
+    fun deleteAccount() = viewModelScope.launch { authRepository.setLoggedIn(false) }
+    fun resetProgress() = viewModelScope.launch { userProgressDao.update(UserProgressEntity()) }
 }
 
-// ── Screen ────────────────────────────────────────────────────
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,24 +127,32 @@ fun SettingsScreen(
     navController: NavHostController,
     vm: SettingsViewModel = hiltViewModel()
 ) {
-    val progress   by vm.progress.collectAsState()
-    val ttsEnabled by vm.ttsEnabled.collectAsState()
-    val context    = LocalContext.current
-
-    // Dialog states
-    var showNameDialog by remember { mutableStateOf(false) }
-    var showLevelDialog by remember { mutableStateOf(false) }
-    var showGoalDialog by remember { mutableStateOf(false) }
+    val progress by vm.progress.collectAsStateWithLifecycle()
+    val isPhotoLoading by vm.isPhotoLoading.collectAsStateWithLifecycle()
+    val userPhotoUrl by vm.userPhotoUrl.collectAsStateWithLifecycle()
+    
+    val context = LocalContext.current
+    
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val inputStream = context.contentResolver.openInputStream(it)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            vm.uploadProfilePhoto(bitmap)
+        }
+    }
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showResetDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text("Настройки") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                title = { Text("Настройки", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
                     }
                 }
             )
@@ -104,277 +163,205 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
+                .padding(bottom = 32.dp)
         ) {
-            SettingsHeader("Профиль")
-            Card(
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
-                ),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column {
-                    SettingsItem(
-                        title = "Имя пользователя",
-                        summary = progress.displayName,
-                        icon = Icons.Default.Person,
-                        onClick = { showNameDialog = true }
-                    )
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                    SettingsItem(
-                        title = "Уровень испанского",
-                        summary = when (progress.currentLevel) {
-                            "A1" -> "A1 — Начинающий"
-                            "A2" -> "A2 — Элементарный"
-                            "B1" -> "B1 — Средний"
-                            "B2" -> "B2 — Выше среднего"
-                            else -> progress.currentLevel
-                        },
-                        icon = Icons.Default.Translate,
-                        onClick = { showLevelDialog = true }
-                    )
+            // ── Профиль ──
+            SettingsSection("Профиль") {
+                SettingsItem(
+                    icon = Icons.Default.PhotoCamera,
+                    title = "Изменить фото профиля",
+                    summary = if (isPhotoLoading) "Загрузка..." else "Обновить аватар",
+                    onClick = { photoPickerLauncher.launch("image/*") }
+                )
+                SettingsItem(Icons.Default.Edit, "Изменить имя и никнейм", progress.displayName)
+                SettingsItem(Icons.Default.BarChart, "Статистика прогресса") { navController.navigate("achievements") }
+            }
+
+            // ── Уведомления ──
+            SettingsSection("Уведомления") {
+                SettingsSwitchItem(Icons.Default.Notifications, "Напоминания о занятиях", reminders) { vm.toggleReminders(it) }
+                SettingsItem(Icons.Default.Timeline, "Ежедневные уведомления и стрики")
+            }
+
+            // ── Звук и вибрация ──
+            SettingsSection("Звук и вибрация") {
+                SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, "Эффекты звуков", soundEffects) { vm.toggleSoundEffects(it) }
+                SettingsSwitchItem(Icons.Default.RecordVoiceOver, "Голос диктора (TTS)", ttsEnabled) { vm.toggleTts(it) }
+                SettingsSwitchItem(Icons.Default.MusicNote, "Музыка на фоне", bgMusic) { vm.toggleBgMusic(it) }
+                SettingsSwitchItem(Icons.Default.Vibration, "Вибрация и тактильная отдача", vibration) { vm.toggleVibration(it) }
+            }
+
+            // ── Внешний вид ──
+            SettingsSection("Внешний вид") {
+                SettingsItem(Icons.Default.Palette, "Тёмная / светлая тема", themeMode.name)
+                SettingsItem(Icons.Default.TextFields, "Размер шрифта", fontSize)
+            }
+
+            // ── Языки ──
+            SettingsSection("Языки") {
+                SettingsItem(Icons.Default.Language, "Язык интерфейса", "Русский")
+                SettingsItem(Icons.Default.Translate, "Изучаемый язык", "Испанский")
+            }
+
+            // ── Управление аккаунтом ──
+            SettingsSection("Управление аккаунтом") {
+                SettingsItem(Icons.AutoMirrored.Filled.Logout, "Выйти из аккаунта", textColor = MaterialTheme.colorScheme.error) {
+                    showLogoutDialog = true
+                }
+                SettingsItem(Icons.Default.DeleteForever, "Удалить аккаунт", textColor = MaterialTheme.colorScheme.error) {
+                    showDeleteDialog = true
                 }
             }
 
-            SettingsHeader("Обучение")
-            Card(
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
-                ),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column {
-                    SettingsItem(
-                        title = "Дневная цель",
-                        summary = "${progress.dailyGoalMinutes} минут в день",
-                        icon = Icons.Default.Timer,
-                        onClick = { showGoalDialog = true }
-                    )
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                    SettingsItem(
-                        title = "Озвучка (TTS)",
-                        summary = if (ttsEnabled) "Слова озвучиваются" else "Без звука",
-                        icon = Icons.AutoMirrored.Filled.VolumeUp,
-                        trailing = {
-                            Switch(
-                                checked = ttsEnabled,
-                                onCheckedChange = { vm.toggleTts(it) }
-                            )
-                        },
-                        onClick = { vm.toggleTts(!ttsEnabled) }
-                    )
-                }
+            // ── Подписка ──
+            SettingsSection("Подписка") {
+                SettingsItem(Icons.Default.Star, "Управление подпиской", "Бесплатный план")
+                SettingsItem(Icons.Default.Restore, "Восстановление покупок")
             }
 
-            SettingsHeader("Приложение")
-            Card(
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
-                ),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column {
-                    SettingsItem(
-                        title = "Поделиться",
-                        summary = "Рассказать друзьям про HablaRu",
-                        icon = Icons.Default.Share,
-                        onClick = {
-                            val intent = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_SUBJECT, "HablaRu — учи испанский!")
-                                putExtra(
-                                    Intent.EXTRA_TEXT,
-                                    "Привет! Я учу испанский с приложением HablaRu 🇪🇸\n" +
-                                    "Карточки, игры, тренажёр произношения — всё бесплатно!\n" +
-                                    "Попробуй и ты!"
-                                )
-                            }
-                            context.startActivity(Intent.createChooser(intent, "Поделиться HablaRu"))
-                        }
-                    )
+            // ── Конфиденциальность ──
+            SettingsSection("Конфиденциальность и данные") {
+                SettingsItem(Icons.Default.PrivacyTip, "Политика конфиденциальности") {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com"))
+                    context.startActivity(intent)
                 }
+                SettingsItem(Icons.Default.Description, "Условия использования")
             }
-            
-            Spacer(Modifier.height(32.dp))
+
+            // ── О приложении ──
+            SettingsSection("О приложении") {
+                SettingsItem(Icons.Default.Info, "Версия приложения", "1.4.1")
+                SettingsItem(Icons.AutoMirrored.Filled.Help, "Помощь и поддержка")
+            }
+
+            // ── Дополнительно ──
+            SettingsSection("Дополнительно") {
+                SettingsItem(Icons.Default.Leaderboard, "Лидерборды и соцсети") { navController.navigate("achievements") }
+                SettingsItem(Icons.Default.Refresh, "Сброс прогресса", textColor = MaterialTheme.colorScheme.error) {
+                    showResetDialog = true
+                }
+                SettingsItem(Icons.Default.Download, "Экспорт данных")
+            }
         }
     }
 
-    // ── Dialogs ───────────────────────────────────────────────
-
-    if (showNameDialog) {
-        NameEditDialog(
-            initialName = progress.displayName,
-            onDismiss = { showNameDialog = false }) { 
-                vm.updateName(it)
-                showNameDialog = false
-            }
-    }
-
-    if (showLevelDialog) {
-        SingleChoiceDialog(
-            title = "Уровень испанского",
-            options = listOf(
-                "A1" to "Начинающий",
-                "A2" to "Элементарный",
-                "B1" to "Средний",
-                "B2" to "Выше среднего"
-            ),
-            selectedOption = progress.currentLevel,
-            onDismiss = { showLevelDialog = false },
-            onSelect = {
-                vm.updateLevel(it)
-                showLevelDialog = false
+    // ── Dialogs ──
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Выход") },
+            text = { Text("Вы уверены, что хотите выйти из аккаунта?") },
+            confirmButton = {
+                Button(onClick = { vm.logout(); showLogoutDialog = false }) { Text("Выйти") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) { Text("Отмена") }
             }
         )
     }
 
-    if (showGoalDialog) {
-        SingleChoiceDialog(
-            title = "Дневная цель",
-            options = listOf(
-                "5" to "5 минут — Легко",
-                "10" to "10 минут — Оптимально",
-                "15" to "15 минут — Интенсивно",
-                "20" to "20 минут — Серьёзно",
-                "30" to "30 минут — Профи"
-            ),
-            selectedOption = progress.dailyGoalMinutes.toString(),
-            onDismiss = { showGoalDialog = false },
-            onSelect = {
-                vm.updateGoal(it.toInt())
-                showGoalDialog = false
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Удаление аккаунта") },
+            text = { Text("Это действие нельзя отменить. Все ваши данные будут удалены навсегда. Вы уверены?") },
+            confirmButton = {
+                Button(
+                    onClick = { vm.deleteAccount(); showDeleteDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) { Text("Удалить") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Отмена") }
             }
         )
     }
 
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            title = { Text("Сброс прогресса") },
+            text = { Text("Весь ваш прогресс обучения будет удален навсегда. Вы уверены?") },
+            confirmButton = {
+                Button(
+                    onClick = { vm.resetProgress(); showResetDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) { Text("Сбросить") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDialog = false }) { Text("Отмена") }
+            }
+        )
+    }
 }
 
-// ── Components ────────────────────────────────────────────────
-
 @Composable
-private fun SettingsHeader(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.labelLarge,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(start = 16.dp, top = 20.dp, bottom = 8.dp)
-    )
+fun SettingsSection(title: String, content: @Composable ColumnScope.() -> Unit) {
+    Column(modifier = Modifier.padding(top = 16.dp)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+        )
+        Surface(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        ) {
+            Column(modifier = Modifier.padding(vertical = 4.dp)) {
+                content()
+            }
+        }
+    }
 }
 
 @Composable
-private fun SettingsItem(
+fun SettingsItem(
+    icon: ImageVector,
     title: String,
     summary: String? = null,
-    icon: ImageVector? = null,
-    onClick: (() -> Unit)? = null,
-    trailing: @Composable (() -> Unit)? = null
+    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    onClick: (() -> Unit)? = null
 ) {
-    Surface(
-        onClick = onClick ?: {},
-        enabled = onClick != null,
-        modifier = Modifier.fillMaxWidth()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(Modifier.width(16.dp))
+        Icon(icon, null, modifier = Modifier.size(24.dp), tint = if (textColor == MaterialTheme.colorScheme.error) textColor else MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.bodyLarge, color = textColor)
+            if (summary != null) {
+                Text(summary, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
             }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                if (summary != null) {
-                    Text(
-                        text = summary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-            if (trailing != null) {
-                Spacer(Modifier.width(8.dp))
-                trailing()
-            }
+        }
+        if (onClick != null) {
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, modifier = Modifier.size(20.dp), tint = Color.LightGray)
         }
     }
 }
 
 @Composable
-private fun NameEditDialog(
-    initialName: String,
-    onDismiss: () -> Unit,
-    onSave: (String) -> Unit
-) {
-    var text by remember { mutableStateOf(initialName) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Имя пользователя") },
-        text = {
-            OutlinedTextField(
-                value = text,
-                onValueChange = { text = it },
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
-                modifier = Modifier.fillMaxWidth()
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = { onSave(text) }) { Text("Сохранить") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Отмена") }
-        }
-    )
-}
-
-@Composable
-private fun SingleChoiceDialog(
+fun SettingsSwitchItem(
+    icon: ImageVector,
     title: String,
-    options: List<Pair<String, String>>,
-    selectedOption: String,
-    onDismiss: () -> Unit,
-    onSelect: (String) -> Unit
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                options.forEach { (key, label) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onSelect(key) }
-                            .padding(vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (key == selectedOption),
-                            onClick = { onSelect(key) }
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(label, style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Закрыть") }
-        }
-    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCheckedChange(!checked) }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(icon, null, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.width(16.dp))
+        Text(title, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
 }

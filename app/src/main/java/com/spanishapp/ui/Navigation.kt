@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -41,23 +44,70 @@ import com.spanishapp.ui.settings.SettingsScreen
 import com.spanishapp.ui.pronunciation.PronunciationScreen
 import com.spanishapp.ui.dialogues.DialoguesScreen
 import com.spanishapp.ui.onboarding.OnboardingScreen
+import com.spanishapp.ui.auth.WelcomeScreen
+import com.spanishapp.ui.auth.RegisterScreen
+import com.spanishapp.ui.auth.LoginScreen
+import com.spanishapp.ui.auth.ForgotPasswordScreen
+import com.spanishapp.ui.auth.NameEntryScreen
+import com.spanishapp.ui.auth.AgeSelectionScreen
+import com.spanishapp.ui.auth.ReasonSelectionScreen
+import com.spanishapp.ui.auth.LevelSelectionScreen
+import com.spanishapp.ui.auth.PlacementTestScreen
+import com.spanishapp.ui.auth.AuthViewModel
 
 object Navigation {
 
     @Composable
     fun SpanishNavHost(
         navController: NavHostController,
-        modifier: Modifier = Modifier.Companion
+        modifier: Modifier = Modifier,
+        authViewModel: AuthViewModel = hiltViewModel()
     ) {
+        val authState by authViewModel.uiState.collectAsStateWithLifecycle()
+        
+        // Используем remember, чтобы зафиксировать начальный экран только ПРИ ПЕРВОМ определении состояния
+        // Это предотвратит "полеты" экранов при обновлении userName, age и т.д.
+        val initialStartDest = remember(authState.isLoggedIn) {
+            when {
+                authState.isLoggedIn == null -> null // Еще грузимся
+                authState.isLoggedIn == true -> {
+                    // Если залогинен, проверяем где остановился онбординг
+                    when {
+                        authState.userName == null -> "name_entry"
+                        authState.userAge == null -> "age_selection"
+                        authState.userReason == null -> "reason_selection"
+                        authState.userLevel == null -> "level_selection"
+                        else -> "home"
+                    }
+                }
+                else -> "welcome"
+            }
+        }
+
+        if (initialStartDest == null) return
+
         NavHost(
             navController = navController,
-            startDestination = "home",
+            startDestination = initialStartDest,
             modifier = modifier,
             enterTransition = { slideInHorizontally(tween(260)) { it / 5 } + fadeIn(tween(260)) },
             exitTransition = { slideOutHorizontally(tween(260)) { -it / 5 } + fadeOut(tween(260)) },
             popEnterTransition = { slideInHorizontally(tween(260)) { -it / 5 } + fadeIn(tween(260)) },
             popExitTransition = { slideOutHorizontally(tween(260)) { it / 5 } + fadeOut(tween(260)) }
         ) {
+            // ── Авторизация ──────────────────────────────────
+            composable("welcome") { WelcomeScreen(navController) }
+            composable("register") { RegisterScreen(navController) }
+            composable("login") { LoginScreen(navController) }
+            composable("forgot_password") { ForgotPasswordScreen(navController) }
+            
+            // ── Онбординг ─────────────────────────────────────
+            composable("name_entry") { NameEntryScreen(navController) }
+            composable("age_selection") { AgeSelectionScreen(navController) }
+            composable("reason_selection") { ReasonSelectionScreen(navController) }
+            composable("level_selection") { LevelSelectionScreen(navController) }
+            composable("placement_test") { PlacementTestScreen(navController) }
+
             // ── Главная ───────────────────────────────────────
             composable("home") { HomeScreen(navController) }
 

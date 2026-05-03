@@ -20,9 +20,29 @@ class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     companion object {
-        val TTS_ENABLED  = booleanPreferencesKey("tts_enabled")
-        val THEME_MODE   = stringPreferencesKey("theme_mode")
+        val TTS_ENABLED      = booleanPreferencesKey("tts_enabled")
+        val THEME_MODE       = stringPreferencesKey("theme_mode")
+        val SOUND_EFFECTS    = booleanPreferencesKey("sound_effects")
+        val BG_MUSIC         = booleanPreferencesKey("bg_music")
+        val VIBRATION        = booleanPreferencesKey("vibration")
+        val REMINDERS        = booleanPreferencesKey("reminders")
+        val FONT_SIZE        = stringPreferencesKey("font_size") // SMALL, MEDIUM, LARGE
     }
+
+    val soundEffectsEnabled: Flow<Boolean> = context.dataStore.data.map { it[SOUND_EFFECTS] ?: true }
+    suspend fun setSoundEffectsEnabled(enabled: Boolean) = context.dataStore.edit { it[SOUND_EFFECTS] = enabled }
+
+    val bgMusicEnabled: Flow<Boolean> = context.dataStore.data.map { it[BG_MUSIC] ?: false }
+    suspend fun setBgMusicEnabled(enabled: Boolean) = context.dataStore.edit { it[BG_MUSIC] = enabled }
+
+    val vibrationEnabled: Flow<Boolean> = context.dataStore.data.map { it[VIBRATION] ?: true }
+    suspend fun setVibrationEnabled(enabled: Boolean) = context.dataStore.edit { it[VIBRATION] = enabled }
+
+    val remindersEnabled: Flow<Boolean> = context.dataStore.data.map { it[REMINDERS] ?: true }
+    suspend fun setRemindersEnabled(enabled: Boolean) = context.dataStore.edit { it[REMINDERS] = enabled }
+
+    val fontSize: Flow<String> = context.dataStore.data.map { it[FONT_SIZE] ?: "MEDIUM" }
+    suspend fun setFontSize(size: String) = context.dataStore.edit { it[FONT_SIZE] = size }
 
     /** Глобальный тумблер звука (TTS). По умолчанию — включён. */
     val ttsEnabled: Flow<Boolean> = context.dataStore.data
