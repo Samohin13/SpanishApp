@@ -41,7 +41,8 @@ data class OnboardingState(
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val userProgressDao: UserProgressDao
+    private val userProgressDao: UserProgressDao,
+    private val authRepository: com.spanishapp.data.repository.AuthRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OnboardingState())
@@ -66,6 +67,12 @@ class OnboardingViewModel @Inject constructor(
             dailyGoalMinutes = s.selectedGoal
         )
         if (existing == null) userProgressDao.insert(entry) else userProgressDao.update(entry)
+        
+        // Помечаем онбординг как завершенный!
+        authRepository.setOnboardingCompleted(true)
+        authRepository.setUserName(s.name.ifBlank { "Estudiante" })
+        authRepository.setUserLevel(s.selectedLevel)
+
         onDone()
     }
 }
@@ -194,8 +201,8 @@ private fun WelcomePage() {
         Spacer(Modifier.height(8.dp))
         // Фичи
         listOf(
-            "🃏 Карточки с интервальным повторением",
-            "🎮 Игры: артикли, скорость, анаграммы",
+            "🃏 Tarjetas с интервальным повторением",
+            "🎮 Juegos: артикли, скорость, анаграммы",
             "🎙️ Тренажёр произношения",
             "🔊 Озвучка испанских слов"
         ).forEach { feature ->

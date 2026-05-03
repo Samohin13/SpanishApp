@@ -156,7 +156,7 @@ fun FlashcardsSetupScreen(
                         .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 16.dp)
                 ) {
                     Text(
-                        "Карточки",
+                        "Tarjetas",
                         fontSize   = 26.sp,
                         fontWeight = FontWeight.Bold,
                         color      = TextMain

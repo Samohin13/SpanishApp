@@ -45,10 +45,10 @@ fun SpanishAppRoot() {
     val currentRoute = navBackStackEntry?.destination?.route ?: "home"
 
     val showBottomBar = currentRoute in listOf(
-        "home", "games", "flashcards", "dictionary", "profile",
+        "home", "games", "dictionary", "profile",
         "grammar", "achievements", "weak_words",
         "conjugation", "quiz", "dialogues", "settings", "pronunciation"
-    )
+    ) || currentRoute.startsWith("flashcards")
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

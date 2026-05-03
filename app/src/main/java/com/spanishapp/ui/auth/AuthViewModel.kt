@@ -79,6 +79,11 @@ class AuthViewModel @Inject constructor(
                 _uiState.update { it.copy(userReason = reason) }
             }
         }
+        viewModelScope.launch {
+            authRepository.onboardingCompleted.collect { completed ->
+                _uiState.update { it.copy(onboardingCompleted = completed) }
+            }
+        }
     }
 
     private suspend fun syncUserDataFromFirestore(uid: String) {

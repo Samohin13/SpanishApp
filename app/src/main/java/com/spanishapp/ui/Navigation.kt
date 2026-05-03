@@ -67,17 +67,21 @@ object Navigation {
         
         // Используем remember, чтобы зафиксировать начальный экран только ПРИ ПЕРВОМ определении состояния
         // Это предотвратит "полеты" экранов при обновлении userName, age и т.д.
-        val initialStartDest = remember(authState.isLoggedIn) {
+        val initialStartDest = remember(authState.isLoggedIn, authState.onboardingCompleted) {
             when {
                 authState.isLoggedIn == null -> null // Еще грузимся
                 authState.isLoggedIn == true -> {
-                    // Если залогинен, проверяем где остановился онбординг
-                    when {
-                        authState.userName == null -> "name_entry"
-                        authState.userAge == null -> "age_selection"
-                        authState.userReason == null -> "reason_selection"
-                        authState.userLevel == null -> "level_selection"
-                        else -> "home"
+                    if (authState.onboardingCompleted) {
+                        "home"
+                    } else {
+                        // Если залогинен, но онбординг не закончен, проверяем где остановились
+                        when {
+                            authState.userName == null -> "name_entry"
+                            authState.userAge == null -> "age_selection"
+                            authState.userReason == null -> "reason_selection"
+                            authState.userLevel == null -> "level_selection"
+                            else -> "home"
+                        }
                     }
                 }
                 else -> "welcome"
