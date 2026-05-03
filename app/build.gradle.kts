@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.lottie)
     implementation(libs.coil.compose)
+    implementation(libs.image.cropper)
     implementation(libs.androidx.work)
     implementation(libs.androidx.glance)
     implementation(libs.androidx.glance.material3)

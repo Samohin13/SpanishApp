@@ -4,11 +4,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -18,8 +19,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +31,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -61,6 +69,9 @@ class SettingsViewModel @Inject constructor(
     private val _nameError = MutableStateFlow<String?>(null)
     val nameError = _nameError.asStateFlow()
 
+    private val _errorEvent = MutableSharedFlow<String>()
+    val errorEvent = _errorEvent.asSharedFlow()
+
     val userName = authRepository.userName.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "Estudiante")
     val userPhotoUrl = authRepository.userPhotoUrl.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
@@ -74,7 +85,6 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 authRepository.setUserName(name)
-                // Firestore sync
                 auth.currentUser?.let { user ->
                     db.collection("users").document(user.uid).update("name", name).await()
                 }
@@ -90,32 +100,35 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun uploadProfilePhoto(bitmap: Bitmap) {
-        val currentUser = auth.currentUser ?: return
+        val currentUser = auth.currentUser ?: run {
+            viewModelScope.launch { _errorEvent.emit("Пользователь не авторизован") }
+            return
+        }
         _isPhotoLoading.value = true
 
         viewModelScope.launch {
             try {
-                // 1. Сжатие и обработка (Стандарт: WebP, 500x500)
+                // 1. Сжатие (JPEG, 80% качество)
                 val baos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
                 val data = baos.toByteArray()
 
                 // 2. Загрузка в Firebase Storage
                 val storageRef = storage.reference.child("avatars/${currentUser.uid}.jpg")
                 storageRef.putBytes(data).await()
                 
-                // 3. Получение URL и сохранение
+                // 3. Получение URL и сохранение локально
                 val downloadUrl = storageRef.downloadUrl.await().toString()
                 authRepository.setUserPhotoUrl(downloadUrl)
                 
-                // 4. Обновление в Firestore для синхронизации
+                // 4. Обновление в Firestore для синхронизации профиля
                 db.collection("users")
                     .document(currentUser.uid)
                     .update("photoUrl", downloadUrl)
                     .await()
 
             } catch (e: Exception) {
-                // Handle error
+                _errorEvent.emit("Ошибка при загрузке фото: ${e.localizedMessage}")
             } finally {
                 _isPhotoLoading.value = false
             }
@@ -165,16 +178,30 @@ fun SettingsScreen(
     val fontSize by vm.fontSize.collectAsStateWithLifecycle()
     
     val context = LocalContext.current
-    
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            val inputStream = context.contentResolver.openInputStream(it)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            vm.uploadProfilePhoto(bitmap)
+
+    // Подписка на ошибки
+    LaunchedEffect(Unit) {
+        vm.errorEvent.collect { error ->
+            Toast.makeText(context, error, Toast.LENGTH_LONG).show()
         }
     }
+    
+    // Лаунчер для выбора и ОБРЕЗКИ фото
+    val cropImageLauncher = rememberLauncherForActivityResult(
+        contract = CropImageContract()
+    ) { result ->
+        if (result.isSuccessful) {
+            val uri = result.uriContent
+            uri?.let {
+                val inputStream = context.contentResolver.openInputStream(it)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                if (bitmap != null) {
+                    vm.uploadProfilePhoto(bitmap)
+                }
+            }
+        }
+    }
+
     var showNameDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -199,14 +226,62 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 32.dp)
         ) {
+            // ── Шапка профиля ──
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(contentAlignment = Alignment.BottomEnd) {
+                    Surface(
+                        modifier = Modifier.size(100.dp),
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    ) {
+                        if (isPhotoLoading) {
+                            Box(contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator(modifier = Modifier.size(32.dp))
+                            }
+                        } else {
+                            AsyncImage(
+                                model = ImageRequest.Builder(context)
+                                    .data(userPhotoUrl ?: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "Аватар",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize().clip(CircleShape)
+                            )
+                        }
+                    }
+                    SmallFloatingActionButton(
+                        onClick = { 
+                            val options = CropImageContractOptions(
+                                null, 
+                                CropImageOptions(
+                                    imageSourceIncludeGallery = true,
+                                    imageSourceIncludeCamera = true,
+                                    guidelines = CropImageOptions.Guidelines.ON,
+                                    aspectRatioX = 1,
+                                    aspectRatioY = 1,
+                                    fixAspectRatio = true,
+                                    cropShape = CropImageOptions.CropShape.OVAL
+                                )
+                            )
+                            cropImageLauncher.launch(options)
+                        },
+                        modifier = Modifier.size(32.dp),
+                        shape = CircleShape,
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ) {
+                        Icon(Icons.Default.PhotoCamera, null, modifier = Modifier.size(16.dp))
+                    }
+                }
+            }
+
             // ── Профиль ──
             SettingsSection("Профиль") {
-                SettingsItem(
-                    icon = Icons.Default.PhotoCamera,
-                    title = "Изменить фото профиля",
-                    summary = if (isPhotoLoading) "Загрузка..." else "Обновить аватар",
-                    onClick = { photoPickerLauncher.launch("image/*") }
-                )
                 SettingsItem(Icons.Default.Edit, "Изменить имя и никнейм", progress.displayName) {
                     showNameDialog = true
                 }
