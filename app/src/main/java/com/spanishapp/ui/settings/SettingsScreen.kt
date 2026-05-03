@@ -165,6 +165,17 @@ class SettingsViewModel @Inject constructor(
     fun logout() = viewModelScope.launch { authRepository.setLoggedIn(false) }
     fun deleteAccount() = viewModelScope.launch { authRepository.setLoggedIn(false) }
     fun resetProgress() = viewModelScope.launch { userProgressDao.update(UserProgressEntity()) }
+
+    fun updateLevel(level: String) = viewModelScope.launch {
+        val p = progress.value
+        userProgressDao.update(p.copy(currentLevel = level))
+        authRepository.setUserLevel(level)
+    }
+
+    fun updateGoal(minutes: Int) = viewModelScope.launch {
+        val p = progress.value
+        userProgressDao.update(p.copy(dailyGoalMinutes = minutes))
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -216,6 +227,11 @@ fun SettingsScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
+    var showFontDialog by remember { mutableStateOf(false) }
+    var showLevelDialog by remember { mutableStateOf(false) }
+    var showGoalDialog by remember { mutableStateOf(false) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -281,22 +297,98 @@ fun SettingsScreen(
             // ── Секции настроек ──
             SettingsSection("Профиль") {
                 SettingsItem(Icons.Default.Edit, "Изменить имя", progress.displayName) { showNameDialog = true }
-                SettingsItem(Icons.Default.BarChart, "Статистика") { navController.navigate("achievements") }
+                SettingsItem(Icons.Default.Translate, "Уровень испанского", when(progress.currentLevel) {
+                    "A1" -> "A1 — Начинающий"
+                    "A2" -> "A2 — Элементарный"
+                    "B1" -> "B1 — Средний"
+                    "B2" -> "B2 — Выше среднего"
+                    else -> progress.currentLevel
+                }) { showLevelDialog = true }
+                SettingsItem(Icons.Default.Timer, "Дневная цель", "${progress.dailyGoalMinutes} мин") { showGoalDialog = true }
+                SettingsItem(Icons.Default.BarChart, "Статистика прогресса") { navController.navigate("achievements") }
             }
 
             SettingsSection("Уведомления") {
-                SettingsSwitchItem(Icons.Default.Notifications, "Напоминания", reminders) { vm.toggleReminders(it) }
+                SettingsSwitchItem(Icons.Default.Notifications, "Напоминания о занятиях", reminders) { vm.toggleReminders(it) }
+                SettingsSwitchItem(Icons.Default.EventAvailable, "Ежедневные уведомления и стрики", reminders) { /* Можно разделить ключи в будущем */ }
             }
 
             SettingsSection("Звук и вибрация") {
-                SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, "Звуковые эффекты", soundEffects) { vm.toggleSoundEffects(it) }
-                SettingsSwitchItem(Icons.Default.RecordVoiceOver, "Диктор (TTS)", ttsEnabled) { vm.toggleTts(it) }
-                SettingsSwitchItem(Icons.Default.Vibration, "Вибрация", vibration) { vm.toggleVibration(it) }
+                SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, "Эффекты звуков", soundEffects) { vm.toggleSoundEffects(it) }
+                SettingsSwitchItem(Icons.Default.RecordVoiceOver, "Голос диктора", ttsEnabled) { vm.toggleTts(it) }
+                SettingsSwitchItem(Icons.Default.MusicNote, "Музыка на фоне", bgMusic) { vm.toggleBgMusic(it) }
+                SettingsSwitchItem(Icons.Default.Vibration, "Вибрация и тактильная отдача", vibration) { vm.toggleVibration(it) }
+                SettingsItem(Icons.Default.InterpreterMode, "Настройка голоса") { navController.navigate("settings_voice") }
             }
 
-            SettingsSection("Аккаунт") {
-                SettingsItem(Icons.AutoMirrored.Filled.Logout, "Выйти", textColor = MaterialTheme.colorScheme.error) { showLogoutDialog = true }
-                SettingsItem(Icons.Default.DeleteForever, "Удалить аккаунт", textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }
+            SettingsSection("Внешний вид") {
+                val themeLabel = when(themeMode) {
+                    ThemeMode.AUTO -> "Системная"
+                    ThemeMode.LIGHT -> "Светлая"
+                    ThemeMode.DARK -> "Темная"
+                }
+                val fontLabel = when(fontSize) {
+                    "SMALL" -> "Маленький"
+                    "MEDIUM" -> "Средний"
+                    "LARGE" -> "Большой"
+                    else -> fontSize
+                }
+                SettingsItem(Icons.Default.Palette, "Тёмная / светлая тема", themeLabel) { showThemeDialog = true }
+                SettingsItem(Icons.Default.TextFields, "Размер шрифта", fontLabel) { showFontDialog = true }
+            }
+
+            SettingsSection("Языки") {
+                SettingsItem(Icons.Default.Language, "Язык интерфейса", "Русский") { showLanguageDialog = true }
+                SettingsItem(Icons.Default.Public, "Изучаемый язык", "Испанский") { /* Пока только один язык */ }
+            }
+
+            SettingsSection("Подписка") {
+                SettingsItem(Icons.Default.Star, "Управление подпиской") { /* Открыть маркет или экран оплаты */ }
+                SettingsItem(Icons.Default.Restore, "Восстановление покупок") { /* Логика восстановления */ }
+            }
+
+            SettingsSection("Помощь и поддержка") {
+                SettingsItem(Icons.Default.HelpOutline, "Центр помощи") { /* Ссылка на FAQ или поддержку */ }
+                SettingsItem(Icons.Default.MailOutline, "Связаться с нами") { 
+                    val intent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("mailto:support@spanishapp.com")
+                        putExtra(Intent.EXTRA_SUBJECT, "Поддержка SpanishApp")
+                    }
+                    context.startActivity(Intent.createChooser(intent, "Отправить письмо"))
+                }
+            }
+
+            SettingsSection("Конфиденциальность и данные") {
+                SettingsItem(Icons.Default.PrivacyTip, "Политика конфиденциальности") { /* URL */ }
+                SettingsItem(Icons.Default.Description, "Условия использования") { /* URL */ }
+                SettingsItem(Icons.Default.FileUpload, "Экспорт данных") { /* Логика экспорта */ }
+            }
+
+            SettingsSection("Дополнительно") {
+                SettingsItem(Icons.Default.Leaderboard, "Лидерборды и соцсети") { /* Навигация в лидерборды */ }
+                SettingsItem(Icons.Default.Refresh, "Сброс прогресса") { showResetDialog = true }
+                SettingsItem(Icons.Default.Share, "Поделиться приложением") {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "Учи испанский со мной в SpanishApp! 🇪🇸")
+                    }
+                    context.startActivity(Intent.createChooser(intent, "Поделиться"))
+                }
+            }
+
+            SettingsSection("Управление аккаунтом") {
+                SettingsItem(Icons.AutoMirrored.Filled.Logout, "Выйти из аккаунта", textColor = MaterialTheme.colorScheme.error) { showLogoutDialog = true }
+                SettingsItem(Icons.Default.DeleteForever, "Удалить аккаунт (с подтверждением)", textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }
+            }
+
+            // ── О приложении ──
+            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp), contentAlignment = Alignment.Center) {
+                Text(
+                    text = "SpanishApp Версия 1.4\nСделано с ❤️ для изучения испанского",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
             }
         }
     }
@@ -309,6 +401,137 @@ fun SettingsScreen(
             text = { Text("Выйти из аккаунта?") },
             confirmButton = { Button(onClick = { vm.logout(); showLogoutDialog = false }) { Text("Выйти") } },
             dismissButton = { TextButton(onClick = { showLogoutDialog = false }) { Text("Отмена") } }
+        )
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Удаление аккаунта") },
+            text = { Text("Вы уверены? Весь прогресс будет удален безвозвратно.") },
+            confirmButton = { 
+                Button(
+                    onClick = { vm.deleteAccount(); showDeleteDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) { Text("Удалить", color = Color.White) }
+            },
+            dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text("Отмена") } }
+        )
+    }
+
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            title = { Text("Сброс прогресса") },
+            text = { Text("Весь ваш игровой прогресс будет обнулен. Вы уверены?") },
+            confirmButton = { 
+                Button(
+                    onClick = { vm.resetProgress(); showResetDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) { Text("Сбросить", color = Color.White) }
+            },
+            dismissButton = { TextButton(onClick = { showResetDialog = false }) { Text("Отмена") } }
+        )
+    }
+
+    if (showThemeDialog) {
+        AlertDialog(
+            onDismissRequest = { showThemeDialog = false },
+            title = { Text("Тема оформления") },
+            text = {
+                Column {
+                    ThemeMode.values().forEach { mode ->
+                        val label = when(mode) {
+                            ThemeMode.AUTO -> "Системная"
+                            ThemeMode.LIGHT -> "Светлая"
+                            ThemeMode.DARK -> "Темная"
+                        }
+                        Row(
+                            Modifier.fillMaxWidth().clickable { vm.setThemeMode(mode); showThemeDialog = false }.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = themeMode == mode, onClick = { vm.setThemeMode(mode); showThemeDialog = false })
+                            Text(label, modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+            },
+            confirmButton = {}
+        )
+    }
+
+    if (showFontDialog) {
+        val sizes = listOf("SMALL" to "Маленький", "MEDIUM" to "Средний", "LARGE" to "Большой")
+        AlertDialog(
+            onDismissRequest = { showFontDialog = false },
+            title = { Text("Размер шрифта") },
+            text = {
+                Column {
+                    sizes.forEach { (key, label) ->
+                        Row(
+                            Modifier.fillMaxWidth().clickable { vm.setFontSize(key); showFontDialog = false }.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = fontSize == key, onClick = { vm.setFontSize(key); showFontDialog = false })
+                            Text(label, modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+            },
+            confirmButton = {}
+        )
+    }
+
+    if (showLevelDialog) {
+        val levels = listOf("A1" to "Начинающий", "A2" to "Элементарный", "B1" to "Средний", "B2" to "Выше среднего")
+        AlertDialog(
+            onDismissRequest = { showLevelDialog = false },
+            title = { Text("Уровень испанского") },
+            text = {
+                Column {
+                    levels.forEach { (key, label) ->
+                        Row(
+                            Modifier.fillMaxWidth().clickable { vm.updateLevel(key); showLevelDialog = false }.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = progress.currentLevel == key, onClick = { vm.updateLevel(key); showLevelDialog = false })
+                            Text(label, modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+            },
+            confirmButton = {}
+        )
+    }
+
+    if (showGoalDialog) {
+        val goals = listOf(5, 10, 15, 20, 30)
+        AlertDialog(
+            onDismissRequest = { showGoalDialog = false },
+            title = { Text("Дневная цель") },
+            text = {
+                Column {
+                    goals.forEach { mins ->
+                        Row(
+                            Modifier.fillMaxWidth().clickable { vm.updateGoal(mins); showGoalDialog = false }.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = progress.dailyGoalMinutes == mins, onClick = { vm.updateGoal(mins); showGoalDialog = false })
+                            Text("$mins минут в день", modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+            },
+            confirmButton = {}
+        )
+    }
+
+    if (showLanguageDialog) {
+        AlertDialog(
+            onDismissRequest = { showLanguageDialog = false },
+            title = { Text("Язык интерфейса") },
+            text = { Text("В данной версии доступен только Русский язык.") },
+            confirmButton = { TextButton(onClick = { showLanguageDialog = false }) { Text("OK") } }
         )
     }
 
