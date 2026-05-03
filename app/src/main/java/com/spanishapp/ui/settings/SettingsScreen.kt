@@ -60,7 +60,7 @@ class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val storage = FirebaseStorage.getInstance()
+    private val storage = FirebaseStorage.getInstance("gs://spanishapp-35092.firebasestorage.app")
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
@@ -121,10 +121,13 @@ class SettingsViewModel @Inject constructor(
                 val uploadTask = storageRef.putBytes(data).await()
                 
                 if (uploadTask.metadata != null) {
-                    // 4. Получение URL только после успешной загрузки
+                    // 4. Небольшая пауза для завершения индексации на сервере
+                    kotlinx.coroutines.delay(500)
+                    
+                    // 5. Получение URL только после успешной загрузки
                     val downloadUrl = storageRef.downloadUrl.await().toString()
                     
-                    // 5. Сохранение локально
+                    // 6. Сохранение локально
                     authRepository.setUserPhotoUrl(downloadUrl)
                     
                     // 6. Попытка обновления в Firestore (может не пройти, если API выключен)
