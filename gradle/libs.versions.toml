@@ -16,7 +16,7 @@ glance = "1.1.1"
 splashscreen = "1.0.1"
 datastore = "1.1.1"
 coil = "2.7.0"
-image-cropper = "4.6.0"
+image-cropper = "4.5.0"
 coreKtx = "1.15.0"
 activityCompose = "1.9.3"
 composeBom = "2024.12.01"
@@ -61,7 +61,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-image-cropper = { group = "com.github.CanHub", name = "Android-Image-Cropper", version.ref = "image-cropper" }
+image-cropper = { group = "com.canhub.cropper", name = "android-image-cropper", version.ref = "image-cropper" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
