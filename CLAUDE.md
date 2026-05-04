@@ -325,7 +325,11 @@ android.enableJetifier=true
 
 1. **Пользователь — новичок** в Android/Git/сборке. Всегда объяснять **пошагово**, где кликать в IDE или какую команду вставлять в терминал, какой результат ожидать.
 2. **Коммитить каждую итерацию** правок в git автоматически — не ждать разрешения. Пушить в `origin/master` (и `SaveGitHub` для бэкапа).
-3. **Память**: `C:\Users\bravo\.claude\projects\C--Users-bravo-AndroidStudioProjects-SpanishApp2\memory\`:
+3. **Резервные копии (обязательно в конце каждой сессии):**
+   - Переместить `SaveGitHub` на текущий master: `git checkout SaveGitHub && git merge master --ff-only && git push origin SaveGitHub && git checkout master`
+   - Когда пользователь подтверждает «всё работает на телефоне» — создать датированный тег: `git tag -a stable-YYYY-MM-DD -m "описание" && git push origin stable-YYYY-MM-DD`
+   - Текущий стабильный тег: `stable-2026-05-04`
+4. **Память**: `C:\Users\bravo\.claude\projects\C--Users-bravo-AndroidStudioProjects-SpanishApp2\memory\`:
    - `user_level.md` — новичок
    - `feedback_explain_steps.md` — пошаговые инструкции
    - `feedback_always_commit.md` — коммит после каждой правки
