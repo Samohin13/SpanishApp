@@ -3,6 +3,7 @@ package com.spanishapp.ui.home
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -52,7 +53,8 @@ data class RoadmapLesson(
     val title: String,
     val type: String,
     val category: String = "general",
-    val isCompleted: Boolean = false
+    val isCompleted: Boolean = false,
+    val isPremium: Boolean = false
 )
 
 // ═══════════════════════════════════════════════════════════════
@@ -72,6 +74,7 @@ private val BgGray      = Color(0xFFF0F0F5)
 //  HOME SCREEN
 // ═══════════════════════════════════════════════════════════════
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
@@ -79,6 +82,8 @@ fun HomeScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var expandedUnitId by remember { mutableStateOf<String?>(null) }
+    var showPremiumSheet by remember { mutableStateOf(false) }
+    val premiumSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LazyColumn(
         modifier = Modifier
@@ -162,9 +167,21 @@ fun HomeScreen(
                     if (!unit.isLocked) {
                         navController.navigate("lesson_intro/${unit.id}/$lessonIndex")
                     }
-                }
+                },
+                onPremiumClick = { showPremiumSheet = true }
             )
             Spacer(Modifier.height(12.dp))
+        }
+    }
+
+    // TODO: Удалить sheet когда контент A2/B1/B2 будет готов и платная подписка реализована
+    if (showPremiumSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showPremiumSheet = false },
+            sheetState = premiumSheetState,
+            containerColor = Color.White
+        ) {
+            HomePremiumSheet(onDismiss = { showPremiumSheet = false })
         }
     }
 }
@@ -195,7 +212,8 @@ private fun TopicCard(
     unit: RoadmapUnit,
     isExpanded: Boolean,
     onToggle: () -> Unit,
-    onLessonClick: (Int) -> Unit
+    onLessonClick: (Int) -> Unit,
+    onPremiumClick: () -> Unit = {}
 ) {
     val accentColor   = if (unit.isLocked) LockGray else unit.color
     val completedCount = unit.lessons.count { it.isCompleted }
@@ -370,11 +388,12 @@ private fun TopicCard(
 
                         unit.lessons.forEachIndexed { idx, lesson ->
                             SubLessonRow(
-                                number    = idx + 1,
-                                lesson    = lesson,
-                                isLocked  = unit.isLocked,
-                                unitColor = accentColor,
-                                onClick   = { onLessonClick(idx) }
+                                number       = idx + 1,
+                                lesson       = lesson,
+                                isLocked     = unit.isLocked,
+                                unitColor    = accentColor,
+                                onClick      = { onLessonClick(idx) },
+                                onPremiumClick = onPremiumClick
                             )
                         }
                     }
@@ -415,7 +434,8 @@ private fun SubLessonRow(
     lesson: RoadmapLesson,
     isLocked: Boolean,
     unitColor: Color,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onPremiumClick: () -> Unit = {}
 ) {
     val typeEmoji = when (lesson.type) {
         "vocab"   -> "📚"
@@ -446,12 +466,17 @@ private fun SubLessonRow(
         else      -> Color(0xFFE65100)
     }
 
+    val effectiveLocked = isLocked || lesson.isPremium
     Surface(
-        onClick   = if (!isLocked) onClick else {{}},
+        onClick = when {
+            isLocked         -> {{}}
+            lesson.isPremium -> onPremiumClick
+            else             -> onClick
+        },
         modifier  = Modifier.fillMaxWidth(),
-        color     = if (isLocked) Color(0xFFF7F7F7) else Color(0xFFFAFAFF),
+        color     = if (effectiveLocked) Color(0xFFF7F7F7) else Color(0xFFFAFAFF),
         shape     = RoundedCornerShape(14.dp),
-        shadowElevation = if (isLocked) 0.dp else 1.dp
+        shadowElevation = if (effectiveLocked) 0.dp else 1.dp
     ) {
         Row(
             modifier          = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
@@ -465,7 +490,7 @@ private fun SubLessonRow(
                     .background(
                         when {
                             lesson.isCompleted -> unitColor
-                            isLocked           -> Color(0xFFE0E0E0)
+                            effectiveLocked    -> Color(0xFFE0E0E0)
                             else               -> unitColor.copy(alpha = 0.12f)
                         }
                     ),
@@ -478,7 +503,7 @@ private fun SubLessonRow(
                         text       = "$number",
                         fontSize   = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color      = if (isLocked) LockGray else unitColor
+                        color      = if (effectiveLocked) LockGray else unitColor
                     )
                 }
             }
@@ -491,7 +516,7 @@ private fun SubLessonRow(
                     text       = lesson.title,
                     fontSize   = 14.sp,
                     fontWeight = if (lesson.isCompleted) FontWeight.Normal else FontWeight.Medium,
-                    color      = if (isLocked) TextGray.copy(.55f) else TextMain,
+                    color      = if (effectiveLocked) TextGray.copy(.55f) else TextMain,
                     maxLines   = 2,
                     lineHeight = 18.sp
                 )
@@ -500,7 +525,7 @@ private fun SubLessonRow(
             Spacer(Modifier.width(10.dp))
 
             // Тип урока — цветной чип
-            if (!isLocked) {
+            if (!effectiveLocked) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
@@ -520,10 +545,100 @@ private fun SubLessonRow(
 
             // Правый значок
             when {
+                lesson.isPremium   -> Icon(Icons.Default.Lock, null, tint = Color(0xFFFF9500), modifier = Modifier.size(15.dp))
                 isLocked           -> Icon(Icons.Default.Lock, null, tint = LockGray, modifier = Modifier.size(15.dp))
-                lesson.isCompleted -> {} // галочка уже в круге
+                lesson.isCompleted -> {}
                 else               -> Icon(Icons.Default.ChevronRight, null, tint = unitColor, modifier = Modifier.size(18.dp))
             }
+        }
+    }
+}
+
+// TODO: Удалить когда реализована настоящая подписка
+@Composable
+private fun HomePremiumSheet(onDismiss: () -> Unit) {
+    val Gold = Color(0xFFFF9500)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+            .padding(bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("🔒", fontSize = 48.sp)
+        Spacer(Modifier.height(12.dp))
+        Text("Этот урок по подписке", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Урок 1 каждого уровня бесплатен.\nДальше — по подписке.",
+            fontSize = 14.sp,
+            color = TextGray,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            lineHeight = 20.sp
+        )
+        Spacer(Modifier.height(24.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(Color(0xFFFFF8E1))
+                .padding(16.dp)
+        ) {
+            Column {
+                Row { Text("🎁  ", fontSize = 14.sp); Text("7 дней бесплатного триала", fontSize = 14.sp) }
+                Spacer(Modifier.height(4.dp))
+                Row { Text("✅  ", fontSize = 14.sp); Text("Все уровни A2, B1, B2", fontSize = 14.sp) }
+                Spacer(Modifier.height(4.dp))
+                Row { Text("🤖  ", fontSize = 14.sp); Text("ИИ-репетитор на Claude", fontSize = 14.sp) }
+            }
+        }
+
+        Spacer(Modifier.height(20.dp))
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.White)
+                    .border(1.5.dp, Color(0xFFE5E5EA), RoundedCornerShape(12.dp))
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Месяц", fontSize = 13.sp, color = TextGray)
+                Text("$4.99", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
+                Text("в месяц", fontSize = 11.sp, color = TextGray)
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Gold)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("🔥 Выгодно", fontSize = 11.sp, color = Color.White.copy(alpha = 0.9f))
+                Text("Год", fontSize = 13.sp, color = Color.White)
+                Text("$29.99", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
+                Text("≈ $2.50 / мес", fontSize = 11.sp, color = Color.White.copy(alpha = 0.8f))
+            }
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        Button(
+            onClick = onDismiss,
+            modifier = Modifier.fillMaxWidth().height(54.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Purple)
+        ) {
+            Text("Попробовать бесплатно 7 дней", fontWeight = FontWeight.Bold)
+        }
+
+        Spacer(Modifier.height(12.dp))
+        TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
+            Text("Закрыть", color = TextGray)
         }
     }
 }

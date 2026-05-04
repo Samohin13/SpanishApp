@@ -192,6 +192,90 @@ object RoadmapData {
                 // 60  ФИНАЛЬНЫЙ БОСС
                 RoadmapLesson("🏆 ФИНАЛЬНЫЙ БОСС: «Один день в Мадриде»",      "quiz",    "all")
             )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A2: БЛОК 1 — В ПРОШЛОМ
+        //  TODO: Удалить isPremium когда контент A2 готов
+        // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "a2_1",
+            title = "A2 · Блок 1: В прошлом",
+            icon = "📅",
+            description = "Pretérito Indefinido — рассказываем о прошлом",
+            cefrLevel = "A2",
+            color = Color(0xFF0277BD),
+            lessons = listOf(
+                RoadmapLesson("📅 Pretérito Indefinido: что это и когда",          "content", "general"),
+                RoadmapLesson("📅 Regulares -AR: hablar → hablé, hablaste, habló", "content", "general"),
+                RoadmapLesson("📅 Regulares -ER/-IR: comer → comí, vivir → viví",  "content", "general"),
+                RoadmapLesson("🌍 Ser vs Estar: ключевые различия",                "content", "general"),
+                RoadmapLesson("💬 ¿Qué hiciste ayer? — первые истории",            "vocab",   "phrases"),
+                RoadmapLesson("🎯 Мини-тест: Regulares",                            "quiz",    "all"),
+                RoadmapLesson("📅 Irregulares: ir/ser → fui/fue/fuimos",           "content", "general",  isPremium = true),
+                RoadmapLesson("📅 Irregulares: tener → tuve, estar → estuve",      "content", "general",  isPremium = true),
+                RoadmapLesson("📅 Irregulares: hacer → hice, querer → quise",      "content", "general",  isPremium = true),
+                RoadmapLesson("📝 Por vs Para: основы",                             "content", "general",  isPremium = true),
+                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "vocab",   "phrases",  isPremium = true),
+                RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all",      isPremium = true)
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  B1: БЛОК 1 — ВЫРАЖАЕМ МНЕНИЯ
+        //  TODO: Удалить isPremium когда контент B1 готов
+        // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "b1_1",
+            title = "B1 · Блок 1: Выражаем мнения",
+            icon = "💭",
+            description = "Subjuntivo Presente — желания, мнения, эмоции",
+            cefrLevel = "B1",
+            color = Color(0xFFE65100),
+            lessons = listOf(
+                RoadmapLesson("🔮 Presente de Subjuntivo: что это и зачем",        "content", "general"),
+                RoadmapLesson("🔮 Regulares: que hable, que coma, que viva",        "content", "general"),
+                RoadmapLesson("💭 Querer que / Esperar que / Necesitar que",        "content", "general"),
+                RoadmapLesson("💭 Es importante que / Es necesario que",            "content", "general"),
+                RoadmapLesson("😊 Ojalá + Subjuntivo: выражаем желания",           "vocab",   "phrases"),
+                RoadmapLesson("🎯 Мини-тест: Subjuntivo",                           "quiz",    "all"),
+                RoadmapLesson("🔮 Irregulares: ser → sea, ir → vaya, haber → haya","content", "general",  isPremium = true),
+                RoadmapLesson("🔮 Dudar que / No creer que + Subjuntivo",          "content", "general",  isPremium = true),
+                RoadmapLesson("🌍 Condicional simple: hablaría, comería",           "content", "general",  isPremium = true),
+                RoadmapLesson("💬 Si tuviera tiempo... — гипотезы",                "vocab",   "phrases",  isPremium = true),
+                RoadmapLesson("📝 Pero vs Sino vs Sin embargo",                     "content", "general",  isPremium = true),
+                RoadmapLesson("🎯 Тест: Subjuntivo + Condicional",                  "quiz",    "all",      isPremium = true)
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  B2: БЛОК 1 — СЛОЖНЫЕ КОНСТРУКЦИИ
+        //  TODO: Удалить isPremium когда контент B2 готов
+        // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "b2_1",
+            title = "B2 · Блок 1: Сложные конструкции",
+            icon = "🏆",
+            description = "Subjuntivo Imperfecto, пассив, сложный синтаксис",
+            cefrLevel = "B2",
+            color = Color(0xFF6A1B9A),
+            lessons = listOf(
+                RoadmapLesson("🔮 Subjuntivo Imperfecto: -ra/-se форма",            "content", "general"),
+                RoadmapLesson("🔮 Si + Subj.Imp. + Condicional: нереальные условия","content", "general"),
+                RoadmapLesson("📝 Estilo indirecto: dijo que viniera",              "content", "general"),
+                RoadmapLesson("🎭 Voz pasiva: fue construido / es conocido",        "content", "general"),
+                RoadmapLesson("💬 Cláusulas relativas: que, quien, cuyo",           "vocab",   "phrases"),
+                RoadmapLesson("🎯 Мини-тест: Imperfecto + Pasiva",                  "quiz",    "all"),
+                RoadmapLesson("🔮 Subjuntivo Pluscuamperfecto: hubiera hablado",    "content", "general",  isPremium = true),
+                RoadmapLesson("🔮 Si hubiera sabido... — полные гипотезы",          "content", "general",  isPremium = true),
+                RoadmapLesson("📝 Perífrasis: llevar + ger., seguir + ger.",        "content", "general",  isPremium = true),
+                RoadmapLesson("🎭 Ser vs Estar с participio: está hecho/es hecho",  "content", "general",  isPremium = true),
+                RoadmapLesson("💬 Модизмы: no hay mal que... / a lo mejor",         "vocab",   "phrases",  isPremium = true),
+                RoadmapLesson("🎯 Финальный тест уровня B2",                        "quiz",    "all",      isPremium = true)
+            )
         )
     )
 }
