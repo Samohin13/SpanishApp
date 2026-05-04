@@ -35,11 +35,11 @@ object RoadmapData {
                 // 4
                 RoadmapLesson("🔤 Ударение и тильда",                         "content", "general"),
                 // 5
-                RoadmapLesson("👋 Hola / Buenos días / ¿Cómo estás?",         "vocab",   "phrases"),
+                RoadmapLesson("👋 Hola / Buenos días / ¿Cómo estás?",         "content", "phrases"),
                 // 6
-                RoadmapLesson("👋 Adiós / Hasta luego / Hasta mañana",        "vocab",   "phrases"),
+                RoadmapLesson("👋 Adiós / Hasta luego / Hasta mañana",        "content", "phrases"),
                 // 7
-                RoadmapLesson("🙏 Por favor / Gracias / De nada / Perdón",    "vocab",   "phrases"),
+                RoadmapLesson("🙏 Por favor / Gracias / De nada / Perdón",    "content", "phrases"),
                 // 8
                 RoadmapLesson("🟣 SER: soy, eres, es (yo / tú / él)",         "content", "general"),
                 // 9
@@ -51,9 +51,9 @@ object RoadmapData {
                 // 12
                 RoadmapLesson("📰 Артикли: el/la/un/una/los/las",             "content", "general"),
                 // 13
-                RoadmapLesson("🌍 Страны: Soy ruso/rusa, de Rusia",           "vocab",   "general"),
+                RoadmapLesson("🌍 Страны: Soy ruso/rusa, de Rusia",           "content", "general"),
                 // 14
-                RoadmapLesson("🔢 Числа 0–10: cero, uno, dos… diez",          "vocab",   "general"),
+                RoadmapLesson("🔢 Числа 0–10: cero, uno, dos… diez",          "content", "general"),
                 // 15  ЧЕКПОИНТ
                 RoadmapLesson("🏁 Чекпоинт: «Паспортный контроль»",           "quiz",    "all")
             )
@@ -72,21 +72,21 @@ object RoadmapData {
             color = Color(0xFF00BCD4),
             lessons = listOf(
                 // 16
-                RoadmapLesson("🔢 Числа 11–20: once, doce… veinte",           "vocab",   "general"),
+                RoadmapLesson("🔢 Числа 11–20: once, doce… veinte",           "content", "general"),
                 // 17
-                RoadmapLesson("🔢 Числа 21–100: veintiuno, treinta…",          "vocab",   "general"),
+                RoadmapLesson("🔢 Числа 21–100: veintiuno, treinta…",          "content", "general"),
                 // 18
                 RoadmapLesson("🟠 TENER: tengo, tienes, tiene",                "content", "general"),
                 // 19
                 RoadmapLesson("🟠 TENER: tenemos, tenéis, tienen (мн.)",       "content", "general"),
                 // 20
-                RoadmapLesson("👨‍👩‍👧 Семья 1: padre, madre, hermano, hijo",        "vocab",   "familia"),
+                RoadmapLesson("👨‍👩‍👧 Семья 1: padre, madre, hermano, hijo",        "content", "familia"),
                 // 21
-                RoadmapLesson("👨‍👩‍👧 Семья 2: abuelo, tío, primo, sobrino",        "vocab",   "familia"),
+                RoadmapLesson("👨‍👩‍👧 Семья 2: abuelo, tío, primo, sobrino",        "content", "familia"),
                 // 22
                 RoadmapLesson("📎 Притяжательные: mi, tu, su, nuestro/a",     "content", "general"),
                 // 23
-                RoadmapLesson("🎨 Цвета: rojo, azul, verde, amarillo…",        "vocab",   "general"),
+                RoadmapLesson("🎨 Цвета: rojo, azul, verde, amarillo…",        "content", "general"),
                 // 24
                 RoadmapLesson("🎨 Согласование: rojo/roja, blanco/blanca",    "content", "general"),
                 // 25
@@ -94,9 +94,9 @@ object RoadmapData {
                 // 26
                 RoadmapLesson("📍 Предлоги: en/sobre/debajo/al lado de",       "content", "general"),
                 // 27
-                RoadmapLesson("🏠 Дом: sala, cocina, dormitorio, baño",        "vocab",   "casa_hogar"),
+                RoadmapLesson("🏠 Дом: sala, cocina, dormitorio, baño",        "content", "casa_hogar"),
                 // 28
-                RoadmapLesson("🛋️ Мебель: sofá, mesa, silla, cama, armario",  "vocab",   "casa_hogar"),
+                RoadmapLesson("🛋️ Мебель: sofá, mesa, silla, cama, armario",  "content", "casa_hogar"),
                 // 29
                 RoadmapLesson("📚 Множественное число: -s и -es",              "content", "general"),
                 // 30  ЧЕКПОИНТ
@@ -125,9 +125,9 @@ object RoadmapData {
                 // 34
                 RoadmapLesson("🔵 Глаголы -IR: vivir, escribir, abrir",       "content", "general"),
                 // 35
-                RoadmapLesson("🍞 Еда: pan, leche, agua, café, fruta, carne", "vocab",   "comida_bebida"),
+                RoadmapLesson("🍞 Еда: pan, leche, agua, café, fruta, carne", "content", "comida_bebida"),
                 // 36
-                RoadmapLesson("🍽️ В ресторане: el menú, el plato, la cuenta", "vocab",   "comida_bebida"),
+                RoadmapLesson("🍽️ В ресторане: el menú, el plato, la cuenta", "content", "comida_bebida"),
                 // 37
                 RoadmapLesson("❤️ QUERER: quiero, quieres, quiere (хотеть)",   "content", "general"),
                 // 38
@@ -135,11 +135,11 @@ object RoadmapData {
                 // 39
                 RoadmapLesson("⏰ Время: ¿Qué hora es? Son las… Es la una",   "content", "general"),
                 // 40
-                RoadmapLesson("📅 Дни недели: lunes, martes… domingo",         "vocab",   "general"),
+                RoadmapLesson("📅 Дни недели: lunes, martes… domingo",         "content", "general"),
                 // 41
-                RoadmapLesson("📅 Месяцы: enero, febrero… diciembre",          "vocab",   "general"),
+                RoadmapLesson("📅 Месяцы: enero, febrero… diciembre",          "content", "general"),
                 // 42
-                RoadmapLesson("⏱️ ¿Cuándo? hoy / mañana / ayer / ahora",      "vocab",   "general"),
+                RoadmapLesson("⏱️ ¿Cuándo? hoy / mañana / ayer / ahora",      "content", "general"),
                 // 43
                 RoadmapLesson("❓ Вопросы: ¿Qué? ¿Quién? ¿Dónde? ¿Cuánto?",  "content", "general"),
                 // 44
@@ -162,31 +162,31 @@ object RoadmapData {
             color = Color(0xFFFF6F00),
             lessons = listOf(
                 // 46
-                RoadmapLesson("🚇 Транспорт: metro, autobús, taxi, tren",      "vocab",   "viajes"),
+                RoadmapLesson("🚇 Транспорт: metro, autobús, taxi, tren",      "content", "viajes"),
                 // 47
                 RoadmapLesson("🏃 IR: voy, vas, va, vamos, vais, van",         "content", "general"),
                 // 48
                 RoadmapLesson("🏃 IR + A + lugar: voy al colegio",             "content", "general"),
                 // 49
-                RoadmapLesson("🗺️ Дорога: ¿Cómo llego? Gira / Sigue recto",  "vocab",   "ciudad"),
+                RoadmapLesson("🗺️ Дорога: ¿Cómo llego? Gira / Sigue recto",  "content", "ciudad"),
                 // 50
-                RoadmapLesson("🛒 Магазин: ¿Cuánto cuesta? caro / barato",    "vocab",   "compras"),
+                RoadmapLesson("🛒 Магазин: ¿Cuánto cuesta? caro / barato",    "content", "compras"),
                 // 51
-                RoadmapLesson("💶 Деньги: el euro, el precio, ¿Tiene cambio?", "vocab",   "compras"),
+                RoadmapLesson("💶 Деньги: el euro, el precio, ¿Tiene cambio?", "content", "compras"),
                 // 52
                 RoadmapLesson("❤️ GUSTAR: me gusta / me gustan",               "content", "general"),
                 // 53
                 RoadmapLesson("❤️ GUSTAR: te gusta / le gusta / nos gusta",   "content", "general"),
                 // 54
-                RoadmapLesson("🦴 Тело: cabeza, brazo, pierna, mano, ojo",     "vocab",   "cuerpo"),
+                RoadmapLesson("🦴 Тело: cabeza, brazo, pierna, mano, ojo",     "content", "cuerpo"),
                 // 55
-                RoadmapLesson("🤒 Здоровье: Me duele… / Tengo fiebre",         "vocab",   "salud"),
+                RoadmapLesson("🤒 Здоровье: Me duele… / Tengo fiebre",         "content", "salud"),
                 // 56
-                RoadmapLesson("👗 Одежда: camisa, pantalón, vestido, zapatos", "vocab",   "ropa"),
+                RoadmapLesson("👗 Одежда: camisa, pantalón, vestido, zapatos", "content", "ropa"),
                 // 57
-                RoadmapLesson("🌤️ Погода: Hace calor/frío / Llueve / Nieva",  "vocab",   "general"),
+                RoadmapLesson("🌤️ Погода: Hace calor/frío / Llueve / Nieva",  "content", "general"),
                 // 58
-                RoadmapLesson("🌅 Мой день: me levanto, desayuno, trabajo…",   "vocab",   "general"),
+                RoadmapLesson("🌅 Мой день: me levanto, desayuno, trabajo…",   "content", "general"),
                 // 59
                 RoadmapLesson("🔄 Возвратные: levantarse, ducharse, acostarse","content", "general"),
                 // 60  ФИНАЛЬНЫЙ БОСС

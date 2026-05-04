@@ -2622,6 +2622,1674 @@ object LessonContentData {
                     explanation = "irse = уходить. Me voy — я ухожу. Очень частая фраза!"
                 )
             )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A1 БЛОК 1 — vocab-уроки
+        // ══════════════════════════════════════════════
+
+        // u1_l4 — Приветствия
+        "u1_l4" to LessonContent(
+            intro = "Как здороваться по-испански в любое время суток",
+            sections = listOf(
+                LessonSection(
+                    heading = "Приветствия",
+                    items = listOf(
+                        LessonItem("¡Hola!", "Привет!", "универсально"),
+                        LessonItem("Buenos días", "Доброе утро", "до 12:00"),
+                        LessonItem("Buenas tardes", "Добрый день/вечер", "12:00–20:00"),
+                        LessonItem("Buenas noches", "Добрый вечер/ночи", "после 20:00"),
+                        LessonItem("¡Buenas!", "Привет! (коротко)", "разговорное")
+                    )
+                ),
+                LessonSection(
+                    heading = "Как дела?",
+                    items = listOf(
+                        LessonItem("¿Cómo estás?", "Как ты?", "неформально"),
+                        LessonItem("¿Cómo está usted?", "Как вы?", "формально"),
+                        LessonItem("(Muy) bien", "Хорошо / Очень хорошо", ""),
+                        LessonItem("Regular", "Так себе / Нормально", ""),
+                        LessonItem("Mal", "Плохо", ""),
+                        LessonItem("¿Y tú?", "А ты?", "встречный вопрос")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сейчас 9 утра. Как поздороваться?",
+                    question = "— ___, señora García.",
+                    options = listOf("Buenos días", "Buenas noches", "Buenas tardes", "Hasta luego"),
+                    correctAnswer = "Buenos días",
+                    explanation = "Buenos días = доброе утро (до 12:00)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "¿Cómo estás?",
+                    options = listOf("Как ты?", "Кто ты?", "Где ты?", "Что ты делаешь?"),
+                    correctAnswer = "Как ты?",
+                    explanation = "¿Cómo estás? — как ты? (неформально). ¿Cómo está usted? — формально."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный ответ",
+                    question = "— ¿Cómo estás? — ___, gracias.",
+                    options = listOf("Muy bien", "Buenos días", "Hola", "Hasta luego"),
+                    correctAnswer = "Muy bien",
+                    explanation = "Muy bien = очень хорошо. Это стандартный ответ на ¿Cómo estás?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «¡Buenas!»?",
+                    question = "¡Buenas! — это...",
+                    options = listOf("Разговорное «привет»", "До свидания", "Спокойной ночи", "Доброе утро"),
+                    correctAnswer = "Разговорное «привет»",
+                    explanation = "¡Buenas! — короткое приветствие, используется в любое время суток."
+                )
+            )
+        ),
+
+        // u1_l5 — Прощания
+        "u1_l5" to LessonContent(
+            intro = "Как прощаться по-испански",
+            sections = listOf(
+                LessonSection(
+                    heading = "Прощания",
+                    items = listOf(
+                        LessonItem("Adiós", "Пока / До свидания", "финальное прощание"),
+                        LessonItem("Hasta luego", "До встречи / Пока", "скоро увидимся"),
+                        LessonItem("Hasta mañana", "До завтра", ""),
+                        LessonItem("Hasta pronto", "До скорого", ""),
+                        LessonItem("Nos vemos", "Увидимся", "разговорное"),
+                        LessonItem("Hasta el lunes", "До понедельника", "конкретный день")
+                    )
+                ),
+                LessonSection(
+                    heading = "Пожелания на прощание",
+                    items = listOf(
+                        LessonItem("Buenas noches", "Спокойной ночи", "уходя вечером"),
+                        LessonItem("Que te vaya bien", "Всего хорошего", ""),
+                        LessonItem("Cuídate", "Береги себя", ""),
+                        LessonItem("Un abrazo", "Обнимаю", "в конце письма/чата")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «до завтра»?",
+                    question = "— ¡___!",
+                    options = listOf("Hasta mañana", "Hasta luego", "Adiós", "Nos vemos"),
+                    correctAnswer = "Hasta mañana",
+                    explanation = "Hasta mañana = до завтра. mañana = завтра."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Nos vemos",
+                    options = listOf("Увидимся", "Мы видим", "Смотри на нас", "Пока навсегда"),
+                    correctAnswer = "Увидимся",
+                    explanation = "Nos vemos — буквально «мы видимся», разговорное «увидимся»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Конец рабочего дня, уходишь домой. Что скажешь?",
+                    question = "— ¡___, hasta mañana!",
+                    options = listOf("Adiós", "Hola", "Buenos días", "¿Cómo estás?"),
+                    correctAnswer = "Adiós",
+                    explanation = "Adiós — до свидания. В паре с hasta mañana = пока, до завтра!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «береги себя»?",
+                    question = "— ¡___!",
+                    options = listOf("Cuídate", "Hasta pronto", "Nos vemos", "Un abrazo"),
+                    correctAnswer = "Cuídate",
+                    explanation = "Cuídate = береги себя (от cuidar = заботиться, беречь)."
+                )
+            )
+        ),
+
+        // u1_l6 — Вежливые слова
+        "u1_l6" to LessonContent(
+            intro = "Вежливые слова — основа общения",
+            sections = listOf(
+                LessonSection(
+                    heading = "Вежливость",
+                    items = listOf(
+                        LessonItem("Por favor", "Пожалуйста (просьба)", "¿Agua, por favor?"),
+                        LessonItem("Gracias", "Спасибо", "¡Muchas gracias! — большое спасибо"),
+                        LessonItem("De nada", "Пожалуйста (ответ)", "ответ на gracias"),
+                        LessonItem("Perdón / Perdona", "Прости / Извини", "небольшая ошибка"),
+                        LessonItem("Lo siento", "Мне жаль / Извините", "серьёзное извинение"),
+                        LessonItem("Disculpe", "Простите", "формально, незнакомцу")
+                    )
+                ),
+                LessonSection(
+                    heading = "Полезные фразы",
+                    items = listOf(
+                        LessonItem("¿Puede repetir?", "Можете повторить?", ""),
+                        LessonItem("No entiendo", "Я не понимаю", ""),
+                        LessonItem("Más despacio", "Помедленнее", ""),
+                        LessonItem("¿Cómo se dice...?", "Как сказать...?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Случайно толкнул человека. Что скажешь?",
+                    question = "— ¡___!",
+                    options = listOf("Perdón", "Gracias", "De nada", "Por favor"),
+                    correctAnswer = "Perdón",
+                    explanation = "Perdón = прости/извини. Для небольших ошибок и случайных ситуаций."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тебя поблагодарили: «Gracias». Ответь.",
+                    question = "— Gracias. — ___.",
+                    options = listOf("De nada", "Por favor", "Lo siento", "Perdón"),
+                    correctAnswer = "De nada",
+                    explanation = "De nada = пожалуйста (в ответ на «спасибо»). Буквально — «не за что»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как попросить говорить медленнее?",
+                    question = "— ___, por favor.",
+                    options = listOf("Más despacio", "Más rápido", "Perdón", "No entiendo"),
+                    correctAnswer = "Más despacio",
+                    explanation = "Más despacio = помедленнее. despacio = медленно, más = больше."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Lo siento mucho.",
+                    options = listOf("Мне очень жаль.", "Я много слышу.", "Мне не жаль.", "Это приятно."),
+                    correctAnswer = "Мне очень жаль.",
+                    explanation = "Lo siento = мне жаль. mucho = очень. Используется для серьёзных извинений."
+                )
+            )
+        ),
+
+        // u1_l12 — Страны и национальности
+        "u1_l12" to LessonContent(
+            intro = "Страны и национальности на испанском",
+            sections = listOf(
+                LessonSection(
+                    heading = "Страны",
+                    items = listOf(
+                        LessonItem("España", "Испания", ""),
+                        LessonItem("Rusia", "Россия", ""),
+                        LessonItem("México", "Мексика", ""),
+                        LessonItem("Francia", "Франция", ""),
+                        LessonItem("Alemania", "Германия", ""),
+                        LessonItem("Italia", "Италия", ""),
+                        LessonItem("Estados Unidos", "США", ""),
+                        LessonItem("China", "Китай", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Национальности (м/ж)",
+                    items = listOf(
+                        LessonItem("español / española", "испанец / испанка", "Soy español."),
+                        LessonItem("ruso / rusa", "русский / русская", "Soy rusa."),
+                        LessonItem("mexicano / mexicana", "мексиканец / мексиканка", ""),
+                        LessonItem("francés / francesa", "француз / француженка", ""),
+                        LessonItem("alemán / alemana", "немец / немка", ""),
+                        LessonItem("italiano / italiana", "итальянец / итальянка", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «я русский»?",
+                    question = "Soy ___.",
+                    options = listOf("ruso", "rusa", "russo", "Rusia"),
+                    correctAnswer = "ruso",
+                    explanation = "ruso = русский (муж.), rusa = русская (жен.). Национальности пишутся с маленькой буквы."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи: «Она испанка»",
+                    question = "Ella es ___.",
+                    options = listOf("española", "español", "España", "espanol"),
+                    correctAnswer = "española",
+                    explanation = "española = испанка (жен.). español = испанец (муж.)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как называется страна на испанском?",
+                    question = "Германия = ___",
+                    options = listOf("Alemania", "Alemana", "Germania", "Germán"),
+                    correctAnswer = "Alemania",
+                    explanation = "Alemania = Германия. alemán/alemana = немец/немка."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи фразу",
+                    question = "Soy de Francia.",
+                    options = listOf("Я из Франции.", "Я француз.", "Я во Франции.", "Я еду во Францию."),
+                    correctAnswer = "Я из Франции.",
+                    explanation = "ser de + страна = быть родом из. Soy de Rusia = я из России."
+                )
+            )
+        ),
+
+        // u1_l13 — Числа 0–10
+        "u1_l13" to LessonContent(
+            intro = "Первые числа — основа всего",
+            sections = listOf(
+                LessonSection(
+                    heading = "Числа 0–10",
+                    items = listOf(
+                        LessonItem("0 — cero", "ноль", ""),
+                        LessonItem("1 — uno / una", "один / одна", "un libro, una mesa"),
+                        LessonItem("2 — dos", "два", ""),
+                        LessonItem("3 — tres", "три", ""),
+                        LessonItem("4 — cuatro", "четыре", ""),
+                        LessonItem("5 — cinco", "пять", ""),
+                        LessonItem("6 — seis", "шесть", ""),
+                        LessonItem("7 — siete", "семь", ""),
+                        LessonItem("8 — ocho", "восемь", ""),
+                        LessonItem("9 — nueve", "девять", ""),
+                        LessonItem("10 — diez", "десять", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "В речи",
+                    items = listOf(
+                        LessonItem("Tengo dos hermanos.", "У меня два брата.", ""),
+                        LessonItem("Son las tres.", "Сейчас три часа.", ""),
+                        LessonItem("Cinco euros, por favor.", "Пять евро, пожалуйста.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какое число?",
+                    question = "siete = ?",
+                    options = listOf("7", "6", "8", "9"),
+                    correctAnswer = "7",
+                    explanation = "siete = семь (7)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «четыре»?",
+                    question = "4 = ___",
+                    options = listOf("cuatro", "cinco", "tres", "catorce"),
+                    correctAnswer = "cuatro",
+                    explanation = "cuatro = четыре. Запомни: cuatro — похоже на «кватро»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Tengo tres gatos.",
+                    options = listOf("У меня три кота.", "Я вижу три кота.", "Три кота едят.", "Нет кота."),
+                    correctAnswer = "У меня три кота.",
+                    explanation = "tener = иметь. Tengo = у меня есть. tres = три. gato = кот."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сколько?",
+                    question = "dos + tres = ___",
+                    options = listOf("cinco", "seis", "cuatro", "siete"),
+                    correctAnswer = "cinco",
+                    explanation = "dos (2) + tres (3) = cinco (5)."
+                )
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A1 БЛОК 2 — vocab-уроки
+        // ══════════════════════════════════════════════
+
+        // u2_l0 — Числа 11–20
+        "u2_l0" to LessonContent(
+            intro = "Числа от 11 до 20",
+            sections = listOf(
+                LessonSection(
+                    heading = "Числа 11–20",
+                    items = listOf(
+                        LessonItem("11 — once", "одиннадцать", ""),
+                        LessonItem("12 — doce", "двенадцать", ""),
+                        LessonItem("13 — trece", "тринадцать", ""),
+                        LessonItem("14 — catorce", "четырнадцать", ""),
+                        LessonItem("15 — quince", "пятнадцать", ""),
+                        LessonItem("16 — dieciséis", "шестнадцать", "diez+y+seis"),
+                        LessonItem("17 — diecisiete", "семнадцать", ""),
+                        LessonItem("18 — dieciocho", "восемнадцать", ""),
+                        LessonItem("19 — diecinueve", "девятнадцать", ""),
+                        LessonItem("20 — veinte", "двадцать", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Правило 16–19",
+                    items = listOf(
+                        LessonItem("dieci- + число", "16–19 пишутся слитно", "dieciséis, diecisiete..."),
+                        LessonItem("dieciséis", "имеет акцент на é", "не dieciseis!")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какое число?",
+                    question = "quince = ?",
+                    options = listOf("15", "14", "16", "50"),
+                    correctAnswer = "15",
+                    explanation = "quince = пятнадцать (15). Запомни: квинс."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как написать 18?",
+                    question = "18 = ___",
+                    options = listOf("dieciocho", "diecocho", "diez y ocho", "ochodiez"),
+                    correctAnswer = "dieciocho",
+                    explanation = "dieciocho — пишется слитно. 16–19 объединяются с приставкой dieci-."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Tengo doce años.",
+                    options = listOf("Мне двенадцать лет.", "У меня двенадцать.", "Я двадцать лет.", "Мне двадцать два."),
+                    correctAnswer = "Мне двенадцать лет.",
+                    explanation = "doce = двенадцать. tener ... años = быть ... лет (буквально «иметь лет»)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что больше?",
+                    question = "dieciséis или catorce?",
+                    options = listOf("dieciséis (16)", "catorce (14)", "Они равны", "Не могу определить"),
+                    correctAnswer = "dieciséis (16)",
+                    explanation = "dieciséis = 16, catorce = 14. 16 > 14."
+                )
+            )
+        ),
+
+        // u2_l1 — Числа 21–100
+        "u2_l1" to LessonContent(
+            intro = "Числа от 21 до 100",
+            sections = listOf(
+                LessonSection(
+                    heading = "Десятки",
+                    items = listOf(
+                        LessonItem("20 — veinte", "двадцать", ""),
+                        LessonItem("30 — treinta", "тридцать", ""),
+                        LessonItem("40 — cuarenta", "сорок", ""),
+                        LessonItem("50 — cincuenta", "пятьдесят", ""),
+                        LessonItem("60 — sesenta", "шестьдесят", ""),
+                        LessonItem("70 — setenta", "семьдесят", ""),
+                        LessonItem("80 — ochenta", "восемьдесят", ""),
+                        LessonItem("90 — noventa", "девяносто", ""),
+                        LessonItem("100 — cien", "сто", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Составные числа 21–29 и 31+",
+                    items = listOf(
+                        LessonItem("21 — veintiuno", "двадцать один", "слитно!"),
+                        LessonItem("22 — veintidós", "двадцать два", "слитно!"),
+                        LessonItem("31 — treinta y uno", "тридцать один", "через y"),
+                        LessonItem("45 — cuarenta y cinco", "сорок пять", "через y"),
+                        LessonItem("99 — noventa y nueve", "девяносто девять", "через y")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как написать 50?",
+                    question = "50 = ___",
+                    options = listOf("cincuenta", "cincodiez", "cinquenta", "cincenta"),
+                    correctAnswer = "cincuenta",
+                    explanation = "cincuenta = пятьдесят. Запомни написание: cinc-u-enta."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "treinta y dos",
+                    options = listOf("32", "30", "22", "23"),
+                    correctAnswer = "32",
+                    explanation = "treinta (30) + y + dos (2) = 32. Числа 31–99 (кроме 21–29) строятся через y."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как правильно написать 25?",
+                    question = "25 = ___",
+                    options = listOf("veinticinco", "veinte y cinco", "veintecinco", "veinticincos"),
+                    correctAnswer = "veinticinco",
+                    explanation = "21–29 пишутся слитно: veintiuno, veintidós, veintitrés... veinticinco."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сколько лет?",
+                    question = "Tengo cuarenta y tres años.",
+                    options = listOf("43 года", "40 лет", "34 года", "53 года"),
+                    correctAnswer = "43 года",
+                    explanation = "cuarenta (40) + y + tres (3) = 43."
+                )
+            )
+        ),
+
+        // u2_l4 — Семья 1
+        "u2_l4" to LessonContent(
+            intro = "Ближайшие родственники",
+            sections = listOf(
+                LessonSection(
+                    heading = "Семья",
+                    items = listOf(
+                        LessonItem("el padre", "отец", "Mi padre se llama Carlos."),
+                        LessonItem("la madre", "мать", "Mi madre trabaja."),
+                        LessonItem("los padres", "родители", "Mis padres son simpáticos."),
+                        LessonItem("el hermano", "брат", "Tengo un hermano."),
+                        LessonItem("la hermana", "сестра", "Mi hermana tiene 10 años."),
+                        LessonItem("el hijo", "сын", "Tengo dos hijos."),
+                        LessonItem("la hija", "дочь", "Mi hija se llama Sofía."),
+                        LessonItem("los hijos", "дети", "¿Tienes hijos?")
+                    )
+                ),
+                LessonSection(
+                    heading = "Семейное положение",
+                    items = listOf(
+                        LessonItem("el marido / el esposo", "муж", ""),
+                        LessonItem("la mujer / la esposa", "жена", ""),
+                        LessonItem("soltero/a", "холост / не замужем", ""),
+                        LessonItem("casado/a", "женат / замужем", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «у меня есть брат»?",
+                    question = "Tengo un ___.",
+                    options = listOf("hermano", "hermana", "hijo", "padre"),
+                    correctAnswer = "hermano",
+                    explanation = "hermano = брат, hermana = сестра."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи: «мои родители»",
+                    question = "___ padres",
+                    options = listOf("Mis", "Mi", "Sus", "Tu"),
+                    correctAnswer = "Mis",
+                    explanation = "mis = мои (мн.ч.), mi = мой/моя (ед.ч.). padres = родители → mis padres."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «los hijos»?",
+                    question = "los hijos = ?",
+                    options = listOf("дети / сыновья", "сын", "дочери", "братья"),
+                    correctAnswer = "дети / сыновья",
+                    explanation = "hijo = сын. los hijos = сыновья или дети (в общем смысле)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи вопрос",
+                    question = "¿Tienes hermanos?",
+                    options = listOf("У тебя есть братья/сёстры?", "Сколько лет твоему брату?", "Где твои братья?", "Ты любишь брата?"),
+                    correctAnswer = "У тебя есть братья/сёстры?",
+                    explanation = "¿Tienes...? = у тебя есть...? hermanos = братья (или братья и сёстры вместе)."
+                )
+            )
+        ),
+
+        // u2_l5 — Семья 2
+        "u2_l5" to LessonContent(
+            intro = "Расширенная семья: бабушки, дяди, кузены",
+            sections = listOf(
+                LessonSection(
+                    heading = "Расширенная семья",
+                    items = listOf(
+                        LessonItem("el abuelo / la abuela", "дедушка / бабушка", "los abuelos = бабушка и дедушка"),
+                        LessonItem("el tío / la tía", "дядя / тётя", "los tíos = тёти и дяди"),
+                        LessonItem("el primo / la prima", "двоюродный брат/сестра", "mis primos = мои кузены"),
+                        LessonItem("el sobrino / la sobrina", "племянник / племянница", ""),
+                        LessonItem("el nieto / la nieta", "внук / внучка", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Описание семьи",
+                    items = listOf(
+                        LessonItem("grande", "большая (семья)", "Tengo una familia grande."),
+                        LessonItem("pequeña", "маленькая", "Mi familia es pequeña."),
+                        LessonItem("unida", "дружная", "Somos una familia unida."),
+                        LessonItem("¿Cómo es tu familia?", "Какая у тебя семья?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Кто такой «el abuelo»?",
+                    question = "el abuelo = ?",
+                    options = listOf("дедушка", "дядя", "племянник", "отец"),
+                    correctAnswer = "дедушка",
+                    explanation = "el abuelo = дедушка. la abuela = бабушка. los abuelos = бабушка с дедушкой."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «племянница»?",
+                    question = "племянница = ___",
+                    options = listOf("la sobrina", "la prima", "la nieta", "la tía"),
+                    correctAnswer = "la sobrina",
+                    explanation = "sobrina = племянница (жен.). sobrino = племянник (муж.)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Mis primos viven en Madrid.",
+                    options = listOf("Мои кузены живут в Мадриде.", "Мои родители в Мадриде.", "Мои друзья живут.", "Мой брат в Мадриде."),
+                    correctAnswer = "Мои кузены живут в Мадриде.",
+                    explanation = "primos = кузены (двоюродные братья/сёстры). vivir = жить."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «у меня большая семья»?",
+                    question = "Tengo una familia ___.",
+                    options = listOf("grande", "pequeña", "unida", "nueva"),
+                    correctAnswer = "grande",
+                    explanation = "grande = большой/большая. pequeña = маленькая. Tengo una familia grande = у меня большая семья."
+                )
+            )
+        ),
+
+        // u2_l7 — Цвета
+        "u2_l7" to LessonContent(
+            intro = "Цвета на испанском — и их согласование",
+            sections = listOf(
+                LessonSection(
+                    heading = "Основные цвета",
+                    items = listOf(
+                        LessonItem("rojo / roja", "красный / красная", "un coche rojo"),
+                        LessonItem("azul", "синий / голубой", "не меняется по роду"),
+                        LessonItem("verde", "зелёный", "не меняется по роду"),
+                        LessonItem("amarillo / amarilla", "жёлтый / жёлтая", ""),
+                        LessonItem("blanco / blanca", "белый / белая", ""),
+                        LessonItem("negro / negra", "чёрный / чёрная", ""),
+                        LessonItem("naranja", "оранжевый", "не меняется"),
+                        LessonItem("rosa", "розовый", "не меняется"),
+                        LessonItem("morado / morada", "фиолетовый", ""),
+                        LessonItem("gris", "серый", "не меняется")
+                    )
+                ),
+                LessonSection(
+                    heading = "Правило согласования",
+                    items = listOf(
+                        LessonItem("-o/-a меняются", "rojo→roja, blanco→blanca", ""),
+                        LessonItem("azul/verde/naranja", "одинаковы для м. и ж.", "un gato verde / una casa verde")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи: «красная машина»",
+                    question = "un coche ___",
+                    options = listOf("rojo", "roja", "roja coche", "rojо"),
+                    correctAnswer = "rojo",
+                    explanation = "coche (машина) — мужского рода → rojo (не roja). El coche es rojo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какой цвет не меняется по роду?",
+                    question = "Выбери цвет, который одинаков для м. и ж. рода",
+                    options = listOf("azul", "rojo", "blanco", "amarillo"),
+                    correctAnswer = "azul",
+                    explanation = "azul, verde, naranja, rosa, gris — не меняются. un libro azul / una silla azul."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «белая рубашка»?",
+                    question = "una camisa ___",
+                    options = listOf("blanca", "blanco", "blanc", "blancas"),
+                    correctAnswer = "blanca",
+                    explanation = "camisa (рубашка) — женского рода → blanca."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "El cielo es azul.",
+                    options = listOf("Небо голубое.", "Небо зелёное.", "Море синее.", "Небо серое."),
+                    correctAnswer = "Небо голубое.",
+                    explanation = "el cielo = небо, azul = синий/голубой."
+                )
+            )
+        ),
+
+        // u2_l11 — Дом
+        "u2_l11" to LessonContent(
+            intro = "Комнаты и части дома",
+            sections = listOf(
+                LessonSection(
+                    heading = "Комнаты",
+                    items = listOf(
+                        LessonItem("la sala / el salón", "гостиная", ""),
+                        LessonItem("la cocina", "кухня", ""),
+                        LessonItem("el dormitorio", "спальня", ""),
+                        LessonItem("el baño", "ванная/туалет", ""),
+                        LessonItem("el comedor", "столовая", ""),
+                        LessonItem("el pasillo", "коридор", ""),
+                        LessonItem("el jardín", "сад", ""),
+                        LessonItem("el garaje", "гараж", ""),
+                        LessonItem("la terraza", "терраса", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Типы жилья",
+                    items = listOf(
+                        LessonItem("el piso", "квартира", "Vivo en un piso."),
+                        LessonItem("la casa", "дом", "Tengo una casa grande."),
+                        LessonItem("el estudio", "студия (квартира)", ""),
+                        LessonItem("el edificio", "здание / дом (здание)", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Где готовят еду?",
+                    question = "Cocino en ___.",
+                    options = listOf("la cocina", "el baño", "el dormitorio", "el salón"),
+                    correctAnswer = "la cocina",
+                    explanation = "la cocina = кухня. cocinar = готовить. cocino = я готовлю."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Mi dormitorio es pequeño.",
+                    options = listOf("Моя спальня маленькая.", "Моя кухня маленькая.", "Мой дом маленький.", "Моя квартира маленькая."),
+                    correctAnswer = "Моя спальня маленькая.",
+                    explanation = "dormitorio = спальня. pequeño = маленький."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «квартира»?",
+                    question = "квартира = ___",
+                    options = listOf("el piso", "la casa", "el edificio", "el estudio"),
+                    correctAnswer = "el piso",
+                    explanation = "el piso = квартира (в Испании). la casa = дом (отдельный). В Латинской Америке говорят el departamento."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Где принимают душ?",
+                    question = "Me ducho en ___.",
+                    options = listOf("el baño", "la cocina", "el comedor", "el garaje"),
+                    correctAnswer = "el baño",
+                    explanation = "el baño = ванная/туалет. ducharse = принимать душ."
+                )
+            )
+        ),
+
+        // u2_l12 — Мебель
+        "u2_l12" to LessonContent(
+            intro = "Мебель и предметы интерьера",
+            sections = listOf(
+                LessonSection(
+                    heading = "Мебель",
+                    items = listOf(
+                        LessonItem("el sofá", "диван", "El sofá es cómodo."),
+                        LessonItem("la mesa", "стол", "La mesa es grande."),
+                        LessonItem("la silla", "стул", "Hay cuatro sillas."),
+                        LessonItem("la cama", "кровать", "Mi cama es cómoda."),
+                        LessonItem("el armario", "шкаф", ""),
+                        LessonItem("la estantería", "книжная полка", ""),
+                        LessonItem("la lámpara", "лампа", ""),
+                        LessonItem("la alfombra", "ковёр", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глагол HAY (есть / имеется)",
+                    items = listOf(
+                        LessonItem("Hay una mesa.", "Есть стол.", ""),
+                        LessonItem("Hay dos sillas.", "Есть два стула.", ""),
+                        LessonItem("No hay armario.", "Нет шкафа.", ""),
+                        LessonItem("¿Hay jardín?", "Есть сад?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «в комнате есть диван»?",
+                    question = "En el salón ___ un sofá.",
+                    options = listOf("hay", "es", "está", "tiene"),
+                    correctAnswer = "hay",
+                    explanation = "hay = есть/имеется (безличная форма глагола haber). Hay una mesa — есть стол."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "No hay sillas.",
+                    options = listOf("Нет стульев.", "Нет дивана.", "Нет стола.", "Нет кровати."),
+                    correctAnswer = "Нет стульев.",
+                    explanation = "silla = стул. No hay = нет (отрицание hay)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «la cama»?",
+                    question = "la cama = ?",
+                    options = listOf("кровать", "стул", "диван", "шкаф"),
+                    correctAnswer = "кровать",
+                    explanation = "la cama = кровать. Me acuesto en la cama = я ложусь спать на кровать."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Hay armario en tu dormitorio?",
+                    options = listOf("В твоей спальне есть шкаф?", "Где твой шкаф?", "У тебя есть кровать?", "Какой у тебя диван?"),
+                    correctAnswer = "В твоей спальне есть шкаф?",
+                    explanation = "¿Hay...? = есть ли...? armario = шкаф. dormitorio = спальня."
+                )
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A1 БЛОК 3 — vocab-уроки
+        // ══════════════════════════════════════════════
+
+        // u3_l4 — Еда
+        "u3_l4" to LessonContent(
+            intro = "Продукты питания и еда",
+            sections = listOf(
+                LessonSection(
+                    heading = "Продукты",
+                    items = listOf(
+                        LessonItem("el pan", "хлеб", ""),
+                        LessonItem("la leche", "молоко", ""),
+                        LessonItem("el agua (f.)", "вода", "el agua — исключение!"),
+                        LessonItem("el café", "кофе", ""),
+                        LessonItem("la fruta", "фрукты", ""),
+                        LessonItem("la carne", "мясо", ""),
+                        LessonItem("el pescado", "рыба", ""),
+                        LessonItem("el arroz", "рис", ""),
+                        LessonItem("la verdura", "овощи", ""),
+                        LessonItem("el huevo", "яйцо", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Приёмы пищи",
+                    items = listOf(
+                        LessonItem("el desayuno", "завтрак", "desayunar = завтракать"),
+                        LessonItem("el almuerzo / la comida", "обед", "comer = обедать"),
+                        LessonItem("la cena", "ужин", "cenar = ужинать"),
+                        LessonItem("tener hambre", "хотеть есть", "Tengo hambre."),
+                        LessonItem("tener sed", "хотеть пить", "Tengo sed.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Tengo hambre.",
+                    options = listOf("Я хочу есть.", "Я хочу пить.", "Я сыт.", "Я устал."),
+                    correctAnswer = "Я хочу есть.",
+                    explanation = "tener hambre = хотеть есть (буквально «иметь голод»). Tengo hambre = я хочу есть."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «el pescado»?",
+                    question = "el pescado = ?",
+                    options = listOf("рыба (еда)", "мясо", "рис", "хлеб"),
+                    correctAnswer = "рыба (еда)",
+                    explanation = "el pescado = рыба как блюдо/продукт. el pez = живая рыба в воде."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как называется ужин?",
+                    question = "ужин = ___",
+                    options = listOf("la cena", "el desayuno", "el almuerzo", "la comida"),
+                    correctAnswer = "la cena",
+                    explanation = "la cena = ужин. cenar = ужинать. Cenamos a las 9. = Мы ужинаем в 9."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Заполни пропуск",
+                    question = "No como ___. Soy vegetariano.",
+                    options = listOf("carne", "fruta", "arroz", "verdura"),
+                    correctAnswer = "carne",
+                    explanation = "carne = мясо. vegetariano = вегетарианец. No como carne = я не ем мясо."
+                )
+            )
+        ),
+
+        // u3_l5 — В ресторане
+        "u3_l5" to LessonContent(
+            intro = "Как заказать еду в ресторане",
+            sections = listOf(
+                LessonSection(
+                    heading = "В ресторане",
+                    items = listOf(
+                        LessonItem("el menú", "меню", "¿Me trae el menú?"),
+                        LessonItem("el plato", "блюдо / тарелка", "el plato del día = блюдо дня"),
+                        LessonItem("la cuenta", "счёт", "¡La cuenta, por favor!"),
+                        LessonItem("el camarero / la camarera", "официант/ка", ""),
+                        LessonItem("pedir", "заказывать", "Quiero pedir..."),
+                        LessonItem("la mesa", "стол", "Una mesa para dos.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Полезные фразы",
+                    items = listOf(
+                        LessonItem("Una mesa para dos, por favor.", "Столик на двоих.", ""),
+                        LessonItem("¿Qué recomienda?", "Что порекомендуете?", ""),
+                        LessonItem("Quiero el plato del día.", "Я хочу блюдо дня.", ""),
+                        LessonItem("¿Está incluido el servicio?", "Обслуживание включено?", ""),
+                        LessonItem("¡Buen provecho!", "Приятного аппетита!", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как попросить счёт?",
+                    question = "___, por favor.",
+                    options = listOf("La cuenta", "El menú", "El plato", "La mesa"),
+                    correctAnswer = "La cuenta",
+                    explanation = "La cuenta = счёт. ¡La cuenta, por favor! — типичная фраза в ресторане."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «столик на двоих»?",
+                    question = "Una ___ para dos, por favor.",
+                    options = listOf("mesa", "cuenta", "menú", "plato"),
+                    correctAnswer = "mesa",
+                    explanation = "la mesa = стол. Una mesa para dos = столик на двоих."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Qué recomienda?",
+                    options = listOf("Что порекомендуете?", "Что вы хотите?", "Что есть в меню?", "Какой счёт?"),
+                    correctAnswer = "Что порекомендуете?",
+                    explanation = "recomendar = рекомендовать. ¿Qué recomienda? — вопрос официанту."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «¡Buen provecho!»?",
+                    question = "¡Buen provecho! = ?",
+                    options = listOf("Приятного аппетита!", "Добрый день!", "Спасибо за ужин!", "Пожалуйста!"),
+                    correctAnswer = "Приятного аппетита!",
+                    explanation = "¡Buen provecho! = приятного аппетита! Говорят перед едой или проходя мимо обедающих."
+                )
+            )
+        ),
+
+        // u3_l9 — Дни недели
+        "u3_l9" to LessonContent(
+            intro = "Семь дней недели",
+            sections = listOf(
+                LessonSection(
+                    heading = "Дни недели",
+                    items = listOf(
+                        LessonItem("lunes", "понедельник", ""),
+                        LessonItem("martes", "вторник", ""),
+                        LessonItem("miércoles", "среда", ""),
+                        LessonItem("jueves", "четверг", ""),
+                        LessonItem("viernes", "пятница", ""),
+                        LessonItem("sábado", "суббота", ""),
+                        LessonItem("domingo", "воскресенье", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Использование",
+                    items = listOf(
+                        LessonItem("el lunes", "в понедельник (один раз)", "El lunes tengo clase."),
+                        LessonItem("los lunes", "по понедельникам", "Los lunes trabajo."),
+                        LessonItem("el fin de semana", "выходные", ""),
+                        LessonItem("entre semana", "в будни", ""),
+                        LessonItem("¿Qué día es hoy?", "Какой сегодня день?", "Hoy es martes.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какой день идёт после пятницы?",
+                    question = "viernes → ___",
+                    options = listOf("sábado", "domingo", "lunes", "jueves"),
+                    correctAnswer = "sábado",
+                    explanation = "viernes (пятница) → sábado (суббота) → domingo (воскресенье)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Los lunes tengo inglés.",
+                    options = listOf("По понедельникам у меня английский.", "В понедельник у меня английский.", "Каждый понедельник я работаю.", "Сегодня понедельник."),
+                    correctAnswer = "По понедельникам у меня английский.",
+                    explanation = "los lunes (с артиклем + мн.ч.) = по понедельникам (регулярно)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «el fin de semana»?",
+                    question = "el fin de semana = ?",
+                    options = listOf("выходные", "конец месяца", "будни", "рабочая неделя"),
+                    correctAnswer = "выходные",
+                    explanation = "fin = конец, semana = неделя. el fin de semana = конец недели = выходные (суббота+воскресенье)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какой день — miércoles?",
+                    question = "miércoles = ?",
+                    options = listOf("среда", "вторник", "четверг", "пятница"),
+                    correctAnswer = "среда",
+                    explanation = "miércoles = среда. Запомни: ми-ЭР-колес — звучит необычно!"
+                )
+            )
+        ),
+
+        // u3_l10 — Месяцы
+        "u3_l10" to LessonContent(
+            intro = "Двенадцать месяцев года",
+            sections = listOf(
+                LessonSection(
+                    heading = "Месяцы",
+                    items = listOf(
+                        LessonItem("enero", "январь", ""),
+                        LessonItem("febrero", "февраль", ""),
+                        LessonItem("marzo", "март", ""),
+                        LessonItem("abril", "апрель", ""),
+                        LessonItem("mayo", "май", ""),
+                        LessonItem("junio", "июнь", ""),
+                        LessonItem("julio", "июль", ""),
+                        LessonItem("agosto", "август", ""),
+                        LessonItem("septiembre", "сентябрь", ""),
+                        LessonItem("octubre", "октябрь", ""),
+                        LessonItem("noviembre", "ноябрь", ""),
+                        LessonItem("diciembre", "декабрь", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Даты и сезоны",
+                    items = listOf(
+                        LessonItem("¿Cuándo es tu cumpleaños?", "Когда твой день рождения?", ""),
+                        LessonItem("El 5 de mayo.", "Пятого мая.", "число + de + месяц"),
+                        LessonItem("en enero", "в январе", "предлог en + месяц"),
+                        LessonItem("Nací en marzo.", "Я родился/лась в марте.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какой месяц восьмой?",
+                    question = "Восьмой месяц = ___",
+                    options = listOf("agosto", "julio", "junio", "septiembre"),
+                    correctAnswer = "agosto",
+                    explanation = "agosto = август (8-й месяц). julio = июль (7), septiembre = сентябрь (9)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «в апреле»?",
+                    question = "___ abril",
+                    options = listOf("en", "el", "de", "por"),
+                    correctAnswer = "en",
+                    explanation = "en + месяц = в (месяце). en abril = в апреле, en enero = в январе."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи дату",
+                    question = "El 3 de febrero",
+                    options = listOf("3 февраля", "3 марта", "23 февраля", "13 февраля"),
+                    correctAnswer = "3 февраля",
+                    explanation = "el 3 de febrero = третье февраля. Формула: el + число + de + месяц."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Mi cumpleaños es en diciembre.",
+                    options = listOf("Мой день рождения в декабре.", "Я родился в декабре.", "Декабрь — мой любимый месяц.", "Рождество в декабре."),
+                    correctAnswer = "Мой день рождения в декабре.",
+                    explanation = "cumpleaños = день рождения. en diciembre = в декабре."
+                )
+            )
+        ),
+
+        // u3_l11 — Когда? hoy/mañana/ayer
+        "u3_l11" to LessonContent(
+            intro = "Слова для обозначения времени",
+            sections = listOf(
+                LessonSection(
+                    heading = "Когда?",
+                    items = listOf(
+                        LessonItem("hoy", "сегодня", "Hoy es lunes."),
+                        LessonItem("mañana", "завтра", "Mañana trabajo."),
+                        LessonItem("ayer", "вчера", "Ayer fui al cine."),
+                        LessonItem("ahora", "сейчас", "Ahora estoy en casa."),
+                        LessonItem("después", "потом / после", "Después como."),
+                        LessonItem("antes", "раньше / до", "Antes estudio."),
+                        LessonItem("siempre", "всегда", "Siempre desayuno."),
+                        LessonItem("nunca", "никогда", "Nunca como carne."),
+                        LessonItem("a veces", "иногда", "A veces corro."),
+                        LessonItem("ya", "уже", "Ya termino.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Части дня",
+                    items = listOf(
+                        LessonItem("por la mañana", "утром", ""),
+                        LessonItem("por la tarde", "днём/вечером", ""),
+                        LessonItem("por la noche", "ночью", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Siempre desayuno a las ocho.",
+                    options = listOf("Я всегда завтракаю в восемь.", "Я иногда завтракаю.", "Я никогда не завтракаю.", "Я уже завтракал."),
+                    correctAnswer = "Я всегда завтракаю в восемь.",
+                    explanation = "siempre = всегда. desayunar = завтракать. a las ocho = в восемь."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «вчера»?",
+                    question = "___ fui al parque.",
+                    options = listOf("Ayer", "Hoy", "Mañana", "Ahora"),
+                    correctAnswer = "Ayer",
+                    explanation = "Ayer = вчера. hoy = сегодня. mañana = завтра."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «a veces»?",
+                    question = "A veces como pizza.",
+                    options = listOf("Иногда я ем пиццу.", "Всегда ем пиццу.", "Никогда не ем пиццу.", "Я ем пиццу сейчас."),
+                    correctAnswer = "Иногда я ем пиццу.",
+                    explanation = "a veces = иногда."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Mañana por la mañana tengo clase.",
+                    options = listOf("Завтра утром у меня занятие.", "Сегодня утром занятие.", "Завтра вечером занятие.", "Утром я работаю."),
+                    correctAnswer = "Завтра утром у меня занятие.",
+                    explanation = "mañana = завтра. por la mañana = утром. tener clase = иметь занятие."
+                )
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A1 БЛОК 4 — vocab-уроки
+        // ══════════════════════════════════════════════
+
+        // u4_l0 — Транспорт
+        "u4_l0" to LessonContent(
+            intro = "Виды транспорта",
+            sections = listOf(
+                LessonSection(
+                    heading = "Транспорт",
+                    items = listOf(
+                        LessonItem("el metro", "метро", "Voy en metro."),
+                        LessonItem("el autobús", "автобус", "Tomo el autobús."),
+                        LessonItem("el taxi", "такси", "Pido un taxi."),
+                        LessonItem("el tren", "поезд", "El tren sale a las 9."),
+                        LessonItem("el avión", "самолёт", "Viajo en avión."),
+                        LessonItem("el coche / el carro", "машина", "Tengo coche."),
+                        LessonItem("la bicicleta / la bici", "велосипед", "Voy en bici."),
+                        LessonItem("a pie", "пешком", "Voy a pie.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Предлог EN для транспорта",
+                    items = listOf(
+                        LessonItem("en metro", "на метро", ""),
+                        LessonItem("en autobús", "на автобусе", ""),
+                        LessonItem("en coche", "на машине", ""),
+                        LessonItem("en tren", "на поезде", ""),
+                        LessonItem("a pie", "пешком (исключение!)", "не «en pie»")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Voy al trabajo en metro.",
+                    options = listOf("Я еду на работу на метро.", "Я иду на работу пешком.", "Я езжу на автобусе.", "Я живу рядом с метро."),
+                    correctAnswer = "Я еду на работу на метро.",
+                    explanation = "ir + en metro = ехать на метро. al trabajo = на работу."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «пешком»?",
+                    question = "пешком = ___",
+                    options = listOf("a pie", "en pie", "con pie", "por pie"),
+                    correctAnswer = "a pie",
+                    explanation = "a pie = пешком. Это исключение — другие виды транспорта идут с en."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «на велосипеде»?",
+                    question = "Voy ___ bici.",
+                    options = listOf("en", "a", "con", "de"),
+                    correctAnswer = "en",
+                    explanation = "en bici = на велосипеде. Все транспортные средства (кроме a pie) используют предлог en."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «el avión»?",
+                    question = "el avión = ?",
+                    options = listOf("самолёт", "автобус", "поезд", "такси"),
+                    correctAnswer = "самолёт",
+                    explanation = "el avión = самолёт. viajar en avión = путешествовать самолётом."
+                )
+            )
+        ),
+
+        // u4_l3 — Дорога
+        "u4_l3" to LessonContent(
+            intro = "Как спросить дорогу и объяснить маршрут",
+            sections = listOf(
+                LessonSection(
+                    heading = "Как добраться",
+                    items = listOf(
+                        LessonItem("¿Cómo llego a...?", "Как добраться до...?", ""),
+                        LessonItem("girar / doblar a la derecha", "повернуть направо", ""),
+                        LessonItem("girar / doblar a la izquierda", "повернуть налево", ""),
+                        LessonItem("seguir recto / todo recto", "идти прямо", ""),
+                        LessonItem("la calle", "улица", "en la calle Mayor"),
+                        LessonItem("la plaza", "площадь", "la Plaza Mayor"),
+                        LessonItem("la parada", "остановка", "la parada de metro"),
+                        LessonItem("el semáforo", "светофор", "en el semáforo, gira")
+                    )
+                ),
+                LessonSection(
+                    heading = "Расстояние",
+                    items = listOf(
+                        LessonItem("cerca", "близко", "Está cerca."),
+                        LessonItem("lejos", "далеко", "Está lejos."),
+                        LessonItem("a cinco minutos", "в пяти минутах", ""),
+                        LessonItem("al final de la calle", "в конце улицы", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить дорогу до вокзала?",
+                    question = "¿___ llego a la estación?",
+                    options = listOf("Cómo", "Dónde", "Cuándo", "Quién"),
+                    correctAnswer = "Cómo",
+                    explanation = "¿Cómo llego a...? = как мне добраться до...? Cómo = как."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «повернуть направо»?",
+                    question = "girar a la ___",
+                    options = listOf("derecha", "izquierda", "recto", "calle"),
+                    correctAnswer = "derecha",
+                    explanation = "a la derecha = направо. a la izquierda = налево."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Sigue todo recto.",
+                    options = listOf("Иди прямо.", "Поверни направо.", "Стоп.", "Вернись назад."),
+                    correctAnswer = "Иди прямо.",
+                    explanation = "seguir recto / todo recto = идти прямо."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «está cerca»?",
+                    question = "El metro está cerca.",
+                    options = listOf("Метро близко.", "Метро далеко.", "Метро здесь.", "Метро за углом."),
+                    correctAnswer = "Метро близко.",
+                    explanation = "cerca = близко. lejos = далеко. Está cerca = это близко."
+                )
+            )
+        ),
+
+        // u4_l4 — Магазин
+        "u4_l4" to LessonContent(
+            intro = "Покупки и цены",
+            sections = listOf(
+                LessonSection(
+                    heading = "В магазине",
+                    items = listOf(
+                        LessonItem("¿Cuánto cuesta?", "Сколько стоит?", "ед. число"),
+                        LessonItem("¿Cuánto cuestan?", "Сколько стоят?", "мн. число"),
+                        LessonItem("caro/a", "дорогой/ая", "Es muy caro."),
+                        LessonItem("barato/a", "дешёвый/ая", "Es barato."),
+                        LessonItem("el precio", "цена", "¿Cuál es el precio?"),
+                        LessonItem("comprar", "покупать", "Quiero comprar..."),
+                        LessonItem("vender", "продавать", "¿Venden pan aquí?"),
+                        LessonItem("la tienda", "магазин", ""),
+                        LessonItem("el supermercado", "супермаркет", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Диалог в магазине",
+                    items = listOf(
+                        LessonItem("¿En qué puedo ayudarle?", "Чем могу помочь?", "продавец"),
+                        LessonItem("Busco...", "Я ищу...", "покупатель"),
+                        LessonItem("¿Tiene...?", "У вас есть...?", ""),
+                        LessonItem("Me lo llevo.", "Я это возьму.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить цену одного предмета?",
+                    question = "¿Cuánto ___ esta camisa?",
+                    options = listOf("cuesta", "cuestan", "vale", "es"),
+                    correctAnswer = "cuesta",
+                    explanation = "¿Cuánto cuesta? = сколько стоит? (ед.ч.). ¿Cuánto cuestan? = сколько стоят? (мн.ч.)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Es muy barato.",
+                    options = listOf("Это очень дёшево.", "Это очень дорого.", "Это дёшево.", "Хорошая цена."),
+                    correctAnswer = "Это очень дёшево.",
+                    explanation = "barato = дешёвый/дёшево. muy = очень. caro = дорогой."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «я ищу»?",
+                    question = "___ una camisa azul.",
+                    options = listOf("Busco", "Compro", "Vendo", "Tengo"),
+                    correctAnswer = "Busco",
+                    explanation = "buscar = искать. Busco = я ищу."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «Me lo llevo»?",
+                    question = "Me lo llevo = ?",
+                    options = listOf("Я это возьму.", "Мне это не нравится.", "Покажите другое.", "Это моё."),
+                    correctAnswer = "Я это возьму.",
+                    explanation = "Me lo llevo = я это беру/возьму. Говорят когда решили купить товар."
+                )
+            )
+        ),
+
+        // u4_l5 — Деньги
+        "u4_l5" to LessonContent(
+            intro = "Деньги и оплата",
+            sections = listOf(
+                LessonSection(
+                    heading = "Деньги",
+                    items = listOf(
+                        LessonItem("el euro", "евро", ""),
+                        LessonItem("el céntimo", "цент", "50 céntimos"),
+                        LessonItem("el billete", "купюра / билет", "un billete de 20 euros"),
+                        LessonItem("la moneda", "монета", ""),
+                        LessonItem("el cambio", "сдача / обмен", "¿Tiene cambio?"),
+                        LessonItem("la tarjeta", "карточка", "Pago con tarjeta."),
+                        LessonItem("en efectivo", "наличными", "Pago en efectivo.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Оплата",
+                    items = listOf(
+                        LessonItem("pagar", "платить", "¿Cómo paga?"),
+                        LessonItem("¿Aceptan tarjeta?", "Принимаете карту?", ""),
+                        LessonItem("¿Tiene cambio de 50?", "Есть сдача с 50?", ""),
+                        LessonItem("Quédese con el cambio.", "Оставьте сдачу себе.", "чаевые")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «я плачу картой»?",
+                    question = "Pago con ___.",
+                    options = listOf("tarjeta", "billete", "cambio", "moneda"),
+                    correctAnswer = "tarjeta",
+                    explanation = "pagar con tarjeta = платить картой. pagar en efectivo = платить наличными."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «el cambio»?",
+                    question = "el cambio = ?",
+                    options = listOf("сдача", "карта", "купюра", "монета"),
+                    correctAnswer = "сдача",
+                    explanation = "el cambio = сдача (или обмен валюты). ¿Tiene cambio? = У вас есть сдача?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи вопрос",
+                    question = "¿Aceptan tarjeta?",
+                    options = listOf("Принимаете карту?", "Есть ли скидка?", "Сколько стоит?", "Где касса?"),
+                    correctAnswer = "Принимаете карту?",
+                    explanation = "aceptar = принимать. tarjeta = карточка. ¿Aceptan tarjeta? — частый вопрос в магазине."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «наличными»?",
+                    question = "Pago ___.",
+                    options = listOf("en efectivo", "con tarjeta", "con billete", "con moneda"),
+                    correctAnswer = "en efectivo",
+                    explanation = "en efectivo = наличными. con tarjeta = картой."
+                )
+            )
+        ),
+
+        // u4_l8 — Тело
+        "u4_l8" to LessonContent(
+            intro = "Части тела",
+            sections = listOf(
+                LessonSection(
+                    heading = "Части тела",
+                    items = listOf(
+                        LessonItem("la cabeza", "голова", ""),
+                        LessonItem("el ojo / los ojos", "глаз / глаза", ""),
+                        LessonItem("la nariz", "нос", ""),
+                        LessonItem("la boca", "рот", ""),
+                        LessonItem("la oreja / la oreja", "ухо / уши", ""),
+                        LessonItem("el cuello", "шея", ""),
+                        LessonItem("el brazo", "рука (от плеча)", ""),
+                        LessonItem("la mano", "рука (ладонь/кисть)", ""),
+                        LessonItem("el dedo", "палец", ""),
+                        LessonItem("la pierna", "нога (от бедра)", ""),
+                        LessonItem("el pie", "стопа / нога", ""),
+                        LessonItem("la espalda", "спина", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Рука vs Нога — внимание!",
+                    items = listOf(
+                        LessonItem("el brazo", "рука (вся рука)", "Me duele el brazo."),
+                        LessonItem("la mano", "кисть руки", "Levanta la mano."),
+                        LessonItem("la pierna", "нога (вся нога)", "Me duele la pierna."),
+                        LessonItem("el pie", "стопа", "Tengo frío en los pies.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «голова»?",
+                    question = "голова = ___",
+                    options = listOf("la cabeza", "la cara", "el cuello", "la espalda"),
+                    correctAnswer = "la cabeza",
+                    explanation = "la cabeza = голова."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Me duele el brazo.",
+                    options = listOf("У меня болит рука.", "У меня болит нога.", "У меня болит голова.", "У меня болит спина."),
+                    correctAnswer = "У меня болит рука.",
+                    explanation = "doler = болеть. Me duele = у меня болит. el brazo = рука."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «la mano»?",
+                    question = "la mano = ?",
+                    options = listOf("кисть руки", "вся рука", "палец", "плечо"),
+                    correctAnswer = "кисть руки",
+                    explanation = "la mano = кисть/рука (ладонь). el brazo = вся рука от плеча. Внимание: la mano — женского рода, несмотря на -o!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сколько пальцев?",
+                    question = "Tengo diez ___.",
+                    options = listOf("dedos", "manos", "pies", "brazos"),
+                    correctAnswer = "dedos",
+                    explanation = "dedo = палец. diez dedos = десять пальцев."
+                )
+            )
+        ),
+
+        // u4_l9 — Здоровье
+        "u4_l9" to LessonContent(
+            intro = "Как говорить о самочувствии и болезнях",
+            sections = listOf(
+                LessonSection(
+                    heading = "Самочувствие",
+                    items = listOf(
+                        LessonItem("Me duele la cabeza.", "У меня болит голова.", ""),
+                        LessonItem("Me duelen los pies.", "У меня болят ноги.", "мн. число → duelen"),
+                        LessonItem("Tengo fiebre.", "У меня температура.", ""),
+                        LessonItem("Tengo tos.", "У меня кашель.", ""),
+                        LessonItem("Estoy enfermo/a.", "Я болен/больна.", ""),
+                        LessonItem("Me encuentro mal.", "Я плохо себя чувствую.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Медицина",
+                    items = listOf(
+                        LessonItem("el médico / la médica", "врач", "Voy al médico."),
+                        LessonItem("la farmacia", "аптека", ""),
+                        LessonItem("el medicamento", "лекарство", ""),
+                        LessonItem("la pastilla", "таблетка", "Toma una pastilla."),
+                        LessonItem("¿Qué le pasa?", "Что с вами?", "врач → пациент"),
+                        LessonItem("¿Dónde le duele?", "Где болит?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «у меня болит живот»?",
+                    question = "Me ___ el estómago.",
+                    options = listOf("duele", "duelen", "duelo", "dolor"),
+                    correctAnswer = "duele",
+                    explanation = "doler работает как gustar: me duele (ед.ч.) / me duelen (мн.ч.). el estómago = живот."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Tengo fiebre y tos.",
+                    options = listOf("У меня температура и кашель.", "У меня головная боль.", "Я очень устал.", "У меня грипп."),
+                    correctAnswer = "У меня температура и кашель.",
+                    explanation = "fiebre = температура/жар. tos = кашель."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Куда идёшь если заболел?",
+                    question = "Estoy enfermo. Voy ___.",
+                    options = listOf("al médico", "a la farmacia", "al supermercado", "a casa"),
+                    correctAnswer = "al médico",
+                    explanation = "al médico = к врачу (al = a + el). Сначала к врачу, потом в аптеку (a la farmacia) за лекарствами."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как врач спросит «где болит»?",
+                    question = "¿Dónde le ___?",
+                    options = listOf("duele", "duelen", "duelo", "duela"),
+                    correctAnswer = "duele",
+                    explanation = "¿Dónde le duele? = где у вас болит? (формальное обращение)."
+                )
+            )
+        ),
+
+        // u4_l10 — Одежда
+        "u4_l10" to LessonContent(
+            intro = "Одежда и аксессуары",
+            sections = listOf(
+                LessonSection(
+                    heading = "Одежда",
+                    items = listOf(
+                        LessonItem("la camisa", "рубашка", ""),
+                        LessonItem("los pantalones", "брюки", "всегда мн. число"),
+                        LessonItem("el vestido", "платье", ""),
+                        LessonItem("la falda", "юбка", ""),
+                        LessonItem("el abrigo", "пальто", ""),
+                        LessonItem("la chaqueta", "пиджак / куртка", ""),
+                        LessonItem("los zapatos", "туфли / ботинки", ""),
+                        LessonItem("los calcetines", "носки", ""),
+                        LessonItem("la camiseta", "футболка", ""),
+                        LessonItem("los vaqueros", "джинсы", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Покупка одежды",
+                    items = listOf(
+                        LessonItem("¿Qué talla usa?", "Какой размер?", "продавец"),
+                        LessonItem("la talla S/M/L", "размер S/M/L", ""),
+                        LessonItem("¿Puedo probármelo?", "Могу примерить?", ""),
+                        LessonItem("el probador", "примерочная", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «los vaqueros»?",
+                    question = "los vaqueros = ?",
+                    options = listOf("джинсы", "брюки", "шорты", "носки"),
+                    correctAnswer = "джинсы",
+                    explanation = "los vaqueros = джинсы (в Испании). vaquero = ковбой, но vaqueros = джинсы!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Llevo una camisa blanca.",
+                    options = listOf("Я ношу белую рубашку.", "Я купил белую рубашку.", "Мне нравится белая рубашка.", "У меня белая рубашка."),
+                    correctAnswer = "Я ношу белую рубашку.",
+                    explanation = "llevar = носить (одежду). Llevo = я ношу."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить про примерочную?",
+                    question = "¿Dónde está el ___?",
+                    options = listOf("probador", "talla", "vestido", "zapato"),
+                    correctAnswer = "probador",
+                    explanation = "el probador = примерочная. ¿Puedo probármelo? = Могу примерить?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как называется пальто?",
+                    question = "пальто = ___",
+                    options = listOf("el abrigo", "la chaqueta", "el vestido", "la camisa"),
+                    correctAnswer = "el abrigo",
+                    explanation = "el abrigo = пальто. la chaqueta = пиджак или лёгкая куртка."
+                )
+            )
+        ),
+
+        // u4_l11 — Погода
+        "u4_l11" to LessonContent(
+            intro = "Как говорить о погоде",
+            sections = listOf(
+                LessonSection(
+                    heading = "HACER + погода",
+                    items = listOf(
+                        LessonItem("Hace calor.", "Жарко.", ""),
+                        LessonItem("Hace frío.", "Холодно.", ""),
+                        LessonItem("Hace sol.", "Солнечно.", ""),
+                        LessonItem("Hace viento.", "Ветрено.", ""),
+                        LessonItem("Hace buen tiempo.", "Хорошая погода.", ""),
+                        LessonItem("Hace mal tiempo.", "Плохая погода.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие глаголы погоды",
+                    items = listOf(
+                        LessonItem("Llueve. / Está lloviendo.", "Идёт дождь.", "llover"),
+                        LessonItem("Nieva. / Está nevando.", "Идёт снег.", "nevar"),
+                        LessonItem("Está nublado.", "Пасмурно.", ""),
+                        LessonItem("Está despejado.", "Ясно (нет облаков).", ""),
+                        LessonItem("¿Qué tiempo hace?", "Какая погода?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «холодно»?",
+                    question = "Hace ___.",
+                    options = listOf("frío", "calor", "sol", "viento"),
+                    correctAnswer = "frío",
+                    explanation = "Hace frío = холодно. Hace calor = жарко."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Está lloviendo.",
+                    options = listOf("Идёт дождь.", "Идёт снег.", "Пасмурно.", "Ветрено."),
+                    correctAnswer = "Идёт дождь.",
+                    explanation = "llover = идти дождю. Está lloviendo = сейчас идёт дождь."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «хорошая погода»?",
+                    question = "Hace ___ tiempo.",
+                    options = listOf("buen", "mal", "mucho", "poco"),
+                    correctAnswer = "buen",
+                    explanation = "Hace buen tiempo = хорошая погода. Hace mal tiempo = плохая погода."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «Está despejado»?",
+                    question = "Está despejado = ?",
+                    options = listOf("Ясно / Нет облаков", "Пасмурно", "Туман", "Ветрено"),
+                    correctAnswer = "Ясно / Нет облаков",
+                    explanation = "despejado = ясный (без облаков). nublado = облачный/пасмурный."
+                )
+            )
+        ),
+
+        // u4_l12 — Мой день
+        "u4_l12" to LessonContent(
+            intro = "Распорядок дня — глаголы повседневной жизни",
+            sections = listOf(
+                LessonSection(
+                    heading = "Распорядок дня",
+                    items = listOf(
+                        LessonItem("levantarse", "вставать", "Me levanto a las 7."),
+                        LessonItem("ducharse", "принимать душ", "Me ducho por la mañana."),
+                        LessonItem("desayunar", "завтракать", "Desayuno a las 8."),
+                        LessonItem("ir al trabajo / a clase", "идти на работу / учёбу", ""),
+                        LessonItem("trabajar / estudiar", "работать / учиться", ""),
+                        LessonItem("comer / almorzar", "обедать", "Como a las 14:00."),
+                        LessonItem("hacer deporte", "заниматься спортом", ""),
+                        LessonItem("cenar", "ужинать", "Cenamos a las 21:00."),
+                        LessonItem("ver la tele", "смотреть телевизор", ""),
+                        LessonItem("acostarse", "ложиться спать", "Me acuesto a las 23:00.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Мой день — пример",
+                    items = listOf(
+                        LessonItem("Me levanto a las siete.", "Я встаю в семь.", ""),
+                        LessonItem("Desayuno y voy al trabajo.", "Завтракаю и иду на работу.", ""),
+                        LessonItem("Como a las dos.", "Обедаю в два.", ""),
+                        LessonItem("Me acuesto a las once.", "Ложусь спать в одиннадцать.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Первое действие утром — обычно?",
+                    question = "Por la mañana, primero ___.",
+                    options = listOf("me levanto", "me acuesto", "ceno", "trabajo"),
+                    correctAnswer = "me levanto",
+                    explanation = "levantarse = вставать. Me levanto = я встаю. Первое действие дня!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Desayuno a las ocho.",
+                    options = listOf("Я завтракаю в восемь.", "Я ужинаю в восемь.", "Я встаю в восемь.", "Я обедаю в восемь."),
+                    correctAnswer = "Я завтракаю в восемь.",
+                    explanation = "desayunar = завтракать. a las ocho = в восемь."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «я занимаюсь спортом»?",
+                    question = "Hago ___.",
+                    options = listOf("deporte", "tele", "trabajo", "ducha"),
+                    correctAnswer = "deporte",
+                    explanation = "hacer deporte = заниматься спортом. hago = я делаю."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Me acuesto tarde los viernes.",
+                    options = listOf("По пятницам я ложусь поздно.", "В пятницу я встаю поздно.", "Я всегда сплю поздно.", "По пятницам я работаю."),
+                    correctAnswer = "По пятницам я ложусь поздно.",
+                    explanation = "acostarse = ложиться спать. tarde = поздно. los viernes = по пятницам."
+                )
+            )
         )
     )
 }
