@@ -88,7 +88,18 @@ class HomeViewModel @Inject constructor(
 
     private fun buildRoadmapUnits(completedKeys: Set<String>): List<RoadmapUnit> {
         return RoadmapData.units.map { unit ->
-            val unitId = unit.id.toInt()
+            val unitId = unit.id.toIntOrNull()
+
+            // Non-numeric IDs = A2/B1/B2 preview blocks (content not ready yet).
+            // Show them as visually unlocked so the user can browse lesson titles,
+            // but don't track real progress yet.
+            if (unitId == null) {
+                return@map unit.copy(
+                    isLocked = false,
+                    progress = 0f,
+                    lessons  = unit.lessons.map { it.copy(isCompleted = false) }
+                )
+            }
 
             val unlocked = unitId == 1 || run {
                 val prevUnit = RoadmapData.units[unitId - 2]

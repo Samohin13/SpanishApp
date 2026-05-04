@@ -165,7 +165,12 @@ fun HomeScreen(
                 },
                 onLessonClick = { lessonIndex ->
                     if (!unit.isLocked) {
-                        navController.navigate("lesson_intro/${unit.id}/$lessonIndex")
+                        // A2/B1/B2 units have non-numeric IDs — content not ready yet
+                        if (unit.id.toIntOrNull() != null) {
+                            navController.navigate("lesson_intro/${unit.id}/$lessonIndex")
+                        } else {
+                            showPremiumSheet = true
+                        }
                     }
                 },
                 onPremiumClick = { showPremiumSheet = true }
