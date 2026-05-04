@@ -49,11 +49,18 @@ fun LevelSelectionScreen(
     val scope = rememberCoroutineScope()
 
     fun confirmAndGo(levelCode: String) {
-        viewModel.selectLevel(levelCode)
-        viewModel.completeOnboarding()
-        navController.navigate("home") {
-            popUpTo(navController.graph.startDestinationId) { inclusive = true }
-            launchSingleTop = true
+        if (levelCode in PREMIUM_LEVELS) {
+            // Показываем экран с объяснением что контент в разработке
+            navController.navigate("placement_result/$levelCode") {
+                popUpTo("level_selection") { inclusive = true }
+            }
+        } else {
+            viewModel.selectLevel(levelCode)
+            viewModel.completeOnboarding()
+            navController.navigate("home") {
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                launchSingleTop = true
+            }
         }
     }
 
