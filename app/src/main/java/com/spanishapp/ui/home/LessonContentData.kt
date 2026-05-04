@@ -1988,6 +1988,567 @@ object LessonContentData {
             )
         ),
 
+        // ══════════════════════════════════════════════
+        //  A2 БЛОК 1: В ПРОШЛОМ  (unitId=5)
+        // ══════════════════════════════════════════════
+
+        // u5_l0 — Pretérito Indefinido: введение
+        "u5_l0" to LessonContent(
+            intro = "Pretérito Indefinido — прошедшее время для завершённых действий. Вчера, на прошлой неделе, в детстве — всё через него!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Что такое Pretérito Indefinido?",
+                    items = listOf(
+                        LessonItem("Завершённое действие", "Ayer comí pizza.", "вчера я съел пиццу"),
+                        LessonItem("Конкретный момент", "El lunes llamé.", "в понедельник я позвонил"),
+                        LessonItem("Маркеры времени", "ayer, anteayer, el año pasado", "вчера, позавчера, в прошлом году"),
+                        LessonItem("también:", "la semana pasada, en 2020", "на прошлой неделе, в 2020-м")
+                    )
+                ),
+                LessonSection(
+                    heading = "Окончания -AR (hablar)",
+                    items = listOf(
+                        LessonItem("yo", "hablé", "я поговорил"),
+                        LessonItem("tú", "hablaste", "ты поговорил"),
+                        LessonItem("él / ella", "habló", "он поговорил"),
+                        LessonItem("nosotros", "hablamos", "мы поговорили"),
+                        LessonItem("vosotros", "hablasteis", "вы поговорили"),
+                        LessonItem("ellos", "hablaron", "они поговорили")
+                    )
+                ),
+                LessonSection(
+                    heading = "Первые фразы",
+                    items = listOf(
+                        LessonItem("Ayer llamé a mi madre.", "Вчера я позвонил маме.", ""),
+                        LessonItem("¿Llegaste tarde?", "Ты опоздал?", ""),
+                        LessonItem("Viajamos a España.", "Мы путешествовали в Испанию.", ""),
+                        LessonItem("¿Cuándo llegaste?", "Когда ты приехал?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Вчера я позвонил маме. Ayer ___ a mi madre.",
+                    options = listOf("llamé", "llamo", "llamaba", "llamar"),
+                    correctAnswer = "llamé",
+                    explanation = "yo + -AR в P.Indefinido → -é: llamar → llamé. Тильда на é обязательна!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "¿Llegaste tarde?",
+                    options = listOf("Ты опоздал?", "Ты опаздываешь?", "Ты опоздаешь?", "Ты часто опаздываешь?"),
+                    correctAnswer = "Ты опоздал?",
+                    explanation = "llegaste = ты прибыл/опоздал. tú + llegar → llegaste (P.Indefinido)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какой маркер P.Indefinido?",
+                    question = "Какое слово указывает на P.Indefinido?",
+                    options = listOf("ayer (вчера)", "ahora (сейчас)", "siempre (всегда)", "mañana (завтра)"),
+                    correctAnswer = "ayer (вчера)",
+                    explanation = "ayer, la semana pasada, el año pasado → P.Indefinido (завершённое прошлое)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Мы поехали в Испанию. ___ a España.",
+                    options = listOf("Viajamos", "Viajé", "Viajaste", "Viajaron"),
+                    correctAnswer = "Viajamos",
+                    explanation = "nosotros + viajar → viajamos. Внимание: форма nosotros совпадает с настоящим временем!"
+                )
+            )
+        ),
+
+        // u5_l1 — Regulares -AR
+        "u5_l1" to LessonContent(
+            intro = "Правильные глаголы -AR в Pretérito Indefinido. Запомни шесть окончаний — и сможешь рассказать о прошлом с сотнями глаголов!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Окончания -AR (hablar)",
+                    items = listOf(
+                        LessonItem("yo", "hablé", ""),
+                        LessonItem("tú", "hablaste", ""),
+                        LessonItem("él / ella / Ud.", "habló", ""),
+                        LessonItem("nosotros", "hablamos", ""),
+                        LessonItem("vosotros", "hablasteis", ""),
+                        LessonItem("ellos / Uds.", "hablaron", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры: trabajar, comprar, llamar",
+                    items = listOf(
+                        LessonItem("Trabajé mucho ayer.", "Я много работал вчера.", ""),
+                        LessonItem("¿Compraste el libro?", "Ты купил книгу?", ""),
+                        LessonItem("Ella llamó a las 8.", "Она позвонила в 8.", ""),
+                        LessonItem("Llegaron tarde.", "Они опоздали.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Частые -AR глаголы в прошлом",
+                    items = listOf(
+                        LessonItem("hablar → hablé", "поговорил", ""),
+                        LessonItem("trabajar → trabajé", "поработал", ""),
+                        LessonItem("comprar → compré", "купил", ""),
+                        LessonItem("llamar → llamé", "позвонил", ""),
+                        LessonItem("llegar → llegué", "прибыл", "g→gu перед e"),
+                        LessonItem("empezar → empecé", "начал", "z→c перед e")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Он купил машину. Él ___ un coche.",
+                    options = listOf("compró", "compré", "compraste", "compramos"),
+                    correctAnswer = "compró",
+                    explanation = "él + comprar → compró. Тильда на -ó для él/ella обязательна!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Они опоздали.",
+                    options = listOf("Llegaron tarde.", "Llegó tarde.", "Llegaste tarde.", "Llegamos tarde."),
+                    correctAnswer = "Llegaron tarde.",
+                    explanation = "ellos + llegar → llegaron. -AR: ellos → -aron."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я начал учить испанский. ___ a estudiar español.",
+                    options = listOf("Empecé", "Empezé", "Empezó", "Empecemos"),
+                    correctAnswer = "Empecé",
+                    explanation = "empezar → empecé (z→c перед e). yo → -é."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Ты много работал вчера?",
+                    options = listOf("¿Trabajaste mucho ayer?", "¿Trabajé mucho ayer?", "¿Trabajó mucho ayer?", "¿Trabajabas mucho ayer?"),
+                    correctAnswer = "¿Trabajaste mucho ayer?",
+                    explanation = "tú + trabajar → trabajaste. ayer = вчера."
+                )
+            )
+        ),
+
+        // u5_l2 — Regulares -ER/-IR
+        "u5_l2" to LessonContent(
+            intro = "Глаголы -ER и -IR в Pretérito Indefinido имеют одинаковые окончания! Выучи одну таблицу для двух групп.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Окончания -ER/-IR (одинаковые!)",
+                    items = listOf(
+                        LessonItem("yo", "-í", "comí, viví"),
+                        LessonItem("tú", "-iste", "comiste, viviste"),
+                        LessonItem("él / ella", "-ió", "comió, vivió"),
+                        LessonItem("nosotros", "-imos", "comimos, vivimos"),
+                        LessonItem("vosotros", "-isteis", "comisteis, vivisteis"),
+                        LessonItem("ellos", "-ieron", "comieron, vivieron")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Comí paella ayer.", "Я ел паэлью вчера.", ""),
+                        LessonItem("¿Bebiste vino?", "Ты пил вино?", ""),
+                        LessonItem("Ella vivió en Madrid.", "Она жила в Мадриде.", ""),
+                        LessonItem("Escribieron una carta.", "Они написали письмо.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Частые -ER/-IR глаголы",
+                    items = listOf(
+                        LessonItem("comer → comí", "поел", ""),
+                        LessonItem("beber → bebí", "выпил", ""),
+                        LessonItem("vivir → viví", "жил", ""),
+                        LessonItem("escribir → escribí", "написал", ""),
+                        LessonItem("salir → salí", "вышел", ""),
+                        LessonItem("recibir → recibí", "получил", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я ел паэлью. ___ paella.",
+                    options = listOf("Comí", "Como", "Comía", "Comer"),
+                    correctAnswer = "Comí",
+                    explanation = "yo + comer → comí. -ER/-IR: yo → -í (с тильдой)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Они написали письмо. ___ una carta.",
+                    options = listOf("Escribieron", "Escribió", "Escribí", "Escribimos"),
+                    correctAnswer = "Escribieron",
+                    explanation = "ellos + escribir → escribieron. -ER/-IR: ellos → -ieron."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Ты выпил кофе?",
+                    options = listOf("¿Bebiste café?", "¿Bebí café?", "¿Bebió café?", "¿Bebías café?"),
+                    correctAnswer = "¿Bebiste café?",
+                    explanation = "tú + beber → bebiste. -ER: tú → -iste."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что общего у -ER и -IR?",
+                    question = "Окончания -ER и -IR в P.Indefinido...",
+                    options = listOf("Одинаковые для всех лиц", "Разные для yo", "Разные для nosotros", "Полностью разные"),
+                    correctAnswer = "Одинаковые для всех лиц",
+                    explanation = "comí = viví, comiste = viviste и т.д. -ER и -IR имеют одинаковые окончания в P.Indefinido!"
+                )
+            )
+        ),
+
+        // u5_l3 — SER vs ESTAR: ключевые различия
+        "u5_l3" to LessonContent(
+            intro = "SER vs ESTAR — главная головоломка испанского. Разберём все случаи с примерами раз и навсегда!",
+            sections = listOf(
+                LessonSection(
+                    heading = "SER — постоянное, суть",
+                    items = listOf(
+                        LessonItem("Личность и характер", "Es simpático.", "он добрый (всегда)"),
+                        LessonItem("Профессия", "Es médico.", "он врач"),
+                        LessonItem("Происхождение", "Es de Rusia.", "он из России"),
+                        LessonItem("Материал", "Es de madera.", "это деревянное"),
+                        LessonItem("Время / дата", "Son las tres.", "три часа"),
+                        LessonItem("Пассивный залог", "Fue construido en 1800.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "ESTAR — временное, состояние",
+                    items = listOf(
+                        LessonItem("Местонахождение", "Está en casa.", "он дома"),
+                        LessonItem("Временное состояние", "Está cansado.", "он устал (сейчас)"),
+                        LessonItem("Результат действия", "La puerta está abierta.", "дверь открыта"),
+                        LessonItem("Gerundio", "Estoy comiendo.", "я ем (сейчас)"),
+                        LessonItem("Настроение", "Está de buen humor.", "он в хорошем настроении")
+                    )
+                ),
+                LessonSection(
+                    heading = "Пары с разным значением",
+                    items = listOf(
+                        LessonItem("Es aburrido.", "Он скучный (характер).", "SER"),
+                        LessonItem("Está aburrido.", "Ему скучно (сейчас).", "ESTAR"),
+                        LessonItem("Es malo.", "Он плохой человек.", "SER"),
+                        LessonItem("Está malo.", "Он болен.", "ESTAR"),
+                        LessonItem("Es bueno.", "Он хороший.", "SER"),
+                        LessonItem("Está bueno.", "Это вкусно.", "ESTAR")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "SER или ESTAR?",
+                    question = "Он болен. Él ___ malo.",
+                    options = listOf("está", "es", "estoy", "son"),
+                    correctAnswer = "está",
+                    explanation = "Está malo = он болен (временное). Es malo = он плохой (характер)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "SER или ESTAR?",
+                    question = "Паэлья вкусная (сейчас). La paella ___ buena.",
+                    options = listOf("está", "es", "estoy", "son"),
+                    correctAnswer = "está",
+                    explanation = "Está buena = вкусная (сейчас, на вкус). Es buena = хорошего качества (всегда)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "SER или ESTAR?",
+                    question = "Он врач. Él ___ médico.",
+                    options = listOf("es", "está", "son", "estoy"),
+                    correctAnswer = "es",
+                    explanation = "Профессия → SER. Es médico."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Дверь открыта (результат).",
+                    options = listOf("La puerta está abierta.", "La puerta es abierta.", "La puerta está abrir.", "La puerta es abierto."),
+                    correctAnswer = "La puerta está abierta.",
+                    explanation = "Результат действия → ESTAR. está abierta = открыта (кем-то открыли)."
+                )
+            )
+        ),
+
+        // u5_l6 — Irregulares: ir/ser → fui
+        "u5_l6" to LessonContent(
+            intro = "IR и SER в P.Indefinido совпадают полностью! Это самые нерегулярные глаголы — без тильд, без логики, просто запомни.",
+            sections = listOf(
+                LessonSection(
+                    heading = "IR/SER в P.Indefinido (одинаковые!)",
+                    items = listOf(
+                        LessonItem("yo", "fui", "я пошёл / я был"),
+                        LessonItem("tú", "fuiste", "ты пошёл / ты был"),
+                        LessonItem("él / ella", "fue", "он пошёл / он был"),
+                        LessonItem("nosotros", "fuimos", "мы пошли / мы были"),
+                        LessonItem("vosotros", "fuisteis", "вы пошли / вы были"),
+                        LessonItem("ellos", "fueron", "они пошли / они были")
+                    )
+                ),
+                LessonSection(
+                    heading = "Контекст подсказывает смысл",
+                    items = listOf(
+                        LessonItem("Fui al cine.", "Я пошёл в кино.", "IR — движение"),
+                        LessonItem("Fue un gran día.", "Это был великий день.", "SER — характеристика"),
+                        LessonItem("¿Fuiste a la fiesta?", "Ты ходил на вечеринку?", "IR"),
+                        LessonItem("Fue muy difícil.", "Это было очень сложно.", "SER")
+                    )
+                ),
+                LessonSection(
+                    heading = "Внимание: нет тильды!",
+                    items = listOf(
+                        LessonItem("fui, fuiste, fue", "без тильды", "в отличие от regular глаголов"),
+                        LessonItem("fuimos, fuisteis, fueron", "без тильды", ""),
+                        LessonItem("Это исключение", "просто запомни", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я ходил в кино. ___ al cine.",
+                    options = listOf("Fui", "Fue", "Fuiste", "Fuimos"),
+                    correctAnswer = "Fui",
+                    explanation = "yo + IR/SER → fui. Без тильды!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "IR или SER в этом предложении?",
+                    question = "Fue un gran día.",
+                    options = listOf("SER (это был великий день)", "IR (он пошёл в великий день)", "Оба варианта невозможны", "Трудно сказать без контекста"),
+                    correctAnswer = "SER (это был великий день)",
+                    explanation = "Fue un gran día — SER, характеристика дня. Контекст (un gran día) указывает на SER."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Мы были в Мадриде.",
+                    options = listOf("Fuimos a Madrid.", "Fueron a Madrid.", "Fuisteis a Madrid.", "Fue a Madrid."),
+                    correctAnswer = "Fuimos a Madrid.",
+                    explanation = "nosotros + IR/SER → fuimos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Правда или нет?",
+                    question = "IR и SER в P.Indefinido — разные формы.",
+                    options = listOf("Неправда — формы одинаковые", "Правда — формы разные", "Только yo одинаково", "Только ellos одинаково"),
+                    correctAnswer = "Неправда — формы одинаковые",
+                    explanation = "fui, fuiste, fue, fuimos, fuisteis, fueron — одно для обоих глаголов!"
+                )
+            )
+        ),
+
+        // u5_l7 — Irregulares: tener → tuve, estar → estuve
+        "u5_l7" to LessonContent(
+            intro = "Группа нерегулярных с основой на -uv-: tener, estar, andar. Окончания без тильд — это важно!",
+            sections = listOf(
+                LessonSection(
+                    heading = "TENER → tuv-",
+                    items = listOf(
+                        LessonItem("yo tuve", "у меня было", ""),
+                        LessonItem("tú tuviste", "у тебя было", ""),
+                        LessonItem("él tuvo", "у него было", ""),
+                        LessonItem("nosotros tuvimos", "у нас было", ""),
+                        LessonItem("ellos tuvieron", "у них было", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "ESTAR → estuv-",
+                    items = listOf(
+                        LessonItem("yo estuve", "я был/находился", ""),
+                        LessonItem("tú estuviste", "ты был", ""),
+                        LessonItem("él estuvo", "он был", ""),
+                        LessonItem("nosotros estuvimos", "мы были", ""),
+                        LessonItem("ellos estuvieron", "они были", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Tuve un problema.", "У меня была проблема.", ""),
+                        LessonItem("¿Dónde estuviste?", "Где ты был?", ""),
+                        LessonItem("Estuvo enfermo.", "Он был болен.", ""),
+                        LessonItem("Tuvimos mucha suerte.", "Нам очень повезло.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "У меня была проблема. ___ un problema.",
+                    options = listOf("Tuve", "Tengo", "Tenía", "Tiene"),
+                    correctAnswer = "Tuve",
+                    explanation = "yo + tener → tuve (P.Indefinido). Основа tuv- + окончание без тильды."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Где ты был?",
+                    options = listOf("¿Dónde estuviste?", "¿Dónde estuve?", "¿Dónde estuvo?", "¿Dónde estabas?"),
+                    correctAnswer = "¿Dónde estuviste?",
+                    explanation = "tú + estar → estuviste. ¿Dónde estuviste? = где ты был?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Они были в Барселоне. ___ en Barcelona.",
+                    options = listOf("Estuvieron", "Estuvimos", "Estuvo", "Estuviste"),
+                    correctAnswer = "Estuvieron",
+                    explanation = "ellos + estar → estuvieron. -ieron = окончание для ellos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Есть ли тильда?",
+                    question = "yo + tener → tuv___",
+                    options = listOf("tuve (без тильды)", "tuvé (с тильдой)", "túve (с тильдой)", "tuvê"),
+                    correctAnswer = "tuve (без тильды)",
+                    explanation = "Нерегулярные P.Indefinido не имеют тильды: tuve, tuviste, tuvo..."
+                )
+            )
+        ),
+
+        // u5_l8 — Irregulares: hacer → hice, querer → quise
+        "u5_l8" to LessonContent(
+            intro = "Ещё одна группа нерегулярных: hacer, querer, venir, poder. У каждого своя основа — запоминай парами.",
+            sections = listOf(
+                LessonSection(
+                    heading = "HACER → hic-/hiz-",
+                    items = listOf(
+                        LessonItem("yo hice", "я сделал", ""),
+                        LessonItem("tú hiciste", "ты сделал", ""),
+                        LessonItem("él hizo", "он сделал", "c→z перед o"),
+                        LessonItem("nosotros hicimos", "мы сделали", ""),
+                        LessonItem("ellos hicieron", "они сделали", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "QUERER → quis-",
+                    items = listOf(
+                        LessonItem("yo quise", "я хотел / я попытался", ""),
+                        LessonItem("tú quisiste", "ты хотел", ""),
+                        LessonItem("él quiso", "он хотел", ""),
+                        LessonItem("ellos quisieron", "они хотели", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие нерегулярные",
+                    items = listOf(
+                        LessonItem("venir → vine", "пришёл", "yo vine"),
+                        LessonItem("poder → pude", "смог", "yo pude"),
+                        LessonItem("poner → puse", "положил", "yo puse"),
+                        LessonItem("saber → supe", "узнал / знал", "yo supe")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я сделал домашнюю работу. ___ los deberes.",
+                    options = listOf("Hice", "Hizo", "Hacé", "Hacía"),
+                    correctAnswer = "Hice",
+                    explanation = "yo + hacer → hice. c сохраняется перед e и i."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Он не смог прийти. No ___ venir.",
+                    options = listOf("pudo", "puede", "pude", "pudiste"),
+                    correctAnswer = "pudo",
+                    explanation = "él + poder → pudo (P.Indefinido). Основа pud-."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Они пришли поздно.",
+                    options = listOf("Vinieron tarde.", "Vinimos tarde.", "Vine tarde.", "Vino tarde."),
+                    correctAnswer = "Vinieron tarde.",
+                    explanation = "ellos + venir → vinieron."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что означает?",
+                    question = "No quise ir.",
+                    options = listOf("Я не захотел идти.", "Я не хочу идти.", "Я не мог идти.", "Я не пойду.", ),
+                    correctAnswer = "Я не захотел идти.",
+                    explanation = "quise = я хотел/попытался. No quise — я не захотел (и не пошёл)."
+                )
+            )
+        ),
+
+        // u5_l9 — Por vs Para
+        "u5_l9" to LessonContent(
+            intro = "Por и Para — оба переводятся «для/за/по/через», но используются в разных случаях. Запомни ключевые правила!",
+            sections = listOf(
+                LessonSection(
+                    heading = "POR — причина, обмен, движение",
+                    items = listOf(
+                        LessonItem("Причина", "Lo hice por amor.", "сделал из-за любви"),
+                        LessonItem("Благодарность / обмен", "Gracias por todo.", "спасибо за всё"),
+                        LessonItem("Цена", "Lo compré por 10€.", "купил за 10 евро"),
+                        LessonItem("Движение сквозь/по", "Paseamos por el parque.", "гуляли по парку"),
+                        LessonItem("Длительность", "Estudié por dos horas.", "учился в течение 2 часов"),
+                        LessonItem("Средство", "Llama por teléfono.", "звони по телефону")
+                    )
+                ),
+                LessonSection(
+                    heading = "PARA — цель, назначение, получатель",
+                    items = listOf(
+                        LessonItem("Цель / для чего", "Estudio para aprender.", "учусь чтобы выучить"),
+                        LessonItem("Получатель", "Es para ti.", "это для тебя"),
+                        LessonItem("Дедлайн", "Para el lunes.", "к понедельнику"),
+                        LessonItem("Направление", "Salgo para Madrid.", "уезжаю в Мадрид"),
+                        LessonItem("Мнение", "Para mí, es fácil.", "по-моему, это легко")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "POR или PARA?",
+                    question = "Это для тебя. Es ___ ti.",
+                    options = listOf("para", "por", "a", "de"),
+                    correctAnswer = "para",
+                    explanation = "para = для (получатель). Es para ti — это для тебя."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "POR или PARA?",
+                    question = "Спасибо за всё. Gracias ___ todo.",
+                    options = listOf("por", "para", "de", "a"),
+                    correctAnswer = "por",
+                    explanation = "por = за (благодарность/обмен). Gracias por todo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "POR или PARA?",
+                    question = "Я учусь чтобы найти работу. Estudio ___ encontrar trabajo.",
+                    options = listOf("para", "por", "que", "con"),
+                    correctAnswer = "para",
+                    explanation = "para + infinitivo = цель действия. Estudio para encontrar trabajo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи фразу",
+                    question = "Paseamos por el parque.",
+                    options = listOf("Мы гуляли по парку.", "Мы шли для парка.", "Мы гуляли ради парка.", "Мы прошли мимо парка."),
+                    correctAnswer = "Мы гуляли по парку.",
+                    explanation = "por = по (движение по территории). Paseamos por el parque — гуляли по парку."
+                )
+            )
+        ),
+
         // u4_l13 — Возвратные глаголы
         "u4_l13" to LessonContent(
             intro = "Возвратные глаголы (verbos reflexivos) описывают действия, которые направлены на себя. Они всегда идут с местоимением.",

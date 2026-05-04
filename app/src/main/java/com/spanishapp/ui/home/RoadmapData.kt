@@ -196,7 +196,6 @@ object RoadmapData {
 
         // ══════════════════════════════════════════════
         //  A2: БЛОК 1 — В ПРОШЛОМ
-        //  TODO: Удалить isPremium когда контент A2 готов
         // ══════════════════════════════════════════════
 
         RoadmapUnit(
@@ -213,12 +212,102 @@ object RoadmapData {
                 RoadmapLesson("🌍 Ser vs Estar: ключевые различия",                "content", "general"),
                 RoadmapLesson("💬 ¿Qué hiciste ayer? — первые истории",            "vocab",   "phrases"),
                 RoadmapLesson("🎯 Мини-тест: Regulares",                            "quiz",    "all"),
-                RoadmapLesson("📅 Irregulares: ir/ser → fui/fue/fuimos",           "content", "general",  isPremium = true),
-                RoadmapLesson("📅 Irregulares: tener → tuve, estar → estuve",      "content", "general",  isPremium = true),
-                RoadmapLesson("📅 Irregulares: hacer → hice, querer → quise",      "content", "general",  isPremium = true),
-                RoadmapLesson("📝 Por vs Para: основы",                             "content", "general",  isPremium = true),
-                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "vocab",   "phrases",  isPremium = true),
-                RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all",      isPremium = true)
+                RoadmapLesson("📅 Irregulares: ir/ser → fui/fue/fuimos",           "content", "general"),
+                RoadmapLesson("📅 Irregulares: tener → tuve, estar → estuve",      "content", "general"),
+                RoadmapLesson("📅 Irregulares: hacer → hice, querer → quise",      "content", "general"),
+                RoadmapLesson("📝 Por vs Para: основы",                             "content", "general"),
+                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "vocab",   "phrases"),
+                RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all")
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A2: БЛОК 2 — РАНЬШЕ И СЕЙЧАС
+        // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "a2_2",
+            title = "A2 · Блок 2: Раньше и сейчас",
+            icon = "🕰️",
+            description = "Imperfecto, сравнения, местоимения, hace...que",
+            cefrLevel = "A2",
+            color = Color(0xFF0277BD),
+            lessons = listOf(
+                RoadmapLesson("⏳ Imperfecto -AR: hablaba, trabajaba, estudiaba",   "content", "general"),
+                RoadmapLesson("⏳ Imperfecto -ER/-IR: comía, vivía + ser/ir/ver",   "content", "general"),
+                RoadmapLesson("⚡ Indefinido vs Imperfecto: когда что использовать","content", "general"),
+                RoadmapLesson("📖 Описания из прошлого: era niño, tenía...",        "vocab",   "phrases"),
+                RoadmapLesson("📊 Сравнение: más...que / menos...que",              "content", "general"),
+                RoadmapLesson("📊 Сравнение: tan...como / tanto...como",            "content", "general"),
+                RoadmapLesson("🏆 Превосходная степень: el más, el mejor",          "content", "general"),
+                RoadmapLesson("🎯 Прилагательные-описания: alto, simpático, listo", "vocab",   "general"),
+                RoadmapLesson("👆 Местоимения OD: lo, la, los, las",                "content", "general"),
+                RoadmapLesson("👆 Местоимения OI: me, te, le, nos, os, les",       "content", "general"),
+                RoadmapLesson("⏱️ Hace + tiempo + que: hace dos años que...",       "content", "general"),
+                RoadmapLesson("✈️ В путешествии: hotel, billete, reserva",          "vocab",   "viajes"),
+                RoadmapLesson("📝 Por vs Para: продвинутый уровень",                "content", "general"),
+                RoadmapLesson("😊 Эмоции: alegría, tristeza, miedo, sorpresa",     "vocab",   "emociones"),
+                RoadmapLesson("🏁 Чекпоинт: «Расскажи о своём детстве»",           "quiz",    "all")
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A2: БЛОК 3 — СЕЙЧАС И СКОРО
+        // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "a2_3",
+            title = "A2 · Блок 3: Сейчас и скоро",
+            icon = "⚡",
+            description = "Pretérito Perfecto, герундий, императив, работа",
+            cefrLevel = "A2",
+            color = Color(0xFF0277BD),
+            lessons = listOf(
+                RoadmapLesson("✅ Pretérito Perfecto: he comido, has vivido",       "content", "general"),
+                RoadmapLesson("✅ Participios irregulares: hecho, dicho, visto",    "content", "general"),
+                RoadmapLesson("🔀 Perfecto vs Indefinido: когда что использовать",  "content", "general"),
+                RoadmapLesson("📌 Ya / Todavía / Aún: уже, ещё, до сих пор",       "vocab",   "phrases"),
+                RoadmapLesson("🔄 Estar + gerundio: estoy comiendo (сейчас)",       "content", "general"),
+                RoadmapLesson("🔄 Seguir + gerundio / Llevar + gerundio",           "content", "general"),
+                RoadmapLesson("💼 Работа: buscar empleo, currículum, entrevista",   "vocab",   "trabajo"),
+                RoadmapLesson("📢 Imperativo afirmativo: ¡habla! ¡come! ¡escribe!", "content", "general"),
+                RoadmapLesson("🚫 Imperativo negativo: ¡no hables! ¡no comas!",    "content", "general"),
+                RoadmapLesson("🏥 У врача: síntomas, me duele, tengo fiebre",       "vocab",   "salud"),
+                RoadmapLesson("🔗 ОД + ОИ вместе: te lo doy, se lo digo",           "content", "general"),
+                RoadmapLesson("👗 Одежда и мода: talla, probarse, quedar bien",     "vocab",   "ropa"),
+                RoadmapLesson("🔗 Придаточные с que: creo que / pienso que",        "content", "general"),
+                RoadmapLesson("🌿 Природа и погода: el campo, el mar, hace viento", "vocab",   "general"),
+                RoadmapLesson("🏁 Чекпоинт: «Мой обычный день»",                   "quiz",    "all")
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A2: БЛОК 4 — МЕЧТЫ И ПЛАНЫ
+        // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "a2_4",
+            title = "A2 · Блок 4: Мечты и планы",
+            icon = "🚀",
+            description = "Futuro, Condicional, si-clauses, мечты",
+            cefrLevel = "A2",
+            color = Color(0xFF0277BD),
+            lessons = listOf(
+                RoadmapLesson("🔮 Futuro Simple -AR: hablaré, hablarás, hablará",  "content", "general"),
+                RoadmapLesson("🔮 Futuro irregular: tendré, haré, vendré, iré",    "content", "general"),
+                RoadmapLesson("💭 Condicional Simple: hablaría, comería",           "content", "general"),
+                RoadmapLesson("💭 Condicional irregular: tendría, haría, vendría",  "content", "general"),
+                RoadmapLesson("🔀 Si + presente + futuro: si llueve, no saldré",   "content", "general"),
+                RoadmapLesson("✨ Планы и мечты: quisiera, me gustaría, espero",   "vocab",   "phrases"),
+                RoadmapLesson("❓ Pronombres indefinidos: algo, alguien, nada",     "content", "general"),
+                RoadmapLesson("🎲 Вероятность: probablemente, quizás, a lo mejor", "content", "general"),
+                RoadmapLesson("🚗 Транспорт и дорога: alquilar, conducir, aparcar","vocab",   "viajes"),
+                RoadmapLesson("🔗 Глаголы с предлогом: pensar en, soñar con",      "content", "general"),
+                RoadmapLesson("🍽️ Гастрономия: tapas, paella, tortilla española", "vocab",   "comida_bebida"),
+                RoadmapLesson("📏 Cuantificadores: mucho, poco, bastante, demasiado","content","general"),
+                RoadmapLesson("📱 Технологии: app, wifi, contraseña, descargar",   "vocab",   "tecnologia"),
+                RoadmapLesson("💪 Спорт и здоровье: hacer ejercicio, llevar dieta","vocab",   "salud"),
+                RoadmapLesson("🏆 ФИНАЛЬНЫЙ БОСС A2: «Планирование путешествия»",  "quiz",    "all")
             )
         ),
 
