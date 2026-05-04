@@ -193,6 +193,12 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun completeOnboarding() {
+        viewModelScope.launch {
+            authRepository.setOnboardingCompleted(true)
+        }
+    }
+
     fun updateName(name: String) {
         viewModelScope.launch {
             authRepository.setUserName(name)

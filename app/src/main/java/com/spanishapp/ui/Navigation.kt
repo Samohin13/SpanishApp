@@ -51,8 +51,10 @@ import com.spanishapp.ui.auth.ForgotPasswordScreen
 import com.spanishapp.ui.auth.NameEntryScreen
 import com.spanishapp.ui.auth.AgeSelectionScreen
 import com.spanishapp.ui.auth.ReasonSelectionScreen
+import com.spanishapp.ui.auth.KnowledgeCheckScreen
 import com.spanishapp.ui.auth.LevelSelectionScreen
 import com.spanishapp.ui.auth.PlacementTestScreen
+import com.spanishapp.ui.auth.PlacementResultScreen
 import com.spanishapp.ui.auth.AuthViewModel
 
 object Navigation {
@@ -109,8 +111,10 @@ object Navigation {
             composable("name_entry") { NameEntryScreen(navController) }
             composable("age_selection") { AgeSelectionScreen(navController) }
             composable("reason_selection") { ReasonSelectionScreen(navController) }
-            composable("level_selection") { LevelSelectionScreen(navController) }
+            composable("knowledge_check") { KnowledgeCheckScreen(navController) }
             composable("placement_test") { PlacementTestScreen(navController) }
+            composable("placement_result") { PlacementResultScreen(navController) }
+            composable("level_selection") { LevelSelectionScreen(navController) }
 
             // ── Главная ───────────────────────────────────────
             composable("home") { HomeScreen(navController) }

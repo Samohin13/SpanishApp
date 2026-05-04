@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.ui.theme.AppColors
 
 @Composable
 fun NameEntryScreen(navController: NavHostController, viewModel: AuthViewModel = hiltViewModel()) {
@@ -130,18 +131,114 @@ fun ReasonSelectionScreen(navController: NavHostController, viewModel: AuthViewM
         }
         
         Spacer(Modifier.weight(1f))
-        
+
         Button(
-            onClick = { 
+            onClick = {
                 selectedReason?.let {
                     viewModel.updateReason(it)
-                    navController.navigate("level_selection")
+                    navController.navigate("knowledge_check")
                 }
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             enabled = selectedReason != null
         ) {
             Text("Далее")
+        }
+    }
+}
+
+@Composable
+fun KnowledgeCheckScreen(
+    navController: NavHostController,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColors.BgWhite)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("🇪🇸", fontSize = 64.sp)
+        Spacer(Modifier.height(24.dp))
+        Text(
+            "Ты знаешь испанский?",
+            fontSize = 26.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Это поможет настроить программу под тебя",
+            fontSize = 14.sp,
+            color = AppColors.TextSecondary,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(48.dp))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    viewModel.selectLevel("A1")
+                    viewModel.completeOnboarding()
+                    navController.navigate("home") {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            colors = CardDefaults.cardColors(containerColor = AppColors.PurplePale),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(0.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("🌱", fontSize = 32.sp)
+                Spacer(Modifier.width(16.dp))
+                Column {
+                    Text("Начинаю с нуля", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(
+                        "Испанский для меня новый язык",
+                        fontSize = 13.sp,
+                        color = AppColors.TextSecondary
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { navController.navigate("placement_test") },
+            colors = CardDefaults.cardColors(containerColor = AppColors.Purple),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(0.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("🎯", fontSize = 32.sp)
+                Spacer(Modifier.width(16.dp))
+                Column {
+                    Text(
+                        "Уже знаю испанский",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                    Text(
+                        "Пройду короткий тест — 8 вопросов",
+                        fontSize = 13.sp,
+                        color = Color.White.copy(alpha = 0.75f)
+                    )
+                }
+            }
         }
     }
 }
