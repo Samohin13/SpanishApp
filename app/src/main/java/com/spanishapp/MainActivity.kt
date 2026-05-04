@@ -72,7 +72,7 @@ fun SpanishAppRoot() {
     ) { paddingValues ->
         Navigation.SpanishNavHost(
             navController = navController,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
         )
     }
 }
