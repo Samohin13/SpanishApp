@@ -36,6 +36,7 @@ import com.spanishapp.ui.home.HomeScreen
 import com.spanishapp.ui.home.LessonContentScreen
 import com.spanishapp.ui.home.LessonIntroScreen
 import com.spanishapp.ui.home.LessonIntroViewModel
+import com.spanishapp.ui.home.LessonSessionScreen
 import com.spanishapp.ui.grammar.GrammarScreen
 import com.spanishapp.ui.quiz.QuizScreen
 import com.spanishapp.ui.profile.AchievementsScreen
@@ -169,6 +170,20 @@ object Navigation {
                 val lessonIndex = backStackEntry.arguments?.getInt("lessonIndex") ?: 0
                 val vm: LessonIntroViewModel = hiltViewModel()
                 LessonContentScreen(navController, unitId, lessonIndex, vm)
+            }
+
+            // ── Интерактивная сессия урока (теория + упражнения + победа) ──
+            composable(
+                "lesson_session/{unitId}/{lessonIndex}",
+                arguments = listOf(
+                    navArgument("unitId") { type = NavType.IntType },
+                    navArgument("lessonIndex") { type = NavType.IntType }
+                )
+            ) { backStackEntry ->
+                val unitId      = backStackEntry.arguments?.getInt("unitId") ?: 1
+                val lessonIndex = backStackEntry.arguments?.getInt("lessonIndex") ?: 0
+                val vm: LessonIntroViewModel = hiltViewModel()
+                LessonSessionScreen(navController, unitId, lessonIndex, vm)
             }
 
             // ── Онбординг ─────────────────────────────────────

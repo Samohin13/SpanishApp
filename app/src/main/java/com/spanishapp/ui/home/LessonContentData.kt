@@ -8,7 +8,8 @@ package com.spanishapp.ui.home
 
 data class LessonContent(
     val intro: String,
-    val sections: List<LessonSection>
+    val sections: List<LessonSection>,
+    val exercises: List<Exercise> = emptyList()
 )
 
 data class LessonSection(
@@ -61,6 +62,40 @@ object LessonContentData {
                         LessonItem("o-ce-a-no", "океан", "о-сэ-а-но")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Как читается слово «casa»?",
+                    options = listOf("КА-са", "КЕЙ-са", "СА-са", "ЧА-са"),
+                    correctAnswer = "КА-са",
+                    explanation = "Испанская «a» всегда [а], «c» перед «a» = [к]. casa = «ка-са» — дом."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что означает это слово?",
+                    question = "amigo",
+                    options = listOf("друг", "враг", "брат", "учитель"),
+                    correctAnswer = "друг",
+                    explanation = "amigo — друг. Читается «а-ми-го»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сколько звуков в испанском слове?",
+                    question = "Сколько разных звуков у гласных в испанском?",
+                    options = listOf("5 — всегда одинаковые", "12 — как в английском", "3 — A, E, O", "7 — с дифтонгами"),
+                    correctAnswer = "5 — всегда одинаковые",
+                    explanation = "В испанском 5 гласных, и каждая всегда читается одинаково. Это огромный плюс!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Как по-испански «музыка»?",
+                    options = listOf("música", "muzika", "musique", "musica"),
+                    correctAnswer = "música",
+                    explanation = "música — музыка. Тильда над «u» показывает ударение: МУ-си-ка."
+                )
             )
         ),
 
@@ -99,6 +134,40 @@ object LessonContentData {
                         LessonItem("general", "генерал", "хэ-нэ-раль"),
                         LessonItem("coche", "машина", "ко-чэ")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Как читается буква «V» в испанском?",
+                    options = listOf("Как [б/в] — одинаково с B", "Как [в] — только звонкий", "Как [ф]", "Как [у]"),
+                    correctAnswer = "Как [б/в] — одинаково с B",
+                    explanation = "В испанском B и V звучат одинаково! vino читается «бино»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как читается это слово?",
+                    question = "gente",
+                    options = listOf("[хэнтэ]", "[гэнтэ]", "[джэнтэ]", "[зэнтэ]"),
+                    correctAnswer = "[хэнтэ]",
+                    explanation = "G перед «e» и «i» читается как [х]. gente = «хэнтэ» — люди."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи слово",
+                    question = "vida",
+                    options = listOf("жизнь", "вода", "видео", "победа"),
+                    correctAnswer = "жизнь",
+                    explanation = "vida — жизнь. Читается «би-да» — D между гласными мягкий."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный ответ",
+                    question = "Как читается «G» перед буквами A, O, U?",
+                    options = listOf("Как [г]", "Как [х]", "Как [дж]", "Как [ч]"),
+                    correctAnswer = "Как [г]",
+                    explanation = "G + a/o/u = [г]. Пример: gato (кот) = «гато»."
                 )
             )
         ),
@@ -140,6 +209,40 @@ object LessonContentData {
                         LessonItem("R в начале слова", "тоже раскатистый", "Rosa — [Рроса]")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Как читается «H» в испанском?",
+                    options = listOf("Молчит, не читается", "Как [х]", "Как [г]", "Как [h] в английском"),
+                    correctAnswer = "Молчит, не читается",
+                    explanation = "H в испанском всегда молчит! hola = «ола», hotel = «отэль»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи слово",
+                    question = "mañana",
+                    options = listOf("завтра / утро", "вечер", "сегодня", "ночь"),
+                    correctAnswer = "завтра / утро",
+                    explanation = "mañana = завтра или утро. Ñ читается как «нь»: «маньяна»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как читается это слово?",
+                    question = "jamón",
+                    options = listOf("[хамон]", "[джамон]", "[ямон]", "[гамон]"),
+                    correctAnswer = "[хамон]",
+                    explanation = "J всегда читается [х]. jamón — хамон (вяленая ветчина)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи слово",
+                    question = "perro",
+                    options = listOf("собака", "кошка", "птица", "рыба"),
+                    correctAnswer = "собака",
+                    explanation = "perro — собака. RR раскатистый: «пэ-рро». Одинарная R в середине слова мягче."
+                )
             )
         ),
 
@@ -173,6 +276,40 @@ object LessonContentData {
                         LessonItem("¿quién?", "кто?", ""),
                         LessonItem("¿cuándo?", "когда?", "")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Где ударение?",
+                    question = "Слово «casa» — куда падает ударение?",
+                    options = listOf("CA-sa (предпоследний слог)", "ca-SA (последний слог)", "На оба слога", "Неизвестно"),
+                    correctAnswer = "CA-sa (предпоследний слог)",
+                    explanation = "casa оканчивается на гласную «a» → ударение на предпоследний слог: CA-sa."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Зачем стоит тильда?",
+                    question = "Почему в слове «café» стоит тильда?",
+                    options = listOf("Ударение на последнем слоге, но слово на гласную — исключение", "Просто украшение", "Слово иностранное", "Всегда ставят на e"),
+                    correctAnswer = "Ударение на последнем слоге, но слово на гласную — исключение",
+                    explanation = "По правилу слова на гласную ударяются на предпоследний. café нарушает → тильда."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи вопрос",
+                    question = "¿Dónde?",
+                    options = listOf("Где?", "Кто?", "Когда?", "Почему?"),
+                    correctAnswer = "Где?",
+                    explanation = "¿Dónde? = Где? Тильда над «o» показывает ударение и вопросительное значение."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Где ударение?",
+                    question = "Слово «hablar» оканчивается на R (согласная). Где ударение?",
+                    options = listOf("ha-BLAR (последний слог)", "HAB-lar (первый слог)", "hab-LAR (второй слог)", "Равное"),
+                    correctAnswer = "ha-BLAR (последний слог)",
+                    explanation = "Слова на согласную (не N/S) ударяются на последний слог. hablar = «а-БЛАР»."
                 )
             )
         ),
@@ -208,6 +345,40 @@ object LessonContentData {
                         LessonItem("Происхождение", "Soy de Moscú", ""),
                         LessonItem("Характеристика", "Soy alto/a, simpático/a", "")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я — студент. (Yo) ___ estudiante.",
+                    options = listOf("soy", "eres", "es", "son"),
+                    correctAnswer = "soy",
+                    explanation = "Yo soy estudiante — Я студент. SER для «yo» = soy."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Ты из Испании? ¿Tú ___ de España?",
+                    options = listOf("eres", "soy", "es", "somos"),
+                    correctAnswer = "eres",
+                    explanation = "Tú eres — ты есть. «¿Tú eres de España?» — Ты из Испании?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "Él es médico.",
+                    options = listOf("Он врач.", "Он болен.", "Он здесь.", "Он студент?"),
+                    correctAnswer = "Он врач.",
+                    explanation = "Él es médico — Он врач. SER используется для профессий."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Она из России.",
+                    options = listOf("Ella es de Rusia.", "Ella está de Rusia.", "Ella soy de Rusia.", "Ella eres de Rusia."),
+                    correctAnswer = "Ella es de Rusia.",
+                    explanation = "Ella es de Rusia. Происхождение выражается через SER + de + место."
                 )
             )
         ),

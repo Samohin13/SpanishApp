@@ -190,8 +190,10 @@ private fun buildActivityRoute(
     lessonIndex: Int
 ): String {
     val cat = lesson.category
+    val hasSession = LessonContentData.lessons["u${unitId}_l${lessonIndex}"] != null
     return when (lesson.type) {
-        "content" -> "lesson_content/$unitId/$lessonIndex"
+        "content" -> if (hasSession) "lesson_session/$unitId/$lessonIndex"
+                     else "lesson_content/$unitId/$lessonIndex"
         "vocab"   -> "flashcards_session?level=$cefrLevel&category=$cat&direction=ES_TO_RU"
         "phrase"  -> "flashcards_session?level=$cefrLevel&category=$cat&direction=MIXED"
         "grammar" -> "grammar"
