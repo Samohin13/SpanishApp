@@ -157,7 +157,7 @@ fun OnboardingScreen(
                         if (state.page < 2) vm.nextPage()
                         else vm.finish {
                             navController.navigate("home") {
-                                popUpTo("onboarding") { inclusive = true }
+                                popUpTo("welcome") { inclusive = true }
                             }
                         }
                     },

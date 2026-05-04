@@ -87,7 +87,7 @@ fun LevelSelectionScreen(
                 selectedLevelCode?.let {
                     viewModel.selectLevel(it)
                     navController.navigate("home") {
-                        popUpTo("level_selection") { inclusive = true }
+                        popUpTo("welcome") { inclusive = true }
                     }
                 }
             },
