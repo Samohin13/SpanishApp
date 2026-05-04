@@ -32,7 +32,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.*
 import com.spanishapp.data.db.entity.WordEntity
+import com.spanishapp.domain.algorithm.LeaguePromotion
 import com.spanishapp.domain.algorithm.ReviewButton
+import com.spanishapp.ui.components.LeaguePromotionDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +47,14 @@ fun FlashcardsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = LocalHapticFeedback.current
+
+    var leaguePromotion by remember { mutableStateOf<LeaguePromotion?>(null) }
+    LaunchedEffect(viewModel) {
+        viewModel.leaguePromotions.collect { leaguePromotion = it }
+    }
+    leaguePromotion?.let { promo ->
+        LeaguePromotionDialog(from = promo.from, to = promo.to, onDismiss = { leaguePromotion = null })
+    }
 
     LaunchedEffect(level, category, direction) {
         viewModel.startSession(level, category, direction)

@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.spanishapp.domain.algorithm.LeaguePromotion
+import com.spanishapp.ui.components.LeaguePromotionDialog
 
 private val LibroGreen  = Color(0xFF43A047)
 private val LibroPurple = Color(0xFF7B2FBE)
@@ -212,6 +214,15 @@ fun LibroReadScreen(
     var state: ReadState by remember { mutableStateOf(ReadState.Reading) }
     val translation by vm.translation.collectAsStateWithLifecycle()
     var highlightRange by remember { mutableStateOf<IntRange?>(null) }
+
+    // League promotion dialog
+    var leaguePromotion by remember { mutableStateOf<LeaguePromotion?>(null) }
+    LaunchedEffect(vm) {
+        vm.leaguePromotions.collect { leaguePromotion = it }
+    }
+    leaguePromotion?.let { promo ->
+        LeaguePromotionDialog(from = promo.from, to = promo.to, onDismiss = { leaguePromotion = null })
+    }
 
     // Сбрасываем подсветку когда баннер закрывается
     if (!translation.visible) highlightRange = null

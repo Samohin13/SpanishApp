@@ -5,13 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.WordEntity
+import com.spanishapp.domain.algorithm.LeaguePromotion
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.domain.algorithm.ReviewButton
 import com.spanishapp.domain.algorithm.SM2
 import com.spanishapp.domain.algorithm.XpSystem
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,11 +47,15 @@ data class FlashcardsUiState(
 class FlashcardsViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    private val ratingUpdater: RatingUpdater
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FlashcardsUiState())
     val state: StateFlow<FlashcardsUiState> = _state.asStateFlow()
+
+    private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
+    val leaguePromotions: SharedFlow<LeaguePromotion> = _leaguePromotions.asSharedFlow()
 
     private var mode: FlashcardDirection = FlashcardDirection.ES_TO_RU
 
@@ -130,7 +139,13 @@ class FlashcardsViewModel @Inject constructor(
             ReviewButton.EASY -> XpSystem.WORD_EASY
         }
 
-        viewModelScope.launch { wordDao.update(updated) }
+        viewModelScope.launch {
+            wordDao.update(updated)
+            // Skill rating: применяем до обновления ease factor — используем easeFactor,
+            // который БЫЛ у слова на момент ответа (отражает реальную сложность).
+            val promotion = ratingUpdater.applyAnswer(easeFactor = current.easeFactor, quality = quality)
+            if (promotion != null) _leaguePromotions.tryEmit(promotion)
+        }
 
         val nextIdx = s.currentIndex + 1
         val finished = nextIdx >= s.cards.size

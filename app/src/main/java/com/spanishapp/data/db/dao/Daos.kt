@@ -149,7 +149,39 @@ interface WordDao {
           AND interval >= :minIntervalDays
     """)
     suspend fun countMasteredByLevelAndCategory(level: String, category: String, minIntervalDays: Int = 7): Int
+
+    // ── Mastery rating: aggregate per category ───────────────
+    @Query("""
+        SELECT category AS category,
+               COUNT(*) AS total,
+               SUM(CASE WHEN is_learned = 1 THEN 1 ELSE 0 END) AS learned,
+               COALESCE(SUM(total_reviews), 0) AS totalReviews,
+               COALESCE(SUM(correct_reviews), 0) AS correctReviews
+        FROM words
+        GROUP BY category
+    """)
+    suspend fun getCategoryStats(): List<CategoryStatsRow>
+
+    @Query("""
+        SELECT category AS category,
+               COUNT(*) AS total,
+               SUM(CASE WHEN is_learned = 1 THEN 1 ELSE 0 END) AS learned,
+               COALESCE(SUM(total_reviews), 0) AS totalReviews,
+               COALESCE(SUM(correct_reviews), 0) AS correctReviews
+        FROM words
+        WHERE level = :level
+        GROUP BY category
+    """)
+    suspend fun getCategoryStatsForLevel(level: String): List<CategoryStatsRow>
 }
+
+data class CategoryStatsRow(
+    val category: String,
+    val total: Int,
+    val learned: Int,
+    val totalReviews: Int,
+    val correctReviews: Int
+)
 
 @Dao
 interface ConjugationDao {
@@ -242,6 +274,23 @@ interface UserProgressDao {
 
     @Query("UPDATE user_progress SET total_study_minutes = total_study_minutes + :minutes")
     suspend fun addStudyTime(minutes: Int)
+
+    // ── Rating system ────────────────────────────────────────
+    @Query("""
+        UPDATE user_progress SET
+            skill_rating = :rating,
+            peak_skill_rating = MAX(peak_skill_rating, :rating),
+            last_rating_update = :ts,
+            current_league = :league,
+            peak_league = MAX(peak_league, :league)
+    """)
+    suspend fun updateSkillRating(rating: Int, league: Int, ts: Long)
+
+    @Query("UPDATE user_progress SET leaderboard_opt_in = :enabled")
+    suspend fun setLeaderboardOptIn(enabled: Boolean)
+
+    @Query("UPDATE user_progress SET display_name = :name")
+    suspend fun updateDisplayName(name: String)
 }
 
 @Dao

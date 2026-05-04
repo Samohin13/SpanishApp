@@ -24,7 +24,7 @@ import com.spanishapp.data.db.entity.*
         LessonProgressEntity::class,
         LibroProgressEntity::class
     ],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -186,6 +186,18 @@ abstract class AppDatabase : RoomDatabase() {
         val MIGRATION_7_8 = object : Migration(7, 8) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_word_list_entries_word_id ON word_list_entries(word_id)")
+            }
+        }
+
+        // ── v9: рейтинговая система (skill_rating, peak, lastUpdate, league, opt-in) ──
+        val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN skill_rating INTEGER NOT NULL DEFAULT 1000")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN peak_skill_rating INTEGER NOT NULL DEFAULT 1000")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN last_rating_update INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN current_league INTEGER NOT NULL DEFAULT 1")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN peak_league INTEGER NOT NULL DEFAULT 1")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN leaderboard_opt_in INTEGER NOT NULL DEFAULT 0")
             }
         }
     }

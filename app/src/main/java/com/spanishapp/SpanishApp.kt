@@ -3,6 +3,7 @@ package com.spanishapp
 import android.app.Application
 import com.spanishapp.data.db.DatabaseSeeder
 import com.spanishapp.service.DailyReminderWorker
+import com.spanishapp.service.RatingDecayWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ class SpanishApp : Application() {
     override fun onCreate() {
         super.onCreate()
         DailyReminderWorker.schedule(this)
+        RatingDecayWorker.schedule(this)
         appScope.launch { databaseSeeder.seedIfNeeded() }
     }
 }
