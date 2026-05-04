@@ -1,7 +1,6 @@
 package com.spanishapp.ui.auth
 
 import androidx.compose.animation.*
-import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -137,9 +136,7 @@ fun PlacementTestScreen(
                         answered = false
                     } else {
                         val level = calcLevel(correctCount)
-                        viewModel.selectLevel(level)
-                        viewModel.completeOnboarding()
-                        navController.navigate("placement_result") {
+                        navController.navigate("placement_result/$level") {
                             popUpTo("placement_test") { inclusive = true }
                         }
                     }
@@ -160,10 +157,9 @@ fun PlacementTestScreen(
 @Composable
 fun PlacementResultScreen(
     navController: NavHostController,
+    level: String,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
-    val level = state.userLevel ?: "A1"
 
     val (emoji, title, description) = when (level) {
         "B2" -> Triple("🏆", "Впечатляет!", "Ты на продвинутом уровне.\nПрограмма настроена на B2.")
@@ -230,6 +226,8 @@ fun PlacementResultScreen(
 
         Button(
             onClick = {
+                viewModel.selectLevel(level)
+                viewModel.completeOnboarding()
                 navController.navigate("home") {
                     popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     launchSingleTop = true
@@ -244,7 +242,11 @@ fun PlacementResultScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        TextButton(onClick = { navController.navigate("level_selection") }) {
+        TextButton(onClick = {
+            navController.navigate("level_selection") {
+                popUpTo("placement_result/$level") { inclusive = true }
+            }
+        }) {
             Text("Изменить уровень", color = AppColors.TextSecondary)
         }
     }

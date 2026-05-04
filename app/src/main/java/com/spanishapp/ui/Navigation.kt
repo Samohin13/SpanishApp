@@ -113,7 +113,13 @@ object Navigation {
             composable("reason_selection") { ReasonSelectionScreen(navController) }
             composable("knowledge_check") { KnowledgeCheckScreen(navController) }
             composable("placement_test") { PlacementTestScreen(navController) }
-            composable("placement_result") { PlacementResultScreen(navController) }
+            composable(
+                "placement_result/{level}",
+                arguments = listOf(navArgument("level") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val level = backStackEntry.arguments?.getString("level") ?: "A1"
+                PlacementResultScreen(navController, level)
+            }
             composable("level_selection") { LevelSelectionScreen(navController) }
 
             // ── Главная ───────────────────────────────────────
