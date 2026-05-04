@@ -417,6 +417,40 @@ object LessonContentData {
                         LessonItem("ustedes", "«вы» мн.ч. везде", "универсально")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Мы друзья. (Nosotros) ___ amigos.",
+                    options = listOf("somos", "sois", "son", "soy"),
+                    correctAnswer = "somos",
+                    explanation = "Nosotros somos — мы есть. somos = форма SER для nosotros."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "Ellos son estudiantes.",
+                    options = listOf("Они студенты.", "Он студент.", "Мы студенты.", "Вы студенты."),
+                    correctAnswer = "Они студенты.",
+                    explanation = "Ellos son — они есть. son = форма SER для ellos/ellas/ustedes."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму (вежливо)",
+                    question = "Вы из России? ¿Ustedes ___ de Rusia?",
+                    options = listOf("son", "sois", "somos", "eres"),
+                    correctAnswer = "son",
+                    explanation = "Ustedes son — вежливая форма мн.ч. В Латинской Америке ustedes заменяет vosotros."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Мы из Мадрида.",
+                    options = listOf("Somos de Madrid.", "Son de Madrid.", "Sois de Madrid.", "Somos en Madrid."),
+                    correctAnswer = "Somos de Madrid.",
+                    explanation = "Somos de Madrid — мы из Мадрида. SER + de + место = происхождение."
+                )
             )
         ),
 
@@ -447,6 +481,40 @@ object LessonContentData {
                         LessonItem("Для ударения", "¡Yo soy Ana!", "именно я"),
                         LessonItem("В остальных случаях", "обычно опускают", "hablo = я говорю (и так ясно)")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное местоимение",
+                    question = "«Они» (смешанная группа) = ?",
+                    options = listOf("ellos", "ellas", "nosotros", "ustedes"),
+                    correctAnswer = "ellos",
+                    explanation = "Смешанная группа или только мужчины = ellos. ellas — только для женщин."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что означает?",
+                    question = "usted (Ud.)",
+                    options = listOf("Вы (вежливо, один человек)", "ты", "Вы (мн.ч.)", "вы (Испания)"),
+                    correctAnswer = "Вы (вежливо, один человек)",
+                    explanation = "usted — вежливое «вы» для одного человека. Сокращается Ud. или Vd."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Нужно ли местоимение?",
+                    question = "Как по-испански «я говорю» (без выделения)?",
+                    options = listOf("Hablo.", "Yo hablo.", "Hablo yo.", "Yo lo hablo."),
+                    correctAnswer = "Hablo.",
+                    explanation = "Местоимение часто опускают — окончание -o уже показывает «я». Hablo = я говорю."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "«Вы» в Испании (неформально, мн.ч.) = ?",
+                    options = listOf("vosotros", "ustedes", "usted", "ellos"),
+                    correctAnswer = "vosotros",
+                    explanation = "vosotros — неформальное мн.ч., только в Испании. В Латинской Америке говорят ustedes."
                 )
             )
         ),
@@ -483,6 +551,40 @@ object LessonContentData {
                         LessonItem("Запоминай с артиклем", "el/la + слово", "сразу будешь знать род")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный артикль",
+                    question = "___ libro (книга)",
+                    options = listOf("el", "la", "los", "las"),
+                    correctAnswer = "el",
+                    explanation = "libro оканчивается на -o → мужской род → el libro."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный артикль",
+                    question = "___ mano (рука)",
+                    options = listOf("la", "el", "los", "un"),
+                    correctAnswer = "la",
+                    explanation = "la mano — исключение! Оканчивается на -o, но женский род. Запомни: la mano, la foto."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Определи род по окончанию",
+                    question = "Слова на -ción (canción, nación) — какой род?",
+                    options = listOf("Всегда женский", "Всегда мужской", "Зависит от слова", "Нет правила"),
+                    correctAnswer = "Всегда женский",
+                    explanation = "Слова на -ción, -sión, -dad всегда женского рода: la canción, la ciudad."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный артикль",
+                    question = "___ problema (проблема)",
+                    options = listOf("el", "la", "un", "una"),
+                    correctAnswer = "el",
+                    explanation = "el problema — исключение! Слова греч. происхождения на -ma мужского рода: el programa, el sistema."
+                )
             )
         ),
 
@@ -517,6 +619,40 @@ object LessonContentData {
                         LessonItem("Dame la manzana.", "Дай мне это яблоко.", "конкретное"),
                         LessonItem("Soy médico.", "Я врач.", "профессия — без артикля!")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный артикль",
+                    question = "Я вижу собаку (упоминаю впервые). Veo ___ perro.",
+                    options = listOf("un", "el", "los", "unos"),
+                    correctAnswer = "un",
+                    explanation = "Первое упоминание = неопределённый артикль. un perro — какая-то собака."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Собака (уже знакомая) большая. ___ perro es grande.",
+                    options = listOf("El", "Un", "Los", "Unos"),
+                    correctAnswer = "El",
+                    explanation = "Уже известный предмет = определённый артикль. El perro — та самая собака."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Когда артикль не нужен?",
+                    question = "Я врач. Soy ___.",
+                    options = listOf("médico (без артикля)", "el médico", "un médico", "los médicos"),
+                    correctAnswer = "médico (без артикля)",
+                    explanation = "После SER с профессией артикль не нужен: Soy médico, Eres estudiante."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Несколько домов (неопределённо)",
+                    options = listOf("unas casas", "las casas", "unos casas", "una casa"),
+                    correctAnswer = "unas casas",
+                    explanation = "unas casas — несколько домов. casa — женский род → unas."
                 )
             )
         ),
@@ -556,6 +692,40 @@ object LessonContentData {
                         LessonItem("Tengo prisa.", "Я тороплюсь.", "")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "У меня есть кошка. (Yo) ___ un gato.",
+                    options = listOf("tengo", "tienes", "tiene", "tenemos"),
+                    correctAnswer = "tengo",
+                    explanation = "Yo tengo — у меня есть. tengo = форма TENER для yo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "Ella tiene 20 años.",
+                    options = listOf("Ей 20 лет.", "У неё 20 евро.", "Она 20-я.", "Она берёт 20."),
+                    correctAnswer = "Ей 20 лет.",
+                    explanation = "tener + años = возраст. В испанском говорят «иметь лет», не «быть»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать?",
+                    question = "Я голоден.",
+                    options = listOf("Tengo hambre.", "Soy hambre.", "Estoy hambre.", "Hay hambre."),
+                    correctAnswer = "Tengo hambre.",
+                    explanation = "Tengo hambre — буквально «имею голод». Состояния через TENER: hambre, sed, miedo, sueño."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "У тебя есть братья? ¿___ hermanos?",
+                    options = listOf("Tienes", "Tengo", "Tiene", "Tenes"),
+                    correctAnswer = "Tienes",
+                    explanation = "¿Tienes hermanos? tú tienes = ты имеешь."
+                )
             )
         ),
 
@@ -582,6 +752,178 @@ object LessonContentData {
                         LessonItem("Ellos tienen dos hijos.", "У них двое детей.", ""),
                         LessonItem("¿Ustedes tienen reserva?", "У вас есть бронь?", "")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "У нас большой дом. ___ una casa grande.",
+                    options = listOf("Tenemos", "Tienen", "Tenéis", "Tener"),
+                    correctAnswer = "Tenemos",
+                    explanation = "Nosotros tenemos — у нас есть. -emos = окончание для nosotros."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "Ellos tienen dos hijos.",
+                    options = listOf("У них двое детей.", "Они двое детей.", "Его двое детей.", "У него двое детей."),
+                    correctAnswer = "У них двое детей.",
+                    explanation = "Ellos tienen dos hijos. hijo = сын/ребёнок, hijos = дети."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "¿___ ustedes reserva?",
+                    options = listOf("Tienen", "Tenéis", "Tenemos", "Tienes"),
+                    correctAnswer = "Tienen",
+                    explanation = "Ustedes tienen — вежливое мн.ч. tienen = форма для ellos/ellas/ustedes."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать в Испании (неформально)?",
+                    question = "У вас есть питомец? (vosotros)",
+                    options = listOf("¿Tenéis mascota?", "¿Tienen mascota?", "¿Tienes mascota?", "¿Tenemos mascota?"),
+                    correctAnswer = "¿Tenéis mascota?",
+                    explanation = "Vosotros tenéis — форма для vosotros, используется в Испании."
+                )
+            )
+        ),
+
+        // u2_l6 — Притяжательные: mi, tu, su, nuestro/a
+        "u2_l6" to LessonContent(
+            intro = "Притяжательные местоимения показывают кому принадлежит предмет. В испанском они согласуются с предметом, а не с владельцем!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Притяжательные (перед существительным)",
+                    items = listOf(
+                        LessonItem("mi / mis", "мой / мои", "mi casa, mis libros"),
+                        LessonItem("tu / tus", "твой / твои", "tu perro, tus amigos"),
+                        LessonItem("su / sus", "его / её / Ваш", "su madre, sus hijos"),
+                        LessonItem("nuestro/a / nuestros/as", "наш / наша / наши", "nuestro coche, nuestra casa"),
+                        LessonItem("vuestro/a / vuestros/as", "ваш (Испания)", "vuestro hijo"),
+                        LessonItem("su / sus", "их / Ваш (мн.ч.)", "su trabajo, sus ideas")
+                    )
+                ),
+                LessonSection(
+                    heading = "Важно: согласование с предметом",
+                    items = listOf(
+                        LessonItem("mi libro", "моя книга (м.р.)", ""),
+                        LessonItem("mi casa", "мой дом (ж.р.)", "mi — не меняется!"),
+                        LessonItem("nuestro hijo", "наш сын (м.р.)", ""),
+                        LessonItem("nuestra hija", "наша дочь (ж.р.)", "nuestro/a меняется!")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("¿Cómo se llama tu perro?", "Как зовут твою собаку?", ""),
+                        LessonItem("Mi madre es profesora.", "Моя мама — учительница.", ""),
+                        LessonItem("Nuestros amigos son simpáticos.", "Наши друзья приятные.", ""),
+                        LessonItem("¿Dónde está su casa?", "Где его/её/их дом?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "___ libro es interesante. (моя книга)",
+                    options = listOf("Mi", "Tu", "Su", "Mis"),
+                    correctAnswer = "Mi",
+                    explanation = "mi libro — моя книга. mi не меняется по роду: mi libro, mi casa."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "___ casa es grande. (наш дом — женский род)",
+                    options = listOf("Nuestra", "Nuestro", "Su", "Mi"),
+                    correctAnswer = "Nuestra",
+                    explanation = "casa — женский род → nuestra casa. nuestro/nuestra меняется по роду предмета."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Твои друзья симпатичные.",
+                    options = listOf("Tus amigos son simpáticos.", "Tu amigos son simpáticos.", "Sus amigos son simpáticos.", "Mi amigos son simpáticos."),
+                    correctAnswer = "Tus amigos son simpáticos.",
+                    explanation = "amigos — множественное число → tus (мн.ч. от tu)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "С чем согласуется притяжательное?",
+                    question = "«Наша» по-испански — nuestro или nuestra?",
+                    options = listOf("Зависит от рода предмета", "Зависит от рода владельца", "Всегда nuestro", "Всегда nuestra"),
+                    correctAnswer = "Зависит от рода предмета",
+                    explanation = "nuestro hijo (сын — м.р.), nuestra hija (дочь — ж.р.). Согласуется с тем, о чём говорим."
+                )
+            )
+        ),
+
+        // u2_l8 — Согласование прилагательных: rojo/roja, blanco/blanca
+        "u2_l8" to LessonContent(
+            intro = "В испанском прилагательные согласуются с существительным по роду и числу. Это один из важнейших принципов грамматики!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Согласование по роду",
+                    items = listOf(
+                        LessonItem("el coche rojo", "красная машина (м.р.)", "-o для мужского"),
+                        LessonItem("la casa roja", "красный дом (ж.р.)", "-a для женского"),
+                        LessonItem("el gato negro", "чёрный кот", ""),
+                        LessonItem("la gata negra", "чёрная кошка", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Прилагательные на -e и на согласную",
+                    items = listOf(
+                        LessonItem("grande", "большой / большая", "не меняется: el libro grande / la casa grande"),
+                        LessonItem("inteligente", "умный / умная", "el chico inteligente / la chica inteligente"),
+                        LessonItem("azul", "синий / синяя", "не меняется: el cielo azul / la flor azul"),
+                        LessonItem("verde", "зелёный / зелёная", "el árbol verde / la hierba verde")
+                    )
+                ),
+                LessonSection(
+                    heading = "Множественное число",
+                    items = listOf(
+                        LessonItem("los coches rojos", "красные машины (м.р.)", "-os"),
+                        LessonItem("las casas rojas", "красные дома (ж.р.)", "-as"),
+                        LessonItem("los libros grandes", "большие книги", "-s после -e"),
+                        LessonItem("las flores azules", "синие цветы", "-es после согласной")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "la casa ___ (красный)",
+                    options = listOf("roja", "rojo", "rojos", "rojas"),
+                    correctAnswer = "roja",
+                    explanation = "casa — женский род → roja. -a для женского рода."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "el libro ___ (большой)",
+                    options = listOf("grande", "granda", "grandes", "grando"),
+                    correctAnswer = "grande",
+                    explanation = "Прилагательные на -e не меняются по роду: el libro grande, la mesa grande."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "синие цветы (las flores)",
+                    options = listOf("las flores azules", "las flores azul", "las flores azulos", "las flores azulas"),
+                    correctAnswer = "las flores azules",
+                    explanation = "azul — прилагательное на согласную. Мн.ч.: azul → azules."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "los gatos ___ (чёрный)",
+                    options = listOf("negros", "negras", "negro", "negra"),
+                    correctAnswer = "negros",
+                    explanation = "los gatos — мужской род мн.ч. → negros (-os)."
                 )
             )
         ),
@@ -619,6 +961,179 @@ object LessonContentData {
                         LessonItem("Es médico.", "Он врач. (профессия)", "SER = идентичность"),
                         LessonItem("Está en Madrid.", "Он в Мадриде. (место)", "ESTAR = положение")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я дома. ___ en casa.",
+                    options = listOf("Estoy", "Soy", "Estás", "Está"),
+                    correctAnswer = "Estoy",
+                    explanation = "Estoy en casa — я дома. ESTAR для местонахождения."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "SER или ESTAR?",
+                    question = "Он устал. (временное) Él ___ cansado.",
+                    options = listOf("está", "es", "estoy", "eres"),
+                    correctAnswer = "está",
+                    explanation = "Él está cansado — он устал сейчас. ESTAR = временное состояние."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "SER или ESTAR?",
+                    question = "Он высокий. (постоянно) Él ___ alto.",
+                    options = listOf("es", "está", "estoy", "son"),
+                    correctAnswer = "es",
+                    explanation = "Él es alto — он высокий (всегда). SER = постоянные качества."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Книга на столе.",
+                    options = listOf("El libro está en la mesa.", "El libro es en la mesa.", "La libro está en la mesa.", "El libro estoy en la mesa."),
+                    correctAnswer = "El libro está en la mesa.",
+                    explanation = "ESTAR для местонахождения предметов. está = он/она находится."
+                )
+            )
+        ),
+
+        // u2_l10 — Предлоги места: en, sobre, debajo de, al lado de
+        "u2_l10" to LessonContent(
+            intro = "Предлоги места помогают описать где находится предмет. Запомни 8 главных — и ты сможешь объяснить расположение чего угодно!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Основные предлоги места",
+                    items = listOf(
+                        LessonItem("en", "в, на", "El libro está en la mesa."),
+                        LessonItem("sobre / encima de", "на (сверху), над", "El gato está sobre el sofá."),
+                        LessonItem("debajo de", "под", "El perro está debajo de la cama."),
+                        LessonItem("al lado de", "рядом с, около", "La tienda está al lado del banco."),
+                        LessonItem("delante de", "перед", "El coche está delante de la casa."),
+                        LessonItem("detrás de", "за, позади", "El jardín está detrás de la casa."),
+                        LessonItem("entre", "между", "La farmacia está entre el banco y el cine."),
+                        LessonItem("cerca de / lejos de", "рядом с / далеко от", "¿Está cerca de aquí?")
+                    )
+                ),
+                LessonSection(
+                    heading = "de + el = del",
+                    items = listOf(
+                        LessonItem("al lado de + el banco", "al lado del banco", "de+el = del"),
+                        LessonItem("detrás de + el colegio", "detrás del colegio", ""),
+                        LessonItem("de + la tienda", "de la tienda", "de+la НЕ сливается")
+                    )
+                ),
+                LessonSection(
+                    heading = "Диалог: ¿Dónde está...?",
+                    items = listOf(
+                        LessonItem("¿Dónde está el baño?", "Где туалет?", ""),
+                        LessonItem("Está al final del pasillo.", "В конце коридора.", ""),
+                        LessonItem("¿Hay una farmacia cerca?", "Есть аптека рядом?", ""),
+                        LessonItem("Sí, está enfrente del hotel.", "Да, напротив отеля.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный предлог",
+                    question = "Кот на диване. El gato está ___ el sofá.",
+                    options = listOf("sobre", "debajo de", "entre", "detrás de"),
+                    correctAnswer = "sobre",
+                    explanation = "sobre = на (сверху). El gato está sobre el sofá — кот на диване."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи предлог",
+                    question = "debajo de",
+                    options = listOf("под", "над", "рядом", "перед"),
+                    correctAnswer = "под",
+                    explanation = "debajo de = под. El perro está debajo de la mesa — собака под столом."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "al lado de + el banco = ?",
+                    options = listOf("al lado del banco", "al lado de el banco", "al lado la banco", "al del banco"),
+                    correctAnswer = "al lado del banco",
+                    explanation = "de + el = del. Всегда сливается: del banco, del colegio."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Аптека между банком и кино.",
+                    options = listOf("La farmacia está entre el banco y el cine.", "La farmacia está al lado del banco y el cine.", "La farmacia está sobre el banco y el cine.", "La farmacia está enfrente del banco y el cine."),
+                    correctAnswer = "La farmacia está entre el banco y el cine.",
+                    explanation = "entre = между. entre A y B = между A и B."
+                )
+            )
+        ),
+
+        // u2_l13 — Множественное число: -s и -es
+        "u2_l13" to LessonContent(
+            intro = "Образовать множественное число в испанском несложно — два правила и несколько исключений.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Правило 1: + -s (после гласной)",
+                    items = listOf(
+                        LessonItem("libro → libros", "книга → книги", "на -o"),
+                        LessonItem("casa → casas", "дом → дома", "на -a"),
+                        LessonItem("coche → coches", "машина → машины", "на -e"),
+                        LessonItem("tribu → tribus", "племя → племена", "на -u")
+                    )
+                ),
+                LessonSection(
+                    heading = "Правило 2: + -es (после согласной)",
+                    items = listOf(
+                        LessonItem("ciudad → ciudades", "город → города", "на -d"),
+                        LessonItem("canción → canciones", "песня → песни", "на -n, тильда исчезает"),
+                        LessonItem("papel → papeles", "бумага → бумаги", "на -l"),
+                        LessonItem("árbol → árboles", "дерево → деревья", "на -l")
+                    )
+                ),
+                LessonSection(
+                    heading = "Артикли во мн.ч.",
+                    items = listOf(
+                        LessonItem("el libro → los libros", "книга → книги", "el → los"),
+                        LessonItem("la casa → las casas", "дом → дома", "la → las"),
+                        LessonItem("un perro → unos perros", "собака → собаки", "un → unos"),
+                        LessonItem("una mesa → unas mesas", "стол → столы", "una → unas")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образуй множественное число",
+                    question = "libro → ?",
+                    options = listOf("libros", "libres", "libroes", "libross"),
+                    correctAnswer = "libros",
+                    explanation = "libro оканчивается на гласную -o → добавляем -s → libros."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образуй множественное число",
+                    question = "ciudad → ?",
+                    options = listOf("ciudades", "ciudads", "ciudas", "ciudades"),
+                    correctAnswer = "ciudades",
+                    explanation = "ciudad оканчивается на согласную -d → добавляем -es → ciudades."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный артикль мн.ч.",
+                    question = "la casa → ___",
+                    options = listOf("las casas", "los casas", "unas casas", "las cosas"),
+                    correctAnswer = "las casas",
+                    explanation = "la (ж.р.) → las во мн.ч. casa → casas (гласная + s)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что происходит с тильдой?",
+                    question = "canción → canciones. Почему исчезла тильда?",
+                    options = listOf("Ударение перешло на новый слог автоматически", "Это ошибка", "Тильда всегда исчезает во мн.ч.", "Слово изменило значение"),
+                    correctAnswer = "Ударение перешло на новый слог автоматически",
+                    explanation = "canción → canciones: добавился слог -es, ударение теперь падает правильно без тильды."
                 )
             )
         ),
@@ -661,6 +1176,40 @@ object LessonContentData {
                         LessonItem("Estudio español.", "Я учу испанский.", "")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я говорю по-испански. (Yo) ___ español.",
+                    options = listOf("hablo", "hablas", "habla", "hablar"),
+                    correctAnswer = "hablo",
+                    explanation = "Yo + глагол -AR → -o: hablar → hablo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Ты работаешь? ¿___ ?",
+                    options = listOf("Trabajas", "Trabajo", "Trabaja", "Trabajar"),
+                    correctAnswer = "Trabajas",
+                    explanation = "Tú + глагол -AR → -as: trabajar → trabajas."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Она танцует хорошо.",
+                    options = listOf("Ella baila bien.", "Ella bailas bien.", "Ella bailo bien.", "Ella bailar bien."),
+                    correctAnswer = "Ella baila bien.",
+                    explanation = "Él/ella + глагол -AR → -a: bailar → baila."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что означает глагол?",
+                    question = "escuchar",
+                    options = listOf("слушать", "говорить", "смотреть", "читать"),
+                    correctAnswer = "слушать",
+                    explanation = "escuchar = слушать. yo escucho música — я слушаю музыку."
+                )
             )
         ),
 
@@ -689,6 +1238,40 @@ object LessonContentData {
                         LessonItem("vosotros", "trabajáis", ""),
                         LessonItem("ellos", "trabajan", "")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Мы говорим по-русски. ___ ruso.",
+                    options = listOf("Hablamos", "Habláis", "Hablan", "Habla"),
+                    correctAnswer = "Hablamos",
+                    explanation = "Nosotros + -AR → -amos: hablar → hablamos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Они работают здесь. ___ aquí.",
+                    options = listOf("Trabajan", "Trabajamos", "Trabajáis", "Trabaja"),
+                    correctAnswer = "Trabajan",
+                    explanation = "Ellos + -AR → -an: trabajar → trabajan."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Вы (Испания) танцуете хорошо.",
+                    options = listOf("Bailáis bien.", "Bailan bien.", "Bailamos bien.", "Bailas bien."),
+                    correctAnswer = "Bailáis bien.",
+                    explanation = "Vosotros + -AR → -áis: bailar → bailáis."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Найди ошибку",
+                    question = "Ellos estudian español. — правильно или нет?",
+                    options = listOf("Правильно", "Должно быть «estudian»", "Должно быть «estudiamos»", "Должно быть «estudias»"),
+                    correctAnswer = "Правильно",
+                    explanation = "Ellos estudian — верно! ellos + -AR → -an."
                 )
             )
         ),
@@ -719,6 +1302,40 @@ object LessonContentData {
                         LessonItem("aprender", "учить / учиться", "yo aprendo")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я ем пиццу. (Yo) ___ pizza.",
+                    options = listOf("como", "comes", "come", "comer"),
+                    correctAnswer = "como",
+                    explanation = "Yo + глагол -ER → -o: comer → como."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Он читает книгу.",
+                    options = listOf("Él lee un libro.", "Él lees un libro.", "Él leo un libro.", "Él leen un libro."),
+                    correctAnswer = "Él lee un libro.",
+                    explanation = "Él + leer → lee. -ER: él/ella → -e."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Мы пьём воду. ___ agua.",
+                    options = listOf("Bebemos", "Bebéis", "Beben", "Bebe"),
+                    correctAnswer = "Bebemos",
+                    explanation = "Nosotros + -ER → -emos: beber → bebemos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что означает глагол?",
+                    question = "aprender",
+                    options = listOf("учить / учиться", "открывать", "бегать", "продавать"),
+                    correctAnswer = "учить / учиться",
+                    explanation = "aprender = учить, учиться. Estudio español y aprendo mucho — учу испанский и многому учусь."
+                )
             )
         ),
 
@@ -748,6 +1365,40 @@ object LessonContentData {
                         LessonItem("recibir", "получать", "yo recibo")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я живу в Москве. (Yo) ___ en Moscú.",
+                    options = listOf("vivo", "vives", "vive", "vivir"),
+                    correctAnswer = "vivo",
+                    explanation = "Yo + -IR → -o: vivir → vivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "В чём отличие -IR от -ER?",
+                    question = "«Мы» для -ER: com-emos. «Мы» для -IR: viv-___",
+                    options = listOf("-imos", "-emos", "-amos", "-imos"),
+                    correctAnswer = "-imos",
+                    explanation = "-ER: nosotros -emos (comemos). -IR: nosotros -imos (vivimos). Только эти две формы отличаются."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Она пишет письмо.",
+                    options = listOf("Ella escribe una carta.", "Ella escribes una carta.", "Ella escribo una carta.", "Ella escriben una carta."),
+                    correctAnswer = "Ella escribe una carta.",
+                    explanation = "Ella + escribir → escribe. -IR: él/ella → -e."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что означает глагол?",
+                    question = "abrir",
+                    options = listOf("открывать", "закрывать", "писать", "получать"),
+                    correctAnswer = "открывать",
+                    explanation = "abrir = открывать. Abre la puerta — открой дверь."
+                )
             )
         ),
 
@@ -776,6 +1427,40 @@ object LessonContentData {
                         LessonItem("¿Quieres salir?", "Хочешь выйти?", "")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я хочу кофе. (Yo) ___ café.",
+                    options = listOf("quiero", "quieres", "quiere", "queremos"),
+                    correctAnswer = "quiero",
+                    explanation = "Yo quiero — я хочу. E→IE: querer → quiero (но queremos без IE)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "¿Qué quieres comer?",
+                    options = listOf("Что ты хочешь поесть?", "Что ты можешь есть?", "Что ты ешь?", "Что ты купил?"),
+                    correctAnswer = "Что ты хочешь поесть?",
+                    explanation = "quieres comer = хочешь есть. QUERER + infinitivo = хотеть + сделать."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Они хотят выйти. ___ salir.",
+                    options = listOf("Quieren", "Queremos", "Queréis", "Quiere"),
+                    correctAnswer = "Quieren",
+                    explanation = "Ellos quieren — они хотят. E→IE в ellos тоже: quieren."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать по-испански?",
+                    question = "Я тебя люблю. (разговорное)",
+                    options = listOf("Te quiero.", "Te quieres.", "Yo quiero tú.", "Quiero tú."),
+                    correctAnswer = "Te quiero.",
+                    explanation = "Te quiero — я тебя люблю (разговорное). Te = тебя (перед глаголом)."
+                )
             )
         ),
 
@@ -803,6 +1488,40 @@ object LessonContentData {
                         LessonItem("¿Podemos sentarnos?", "Можем сесть?", ""),
                         LessonItem("Puedes hablar más despacio.", "Говори помедленнее.", "")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я не могу прийти. No ___ venir.",
+                    options = listOf("puedo", "puedes", "puede", "podemos"),
+                    correctAnswer = "puedo",
+                    explanation = "Yo puedo — я могу. O→UE: poder → puedo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский (вежливо)",
+                    question = "Вы можете повторить?",
+                    options = listOf("¿Puede repetir?", "¿Puedo repetir?", "¿Puedes repetir?", "¿Podemos repetir?"),
+                    correctAnswer = "¿Puede repetir?",
+                    explanation = "¿Puede repetir? — вежливая просьба. usted puede = Вы можете."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Они могут помочь. ___ ayudar.",
+                    options = listOf("Pueden", "Podemos", "Podéis", "Puede"),
+                    correctAnswer = "Pueden",
+                    explanation = "Ellos pueden — они могут. O→UE в ellos тоже: pueden."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как вежливо попросить?",
+                    question = "Говори помедленнее, пожалуйста.",
+                    options = listOf("Puedes hablar más despacio.", "Puedo hablar más despacio.", "Puede hablar más despacio.", "Podemos hablar más despacio."),
+                    correctAnswer = "Puedes hablar más despacio.",
+                    explanation = "Puedes hablar más despacio — ты можешь говорить помедленнее. Вежливая просьба."
                 )
             )
         ),
@@ -840,6 +1559,40 @@ object LessonContentData {
                         LessonItem("por la noche", "ночью / поздним вечером", "")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «час дня»?",
+                    question = "Сейчас 1:00.",
+                    options = listOf("Es la una.", "Son las una.", "Es las una.", "Son la una."),
+                    correctAnswer = "Es la una.",
+                    explanation = "Только 1 час = Es la una (единственное число). Все остальные: Son las dos/tres..."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "Son las tres y media.",
+                    options = listOf("Три тридцать.", "Три пятнадцать.", "Без получаса четыре.", "Полтретьего."),
+                    correctAnswer = "Три тридцать.",
+                    explanation = "y media = и половина = +30 минут. Son las tres y media = 3:30."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать?",
+                    question = "Встреча в 8 утра.",
+                    options = listOf("La reunión es a las ocho de la mañana.", "La reunión es son las ocho.", "La reunión está a las ocho.", "La reunión es en las ocho."),
+                    correctAnswer = "La reunión es a las ocho de la mañana.",
+                    explanation = "a las ocho = в восемь. de la mañana = утра."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "Son las cinco menos cuarto.",
+                    options = listOf("Без четверти пять.", "Пять пятнадцать.", "Четыре сорок пять.", "Без пяти пять."),
+                    correctAnswer = "Без четверти пять.",
+                    explanation = "menos cuarto = минус четверть (15 минут). Son las cinco menos cuarto = 4:45."
+                )
             )
         ),
 
@@ -862,6 +1615,40 @@ object LessonContentData {
                         LessonItem("¿Para qué?", "Зачем? Для чего?", ""),
                         LessonItem("¿Cuál? / ¿Cuáles?", "Какой? Который?", "¿Cuál prefieres?")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное вопросительное слово",
+                    question = "___ estás? (Как ты?)",
+                    options = listOf("¿Cómo", "¿Qué", "¿Dónde", "¿Cuándo"),
+                    correctAnswer = "¿Cómo",
+                    explanation = "¿Cómo estás? — Как ты? cómo = как."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи вопрос",
+                    question = "¿Cuánto cuesta?",
+                    options = listOf("Сколько стоит?", "Где это?", "Когда?", "Почему?"),
+                    correctAnswer = "Сколько стоит?",
+                    explanation = "¿Cuánto cuesta? = Сколько стоит? cuánto = сколько, costar = стоить."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вопрос",
+                    question = "Ты спрашиваешь «куда идёт человек»",
+                    options = listOf("¿Adónde vas?", "¿Dónde estás?", "¿Cuándo vas?", "¿Por qué vas?"),
+                    correctAnswer = "¿Adónde vas?",
+                    explanation = "¿Adónde? = куда (движение). ¿Dónde? = где (положение)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи вопрос",
+                    question = "¿Por qué estudias español?",
+                    options = listOf("Почему ты учишь испанский?", "Для чего учишь испанский?", "Как учишь испанский?", "Когда учишь испанский?"),
+                    correctAnswer = "Почему ты учишь испанский?",
+                    explanation = "¿Por qué? = почему. ¿Para qué? = зачем/для чего."
                 )
             )
         ),
@@ -897,6 +1684,40 @@ object LessonContentData {
                         LessonItem("No voy nunca.", "Я никогда не иду.", "")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Я не говорю по-китайски.",
+                    options = listOf("No hablo chino.", "Hablo no chino.", "No hablar chino.", "No hablas chino."),
+                    correctAnswer = "No hablo chino.",
+                    explanation = "No + глагол = отрицание. No стоит прямо перед глаголом."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "No tengo nada.",
+                    options = listOf("У меня ничего нет.", "У меня что-то есть.", "Я ничего не хочу.", "Мне ничего не надо."),
+                    correctAnswer = "У меня ничего нет.",
+                    explanation = "No tengo nada — двойное отрицание в испанском правильно! nada = ничего."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «никогда»?",
+                    question = "Я никогда не ем мясо.",
+                    options = listOf("No como carne nunca. / Nunca como carne.", "No como nada carne.", "Jamás como siempre carne.", "Tampoco como carne."),
+                    correctAnswer = "No como carne nunca. / Nunca como carne.",
+                    explanation = "nunca = никогда. Можно: Nunca como carne. или No como carne nunca."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что означает?",
+                    question = "Yo tampoco.",
+                    options = listOf("Я тоже нет.", "Я тоже да.", "Я не знаю.", "Я никогда."),
+                    correctAnswer = "Я тоже нет.",
+                    explanation = "tampoco = тоже нет. ¿No te gusta? — No me gusta. — Yo tampoco."
+                )
             )
         ),
 
@@ -928,6 +1749,40 @@ object LessonContentData {
                         LessonItem("Van al cine.", "Они идут в кино.", ""),
                         LessonItem("¿Vais de vacaciones?", "Вы едете в отпуск?", "")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я иду на работу. (Yo) ___ al trabajo.",
+                    options = listOf("voy", "vas", "va", "vamos"),
+                    correctAnswer = "voy",
+                    explanation = "Yo voy — я иду. IR совсем нерегулярный: voy, vas, va, vamos, vais, van."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "¿Adónde vas?",
+                    options = listOf("Куда ты идёшь?", "Где ты?", "Как ты идёшь?", "Когда идёшь?"),
+                    correctAnswer = "Куда ты идёшь?",
+                    explanation = "¿Adónde vas? — куда ты идёшь? adónde = куда (движение)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Они идут в кино. ___ al cine.",
+                    options = listOf("Van", "Vamos", "Vais", "Vas"),
+                    correctAnswer = "Van",
+                    explanation = "Ellos van — они идут."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать по-испански?",
+                    question = "Пошли!",
+                    options = listOf("¡Vamos!", "¡Van!", "¡Voy!", "¡Vas!"),
+                    correctAnswer = "¡Vamos!",
+                    explanation = "¡Vamos! — пошли / давай. Одна из самых частых фраз в испанском!"
                 )
             )
         ),
@@ -965,6 +1820,40 @@ object LessonContentData {
                         LessonItem("a + la escuela", "a la escuela", "в школу")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Я иду в банк. Voy ___ banco.",
+                    options = listOf("al", "a el", "a la", "en el"),
+                    correctAnswer = "al",
+                    explanation = "a + el = al. Voy al banco — я иду в банк."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "¿Qué vas a hacer mañana?",
+                    options = listOf("Что ты будешь делать завтра?", "Что ты делал вчера?", "Что ты делаешь сейчас?", "Что ты хочешь делать?"),
+                    correctAnswer = "Что ты будешь делать завтра?",
+                    explanation = "vas a hacer = собираешься делать (ближайшее будущее). mañana = завтра."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать о будущем?",
+                    question = "Завтра будет дождь.",
+                    options = listOf("Va a llover mañana.", "Voy a llover mañana.", "Llueve mañana.", "Va llover mañana."),
+                    correctAnswer = "Va a llover mañana.",
+                    explanation = "va a llover = будет дождить. IR A + infinitivo = ближайшее будущее."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Я иду в магазин. Voy ___",
+                    options = listOf("a la tienda.", "al tienda.", "en la tienda.", "a el tienda."),
+                    correctAnswer = "a la tienda.",
+                    explanation = "tienda — женский род, поэтому a la tienda (не al)."
+                )
             )
         ),
 
@@ -1001,6 +1890,40 @@ object LessonContentData {
                         LessonItem("A él le gusta el fútbol.", "Ему нравится футбол.", "")
                     )
                 )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Мне нравится кофе. Me ___ el café.",
+                    options = listOf("gusta", "gustan", "gusto", "gustas"),
+                    correctAnswer = "gusta",
+                    explanation = "el café — единственное число → gusta. Глагол согласуется с тем, что нравится."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Мне нравятся кошки. Me ___ los gatos.",
+                    options = listOf("gustan", "gusta", "gusto", "gustán"),
+                    correctAnswer = "gustan",
+                    explanation = "los gatos — множественное число → gustan."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Тебе нравится музыка?",
+                    options = listOf("¿Te gusta la música?", "¿Me gusta la música?", "¿Te gustan la música?", "¿Le gusta la música?"),
+                    correctAnswer = "¿Te gusta la música?",
+                    explanation = "te = тебе. la música — ед.ч. → gusta."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "A él le gusta el fútbol.",
+                    options = listOf("Ему нравится футбол.", "Он любит футбол.", "Он играет в футбол.", "Он смотрит футбол."),
+                    correctAnswer = "Ему нравится футбол.",
+                    explanation = "le gusta = ему/ей нравится. a él — уточнение что именно ему."
+                )
             )
         ),
 
@@ -1027,6 +1950,40 @@ object LessonContentData {
                         LessonItem("Me duelen los pies.", "У меня болят ноги.", ""),
                         LessonItem("Nos parece una buena idea.", "Нам кажется, это хорошая идея.", "")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "¡Me encanta España!",
+                    options = listOf("Я обожаю Испанию!", "Мне нравится Испания.", "Я в Испании.", "Испания мне интересна."),
+                    correctAnswer = "Я обожаю Испанию!",
+                    explanation = "encantar = обожать, очень нравиться. Сильнее чем gustar."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "У меня болит голова. Me ___ la cabeza.",
+                    options = listOf("duele", "duelen", "duelo", "dueles"),
+                    correctAnswer = "duele",
+                    explanation = "la cabeza — единственное число → duele. Me duele la cabeza."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "У меня болят ноги. Me ___ los pies.",
+                    options = listOf("duelen", "duele", "duelo", "dueles"),
+                    correctAnswer = "duelen",
+                    explanation = "los pies — множественное число → duelen. Me duelen los pies."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что означает?",
+                    question = "Te queda bien.",
+                    options = listOf("Тебе идёт (одежда).", "Тебе хватает.", "Ты остаёшься.", "Тебе нравится."),
+                    correctAnswer = "Тебе идёт (одежда).",
+                    explanation = "quedar bien = идти (об одежде). Te queda bien — тебе идёт эта вещь."
                 )
             )
         ),
@@ -1068,6 +2025,40 @@ object LessonContentData {
                         LessonItem("sentarse", "садиться", "Siéntate. — Садись."),
                         LessonItem("irse", "уходить", "Me voy. — Я ухожу.")
                     )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Я встаю в 7 утра. ___ a las 7.",
+                    options = listOf("Me levanto", "Te levantas", "Se levanta", "Nos levantamos"),
+                    correctAnswer = "Me levanto",
+                    explanation = "me + levanto = я встаю. Возвратное местоимение me идёт перед глаголом."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на русский",
+                    question = "¿Cómo te llamas?",
+                    options = listOf("Как тебя зовут?", "Как ты себя чувствуешь?", "Куда ты идёшь?", "Как ты учишься?"),
+                    correctAnswer = "Как тебя зовут?",
+                    explanation = "llamarse = называться. ¿Cómo te llamas? — как тебя зовут? Me llamo... — меня зовут..."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Она ложится спать поздно. ___ tarde.",
+                    options = listOf("Se acuesta", "Me acuesto", "Te acuestas", "Nos acostamos"),
+                    correctAnswer = "Se acuesta",
+                    explanation = "se acuesta = он/она ложится спать. se = возвратное местоимение для él/ella."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать?",
+                    question = "Я ухожу.",
+                    options = listOf("Me voy.", "Se va.", "Te vas.", "Nos vamos."),
+                    correctAnswer = "Me voy.",
+                    explanation = "irse = уходить. Me voy — я ухожу. Очень частая фраза!"
                 )
             )
         )
