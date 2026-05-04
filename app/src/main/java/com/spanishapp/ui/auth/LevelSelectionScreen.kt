@@ -209,12 +209,17 @@ private fun PremiumLevelSheet(
                 Spacer(Modifier.height(8.dp))
                 Row {
                     Text("✅  ", fontSize = 14.sp)
-                    Text("1–3 урока бесплатно для всех", fontSize = 14.sp)
+                    Text("Урок 1 (5–6 тем) — бесплатно для всех", fontSize = 14.sp)
                 }
                 Spacer(Modifier.height(4.dp))
                 Row {
-                    Text("⭐  ", fontSize = 14.sp)
-                    Text("Полный доступ по подписке", fontSize = 14.sp)
+                    Text("🔓  ", fontSize = 14.sp)
+                    Text("Урок 2 и дальше — по подписке", fontSize = 14.sp)
+                }
+                Spacer(Modifier.height(4.dp))
+                Row {
+                    Text("🎁  ", fontSize = 14.sp)
+                    Text("7 дней бесплатного триала при первой оплате", fontSize = 14.sp)
                 }
             }
         }
