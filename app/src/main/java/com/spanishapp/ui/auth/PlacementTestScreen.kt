@@ -48,7 +48,8 @@ fun PlacementTestScreen(navController: NavHostController, viewModel: AuthViewMod
                     } else {
                         viewModel.selectLevel("A2") // Имитация результата
                         navController.navigate("home") {
-                            popUpTo("welcome") { inclusive = true }
+                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                            launchSingleTop = true
                         }
                     }
                 },
