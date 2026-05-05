@@ -6432,11 +6432,11 @@ object LessonContentData {
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Выбери правильный вариант",
-                    question = "En el trabajo, mi jefe me ___ (decir) que ___ (hacer) el reporte hoy.",
-                    options = listOf("ha dicho / haga", "dijo / hiciera", "dice / hago", "dirá / haré"),
-                    correctAnswer = "ha dicho / haga",
-                    explanation = "Perfecto: ha dicho (сказал). Второе слово требует Subjuntivo в инструкции (B1+), но на A2 может быть simplificado."
+                    instruction = "Pretérito Perfecto vs Indefinido",
+                    question = "Hoy ___ a mi jefe a las nueve, pero ayer ___ a las diez.",
+                    options = listOf("he visto / vi", "vi / he visto", "veo / vi", "he visto / he visto"),
+                    correctAnswer = "he visto / vi",
+                    explanation = "«Сегодня» (hoy) → Perfecto (he visto). «Вчера» (ayer) → Indefinido (vi). Hoy/esta semana/este año → Perfecto; ayer/la semana pasada → Indefinido."
                 )
             )
         ),
