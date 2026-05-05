@@ -600,9 +600,14 @@ private fun ExerciseCard(
                         wordToSay   = exercise.correctAnswer,
                         accentColor = accentColor,
                         tts         = tts,
-                        answered    = answered,
-                        onAnswer    = { passed ->
-                            selectedOption = if (passed) exercise.correctAnswer else "__failed__"
+                        onPassed    = {
+                            // Только успех завершает упражнение
+                            selectedOption = exercise.correctAnswer
+                            answered = true
+                        },
+                        onSkipped   = {
+                            // После 3 провалов — принудительный пропуск как ошибка
+                            selectedOption = "__failed__"
                             answered = true
                         }
                     )
@@ -668,13 +673,17 @@ private fun ExerciseCard(
 }
 
 // ─── Произнеси слово (SPEAKING) ───────────────────────────────────────────
+// Правило: только верное произношение позволяет идти дальше.
+// После MAX_FAILS неудачных попыток появляется кнопка «Пропустить».
+private const val MAX_FAILS = 3
+
 @Composable
 private fun SpeakingInput(
     wordToSay: String,
     accentColor: Color,
     tts: TextToSpeech?,
-    answered: Boolean,
-    onAnswer: (Boolean) -> Unit
+    onPassed:  () -> Unit,
+    onSkipped: () -> Unit
 ) {
     val ctx   = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -685,13 +694,14 @@ private fun SpeakingInput(
         ).spanishSpeechRecognizer()
     }
 
-    var isListening by remember { mutableStateOf(false) }
-    var recognized  by remember { mutableStateOf("") }
-    var passed      by remember { mutableStateOf(false) }
-    var quality     by remember { mutableStateOf(com.spanishapp.service.PronunciationQuality.WRONG) }
-    var isSilence   by remember { mutableStateOf(false) }
-    var errorMsg    by remember { mutableStateOf("") }
-    var attempts    by remember { mutableStateOf(0) }
+    var isListening  by remember { mutableStateOf(false) }
+    var recognized   by remember { mutableStateOf("") }
+    var lastPassed   by remember { mutableStateOf(false) }
+    var quality      by remember { mutableStateOf(com.spanishapp.service.PronunciationQuality.WRONG) }
+    var isSilence    by remember { mutableStateOf(false) }
+    var errorMsg     by remember { mutableStateOf("") }
+    var failCount    by remember { mutableStateOf(0) }  // только реальные ошибки (не тишина)
+    var showResult   by remember { mutableStateOf(false) }
 
     val infiniteTransition = rememberInfiniteTransition(label = "mic")
     val micScale by infiniteTransition.animateFloat(
@@ -700,29 +710,43 @@ private fun SpeakingInput(
         label = "micScale"
     )
 
+    fun handleResult(r: com.spanishapp.service.PronunciationResult) {
+        isListening = false
+        isSilence   = r.isSilence
+        errorMsg    = r.error
+        if (r.isSilence) return          // тишина → не считаем, просто показываем подсказку
+
+        recognized = r.recognized
+        lastPassed = r.passed
+        quality    = r.quality
+        showResult = true
+        if (r.passed) {
+            onPassed()                   // верно → идём дальше
+        } else {
+            failCount++                  // неверно → счётчик попыток
+        }
+    }
+
     val permLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) scope.launch { doListen(recognizer, wordToSay,
-            onStart  = { isListening = true; isSilence = false; errorMsg = "" },
-            onResult = { r -> isListening = false; recognized = r.recognized
-                passed = r.passed; quality = r.quality; isSilence = r.isSilence
-                errorMsg = r.error; attempts++
-                if (!r.isSilence) onAnswer(r.passed) }
-        )} else errorMsg = "Нет разрешения на микрофон"
+        if (granted) scope.launch {
+            doListen(recognizer, wordToSay,
+                onStart  = { isListening = true; isSilence = false; errorMsg = ""; showResult = false },
+                onResult = ::handleResult)
+        } else errorMsg = "Нет разрешения на микрофон"
     }
 
     fun startListening() {
-        isSilence = false; errorMsg = ""
+        if (isListening) return
+        isSilence = false; errorMsg = ""; showResult = false
         if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.RECORD_AUDIO)
             == PackageManager.PERMISSION_GRANTED) {
-            scope.launch { doListen(recognizer, wordToSay,
-                onStart  = { isListening = true },
-                onResult = { r -> isListening = false; recognized = r.recognized
-                    passed = r.passed; quality = r.quality; isSilence = r.isSilence
-                    errorMsg = r.error; attempts++
-                    if (!r.isSilence) onAnswer(r.passed) }
-            )}
+            scope.launch {
+                doListen(recognizer, wordToSay,
+                    onStart  = { isListening = true },
+                    onResult = ::handleResult)
+            }
         } else permLauncher.launch(Manifest.permission.RECORD_AUDIO)
     }
 
@@ -735,109 +759,108 @@ private fun SpeakingInput(
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = wordToSay, fontSize = 38.sp,
-                    fontWeight = FontWeight.ExtraBold, color = accentColor
-                )
+                Text(wordToSay, fontSize = 38.sp, fontWeight = FontWeight.ExtraBold, color = accentColor)
                 Spacer(Modifier.height(4.dp))
                 SpeakerButton(text = wordToSay, tts = tts, tint = accentColor)
-                Text(
-                    "← послушай, затем повтори",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Text("← послушай, затем повтори",
+                    fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
         Spacer(Modifier.height(20.dp))
 
-        // Тишина / отвлёкся
-        AnimatedVisibility(visible = isSilence && !answered) {
-            Surface(
-                shape = RoundedCornerShape(14.dp),
-                color = Orange.copy(alpha = 0.12f),
-                modifier = Modifier.fillMaxWidth()
-            ) {
+        // Тишина
+        AnimatedVisibility(visible = isSilence) {
+            Surface(shape = RoundedCornerShape(14.dp), color = Orange.copy(0.12f),
+                modifier = Modifier.fillMaxWidth()) {
                 Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text("🤔", fontSize = 22.sp)
                     Spacer(Modifier.width(10.dp))
                     Column {
                         Text(
-                            if (attempts <= 1) "Кажется, ты отвлёкся — нажми снова!"
-                            else "Не слышу тебя. Говори чуть громче и чётче.",
+                            if (failCount == 0) "Кажется, ты отвлёкся — нажми снова!"
+                            else "Не слышу тебя. Говори громче и чётче.",
                             fontWeight = FontWeight.SemiBold, fontSize = 14.sp
                         )
-                        Text("Это не ошибка, просто попробуй ещё раз",
+                        Text("Это не считается ошибкой",
                             fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
         }
 
-        // Ошибка (не тишина)
+        // Техническая ошибка
         AnimatedVisibility(visible = errorMsg.isNotEmpty() && !isSilence) {
             Text("⚠️ $errorMsg", color = Red, fontSize = 13.sp,
                 modifier = Modifier.padding(top = 4.dp))
         }
 
-        // Результат
-        AnimatedVisibility(visible = answered && recognized.isNotEmpty()) {
-            val (bgColor, emoji, label) = when (quality) {
-                com.spanishapp.service.PronunciationQuality.PERFECT    ->
-                    Triple(Green.copy(0.12f), "🌟", "Идеально! Отличное произношение!")
-                com.spanishapp.service.PronunciationQuality.GOOD       ->
-                    Triple(Green.copy(0.10f), "👏", "Отлично! Хорошее произношение")
-                com.spanishapp.service.PronunciationQuality.ACCEPTABLE ->
-                    Triple(Green.copy(0.08f), "👍", "Принято! Над произношением ещё поработаем")
-                com.spanishapp.service.PronunciationQuality.WRONG      ->
-                    Triple(Red.copy(0.10f), "❌", "Не совсем верно")
-            }
-            Surface(shape = RoundedCornerShape(14.dp), color = bgColor,
+        // Результат попытки (только неверные — верные сразу уходят через onPassed)
+        AnimatedVisibility(visible = showResult && !lastPassed) {
+            Surface(shape = RoundedCornerShape(14.dp), color = Red.copy(0.08f),
                 modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("$emoji  $label", fontWeight = FontWeight.Bold, fontSize = 17.sp,
-                        color = if (passed) Green else Red)
+                Column(Modifier.padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    val msg = when {
+                        failCount == 1 -> "Не совсем точно — попробуй ещё раз"
+                        failCount == 2 -> "Послушай ещё раз и повтори медленно"
+                        else           -> "Сложно — ещё раз, ты справишься!"
+                    }
+                    Text("❌  $msg", fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = Red)
                     Spacer(Modifier.height(4.dp))
                     Text("Распознано: «$recognized»", fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    if (!passed && recognized.isNotEmpty()) {
-                        Text("Нужно: «$wordToSay»", fontSize = 13.sp,
-                            color = Green, fontWeight = FontWeight.SemiBold)
-                    }
+                    Text("Нужно: «$wordToSay»", fontSize = 13.sp,
+                        color = accentColor, fontWeight = FontWeight.SemiBold)
                 }
             }
         }
 
         Spacer(Modifier.height(20.dp))
 
-        // Кнопка микрофона — показывается пока не дан финальный ответ
-        if (!answered) {
-            Box(contentAlignment = Alignment.Center) {
-                if (isListening) {
-                    Box(Modifier.size(88.dp).scale(micScale).clip(CircleShape)
-                        .background(accentColor.copy(alpha = 0.15f)))
-                }
-                IconButton(
-                    onClick  = { if (!isListening) startListening() },
-                    enabled  = !isListening,
-                    modifier = Modifier.size(72.dp).clip(CircleShape)
-                        .background(if (isListening) accentColor else accentColor.copy(0.15f))
+        // Кнопка микрофона
+        Box(contentAlignment = Alignment.Center) {
+            if (isListening) {
+                Box(Modifier.size(88.dp).scale(micScale).clip(CircleShape)
+                    .background(accentColor.copy(0.15f)))
+            }
+            IconButton(
+                onClick  = { startListening() },
+                enabled  = !isListening,
+                modifier = Modifier.size(72.dp).clip(CircleShape)
+                    .background(if (isListening) accentColor else accentColor.copy(0.15f))
+            ) {
+                Icon(Icons.Default.Mic, contentDescription = "Произнести",
+                    tint = if (isListening) Color.White else accentColor,
+                    modifier = Modifier.size(32.dp))
+            }
+        }
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = when {
+                isListening  -> "🎙 Слушаю..."
+                isSilence    -> "Нажми снова"
+                failCount > 0 -> "Попробуй ещё раз (${failCount}/${MAX_FAILS})"
+                else         -> "Нажми и произнеси"
+            },
+            fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        // Кнопка «Пропустить» — только после MAX_FAILS провалов
+        AnimatedVisibility(visible = failCount >= MAX_FAILS) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Spacer(Modifier.height(16.dp))
+                Text("Сложное слово? Пропусти и вернись позже",
+                    fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(6.dp))
+                OutlinedButton(
+                    onClick = onSkipped,
+                    shape   = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(Icons.Default.Mic, contentDescription = "Произнести",
-                        tint = if (isListening) Color.White else accentColor,
-                        modifier = Modifier.size(32.dp))
+                    Text("Пропустить (засчитается как ошибка)",
+                        fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = when {
-                    isListening -> "🎙 Слушаю..."
-                    isSilence   -> "Нажми снова"
-                    attempts > 0 -> "Попробуй ещё раз"
-                    else        -> "Нажми и произнеси"
-                },
-                fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
