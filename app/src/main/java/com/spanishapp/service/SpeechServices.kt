@@ -195,15 +195,26 @@ class SpanishSpeechRecognizer @Inject constructor(
     suspend fun checkPronunciation(expected: String): PronunciationResult {
         return when (val result = listenOnce()) {
             is SpeechResult.Success -> {
-                val similarity = stringSimilarity(
-                    result.text.lowercase().trim(),
-                    expected.lowercase().trim()
-                )
+                val norm     = ::phoneticallyNormalize
+                val expNorm  = norm(expected)
+                val recNorm  = norm(result.text)
+                val similarity = stringSimilarity(recNorm, expNorm)
+                // Порог зависит от длины: короткие слова требуют точности
+                val threshold = when {
+                    expNorm.length <= 4 -> 0.90f
+                    expNorm.length <= 7 -> 0.82f
+                    else                -> 0.75f
+                }
+                // Для коротких слов (≤5 букв): первая буква должна совпадать
+                val firstLetterOk = expNorm.length > 5 ||
+                    (recNorm.isNotEmpty() && expNorm.isNotEmpty() &&
+                     recNorm.first() == expNorm.first())
+                val passed = similarity >= threshold && firstLetterOk
                 PronunciationResult(
                     recognized = result.text,
                     expected   = expected,
                     score      = similarity,
-                    passed     = similarity >= 0.75f
+                    passed     = passed
                 )
             }
             is SpeechResult.Error   -> PronunciationResult(
@@ -214,6 +225,21 @@ class SpanishSpeechRecognizer @Inject constructor(
             )
         }
     }
+
+    /**
+     * Фонетическая нормализация испанского слова перед сравнением:
+     *  • нижний регистр
+     *  • убираем ударения (á→a, é→e, ...)
+     *  • ñ→n (STT может вернуть n вместо ñ)
+     *  • убираем немую H в начале слова (hola → ola, hablar → ablar)
+     */
+    private fun phoneticallyNormalize(word: String): String =
+        word.lowercase()
+            .replace("á", "a").replace("é", "e").replace("í", "i")
+            .replace("ó", "o").replace("ú", "u").replace("ü", "u")
+            .replace("ñ", "n").replace("¿", "").replace("¡", "")
+            .trim()
+            .let { if (it.startsWith("h")) it.substring(1) else it }
 
     private fun stringSimilarity(a: String, b: String): Float {
         if (a == b) return 1f
