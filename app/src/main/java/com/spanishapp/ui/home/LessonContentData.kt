@@ -10538,6 +10538,881 @@ object LessonContentData {
                     explanation = "en definitiva = «в итоге». Подводит итог перечисленным достоинствам кандидата."
                 )
             )
+        ),
+
+        // ══════════════════════════════════════════════════════════════
+        //  БЛОК 4 B1: VOCABULARIO Y EXPRESIÓN  (уроки 46–60)
+        //  unit id = 12, lessonIndex 0–14
+        // ══════════════════════════════════════════════════════════════
+
+        // ── u12_l0: Trabajo — entrevista y empresa ─────────────────────
+        "u12_l0" to LessonContent(
+            intro = "Деловой испанский начинается с собеседования и описания структуры компании.",
+            sections = listOf(
+                LessonSection("Лексика собеседования",
+                    "el currículum — резюме · la entrevista — собеседование · el puesto — должность\n" +
+                    "el sueldo — зарплата · la jornada — рабочий день · el contrato — договор\n" +
+                    "el jefe / la jefa — руководитель · el empleado — сотрудник · la empresa — компания"),
+                LessonSection("Типичные вопросы на интервью",
+                    "¿Cuál es su experiencia? — Какой у вас опыт?\n" +
+                    "¿Por qué quiere trabajar aquí? — Почему вы хотите работать здесь?\n" +
+                    "¿Cuáles son sus puntos fuertes? — Каковы ваши сильные стороны?\n" +
+                    "Estoy acostumbrado a trabajar en equipo. — Я привык работать в команде."),
+                LessonSection("Структура компании",
+                    "el departamento — отдел · la reunión — совещание · la sede — штаб-квартира\n" +
+                    "trabajar a tiempo completo/parcial — работать полный/неполный день\n" +
+                    "estar de baja — быть на больничном · pedir una baja — уйти на больничный")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Деловая лексика",
+                    question = "Mañana tengo una ___ de trabajo en una empresa de tecnología.",
+                    options = listOf("reunión", "entrevista", "jornada", "baja"),
+                    correctAnswer = "entrevista",
+                    explanation = "entrevista de trabajo = собеседование. «Завтра у меня собеседование в технологической компании.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Деловая лексика",
+                    question = "Mi ___ es de 2000 euros al mes.",
+                    options = listOf("puesto", "contrato", "sueldo", "empresa"),
+                    correctAnswer = "sueldo",
+                    explanation = "sueldo = зарплата. «Моя зарплата — 2000 евро в месяц.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Рабочий режим",
+                    question = "Trabajo ___ completa, de 9 a 18 horas.",
+                    options = listOf("a tiempo", "en jornada", "de contrato", "en puesto"),
+                    correctAnswer = "a tiempo",
+                    explanation = "a tiempo completa = полный рабочий день. «Я работаю полный день, с 9 до 18.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Собеседование",
+                    question = "¿Cuáles son sus ___ fuertes? — Мои сильные стороны — это...",
+                    options = listOf("puntos", "notas", "partes", "lados"),
+                    correctAnswer = "puntos",
+                    explanation = "puntos fuertes = сильные стороны. Стандартный вопрос на собеседовании."
+                )
+            )
+        ),
+
+        // ── u12_l1: Correo formal ─────────────────────────────────────
+        "u12_l1" to LessonContent(
+            intro = "Деловое письмо по-испански: структура, формулы вежливости и стандартные обороты.",
+            sections = listOf(
+                LessonSection("Обращение и приветствие",
+                    "Estimado/a Sr./Sra. [apellido]: — Уважаемый(ая) г-н/г-жа [фамилия]:\n" +
+                    "A quien corresponda: — Кому это может касаться:\n" +
+                    "Me dirijo a usted para... — Обращаюсь к Вам с целью...\n" +
+                    "En respuesta a su correo del... — В ответ на Ваше письмо от..."),
+                LessonSection("Тело письма",
+                    "Le informo de que... — Сообщаю Вам, что...\n" +
+                    "Adjunto encontrará... — В приложении Вы найдёте...\n" +
+                    "Le agradezco de antemano su atención. — Заранее благодарю за внимание.\n" +
+                    "Quedo a su disposición para cualquier consulta. — Остаюсь в Вашем распоряжении."),
+                LessonSection("Прощание",
+                    "Atentamente, — С уважением,\n" +
+                    "Un cordial saludo, — С дружеским приветом,\n" +
+                    "En espera de su respuesta, — В ожидании Вашего ответа,\n" +
+                    "Reciba un cordial saludo, — Примите сердечный привет,")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Обращение в письме",
+                    question = "___ Sr. García: Le escribo para solicitar información.",
+                    options = listOf("Querido", "Hola", "Estimado", "Buenos días"),
+                    correctAnswer = "Estimado",
+                    explanation = "Estimado Sr. García — стандартное деловое обращение. Querido и Hola — неформальны."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Приложение к письму",
+                    question = "___ encontrará el contrato firmado.",
+                    options = listOf("Dentro", "Adjunto", "Encima", "Junto"),
+                    correctAnswer = "Adjunto",
+                    explanation = "Adjunto encontrará = «В приложении найдёте». Стандартная формула делового письма."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Готовность к диалогу",
+                    question = "Quedo a su ___ para cualquier consulta.",
+                    options = listOf("servicio", "ayuda", "disposición", "mando"),
+                    correctAnswer = "disposición",
+                    explanation = "quedar a su disposición = «остаться в Вашем распоряжении». Вежливое завершение."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Подпись письма",
+                    question = "___, María López.",
+                    options = listOf("Con amor", "Hasta luego", "Atentamente", "Saludos"),
+                    correctAnswer = "Atentamente",
+                    explanation = "Atentamente = «С уважением» — нейтральная деловая подпись."
+                )
+            )
+        ),
+
+        // ── u12_l2: Medios de comunicación ───────────────────────────
+        "u12_l2" to LessonContent(
+            intro = "Лексика СМИ: новости, репортажи, медиапространство.",
+            sections = listOf(
+                LessonSection("Типы СМИ",
+                    "el periódico / el diario — газета · la revista — журнал\n" +
+                    "el telediario — теленовости · la radio — радио\n" +
+                    "el reportaje — репортаж · la crónica — хроника · el editorial — редакционная статья\n" +
+                    "la portada — первая полоса · el titular — заголовок"),
+                LessonSection("Глаголы и выражения",
+                    "publicar — публиковать · difundir — распространять · informar de — сообщать о\n" +
+                    "según las fuentes — по данным источников · se ha confirmado que — подтверждено, что\n" +
+                    "las noticias de última hora — последние новости\n" +
+                    "en directo — в прямом эфире · en diferido — в записи"),
+                LessonSection("Мнение о СМИ",
+                    "la prensa libre — свободная пресса · la censura — цензура\n" +
+                    "las fake news — фейковые новости · contrastar la información — проверять информацию\n" +
+                    "ser objetivo/subjetivo — быть объективным/субъективным")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Лексика СМИ",
+                    question = "El ___ de hoy habla sobre las elecciones.",
+                    options = listOf("titular", "editorial", "telediario", "reportaje"),
+                    correctAnswer = "titular",
+                    explanation = "el titular = заголовок. «Сегодняшний заголовок говорит о выборах.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Трансляция",
+                    question = "El partido se transmite ___ desde el estadio.",
+                    options = listOf("en diferido", "en directo", "por radio", "en portada"),
+                    correctAnswer = "en directo",
+                    explanation = "en directo = в прямом эфире. «Матч транслируется в прямом эфире со стадиона.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Глагол СМИ",
+                    question = "El periódico ___ la noticia esta mañana.",
+                    options = listOf("publicó", "habló", "escuchó", "vio"),
+                    correctAnswer = "publicó",
+                    explanation = "publicar = публиковать. «Газета опубликовала новость этим утром.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Критическое мышление",
+                    question = "Es importante ___ la información antes de compartirla.",
+                    options = listOf("borrar", "contrastar", "ignorar", "publicar"),
+                    correctAnswer = "contrastar",
+                    explanation = "contrastar la información = проверять информацию. «Важно проверять информацию перед публикацией.»"
+                )
+            )
+        ),
+
+        // ── u12_l3: Redes sociales ────────────────────────────────────
+        "u12_l3" to LessonContent(
+            intro = "Словарь социальных сетей — необходимый B1-словарь для современного общения.",
+            sections = listOf(
+                LessonSection("Действия в соцсетях",
+                    "publicar — публиковать · comentar — комментировать · compartir — делиться\n" +
+                    "seguir — подписаться · dejar de seguir — отписаться · bloquear — заблокировать\n" +
+                    "dar me gusta — лайкнуть · etiquetar — отметить (тегнуть)\n" +
+                    "subir una foto/vídeo — загрузить фото/видео"),
+                LessonSection("Термины платформ",
+                    "el seguidor / la seguidora — подписчик · la publicación — пост · la historia — сторис\n" +
+                    "el perfil — профиль · la cuenta — аккаунт · el enlace — ссылка\n" +
+                    "la tendencia — тренд · viral: hacerse viral — стать вирусным\n" +
+                    "la notificación — уведомление · la bandeja de entrada — входящие"),
+                LessonSection("Мнение о соцсетях",
+                    "Las redes sociales pueden ser adictivas. — Соцсети могут быть аддиктивны.\n" +
+                    "Hay que proteger la privacidad. — Нужно защищать приватность.\n" +
+                    "El ciberacoso es un problema grave. — Киберзапугивание — серьёзная проблема.")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Соцсети",
+                    question = "Voy a ___ esta foto en Instagram.",
+                    options = listOf("ver", "publicar", "leer", "escuchar"),
+                    correctAnswer = "publicar",
+                    explanation = "publicar = публиковать. «Я собираюсь опубликовать это фото в Instagram.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Термин соцсетей",
+                    question = "Tiene más de un millón de ___.",
+                    options = listOf("publicaciones", "seguidores", "perfiles", "cuentas"),
+                    correctAnswer = "seguidores",
+                    explanation = "seguidores = подписчики. «У него/неё больше миллиона подписчиков.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Действие в соцсетях",
+                    question = "Me ha ___ en una foto del evento.",
+                    options = listOf("seguido", "etiquetado", "bloqueado", "compartido"),
+                    correctAnswer = "etiquetado",
+                    explanation = "etiquetar = отмечать/тегать. «Меня отметили на фото с мероприятия.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Вирусный контент",
+                    question = "El vídeo se ha hecho ___ en pocas horas.",
+                    options = listOf("seguido", "etiquetado", "viral", "publicado"),
+                    correctAnswer = "viral",
+                    explanation = "hacerse viral = стать вирусным. «Видео стало вирусным за несколько часов.»"
+                )
+            )
+        ),
+
+        // ── u12_l4: Salud — síntomas y diagnóstico ─────────────────────
+        "u12_l4" to LessonContent(
+            intro = "Медицинская лексика — симптомы, диагноз, рецепт.",
+            sections = listOf(
+                LessonSection("Симптомы и жалобы",
+                    "Me duele la cabeza / el estómago / la espalda. — У меня болит голова/живот/спина.\n" +
+                    "Tengo fiebre / tos / náuseas / mareos. — У меня жар/кашель/тошнота/головокружение.\n" +
+                    "Me encuentro mal / fatal. — Я плохо себя чувствую.\n" +
+                    "Llevo dos días con fiebre. — У меня жар уже два дня."),
+                LessonSection("В кабинете врача",
+                    "el médico / la médica — врач · la consulta — кабинет врача\n" +
+                    "la receta — рецепт · el medicamento — лекарство\n" +
+                    "el análisis de sangre — анализ крови · la radiografía — рентген\n" +
+                    "las urgencias — скорая помощь/приёмный покой · ingresar en el hospital — госпитализировать"),
+                LessonSection("Диагноз и лечение",
+                    "Tiene usted una infección. — У вас инфекция.\n" +
+                    "Le receto antibióticos. — Я выписываю вам антибиотики.\n" +
+                    "Tome dos pastillas cada ocho horas. — Принимайте по две таблетки каждые восемь часов.\n" +
+                    "Guarde reposo durante tres días. — Соблюдайте постельный режим три дня.")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Симптомы",
+                    question = "Me ___ la garganta y tengo tos.",
+                    options = listOf("duele", "tengo", "estoy", "siento"),
+                    correctAnswer = "duele",
+                    explanation = "doler (duele) = болеть. Constr.: me duele + часть тела. «У меня болит горло и есть кашель.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Медицинская лексика",
+                    question = "El médico me ha dado una ___ para los antibióticos.",
+                    options = listOf("receta", "consulta", "urgencia", "pastilla"),
+                    correctAnswer = "receta",
+                    explanation = "la receta = рецепт. «Врач выписал мне рецепт на антибиотики.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Рекомендация врача",
+                    question = "Debe ___ reposo durante tres días.",
+                    options = listOf("tomar", "guardar", "hacer", "tener"),
+                    correctAnswer = "guardar",
+                    explanation = "guardar reposo = соблюдать постельный режим. Устойчивое выражение."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Срочная помощь",
+                    question = "Si el dolor es muy fuerte, vaya a ___.",
+                    options = listOf("la consulta", "la farmacia", "urgencias", "la clínica"),
+                    correctAnswer = "urgencias",
+                    explanation = "urgencias = скорая помощь/приёмный покой. «Если боль очень сильная, идите в приёмный покой.»"
+                )
+            )
+        ),
+
+        // ── u12_l5: En el médico — diálogo ───────────────────────────
+        "u12_l5" to LessonContent(
+            intro = "Диалог у врача: как описать состояние и понять назначение.",
+            sections = listOf(
+                LessonSection("Описание самочувствия",
+                    "Me encuentro muy cansado/a últimamente. — В последнее время я очень устаю.\n" +
+                    "No puedo dormir bien. — Я не могу нормально спать.\n" +
+                    "He perdido el apetito. — Я потерял(а) аппетит.\n" +
+                    "Me duele aquí. — Здесь болит. (указывая на место)"),
+                LessonSection("Вопросы врача",
+                    "¿Desde cuándo tiene estos síntomas? — С каких пор у вас эти симптомы?\n" +
+                    "¿Tiene alguna alergia? — Есть ли у вас аллергия?\n" +
+                    "¿Está tomando algún medicamento? — Принимаете ли вы лекарства?\n" +
+                    "¿Ha tenido estas molestias antes? — Были ли у вас эти жалобы раньше?"),
+                LessonSection("Назначения",
+                    "Le mando hacerse un análisis. — Направляю вас на анализы.\n" +
+                    "Vuelva en una semana. — Приходите через неделю.\n" +
+                    "Evite el alcohol y el tabaco. — Избегайте алкоголя и табака.\n" +
+                    "Siga una dieta equilibrada. — Соблюдайте сбалансированную диету.")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Диалог у врача",
+                    question = "¿___ cuándo tiene estos síntomas?",
+                    options = listOf("Hasta", "Desde", "Para", "Por"),
+                    correctAnswer = "Desde",
+                    explanation = "¿Desde cuándo...? = «С каких пор...?» Предлог desde указывает начальную точку времени."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Самочувствие",
+                    question = "He ___ el apetito y me encuentro muy débil.",
+                    options = listOf("ganado", "perdido", "tenido", "hecho"),
+                    correctAnswer = "perdido",
+                    explanation = "perder el apetito = потерять аппетит. «Я потерял(а) аппетит и чувствую сильную слабость.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Назначение врача",
+                    question = "___ una dieta equilibrada y descanse más.",
+                    options = listOf("Siga", "Haga", "Coma", "Tome"),
+                    correctAnswer = "Siga",
+                    explanation = "Siga = (Вы) следуйте (imperativo formal). seguir una dieta = соблюдать диету."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Аллергия",
+                    question = "¿Tiene alguna ___? — Sí, soy alérgico a la penicilina.",
+                    options = listOf("enfermedad", "receta", "alergia", "pastilla"),
+                    correctAnswer = "alergia",
+                    explanation = "alergia = аллергия. «Есть ли у вас аллергия? — Да, я аллергик на пенициллин.»"
+                )
+            )
+        ),
+
+        // ── u12_l6: Modismos con DAR ──────────────────────────────────
+        "u12_l6" to LessonContent(
+            intro = "Глагол dar образует множество устойчивых выражений — без них невозможно понять разговорную речь.",
+            sections = listOf(
+                LessonSection("Modismos básicos con DAR",
+                    "dar igual — не иметь значения (всё равно)\n" +
+                    "   Me da igual. — Мне всё равно.\n" +
+                    "dar miedo — пугать\n" +
+                    "   Me da miedo conducir por la noche. — Ночное вождение меня пугает.\n" +
+                    "dar vergüenza — стыдить\n" +
+                    "   Le da vergüenza hablar en público. — Ему стыдно говорить на публике."),
+                LessonSection("Modismos con DAR II",
+                    "darse cuenta de — осознать, заметить\n" +
+                    "   Me di cuenta de que estaba equivocado. — Я понял, что ошибался.\n" +
+                    "dar la lata — надоедать, донимать\n" +
+                    "   El niño da la lata todo el día. — Ребёнок донимает весь день.\n" +
+                    "dar en el clavo — попасть в точку\n" +
+                    "   ¡Has dado en el clavo! — Ты попал в точку!"),
+                LessonSection("Modismos con DAR III",
+                    "dar pie a — давать повод для\n" +
+                    "   Sus palabras dieron pie a un debate. — Его слова дали повод для дискуссии.\n" +
+                    "dar a luz — рожать\n" +
+                    "   Mi hermana dio a luz ayer. — Моя сестра родила вчера.\n" +
+                    "dar de comer — кормить\n" +
+                    "   ¿Le has dado de comer al perro? — Ты покормил собаку?")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Модизм с DAR",
+                    question = "No me ___ si vamos al cine o al teatro.",
+                    options = listOf("da igual", "da miedo", "da vergüenza", "da pie"),
+                    correctAnswer = "da igual",
+                    explanation = "dar igual = «быть всё равно». «Мне всё равно, идём ли мы в кино или в театр.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Модизм с DAR",
+                    question = "De repente me ___ de que había olvidado las llaves.",
+                    options = listOf("di cuenta", "di igual", "di miedo", "di lata"),
+                    correctAnswer = "di cuenta",
+                    explanation = "darse cuenta de = осознать/заметить. «Я вдруг понял, что забыл ключи.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Устойчивое выражение",
+                    question = "¡Has ___ en el clavo! Eso es exactamente lo que pensaba.",
+                    options = listOf("dado", "hecho", "puesto", "dicho"),
+                    correctAnswer = "dado",
+                    explanation = "dar en el clavo = попасть в точку. «Ты попал в точку! Именно это я и думал.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Модизм",
+                    question = "El niño ___ la lata con sus preguntas.",
+                    options = listOf("da", "hace", "tiene", "pone"),
+                    correctAnswer = "da",
+                    explanation = "dar la lata = донимать, надоедать. «Ребёнок донимает своими вопросами.»"
+                )
+            )
+        ),
+
+        // ── u12_l7: Modismos con TENER ───────────────────────────────
+        "u12_l7" to LessonContent(
+            intro = "Глагол tener — ключ к большинству испанских идиом и описанию состояний.",
+            sections = listOf(
+                LessonSection("Tener + sustantivo I",
+                    "tener ganas de — хотеть, иметь желание\n" +
+                    "   Tengo ganas de verte. — Мне не терпится тебя увидеть.\n" +
+                    "tener razón — быть правым\n" +
+                    "   Tienes razón, debería disculparme. — Ты прав, мне следует извиниться.\n" +
+                    "tener en cuenta — учитывать, принимать во внимание\n" +
+                    "   Hay que tener en cuenta todos los factores. — Нужно учитывать все факторы."),
+                LessonSection("Tener + sustantivo II",
+                    "tener éxito — иметь успех\n" +
+                    "   Su novela ha tenido mucho éxito. — Его роман имел большой успех.\n" +
+                    "tener lugar — иметь место, происходить\n" +
+                    "   La reunión tendrá lugar el lunes. — Собрание состоится в понедельник.\n" +
+                    "tener en mente — держать в уме, планировать\n" +
+                    "   Tengo en mente abrir mi propio negocio. — Я планирую открыть собственный бизнес."),
+                LessonSection("Tener + sustantivo III",
+                    "tener en común — иметь общее\n" +
+                    "   Tenemos mucho en común. — У нас много общего.\n" +
+                    "no tener ni idea — не иметь ни малейшего понятия\n" +
+                    "   No tengo ni idea de cómo funciona. — Я понятия не имею, как это работает.\n" +
+                    "tener buena/mala pinta — выглядеть хорошо/плохо")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Модизм с TENER",
+                    question = "___ ganas de empezar las vacaciones.",
+                    options = listOf("Tengo", "Estoy", "Soy", "Hago"),
+                    correctAnswer = "Tengo",
+                    explanation = "tener ganas de = «иметь желание/хотеть». «Мне не терпится начать каникулы.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Модизм с TENER",
+                    question = "La conferencia ___ lugar en el auditorio principal.",
+                    options = listOf("tiene", "hace", "está", "da"),
+                    correctAnswer = "tiene",
+                    explanation = "tener lugar = происходить/состояться. «Конференция состоится в главном зале.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Устойчивое выражение",
+                    question = "Hay que ___ en cuenta el presupuesto disponible.",
+                    options = listOf("tener", "poner", "dar", "hacer"),
+                    correctAnswer = "tener",
+                    explanation = "tener en cuenta = учитывать. «Нужно учитывать имеющийся бюджет.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Незнание",
+                    question = "No ___ ni idea de dónde están mis gafas.",
+                    options = listOf("tengo", "sé", "conozco", "estoy"),
+                    correctAnswer = "tengo",
+                    explanation = "no tener ni idea = понятия не иметь. «Я понятия не имею, где мои очки.»"
+                )
+            )
+        ),
+
+        // ── u12_l8: Modismos con HACER ───────────────────────────────
+        "u12_l8" to LessonContent(
+            intro = "Глагол hacer — ещё один столп испанской идиоматики.",
+            sections = listOf(
+                LessonSection("Hacer + sustantivo I",
+                    "hacer falta — быть необходимым, нужным\n" +
+                    "   Hace falta más tiempo. — Нужно больше времени.\n" +
+                    "hacer caso — слушаться, обращать внимание\n" +
+                    "   No me hace caso. — Он меня не слушает.\n" +
+                    "hacer ilusión — радовать, вызывать приятное волнение\n" +
+                    "   Me hace mucha ilusión el viaje. — Я так жду этого путешествия."),
+                LessonSection("Hacer + sustantivo II",
+                    "hacer la vista gorda — смотреть сквозь пальцы, не замечать\n" +
+                    "   El jefe hizo la vista gorda ante los retrasos. — Шеф смотрел сквозь пальцы на опоздания.\n" +
+                    "hacer las paces — помириться\n" +
+                    "   Por fin hicieron las paces. — Наконец они помирились.\n" +
+                    "hacer hincapié en — делать акцент на\n" +
+                    "   El profesor hizo hincapié en la pronunciación. — Учитель сделал акцент на произношении."),
+                LessonSection("Hacer + sustantivo III",
+                    "hacer de — играть роль, выступать в качестве\n" +
+                    "   Hace de intérprete en las reuniones. — Он выступает переводчиком на совещаниях.\n" +
+                    "hacerse el tonto — прикидываться дурачком\n" +
+                    "   No te hagas el tonto, sabes perfectamente de qué hablo.")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Модизм с HACER",
+                    question = "___ falta estudiar más para el examen.",
+                    options = listOf("Hace", "Tiene", "Da", "Está"),
+                    correctAnswer = "Hace",
+                    explanation = "hacer falta = быть необходимым. «Нужно больше заниматься к экзамену.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Устойчивое выражение",
+                    question = "Me ___ mucha ilusión conocerte en persona.",
+                    options = listOf("hace", "da", "tiene", "pone"),
+                    correctAnswer = "hace",
+                    explanation = "hacer ilusión = радовать/вызывать волнение ожидания. «Мне так радостно познакомиться с тобой лично.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Модизм с HACER",
+                    question = "El árbitro ___ la vista gorda y no sancionó la falta.",
+                    options = listOf("hizo", "dio", "tuvo", "puso"),
+                    correctAnswer = "hizo",
+                    explanation = "hacer la vista gorda = смотреть сквозь пальцы. «Арбитр не заметил нарушение.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Помириться",
+                    question = "Después de la discusión, los dos amigos hicieron las ___.",
+                    options = listOf("paces", "manos", "cuentas", "maletas"),
+                    correctAnswer = "paces",
+                    explanation = "hacer las paces = помириться. «После ссоры двое друзей помирились.»"
+                )
+            )
+        ),
+
+        // ── u12_l9: Modismos con LLEVAR ──────────────────────────────
+        "u12_l9" to LessonContent(
+            intro = "Глагол llevar в идиомах — обозначает перенос, продолжение и преодоление.",
+            sections = listOf(
+                LessonSection("Llevar + acción",
+                    "llevar a cabo — осуществлять, проводить\n" +
+                    "   El proyecto se llevó a cabo con éxito. — Проект был успешно осуществлён.\n" +
+                    "llevar la contraria — возражать, идти вперекор\n" +
+                    "   Siempre me lleva la contraria. — Он всегда мне возражает.\n" +
+                    "llevar ventaja — иметь преимущество\n" +
+                    "   Llevamos ventaja a los competidores. — Мы имеем преимущество перед конкурентами."),
+                LessonSection("Llevar + tiempo",
+                    "llevar + tiempo + gerundio — ... делать уже (продолжительность)\n" +
+                    "   Llevo dos horas esperando. — Я жду уже два часа.\n" +
+                    "   ¿Cuánto llevas estudiando español? — Сколько ты уже изучаешь испанский?\n" +
+                    "llevar bien/mal algo — хорошо/плохо переносить что-то\n" +
+                    "   No lleva bien la presión. — Он плохо переносит давление."),
+                LessonSection("Llevar + estado",
+                    "llevar razón (разговорное = tener razón) — быть правым\n" +
+                    "   Llevas razón, me equivoqué. — Ты прав, я ошибся.\n" +
+                    "llevar consigo — нести с собой, влечь за собой\n" +
+                    "   El cargo lleva consigo mucha responsabilidad. — Должность влечёт большую ответственность.")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Модизм с LLEVAR",
+                    question = "El equipo ___ a cabo el proyecto en tiempo récord.",
+                    options = listOf("llevó", "hizo", "tuvo", "dio"),
+                    correctAnswer = "llevó",
+                    explanation = "llevar a cabo = осуществить/провести. «Команда осуществила проект в рекордные сроки.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Продолжительность",
+                    question = "___ tres años viviendo en Madrid.",
+                    options = listOf("Tengo", "Estoy", "Llevo", "Sigo"),
+                    correctAnswer = "Llevo",
+                    explanation = "llevar + tiempo + gerundio = «уже ... делать». «Я живу в Мадриде уже три года.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Устойчивое выражение",
+                    question = "Mi hermano siempre me ___ la contraria.",
+                    options = listOf("lleva", "da", "hace", "tiene"),
+                    correctAnswer = "lleva",
+                    explanation = "llevar la contraria = возражать, идти наперекор. «Мой брат всегда мне возражает.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Преимущество",
+                    question = "Nuestro equipo ___ ventaja a los demás participantes.",
+                    options = listOf("lleva", "tiene", "hace", "da"),
+                    correctAnswer = "lleva",
+                    explanation = "llevar ventaja = иметь преимущество. «Наша команда имеет преимущество перед остальными.»"
+                )
+            )
+        ),
+
+        // ── u12_l10: Registro formal vs coloquial ─────────────────────
+        "u12_l10" to LessonContent(
+            intro = "Разграничение формального и разговорного регистра — ключевой навык B1–B2.",
+            sections = listOf(
+                LessonSection("Лексические замены",
+                    "Formal → Coloquial:\n" +
+                    "solicitar → pedir — просить\n" +
+                    "comunicar → decir — говорить\n" +
+                    "efectuar → hacer — делать\n" +
+                    "adquirir → comprar — покупать\n" +
+                    "fallecer → morir — умирать\n" +
+                    "residir → vivir — жить\n" +
+                    "contraer matrimonio → casarse — жениться/выйти замуж"),
+                LessonSection("Грамматические различия",
+                    "Formal: usted, ustedes · Coloquial: tú, vosotros\n" +
+                    "Formal: Le agradezco su colaboración.\n" +
+                    "Coloquial: Gracias por tu ayuda.\n" +
+                    "Formal: En caso de que... + Subj. · Coloquial: Si...\n" +
+                    "Formal: Con el fin de + infinitivo · Coloquial: Para + infinitivo"),
+                LessonSection("Когда что использовать",
+                    "Formal: письма, заявления, официальные документы, деловые встречи\n" +
+                    "Coloquial: разговор с друзьями, мессенджеры, неформальные ситуации\n" +
+                    "Neutro: новостные статьи, учебники, презентации\n" +
+                    "Главное правило: адаптируй речь к ситуации и собеседнику.")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Формальная замена",
+                    question = "«Quiero pedir un certificado» — более формально: Deseo ___ un certificado.",
+                    options = listOf("solicitar", "buscar", "necesitar", "tener"),
+                    correctAnswer = "solicitar",
+                    explanation = "solicitar = официальный эквивалент pedir. «Я желаю запросить справку.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Регистр",
+                    question = "«Vivo en Barcelona» — формальная версия: ___ en Barcelona.",
+                    options = listOf("Estoy", "Habito", "Resido", "Paso"),
+                    correctAnswer = "Resido",
+                    explanation = "residir = проживать (официально). «Я проживаю в Барселоне.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Деловая лексика",
+                    question = "Con el fin de ___ los costes, hemos reducido el personal.",
+                    options = listOf("reducir", "bajar", "ahorrar", "cortar"),
+                    correctAnswer = "reducir",
+                    explanation = "reducir los costes = сократить расходы (формально). Con el fin de — официальная конструкция."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Обращение",
+                    question = "En una carta formal se usa ___ en lugar de tú.",
+                    options = listOf("él", "usted", "vos", "nosotros"),
+                    correctAnswer = "usted",
+                    explanation = "usted = Вы (формальное обращение). В деловой переписке обязательно."
+                )
+            )
+        ),
+
+        // ── u12_l11: Carta de solicitud ──────────────────────────────
+        "u12_l11" to LessonContent(
+            intro = "Письмо-заявление: структура, формулы и практика.",
+            sections = listOf(
+                LessonSection("Структура письма-заявления",
+                    "1. Encabezado — заголовок (дата, адресат)\n" +
+                    "2. Saludo — приветствие (Estimado/a...)\n" +
+                    "3. Introducción — цель обращения\n" +
+                    "4. Desarrollo — аргументы, детали\n" +
+                    "5. Conclusión — просьба и готовность к диалогу\n" +
+                    "6. Despedida — прощание (Atentamente,)"),
+                LessonSection("Типичные фразы",
+                    "Me dirijo a usted para solicitar... — Обращаюсь к Вам с просьбой...\n" +
+                    "En respuesta a su anuncio... — В ответ на Ваше объявление...\n" +
+                    "Tengo el placer de presentarles mi candidatura. — Имею честь представить свою кандидатуру.\n" +
+                    "Quedo a su entera disposición para una entrevista.\n" +
+                    "Adjunto mi currículum vitae y una carta de recomendación."),
+                LessonSection("Пример вступления",
+                    "Madrid, 5 de mayo de 2026\n\n" +
+                    "Estimado/a Sr./Sra. García:\n\n" +
+                    "Me dirijo a usted en respuesta al anuncio publicado en la página web de su empresa " +
+                    "para el puesto de diseñador gráfico. Tengo tres años de experiencia en el sector.")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Начало письма-заявления",
+                    question = "Me ___ a usted para solicitar información sobre el curso.",
+                    options = listOf("dirijo", "voy", "hablo", "escribo"),
+                    correctAnswer = "dirijo",
+                    explanation = "dirigirse a = обращаться к (официально). «Обращаюсь к Вам с просьбой о предоставлении информации о курсе.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Прикладываемые документы",
+                    question = "___ mi currículum y las referencias solicitadas.",
+                    options = listOf("Adjunto", "Envío", "Doy", "Pongo"),
+                    correctAnswer = "Adjunto",
+                    explanation = "adjuntar = прикладывать (к письму). «Прилагаю своё резюме и запрошенные рекомендации.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Готовность к собеседованию",
+                    question = "Quedo a su entera ___ para una entrevista.",
+                    options = listOf("disposición", "ayuda", "servicio", "atención"),
+                    correctAnswer = "disposición",
+                    explanation = "quedar a su entera disposición = «быть полностью в Вашем распоряжении»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Цель обращения",
+                    question = "En ___ a su anuncio, me gustaría presentar mi candidatura.",
+                    options = listOf("respuesta", "caso", "relación", "vista"),
+                    correctAnswer = "respuesta",
+                    explanation = "en respuesta a = в ответ на. «В ответ на Ваше объявление хотел бы представить свою кандидатуру.»"
+                )
+            )
+        ),
+
+        // ── u12_l12: Debatir y argumentar I ──────────────────────────
+        "u12_l12" to LessonContent(
+            intro = "Умение выражать согласие, несогласие и нюансировать позицию — ключ к B1-дискуссии.",
+            sections = listOf(
+                LessonSection("Выражение согласия",
+                    "Estoy completamente de acuerdo. — Я полностью согласен(на).\n" +
+                    "Tienes razón en ese punto. — Ты прав(а) в этом пункте.\n" +
+                    "Exactamente, eso es lo que pienso. — Именно, это то, что я думаю.\n" +
+                    "Sin duda alguna, es así. — Без сомнения, это так.\n" +
+                    "Comparto tu opinión. — Разделяю твоё мнение."),
+                LessonSection("Выражение несогласия",
+                    "No estoy de acuerdo con eso. — Я с этим не согласен(на).\n" +
+                    "Creo que te equivocas. — Думаю, ты ошибаешься.\n" +
+                    "Desde mi punto de vista es diferente. — С моей точки зрения иначе.\n" +
+                    "Sin embargo, hay que considerar que... — Тем не менее, нужно учитывать, что...\n" +
+                    "Aunque entiendo tu postura, yo creo que... — Хотя я понимаю твою позицию, я считаю, что..."),
+                LessonSection("Нюансирование",
+                    "Depende de la situación. — Зависит от ситуации.\n" +
+                    "Hay que matizar que... — Надо уточнить, что...\n" +
+                    "En cierta medida, sí, pero... — В определённой мере да, но...\n" +
+                    "Por un lado... por otro lado... — С одной стороны... с другой стороны...")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Согласие",
+                    question = "Estoy completamente ___ acuerdo con tu propuesta.",
+                    options = listOf("en", "de", "con", "a"),
+                    correctAnswer = "de",
+                    explanation = "estar de acuerdo = соглашаться. «Я полностью согласен с твоим предложением.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Несогласие",
+                    question = "Desde mi ___ de vista, la solución propuesta no es viable.",
+                    options = listOf("punto", "parte", "lado", "forma"),
+                    correctAnswer = "punto",
+                    explanation = "desde mi punto de vista = с моей точки зрения. Устойчивое выражение."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Нюансирование",
+                    question = "___ un lado, es útil; por otro, resulta costoso.",
+                    options = listOf("Por", "De", "En", "Con"),
+                    correctAnswer = "Por",
+                    explanation = "por un lado... por otro lado = с одной стороны... с другой. Стандартная конструкция аргументации."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Уступка",
+                    question = "___ entiendo tu punto de vista, creo que hay otras opciones.",
+                    options = listOf("Aunque", "Porque", "Cuando", "Si"),
+                    correctAnswer = "Aunque",
+                    explanation = "aunque = хотя/несмотря на то что. «Хотя я понимаю твою точку зрения, думаю, есть другие варианты.»"
+                )
+            )
+        ),
+
+        // ── u12_l13: Argumentar con conectores ─────────────────────────
+        "u12_l13" to LessonContent(
+            intro = "Связные аргументы — это структура: тезис, доказательство, вывод.",
+            sections = listOf(
+                LessonSection("Ввод тезиса",
+                    "En mi opinión / A mi juicio — по моему мнению\n" +
+                    "Considero que / Pienso que / Creo que — считаю/думаю, что\n" +
+                    "Está claro que / Es evidente que — очевидно, что\n" +
+                    "Cabe destacar que — стоит отметить, что"),
+                LessonSection("Доказательства и примеры",
+                    "Por ejemplo / Como ejemplo — например\n" +
+                    "De hecho — на самом деле (подкрепление)\n" +
+                    "Según los datos... — Согласно данным...\n" +
+                    "Hay que tener en cuenta que... — Нужно принять во внимание, что...\n" +
+                    "Esto se debe a que... — Это объясняется тем, что..."),
+                LessonSection("Вывод и заключение",
+                    "Por lo tanto / Por consiguiente — следовательно\n" +
+                    "En conclusión / Para concluir — в заключение\n" +
+                    "En definitiva — в итоге\n" +
+                    "Todo ello indica que... — Всё это указывает на то, что...\n" +
+                    "A modo de resumen — подводя итог")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ввод мнения",
+                    question = "___ mi opinión, el transporte público es más eficiente que el coche.",
+                    options = listOf("En", "A", "Por", "De"),
+                    correctAnswer = "En",
+                    explanation = "en mi opinión = по моему мнению. «По моему мнению, общественный транспорт эффективнее автомобиля.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Пример",
+                    question = "El proyecto fue un éxito. ___ ejemplo, las ventas aumentaron un 30%.",
+                    options = listOf("Por", "Como", "De", "En"),
+                    correctAnswer = "Por",
+                    explanation = "por ejemplo = например. «Проект был успешным. Например, продажи выросли на 30%.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Вывод",
+                    question = "No tenemos presupuesto, ___ lo tanto, no podemos continuar.",
+                    options = listOf("por", "en", "de", "con"),
+                    correctAnswer = "por",
+                    explanation = "por lo tanto = следовательно. «У нас нет бюджета, следовательно, мы не можем продолжать.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Заключение",
+                    question = "___ conclusión, este modelo de negocio es sostenible.",
+                    options = listOf("En", "Por", "De", "Con"),
+                    correctAnswer = "En",
+                    explanation = "en conclusión = в заключение. «В заключение, эта бизнес-модель жизнеспособна.»"
+                )
+            )
+        ),
+
+        // ── u12_l14: ФИНАЛЬНЫЙ ЧЕКПОИНТ B1 ──────────────────────────
+        "u12_l14" to LessonContent(
+            intro = "Финальный чекпоинт курса B1. Ты освоил всё: Subjuntivo, Condicional, косвенную речь, пассив, perífrasis и продвинутую лексику!",
+            sections = listOf(
+                LessonSection("Что ты выучил на B1",
+                    "Блок 1 — Subjuntivo Presente: желания, эмоции, сомнения, безличные конструкции\n" +
+                    "Блок 2 — Condicional + Si-clauses + Imperfecto de Subjuntivo\n" +
+                    "Блок 3 — Estilo indirecto, relativas, pasiva, perífrasis, conectores\n" +
+                    "Блок 4 — Деловой язык, СМИ, здоровье, модизмы, аргументация"),
+                LessonSection("Ключевые навыки B1",
+                    "✅ Говорить о желаниях и эмоциях через Subjuntivo\n" +
+                    "✅ Строить гипотезы (Si tuviera dinero, viajaría...)\n" +
+                    "✅ Передавать чужую речь (Me dijo que vendría...)\n" +
+                    "✅ Использовать пассивные конструкции\n" +
+                    "✅ Применять perífrasis (llevar + gerundio, acabar de...)\n" +
+                    "✅ Аргументировать позицию с conectores"),
+                LessonSection("Следующий уровень: B2",
+                    "На B2 тебя ждут:\n" +
+                    "— Subjuntivo Imperfecto/Pluscuamperfecto\n" +
+                    "— Сложные гипотезы (Si hubiera sabido...)\n" +
+                    "— Стилистика и регистры\n" +
+                    "— Идиомы и выражения высокого уровня\n\n" +
+                    "¡Enhorabuena! — Поздравляем! Ты завершил курс B1! 🎓")
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финальный тест: Subjuntivo",
+                    question = "Espero que todos ___ a tiempo para la reunión.",
+                    options = listOf("llegan", "llegarán", "lleguen", "llegaban"),
+                    correctAnswer = "lleguen",
+                    explanation = "esperar que + Subj.Pres.: lleguen. «Надеюсь, что все придут вовремя на собрание.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финальный тест: Condicional + Si",
+                    question = "Si ___ más dinero, compraría un apartamento en el centro.",
+                    options = listOf("tengo", "tuviera", "tendré", "tenga"),
+                    correctAnswer = "tuviera",
+                    explanation = "Si + Subj.Imp. (tuviera) + Condicional (compraría). Нереальное условие в настоящем."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финальный тест: Estilo indirecto",
+                    question = "Ana dijo: «Mañana vengo». → Ana dijo que ___ al día siguiente.",
+                    options = listOf("vendría", "venía", "viene", "viniera"),
+                    correctAnswer = "vendría",
+                    explanation = "vengo (Presente) → vendría (Condicional) в косвенной речи после dijo que."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финальный тест: Modismos",
+                    question = "El equipo ___ a cabo el proyecto en tiempo récord.",
+                    options = listOf("llevó", "hizo", "tuvo", "puso"),
+                    correctAnswer = "llevó",
+                    explanation = "llevar a cabo = осуществить. «Команда осуществила проект в рекордные сроки.» ¡Enhorabuena! 🏆"
+                )
+            )
         )
     )
 }

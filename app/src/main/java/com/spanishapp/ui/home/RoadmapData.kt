@@ -449,6 +449,51 @@ object RoadmapData {
             )
         ),
 
+        // ══════════════════════════════════════════════
+        //  БЛОК 4 B1: VOCABULARIO Y EXPRESIÓN  (уроки 46–60)
+        // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "12",
+            title = "Блок 4: Словарь и стиль",
+            icon = "📖",
+            description = "Деловой язык, идиомы, СМИ, здоровье, финальный чекпоинт B1",
+            cefrLevel = "B1",
+            color = Color(0xFF1565C0),
+            lessons = listOf(
+                // 46
+                RoadmapLesson("💼 Trabajo: entrevista, empresa, contrato",             "content", "trabajo"),
+                // 47
+                RoadmapLesson("💼 Correo formal: estimado / adjunto / agradezco",      "content", "trabajo"),
+                // 48
+                RoadmapLesson("📰 Medios: noticias, reportaje, editorial",             "content", "general"),
+                // 49
+                RoadmapLesson("📱 Redes sociales: publicar, comentar, seguir",         "content", "tecnologia"),
+                // 50
+                RoadmapLesson("🏥 Salud: síntoma, diagnóstico, receta, urgencias",     "content", "salud"),
+                // 51
+                RoadmapLesson("🏥 En el médico: me duele / tengo fiebre / estoy mal",  "content", "salud"),
+                // 52
+                RoadmapLesson("🎭 Modismos con DAR: dar igual / dar miedo / darse cuenta","content","general"),
+                // 53
+                RoadmapLesson("🎭 Modismos con TENER: tener ganas / razón / en cuenta","content","general"),
+                // 54
+                RoadmapLesson("🎭 Modismos con HACER: hacer falta / caso / ilusión",   "content","general"),
+                // 55
+                RoadmapLesson("🎭 Modismos con LLEVAR: llevar a cabo / la contraria",  "content","general"),
+                // 56
+                RoadmapLesson("✍️ Registro formal vs coloquial: diferencias clave",    "content","general"),
+                // 57
+                RoadmapLesson("✍️ Carta de solicitud: estructura y fórmulas",          "content","general"),
+                // 58
+                RoadmapLesson("🗣️ Debatir: expresar acuerdo / desacuerdo / matizar",  "content","general"),
+                // 59
+                RoadmapLesson("🗣️ Argumentar: por un lado... por otro lado...",        "content","general"),
+                // 60  ФИНАЛЬНЫЙ ЧЕКПОИНТ B1
+                RoadmapLesson("🏆 Чекпоинт «Финал B1»",                               "quiz",   "all")
+            )
+        ),
+
         RoadmapUnit(
             id = "b2_1",
             title = "B2 · Блок 1: Сложные конструкции",
