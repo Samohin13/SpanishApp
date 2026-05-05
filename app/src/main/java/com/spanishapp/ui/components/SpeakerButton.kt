@@ -27,22 +27,38 @@ fun rememberSpanishTts(): TextToSpeech? {
             if (status == TextToSpeech.SUCCESS) {
                 val tts = instance ?: return@TextToSpeech
 
-                // Выбираем лучший испанский голос из доступных:
-                // сортируем по качеству (выше = лучше), потом по латентности (меньше = лучше)
-                val bestVoice = tts.voices
-                    ?.filter { voice ->
-                        voice.locale.language == "es" &&
-                        !voice.isNetworkConnectionRequired &&
-                        !voice.features.contains(android.speech.tts.TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED)
+                // Выбираем лучший испанский голос из доступных.
+                // Приоритет: качество (VERY_HIGH=500 → LOW=200), затем «нейросетевые»
+                // голоса (имена с wavenet/neural), затем низкая латентность.
+                val spanishVoices = tts.voices
+                    ?.filter { v ->
+                        v.locale.language == "es" &&
+                        !v.features.contains(android.speech.tts.TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED)
                     }
-                    ?.sortedWith(compareByDescending<android.speech.tts.Voice> { it.quality }
-                        .thenBy { it.latency })
-                    ?.firstOrNull()
+                    ?: emptyList()
+
+                fun isNeural(v: android.speech.tts.Voice): Boolean {
+                    val n = v.name.lowercase()
+                    return n.contains("wavenet") || n.contains("neural") ||
+                           n.contains("network") || n.contains("hd")
+                }
+
+                val bestVoice = spanishVoices
+                    .sortedWith(
+                        compareByDescending<android.speech.tts.Voice> { it.quality }
+                            .thenByDescending { isNeural(it) }
+                            .thenBy { it.latency }
+                    )
+                    .firstOrNull()
 
                 if (bestVoice != null) {
                     tts.voice = bestVoice
+                    android.util.Log.d(
+                        "SpanishTTS",
+                        "Selected: ${bestVoice.name} q=${bestVoice.quality} " +
+                        "net=${bestVoice.isNetworkConnectionRequired}"
+                    )
                 } else {
-                    // Fallback: просто испанский язык
                     tts.language = Locale("es", "ES")
                 }
 
