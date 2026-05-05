@@ -18,10 +18,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -81,9 +83,11 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val wordOfDay by viewModel.wordOfTheDay.collectAsStateWithLifecycle()
     var expandedUnitId by remember { mutableStateOf<String?>(null) }
     var showPremiumSheet by remember { mutableStateOf(false) }
     val premiumSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val tts = rememberSpanishTts()
 
     LazyColumn(
         modifier = Modifier
@@ -154,6 +158,25 @@ fun HomeScreen(
         }
 
         item { Spacer(Modifier.height(16.dp)) }
+
+        // ── Streak card ────────────────────────────────────────
+        item {
+            StreakCard(
+                streak       = state.currentStreak,
+                studiedToday = state.studiedToday,
+                todayMinutes = state.todayMinutes,
+                goalMinutes  = state.dailyGoalMinutes
+            )
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ── Word of day card ───────────────────────────────────
+        wordOfDay?.let { word ->
+            item {
+                WordOfDayCard(word = word, tts = tts)
+                Spacer(Modifier.height(12.dp))
+            }
+        }
 
         // ── Course cards ───────────────────────────────────────
         val courseData = listOf(
@@ -783,6 +806,176 @@ internal fun HomePremiumSheet(onDismiss: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
             Text("Закрыть", color = TextGray)
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  STREAK CARD
+// ═══════════════════════════════════════════════════════════════
+
+@Composable
+private fun StreakCard(
+    streak: Int,
+    studiedToday: Boolean,
+    todayMinutes: Int,
+    goalMinutes: Int
+) {
+    val flameScale by rememberInfiniteTransition(label = "flame").animateFloat(
+        initialValue = 1f,
+        targetValue  = if (streak > 0) 1.12f else 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(700, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "flameScale"
+    )
+
+    val progress = if (goalMinutes > 0) (todayMinutes.toFloat() / goalMinutes).coerceIn(0f, 1f) else 0f
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 14.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = Color.White,
+        shadowElevation = 4.dp,
+        tonalElevation = 0.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Flame
+            Text(
+                text = if (streak > 0) "🔥" else "💤",
+                fontSize = 40.sp,
+                modifier = Modifier.scale(if (streak > 0) flameScale else 1f)
+            )
+
+            Spacer(Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "$streak",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = if (streak > 0) OrangeColor else TextGray
+                    )
+                    Text(
+                        text = "дней подряд",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = TextGray
+                    )
+                }
+
+                Spacer(Modifier.height(6.dp))
+
+                // Daily goal progress bar
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(7.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(OrangeColor.copy(alpha = 0.12f))
+                ) {
+                    if (progress > 0f) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(progress)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(Brush.horizontalGradient(listOf(OrangeColor, GoldColor)))
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(4.dp))
+
+                Text(
+                    text = if (studiedToday) "✓ Сегодня занимался  $todayMinutes / $goalMinutes мин"
+                           else "Ещё не занимался сегодня",
+                    fontSize = 12.sp,
+                    color = if (studiedToday) Color(0xFF2E7D32) else TextGray
+                )
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  WORD OF DAY CARD
+// ═══════════════════════════════════════════════════════════════
+
+@Composable
+private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?) {
+    val WordBlue = Color(0xFF1565C0)
+    val WordBg   = Color(0xFFE8F0FE)
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 14.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = Color.White,
+        shadowElevation = 4.dp,
+        tonalElevation = 0.dp
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
+            // Label
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("📖", fontSize = 14.sp)
+                Text("Слово дня", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = WordBlue)
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            // Spanish word + speaker
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = word.spanish,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = WordBlue,
+                    modifier = Modifier.weight(1f)
+                )
+                SpeakerButton(text = word.spanish, tts = tts, tint = WordBlue)
+            }
+
+            // Russian translation
+            Text(
+                text = word.russian,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = TextMain
+            )
+
+            if (word.example.isNotBlank()) {
+                Spacer(Modifier.height(10.dp))
+                // Example sentence
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(WordBg)
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "\"${word.example}\"",
+                        fontSize = 13.sp,
+                        fontStyle = FontStyle.Italic,
+                        color = WordBlue.copy(alpha = 0.85f),
+                        lineHeight = 18.sp
+                    )
+                }
+            }
+
+            if (word.wasPracticed) {
+                Spacer(Modifier.height(8.dp))
+                Text("✓ Уже практиковал", fontSize = 12.sp, color = Color(0xFF2E7D32))
+            }
         }
     }
 }
