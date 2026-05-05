@@ -3,6 +3,8 @@ package com.spanishapp.ui.home
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -139,13 +141,35 @@ fun LessonSessionScreen(
                         )
                     }
                     SessionStep.Victory -> {
+                        // Есть ли следующий урок в этом же блоке?
+                        val nextLessonIndex = lessonIndex + 1
+                        val hasNextInUnit   = nextLessonIndex < (unit.lessons.size)
+                        // Есть ли следующий блок?
+                        val nextUnitId      = unitId + 1
+                        val hasNextUnit     = RoadmapData.units.getOrNull(nextUnitId - 1) != null
+
                         VictoryScreen(
-                            lessonTitle  = lesson.title,
-                            xpEarned     = xpEarned + 15,
-                            correctCount = correctCount,
+                            lessonTitle    = lesson.title,
+                            xpEarned       = xpEarned + 15,
+                            correctCount   = correctCount,
                             totalExercises = exercises.size,
-                            accentColor  = accentColor,
-                            onFinish     = {
+                            accentColor    = accentColor,
+                            hasNextLesson  = hasNextInUnit || hasNextUnit,
+                            onNextLesson   = {
+                                viewModel.markLessonComplete(unitId, lessonIndex)
+                                if (hasNextInUnit) {
+                                    navController.navigate("lesson_intro/$unitId/$nextLessonIndex") {
+                                        popUpTo("lesson_session/$unitId/$lessonIndex") { inclusive = true }
+                                    }
+                                } else if (hasNextUnit) {
+                                    navController.navigate("lesson_intro/$nextUnitId/0") {
+                                        popUpTo("lesson_session/$unitId/$lessonIndex") { inclusive = true }
+                                    }
+                                } else {
+                                    navController.popBackStack()
+                                }
+                            },
+                            onFinish       = {
                                 viewModel.markLessonComplete(unitId, lessonIndex)
                                 navController.popBackStack()
                             }
@@ -295,16 +319,10 @@ private fun ExerciseCard(
 ) {
     val haptic = LocalHapticFeedback.current
 
-    // null = не ответил, true = верно, false = неверно
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var answered       by remember { mutableStateOf(false) }
 
-    LaunchedEffect(selectedOption) {
-        if (selectedOption != null) {
-            delay(900)
-            if (selectedOption == exercise.correctAnswer) onCorrect() else onWrong()
-        }
-    }
+    val isCorrectAnswer = selectedOption == exercise.correctAnswer
 
     Column(
         Modifier
@@ -317,9 +335,9 @@ private fun ExerciseCard(
 
             // Инструкция
             Text(
-                text     = exercise.instruction,
-                fontSize = 14.sp,
-                color    = MaterialTheme.colorScheme.onSurfaceVariant,
+                text       = exercise.instruction,
+                fontSize   = 14.sp,
+                color      = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Medium
             )
             Spacer(Modifier.height(12.dp))
@@ -343,9 +361,9 @@ private fun ExerciseCard(
             if (exercise.hint.isNotEmpty()) {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text  = "💡 ${exercise.hint}",
+                    text     = "💡 ${exercise.hint}",
                     fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color    = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -358,16 +376,16 @@ private fun ExerciseCard(
                         val isSelected = selectedOption == option
                         val isCorrect  = option == exercise.correctAnswer
                         val bgColor = when {
-                            !answered && isSelected -> accentColor.copy(alpha = 0.1f)
-                            answered && isCorrect   -> Green.copy(alpha = 0.12f)
+                            !answered && isSelected              -> accentColor.copy(alpha = 0.1f)
+                            answered && isCorrect                -> Green.copy(alpha = 0.12f)
                             answered && isSelected && !isCorrect -> Red.copy(alpha = 0.12f)
-                            else                   -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                            else                                 -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
                         }
                         val borderColor = when {
-                            answered && isCorrect              -> Green
+                            answered && isCorrect                -> Green
                             answered && isSelected && !isCorrect -> Red
-                            isSelected                         -> accentColor
-                            else                               -> Color.Transparent
+                            isSelected                           -> accentColor
+                            else                                 -> Color.Transparent
                         }
 
                         Surface(
@@ -407,30 +425,64 @@ private fun ExerciseCard(
                     }
                 }
                 else -> {
-                    // Заглушка для других типов упражнений
                     Text("Упражнение в разработке", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
 
-            // Объяснение после ответа
-            if (answered && exercise.explanation.isNotEmpty()) {
-                Spacer(Modifier.height(12.dp))
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = if (selectedOption == exercise.correctAnswer)
-                        Green.copy(alpha = 0.08f) else Red.copy(alpha = 0.08f)
-                ) {
-                    Text(
-                        text     = exercise.explanation,
-                        modifier = Modifier.padding(12.dp),
-                        fontSize = 14.sp,
-                        color    = MaterialTheme.colorScheme.onSurface
-                    )
+            // Объяснение — показывается сразу и остаётся до нажатия ДАЛЕЕ
+            AnimatedVisibility(
+                visible = answered && exercise.explanation.isNotEmpty(),
+                enter   = fadeIn() + expandVertically()
+            ) {
+                Column {
+                    Spacer(Modifier.height(12.dp))
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isCorrectAnswer) Green.copy(alpha = 0.08f)
+                                else Red.copy(alpha = 0.08f)
+                    ) {
+                        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
+                            Text(
+                                text     = if (isCorrectAnswer) "✅ " else "❌ ",
+                                fontSize = 16.sp
+                            )
+                            Text(
+                                text     = exercise.explanation,
+                                fontSize = 14.sp,
+                                color    = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
                 }
             }
         }
 
-        Spacer(Modifier.height(20.dp))
+        // Кнопка ДАЛЕЕ — появляется только после ответа
+        AnimatedVisibility(
+            visible = answered,
+            enter   = fadeIn() + slideInVertically { it }
+        ) {
+            Button(
+                onClick  = { if (isCorrectAnswer) onCorrect() else onWrong() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .height(56.dp),
+                shape  = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isCorrectAnswer) Green else Red
+                )
+            ) {
+                Text(
+                    text       = if (isCorrectAnswer) "ДАЛЕЕ →" else "ПОНЯЛ, ДАЛЕЕ →",
+                    fontSize   = 16.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+        }
+
+        // Пустой спейсер когда кнопки ещё нет
+        if (!answered) Spacer(Modifier.height(20.dp))
     }
 }
 
@@ -442,6 +494,8 @@ private fun VictoryScreen(
     correctCount: Int,
     totalExercises: Int,
     accentColor: Color,
+    hasNextLesson: Boolean,
+    onNextLesson: () -> Unit,
     onFinish: () -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
@@ -463,7 +517,7 @@ private fun VictoryScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Звезда / трофей
+        // Трофей
         Box(
             Modifier
                 .size(120.dp)
@@ -507,15 +561,38 @@ private fun VictoryScreen(
 
         Spacer(Modifier.height(40.dp))
 
-        Button(
+        // Кнопка "СЛЕДУЮЩИЙ УРОК" — только если есть следующий
+        if (hasNextLesson) {
+            Button(
+                onClick  = onNextLesson,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                shape  = RoundedCornerShape(18.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = accentColor)
+            ) {
+                Text("СЛЕДУЮЩИЙ УРОК →", fontSize = 17.sp, fontWeight = FontWeight.ExtraBold)
+            }
+
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // Кнопка "ВЫЙТИ В МЕНЮ"
+        OutlinedButton(
             onClick  = onFinish,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp),
-            shape    = RoundedCornerShape(18.dp),
-            colors   = ButtonDefaults.buttonColors(containerColor = accentColor)
+                .height(56.dp),
+            shape  = RoundedCornerShape(18.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         ) {
-            Text("ПРОДОЛЖИТЬ", fontSize = 17.sp, fontWeight = FontWeight.ExtraBold)
+            Text(
+                text       = if (hasNextLesson) "Выйти в меню" else "ГОТОВО",
+                fontSize   = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }
