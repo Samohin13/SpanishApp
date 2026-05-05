@@ -25,13 +25,108 @@ data class LessonItem(
 
 object LessonContentData {
 
-    val lessons: Map<String, LessonContent> =
-        block01() + block02() + block03() + block04() +
-        block05() + block06() + block07() + block08() +
-        block09() + block10() + block11() + block12() +
-        block13() + block14() + block15() + block16() +
-        block17() + block18() + block19() + block20() +
-        block21() + block22()
+    val lessons: Map<String, LessonContent> = run {
+        val raw = block01() + block02() + block03() + block04() +
+                  block05() + block06() + block07() + block08() +
+                  block09() + block10() + block11() + block12() +
+                  block13() + block14() + block15() + block16() +
+                  block17() + block18() + block19() + block20() +
+                  block21() + block22()
+        enrichWithSpeaking(raw)
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // Автоматически добавляет 1 SPEAKING-упражнение в уроки,
+    // где есть реальная испанская лексика (слово ↔ русский перевод).
+    // Уроки с правилами/объяснениями пропускаются.
+    // Уроки, уже имеющие SPEAKING, не трогаются.
+    // Позиция варьируется по индексу блока, чтобы не надоедало.
+    // ──────────────────────────────────────────────────────────────
+    private fun enrichWithSpeaking(
+        lessons: Map<String, LessonContent>
+    ): Map<String, LessonContent> {
+        var idx = 0
+        return lessons.mapValues { (_, content) ->
+            idx++
+            // Пропускаем если SPEAKING уже есть
+            if (content.exercises.any { it.type == ExerciseType.SPEAKING }) {
+                return@mapValues content
+            }
+            val candidate = pickSpeakingCandidate(content)
+                ?: return@mapValues content          // нет подходящего слова
+
+            val exercise = Exercise(
+                type        = ExerciseType.SPEAKING,
+                instruction = "Произнеси вслух",
+                question    = "Послушай и повтори",
+                correctAnswer = candidate.first,
+                explanation   = candidate.second
+            )
+
+            // Позиция варьируется: ~в начале / середине / конце
+            val exs = content.exercises.toMutableList()
+            val pos = when (idx % 3) {
+                0    -> 0                                        // в начало
+                1    -> (exs.size / 2).coerceAtLeast(0)         // в середину
+                else -> exs.size                                 // в конец
+            }
+            exs.add(pos, exercise)
+            content.copy(exercises = exs)
+        }
+    }
+
+    /**
+     * Ищет лучшего кандидата для SPEAKING в уроке:
+     *  - `left` — испанское слово/фраза (≥4 латинских буквы, ≥3 разных)
+     *  - `right` — русский перевод (есть кириллица)
+     *  - не длиннее 3 слов (STT хорошо работает с короткими фразами)
+     *  - не чисто грамматический термин
+     * Возвращает Pair(слово, объяснение) или null если урок не про лексику.
+     */
+    private fun pickSpeakingCandidate(content: LessonContent): Pair<String, String>? {
+        val items = content.sections.flatMap { it.items }
+
+        // Считаем долю «словарных» строк (испанское ↔ русское)
+        val vocabCount = items.count { isVocabItem(it) }
+        // Если меньше 30% словарных — урок про правила, пропускаем
+        if (items.isEmpty() || vocabCount.toDouble() / items.size < 0.30) return null
+
+        // Выбираем лучшего кандидата: предпочитаем 2-3 слова, 5-10 букв
+        return items
+            .filter { isVocabItem(it) }
+            .sortedWith(compareBy(
+                { it.left.trim().split(" ").size > 3 },   // не длиннее 3 слов
+                { latinLen(it.left) < 4 },                 // минимум 4 буквы
+                { latinLen(it.left) > 14 }                 // не слишком длинное
+            ))
+            .firstOrNull()
+            ?.let { item ->
+                val word = item.left.trim()
+                val explanation = buildString {
+                    append(word)
+                    if (item.right.isNotBlank()) append(" — ${item.right}")
+                    if (item.note.isNotBlank()) append(". ${item.note}")
+                }
+                word to explanation
+            }
+    }
+
+    private fun isVocabItem(item: LessonItem): Boolean {
+        val left = item.left
+        val right = item.right
+        val letters = left.filter { it.isLetter() }
+        val latin = letters.count { it !in 'Ѐ'..'ӿ' }
+        val cyrillic = letters.count { it in 'Ѐ'..'ӿ' }
+        val unique = letters.map { it.lowercaseChar() }.toSet()
+        val wordCount = left.trim().split(Regex("\\s+")).size
+        // left — испанское слово/фраза
+        val leftIsSpanish = latin >= 4 && unique.size >= 3 && cyrillic == 0
+        // right — русский перевод (содержит кириллицу)
+        val rightIsRussian = right.any { it in 'Ѐ'..'ӿ' }
+        return leftIsSpanish && rightIsRussian && wordCount <= 3
+    }
+
+    private fun latinLen(s: String) = s.count { it !in 'Ѐ'..'ӿ' && it.isLetter() }
 
     private fun block01(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
