@@ -28,6 +28,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.filled.EmojiFlags
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,10 +41,18 @@ import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.data.repository.AuthRepository
+import com.spanishapp.domain.algorithm.League
+import com.spanishapp.domain.algorithm.LeagueResolver
+import com.spanishapp.domain.algorithm.MasteryRating
 import com.spanishapp.domain.algorithm.XpSystem
+import com.spanishapp.ui.components.LeagueBadge
+import com.spanishapp.ui.components.LeaguePath
 import com.spanishapp.ui.components.SpanishBackground
+import com.spanishapp.ui.components.SpanishFlagRating
+import com.spanishapp.ui.flashcards.CategoryMeta
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 // ... (ViewModel remains the same)
@@ -54,6 +64,10 @@ class ProfileViewModel @Inject constructor(
     private val achievementDao: AchievementDao,
     private val authRepository: AuthRepository
 ) : ViewModel() {
+
+    private val _categoryRatings = MutableStateFlow<List<CategoryRatingUi>>(emptyList())
+    val categoryRatings: StateFlow<List<CategoryRatingUi>> = _categoryRatings.asStateFlow()
+
     val state: StateFlow<ProfileUiState> = combine(
         userProgressDao.getProgress(),
         wordDao.learnedCount(),
@@ -69,6 +83,29 @@ class ProfileViewModel @Inject constructor(
             photoUrl             = photoUrl
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState())
+
+    init {
+        viewModelScope.launch {
+            refreshCategoryRatings()
+        }
+    }
+
+    suspend fun refreshCategoryRatings() {
+        val rows = wordDao.getCategoryStats()
+        val ui = rows.map { row ->
+            val info = CategoryMeta.infoFor(row.category)
+            CategoryRatingUi(
+                key = row.category,
+                label = info.label,
+                icon = info.icon,
+                flags = MasteryRating.flags(row.total, row.learned, row.totalReviews, row.correctReviews),
+                score = MasteryRating.score(row.total, row.learned, row.totalReviews, row.correctReviews),
+                total = row.total,
+                learned = row.learned
+            )
+        }.sortedBy { it.score }
+        _categoryRatings.value = ui
+    }
 }
 
 data class ProfileUiState(
@@ -79,6 +116,16 @@ data class ProfileUiState(
     val photoUrl: String? = null
 )
 
+data class CategoryRatingUi(
+    val key: String,
+    val label: String,
+    val icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    val flags: Int,
+    val score: Float,
+    val total: Int,
+    val learned: Int
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -86,10 +133,14 @@ fun ProfileScreen(
     vm: ProfileViewModel = hiltViewModel()
 ) {
     val state by vm.state.collectAsState()
+    val categoryRatings by vm.categoryRatings.collectAsState()
     val p = state.progress
     val haptic = LocalHapticFeedback.current
     val appLevel  = XpSystem.levelForXp(p.totalXp)
     val progress  = XpSystem.progressToNextLevel(p.totalXp)
+    val league = LeagueResolver.fromTier(p.currentLeague.coerceAtLeast(1))
+    val peakLeague = LeagueResolver.fromTier(p.peakLeague.coerceAtLeast(1))
+    val leagueProgress = LeagueResolver.progressInLeague(p.skillRating)
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -119,9 +170,9 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfileHeader(
-                name = p.displayName.ifBlank { "Estudiante" }, 
-                level = p.currentLevel, 
-                appLevel = appLevel, 
+                name = p.displayName.ifBlank { "Estudiante" },
+                level = p.currentLevel,
+                appLevel = appLevel,
                 progress = progress,
                 photoUrl = state.photoUrl
             )
@@ -134,10 +185,171 @@ fun ProfileScreen(
                 StatBox(value = "${p.totalStudyMinutes}", label = "Мин", icon = "⏱", modifier = Modifier.weight(1f))
             }
             Spacer(Modifier.height(24.dp))
-            AchievementsSection(unlocked = state.unlockedAchievements, total = state.totalAchievements, onClick = { 
+            // ── Путь до Мадрида ─────────────────────────────────
+            PathToMadridCard(
+                league = league,
+                peakLeague = peakLeague,
+                leagueProgress = leagueProgress,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(Modifier.height(16.dp))
+            // ── Skill Rating ────────────────────────────────────
+            SkillRatingCard(
+                current = p.skillRating,
+                peak = p.peakSkillRating,
+                onLeaderboardClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    navController.navigate("leaderboard")
+                },
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(Modifier.height(16.dp))
+            // ── Mastery по темам (флаги) ────────────────────────
+            CategoryRatingCard(
+                items = categoryRatings,
+                onSeeAll = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    navController.navigate("rating_full")
+                },
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(Modifier.height(16.dp))
+            AchievementsSection(unlocked = state.unlockedAchievements, total = state.totalAchievements, onClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                navController.navigate("achievements") 
+                navController.navigate("achievements")
             }, modifier = Modifier.padding(horizontal = 24.dp))
+        }
+    }
+}
+
+// ── Путь до Мадрида ─────────────────────────────────────────
+@Composable
+private fun PathToMadridCard(
+    league: League,
+    peakLeague: League,
+    leagueProgress: Float,
+    modifier: Modifier = Modifier
+) {
+    val accent = Color(league.accentColorHex)
+    val next = LeagueResolver.next(league)
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.EmojiFlags, null, tint = accent, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Путь до Мадрида", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            }
+            Spacer(Modifier.height(16.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(league.emoji, fontSize = 36.sp)
+                Spacer(Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(league.city, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = accent)
+                    Text(league.region, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+            LinearProgressIndicator(
+                progress = { leagueProgress },
+                modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
+                color = accent,
+                trackColor = accent.copy(alpha = 0.15f)
+            )
+            Spacer(Modifier.height(8.dp))
+            if (next != null) {
+                Text(
+                    "Следующая остановка: ${next.emoji} ${next.city}",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                Text(
+                    "👑 Ты дошёл до столицы!",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = accent
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            LeaguePath(currentTier = league.tier, peakTier = peakLeague.tier)
+        }
+    }
+}
+
+// ── Skill Rating + кнопка к лидерборду ──────────────────────
+@Composable
+private fun SkillRatingCard(
+    current: Int,
+    peak: Int,
+    onLeaderboardClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp
+    ) {
+        Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text("Мой рейтинг", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(4.dp))
+                Text(current.toString(), fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
+                Text("Лучший: $peak", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            FilledTonalButton(onClick = onLeaderboardClick) {
+                Icon(Icons.Default.Leaderboard, null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(6.dp))
+                Text("Лидеры")
+            }
+        }
+    }
+}
+
+// ── Прогресс по темам (испанские флаги) ─────────────────────
+@Composable
+private fun CategoryRatingCard(
+    items: List<CategoryRatingUi>,
+    onSeeAll: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Прогресс по темам", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                TextButton(onClick = onSeeAll) { Text("Все") }
+            }
+            Spacer(Modifier.height(8.dp))
+            if (items.isEmpty()) {
+                Text("Начни тренировки, чтобы увидеть свой прогресс по темам.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            } else {
+                items.take(6).forEach { item ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (item.icon != null) {
+                            Icon(item.icon, null, modifier = Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
+                            Spacer(Modifier.width(8.dp))
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(item.label, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                            Text("${item.learned}/${item.total} слов", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        SpanishFlagRating(filled = item.flags)
+                    }
+                }
+            }
         }
     }
 }

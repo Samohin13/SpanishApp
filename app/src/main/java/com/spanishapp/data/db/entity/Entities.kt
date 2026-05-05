@@ -111,7 +111,14 @@ data class UserProgressEntity(
     @ColumnInfo(name = "daily_goal_minutes") val dailyGoalMinutes: Int = 10,
     @ColumnInfo(name = "current_level") val currentLevel: String = "A1",
     @ColumnInfo(name = "avatar_index") val avatarIndex: Int = 0,
-    @ColumnInfo(name = "sync_token") val syncToken: String = ""
+    @ColumnInfo(name = "sync_token") val syncToken: String = "",
+    // ── Rating system (added in v9) ──────────────────────────
+    @ColumnInfo(name = "skill_rating") val skillRating: Int = 1000,
+    @ColumnInfo(name = "peak_skill_rating") val peakSkillRating: Int = 1000,
+    @ColumnInfo(name = "last_rating_update") val lastRatingUpdate: Long = 0L,
+    @ColumnInfo(name = "current_league") val currentLeague: Int = 1,
+    @ColumnInfo(name = "peak_league") val peakLeague: Int = 1,
+    @ColumnInfo(name = "leaderboard_opt_in") val leaderboardOptIn: Boolean = false
 )
 
 @Entity(tableName = "chat_messages")

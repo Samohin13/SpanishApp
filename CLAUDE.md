@@ -2,7 +2,69 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-04-30, сессия 7 (Libros + перевод по зажатию)**
+> Последнее обновление: **2026-05-04, сессия 8 (Рейтинговая система + лиги «Путь до Мадрида» + лидерборд)**
+
+## 8.1. Рейтинговая система (новое в сессии 8)
+
+**Ветка**: `claude/add-rating-system-7k9ox`. Состоит из четырёх частей:
+
+### A) Skill Rating (общее число, ELO-подобный)
+- Хранится в `UserProgressEntity.skillRating` (Int, default = 1000), `peakSkillRating`, `lastRatingUpdate`.
+- Старт **1000**, пол **800**, потолок **3000**. Реализация: `SkillRatingSystem` в `LearningAlgorithms.kt`.
+- При каждом ответе: правильно на сложном (низкий EF) → больший прирост; ошибка на лёгком → больший минус.
+- Затухание: после 3 дней грейса −2/день, не ниже max(800, peak−200). Применяется `RatingDecayWorker` ежедневно.
+
+### B) Mastery по категориям (испанские флаги 0–5)
+- Не хранится в БД — считается на лету из `WordEntity` (поля `correctReviews`, `totalReviews`, `isLearned`).
+- Новый DAO-метод: `WordDao.getCategoryStats()` → `List<CategoryStatsRow>`.
+- Формула: `score = 0.6*coverage + 0.4*accuracy` (если ревью≥5), флаги по порогам [0.10, 0.30, 0.50, 0.75, 0.90].
+- Composable `SpanishFlagRating(filled, of=5)` рисует флаги через `Canvas` (без растровых ассетов).
+
+### C) Лиги «Путь до Мадрида» (8 ступеней)
+- 1 Aldea perdida → 2 Santiago de Compostela → 3 Bilbao → 4 Zaragoza → 5 Valencia → 6 Sevilla → 7 Barcelona → **8 Madrid**.
+- Пороги по skillRating: 0/1100/1300/1500/1700/1900/2100/2300+.
+- Хранится `currentLeague` и `peakLeague` в `UserProgressEntity`.
+- Composable `LeaguePromotionDialog` показывается после каждого ответа, если лига выросла.
+- Объект `LeagueResolver` в `LearningAlgorithms.kt`: `fromRating(r)`, `next(l)`, `progressInLeague(r)`.
+
+### D) Лидерборд (Firebase Anonymous Auth + Firestore)
+- Коллекция `leaderboard/{uid}`: `{nickname, country, skillRating, peakRating, league, updatedAt}`.
+- Страна — авто по `Locale.getDefault().country` (KZ/RU/FR/...). Маппинг ISO→русское название → `domain/rating/CountryNames.kt`.
+- Две вкладки: своя страна (динамический заголовок) / Мир. Подиум топ-3, sticky-self.
+- Опт-ин диалог при первом заходе. `setLeaderboardOptIn` в `UserProgressDao`. Можно выйти.
+- Запросы: `orderBy(skillRating).limit(100)`. Свой ранг через `Aggregate.count()`.
+- Файлы: `LeaderboardRepository`, `LeaderboardViewModel`, `LeaderboardScreen`.
+
+### Ключевые файлы Rating-системы
+| Файл | Что делает |
+|---|---|
+| `domain/algorithm/LearningAlgorithms.kt` | `SkillRatingSystem`, `MasteryRating`, `League`, `LeagueResolver` |
+| `domain/algorithm/RatingUpdater.kt` | `applyAnswer(easeFactor, quality): LeaguePromotion?` — общая точка |
+| `domain/rating/CountryNames.kt` | ISO-код → русское название + эмодзи флага (~50 стран) |
+| `service/RatingDecayWorker.kt` | Раз в сутки применяет затухание |
+| `data/db/AppDatabase.kt` | version=9, MIGRATION_8_9 (6 ALTER TABLE) |
+| `data/repository/LeaderboardRepository.kt` | Firebase Auth + Firestore queries |
+| `ui/components/RatingComponents.kt` | `SpanishFlagRating`, `LeagueBadge`, `LeaguePromotionDialog`, `LeaguePath` |
+| `ui/profile/ProfileScreen.kt` | + 3 карточки (Путь до Мадрида, Skill Rating, Прогресс по темам) |
+| `ui/profile/RatingScreen.kt` | НОВЫЙ — все 58 категорий с флагами + сортировка |
+| `ui/leaderboard/LeaderboardScreen.kt` | НОВЫЙ — табы «своя страна»/«Мир», подиум, опт-ин |
+
+### Подключение к тренировкам
+- `FlashcardsViewModel` — после `SM2.review` вызывает `RatingUpdater.applyAnswer(word.easeFactor, quality)`.
+- `LibrosViewModel.saveResult` — по одному applyAnswer за каждый правильный/неправильный.
+- `MutableSharedFlow<LeaguePromotion>` в каждой ViewModel → собирается в Screen → показывает диалог.
+
+### Что нужно от пользователя для онлайн-лидерборда
+- `app/google-services.json` уже в репозитории.
+- Firebase Console → создать Firestore Database в production mode.
+- Firestore Rules:
+  ```
+  match /leaderboard/{uid} {
+    allow read: if true;
+    allow write: if request.auth != null && request.auth.uid == uid;
+  }
+  ```
+- Включить Anonymous Authentication в Firebase Console → Authentication → Sign-in method.
 
 ---
 

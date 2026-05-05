@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.LibroProgressDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.LibroProgressEntity
+import com.spanishapp.domain.algorithm.LeaguePromotion
+import com.spanishapp.domain.algorithm.RatingUpdater
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -31,8 +33,12 @@ data class TranslationState(
 @HiltViewModel
 class LibrosViewModel @Inject constructor(
     private val dao: LibroProgressDao,
-    private val wordDao: WordDao
+    private val wordDao: WordDao,
+    private val ratingUpdater: RatingUpdater
 ) : ViewModel() {
+
+    private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
+    val leaguePromotions: SharedFlow<LeaguePromotion> = _leaguePromotions.asSharedFlow()
 
     // ── Список рассказов + прогресс ───────────────────────────
 
@@ -71,6 +77,17 @@ class LibrosViewModel @Inject constructor(
                     completedAt = System.currentTimeMillis()
                 )
             )
+            // Skill rating: один «ответ» за каждый правильный/неправильный
+            // ease=2.5 (нейтральная сложность для текстовых вопросов).
+            repeat(correctCount) {
+                val promo = ratingUpdater.applyAnswer(easeFactor = 2.5f, quality = 4)
+                if (promo != null) _leaguePromotions.tryEmit(promo)
+            }
+            val mistakes = totalCount - correctCount
+            repeat(mistakes) {
+                val promo = ratingUpdater.applyAnswer(easeFactor = 2.5f, quality = 1)
+                if (promo != null) _leaguePromotions.tryEmit(promo)
+            }
         }
     }
 

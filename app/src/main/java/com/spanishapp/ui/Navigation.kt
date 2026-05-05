@@ -41,6 +41,8 @@ import com.spanishapp.ui.grammar.GrammarScreen
 import com.spanishapp.ui.quiz.QuizScreen
 import com.spanishapp.ui.profile.AchievementsScreen
 import com.spanishapp.ui.profile.ProfileScreen
+import com.spanishapp.ui.profile.RatingScreen
+import com.spanishapp.ui.leaderboard.LeaderboardScreen
 import com.spanishapp.ui.settings.SettingsScreen
 import com.spanishapp.ui.pronunciation.PronunciationScreen
 import com.spanishapp.ui.dialogues.DialoguesScreen
@@ -259,6 +261,10 @@ object Navigation {
             composable("achievements") { AchievementsScreen(navController) }
             composable("settings")     { SettingsScreen(navController) }
             composable("settings_voice") { Placeholder("Настройка голоса") }
+
+            // ── Рейтинг / Лиги / Лидерборд ───────────────────
+            composable("rating_full")  { RatingScreen(navController) }
+            composable("leaderboard")  { LeaderboardScreen(navController) }
 
             // ── Словарь ───────────────────────────────────────
             composable("dictionary")  { DictionaryScreen(navController) }

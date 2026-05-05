@@ -189,3 +189,128 @@ object AdaptiveLearning {
         else -> false
     }
 }
+
+// ═════════════════════════════════════════════════════════════
+//  SKILL RATING SYSTEM (ELO-подобный, с медленным затуханием)
+//  Растёт за правильные ответы на сложные слова, падает за
+//  ошибки на лёгких; затухает после 3 дней простоя.
+// ═════════════════════════════════════════════════════════════
+object SkillRatingSystem {
+
+    const val START_RATING = 1000
+    const val FLOOR_RATING = 800
+    const val CEILING_RATING = 3000
+    const val K_FACTOR = 8
+
+    // Затухание
+    const val DECAY_GRACE_DAYS = 3
+    const val DECAY_PER_DAY = 2
+    const val DECAY_PEAK_BUFFER = 200   // не падаем ниже peak - 200
+
+    private const val DAY_MS = 86_400_000L
+
+    /**
+     * Изменяет рейтинг по результату одного ответа.
+     * @param easeFactor SM-2 ease factor (1.3..3+). Чем ниже — тем сложнее слово.
+     * @param quality SM-2 quality 0..5. <3 = ошибка.
+     */
+    fun applyAnswer(currentRating: Int, easeFactor: Float, quality: Int): Int {
+        val difficulty = (2.5f - easeFactor).coerceIn(-1.2f, 1.2f)
+        val deltaF = when {
+            quality >= 5 -> K_FACTOR * (1.0f + difficulty * 0.5f)
+            quality == 4 -> K_FACTOR * (0.6f + difficulty * 0.4f)
+            quality == 3 -> K_FACTOR * 0.3f
+            quality == 2 -> K_FACTOR * 0.2f
+            else         -> -K_FACTOR * (1.0f - difficulty * 0.4f)
+        }
+        val delta = deltaF.roundToInt()
+        return (currentRating + delta).coerceIn(FLOOR_RATING, CEILING_RATING)
+    }
+
+    /**
+     * Затухание после долгого простоя.
+     * @return новый рейтинг (или тот же, если простой <= GRACE).
+     */
+    fun applyDecay(currentRating: Int, peakRating: Int, lastUpdateMs: Long, nowMs: Long): Int {
+        if (lastUpdateMs <= 0L) return currentRating
+        val days = ((nowMs - lastUpdateMs) / DAY_MS).toInt()
+        if (days <= DECAY_GRACE_DAYS) return currentRating
+        val penalty = (days - DECAY_GRACE_DAYS) * DECAY_PER_DAY
+        val floor = max(FLOOR_RATING, peakRating - DECAY_PEAK_BUFFER)
+        return max(floor, currentRating - penalty)
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  ЛИГИ — «Путь до Мадрида»
+//  Персональный путь по городам Испании от окраины к столице.
+//  Не еженедельный сброс — постоянная привязка к skillRating.
+// ═════════════════════════════════════════════════════════════
+data class League(
+    val tier: Int,
+    val city: String,        // отображается в UI
+    val region: String,      // подпись
+    val ratingFrom: Int,
+    val ratingTo: Int,       // включительно для последней
+    val emoji: String,
+    val accentColorHex: Long // 0xFFRRGGBB
+)
+
+object LeagueResolver {
+
+    val LEAGUES: List<League> = listOf(
+        League(1, "Aldea perdida",          "Extremadura",            0,    1099, "🏚️", 0xFF8D6E63),
+        League(2, "Santiago de Compostela", "Galicia",             1100,    1299, "⛪",  0xFF4DB6AC),
+        League(3, "Bilbao",                 "País Vasco",          1300,    1499, "⚓",  0xFF455A64),
+        League(4, "Zaragoza",               "Aragón",              1500,    1699, "🏛️", 0xFF8E24AA),
+        League(5, "Valencia",               "Comunidad Valenciana",1700,    1899, "🍊",  0xFFFF7043),
+        League(6, "Sevilla",                "Andalucía",           1900,    2099, "💃",  0xFFD81B60),
+        League(7, "Barcelona",              "Cataluña",            2100,    2299, "🏰",  0xFF1976D2),
+        League(8, "Madrid — ¡La Capital!",  "Madrid",              2300, 999999, "👑",  0xFFC62828)
+    )
+
+    fun fromRating(rating: Int): League =
+        LEAGUES.firstOrNull { rating in it.ratingFrom..it.ratingTo } ?: LEAGUES.first()
+
+    fun fromTier(tier: Int): League =
+        LEAGUES.firstOrNull { it.tier == tier } ?: LEAGUES.first()
+
+    fun next(current: League): League? =
+        LEAGUES.firstOrNull { it.tier == current.tier + 1 }
+
+    /** Прогресс внутри текущей лиги: 0f..1f (для прогресс-бара). Madrid = 1f. */
+    fun progressInLeague(rating: Int): Float {
+        val l = fromRating(rating)
+        if (l.tier == LEAGUES.size) return 1f
+        val span = (l.ratingTo - l.ratingFrom).coerceAtLeast(1)
+        return ((rating - l.ratingFrom).toFloat() / span).coerceIn(0f, 1f)
+    }
+}
+
+// ═════════════════════════════════════════════════════════════
+//  MASTERY RATING (испанские флаги по категориям, 0..5)
+// ═════════════════════════════════════════════════════════════
+object MasteryRating {
+
+    private val THRESHOLDS = floatArrayOf(0.10f, 0.30f, 0.50f, 0.75f, 0.90f)
+
+    /** Комбинированный score: 60% покрытия + 40% точности (если ревью >= 5). */
+    fun score(total: Int, learned: Int, totalReviews: Int, correctReviews: Int): Float {
+        if (total <= 0) return 0f
+        val coverage = (learned.toFloat() / total).coerceIn(0f, 1f)
+        return if (totalReviews >= 5) {
+            val accuracy = (correctReviews.toFloat() / totalReviews).coerceIn(0f, 1f)
+            0.6f * coverage + 0.4f * accuracy
+        } else {
+            0.6f * coverage
+        }
+    }
+
+    /** Количество испанских флагов 0..5. */
+    fun flags(total: Int, learned: Int, totalReviews: Int, correctReviews: Int): Int {
+        val s = score(total, learned, totalReviews, correctReviews)
+        var count = 0
+        for (t in THRESHOLDS) if (s >= t) count++
+        return count
+    }
+}
