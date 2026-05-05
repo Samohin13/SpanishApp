@@ -25,8 +25,14 @@ data class LessonItem(
 
 object LessonContentData {
 
-    val lessons: Map<String, LessonContent> = mapOf(
+    val lessons: Map<String, LessonContent> =
+        block01() + block02() + block03() + block04() +
+        block05() + block06() + block07() + block08() +
+        block09() + block10() + block11() + block12() +
+        block13() + block14() + block15() + block16() +
+        block17() + block18()
 
+    private fun block01(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  БЛОК 1: ВЗЛЁТ
         // ══════════════════════════════════════════════
@@ -655,8 +661,10 @@ object LessonContentData {
                     explanation = "unas casas — несколько домов. casa — женский род → unas."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block02(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  БЛОК 2: МОЙ МИР
         // ══════════════════════════════════════════════
@@ -1136,8 +1144,10 @@ object LessonContentData {
                     explanation = "canción → canciones: добавился слог -es, ударение теперь падает правильно без тильды."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block03(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  БЛОК 3: ДЕЙСТВИЕ
         // ══════════════════════════════════════════════
@@ -1719,8 +1729,10 @@ object LessonContentData {
                     explanation = "tampoco = тоже нет. ¿No te gusta? — No me gusta. — Yo tampoco."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block04(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  БЛОК 4: ВЫЖИВАНИЕ
         // ══════════════════════════════════════════════
@@ -1986,8 +1998,10 @@ object LessonContentData {
                     explanation = "quedar bien = идти (об одежде). Te queda bien — тебе идёт эта вещь."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block05(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A2 БЛОК 1: В ПРОШЛОМ  (unitId=5)
         // ══════════════════════════════════════════════
@@ -2622,8 +2636,10 @@ object LessonContentData {
                     explanation = "irse = уходить. Me voy — я ухожу. Очень частая фраза!"
                 )
             )
-        ),
+        )
+    )
 
+    private fun block06(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A1 БЛОК 1 — vocab-уроки
         // ══════════════════════════════════════════════
@@ -2940,8 +2956,10 @@ object LessonContentData {
                     explanation = "dos (2) + tres (3) = cinco (5)."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block07(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A1 БЛОК 2 — vocab-уроки
         // ══════════════════════════════════════════════
@@ -3385,8 +3403,10 @@ object LessonContentData {
                     explanation = "¿Hay...? = есть ли...? armario = шкаф. dormitorio = спальня."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block08(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A1 БЛОК 3 — vocab-уроки
         // ══════════════════════════════════════════════
@@ -3711,8 +3731,10 @@ object LessonContentData {
                     explanation = "mañana = завтра. por la mañana = утром. tener clase = иметь занятие."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block09(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A1 БЛОК 4 — vocab-уроки
         // ══════════════════════════════════════════════
@@ -4290,8 +4312,10 @@ object LessonContentData {
                     explanation = "acostarse = ложиться спать. tarde = поздно. los viernes = по пятницам."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block10(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A2 БЛОК 1 — vocab-уроки
         // ══════════════════════════════════════════════
@@ -4673,8 +4697,10 @@ object LessonContentData {
                     explanation = "Indefinido: Quise (я захотел) и pude (я смог). Оба irregular с особыми формами."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block11(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A2 БЛОК 2 (unitId=6)
         // ══════════════════════════════════════════════
@@ -5552,8 +5578,10 @@ object LessonContentData {
                     explanation = "Imperfecto: era (она была), amable (добрая). Описание качества в прошлом."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block12(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A2 БЛОК 3 (unitId=7)
         // ══════════════════════════════════════════════
@@ -6439,8 +6467,10 @@ object LessonContentData {
                     explanation = "«Сегодня» (hoy) → Perfecto (he visto). «Вчера» (ayer) → Indefinido (vi). Hoy/esta semana/este año → Perfecto; ayer/la semana pasada → Indefinido."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block13(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A2 БЛОК 4 (unitId=8)
         // ══════════════════════════════════════════════
@@ -7335,8 +7365,10 @@ object LessonContentData {
                     explanation = "Condicional для предположения о лучшем варианте. alquilaría (я бы арендовал), cogería (я бы взял)."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block14(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  A1 ЧЕКПОИНТЫ (добавлены в конец)
         // ══════════════════════════════════════════════
@@ -7499,8 +7531,10 @@ object LessonContentData {
                     explanation = "llevar = носить (одежду). Hoy llevo un abrigo = сегодня я ношу пальто."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block15(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  БЛОК 1 B1: SUBJUNTIVO PRESENTE
         //  u9_l0 – u9_l14
@@ -8512,8 +8546,10 @@ object LessonContentData {
                     explanation = "cuando + будущее → subjuntivo: empezar (e→ie) → empiecen. «Когда начнутся каникулы, путешествуем вместе.»"
                 )
             )
-        ),
+        )
+    )
 
+    private fun block16(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  БЛОК 2 B1: CONDICIONAL E HIPÓTESIS
         //  u10_l0 – u10_l14
@@ -9523,8 +9559,10 @@ object LessonContentData {
                     explanation = "quizás + subjuntivo (vaya) подчёркивает неопределённость — соответствует «aún no estoy seguro». «Может быть, приду повидаться с тобой в эти выходные.»"
                 )
             )
-        ),
+        )
+    )
 
+    private fun block17(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
         //  БЛОК 3 B1: COMUNICACIÓN AVANZADA
         //  u11_l0 – u11_l14
@@ -10538,8 +10576,10 @@ object LessonContentData {
                     explanation = "en definitiva = «в итоге». Подводит итог перечисленным достоинствам кандидата."
                 )
             )
-        ),
+        )
+    )
 
+    private fun block18(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════════════════════
         //  БЛОК 4 B1: VOCABULARIO Y EXPRESIÓN  (уроки 46–60)
         //  unit id = 12, lessonIndex 0–14
@@ -11594,4 +11634,5 @@ object LessonContentData {
             )
         )
     )
+
 }
