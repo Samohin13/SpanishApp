@@ -466,7 +466,18 @@ internal fun TopicCard(
                     lineHeight = 18.sp
                 )
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(6.dp))
+
+                // Формат блока: теория + практика
+                Text(
+                    text = "Теория · Практика · ${unit.lessons.size} уроков",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (unit.isLocked) TextGray.copy(.5f) else unit.color,
+                    letterSpacing = 0.3.sp
+                )
+
+                Spacer(Modifier.height(10.dp))
 
                 // Прогресс-бар + стрелка
                 Row(verticalAlignment = Alignment.CenterVertically) {
