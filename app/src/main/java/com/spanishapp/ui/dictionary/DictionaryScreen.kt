@@ -3,12 +3,19 @@ package com.spanishapp.ui.dictionary
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import android.content.Intent
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -49,6 +56,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DictionaryViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context,
     private val wordDao: WordListDao,
     private val wDao: WordDao,
     private val tts: SpanishTts
@@ -57,6 +65,36 @@ class DictionaryViewModel @Inject constructor(
     // ── Поиск ─────────────────────────────────────────────────
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
+
+    // ── История поиска (последние 10 запросов) ─────────────────
+    private val historyPrefs = appContext.getSharedPreferences("dict_search_history", android.content.Context.MODE_PRIVATE)
+    private val _searchHistory = MutableStateFlow(loadHistory())
+    val searchHistory: StateFlow<List<String>> = _searchHistory.asStateFlow()
+
+    private fun loadHistory(): List<String> =
+        historyPrefs.getString("queries", "")
+            ?.split("\n")
+            ?.filter { it.isNotBlank() }
+            ?: emptyList()
+
+    fun addToHistory(q: String) {
+        val trimmed = q.trim()
+        if (trimmed.length < 2) return
+        val updated = (listOf(trimmed) + _searchHistory.value.filter { !it.equals(trimmed, ignoreCase = true) }).take(10)
+        _searchHistory.value = updated
+        historyPrefs.edit().putString("queries", updated.joinToString("\n")).apply()
+    }
+
+    fun removeFromHistory(q: String) {
+        val updated = _searchHistory.value.filter { it != q }
+        _searchHistory.value = updated
+        historyPrefs.edit().putString("queries", updated.joinToString("\n")).apply()
+    }
+
+    fun clearSearchHistory() {
+        _searchHistory.value = emptyList()
+        historyPrefs.edit().remove("queries").apply()
+    }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private val _allWords: StateFlow<List<WordEntity>> = _query
@@ -170,13 +208,14 @@ fun DictionaryScreen(
     navController: NavHostController,
     vm: DictionaryViewModel = hiltViewModel()
 ) {
-    val query      by vm.query.collectAsState()
-    val wordsOnly  by vm.wordsOnly.collectAsState()
-    val phrases    by vm.phrases.collectAsState()
-    val myLists    by vm.myLists.collectAsState()
-    val listWords  by vm.listWords.collectAsState()
-    val selectedId by vm.selectedListId.collectAsState()
-    val membership by vm.wordListMembership.collectAsState()
+    val query         by vm.query.collectAsState()
+    val wordsOnly     by vm.wordsOnly.collectAsState()
+    val phrases       by vm.phrases.collectAsState()
+    val myLists       by vm.myLists.collectAsState()
+    val listWords     by vm.listWords.collectAsState()
+    val selectedId    by vm.selectedListId.collectAsState()
+    val membership    by vm.wordListMembership.collectAsState()
+    val searchHistory by vm.searchHistory.collectAsState()
 
     // Вкладки: 0 = Все слова, 1 = Фразы, 2 = Мои списки
     var tab by remember { mutableIntStateOf(0) }
@@ -242,10 +281,14 @@ fun DictionaryScreen(
                 // ── Все слова ─────────────────────────────
                 tab == 0 -> {
                     AllWordsContent(
-                        query      = query,
-                        words      = wordsOnly,
-                        membership = membership,
-                        onQuery    = vm::setQuery,
+                        query         = query,
+                        words         = wordsOnly,
+                        membership    = membership,
+                        searchHistory = searchHistory,
+                        onQuery       = vm::setQuery,
+                        onSubmitSearch = vm::addToHistory,
+                        onClearHistory = vm::clearSearchHistory,
+                        onRemoveHistoryItem = vm::removeFromHistory,
                         onWordClick = { w ->
                             vm.loadMembership(w.id)
                             wordDetail = w
@@ -260,10 +303,14 @@ fun DictionaryScreen(
                 // ── Фразы ─────────────────────────────────
                 tab == 1 -> {
                     AllWordsContent(
-                        query      = query,
-                        words      = phrases,
-                        membership = membership,
-                        onQuery    = vm::setQuery,
+                        query         = query,
+                        words         = phrases,
+                        membership    = membership,
+                        searchHistory = searchHistory,
+                        onQuery       = vm::setQuery,
+                        onSubmitSearch = vm::addToHistory,
+                        onClearHistory = vm::clearSearchHistory,
+                        onRemoveHistoryItem = vm::removeFromHistory,
                         onWordClick = { w ->
                             vm.loadMembership(w.id)
                             wordDetail = w
@@ -332,12 +379,17 @@ fun DictionaryScreen(
 //  TAB: ВСЕ СЛОВА
 // ══════════════════════════════════════════════════════════════
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AllWordsContent(
     query: String,
     words: List<WordEntity>,
     membership: Map<Int, List<Int>>,
+    searchHistory: List<String>,
     onQuery: (String) -> Unit,
+    onSubmitSearch: (String) -> Unit,
+    onClearHistory: () -> Unit,
+    onRemoveHistoryItem: (String) -> Unit,
     onWordClick: (WordEntity) -> Unit,
     onAddToList: (WordEntity) -> Unit,
     onSpeak: (WordEntity) -> Unit
@@ -345,40 +397,120 @@ private fun AllWordsContent(
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val showIndex = query.isEmpty() && words.size > 30
+    var historyExpanded by remember { mutableStateOf(false) }
 
-    // letter → index первого слова, начинающегося на эту букву (с учётом артикля)
-    val letterIndex = remember(words, showIndex) {
-        if (!showIndex) emptyMap<Char, Int>()
-        else {
-            val map = LinkedHashMap<Char, Int>()
-            words.forEachIndexed { i, w ->
-                val c = firstSpanishLetter(w.spanish)
-                if (c !in map) map[c] = i
-            }
-            map
+    // Группировка по букве + индекс позиции буквы в LazyColumn (учётом sticky-заголовков)
+    data class Group(val letter: Char, val words: List<WordEntity>)
+    val grouped = remember(words, showIndex) {
+        if (!showIndex) emptyList()
+        else words.groupBy { firstSpanishLetter(it.spanish) }
+            .map { (letter, ws) -> Group(letter, ws) }
+    }
+    // Map: letter → индекс sticky-заголовка в LazyColumn
+    val letterIndex = remember(grouped) {
+        val map = LinkedHashMap<Char, Int>()
+        var idx = 0
+        for (g in grouped) {
+            map[g.letter] = idx
+            idx += 1 + g.words.size  // header + слова
         }
+        map
     }
 
     Column(Modifier.fillMaxSize()) {
-        OutlinedTextField(
-            value       = query,
-            onValueChange = onQuery,
-            placeholder = { Text("Поиск…") },
-            leadingIcon  = { Icon(Icons.Default.Search, null) },
-            trailingIcon = {
-                AnimatedVisibility(query.isNotEmpty()) {
-                    IconButton(onClick = { onQuery("") }) {
-                        Icon(Icons.Default.Close, null)
+        // ── Поиск + история ───────────────────────────────
+        Box(Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                value       = query,
+                onValueChange = { v ->
+                    onQuery(v)
+                    historyExpanded = false
+                },
+                placeholder = { Text("Поиск…") },
+                leadingIcon = {
+                    IconButton(
+                        onClick = {
+                            if (searchHistory.isNotEmpty()) historyExpanded = !historyExpanded
+                        },
+                        modifier = Modifier.size(40.dp)
+                    ) { Icon(Icons.Default.Search, null) }
+                },
+                trailingIcon = {
+                    Row {
+                        AnimatedVisibility(query.isNotEmpty()) {
+                            IconButton(onClick = {
+                                if (query.isNotBlank()) onSubmitSearch(query)
+                                onQuery("")
+                            }) {
+                                Icon(Icons.Default.Close, null)
+                            }
+                        }
+                        if (query.isEmpty() && searchHistory.isNotEmpty()) {
+                            IconButton(onClick = { historyExpanded = !historyExpanded }) {
+                                Icon(
+                                    if (historyExpanded) Icons.Default.ArrowDropUp
+                                    else Icons.Default.ArrowDropDown, null)
+                            }
+                        }
+                    }
+                },
+                singleLine = true,
+                shape      = RoundedCornerShape(14.dp),
+                modifier   = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 10.dp)
+            )
+
+            DropdownMenu(
+                expanded = historyExpanded && searchHistory.isNotEmpty(),
+                onDismissRequest = { historyExpanded = false },
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .heightIn(max = 320.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Недавний поиск",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    TextButton(onClick = {
+                        onClearHistory()
+                        historyExpanded = false
+                    }) {
+                        Text("Очистить", style = MaterialTheme.typography.labelSmall)
                     }
                 }
-            },
-            singleLine = true,
-            shape      = RoundedCornerShape(14.dp),
-            modifier   = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp)
-        )
+                HorizontalDivider()
+                searchHistory.forEach { q ->
+                    DropdownMenuItem(
+                        text = { Text(q) },
+                        leadingIcon = { Icon(Icons.Default.History, null,
+                            modifier = Modifier.size(18.dp)) },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { onRemoveHistoryItem(q) },
+                                modifier = Modifier.size(28.dp)
+                            ) {
+                                Icon(Icons.Default.Close, null,
+                                    modifier = Modifier.size(14.dp),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        },
+                        onClick = {
+                            onQuery(q)
+                            historyExpanded = false
+                        }
+                    )
+                }
+            }
+        }
 
+        // ── Список слов ───────────────────────────────────
         Row(Modifier.fillMaxSize()) {
             LazyColumn(
                 state = listState,
@@ -386,14 +518,47 @@ private fun AllWordsContent(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.weight(1f)
             ) {
-                items(words, key = { it.id }) { word ->
-                    WordRow(
-                        word        = word,
-                        isInAnyList = !membership[word.id].isNullOrEmpty(),
-                        onWordClick = { onWordClick(word) },
-                        onAddToList = { onAddToList(word) },
-                        onSpeak     = { onSpeak(word) }
-                    )
+                if (showIndex) {
+                    // С группами и sticky-заголовками
+                    grouped.forEach { group ->
+                        stickyHeader {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .padding(vertical = 4.dp, horizontal = 4.dp)
+                            ) {
+                                Text(
+                                    text = group.letter.toString(),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                        items(group.words, key = { it.id }) { word ->
+                            WordRow(
+                                word        = word,
+                                query       = query,
+                                isInAnyList = !membership[word.id].isNullOrEmpty(),
+                                onWordClick = { onWordClick(word) },
+                                onAddToList = { onAddToList(word) },
+                                onSpeak     = { onSpeak(word) }
+                            )
+                        }
+                    }
+                } else {
+                    // Поиск активен или мало слов — без группировки
+                    items(words, key = { it.id }) { word ->
+                        WordRow(
+                            word        = word,
+                            query       = query,
+                            isInAnyList = !membership[word.id].isNullOrEmpty(),
+                            onWordClick = { onWordClick(word) },
+                            onAddToList = { onAddToList(word) },
+                            onSpeak     = { onSpeak(word) }
+                        )
+                    }
                 }
             }
 
@@ -623,13 +788,61 @@ private fun ListWordsContent(
     onRemove: (WordEntity) -> Unit,
     onSpeak: (WordEntity) -> Unit
 ) {
+    val context = LocalContext.current
+    var exportMenu by remember { mutableStateOf(false) }
+
     Column(Modifier.fillMaxSize()) {
-        Text(
-            "${words.size}/150 слов",
-            style    = MaterialTheme.typography.bodySmall,
-            color    = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 6.dp)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 8.dp, top = 10.dp, bottom = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                "${words.size}/150 слов",
+                style    = MaterialTheme.typography.bodySmall,
+                color    = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            if (words.isNotEmpty()) {
+                Box {
+                    IconButton(onClick = { exportMenu = true }, modifier = Modifier.size(36.dp)) {
+                        Icon(Icons.Default.Share, "Экспорт",
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.primary)
+                    }
+                    DropdownMenu(
+                        expanded = exportMenu,
+                        onDismissRequest = { exportMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Текст (TXT)") },
+                            leadingIcon = { Icon(Icons.Default.Description, null) },
+                            onClick = {
+                                exportMenu = false
+                                shareAsText(context, exportAsTxt(words), "spanish_words.txt")
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Таблица (CSV)") },
+                            leadingIcon = { Icon(Icons.Default.TableChart, null) },
+                            onClick = {
+                                exportMenu = false
+                                shareAsText(context, exportAsCsv(words), "spanish_words.csv")
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Печать / PDF") },
+                            leadingIcon = { Icon(Icons.Default.Print, null) },
+                            onClick = {
+                                exportMenu = false
+                                shareAsText(context, exportAsTxt(words), "spanish_words.txt")
+                            }
+                        )
+                    }
+                }
+            }
+        }
 
         if (words.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -671,6 +884,7 @@ private fun ListWordsContent(
 @Composable
 private fun WordRow(
     word: WordEntity,
+    query: String = "",
     isInAnyList: Boolean,
     showRemove: Boolean = false,
     onWordClick: () -> Unit,
@@ -678,6 +892,7 @@ private fun WordRow(
     onRemove: (() -> Unit)? = null,
     onSpeak: () -> Unit
 ) {
+    val highlightColor = MaterialTheme.colorScheme.primary
     Surface(
         onClick    = onWordClick,
         shape      = RoundedCornerShape(14.dp),
@@ -685,11 +900,11 @@ private fun WordRow(
         modifier   = Modifier.fillMaxWidth()
     ) {
         Row(
-            modifier          = Modifier.padding(start = 14.dp, end = 4.dp, top = 10.dp, bottom = 10.dp),
+            modifier          = Modifier.padding(start = 10.dp, end = 4.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Индикатор уровня
-            LevelDot(word.level)
+            // Индикатор прогресса + уровень (всё в одной колонке слева)
+            ProgressLevelIndicator(word)
             Spacer(Modifier.width(10.dp))
 
             Column(modifier = Modifier.weight(1f)) {
@@ -697,7 +912,7 @@ private fun WordRow(
                 Row(verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
-                        word.spanish,
+                        text = highlightMatch(word.spanish, query, highlightColor),
                         style      = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                         color      = MaterialTheme.colorScheme.onSurface
@@ -711,7 +926,7 @@ private fun WordRow(
                     }
                 }
                 Text(
-                    word.russian,
+                    text = highlightMatch(word.russian, query, highlightColor),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -776,14 +991,7 @@ private fun VerbBadge(label: String, color: Color) {
 
 @Composable
 private fun LevelDot(level: String) {
-    val color = when (level) {
-        "A1" -> Color(0xFF059669)
-        "A2" -> Color(0xFF0284C7)
-        "B1" -> Color(0xFFD97706)
-        "B2" -> Color(0xFFF05A28)
-        "C1" -> Color(0xFF7C3AED)
-        else -> Color(0xFF9CA3AF)
-    }
+    val color = levelColor(level)
     Column(horizontalAlignment = Alignment.CenterHorizontally,
            verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Box(modifier = Modifier
@@ -792,6 +1000,96 @@ private fun LevelDot(level: String) {
             .background(color))
         Text(level, style = MaterialTheme.typography.labelSmall,
             fontSize = 8.sp, color = color, fontWeight = FontWeight.Bold)
+    }
+}
+
+private fun levelColor(level: String): Color = when (level) {
+    "A1" -> Color(0xFF059669)
+    "A2" -> Color(0xFF0284C7)
+    "B1" -> Color(0xFFD97706)
+    "B2" -> Color(0xFFF05A28)
+    "C1" -> Color(0xFF7C3AED)
+    else -> Color(0xFF9CA3AF)
+}
+
+/**
+ * Прогресс изучения слова:
+ * 🟢 выучено  · isLearned == true
+ * 🔴 слабое   · totalReviews >= 3 && correctRatio < 0.6
+ * 🟡 в процессе · totalReviews > 0
+ * ⚪ новое   · totalReviews == 0
+ */
+private enum class WordProgress(val color: Color, val label: String) {
+    LEARNED(Color(0xFF22C55E), "выучено"),
+    WEAK(Color(0xFFEF4444), "слабое"),
+    IN_PROGRESS(Color(0xFFF59E0B), "учу"),
+    NEW(Color(0xFFCBD5E1), "новое")
+}
+
+private fun progressOf(word: WordEntity): WordProgress {
+    if (word.isLearned) return WordProgress.LEARNED
+    if (word.totalReviews == 0) return WordProgress.NEW
+    val ratio = word.correctReviews.toFloat() / word.totalReviews
+    if (word.totalReviews >= 3 && ratio < 0.6f) return WordProgress.WEAK
+    return WordProgress.IN_PROGRESS
+}
+
+@Composable
+private fun ProgressLevelIndicator(word: WordEntity) {
+    val progress = progressOf(word)
+    val lvlColor = levelColor(word.level)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(3.dp),
+        modifier = Modifier.width(28.dp)
+    ) {
+        // Большой круг прогресса
+        Box(
+            modifier = Modifier
+                .size(14.dp)
+                .clip(CircleShape)
+                .background(progress.color)
+        )
+        // Уровень
+        Text(
+            word.level,
+            style = MaterialTheme.typography.labelSmall,
+            fontSize = 9.sp,
+            color = lvlColor,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+/**
+ * Подсветка вхождения query в text (без учёта регистра).
+ */
+@Composable
+private fun highlightMatch(text: String, query: String, color: Color): AnnotatedString {
+    val q = query.trim()
+    if (q.length < 2) return AnnotatedString(text)
+    val lowerText = text.lowercase()
+    val lowerQ = q.lowercase()
+    if (lowerQ !in lowerText) return AnnotatedString(text)
+
+    return buildAnnotatedString {
+        var start = 0
+        var i = lowerText.indexOf(lowerQ)
+        while (i >= 0) {
+            append(text.substring(start, i))
+            withStyle(
+                SpanStyle(
+                    color = color,
+                    fontWeight = FontWeight.Bold,
+                    background = color.copy(alpha = 0.15f)
+                )
+            ) {
+                append(text.substring(i, i + lowerQ.length))
+            }
+            start = i + lowerQ.length
+            i = lowerText.indexOf(lowerQ, start)
+        }
+        append(text.substring(start))
     }
 }
 
@@ -1121,4 +1419,46 @@ private fun CreateListDialog(
             TextButton(onClick = onDismiss) { Text("Отмена") }
         }
     )
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ЭКСПОРТ СПИСКА
+// ══════════════════════════════════════════════════════════════
+
+private fun exportAsTxt(words: List<WordEntity>): String = buildString {
+    appendLine("Список слов · ${words.size}")
+    appendLine("─".repeat(40))
+    words.forEach { w ->
+        appendLine("${w.spanish} — ${w.russian}")
+        if (w.example.isNotBlank()) appendLine("   ${w.example}")
+        appendLine("   [${w.level} · ${w.category}]")
+        appendLine()
+    }
+}
+
+private fun exportAsCsv(words: List<WordEntity>): String = buildString {
+    appendLine("spanish,russian,example,level,category,type")
+    words.forEach { w ->
+        append(csvEscape(w.spanish)); append(',')
+        append(csvEscape(w.russian)); append(',')
+        append(csvEscape(w.example)); append(',')
+        append(csvEscape(w.level)); append(',')
+        append(csvEscape(w.category)); append(',')
+        append(csvEscape(w.wordType))
+        appendLine()
+    }
+}
+
+private fun csvEscape(s: String): String {
+    val needsEscape = s.contains(',') || s.contains('"') || s.contains('\n')
+    return if (needsEscape) "\"${s.replace("\"", "\"\"")}\"" else s
+}
+
+private fun shareAsText(context: android.content.Context, text: String, subject: String) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+        putExtra(Intent.EXTRA_TEXT, text)
+    }
+    context.startActivity(Intent.createChooser(intent, "Поделиться списком"))
 }
