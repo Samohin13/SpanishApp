@@ -155,22 +155,24 @@ fun HomeScreen(
 
         item { Spacer(Modifier.height(16.dp)) }
 
-        // ── Topic cards ────────────────────────────────────────
-        itemsIndexed(state.roadmapUnits) { _, unit ->
-            TopicCard(
-                unit       = unit,
-                isExpanded = expandedUnitId == unit.id,
-                onToggle   = {
-                    expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
-                },
-                onLessonClick = { lessonIndex ->
-                    if (!unit.isLocked) {
-                        // A2/B1/B2 units have non-numeric IDs — content not ready yet
-                        if (unit.id.toIntOrNull() != null) {
-                            navController.navigate("lesson_intro/${unit.id}/$lessonIndex")
-                        } else {
-                            showPremiumSheet = true
-                        }
+        // ── Course cards ───────────────────────────────────────
+        val courseData = listOf(
+            CourseCardData("A1", "Начинающий", "🚀", Color(0xFF7C4DFF), "60 микро-уроков", "4 блока"),
+            CourseCardData("A2", "Элементарный", "🌍", Color(0xFF00BCD4), "60 уроков", "4 блока"),
+            CourseCardData("B1", "Средний", "📚", Color(0xFF4CAF50), "скоро", "4 блока"),
+            CourseCardData("B2", "Выше среднего", "🎓", Color(0xFF6A1B9A), "скоро", "4 блока")
+        )
+
+        itemsIndexed(courseData) { _, course ->
+            CourseCard(
+                course = course,
+                unitsCount = state.roadmapUnits.count { it.cefrLevel == course.level },
+                isLocked = course.level != "A1",
+                onClick = {
+                    if (course.level == "A1") {
+                        navController.navigate("course_detail/${course.level}")
+                    } else {
+                        showPremiumSheet = true
                     }
                 },
                 onPremiumClick = { showPremiumSheet = true }
@@ -187,6 +189,142 @@ fun HomeScreen(
             containerColor = Color.White
         ) {
             HomePremiumSheet(onDismiss = { showPremiumSheet = false })
+        }
+    }
+}
+
+// ── Data class for course card ────────────────────────────────
+
+data class CourseCardData(
+    val level: String,
+    val title: String,
+    val icon: String,
+    val color: Color,
+    val subtitle: String,
+    val blocksLabel: String
+)
+
+// ── Course card ────────────────────────────────────────────────
+
+@Composable
+private fun CourseCard(
+    course: CourseCardData,
+    unitsCount: Int,
+    isLocked: Boolean,
+    onClick: () -> Unit,
+    onPremiumClick: () -> Unit = {}
+) {
+    val accentColor = if (isLocked) LockGray else course.color
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 14.dp)
+            .shadow(
+                elevation = if (isLocked) 2.dp else 6.dp,
+                shape = RoundedCornerShape(20.dp),
+                spotColor = accentColor.copy(alpha = 0.35f)
+            )
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color.White)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = if (isLocked) onPremiumClick else onClick
+            )
+    ) {
+        Column {
+            // ── Header ──────────────────────────────────────────
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(
+                        if (isLocked)
+                            Brush.horizontalGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
+                        else
+                            Brush.horizontalGradient(
+                                listOf(accentColor, accentColor.copy(alpha = 0.72f))
+                            )
+                    )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 18.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        // Large emoji icon
+                        Text(course.icon, fontSize = 40.sp, modifier = Modifier.padding(bottom = 8.dp))
+
+                        // Level and title
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            CefrBadge(course.level)
+                            Text(
+                                course.title,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.White,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+
+                    // Right info
+                    if (isLocked) {
+                        Icon(Icons.Default.Lock, null, tint = Color.White.copy(.8f), modifier = Modifier.size(24.dp))
+                    } else {
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(
+                                "$unitsCount блоков",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Text(
+                                "60 уроков",
+                                fontSize = 11.sp,
+                                color = Color.White.copy(.8f)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // ── Body ────────────────────────────────────────────
+            Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
+                Text(
+                    course.subtitle,
+                    fontSize = 13.sp,
+                    color = if (isLocked) TextGray.copy(.6f) else TextGray,
+                    maxLines = 2,
+                    lineHeight = 18.sp
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                // Progress bar placeholder
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(7.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(accentColor.copy(alpha = 0.15f))
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                // Call-to-action
+                Text(
+                    if (isLocked) "Заблокировано" else "Начать обучение →",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = accentColor
+                )
+            }
         }
     }
 }

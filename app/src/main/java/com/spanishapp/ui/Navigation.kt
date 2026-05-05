@@ -33,6 +33,7 @@ import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
 import com.spanishapp.ui.games.*
 import com.spanishapp.ui.home.HomeScreen
+import com.spanishapp.ui.home.CourseDetailScreen
 import com.spanishapp.ui.home.LessonContentScreen
 import com.spanishapp.ui.home.LessonIntroScreen
 import com.spanishapp.ui.home.LessonIntroViewModel
@@ -127,6 +128,14 @@ object Navigation {
 
             // ── Главная ───────────────────────────────────────
             composable("home") { HomeScreen(navController) }
+
+            composable(
+                "course_detail/{courseLevel}",
+                arguments = listOf(navArgument("courseLevel") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val courseLevel = backStackEntry.arguments?.getString("courseLevel") ?: "A1"
+                CourseDetailScreen(navController, courseLevel)
+            }
 
             // ── Игры ─────────────────────────────────────────
             composable("games") { GamesScreen(navController) }
