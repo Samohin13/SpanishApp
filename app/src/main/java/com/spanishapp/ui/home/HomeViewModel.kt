@@ -101,12 +101,7 @@ class HomeViewModel @Inject constructor(
                 )
             }
 
-            val unlocked = unitId == 1 || run {
-                val prevUnit = RoadmapData.units[unitId - 2]
-                prevUnit.lessons.indices.all { idx ->
-                    "u${unitId - 1}_l${idx}" in completedKeys
-                }
-            }
+            val unlocked = true // TODO: restore progression lock after testing
 
             val lessonsWithProgress = unit.lessons.mapIndexed { idx, lesson ->
                 lesson.copy(isCompleted = "u${unitId}_l${idx}" in completedKeys)
