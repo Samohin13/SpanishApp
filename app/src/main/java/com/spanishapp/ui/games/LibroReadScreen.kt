@@ -2,7 +2,10 @@ package com.spanishapp.ui.games
 
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
+import androidx.core.content.ContextCompat
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -112,8 +115,14 @@ private fun wordMatch(exp: String, rec: String): Boolean {
 
 private fun compareToExpected(expected: String, recognized: String): List<Pair<String, Boolean>> {
     val expTokens = expected.split(Regex("[\\s,;:!?¡¿.«»\"'()\\-]+")).filter { it.isNotBlank() }
-    val recTokens = recognized.split(Regex("\\s+")).filter { it.isNotBlank() }
-    return expTokens.map { expWord -> expWord to recTokens.any { wordMatch(expWord, it) } }
+    val recTokens = recognized.split(Regex("\\s+")).filter { it.isNotBlank() }.toMutableList()
+    return expTokens.map { expWord ->
+        val matchIdx = recTokens.indexOfFirst { wordMatch(expWord, it) }
+        if (matchIdx >= 0) {
+            recTokens.removeAt(matchIdx)
+            expWord to true
+        } else expWord to false
+    }
 }
 
 // покрыты тестами в LibroTextHelpersTest
@@ -273,14 +282,17 @@ private fun BottomTranslationBox(
 private fun ReadingAloudPanel(
     state: ReadState.ReadingAloud,
     stt: SpanishSpeechRecognizer,
+    tts: TextToSpeech?,
     levelColor: Color,
     onUpdate: (ReadState.ReadingAloud) -> Unit,
     onDone: (List<SentenceResult>) -> Unit,
     onExit: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val ctx   = LocalContext.current
     val sentence = state.sentences.getOrNull(state.currentIdx) ?: return
     val result   = state.results.getOrNull(state.currentIdx)
+    var sttError by remember(state.currentIdx) { mutableStateOf<String?>(null) }
 
     val infiniteTransition = rememberInfiniteTransition(label = "mic")
     val micScale by infiniteTransition.animateFloat(
@@ -288,6 +300,47 @@ private fun ReadingAloudPanel(
         animationSpec = infiniteRepeatable(tween(550), RepeatMode.Reverse),
         label = "micScale"
     )
+
+    fun startListening() {
+        if (state.isListening) return
+        sttError = null
+        onUpdate(state.copy(isListening = true, recognizedText = ""))
+        scope.launch {
+            when (val r = stt.listenOnce()) {
+                is SpeechResult.Success -> {
+                    val checks = compareToExpected(sentence, r.text)
+                    val newResults = state.results.toMutableList()
+                    if (state.currentIdx < newResults.size)
+                        newResults[state.currentIdx] = SentenceResult(checks)
+                    onUpdate(state.copy(
+                        isListening = false, recognizedText = r.text, results = newResults
+                    ))
+                }
+                is SpeechResult.Error -> {
+                    sttError = if (r.isSilence) "Не услышал — попробуй ещё раз"
+                               else r.message.ifBlank { "Ошибка распознавания" }
+                    onUpdate(state.copy(isListening = false, recognizedText = ""))
+                }
+                SpeechResult.Cancelled -> onUpdate(state.copy(isListening = false))
+            }
+        }
+    }
+
+    val permLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) startListening()
+        else sttError = "Нет разрешения на микрофон"
+    }
+
+    fun checkPermAndListen() {
+        if (ContextCompat.checkSelfPermission(ctx, android.Manifest.permission.RECORD_AUDIO)
+            == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            startListening()
+        } else {
+            permLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+        }
+    }
 
     Column(
         Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp),
@@ -310,7 +363,24 @@ private fun ReadingAloudPanel(
             color = levelColor, trackColor = levelColor.copy(alpha = 0.15f)
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
+
+        // ── Кнопка «послушать как звучит» ──
+        OutlinedButton(
+            onClick = {
+                tts?.stop()
+                tts?.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, "ra_sentence")
+            },
+            modifier = Modifier.height(38.dp),
+            shape = RoundedCornerShape(20.dp),
+            border = androidx.compose.foundation.BorderStroke(1.dp, levelColor.copy(alpha = 0.5f))
+        ) {
+            Icon(Icons.Default.VolumeUp, null, tint = levelColor, modifier = Modifier.size(16.dp))
+            Spacer(Modifier.width(6.dp))
+            Text("Послушать", color = levelColor, fontSize = 13.sp)
+        }
+
+        Spacer(Modifier.height(10.dp))
 
         // ── Карточка с предложением ──
         Card(
@@ -363,6 +433,17 @@ private fun ReadingAloudPanel(
             }
         }
 
+        // ── Ошибка STT (тишина / разрешение / сеть) ──
+        if (sttError != null && result == null) {
+            Spacer(Modifier.height(10.dp))
+            Box(
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFFFFF3E0)).padding(10.dp)
+            ) {
+                Text("⚠ $sttError", fontSize = 13.sp, color = Color(0xFFE65100))
+            }
+        }
+
         Spacer(Modifier.weight(1f))
 
         // ── Кнопка микрофона ──
@@ -383,22 +464,8 @@ private fun ReadingAloudPanel(
                     shape = CircleShape,
                     color = if (state.isListening) Color(0xFFC62828) else levelColor,
                     shadowElevation = 6.dp,
-                    modifier = Modifier.size(68.dp).clickable(enabled = !state.isListening) {
-                        onUpdate(state.copy(isListening = true))
-                        scope.launch {
-                            val sttResult = stt.listenOnce()
-                            val recognized = when (sttResult) {
-                                is SpeechResult.Success -> sttResult.text
-                                is SpeechResult.Error   -> ""
-                                else                    -> ""
-                            }
-                            val checks = compareToExpected(sentence, recognized)
-                            val newResults = state.results.toMutableList()
-                            if (state.currentIdx < newResults.size)
-                                newResults[state.currentIdx] = SentenceResult(checks)
-                            onUpdate(state.copy(isListening = false, recognizedText = recognized, results = newResults))
-                        }
-                    }
+                    modifier = Modifier.size(68.dp)
+                        .clickable(enabled = !state.isListening) { checkPermAndListen() }
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
@@ -572,8 +639,13 @@ fun LibroReadScreen(
         tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(id: String?) { isSpeaking = true }
             override fun onDone(id: String?)  { isSpeaking = false }
-            @Deprecated("Deprecated") override fun onError(id: String?) { isSpeaking = false }
+            override fun onError(id: String?) { isSpeaking = false }
         })
+    }
+
+    // Останавливаем TTS при выходе с экрана
+    DisposableEffect(tts) {
+        onDispose { tts?.stop() }
     }
 
     // STT для «Читать вслух»
@@ -793,9 +865,11 @@ fun LibroReadScreen(
                     ReadingAloudPanel(
                         state     = s,
                         stt       = stt,
+                        tts       = tts,
                         levelColor = levelColor,
                         onUpdate  = { state = it },
                         onDone    = { results ->
+                            tts?.stop()
                             state = ReadState.ReadingDone(s.sentences, results)
                         },
                         onExit    = { tts?.stop(); state = ReadState.Reading }
