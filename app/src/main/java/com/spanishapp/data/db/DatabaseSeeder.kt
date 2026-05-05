@@ -10,7 +10,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.firstOrNull
-import org.json.JSONObject
 import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,8 +21,8 @@ class DatabaseSeeder @Inject constructor(
     private val achievementManager: AchievementManager
 ) {
     companion object {
-        // Порог для досева. Поднят до 11000 (все VocabExpansion 1-13 + Slang).
-        const val VOCAB_TARGET = 11000
+        // Порог для досева — единый источник правды CleanVocab (~4712 слов).
+        const val VOCAB_TARGET = 4500
 
         // ── Полностью неправильные глаголы ────────────────────
         val IRREGULAR_VERBS = setOf(
@@ -90,60 +89,14 @@ class DatabaseSeeder @Inject constructor(
         levels.forEach { dao.upsertProgress(it) }
     }
 
-    // ── Vocabulary from assets/spanish_vocab.json ────────────
+    // ── Vocabulary: единый источник CleanVocab (дедуплицированный) ─────
     // Использует IGNORE-стратегию вставки — безопасно вызывать повторно.
-    // Досевает слова если в БД меньше чем VOCAB_TARGET.
     private suspend fun seedWords() {
         val current = db.wordDao().getCount()
         if (current >= VOCAB_TARGET) return
 
-        val json = context.assets.open("spanish_vocab.json")
-            .bufferedReader().readText()
-        val root = JSONObject(json)
-        val words = mutableListOf<WordEntity>()
-
-        fun parseSection(key: String, type: String) {
-            if (!root.has(key)) return
-            val arr = root.getJSONArray(key)
-            for (i in 0 until arr.length()) {
-                val obj = arr.getJSONObject(i)
-                words += WordEntity(
-                    spanish  = obj.getString("spanish"),
-                    russian  = obj.getString("russian"),
-                    example  = obj.optString("example", ""),
-                    level    = obj.optString("level", "A1"),
-                    category = obj.optString("category", "general"),
-                    wordType = type
-                )
-            }
-        }
-
-        parseSection("nouns",        "noun")
-        parseSection("verbs",        "verb")
-        parseSection("adjectives",   "adjective")
-        parseSection("phrases",      "phrase")
-        parseSection("adverbs",      "adverb")
-        parseSection("prepositions", "preposition")
-
-        words += ModernVocab.entries
-        words += ExtendedVocab.entries
-        words += VocabExpansion1.entries
-        words += VocabExpansion2.entries
-        words += VocabExpansion3.entries
-        words += VocabExpansion4.entries
-        words += VocabExpansion5.entries
-        words += VocabExpansion6.entries
-        words += VocabExpansion7.entries
-        words += VocabExpansion8.entries
-        words += VocabExpansion9.entries
-        words += VocabExpansion10.entries
-        words += VocabExpansion11.entries
-        words += VocabExpansion12.entries
-        words += VocabExpansion13.entries
-        words += SlangVocab18.entries
-
-        // Дедупликация по испанскому слову (сохраняем первое вхождение)
-        val unique = words.distinctBy { it.spanish.trim().lowercase() }
+        // Дедуплицированный набор из CleanVocab.kt
+        val unique = CleanVocab.entries.distinctBy { it.spanish.trim().lowercase() }
 
         // Пометить неправильные и отклоняющиеся глаголы
         val marked = unique.map { word ->
