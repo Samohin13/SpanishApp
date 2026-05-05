@@ -17,8 +17,8 @@ object VocabExtra6 {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("el perejil", "петрушка", "Perejil picado.", "A1", "comida"),
         w("la canela", "корица", "Canela en rama.", "A1", "comida"),
         w("la menta", "мята", "Té con menta.", "A1", "comida"),
@@ -35,7 +35,6 @@ object VocabExtra6 {
         w("el ramo de flores", "букет", "Un ramo de flores.", "A1", "naturaleza"),
         w("la oscuridad", "темнота", "Miedo a la oscuridad.", "A1", "naturaleza"),
         w("el reloj de pulsera", "наручные часы", "Un reloj de pulsera caro.", "A1", "ropa"),
-        // ── A2 ──
         w("el avestruz", "страус", "El avestruz africano.", "A2", "animales"),
         w("el canario", "канарейка", "Un canario amarillo.", "A2", "animales"),
         w("el gorrión", "воробей", "Gorriones en el techo.", "A2", "animales"),
@@ -155,7 +154,6 @@ object VocabExtra6 {
         w("la velocidad máxima", "максимальная скорость", "Velocidad máxima 120.", "A2", "transporte"),
         w("la guía turística", "путеводитель", "Una guía turística actualizada.", "A2", "viajes"),
         w("la oficina de turismo", "турбюро", "La oficina de turismo central.", "A2", "viajes"),
-        // ── B1 ──
         w("el alacrán", "скорпион", "Un alacrán venenoso.", "B1", "animales"),
         w("el caracol terrestre", "улитка наземная", "Un caracol del jardín.", "B1", "animales"),
         w("el cisne negro", "чёрный лебедь", "Un cisne negro raro.", "B1", "animales"),
@@ -421,6 +419,9 @@ object VocabExtra6 {
         w("la sobredosis", "передозировка", "Sobredosis accidental.", "B1", "salud"),
         w("la transfusión", "переливание", "Transfusión de sangre.", "B1", "salud"),
         w("la tuberculosis", "туберкулёз", "Tuberculosis pulmonar.", "B1", "salud"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("el agente comercial", "торговый агент", "Un agente comercial activo.", "B1", "trabajo"),
         w("el agente inmobiliario", "риелтор", "Un agente inmobiliario.", "B1", "trabajo"),
         w("el anticuario", "антиквар", "Tienda de anticuario.", "B1", "trabajo"),
@@ -455,7 +456,6 @@ object VocabExtra6 {
         w("la barrera del idioma", "языковой барьер", "La barrera del idioma.", "B1", "viajes"),
         w("la nacionalidad doble", "двойное гражданство", "Tiene nacionalidad doble.", "B1", "viajes"),
         w("la nostalgia del hogar", "тоска по дому", "Nostalgia del hogar lejano.", "B1", "viajes"),
-        // ── B2 ──
         w("el albatros", "альбатрос", "Albatros oceánicos.", "B2", "animales"),
         w("el calamar gigante", "гигантский кальмар", "El calamar gigante.", "B2", "animales"),
         w("el ciempiés", "сороконожка", "Un ciempiés rápido.", "B2", "animales"),
@@ -565,10 +565,11 @@ object VocabExtra6 {
         w("la rotonda doble", "двойной круг", "Una rotonda doble.", "B2", "transporte"),
         w("el padrón", "регистрация (испан.)", "Empadronarse en el padrón.", "B2", "viajes"),
         w("la asimilación", "ассимиляция", "Asimilación cultural completa.", "B2", "viajes"),
-        // ── C1 ──
         w("el bogue", "морской лещ", "Bogue frito.", "C1", "comida"),
         w("la pleura", "плевра", "Inflamación de la pleura.", "C1", "cuerpo"),
         w("los alveolos", "альвеолы", "Los alveolos pulmonares.", "C1", "cuerpo"),
         w("el actuario", "актуарий", "Un actuario de seguros.", "C1", "trabajo"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2()
 }

@@ -17,8 +17,8 @@ object VocabExtra10 {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("el gatito", "котёнок", "Un gatito tierno.", "A1", "animales"),
         w("el perrito", "пёсик", "Un perrito adorable.", "A1", "animales"),
         w("la gata", "кошка", "La gata duerme.", "A1", "animales"),
@@ -36,7 +36,6 @@ object VocabExtra10 {
         w("la letra minúscula", "строчная буква", "Una letra minúscula.", "A1", "comunicacion"),
         w("el humor (estado)", "настроение", "Un humor variable.", "A1", "emociones"),
         w("los lego", "Лего", "Construir con Lego.", "A1", "familia"),
-        // ── A2 ──
         w("el comedero", "миска для еды", "El comedero del perro.", "A2", "animales"),
         w("el juguete del perro", "игрушка собаки", "Un juguete del perro.", "A2", "animales"),
         w("el paseo del perro", "выгул собаки", "Sacar al perro de paseo.", "A2", "animales"),
@@ -155,7 +154,6 @@ object VocabExtra10 {
         w("la presentación", "презентация", "Una presentación clara.", "A2", "trabajo"),
         w("la reunión semanal", "еженедельная встреча", "Reunión semanal del equipo.", "A2", "trabajo"),
         w("la videoconferencia", "видеоконференция", "Una videoconferencia internacional.", "A2", "trabajo"),
-        // ── B1 ──
         w("el acuario tropical", "тропический аквариум", "Acuario tropical decorativo.", "B1", "animales"),
         w("el adiestrador", "кинолог", "El adiestrador de perros.", "B1", "animales"),
         w("el albergue de animales", "приют для животных", "Adoptar del albergue de animales.", "B1", "animales"),
@@ -421,6 +419,9 @@ object VocabExtra10 {
         w("el golpe de calor", "тепловой удар", "Golpe de calor peligroso.", "B1", "salud"),
         w("el hematoma", "гематома", "Un hematoma grande.", "B1", "salud"),
         w("el hipo", "икота", "Tener hipo.", "B1", "salud"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("el mareo de coche", "укачивание", "Mareo de coche infantil.", "B1", "salud"),
         w("el vértigo", "головокружение", "Vértigo de altura.", "B1", "salud"),
         w("la ciática", "ишиас", "Sufre ciática.", "B1", "salud"),
@@ -454,7 +455,6 @@ object VocabExtra10 {
         w("la reunión anual", "ежегодная встреча", "Reunión anual de accionistas.", "B1", "trabajo"),
         w("la reunión mensual", "ежемесячная встреча", "Reunión mensual de gerencia.", "B1", "trabajo"),
         w("la tutoría laboral", "наставничество", "Tutoría laboral activa.", "B1", "trabajo"),
-        // ── B2 ──
         w("el chip de identificación", "чип-идентификатор", "Chip de identificación obligatorio.", "B2", "animales"),
         w("el collar antiparasitario", "противопаразитарный ошейник", "Collar antiparasitario.", "B2", "animales"),
         w("el pis del gato", "кошачья моча", "Limpiar el pis del gato.", "B2", "animales"),
@@ -561,7 +561,6 @@ object VocabExtra10 {
         w("la lideresa", "женщина-лидер", "Una lideresa fuerte.", "B2", "trabajo"),
         w("la retroalimentación", "обратная связь", "Retroalimentación positiva.", "B2", "trabajo"),
         w("la revisión de objetivos", "пересмотр целей", "Revisión de objetivos trimestral.", "B2", "trabajo"),
-        // ── C1 ──
         w("el acento circunflejo", "циркумфлекс", "Acento circunflejo.", "C1", "comunicacion"),
         w("el ampersand", "амперсанд &", "El símbolo ampersand.", "C1", "comunicacion"),
         w("el trasgo", "проказник", "Un trasgo del bosque.", "C1", "cultura"),
@@ -573,4 +572,6 @@ object VocabExtra10 {
         w("la plutocracia", "плутократия", "Una plutocracia moderna.", "C1", "politica"),
         w("el mentee", "менти", "Un mentee aprendiz.", "C1", "trabajo"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2()
 }

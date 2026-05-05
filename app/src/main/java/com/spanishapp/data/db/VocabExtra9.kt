@@ -16,8 +16,8 @@ object VocabExtra9 {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("dar un abrazo", "обнять", "Darle un abrazo grande.", "A1", "acciones", "phrase"),
         w("dar un beso", "поцеловать", "Darle un beso.", "A1", "acciones", "phrase"),
         w("dulce (sabor)", "сладкий (вкус)", "Sabor dulce.", "A1", "calidad", "adjective"),
@@ -58,7 +58,6 @@ object VocabExtra9 {
         w("África", "Африка", "África subsahariana.", "A1", "geografia"),
         w("la droga", "наркотик", "Drogas duras.", "A1", "politica"),
         w("el coche de bomberos", "пожарная машина", "El coche de bomberos.", "A1", "transporte"),
-        // ── A2 ──
         w("admirar", "восхищаться", "Admirar la obra.", "A2", "acciones", "verb"),
         w("negar con la cabeza", "качать головой", "Negar con la cabeza.", "A2", "acciones", "phrase"),
         w("congelado (comida)", "замороженный", "Pizza congelada.", "A2", "calidad", "adjective"),
@@ -204,7 +203,6 @@ object VocabExtra9 {
         w("la pegatina", "наклейка", "Una pegatina infantil.", "A2", "trabajo"),
         w("el deportivo", "спорткар", "Un deportivo italiano.", "A2", "transporte"),
         w("la limusina", "лимузин", "Una limusina blanca.", "A2", "transporte"),
-        // ── B1 ──
         w("arrugar", "морщить", "Arrugar la nariz.", "B1", "acciones", "verb"),
         w("asentir", "соглашаться (кивком)", "Asentir con la cabeza.", "B1", "acciones", "verb"),
         w("avistar", "увидеть/обнаружить", "Avistar el avión.", "B1", "acciones", "verb"),
@@ -420,6 +418,9 @@ object VocabExtra9 {
         w("la condicional", "условка", "Salió en condicional.", "B1", "politica"),
         w("la criminalidad", "преступность", "Tasa de criminalidad.", "B1", "politica"),
         w("la desintoxicación", "детокс", "Desintoxicación supervisada.", "B1", "politica"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("la guardia civil", "гражданская гвардия", "La Guardia Civil rural.", "B1", "politica"),
         w("la huella dactilar", "отпечаток пальца", "Huella dactilar identificada.", "B1", "politica"),
         w("la investigación criminal", "уголовное расследование", "Investigación criminal abierta.", "B1", "politica"),
@@ -473,7 +474,6 @@ object VocabExtra9 {
         w("la furgoneta camper", "автодом", "Una furgoneta camper equipada.", "B1", "transporte"),
         w("la furgoneta de reparto", "доставочный фургон", "Una furgoneta de reparto.", "B1", "transporte"),
         w("la grúa de coches", "эвакуатор", "Llamar a la grúa de coches.", "B1", "transporte"),
-        // ── B2 ──
         w("acechar", "подстерегать", "Acechar a la presa.", "B2", "acciones", "verb"),
         w("achicar los ojos", "щуриться", "Achicar los ojos por el sol.", "B2", "acciones", "phrase"),
         w("entornar", "прищурить", "Entornar los ojos.", "B2", "acciones", "verb"),
@@ -572,11 +572,12 @@ object VocabExtra9 {
         w("la tachuela", "кнопка/гвоздик", "Tachuelas de tablón.", "B2", "trabajo"),
         w("el coche fúnebre", "катафалк", "Un coche fúnebre.", "B2", "transporte"),
         w("el monovolumen familiar", "минивэн семейный", "Un monovolumen familiar grande.", "B2", "transporte"),
-        // ── C1 ──
         w("atisbar", "разглядеть/уловить", "Atisbar una sonrisa.", "C1", "acciones", "verb"),
         w("escudriñar", "вглядываться", "Escudriñar el horizonte.", "C1", "acciones", "verb"),
         w("el cannolo", "канноли", "Cannoli sicilianos.", "C1", "comida"),
         w("el pelotero", "теннисист (Лат. Ам.)", "Un pelotero profesional.", "C1", "deportes"),
         w("el polipasto", "тельфер", "Un polipasto industrial.", "C1", "trabajo"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2()
 }

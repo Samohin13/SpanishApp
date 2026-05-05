@@ -18,8 +18,8 @@ object VocabExtra8 {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("las vacaciones escolares", "школьные каникулы", "Vacaciones escolares de verano.", "A1", "educacion"),
         w("el premio (recompensa)", "приз (награда)", "Un premio especial.", "A1", "familia"),
         w("el club", "клуб", "Un club privado.", "A1", "general"),
@@ -33,7 +33,6 @@ object VocabExtra8 {
         w("el bluetooth", "Bluetooth", "Conexión por bluetooth.", "A1", "tecnologia"),
         w("la prisa", "спешка", "Tener prisa.", "A1", "tiempo"),
         w("la siesta", "сиеста", "Echar la siesta.", "A1", "tiempo"),
-        // ── A2 ──
         w("el acrílico", "акрил", "Pintura acrílica.", "A2", "arte"),
         w("el cámara lenta", "замедленная съёмка", "Repetición a cámara lenta.", "A2", "arte"),
         w("el enfoque", "фокус", "Enfoque automático.", "A2", "arte"),
@@ -128,7 +127,6 @@ object VocabExtra8 {
         w("el protector solar", "санскрин", "Protector solar SPF 50.", "A2", "viajes"),
         w("la hamaca", "гамак", "Una hamaca colgada.", "A2", "viajes"),
         w("la maleta de ruedas", "чемодан на колёсах", "Una maleta de ruedas.", "A2", "viajes"),
-        // ── B1 ──
         w("el arte abstracto", "абстрактное искусство", "Arte abstracto puro.", "B1", "arte"),
         w("el carboncillo", "уголь (рисование)", "Dibujar con carboncillo.", "B1", "arte"),
         w("el coleccionista de arte", "коллекционер искусства", "Un coleccionista de arte importante.", "B1", "arte"),
@@ -381,7 +379,6 @@ object VocabExtra8 {
         w("las gafas de bucear", "очки для дайвинга", "Gafas de bucear claras.", "B1", "viajes"),
         w("los binoculares", "бинокль", "Binoculares para aves.", "B1", "viajes"),
         w("los prismáticos", "бинокль", "Unos prismáticos potentes.", "B1", "viajes"),
-        // ── B2 ──
         w("el arte conceptual", "концептуальное искусство", "Arte conceptual radical.", "B2", "arte"),
         w("el arte figurativo", "фигуративное искусство", "Arte figurativo realista.", "B2", "arte"),
         w("el atelier", "ателье/мастерская художника", "El atelier del pintor.", "B2", "arte"),
@@ -423,6 +420,9 @@ object VocabExtra8 {
         w("el balance contable", "бухгалтерский баланс", "Un balance contable claro.", "B2", "economia"),
         w("el blanqueo de dinero", "отмывание денег", "Blanqueo de dinero internacional.", "B2", "economia"),
         w("el cohecho", "дача взятки", "Delito de cohecho.", "B2", "economia"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("el cártel", "картель", "Un cártel ilegal.", "B2", "economia"),
         w("el desahucio", "выселение", "Un desahucio judicial.", "B2", "economia"),
         w("el desfalco", "растрата", "Desfalco de fondos públicos.", "B2", "economia"),
@@ -525,7 +525,6 @@ object VocabExtra8 {
         w("el ESP", "ESP", "Sistema ESP de estabilidad.", "B2", "transporte"),
         w("la dirección asistida", "усилитель руля", "Dirección asistida hidráulica.", "B2", "transporte"),
         w("el tubo de respirar", "трубка для снорклинга", "Tubo de respirar.", "B2", "viajes"),
-        // ── C1 ──
         w("el aguafuerte", "офорт", "Un aguafuerte de Goya.", "C1", "arte"),
         w("el land art", "лэнд-арт", "Obras de land art.", "C1", "arte"),
         w("la curaduría", "кураторство", "Curaduría experta.", "C1", "arte"),
@@ -548,4 +547,6 @@ object VocabExtra8 {
         w("la hermenéutica", "герменевтика", "Hermenéutica bíblica.", "C1", "religion"),
         w("la ontología", "онтология", "La ontología del ser.", "C1", "religion"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2()
 }

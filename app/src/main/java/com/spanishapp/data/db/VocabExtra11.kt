@@ -17,8 +17,8 @@ object VocabExtra11 {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("la lámpara de mesa", "настольная лампа", "Una lámpara de mesa elegante.", "A1", "casa"),
         w("el café americano", "американо", "Un café americano largo.", "A1", "comida"),
         w("el café espresso", "эспрессо", "Un café espresso italiano.", "A1", "comida"),
@@ -31,7 +31,6 @@ object VocabExtra11 {
         w("guapo (chico)", "красавчик", "Eres muy guapo.", "A1", "expresiones", "adjective"),
         w("súper", "супер", "Súper bien.", "A1", "expresiones", "adverb"),
         w("la reunión familiar", "семейная встреча", "Reunión familiar dominical.", "A1", "familia"),
-        // ── A2 ──
         w("ascender", "повышаться", "Ascender en la liga.", "A2", "acciones", "verb"),
         w("compensar", "компенсировать", "Compensar el error.", "A2", "acciones", "verb"),
         w("retirarse", "удаляться", "Retirarse a descansar.", "A2", "acciones", "verb"),
@@ -98,7 +97,6 @@ object VocabExtra11 {
         w("los ochenta", "восьмидесятые", "Moda de los ochenta.", "A2", "tiempo"),
         w("los sesenta", "шестидесятые", "Los sesenta hippies.", "A2", "tiempo"),
         w("los setenta", "семидесятые", "Cine de los setenta.", "A2", "tiempo"),
-        // ── B1 ──
         w("abonar", "оплачивать", "Abonar la factura.", "B1", "acciones", "verb"),
         w("autorizar", "разрешать", "Autorizar el viaje.", "B1", "acciones", "verb"),
         w("avalar", "поручаться", "Avalar el préstamo.", "B1", "acciones", "verb"),
@@ -329,7 +327,6 @@ object VocabExtra11 {
         w("los cuarenta", "сороковые", "Guerra de los cuarenta.", "B1", "tiempo"),
         w("los treinta", "тридцатые", "Crisis de los treinta.", "B1", "tiempo"),
         w("los veinte", "двадцатые", "Los locos veinte.", "B1", "tiempo"),
-        // ── B2 ──
         w("acometer", "взяться за", "Acometer una tarea.", "B2", "acciones", "verb"),
         w("auspiciar", "покровительствовать", "Auspiciar la conferencia.", "B2", "acciones", "verb"),
         w("desertar", "дезертировать", "Desertar del ejército.", "B2", "acciones", "verb"),
@@ -422,6 +419,9 @@ object VocabExtra11 {
         w("el peritaje del seguro", "экспертиза страховой", "Peritaje del seguro.", "B2", "economia"),
         w("el plazo de amortización", "срок кредита", "Plazo de amortización largo.", "B2", "economia"),
         w("la cartera de inversiones", "инвестпортфель", "Una cartera de inversiones equilibrada.", "B2", "economia"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("la diversificación", "диверсификация", "Diversificación del riesgo.", "B2", "economia"),
         w("la franquicia (seguro)", "франшиза (страх.)", "Franquicia del seguro.", "B2", "economia"),
         w("la mutua", "страховая (трудовая)", "La mutua de la empresa.", "B2", "economia"),
@@ -489,7 +489,6 @@ object VocabExtra11 {
         w("el bicentenario", "двухсотлетие", "Bicentenario de la república.", "B2", "tiempo"),
         w("la efeméride", "памятная дата", "Una efeméride histórica.", "B2", "tiempo"),
         w("los dosmiles", "двухтысячные", "Internet en los dosmiles.", "B2", "tiempo"),
-        // ── C1 ──
         w("el amontillado", "амонтильядо", "Amontillado clásico.", "C1", "comida"),
         w("el cachelo", "галисийская картошка", "Cachelos con pulpo.", "C1", "comida"),
         w("el calçots", "кальсотс (зел. лук)", "Calçots con romesco.", "C1", "comida"),
@@ -506,4 +505,6 @@ object VocabExtra11 {
         w("los diezmiles", "десятые годы", "Smartphones en los diezmiles.", "C1", "tiempo"),
         w("los veintemiles", "двадцатые (XXI в.)", "Pandemia de los veintemiles.", "C1", "tiempo"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2()
 }

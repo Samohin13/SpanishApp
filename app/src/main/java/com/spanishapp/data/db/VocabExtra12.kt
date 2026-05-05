@@ -15,8 +15,8 @@ object VocabExtra12 {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("calcular", "вычислять", "Calcular el total.", "A1", "acciones", "verb"),
         w("describir", "описывать", "Describir el lugar.", "A1", "acciones", "verb"),
         w("mejorar (cualidad)", "улучшаться", "Mejorar la salud.", "A1", "acciones", "verb"),
@@ -29,7 +29,6 @@ object VocabExtra12 {
         w("Twitter", "Twitter", "Un tweet en Twitter.", "A1", "tecnologia"),
         w("WhatsApp", "WhatsApp", "Mensaje de WhatsApp.", "A1", "tecnologia"),
         w("YouTube", "YouTube", "Canal de YouTube.", "A1", "tecnologia"),
-        // ── A2 ──
         w("aclarar", "прояснять", "Aclarar la duda.", "A2", "acciones", "verb"),
         w("anotar (oficial)", "записывать", "Anotar el cambio.", "A2", "acciones", "verb"),
         w("apreciar", "ценить", "Apreciar la belleza.", "A2", "acciones", "verb"),
@@ -104,7 +103,6 @@ object VocabExtra12 {
         w("X", "X (Twitter)", "Red social X.", "A2", "tecnologia"),
         w("el astronauta", "астронавт", "Un astronauta de la NASA.", "A2", "trabajo"),
         w("el cosmonauta", "космонавт", "Un cosmonauta ruso.", "A2", "trabajo"),
-        // ── B1 ──
         w("acentuar", "подчёркивать", "Acentuar la importancia.", "B1", "acciones", "verb"),
         w("clarificar", "уточнять", "Clarificar la pregunta.", "B1", "acciones", "verb"),
         w("consolidar", "укреплять", "Consolidar el equipo.", "B1", "acciones", "verb"),
@@ -294,7 +292,6 @@ object VocabExtra12 {
         w("el geógrafo", "географ", "Un geógrafo apasionado.", "B1", "trabajo"),
         w("el meteorólogo (prof.)", "метеоролог-проф.", "Un meteorólogo experto.", "B1", "trabajo"),
         w("el zoólogo", "зоолог", "Un zoólogo destacado.", "B1", "trabajo"),
-        // ── B2 ──
         w("afianzar", "закреплять", "Afianzar la posición.", "B2", "acciones", "verb"),
         w("debatir formalmente", "официально обсуждать", "Debatir formalmente la moción.", "B2", "acciones", "phrase"),
         w("deliberar", "совещаться", "Deliberar la decisión.", "B2", "acciones", "verb"),
@@ -412,7 +409,6 @@ object VocabExtra12 {
         w("el sismólogo", "сейсмолог", "Un sismólogo de Japón.", "B2", "trabajo"),
         w("el veterinario rural", "сельский ветеринар", "El veterinario rural.", "B2", "trabajo"),
         w("el vulcanólogo", "вулканолог", "Un vulcanólogo italiano.", "B2", "trabajo"),
-        // ── C1 ──
         w("censar", "переписывать", "Censar la población.", "C1", "acciones", "verb"),
         w("dilucidar", "выяснять", "Dilucidar el misterio.", "C1", "acciones", "verb"),
         w("el arcano mayor", "старший аркан", "Los arcanos mayores.", "C1", "cultura"),
@@ -421,6 +417,9 @@ object VocabExtra12 {
         w("el chupinazo", "выстрел открытия праздника", "El chupinazo de San Fermín.", "C1", "cultura"),
         w("el quejío", "вскрик флам.", "Un quejío flamenco desgarrador.", "C1", "cultura"),
         w("el quiromántico", "хиромант", "Un quiromántico predice.", "C1", "cultura"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("el rebujito", "ребухито (напиток)", "Un rebujito andaluz.", "C1", "cultura"),
         w("el sarao", "светский раут", "Un sarao en el palacio.", "C1", "cultura"),
         w("el ágape", "застолье", "Un ágape entre amigos.", "C1", "cultura"),
@@ -437,4 +436,6 @@ object VocabExtra12 {
         w("el etólogo", "этолог", "Un etólogo del comportamiento.", "C1", "trabajo"),
         w("el ictiólogo", "ихтиолог", "Un ictiólogo investiga peces.", "C1", "trabajo"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2()
 }

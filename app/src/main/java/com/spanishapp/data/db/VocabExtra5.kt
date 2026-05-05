@@ -17,8 +17,8 @@ object VocabExtra5 {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("cortar (cuchilla)", "разрезать", "Cortar con tijeras.", "A1", "acciones", "verb"),
         w("gigante", "гигантский", "Un árbol gigante.", "A1", "calidad", "adjective"),
         w("el banco del parque", "скамейка в парке", "Sentarse en un banco del parque.", "A1", "ciudad"),
@@ -53,7 +53,6 @@ object VocabExtra5 {
         w("el like", "лайк", "Dar like a la foto.", "A1", "tecnologia"),
         w("el perfil", "профиль", "Un perfil público.", "A1", "tecnologia"),
         w("la pintura blanca", "белая краска", "Pinta con pintura blanca.", "A1", "trabajo"),
-        // ── A2 ──
         w("anotar", "записывать", "Anota el número.", "A2", "acciones", "verb"),
         w("apretar (nudo)", "затягивать", "Apretar el nudo.", "A2", "acciones", "verb"),
         w("apuntar", "записывать/целиться", "Apunta esto.", "A2", "acciones", "verb"),
@@ -221,7 +220,6 @@ object VocabExtra5 {
         w("la perla", "жемчуг", "Un collar de perlas.", "A2", "trabajo"),
         w("la sierra", "пила", "Una sierra eléctrica.", "A2", "trabajo"),
         w("los guantes de trabajo", "рабочие перчатки", "Lleva guantes de trabajo.", "A2", "trabajo"),
-        // ── B1 ──
         w("aflojar", "ослаблять", "Aflojar el tornillo.", "B1", "acciones", "verb"),
         w("agendar", "записывать в ежедневник", "Agendar una cita.", "B1", "acciones", "verb"),
         w("agredir", "нападать", "Agredir físicamente.", "B1", "acciones", "verb"),
@@ -421,6 +419,9 @@ object VocabExtra5 {
         w("la modernidad", "современность", "La modernidad llegó.", "B1", "general"),
         w("la montaña rusa", "американские горки", "Montaña rusa rápida.", "B1", "general"),
         w("la realidad virtual (concepto)", "виртуальная реальность", "La realidad virtual avanza.", "B1", "general"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("la semejanza", "схожесть", "Una semejanza física.", "B1", "general"),
         w("la similitud", "сходство", "Hay similitudes entre ellos.", "B1", "general"),
         w("la suculenta", "суккулент", "Suculentas en la ventana.", "B1", "general"),
@@ -472,7 +473,6 @@ object VocabExtra5 {
         w("la tuerca", "гайка", "Aflojar la tuerca.", "B1", "trabajo"),
         w("las gafas de protección", "защитные очки", "Gafas de protección para soldar.", "B1", "trabajo"),
         w("los alicates", "плоскогубцы", "Unos alicates buenos.", "B1", "trabajo"),
-        // ── B2 ──
         w("agrietar", "трескаться", "Agrieta la pared.", "B2", "acciones", "verb"),
         w("asemejar", "уподобляться", "Se asemeja a su padre.", "B2", "acciones", "verb"),
         w("bocetar", "набрасывать (эскиз)", "Bocetar una idea.", "B2", "acciones", "verb"),
@@ -527,9 +527,10 @@ object VocabExtra5 {
         w("la astilla", "щепка", "Una astilla en el dedo.", "B2", "trabajo"),
         w("la llave de tubo", "торцевой ключ", "Llave de tubo profesional.", "B2", "trabajo"),
         w("la viruta", "стружка", "Virutas de madera.", "B2", "trabajo"),
-        // ── C1 ──
         w("erigir", "воздвигать", "Erigir una estatua.", "C1", "acciones", "verb"),
         w("inmensurable", "неизмеримый", "Un valor inmensurable.", "C1", "calidad", "adjective"),
         w("el axioma", "аксиома", "Un axioma matemático.", "C1", "ciencia"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2()
 }

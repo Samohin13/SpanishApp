@@ -4,23 +4,16 @@ import com.spanishapp.data.db.entity.WordEntity
 
 /**
  * CleanVocab — единый источник правды для словаря.
- * Сгенерирован дедупликацией из старых VocabExpansion*.kt + ExtendedVocab.kt +
- * ModernVocab.kt + SlangVocab18.kt + spanish_vocab.json.
- *
  * Всего слов: 4712
- *   A1: 999
- *   A2: 1305
- *   B1: 1684
- *   B2: 646
- *   C1: 78
+ *
+ * NB: разбит на чанки чтобы обойти JVM-лимит "Method too large" (64 КБ).
  */
 object CleanVocab {
 
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 (999) ─────────────────────────────────────────
+    private fun chunk1(): List<WordEntity> = listOf(
         w("a", "в, к, на (направление)", "Voy a Madrid manana.", "A1", "preposicion", "preposition"),
         w("A menudo", "Часто", "", "A1", "expresiones", "phrase"),
         w("a veces", "иногда", "A veces voy al gimnasio.", "A1", "tiempo", "adverb"),
@@ -421,6 +414,9 @@ object CleanVocab {
         w("el taxista", "таксист", "", "A1", "general"),
         w("el techo", "потолок / крыша", "El techo es alto.", "A1", "casa"),
         w("el televisor", "телевизор", "El televisor está encendido.", "A1", "tecnologia"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("el teléfono", "телефон", "Mi teléfono es nuevo.", "A1", "tecnologia"),
         w("el tenedor", "вилка", "", "A1", "general"),
         w("el tiempo", "время / погода", "El tiempo es bueno hoy.", "A1", "tiempo"),
@@ -821,6 +817,9 @@ object CleanVocab {
         w("Me lo llevo", "Я возьму это", "", "A1", "compras", "phrase"),
         w("mejor", "лучший", "Es la mejor opción.", "A1", "calidad", "adjective"),
         w("merendar", "полдничать", "Merienda fruta y yogur.", "A1", "general", "verb"),
+    )
+
+    private fun chunk3(): List<WordEntity> = listOf(
         w("mirar", "смотреть", "Miro la televisión.", "A1", "percepcion", "verb"),
         w("miércoles", "среда", "", "A1", "general"),
         w("mojado", "мокрый", "Estoy mojado.", "A1", "fisico", "adjective"),
@@ -1020,7 +1019,6 @@ object CleanVocab {
         w("¿Tienen la talla M?", "Есть размер M?", "", "A1", "compras", "phrase"),
         w("último", "последний", "El último tren.", "A1", "tiempo", "adjective"),
         w("útil", "полезный", "Es muy útil.", "A1", "valor", "adjective"),
-        // ── A2 (1305) ─────────────────────────────────────────
         w("A lo mejor", "Может быть", "", "A2", "expresiones", "phrase"),
         w("a partir de ahora", "с этого момента", "A partir de ahora, estudia.", "A2", "general", "phrase"),
         w("a tiempo", "вовремя", "Llegó a tiempo.", "A2", "general", "phrase"),
@@ -1222,6 +1220,9 @@ object CleanVocab {
         w("el balcón", "балкон", "Salgo al balcón.", "A2", "casa"),
         w("el balde", "ведро", "", "A2", "general"),
         w("el baloncesto", "баскетбол", "El baloncesto es popular en España.", "A2", "deportes"),
+    )
+
+    private fun chunk4(): List<WordEntity> = listOf(
         w("el barbero", "парикмахер", "", "A2", "general"),
         w("el barman", "бармен", "", "A2", "general"),
         w("el barrio", "район", "Vivo en un barrio tranquilo.", "A2", "ciudad"),
@@ -1622,6 +1623,9 @@ object CleanVocab {
         w("el tronco", "ствол", "El tronco del roble es enorme.", "A2", "naturaleza"),
         w("el trozo", "кусок", "", "A2", "general"),
         w("el truco", "фокус / трюк", "", "A2", "general"),
+    )
+
+    private fun chunk5(): List<WordEntity> = listOf(
         w("el trueno", "гром", "El trueno asusta.", "A2", "naturaleza"),
         w("el tubo", "труба / тюбик", "", "A2", "general"),
         w("el tucán", "тукан", "", "A2", "general"),
@@ -2022,6 +2026,9 @@ object CleanVocab {
         w("la rueda", "колесо", "", "A2", "general"),
         w("la ruta", "маршрут", "", "A2", "general"),
         w("la rutina", "рутина / привычка", "", "A2", "general"),
+    )
+
+    private fun chunk6(): List<WordEntity> = listOf(
         w("la sala", "зал/гостиная", "La sala está ordenada.", "A2", "casa"),
         w("la salida", "выход/выезд", "¿Dónde está la salida?", "A2", "general"),
         w("la saliva", "слюна", "", "A2", "general"),
@@ -2326,7 +2333,6 @@ object CleanVocab {
         w("¿Qué tal si...?", "А что если...?", "¿Qué tal si salimos?", "A2", "general", "phrase"),
         w("¿Tiene opción vegetariana?", "Есть вегетарианское?", "¿Tiene opción vegetariana?", "A2", "general", "phrase"),
         w("áspero", "шершавый", "La superficie es áspera.", "A2", "fisico", "adjective"),
-        // ── B1 (1684) ─────────────────────────────────────────
         w("a día de hoy", "на сегодняшний день", "A día de hoy no hay noticias.", "B1", "general", "phrase"),
         w("a fin de cuentas", "в конце концов", "A fin de cuentas, lo importante es salud.", "B1", "general", "phrase"),
         w("a menos que", "если только не", "Ire a menos que llueva.", "B1", "conjuncion", "preposition"),
@@ -2423,6 +2429,9 @@ object CleanVocab {
         w("currar", "пахать / работать", "Curro mucho esta semana.", "B1", "expresiones", "verb"),
         w("dar a conocer", "знакомить/представлять", "Quiero dar a conocer mi proyecto.", "B1", "general", "phrase"),
         w("dar la bienvenida", "приветствовать", "Le dimos la bienvenida.", "B1", "general", "phrase"),
+    )
+
+    private fun chunk7(): List<WordEntity> = listOf(
         w("dar por hecho", "принимать как должное", "No lo des por hecho.", "B1", "general", "phrase"),
         w("Darse cuenta", "Осознавать", "", "B1", "expresiones", "phrase"),
         w("de ahora en adelante", "отныне", "De ahora en adelante, seré puntual.", "B1", "general", "phrase"),
@@ -2823,6 +2832,9 @@ object CleanVocab {
         w("el lóbulo", "мочка / доля", "", "B1", "general"),
         w("el lúpulo", "хмель", "", "B1", "general"),
         w("el magistrado", "судья / магистр", "", "B1", "general"),
+    )
+
+    private fun chunk8(): List<WordEntity> = listOf(
         w("el magnetismo", "магнетизм", "", "B1", "general"),
         w("el malhechor", "злоумышленник", "", "B1", "general"),
         w("el malvado", "злодей", "", "B1", "general"),
@@ -3223,6 +3235,9 @@ object CleanVocab {
         w("en resumen", "подводя итог", "En resumen, fue un éxito.", "B1", "general", "phrase"),
         w("en segundo lugar", "во-вторых", "En segundo lugar, actúa.", "B1", "general", "phrase"),
         w("en todo caso", "в любом случае", "En todo caso, avísame.", "B1", "general", "phrase"),
+    )
+
+    private fun chunk9(): List<WordEntity> = listOf(
         w("en vez de", "вместо", "En vez de quejarte, actua.", "B1", "preposicion", "preposition"),
         w("enfrentarse", "сталкиваться/противостоять", "Se enfrenta a grandes retos.", "B1", "general", "verb"),
         w("engañar", "обманывать", "No me engañes.", "B1", "general", "verb"),
@@ -3623,6 +3638,9 @@ object CleanVocab {
         w("la meditación", "медитация", "La meditación reduce el estrés.", "B1", "psicologia"),
         w("la medusa", "медуза", "La medusa puede picar.", "B1", "animales"),
         w("la mejoría", "улучшение", "", "B1", "general"),
+    )
+
+    private fun chunk10(): List<WordEntity> = listOf(
         w("la melaza", "патока", "", "B1", "general"),
         w("la melena", "грива / длинные волосы", "", "B1", "general"),
         w("la melodía", "мелодия", "La melodía es pegadiza.", "B1", "musica"),
@@ -4011,7 +4029,6 @@ object CleanVocab {
         w("últimamente", "в последнее время", "Últimamente duerme mal.", "B1", "general", "adverb"),
         w("únicamente", "исключительно", "Únicamente para adultos.", "B1", "general", "adverb"),
         w("único", "уникальный", "Es un diseño único.", "B1", "calidad", "adjective"),
-        // ── B2 (646) ─────────────────────────────────────────
         w("a fin de que", "с тем чтобы", "Lo explico a fin de que comprendas.", "B2", "conjuncion", "preposition"),
         w("a grandes rasgos", "в общих чертах", "A grandes rasgos, el plan es bueno.", "B2", "general", "phrase"),
         w("a largo plazo", "в долгосрочной перспективе", "A largo plazo, será beneficioso.", "B2", "general", "phrase"),
@@ -4024,6 +4041,9 @@ object CleanVocab {
         w("abstracto", "абстрактный", "El arte abstracto es subjetivo.", "B2", "filosofia", "adjective"),
         w("acatar", "подчиняться/выполнять", "Acata la decisión judicial.", "B2", "general", "verb"),
         w("acoger", "принимать/приютить", "Acogen a familias refugiadas.", "B2", "general", "verb"),
+    )
+
+    private fun chunk11(): List<WordEntity> = listOf(
         w("adoptar", "усыновлять", "Adoptaron a un niño de tres años.", "B2", "familia", "verb"),
         w("adquirir", "приобретать", "Adquiere habilidades nuevas.", "B2", "general", "verb"),
         w("afrontar", "справляться/встречать", "Afronta los problemas con calma.", "B2", "psicologia", "verb"),
@@ -4424,6 +4444,9 @@ object CleanVocab {
         w("la brecha generacional", "разрыв поколений", "La brecha generacional es real.", "B2", "familia"),
         w("la brecha salarial", "разрыв в зарплатах", "La brecha salarial es injusta.", "B2", "economia"),
         w("la bártulos", "пожитки", "", "B2", "general"),
+    )
+
+    private fun chunk12(): List<WordEntity> = listOf(
         w("la caducidad", "истечение срока", "", "B2", "general"),
         w("la cal", "известь", "", "B2", "general"),
         w("la calamidad", "бедствие", "", "B2", "general"),
@@ -4658,7 +4681,6 @@ object CleanVocab {
         w("¿Está hecho al punto?", "Средней прожарки?", "¿El filete está al punto?", "B2", "general", "phrase"),
         w("árido", "засушливый/аридный", "El clima árido dificulta la agricultura.", "B2", "naturaleza", "adjective"),
         w("íntegro", "честный/порядочный", "Es una persona íntegra.", "B2", "general", "adjective"),
-        // ── C1 (78) ─────────────────────────────────────────
         w("a sabiendas", "сознательно/зная", "Lo hizo a sabiendas del riesgo.", "C1", "general", "phrase"),
         w("a tenor de", "судя по/в соответствии", "A tenor de los datos, hay que actuar.", "C1", "general", "phrase"),
         w("afligir", "огорчать/удручать", "La noticia le aflige mucho.", "C1", "general", "verb"),
@@ -4738,4 +4760,6 @@ object CleanVocab {
         w("Ver los toros desde la barrera", "Быть сторонним наблюдателем", "Siempre ve los toros desde la barrera.", "C1", "general", "phrase"),
         w("vulnerar", "нарушать/ущемлять", "Vulnera los derechos del trabajador.", "C1", "general", "verb"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2() + chunk3() + chunk4() + chunk5() + chunk6() + chunk7() + chunk8() + chunk9() + chunk10() + chunk11() + chunk12()
 }

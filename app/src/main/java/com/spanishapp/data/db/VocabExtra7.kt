@@ -17,8 +17,8 @@ object VocabExtra7 {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── A1 ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("recordar (memoria)", "помнить", "Recordar la infancia.", "A1", "acciones", "verb"),
         w("regalar", "дарить", "Regalar flores.", "A1", "acciones", "verb"),
         w("clásico", "классический", "Música clásica.", "A1", "calidad", "adjective"),
@@ -51,7 +51,6 @@ object VocabExtra7 {
         w("a la derecha", "направо", "Gira a la derecha.", "A1", "transporte", "phrase"),
         w("a la izquierda", "налево", "Gira a la izquierda.", "A1", "transporte", "phrase"),
         w("recto (camino)", "прямо (по пути)", "Sigue recto.", "A1", "transporte", "adverb"),
-        // ── A2 ──
         w("ampliar", "расширять", "Ampliar el negocio.", "A2", "acciones", "verb"),
         w("convertir", "превращать", "Convertir agua en vino.", "A2", "acciones", "verb"),
         w("devolver", "возвращать", "Devolver el libro.", "A2", "acciones", "verb"),
@@ -171,7 +170,6 @@ object VocabExtra7 {
         w("la carrera profesional", "карьера", "Una carrera profesional exitosa.", "A2", "trabajo"),
         w("la pintura de pared", "покраска стены", "Pintura de pared blanca.", "A2", "trabajo"),
         w("la promoción", "продвижение", "Una promoción merecida.", "A2", "trabajo"),
-        // ── B1 ──
         w("ahogar", "утопить", "Ahogar las penas.", "B1", "acciones", "verb"),
         w("alterar", "изменять (нарушать)", "Alterar el orden.", "B1", "acciones", "verb"),
         w("asesinar", "убивать (умышл.)", "Asesinar a sangre fría.", "B1", "acciones", "verb"),
@@ -404,7 +402,6 @@ object VocabExtra7 {
         w("la revisión técnica", "ТО", "La revisión técnica anual.", "B1", "trabajo"),
         w("la tarima", "напольное покрытие", "Tarima flotante.", "B1", "trabajo"),
         w("las vacaciones laborales", "трудовой отпуск", "30 días de vacaciones laborales.", "B1", "trabajo"),
-        // ── B2 ──
         w("ahorcar", "повесить", "Ahorcar al condenado.", "B2", "acciones", "verb"),
         w("coexistir", "сосуществовать", "Coexistir armoniosamente.", "B2", "acciones", "verb"),
         w("estrangular", "задушить", "Estrangular al rival.", "B2", "acciones", "verb"),
@@ -422,6 +419,9 @@ object VocabExtra7 {
         w("el cálculo diferencial", "дифференциальное исчисление", "Cálculo diferencial.", "B2", "ciencia"),
         w("el cálculo integral", "интегральное исчисление", "Cálculo integral avanzado.", "B2", "ciencia"),
         w("el universo en expansión", "расширяющаяся вселенная", "El universo en expansión.", "B2", "ciencia"),
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("la antimateria", "антиматерия", "Partículas de antimateria.", "B2", "ciencia"),
         w("la astrofísica", "астрофизика", "Estudia astrofísica.", "B2", "ciencia"),
         w("la cibernética", "кибернетика", "La cibernética moderna.", "B2", "ciencia"),
@@ -495,7 +495,6 @@ object VocabExtra7 {
         w("la jornada continua", "сплошной день", "Jornada continua de 8 horas.", "B2", "trabajo"),
         w("la jornada partida", "день с перерывом", "Jornada partida con siesta.", "B2", "trabajo"),
         w("la oficina del INEM", "биржа труда (испан.)", "Acudir a la oficina del INEM.", "B2", "trabajo"),
-        // ── C1 ──
         w("acrecentar", "приумножать", "Acrecentar la fortuna.", "C1", "acciones", "verb"),
         w("heterodoxo", "неортодоксальный", "Pensamiento heterodoxo.", "C1", "calidad", "adjective"),
         w("el agujero blanco", "белая дыра", "Un agujero blanco hipotético.", "C1", "ciencia"),
@@ -509,4 +508,6 @@ object VocabExtra7 {
         w("la Anunciación", "Благовещение", "La Anunciación marial.", "C1", "religion"),
         w("la apostasía", "вероотступничество", "Acto de apostasía.", "C1", "religion"),
     )
+
+    val entries: List<WordEntity> = chunk1() + chunk2()
 }
