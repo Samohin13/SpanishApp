@@ -6,6 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
+import com.spanishapp.domain.games.GameId
+import com.spanishapp.domain.games.GameLevelManager
+import com.spanishapp.domain.games.LevelDifficulty
+import com.spanishapp.domain.games.LevelParams
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,12 +21,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.random.Random
-
-enum class SopaDifficulty(val size: Int, val title: String) {
-    PRINCIPIANTE(8, "Principiante"),
-    INTERMEDIO(12, "Intermedio"),
-    AVANZADO(15, "Avanzado")
-}
 
 data class SopaWord(
     val id: Int,
@@ -39,29 +37,43 @@ data class FoundWord(
     val color: Color
 )
 
+/**
+ * Параметры конкретного уровня Sopa, выводятся из общего LevelDifficulty.
+ */
+data class SopaLevelConfig(
+    val gridSize: Int,        // 6..16
+    val targetWords: Int,     // желаемое число слов
+    val timeSec: Int,         // 0 = без таймера
+    val ghost: Boolean        // прячем список слов
+)
+
 data class SopaGameState(
+    val params: LevelParams = LevelDifficulty.forLevel(1),
+    val config: SopaLevelConfig = SopaLevelConfig(6, 4, 0, false),
     val grid: List<List<Char>> = emptyList(),
     val words: List<SopaWord> = emptyList(),
     val selectedCells: List<Pair<Int, Int>> = emptyList(),
     val foundWords: List<FoundWord> = emptyList(),
     val hintCells: Set<Pair<Int, Int>> = emptySet(),
     val isGameOver: Boolean = false,
-    val difficulty: SopaDifficulty = SopaDifficulty.PRINCIPIANTE,
-    val isGhostMode: Boolean = false,
-    val hasTimer: Boolean = true,
     val score: Int = 0,
     val combo: Int = 0,
     val timeLeftSeconds: Int = 0,
-    val showSetup: Boolean = true,
-    val level: String = "A1"
-)
+    val showLevelMap: Boolean = true,
+    val finalStars: Int = 0,
+    val finalPercent: Int = 0
+) {
+    val level: Int get() = params.level
+    val hasTimer: Boolean get() = config.timeSec > 0
+}
 
 @HiltViewModel
 class SopaViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SopaGameState())
@@ -78,78 +90,89 @@ class SopaViewModel @Inject constructor(
         Color(0xFF4DB6AC), Color(0xFF8BC34A), Color(0xFFCDDC39)
     )
 
-    fun startGame(level: String, difficulty: SopaDifficulty, isGhostMode: Boolean, hasTimer: Boolean) {
+    fun startLevel(level: Int) {
+        timerJob?.cancel()
         viewModelScope.launch {
+            val params = LevelDifficulty.forLevel(level)
+            val config = configFor(level)
+
             gameStartTime = SystemClock.elapsedRealtime()
-            lastFindTime = gameStartTime
-            
-            val targetCount = when(difficulty) {
-                SopaDifficulty.PRINCIPIANTE -> 10
-                SopaDifficulty.INTERMEDIO -> 15
-                SopaDifficulty.AVANZADO -> 20
+            lastFindTime  = gameStartTime
+
+            // ── Получаем большой пул слов нужного CEFR-слоя ───
+            val pool = wordDao.getRandomWords(300).filter {
+                it.level in params.cefr && it.russian.isNotBlank() && it.spanish.isNotBlank()
             }
-            
-            // 1. IMPROVED FETCHING: Only words with translation and non-empty spanish
-            val wordsFromDb = wordDao.getRandomWords(200)
-                .filter { it.level == level && it.russian.isNotBlank() && it.spanish.isNotBlank() }
-            
-            val processedWords = wordsFromDb.map { 
+            val maxWordLen = config.gridSize - 1   // оставляем запас
+            val candidates = pool.map {
                 SopaWord(
-                    id = it.id,
-                    word = stripArticle(it.spanish).uppercase().replace(" ", "").replace("-", ""),
+                    id          = it.id,
+                    word        = stripArticle(it.spanish).uppercase().replace(" ", "").replace("-", ""),
                     translation = it.russian
                 )
-            }.filter { it.word.length in 3..difficulty.size }.take(targetCount)
+            }.filter { it.word.length in 3..maxWordLen }
+             .distinctBy { it.word }
+             .shuffled()
 
-            if (processedWords.isEmpty()) return@launch
-
-            val size = difficulty.size
-            val grid = Array(size) { CharArray(size) { ' ' } }
-            val wordPositions = mutableMapOf<String, List<Pair<Int, Int>>>()
-            
-            processedWords.forEach { sopaWord ->
+            // ── Пытаемся уместить нужное число слов на сетке ───
+            val grid = Array(config.gridSize) { CharArray(config.gridSize) { ' ' } }
+            val placed = mutableListOf<SopaWord>()
+            for (sw in candidates) {
+                if (placed.size >= config.targetWords) break
                 val path = mutableListOf<Pair<Int, Int>>()
-                if (placeWordSnake(grid, sopaWord.word, path)) {
-                    wordPositions[sopaWord.word] = path.toList()
+                if (placeWordSnake(grid, sw.word, path)) {
+                    placed.add(sw)
                 }
             }
-
+            if (placed.isEmpty()) return@launch
             fillEmptyCells(grid)
 
             _state.value = SopaGameState(
-                grid = grid.map { it.toList() },
-                words = processedWords,
-                difficulty = difficulty,
-                isGhostMode = isGhostMode,
-                hasTimer = hasTimer,
-                showSetup = false,
-                level = level,
-                timeLeftSeconds = if (difficulty == SopaDifficulty.PRINCIPIANTE) 240 else if (difficulty == SopaDifficulty.INTERMEDIO) 400 else 600
+                params       = params,
+                config       = config,
+                grid         = grid.map { it.toList() },
+                words        = placed,
+                showLevelMap = false,
+                timeLeftSeconds = config.timeSec
             )
-            
-            if (hasTimer) startTimer()
+
+            if (config.timeSec > 0) startTimer()
         }
+    }
+
+    fun openLevelMap() {
+        timerJob?.cancel()
+        _state.value = _state.value.copy(showLevelMap = true, isGameOver = false)
+    }
+
+    /**
+     * Конфигурация уровня для Sopa.
+     * Сетка плавно растёт 6→16, количество слов 4→18, таймер сжимается.
+     */
+    private fun configFor(level: Int): SopaLevelConfig = when {
+        level <= 10  -> SopaLevelConfig(gridSize = 7,  targetWords = 4,  timeSec = 0,   ghost = false)
+        level <= 25  -> SopaLevelConfig(gridSize = 8,  targetWords = 6,  timeSec = 300, ghost = false)
+        level <= 40  -> SopaLevelConfig(gridSize = 10, targetWords = 8,  timeSec = 280, ghost = false)
+        level <= 55  -> SopaLevelConfig(gridSize = 11, targetWords = 10, timeSec = 260, ghost = false)
+        level <= 70  -> SopaLevelConfig(gridSize = 12, targetWords = 12, timeSec = 240, ghost = false)
+        level <= 85  -> SopaLevelConfig(gridSize = 14, targetWords = 14, timeSec = 240, ghost = false)
+        else         -> SopaLevelConfig(gridSize = 15, targetWords = 16, timeSec = 240, ghost = true)
     }
 
     private fun placeWordSnake(grid: Array<CharArray>, word: String, path: MutableList<Pair<Int, Int>>): Boolean {
         val size = grid.size
-        var placed = false
         var attempts = 0
-        
-        while (!placed && attempts < 150) {
+        while (attempts < 200) {
             attempts++
             val startR = Random.nextInt(size)
             val startC = Random.nextInt(size)
-            
             path.clear()
             if (findPath(grid, word, 0, startR, startC, path)) {
-                path.forEachIndexed { i, pos ->
-                    grid[pos.first][pos.second] = word[i]
-                }
-                placed = true
+                path.forEachIndexed { i, pos -> grid[pos.first][pos.second] = word[i] }
+                return true
             }
         }
-        return placed
+        return false
     }
 
     private fun findPath(grid: Array<CharArray>, word: String, index: Int, r: Int, c: Int, path: MutableList<Pair<Int, Int>>): Boolean {
@@ -160,18 +183,18 @@ class SopaViewModel @Inject constructor(
 
         path.add(r to c)
         val dirs = listOf(0 to 1, 0 to -1, 1 to 0, -1 to 0, 1 to 1, 1 to -1, -1 to 1, -1 to -1).shuffled()
-        for (dir in dirs) {
-            if (findPath(grid, word, index + 1, r + dir.first, c + dir.second, path)) return true
+        for (d in dirs) {
+            if (findPath(grid, word, index + 1, r + d.first, c + d.second, path)) return true
         }
         path.removeAt(path.size - 1)
         return false
     }
 
     private fun fillEmptyCells(grid: Array<CharArray>) {
-        val spanishFreq = "EEEEAAAAAOOOOOOSSSSSRRRRRNNNNNIIIIIDDDDDLLLLLCCCCCTTTTTUUUUUMMMMM".uppercase()
-        for (r in grid.indices) {
-            for (c in grid[r].indices) {
-                if (grid[r][c] == ' ') grid[r][c] = if (Random.nextInt(100) < 85) spanishFreq.random() else ('A'..'Z').random()
+        val freq = "EEEEAAAAOOOOOSSSSRRRRNNNNIIIIIDDDDLLLLCCCCTTTTUUUUMMMM"
+        for (r in grid.indices) for (c in grid[r].indices) {
+            if (grid[r][c] == ' ') {
+                grid[r][c] = if (Random.nextInt(100) < 85) freq.random() else ('A'..'Z').random()
             }
         }
     }
@@ -229,16 +252,14 @@ class SopaViewModel @Inject constructor(
             val newWords = s.words.toMutableList()
             newWords[foundWordIndex] = foundWord.copy(isFound = true, findTime = now, color = assignedColor)
             val newFoundWords = s.foundWords + FoundWord(foundWord.word, cells, assignedColor)
-            
-            // Clear hints when word is found
             val newHintCells = s.hintCells.filterNot { cells.contains(it) }.toSet()
-            
+
             _state.value = s.copy(
-                words = newWords, 
-                foundWords = newFoundWords, 
-                hintCells = newHintCells,
-                score = s.score + 15 * newCombo, 
-                combo = newCombo
+                words      = newWords,
+                foundWords = newFoundWords,
+                hintCells  = newHintCells,
+                score      = s.score + 15 * newCombo,
+                combo      = newCombo
             )
             if (newWords.all { it.isFound }) finishGame()
         }
@@ -246,41 +267,38 @@ class SopaViewModel @Inject constructor(
 
     private fun finishGame() {
         val s = _state.value
+        val total = s.words.size.coerceAtLeast(1)
+        val found = s.words.count { it.isFound }
+        val percent = (found * 100) / total
         val bonus = if (s.hasTimer) s.timeLeftSeconds / 5 else 0
-        _state.value = s.copy(isGameOver = true, score = s.score + bonus)
+
         viewModelScope.launch {
-            var lastTime = gameStartTime
-            s.words.filter { it.isFound }.sortedBy { it.findTime }.forEach { word ->
-                val timeTaken = word.findTime - lastTime
-                lastTime = word.findTime
-                if (timeTaken > 25000) {
-                    wordDao.getById(word.id)?.let { entity ->
-                        wordDao.update(entity.copy(easeFactor = (entity.easeFactor - 0.2f).coerceAtLeast(1.3f), nextReview = System.currentTimeMillis()))
-                    }
-                }
+            val stars = levelManager.completeLevel(GameId.SOPA, s.level, percent)
+
+            val p = userProgressDao.getProgressOnce()
+            if (p != null) {
+                userProgressDao.update(p.copy(totalXp = p.totalXp + (s.score / 6).coerceIn(15, 60)))
+                achievementManager.checkAndUnlock()
             }
-            val p = userProgressDao.getProgressOnce() ?: return@launch
-            userProgressDao.update(p.copy(totalXp = p.totalXp + (s.score / 6).coerceIn(15, 60)))
-            achievementManager.checkAndUnlock()
+
+            _state.value = s.copy(
+                isGameOver   = true,
+                score        = s.score + bonus,
+                finalStars   = stars,
+                finalPercent = percent
+            )
         }
     }
 
-    // 4. IMPROVED HINT: Now it actually highlights the first letter visually
     fun useHint() {
         val s = _state.value
         if (s.score < 30) return
         val targetWord = s.words.find { !it.isFound } ?: return
-        
-        // Let's find the first character of the word in the grid that isn't already hinted
-        for (r in 0 until s.difficulty.size) {
-            for (c in 0 until s.difficulty.size) {
+        for (r in 0 until s.config.gridSize) {
+            for (c in 0 until s.config.gridSize) {
                 if (s.grid[r][c] == targetWord.word[0]) {
-                    // Make sure it's not already found
                     if (s.foundWords.none { it.cells.contains(r to c) } && !s.hintCells.contains(r to c)) {
-                        _state.value = s.copy(
-                            score = s.score - 30,
-                            hintCells = s.hintCells + (r to c)
-                        )
+                        _state.value = s.copy(score = s.score - 30, hintCells = s.hintCells + (r to c))
                         return
                     }
                 }
@@ -288,14 +306,17 @@ class SopaViewModel @Inject constructor(
         }
     }
 
-    // 3. FUNCTIONAL RESET: Explicitly clears selection
     fun clearSelection() {
         _state.value = _state.value.copy(selectedCells = emptyList())
     }
 
-    // 2. ROBUST ARTICLE STRIPPING: Handles various cases and extra spaces
     private fun stripArticle(s: String): String {
         val regex = Regex("^(el|la|los|las|un|una|unos|unas)\\s+", RegexOption.IGNORE_CASE)
         return s.trim().replace(regex, "").trim()
+    }
+
+    override fun onCleared() {
+        timerJob?.cancel()
+        super.onCleared()
     }
 }
