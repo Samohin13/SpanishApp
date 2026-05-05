@@ -96,7 +96,7 @@ class DatabaseSeeder @Inject constructor(
         if (current >= VOCAB_TARGET) return
 
         // Дедуплицированный набор: CleanVocab + расширения
-        val all = CleanVocab.entries + VocabExtra1.entries + VocabExtra2.entries + VocabExtra3.entries + VocabExtra4.entries + VocabExtra5.entries + VocabExtra6.entries + VocabExtra7.entries + VocabExtra8.entries + VocabExtra9.entries
+        val all = CleanVocab.entries + VocabExtra1.entries + VocabExtra2.entries + VocabExtra3.entries + VocabExtra4.entries + VocabExtra5.entries + VocabExtra6.entries + VocabExtra7.entries + VocabExtra8.entries + VocabExtra9.entries + VocabExtra10.entries
         val unique = all.distinctBy { it.spanish.trim().lowercase() }
 
         // Пометить неправильные и отклоняющиеся глаголы
