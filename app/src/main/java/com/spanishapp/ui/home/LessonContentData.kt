@@ -31,7 +31,7 @@ object LessonContentData {
         block09() + block10() + block11() + block12() +
         block13() + block14() + block15() + block16() +
         block17() + block18() + block19() + block20() +
-        block21()
+        block21() + block22()
 
     private fun block01(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
@@ -14732,6 +14732,1021 @@ object LessonContentData {
                     options = listOf("Espero su pronta solución", "Quiero respuesta ya", "Resuelve esto", "Vamos rápido"),
                     correctAnswer = "Espero su pronta solución",
                     explanation = "pronta solución — formal."
+                )
+            )
+        )
+    )
+
+    private fun block22(): Map<String, LessonContent> = mapOf(
+        // ══════════════════════════════════════════════
+        //  B2 БЛОК 4 (u16): LÉXICO Y CULTURA
+        // ══════════════════════════════════════════════
+
+        "u16_l0" to LessonContent(
+            intro = "Modismos B2 — продвинутые идиомы повседневной речи.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Часто употребляемые",
+                    items = listOf(
+                        LessonItem("estar en las nubes", "витать в облаках", ""),
+                        LessonItem("tomar el pelo", "разыгрывать", "= шутить над"),
+                        LessonItem("dar en el clavo", "попасть в точку", ""),
+                        LessonItem("matar dos pájaros de un tiro", "убить двух зайцев", ""),
+                        LessonItem("ser pan comido", "проще простого", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "С эмоциями",
+                    items = listOf(
+                        LessonItem("estar de mala leche", "быть в плохом настроении", "разг."),
+                        LessonItem("hacerse la boca agua", "слюнки текут", ""),
+                        LessonItem("subirse por las paredes", "лезть на стену", "от злости"),
+                        LessonItem("estar como una cabra", "быть с приветом", ""),
+                        LessonItem("perder los estribos", "выйти из себя", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "С деньгами и удачей",
+                    items = listOf(
+                        LessonItem("costar un ojo de la cara", "стоить целого состояния", ""),
+                        LessonItem("estar sin blanca", "быть без копейки", ""),
+                        LessonItem("tener enchufe", "иметь связи", "blat"),
+                        LessonItem("tocar la lotería", "сорвать куш", ""),
+                        LessonItem("a precio de oro", "втридорога", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Идиома",
+                    question = "«Это проще простого!»",
+                    options = listOf("Es pan comido", "Es comida", "Es pan", "Es fácil pan"),
+                    correctAnswer = "Es pan comido",
+                    explanation = "ser pan comido = очень легко."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "В точку",
+                    question = "«Ты попал в точку.»",
+                    options = listOf("Has dado en el clavo", "Has roto el clavo", "Tienes clavo", "Eres clavo"),
+                    correctAnswer = "Has dado en el clavo",
+                    explanation = "dar en el clavo = попасть в точку."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Дорого",
+                    question = "«Это стоит целого состояния.»",
+                    options = listOf("Cuesta mucho", "Cuesta un ojo de la cara", "Es muy caro", "Vale oro"),
+                    correctAnswer = "Cuesta un ojo de la cara",
+                    explanation = "costar un ojo de la cara — устойчивая идиома."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Витает в облаках",
+                    question = "«Maria всегда мечтает.»",
+                    options = listOf("María siempre está en las nubes", "María tiene nubes", "María vuela", "María sueña"),
+                    correctAnswer = "María siempre está en las nubes",
+                    explanation = "estar en las nubes = быть рассеянным/мечтать."
+                )
+            )
+        ),
+
+        "u16_l1" to LessonContent(
+            intro = "Refranes — испанские пословицы. Ключ к культурному коду.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Топ-5 refranes",
+                    items = listOf(
+                        LessonItem("A quien madruga, Dios le ayuda.", "Кто рано встаёт, тому Бог помогает.", ""),
+                        LessonItem("No hay mal que por bien no venga.", "Нет худа без добра.", ""),
+                        LessonItem("Más vale tarde que nunca.", "Лучше поздно, чем никогда.", ""),
+                        LessonItem("En boca cerrada no entran moscas.", "Молчание — золото.", "букв.: в закрытый рот мухи не залетают"),
+                        LessonItem("Dime con quién andas y te diré quién eres.", "Скажи мне, кто твой друг…", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Об ошибках и опыте",
+                    items = listOf(
+                        LessonItem("El que no arriesga, no gana.", "Кто не рискует, не выигрывает.", ""),
+                        LessonItem("A grandes males, grandes remedios.", "Клин клином вышибают.", ""),
+                        LessonItem("Quien mucho abarca, poco aprieta.", "За двумя зайцами…", ""),
+                        LessonItem("Más vale prevenir que curar.", "Лучше предотвратить, чем лечить.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "О времени",
+                    items = listOf(
+                        LessonItem("No por mucho madrugar amanece más temprano.", "Поспешишь — людей насмешишь.", ""),
+                        LessonItem("Roma no se hizo en un día.", "Москва не сразу строилась.", ""),
+                        LessonItem("El tiempo todo lo cura.", "Время лечит.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Лучше поздно…",
+                    question = "Подберите окончание:",
+                    options = listOf("…que nunca", "…que ahora", "…que pronto", "…que mañana"),
+                    correctAnswer = "…que nunca",
+                    explanation = "Más vale tarde que nunca."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Кто рано встаёт",
+                    question = "A quien madruga, ___",
+                    options = listOf("Dios le ayuda", "trabaja más", "es feliz", "duerme menos"),
+                    correctAnswer = "Dios le ayuda",
+                    explanation = "Классический refrán."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Молчание",
+                    question = "«Молчание — золото.»",
+                    options = listOf("Hablar es plata", "En boca cerrada no entran moscas", "Calla y come", "El silencio es oro"),
+                    correctAnswer = "En boca cerrada no entran moscas",
+                    explanation = "Самый частый refrán на эту тему."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Москва не сразу…",
+                    question = "Испанский эквивалент:",
+                    options = listOf("Roma no se hizo en un día", "Madrid es vieja", "Roma fue rápida", "España es grande"),
+                    correctAnswer = "Roma no se hizo en un día",
+                    explanation = "Roma — испанский Roma."
+                )
+            )
+        ),
+
+        "u16_l2" to LessonContent(
+            intro = "Falsos amigos — слова, обманчиво похожие на русские/английские.",
+            sections = listOf(
+                LessonSection(
+                    heading = "С английским",
+                    items = listOf(
+                        LessonItem("embarazada", "беременная (НЕ embarrassed!)", "embarrassed = avergonzado"),
+                        LessonItem("éxito", "успех (НЕ exit)", "exit = salida"),
+                        LessonItem("constipado", "простуженный (НЕ constipated)", ""),
+                        LessonItem("largo", "длинный (НЕ large)", "large = grande"),
+                        LessonItem("sensible", "чувствительный (НЕ sensible)", "sensible = sensato")
+                    )
+                ),
+                LessonSection(
+                    heading = "С русским",
+                    items = listOf(
+                        LessonItem("familiar", "знакомый/семейный (НЕ фамилия)", "фамилия = apellido"),
+                        LessonItem("debate", "дебаты (но и: бить себя)", ""),
+                        LessonItem("tabla", "доска (НЕ табло/таблица)", "таблица = tabla, табло = marcador"),
+                        LessonItem("fábrica", "завод (НЕ фабрика тканей только)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Тонкие различия",
+                    items = listOf(
+                        LessonItem("realizar", "выполнять (а не «осознавать»)", "осознавать = darse cuenta"),
+                        LessonItem("introducir", "вводить (а не «представлять» человека)", "представлять = presentar"),
+                        LessonItem("asistir a", "присутствовать на (а не «помогать»)", "помогать = ayudar"),
+                        LessonItem("contestar", "отвечать (а не «оспаривать»)", "оспаривать = impugnar")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Я смущён",
+                    question = "«I'm embarrassed» по-испански:",
+                    options = listOf("Estoy embarazado", "Estoy avergonzado", "Soy embarazoso", "Tengo vergüenza"),
+                    correctAnswer = "Estoy avergonzado",
+                    explanation = "embarazada = беременная! Falso amigo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Присутствовать",
+                    question = "«Я присутствовал на собрании.»",
+                    options = listOf("Asistí a la reunión", "Ayudé a la reunión", "Atendí a la reunión", "Visité la reunión"),
+                    correctAnswer = "Asistí a la reunión",
+                    explanation = "asistir a = присутствовать."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Я понял",
+                    question = "«Я осознал ошибку.»",
+                    options = listOf("Realicé el error", "Me di cuenta del error", "Hice el error", "Conocí el error"),
+                    correctAnswer = "Me di cuenta del error",
+                    explanation = "darse cuenta de = осознавать. realizar = выполнять."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Длинный фильм",
+                    question = "«Это длинный фильм.»",
+                    options = listOf("Es una película grande", "Es una película larga", "Es película large", "Es muy ancha"),
+                    correctAnswer = "Es una película larga",
+                    explanation = "largo = длинный, grande = большой/great."
+                )
+            )
+        ),
+
+        "u16_l3" to LessonContent(
+            intro = "Diminutivos y aumentativos — суффиксы, меняющие оттенок слова.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Уменьшительные",
+                    items = listOf(
+                        LessonItem("-ito/-ita", "стандарт", "casa → casita, perro → perrito"),
+                        LessonItem("-illo/-illa", "часто пренебр./шутл.", "chico → chiquillo"),
+                        LessonItem("-ín/-ina", "ласковое", "pequeño → pequeñín"),
+                        LessonItem("-uelo/-uela", "поэтич./книжн.", "río → riachuelo")
+                    )
+                ),
+                LessonSection(
+                    heading = "Увеличительные",
+                    items = listOf(
+                        LessonItem("-ón/-ona", "большой / усиление", "casa → casona, hombre → hombrón"),
+                        LessonItem("-azo/-aza", "большой/удар", "perro → perrazo, manazo = удар рукой"),
+                        LessonItem("-ote/-ota", "грубый/большой", "grande → grandote")
+                    )
+                ),
+                LessonSection(
+                    heading = "Тонкости",
+                    items = listOf(
+                        LessonItem("ahora → ahorita", "сейчас → прямо сейчас (LatAm)", ""),
+                        LessonItem("café → cafecito", "кофеёк", "ласково"),
+                        LessonItem("solo → solito", "совсем один", "оттенок"),
+                        LessonItem("besito", "поцелуйчик", "вместо beso")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Уменьшительное",
+                    question = "«Маленький домик.»",
+                    options = listOf("casona", "casaza", "casita", "casona"),
+                    correctAnswer = "casita",
+                    explanation = "-ita = стандарт уменьшительного."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Большой дом",
+                    question = "«Огромный дом.»",
+                    options = listOf("casita", "casona", "casilla", "caseta"),
+                    correctAnswer = "casona",
+                    explanation = "-ona = увеличительное."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Удар",
+                    question = "Manazo означает:",
+                    options = listOf("маленькая рука", "удар рукой", "перчатка", "ладонь"),
+                    correctAnswer = "удар рукой",
+                    explanation = "-azo часто = удар: codazo, cabezazo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Прямо сейчас",
+                    question = "«Ahorita» в Латинской Америке:",
+                    options = listOf("сейчас же", "никогда", "вчера", "потом"),
+                    correctAnswer = "сейчас же",
+                    explanation = "ahorita = ahora ya (LatAm)."
+                )
+            )
+        ),
+
+        "u16_l4" to LessonContent(
+            intro = "Español de América — отличия испанского в Латинской Америке.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Грамматика",
+                    items = listOf(
+                        LessonItem("ustedes (без vosotros)", "везде в LatAm", "vosotros — только в Испании"),
+                        LessonItem("voseo", "vos hablás (Аргентина, Уругвай)", "вместо tú hablas"),
+                        LessonItem("preferencia por Pretérito Indefinido", "ya llegué (LatAm) vs ya he llegado (ES)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Произношение",
+                    items = listOf(
+                        LessonItem("seseo", "c/z = [s]", "вся LatAm + юг Испании"),
+                        LessonItem("yeísmo rehilado", "ll/y = [ʃ] (Аргентина)", "calle = [каше]"),
+                        LessonItem("aspiración de s", "los amigos = [lo amigo]", "Карибы")
+                    )
+                ),
+                LessonSection(
+                    heading = "Лексика",
+                    items = listOf(
+                        LessonItem("carro / coche", "машина", "LatAm / ES"),
+                        LessonItem("computadora / ordenador", "компьютер", ""),
+                        LessonItem("celular / móvil", "мобильный", ""),
+                        LessonItem("manejar / conducir", "водить", ""),
+                        LessonItem("plata / dinero", "деньги", "LatAm разг.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "В Мексике",
+                    question = "«Мобильный» по-мексикански:",
+                    options = listOf("móvil", "celular", "telefonillo", "fonito"),
+                    correctAnswer = "celular",
+                    explanation = "celular — стандарт LatAm; móvil — Испания."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Voseo",
+                    question = "В Аргентине говорят:",
+                    options = listOf("tú hablas", "vos hablás", "usted habla", "tú hablás"),
+                    correctAnswer = "vos hablás",
+                    explanation = "Voseo: vos + ударная форма."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Колумбия",
+                    question = "«Машина» в Колумбии:",
+                    options = listOf("coche", "carro", "auto", "vehículo"),
+                    correctAnswer = "carro",
+                    explanation = "carro — стандарт LatAm."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Vosotros",
+                    question = "Кто использует vosotros?",
+                    options = listOf("вся Латинская Америка", "только Испания", "Мексика", "никто"),
+                    correctAnswer = "только Испания",
+                    explanation = "В LatAm используют ustedes для всех ситуаций."
+                )
+            )
+        ),
+
+        "u16_l5" to LessonContent(
+            intro = "Мини-тест: идиомы, refranes, falsos amigos, диминутивы, latinoamericanismos.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Чек-лист",
+                    items = listOf(
+                        LessonItem("modismos B2", "20+ устойчивых выражений", ""),
+                        LessonItem("refranes", "10+ пословиц", ""),
+                        LessonItem("falsos amigos", "10+ ловушек", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Подсказки",
+                    items = listOf(
+                        LessonItem("estar en las nubes", "= рассеян/мечтает", ""),
+                        LessonItem("ser pan comido", "= элементарно", ""),
+                        LessonItem("dar en el clavo", "= точно угадал", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Latinoamericanismos",
+                    items = listOf(
+                        LessonItem("plata", "=dinero", "LatAm"),
+                        LessonItem("ahorita", "=ahora ya", "LatAm"),
+                        LessonItem("carro", "=coche", "LatAm")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Falso amigo",
+                    question = "«Embarazada» означает:",
+                    options = listOf("смущённая", "беременная", "застрявшая", "уставшая"),
+                    correctAnswer = "беременная",
+                    explanation = "Главный ложный друг с английским embarrassed."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Идиома",
+                    question = "«Я витаю в облаках.»",
+                    options = listOf("Estoy en las nubes", "Vuelo alto", "Sueño nubes", "Tengo nubes"),
+                    correctAnswer = "Estoy en las nubes",
+                    explanation = "estar en las nubes."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Refrán",
+                    question = "«Лучше поздно, чем…»",
+                    options = listOf("nunca", "ahora", "luego", "ya"),
+                    correctAnswer = "nunca",
+                    explanation = "Más vale tarde que nunca."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "LatAm",
+                    question = "«Кофеёк» (ласково):",
+                    options = listOf("cafezón", "cafecito", "cafote", "cafillo"),
+                    correctAnswer = "cafecito",
+                    explanation = "-cito — диминутив для слов на -e."
+                )
+            )
+        ),
+
+        "u16_l6" to LessonContent(
+            intro = "Eufemismos — смягчённые выражения вместо прямых.",
+            sections = listOf(
+                LessonSection(
+                    heading = "О смерти",
+                    items = listOf(
+                        LessonItem("pasar a mejor vida", "уйти в лучший мир", "вместо morir"),
+                        LessonItem("dejarnos", "покинуть нас", ""),
+                        LessonItem("descansar en paz", "покоиться с миром", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "О работе и деньгах",
+                    items = listOf(
+                        LessonItem("estar entre dos trabajos", "быть в поиске работы", "= безработный"),
+                        LessonItem("pasar por una mala racha", "переживать трудный период", ""),
+                        LessonItem("ser de recursos limitados", "быть с ограниченными средствами", "вместо «бедный»")
+                    )
+                ),
+                LessonSection(
+                    heading = "О физических особенностях",
+                    items = listOf(
+                        LessonItem("persona de la tercera edad", "пожилой", "вместо viejo"),
+                        LessonItem("persona con movilidad reducida", "с ограниченной мобильностью", ""),
+                        LessonItem("persona en situación de calle", "бездомный", "очень PC")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Эвфемизм",
+                    question = "Вежливо о пожилом человеке:",
+                    options = listOf("viejo", "anciano", "persona de la tercera edad", "abuelo"),
+                    correctAnswer = "persona de la tercera edad",
+                    explanation = "Самая нейтральная formal-форма."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Безработный",
+                    question = "Эвфемизм для desempleado:",
+                    options = listOf("vago", "estar entre dos trabajos", "sin trabajo", "perdido"),
+                    correctAnswer = "estar entre dos trabajos",
+                    explanation = "Смягчённая формула."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Умер",
+                    question = "Эвфемизм для murió:",
+                    options = listOf("se fue", "pasó a mejor vida", "se rompió", "no está"),
+                    correctAnswer = "pasó a mejor vida",
+                    explanation = "Классический эвфемизм."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Бедный",
+                    question = "Эвфемизм для pobre:",
+                    options = listOf("flaco", "de recursos limitados", "sin nada", "tonto"),
+                    correctAnswer = "de recursos limitados",
+                    explanation = "Полит-корректная формула."
+                )
+            )
+        ),
+
+        "u16_l7" to LessonContent(
+            intro = "Léxico moderno — современная лексика B2: технологии, соцсети, тренды.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Соцсети",
+                    items = listOf(
+                        LessonItem("postear / publicar", "запостить", ""),
+                        LessonItem("dar like", "лайкнуть", ""),
+                        LessonItem("hacerse viral", "стать вирусным", ""),
+                        LessonItem("el influencer / influyente", "инфлюенсер", ""),
+                        LessonItem("la cuenta / la red social", "аккаунт / соцсеть", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Технологии",
+                    items = listOf(
+                        LessonItem("la inteligencia artificial (IA)", "ИИ", ""),
+                        LessonItem("la nube", "облако (хранилище)", ""),
+                        LessonItem("teletrabajar", "работать удалённо", ""),
+                        LessonItem("la videollamada", "видеозвонок", ""),
+                        LessonItem("cargar / descargar", "загружать / скачивать", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Социальные тренды",
+                    items = listOf(
+                        LessonItem("la sostenibilidad", "устойчивое развитие", ""),
+                        LessonItem("el reciclaje", "переработка", ""),
+                        LessonItem("la huella de carbono", "углеродный след", ""),
+                        LessonItem("la salud mental", "психическое здоровье", ""),
+                        LessonItem("el bienestar", "благополучие", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Стало вирусным",
+                    question = "«Видео стало вирусным.»",
+                    options = listOf("El video se hizo viral", "El video viró", "El video tiene virus", "El video voló"),
+                    correctAnswer = "El video se hizo viral",
+                    explanation = "hacerse viral — устойчиво."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "ИИ",
+                    question = "«Искусственный интеллект» сокращается:",
+                    options = listOf("IA", "AI", "II", "ICI"),
+                    correctAnswer = "IA",
+                    explanation = "В испанском сокращение IA."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Удалёнка",
+                    question = "«Я работаю удалённо.»",
+                    options = listOf("Trabajo lejos", "Teletrabajo", "Trabajo en casa solo", "Trabajo internet"),
+                    correctAnswer = "Teletrabajo",
+                    explanation = "teletrabajar — стандартный глагол."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Углеродный след",
+                    question = "«La huella de carbono» означает:",
+                    options = listOf("отпечаток ноги", "углеродный след", "грязный след", "печать угля"),
+                    correctAnswer = "углеродный след",
+                    explanation = "huella = след."
+                )
+            )
+        ),
+
+        "u16_l8" to LessonContent(
+            intro = "Cultura: España vs América — основные культурные различия.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Время и распорядок (Испания)",
+                    items = listOf(
+                        LessonItem("la siesta", "послеобеденный сон/перерыв", ""),
+                        LessonItem("comer a las 14:00–15:00", "обед в 14–15", "vs LatAm: 12–13"),
+                        LessonItem("cenar a las 22:00", "ужин в 22:00", ""),
+                        LessonItem("la sobremesa", "разговор после еды", "уникально")
+                    )
+                ),
+                LessonSection(
+                    heading = "Праздники",
+                    items = listOf(
+                        LessonItem("Reyes Magos (6 enero)", "Три волхва — главные подарки", "Испания"),
+                        LessonItem("Día de Muertos (2 nov)", "День мёртвых", "Мексика"),
+                        LessonItem("Inti Raymi", "праздник солнца", "Перу/Эквадор"),
+                        LessonItem("La Tomatina", "битва помидорами", "Буньоль, Испания")
+                    )
+                ),
+                LessonSection(
+                    heading = "Кухня",
+                    items = listOf(
+                        LessonItem("la paella", "паэлья", "Валенсия"),
+                        LessonItem("el ceviche", "сырая рыба в лайме", "Перу"),
+                        LessonItem("el asado", "барбекю", "Аргентина"),
+                        LessonItem("los tacos", "тако", "Мексика"),
+                        LessonItem("el tapeo", "ходить по тапас-барам", "Испания")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Перу",
+                    question = "Знаменитое блюдо Перу:",
+                    options = listOf("paella", "ceviche", "asado", "tacos"),
+                    correctAnswer = "ceviche",
+                    explanation = "ceviche — национальное блюдо Перу."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Подарки в Испании",
+                    question = "Главный «подарочный» праздник:",
+                    options = listOf("Navidad 25 dic", "Reyes Magos 6 enero", "Año Nuevo", "Día de la Madre"),
+                    correctAnswer = "Reyes Magos 6 enero",
+                    explanation = "Дети получают подарки 6 января."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Sobremesa",
+                    question = "Sobremesa — это:",
+                    options = listOf("закуска", "разговор после еды", "десерт", "посуда"),
+                    correctAnswer = "разговор после еды",
+                    explanation = "Уникально испанская традиция."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Аргентина",
+                    question = "Главное блюдо Аргентины:",
+                    options = listOf("tacos", "asado", "paella", "ceviche"),
+                    correctAnswer = "asado",
+                    explanation = "asado — национальное БК-мясо."
+                )
+            )
+        ),
+
+        "u16_l9" to LessonContent(
+            intro = "Cine y literatura — испаноязычные авторы и фильмы.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Литература",
+                    items = listOf(
+                        LessonItem("Miguel de Cervantes — Don Quijote", "1605", "классика"),
+                        LessonItem("Gabriel García Márquez — Cien años de soledad", "1967", "магич. реализм, Колумбия"),
+                        LessonItem("Jorge Luis Borges", "рассказы, эссе", "Аргентина"),
+                        LessonItem("Isabel Allende — La casa de los espíritus", "1982", "Чили"),
+                        LessonItem("Mario Vargas Llosa", "Нобель 2010", "Перу")
+                    )
+                ),
+                LessonSection(
+                    heading = "Кино",
+                    items = listOf(
+                        LessonItem("Pedro Almodóvar", "режиссёр", "Volver, Todo sobre mi madre"),
+                        LessonItem("Guillermo del Toro", "El laberinto del fauno", "Мексика"),
+                        LessonItem("Alejandro G. Iñárritu", "Birdman, Amores perros", "Мексика"),
+                        LessonItem("La casa de papel", "сериал", "Испания, Netflix")
+                    )
+                ),
+                LessonSection(
+                    heading = "Полезные фразы",
+                    items = listOf(
+                        LessonItem("ambientado en…", "действие происходит в…", ""),
+                        LessonItem("trata de…", "повествует о…", ""),
+                        LessonItem("la trama", "сюжет", ""),
+                        LessonItem("el desenlace", "развязка", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Cien años…",
+                    question = "Автор «Сто лет одиночества»:",
+                    options = listOf("Borges", "García Márquez", "Vargas Llosa", "Allende"),
+                    correctAnswer = "García Márquez",
+                    explanation = "Колумбия, магический реализм, Нобель 1982."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Almodóvar",
+                    question = "Pedro Almodóvar — это:",
+                    options = listOf("писатель", "режиссёр", "актёр", "композитор"),
+                    correctAnswer = "режиссёр",
+                    explanation = "Испанский кинорежиссёр."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сюжет",
+                    question = "«La trama es interesante.»",
+                    options = listOf("драма", "сюжет", "тема", "трамвай"),
+                    correctAnswer = "сюжет",
+                    explanation = "trama = сюжет, plot."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Действие происходит",
+                    question = "«Действие происходит в Мадриде.»",
+                    options = listOf("Está en Madrid", "Ambientado en Madrid", "Va a Madrid", "Es Madrid"),
+                    correctAnswer = "Ambientado en Madrid",
+                    explanation = "ambientado en — устойчиво."
+                )
+            )
+        ),
+
+        "u16_l10" to LessonContent(
+            intro = "Música y baile hispanohablantes — музыкальные стили и культурные коды.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Стили",
+                    items = listOf(
+                        LessonItem("flamenco", "Андалусия (Испания)", "guitarra + cante + baile"),
+                        LessonItem("salsa", "Куба, Пуэрто-Рико, Колумбия", ""),
+                        LessonItem("tango", "Аргентина, Уругвай", ""),
+                        LessonItem("reguetón", "Пуэрто-Рико", "современный"),
+                        LessonItem("bachata", "Доминиканская Республика", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы",
+                    items = listOf(
+                        LessonItem("bailar", "танцевать", ""),
+                        LessonItem("cantar", "петь", ""),
+                        LessonItem("tocar la guitarra", "играть на гитаре", ""),
+                        LessonItem("componer", "сочинять", "+ canción"),
+                        LessonItem("estrenar", "премьеру выпустить", "+ canción/película")
+                    )
+                ),
+                LessonSection(
+                    heading = "Артисты",
+                    items = listOf(
+                        LessonItem("Rosalía", "Испания, фламенко-поп", ""),
+                        LessonItem("Bad Bunny", "Пуэрто-Рико, реггетон", ""),
+                        LessonItem("Shakira", "Колумбия", ""),
+                        LessonItem("Carlos Gardel", "Аргентина, тангу", "классика")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Танго",
+                    question = "Танго родом из:",
+                    options = listOf("Испании", "Аргентины и Уругвая", "Кубы", "Мексики"),
+                    correctAnswer = "Аргентины и Уругвая",
+                    explanation = "Río de la Plata — родина танго."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Фламенко",
+                    question = "Фламенко — из:",
+                    options = listOf("Каталонии", "Андалусии", "Мексики", "Чили"),
+                    correctAnswer = "Андалусии",
+                    explanation = "Юг Испании."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Премьера",
+                    question = "«Она выпустила новую песню.»",
+                    options = listOf("Hizo canción", "Estrenó una nueva canción", "Tiró canción", "Cantó nueva"),
+                    correctAnswer = "Estrenó una nueva canción",
+                    explanation = "estrenar — выпускать премьеру."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Реггетон",
+                    question = "Bad Bunny — звезда:",
+                    options = listOf("flamenco", "tango", "reguetón", "salsa"),
+                    correctAnswer = "reguetón",
+                    explanation = "Пуэрто-Рико, главный реггетон-исполнитель."
+                )
+            )
+        ),
+
+        "u16_l11" to LessonContent(
+            intro = "Humor y gestos — испанский юмор и невербальная коммуникация.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Жесты",
+                    items = listOf(
+                        LessonItem("pulgar arriba", "большой палец вверх — ок", ""),
+                        LessonItem("frotar dedos (pulgar+índice)", "деньги", ""),
+                        LessonItem("dedo en la sien", "сумасшедший", ""),
+                        LessonItem("mano abierta moviendo", "много / полно", "«¡Está hasta arriba!»")
+                    )
+                ),
+                LessonSection(
+                    heading = "Юмор и ирония",
+                    items = listOf(
+                        LessonItem("¡Sí, claro!", "ну конечно (ирония)", ""),
+                        LessonItem("Anda ya", "да ладно", "недоверие"),
+                        LessonItem("¡Qué morro tienes!", "ну ты наглец!", ""),
+                        LessonItem("Vaya tela", "ничего себе / охренеть", "разг.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Реакции",
+                    items = listOf(
+                        LessonItem("¡No me digas!", "да ну!", "удивление"),
+                        LessonItem("¡Qué fuerte!", "офигеть!", ""),
+                        LessonItem("¡Anda!", "ого!", ""),
+                        LessonItem("¡Vaya!", "ничего себе!", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Удивление",
+                    question = "«Да ну!» по-испански:",
+                    options = listOf("¡No me digas!", "¡Sí, claro!", "¡Por favor!", "¡Vale!"),
+                    correctAnswer = "¡No me digas!",
+                    explanation = "Стандартное выражение удивления."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ирония",
+                    question = "«¡Sí, claro!» с интонацией = ?",
+                    options = listOf("искреннее согласие", "ирония / недоверие", "вопрос", "приглашение"),
+                    correctAnswer = "ирония / недоверие",
+                    explanation = "Тон делает фразу саркастической."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Жест денег",
+                    question = "Трение пальцев = ?",
+                    options = listOf("холод", "деньги", "соль", "много"),
+                    correctAnswer = "деньги",
+                    explanation = "Универсальный жест pasta/dinero."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Наглец",
+                    question = "«¡Qué morro tienes!» означает:",
+                    options = listOf("какой ты милый", "ну ты наглец!", "какой умный", "плохо выглядишь"),
+                    correctAnswer = "ну ты наглец!",
+                    explanation = "tener morro = быть наглым."
+                )
+            )
+        ),
+
+        "u16_l12" to LessonContent(
+            intro = "Verbos pronominales avanzados — глаголы, меняющие смысл с местоимением.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Сильное изменение смысла",
+                    items = listOf(
+                        LessonItem("ir / irse", "идти / уходить", "Voy a casa / Me voy"),
+                        LessonItem("dormir / dormirse", "спать / заснуть", ""),
+                        LessonItem("comer / comerse", "есть / съесть полностью", "Se comió todo el pastel."),
+                        LessonItem("llevar / llevarse", "нести / уносить", "El ladrón se llevó todo."),
+                        LessonItem("acordar / acordarse", "договориться / помнить", "+de")
+                    )
+                ),
+                LessonSection(
+                    heading = "Эмоции",
+                    items = listOf(
+                        LessonItem("alegrarse de", "радоваться", "+inf/que"),
+                        LessonItem("preocuparse por", "беспокоиться", ""),
+                        LessonItem("enfadarse con", "сердиться на", ""),
+                        LessonItem("acostumbrarse a", "привыкать к", ""),
+                        LessonItem("atreverse a + inf", "осмеливаться", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Часто путаемые",
+                    items = listOf(
+                        LessonItem("parecer / parecerse a", "казаться / быть похожим", "Se parece a su padre."),
+                        LessonItem("quedar / quedarse", "встретиться / остаться", "Quedamos a las 5 / Me quedo en casa."),
+                        LessonItem("poner / ponerse", "положить / надеть/стать", "Me puse la chaqueta. Se puso triste.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Уйти",
+                    question = "«Я ухожу.»",
+                    options = listOf("Voy", "Me voy", "Salgo", "Llego"),
+                    correctAnswer = "Me voy",
+                    explanation = "irse = уходить (отсюда). ir = идти (куда-то)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Стать грустным",
+                    question = "«Он стал грустным.»",
+                    options = listOf("Se puso triste", "Es triste", "Pone triste", "Triste se hizo"),
+                    correctAnswer = "Se puso triste",
+                    explanation = "ponerse + adj = стать (эмоционально/физически)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Похож",
+                    question = "«Он похож на отца.»",
+                    options = listOf("Parece su padre", "Se parece a su padre", "Es como padre", "Parece padre"),
+                    correctAnswer = "Se parece a su padre",
+                    explanation = "parecerse a = быть похожим на."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Помнить",
+                    question = "«Я помню эту песню.»",
+                    options = listOf("Acuerdo esa canción", "Me acuerdo de esa canción", "Recuerdo de esa canción", "Acordamos canción"),
+                    correctAnswer = "Me acuerdo de esa canción",
+                    explanation = "acordarse de + sustantivo."
+                )
+            )
+        ),
+
+        "u16_l13" to LessonContent(
+            intro = "Estilo periodístico — газетный язык: заголовки, подача новостей, нейтралитет.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Заголовки",
+                    items = listOf(
+                        LessonItem("Presente histórico", "El Gobierno aprueba la ley", "вместо pasado"),
+                        LessonItem("Sin artículos", "Detenido por robo", "вместо «un» / «el»"),
+                        LessonItem("Comillas + verbo", "«No dimitirá», afirma", "цитата+глагол")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы новостей",
+                    items = listOf(
+                        LessonItem("aprobar", "одобрить", "+ ley"),
+                        LessonItem("rechazar", "отклонить", ""),
+                        LessonItem("denunciar", "заявить, разоблачить", ""),
+                        LessonItem("firmar un acuerdo", "подписать соглашение", ""),
+                        LessonItem("convocar elecciones", "объявить выборы", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Нейтрализующие фразы",
+                    items = listOf(
+                        LessonItem("según fuentes oficiales", "по официальным данным", ""),
+                        LessonItem("supuestamente", "предположительно", ""),
+                        LessonItem("se baraja la posibilidad de", "рассматривается вероятность", ""),
+                        LessonItem("a falta de confirmación", "до подтверждения", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Заголовок",
+                    question = "Газетный заголовок «Парламент одобрил закон»:",
+                    options = listOf("El parlamento aprobó la ley", "El parlamento aprueba la ley", "Aprobará el parlamento ley", "La ley fue"),
+                    correctAnswer = "El parlamento aprueba la ley",
+                    explanation = "Заголовки — present tense (presente histórico)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Предположительно",
+                    question = "«Предположительно виновен.»",
+                    options = listOf("Probablemente culpable", "Supuestamente culpable", "Quizá culpable", "Tal vez culpable"),
+                    correctAnswer = "Supuestamente culpable",
+                    explanation = "Стандартный газетный термин."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Источники",
+                    question = "Связка для нейтралитета:",
+                    options = listOf("Yo creo que", "Según fuentes oficiales", "Pienso", "Me parece"),
+                    correctAnswer = "Según fuentes oficiales",
+                    explanation = "Газеты прячутся за «источниками»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Подписан договор",
+                    question = "«Был подписан договор.»",
+                    options = listOf("Se firmó un acuerdo", "Se hizo papel", "Pusieron firma", "Firmamos"),
+                    correctAnswer = "Se firmó un acuerdo",
+                    explanation = "se pasivo + acuerdo."
+                )
+            )
+        ),
+
+        "u16_l14" to LessonContent(
+            intro = "🎓 ФИНАЛЬНЫЙ ЧЕКПОЙНТ B2! Вы прошли весь курс: грамматика, formal, лексика, культура.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Что освоено за B2",
+                    items = listOf(
+                        LessonItem("Блок 1", "Subjuntivo Avanzado (todos los tiempos)", ""),
+                        LessonItem("Блок 2", "Pasiva, perífrasis, estilo indirecto", ""),
+                        LessonItem("Блок 3", "Comunicación formal, conectores, registros", ""),
+                        LessonItem("Блок 4", "Léxico, modismos, cultura, español de América", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Достигнутый уровень B2",
+                    items = listOf(
+                        LessonItem("~4000 слов", "активный словарь", ""),
+                        LessonItem("Все времена subjuntivo", "включая imperfecto и pluscuamperfecto", ""),
+                        LessonItem("Сложные конструкции", "concesivas, condicionales, relativas", ""),
+                        LessonItem("Регистры", "от formal до coloquial", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Дальше — C1",
+                    items = listOf(
+                        LessonItem("стилистика", "оттенки и тон", ""),
+                        LessonItem("регионализмы", "глубже в LatAm", ""),
+                        LessonItem("литературный язык", "Borges, Cortázar, Cervantes", ""),
+                        LessonItem("¡Felicidades!", "Вы — B2-говорящий!", "🎉")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал B2: subj.",
+                    question = "Pase lo que ___, no me rendiré.",
+                    options = listOf("pasa", "pase", "pasó", "pasaba"),
+                    correctAnswer = "pase",
+                    explanation = "Удвоенный subjuntivo: pase lo que pase."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал B2: модизм",
+                    question = "«Это проще простого.»",
+                    options = listOf("Es difícil", "Es pan comido", "Es duro", "Tiene pan"),
+                    correctAnswer = "Es pan comido",
+                    explanation = "ser pan comido — главный модизм B2."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал B2: formal",
+                    question = "Прощание делового письма:",
+                    options = listOf("Atentamente,", "Besos,", "Hasta luego,", "Adiós"),
+                    correctAnswer = "Atentamente,",
+                    explanation = "Стандарт formal."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал B2: ложный друг",
+                    question = "«Embarazada» означает:",
+                    options = listOf("смущённая", "беременная", "уставшая", "большая"),
+                    correctAnswer = "беременная",
+                    explanation = "Главный falso amigo."
                 )
             )
         )
