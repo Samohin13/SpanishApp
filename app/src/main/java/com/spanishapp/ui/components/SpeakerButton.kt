@@ -115,6 +115,25 @@ private fun applyBestVoice(tts: TextToSpeech, preferredName: String?) {
     }
 }
 
+/**
+ * Определяет, стоит ли озвучивать строку испанским TTS.
+ *  • Минимум 2 латинские буквы подряд (отсекает "a", "—", "?", "1", "___")
+ *  • Без кириллицы (это перевод на русский — не для es-TTS)
+ */
+fun isSpanishSpeakable(text: String?): Boolean {
+    if (text.isNullOrBlank()) return false
+    val cleaned = text.replace("_", " ").trim()
+    if (cleaned.isEmpty()) return false
+    if (cleaned.any { it in 'Ѐ'..'ӿ' }) return false
+    return Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)
+}
+
+/** Очищает текст перед озвучкой: убирает плейсхолдеры. */
+fun sanitizeForTts(text: String): String =
+    text.replace("___", " ")
+        .replace(Regex("\\s+"), " ")
+        .trim()
+
 @Composable
 fun SpeakerButton(
     text: String,
@@ -122,6 +141,9 @@ fun SpeakerButton(
     tint: Color = Color(0xFF9E9E9E),
     modifier: Modifier = Modifier
 ) {
+    if (!isSpanishSpeakable(text)) return
+
+    val cleanText = remember(text) { sanitizeForTts(text) }
     var speaking by remember { mutableStateOf(false) }
 
     val iconTint by animateColorAsState(
@@ -140,7 +162,7 @@ fun SpeakerButton(
     IconButton(
         onClick = {
             tts?.stop()
-            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "speak_${System.currentTimeMillis()}")
+            tts?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, null, "speak_${System.currentTimeMillis()}")
             speaking = true
         },
         modifier = modifier.size(36.dp),

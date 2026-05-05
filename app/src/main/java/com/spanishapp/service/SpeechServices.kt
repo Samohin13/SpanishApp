@@ -52,16 +52,39 @@ class SpanishTts @Inject constructor(
         }
     }
 
+    /**
+     * Решает, имеет ли смысл озвучивать строку через испанский TTS.
+     *  • Минимум 2 латинские буквы подряд (отсекает "a", "?", "1", "___")
+     *  • Без кириллицы (русский перевод не озвучиваем)
+     */
+    private fun isSpeakable(text: String?): Boolean {
+        if (text.isNullOrBlank()) return false
+        val cleaned = text.replace("_", " ").trim()
+        if (cleaned.isEmpty()) return false
+        if (cleaned.any { it in 'Ѐ'..'ӿ' }) return false
+        return Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)
+    }
+
+    private fun sanitize(text: String): String =
+        text.replace("___", " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
+
     /** Speak Spanish text aloud. @param slow — 0.66× rate for careful listening. */
     fun speak(text: String, slow: Boolean = false) {
         val t = tts ?: return
         if (!_isReady.value) return
+        if (!isSpeakable(text)) return
         t.setSpeechRate(if (slow) 0.6f else 0.9f)
-        t.speak(text, TextToSpeech.QUEUE_FLUSH, null, "utterance_${System.currentTimeMillis()}")
+        t.speak(sanitize(text), TextToSpeech.QUEUE_FLUSH, null, "utterance_${System.currentTimeMillis()}")
     }
 
     suspend fun speakAndWait(text: String, slow: Boolean = false) =
         suspendCancellableCoroutine { cont ->
+            if (!isSpeakable(text)) {
+                if (cont.isActive) cont.resume(Unit)
+                return@suspendCancellableCoroutine
+            }
             val id = "wait_${System.currentTimeMillis()}"
             tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {}
@@ -73,7 +96,7 @@ class SpanishTts @Inject constructor(
                 }
             })
             tts?.setSpeechRate(if (slow) 0.6f else 0.9f)
-            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, id)
+            tts?.speak(sanitize(text), TextToSpeech.QUEUE_FLUSH, null, id)
             cont.invokeOnCancellation { tts?.stop() }
         }
 

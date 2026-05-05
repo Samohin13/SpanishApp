@@ -488,8 +488,15 @@ private fun ExerciseCard(
                                     selectedOption = option
                                     answered = true
                                     // Озвучить правильный ответ
-                                    if (option == exercise.correctAnswer) {
-                                        tts?.speak(option, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                    if (option == exercise.correctAnswer &&
+                                        com.spanishapp.ui.components.isSpanishSpeakable(option)
+                                    ) {
+                                        tts?.speak(
+                                            com.spanishapp.ui.components.sanitizeForTts(option),
+                                            android.speech.tts.TextToSpeech.QUEUE_FLUSH,
+                                            null,
+                                            "ans"
+                                        )
                                     }
                                 }
                         ) {
