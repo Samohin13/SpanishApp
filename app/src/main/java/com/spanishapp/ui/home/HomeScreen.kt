@@ -167,9 +167,9 @@ fun HomeScreen(
             CourseCard(
                 course = course,
                 unitsCount = state.roadmapUnits.count { it.cefrLevel == course.level },
-                isLocked = course.level != "A1",
+                isLocked = false, // TODO: restore subscription lock after testing
                 onClick = {
-                    if (course.level == "A1") {
+                    if (true) {
                         navController.navigate("course_detail/${course.level}")
                     } else {
                         showPremiumSheet = true
