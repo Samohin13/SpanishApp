@@ -10549,19 +10549,40 @@ object LessonContentData {
         "u12_l0" to LessonContent(
             intro = "Деловой испанский начинается с собеседования и описания структуры компании.",
             sections = listOf(
-                LessonSection("Лексика собеседования",
-                    "el currículum — резюме · la entrevista — собеседование · el puesto — должность\n" +
-                    "el sueldo — зарплата · la jornada — рабочий день · el contrato — договор\n" +
-                    "el jefe / la jefa — руководитель · el empleado — сотрудник · la empresa — компания"),
-                LessonSection("Типичные вопросы на интервью",
-                    "¿Cuál es su experiencia? — Какой у вас опыт?\n" +
-                    "¿Por qué quiere trabajar aquí? — Почему вы хотите работать здесь?\n" +
-                    "¿Cuáles son sus puntos fuertes? — Каковы ваши сильные стороны?\n" +
-                    "Estoy acostumbrado a trabajar en equipo. — Я привык работать в команде."),
-                LessonSection("Структура компании",
-                    "el departamento — отдел · la reunión — совещание · la sede — штаб-квартира\n" +
-                    "trabajar a tiempo completo/parcial — работать полный/неполный день\n" +
-                    "estar de baja — быть на больничном · pedir una baja — уйти на больничный")
+                LessonSection(
+                    heading = "Лексика собеседования",
+                    items = listOf(
+                        LessonItem("el currículum", "резюме"),
+                        LessonItem("la entrevista", "собеседование"),
+                        LessonItem("el puesto", "должность"),
+                        LessonItem("el sueldo", "зарплата"),
+                        LessonItem("la jornada", "рабочий день"),
+                        LessonItem("el contrato", "договор"),
+                        LessonItem("el jefe / la jefa", "руководитель"),
+                        LessonItem("el empleado", "сотрудник"),
+                        LessonItem("la empresa", "компания")
+                    )
+                ),
+                LessonSection(
+                    heading = "Типичные вопросы на интервью",
+                    items = listOf(
+                        LessonItem("¿Cuál es su experiencia?", "Какой у вас опыт?"),
+                        LessonItem("¿Por qué quiere trabajar aquí?", "Почему вы хотите работать здесь?"),
+                        LessonItem("¿Cuáles son sus puntos fuertes?", "Каковы ваши сильные стороны?"),
+                        LessonItem("Estoy acostumbrado a trabajar en equipo.", "Я привык работать в команде.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Структура компании",
+                    items = listOf(
+                        LessonItem("el departamento", "отдел"),
+                        LessonItem("la reunión", "совещание"),
+                        LessonItem("la sede", "штаб-квартира"),
+                        LessonItem("trabajar a tiempo completo/parcial", "работать полный/неполный день"),
+                        LessonItem("estar de baja", "быть на больничном"),
+                        LessonItem("pedir una baja", "уйти на больничный")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -10603,21 +10624,33 @@ object LessonContentData {
         "u12_l1" to LessonContent(
             intro = "Деловое письмо по-испански: структура, формулы вежливости и стандартные обороты.",
             sections = listOf(
-                LessonSection("Обращение и приветствие",
-                    "Estimado/a Sr./Sra. [apellido]: — Уважаемый(ая) г-н/г-жа [фамилия]:\n" +
-                    "A quien corresponda: — Кому это может касаться:\n" +
-                    "Me dirijo a usted para... — Обращаюсь к Вам с целью...\n" +
-                    "En respuesta a su correo del... — В ответ на Ваше письмо от..."),
-                LessonSection("Тело письма",
-                    "Le informo de que... — Сообщаю Вам, что...\n" +
-                    "Adjunto encontrará... — В приложении Вы найдёте...\n" +
-                    "Le agradezco de antemano su atención. — Заранее благодарю за внимание.\n" +
-                    "Quedo a su disposición para cualquier consulta. — Остаюсь в Вашем распоряжении."),
-                LessonSection("Прощание",
-                    "Atentamente, — С уважением,\n" +
-                    "Un cordial saludo, — С дружеским приветом,\n" +
-                    "En espera de su respuesta, — В ожидании Вашего ответа,\n" +
-                    "Reciba un cordial saludo, — Примите сердечный привет,")
+                LessonSection(
+                    heading = "Обращение и приветствие",
+                    items = listOf(
+                        LessonItem("Estimado/a Sr./Sra. [apellido]:", "Уважаемый(ая) г-н/г-жа [фамилия]:"),
+                        LessonItem("A quien corresponda:", "Кому это может касаться:"),
+                        LessonItem("Me dirijo a usted para...", "Обращаюсь к Вам с целью..."),
+                        LessonItem("En respuesta a su correo del...", "В ответ на Ваше письмо от...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Тело письма",
+                    items = listOf(
+                        LessonItem("Le informo de que...", "Сообщаю Вам, что..."),
+                        LessonItem("Adjunto encontrará...", "В приложении Вы найдёте..."),
+                        LessonItem("Le agradezco de antemano su atención.", "Заранее благодарю за внимание."),
+                        LessonItem("Quedo a su disposición para cualquier consulta.", "Остаюсь в Вашем распоряжении.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Прощание",
+                    items = listOf(
+                        LessonItem("Atentamente,", "С уважением,"),
+                        LessonItem("Un cordial saludo,", "С дружеским приветом,"),
+                        LessonItem("En espera de su respuesta,", "В ожидании Вашего ответа,"),
+                        LessonItem("Reciba un cordial saludo,", "Примите сердечный привет,")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -10659,20 +10692,43 @@ object LessonContentData {
         "u12_l2" to LessonContent(
             intro = "Лексика СМИ: новости, репортажи, медиапространство.",
             sections = listOf(
-                LessonSection("Типы СМИ",
-                    "el periódico / el diario — газета · la revista — журнал\n" +
-                    "el telediario — теленовости · la radio — радио\n" +
-                    "el reportaje — репортаж · la crónica — хроника · el editorial — редакционная статья\n" +
-                    "la portada — первая полоса · el titular — заголовок"),
-                LessonSection("Глаголы и выражения",
-                    "publicar — публиковать · difundir — распространять · informar de — сообщать о\n" +
-                    "según las fuentes — по данным источников · se ha confirmado que — подтверждено, что\n" +
-                    "las noticias de última hora — последние новости\n" +
-                    "en directo — в прямом эфире · en diferido — в записи"),
-                LessonSection("Мнение о СМИ",
-                    "la prensa libre — свободная пресса · la censura — цензура\n" +
-                    "las fake news — фейковые новости · contrastar la información — проверять информацию\n" +
-                    "ser objetivo/subjetivo — быть объективным/субъективным")
+                LessonSection(
+                    heading = "Типы СМИ",
+                    items = listOf(
+                        LessonItem("el periódico / el diario", "газета"),
+                        LessonItem("la revista", "журнал"),
+                        LessonItem("el telediario", "теленовости"),
+                        LessonItem("la radio", "радио"),
+                        LessonItem("el reportaje", "репортаж"),
+                        LessonItem("la crónica", "хроника"),
+                        LessonItem("el editorial", "редакционная статья"),
+                        LessonItem("la portada", "первая полоса"),
+                        LessonItem("el titular", "заголовок")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы и выражения",
+                    items = listOf(
+                        LessonItem("publicar", "публиковать"),
+                        LessonItem("difundir", "распространять"),
+                        LessonItem("informar de", "сообщать о"),
+                        LessonItem("según las fuentes", "по данным источников"),
+                        LessonItem("se ha confirmado que", "подтверждено, что"),
+                        LessonItem("las noticias de última hora", "последние новости"),
+                        LessonItem("en directo", "в прямом эфире"),
+                        LessonItem("en diferido", "в записи")
+                    )
+                ),
+                LessonSection(
+                    heading = "Мнение о СМИ",
+                    items = listOf(
+                        LessonItem("la prensa libre", "свободная пресса"),
+                        LessonItem("la censura", "цензура"),
+                        LessonItem("las fake news", "фейковые новости"),
+                        LessonItem("contrastar la información", "проверять информацию"),
+                        LessonItem("ser objetivo/subjetivo", "быть объективным/субъективным")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -10714,20 +10770,43 @@ object LessonContentData {
         "u12_l3" to LessonContent(
             intro = "Словарь социальных сетей — необходимый B1-словарь для современного общения.",
             sections = listOf(
-                LessonSection("Действия в соцсетях",
-                    "publicar — публиковать · comentar — комментировать · compartir — делиться\n" +
-                    "seguir — подписаться · dejar de seguir — отписаться · bloquear — заблокировать\n" +
-                    "dar me gusta — лайкнуть · etiquetar — отметить (тегнуть)\n" +
-                    "subir una foto/vídeo — загрузить фото/видео"),
-                LessonSection("Термины платформ",
-                    "el seguidor / la seguidora — подписчик · la publicación — пост · la historia — сторис\n" +
-                    "el perfil — профиль · la cuenta — аккаунт · el enlace — ссылка\n" +
-                    "la tendencia — тренд · viral: hacerse viral — стать вирусным\n" +
-                    "la notificación — уведомление · la bandeja de entrada — входящие"),
-                LessonSection("Мнение о соцсетях",
-                    "Las redes sociales pueden ser adictivas. — Соцсети могут быть аддиктивны.\n" +
-                    "Hay que proteger la privacidad. — Нужно защищать приватность.\n" +
-                    "El ciberacoso es un problema grave. — Киберзапугивание — серьёзная проблема.")
+                LessonSection(
+                    heading = "Действия в соцсетях",
+                    items = listOf(
+                        LessonItem("publicar", "публиковать"),
+                        LessonItem("comentar", "комментировать"),
+                        LessonItem("compartir", "делиться"),
+                        LessonItem("seguir", "подписаться"),
+                        LessonItem("dejar de seguir", "отписаться"),
+                        LessonItem("bloquear", "заблокировать"),
+                        LessonItem("dar me gusta", "лайкнуть"),
+                        LessonItem("etiquetar", "отметить (тегнуть)"),
+                        LessonItem("subir una foto/vídeo", "загрузить фото/видео")
+                    )
+                ),
+                LessonSection(
+                    heading = "Термины платформ",
+                    items = listOf(
+                        LessonItem("el seguidor / la seguidora", "подписчик"),
+                        LessonItem("la publicación", "пост"),
+                        LessonItem("la historia", "сторис"),
+                        LessonItem("el perfil", "профиль"),
+                        LessonItem("la cuenta", "аккаунт"),
+                        LessonItem("el enlace", "ссылка"),
+                        LessonItem("la tendencia", "тренд"),
+                        LessonItem("hacerse viral", "стать вирусным"),
+                        LessonItem("la notificación", "уведомление"),
+                        LessonItem("la bandeja de entrada", "входящие")
+                    )
+                ),
+                LessonSection(
+                    heading = "Мнение о соцсетях",
+                    items = listOf(
+                        LessonItem("Las redes sociales pueden ser adictivas.", "Соцсети могут быть аддиктивны."),
+                        LessonItem("Hay que proteger la privacidad.", "Нужно защищать приватность."),
+                        LessonItem("El ciberacoso es un problema grave.", "Киберзапугивание — серьёзная проблема.")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -10769,21 +10848,37 @@ object LessonContentData {
         "u12_l4" to LessonContent(
             intro = "Медицинская лексика — симптомы, диагноз, рецепт.",
             sections = listOf(
-                LessonSection("Симптомы и жалобы",
-                    "Me duele la cabeza / el estómago / la espalda. — У меня болит голова/живот/спина.\n" +
-                    "Tengo fiebre / tos / náuseas / mareos. — У меня жар/кашель/тошнота/головокружение.\n" +
-                    "Me encuentro mal / fatal. — Я плохо себя чувствую.\n" +
-                    "Llevo dos días con fiebre. — У меня жар уже два дня."),
-                LessonSection("В кабинете врача",
-                    "el médico / la médica — врач · la consulta — кабинет врача\n" +
-                    "la receta — рецепт · el medicamento — лекарство\n" +
-                    "el análisis de sangre — анализ крови · la radiografía — рентген\n" +
-                    "las urgencias — скорая помощь/приёмный покой · ingresar en el hospital — госпитализировать"),
-                LessonSection("Диагноз и лечение",
-                    "Tiene usted una infección. — У вас инфекция.\n" +
-                    "Le receto antibióticos. — Я выписываю вам антибиотики.\n" +
-                    "Tome dos pastillas cada ocho horas. — Принимайте по две таблетки каждые восемь часов.\n" +
-                    "Guarde reposo durante tres días. — Соблюдайте постельный режим три дня.")
+                LessonSection(
+                    heading = "Симптомы и жалобы",
+                    items = listOf(
+                        LessonItem("Me duele la cabeza / el estómago / la espalda.", "У меня болит голова/живот/спина."),
+                        LessonItem("Tengo fiebre / tos / náuseas / mareos.", "У меня жар/кашель/тошнота/головокружение."),
+                        LessonItem("Me encuentro mal / fatal.", "Я плохо себя чувствую."),
+                        LessonItem("Llevo dos días con fiebre.", "У меня жар уже два дня.")
+                    )
+                ),
+                LessonSection(
+                    heading = "В кабинете врача",
+                    items = listOf(
+                        LessonItem("el médico / la médica", "врач"),
+                        LessonItem("la consulta", "кабинет врача"),
+                        LessonItem("la receta", "рецепт"),
+                        LessonItem("el medicamento", "лекарство"),
+                        LessonItem("el análisis de sangre", "анализ крови"),
+                        LessonItem("la radiografía", "рентген"),
+                        LessonItem("las urgencias", "скорая помощь/приёмный покой"),
+                        LessonItem("ingresar en el hospital", "госпитализировать")
+                    )
+                ),
+                LessonSection(
+                    heading = "Диагноз и лечение",
+                    items = listOf(
+                        LessonItem("Tiene usted una infección.", "У вас инфекция."),
+                        LessonItem("Le receto antibióticos.", "Я выписываю вам антибиотики."),
+                        LessonItem("Tome dos pastillas cada ocho horas.", "Принимайте по две таблетки каждые восемь часов."),
+                        LessonItem("Guarde reposo durante tres días.", "Соблюдайте постельный режим три дня.")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -10825,21 +10920,33 @@ object LessonContentData {
         "u12_l5" to LessonContent(
             intro = "Диалог у врача: как описать состояние и понять назначение.",
             sections = listOf(
-                LessonSection("Описание самочувствия",
-                    "Me encuentro muy cansado/a últimamente. — В последнее время я очень устаю.\n" +
-                    "No puedo dormir bien. — Я не могу нормально спать.\n" +
-                    "He perdido el apetito. — Я потерял(а) аппетит.\n" +
-                    "Me duele aquí. — Здесь болит. (указывая на место)"),
-                LessonSection("Вопросы врача",
-                    "¿Desde cuándo tiene estos síntomas? — С каких пор у вас эти симптомы?\n" +
-                    "¿Tiene alguna alergia? — Есть ли у вас аллергия?\n" +
-                    "¿Está tomando algún medicamento? — Принимаете ли вы лекарства?\n" +
-                    "¿Ha tenido estas molestias antes? — Были ли у вас эти жалобы раньше?"),
-                LessonSection("Назначения",
-                    "Le mando hacerse un análisis. — Направляю вас на анализы.\n" +
-                    "Vuelva en una semana. — Приходите через неделю.\n" +
-                    "Evite el alcohol y el tabaco. — Избегайте алкоголя и табака.\n" +
-                    "Siga una dieta equilibrada. — Соблюдайте сбалансированную диету.")
+                LessonSection(
+                    heading = "Описание самочувствия",
+                    items = listOf(
+                        LessonItem("Me encuentro muy cansado/a últimamente.", "В последнее время я очень устаю."),
+                        LessonItem("No puedo dormir bien.", "Я не могу нормально спать."),
+                        LessonItem("He perdido el apetito.", "Я потерял(а) аппетит."),
+                        LessonItem("Me duele aquí.", "Здесь болит. (указывая на место)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Вопросы врача",
+                    items = listOf(
+                        LessonItem("¿Desde cuándo tiene estos síntomas?", "С каких пор у вас эти симптомы?"),
+                        LessonItem("¿Tiene alguna alergia?", "Есть ли у вас аллергия?"),
+                        LessonItem("¿Está tomando algún medicamento?", "Принимаете ли вы лекарства?"),
+                        LessonItem("¿Ha tenido estas molestias antes?", "Были ли у вас эти жалобы раньше?")
+                    )
+                ),
+                LessonSection(
+                    heading = "Назначения",
+                    items = listOf(
+                        LessonItem("Le mando hacerse un análisis.", "Направляю вас на анализы."),
+                        LessonItem("Vuelva en una semana.", "Приходите через неделю."),
+                        LessonItem("Evite el alcohol y el tabaco.", "Избегайте алкоголя и табака."),
+                        LessonItem("Siga una dieta equilibrada.", "Соблюдайте сбалансированную диету.")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -10881,27 +10988,30 @@ object LessonContentData {
         "u12_l6" to LessonContent(
             intro = "Глагол dar образует множество устойчивых выражений — без них невозможно понять разговорную речь.",
             sections = listOf(
-                LessonSection("Modismos básicos con DAR",
-                    "dar igual — не иметь значения (всё равно)\n" +
-                    "   Me da igual. — Мне всё равно.\n" +
-                    "dar miedo — пугать\n" +
-                    "   Me da miedo conducir por la noche. — Ночное вождение меня пугает.\n" +
-                    "dar vergüenza — стыдить\n" +
-                    "   Le da vergüenza hablar en público. — Ему стыдно говорить на публике."),
-                LessonSection("Modismos con DAR II",
-                    "darse cuenta de — осознать, заметить\n" +
-                    "   Me di cuenta de que estaba equivocado. — Я понял, что ошибался.\n" +
-                    "dar la lata — надоедать, донимать\n" +
-                    "   El niño da la lata todo el día. — Ребёнок донимает весь день.\n" +
-                    "dar en el clavo — попасть в точку\n" +
-                    "   ¡Has dado en el clavo! — Ты попал в точку!"),
-                LessonSection("Modismos con DAR III",
-                    "dar pie a — давать повод для\n" +
-                    "   Sus palabras dieron pie a un debate. — Его слова дали повод для дискуссии.\n" +
-                    "dar a luz — рожать\n" +
-                    "   Mi hermana dio a luz ayer. — Моя сестра родила вчера.\n" +
-                    "dar de comer — кормить\n" +
-                    "   ¿Le has dado de comer al perro? — Ты покормил собаку?")
+                LessonSection(
+                    heading = "Modismos básicos con DAR",
+                    items = listOf(
+                        LessonItem("dar igual", "не иметь значения (всё равно)", "Me da igual. — Мне всё равно."),
+                        LessonItem("dar miedo", "пугать", "Me da miedo conducir por la noche. — Ночное вождение меня пугает."),
+                        LessonItem("dar vergüenza", "стыдить", "Le da vergüenza hablar en público. — Ему стыдно говорить на публике.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Modismos con DAR II",
+                    items = listOf(
+                        LessonItem("darse cuenta de", "осознать, заметить", "Me di cuenta de que estaba equivocado. — Я понял, что ошибался."),
+                        LessonItem("dar la lata", "надоедать, донимать", "El niño da la lata todo el día. — Ребёнок донимает весь день."),
+                        LessonItem("dar en el clavo", "попасть в точку", "¡Has dado en el clavo! — Ты попал в точку!")
+                    )
+                ),
+                LessonSection(
+                    heading = "Modismos con DAR III",
+                    items = listOf(
+                        LessonItem("dar pie a", "давать повод для", "Sus palabras dieron pie a un debate. — Его слова дали повод для дискуссии."),
+                        LessonItem("dar a luz", "рожать", "Mi hermana dio a luz ayer. — Моя сестра родила вчера."),
+                        LessonItem("dar de comer", "кормить", "¿Le has dado de comer al perro? — Ты покормил собаку?")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -10943,26 +11053,30 @@ object LessonContentData {
         "u12_l7" to LessonContent(
             intro = "Глагол tener — ключ к большинству испанских идиом и описанию состояний.",
             sections = listOf(
-                LessonSection("Tener + sustantivo I",
-                    "tener ganas de — хотеть, иметь желание\n" +
-                    "   Tengo ganas de verte. — Мне не терпится тебя увидеть.\n" +
-                    "tener razón — быть правым\n" +
-                    "   Tienes razón, debería disculparme. — Ты прав, мне следует извиниться.\n" +
-                    "tener en cuenta — учитывать, принимать во внимание\n" +
-                    "   Hay que tener en cuenta todos los factores. — Нужно учитывать все факторы."),
-                LessonSection("Tener + sustantivo II",
-                    "tener éxito — иметь успех\n" +
-                    "   Su novela ha tenido mucho éxito. — Его роман имел большой успех.\n" +
-                    "tener lugar — иметь место, происходить\n" +
-                    "   La reunión tendrá lugar el lunes. — Собрание состоится в понедельник.\n" +
-                    "tener en mente — держать в уме, планировать\n" +
-                    "   Tengo en mente abrir mi propio negocio. — Я планирую открыть собственный бизнес."),
-                LessonSection("Tener + sustantivo III",
-                    "tener en común — иметь общее\n" +
-                    "   Tenemos mucho en común. — У нас много общего.\n" +
-                    "no tener ni idea — не иметь ни малейшего понятия\n" +
-                    "   No tengo ni idea de cómo funciona. — Я понятия не имею, как это работает.\n" +
-                    "tener buena/mala pinta — выглядеть хорошо/плохо")
+                LessonSection(
+                    heading = "Tener + sustantivo I",
+                    items = listOf(
+                        LessonItem("tener ganas de", "хотеть, иметь желание", "Tengo ganas de verte. — Мне не терпится тебя увидеть."),
+                        LessonItem("tener razón", "быть правым", "Tienes razón, debería disculparme. — Ты прав, мне следует извиниться."),
+                        LessonItem("tener en cuenta", "учитывать, принимать во внимание", "Hay que tener en cuenta todos los factores. — Нужно учитывать все факторы.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Tener + sustantivo II",
+                    items = listOf(
+                        LessonItem("tener éxito", "иметь успех", "Su novela ha tenido mucho éxito. — Его роман имел большой успех."),
+                        LessonItem("tener lugar", "иметь место, происходить", "La reunión tendrá lugar el lunes. — Собрание состоится в понедельник."),
+                        LessonItem("tener en mente", "держать в уме, планировать", "Tengo en mente abrir mi propio negocio. — Я планирую открыть собственный бизнес.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Tener + sustantivo III",
+                    items = listOf(
+                        LessonItem("tener en común", "иметь общее", "Tenemos mucho en común. — У нас много общего."),
+                        LessonItem("no tener ni idea", "не иметь ни малейшего понятия", "No tengo ni idea de cómo funciona. — Я понятия не имею, как это работает."),
+                        LessonItem("tener buena/mala pinta", "выглядеть хорошо/плохо")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -11004,25 +11118,29 @@ object LessonContentData {
         "u12_l8" to LessonContent(
             intro = "Глагол hacer — ещё один столп испанской идиоматики.",
             sections = listOf(
-                LessonSection("Hacer + sustantivo I",
-                    "hacer falta — быть необходимым, нужным\n" +
-                    "   Hace falta más tiempo. — Нужно больше времени.\n" +
-                    "hacer caso — слушаться, обращать внимание\n" +
-                    "   No me hace caso. — Он меня не слушает.\n" +
-                    "hacer ilusión — радовать, вызывать приятное волнение\n" +
-                    "   Me hace mucha ilusión el viaje. — Я так жду этого путешествия."),
-                LessonSection("Hacer + sustantivo II",
-                    "hacer la vista gorda — смотреть сквозь пальцы, не замечать\n" +
-                    "   El jefe hizo la vista gorda ante los retrasos. — Шеф смотрел сквозь пальцы на опоздания.\n" +
-                    "hacer las paces — помириться\n" +
-                    "   Por fin hicieron las paces. — Наконец они помирились.\n" +
-                    "hacer hincapié en — делать акцент на\n" +
-                    "   El profesor hizo hincapié en la pronunciación. — Учитель сделал акцент на произношении."),
-                LessonSection("Hacer + sustantivo III",
-                    "hacer de — играть роль, выступать в качестве\n" +
-                    "   Hace de intérprete en las reuniones. — Он выступает переводчиком на совещаниях.\n" +
-                    "hacerse el tonto — прикидываться дурачком\n" +
-                    "   No te hagas el tonto, sabes perfectamente de qué hablo.")
+                LessonSection(
+                    heading = "Hacer + sustantivo I",
+                    items = listOf(
+                        LessonItem("hacer falta", "быть необходимым, нужным", "Hace falta más tiempo. — Нужно больше времени."),
+                        LessonItem("hacer caso", "слушаться, обращать внимание", "No me hace caso. — Он меня не слушает."),
+                        LessonItem("hacer ilusión", "радовать, вызывать приятное волнение", "Me hace mucha ilusión el viaje. — Я так жду этого путешествия.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Hacer + sustantivo II",
+                    items = listOf(
+                        LessonItem("hacer la vista gorda", "смотреть сквозь пальцы, не замечать", "El jefe hizo la vista gorda ante los retrasos. — Шеф смотрел сквозь пальцы на опоздания."),
+                        LessonItem("hacer las paces", "помириться", "Por fin hicieron las paces. — Наконец они помирились."),
+                        LessonItem("hacer hincapié en", "делать акцент на", "El profesor hizo hincapié en la pronunciación. — Учитель сделал акцент на произношении.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Hacer + sustantivo III",
+                    items = listOf(
+                        LessonItem("hacer de", "играть роль, выступать в качестве", "Hace de intérprete en las reuniones. — Он выступает переводчиком на совещаниях."),
+                        LessonItem("hacerse el tonto", "прикидываться дурачком", "No te hagas el tonto, sabes perfectamente de qué hablo.")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -11064,24 +11182,29 @@ object LessonContentData {
         "u12_l9" to LessonContent(
             intro = "Глагол llevar в идиомах — обозначает перенос, продолжение и преодоление.",
             sections = listOf(
-                LessonSection("Llevar + acción",
-                    "llevar a cabo — осуществлять, проводить\n" +
-                    "   El proyecto se llevó a cabo con éxito. — Проект был успешно осуществлён.\n" +
-                    "llevar la contraria — возражать, идти вперекор\n" +
-                    "   Siempre me lleva la contraria. — Он всегда мне возражает.\n" +
-                    "llevar ventaja — иметь преимущество\n" +
-                    "   Llevamos ventaja a los competidores. — Мы имеем преимущество перед конкурентами."),
-                LessonSection("Llevar + tiempo",
-                    "llevar + tiempo + gerundio — ... делать уже (продолжительность)\n" +
-                    "   Llevo dos horas esperando. — Я жду уже два часа.\n" +
-                    "   ¿Cuánto llevas estudiando español? — Сколько ты уже изучаешь испанский?\n" +
-                    "llevar bien/mal algo — хорошо/плохо переносить что-то\n" +
-                    "   No lleva bien la presión. — Он плохо переносит давление."),
-                LessonSection("Llevar + estado",
-                    "llevar razón (разговорное = tener razón) — быть правым\n" +
-                    "   Llevas razón, me equivoqué. — Ты прав, я ошибся.\n" +
-                    "llevar consigo — нести с собой, влечь за собой\n" +
-                    "   El cargo lleva consigo mucha responsabilidad. — Должность влечёт большую ответственность.")
+                LessonSection(
+                    heading = "Llevar + acción",
+                    items = listOf(
+                        LessonItem("llevar a cabo", "осуществлять, проводить", "El proyecto se llevó a cabo con éxito. — Проект был успешно осуществлён."),
+                        LessonItem("llevar la contraria", "возражать, идти вперекор", "Siempre me lleva la contraria. — Он всегда мне возражает."),
+                        LessonItem("llevar ventaja", "иметь преимущество", "Llevamos ventaja a los competidores. — Мы имеем преимущество перед конкурентами.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Llevar + tiempo",
+                    items = listOf(
+                        LessonItem("llevar + tiempo + gerundio", "... делать уже (продолжительность)", "Llevo dos horas esperando. — Я жду уже два часа."),
+                        LessonItem("¿Cuánto llevas estudiando español?", "Сколько ты уже изучаешь испанский?"),
+                        LessonItem("llevar bien/mal algo", "хорошо/плохо переносить что-то", "No lleva bien la presión. — Он плохо переносит давление.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Llevar + estado",
+                    items = listOf(
+                        LessonItem("llevar razón (разг. = tener razón)", "быть правым", "Llevas razón, me equivoqué. — Ты прав, я ошибся."),
+                        LessonItem("llevar consigo", "нести с собой, влечь за собой", "El cargo lleva consigo mucha responsabilidad. — Должность влечёт большую ответственность.")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -11123,26 +11246,36 @@ object LessonContentData {
         "u12_l10" to LessonContent(
             intro = "Разграничение формального и разговорного регистра — ключевой навык B1–B2.",
             sections = listOf(
-                LessonSection("Лексические замены",
-                    "Formal → Coloquial:\n" +
-                    "solicitar → pedir — просить\n" +
-                    "comunicar → decir — говорить\n" +
-                    "efectuar → hacer — делать\n" +
-                    "adquirir → comprar — покупать\n" +
-                    "fallecer → morir — умирать\n" +
-                    "residir → vivir — жить\n" +
-                    "contraer matrimonio → casarse — жениться/выйти замуж"),
-                LessonSection("Грамматические различия",
-                    "Formal: usted, ustedes · Coloquial: tú, vosotros\n" +
-                    "Formal: Le agradezco su colaboración.\n" +
-                    "Coloquial: Gracias por tu ayuda.\n" +
-                    "Formal: En caso de que... + Subj. · Coloquial: Si...\n" +
-                    "Formal: Con el fin de + infinitivo · Coloquial: Para + infinitivo"),
-                LessonSection("Когда что использовать",
-                    "Formal: письма, заявления, официальные документы, деловые встречи\n" +
-                    "Coloquial: разговор с друзьями, мессенджеры, неформальные ситуации\n" +
-                    "Neutro: новостные статьи, учебники, презентации\n" +
-                    "Главное правило: адаптируй речь к ситуации и собеседнику.")
+                LessonSection(
+                    heading = "Лексические замены (Formal → Coloquial)",
+                    items = listOf(
+                        LessonItem("solicitar → pedir", "просить"),
+                        LessonItem("comunicar → decir", "говорить"),
+                        LessonItem("efectuar → hacer", "делать"),
+                        LessonItem("adquirir → comprar", "покупать"),
+                        LessonItem("fallecer → morir", "умирать"),
+                        LessonItem("residir → vivir", "жить"),
+                        LessonItem("contraer matrimonio → casarse", "жениться/выйти замуж")
+                    )
+                ),
+                LessonSection(
+                    heading = "Грамматические различия",
+                    items = listOf(
+                        LessonItem("Formal: usted, ustedes", "Coloquial: tú, vosotros"),
+                        LessonItem("Formal: Le agradezco su colaboración.", "Coloquial: Gracias por tu ayuda."),
+                        LessonItem("Formal: En caso de que... + Subj.", "Coloquial: Si..."),
+                        LessonItem("Formal: Con el fin de + inf.", "Coloquial: Para + inf.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Когда что использовать",
+                    items = listOf(
+                        LessonItem("Formal", "письма, заявления, официальные документы, деловые встречи"),
+                        LessonItem("Coloquial", "разговор с друзьями, мессенджеры, неформальные ситуации"),
+                        LessonItem("Neutro", "новостные статьи, учебники, презентации"),
+                        LessonItem("Главное правило", "адаптируй речь к ситуации и собеседнику")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -11184,24 +11317,35 @@ object LessonContentData {
         "u12_l11" to LessonContent(
             intro = "Письмо-заявление: структура, формулы и практика.",
             sections = listOf(
-                LessonSection("Структура письма-заявления",
-                    "1. Encabezado — заголовок (дата, адресат)\n" +
-                    "2. Saludo — приветствие (Estimado/a...)\n" +
-                    "3. Introducción — цель обращения\n" +
-                    "4. Desarrollo — аргументы, детали\n" +
-                    "5. Conclusión — просьба и готовность к диалогу\n" +
-                    "6. Despedida — прощание (Atentamente,)"),
-                LessonSection("Типичные фразы",
-                    "Me dirijo a usted para solicitar... — Обращаюсь к Вам с просьбой...\n" +
-                    "En respuesta a su anuncio... — В ответ на Ваше объявление...\n" +
-                    "Tengo el placer de presentarles mi candidatura. — Имею честь представить свою кандидатуру.\n" +
-                    "Quedo a su entera disposición para una entrevista.\n" +
-                    "Adjunto mi currículum vitae y una carta de recomendación."),
-                LessonSection("Пример вступления",
-                    "Madrid, 5 de mayo de 2026\n\n" +
-                    "Estimado/a Sr./Sra. García:\n\n" +
-                    "Me dirijo a usted en respuesta al anuncio publicado en la página web de su empresa " +
-                    "para el puesto de diseñador gráfico. Tengo tres años de experiencia en el sector.")
+                LessonSection(
+                    heading = "Структура письма-заявления",
+                    items = listOf(
+                        LessonItem("1. Encabezado", "заголовок (дата, адресат)"),
+                        LessonItem("2. Saludo", "приветствие (Estimado/a...)"),
+                        LessonItem("3. Introducción", "цель обращения"),
+                        LessonItem("4. Desarrollo", "аргументы, детали"),
+                        LessonItem("5. Conclusión", "просьба и готовность к диалогу"),
+                        LessonItem("6. Despedida", "прощание (Atentamente,)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Типичные фразы",
+                    items = listOf(
+                        LessonItem("Me dirijo a usted para solicitar...", "Обращаюсь к Вам с просьбой..."),
+                        LessonItem("En respuesta a su anuncio...", "В ответ на Ваше объявление..."),
+                        LessonItem("Tengo el placer de presentarles mi candidatura.", "Имею честь представить свою кандидатуру."),
+                        LessonItem("Quedo a su entera disposición para una entrevista.", "Я полностью в Вашем распоряжении для собеседования."),
+                        LessonItem("Adjunto mi currículum vitae y una carta de recomendación.", "Прилагаю резюме и рекомендательное письмо.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Пример вступления",
+                    items = listOf(
+                        LessonItem("Madrid, 5 de mayo de 2026", "Estimado/a Sr./Sra. García:"),
+                        LessonItem("Me dirijo a usted en respuesta al anuncio publicado en la página web de su empresa para el puesto de diseñador gráfico.", "Обращаюсь к Вам в ответ на объявление на сайте вашей компании о должности графического дизайнера."),
+                        LessonItem("Tengo tres años de experiencia en el sector.", "У меня три года опыта в этой области.")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -11243,23 +11387,35 @@ object LessonContentData {
         "u12_l12" to LessonContent(
             intro = "Умение выражать согласие, несогласие и нюансировать позицию — ключ к B1-дискуссии.",
             sections = listOf(
-                LessonSection("Выражение согласия",
-                    "Estoy completamente de acuerdo. — Я полностью согласен(на).\n" +
-                    "Tienes razón en ese punto. — Ты прав(а) в этом пункте.\n" +
-                    "Exactamente, eso es lo que pienso. — Именно, это то, что я думаю.\n" +
-                    "Sin duda alguna, es así. — Без сомнения, это так.\n" +
-                    "Comparto tu opinión. — Разделяю твоё мнение."),
-                LessonSection("Выражение несогласия",
-                    "No estoy de acuerdo con eso. — Я с этим не согласен(на).\n" +
-                    "Creo que te equivocas. — Думаю, ты ошибаешься.\n" +
-                    "Desde mi punto de vista es diferente. — С моей точки зрения иначе.\n" +
-                    "Sin embargo, hay que considerar que... — Тем не менее, нужно учитывать, что...\n" +
-                    "Aunque entiendo tu postura, yo creo que... — Хотя я понимаю твою позицию, я считаю, что..."),
-                LessonSection("Нюансирование",
-                    "Depende de la situación. — Зависит от ситуации.\n" +
-                    "Hay que matizar que... — Надо уточнить, что...\n" +
-                    "En cierta medida, sí, pero... — В определённой мере да, но...\n" +
-                    "Por un lado... por otro lado... — С одной стороны... с другой стороны...")
+                LessonSection(
+                    heading = "Выражение согласия",
+                    items = listOf(
+                        LessonItem("Estoy completamente de acuerdo.", "Я полностью согласен(на)."),
+                        LessonItem("Tienes razón en ese punto.", "Ты прав(а) в этом пункте."),
+                        LessonItem("Exactamente, eso es lo que pienso.", "Именно, это то, что я думаю."),
+                        LessonItem("Sin duda alguna, es así.", "Без сомнения, это так."),
+                        LessonItem("Comparto tu opinión.", "Разделяю твоё мнение.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Выражение несогласия",
+                    items = listOf(
+                        LessonItem("No estoy de acuerdo con eso.", "Я с этим не согласен(на)."),
+                        LessonItem("Creo que te equivocas.", "Думаю, ты ошибаешься."),
+                        LessonItem("Desde mi punto de vista es diferente.", "С моей точки зрения иначе."),
+                        LessonItem("Sin embargo, hay que considerar que...", "Тем не менее, нужно учитывать, что..."),
+                        LessonItem("Aunque entiendo tu postura, yo creo que...", "Хотя я понимаю твою позицию, я считаю, что...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Нюансирование",
+                    items = listOf(
+                        LessonItem("Depende de la situación.", "Зависит от ситуации."),
+                        LessonItem("Hay que matizar que...", "Надо уточнить, что..."),
+                        LessonItem("En cierta medida, sí, pero...", "В определённой мере да, но..."),
+                        LessonItem("Por un lado... por otro lado...", "С одной стороны... с другой стороны...")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -11301,23 +11457,35 @@ object LessonContentData {
         "u12_l13" to LessonContent(
             intro = "Связные аргументы — это структура: тезис, доказательство, вывод.",
             sections = listOf(
-                LessonSection("Ввод тезиса",
-                    "En mi opinión / A mi juicio — по моему мнению\n" +
-                    "Considero que / Pienso que / Creo que — считаю/думаю, что\n" +
-                    "Está claro que / Es evidente que — очевидно, что\n" +
-                    "Cabe destacar que — стоит отметить, что"),
-                LessonSection("Доказательства и примеры",
-                    "Por ejemplo / Como ejemplo — например\n" +
-                    "De hecho — на самом деле (подкрепление)\n" +
-                    "Según los datos... — Согласно данным...\n" +
-                    "Hay que tener en cuenta que... — Нужно принять во внимание, что...\n" +
-                    "Esto se debe a que... — Это объясняется тем, что..."),
-                LessonSection("Вывод и заключение",
-                    "Por lo tanto / Por consiguiente — следовательно\n" +
-                    "En conclusión / Para concluir — в заключение\n" +
-                    "En definitiva — в итоге\n" +
-                    "Todo ello indica que... — Всё это указывает на то, что...\n" +
-                    "A modo de resumen — подводя итог")
+                LessonSection(
+                    heading = "Ввод тезиса",
+                    items = listOf(
+                        LessonItem("En mi opinión / A mi juicio", "по моему мнению"),
+                        LessonItem("Considero que / Pienso que / Creo que", "считаю/думаю, что"),
+                        LessonItem("Está claro que / Es evidente que", "очевидно, что"),
+                        LessonItem("Cabe destacar que", "стоит отметить, что")
+                    )
+                ),
+                LessonSection(
+                    heading = "Доказательства и примеры",
+                    items = listOf(
+                        LessonItem("Por ejemplo / Como ejemplo", "например"),
+                        LessonItem("De hecho", "на самом деле (подкрепление)"),
+                        LessonItem("Según los datos...", "Согласно данным..."),
+                        LessonItem("Hay que tener en cuenta que...", "Нужно принять во внимание, что..."),
+                        LessonItem("Esto se debe a que...", "Это объясняется тем, что...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Вывод и заключение",
+                    items = listOf(
+                        LessonItem("Por lo tanto / Por consiguiente", "следовательно"),
+                        LessonItem("En conclusión / Para concluir", "в заключение"),
+                        LessonItem("En definitiva", "в итоге"),
+                        LessonItem("Todo ello indica que...", "Всё это указывает на то, что..."),
+                        LessonItem("A modo de resumen", "подводя итог")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
@@ -11359,25 +11527,36 @@ object LessonContentData {
         "u12_l14" to LessonContent(
             intro = "Финальный чекпоинт курса B1. Ты освоил всё: Subjuntivo, Condicional, косвенную речь, пассив, perífrasis и продвинутую лексику!",
             sections = listOf(
-                LessonSection("Что ты выучил на B1",
-                    "Блок 1 — Subjuntivo Presente: желания, эмоции, сомнения, безличные конструкции\n" +
-                    "Блок 2 — Condicional + Si-clauses + Imperfecto de Subjuntivo\n" +
-                    "Блок 3 — Estilo indirecto, relativas, pasiva, perífrasis, conectores\n" +
-                    "Блок 4 — Деловой язык, СМИ, здоровье, модизмы, аргументация"),
-                LessonSection("Ключевые навыки B1",
-                    "✅ Говорить о желаниях и эмоциях через Subjuntivo\n" +
-                    "✅ Строить гипотезы (Si tuviera dinero, viajaría...)\n" +
-                    "✅ Передавать чужую речь (Me dijo que vendría...)\n" +
-                    "✅ Использовать пассивные конструкции\n" +
-                    "✅ Применять perífrasis (llevar + gerundio, acabar de...)\n" +
-                    "✅ Аргументировать позицию с conectores"),
-                LessonSection("Следующий уровень: B2",
-                    "На B2 тебя ждут:\n" +
-                    "— Subjuntivo Imperfecto/Pluscuamperfecto\n" +
-                    "— Сложные гипотезы (Si hubiera sabido...)\n" +
-                    "— Стилистика и регистры\n" +
-                    "— Идиомы и выражения высокого уровня\n\n" +
-                    "¡Enhorabuena! — Поздравляем! Ты завершил курс B1! 🎓")
+                LessonSection(
+                    heading = "Что ты выучил на B1",
+                    items = listOf(
+                        LessonItem("Блок 1", "Subjuntivo Presente: желания, эмоции, сомнения, безличные конструкции"),
+                        LessonItem("Блок 2", "Condicional + Si-clauses + Imperfecto de Subjuntivo"),
+                        LessonItem("Блок 3", "Estilo indirecto, relativas, pasiva, perífrasis, conectores"),
+                        LessonItem("Блок 4", "Деловой язык, СМИ, здоровье, модизмы, аргументация")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ключевые навыки B1",
+                    items = listOf(
+                        LessonItem("✅ Subjuntivo", "Говорить о желаниях и эмоциях"),
+                        LessonItem("✅ Гипотезы", "Si tuviera dinero, viajaría..."),
+                        LessonItem("✅ Косвенная речь", "Me dijo que vendría..."),
+                        LessonItem("✅ Пассив", "Использовать пассивные конструкции"),
+                        LessonItem("✅ Perífrasis", "llevar + gerundio, acabar de..."),
+                        LessonItem("✅ Аргументация", "Структурировать позицию с conectores")
+                    )
+                ),
+                LessonSection(
+                    heading = "Следующий уровень: B2",
+                    items = listOf(
+                        LessonItem("Subjuntivo Imperfecto/Pluscuamperfecto", "сложные наклонения"),
+                        LessonItem("Сложные гипотезы", "Si hubiera sabido..."),
+                        LessonItem("Стилистика и регистры", "продвинутый уровень"),
+                        LessonItem("Идиомы высокого уровня", "B2 vocabulary"),
+                        LessonItem("¡Enhorabuena!", "Поздравляем! Ты завершил курс B1! 🎓")
+                    )
+                )
             ),
             exercises = listOf(
                 Exercise(
