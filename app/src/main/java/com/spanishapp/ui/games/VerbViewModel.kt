@@ -15,43 +15,60 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class VerbTrainingMode { CHOICE, ASSEMBLY, INPUT }
-enum class VerbGroup { REGULAR, STEM, IRREGULAR }
+/** 4 режима тренажёра — как у Espato. */
+enum class VerbTrainingMode(val title: String, val desc: String) {
+    CONJUGAR("Conjugar", "Время + лицо + инфинитив → форма"),
+    INVERSO ("Inverso",  "Форма → инфинитив + лицо + время"),
+    HUECO   ("Hueco",    "Заполни пропуск во фразе"),
+    AUDITIVO("Auditivo", "Услышь форму и запиши")
+}
+
+enum class VerbGroup { REGULAR, IRREGULAR, REFLEXIVE }
 
 data class VerbWorkoutConfig(
+    val mode: VerbTrainingMode = VerbTrainingMode.CONJUGAR,
     val selectedTenses: Set<String> = setOf("presente"),
-    val groups: Set<VerbGroup> = setOf(VerbGroup.REGULAR, VerbGroup.IRREGULAR, VerbGroup.STEM),
-    val reflexive: Set<Boolean> = setOf(true, false), // true = reflexive, false = non-reflexive
-    val limitType: String = "все", // "топ-50", "топ-100", "топ-200", "все", "свой список"
-    val mode: VerbTrainingMode = VerbTrainingMode.CHOICE,
-    val selfCheck: Boolean = false,
+    val groups: Set<VerbGroup> = setOf(VerbGroup.REGULAR, VerbGroup.IRREGULAR),
+    val includeReflexive: Boolean = true,
     val isVoseo: Boolean = false,
-    val hasTimer: Boolean = false,
-    val timerValue: Int = 1 // minutes
+    val acceptNoAccent: Boolean = true,
+    val questionCount: Int = 20
 )
 
+/** Один вопрос в сессии. Поля используются по-разному в зависимости от режима. */
 data class VerbQuestion(
     val conjugation: ConjugationEntity,
-    val pronounIndex: Int,
-    val correctAnswer: String,
-    val options: List<String> = emptyList(),
-    val userValue: String = "",
+    val pronounIndex: Int,                  // 0..5
+    val correctAnswer: String,              // правильная форма
+    // Inverso:
+    val pickedInfinitive: String? = null,   // что показано (для Inverso)
+    // Hueco:
+    val sentenceTemplate: String = "",      // фраза с ___
+    // Auditivo:
+    val ttsText: String = "",               // что озвучить
+    // Состояние ответа
+    val userInput: String = "",
     val isChecked: Boolean = false,
     val isCorrect: Boolean? = null,
-    val allUserValues: List<String> = List(6) { "" },
-    val allChecked: Boolean = false,
-    val allResults: List<Boolean?> = List(6) { null }
+    val nearMiss: Boolean = false,          // правильно, но без акцентов
+    // Inverso: пользователь выбрал
+    val pickedInf: String = "",
+    val pickedTense: String = "",
+    val pickedPronounIdx: Int = -1
 )
 
 data class VerbTrainingState(
     val config: VerbWorkoutConfig = VerbWorkoutConfig(),
     val questions: List<VerbQuestion> = emptyList(),
     val currentIndex: Int = 0,
+    val correctCount: Int = 0,
+    val nearMissCount: Int = 0,
     val score: Int = 0,
     val isGameOver: Boolean = false,
-    val showSetup: Boolean = true,
-    val timeLeftSeconds: Int = 0
-)
+    val showSetup: Boolean = true
+) {
+    val total: Int get() = questions.size.coerceAtLeast(1)
+}
 
 @HiltViewModel
 class VerbViewModel @Inject constructor(
@@ -64,136 +81,168 @@ class VerbViewModel @Inject constructor(
     private val _state = MutableStateFlow(VerbTrainingState())
     val state = _state.asStateFlow()
 
-    private val pronouns = listOf("yo", "tú", "él/ella", "nosotros", "vosotros", "ellos")
-    private val pronounsVoseo = listOf("yo", "vos", "él/ella", "nosotros", "vosotros", "ellos")
-
     private var timerJob: Job? = null
 
-    fun updateConfig(config: VerbWorkoutConfig) {
-        _state.value = _state.value.copy(config = config)
+    private val pronouns = listOf("yo", "tú", "él/ella", "nosotros", "vosotros", "ellos")
+    private val pronounsVoseo = listOf("yo", "vos", "él/ella", "nosotros", "vosotros", "ellos")
+    private val allTenses = listOf("presente", "preterito", "imperfecto", "futuro", "condicional", "subjuntivo")
+
+    fun updateConfig(c: VerbWorkoutConfig) {
+        _state.value = _state.value.copy(config = c)
+    }
+
+    fun openSetup() {
+        timerJob?.cancel()
+        _state.value = VerbTrainingState(config = _state.value.config)
     }
 
     fun startTraining() {
         viewModelScope.launch {
-            val config = _state.value.config
-            val allConjugations = conjugationDao.getAll()
-            
-            // 1. Filter by tense
-            var filtered = allConjugations.filter { it.tense in config.selectedTenses }
+            val cfg = _state.value.config
+            val all = conjugationDao.getAll()
 
-            // 2. Filter by group (regular/irregular/stem)
-            // Note: In our current DB, ConjugationEntity only has isIrregular. 
-            // We'd need WordEntity.verbSubtype for "stem" check, but for now we'll use isIrregular.
-            filtered = filtered.filter { conj ->
-                if (conj.isIrregular) VerbGroup.IRREGULAR in config.groups else VerbGroup.REGULAR in config.groups
+            // Фильтрация
+            var pool = all.filter { it.tense in cfg.selectedTenses }
+            pool = pool.filter { c ->
+                val isReflex = c.verb.lowercase().endsWith("se")
+                val passReflex = if (isReflex) cfg.includeReflexive else true
+                val passGroup =
+                    (c.isIrregular && VerbGroup.IRREGULAR in cfg.groups) ||
+                    (!c.isIrregular && VerbGroup.REGULAR in cfg.groups)
+                passReflex && passGroup
             }
+            if (pool.isEmpty()) return@launch
 
-            // 3. Filter by reflexivity
-            filtered = filtered.filter { conj ->
-                val isReflexive = conj.verb.lowercase().endsWith("se")
-                (isReflexive && true in config.reflexive) || (!isReflexive && false in config.reflexive)
-            }
+            // Сборка вопросов
+            val pickedConjs = pool.shuffled().take(cfg.questionCount.coerceAtMost(pool.size))
+            val questions = pickedConjs.map { c ->
+                val pIdx = (0..5).random()
+                var correct = formAt(c, pIdx)
+                if (cfg.isVoseo && pIdx == 1 && (c.tense == "presente"))
+                    correct = convertToVoseo(c.verb)
 
-            // 4. Apply Limit
-            val limit = when(config.limitType) {
-                "топ-50" -> 50
-                "топ-100" -> 100
-                "топ-200" -> 200
-                else -> 1000
-            }
-            
-            val finalPool = filtered.shuffled().take(limit)
-
-            val questions = finalPool.map { conj ->
-                val pIdx = if (config.mode == VerbTrainingMode.ASSEMBLY) 0 else (0..5).random()
-                val forms = listOf(conj.yo, conj.tu, conj.el, conj.nosotros, conj.vosotros, conj.ellos)
-                var correct = forms[pIdx]
-                
-                if (config.isVoseo && pIdx == 1 && (conj.tense == "presente" || conj.tense == "imperativo")) {
-                    correct = convertToVoseo(conj.verb, conj.tense)
+                when (cfg.mode) {
+                    VerbTrainingMode.CONJUGAR -> VerbQuestion(
+                        conjugation   = c,
+                        pronounIndex  = pIdx,
+                        correctAnswer = correct
+                    )
+                    VerbTrainingMode.INVERSO -> VerbQuestion(
+                        conjugation   = c,
+                        pronounIndex  = pIdx,
+                        correctAnswer = correct,
+                        pickedInfinitive = c.verb
+                    )
+                    VerbTrainingMode.HUECO -> VerbQuestion(
+                        conjugation   = c,
+                        pronounIndex  = pIdx,
+                        correctAnswer = correct,
+                        sentenceTemplate = templateFor(c.tense, pIdx, cfg.isVoseo)
+                    )
+                    VerbTrainingMode.AUDITIVO -> VerbQuestion(
+                        conjugation   = c,
+                        pronounIndex  = pIdx,
+                        correctAnswer = correct,
+                        ttsText       = correct
+                    )
                 }
-
-                val options = if (config.mode == VerbTrainingMode.CHOICE) {
-                    (allConjugations.shuffled().take(3).map { 
-                        listOf(it.yo, it.tu, it.el, it.nosotros, it.vosotros, it.ellos).random() 
-                    } + correct).shuffled()
-                } else emptyList()
-
-                VerbQuestion(conj, pIdx, correct, options)
             }
 
             _state.value = _state.value.copy(
-                questions = questions,
+                questions   = questions,
                 currentIndex = 0,
-                score = 0,
-                isGameOver = false,
-                showSetup = false,
-                timeLeftSeconds = if (config.hasTimer) config.timerValue * 60 else 0
+                correctCount = 0,
+                nearMissCount = 0,
+                score        = 0,
+                isGameOver   = false,
+                showSetup    = false
             )
 
-            if (config.hasTimer) startTimer()
-        }
-    }
-
-    private fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (_state.value.timeLeftSeconds > 0) {
-                delay(1000)
-                _state.value = _state.value.copy(timeLeftSeconds = _state.value.timeLeftSeconds - 1)
+            // Озвучить первую форму если режим Auditivo
+            if (cfg.mode == VerbTrainingMode.AUDITIVO) {
+                tts.speak(questions.first().ttsText)
             }
-            finishTraining()
         }
     }
 
-    private fun convertToVoseo(verb: String, tense: String): String {
-        return when {
-            verb.endsWith("ar") -> verb.dropLast(2) + "ás"
-            verb.endsWith("er") -> verb.dropLast(2) + "és"
-            verb.endsWith("ir") -> verb.dropLast(2) + "ís"
-            else -> verb
+    /** Повторить произнесение (для режима Auditivo). */
+    fun replayAudio() {
+        val q = _state.value.questions.getOrNull(_state.value.currentIndex) ?: return
+        if (_state.value.config.mode == VerbTrainingMode.AUDITIVO && q.ttsText.isNotBlank()) {
+            tts.speak(q.ttsText)
         }
     }
 
-    fun submitAnswer(value: String) {
+    /** Озвучить инфинитив (полезная подсказка в любом режиме). */
+    fun playInfinitive() {
+        val q = _state.value.questions.getOrNull(_state.value.currentIndex) ?: return
+        tts.speak(q.conjugation.verb)
+    }
+
+    /**
+     * Проверка ответа в режимах CONJUGAR / HUECO / AUDITIVO (текстовый ввод формы).
+     */
+    fun submitAnswer(input: String) {
         val s = _state.value
-        val q = s.questions[s.currentIndex]
-        val isCorrect = value.trim().lowercase() == q.correctAnswer.lowercase()
-        
-        val updatedQuestions = s.questions.toMutableList()
-        updatedQuestions[s.currentIndex] = q.copy(
-            userValue = value,
+        val q = s.questions.getOrNull(s.currentIndex) ?: return
+        if (q.isChecked) return
+
+        val u = input.trim().lowercase()
+        val c = q.correctAnswer.lowercase()
+        val (correct, near) = when {
+            u == c                                      -> true to false
+            s.config.acceptNoAccent &&
+                stripAccents(u) == stripAccents(c)      -> true to true   // без акцентов
+            else                                        -> false to false
+        }
+
+        val updated = q.copy(
+            userInput = input,
             isChecked = true,
-            isCorrect = isCorrect
+            isCorrect = correct,
+            nearMiss  = near
+        )
+        val deltaScore = when {
+            correct && !near -> 10
+            correct && near  -> 5
+            else             -> 0
+        }
+
+        replaceCurrent(updated)
+        _state.value = _state.value.copy(
+            correctCount  = s.correctCount  + (if (correct && !near) 1 else 0),
+            nearMissCount = s.nearMissCount + (if (correct && near) 1 else 0),
+            score         = s.score + deltaScore
         )
 
-        _state.value = s.copy(
-            questions = updatedQuestions,
-            score = if (isCorrect) s.score + 1 else s.score
-        )
-
-        if (isCorrect) tts.speak(q.correctAnswer)
+        if (correct) tts.speak(q.correctAnswer)
     }
 
-    fun submitAssembly(values: List<String>) {
+    /**
+     * Проверка ответа в режиме INVERSO — пользователь выбрал инфинитив, время и лицо.
+     */
+    fun submitInverso(inf: String, tense: String, pronounIdx: Int) {
         val s = _state.value
-        val q = s.questions[s.currentIndex]
-        val correctForms = listOf(q.conjugation.yo, q.conjugation.tu, q.conjugation.el, q.conjugation.nosotros, q.conjugation.vosotros, q.conjugation.ellos)
-        
-        val results = values.mapIndexed { index, v -> v.trim().lowercase() == correctForms[index].lowercase() }
-        val correctCount = results.count { it }
-        
-        val updatedQuestions = s.questions.toMutableList()
-        updatedQuestions[s.currentIndex] = q.copy(
-            allUserValues = values,
-            allChecked = true,
-            allResults = results
-        )
+        val q = s.questions.getOrNull(s.currentIndex) ?: return
+        if (q.isChecked) return
 
-        _state.value = s.copy(
-            questions = updatedQuestions,
-            score = s.score + (if (correctCount == 6) 1 else 0)
+        val correct = inf == q.conjugation.verb &&
+                      tense == q.conjugation.tense &&
+                      pronounIdx == q.pronounIndex
+
+        val updated = q.copy(
+            isChecked = true,
+            isCorrect = correct,
+            pickedInf = inf,
+            pickedTense = tense,
+            pickedPronounIdx = pronounIdx
         )
+        replaceCurrent(updated)
+        _state.value = _state.value.copy(
+            correctCount = s.correctCount + (if (correct) 1 else 0),
+            score        = s.score + (if (correct) 10 else 0)
+        )
+        if (correct) tts.speak(q.correctAnswer)
     }
 
     fun nextQuestion() {
@@ -202,6 +251,10 @@ class VerbViewModel @Inject constructor(
             finishTraining()
         } else {
             _state.value = s.copy(currentIndex = s.currentIndex + 1)
+            // Авто-озвучка для Auditivo
+            if (s.config.mode == VerbTrainingMode.AUDITIVO) {
+                _state.value.questions.getOrNull(s.currentIndex + 1)?.let { tts.speak(it.ttsText) }
+            }
         }
     }
 
@@ -210,13 +263,54 @@ class VerbViewModel @Inject constructor(
         _state.value = _state.value.copy(isGameOver = true)
         viewModelScope.launch {
             val p = userProgressDao.getProgressOnce() ?: return@launch
-            userProgressDao.update(p.copy(totalXp = p.totalXp + (_state.value.score * 10)))
+            userProgressDao.update(p.copy(totalXp = p.totalXp + (_state.value.score)))
             achievementManager.checkAndUnlock()
         }
     }
 
-    fun getPronoun(index: Int): String {
-        return if (_state.value.config.isVoseo) pronounsVoseo[index] else pronouns[index]
+    fun getPronoun(index: Int): String =
+        if (_state.value.config.isVoseo) pronounsVoseo[index] else pronouns[index]
+
+    /** Доступные времена/глаголы для UI выбора в Inverso. */
+    fun availableTenses(): List<String> = allTenses
+
+    // ── Helpers ─────────────────────────────────────────────
+
+    private fun replaceCurrent(q: VerbQuestion) {
+        val list = _state.value.questions.toMutableList()
+        list[_state.value.currentIndex] = q
+        _state.value = _state.value.copy(questions = list)
+    }
+
+    private fun formAt(c: ConjugationEntity, idx: Int): String =
+        listOf(c.yo, c.tu, c.el, c.nosotros, c.vosotros, c.ellos)[idx]
+
+    private fun convertToVoseo(verb: String): String = when {
+        verb.endsWith("ar") -> verb.dropLast(2) + "ás"
+        verb.endsWith("er") -> verb.dropLast(2) + "és"
+        verb.endsWith("ir") -> verb.dropLast(2) + "ís"
+        else -> verb
+    }
+
+    private fun stripAccents(s: String): String =
+        s.replace('á','a').replace('é','e').replace('í','i')
+         .replace('ó','o').replace('ú','u').replace('ü','u')
+         .replace('ñ','n')
+
+    /**
+     * Шаблон фразы для режима HUECO (с подстановкой местоимения и контекста).
+     */
+    private fun templateFor(tense: String, pIdx: Int, isVoseo: Boolean): String {
+        val pron = (if (isVoseo) pronounsVoseo else pronouns)[pIdx]
+        return when (tense) {
+            "presente"    -> "$pron ___ todos los días."
+            "preterito"   -> "Ayer $pron ___."
+            "imperfecto"  -> "Antes $pron siempre ___."
+            "futuro"      -> "Mañana $pron ___."
+            "condicional" -> "Si pudiera, $pron ___."
+            "subjuntivo"  -> "Espero que $pron ___."
+            else          -> "$pron ___."
+        }
     }
 
     override fun onCleared() {

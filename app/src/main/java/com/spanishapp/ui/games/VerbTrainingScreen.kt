@@ -1,38 +1,48 @@
 package com.spanishapp.ui.games
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 
-private val Purple = Color(0xFF7B2FBE)
-private val BgGray = Color(0xFFF8F8FA)
-private val TextMain = Color(0xFF1A1A1A)
-private val TextGray = Color(0xFF8E8E93)
-private val CardBorder = Color(0xFFE5E5EA)
+private val ACCENT      = Color(0xFF2196F3)
+private val ACCENT_DARK = Color(0xFF1565C0)
+private val BgGray      = Color(0xFFF8F8FA)
+private val TextMain    = Color(0xFF1A1A1A)
+private val TextGray    = Color(0xFF8E8E93)
+private val CardBorder  = Color(0xFFE5E5EA)
+private val Green       = Color(0xFF4CAF50)
+private val Red         = Color(0xFFF44336)
+private val Orange      = Color(0xFFFF9500)
+
+private val ACCENT_KEYS = listOf("á", "é", "í", "ó", "ú", "ñ", "ü")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,525 +55,632 @@ fun VerbTrainingScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Verbos: Тренажер", fontWeight = FontWeight.Bold) },
+                title = { Text("Verbos · тренажёр", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                    IconButton(onClick = {
+                        if (state.showSetup || state.isGameOver) navController.popBackStack()
+                        else viewModel.openSetup()
+                    }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null) }
+                },
+                actions = {
+                    if (!state.showSetup && !state.isGameOver) {
+                        IconButton(onClick = { viewModel.openSetup() }) {
+                            Icon(Icons.Default.Settings, null)
+                        }
                     }
                 }
             )
         }
     ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(BgGray)
-        ) {
+        Box(Modifier.fillMaxSize().padding(padding).background(BgGray)) {
             when {
-                state.showSetup -> VerbSetupPremium(state.config, viewModel)
-                state.isGameOver -> VerbResultScreen(state, onFinish = { navController.popBackStack() })
-                else -> VerbActiveTraining(state, viewModel)
+                state.showSetup  -> SetupContent(state, viewModel)
+                state.isGameOver -> ResultsContent(state, viewModel) { navController.popBackStack() }
+                else             -> TrainingContent(state, viewModel)
             }
         }
     }
 }
 
+// ══════════════════════════════════════════════════════════════
+//  НАСТРОЙКИ
+// ══════════════════════════════════════════════════════════════
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun VerbSetupPremium(config: VerbWorkoutConfig, viewModel: VerbViewModel) {
-    val scrollState = rememberScrollState()
+private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
+    val cfg = state.config
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
+    ) {
+        Text("Настройки", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = TextMain)
+
+        SectionCard(title = "Режим тренировки") {
+            VerbTrainingMode.entries.forEach { mode ->
+                val sel = cfg.mode == mode
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                        .clickable { vm.updateConfig(cfg.copy(mode = mode)) },
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (sel) ACCENT.copy(alpha = 0.10f) else Color.White,
+                    border = androidx.compose.foundation.BorderStroke(
+                        if (sel) 2.dp else 1.dp,
+                        if (sel) ACCENT else CardBorder
+                    )
+                ) {
+                    Row(modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = sel, onClick = null,
+                            colors = RadioButtonDefaults.colors(selectedColor = ACCENT))
+                        Spacer(Modifier.width(8.dp))
+                        Column {
+                            Text(mode.title, fontWeight = FontWeight.SemiBold, color = TextMain)
+                            Text(mode.desc, fontSize = 12.sp, color = TextGray)
+                        }
+                    }
+                }
+            }
+        }
+
+        SectionCard(title = "Времена") {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                vm.availableTenses().forEach { t ->
+                    val sel = t in cfg.selectedTenses
+                    FilterChip(
+                        selected = sel,
+                        onClick = {
+                            val newSet = if (sel) cfg.selectedTenses - t else cfg.selectedTenses + t
+                            if (newSet.isNotEmpty()) vm.updateConfig(cfg.copy(selectedTenses = newSet))
+                        },
+                        label = { Text(prettyTense(t)) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = ACCENT,
+                            selectedLabelColor = Color.White
+                        )
+                    )
+                }
+            }
+        }
+
+        SectionCard(title = "Группы глаголов") {
+            Column {
+                ToggleRow("Регулярные", VerbGroup.REGULAR in cfg.groups) { on ->
+                    val g = if (on) cfg.groups + VerbGroup.REGULAR else cfg.groups - VerbGroup.REGULAR
+                    if (g.isNotEmpty()) vm.updateConfig(cfg.copy(groups = g))
+                }
+                ToggleRow("Неправильные (ser, estar, ir...)", VerbGroup.IRREGULAR in cfg.groups) { on ->
+                    val g = if (on) cfg.groups + VerbGroup.IRREGULAR else cfg.groups - VerbGroup.IRREGULAR
+                    if (g.isNotEmpty()) vm.updateConfig(cfg.copy(groups = g))
+                }
+            }
+        }
+
+        SectionCard(title = "Дополнительно") {
+            Column {
+                ToggleRow("Включать рефлексивные (lavarse)", cfg.includeReflexive) {
+                    vm.updateConfig(cfg.copy(includeReflexive = it))
+                }
+                ToggleRow("Voseo (vos вместо tú)", cfg.isVoseo) {
+                    vm.updateConfig(cfg.copy(isVoseo = it))
+                }
+                ToggleRow("Засчитывать ввод без акцентов", cfg.acceptNoAccent) {
+                    vm.updateConfig(cfg.copy(acceptNoAccent = it))
+                }
+            }
+        }
+
+        SectionCard(title = "Сколько вопросов") {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf(10, 20, 30).forEach { n ->
+                    FilterChip(
+                        selected = cfg.questionCount == n,
+                        onClick = { vm.updateConfig(cfg.copy(questionCount = n)) },
+                        label = { Text(n.toString()) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = ACCENT,
+                            selectedLabelColor = Color.White
+                        )
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        Button(
+            onClick = { vm.startTraining() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
+            enabled = cfg.selectedTenses.isNotEmpty() && cfg.groups.isNotEmpty()
+        ) {
+            Text("¡EMPEZAR!", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        }
+
+        Spacer(Modifier.height(20.dp))
+    }
+}
+
+@Composable
+private fun SectionCard(title: String, content: @Composable () -> Unit) {
+    Column {
+        Text(title, fontSize = 13.sp, color = TextGray, fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp))
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(14.dp),
+            color = Color.White,
+            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
+        ) { Column(modifier = Modifier.padding(12.dp)) { content() } }
+    }
+}
+
+@Composable
+private fun ToggleRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(label, fontSize = 14.sp, color = TextMain)
+        Switch(
+            checked = checked,
+            onCheckedChange = onChange,
+            colors = SwitchDefaults.colors(checkedTrackColor = ACCENT)
+        )
+    }
+}
+
+private fun prettyTense(t: String): String = when (t) {
+    "presente"    -> "Presente"
+    "preterito"   -> "Indefinido"
+    "imperfecto"  -> "Imperfecto"
+    "futuro"      -> "Futuro"
+    "condicional" -> "Condicional"
+    "subjuntivo"  -> "Subjuntivo"
+    else          -> t
+}
+
+// ══════════════════════════════════════════════════════════════
+//  ТРЕНИРОВКА
+// ══════════════════════════════════════════════════════════════
+
+@Composable
+private fun TrainingContent(state: VerbTrainingState, vm: VerbViewModel) {
+    val q = state.questions.getOrNull(state.currentIndex) ?: return
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Upper button
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text(
-                "начать с прежними настройками",
-                fontSize = 11.sp,
-                color = TextGray,
-                modifier = Modifier
-                    .border(0.5.dp, CardBorder, RoundedCornerShape(4.dp))
-                    .clickable { viewModel.startTraining() }
-                    .padding(horizontal = 10.dp, vertical = 4.dp)
-            )
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("Вопрос ${state.currentIndex + 1}/${state.total}",
+                color = ACCENT, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+            Text("Очки: ${state.score}", color = ACCENT, fontWeight = FontWeight.Bold)
         }
+        LinearProgressIndicator(
+            progress = { (state.currentIndex + 1).toFloat() / state.total },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+                .height(4.dp)
+                .clip(RoundedCornerShape(2.dp)),
+            color = ACCENT,
+            trackColor = CardBorder
+        )
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            // LEFT COLUMN
-            Column(modifier = Modifier.weight(1.1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Времена:", color = Purple, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
-                
-                Panel(title = "Modo Indicativo:") {
-                    TenseCheck("Presente", "presente", config, viewModel)
-                    TenseCheck("Pretérito Perfecto", "preterito_perfecto", config, viewModel)
-                    TenseCheck("Pretérito Indefinido", "preterito", config, viewModel)
-                    TenseCheck("Pretérito Imperfecto", "imperfecto", config, viewModel)
-                    TenseCheck("Pretérito Pluscuamperfecto", "pluscuamperfecto", config, viewModel)
-                    TenseCheck("Pretérito Anterior", "anterior", config, viewModel)
-                }
+        Spacer(Modifier.height(8.dp))
 
-                Panel(title = "Futuros:") {
-                    TenseCheck("Futuro Simple", "futuro", config, viewModel)
-                    TenseCheck("Futuro Compuesto", "futuro_compuesto", config, viewModel)
-                    TenseCheck("Condicional Simple", "condicional", config, viewModel)
-                    TenseCheck("Condicional Compuesto", "condicional_compuesto", config, viewModel)
-                }
+        when (state.config.mode) {
+            VerbTrainingMode.CONJUGAR -> ConjugarCard(q, vm)
+            VerbTrainingMode.HUECO    -> HuecoCard(q, vm)
+            VerbTrainingMode.AUDITIVO -> AuditivoCard(q, vm)
+            VerbTrainingMode.INVERSO  -> InversoCard(q, vm)
+        }
+    }
+}
 
-                Panel(title = "Modo Imperativo:") {
-                    TenseCheck("Afirmativo", "afirmativo", config, viewModel)
-                    TenseCheck("Negativo", "negativo", config, viewModel)
-                }
+@Composable
+private fun ConjugarCard(q: VerbQuestion, vm: VerbViewModel) {
+    QuestionCard(
+        title   = prettyTense(q.conjugation.tense),
+        bigLine = "${vm.getPronoun(q.pronounIndex)} · ${q.conjugation.verb}",
+        hint    = q.conjugation.note.ifBlank { null }
+    )
+    AnswerArea(q, vm)
+}
 
-                Panel(title = "Modo Subjuntivo:") {
-                    TenseCheck("Presente", "subjuntivo_presente", config, viewModel)
-                    TenseCheck("Perfecto", "subjuntivo_perfecto", config, viewModel)
-                    TenseCheck("Imperfecto", "subjuntivo", config, viewModel)
-                    TenseCheck("Pluscuamperfecto", "subjuntivo_pluscuamperfecto", config, viewModel)
+@Composable
+private fun HuecoCard(q: VerbQuestion, vm: VerbViewModel) {
+    QuestionCard(
+        title   = prettyTense(q.conjugation.tense),
+        bigLine = q.sentenceTemplate,
+        hint    = "(${q.conjugation.verb})"
+    )
+    AnswerArea(q, vm)
+}
+
+@Composable
+private fun AuditivoCard(q: VerbQuestion, vm: VerbViewModel) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = Color.White,
+        shadowElevation = 2.dp
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(prettyTense(q.conjugation.tense), fontSize = 12.sp, color = TextGray)
+            Spacer(Modifier.height(8.dp))
+            IconButton(
+                onClick = { vm.replayAudio() },
+                modifier = Modifier.size(72.dp)
+            ) {
+                Icon(Icons.AutoMirrored.Filled.VolumeUp, "Слушать",
+                    tint = ACCENT, modifier = Modifier.size(56.dp))
+            }
+            Spacer(Modifier.height(8.dp))
+            Text("Послушайте и запишите услышанную форму",
+                fontSize = 13.sp, color = TextGray, textAlign = TextAlign.Center)
+        }
+    }
+    AnswerArea(q, vm)
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun InversoCard(q: VerbQuestion, vm: VerbViewModel) {
+    var pickedInf   by remember(q) { mutableStateOf("") }
+    var pickedTense by remember(q) { mutableStateOf("") }
+    var pickedPron  by remember(q) { mutableIntStateOf(-1) }
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = Color.White,
+        shadowElevation = 2.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Эта форма от какого глагола, времени и лица?",
+                fontSize = 13.sp, color = TextGray, textAlign = TextAlign.Center)
+            Spacer(Modifier.height(8.dp))
+            Text(q.correctAnswer,
+                fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = ACCENT_DARK)
+        }
+    }
+
+    Spacer(Modifier.height(8.dp))
+    DropdownPicker("Инфинитив", q.conjugation.verb,
+        listOf(q.conjugation.verb), pickedInf) { pickedInf = it }
+    DropdownPicker("Время", q.conjugation.tense,
+        listOf("presente","preterito","imperfecto","futuro","condicional","subjuntivo"),
+        pickedTense) { pickedTense = it }
+    DropdownPicker("Лицо", "yo/tú/...",
+        (0..5).map { vm.getPronoun(it) },
+        if (pickedPron < 0) "" else vm.getPronoun(pickedPron)
+    ) { selected ->
+        pickedPron = (0..5).firstOrNull { vm.getPronoun(it) == selected } ?: -1
+    }
+
+    Spacer(Modifier.height(12.dp))
+
+    if (q.isChecked) {
+        FeedbackBanner(q)
+        Button(
+            onClick = { vm.nextQuestion() },
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
+            shape = RoundedCornerShape(14.dp)
+        ) { Text("Далее", fontWeight = FontWeight.Bold) }
+    } else {
+        Button(
+            onClick = { vm.submitInverso(pickedInf, pickedTense, pickedPron) },
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
+            shape = RoundedCornerShape(14.dp),
+            enabled = pickedInf.isNotBlank() && pickedTense.isNotBlank() && pickedPron >= 0
+        ) { Text("Проверить", fontWeight = FontWeight.Bold) }
+    }
+}
+
+@Composable
+private fun QuestionCard(title: String, bigLine: String, hint: String?) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = Color.White,
+        shadowElevation = 2.dp
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Surface(
+                color = ACCENT.copy(alpha = 0.12f),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(title, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = ACCENT_DARK,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))
+            }
+            Spacer(Modifier.height(16.dp))
+            Text(bigLine,
+                fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = TextMain,
+                textAlign = TextAlign.Center)
+            if (hint != null) {
+                Spacer(Modifier.height(8.dp))
+                Text(hint, fontSize = 13.sp, color = TextGray, textAlign = TextAlign.Center)
+            }
+        }
+    }
+}
+
+@Composable
+private fun AnswerArea(q: VerbQuestion, vm: VerbViewModel) {
+    var input by remember(q) { mutableStateOf(TextFieldValue("")) }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(q) {
+        if (!q.isChecked) {
+            try { focusRequester.requestFocus() } catch (_: Exception) { /* noop */ }
+        }
+    }
+
+    OutlinedTextField(
+        value = input,
+        onValueChange = { if (!q.isChecked) input = it },
+        placeholder = { Text("Введите форму…") },
+        singleLine = true,
+        readOnly = q.isChecked,
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
+        shape = RoundedCornerShape(14.dp)
+    )
+
+    Spacer(Modifier.height(8.dp))
+
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier.fillMaxWidth()) {
+        ACCENT_KEYS.forEach { ch ->
+            Surface(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(40.dp)
+                    .clickable(enabled = !q.isChecked) {
+                        val before = input.text.substring(0, input.selection.start)
+                        val after  = input.text.substring(input.selection.end)
+                        val combined = before + ch + after
+                        input = TextFieldValue(combined,
+                            selection = TextRange(before.length + ch.length))
+                    },
+                shape = RoundedCornerShape(8.dp),
+                color = Color.White,
+                border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(ch, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = ACCENT)
                 }
             }
+        }
+    }
 
-            Spacer(Modifier.width(12.dp))
+    Spacer(Modifier.height(12.dp))
 
-            // RIGHT COLUMN
-            Column(modifier = Modifier.weight(0.9f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Panel(title = "Тип глаголов:") {
-                    GroupSwitch("правильные", VerbGroup.REGULAR, config, viewModel)
-                    GroupSwitch("отклоняющиеся", VerbGroup.STEM, config, viewModel)
-                    GroupSwitch("неправильные", VerbGroup.IRREGULAR, config, viewModel)
-                }
+    if (q.isChecked) {
+        FeedbackBanner(q)
+        Button(
+            onClick = { vm.nextQuestion() },
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
+            shape = RoundedCornerShape(14.dp)
+        ) { Text("Далее", fontWeight = FontWeight.Bold) }
+    } else {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(
+                onClick = { vm.submitAnswer("") },
+                modifier = Modifier.weight(1f).height(50.dp),
+                shape = RoundedCornerShape(14.dp)
+            ) { Text("Не знаю") }
 
-                Panel(title = "Возвратность:") {
-                    ReflexiveSwitch("невозвратные", false, config, viewModel)
-                    ReflexiveSwitch("возвратные", true, config, viewModel)
-                }
+            Button(
+                onClick = { vm.submitAnswer(input.text) },
+                modifier = Modifier.weight(1.5f).height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
+                shape = RoundedCornerShape(14.dp),
+                enabled = input.text.isNotBlank()
+            ) { Text("Проверить", fontWeight = FontWeight.Bold) }
+        }
+    }
+}
 
-                Panel(title = "Список глаголов:") {
-                    val limits = listOf("топ-50", "топ-100", "топ-200", "все", "свой список")
-                    limits.forEach { limit ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.clickable { viewModel.updateConfig(config.copy(limitType = limit)) }
-                        ) {
-                            RadioButton(
-                                selected = config.limitType == limit,
-                                onClick = null,
-                                colors = RadioButtonDefaults.colors(selectedColor = Purple),
-                                modifier = Modifier.scale(0.8f)
+@Composable
+private fun FeedbackBanner(q: VerbQuestion) {
+    val (color, icon, text) = when {
+        q.isCorrect == true && q.nearMiss ->
+            Triple(Orange, Icons.Default.Check, "Почти! Не хватает акцентов: ${q.correctAnswer}")
+        q.isCorrect == true ->
+            Triple(Green, Icons.Default.Check, "¡Correcto!  ${q.correctAnswer}")
+        else ->
+            Triple(Red, Icons.Default.Close, "Правильно: ${q.correctAnswer}")
+    }
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 10.dp),
+        shape = RoundedCornerShape(14.dp),
+        color = color.copy(alpha = 0.12f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, color)
+    ) {
+        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(icon, null, tint = color)
+            Spacer(Modifier.width(8.dp))
+            Text(text, color = color, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+@Composable
+private fun DropdownPicker(label: String, hint: String, options: List<String>, selected: String, onSelect: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 4.dp)) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = true },
+            shape = RoundedCornerShape(12.dp),
+            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder),
+            color = Color.White
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text(label, fontSize = 11.sp, color = TextGray)
+                Text(if (selected.isBlank()) "—  $hint" else prettyOption(label, selected),
+                    fontSize = 16.sp,
+                    color = if (selected.isBlank()) TextGray else TextMain,
+                    fontWeight = FontWeight.SemiBold)
+            }
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            options.forEach { o ->
+                DropdownMenuItem(
+                    text = { Text(prettyOption(label, o)) },
+                    onClick = { onSelect(o); expanded = false }
+                )
+            }
+        }
+    }
+}
+
+private fun prettyOption(label: String, raw: String): String =
+    if (label == "Время") prettyTense(raw) else raw
+
+// ══════════════════════════════════════════════════════════════
+//  РЕЗУЛЬТАТЫ
+// ══════════════════════════════════════════════════════════════
+
+@Composable
+private fun ResultsContent(state: VerbTrainingState, vm: VerbViewModel, onExit: () -> Unit) {
+    val total = state.total
+    val percent = if (total > 0)
+        ((state.correctCount + state.nearMissCount * 0.5f) * 100 / total).toInt() else 0
+    val weak = state.questions.filter { it.isCorrect == false }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("🎯", fontSize = 64.sp)
+        Text("Тренировка завершена",
+            fontSize = 22.sp, fontWeight = FontWeight.Bold, color = TextMain)
+        Spacer(Modifier.height(20.dp))
+
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround) {
+            Stat("Точность", "$percent%")
+            Stat("Правильно", "${state.correctCount}/$total")
+            if (state.nearMissCount > 0) Stat("Без акцентов", "${state.nearMissCount}")
+        }
+
+        Spacer(Modifier.height(28.dp))
+
+        if (weak.isNotEmpty()) {
+            Text("Сложные формы:", fontSize = 14.sp, color = TextGray,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(bottom = 8.dp))
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                color = Color.White,
+                border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    weak.forEach { q ->
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(
+                                "${vm.getPronoun(q.pronounIndex)} · ${q.conjugation.verb}",
+                                fontSize = 13.sp, color = TextMain
                             )
-                            Text(limit, color = TextMain, fontSize = 13.sp)
+                            Text(
+                                q.correctAnswer,
+                                fontSize = 13.sp, color = ACCENT,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                     }
                 }
-
-                Panel(title = "Режим тренировки:") {
-                    ModeSwitch("выбрать форму", VerbTrainingMode.CHOICE, config, viewModel)
-                    ModeSwitch("расставить формы", VerbTrainingMode.ASSEMBLY, config, viewModel)
-                    ModeSwitch("вписать форму", VerbTrainingMode.INPUT, config, viewModel)
-                }
-
-                Panel(title = "Самостоятельная проверка") {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Switch(
-                            checked = config.selfCheck,
-                            onCheckedChange = { viewModel.updateConfig(config.copy(selfCheck = it)) },
-                            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Purple),
-                            modifier = Modifier.scale(0.8f)
-                        )
-                        Text("включить", color = TextMain, fontSize = 13.sp)
-                    }
-                }
             }
-        }
-
-        // Bottom Panels
-        Panel(title = "Аргентинский диалект") {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Switch(
-                    checked = config.isVoseo,
-                    onCheckedChange = { viewModel.updateConfig(config.copy(isVoseo = it)) },
-                    colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Purple),
-                    modifier = Modifier.scale(0.8f)
-                )
-                Text("включить", color = TextMain, fontSize = 14.sp)
-            }
-        }
-
-        Panel(title = "Таймер") {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Switch(
-                    checked = config.hasTimer,
-                    onCheckedChange = { viewModel.updateConfig(config.copy(hasTimer = it)) },
-                    colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Purple),
-                    modifier = Modifier.scale(0.8f)
-                )
-                Spacer(Modifier.width(16.dp))
-                IconButton(
-                    onClick = { if(config.timerValue > 1) viewModel.updateConfig(config.copy(timerValue = config.timerValue - 1)) },
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Icon(Icons.Default.ChevronLeft, null, tint = Purple)
-                }
-                Surface(
-                    color = Purple.copy(alpha = 0.05f),
-                    shape = RoundedCornerShape(4.dp),
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                ) {
-                    Text(
-                        String.format("%02d", config.timerValue),
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        color = TextMain,
-                        fontSize = 16.sp
-                    )
-                }
-                IconButton(
-                    onClick = { viewModel.updateConfig(config.copy(timerValue = config.timerValue + 1)) },
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Icon(Icons.Default.ChevronRight, null, tint = Purple)
-                }
-            }
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Button(
-            onClick = { viewModel.startTraining() },
-            modifier = Modifier.fillMaxWidth().height(54.dp),
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple),
-            enabled = config.selectedTenses.isNotEmpty() && config.groups.isNotEmpty()
-        ) {
-            Text("НАЧАТЬ", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-        }
-        
-        Spacer(Modifier.height(32.dp))
-    }
-}
-
-@Composable
-fun Panel(title: String, content: @Composable ColumnScope.() -> Unit) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = Color.White,
-        border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
-    ) {
-        Column(modifier = Modifier.padding(10.dp)) {
-            Text(title, color = Purple, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(6.dp))
-            content()
-        }
-    }
-}
-
-@Composable
-fun TenseCheck(label: String, tense: String, config: VerbWorkoutConfig, viewModel: VerbViewModel) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                val new = if (tense in config.selectedTenses) config.selectedTenses - tense else config.selectedTenses + tense
-                viewModel.updateConfig(config.copy(selectedTenses = new))
-            }
-    ) {
-        Checkbox(
-            checked = tense in config.selectedTenses,
-            onCheckedChange = null,
-            colors = CheckboxDefaults.colors(checkedColor = Purple),
-            modifier = Modifier.scale(0.8f).size(24.dp)
-        )
-        Spacer(Modifier.width(4.dp))
-        Text(label, color = TextMain, fontSize = 11.sp, lineHeight = 13.sp)
-    }
-}
-
-@Composable
-fun GroupSwitch(label: String, group: VerbGroup, config: VerbWorkoutConfig, viewModel: VerbViewModel) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(32.dp)) {
-        Switch(
-            checked = group in config.groups,
-            onCheckedChange = { 
-                val new = if (it) config.groups + group else config.groups - group
-                viewModel.updateConfig(config.copy(groups = new))
-            },
-            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Purple),
-            modifier = Modifier.scale(0.7f)
-        )
-        Text(label, color = TextMain, fontSize = 12.sp, modifier = Modifier.padding(start = 2.dp))
-    }
-}
-
-@Composable
-fun ReflexiveSwitch(label: String, reflexive: Boolean, config: VerbWorkoutConfig, viewModel: VerbViewModel) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(32.dp)) {
-        Switch(
-            checked = reflexive in config.reflexive,
-            onCheckedChange = { 
-                val new = if (it) config.reflexive + reflexive else config.reflexive - reflexive
-                viewModel.updateConfig(config.copy(reflexive = new))
-            },
-            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Purple),
-            modifier = Modifier.scale(0.7f)
-        )
-        Text(label, color = TextMain, fontSize = 12.sp, modifier = Modifier.padding(start = 2.dp))
-    }
-}
-
-@Composable
-fun ModeSwitch(label: String, mode: VerbTrainingMode, config: VerbWorkoutConfig, viewModel: VerbViewModel) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(32.dp)) {
-        Switch(
-            checked = config.mode == mode,
-            onCheckedChange = { if(it) viewModel.updateConfig(config.copy(mode = mode)) },
-            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Purple),
-            modifier = Modifier.scale(0.7f)
-        )
-        Text(label, color = TextMain, fontSize = 12.sp, modifier = Modifier.padding(start = 2.dp))
-    }
-}
-
-@Composable
-fun VerbActiveTraining(state: VerbTrainingState, viewModel: VerbViewModel) {
-    val q = state.questions.getOrNull(state.currentIndex) ?: return
-    var inputText by remember(state.currentIndex) { mutableStateOf("") }
-    val assemblyValues = remember(state.currentIndex) { mutableStateListOf(*q.allUserValues.toTypedArray()) }
-    val green = Color(0xFF4CAF50)
-
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("${state.currentIndex + 1}/${state.questions.size}", color = Purple, fontWeight = FontWeight.Bold)
-            if (state.config.hasTimer) {
-                Text(
-                    String.format("%02d:%02d", state.timeLeftSeconds / 60, state.timeLeftSeconds % 60),
-                    color = if (state.timeLeftSeconds < 15) Color.Red else TextMain,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Text("Очки: ${state.score}", color = Purple, fontWeight = FontWeight.Bold)
-        }
-        
-        Spacer(Modifier.height(8.dp))
-        
-        LinearProgressIndicator(
-            progress = { (state.currentIndex + 1).toFloat() / state.questions.size },
-            modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
-            color = Purple,
-            trackColor = CardBorder
-        )
-        
-        Spacer(Modifier.height(24.dp))
-
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            color = Color.White,
-            shadowElevation = 2.dp,
-            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(q.conjugation.tense.uppercase(), color = Purple, fontWeight = FontWeight.Bold, fontSize = 13.sp)
-                Spacer(Modifier.height(8.dp))
-                Text(q.conjugation.verb, fontSize = 36.sp, fontWeight = FontWeight.Bold, color = TextMain)
-                if (state.config.mode != VerbTrainingMode.ASSEMBLY) {
-                    Spacer(Modifier.height(4.dp))
-                    Text("${viewModel.getPronoun(q.pronounIndex)} → ?", color = TextGray, fontSize = 20.sp)
-                }
-            }
-        }
-
-        Spacer(Modifier.height(32.dp))
-
-        when (state.config.mode) {
-            VerbTrainingMode.CHOICE -> ChoiceContent(q, viewModel)
-            VerbTrainingMode.INPUT -> InputContent(q, inputText, onValueChange = { inputText = it }, viewModel)
-            VerbTrainingMode.ASSEMBLY -> AssemblyContent(q, assemblyValues, viewModel)
-        }
-
-        Spacer(Modifier.height(32.dp))
-
-        val isAnswered = if (state.config.mode == VerbTrainingMode.ASSEMBLY) q.allChecked else q.isChecked
-        if (isAnswered) {
-            Button(
-                onClick = { viewModel.nextQuestion() },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Purple)
-            ) {
-                Text("ДАЛЕЕ", fontSize = 18.sp, color = Color.White, fontWeight = FontWeight.Bold)
-            }
-        }
-    }
-}
-
-@Composable
-fun ChoiceContent(q: VerbQuestion, viewModel: VerbViewModel) {
-    val green = Color(0xFF4CAF50)
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        q.options.forEach { option ->
-            val isSelected = q.isChecked && q.userValue == option
-            val isCorrect = q.isChecked && option == q.correctAnswer
-            
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .clickable(enabled = !q.isChecked) { viewModel.submitAnswer(option) },
-                shape = RoundedCornerShape(16.dp),
-                color = when {
-                    isCorrect -> green
-                    isSelected -> Color(0xFFF44336)
-                    else -> Color.White
-                },
-                border = if (!isCorrect && !isSelected) androidx.compose.foundation.BorderStroke(1.dp, CardBorder) else null
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        option,
-                        fontSize = 18.sp,
-                        color = if (isCorrect || isSelected) Color.White else TextMain,
-                        fontWeight = if (isCorrect || isSelected) FontWeight.Bold else FontWeight.Normal
-                    )
-                }
-            }
-        }
-        if (q.isChecked && q.isCorrect == false) {
-            Text("Верно: ${q.correctAnswer}", color = green, fontWeight = FontWeight.Bold, textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.fillMaxWidth())
-        }
-    }
-}
-
-@Composable
-fun InputContent(q: VerbQuestion, text: String, onValueChange: (String) -> Unit, viewModel: VerbViewModel) {
-    val green = Color(0xFF4CAF50)
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        OutlinedTextField(
-            value = text,
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Введите форму") },
-            enabled = !q.isChecked,
-            shape = RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Purple,
-                unfocusedBorderColor = CardBorder
-            ),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { viewModel.submitAnswer(text) })
-        )
-        if (q.isChecked) {
-            val color = if (q.isCorrect == true) green else Color(0xFFF44336)
-            Text(
-                if (q.isCorrect == true) "¡Excelente!" else "Ошибка! Верно: ${q.correctAnswer}",
-                color = color,
-                fontWeight = FontWeight.Bold,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        } else {
-            Button(
-                onClick = { viewModel.submitAnswer(text) },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                enabled = text.isNotBlank(),
-                colors = ButtonDefaults.buttonColors(containerColor = Purple),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Text("ПРОВЕРИТЬ", color = Color.White, fontWeight = FontWeight.Bold)
-            }
-        }
-    }
-}
-
-@Composable
-fun AssemblyContent(q: VerbQuestion, values: MutableList<String>, viewModel: VerbViewModel) {
-    val green = Color(0xFF4CAF50)
-    val correctForms = listOf(q.conjugation.yo, q.conjugation.tu, q.conjugation.el, q.conjugation.nosotros, q.conjugation.vosotros, q.conjugation.ellos)
-    
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        correctForms.forEachIndexed { index, correct ->
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        viewModel.getPronoun(index),
-                        modifier = Modifier.width(80.dp),
-                        fontWeight = FontWeight.Bold,
-                        color = Purple
-                    )
-                    OutlinedTextField(
-                        value = values[index],
-                        onValueChange = { if (!q.allChecked) values[index] = it },
-                        modifier = Modifier.weight(1f),
-                        enabled = !q.allChecked,
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = if (q.allChecked) {
-                                if (q.allResults[index] == true) green else Color(0xFFF44336)
-                            } else CardBorder,
-                            focusedBorderColor = Purple
-                        )
-                    )
-                }
-                if (q.allChecked && q.allResults[index] == false) {
-                    Text(
-                        correct,
-                        color = green,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 88.dp, top = 2.dp)
-                    )
-                }
-            }
-        }
-        
-        if (!q.allChecked) {
             Spacer(Modifier.height(16.dp))
-            Button(
-                onClick = { viewModel.submitAssembly(values.toList()) },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Purple),
-                shape = RoundedCornerShape(16.dp)
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(
+                onClick = onExit,
+                modifier = Modifier.weight(1f).height(50.dp),
+                shape = RoundedCornerShape(14.dp)
+            ) { Text("В меню") }
+
+            OutlinedButton(
+                onClick = { vm.openSetup() },
+                modifier = Modifier.weight(1f).height(50.dp),
+                shape = RoundedCornerShape(14.dp)
             ) {
-                Text("ПРОВЕРИТЬ ВСЁ", color = Color.White, fontWeight = FontWeight.Bold)
+                Icon(Icons.Default.Replay, null, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(4.dp))
+                Text("Ещё раз")
             }
         }
+
+        Spacer(Modifier.height(20.dp))
     }
 }
 
 @Composable
-fun VerbResultScreen(state: VerbTrainingState, onFinish: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("🎓", fontSize = 80.sp)
-        Spacer(Modifier.height(16.dp))
-        Text("Тренировка окончена", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = TextMain)
-        Text("Ваш результат: ${state.score}", fontSize = 20.sp, color = Purple, fontWeight = FontWeight.SemiBold)
-        
-        Spacer(Modifier.height(40.dp))
-        
-        Button(
-            onClick = onFinish,
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text("В МЕНЮ", color = Color.White, fontWeight = FontWeight.Bold)
-        }
+private fun Stat(label: String, value: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(value, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = ACCENT)
+        Text(label, fontSize = 12.sp, color = TextGray)
     }
 }
