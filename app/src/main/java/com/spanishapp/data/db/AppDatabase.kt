@@ -22,9 +22,10 @@ import com.spanishapp.data.db.entity.*
         ArticleLevelProgressEntity::class,
         ArticleWordEntity::class,
         LessonProgressEntity::class,
-        LibroProgressEntity::class
+        LibroProgressEntity::class,
+        GameLevelProgressEntity::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -40,6 +41,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun articleGameDao(): ArticleGameDao
     abstract fun lessonProgressDao(): LessonProgressDao
     abstract fun libroProgressDao(): LibroProgressDao
+    abstract fun gameLevelProgressDao(): GameLevelProgressDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -198,6 +200,22 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE user_progress ADD COLUMN current_league INTEGER NOT NULL DEFAULT 1")
                 db.execSQL("ALTER TABLE user_progress ADD COLUMN peak_league INTEGER NOT NULL DEFAULT 1")
                 db.execSQL("ALTER TABLE user_progress ADD COLUMN leaderboard_opt_in INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        // ── v10: универсальная таблица прогресса 100 уровней на игру ──
+        val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS game_level_progress (
+                        game_id TEXT NOT NULL,
+                        level_num INTEGER NOT NULL,
+                        stars INTEGER NOT NULL DEFAULT 0,
+                        best_score INTEGER NOT NULL DEFAULT 0,
+                        completed_at INTEGER NOT NULL DEFAULT 0,
+                        PRIMARY KEY(game_id, level_num)
+                    )
+                """.trimIndent())
             }
         }
     }

@@ -31,7 +31,8 @@ object AppModule {
                 AppDatabase.MIGRATION_5_6,
                 AppDatabase.MIGRATION_6_7,
                 AppDatabase.MIGRATION_7_8,
-                AppDatabase.MIGRATION_8_9
+                AppDatabase.MIGRATION_8_9,
+                AppDatabase.MIGRATION_9_10
             )
             .fallbackToDestructiveMigration()
             .build()
@@ -48,6 +49,7 @@ object AppModule {
     @Provides fun provideArticleGameDao(db: AppDatabase): ArticleGameDao = db.articleGameDao()
     @Provides fun provideLessonProgressDao(db: AppDatabase): LessonProgressDao = db.lessonProgressDao()
     @Provides fun provideLibroProgressDao(db: AppDatabase): LibroProgressDao = db.libroProgressDao()
+    @Provides fun provideGameLevelProgressDao(db: AppDatabase): GameLevelProgressDao = db.gameLevelProgressDao()
 
     // ── OkHttp  (Anthropic API) ────────────────────────────────
     @Provides

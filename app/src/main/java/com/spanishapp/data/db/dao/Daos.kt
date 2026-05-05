@@ -448,3 +448,27 @@ interface LibroProgressDao {
     @Query("SELECT * FROM libro_progress WHERE libro_id = :id")
     suspend fun getById(id: Int): LibroProgressEntity?
 }
+
+@Dao
+interface GameLevelProgressDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(progress: GameLevelProgressEntity)
+
+    @Query("SELECT * FROM game_level_progress WHERE game_id = :gameId ORDER BY level_num ASC")
+    fun observeForGame(gameId: String): Flow<List<GameLevelProgressEntity>>
+
+    @Query("SELECT * FROM game_level_progress WHERE game_id = :gameId ORDER BY level_num ASC")
+    suspend fun getForGame(gameId: String): List<GameLevelProgressEntity>
+
+    @Query("SELECT * FROM game_level_progress WHERE game_id = :gameId AND level_num = :level LIMIT 1")
+    suspend fun getOne(gameId: String, level: Int): GameLevelProgressEntity?
+
+    @Query("""
+        SELECT COALESCE(MAX(level_num), 0) FROM game_level_progress
+        WHERE game_id = :gameId AND stars > 0
+    """)
+    suspend fun maxClearedLevel(gameId: String): Int
+
+    @Query("SELECT COALESCE(SUM(stars), 0) FROM game_level_progress WHERE game_id = :gameId")
+    suspend fun totalStars(gameId: String): Int
+}

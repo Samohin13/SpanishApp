@@ -186,3 +186,17 @@ data class LibroProgressEntity(
     @ColumnInfo(name = "best_score") val bestScore: Int = 0,   // % правильных (0–100)
     @ColumnInfo(name = "completed_at") val completedAt: Long = 0L
 )
+
+// Универсальный прогресс уровней игр (100 уровней на каждую игру).
+// Композитный ключ: (gameId, levelNum)
+@Entity(
+    tableName = "game_level_progress",
+    primaryKeys = ["game_id", "level_num"]
+)
+data class GameLevelProgressEntity(
+    @ColumnInfo(name = "game_id")    val gameId: String,        // "articles" / "speed" / ...
+    @ColumnInfo(name = "level_num")  val levelNum: Int,         // 1..100
+    @ColumnInfo(name = "stars")      val stars: Int = 0,        // 0..3
+    @ColumnInfo(name = "best_score") val bestScore: Int = 0,    // % правильных (0..100)
+    @ColumnInfo(name = "completed_at") val completedAt: Long = 0L
+)
