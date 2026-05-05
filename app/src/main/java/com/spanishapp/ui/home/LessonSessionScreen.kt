@@ -27,8 +27,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import com.spanishapp.ui.components.SpeakerButton
 import com.spanishapp.ui.components.VoiceInstallPromptHost
+import com.spanishapp.ui.components.inferSpeakText
 import com.spanishapp.ui.components.rememberSpanishTts
 import kotlinx.coroutines.delay
 
@@ -384,16 +391,19 @@ private fun ExerciseCard(
         animationSpec = tween(300),
         label         = "flash"
     )
+    fun checkCorrect(selected: String?) =
+        selected?.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true) == true
+
     LaunchedEffect(answered) {
         if (answered) {
-            val isCorrect = selectedOption == exercise.correctAnswer
-            flashColor = if (isCorrect) Green.copy(alpha = 0.08f) else Red.copy(alpha = 0.08f)
+            flashColor = if (checkCorrect(selectedOption)) Green.copy(alpha = 0.08f)
+                         else Red.copy(alpha = 0.08f)
             delay(500)
             flashColor = Color.Transparent
         }
     }
 
-    val isCorrectAnswer = selectedOption == exercise.correctAnswer
+    val isCorrectAnswer = checkCorrect(selectedOption)
 
     Box(
         Modifier
@@ -471,7 +481,6 @@ private fun ExerciseCard(
                             isSelected                           -> accentColor
                             else                                 -> Color.Transparent
                         }
-
                         Surface(
                             shape    = RoundedCornerShape(14.dp),
                             color    = bgColor,
@@ -487,16 +496,8 @@ private fun ExerciseCard(
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     selectedOption = option
                                     answered = true
-                                    // Озвучить правильный ответ
-                                    if (option == exercise.correctAnswer &&
-                                        com.spanishapp.ui.components.isSpanishSpeakable(option)
-                                    ) {
-                                        tts?.speak(
-                                            com.spanishapp.ui.components.sanitizeForTts(option),
-                                            android.speech.tts.TextToSpeech.QUEUE_FLUSH,
-                                            null,
-                                            "ans"
-                                        )
+                                    inferSpeakText(option)?.let { t ->
+                                        tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
                                     }
                                 }
                         ) {
@@ -519,8 +520,55 @@ private fun ExerciseCard(
                         }
                     }
                 }
-                else -> {
-                    Text("Упражнение в разработке", color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+                ExerciseType.FILL_BLANK -> {
+                    FillBlankInput(
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor   = accentColor,
+                        answered      = answered,
+                        onAnswer      = { typed ->
+                            selectedOption = typed
+                            answered = true
+                            if (typed.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true)) {
+                                inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                    tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                }
+                            }
+                        }
+                    )
+                }
+
+                ExerciseType.BUILD_SENTENCE -> {
+                    BuildSentenceInput(
+                        words         = exercise.words,
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor   = accentColor,
+                        answered      = answered,
+                        onAnswer      = { built ->
+                            selectedOption = built
+                            answered = true
+                            if (built.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true)) {
+                                inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                    tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                }
+                            }
+                        }
+                    )
+                }
+
+                ExerciseType.TRANSLATE -> {
+                    FillBlankInput(
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor   = accentColor,
+                        answered      = answered,
+                        onAnswer      = { typed ->
+                            selectedOption = typed
+                            answered = true
+                            inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                            }
+                        }
+                    )
                 }
             }
 
@@ -578,6 +626,193 @@ private fun ExerciseCard(
             }
 
             if (!answered) Spacer(Modifier.height(20.dp))
+        }
+    }
+}
+
+// ─── Ввод слова (FILL_BLANK / TRANSLATE) ──────────────────────────────────
+@Composable
+private fun FillBlankInput(
+    correctAnswer: String,
+    accentColor: Color,
+    answered: Boolean,
+    onAnswer: (String) -> Unit
+) {
+    var typed by remember { mutableStateOf("") }
+    val keyboard = LocalSoftwareKeyboardController.current
+    val isCorrect = typed.trim().equals(correctAnswer.trim(), ignoreCase = true)
+
+    val borderColor = when {
+        !answered -> accentColor
+        isCorrect -> Green
+        else      -> Red
+    }
+
+    OutlinedTextField(
+        value         = typed,
+        onValueChange = { if (!answered) typed = it },
+        enabled       = !answered,
+        singleLine    = true,
+        placeholder   = { Text("Введи ответ...", color = Color.Gray) },
+        modifier      = Modifier.fillMaxWidth(),
+        shape         = RoundedCornerShape(14.dp),
+        colors        = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor   = borderColor,
+            unfocusedBorderColor = borderColor.copy(alpha = 0.5f),
+            disabledBorderColor  = borderColor,
+            disabledTextColor    = MaterialTheme.colorScheme.onSurface
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = {
+            if (typed.isNotBlank() && !answered) {
+                keyboard?.hide()
+                onAnswer(typed.trim())
+            }
+        }),
+        trailingIcon = {
+            if (answered) {
+                Text(
+                    if (isCorrect) "✓" else "✗",
+                    color = if (isCorrect) Green else Red,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(end = 12.dp)
+                )
+            }
+        }
+    )
+
+    // Показываем правильный ответ если ошибся
+    AnimatedVisibility(visible = answered && !isCorrect) {
+        Text(
+            text = "Правильно: $correctAnswer",
+            color = Green,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(top = 6.dp, start = 4.dp)
+        )
+    }
+
+    if (!answered) {
+        Spacer(Modifier.height(12.dp))
+        Button(
+            onClick  = {
+                if (typed.isNotBlank()) {
+                    keyboard?.hide()
+                    onAnswer(typed.trim())
+                }
+            },
+            enabled  = typed.isNotBlank(),
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+            shape    = RoundedCornerShape(14.dp),
+            colors   = ButtonDefaults.buttonColors(containerColor = accentColor)
+        ) {
+            Text("ПРОВЕРИТЬ", fontWeight = FontWeight.ExtraBold)
+        }
+    }
+}
+
+// ─── Составь предложение из плиток (BUILD_SENTENCE) ───────────────────────
+@Composable
+private fun BuildSentenceInput(
+    words: List<String>,
+    correctAnswer: String,
+    accentColor: Color,
+    answered: Boolean,
+    onAnswer: (String) -> Unit
+) {
+    val shuffled = remember(words) { words.shuffled() }
+    val chosen   = remember { mutableStateListOf<String>() }
+    val pool     = remember(words) { mutableStateListOf(*shuffled.toTypedArray()) }
+
+    val built     = chosen.joinToString(" ")
+    val isCorrect = built.trim().equals(correctAnswer.trim(), ignoreCase = true)
+
+    // Зона собранного предложения
+    Surface(
+        shape    = RoundedCornerShape(14.dp),
+        color    = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp)
+    ) {
+        Box(Modifier.padding(12.dp)) {
+            if (chosen.isEmpty()) {
+                Text("Нажимай на слова ниже →", color = Color.Gray, fontSize = 14.sp)
+            } else {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    items(chosen) { word ->
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = accentColor.copy(alpha = 0.15f),
+                            modifier = Modifier.clickable(enabled = !answered) {
+                                chosen.remove(word)
+                                pool.add(word)
+                            }
+                        ) {
+                            Text(
+                                text = word,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = accentColor
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Spacer(Modifier.height(10.dp))
+
+    // Пул слов
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(pool.toList()) { word ->
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier
+                    .clickable(enabled = !answered) {
+                        pool.remove(word)
+                        chosen.add(word)
+                    }
+                    .border(1.dp, accentColor.copy(alpha = 0.3f), RoundedCornerShape(10.dp))
+            ) {
+                Text(
+                    text = word,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+
+    // Показываем правильный ответ если ошибся
+    AnimatedVisibility(visible = answered && !isCorrect) {
+        Text(
+            text = "Правильно: $correctAnswer",
+            color = Green,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            modifier = Modifier.padding(top = 8.dp, start = 4.dp)
+        )
+    }
+
+    if (!answered) {
+        Spacer(Modifier.height(12.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(
+                onClick  = { chosen.clear(); pool.clear(); pool.addAll(shuffled) },
+                modifier = Modifier.height(52.dp),
+                shape    = RoundedCornerShape(14.dp)
+            ) { Text("↺") }
+            Button(
+                onClick  = { if (chosen.isNotEmpty()) onAnswer(built) },
+                enabled  = chosen.isNotEmpty(),
+                modifier = Modifier.weight(1f).height(52.dp),
+                shape    = RoundedCornerShape(14.dp),
+                colors   = ButtonDefaults.buttonColors(containerColor = accentColor)
+            ) { Text("ПРОВЕРИТЬ", fontWeight = FontWeight.ExtraBold) }
         }
     }
 }
