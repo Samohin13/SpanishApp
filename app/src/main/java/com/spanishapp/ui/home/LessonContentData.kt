@@ -4595,6 +4595,86 @@ object LessonContentData {
             )
         ),
 
+        // Mini-test: Regulares Indefinido
+        "u5_l5" to LessonContent(
+            intro = "Мини-тест: Pretérito Indefinido Regular (-AR, -ER, -IR)",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму Indefinido",
+                    question = "Ayer yo ___ (hablar) con mi madre.",
+                    options = listOf("hablé", "hablaba", "he hablado", "hablo"),
+                    correctAnswer = "hablé",
+                    explanation = "Indefinido от hablar (-AR): hablé (я говорил). Использует -é для yo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "¿Qué ___ (comer) tú en el restaurante?",
+                    options = listOf("comiste", "comías", "has comido", "comes"),
+                    correctAnswer = "comiste",
+                    explanation = "Indefinido от comer (-ER): comiste (ты ел). Прошедшее совершённое действие."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Mi hermana ___ (vivir) en Barcelona el año pasado.",
+                    options = listOf("vivió", "vivía", "ha vivido", "vive"),
+                    correctAnswer = "vivió",
+                    explanation = "Indefinido от vivir (-IR): vivió (она жила). El año pasado указывает на завершённое действие."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Мы работали весь день (ayer = вчера).",
+                    options = listOf("Trabajamos todo el día ayer.", "Trabajábamos todo el día ayer.", "Hemos trabajado todo el día ayer.", "Trabajaremos todo el día ayer."),
+                    correctAnswer = "Trabajamos todo el día ayer.",
+                    explanation = "Indefinido nosotros: trabajamos. Используется для завершённого действия в прошлом."
+                )
+            )
+        ),
+
+        // Полный тест: Pretérito Indefinido
+        "u5_l14" to LessonContent(
+            intro = "Полный тест: Pretérito Indefinido (Regular + Irregular)",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму irregular глагола",
+                    question = "El fin de semana pasado ___ (ir) al cine con mis amigos.",
+                    options = listOf("fui", "iba", "he ido", "voy"),
+                    correctAnswer = "fui",
+                    explanation = "Indefinido от ir (irregular): fui (я пошёл). ir и ser имеют одинаковую форму в Indefinido."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "¿Qué ___ (hacer) tú el sábado pasado?",
+                    options = listOf("hiciste", "hacías", "has hecho", "haces"),
+                    correctAnswer = "hiciste",
+                    explanation = "Indefinido от hacer (irregular): hiciste (ты делал). Важное irregular изменение: hac- → hic-."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Ayer ___ (estar) en casa todo el día porque ___ (tener) que estudiar.",
+                    options = listOf("estuve / tuve", "estaba / tenía", "he estado / he tenido", "estoy / tengo"),
+                    correctAnswer = "estuve / tuve",
+                    explanation = "Indefinido: estuve (я был) и tuve (у меня было). Оба irregular: estuve, tuve."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Я хотел пойти в парк, но не мог (no pude) найти друга.",
+                    options = listOf("Quise ir al parque, pero no pude encontrar a mi amigo.", "Quería ir al parque, pero no podía encontrar a mi amigo.", "He querido ir al parque, pero no he podido encontrar a mi amigo.", "Quiero ir al parque, pero no puedo encontrar a mi amigo."),
+                    correctAnswer = "Quise ir al parque, pero no pude encontrar a mi amigo.",
+                    explanation = "Indefinido: Quise (я захотел) и pude (я смог). Оба irregular с особыми формами."
+                )
+            )
+        ),
+
         // ══════════════════════════════════════════════
         //  A2 БЛОК 2 (unitId=6)
         // ══════════════════════════════════════════════
@@ -5430,6 +5510,46 @@ object LessonContentData {
                     options = listOf("siento", "estoy", "tengo", "soy"),
                     correctAnswer = "siento",
                     explanation = "sentirse = чувствовать себя. Me siento feliz = я чувствую себя счастливым."
+                )
+            )
+        ),
+
+        // Чекпоинт Блока 2: Детство (Imperfecto)
+        "u6_l14" to LessonContent(
+            intro = "Чекпоинт Блока 2: Расскажи о своём детстве",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери Imperfecto для описания прошлого",
+                    question = "Cuando ___ (ser) niño, siempre ___ (jugar) en el parque.",
+                    options = listOf("era / jugaba", "fui / jugué", "he sido / he jugado", "soy / juego"),
+                    correctAnswer = "era / jugaba",
+                    explanation = "Imperfecto описывает привычные действия в прошлом. era (я был), jugaba (я играл)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери Indefinido vs Imperfecto",
+                    question = "Mientras ___ (jugar) en el parque, mi madre ___ (llegar) para recogerme.",
+                    options = listOf("jugaba / llegó", "jugué / llegué", "he jugado / ha llegado", "juego / llega"),
+                    correctAnswer = "jugaba / llegó",
+                    explanation = "Imperfecto (jugaba) для фона, Indefinido (llegó) для главного события."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи сравнение",
+                    question = "Mi mejor amigo era más alto que yo.",
+                    options = listOf("Мой лучший друг был выше меня.", "Мой лучший друг был очень высокий.", "Мой лучший друг становился выше.", "Мой лучший друг был высок."),
+                    correctAnswer = "Мой лучший друг был выше меня.",
+                    explanation = "más alto que = выше чем. era = был (Imperfecto для описания)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное прилагательное-описание",
+                    question = "Mi maestra de primaria ___ muy ___ con nosotros.",
+                    options = listOf("era / amable", "fue / amable", "ha sido / amable", "es / amable"),
+                    correctAnswer = "era / amable",
+                    explanation = "Imperfecto: era (она была), amable (добрая). Описание качества в прошлом."
                 )
             )
         ),
@@ -6277,6 +6397,46 @@ object LessonContentData {
                     options = listOf("В Испании ужинают очень поздно.", "В Испании завтракают рано.", "В Испании обедают в обед.", "В Испании едят мало."),
                     correctAnswer = "В Испании ужинают очень поздно.",
                     explanation = "cenar = ужинать. tarde = поздно. se cena = ужинают (безличная конструкция)."
+                )
+            )
+        ),
+
+        // Чекпоинт Блока 3: Мой день (Perfecto + Imperativo)
+        "u7_l14" to LessonContent(
+            intro = "Чекпоинт Блока 3: Мой обычный день",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери Pretérito Perfecto",
+                    question = "Esta mañana ___ (levantarse) a las 7 y ___ (desayunar) café.",
+                    options = listOf("me he levantado / he desayunado", "me levantaba / desayunaba", "me levanté / desayuné", "me levanto / desayuno"),
+                    correctAnswer = "me he levantado / he desayunado",
+                    explanation = "Perfecto связывает прошлое с настоящим. Esta mañana = сегодня утром (часть текущего дня)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери Imperativo (команда)",
+                    question = "¡___ la puerta, por favor! Hace frío.",
+                    options = listOf("Cierra", "Cierras", "Cerraste", "Cerrarás"),
+                    correctAnswer = "Cierra",
+                    explanation = "Imperativo tú: cierra (закрой). Это команда для близкого человека."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Сегодня я уже поел три раза (tres veces).",
+                    options = listOf("Hoy he comido tres veces.", "Hoy comí tres veces.", "Hoy como tres veces.", "Hoy comeré tres veces."),
+                    correctAnswer = "Hoy he comido tres veces.",
+                    explanation = "Perfecto: he comido (я поел). Hoy = сегодня (связь с настоящим)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "En el trabajo, mi jefe me ___ (decir) que ___ (hacer) el reporte hoy.",
+                    options = listOf("ha dicho / haga", "dijo / hiciera", "dice / hago", "dirá / haré"),
+                    correctAnswer = "ha dicho / haga",
+                    explanation = "Perfecto: ha dicho (сказал). Второе слово требует Subjuntivo в инструкции (B1+), но на A2 может быть simplificado."
                 )
             )
         ),
@@ -7133,6 +7293,46 @@ object LessonContentData {
                     options = listOf("Хочу быть в хорошей форме.", "Хочу похудеть.", "Хочу заниматься спортом.", "Хочу быть здоровым."),
                     correctAnswer = "Хочу быть в хорошей форме.",
                     explanation = "estar en forma = быть в форме (физически). estar en buena forma = быть в хорошей форме."
+                )
+            )
+        ),
+
+        // Финальный чекпоинт Блока 4: Планирование путешествия (Futuro + Condicional)
+        "u8_l14" to LessonContent(
+            intro = "ФИНАЛЬНЫЙ БОСС A2: Планирование путешествия",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери Futuro Simple для плана",
+                    question = "El próximo verano ___ (viajar) a España. ___ (visitar) Barcelona y ___ (pasar) tiempo en la playa.",
+                    options = listOf("viajaré / visitaré / pasaré", "viajo / visito / paso", "viajaba / visitaba / pasaba", "viajaría / visitaría / pasaría"),
+                    correctAnswer = "viajaré / visitaré / pasaré",
+                    explanation = "Futuro Simple: viajaré (я буду путешествовать), visitaré, pasaré. El próximo verano указывает на будущее."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери Condicional для гипотезы",
+                    question = "Si tuviera dinero, ___ (ir) a París y ___ (quedarme) en un hotel de lujo.",
+                    options = listOf("iría / me quedaría", "voy / me quedo", "fui / me quedé", "iré / me quedaré"),
+                    correctAnswer = "iría / me quedaría",
+                    explanation = "Condicional с 'si + imperfecto de subjuntivo' описывает нереальное условие. iría = я бы пошёл."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "Если завтра будет хорошая погода, мы пойдём в пляж.",
+                    options = listOf("Si mañana hace buen tiempo, iremos a la playa.", "Si mañana hizo buen tiempo, vamos a la playa.", "Si mañana habrá buen tiempo, iremos a la playa.", "Si mañana hiciera buen tiempo, iríamos a la playa."),
+                    correctAnswer = "Si mañana hace buen tiempo, iremos a la playa.",
+                    explanation = "Реальное условие: presente + futuro. Si + presente indicativo → futuro simple."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "¿Cuál sería el transporte más económico? Probablemente ___ (alquilar) un coche o ___ (coger) un autobús.",
+                    options = listOf("alquilaría / cogería", "alquilaré / cogeré", "alquilo / cojo", "alquilaba / cogía"),
+                    correctAnswer = "alquilaría / cogería",
+                    explanation = "Condicional для предположения о лучшем варианте. alquilaría (я бы арендовал), cogería (я бы взял)."
                 )
             )
         )
