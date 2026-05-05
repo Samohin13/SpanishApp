@@ -966,7 +966,934 @@ object LibrosData {
             )
         )
 
-        // A2 (26–50), B1 (51–75), B2 (76–100) — добавляются в следующих сессиях
+        // ══════════════════════════════════════════════
+        //  БЛОК A2 — Elemental (рассказы 26–50)
+        // ══════════════════════════════════════════════
+
+        // ── Сложность 🔴⚪⚪⚪⚪ (1 точка) — рассказы 26–30 ──
+
+        Libro(
+            id = 26,
+            title = "El Primer Día de Trabajo",
+            level = "A2", difficulty = 1, topic = "Работа / Офис",
+            text = """
+                Hoy es el primer día de trabajo de Carlos. Llegó temprano a la oficina.
+                Su jefa se llama Elena. Ella le mostró su escritorio y su ordenador.
+                Carlos conoció a sus compañeros. Todos fueron muy simpáticos con él.
+                A las dos comieron juntos en el restaurante de la empresa.
+                Carlos estaba un poco nervioso, pero al final del día se sintió bien.
+                «Creo que me va a gustar este trabajo», pensó.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo se llama la jefa de Carlos?",
+                    listOf("María", "Elena", "Laura"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo fueron los compañeros con Carlos?",
+                    listOf("Antipáticos", "Indiferentes", "Muy simpáticos"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Dónde comieron a las dos?",
+                    listOf("En casa de Carlos", "En un bar del barrio", "En el restaurante de la empresa"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Cómo se sintió Carlos al final del día?",
+                    listOf("Muy cansado y triste", "Bien y con ganas de volver", "Decepcionado con el trabajo"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 27,
+            title = "De Compras en el Mercado",
+            level = "A2", difficulty = 1, topic = "Покупки / Рынок",
+            text = """
+                El sábado por la mañana Marta fue al mercado del barrio.
+                Compró tomates, cebollas y dos kilos de naranjas.
+                También quiso comprar queso, pero era demasiado caro.
+                El vendedor le recomendó un queso más barato que también estaba bueno.
+                Marta lo probó y le gustó mucho. Compró medio kilo.
+                Gastó quince euros en total y volvió a casa muy contenta.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuándo fue Marta al mercado?",
+                    listOf("El viernes por la tarde", "El sábado por la mañana", "El domingo al mediodía"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué Marta no compró el primer queso?",
+                    listOf("Era demasiado caro", "No le gustó el sabor", "Ya tenía queso en casa"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cuánto queso compró Marta al final?",
+                    listOf("Un kilo", "Dos kilos", "Medio kilo"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Cuánto dinero gastó Marta?",
+                    listOf("Diez euros", "Quince euros", "Veinte euros"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 28,
+            title = "Una Tarde en el Parque",
+            level = "A2", difficulty = 1, topic = "Свободное время",
+            text = """
+                Ayer por la tarde Daniel fue al parque con su hijo pequeño, Tomás.
+                Tomás quería subir a los columpios. Luego corrió por el césped verde.
+                Daniel se sentó en un banco y leyó su libro favorito.
+                Después los dos comieron un helado de chocolate.
+                Cuando llegó la noche, volvieron a casa cansados pero felices.
+                A Tomás le encantó la tarde en el parque.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Con quién fue Daniel al parque?",
+                    listOf("Con su esposa", "Con su hijo Tomás", "Con sus amigos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hizo Daniel mientras Tomás jugaba?",
+                    listOf("Durmió en el banco", "Habló por teléfono", "Leyó su libro"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Qué helado comieron?",
+                    listOf("De fresa", "De vainilla", "De chocolate"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Cómo volvieron a casa?",
+                    listOf("En autobús, muy aburridos", "Cansados pero felices", "Enfadados por la lluvia"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 29,
+            title = "La Llamada Perdida",
+            level = "A2", difficulty = 1, topic = "Технологии / Общение",
+            text = """
+                Sofía miró su móvil y vio tres llamadas perdidas de su amiga Paula.
+                Intentó llamarla, pero el número estaba ocupado.
+                Le mandó un mensaje de texto: «Hola, ¿todo bien? Llámame cuando puedas.»
+                Paula respondió rápido: «¡Sí! Tengo una noticia increíble. Te cuento luego.»
+                Sofía se quedó muy curiosa. Esperó dos horas hasta que Paula la llamó.
+                La noticia era que Paula había conseguido trabajo en París.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuántas llamadas perdidas tenía Sofía?",
+                    listOf("Una", "Dos", "Tres"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Por qué no pudo hablar con Paula inmediatamente?",
+                    listOf("Paula no tenía móvil", "El número estaba ocupado", "Sofía no tenía batería"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuánto tiempo esperó Sofía?",
+                    listOf("Diez minutos", "Una hora", "Dos horas"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Cuál era la noticia de Paula?",
+                    listOf("Se casaba en verano", "Había conseguido trabajo en París", "Iba a tener un hijo"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 30,
+            title = "El Vuelo con Retraso",
+            level = "A2", difficulty = 1, topic = "Путешествия / Аэропорт",
+            text = """
+                Javier llegó al aeropuerto a las seis de la mañana.
+                Su vuelo a Barcelona salía a las ocho. Pasó el control de seguridad sin problemas.
+                En la puerta de embarque le dijeron que el vuelo tenía dos horas de retraso.
+                Se sentó en una cafetería y pidió un café con leche y un croissant.
+                Leyó el periódico y escuchó música. El tiempo pasó rápido.
+                Por fin embarcó y llegó a Barcelona a mediodía, un poco tarde pero tranquilo.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿A qué hora llegó Javier al aeropuerto?",
+                    listOf("A las cinco", "A las seis", "A las siete"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuánto retraso tenía el vuelo?",
+                    listOf("Una hora", "Dos horas", "Tres horas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué pidió Javier en la cafetería?",
+                    listOf("Un zumo y una tostada", "Un café con leche y un croissant", "Un bocadillo y agua"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo llegó Javier a Barcelona?",
+                    listOf("Muy estresado y enfadado", "Un poco tarde pero tranquilo", "Sin equipaje y nervioso"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        // ── Сложность 🔴🔴⚪⚪⚪ (2 точки) — рассказы 31–35 ──
+
+        Libro(
+            id = 31,
+            title = "El Apartamento Nuevo",
+            level = "A2", difficulty = 2, topic = "Жильё / Переезд",
+            text = """
+                Laura y su novio Miguel acaban de alquilar un apartamento en el centro de la ciudad.
+                El piso tiene dos habitaciones, una cocina moderna y un balcón con vistas al parque.
+                El alquiler cuesta novecientos euros al mes, pero entre los dos es asequible.
+                El primer fin de semana limpiaron todo y montaron los muebles que compraron en una tienda de segunda mano.
+                La sala quedó muy acogedora con el sofá nuevo y las plantas que trajo Laura.
+                Sus amigos vinieron a cenar el sábado y les encantó el apartamento.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Dónde está el apartamento?",
+                    listOf("En las afueras de la ciudad", "En el centro de la ciudad", "Cerca del aeropuerto"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuánto cuesta el alquiler?",
+                    listOf("Setecientos euros", "Ochocientos euros", "Novecientos euros"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Dónde compraron los muebles?",
+                    listOf("En una tienda de lujo", "En una tienda de segunda mano", "Los recibieron de regalo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hicieron el sábado?",
+                    listOf("Fueron a un restaurante", "Recibieron a sus amigos a cenar", "Viajaron a otra ciudad"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 32,
+            title = "Aprendiendo a Cocinar",
+            level = "A2", difficulty = 2, topic = "Кулинария",
+            text = """
+                Roberto siempre comía en restaurantes porque no sabía cocinar.
+                Un día decidió aprender y se apuntó a un curso de cocina los jueves por la noche.
+                El primer día aprendió a hacer una tortilla española. Le salió bastante bien.
+                La semana siguiente preparó una sopa de verduras con ajo y pimentón.
+                Su compañera de piso, Ana, la probó y dijo que estaba deliciosa.
+                Ahora Roberto cocina tres veces por semana y ha ahorrado mucho dinero.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué Roberto siempre comía en restaurantes?",
+                    listOf("Le encantaba salir a comer", "No sabía cocinar", "Su cocina estaba rota"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué aprendió a hacer el primer día del curso?",
+                    listOf("Una paella valenciana", "Una sopa de verduras", "Una tortilla española"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Qué dijo Ana sobre la sopa?",
+                    listOf("Que estaba demasiado salada", "Que estaba deliciosa", "Que necesitaba más ajo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál es el resultado positivo del curso para Roberto?",
+                    listOf("Tiene más amigos ahora", "Ha ahorrado mucho dinero", "Le ofrecieron trabajo en un restaurante"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 33,
+            title = "El Partido de Fútbol",
+            level = "A2", difficulty = 2, topic = "Спорт / Досуг",
+            text = """
+                El domingo había un partido importante entre el Real Madrid y el Barcelona.
+                Diego y sus amigos se reunieron en casa de Pablo para verlo.
+                Pablo preparó bocadillos y refrescos para todos.
+                El partido estuvo muy emocionante. En el minuto ochenta y cinco el Madrid marcó el gol del empate.
+                Al final el partido terminó uno a uno. Diego estaba un poco decepcionado porque quería que ganara el Madrid.
+                Sin embargo, todos disfrutaron mucho de la tarde juntos.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Dónde vieron el partido?",
+                    listOf("En un bar del barrio", "En el estadio", "En casa de Pablo"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿En qué minuto marcó el Madrid?",
+                    listOf("En el minuto setenta", "En el minuto ochenta y cinco", "En el minuto noventa"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo terminó el partido?",
+                    listOf("Dos a cero para el Barcelona", "Uno a uno", "Tres a dos para el Madrid"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo se sintió Diego con el resultado?",
+                    listOf("Muy contento", "Un poco decepcionado", "Completamente indiferente"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 34,
+            title = "El Médico y el Catarro",
+            level = "A2", difficulty = 2, topic = "Здоровье",
+            text = """
+                El lunes Inés se levantó con dolor de garganta y fiebre de treinta y ocho grados.
+                Llamó a su trabajo para decir que no podía ir y pidió cita con el médico.
+                La doctora la examinó y le dijo que tenía un catarro fuerte.
+                Le recetó un antiinflamatorio y le recomendó descansar, beber mucho líquido y no salir de casa.
+                Inés compró los medicamentos en la farmacia y pasó dos días en cama viendo series.
+                El miércoles ya se encontraba mucho mejor y el jueves volvió al trabajo.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué síntomas tenía Inés el lunes?",
+                    listOf("Dolor de cabeza y tos", "Dolor de garganta y fiebre", "Dolor de estómago y mareos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué diagnóstico le dio la doctora?",
+                    listOf("Una alergia primaveral", "Una infección de oído", "Un catarro fuerte"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Qué hizo Inés durante los dos días en cama?",
+                    listOf("Leyó novelas", "Vio series", "Durmió todo el tiempo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuándo volvió Inés al trabajo?",
+                    listOf("El martes", "El miércoles", "El jueves"),
+                    correctIndex = 2
+                )
+            )
+        ),
+
+        Libro(
+            id = 35,
+            title = "El Restaurante Equivocado",
+            level = "A2", difficulty = 2, topic = "Рестораны / Ситуации",
+            text = """
+                Ana y Carlos quedaron para cenar en el restaurante «La Bodeguita» a las nueve.
+                Carlos llegó puntual, pero no vio a Ana. Esperó veinte minutos y la llamó.
+                Ana estaba en «La Bodeguita», pero en la calle Mayor, no en la calle del Sol.
+                Había dos restaurantes con el mismo nombre en la ciudad.
+                Carlos caminó diez minutos hasta el otro restaurante y al fin se encontraron.
+                Se rieron mucho del malentendido y disfrutaron de una cena estupenda.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿A qué hora quedaron Ana y Carlos?",
+                    listOf("A las ocho", "A las nueve", "A las diez"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál fue el problema?",
+                    listOf("Ana se olvidó de la cena", "Había dos restaurantes con el mismo nombre", "El restaurante estaba cerrado"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Dónde estaba el restaurante de Ana?",
+                    listOf("En la calle del Sol", "En la calle Mayor", "En la plaza Central"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo reaccionaron al encontrarse?",
+                    listOf("Estaban enfadados", "Se rieron del malentendido", "Decidieron irse a casa"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        // ── Сложность 🔴🔴🔴⚪⚪ (3 точки) — рассказы 36–40 ──
+
+        Libro(
+            id = 36,
+            title = "El Intercambio de Idiomas",
+            level = "A2", difficulty = 3, topic = "Языки / Учёба",
+            text = """
+                Lucía estudia inglés en la universidad y quiere mejorar su conversación.
+                Encontró a un chico inglés llamado James que estudia español y busca un intercambio.
+                Quedaron una vez por semana en una cafetería del centro.
+                Cada sesión tenía dos partes: media hora en español y media hora en inglés.
+                Al principio los dos se equivocaban mucho, pero con el tiempo mejoraron bastante.
+                Después de tres meses, Lucía ya podía hablar inglés con mucha más fluidez.
+                James, por su parte, aprendió muchas expresiones coloquiales del español.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué busca James en el intercambio?",
+                    listOf("Mejorar su francés", "Practicar su español", "Aprender a cocinar"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Con qué frecuencia quedaban?",
+                    listOf("Todos los días", "Una vez por semana", "Dos veces al mes"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo estaba organizada cada sesión?",
+                    listOf("Solo en inglés durante una hora", "Media hora en español y media en inglés", "Una hora en un idioma según el día"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué aprendió James principalmente?",
+                    listOf("Gramática avanzada", "Muchas expresiones coloquiales", "El acento de Madrid"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 37,
+            title = "La Entrevista de Trabajo",
+            level = "A2", difficulty = 3, topic = "Работа / Карьера",
+            text = """
+                Marcos recibió un correo electrónico con una invitación a una entrevista de trabajo.
+                La empresa fabricaba software y buscaba un diseñador gráfico con experiencia.
+                Marcos preparó su portfolio y practicó las respuestas a posibles preguntas.
+                El día de la entrevista se puso su mejor camisa y llegó diez minutos antes.
+                La entrevistadora le preguntó sobre sus proyectos anteriores y sus puntos fuertes.
+                Marcos respondió con calma y confianza. Al salir, se sentía muy optimista.
+                Tres días después, la empresa lo llamó para ofrecerle el puesto.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Para qué puesto era la entrevista?",
+                    listOf("Programador web", "Diseñador gráfico", "Director de marketing"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué preparó Marcos antes de la entrevista?",
+                    listOf("Una carta de presentación", "Su portfolio y respuestas", "Un contrato de trabajo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuándo llegó Marcos a la entrevista?",
+                    listOf("Exactamente a la hora", "Diez minutos antes", "Un poco tarde"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál fue el resultado?",
+                    listOf("Le dijeron que no era suficientemente bueno", "Lo llamaron para ofrecerle el puesto", "Tuvo que hacer una segunda entrevista"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 38,
+            title = "El Viaje a Sevilla",
+            level = "A2", difficulty = 3, topic = "Путешествия / Испания",
+            text = """
+                Durante las vacaciones de primavera, Carmen y su hermana viajaron a Sevilla en tren.
+                El viaje duró dos horas y media desde Madrid. Llegaron al hotel a mediodía.
+                Por la tarde visitaron la Giralda y el barrio de Santa Cruz con sus calles estrechas y flores.
+                Al día siguiente fueron a ver la Plaza de España y comieron tapas en un bar típico.
+                Probaron el gazpacho, las croquetas y el jamón ibérico. Todo estaba riquísimo.
+                En el tren de vuelta Carmen dijo: «Sevilla es una ciudad preciosa. Hay que volver.»
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo viajaron Carmen y su hermana a Sevilla?",
+                    listOf("En avión", "En coche", "En tren"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Qué visitaron la primera tarde?",
+                    listOf("La Plaza de España y el Alcázar", "La Giralda y el barrio de Santa Cruz", "El Parque de María Luisa"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué comida probaron en el bar típico?",
+                    listOf("Paella y sangría", "Gazpacho, croquetas y jamón ibérico", "Tortilla y ensalada mixta"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué dijo Carmen en el tren de vuelta?",
+                    listOf("Que estaba cansada del viaje", "Que Sevilla era preciosa y había que volver", "Que prefería Madrid"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 39,
+            title = "La Bicicleta Nueva",
+            level = "A2", difficulty = 3, topic = "Транспорт / Город",
+            text = """
+                Pablo quería dejar de ir al trabajo en coche y empezar a usar la bicicleta.
+                La ciudad había construido nuevos carriles bici por todo el centro.
+                Fue a una tienda de bicicletas y pidió consejo al dependiente.
+                Después de probar tres modelos diferentes, eligió una bicicleta de ciudad con cambios.
+                Costó doscientos ochenta euros, más un casco y una cadena antirrobo.
+                La primera semana fue un poco difícil por las cuestas, pero Pablo se acostumbró rápido.
+                Ahora llega al trabajo en veinte minutos, hace ejercicio y gasta menos en gasolina.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué quería Pablo usar la bicicleta?",
+                    listOf("Porque no tenía coche", "Para dejar de ir en coche al trabajo", "Porque el transporte público era muy caro"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuántos modelos probó antes de elegir?",
+                    listOf("Dos", "Tres", "Cuatro"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué compró además de la bicicleta?",
+                    listOf("Un impermeable y un mapa", "Un casco y una cadena antirrobo", "Guantes y una mochila"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuáles son los beneficios para Pablo?",
+                    listOf("Solo ahorra tiempo en el camino", "Llega antes, hace ejercicio y gasta menos en gasolina", "Tiene más tiempo libre por las tardes"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 40,
+            title = "Una Noche de Lluvia",
+            level = "A2", difficulty = 3, topic = "Погода / Рассказ",
+            text = """
+                Era una noche de noviembre y llovía mucho en la ciudad.
+                Elena volvía a casa después de una cena con sus amigas.
+                No llevaba paraguas y el autobús no llegaba. Estaba empapada y tenía frío.
+                Un taxi se paró a su lado. El taxista le preguntó adónde iba.
+                Elena le dijo su dirección y subió al coche aliviada.
+                Durante el trayecto el taxista le habló del partido de fútbol de esa noche.
+                Al llegar a casa Elena le dio una propina generosa y entró corriendo a darse una ducha caliente.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué estaba mojada Elena?",
+                    listOf("Había cruzado un río", "No llevaba paraguas y llovía mucho", "Se había caído en un charco"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué no cogió el autobús?",
+                    listOf("El autobús no llegaba", "No tenía dinero para el billete", "La parada estaba muy lejos"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿De qué habló el taxista durante el trayecto?",
+                    listOf("Del tiempo y la lluvia", "Del partido de fútbol de esa noche", "De su familia y sus viajes"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hizo Elena nada más llegar a casa?",
+                    listOf("Llamó a sus amigas", "Se acostó directamente", "Entró corriendo a darse una ducha"),
+                    correctIndex = 2
+                )
+            )
+        ),
+
+        // ── Сложность 🔴🔴🔴🔴⚪ (4 точки) — рассказы 41–45 ──
+
+        Libro(
+            id = 41,
+            title = "El Vecino Misterioso",
+            level = "A2", difficulty = 4, topic = "Соседи / Рассказ",
+            text = """
+                Desde hacía un mes, Rosa notaba cosas extrañas en su edificio.
+                El vecino del quinto piso llegaba siempre a las tres de la madrugada con una maleta grande.
+                Nunca saludaba a nadie y tenía las persianas siempre bajadas.
+                Rosa le contó sus sospechas a su marido, que se reía y le decía que no imaginara cosas.
+                Un día en el ascensor Rosa le preguntó directamente al vecino cómo se llamaba.
+                Él respondió con una sonrisa: «Me llamo Andrés. Soy músico de jazz y toco en un club nocturno.»
+                Rosa se sintió un poco tonta, pero también se alegró de que todo tuviera una explicación sencilla.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué le parecía extraño a Rosa sobre el vecino?",
+                    listOf("Llegaba muy tarde con una maleta y tenía las persianas bajadas", "Hacía ruido por las noches", "Nunca pagaba los gastos del edificio"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cómo reaccionaba el marido de Rosa?",
+                    listOf("Compartía sus sospechas", "Se reía y le decía que no imaginara cosas", "Fue a hablar con el vecino"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo se enteró Rosa de la verdad?",
+                    listOf("Lo buscó en internet", "Le preguntó directamente en el ascensor", "El vecino le escribió una nota"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿A qué se dedica Andrés?",
+                    listOf("Es actor de teatro", "Es músico de jazz", "Es cocinero nocturno"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 42,
+            title = "El Examen de Conducir",
+            level = "A2", difficulty = 4, topic = "Транспорт / Жизненные ситуации",
+            text = """
+                Después de dos años de autoescuela, Natalia por fin se presentó al examen práctico de conducir.
+                Había suspendido el teórico dos veces, pero lo aprobó a la tercera.
+                El día del examen estaba nerviosa. El examinador se sentó a su lado con una tableta.
+                Natalia arrancó el coche sin problemas. Hizo bien el aparcamiento en paralelo y respetó todas las señales.
+                Pero al final de la prueba se pasó un semáforo en ámbar y el examinador lo anotó.
+                Al terminar, él dijo: «Ha cometido una infracción leve, pero en general ha conducido bien. Aprobada.»
+                Natalia llamó a su madre llorando de alegría.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuántas veces suspendió Natalia el examen teórico?",
+                    listOf("Una vez", "Dos veces", "Tres veces"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hizo bien Natalia durante el examen?",
+                    listOf("Solo el aparcamiento en paralelo", "El aparcamiento y respetar señales", "Toda la prueba sin errores"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál fue su error?",
+                    listOf("Chocó contra un bordillo", "Se pasó un semáforo en ámbar", "Frenó de golpe en la autopista"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál fue el resultado del examen?",
+                    listOf("Suspendida por la infracción", "Aprobada a pesar de la infracción leve", "Tendría que repetir solo esa maniobra"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 43,
+            title = "El Festival de Música",
+            level = "A2", difficulty = 4, topic = "Музыка / Культура",
+            text = """
+                El verano pasado Hugo y sus amigos fueron al festival de música más grande de España.
+                Compraron las entradas dos meses antes porque se agotaban muy rápido.
+                El festival duró tres días. Había escenarios con rock, electrónica y flamenco.
+                El primer día vieron a su grupo favorito y cantaron todas las canciones.
+                Dormían en tiendas de campaña en un área de acampada cerca del recinto.
+                El calor era intenso, pero el ambiente era increíble.
+                Hugo dijo que fue la mejor experiencia de su vida y que ya quería volver al año siguiente.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Con cuánta antelación compraron las entradas?",
+                    listOf("Una semana antes", "Un mes antes", "Dos meses antes"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Qué géneros musicales había en el festival?",
+                    listOf("Pop, reggaeton y hip-hop", "Rock, electrónica y flamenco", "Jazz, blues y soul"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Dónde dormían Hugo y sus amigos?",
+                    listOf("En un hotel cercano", "En tiendas de campaña en el área de acampada", "En la furgoneta de un amigo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo resumió Hugo la experiencia?",
+                    listOf("Dijo que había sido demasiado caro y cansado", "Dijo que fue la mejor experiencia de su vida", "Dijo que prefería los conciertos pequeños"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 44,
+            title = "El Piso de Estudiantes",
+            level = "A2", difficulty = 4, topic = "Студенческая жизнь",
+            text = """
+                Valentina llegó a Madrid para estudiar periodismo y alquiló una habitación en un piso compartido.
+                Vivía con tres estudiantes más: uno de Alemania, uno de México y una chica de Valencia.
+                Al principio había pequeños conflictos sobre la limpieza y la música a altas horas.
+                Hicieron una lista de normas: cada uno limpiaba la cocina una vez por semana y el silencio era obligatorio después de medianoche.
+                Con el tiempo se hicieron muy buenos amigos. Cocinaban juntos los domingos y se ayudaban con los estudios.
+                Valentina dice que esa época fue muy difícil al principio pero increíblemente enriquecedora.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué estudia Valentina?",
+                    listOf("Arquitectura", "Periodismo", "Medicina"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuáles eran los conflictos al principio?",
+                    listOf("El dinero del alquiler y los gastos", "La limpieza y la música a altas horas", "Los horarios del baño y la nevera"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué decía la norma sobre el silencio?",
+                    listOf("Silencio a partir de las once", "Silencio obligatorio después de medianoche", "No había norma sobre el ruido"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hacían los domingos?",
+                    listOf("Iban al mercado juntos", "Cocinaban juntos y se ayudaban con los estudios", "Cada uno salía por su cuenta"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 45,
+            title = "La Receta de la Abuela",
+            level = "A2", difficulty = 4, topic = "Семья / Кулинария",
+            text = """
+                Cada verano, la familia de Antonio se reunía en el pueblo para hacer la receta de la abuela: arroz con leche.
+                La abuela Carmen usaba solo ingredientes naturales: arroz de grano corto, leche entera, azúcar, limón y canela.
+                El proceso tardaba casi dos horas a fuego muy lento, removiendo constantemente.
+                Antonio aprendió a hacerlo con ella a los doce años.
+                Cuando la abuela murió, Antonio se convirtió en el guardián de la receta.
+                Cada Navidad la prepara para toda la familia. Nadie puede creer que sabe igual que la de la abuela.
+                «El secreto», dice Antonio, «es la paciencia y el amor que le pones.»
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuál es el plato tradicional de la familia?",
+                    listOf("Paella valenciana", "Arroz con leche", "Cocido madrileño"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuánto tiempo tardaba el proceso de cocción?",
+                    listOf("Unos treinta minutos", "Casi una hora", "Casi dos horas"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿A qué edad aprendió Antonio la receta?",
+                    listOf("A los diez años", "A los doce años", "A los quince años"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál dice Antonio que es el secreto de la receta?",
+                    listOf("Los ingredientes de alta calidad", "La paciencia y el amor que le pones", "El tipo de cacerola que se usa"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        // ── Сложность 🔴🔴🔴🔴🔴 (5 точек) — рассказы 46–50 ──
+
+        Libro(
+            id = 46,
+            title = "El Emprendedor",
+            level = "A2", difficulty = 5, topic = "Бизнес / Мечты",
+            text = """
+                Después de diez años trabajando para una empresa multinacional, Alejandro decidió crear su propio negocio.
+                Siempre había soñado con una tienda de café de especialidad donde también se vendieran libros de segunda mano.
+                Ahorró durante dos años y buscó un local en el barrio más bohemio de la ciudad.
+                El primer mes fue durísimo: pocos clientes, muchos gastos y dudas constantes.
+                Sin embargo, una reseña positiva de una cuenta popular de Instagram cambió todo.
+                En tres semanas el local se llenaba todos los días y Alejandro tuvo que contratar a dos personas más.
+                Hoy, dos años después, tiene tres sucursales y está escribiendo un libro sobre emprendimiento.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuál era el sueño de Alejandro?",
+                    listOf("Una librería de textos académicos", "Una tienda de café de especialidad con libros de segunda mano", "Un restaurante de comida internacional"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué cambió la situación del negocio?",
+                    listOf("Una entrevista en televisión", "Una reseña positiva en Instagram", "Una reducción de los precios"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuánto tiempo ahorró Alejandro antes de abrir?",
+                    listOf("Un año", "Dos años", "Cinco años"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿En qué situación está Alejandro dos años después de abrir?",
+                    listOf("Cerró el negocio por las deudas", "Tiene tres sucursales y escribe un libro", "Volvió a su trabajo anterior"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 47,
+            title = "El Voluntario",
+            level = "A2", difficulty = 5, topic = "Волонтёрство / Общество",
+            text = """
+                Cuando Irene se jubiló a los sesenta y cinco años, decidió que quería hacer algo útil con su tiempo libre.
+                Se apuntó como voluntaria en una asociación que enseñaba español a inmigrantes recién llegados.
+                Los primeros días fueron un desafío: los alumnos hablaban distintos idiomas y tenían niveles muy diferentes.
+                Irene preparaba materiales personalizados para cada grupo y pasaba horas buscando recursos online.
+                Poco a poco los estudiantes progresaron. Uno de ellos, Ahmed, aprendió tan rápido que consiguió trabajo en tres meses.
+                Irene recibió una carta de agradecimiento del director de la asociación.
+                «Nunca pensé», dijo ella, «que aprender podría dar tanto como enseñar.»
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué hacía Irene como voluntaria?",
+                    listOf("Repartía comida en un banco de alimentos", "Enseñaba español a inmigrantes", "Cuidaba a personas mayores"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál era la dificultad principal al principio?",
+                    listOf("No había materiales disponibles", "Los alumnos hablaban distintos idiomas y tenían niveles diferentes", "La asociación no le pagaba suficiente"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué logró Ahmed gracias a su aprendizaje?",
+                    listOf("Conseguir trabajo en tres meses", "Empezar una empresa propia", "Aprender un tercer idioma"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué reflexión hace Irene al final?",
+                    listOf("Que enseñar era demasiado difícil para ella", "Que aprender podría dar tanto como enseñar", "Que prefería trabajar con niños"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 48,
+            title = "La Carta al Futuro",
+            level = "A2", difficulty = 5, topic = "Рефлексия / Время",
+            text = """
+                En su último año de instituto, la profesora de lengua pidió a los alumnos que escribieran una carta para ellos mismos, que se abriría diez años después.
+                Claudia escribió sobre sus sueños: quería ser veterinaria, vivir cerca del mar y tener un perro grande.
+                Diez años más tarde, Claudia trabajaba como veterinaria en una clínica de Valencia, vivía a quinientos metros del mar y tenía un labrador llamado Nemo.
+                Cuando abrió el sobre y leyó la carta, se echó a reír y a llorar a la vez.
+                No todo había sido fácil: los estudios fueron muy duros y hubo momentos en que quiso rendirse.
+                Pero al leer sus propias palabras de diecisiete años, sintió una profunda gratitud por no haber abandonado.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué pidió la profesora que hicieran los alumnos?",
+                    listOf("Un diario de toda la semana", "Una carta para ellos mismos que se abriría en diez años", "Una redacción sobre sus recuerdos de la infancia"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuáles eran los sueños de Claudia en el instituto?",
+                    listOf("Ser médica, vivir en Madrid y tener un gato", "Ser veterinaria, vivir cerca del mar y tener un perro grande", "Ser bióloga, viajar por el mundo y aprender idiomas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo reaccionó Claudia al leer la carta diez años después?",
+                    listOf("Se sorprendió porque no recordaba haberla escrito", "Se echó a reír y a llorar a la vez", "La leyó con indiferencia porque ya no le importaban esas cosas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué sintió Claudia al releer sus palabras de los diecisiete años?",
+                    listOf("Vergüenza de lo ingenua que había sido", "Una profunda gratitud por no haber abandonado", "Tristeza porque no había conseguido todos sus sueños"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 49,
+            title = "El Puente Roto",
+            level = "A2", difficulty = 5, topic = "Дружба / Примирение",
+            text = """
+                Rodrigo y su mejor amigo Sergio no se hablaban desde hacía ocho meses.
+                Todo empezó por una tontería: una discusión sobre dinero que debía Rodrigo por un viaje compartido.
+                Rodrigo pensaba que ya lo había devuelto; Sergio decía que no.
+                Sus amigos comunes intentaron mediar, pero los dos eran muy orgullosos.
+                Un día Rodrigo encontró un mensaje antiguo en el que efectivamente decía que pagaría más tarde.
+                En lugar de ponerse a la defensiva, le mandó el mensaje a Sergio con un sencillo texto: «Tenías razón. Lo siento.»
+                Sergio respondió en diez minutos: «Yo también lo siento. ¿Tomamos algo esta semana?»
+                Esa misma tarde estaban sentados en su bar de siempre, como si nada hubiera pasado.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué Rodrigo y Sergio no se hablaban?",
+                    listOf("Rodrigo salió con la exnovia de Sergio", "Una discusión sobre dinero de un viaje compartido", "Un malentendido sobre un trabajo en común"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué encontró Rodrigo que cambió la situación?",
+                    listOf("El recibo del banco con la transferencia", "Un mensaje antiguo donde decía que pagaría más tarde", "Una nota que Sergio le había dejado hace meses"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo reaccionó Rodrigo al descubrir que Sergio tenía razón?",
+                    listOf("Se enfadó aún más", "Le mandó el mensaje con una disculpa sencilla", "Pidió a un amigo que lo explicara"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuánto tardó Sergio en responder?",
+                    listOf("Tres días", "Una hora", "Diez minutos"),
+                    correctIndex = 2
+                )
+            )
+        ),
+
+        Libro(
+            id = 50,
+            title = "La Promesa del Maratón",
+            level = "A2", difficulty = 5, topic = "Спорт / Личный рост",
+            text = """
+                Después de un chequeo médico, el doctor le dijo a Beatriz que necesitaba hacer más ejercicio.
+                Beatriz nunca había sido deportista, pero decidió inscribirse en un maratón popular de su ciudad que se celebraría en seis meses.
+                Empezó a entrenar tres veces por semana: al principio apenas podía correr diez minutos seguidos.
+                Siguió un plan de entrenamiento progresivo que encontró en internet y poco a poco fue mejorando.
+                Tuvo momentos de duda, sobre todo cuando se lesionó el tobillo en el cuarto mes y tuvo que parar dos semanas.
+                El día del maratón, Beatriz cruzó la meta en cuatro horas y cuarenta y tres minutos, llorando y sonriendo al mismo tiempo.
+                «Lo más importante no era el tiempo», le dijo a su familia, «sino demostrarme que podía.»
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué decidió Beatriz correr un maratón?",
+                    listOf("Un amigo la retó a hacerlo", "El doctor le dijo que necesitaba más ejercicio", "Siempre había querido ser corredora profesional"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué problema tuvo en el cuarto mes?",
+                    listOf("Se cansó del entrenamiento y quiso rendirse", "Se lesionó el tobillo y tuvo que parar dos semanas", "Enfermó de gripe y no pudo entrenar"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿En cuánto tiempo terminó Beatriz el maratón?",
+                    listOf("En tres horas y veinte minutos", "En cuatro horas y cuarenta y tres minutos", "En cinco horas y diez minutos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál era para Beatriz lo más importante del maratón?",
+                    listOf("Terminar antes que los demás participantes", "Demostrarse a sí misma que podía", "Bajar de las cinco horas"),
+                    correctIndex = 1
+                )
+            )
+        )
+
+        // B1 (51–75), B2 (76–100) — добавляются en siguientes sesiones
     )
 
     fun getById(id: Int): Libro? = all.firstOrNull { it.id == id }
