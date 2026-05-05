@@ -9523,6 +9523,1021 @@ object LessonContentData {
                     explanation = "С quizás можно использовать и indicativo (voy) и subjuntivo (vaya). Subjuntivo = чуть менее уверен."
                 )
             )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  БЛОК 3 B1: COMUNICACIÓN AVANZADA
+        //  u11_l0 – u11_l14
+        // ══════════════════════════════════════════════
+
+        // u11_l0 — Estilo indirecto: введение
+        "u11_l0" to LessonContent(
+            intro = "Estilo indirecto (косвенная речь) — это пересказ чужих слов. «Он сказал, что...», «Она спросила, ...». Это очень важный навык для B1.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Прямая vs Косвенная речь",
+                    items = listOf(
+                        LessonItem("Прямая: «Tengo hambre.»", "Он говорит: «Я голоден.»", ""),
+                        LessonItem("Косвенная: Dijo que tenía hambre.", "Он сказал, что был голоден.", ""),
+                        LessonItem("Прямая: «¿Vienes mañana?»", "Она спрашивает: «Придёшь завтра?»", ""),
+                        LessonItem("Косвенная: Preguntó si venía mañana.", "Она спросила, придёт ли он.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы пересказа",
+                    items = listOf(
+                        LessonItem("decir que", "сказать, что", ""),
+                        LessonItem("preguntar si / qué / dónde...", "спросить, ... ли / что / где...", ""),
+                        LessonItem("contar que", "рассказать, что", ""),
+                        LessonItem("explicar que / añadir que", "объяснить / добавить, что", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Главные изменения",
+                    items = listOf(
+                        LessonItem("Presente → Imperfecto", "«tengo» → «tenía»", ""),
+                        LessonItem("Futuro → Condicional", "«vendré» → «vendría»", ""),
+                        LessonItem("Pretérito Perfecto → Pluscuamperfecto", "«he comido» → «había comido»", ""),
+                        LessonItem("Местоимения и указатели меняются", "yo → él/ella, aquí → allí, hoy → ese día", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Прямая → косвенная речь",
+                    question = "«Estoy cansado.» → Dijo que ___",
+                    options = listOf("estoy cansado", "está cansado", "estaba cansado", "esté cansado"),
+                    correctAnswer = "estaba cansado",
+                    explanation = "Presente → Imperfecto в косвенной речи: estoy → estaba. «Сказал, что был усталым.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какой глагол для пересказа вопроса?",
+                    question = "«¿Tienes tiempo?» → ___ si tenía tiempo.",
+                    options = listOf("Dijo", "Preguntó", "Contó", "Explicó"),
+                    correctAnswer = "Preguntó",
+                    explanation = "Вопрос пересказывается через preguntar si (closed question) или preguntar qué/dónde... (open question)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Futuro → Condicional",
+                    question = "«Vendré mañana.» → Dijo que ___",
+                    options = listOf("vendrá mañana", "viene mañana", "vendría al día siguiente", "venga al día siguiente"),
+                    correctAnswer = "vendría al día siguiente",
+                    explanation = "Futuro → Condicional. «mañana» → «al día siguiente» (указатель тоже меняется)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что меняется в косвенной речи?",
+                    question = "¿Qué cambios ocurren en el estilo indirecto?",
+                    options = listOf("Только время глагола", "Только местоимения", "Время глагола, местоимения и указатели времени/места", "Ничего не меняется"),
+                    correctAnswer = "Время глагола, местоимения и указатели времени/места",
+                    explanation = "В косвенной речи меняются: время (presente→imperfecto), местоимения (yo→él) и указатели (aquí→allí, hoy→ese día)."
+                )
+            )
+        ),
+
+        // u11_l1 — Dijo que... / Preguntó si...
+        "u11_l1" to LessonContent(
+            intro = "Два основных типа косвенной речи: утверждения (dijo que...) и вопросы (preguntó si.../qué.../dónde...). Разбираем подробно каждый.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Утверждения: decir que + imperfecto",
+                    items = listOf(
+                        LessonItem("«Soy médico.» → Dijo que era médico.", "soy → era", ""),
+                        LessonItem("«Trabajo aquí.» → Dijo que trabajaba allí.", "aquí → allí", ""),
+                        LessonItem("«Me llamo Ana.» → Dijo que se llamaba Ana.", "me → se", ""),
+                        LessonItem("«Vivo en Madrid.» → Dijo que vivía en Madrid.", "vivo → vivía", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Закрытые вопросы: preguntar si",
+                    items = listOf(
+                        LessonItem("«¿Tienes coche?» → Preguntó si tenía coche.", "si = «ли»", ""),
+                        LessonItem("«¿Vienes mañana?» → Preguntó si vendría al día siguiente.", "vendría = futuro→condicional", ""),
+                        LessonItem("«¿Eres español?» → Preguntó si era español.", "eres → era", ""),
+                        LessonItem("si (без ударения) = «ли»", "не путать с sí (да)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Открытые вопросы: preguntar qué/dónde/cuándo...",
+                    items = listOf(
+                        LessonItem("«¿Dónde vives?» → Preguntó dónde vivía.", "dónde + imperfecto", ""),
+                        LessonItem("«¿Qué quieres?» → Preguntó qué quería.", "qué + imperfecto", ""),
+                        LessonItem("«¿Cuándo llegas?» → Preguntó cuándo llegaba.", "cuándo + imperfecto", ""),
+                        LessonItem("Вопросительное слово сохраняется", "dónde, qué, cuándo, cómo, por qué...", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Утверждение → косвенная речь",
+                    question = "«Estudio en la universidad.» → Dijo que ___ en la universidad.",
+                    options = listOf("estudio", "estudia", "estudiaba", "estudie"),
+                    correctAnswer = "estudiaba",
+                    explanation = "Presente → Imperfecto: estudio → estudiaba. «Сказал, что учится в университете.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Закрытый вопрос → косвенная речь",
+                    question = "«¿Hablas inglés?» → Preguntó ___ inglés.",
+                    options = listOf("que hablas", "si hablaba", "que hablaba", "si hablas"),
+                    correctAnswer = "si hablaba",
+                    explanation = "Закрытый вопрос (да/нет) → preguntar si + imperfecto: si hablaba."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Открытый вопрос → косвенная речь",
+                    question = "«¿Dónde trabajas?» → Preguntó ___ trabajaba.",
+                    options = listOf("si", "que", "dónde", "donde"),
+                    correctAnswer = "dónde",
+                    explanation = "Открытый вопрос сохраняет вопросительное слово: preguntó dónde trabajaba."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Местоимение меняется",
+                    question = "«Me duele la cabeza.» → Dijo que ___ dolía la cabeza.",
+                    options = listOf("me", "te", "le", "se"),
+                    correctAnswer = "le",
+                    explanation = "Me (я) → le (ему/ей): me duele → le dolía. Местоимения меняются при пересказе."
+                )
+            )
+        ),
+
+        // u11_l2 — Изменение времён в косвенной речи
+        "u11_l2" to LessonContent(
+            intro = "Таблица изменений времён — это сердце косвенной речи. Выучи её и сможешь пересказывать любые высказывания.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Таблица изменений времён",
+                    items = listOf(
+                        LessonItem("Presente → Imperfecto", "«hablo» → «hablaba»", ""),
+                        LessonItem("Pretérito Perfecto → Pluscuamperfecto", "«he hablado» → «había hablado»", ""),
+                        LessonItem("Pretérito Indefinido → Pluscuamperfecto", "«hablé» → «había hablado»", ""),
+                        LessonItem("Futuro → Condicional", "«hablaré» → «hablaría»", ""),
+                        LessonItem("Imp. de Subj. → Imp. de Subj.", "«hablara» → «hablara» (не меняется)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Изменение указателей",
+                    items = listOf(
+                        LessonItem("hoy → ese día", "сегодня → в тот день", ""),
+                        LessonItem("mañana → al día siguiente", "завтра → на следующий день", ""),
+                        LessonItem("ayer → el día anterior", "вчера → накануне", ""),
+                        LessonItem("aquí → allí", "здесь → там", ""),
+                        LessonItem("este/estos → ese/esos", "этот/эти → тот/те", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры с изменениями",
+                    items = listOf(
+                        LessonItem("«Ayer fui al médico.»", "Dijo que el día anterior había ido al médico.", ""),
+                        LessonItem("«Mañana vendré.»", "Dijo que al día siguiente vendría.", ""),
+                        LessonItem("«He terminado el trabajo.»", "Dijo que había terminado el trabajo.", ""),
+                        LessonItem("«Aquí vivo yo.»", "Dijo que allí vivía él.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Pretérito Perfecto → Pluscuamperfecto",
+                    question = "«He comido ya.» → Dijo que ya ___ comido.",
+                    options = listOf("ha", "había", "haya", "hubiera"),
+                    correctAnswer = "había",
+                    explanation = "Pret. Perfecto → Pluscuamperfecto: he comido → había comido. «Сказал, что уже поел.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Futuro → Condicional",
+                    question = "«Llamaré mañana.» → Dijo que ___ al día siguiente.",
+                    options = listOf("llamará", "llamaría", "llame", "llamara"),
+                    correctAnswer = "llamaría",
+                    explanation = "Futuro → Condicional: llamaré → llamaría. mañana → al día siguiente."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Изменение указателя времени",
+                    question = "«Hoy no tengo tiempo.» → Dijo que ___ no tenía tiempo.",
+                    options = listOf("hoy", "ese día", "mañana", "ayer"),
+                    correctAnswer = "ese día",
+                    explanation = "hoy → ese día в косвенной речи. «Сказал, что в тот день у него не было времени.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Pretérito Indefinido → Pluscuamperfecto",
+                    question = "«Llegué tarde.» → Dijo que ___ tarde.",
+                    options = listOf("llegó", "llegaba", "había llegado", "hubiera llegado"),
+                    correctAnswer = "había llegado",
+                    explanation = "Pret. Indefinido → Pluscuamperfecto: llegué → había llegado. «Сказал, что опоздал.»"
+                )
+            )
+        ),
+
+        // u11_l3 — Косвенные приказы: pidió que + Imp.Subj.
+        "u11_l3" to LessonContent(
+            intro = "Косвенные приказы и просьбы: когда пересказываем чью-то команду или просьбу — используем pidió/ordenó/rogó que + Imperfecto de Subjuntivo.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Схема: pedir/decir/mandar + que + Imp.Subj.",
+                    items = listOf(
+                        LessonItem("«¡Ven aquí!» → Me pidió que fuera allí.", "imperativo → Imp.Subj.", ""),
+                        LessonItem("«¡Habla más despacio!» → Me dijo que hablara más despacio.", "habla → hablara", ""),
+                        LessonItem("«¡No llegues tarde!» → Me pidió que no llegara tarde.", "no llegues → no llegara", ""),
+                        LessonItem("«¡Ayúdame!» → Me rogó que le ayudara.", "ayúdame → le ayudara", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы пересказа команд",
+                    items = listOf(
+                        LessonItem("pedir que", "попросить, чтобы", ""),
+                        LessonItem("decir que (+ Imp.Subj.)", "сказать, чтобы", ""),
+                        LessonItem("ordenar / mandar que", "приказать, чтобы", ""),
+                        LessonItem("rogar que / suplicar que", "умолять, чтобы", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("El médico me dijo que descansara.", "Врач сказал мне отдыхать.", ""),
+                        LessonItem("El jefe ordenó que termináramos.", "Шеф приказал, чтобы мы закончили.", ""),
+                        LessonItem("Me rogó que no se lo dijera a nadie.", "Умолял не говорить никому.", ""),
+                        LessonItem("Les pidió que llegaran a tiempo.", "Попросил их прийти вовремя.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Косвенная просьба",
+                    question = "«¡Espera aquí!» → Me pidió que ___ allí.",
+                    options = listOf("esperas", "esperes", "esperara", "esperaría"),
+                    correctAnswer = "esperara",
+                    explanation = "Приказ/просьба в косвенной речи: pedir que + Imp.Subj.: espera → esperara."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Косвенный приказ (негатив)",
+                    question = "«¡No fumes!» → Me dijo que no ___.",
+                    options = listOf("fumas", "fumes", "fumara", "fumaría"),
+                    correctAnswer = "fumara",
+                    explanation = "Негативный приказ → Imp.Subj.: no fumes → no fumara. «Сказал мне не курить.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный глагол пересказа",
+                    question = "El jefe ___ que termináramos el proyecto hoy.",
+                    options = listOf("preguntó", "habló", "ordenó", "pensó"),
+                    correctAnswer = "ordenó",
+                    explanation = "Приказ шефа → ordenó que + Imp.Subj. «Шеф приказал, чтобы мы закончили проект сегодня.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imp.Subj. от venir (tú)",
+                    question = "Me rogó que ___ pronto.",
+                    options = listOf("vienes", "vengas", "vinieras", "vendrías"),
+                    correctAnswer = "vinieras",
+                    explanation = "Косвенная просьба: rogar que + Imp.Subj. venir → vinieron → vinie- + ras = vinieras."
+                )
+            )
+        ),
+
+        // u11_l4 — Cláusulas relativas: que, quien, donde
+        "u11_l4" to LessonContent(
+            intro = "Relative clauses (придаточные определительные) связывают информацию о существительном. «Книга, которую я читаю...», «Человек, который пришёл...»",
+            sections = listOf(
+                LessonSection(
+                    heading = "que — самое частое",
+                    items = listOf(
+                        LessonItem("El libro que leo es interesante.", "Книга, которую я читаю, интересная.", ""),
+                        LessonItem("La chica que trabaja aquí es simpática.", "Девушка, которая работает здесь, милая.", ""),
+                        LessonItem("El coche que compré es rojo.", "Машина, которую я купил, красная.", ""),
+                        LessonItem("que = который/которую/которые", "для людей и вещей", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "quien/quienes — только для людей",
+                    items = listOf(
+                        LessonItem("La persona con quien hablo.", "Человек, с которым я говорю.", ""),
+                        LessonItem("Los amigos con quienes viajé.", "Друзья, с которыми я путешествовал.", ""),
+                        LessonItem("Quien mucho habla, poco sabe.", "Кто много говорит, мало знает.", ""),
+                        LessonItem("quien = кто (только люди)", "обычно после предлогов: con quien, para quien", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "donde, cuando, como",
+                    items = listOf(
+                        LessonItem("La ciudad donde nací.", "Город, где я родился.", ""),
+                        LessonItem("El momento cuando te conocí.", "Момент, когда я тебя встретил.", ""),
+                        LessonItem("La manera como lo explica.", "Способ, которым он объясняет.", ""),
+                        LessonItem("donde = где; cuando = когда; como = как", "для места/времени/способа", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное местоимение",
+                    question = "El profesor ___ nos enseña es muy bueno.",
+                    options = listOf("quien", "donde", "que", "cuyo"),
+                    correctAnswer = "que",
+                    explanation = "que — для людей и вещей (субъект). «Учитель, который нас учит, очень хороший.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Quien — после предлога",
+                    question = "La persona con ___ trabajo es muy profesional.",
+                    options = listOf("que", "quien", "donde", "cuyo"),
+                    correctAnswer = "quien",
+                    explanation = "После предлога con — quien (для людей): con quien trabajo. «Человек, с которым я работаю, очень профессиональный.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Donde — место",
+                    question = "Me gusta el café ___ nos conocimos.",
+                    options = listOf("que", "quien", "donde", "cuando"),
+                    correctAnswer = "donde",
+                    explanation = "donde = место. «Мне нравится кафе, где мы познакомились.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Que vs Quien",
+                    question = "Los estudiantes ___ aprobaron el examen están muy contentos.",
+                    options = listOf("quien", "quienes", "que", "donde"),
+                    correctAnswer = "que",
+                    explanation = "que — субъект придаточного (не после предлога). «Студенты, которые сдали экзамен, очень довольны.»"
+                )
+            )
+        ),
+
+        // u11_l5 — Cuyo / el cual / lo cual
+        "u11_l5" to LessonContent(
+            intro = "Cuyo, el cual и lo cual — более сложные относительные местоимения. Они делают речь богаче и характерны для письменного B1-B2.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Cuyo — притяжательное «чей»",
+                    items = listOf(
+                        LessonItem("cuyo/cuya/cuyos/cuyas", "согласуется с существительным!", ""),
+                        LessonItem("El escritor cuya novela leí.", "Писатель, чей роман я прочитал.", ""),
+                        LessonItem("La empresa cuyos productos son famosos.", "Компания, чьи продукты знамениты.", ""),
+                        LessonItem("Cuyo concuerda con la cosa poseída", "cuya novela (ж.р.) / cuyos productos (мн.)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "El cual / la cual / los cuales — торжественнее que",
+                    items = listOf(
+                        LessonItem("La razón por la cual vine.", "Причина, по которой я пришёл.", ""),
+                        LessonItem("El problema del cual hablamos.", "Проблема, о которой мы говорим.", ""),
+                        LessonItem("Обычно после предлогов (por, de, en...)", "el cual = более формально, чем que", ""),
+                        LessonItem("Los documentos sin los cuales no puedo.", "Документы, без которых я не могу.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Lo cual — для идей/ситуаций",
+                    items = listOf(
+                        LessonItem("Llegó tarde, lo cual me molestó.", "Пришёл поздно, что меня раздражало.", ""),
+                        LessonItem("Habla muy rápido, lo cual es difícil.", "Говорит быстро, что сложно.", ""),
+                        LessonItem("lo cual = что (ссылка на всю предыдущую идею)", "не на конкретное слово", ""),
+                        LessonItem("No trajo el trabajo, lo que me sorprendió.", "lo que = то же, что lo cual (разговорнее)", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Cuyo — согласование",
+                    question = "El autor ___ libros son famosos vive en Argentina.",
+                    options = listOf("cuyo", "cuyos", "cuya", "cuyas"),
+                    correctAnswer = "cuyos",
+                    explanation = "cuyo согласуется с существительным: libros (мн.ч., м.р.) → cuyos. «Автор, чьи книги знамениты, живёт в Аргентине.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Lo cual — ссылка на идею",
+                    question = "No vino a la reunión, ___ causó problemas.",
+                    options = listOf("que", "quien", "lo cual", "cuyo"),
+                    correctAnswer = "lo cual",
+                    explanation = "lo cual ссылается на всю предыдущую идею (не пришёл на встречу). «Не пришёл на встречу, что создало проблемы.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "El cual — после предлога",
+                    question = "El motivo por ___ llamé era urgente.",
+                    options = listOf("que", "el que / el cual", "quien", "cuyo"),
+                    correctAnswer = "el que / el cual",
+                    explanation = "После предлога por + артикль + que/cual. «Причина, по которой я звонил, была срочной.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Cuya — женский род",
+                    question = "Es una empresa ___ reputación es excelente.",
+                    options = listOf("cuyo", "cuyos", "cuya", "cuyas"),
+                    correctAnswer = "cuya",
+                    explanation = "reputación — женский род → cuya. «Это компания, чья репутация превосходна.»"
+                )
+            )
+        ),
+
+        // u11_l6 — Voz pasiva: ser + participio
+        "u11_l6" to LessonContent(
+            intro = "Voz pasiva (страдательный залог) используется когда важно ЧТО произошло, а не КТО это сделал. Строится с ser + participio.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Схема: ser + participio (согласованный)",
+                    items = listOf(
+                        LessonItem("Activa: El arquitecto construyó el puente.", "Активный: Архитектор построил мост.", ""),
+                        LessonItem("Pasiva: El puente fue construido por el arquitecto.", "Пассивный: Мост был построен архитектором.", ""),
+                        LessonItem("ser + participio + (por + агент)", "ser меняется по времени", ""),
+                        LessonItem("participio согласуется с субъектом", "el puente → construido; la casa → construida", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры в разных временах",
+                    items = listOf(
+                        LessonItem("El libro ES publicado hoy. (presente)", "Книга публикуется сегодня.", ""),
+                        LessonItem("El libro FUE publicado ayer. (indefinido)", "Книга была опубликована вчера.", ""),
+                        LessonItem("El libro SERÁ publicado mañana. (futuro)", "Книга будет опубликована завтра.", ""),
+                        LessonItem("El libro HA SIDO publicado. (perfecto)", "Книга была опубликована.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Pasiva refleja: se + verbo (чаще используется!)",
+                    items = listOf(
+                        LessonItem("Se vende piso. (pasiva refleja)", "Продаётся квартира.", ""),
+                        LessonItem("Se habla español aquí.", "Здесь говорят по-испански.", ""),
+                        LessonItem("Se abrió la tienda a las 9.", "Магазин открылся в 9.", ""),
+                        LessonItem("Pasiva refleja (se) — в разговорной речи!", "más natural que ser+participio", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Voz pasiva — participio согласован",
+                    question = "Las cartas ___ enviadas ayer.",
+                    options = listOf("fue / fueron", "fue", "fueron", "ha sido"),
+                    correctAnswer = "fueron",
+                    explanation = "cartas (мн.ч., ж.р.) → fueron enviadas. Ser согласуется с субъектом."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Participio согласуется с субъектом",
+                    question = "El informe fue ___ por el director.",
+                    options = listOf("firmada", "firmado", "firmados", "firmadas"),
+                    correctAnswer = "firmado",
+                    explanation = "informe (м.р., ед.ч.) → firmado. «Доклад был подписан директором.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Pasiva refleja с se",
+                    question = "En este restaurante ___ muy bien.",
+                    options = listOf("se come", "es comido", "fue comido", "se comen"),
+                    correctAnswer = "se come",
+                    explanation = "Pasiva refleja: se come (безличная). «В этом ресторане едят очень хорошо.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Activa → Pasiva",
+                    question = "Los estudiantes escribieron el examen. → El examen ___ escrito ___ los estudiantes.",
+                    options = listOf("es / por", "fue / por", "fue / de", "será / por"),
+                    correctAnswer = "fue / por",
+                    explanation = "Activa (pasado) → Pasiva: fue escrito por. «Экзамен был написан студентами.»"
+                )
+            )
+        ),
+
+        // u11_l7 — Ser vs Estar + participio
+        "u11_l7" to LessonContent(
+            intro = "Ser + participio = пассив (действие). Estar + participio = состояние (результат действия). Это тонкое, но важное различие!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Ser + participio = действие (пассив)",
+                    items = listOf(
+                        LessonItem("La puerta fue cerrada por el guardia.", "Дверь была закрыта охранником. (действие)", ""),
+                        LessonItem("El libro fue escrito en 1984.", "Книга была написана в 1984. (действие)", ""),
+                        LessonItem("La ciudad fue destruida por el terremoto.", "Город был разрушен землетрясением.", ""),
+                        LessonItem("Ser = акцент на самом действии", "кем/чем была произведена", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Estar + participio = состояние (результат)",
+                    items = listOf(
+                        LessonItem("La puerta está cerrada.", "Дверь закрыта. (состояние сейчас)", ""),
+                        LessonItem("El libro está escrito en español.", "Книга написана по-испански. (факт)", ""),
+                        LessonItem("La tienda está abierta.", "Магазин открыт. (состояние)", ""),
+                        LessonItem("Estar = акцент на результирующем состоянии", "как есть сейчас", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Сравни пары",
+                    items = listOf(
+                        LessonItem("La ventana FUE abierta por el ladrón.", "Окно было открыто вором. (действие)", ""),
+                        LessonItem("La ventana ESTÁ abierta.", "Окно открыто. (состояние)", ""),
+                        LessonItem("La cena FUE preparada por mamá.", "Ужин был приготовлен мамой.", ""),
+                        LessonItem("La cena ESTÁ preparada.", "Ужин готов.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ser (действие) или Estar (состояние)?",
+                    question = "La tienda ___ cerrada a las 9. (её закрыли в 9)",
+                    options = listOf("está", "fue", "es", "ha estado"),
+                    correctAnswer = "fue",
+                    explanation = "Действие в прошлом → ser: fue cerrada. «Магазин был закрыт в 9 часов (охранником).»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ser (действие) или Estar (состояние)?",
+                    question = "No puedo entrar. La puerta ___ cerrada.",
+                    options = listOf("fue", "está", "será", "es"),
+                    correctAnswer = "está",
+                    explanation = "Состояние сейчас → estar: está cerrada. «Не могу войти. Дверь закрыта.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Participio согласуется",
+                    question = "Las ventanas están ___.",
+                    options = listOf("abierto", "abierta", "abiertas", "abiertos"),
+                    correctAnswer = "abiertas",
+                    explanation = "ventanas (мн.ч., ж.р.) → abiertas. С estar participio также согласуется."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ser vs Estar — смысл",
+                    question = "«El trabajo fue hecho» vs «El trabajo está hecho». ¿Qué diferencia hay?",
+                    options = listOf(
+                        "Нет разницы",
+                        "fue hecho = кто-то сделал (действие); está hecho = готово (состояние)",
+                        "fue hecho = настоящее; está hecho = прошлое",
+                        "fue hecho = вопрос; está hecho = утверждение"
+                    ),
+                    correctAnswer = "fue hecho = кто-то сделал (действие); está hecho = готово (состояние)",
+                    explanation = "Именно так! Ser+participio = пассивное действие. Estar+participio = состояние как результат."
+                )
+            )
+        ),
+
+        // u11_l8 — Perífrasis: llevar + gerundio
+        "u11_l8" to LessonContent(
+            intro = "Llevar + gerundio выражает продолжительность действия до момента речи. Это очень употребительная конструкция, которую русскоязычные часто упускают.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Llevar + gerundio = «делать уже Х времени»",
+                    items = listOf(
+                        LessonItem("Llevo 2 horas estudiando.", "Я учусь уже 2 часа.", ""),
+                        LessonItem("¿Cuánto tiempo llevas esperando?", "Сколько ты уже ждёшь?", ""),
+                        LessonItem("Lleva 3 años viviendo en Madrid.", "Он живёт в Мадриде уже 3 года.", ""),
+                        LessonItem("Llevamos media hora buscándote.", "Мы ищем тебя уже полчаса.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Llevar + tiempo + sin + infinitivo = «не делать уже Х»",
+                    items = listOf(
+                        LessonItem("Llevo 3 días sin dormir.", "Я не сплю уже 3 дня.", ""),
+                        LessonItem("Lleva semanas sin llamarme.", "Он не звонит мне уже несколько недель.", ""),
+                        LessonItem("Llevamos meses sin vernos.", "Мы не виделись уже несколько месяцев.", ""),
+                        LessonItem("llevar + tiempo + sin + inf.", "«не Х-ать уже...»", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "В прошедшем времени",
+                    items = listOf(
+                        LessonItem("Llevaba 2 horas esperando cuando llegaste.", "Ждал 2 часа, когда ты пришёл.", ""),
+                        LessonItem("¿Cuánto tiempo llevabas viviendo allí?", "Сколько ты уже жил там?", ""),
+                        LessonItem("llevar → llevaba (imperfecto)", "для ситуации в прошлом", ""),
+                        LessonItem("Muy útil en conversación", "часто используется в разговорной речи", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Llevar + gerundio",
+                    question = "___ tres horas estudiando y estoy muy cansado.",
+                    options = listOf("Tengo", "Estoy", "Llevo", "Sigo"),
+                    correctAnswer = "Llevo",
+                    explanation = "llevar + tiempo + gerundio: Llevo tres horas estudiando. «Я учусь уже три часа.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Llevar + sin + infinitivo",
+                    question = "¿Cuánto tiempo ___ sin hablar con tu familia?",
+                    options = listOf("estás", "tienes", "llevas", "sigues"),
+                    correctAnswer = "llevas",
+                    explanation = "llevar + sin + inf.: ¿Cuánto tiempo llevas sin hablar...? «Сколько ты уже не говоришь с семьёй?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Llevo + gerundio: согласование",
+                    question = "Ella ___ dos años ___ en esa empresa.",
+                    options = listOf("lleva / trabaja", "lleva / trabajando", "tiene / trabajando", "está / trabajando"),
+                    correctAnswer = "lleva / trabajando",
+                    explanation = "llevar (согласован с субъектом ella → lleva) + gerundio (trabajando). «Она работает в той компании уже два года.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Перевод с русского",
+                    question = "«Мы ждём тебя уже час» =",
+                    options = listOf("Esperamos una hora.", "Llevamos una hora esperándote.", "Estamos esperando una hora.", "Tenemos una hora esperando."),
+                    correctAnswer = "Llevamos una hora esperándote.",
+                    explanation = "llevar + tiempo + gerundio: Llevamos una hora esperándote."
+                )
+            )
+        ),
+
+        // u11_l9 — Perífrasis: seguir/continuar + gerundio
+        "u11_l9" to LessonContent(
+            intro = "Seguir/continuar + gerundio выражает продолжение действия. Acabar de + infinitivo — действие только что завершилось. Volver a + infinitivo — повторение.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Seguir/Continuar + gerundio = «продолжать делать»",
+                    items = listOf(
+                        LessonItem("Sigo estudiando español.", "Я продолжаю учить испанский.", ""),
+                        LessonItem("¿Sigues viviendo en Madrid?", "Ты всё ещё живёшь в Мадриде?", ""),
+                        LessonItem("Continúa lloviendo.", "Продолжает идти дождь.", ""),
+                        LessonItem("Seguimos trabajando juntos.", "Мы продолжаем работать вместе.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Seguir sin + infinitivo = «по-прежнему не делать»",
+                    items = listOf(
+                        LessonItem("Sigo sin entender.", "Я по-прежнему не понимаю.", ""),
+                        LessonItem("Siguen sin llamarme.", "Они по-прежнему не звонят.", ""),
+                        LessonItem("seguir sin = llevar sin (синонимы)", "оба выражают продолжающееся отсутствие", ""),
+                        LessonItem("Sigo sin tener respuesta.", "По-прежнему нет ответа.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Dejar de vs Ponerse a",
+                    items = listOf(
+                        LessonItem("Dejó de fumar hace un año.", "Бросил курить год назад.", ""),
+                        LessonItem("Se puso a llover de repente.", "Вдруг начался дождь.", ""),
+                        LessonItem("dejar de + inf. = перестать делать", "прекращение", ""),
+                        LessonItem("ponerse a + inf. = начать делать (внезапно)", "начало", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Seguir + gerundio",
+                    question = "A pesar de las dificultades, ___ intentándolo.",
+                    options = listOf("continúa / sigue", "Выберите одно из двух", "sigue", "siguió"),
+                    correctAnswer = "sigue",
+                    explanation = "seguir + gerundio: sigue intentándolo. «Несмотря на трудности, продолжает пытаться.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Dejar de + infinitivo",
+                    question = "Mi hermano ___ comer carne hace dos años.",
+                    options = listOf("siguió", "dejó de", "empezó a", "volvió a"),
+                    correctAnswer = "dejó de",
+                    explanation = "dejar de + inf. = перестать: dejó de comer. «Мой брат перестал есть мясо два года назад.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ponerse a + infinitivo",
+                    question = "De repente ___ llover y nos mojamos.",
+                    options = listOf("siguió a", "dejó de", "se puso a", "acabó de"),
+                    correctAnswer = "se puso a",
+                    explanation = "ponerse a + inf. = внезапно начать: se puso a llover. «Вдруг начался дождь и мы промокли.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Sigue sin + infinitivo",
+                    question = "Le envié tres mensajes pero ___ contestar.",
+                    options = listOf("sigue sin", "continúa de", "lleva sin", "vuelve sin"),
+                    correctAnswer = "sigue sin",
+                    explanation = "sigue sin + inf.: sigue sin contestar. «Отправил три сообщения, но он по-прежнему не отвечает.»"
+                )
+            )
+        ),
+
+        // u11_l10 — Perífrasis: acabar de / volver a + infinitivo
+        "u11_l10" to LessonContent(
+            intro = "Acabar de + infinitivo — «только что сделал». Volver a + infinitivo — «сделал снова». Tener que + infinitivo — «должен сделать». Очень частые в речи!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Acabar de + infinitivo = «только что»",
+                    items = listOf(
+                        LessonItem("Acabo de llegar.", "Я только что приехал.", ""),
+                        LessonItem("Acabas de llamarme.", "Ты только что мне позвонил.", ""),
+                        LessonItem("Acaba de salir el jefe.", "Только что вышел шеф.", ""),
+                        LessonItem("Acabamos de comer.", "Мы только что поели.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Volver a + infinitivo = «снова, опять»",
+                    items = listOf(
+                        LessonItem("Vuelvo a intentarlo.", "Пытаюсь снова.", ""),
+                        LessonItem("¡No vuelvas a hacer eso!", "Не делай это снова!", ""),
+                        LessonItem("Ha vuelto a llover.", "Снова пошёл дождь.", ""),
+                        LessonItem("Volvió a llamar tres veces.", "Позвонил снова три раза.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Tener que / Deber + infinitivo",
+                    items = listOf(
+                        LessonItem("Tengo que estudiar más.", "Мне нужно учиться больше. (обязанность)", ""),
+                        LessonItem("Debo llamarle. (deber = более формально)", "Я должен ему позвонить.", ""),
+                        LessonItem("Hay que + inf. (безличное)", "Hay que trabajar = Нужно работать.", ""),
+                        LessonItem("tener que > deber > hay que", "по степени личного обязательства", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Acabar de + infinitivo",
+                    question = "No puedo comer más. ___ una pizza entera.",
+                    options = listOf("Acabo de comer", "Vuelvo a comer", "Tengo que comer", "Sigo comiendo"),
+                    correctAnswer = "Acabo de comer",
+                    explanation = "acabar de + inf. = только что: Acabo de comer. «Не могу есть больше. Только что съел целую пиццу.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Volver a + infinitivo",
+                    question = "El equipo perdió el partido. ___ entrenar más duro.",
+                    options = listOf("Acaban de", "Vuelven a", "Tienen que", "Siguen"),
+                    correctAnswer = "Tienen que",
+                    explanation = "Здесь — обязательство: tienen que entrenar. «Команда проиграла. Им нужно тренироваться усерднее.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Volver a — повторение",
+                    question = "¡No ___ llegar tarde! Es la tercera vez.",
+                    options = listOf("acabes de", "vuelvas a", "sigas", "dejes de"),
+                    correctAnswer = "vuelvas a",
+                    explanation = "volver a + inf. = снова: no vuelvas a llegar. «Не опаздывай снова! Это третий раз.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Hay que — безличное",
+                    question = "___ respetar las normas de la empresa.",
+                    options = listOf("Tengo que", "Hay que", "Debo de", "Acabo de"),
+                    correctAnswer = "Hay que",
+                    explanation = "hay que + inf. = безличное обязательство (все должны). «Нужно соблюдать правила компании.»"
+                )
+            )
+        ),
+
+        // u11_l11 — Conectores: sin embargo, por lo tanto, además
+        "u11_l11" to LessonContent(
+            intro = "Conectores (связки) организуют аргументированную речь. На B1 они обязательны — они показывают логику между идеями.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Противопоставление",
+                    items = listOf(
+                        LessonItem("sin embargo", "однако, тем не менее", ""),
+                        LessonItem("no obstante", "тем не менее (более формально)", ""),
+                        LessonItem("pero / aunque", "но / хотя", ""),
+                        LessonItem("a pesar de eso", "несмотря на это", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Следствие и вывод",
+                    items = listOf(
+                        LessonItem("por lo tanto / por eso", "поэтому, следовательно", ""),
+                        LessonItem("así que / de modo que", "так что, поэтому", ""),
+                        LessonItem("en consecuencia", "вследствие этого (формально)", ""),
+                        LessonItem("por esta razón", "по этой причине", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Добавление и порядок",
+                    items = listOf(
+                        LessonItem("además", "кроме того, вдобавок", ""),
+                        LessonItem("también / también...", "также", ""),
+                        LessonItem("por otro lado", "с другой стороны", ""),
+                        LessonItem("en primer lugar / en segundo lugar", "во-первых / во-вторых", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Противопоставление",
+                    question = "Es un buen candidato; ___, no tiene experiencia suficiente.",
+                    options = listOf("por lo tanto", "además", "sin embargo", "así que"),
+                    correctAnswer = "sin embargo",
+                    explanation = "sin embargo = «однако, тем не менее». Противопоставляет два факта."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Следствие",
+                    question = "Llegué tarde; ___, me perdí el comienzo.",
+                    options = listOf("sin embargo", "por lo tanto", "además", "no obstante"),
+                    correctAnswer = "por lo tanto",
+                    explanation = "por lo tanto = «поэтому, следовательно». Опоздал → потому пропустил начало."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Добавление",
+                    question = "El hotel es caro; ___, la ubicación es perfecta.",
+                    options = listOf("sin embargo", "por lo tanto", "además", "así que"),
+                    correctAnswer = "además",
+                    explanation = "además = «кроме того». Добавляет ещё один факт в ту же сторону."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную связку",
+                    question = "No estudié nada; ___, suspendí el examen.",
+                    options = listOf("sin embargo", "así que", "además", "por otro lado"),
+                    correctAnswer = "así que",
+                    explanation = "así que = «так что». Логическое следствие: не учился → провалил. «Я ничего не учил, так что провалил экзамен.»"
+                )
+            )
+        ),
+
+        // u11_l12 — Concesión: aunque / a pesar de (que)
+        "u11_l12" to LessonContent(
+            intro = "Уступка (concesión) — выражение «несмотря на что-то». Aunque, a pesar de (que), por más que — разные способы сказать «хотя» и «несмотря на».",
+            sections = listOf(
+                LessonSection(
+                    heading = "Aunque: уступка",
+                    items = listOf(
+                        LessonItem("Aunque es difícil, lo intentaré.", "Хотя это сложно, попробую. (факт)", ""),
+                        LessonItem("Aunque sea difícil, lo intentaré.", "Даже если сложно, попробую. (гипотеза)", ""),
+                        LessonItem("Aunque llueva, saldré.", "Даже если будет дождь, выйду.", ""),
+                        LessonItem("Aunque + ind. = факт / + subj. = гипотеза", "(уже изучали в Блоке 1)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "A pesar de + sustantivo/infinitivo",
+                    items = listOf(
+                        LessonItem("A pesar del frío, salimos.", "Несмотря на холод, вышли.", ""),
+                        LessonItem("A pesar de estar cansado, trabaja.", "Несмотря на усталость, работает.", ""),
+                        LessonItem("A pesar de sus problemas, sonríe.", "Несмотря на свои проблемы, улыбается.", ""),
+                        LessonItem("a pesar de + nombre/infinitivo", "не требует subjuntivo", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "A pesar de que + indicativo/subjuntivo",
+                    items = listOf(
+                        LessonItem("A pesar de que está enfermo, trabaja.", "Несмотря на то что болен, работает.", ""),
+                        LessonItem("Por más que lo intento, no lo consigo.", "Как бы я ни старался, не получается.", ""),
+                        LessonItem("Por mucho que estudie, no aprueba.", "Как много он ни учился бы, не сдаёт.", ""),
+                        LessonItem("por más que / por mucho que + subj.", "«как бы... ни»", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "A pesar de + infinitivo",
+                    question = "___ estar muy ocupada, siempre ayuda a los demás.",
+                    options = listOf("Aunque", "A pesar de", "Sin embargo", "Por lo tanto"),
+                    correctAnswer = "A pesar de",
+                    explanation = "a pesar de + infinitivo (estar): «Несмотря на большую занятость, она всегда помогает другим.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Por más que + subjuntivo",
+                    question = "___ lo intentes, no vas a convencerlo.",
+                    options = listOf("Aunque que", "Por más que", "A pesar que", "Sin embargo"),
+                    correctAnswer = "Por más que",
+                    explanation = "por más que + subj.: «Как бы ты ни старался, ты его не убедишь.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "A pesar de que + indicativo",
+                    question = "Fue a trabajar ___ que tenía fiebre.",
+                    options = listOf("por lo tanto", "a pesar de", "así que", "sin embargo"),
+                    correctAnswer = "a pesar de",
+                    explanation = "a pesar de que + indicativo (tenía): «Пошёл работать, несмотря на то что у него была температура.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "___ su éxito, sigue siendo humilde.",
+                    options = listOf("Por lo tanto", "A pesar de", "Además", "Así que"),
+                    correctAnswer = "A pesar de",
+                    explanation = "a pesar de + sustantivo (su éxito): «Несмотря на свой успех, он остаётся скромным.»"
+                )
+            )
+        ),
+
+        // u11_l13 — Conclusión: en definitiva / en resumen / es decir
+        "u11_l13" to LessonContent(
+            intro = "Завершение аргумента и перефразирование — важные навыки B1. En definitiva, en resumen, es decir — делают речь связной и убедительной.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Резюме и вывод",
+                    items = listOf(
+                        LessonItem("en definitiva", "в конечном счёте, итого", ""),
+                        LessonItem("en resumen / en conclusión", "в заключение, подводя итог", ""),
+                        LessonItem("en fin / total que", "в общем, короче говоря (разговорно)", ""),
+                        LessonItem("en pocas palabras", "в двух словах, вкратце", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Пояснение и перефразирование",
+                    items = listOf(
+                        LessonItem("es decir / o sea", "то есть (разговорнее)", ""),
+                        LessonItem("dicho de otro modo", "иными словами", ""),
+                        LessonItem("esto es", "то есть (формально)", ""),
+                        LessonItem("lo que quiero decir es que", "то, что я хочу сказать, это...", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры в тексте",
+                    items = listOf(
+                        LessonItem("En definitiva, el proyecto fue un éxito.", "В итоге, проект был успешным.", ""),
+                        LessonItem("Es un tímido; es decir, le cuesta hablar.", "Он стеснительный, то есть ему сложно говорить.", ""),
+                        LessonItem("En resumen, necesitamos más tiempo.", "Подводя итог, нам нужно больше времени.", ""),
+                        LessonItem("O sea, no va a venir. ¿Correcto?", "То есть он не придёт. Правильно?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Вывод",
+                    question = "Trabajamos mucho, los resultados son buenos, el equipo está motivado. ___, todo va bien.",
+                    options = listOf("Sin embargo", "Por lo tanto", "En definitiva", "Es decir"),
+                    correctAnswer = "En definitiva",
+                    explanation = "en definitiva = «в итоге, в конечном счёте». Подводит общий итог."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Пояснение",
+                    question = "Es introvertido; ___, prefiere estar solo.",
+                    options = listOf("en definitiva", "es decir", "además", "sin embargo"),
+                    correctAnswer = "es decir",
+                    explanation = "es decir = «то есть». Поясняет или перефразирует предыдущую идею."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "En resumen",
+                    question = "___, el candidato tiene buena formación pero poca experiencia.",
+                    options = listOf("En definitiva", "En resumen", "Es decir", "Оба первых варианта верны"),
+                    correctAnswer = "Оба первых варианта верны",
+                    explanation = "en definitiva и en resumen оба подходят для подведения итога. Выбор зависит от стиля."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "O sea — разговорный вариант",
+                    question = "No vino, no llamó, no escribió. ___, nos ignoró.",
+                    options = listOf("Sin embargo", "O sea", "Además", "A pesar de eso"),
+                    correctAnswer = "O sea",
+                    explanation = "o sea = «то есть» (разговорно). Делает вывод из перечисленных фактов."
+                )
+            )
+        ),
+
+        // u11_l14 — Чекпоинт: «Интервью»
+        "u11_l14" to LessonContent(
+            intro = "Чекпоинт «Интервью». Представь себе интервью на работу — тебе нужны все навыки Блока 3: косвенная речь, относительные придаточные, вежливость и связки.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Что мы изучили в Блоке 3",
+                    items = listOf(
+                        LessonItem("Estilo indirecto", "dijo que, preguntó si, pidió que", ""),
+                        LessonItem("Cláusulas relativas", "que, quien, donde, cuyo, lo cual", ""),
+                        LessonItem("Voz pasiva", "ser + participio / estar + participio", ""),
+                        LessonItem("Perífrasis", "llevar/seguir/acabar de/volver a + inf./ger.", ""),
+                        LessonItem("Conectores y conclusión", "sin embargo, además, en definitiva...", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Косвенная речь",
+                    question = "El entrevistador me preguntó ___ tenía experiencia en ventas.",
+                    options = listOf("que si", "si", "que", "lo que"),
+                    correctAnswer = "si",
+                    explanation = "Закрытый вопрос (да/нет) → preguntar si: me preguntó si tenía experiencia."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Relative clause",
+                    question = "Busco un puesto ___ pueda usar mis conocimientos de español.",
+                    options = listOf("quién", "donde", "en el que", "cuyo"),
+                    correctAnswer = "en el que",
+                    explanation = "en el que (en + el que) = «в котором». Busco un puesto en el que... «Ищу должность, в которой смогу применять знания испанского.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Perífrasis: duración",
+                    question = "___ cinco años trabajando en el sector tecnológico.",
+                    options = listOf("Estoy", "Tengo", "Llevo", "Sigo"),
+                    correctAnswer = "Llevo",
+                    explanation = "llevar + tiempo + gerundio: Llevo cinco años trabajando. «Я работаю в технологическом секторе уже пять лет.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Conector de conclusión",
+                    question = "Tengo experiencia, hablo tres idiomas y me apasiona el trabajo. ___, soy el candidato ideal.",
+                    options = listOf("Sin embargo", "A pesar de", "En definitiva", "Es decir"),
+                    correctAnswer = "En definitiva",
+                    explanation = "en definitiva = «в итоге». Подводит итог перечисленным достоинствам кандидата."
+                )
+            )
         )
     )
 }

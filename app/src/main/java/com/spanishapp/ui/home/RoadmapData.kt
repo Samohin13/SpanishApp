@@ -404,6 +404,51 @@ object RoadmapData {
             )
         ),
 
+        // ══════════════════════════════════════════════
+        //  БЛОК 3 B1: COMUNICACIÓN AVANZADA  (уроки 31–45)
+        // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "11",
+            title = "Блок 3: Коммуникация",
+            icon = "🗣️",
+            description = "Косвенная речь, относительные придаточные, пассив, perífrasis",
+            cefrLevel = "B1",
+            color = Color(0xFFE65100),
+            lessons = listOf(
+                // 31
+                RoadmapLesson("💬 Estilo indirecto: введение",                        "content", "general"),
+                // 32
+                RoadmapLesson("💬 Dijo que... / Preguntó si... (настоящее → прошлое)","content", "general"),
+                // 33
+                RoadmapLesson("💬 Изменение времён в косвенной речи",                 "content", "general"),
+                // 34
+                RoadmapLesson("💬 Косвенные приказы: pidió que + Imp.Subj.",          "content", "general"),
+                // 35
+                RoadmapLesson("🔗 Cláusulas relativas: que, quien, donde",            "content", "general"),
+                // 36
+                RoadmapLesson("🔗 Cuyo / el cual / lo cual",                          "content", "general"),
+                // 37
+                RoadmapLesson("🎭 Voz pasiva: ser + participio",                      "content", "general"),
+                // 38
+                RoadmapLesson("🎭 Ser vs Estar + participio: es hecho / está hecho",  "content", "general"),
+                // 39
+                RoadmapLesson("⚙️ Perífrasis: llevar + gerundio",                     "content", "general"),
+                // 40
+                RoadmapLesson("⚙️ Perífrasis: seguir/continuar + gerundio",           "content", "general"),
+                // 41
+                RoadmapLesson("⚙️ Perífrasis: acabar de / volver a + infinitivo",     "content", "general"),
+                // 42
+                RoadmapLesson("📝 Conectores: sin embargo / por lo tanto / además",   "content", "general"),
+                // 43
+                RoadmapLesson("📝 Concesión: aunque / a pesar de (que)",              "content", "general"),
+                // 44
+                RoadmapLesson("📝 Conclusión: en definitiva / en resumen / es decir", "content", "general"),
+                // 45  ЧЕКПОИНТ
+                RoadmapLesson("🏁 Чекпоинт: «Интервью»",                              "quiz",    "all")
+            )
+        ),
+
         RoadmapUnit(
             id = "b2_1",
             title = "B2 · Блок 1: Сложные конструкции",
