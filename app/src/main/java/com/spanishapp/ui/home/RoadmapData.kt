@@ -247,7 +247,7 @@ object RoadmapData {
                 RoadmapLesson("👆 Местоимения OD: lo, la, los, las",                "content", "general"),
                 RoadmapLesson("👆 Местоимения OI: me, te, le, nos, os, les",       "content", "general"),
                 RoadmapLesson("⏱️ Hace + tiempo + que: hace dos años que...",       "content", "general"),
-                RoadmapLesson("✈️ В путешествии: hotel, billete, reserva",          "content",   "viajes"),
+                RoadmapLesson("👗 Одежда и мода: talla, probarse, quedar bien",     "content",   "ropa"),
                 RoadmapLesson("📝 Por vs Para: продвинутый уровень",                "content", "general"),
                 RoadmapLesson("😊 Эмоции: alegría, tristeza, miedo, sorpresa",     "content",   "emociones"),
                 RoadmapLesson("🏁 Чекпоинт: «Расскажи о своём детстве»",           "quiz",    "all")
@@ -277,9 +277,9 @@ object RoadmapData {
                 RoadmapLesson("🚫 Imperativo negativo: ¡no hables! ¡no comas!",    "content", "general"),
                 RoadmapLesson("🏥 У врача: síntomas, me duele, tengo fiebre",       "content",   "salud"),
                 RoadmapLesson("🔗 ОД + ОИ вместе: te lo doy, se lo digo",           "content", "general"),
-                RoadmapLesson("👗 Одежда и мода: talla, probarse, quedar bien",     "content",   "ropa"),
+                RoadmapLesson("✈️ В путешествии: hotel, billete, reserva",          "content",   "viajes"),
                 RoadmapLesson("🔗 Придаточные с que: creo que / pienso que",        "content", "general"),
-                RoadmapLesson("🌿 Природа и погода: el campo, el mar, hace viento", "content",   "general"),
+                RoadmapLesson("🍽️ Гастрономия: tapas, paella, tortilla española",  "content",   "comida_bebida"),
                 RoadmapLesson("🏁 Чекпоинт: «Мой обычный день»",                   "quiz",    "all")
             )
         ),
@@ -306,7 +306,7 @@ object RoadmapData {
                 RoadmapLesson("🎲 Вероятность: probablemente, quizás, a lo mejor", "content", "general"),
                 RoadmapLesson("🚗 Транспорт и дорога: alquilar, conducir, aparcar","content",   "viajes"),
                 RoadmapLesson("🔗 Глаголы с предлогом: pensar en, soñar con",      "content", "general"),
-                RoadmapLesson("🍽️ Гастрономия: tapas, paella, tortilla española", "content",   "comida_bebida"),
+                RoadmapLesson("🌿 Природа и погода: el campo, el mar, hace viento", "content",   "general"),
                 RoadmapLesson("📏 Cuantificadores: mucho, poco, bastante, demasiado","content","general"),
                 RoadmapLesson("📱 Технологии: app, wifi, contraseña, descargar",   "content",   "tecnologia"),
                 RoadmapLesson("💪 Спорт и здоровье: hacer ejercicio, llevar dieta","content",   "salud"),

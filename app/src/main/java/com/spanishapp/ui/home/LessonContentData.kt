@@ -5251,64 +5251,62 @@ object LessonContentData {
         ),
 
         "u6_l11" to LessonContent(
-            intro = "В путешествии — лексика отеля, билетов, туризма",
+            intro = "Одежда и мода — покупки и стиль",
             sections = listOf(
                 LessonSection(
-                    heading = "Транспорт и билеты",
+                    heading = "Одежда",
                     items = listOf(
-                        LessonItem("el billete / el boleto", "билет", "un billete de ida y vuelta"),
-                        LessonItem("ida y vuelta", "туда и обратно", ""),
-                        LessonItem("solo de ida", "только в одну сторону", ""),
-                        LessonItem("el vuelo", "рейс / полёт", "El vuelo sale a las 10."),
-                        LessonItem("la salida / la llegada", "отправление / прибытие", ""),
-                        LessonItem("facturar el equipaje", "сдать багаж", ""),
-                        LessonItem("el equipaje de mano", "ручная кладь", "")
+                        LessonItem("la talla", "размер (одежды)", "¿Qué talla usas?"),
+                        LessonItem("probarse", "примерять", "¿Puedo probármelo?"),
+                        LessonItem("quedar bien/mal", "идти хорошо/плохо", "Te queda muy bien."),
+                        LessonItem("quedar grande/pequeño", "быть большим/маленьким", "Me queda grande."),
+                        LessonItem("estar de moda", "быть в моде", "Esto está de moda."),
+                        LessonItem("pasado de moda", "немодный / устаревший", "")
                     )
                 ),
                 LessonSection(
-                    heading = "В отеле",
+                    heading = "В магазине одежды",
                     items = listOf(
-                        LessonItem("la reserva", "бронирование", "Tengo una reserva."),
-                        LessonItem("la habitación individual/doble", "одноместный/двухместный номер", ""),
-                        LessonItem("el desayuno incluido", "завтрак включён", ""),
-                        LessonItem("hacer el check-in/out", "заселиться / выселиться", ""),
-                        LessonItem("¿A qué hora es el check-out?", "В котором часу выезд?", ""),
-                        LessonItem("el pasaporte / el DNI", "паспорт / ID", "")
+                        LessonItem("¿Tiene en la talla M?", "Есть в размере M?", ""),
+                        LessonItem("¿Lo tiene en otro color?", "Есть в другом цвете?", ""),
+                        LessonItem("el descuento / las rebajas", "скидка / распродажа", "¡Hay rebajas!"),
+                        LessonItem("¿Puedo devolver esto?", "Могу вернуть это?", ""),
+                        LessonItem("el ticket/recibo", "чек", "Guarda el recibo.")
                     )
                 )
             ),
             exercises = listOf(
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Как сказать «билет туда-обратно»?",
-                    question = "Quiero un billete de ___.",
-                    options = listOf("ida y vuelta", "solo de ida", "vuelta sola", "ida o vuelta"),
-                    correctAnswer = "ida y vuelta",
-                    explanation = "ida y vuelta = туда и обратно. solo de ida = только в одну сторону."
-                ),
-                Exercise(
-                    type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "В отеле: что значит «la reserva»?",
-                    question = "Tengo una reserva a nombre de García.",
-                    options = listOf("У меня бронирование на имя Гарсия.", "У меня комната для Гарсия.", "Я резервирую на Гарсия.", "Мне нужна комната."),
-                    correctAnswer = "У меня бронирование на имя Гарсия.",
-                    explanation = "la reserva = бронирование. a nombre de = на имя."
+                    instruction = "Как спросить «это мне идёт»?",
+                    question = "¿Me ___?",
+                    options = listOf("queda bien", "está bien", "es bien", "va bien"),
+                    correctAnswer = "queda bien",
+                    explanation = "quedar bien = идти/подходить. ¿Me queda bien? = мне идёт? Te queda genial = тебе очень идёт."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Переведи",
-                    question = "¿El desayuno está incluido?",
-                    options = listOf("Завтрак включён?", "Во сколько завтрак?", "Где завтрак?", "Какой завтрак?"),
-                    correctAnswer = "Завтрак включён?",
-                    explanation = "incluido = включённый. ¿Está incluido? = включено? Важный вопрос в отеле!"
+                    question = "Me queda grande. Necesito una talla menos.",
+                    options = listOf("Мне велико. Нужен размер меньше.", "Мне мало. Нужен размер больше.", "Это мне идёт.", "Мне нравится этот размер."),
+                    correctAnswer = "Мне велико. Нужен размер меньше.",
+                    explanation = "quedar grande = быть большим. una talla menos = размер меньше."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Что такое «el equipaje de mano»?",
-                    question = "el equipaje de mano = ?",
-                    options = listOf("ручная кладь", "чемодан", "рюкзак", "багажное отделение"),
-                    correctAnswer = "ручная кладь",
-                    explanation = "equipaje de mano = ручная кладь (то, что берёшь в салон). facturar el equipaje = сдать багаж в багажное отделение."
+                    instruction = "Что такое «las rebajas»?",
+                    question = "¡Vamos de rebajas!",
+                    options = listOf("Пойдём на распродажу!", "Пойдём за подарками!", "Пойдём в магазин!", "Пойдём за скидкой!"),
+                    correctAnswer = "Пойдём на распродажу!",
+                    explanation = "las rebajas = распродажа (сезонная). ¡Hay rebajas! = распродажа!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Lo tienen en otro color?",
+                    options = listOf("Есть это в другом цвете?", "Сколько стоит этот цвет?", "Какого цвета эта вещь?", "Мне нравится этот цвет."),
+                    correctAnswer = "Есть это в другом цвете?",
+                    explanation = "¿Lo tienen en otro color? — стандартный вопрос в магазине одежды."
                 )
             )
         ),
@@ -6100,62 +6098,64 @@ object LessonContentData {
         ),
 
         "u7_l11" to LessonContent(
-            intro = "Одежда и мода — покупки и стиль",
+            intro = "В путешествии — лексика отеля, билетов, туризма",
             sections = listOf(
                 LessonSection(
-                    heading = "Одежда",
+                    heading = "Транспорт и билеты",
                     items = listOf(
-                        LessonItem("la talla", "размер (одежды)", "¿Qué talla usas?"),
-                        LessonItem("probarse", "примерять", "¿Puedo probármelo?"),
-                        LessonItem("quedar bien/mal", "идти хорошо/плохо", "Te queda muy bien."),
-                        LessonItem("quedar grande/pequeño", "быть большим/маленьким", "Me queda grande."),
-                        LessonItem("estar de moda", "быть в моде", "Esto está de moda."),
-                        LessonItem("pasado de moda", "немодный / устаревший", "")
+                        LessonItem("el billete / el boleto", "билет", "un billete de ida y vuelta"),
+                        LessonItem("ida y vuelta", "туда и обратно", ""),
+                        LessonItem("solo de ida", "только в одну сторону", ""),
+                        LessonItem("el vuelo", "рейс / полёт", "El vuelo sale a las 10."),
+                        LessonItem("la salida / la llegada", "отправление / прибытие", ""),
+                        LessonItem("facturar el equipaje", "сдать багаж", ""),
+                        LessonItem("el equipaje de mano", "ручная кладь", "")
                     )
                 ),
                 LessonSection(
-                    heading = "В магазине одежды",
+                    heading = "В отеле",
                     items = listOf(
-                        LessonItem("¿Tiene en la talla M?", "Есть в размере M?", ""),
-                        LessonItem("¿Lo tiene en otro color?", "Есть в другом цвете?", ""),
-                        LessonItem("el descuento / las rebajas", "скидка / распродажа", "¡Hay rebajas!"),
-                        LessonItem("¿Puedo devolver esto?", "Могу вернуть это?", ""),
-                        LessonItem("el ticket/recibo", "чек", "Guarda el recibo.")
+                        LessonItem("la reserva", "бронирование", "Tengo una reserva."),
+                        LessonItem("la habitación individual/doble", "одноместный/двухместный номер", ""),
+                        LessonItem("el desayuno incluido", "завтрак включён", ""),
+                        LessonItem("hacer el check-in/out", "заселиться / выселиться", ""),
+                        LessonItem("¿A qué hora es el check-out?", "В котором часу выезд?", ""),
+                        LessonItem("el pasaporte / el DNI", "паспорт / ID", "")
                     )
                 )
             ),
             exercises = listOf(
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Как спросить «это мне идёт»?",
-                    question = "¿Me ___?",
-                    options = listOf("queda bien", "está bien", "es bien", "va bien"),
-                    correctAnswer = "queda bien",
-                    explanation = "quedar bien = идти/подходить. ¿Me queda bien? = мне идёт? Te queda genial = тебе очень идёт."
+                    instruction = "Как сказать «билет туда-обратно»?",
+                    question = "Quiero un billete de ___.",
+                    options = listOf("ida y vuelta", "solo de ida", "vuelta sola", "ida o vuelta"),
+                    correctAnswer = "ida y vuelta",
+                    explanation = "ida y vuelta = туда и обратно. solo de ida = только в одну сторону."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "В отеле: что значит «la reserva»?",
+                    question = "Tengo una reserva a nombre de García.",
+                    options = listOf("У меня бронирование на имя Гарсия.", "У меня комната для Гарсия.", "Я резервирую на Гарсия.", "Мне нужна комната."),
+                    correctAnswer = "У меня бронирование на имя Гарсия.",
+                    explanation = "la reserva = бронирование. a nombre de = на имя."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Переведи",
-                    question = "Me queda grande. Necesito una talla menos.",
-                    options = listOf("Мне велико. Нужен размер меньше.", "Мне мало. Нужен размер больше.", "Это мне идёт.", "Мне нравится этот размер."),
-                    correctAnswer = "Мне велико. Нужен размер меньше.",
-                    explanation = "quedar grande = быть большим. una talla menos = размер меньше."
+                    question = "¿El desayuno está incluido?",
+                    options = listOf("Завтрак включён?", "Во сколько завтрак?", "Где завтрак?", "Какой завтрак?"),
+                    correctAnswer = "Завтрак включён?",
+                    explanation = "incluido = включённый. ¿Está incluido? = включено? Важный вопрос в отеле!"
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Что такое «las rebajas»?",
-                    question = "¡Vamos de rebajas!",
-                    options = listOf("Пойдём на распродажу!", "Пойдём за подарками!", "Пойдём в магазин!", "Пойдём за скидкой!"),
-                    correctAnswer = "Пойдём на распродажу!",
-                    explanation = "las rebajas = распродажа (сезонная). ¡Hay rebajas! = распродажа!"
-                ),
-                Exercise(
-                    type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Переведи",
-                    question = "¿Lo tienen en otro color?",
-                    options = listOf("Есть это в другом цвете?", "Сколько стоит этот цвет?", "Какого цвета эта вещь?", "Мне нравится этот цвет."),
-                    correctAnswer = "Есть это в другом цвете?",
-                    explanation = "¿Lo tienen en otro color? — стандартный вопрос в магазине одежды."
+                    instruction = "Что такое «el equipaje de mano»?",
+                    question = "el equipaje de mano = ?",
+                    options = listOf("ручная кладь", "чемодан", "рюкзак", "багажное отделение"),
+                    correctAnswer = "ручная кладь",
+                    explanation = "equipaje de mano = ручная кладь (то, что берёшь в салон). facturar el equipaje = сдать багаж в багажное отделение."
                 )
             )
         ),
@@ -6220,64 +6220,63 @@ object LessonContentData {
         ),
 
         "u7_l13" to LessonContent(
-            intro = "Природа, погода и окружающая среда",
+            intro = "Испанская гастрономия — tapas, paella, tradición",
             sections = listOf(
                 LessonSection(
-                    heading = "Природа",
+                    heading = "Типичные блюда",
                     items = listOf(
-                        LessonItem("el campo", "деревня / поле", "Vivo en el campo."),
-                        LessonItem("el mar / el océano", "море / океан", ""),
-                        LessonItem("la montaña", "гора", "Vamos a la montaña."),
-                        LessonItem("el bosque", "лес", ""),
-                        LessonItem("el río", "река", ""),
-                        LessonItem("la playa", "пляж", "Voy a la playa."),
-                        LessonItem("el lago", "озеро", "")
+                        LessonItem("las tapas", "тапас (закуски)", "Vamos de tapas."),
+                        LessonItem("la paella", "паэлья (рис с морепродуктами)", ""),
+                        LessonItem("la tortilla española", "испанский омлет с картошкой", ""),
+                        LessonItem("el gazpacho", "гаспачо (холодный суп)", ""),
+                        LessonItem("el jamón ibérico", "иберийский хамон", ""),
+                        LessonItem("la sangría", "сангрия (напиток)", ""),
+                        LessonItem("el churro", "чурро (жареное тесто)", "churros con chocolate")
                     )
                 ),
                 LessonSection(
-                    heading = "Погода — продвинутый уровень",
+                    heading = "Традиции еды в Испании",
                     items = listOf(
-                        LessonItem("hace viento", "ветрено", "Hace mucho viento hoy."),
-                        LessonItem("hay niebla", "туман", "Hay mucha niebla."),
-                        LessonItem("hay tormenta", "гроза", "¡Hay tormenta!"),
-                        LessonItem("granizar", "идти граду", "Está granizando."),
-                        LessonItem("el pronóstico del tiempo", "прогноз погоды", ""),
-                        LessonItem("grados (°C)", "градусы", "Hace 25 grados.")
+                        LessonItem("ir de tapas", "идти на тапас (бар-хоппинг)", ""),
+                        LessonItem("la sobremesa", "беседа после еды за столом", "культурная традиция"),
+                        LessonItem("el menú del día", "бизнес-ланч (1-е, 2-е, десерт)", "самый дешёвый обед"),
+                        LessonItem("cenar tarde", "ужинать поздно (21–22 ч)", "испанская традиция"),
+                        LessonItem("picar algo", "перекусить", "¿Picamos algo?")
                     )
                 )
             ),
             exercises = listOf(
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Переведи",
-                    question = "Prefiero el campo a la ciudad.",
-                    options = listOf("Я предпочитаю деревню городу.", "Мне нравится город.", "Я живу за городом.", "Деревня лучше."),
-                    correctAnswer = "Я предпочитаю деревню городу.",
-                    explanation = "preferir A a B = предпочитать A вместо B."
-                ),
-                Exercise(
-                    type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Как сказать «идёт гроза»?",
-                    question = "Hay ___.",
-                    options = listOf("tormenta", "niebla", "viento", "granizo"),
-                    correctAnswer = "tormenta",
-                    explanation = "hay tormenta = идёт гроза. hay niebla = туман. hay granizo = идёт град."
+                    instruction = "Что такое «la tortilla española»?",
+                    question = "La tortilla española es...",
+                    options = listOf("омлет с картошкой", "мексиканская лепёшка", "блин с начинкой", "суп"),
+                    correctAnswer = "омлет с картошкой",
+                    explanation = "La tortilla española = испанский омлет с картофелем и яйцами. Не путай с мексиканской tortilla!"
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Переведи",
-                    question = "Según el pronóstico, mañana lloverá.",
-                    options = listOf("По прогнозу, завтра будет дождь.", "Сегодня идёт дождь.", "Вчера был дождь.", "Дождя не будет."),
-                    correctAnswer = "По прогнозу, завтра будет дождь.",
-                    explanation = "según = по (данным). el pronóstico = прогноз. lloverá = будет дождь (Futuro)."
+                    question = "¿Vamos de tapas esta tarde?",
+                    options = listOf("Пойдём на тапас сегодня вечером?", "Пойдём в ресторан?", "Хочешь поесть дома?", "Закажем доставку?"),
+                    correctAnswer = "Пойдём на тапас сегодня вечером?",
+                    explanation = "ir de tapas = идти в бары есть тапас. Типичная испанская традиция."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Что значит «hace 30 grados»?",
-                    question = "Hoy hace 30 grados.",
-                    options = listOf("Сегодня 30 градусов.", "Сегодня очень холодно.", "Сегодня 30 минут.", "Сегодня ветрено."),
-                    correctAnswer = "Сегодня 30 градусов.",
-                    explanation = "hacer X grados = быть X градусов (температура). Hace 30 grados = 30 градусов жары!"
+                    instruction = "Что такое «el menú del día»?",
+                    question = "el menú del día = ?",
+                    options = listOf("комплексный обед (1е+2е+десерт)", "меню ресторана", "блюдо дня", "завтрак"),
+                    correctAnswer = "комплексный обед (1е+2е+десерт)",
+                    explanation = "el menú del día = комплексный обед в будни. Включает первое, второе, десерт и напиток. Очень выгодно!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "En España se cena muy tarde.",
+                    options = listOf("В Испании ужинают очень поздно.", "В Испании завтракают рано.", "В Испании обедают в обед.", "В Испании едят мало."),
+                    correctAnswer = "В Испании ужинают очень поздно.",
+                    explanation = "cenar = ужинать. tarde = поздно. se cena = ужинают (безличная конструкция)."
                 )
             )
         ),
@@ -6890,63 +6889,64 @@ object LessonContentData {
         ),
 
         "u8_l10" to LessonContent(
-            intro = "Испанская гастрономия — tapas, paella, tradición",
+            intro = "Природа, погода и окружающая среда",
             sections = listOf(
                 LessonSection(
-                    heading = "Типичные блюда",
+                    heading = "Природа",
                     items = listOf(
-                        LessonItem("las tapas", "тапас (закуски)", "Vamos de tapas."),
-                        LessonItem("la paella", "паэлья (рис с морепродуктами)", ""),
-                        LessonItem("la tortilla española", "испанский омлет с картошкой", ""),
-                        LessonItem("el gazpacho", "гаспачо (холодный суп)", ""),
-                        LessonItem("el jamón ibérico", "иберийский хамон", ""),
-                        LessonItem("la sangría", "сангрия (напиток)", ""),
-                        LessonItem("el churro", "чурро (жареное тесто)", "churros con chocolate")
+                        LessonItem("el campo", "деревня / поле", "Vivo en el campo."),
+                        LessonItem("el mar / el océano", "море / океан", ""),
+                        LessonItem("la montaña", "гора", "Vamos a la montaña."),
+                        LessonItem("el bosque", "лес", ""),
+                        LessonItem("el río", "река", ""),
+                        LessonItem("la playa", "пляж", "Voy a la playa."),
+                        LessonItem("el lago", "озеро", "")
                     )
                 ),
                 LessonSection(
-                    heading = "Традиции еды в Испании",
+                    heading = "Погода — продвинутый уровень",
                     items = listOf(
-                        LessonItem("ir de tapas", "идти на тапас (бар-хоппинг)", ""),
-                        LessonItem("la sobremesa", "беседа после еды за столом", "культурная традиция"),
-                        LessonItem("el menú del día", "бизнес-ланч (1-е, 2-е, десерт)", "самый дешёвый обед"),
-                        LessonItem("cenar tarde", "ужинать поздно (21–22 ч)", "испанская традиция"),
-                        LessonItem("picar algo", "перекусить", "¿Picamos algo?")
+                        LessonItem("hace viento", "ветрено", "Hace mucho viento hoy."),
+                        LessonItem("hay niebla", "туман", "Hay mucha niebla."),
+                        LessonItem("hay tormenta", "гроза", "¡Hay tormenta!"),
+                        LessonItem("granizar", "идти граду", "Está granizando."),
+                        LessonItem("el pronóstico del tiempo", "прогноз погоды", ""),
+                        LessonItem("grados (°C)", "градусы", "Hace 25 grados.")
                     )
                 )
             ),
             exercises = listOf(
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Что такое «la tortilla española»?",
-                    question = "La tortilla española es...",
-                    options = listOf("омлет с картошкой", "мексиканская лепёшка", "блин с начинкой", "суп"),
-                    correctAnswer = "омлет с картошкой",
-                    explanation = "La tortilla española = испанский омлет с картофелем и яйцами. Не путай с мексиканской tortilla!"
+                    instruction = "Переведи",
+                    question = "Prefiero el campo a la ciudad.",
+                    options = listOf("Я предпочитаю деревню городу.", "Мне нравится город.", "Я живу за городом.", "Деревня лучше."),
+                    correctAnswer = "Я предпочитаю деревню городу.",
+                    explanation = "preferir A a B = предпочитать A вместо B."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «идёт гроза»?",
+                    question = "Hay ___.",
+                    options = listOf("tormenta", "niebla", "viento", "granizo"),
+                    correctAnswer = "tormenta",
+                    explanation = "hay tormenta = идёт гроза. hay niebla = туман. hay granizo = идёт град."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Переведи",
-                    question = "¿Vamos de tapas esta tarde?",
-                    options = listOf("Пойдём на тапас сегодня вечером?", "Пойдём в ресторан?", "Хочешь поесть дома?", "Закажем доставку?"),
-                    correctAnswer = "Пойдём на тапас сегодня вечером?",
-                    explanation = "ir de tapas = идти в бары есть тапас. Типичная испанская традиция."
+                    question = "Según el pronóstico, mañana lloverá.",
+                    options = listOf("По прогнозу, завтра будет дождь.", "Сегодня идёт дождь.", "Вчера был дождь.", "Дождя не будет."),
+                    correctAnswer = "По прогнозу, завтра будет дождь.",
+                    explanation = "según = по (данным). el pronóstico = прогноз. lloverá = будет дождь (Futuro)."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Что такое «el menú del día»?",
-                    question = "el menú del día = ?",
-                    options = listOf("комплексный обед (1е+2е+десерт)", "меню ресторана", "блюдо дня", "завтрак"),
-                    correctAnswer = "комплексный обед (1е+2е+десерт)",
-                    explanation = "el menú del día = комплексный обед в будни. Включает первое, второе, десерт и напиток. Очень выгодно!"
-                ),
-                Exercise(
-                    type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Переведи",
-                    question = "En España se cena muy tarde.",
-                    options = listOf("В Испании ужинают очень поздно.", "В Испании завтракают рано.", "В Испании обедают в обед.", "В Испании едят мало."),
-                    correctAnswer = "В Испании ужинают очень поздно.",
-                    explanation = "cenar = ужинать. tarde = поздно. se cena = ужинают (безличная конструкция)."
+                    instruction = "Что значит «hace 30 grados»?",
+                    question = "Hoy hace 30 grados.",
+                    options = listOf("Сегодня 30 градусов.", "Сегодня очень холодно.", "Сегодня 30 минут.", "Сегодня ветрено."),
+                    correctAnswer = "Сегодня 30 градусов.",
+                    explanation = "hacer X grados = быть X градусов (температура). Hace 30 grados = 30 градусов жары!"
                 )
             )
         ),
