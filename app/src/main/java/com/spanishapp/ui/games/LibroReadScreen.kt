@@ -1,38 +1,54 @@
 package com.spanishapp.ui.games
 
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.spanishapp.domain.algorithm.LeaguePromotion
+import com.spanishapp.service.SpanishSpeechRecognizer
+import com.spanishapp.service.SpeechResult
 import com.spanishapp.ui.components.LeaguePromotionDialog
+import com.spanishapp.ui.components.rememberSpanishTts
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.launch
 
 private val LibroGreen  = Color(0xFF43A047)
 private val LibroPurple = Color(0xFF7B2FBE)
@@ -41,6 +57,63 @@ private sealed interface ReadState {
     object Reading : ReadState
     data class Quiz(val qIndex: Int, val answers: List<Int?>) : ReadState
     data class Result(val correct: Int, val total: Int) : ReadState
+    data class ReadingAloud(
+        val sentences: List<String>,
+        val currentIdx: Int = 0,
+        val results: List<SentenceResult?> = emptyList(),
+        val isListening: Boolean = false,
+        val recognizedText: String = ""
+    ) : ReadState
+    data class ReadingDone(
+        val sentences: List<String>,
+        val results: List<SentenceResult>
+    ) : ReadState
+}
+
+data class SentenceResult(val wordChecks: List<Pair<String, Boolean>>)
+
+// ── STT entry point ───────────────────────────────────────────
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+private interface LibroSpeechEntryPoint {
+    fun speechRecognizer(): SpanishSpeechRecognizer
+}
+
+// ── Вспомогательные функции ───────────────────────────────────
+
+private fun splitSentences(text: String): List<String> =
+    text.split(Regex("(?<=[.!?])\\s+"))
+        .map { it.trim() }
+        .filter { it.isNotBlank() && it.any { c -> c.isLetter() } }
+
+private fun normalizeWord(w: String): String =
+    w.lowercase()
+        .replace('á','a').replace('é','e').replace('í','i')
+        .replace('ó','o').replace('ú','u').replace('ü','u').replace('ñ','n')
+        .filter { it.isLetter() }
+
+private fun levenshtein(a: String, b: String): Int {
+    val dp = Array(a.length + 1) { IntArray(b.length + 1) }
+    for (i in 0..a.length) dp[i][0] = i
+    for (j in 0..b.length) dp[0][j] = j
+    for (i in 1..a.length) for (j in 1..b.length)
+        dp[i][j] = if (a[i-1] == b[j-1]) dp[i-1][j-1]
+                   else 1 + minOf(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
+    return dp[a.length][b.length]
+}
+
+private fun wordMatch(exp: String, rec: String): Boolean {
+    val a = normalizeWord(exp); val b = normalizeWord(rec)
+    if (a.isEmpty() || b.isEmpty()) return false
+    val sim = 1f - levenshtein(a, b).toFloat() / maxOf(a.length, b.length)
+    return sim >= 0.80f
+}
+
+private fun compareToExpected(expected: String, recognized: String): List<Pair<String, Boolean>> {
+    val expTokens = expected.split(Regex("[\\s,;:!?¡¿.«»\"'()\\-]+")).filter { it.isNotBlank() }
+    val recTokens = recognized.split(Regex("\\s+")).filter { it.isNotBlank() }
+    return expTokens.map { expWord -> expWord to recTokens.any { wordMatch(expWord, it) } }
 }
 
 // покрыты тестами в LibroTextHelpersTest
@@ -194,6 +267,283 @@ private fun BottomTranslationBox(
     }
 }
 
+// ── Режим «Читать вслух» ──────────────────────────────────────
+
+@Composable
+private fun ReadingAloudPanel(
+    state: ReadState.ReadingAloud,
+    stt: SpanishSpeechRecognizer,
+    levelColor: Color,
+    onUpdate: (ReadState.ReadingAloud) -> Unit,
+    onDone: (List<SentenceResult>) -> Unit,
+    onExit: () -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val sentence = state.sentences.getOrNull(state.currentIdx) ?: return
+    val result   = state.results.getOrNull(state.currentIdx)
+
+    val infiniteTransition = rememberInfiniteTransition(label = "mic")
+    val micScale by infiniteTransition.animateFloat(
+        initialValue = 1f, targetValue = 1.22f,
+        animationSpec = infiniteRepeatable(tween(550), RepeatMode.Reverse),
+        label = "micScale"
+    )
+
+    Column(
+        Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // ── Прогресс ──
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                "Предложение ${state.currentIdx + 1} из ${state.sentences.size}",
+                fontSize = 13.sp, color = Color(0xFF8E8E93)
+            )
+            TextButton(onClick = onExit, contentPadding = PaddingValues(0.dp)) {
+                Text("← Выйти", fontSize = 13.sp, color = Color(0xFF8E8E93))
+            }
+        }
+        Spacer(Modifier.height(4.dp))
+        LinearProgressIndicator(
+            progress = { (state.currentIdx + 1f) / state.sentences.size },
+            modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
+            color = levelColor, trackColor = levelColor.copy(alpha = 0.15f)
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        // ── Карточка с предложением ──
+        Card(
+            shape = RoundedCornerShape(18.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(3.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(20.dp)) {
+                if (result != null) {
+                    // Цветная подсветка слов
+                    val annotated = buildAnnotatedString {
+                        result.wordChecks.forEach { (word, correct) ->
+                            withStyle(SpanStyle(
+                                color = if (correct) Color(0xFF1B5E20) else Color(0xFFC62828),
+                                background = if (correct) Color(0xFFE8F5E9) else Color(0xFFFCE4EC),
+                                fontWeight = if (!correct) FontWeight.Bold else FontWeight.Normal
+                            )) { append(word) }
+                            append(" ")
+                        }
+                    }
+                    val correct = result.wordChecks.count { it.second }
+                    val total   = result.wordChecks.size
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            if (correct == total) "✓ Отлично!" else "$correct / $total слов верно",
+                            fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                            color = if (correct == total) Color(0xFF2E7D32) else Color(0xFFE65100)
+                        )
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    Text(annotated, fontSize = 18.sp, lineHeight = 28.sp)
+                } else {
+                    Text(sentence, fontSize = 18.sp, lineHeight = 28.sp, color = Color(0xFF1A1A1A))
+                }
+            }
+        }
+
+        // ── Что распознано ──
+        if (state.recognizedText.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            Box(
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFFF0F0F5)).padding(10.dp)
+            ) {
+                Text(
+                    "Ты сказал: «${state.recognizedText}»",
+                    fontSize = 13.sp, color = Color(0xFF555555), fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                )
+            }
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        // ── Кнопка микрофона ──
+        if (result == null) {
+            Text(
+                if (state.isListening) "Слушаю…" else "Нажми микрофон и читай предложение вслух",
+                fontSize = 13.sp, color = Color(0xFF8E8E93), textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(12.dp))
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(90.dp)) {
+                if (state.isListening) {
+                    Box(
+                        Modifier.scale(micScale).size(80.dp).clip(CircleShape)
+                            .background(Color(0xFFC62828).copy(alpha = 0.18f))
+                    )
+                }
+                Surface(
+                    shape = CircleShape,
+                    color = if (state.isListening) Color(0xFFC62828) else levelColor,
+                    shadowElevation = 6.dp,
+                    modifier = Modifier.size(68.dp).clickable(enabled = !state.isListening) {
+                        onUpdate(state.copy(isListening = true))
+                        scope.launch {
+                            val sttResult = stt.listenOnce()
+                            val recognized = when (sttResult) {
+                                is SpeechResult.Success -> sttResult.text
+                                is SpeechResult.Error   -> ""
+                                else                    -> ""
+                            }
+                            val checks = compareToExpected(sentence, recognized)
+                            val newResults = state.results.toMutableList()
+                            if (state.currentIdx < newResults.size)
+                                newResults[state.currentIdx] = SentenceResult(checks)
+                            onUpdate(state.copy(isListening = false, recognizedText = recognized, results = newResults))
+                        }
+                    }
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            if (state.isListening) Icons.Default.Stop else Icons.Default.Mic,
+                            contentDescription = "Микрофон",
+                            tint = Color.White, modifier = Modifier.size(30.dp)
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+
+        // ── Кнопки после результата ──
+        if (result != null) {
+            val isLast = state.currentIdx == state.sentences.size - 1
+            Spacer(Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    if (isLast) {
+                        onDone(state.results.filterNotNull())
+                    } else {
+                        onUpdate(state.copy(currentIdx = state.currentIdx + 1, recognizedText = ""))
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = levelColor)
+            ) {
+                Text(if (isLast) "Посмотреть итог →" else "Следующее предложение →", fontWeight = FontWeight.Bold)
+            }
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = {
+                    val newResults = state.results.toMutableList()
+                    if (state.currentIdx < newResults.size) newResults[state.currentIdx] = null
+                    onUpdate(state.copy(results = newResults, recognizedText = ""))
+                },
+                modifier = Modifier.fillMaxWidth().height(46.dp),
+                shape = RoundedCornerShape(14.dp)
+            ) { Text("🔄 Повторить предложение") }
+        }
+    }
+}
+
+// ── Итог «Читать вслух» ───────────────────────────────────────
+
+@Composable
+private fun ReadingDonePanel(
+    sentences: List<String>,
+    results: List<SentenceResult>,
+    levelColor: Color,
+    onStartQuiz: () -> Unit,
+    onBack: () -> Unit
+) {
+    val totalWords   = results.sumOf { it.wordChecks.size }
+    val correctWords = results.sumOf { it.wordChecks.count { p -> p.second } }
+    val pct = if (totalWords > 0) correctWords * 100 / totalWords else 0
+
+    val emoji = when {
+        pct >= 90 -> "🌟"; pct >= 75 -> "👏"; pct >= 55 -> "👍"; else -> "💪"
+    }
+    val comment = when {
+        pct >= 90 -> "Превосходное произношение!"
+        pct >= 75 -> "Хорошая работа!"
+        pct >= 55 -> "Неплохо, продолжай!"
+        else      -> "Потренируйся ещё немного"
+    }
+
+    Column(
+        Modifier.fillMaxSize().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.height(16.dp))
+        Text(emoji, fontSize = 52.sp)
+        Spacer(Modifier.height(12.dp))
+        Text("Результат чтения", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(4.dp))
+        Text(comment, fontSize = 15.sp, color = Color(0xFF555555))
+        Spacer(Modifier.height(16.dp))
+
+        Text("$pct%", fontSize = 48.sp, fontWeight = FontWeight.ExtraBold, color = levelColor)
+        Text("$correctWords из $totalWords слов произнесено верно", fontSize = 14.sp, color = Color(0xFF8E8E93))
+
+        Spacer(Modifier.height(20.dp))
+
+        // Разбивка по предложениям
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(2.dp),
+            modifier = Modifier.fillMaxWidth().weight(1f)
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                itemsIndexed(results) { i, r ->
+                    val sc = r.wordChecks.count { it.second }
+                    val st = r.wordChecks.size
+                    val allOk = sc == st
+                    Row(
+                        Modifier.fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(if (allOk) Color(0xFFE8F5E9) else Color(0xFFFFF3E0))
+                            .padding(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(if (allOk) "✓" else "✗", fontSize = 16.sp,
+                            color = if (allOk) Color(0xFF2E7D32) else Color(0xFFE65100),
+                            modifier = Modifier.width(24.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                sentences.getOrElse(i) { "" },
+                                fontSize = 12.sp, color = Color(0xFF333333),
+                                maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
+                            Text("$sc / $st слов", fontSize = 11.sp,
+                                color = if (allOk) Color(0xFF2E7D32) else Color(0xFFE65100),
+                                fontWeight = FontWeight.SemiBold)
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Button(
+            onClick = onStartQuiz,
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = levelColor)
+        ) { Text("Начать тест →", fontWeight = FontWeight.Bold) }
+
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedButton(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth().height(46.dp),
+            shape = RoundedCornerShape(14.dp)
+        ) { Text("← Перечитать рассказ") }
+    }
+}
+
 // ── Главный экран ─────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -214,6 +564,25 @@ fun LibroReadScreen(
     var state: ReadState by remember { mutableStateOf(ReadState.Reading) }
     val translation by vm.translation.collectAsStateWithLifecycle()
     var highlightRange by remember { mutableStateOf<IntRange?>(null) }
+
+    // TTS для «Слушать весь текст»
+    val tts = rememberSpanishTts()
+    var isSpeaking by remember { mutableStateOf(false) }
+    LaunchedEffect(tts) {
+        tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(id: String?) { isSpeaking = true }
+            override fun onDone(id: String?)  { isSpeaking = false }
+            @Deprecated("Deprecated") override fun onError(id: String?) { isSpeaking = false }
+        })
+    }
+
+    // STT для «Читать вслух»
+    val context = LocalContext.current
+    val stt = remember(context) {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext, LibroSpeechEntryPoint::class.java
+        ).speechRecognizer()
+    }
 
     // League promotion dialog
     var leaguePromotion by remember { mutableStateOf<LeaguePromotion?>(null) }
@@ -336,8 +705,68 @@ fun LibroReadScreen(
 
                         Spacer(Modifier.height(12.dp))
 
+                        // ── Слушать весь текст + Читать вслух ──
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick = {
+                                    if (isSpeaking) {
+                                        tts?.stop(); isSpeaking = false
+                                    } else {
+                                        tts?.speak(
+                                            libro.text.trim(),
+                                            TextToSpeech.QUEUE_FLUSH, null, "libro_full"
+                                        )
+                                        isSpeaking = true
+                                    }
+                                },
+                                modifier = Modifier.weight(1f).height(46.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.5.dp, if (isSpeaking) Color(0xFFC62828) else levelColor
+                                )
+                            ) {
+                                Icon(
+                                    if (isSpeaking) Icons.Default.Stop else Icons.Default.PlayArrow,
+                                    contentDescription = null,
+                                    tint = if (isSpeaking) Color(0xFFC62828) else levelColor,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    if (isSpeaking) "Стоп" else "Слушать",
+                                    color = if (isSpeaking) Color(0xFFC62828) else levelColor,
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                            Button(
+                                onClick = {
+                                    tts?.stop(); isSpeaking = false
+                                    vm.dismissTranslation()
+                                    val sentences = splitSentences(libro.text.trim())
+                                    state = ReadState.ReadingAloud(
+                                        sentences = sentences,
+                                        results   = List(sentences.size) { null }
+                                    )
+                                },
+                                modifier = Modifier.weight(1f).height(46.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = levelColor)
+                            ) {
+                                Icon(Icons.Default.Mic, null, modifier = Modifier.size(18.dp))
+                                Spacer(Modifier.width(4.dp))
+                                Text("Читать вслух", fontSize = 14.sp)
+                            }
+                        }
+
+                        Spacer(Modifier.height(10.dp))
+
                         Button(
                             onClick = {
+                                tts?.stop(); isSpeaking = false
                                 vm.dismissTranslation()
                                 state = ReadState.Quiz(0, List(libro.questions.size) { null })
                             },
@@ -354,6 +783,37 @@ fun LibroReadScreen(
                         translation = translation,
                         onDismiss = { vm.dismissTranslation() },
                         modifier = Modifier.align(Alignment.BottomCenter)
+                    )
+                }
+            }
+
+            // ── Режим «Читать вслух» ─────────────────────────
+            is ReadState.ReadingAloud -> {
+                Box(Modifier.fillMaxSize().padding(padding)) {
+                    ReadingAloudPanel(
+                        state     = s,
+                        stt       = stt,
+                        levelColor = levelColor,
+                        onUpdate  = { state = it },
+                        onDone    = { results ->
+                            state = ReadState.ReadingDone(s.sentences, results)
+                        },
+                        onExit    = { tts?.stop(); state = ReadState.Reading }
+                    )
+                }
+            }
+
+            // ── Итог «Читать вслух» ──────────────────────────
+            is ReadState.ReadingDone -> {
+                Box(Modifier.fillMaxSize().padding(padding)) {
+                    ReadingDonePanel(
+                        sentences = s.sentences,
+                        results   = s.results,
+                        levelColor = levelColor,
+                        onStartQuiz = {
+                            state = ReadState.Quiz(0, List(libro.questions.size) { null })
+                        },
+                        onBack = { state = ReadState.Reading }
                     )
                 }
             }
