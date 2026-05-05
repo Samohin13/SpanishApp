@@ -21,8 +21,8 @@ class DatabaseSeeder @Inject constructor(
     private val achievementManager: AchievementManager
 ) {
     companion object {
-        // Порог для досева — единый источник правды CleanVocab (~4712 слов).
-        const val VOCAB_TARGET = 4500
+        // Порог для досева — CleanVocab + расширения (целимся в 10 000).
+        const val VOCAB_TARGET = 10000
 
         // ── Полностью неправильные глаголы ────────────────────
         val IRREGULAR_VERBS = setOf(
@@ -95,8 +95,9 @@ class DatabaseSeeder @Inject constructor(
         val current = db.wordDao().getCount()
         if (current >= VOCAB_TARGET) return
 
-        // Дедуплицированный набор из CleanVocab.kt
-        val unique = CleanVocab.entries.distinctBy { it.spanish.trim().lowercase() }
+        // Дедуплицированный набор: CleanVocab + расширения
+        val all = CleanVocab.entries + VocabExtra1.entries
+        val unique = all.distinctBy { it.spanish.trim().lowercase() }
 
         // Пометить неправильные и отклоняющиеся глаголы
         val marked = unique.map { word ->
