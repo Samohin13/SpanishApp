@@ -360,9 +360,49 @@ object RoadmapData {
         ),
 
         // ══════════════════════════════════════════════
-        //  B2: БЛОК 1 — СЛОЖНЫЕ КОНСТРУКЦИИ
-        //  TODO: Удалить isPremium когда контент B2 готов
+        //  БЛОК 2 B1: CONDICIONAL E HIPÓTESIS  (уроки 16–30)
         // ══════════════════════════════════════════════
+
+        RoadmapUnit(
+            id = "10",
+            title = "Блок 2: Condicional",
+            icon = "💫",
+            description = "Condicional Simple, Si-клаузы, Imperfecto de Subjuntivo",
+            cefrLevel = "B1",
+            color = Color(0xFFE65100),
+            lessons = listOf(
+                // 16
+                RoadmapLesson("💫 Condicional Simple: hablaría, comería",            "content", "general"),
+                // 17
+                RoadmapLesson("💫 Regulares -AR: hablar → hablaría",                 "content", "general"),
+                // 18
+                RoadmapLesson("💫 Regulares -ER/-IR: comer → comería",               "content", "general"),
+                // 19
+                RoadmapLesson("⚡ Irregulares 1: tener/poder/saber/haber",            "content", "general"),
+                // 20
+                RoadmapLesson("⚡ Irregulares 2: hacer/querer/venir/salir",           "content", "general"),
+                // 21
+                RoadmapLesson("🔀 Si + Presente + Futuro (тип 1: реальное)",          "content", "general"),
+                // 22
+                RoadmapLesson("📚 Imperfecto de Subjuntivo: введение",               "content", "general"),
+                // 23
+                RoadmapLesson("📚 Imperfecto Subj. regulares: -ra формы",            "content", "general"),
+                // 24
+                RoadmapLesson("📚 Imperfecto Subj. irregulares: fuera, tuviera",     "content", "general"),
+                // 25
+                RoadmapLesson("🔀 Si + Imp.Subj. + Condicional (тип 2: гипотеза)",   "content", "general"),
+                // 26
+                RoadmapLesson("💡 Советы: Yo en tu lugar... / Yo que tú...",          "content", "phrases"),
+                // 27
+                RoadmapLesson("🙏 Вежливость: ¿Podrías...? ¿Te importaría...?",      "content", "phrases"),
+                // 28
+                RoadmapLesson("❓ Quizás / Tal vez + Subj. o Ind.",                   "content", "general"),
+                // 29
+                RoadmapLesson("❤️ Me gustaría que + Subjuntivo",                     "content", "general"),
+                // 30  ЧЕКПОИНТ
+                RoadmapLesson("🏁 Чекпоинт: «Если бы я...»",                         "quiz",    "all")
+            )
+        ),
 
         RoadmapUnit(
             id = "b2_1",

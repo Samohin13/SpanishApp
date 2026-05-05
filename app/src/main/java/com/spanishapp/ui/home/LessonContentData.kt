@@ -8512,6 +8512,1017 @@ object LessonContentData {
                     explanation = "cuando + будущее → subjuntivo: empezar (e→ie) → empiecen. «Когда начнутся каникулы, путешествуем вместе.»"
                 )
             )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  БЛОК 2 B1: CONDICIONAL E HIPÓTESIS
+        //  u10_l0 – u10_l14
+        // ══════════════════════════════════════════════
+
+        // u10_l0 — Condicional Simple: введение
+        "u10_l0" to LessonContent(
+            intro = "Condicional Simple — это «бы» в испанском. Говорим о том, что БЫЛО БЫ, если бы что-то произошло. Это наклонение вежливости и гипотез.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Когда используется Condicional",
+                    items = listOf(
+                        LessonItem("Гипотезы", "Si tuviera dinero, viajaría. (Если бы были деньги, путешествовал бы)", ""),
+                        LessonItem("Вежливые просьбы", "¿Podrías ayudarme? (Мог бы ты помочь?)", ""),
+                        LessonItem("Советы", "Yo en tu lugar, estudiaría más. (На твоём месте учился бы больше)", ""),
+                        LessonItem("Будущее в прошлом", "Dijo que vendría. (Сказал, что придёт)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Как образуется",
+                    items = listOf(
+                        LessonItem("Infinitivo + окончания", "те же окончания для -AR, -ER, -IR!", ""),
+                        LessonItem("-ía, -ías, -ía", "yo, tú, él/ella", ""),
+                        LessonItem("-íamos, -íais, -ían", "nosotros, vosotros, ellos", ""),
+                        LessonItem("hablar → hablar + ía = hablaría", "основа = infinitivo (для регулярных)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Первые примеры",
+                    items = listOf(
+                        LessonItem("hablaría", "говорил бы", ""),
+                        LessonItem("comería", "ел бы", ""),
+                        LessonItem("viviría", "жил бы", ""),
+                        LessonItem("sería", "был бы (ser — нерегулярный)", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое Condicional Simple?",
+                    question = "¿Para qué sirve el condicional simple?",
+                    options = listOf("Для прошедших событий", "Для гипотез, вежливых просьб и советов", "Только для будущего времени", "Только в вопросах"),
+                    correctAnswer = "Для гипотез, вежливых просьб и советов",
+                    explanation = "Condicional = «бы»: Si tuviera tiempo, viajaría. ¿Podrías ayudarme? Yo en tu lugar estudiaría."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Найди форму Condicional",
+                    question = "¿Cuál es la forma del condicional?",
+                    options = listOf("hablo (presente)", "hablé (pretérito)", "hablaría (condicional)", "hablaré (futuro)"),
+                    correctAnswer = "hablaría (condicional)",
+                    explanation = "hablaría = infinitivo hablar + окончание -ía. Это Condicional Simple."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как образуется регулярный Condicional?",
+                    question = "comer → Condicional (yo) = ?",
+                    options = listOf("como", "comí", "comería", "comeré"),
+                    correctAnswer = "comería",
+                    explanation = "Регулярный Condicional = infinitivo + -ía. comer + ía = comería."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional или Futuro?",
+                    question = "Mañana ___ a España. (это факт, plan)",
+                    options = listOf("viajaría (condicional)", "viajaré (futuro)", "viajaba (imperfecto)", "viajé (pretérito)"),
+                    correctAnswer = "viajaré (futuro)",
+                    explanation = "Конкретный план на завтра = Futuro Simple: viajaré. Condicional — для гипотез (Si..., viajaría)."
+                )
+            )
+        ),
+
+        // u10_l1 — Regulares -AR: hablar → hablaría
+        "u10_l1" to LessonContent(
+            intro = "Для -AR глаголов Condicional очень прост: берём инфинитив целиком и добавляем окончания -ía, -ías, -ía, -íamos, -íais, -ían.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Таблица: hablar",
+                    items = listOf(
+                        LessonItem("yo hablaría", "я говорил бы", ""),
+                        LessonItem("tú hablarías", "ты говорил бы", ""),
+                        LessonItem("él/ella hablaría", "он/она говорил(а) бы", ""),
+                        LessonItem("nosotros hablaríamos", "мы говорили бы", ""),
+                        LessonItem("vosotros hablaríais", "вы говорили бы", ""),
+                        LessonItem("ellos hablarían", "они говорили бы", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие -AR глаголы",
+                    items = listOf(
+                        LessonItem("trabajar → trabajaría", "работал бы", ""),
+                        LessonItem("viajar → viajaría", "путешествовал бы", ""),
+                        LessonItem("comprar → compraría", "купил бы", ""),
+                        LessonItem("estudiar → estudiaría", "учился бы", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "В предложениях",
+                    items = listOf(
+                        LessonItem("Con más dinero, viajaría.", "Если бы больше денег, путешествовал бы.", ""),
+                        LessonItem("Yo en tu lugar, estudiaría.", "На твоём месте учился бы.", ""),
+                        LessonItem("¿Trabajarías en el extranjero?", "Работал бы ты за рубежом?", ""),
+                        LessonItem("Ella compraría ese vestido.", "Она купила бы то платье.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола viajar (yo)",
+                    question = "Si tuviera vacaciones, ___ a México.",
+                    options = listOf("viajo", "viajé", "viajaré", "viajaría"),
+                    correctAnswer = "viajaría",
+                    explanation = "Si + Imperfecto Subj. → Condicional: viajar + ía = viajaría. «Если бы были отпуск, поехал бы в Мексику.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола hablar (tú)",
+                    question = "¿___ tú con él en mi lugar?",
+                    options = listOf("hablas", "hablaste", "hablarás", "hablarías"),
+                    correctAnswer = "hablarías",
+                    explanation = "hablar + ías = hablarías (tú). «Поговорил бы ты с ним на моём месте?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола comprar (ellos)",
+                    question = "Con ese dinero, ___ una casa.",
+                    options = listOf("compran", "compraron", "comprarán", "comprarían"),
+                    correctAnswer = "comprarían",
+                    explanation = "comprar + ían = comprarían (ellos). «На эти деньги они купили бы дом.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола trabajar (nosotros)",
+                    question = "Si fuera posible, ___ desde casa.",
+                    options = listOf("trabajamos", "trabajamos", "trabajaríamos", "trabajábamos"),
+                    correctAnswer = "trabajaríamos",
+                    explanation = "trabajar + íamos = trabajaríamos. «Если бы было возможно, работали бы из дома.»"
+                )
+            )
+        ),
+
+        // u10_l2 — Regulares -ER/-IR: comer → comería
+        "u10_l2" to LessonContent(
+            intro = "Для -ER и -IR глаголов принцип тот же: инфинитив + окончания. Никаких отличий от -AR! Все три типа спрягаются одинаково.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Таблица: comer и vivir",
+                    items = listOf(
+                        LessonItem("yo comería / viviría", "я ел бы / жил бы", ""),
+                        LessonItem("tú comerías / vivirías", "ты ел бы / жил бы", ""),
+                        LessonItem("él comería / viviría", "он ел бы / жил бы", ""),
+                        LessonItem("nosotros comeríamos / viviríamos", "мы ели бы / жили бы", ""),
+                        LessonItem("ellos comerían / vivirían", "они ели бы / жили бы", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие -ER/-IR глаголы",
+                    items = listOf(
+                        LessonItem("beber → bebería", "пил бы", ""),
+                        LessonItem("leer → leería", "читал бы", ""),
+                        LessonItem("escribir → escribiría", "писал бы", ""),
+                        LessonItem("abrir → abriría", "открыл бы", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Comería más, pero no tengo hambre.", "Ел бы больше, но не голоден.", ""),
+                        LessonItem("¿Vivirías en otro país?", "Жил бы ты в другой стране?", ""),
+                        LessonItem("Leería más si tuviera tiempo.", "Читал бы больше, если бы было время.", ""),
+                        LessonItem("Escribiría una novela.", "Написал бы роман.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола comer (tú)",
+                    question = "¿___ sushi todos los días si pudieras?",
+                    options = listOf("comes", "comiste", "comerás", "comerías"),
+                    correctAnswer = "comerías",
+                    explanation = "comer + ías = comerías. «Ел бы суши каждый день, если бы мог?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола vivir (yo)",
+                    question = "Yo ___ en Barcelona si pudiera elegir.",
+                    options = listOf("vivo", "viví", "viviré", "viviría"),
+                    correctAnswer = "viviría",
+                    explanation = "vivir + ía = viviría. «Я жил бы в Барселоне, если бы мог выбирать.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола leer (ella)",
+                    question = "Con más tiempo libre, ella ___ muchos libros.",
+                    options = listOf("lee", "leyó", "leerá", "leería"),
+                    correctAnswer = "leería",
+                    explanation = "leer + ía = leería. «Если бы больше свободного времени, она читала бы много книг.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола escribir (nosotros)",
+                    question = "Si tuviéramos más datos, ___ el artículo hoy.",
+                    options = listOf("escribimos", "escribimos", "escribiríamos", "escribiríamos"),
+                    correctAnswer = "escribiríamos",
+                    explanation = "escribir + íamos = escribiríamos. «Если бы у нас было больше данных, написали бы статью сегодня.»"
+                )
+            )
+        ),
+
+        // u10_l3 — Irregulares 1: tener/poder/saber/haber
+        "u10_l3" to LessonContent(
+            intro = "У нерегулярных глаголов Condicional меняется основа (как в Futuro), но окончания те же (-ía, -ías...). Нужно просто запомнить эти основы.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Укороченная основа (-dr-)",
+                    items = listOf(
+                        LessonItem("tener → tendr-", "tendría, tendrías, tendría...", ""),
+                        LessonItem("poder → podr-", "podría, podrías, podría...", ""),
+                        LessonItem("valer → valdr-", "valdría, valdrías...", ""),
+                        LessonItem("salir → saldr-", "saldría, saldrías...", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Усечённая основа",
+                    items = listOf(
+                        LessonItem("saber → sabr-", "sabría, sabrías, sabría...", ""),
+                        LessonItem("haber → habr-", "habría, habrías, habría...", ""),
+                        LessonItem("caber → cabr-", "cabría, cabrías...", ""),
+                        LessonItem("Habría = «было бы»", "¿Habría una solución? (Было бы решение?)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Tendría más paciencia.", "Я бы имел больше терпения.", ""),
+                        LessonItem("¿Podrías ayudarme?", "Мог бы ты помочь мне? (вежливо)", ""),
+                        LessonItem("Sabría qué hacer.", "Знал бы, что делать.", ""),
+                        LessonItem("Habría una solución.", "Было бы решение.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола tener (yo)",
+                    question = "Si ganara la lotería, ___ una casa en la playa.",
+                    options = listOf("tengo", "tuve", "tendré", "tendría"),
+                    correctAnswer = "tendría",
+                    explanation = "tener → tendr- + ía = tendría. Нерегулярная основа tendr-."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола poder (tú) — вежливо",
+                    question = "¿___ decirme dónde está la estación?",
+                    options = listOf("Puedes", "Pudiste", "Podrás", "Podrías"),
+                    correctAnswer = "Podrías",
+                    explanation = "poder → podr- + ías = Podrías. Condicional делает вопрос вежливее: ¿Podrías...? вместо ¿Puedes...?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола saber (él)",
+                    question = "Con esa información, él ___ resolverlo.",
+                    options = listOf("sabe", "supo", "sabrá", "sabría"),
+                    correctAnswer = "sabría",
+                    explanation = "saber → sabr- + ía = sabría. «С этой информацией он знал бы, как это решить.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола haber (impersonal)",
+                    question = "Sin ti, no ___ solución.",
+                    options = listOf("hay", "hubo", "habrá", "habría"),
+                    correctAnswer = "habría",
+                    explanation = "haber → habr- + ía = habría. Форма hay в condicional становится habría."
+                )
+            )
+        ),
+
+        // u10_l4 — Irregulares 2: hacer/querer/venir/salir/decir/poner
+        "u10_l4" to LessonContent(
+            intro = "Ещё группа нерегулярных глаголов со своими основами в Condicional. После освоения этих 6 глаголов — нерегулярных больше нет!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Группа с -r-",
+                    items = listOf(
+                        LessonItem("hacer → har-", "haría, harías, haría...", ""),
+                        LessonItem("querer → querr-", "querría, querrías, querría...", ""),
+                        LessonItem("venir → vendr-", "vendría, vendrías...", ""),
+                        LessonItem("poner → pondr-", "pondría, pondrías...", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ещё два",
+                    items = listOf(
+                        LessonItem("decir → dir-", "diría, dirías, diría...", ""),
+                        LessonItem("salir → saldr-", "saldría, saldrías...", ""),
+                        LessonItem("Все окончания одинаковые", "-ía, -ías, -ía, -íamos, -íais, -ían", ""),
+                        LessonItem("Та же основа, что и в Futuro!", "harás (futuro) → haría (condicional)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("¿Qué harías tú?", "Что бы ты сделал?", ""),
+                        LessonItem("Querría un café, por favor.", "Я бы хотел кофе, пожалуйста. (вежливо)", ""),
+                        LessonItem("Vendría si pudiera.", "Пришёл бы, если бы мог.", ""),
+                        LessonItem("Eso lo diría cualquiera.", "Это сказал бы любой.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола hacer (tú)",
+                    question = "¿Qué ___ tú en mi lugar?",
+                    options = listOf("haces", "hiciste", "harás", "harías"),
+                    correctAnswer = "harías",
+                    explanation = "hacer → har- + ías = harías. «Что бы ты сделал на моём месте?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола venir (él)",
+                    question = "Si lo invitaras, él ___ seguro.",
+                    options = listOf("viene", "vino", "vendrá", "vendría"),
+                    correctAnswer = "vendría",
+                    explanation = "venir → vendr- + ía = vendría. «Если бы ты его пригласил, он бы точно пришёл.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола decir (yo) — вежливо",
+                    question = "Yo ___ que es una buena idea.",
+                    options = listOf("digo", "dije", "diré", "diría"),
+                    correctAnswer = "diría",
+                    explanation = "decir → dir- + ía = diría. «Я бы сказал, что это хорошая идея.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional глагола querer (yo) — заказ в ресторане",
+                    question = "___ la ensalada y un agua, por favor.",
+                    options = listOf("Quiero", "Quería", "Querré", "Querría"),
+                    correctAnswer = "Querría",
+                    explanation = "Querría = Condicional — самый вежливый способ сделать заказ. «Я бы хотел салат и воду, пожалуйста.»"
+                )
+            )
+        ),
+
+        // u10_l5 — Si + Presente + Futuro (тип 1: реальное условие)
+        "u10_l5" to LessonContent(
+            intro = "Тип 1 Si-клауз — реальное или вероятное условие. Если что-то произойдёт (si + presente), то случится результат (futuro). Это выполнимые условия!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Схема: Si + Presente → Futuro",
+                    items = listOf(
+                        LessonItem("Si estudias, aprobarás.", "Если будешь учиться, сдашь.", ""),
+                        LessonItem("Si llueve, nos quedamos en casa.", "Если пойдёт дождь, останемся дома.", ""),
+                        LessonItem("Si tienes hambre, come algo.", "Если ты голоден, поешь что-нибудь.", ""),
+                        LessonItem("Si puedo, te llamo.", "Если смогу, позвоню.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Порядок частей",
+                    items = listOf(
+                        LessonItem("Si + [условие в Presente], [результат в Futuro]", "условие → результат", ""),
+                        LessonItem("[результат в Futuro] si + [условие в Presente]", "результат → условие", ""),
+                        LessonItem("Te llamaré si puedo.", "= Si puedo, te llamaré.", ""),
+                        LessonItem("Запятая ставится только если Si в начале", "Si..., ... = запятая нужна", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Никогда Si + Futuro!",
+                    items = listOf(
+                        LessonItem("❌ Si vendrás, iré.", "ОШИБКА! После si нет futuro", ""),
+                        LessonItem("✅ Si vienes, iré.", "После si — presente indicativo", ""),
+                        LessonItem("❌ Si podrás, llámame.", "ОШИБКА!", ""),
+                        LessonItem("✅ Si puedes, llámame.", "Правильно: Si + presente", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Si + Presente + Futuro (тип 1)",
+                    question = "Si ___ dinero, iré de vacaciones.",
+                    options = listOf("tengo", "tendré", "tuviera", "tuviese"),
+                    correctAnswer = "tengo",
+                    explanation = "Тип 1: Si + presente indicativo + futuro. «Если у меня будут деньги, поеду в отпуск.» tengo (presente)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Si + Presente + Futuro — результат",
+                    question = "Si estudias mucho, ___ el examen.",
+                    options = listOf("apruebas", "aprobaste", "aprobarás", "aprobarías"),
+                    correctAnswer = "aprobarás",
+                    explanation = "Тип 1: условие (si estudias) → результат в Futuro (aprobarás). «Если будешь много учиться, сдашь экзамен.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Найди ошибку",
+                    question = "¿Cuál está INCORRECTO?",
+                    options = listOf("Si tienes hambre, come.", "Si llueve, me quedaré.", "Si vendrás, iré contigo.", "Si puedes, llámame."),
+                    correctAnswer = "Si vendrás, iré contigo.",
+                    explanation = "После si НИКОГДА Futuro! Правильно: Si vienes, iré contigo. Si + presente, no futuro."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи: «Если поедешь в Мадрид, увидишь много интересного»",
+                    question = "Si ___ a Madrid, ___ muchas cosas interesantes.",
+                    options = listOf("vas / verás", "irás / verás", "vayas / verás", "fueras / verías"),
+                    correctAnswer = "vas / verás",
+                    explanation = "Тип 1: Si + presente (vas) + futuro (verás). Реальное условие."
+                )
+            )
+        ),
+
+        // u10_l6 — Imperfecto de Subjuntivo: введение
+        "u10_l6" to LessonContent(
+            intro = "Imperfecto de Subjuntivo — это «прошлое» Subjuntivo. Нужен для гипотетических условий (Si tuviera dinero...) и косвенной речи в прошлом.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Зачем нужен Imperfecto de Subjuntivo",
+                    items = listOf(
+                        LessonItem("Тип 2 Si-клауз (гипотезы)", "Si tuviera dinero, viajaría. (Если бы были деньги...)", ""),
+                        LessonItem("Косвенная речь в прошлом", "Dijo que vinieras. (Сказал, чтобы ты пришёл.)", ""),
+                        LessonItem("Ojalá + Imp. Subj.", "¡Ojalá tuviera más tiempo! (Вот бы больше времени!)", ""),
+                        LessonItem("Como si + Imp. Subj.", "Habla como si supiera todo. (Говорит, будто всё знает.)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Откуда берётся основа",
+                    items = listOf(
+                        LessonItem("Берём ellos Pretérito Indefinido", "hablaron → habla-", ""),
+                        LessonItem("Убираем -ron", "hablaron → habla-", ""),
+                        LessonItem("Добавляем окончания -ra", "hablara, hablaras, hablara...", ""),
+                        LessonItem("hablar → hablaron → habla- → hablara", "полный путь", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Окончания -ra (самые распространённые)",
+                    items = listOf(
+                        LessonItem("-ra, -ras, -ra", "yo, tú, él/ella", ""),
+                        LessonItem("-ramos, -rais, -ran", "nosotros, vosotros, ellos", ""),
+                        LessonItem("hablara / hablaras / hablara", "Imperfecto Subj. от hablar", ""),
+                        LessonItem("Также есть -se формы", "hablase/hablases (менее частые)", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Откуда берётся основа Imperfecto Subj.?",
+                    question = "Para formar el Imperfecto de Subjuntivo de 'hablar', tomamos:",
+                    options = listOf("yo hablo → habl-", "ellos hablaron → habla-", "infinitivo hablar → habla-", "él habló → habló-"),
+                    correctAnswer = "ellos hablaron → habla-",
+                    explanation = "Основа = ellos Pretérito Indefinido минус -ron. hablaron → habla-. Потом + ra/ras/ra..."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Когда нужен Imperfecto de Subjuntivo?",
+                    question = "Si ___ más tiempo, estudiaría chino.",
+                    options = listOf("tengo", "tenga", "tuviera", "tendré"),
+                    correctAnswer = "tuviera",
+                    explanation = "Тип 2 (гипотеза): Si + Imperfecto Subjuntivo + Condicional. tuviera = Imperfecto Subj. от tener."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imperfecto Subj. глагола hablar (tú)",
+                    question = "Le pedí que ___ más despacio.",
+                    options = listOf("hablas", "hables", "hablaras", "hablarás"),
+                    correctAnswer = "hablaras",
+                    explanation = "Просьба в прошлом → Imperfecto Subj.: hablaron → habla- + ras = hablaras."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ojalá + Imperfecto Subj.",
+                    question = "¡Ojalá ___ más horas en el día!",
+                    options = listOf("hay", "haya", "hubiera", "habrá"),
+                    correctAnswer = "hubiera",
+                    explanation = "Ojalá + Imperfecto Subj. для нереальных желаний: haber → hubiera. «Вот бы в сутках было больше часов!»"
+                )
+            )
+        ),
+
+        // u10_l7 — Imperfecto Subj. regulares: -ra формы
+        "u10_l7" to LessonContent(
+            intro = "Регулярные глаголы Imperfecto de Subjuntivo. Правило одно: ellos Pretérito − ron + ra. Работает для ВСЕХ глаголов без исключения!",
+            sections = listOf(
+                LessonSection(
+                    heading = "-AR глаголы: hablar",
+                    items = listOf(
+                        LessonItem("hablaron → habla-", "убираем -ron", ""),
+                        LessonItem("yo hablara", "я говорил бы (subj.)", ""),
+                        LessonItem("tú hablaras", "ты говорил бы", ""),
+                        LessonItem("nosotros habláramos", "мы говорили бы (ударение!)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "-ER/-IR глаголы: comer, vivir",
+                    items = listOf(
+                        LessonItem("comieron → comie-", "comer: comiera, comieras...", ""),
+                        LessonItem("vivieron → vivie-", "vivir: viviera, vivieras...", ""),
+                        LessonItem("yo comiera / viviera", "ел бы (subj.) / жил бы (subj.)", ""),
+                        LessonItem("nosotros comiéramos / viviéramos", "ударение на é!", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Схема в предложениях",
+                    items = listOf(
+                        LessonItem("Si hablara más, aprendería.", "Если бы говорил больше, выучил бы.", ""),
+                        LessonItem("Si comieras bien, estarías sano.", "Если бы питался правильно, был бы здоров.", ""),
+                        LessonItem("Si vivieras aquí, sería genial.", "Если бы ты жил здесь, было бы здорово.", ""),
+                        LessonItem("Quería que hablaras.", "Хотел, чтобы ты поговорил.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imperfecto Subj. от hablar (tú)",
+                    question = "Si ___ español mejor, conseguirías el trabajo.",
+                    options = listOf("hablas", "hables", "hablaras", "hablarías"),
+                    correctAnswer = "hablaras",
+                    explanation = "Тип 2: Si + Imp.Subj. + Cond. hablar → hablaron → habla- + ras = hablaras."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imperfecto Subj. от comer (él)",
+                    question = "Si ___ menos, se sentiría mejor.",
+                    options = listOf("come", "coma", "comiera", "comería"),
+                    correctAnswer = "comiera",
+                    explanation = "Si + Imp.Subj.: comer → comieron → comie- + ra = comiera."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imperfecto Subj. от vivir (nosotros)",
+                    question = "Si ___ cerca, nos veríamos más.",
+                    options = listOf("vivimos", "vivamos", "viviéramos", "viviríamos"),
+                    correctAnswer = "viviéramos",
+                    explanation = "vivir → vivieron → vivie- + ramos = viviéramos (ударение на é)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Косвенная речь в прошлом",
+                    question = "El médico me pidió que ___ más.",
+                    options = listOf("descansas", "descanses", "descansaras", "descansarías"),
+                    correctAnswer = "descansaras",
+                    explanation = "Просьба в прошлом: pidió que + Imp.Subj.: descansar → descansaron → descansa- + ras = descansaras."
+                )
+            )
+        ),
+
+        // u10_l8 — Imperfecto Subj. irregulares: fuera, tuviera, pudiera
+        "u10_l8" to LessonContent(
+            intro = "Нерегулярные глаголы в Pretérito Indefinido → нерегулярная основа в Imperfecto de Subjuntivo. Правило то же: ellos форма − ron!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Самые важные нерегулярные",
+                    items = listOf(
+                        LessonItem("ser/ir → fueron → fue-", "fuera, fueras, fuera...", ""),
+                        LessonItem("tener → tuvieron → tuvie-", "tuviera, tuvieras, tuviera...", ""),
+                        LessonItem("poder → pudieron → pudie-", "pudiera, pudieras, pudiera...", ""),
+                        LessonItem("estar → estuvieron → estuvie-", "estuviera, estuvieras...", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ещё группа",
+                    items = listOf(
+                        LessonItem("hacer → hicieron → hicie-", "hiciera, hicieras, hiciera...", ""),
+                        LessonItem("querer → quisieron → quisie-", "quisiera, quisieras...", ""),
+                        LessonItem("venir → vinieron → vinie-", "viniera, vinieras...", ""),
+                        LessonItem("decir → dijeron → dije-", "dijera, dijeras...", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "В Si-клаузах",
+                    items = listOf(
+                        LessonItem("Si fuera rico, viajaría.", "Если бы я был богатым...", ""),
+                        LessonItem("Si tuviera coche, iría.", "Если бы была машина, поехал бы.", ""),
+                        LessonItem("Si pudieras, ¿vendrías?", "Если бы ты мог, пришёл бы?", ""),
+                        LessonItem("Si hiciera buen tiempo, saldríamos.", "Если бы была хорошая погода, вышли бы.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imp. Subj. от ser/ir (yo)",
+                    question = "Si ___ tú, haría lo mismo.",
+                    options = listOf("soy", "sea", "fuera", "sería"),
+                    correctAnswer = "fuera",
+                    explanation = "ser → fueron → fue- + ra = fuera. «Если бы я был тобой, сделал бы то же самое.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imp. Subj. от tener (nosotros)",
+                    question = "Si ___ más espacio, compraríamos un piano.",
+                    options = listOf("tenemos", "tengamos", "tuviéramos", "tendríamos"),
+                    correctAnswer = "tuviéramos",
+                    explanation = "tener → tuvieron → tuvie- + ramos = tuviéramos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imp. Subj. от poder (tú)",
+                    question = "Si ___ venir, sería perfecto.",
+                    options = listOf("puedes", "puedas", "pudieras", "podrías"),
+                    correctAnswer = "pudieras",
+                    explanation = "poder → pudieron → pudie- + ras = pudieras."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Imp. Subj. от hacer (él)",
+                    question = "Ojalá ___ más ejercicio.",
+                    options = listOf("hace", "haga", "hiciera", "haría"),
+                    correctAnswer = "hiciera",
+                    explanation = "Ojalá + Imp.Subj. для нереального желания: hacer → hicieron → hicie- + ra = hiciera."
+                )
+            )
+        ),
+
+        // u10_l9 — Si + Imp.Subj. + Condicional (тип 2)
+        "u10_l9" to LessonContent(
+            intro = "Тип 2 Si-клауз — гипотетические ситуации, нереальные в настоящем. Схема: Si + Imperfecto de Subjuntivo, + Condicional Simple.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Схема Типа 2",
+                    items = listOf(
+                        LessonItem("Si + [Imp. Subjuntivo], + [Condicional]", "нереальное условие → гипотетический результат", ""),
+                        LessonItem("Si tuviera dinero, viajaría.", "Если бы были деньги, путешествовал бы.", ""),
+                        LessonItem("Si pudiera, lo haría.", "Если бы мог, сделал бы это.", ""),
+                        LessonItem("Si fuera médico, ayudaría más.", "Если бы был врачом, помогал бы больше.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Тип 1 vs Тип 2",
+                    items = listOf(
+                        LessonItem("Тип 1: реально возможно", "Si tengo dinero, viajaré. (могу заработать)", ""),
+                        LessonItem("Тип 2: нереально сейчас", "Si tuviera dinero, viajaría. (денег нет)", ""),
+                        LessonItem("Тип 1: Si + presente + futuro", "«Если буду иметь...»", ""),
+                        LessonItem("Тип 2: Si + imp.subj. + condicional", "«Если бы имел...»", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Больше примеров Типа 2",
+                    items = listOf(
+                        LessonItem("Si viviera en París, hablaría francés.", "Если бы жил в Париже, говорил бы по-французски.", ""),
+                        LessonItem("Si supiera la respuesta, te la diría.", "Если бы знал ответ, сказал бы.", ""),
+                        LessonItem("Si no lloviera, saldríamos.", "Если бы не шёл дождь, вышли бы.", ""),
+                        LessonItem("¿Qué harías si tuvieras un día libre?", "Что бы ты сделал, если бы был выходной?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тип 2: Si + Imp.Subj. + Condicional",
+                    question = "Si ___ más, ___ mejor español.",
+                    options = listOf("practico / hablaré", "practicara / hablaría", "practicase / hablaré", "practicara / hablaré"),
+                    correctAnswer = "practicara / hablaría",
+                    explanation = "Тип 2: Si + Imp.Subj. (practicara) + Condicional (hablaría)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тип 1 или Тип 2?",
+                    question = "Si ___ tiempo mañana, te llamaré.",
+                    options = listOf("tuviera (Тип 2)", "tengo (Тип 1)", "tenga (Subj.)", "tendré (Futuro)"),
+                    correctAnswer = "tengo (Тип 1)",
+                    explanation = "«Завтра» — реально возможно. Тип 1: Si + presente (tengo) + futuro (llamaré)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тип 2 с нерегулярным",
+                    question = "Si ___ un superpoder, elegiría la invisibilidad.",
+                    options = listOf("tengo", "tenga", "tuviera", "tendré"),
+                    correctAnswer = "tuviera",
+                    explanation = "Нереальная гипотеза → Тип 2: tener → tuviera. «Если бы у меня была суперсила, выбрал бы невидимость.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Завершить предложение",
+                    question = "Si fuera millonario, ___",
+                    options = listOf("dono todo a la caridad", "donaré todo a la caridad", "donaría todo a la caridad", "done todo a la caridad"),
+                    correctAnswer = "donaría todo a la caridad",
+                    explanation = "Si + Imp.Subj. → Condicional: donaría. «Если бы был миллионером, пожертвовал бы всё на благотворительность.»"
+                )
+            )
+        ),
+
+        // u10_l10 — Советы: Yo en tu lugar / Yo que tú
+        "u10_l10" to LessonContent(
+            intro = "Condicional — идеальный инструмент для советов. Испанцы говорят «Yo en tu lugar...» или «Yo que tú...» — и дальше Condicional. Это вежливо и естественно.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Формулы совета",
+                    items = listOf(
+                        LessonItem("Yo en tu lugar, hablaría con él.", "На твоём месте, поговорил бы с ним.", ""),
+                        LessonItem("Yo que tú, no lo haría.", "Я бы на твоём месте не делал этого.", ""),
+                        LessonItem("Si yo fuera tú, descansaría.", "Если бы я был тобой, отдохнул бы.", ""),
+                        LessonItem("Yo (de ti), llamaría al médico.", "Я бы (на твоём месте) позвонил врачу.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Мягкие советы vs Жёсткие",
+                    items = listOf(
+                        LessonItem("Deberías descansar. (мягко)", "Тебе следовало бы отдохнуть.", ""),
+                        LessonItem("Podrías intentarlo. (очень мягко)", "Ты мог бы попробовать.", ""),
+                        LessonItem("¡Descansa! (прямо)", "Отдыхай! (императив)", ""),
+                        LessonItem("Condicional = самый вежливый совет", "деловой и учтивый тон", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Практика",
+                    items = listOf(
+                        LessonItem("Amigo: «Estoy muy estresado.»", "Yo en tu lugar, haría más deporte.", ""),
+                        LessonItem("Amigo: «No sé qué estudiar.»", "Yo que tú, pediría consejo a un orientador.", ""),
+                        LessonItem("Amigo: «Tengo un conflicto en el trabajo.»", "Yo hablaría directamente con el jefe.", ""),
+                        LessonItem("Amiga: «Quiero aprender a cocinar.»", "Yo tomaría un curso de cocina.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Совет с «Yo en tu lugar»",
+                    question = "Yo en tu lugar, ___ más agua.",
+                    options = listOf("bebo", "beba", "bebería", "bebiré"),
+                    correctAnswer = "bebería",
+                    explanation = "Yo en tu lugar + Condicional: beber + ía = bebería. «На твоём месте, пил бы больше воды.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Совет с «Yo que tú»",
+                    question = "Yo que tú, no ___ ese trabajo.",
+                    options = listOf("acepto", "acepte", "aceptaría", "aceptaré"),
+                    correctAnswer = "aceptaría",
+                    explanation = "Yo que tú + Condicional: aceptar + ía = aceptaría. «Я бы на твоём месте не принял эту работу.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Мягкий совет с debería",
+                    question = "Estás muy cansado. ___ descansar un poco.",
+                    options = listOf("Debes", "Deberás", "Deberías", "Debas"),
+                    correctAnswer = "Deberías",
+                    explanation = "deber → Condicional: deberías = «тебе следовало бы». Мягче, чем «Debes»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Самый вежливый совет",
+                    question = "¿Cuál es la forma más cortés de dar un consejo?",
+                    options = listOf("¡Habla con él! (imperativo)", "Habla con él. (presente)", "Deberías hablar con él. (condicional)", "Hablarás con él. (futuro)"),
+                    correctAnswer = "Deberías hablar con él. (condicional)",
+                    explanation = "Condicional (deberías, podrías, yo que tú...) — самый вежливый способ дать совет в испанском."
+                )
+            )
+        ),
+
+        // u10_l11 — Вежливость: ¿Podrías...? ¿Te importaría...?
+        "u10_l11" to LessonContent(
+            intro = "В испанском Condicional — стандарт вежливости. ¿Podrías...? звучит намного лучше, чем ¿Puedes...? Это то, что отличает B1 от A2!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Вежливые просьбы",
+                    items = listOf(
+                        LessonItem("¿Podrías ayudarme?", "Мог бы ты помочь мне? (вежливо)", ""),
+                        LessonItem("¿Podrías repetir, por favor?", "Мог бы ты повторить, пожалуйста?", ""),
+                        LessonItem("¿Te importaría abrir la ventana?", "Не могли бы вы открыть окно?", ""),
+                        LessonItem("¿Le molestaría esperar un momento?", "Вам не затруднит подождать минуту?", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "В ресторане и магазине",
+                    items = listOf(
+                        LessonItem("Querría una mesa para dos.", "Я бы хотел столик на двоих.", ""),
+                        LessonItem("¿Me traería la carta?", "Вы бы принесли мне меню?", ""),
+                        LessonItem("¿Tendría algo más barato?", "У вас есть что-то подешевле?", ""),
+                        LessonItem("Me gustaría probar este modelo.", "Мне бы хотелось примерить эту модель.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Presente vs Condicional — разница",
+                    items = listOf(
+                        LessonItem("¿Puedes callar? (прямо)", "Можешь замолчать? (немного грубо)", ""),
+                        LessonItem("¿Podrías hablar más bajo? (вежливо)", "Мог бы ты говорить потише?", ""),
+                        LessonItem("Quiero un café. (нейтрально)", "Я хочу кофе.", ""),
+                        LessonItem("Querría un café. (вежливо)", "Я бы хотел кофе.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Вежливая просьба",
+                    question = "¿___ decirme dónde está el baño?",
+                    options = listOf("Puedes", "Podrías", "Puedas", "Pudieras"),
+                    correctAnswer = "Podrías",
+                    explanation = "poder → Condicional: podrías. Вежливее, чем ¿Puedes? «Не могли бы вы сказать, где туалет?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Заказ в ресторане (вежливо)",
+                    question = "___ el menú del día y una botella de agua.",
+                    options = listOf("Quiero", "Quería", "Querría", "Quisiese"),
+                    correctAnswer = "Querría",
+                    explanation = "Condicional = вежливый заказ: querría (querer → querr- + ía). «Я бы хотел бизнес-ланч и бутылку воды.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "¿Te importaría...?",
+                    question = "¿Te importaría ___ el volumen de la música?",
+                    options = listOf("bajas", "bajes", "bajar", "bajarías"),
+                    correctAnswer = "bajar",
+                    explanation = "¿Te importaría + infinitivo? «Не могли бы вы убавить громкость музыки?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Me gustaría + infinitivo",
+                    question = "___ reservar una habitación para el fin de semana.",
+                    options = listOf("Me gusta", "Me gustara", "Me gustaría", "Me gustase"),
+                    correctAnswer = "Me gustaría",
+                    explanation = "me gustaría + infinitivo = вежливое желание. «Мне бы хотелось забронировать номер на выходные.»"
+                )
+            )
+        ),
+
+        // u10_l12 — Quizás / Tal vez + Subjuntivo o Indicativo
+        "u10_l12" to LessonContent(
+            intro = "Quizás и tal vez выражают неуверенность. С Subjuntivo — меньше уверенности, с Indicativo — чуть больше. Оба варианта правильные!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Quizás/Tal vez + Subjuntivo (меньше уверен)",
+                    items = listOf(
+                        LessonItem("Quizás venga mañana.", "Возможно, придёт завтра. (не уверен)", ""),
+                        LessonItem("Tal vez tenga razón.", "Может быть, он прав. (сомневаюсь)", ""),
+                        LessonItem("Quizás no sea tan difícil.", "Может, это не так трудно.", ""),
+                        LessonItem("Tal vez estés cansado.", "Может, ты устал.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Quizás/Tal vez + Indicativo (больше уверен)",
+                    items = listOf(
+                        LessonItem("Quizás viene mañana.", "Наверное, придёт завтра. (почти уверен)", ""),
+                        LessonItem("Tal vez tiene razón.", "Пожалуй, он прав.", ""),
+                        LessonItem("Oба варианта правильные!", "Выбор зависит от степени уверенности", ""),
+                        LessonItem("Subj. = 30-50% уверенность", "Ind. = 50-70% уверенность", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ещё слова неуверенности",
+                    items = listOf(
+                        LessonItem("A lo mejor + Indicativo", "A lo mejor viene. (= quizás, но только ind.)", ""),
+                        LessonItem("Probablemente + Subj./Ind.", "Probablemente llegue tarde.", ""),
+                        LessonItem("Posiblemente + Subj./Ind.", "Posiblemente sea así.", ""),
+                        LessonItem("A lo mejor — только indicativo!", "A lo mejor viene (❌ venga)", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Quizás + subjuntivo (неуверен)",
+                    question = "Quizás ___ a la fiesta, pero no estoy seguro.",
+                    options = listOf("voy", "vaya", "iré", "fui"),
+                    correctAnswer = "vaya",
+                    explanation = "Quizás + subjuntivo (неуверенность): ir → vaya. «Может, пойду на вечеринку, но не уверен.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "A lo mejor — только indicativo",
+                    question = "A lo mejor ___ un poco tarde.",
+                    options = listOf("llego", "llegue", "llegara", "llegara"),
+                    correctAnswer = "llego",
+                    explanation = "A lo mejor всегда + indicativo! «A lo mejor llego» = «наверное, опоздаю немного.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Tal vez + subjuntivo или indicativo",
+                    question = "Tal vez ___ razón. (оба варианта могут быть верны)",
+                    options = listOf("Только «tiene» (indicativo)", "Только «tenga» (subjuntivo)", "И «tiene», и «tenga» правильно", "Только «tendría» (condicional)"),
+                    correctAnswer = "И «tiene», и «tenga» правильно",
+                    explanation = "С tal vez и quizás можно использовать и subjuntivo, и indicativo. Subjuntivo = меньше уверен, indicativo = чуть увереннее."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Probablemente + subjuntivo",
+                    question = "Probablemente ___ tarde al trabajo.",
+                    options = listOf("llego", "llegue", "Оба варианта верны", "llegara"),
+                    correctAnswer = "Оба варианта верны",
+                    explanation = "Probablemente, posiblemente, quizás, tal vez — все могут использоваться с subj. или ind."
+                )
+            )
+        ),
+
+        // u10_l13 — Me gustaría que + Subjuntivo
+        "u10_l13" to LessonContent(
+            intro = "Me gustaría que + Subjuntivo — вежливый способ выразить желание относительно чужих действий. Сочетание Condicional + Subjuntivo.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Схема: me gustaría que + Subjuntivo",
+                    items = listOf(
+                        LessonItem("Me gustaría que vinieras.", "Мне бы хотелось, чтобы ты пришёл.", ""),
+                        LessonItem("Me gustaría que me ayudaras.", "Мне бы хотелось, чтобы ты помог.", ""),
+                        LessonItem("Me gustaría que hablaras menos.", "Мне бы хотелось, чтобы ты говорил меньше.", ""),
+                        LessonItem("Nos gustaría que participaran.", "Нам бы хотелось, чтобы вы участвовали.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Gustar + que: разные субъекты",
+                    items = listOf(
+                        LessonItem("Me gustaría ir. (я иду)", "один субъект → infinitivo", ""),
+                        LessonItem("Me gustaría que fueras. (ты идёшь)", "два субъекта → que + subjuntivo", ""),
+                        LessonItem("Me gustaría quedarme.", "хочу остаться сам", ""),
+                        LessonItem("Me gustaría que te quedaras.", "хочу, чтобы ты остался", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие глаголы по той же схеме",
+                    items = listOf(
+                        LessonItem("Me encantaría que vinieras.", "Был бы в восторге, если бы ты пришёл.", ""),
+                        LessonItem("Preferiría que hablaras más.", "Предпочёл бы, чтобы ты говорил больше.", ""),
+                        LessonItem("Esperaría que lo entendieras.", "Ожидал бы, что ты поймёшь.", ""),
+                        LessonItem("Querría que me escucharas.", "Хотел бы, чтобы ты меня послушал.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Me gustaría que + subjuntivo",
+                    question = "Me gustaría que ___ más a menudo.",
+                    options = listOf("llamas", "llames", "llamaras", "llamarías"),
+                    correctAnswer = "llamaras",
+                    explanation = "me gustaría que + Imperfecto Subj. (прошлое желание/вежливость): llamar → llamara / llamaras."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Один или два субъекта?",
+                    question = "Me gustaría ___ a Europa el próximo verano.",
+                    options = listOf("ir (infinitivo — я еду)", "que fuera (subjuntivo — кто-то другой)", "que fueras (tú едешь)", "que fueran (они едут)"),
+                    correctAnswer = "ir (infinitivo — я еду)",
+                    explanation = "«Мне бы хотелось поехать» — я хочу и я поеду. Один субъект → infinitivo: ir."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Me encantaría que + subjuntivo",
+                    question = "Me encantaría que ___ a vivir a nuestra ciudad.",
+                    options = listOf("vienes", "vengas", "vinieras", "vendrías"),
+                    correctAnswer = "vinieras",
+                    explanation = "me encantaría que + Imperfecto Subj.: venir → vinieron → vinie- + ras = vinieras."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Preferiría que + subjuntivo",
+                    question = "Preferiría que el jefe ___ más flexible.",
+                    options = listOf("es", "sea", "fuera", "sería"),
+                    correctAnswer = "fuera",
+                    explanation = "preferiría que + Imp.Subj.: ser → fueron → fue- + ra = fuera. «Предпочёл бы, чтобы шеф был более гибким.»"
+                )
+            )
+        ),
+
+        // u10_l14 — Чекпоинт: «Если бы я...»
+        "u10_l14" to LessonContent(
+            intro = "Чекпоинт «Если бы я...». Проверяем Condicional Simple, Si-клаузы и Imperfecto de Subjuntivo. Всё вместе!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Что мы изучили в Блоке 2",
+                    items = listOf(
+                        LessonItem("Condicional Simple", "hablaría, comería, viviría + нерегулярные", ""),
+                        LessonItem("Тип 1: Si + Presente + Futuro", "Si tengo dinero, iré. (реально)", ""),
+                        LessonItem("Imperfecto de Subjuntivo", "hablara, comiera, tuviera, fuera...", ""),
+                        LessonItem("Тип 2: Si + Imp.Subj. + Condicional", "Si tuviera dinero, iría. (гипотетически)", ""),
+                        LessonItem("Вежливость и советы", "¿Podrías...? Yo en tu lugar...", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тип 2: гипотетическая ситуация",
+                    question = "Si ___ invisible, ¿qué harías?",
+                    options = listOf("eres", "seas", "fueras", "serías"),
+                    correctAnswer = "fueras",
+                    explanation = "Нереальная гипотеза → Тип 2: Si + Imp.Subj. ser → fueras. «Если бы ты был невидимым, что бы сделал?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional нерегулярного глагола",
+                    question = "Con más tiempo, ___ aprender a tocar la guitarra.",
+                    options = listOf("quiero", "quiera", "querría", "quisiera"),
+                    correctAnswer = "querría",
+                    explanation = "querer → querr- + ía = querría. «Если бы больше времени, захотел бы научиться играть на гитаре.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Вежливая просьба",
+                    question = "¿___ hablar más despacio, por favor?",
+                    options = listOf("Puedes", "Podrías", "Puedas", "Pudieras"),
+                    correctAnswer = "Podrías",
+                    explanation = "poder → Condicional (podrías) — вежливая просьба. «Не могли бы вы говорить помедленнее?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Quizás + subjuntivo или indicativo",
+                    question = "Quizás ___ a verte este fin de semana.",
+                    options = listOf("voy (indicativo)", "vaya (subjuntivo)", "Оба варианта верны", "iré (futuro)"),
+                    correctAnswer = "Оба варианта верны",
+                    explanation = "С quizás можно использовать и indicativo (voy) и subjuntivo (vaya). Subjuntivo = чуть менее уверен."
+                )
+            )
         )
     )
 }
