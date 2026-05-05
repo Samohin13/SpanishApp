@@ -25,9 +25,30 @@ fun rememberSpanishTts(): TextToSpeech? {
         var instance: TextToSpeech? = null
         instance = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                instance?.language = Locale("es", "ES")
-                instance?.setSpeechRate(0.85f)
-                ttsState.value = instance
+                val tts = instance ?: return@TextToSpeech
+
+                // Выбираем лучший испанский голос из доступных:
+                // сортируем по качеству (выше = лучше), потом по латентности (меньше = лучше)
+                val bestVoice = tts.voices
+                    ?.filter { voice ->
+                        voice.locale.language == "es" &&
+                        !voice.isNetworkConnectionRequired &&
+                        !voice.features.contains(android.speech.tts.TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED)
+                    }
+                    ?.sortedWith(compareByDescending<android.speech.tts.Voice> { it.quality }
+                        .thenBy { it.latency })
+                    ?.firstOrNull()
+
+                if (bestVoice != null) {
+                    tts.voice = bestVoice
+                } else {
+                    // Fallback: просто испанский язык
+                    tts.language = Locale("es", "ES")
+                }
+
+                tts.setSpeechRate(0.82f)   // чуть медленнее для ясности
+                tts.setPitch(1.0f)
+                ttsState.value = tts
             }
         }
         onDispose {
