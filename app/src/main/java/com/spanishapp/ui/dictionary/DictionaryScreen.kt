@@ -3,8 +3,12 @@ package com.spanishapp.ui.dictionary
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -338,6 +342,23 @@ private fun AllWordsContent(
     onAddToList: (WordEntity) -> Unit,
     onSpeak: (WordEntity) -> Unit
 ) {
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val showIndex = query.isEmpty() && words.size > 30
+
+    // letter → index первого слова, начинающегося на эту букву (с учётом артикля)
+    val letterIndex = remember(words, showIndex) {
+        if (!showIndex) emptyMap<Char, Int>()
+        else {
+            val map = LinkedHashMap<Char, Int>()
+            words.forEachIndexed { i, w ->
+                val c = firstSpanishLetter(w.spanish)
+                if (c !in map) map[c] = i
+            }
+            map
+        }
+    }
+
     Column(Modifier.fillMaxSize()) {
         OutlinedTextField(
             value       = query,
@@ -358,17 +379,138 @@ private fun AllWordsContent(
                 .padding(horizontal = 16.dp, vertical = 10.dp)
         )
 
-        LazyColumn(
-            contentPadding     = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+        Row(Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = listState,
+                contentPadding     = PaddingValues(start = 16.dp, end = if (showIndex) 4.dp else 16.dp, top = 4.dp, bottom = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                items(words, key = { it.id }) { word ->
+                    WordRow(
+                        word        = word,
+                        isInAnyList = !membership[word.id].isNullOrEmpty(),
+                        onWordClick = { onWordClick(word) },
+                        onAddToList = { onAddToList(word) },
+                        onSpeak     = { onSpeak(word) }
+                    )
+                }
+            }
+
+            if (showIndex) {
+                AlphabetIndexBar(
+                    available = letterIndex.keys,
+                    onLetter  = { letter ->
+                        letterIndex[letter]?.let { idx ->
+                            scope.launch { listState.scrollToItem(idx) }
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  АЛФАВИТНЫЙ ИНДЕКС-БАР
+// ══════════════════════════════════════════════════════════════
+
+private val SPANISH_ALPHABET = listOf(
+    'A','B','C','D','E','F','G','H','I','J','K','L','M',
+    'N','Ñ','O','P','Q','R','S','T','U','V','W','X','Y','Z'
+)
+
+private fun firstSpanishLetter(spanish: String): Char {
+    val s = spanish.trim()
+    val tokens = s.split(' ').filter { it.isNotBlank() }
+    val articles = setOf("el","la","los","las","un","una","unos","unas")
+    val core = if (tokens.isNotEmpty() && tokens[0].lowercase() in articles)
+        tokens.drop(1).joinToString(" ")
+    else s
+    val c = core.firstOrNull()?.uppercaseChar() ?: return '#'
+    return when (c) {
+        'Á' -> 'A'; 'É' -> 'E'; 'Í' -> 'I'; 'Ó' -> 'O'; 'Ú' -> 'U'; 'Ü' -> 'U'
+        else -> c
+    }
+}
+
+@Composable
+private fun AlphabetIndexBar(
+    available: Set<Char>,
+    onLetter: (Char) -> Unit
+) {
+    var activeLetter by remember { mutableStateOf<Char?>(null) }
+    val density = LocalDensity.current
+
+    Box(
+        Modifier
+            .width(24.dp)
+            .fillMaxHeight()
+            .padding(end = 4.dp, top = 4.dp, bottom = 4.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+            .pointerInput(available) {
+                val handle: (Float) -> Unit = { y ->
+                    val idx = ((y / size.height) * SPANISH_ALPHABET.size)
+                        .toInt().coerceIn(0, SPANISH_ALPHABET.size - 1)
+                    val letter = SPANISH_ALPHABET[idx]
+                    if (letter in available && letter != activeLetter) {
+                        activeLetter = letter
+                        onLetter(letter)
+                    }
+                }
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val change = event.changes.firstOrNull() ?: continue
+                        if (change.pressed) {
+                            handle(change.position.y)
+                        } else if (activeLetter != null) {
+                            activeLetter = null
+                        }
+                    }
+                }
+            }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .align(Alignment.Center),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(words, key = { it.id }) { word ->
-                WordRow(
-                    word        = word,
-                    isInAnyList = !membership[word.id].isNullOrEmpty(),
-                    onWordClick = { onWordClick(word) },
-                    onAddToList = { onAddToList(word) },
-                    onSpeak     = { onSpeak(word) }
+            for (c in SPANISH_ALPHABET) {
+                val isAvailable = c in available
+                val isActive = c == activeLetter
+                Text(
+                    text = c.toString(),
+                    fontSize = 10.sp,
+                    fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
+                    color = when {
+                        isActive       -> MaterialTheme.colorScheme.primary
+                        isAvailable    -> MaterialTheme.colorScheme.onSurfaceVariant
+                        else           -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f)
+                    }
+                )
+            }
+        }
+
+        // Большой "пузырь" с активной буквой слева от бара
+        activeLetter?.let { letter ->
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .offset(x = (-56).dp)
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = letter.toString(),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
