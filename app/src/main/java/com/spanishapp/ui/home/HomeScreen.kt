@@ -466,17 +466,6 @@ internal fun TopicCard(
                     lineHeight = 18.sp
                 )
 
-                Spacer(Modifier.height(6.dp))
-
-                // Формат блока: теория + практика
-                Text(
-                    text = "Теория · Практика · ${unit.lessons.size} уроков",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (unit.isLocked) TextGray.copy(.5f) else unit.color,
-                    letterSpacing = 0.3.sp
-                )
-
                 Spacer(Modifier.height(10.dp))
 
                 // Прогресс-бар + стрелка
@@ -591,20 +580,6 @@ private fun SubLessonRow(
     onClick: () -> Unit,
     onPremiumClick: () -> Unit = {}
 ) {
-    val typeEmoji = when (lesson.type) {
-        "vocab"   -> "📚"
-        "grammar" -> "📖"
-        "phrase"  -> "💬"
-        "content" -> "📝"
-        else      -> "🎯"  // quiz
-    }
-    val typeLabel = when (lesson.type) {
-        "vocab"   -> "Слова"
-        "grammar" -> "Грамматика"
-        "phrase"  -> "Фразы"
-        "content" -> "Теория"
-        else      -> "Тест"
-    }
     val typeBg = when (lesson.type) {
         "vocab"   -> Color(0xFFE8F5E9)
         "grammar" -> Color(0xFFE3F2FD)
@@ -678,20 +653,35 @@ private fun SubLessonRow(
 
             Spacer(Modifier.width(10.dp))
 
-            // Тип урока — цветной чип
+            // Плашки: Теория + Практика
             if (!effectiveLocked) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(typeBg)
-                        .padding(horizontal = 8.dp, vertical = 3.dp)
-                ) {
-                    Text(
-                        "$typeEmoji $typeLabel",
-                        fontSize  = 11.sp,
-                        fontWeight = FontWeight.Medium,
-                        color     = typeTextColor
-                    )
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(typeBg)
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            "📖 Теория",
+                            fontSize  = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            color     = typeTextColor
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color(0xFFFFF3E0))
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            "✏️ Практика",
+                            fontSize  = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            color     = Color(0xFFE65100)
+                        )
+                    }
                 }
             }
 
