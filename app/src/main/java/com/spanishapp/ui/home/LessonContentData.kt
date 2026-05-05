@@ -4290,6 +4290,1820 @@ object LessonContentData {
                     explanation = "acostarse = ложиться спать. tarde = поздно. los viernes = по пятницам."
                 )
             )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A2 БЛОК 1 — vocab-уроки
+        // ══════════════════════════════════════════════
+
+        "u5_l4" to LessonContent(
+            intro = "Рассказываем о вчерашнем дне — первые истории в прошедшем",
+            sections = listOf(
+                LessonSection(
+                    heading = "Маркеры прошедшего времени",
+                    items = listOf(
+                        LessonItem("ayer", "вчера", "Ayer comí pizza."),
+                        LessonItem("anteayer", "позавчера", ""),
+                        LessonItem("la semana pasada", "на прошлой неделе", ""),
+                        LessonItem("el mes pasado", "в прошлом месяце", ""),
+                        LessonItem("el año pasado", "в прошлом году", ""),
+                        LessonItem("hace dos días", "два дня назад", ""),
+                        LessonItem("por la mañana/tarde/noche", "утром/днём/ночью", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Мини-диалог: ¿Qué hiciste ayer?",
+                    items = listOf(
+                        LessonItem("¿Qué hiciste ayer?", "Что ты делал вчера?", ""),
+                        LessonItem("Ayer me levanté tarde.", "Вчера я встал поздно.", ""),
+                        LessonItem("Comí con mis amigos.", "Пообедал с друзьями.", ""),
+                        LessonItem("Por la tarde fui al cine.", "Днём пошёл в кино.", ""),
+                        LessonItem("Vi una película genial.", "Посмотрел отличный фильм.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить «что ты делал вчера»?",
+                    question = "¿Qué ___ ayer?",
+                    options = listOf("hiciste", "haces", "harás", "hacías"),
+                    correctAnswer = "hiciste",
+                    explanation = "hiciste = ты делал (P. Indefinido от hacer). ¿Qué hiciste ayer? — стандартный вопрос о прошлом."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "La semana pasada trabajé mucho.",
+                    options = listOf("На прошлой неделе я много работал.", "На этой неделе я работаю много.", "На следующей неделе буду работать.", "Я всегда много работаю."),
+                    correctAnswer = "На прошлой неделе я много работал.",
+                    explanation = "la semana pasada = на прошлой неделе. trabajé = я работал (P. Indefinido)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери маркер прошедшего",
+                    question = "___ fui al médico.",
+                    options = listOf("Ayer", "Mañana", "Ahora", "Siempre"),
+                    correctAnswer = "Ayer",
+                    explanation = "Ayer = вчера — главный маркер Pretérito Indefinido."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Hace dos días llamé a mi madre.",
+                    options = listOf("Два дня назад я позвонил маме.", "Через два дня позвоню маме.", "Два дня я звоню маме.", "Вчера позвонил маме."),
+                    correctAnswer = "Два дня назад я позвонил маме.",
+                    explanation = "hace dos días = два дня назад. llamé = я позвонил."
+                )
+            )
+        ),
+
+        "u5_l10" to LessonContent(
+            intro = "Рассказываем о выходных — связный текст в прошедшем",
+            sections = listOf(
+                LessonSection(
+                    heading = "Полезные глаголы для рассказа",
+                    items = listOf(
+                        LessonItem("salir → salí", "выйти / выйти", "Salí de casa a las 10."),
+                        LessonItem("quedar con → quedé con", "встретиться с", "Quedé con Ana."),
+                        LessonItem("pasear → paseé", "гулять", "Paseamos por el parque."),
+                        LessonItem("volver → volví", "вернуться", "Volví a casa tarde."),
+                        LessonItem("divertirse → me divertí", "веселиться", "Me divertí mucho."),
+                        LessonItem("descansar → descansé", "отдыхать", "Descansé el domingo.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Диалог: ¿Qué tal el fin de semana?",
+                    items = listOf(
+                        LessonItem("¿Qué tal el fin de semana?", "Как прошли выходные?", ""),
+                        LessonItem("¡Muy bien! El sábado...", "Очень хорошо! В субботу...", ""),
+                        LessonItem("quedé con mis amigos", "встретился с друзьями", ""),
+                        LessonItem("fuimos a un restaurante", "мы пошли в ресторан", ""),
+                        LessonItem("lo pasé genial", "я отлично провёл время", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «я вернулся домой»?",
+                    question = "___ a casa.",
+                    options = listOf("Volví", "Vuelvo", "Volvía", "Volver"),
+                    correctAnswer = "Volví",
+                    explanation = "volver → volví (P. Indefinido). Volví a casa = я вернулся домой."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "El domingo descansé todo el día.",
+                    options = listOf("В воскресенье я отдыхал весь день.", "В субботу я работал весь день.", "В воскресенье я устал.", "Я отдыхаю каждое воскресенье."),
+                    correctAnswer = "В воскресенье я отдыхал весь день.",
+                    explanation = "descansé = я отдыхал. todo el día = весь день."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить «как прошли выходные»?",
+                    question = "¿Qué tal ___?",
+                    options = listOf("el fin de semana", "la semana", "el lunes", "ayer"),
+                    correctAnswer = "el fin de semana",
+                    explanation = "el fin de semana = выходные. ¿Qué tal el fin de semana? — очень частый вопрос в понедельник."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи фразу",
+                    question = "Lo pasé genial.",
+                    options = listOf("Я отлично провёл время.", "Мне было плохо.", "Я устал.", "Мне понравилось немного."),
+                    correctAnswer = "Я отлично провёл время.",
+                    explanation = "pasarlo bien/genial/fatal = провести время хорошо/отлично/ужасно."
+                )
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A2 БЛОК 2 (unitId=6)
+        // ══════════════════════════════════════════════
+
+        "u6_l0" to LessonContent(
+            intro = "Imperfecto: описываем прошлое — глаголы на -AR",
+            sections = listOf(
+                LessonSection(
+                    heading = "Окончания Imperfecto (-AR)",
+                    items = listOf(
+                        LessonItem("yo", "-aba → hablaba", "я говорил/а"),
+                        LessonItem("tú", "-abas → hablabas", "ты говорил/а"),
+                        LessonItem("él/ella", "-aba → hablaba", "он/она говорил/а"),
+                        LessonItem("nosotros", "-ábamos → hablábamos", "мы говорили"),
+                        LessonItem("vosotros", "-abais → hablabais", "вы говорили"),
+                        LessonItem("ellos", "-aban → hablaban", "они говорили")
+                    )
+                ),
+                LessonSection(
+                    heading = "Когда используется Imperfecto",
+                    items = listOf(
+                        LessonItem("Описание в прошлом", "Era alto y tenía ojos azules.", "каким был"),
+                        LessonItem("Привычные действия", "Cuando era niño, jugaba mucho.", "что делал обычно"),
+                        LessonItem("Фон для события", "Llovía cuando salí.", "шёл дождь, когда я вышел"),
+                        LessonItem("Маркеры: siempre, antes, cuando era niño", "всегда, раньше, когда был ребёнком", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Проспрягай: yo + trabajar (Imperfecto)",
+                    question = "Antes yo ___ mucho.",
+                    options = listOf("trabajaba", "trabajé", "trabajo", "trabajaré"),
+                    correctAnswer = "trabajaba",
+                    explanation = "trabajar → yo trabajaba (Imperfecto). Antes = раньше — маркер Imperfecto."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Cuando era niño, jugaba en el parque.",
+                    options = listOf("Когда я был ребёнком, я играл в парке.", "Вчера я играл в парке.", "Ребёнок играет в парке.", "Я всегда играю в парке."),
+                    correctAnswer = "Когда я был ребёнком, я играл в парке.",
+                    explanation = "era niño = был ребёнком. jugaba = играл. cuando + Imperfecto — типичная конструкция."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Ellos siempre ___ juntos.",
+                    options = listOf("estudiaban", "estudiaron", "estudian", "estudiarán"),
+                    correctAnswer = "estudiaban",
+                    explanation = "siempre + Imperfecto = привычное действие в прошлом. ellos estudiaban = они учились."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какое окончание у nosotros в Imperfecto -AR?",
+                    question = "nosotros habl___",
+                    options = listOf("-ábamos", "-aban", "-abas", "-aba"),
+                    correctAnswer = "-ábamos",
+                    explanation = "nosotros hablábamos — единственная форма с ударением на á. Не забудь акцент!"
+                )
+            )
+        ),
+
+        "u6_l1" to LessonContent(
+            intro = "Imperfecto: глаголы на -ER/-IR и три неправильных",
+            sections = listOf(
+                LessonSection(
+                    heading = "Окончания Imperfecto (-ER/-IR)",
+                    items = listOf(
+                        LessonItem("yo", "-ía → comía / vivía", "я ел / жил"),
+                        LessonItem("tú", "-ías → comías", "ты ел"),
+                        LessonItem("él/ella", "-ía → comía", "он ел"),
+                        LessonItem("nosotros", "-íamos → comíamos", "мы ели"),
+                        LessonItem("vosotros", "-íais → comíais", "вы ели"),
+                        LessonItem("ellos", "-ían → comían", "они ели")
+                    )
+                ),
+                LessonSection(
+                    heading = "Три неправильных глагола",
+                    items = listOf(
+                        LessonItem("SER: era, eras, era", "был/была/было", "éramos, erais, eran"),
+                        LessonItem("IR: iba, ibas, iba", "шёл/шла/шло", "íbamos, ibais, iban"),
+                        LessonItem("VER: veía, veías, veía", "видел/смотрел", "veíamos, veíais, veían")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Проспрягай: ella + vivir (Imperfecto)",
+                    question = "Antes ella ___ en Madrid.",
+                    options = listOf("vivía", "vivió", "vive", "vivirá"),
+                    correctAnswer = "vivía",
+                    explanation = "vivir → ella vivía (Imperfecto -IR). antes = раньше."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Неправильный глагол: SER",
+                    question = "Cuando era joven, ___ muy activo.",
+                    options = listOf("era", "fui", "soy", "seré"),
+                    correctAnswer = "era",
+                    explanation = "ser → era (Imperfecto). Описание черты характера в прошлом = Imperfecto."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "De niño, iba al colegio en bici.",
+                    options = listOf("В детстве я ездил в школу на велосипеде.", "Вчера я поехал в школу.", "Я езжу в школу на велосипеде.", "Завтра поеду на велосипеде."),
+                    correctAnswer = "В детстве я ездил в школу на велосипеде.",
+                    explanation = "de niño = в детстве. iba = ехал/ходил (Imperfecto от ir). Привычное действие в прошлом."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму VER",
+                    question = "Nosotros ___ mucha televisión.",
+                    options = listOf("veíamos", "vimos", "vemos", "verémos"),
+                    correctAnswer = "veíamos",
+                    explanation = "ver → veíamos (Imperfecto). Привычное действие в прошлом — смотрели много телевизора."
+                )
+            )
+        ),
+
+        "u6_l2" to LessonContent(
+            intro = "Indefinido vs Imperfecto — когда что использовать",
+            sections = listOf(
+                LessonSection(
+                    heading = "Главное правило",
+                    items = listOf(
+                        LessonItem("Indefinido", "завершённое действие", "Ayer comí pizza. — Вчера я съел пиццу."),
+                        LessonItem("Imperfecto", "описание / фон / привычка", "Cuando era niño, comía pizza. — В детстве ел пиццу."),
+                        LessonItem("Вместе", "фон (Imp.) + событие (Ind.)", "Llovía cuando llegué. — Шёл дождь, когда я пришёл.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Маркеры",
+                    items = listOf(
+                        LessonItem("Indefinido →", "ayer, el lunes, de repente, entonces", ""),
+                        LessonItem("Imperfecto →", "siempre, antes, cuando era niño, normalmente", ""),
+                        LessonItem("de repente", "вдруг (→ Indefinido)", "Caminaba cuando de repente cayó."),
+                        LessonItem("mientras", "пока (→ Imperfecto)", "Mientras comía, sonó el teléfono.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное время",
+                    question = "De repente ___ un ruido fuerte.",
+                    options = listOf("escuché", "escuchaba", "escucho", "escucharé"),
+                    correctAnswer = "escuché",
+                    explanation = "de repente = вдруг — маркер Indefinido. Внезапное действие = Indefinido."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное время",
+                    question = "Cuando era pequeño, ___ mucho.",
+                    options = listOf("lloraba", "lloré", "lloro", "lloraré"),
+                    correctAnswer = "lloraba",
+                    explanation = "cuando era pequeño = когда был маленьким — описание привычки = Imperfecto."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Фон + событие. Выбери оба глагола",
+                    question = "Mientras ___ (leer), ___ (llamar) mi amigo.",
+                    options = listOf("leía / llamó", "leí / llamaba", "leía / llamaba", "leí / llamó"),
+                    correctAnswer = "leía / llamó",
+                    explanation = "mientras + Imperfecto = фоновое действие. Событие прерывает = Indefinido. leía (фон) / llamó (событие)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Normalmente desayunaba en casa, pero ayer desayuné en la cafetería.",
+                    options = listOf("Обычно я завтракал дома, но вчера позавтракал в кафе.", "Вчера я завтракал дома.", "Я всегда завтракаю в кафе.", "Раньше я не завтракал."),
+                    correctAnswer = "Обычно я завтракал дома, но вчера позавтракал в кафе.",
+                    explanation = "normalmente + Imperfecto (привычка) vs ayer + Indefinido (конкретный случай)."
+                )
+            )
+        ),
+
+        "u6_l3" to LessonContent(
+            intro = "Описания из прошлого — Imperfecto в рассказе",
+            sections = listOf(
+                LessonSection(
+                    heading = "Описываем людей и места в прошлом",
+                    items = listOf(
+                        LessonItem("Era alto y delgado.", "Он был высоким и худым.", "внешность"),
+                        LessonItem("Tenía el pelo rubio.", "У него были светлые волосы.", ""),
+                        LessonItem("Era muy simpático.", "Он был очень приятным.", "характер"),
+                        LessonItem("La casa era pequeña.", "Дом был маленьким.", "место"),
+                        LessonItem("Había mucha gente.", "Было много людей.", "hay → había"),
+                        LessonItem("Hacía calor.", "Было жарко.", "погода в прошлом")
+                    )
+                ),
+                LessonSection(
+                    heading = "HAY → HABÍA (было / были)",
+                    items = listOf(
+                        LessonItem("Hay un parque.", "Есть парк.", "настоящее"),
+                        LessonItem("Había un parque.", "Был парк.", "прошлое"),
+                        LessonItem("Había mucha gente.", "Было много людей.", ""),
+                        LessonItem("No había nada.", "Ничего не было.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Опиши внешность в прошлом",
+                    question = "Mi abuelo ___ muy alto.",
+                    options = listOf("era", "fue", "es", "será"),
+                    correctAnswer = "era",
+                    explanation = "Описание внешности/характера в прошлом = Imperfecto. era = был."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи hay → прошлое",
+                    question = "Antes ___ un cine aquí.",
+                    options = listOf("había", "hubo", "hay", "habrá"),
+                    correctAnswer = "había",
+                    explanation = "hay (есть) → había (было) в Imperfecto. Описание того, что существовало."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Погода в прошлом",
+                    question = "Ayer ___ mucho calor.",
+                    options = listOf("hacía", "hizo", "hace", "hará"),
+                    correctAnswer = "hacía",
+                    explanation = "Погода как фон/описание = Imperfecto. hacía calor = было жарко."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "La ciudad era bonita y había muchos turistas.",
+                    options = listOf("Город был красивым и было много туристов.", "Город красивый и много туристов.", "В городе было мало туристов.", "Город стал красивым."),
+                    correctAnswer = "Город был красивым и было много туристов.",
+                    explanation = "era bonita = был красивым (описание). había muchos turistas = было много туристов."
+                )
+            )
+        ),
+
+        "u6_l4" to LessonContent(
+            intro = "Сравнение: más...que и menos...que",
+            sections = listOf(
+                LessonSection(
+                    heading = "Сравнение превосходства и уступки",
+                    items = listOf(
+                        LessonItem("más + adj + que", "более ... чем", "más alto que = выше чем"),
+                        LessonItem("menos + adj + que", "менее ... чем", "menos caro que = дешевле чем"),
+                        LessonItem("más + adv + que", "больше ... чем", "más rápido que = быстрее чем"),
+                        LessonItem("más + noun + que", "больше ... чем", "más dinero que = больше денег чем")
+                    )
+                ),
+                LessonSection(
+                    heading = "Неправильные формы сравнения",
+                    items = listOf(
+                        LessonItem("bueno → mejor", "хороший → лучше", "Este café es mejor."),
+                        LessonItem("malo → peor", "плохой → хуже", "Este tiempo es peor."),
+                        LessonItem("grande → mayor", "большой → старше/больше", "Mi hermano es mayor."),
+                        LessonItem("pequeño → menor", "маленький → младше/меньше", "Soy menor que tú.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Составь сравнение",
+                    question = "Madrid es ___ grande ___ Valencia.",
+                    options = listOf("más / que", "tan / como", "menos / que", "más / como"),
+                    correctAnswer = "más / que",
+                    explanation = "más + прилагательное + que = более ... чем. Madrid es más grande que Valencia."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Este restaurante es ___ que el otro.",
+                    options = listOf("mejor", "más bueno", "bueno más", "más mejor"),
+                    correctAnswer = "mejor",
+                    explanation = "bueno → mejor (неправильная форма). Нельзя сказать «más bueno» — только mejor."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Mi hermana es menor que yo.",
+                    options = listOf("Моя сестра младше меня.", "Моя сестра старше меня.", "Моя сестра маленькая.", "Моя сестра выше меня."),
+                    correctAnswer = "Моя сестра младше меня.",
+                    explanation = "menor = младше (pequeño → menor). mayor = старше."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Составь фразу",
+                    question = "Tengo ___ dinero ___ tú.",
+                    options = listOf("menos / que", "más / como", "menos / como", "tan / que"),
+                    correctAnswer = "menos / que",
+                    explanation = "menos + существительное + que = меньше ... чем. Tengo menos dinero que tú = у меня меньше денег, чем у тебя."
+                )
+            )
+        ),
+
+        "u6_l5" to LessonContent(
+            intro = "Сравнение равенства: tan...como и tanto...como",
+            sections = listOf(
+                LessonSection(
+                    heading = "tan + прилагательное/наречие + como",
+                    items = listOf(
+                        LessonItem("tan + adj + como", "такой же ... как", "tan alto como = такой же высокий как"),
+                        LessonItem("Soy tan alto como tú.", "Я такой же высокий как ты.", ""),
+                        LessonItem("Habla tan rápido como yo.", "Говорит так же быстро как я.", ""),
+                        LessonItem("No es tan caro como piensas.", "Это не так дорого, как ты думаешь.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "tanto/a/os/as + существительное + como",
+                    items = listOf(
+                        LessonItem("tanto + masc. noun", "столько же ... как", "tanto tiempo como = столько же времени как"),
+                        LessonItem("tanta + fem. noun", "столько же", "tanta paciencia como"),
+                        LessonItem("tantos/tantas + plural", "столько же", "tantos amigos como yo"),
+                        LessonItem("Tengo tanto dinero como tú.", "У меня столько же денег как у тебя.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Mi ciudad es ___ bonita ___ la tuya.",
+                    options = listOf("tan / como", "más / que", "tanto / como", "tan / que"),
+                    correctAnswer = "tan / como",
+                    explanation = "tan + прилагательное + como = такой же ... как."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Согласуй tanto",
+                    question = "No tengo ___ paciencia ___ ella.",
+                    options = listOf("tanta / como", "tanto / como", "tan / como", "tantos / como"),
+                    correctAnswer = "tanta / como",
+                    explanation = "paciencia — женского рода → tanta. tanta paciencia como = столько же терпения как."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Él trabaja tan duro como su padre.",
+                    options = listOf("Он работает так же усердно как его отец.", "Он работает усерднее отца.", "Он работает меньше отца.", "Отец работает усерднее."),
+                    correctAnswer = "Он работает так же усердно как его отец.",
+                    explanation = "tan + наречие (duro) + como = так же ... как."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Tengo ___ libros ___ tú.",
+                    options = listOf("tantos / como", "tanto / como", "tanta / como", "tan / como"),
+                    correctAnswer = "tantos / como",
+                    explanation = "libros — мн. число муж. рода → tantos. tantos libros como = столько же книг как."
+                )
+            )
+        ),
+
+        "u6_l6" to LessonContent(
+            intro = "Превосходная степень: el/la más, el mejor",
+            sections = listOf(
+                LessonSection(
+                    heading = "Превосходная степень",
+                    items = listOf(
+                        LessonItem("el/la/los/las + más + adj", "самый/ая/ые", "el más alto = самый высокий"),
+                        LessonItem("el/la/los/las + menos + adj", "наименее", "el menos caro = наименее дорогой"),
+                        LessonItem("de + группа", "из (группы)", "el más alto de la clase = самый высокий в классе"),
+                        LessonItem("Es el mejor de todos.", "Он лучший из всех.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Неправильные превосходные",
+                    items = listOf(
+                        LessonItem("bueno → el mejor", "хороший → лучший", "el mejor restaurante"),
+                        LessonItem("malo → el peor", "плохой → худший", "el peor día"),
+                        LessonItem("grande → el mayor", "большой → самый старший/большой", "el mayor de los hermanos"),
+                        LessonItem("pequeño → el menor", "маленький → самый младший", "la menor de la familia")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Составь превосходную степень",
+                    question = "Es ___ película ___ año.",
+                    options = listOf("la mejor / del", "la más buena / del", "la mejor / de el", "la más mejor / del"),
+                    correctAnswer = "la mejor / del",
+                    explanation = "buena → la mejor (неправильная форма). del = de + el. Es la mejor película del año."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Es el estudiante más inteligente de la clase.",
+                    options = listOf("Он самый умный студент в классе.", "Он умнее всех студентов.", "Он умный студент.", "Студенты в классе умные."),
+                    correctAnswer = "Он самый умный студент в классе.",
+                    explanation = "el más inteligente de la clase = самый умный в классе. de = из (группы)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Ayer fue el ___ día de mi vida.",
+                    options = listOf("peor", "más malo", "menor", "menos bueno"),
+                    correctAnswer = "peor",
+                    explanation = "malo → el peor (неправильная форма). «más malo» не используется."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Mi hermano mayor tiene 25 años.",
+                    options = listOf("Моему старшему брату 25 лет.", "Мой большой брат имеет 25 лет.", "Моему младшему брату 25.", "Брат старше на 25 лет."),
+                    correctAnswer = "Моему старшему брату 25 лет.",
+                    explanation = "mayor = старший (из братьев/сестёр). el hermano mayor = старший брат."
+                )
+            )
+        ),
+
+        "u6_l7" to LessonContent(
+            intro = "Прилагательные-описания людей и характера",
+            sections = listOf(
+                LessonSection(
+                    heading = "Внешность",
+                    items = listOf(
+                        LessonItem("alto/a — bajo/a", "высокий — низкий", ""),
+                        LessonItem("delgado/a — gordo/a", "худой — толстый", ""),
+                        LessonItem("joven — mayor/viejo", "молодой — пожилой", ""),
+                        LessonItem("guapo/a — feo/a", "красивый — некрасивый", ""),
+                        LessonItem("el pelo rubio/moreno/pelirrojo", "светлые/тёмные/рыжие волосы", ""),
+                        LessonItem("los ojos azules/verdes/marrones", "голубые/зелёные/карие глаза", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Характер",
+                    items = listOf(
+                        LessonItem("simpático/a", "приятный, милый", ""),
+                        LessonItem("antipático/a", "неприятный", ""),
+                        LessonItem("inteligente", "умный", ""),
+                        LessonItem("trabajador/a", "трудолюбивый", ""),
+                        LessonItem("perezoso/a", "ленивый", ""),
+                        LessonItem("generoso/a — tacaño/a", "щедрый — жадный", ""),
+                        LessonItem("divertido/a — aburrido/a", "весёлый — скучный", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «она высокая и стройная»?",
+                    question = "Ella es ___ y ___.",
+                    options = listOf("alta y delgada", "alto y delgado", "alta y delgado", "alto y delgada"),
+                    correctAnswer = "alta y delgada",
+                    explanation = "ella → женский род → alta (не alto), delgada (не delgado)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «trabajador»?",
+                    question = "Mi jefe es muy trabajador.",
+                    options = listOf("Мой начальник очень трудолюбив.", "Мой начальник очень ленив.", "Мой начальник умный.", "Мой начальник строгий."),
+                    correctAnswer = "Мой начальник очень трудолюбив.",
+                    explanation = "trabajador = трудолюбивый (от trabajar = работать)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Опиши внешность",
+                    question = "Tiene el pelo ___ y los ojos ___.",
+                    options = listOf("rubio / azules", "rubios / azul", "rubio / azul", "rubia / azules"),
+                    correctAnswer = "rubio / azules",
+                    explanation = "el pelo rubio (ед.ч. муж.), los ojos azules (мн.ч. муж.). Прилагательные согласуются с существительным."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Антоним к «generoso»?",
+                    question = "Lo contrario de generoso es ___.",
+                    options = listOf("tacaño", "perezoso", "antipático", "aburrido"),
+                    correctAnswer = "tacaño",
+                    explanation = "generoso = щедрый ↔ tacaño = жадный/скупой."
+                )
+            )
+        ),
+
+        "u6_l8" to LessonContent(
+            intro = "Прямые дополнения: местоимения lo, la, los, las",
+            sections = listOf(
+                LessonSection(
+                    heading = "Местоимения прямого дополнения (OD)",
+                    items = listOf(
+                        LessonItem("lo", "его / это (муж.)", "¿El libro? Lo tengo."),
+                        LessonItem("la", "её / это (жен.)", "¿La llave? La busco."),
+                        LessonItem("los", "их (муж./смеш.)", "¿Los zapatos? Los compré."),
+                        LessonItem("las", "их (жен.)", "¿Las llaves? Las perdí.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Позиция в предложении",
+                    items = listOf(
+                        LessonItem("Перед спрягаемым глаголом", "Lo como. / La veo.", ""),
+                        LessonItem("После инфинитива (слитно)", "Quiero verlo. / Voy a comprarlo.", ""),
+                        LessonItem("После герундия (слитно)", "Estoy comiéndolo.", ""),
+                        LessonItem("¿Lo ves?", "Ты это видишь?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Замени: ¿Tienes el periódico?",
+                    question = "Sí, ___ tengo.",
+                    options = listOf("lo", "la", "los", "las"),
+                    correctAnswer = "lo",
+                    explanation = "el periódico — мужской род, ед.ч. → lo. Sí, lo tengo = да, он у меня есть."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Замени: ¿Compraste las entradas?",
+                    question = "Sí, ___ compré ayer.",
+                    options = listOf("las", "los", "la", "lo"),
+                    correctAnswer = "las",
+                    explanation = "las entradas — женский род, мн.ч. → las."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Позиция с инфинитивом",
+                    question = "Necesito llamar a María. → Necesito ___.",
+                    options = listOf("llamarla", "la llamar", "llamar la", "la llamarla"),
+                    correctAnswer = "llamarla",
+                    explanation = "После инфинитива местоимение присоединяется слитно: llamar + la = llamarla."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿El café? Ya lo he pedido.",
+                    options = listOf("Кофе? Я уже его заказал.", "Кофе? Я закажу его.", "Кофе? Он вкусный.", "Кофе? Принесите его."),
+                    correctAnswer = "Кофе? Я уже его заказал.",
+                    explanation = "lo = его (заменяет el café). he pedido = заказал (P. Perfecto)."
+                )
+            )
+        ),
+
+        "u6_l9" to LessonContent(
+            intro = "Косвенные дополнения: me, te, le, nos, os, les",
+            sections = listOf(
+                LessonSection(
+                    heading = "Местоимения косвенного дополнения (OI)",
+                    items = listOf(
+                        LessonItem("me", "мне", "Me dices la verdad."),
+                        LessonItem("te", "тебе", "Te doy un regalo."),
+                        LessonItem("le", "ему / ей / Вам", "Le escribo una carta."),
+                        LessonItem("nos", "нам", "Nos explica la lección."),
+                        LessonItem("os", "вам", "Os cuento un secreto."),
+                        LessonItem("les", "им / Вам (мн.)", "Les mando un mensaje.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы, часто использующие OI",
+                    items = listOf(
+                        LessonItem("dar", "давать", "Te doy el libro."),
+                        LessonItem("decir", "говорить", "Me dice la verdad."),
+                        LessonItem("preguntar", "спрашивать", "Te pregunto algo."),
+                        LessonItem("mandar / enviar", "отправлять", "Le mando un email."),
+                        LessonItem("explicar", "объяснять", "Nos explica todo."),
+                        LessonItem("gustar", "нравиться", "Me gusta el café.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Вставь OI: «Я даю ТЕБЕ книгу»",
+                    question = "___ doy el libro.",
+                    options = listOf("Te", "Le", "Me", "Os"),
+                    correctAnswer = "Te",
+                    explanation = "te = тебе. Te doy el libro = я даю тебе книгу."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Le escribo un email a mi jefe.",
+                    options = listOf("Я пишу email своему начальнику.", "Начальник пишет мне email.", "Мы пишем email.", "Ты пишешь email начальнику."),
+                    correctAnswer = "Я пишу email своему начальнику.",
+                    explanation = "le = ему (начальнику). escribo = я пишу. Часто OI дублируется: le ... a mi jefe."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери OI",
+                    question = "El profesor ___ explica la gramática. (нам)",
+                    options = listOf("nos", "les", "os", "me"),
+                    correctAnswer = "nos",
+                    explanation = "nos = нам. El profesor nos explica = учитель объясняет нам."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Te puedo preguntar algo?",
+                    options = listOf("Можно задать тебе вопрос?", "Ты можешь спросить меня?", "Мне можно спросить?", "Он спрашивает тебя."),
+                    correctAnswer = "Можно задать тебе вопрос?",
+                    explanation = "te = тебе. preguntar = спрашивать. ¿Te puedo preguntar? = можно тебя спросить?"
+                )
+            )
+        ),
+
+        "u6_l10" to LessonContent(
+            intro = "Hace + tiempo + que — как давно что-то происходит",
+            sections = listOf(
+                LessonSection(
+                    heading = "Конструкция hace... que",
+                    items = listOf(
+                        LessonItem("Hace + время + que + presente", "вот уже ... как (сейчас)", "Hace dos años que vivo aquí. = Я живу здесь уже два года."),
+                        LessonItem("Hace + время + que + indefinido", "... назад (в прошлом)", "Hace dos años que llegué. = Два года назад я приехал."),
+                        LessonItem("¿Cuánto tiempo hace que...?", "Как давно...?", "¿Cuánto tiempo hace que estudias español?"),
+                        LessonItem("Desde hace + время", "в течение (альтернатива)", "Vivo aquí desde hace dos años.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Hace una hora que espero.", "Я жду уже час.", ""),
+                        LessonItem("Hace un mes que no te veo.", "Я не видел тебя месяц.", ""),
+                        LessonItem("Hace tres años que estudiamos.", "Мы учимся уже три года.", ""),
+                        LessonItem("¿Cuánto hace que llegaste?", "Как давно ты приехал?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Hace cinco años que vivo en Madrid.",
+                    options = listOf("Я живу в Мадриде уже пять лет.", "Пять лет назад я жил в Мадриде.", "Я прожил в Мадриде пять лет.", "Пять лет я ездил в Мадрид."),
+                    correctAnswer = "Я живу в Мадриде уже пять лет.",
+                    explanation = "hace + tiempo + que + presente = вот уже ... как (действие продолжается сейчас)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить «как давно ты учишь испанский»?",
+                    question = "¿___ tiempo ___ que estudias español?",
+                    options = listOf("Cuánto / hace", "Cuándo / hace", "Cuánto / es", "Qué / hace"),
+                    correctAnswer = "Cuánto / hace",
+                    explanation = "¿Cuánto tiempo hace que...? = как давно...? Стандартный вопрос."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Hace dos días que no ___ (comer) bien.",
+                    options = listOf("como", "comí", "comía", "comeré"),
+                    correctAnswer = "como",
+                    explanation = "hace + tiempo + que + presente = действие продолжается до сейчас. Я не ем хорошо уже два дня."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Hace una semana que llegué a España.",
+                    options = listOf("Неделю назад я приехал в Испанию.", "Я живу в Испании уже неделю.", "Я приеду в Испанию через неделю.", "Неделю я езжу в Испанию."),
+                    correctAnswer = "Неделю назад я приехал в Испанию.",
+                    explanation = "hace + tiempo + que + indefinido = ... назад. llegué = приехал (P. Indefinido)."
+                )
+            )
+        ),
+
+        "u6_l11" to LessonContent(
+            intro = "В путешествии — лексика отеля, билетов, туризма",
+            sections = listOf(
+                LessonSection(
+                    heading = "Транспорт и билеты",
+                    items = listOf(
+                        LessonItem("el billete / el boleto", "билет", "un billete de ida y vuelta"),
+                        LessonItem("ida y vuelta", "туда и обратно", ""),
+                        LessonItem("solo de ida", "только в одну сторону", ""),
+                        LessonItem("el vuelo", "рейс / полёт", "El vuelo sale a las 10."),
+                        LessonItem("la salida / la llegada", "отправление / прибытие", ""),
+                        LessonItem("facturar el equipaje", "сдать багаж", ""),
+                        LessonItem("el equipaje de mano", "ручная кладь", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "В отеле",
+                    items = listOf(
+                        LessonItem("la reserva", "бронирование", "Tengo una reserva."),
+                        LessonItem("la habitación individual/doble", "одноместный/двухместный номер", ""),
+                        LessonItem("el desayuno incluido", "завтрак включён", ""),
+                        LessonItem("hacer el check-in/out", "заселиться / выселиться", ""),
+                        LessonItem("¿A qué hora es el check-out?", "В котором часу выезд?", ""),
+                        LessonItem("el pasaporte / el DNI", "паспорт / ID", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «билет туда-обратно»?",
+                    question = "Quiero un billete de ___.",
+                    options = listOf("ida y vuelta", "solo de ida", "vuelta sola", "ida o vuelta"),
+                    correctAnswer = "ida y vuelta",
+                    explanation = "ida y vuelta = туда и обратно. solo de ida = только в одну сторону."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "В отеле: что значит «la reserva»?",
+                    question = "Tengo una reserva a nombre de García.",
+                    options = listOf("У меня бронирование на имя Гарсия.", "У меня комната для Гарсия.", "Я резервирую на Гарсия.", "Мне нужна комната."),
+                    correctAnswer = "У меня бронирование на имя Гарсия.",
+                    explanation = "la reserva = бронирование. a nombre de = на имя."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿El desayuno está incluido?",
+                    options = listOf("Завтрак включён?", "Во сколько завтрак?", "Где завтрак?", "Какой завтрак?"),
+                    correctAnswer = "Завтрак включён?",
+                    explanation = "incluido = включённый. ¿Está incluido? = включено? Важный вопрос в отеле!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «el equipaje de mano»?",
+                    question = "el equipaje de mano = ?",
+                    options = listOf("ручная кладь", "чемодан", "рюкзак", "багажное отделение"),
+                    correctAnswer = "ручная кладь",
+                    explanation = "equipaje de mano = ручная кладь (то, что берёшь в салон). facturar el equipaje = сдать багаж в багажное отделение."
+                )
+            )
+        ),
+
+        "u6_l12" to LessonContent(
+            intro = "Por vs Para — продвинутый уровень",
+            sections = listOf(
+                LessonSection(
+                    heading = "POR — причина, обмен, движение, время",
+                    items = listOf(
+                        LessonItem("причина / мотив", "Lo hice por amor.", "сделал из-за любви"),
+                        LessonItem("обмен", "Te lo cambio por este.", "меняю на это"),
+                        LessonItem("движение сквозь", "Pasamos por Madrid.", "проехали через Мадрид"),
+                        LessonItem("продолжительность", "Estudié por dos horas.", "учился два часа"),
+                        LessonItem("приблизительное место", "Vive por aquí.", "живёт где-то тут"),
+                        LessonItem("от имени / вместо", "Firmé por ella.", "подписал вместо неё")
+                    )
+                ),
+                LessonSection(
+                    heading = "PARA — цель, получатель, срок, направление",
+                    items = listOf(
+                        LessonItem("цель", "Estudio para aprender.", "чтобы выучить"),
+                        LessonItem("получатель", "Este regalo es para ti.", "этот подарок тебе"),
+                        LessonItem("срок", "Lo necesito para el lunes.", "к понедельнику"),
+                        LessonItem("направление", "Salgo para Madrid.", "еду в Мадрид"),
+                        LessonItem("мнение", "Para mí, es difícil.", "по-моему, сложно"),
+                        LessonItem("профессия/назначение", "Es una taza para café.", "чашка для кофе")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери por или para",
+                    question = "Este libro es ___ ti.",
+                    options = listOf("para", "por", "a", "de"),
+                    correctAnswer = "para",
+                    explanation = "para + получатель = для кого предназначено. Este libro es para ti = эта книга для тебя."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Lo compré por diez euros.",
+                    options = listOf("Я купил это за десять евро.", "Я куплю это для десяти евро.", "Это стоит десять евро.", "Я потратил десять евро."),
+                    correctAnswer = "Я купил это за десять евро.",
+                    explanation = "por + сумма = за (обмен). compré por diez euros = купил за десять евро."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный предлог",
+                    question = "Necesito el informe ___ el viernes.",
+                    options = listOf("para", "por", "en", "a"),
+                    correctAnswer = "para",
+                    explanation = "para + срок = к (дедлайн). para el viernes = к пятнице."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Pasamos por el centro histórico.",
+                    options = listOf("Мы проехали через исторический центр.", "Мы остановились в центре.", "Мы живём в центре.", "Центр нам понравился."),
+                    correctAnswer = "Мы проехали через исторический центр.",
+                    explanation = "por + место = движение через/по. pasar por = проходить/проезжать через."
+                )
+            )
+        ),
+
+        "u6_l13" to LessonContent(
+            intro = "Эмоции и чувства на испанском",
+            sections = listOf(
+                LessonSection(
+                    heading = "Основные эмоции",
+                    items = listOf(
+                        LessonItem("la alegría / alegre", "радость / радостный", "Estoy alegre."),
+                        LessonItem("la tristeza / triste", "грусть / грустный", "Estoy triste."),
+                        LessonItem("el miedo / asustado/a", "страх / испуганный", "Tengo miedo."),
+                        LessonItem("la sorpresa / sorprendido/a", "удивление / удивлённый", "Estoy sorprendido."),
+                        LessonItem("el enfado / enfadado/a", "злость / злой", "Estoy enfadado."),
+                        LessonItem("la vergüenza / avergonzado/a", "стыд / смущённый", "Tengo vergüenza."),
+                        LessonItem("el orgullo / orgulloso/a", "гордость / гордый", "Estoy orgulloso.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Выражение эмоций",
+                    items = listOf(
+                        LessonItem("Estoy + adj", "Я ... (временное состояние)", "Estoy nervioso."),
+                        LessonItem("Tengo + noun", "У меня ... ", "Tengo miedo / vergüenza."),
+                        LessonItem("Me siento + adj", "Я чувствую себя ...", "Me siento feliz."),
+                        LessonItem("Me pone nervioso", "Это меня нервирует", "El tráfico me pone nervioso.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «я боюсь»?",
+                    question = "___ miedo.",
+                    options = listOf("Tengo", "Estoy", "Me siento", "Soy"),
+                    correctAnswer = "Tengo",
+                    explanation = "tener miedo = бояться (буквально «иметь страх»). Tengo miedo = я боюсь."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Estoy muy emocionado por el viaje.",
+                    options = listOf("Я очень взволнован путешествием.", "Я устал от путешествия.", "Путешествие меня раздражает.", "Я рад вернуться."),
+                    correctAnswer = "Я очень взволнован путешествием.",
+                    explanation = "emocionado = взволнованный/возбуждённый (в хорошем смысле). por = из-за."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «vergüenza»?",
+                    question = "Tengo vergüenza de hablar en público.",
+                    options = listOf("Мне стыдно говорить публично.", "Я боюсь говорить публично.", "Мне грустно говорить публично.", "Я рад говорить публично."),
+                    correctAnswer = "Мне стыдно говорить публично.",
+                    explanation = "vergüenza = стыд/смущение. tener vergüenza = стыдиться."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Me ___ feliz cuando estoy con mis amigos.",
+                    options = listOf("siento", "estoy", "tengo", "soy"),
+                    correctAnswer = "siento",
+                    explanation = "sentirse = чувствовать себя. Me siento feliz = я чувствую себя счастливым."
+                )
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A2 БЛОК 3 (unitId=7)
+        // ══════════════════════════════════════════════
+
+        "u7_l0" to LessonContent(
+            intro = "Pretérito Perfecto: действия связанные с настоящим",
+            sections = listOf(
+                LessonSection(
+                    heading = "Образование: haber + participio",
+                    items = listOf(
+                        LessonItem("yo he", "hablado / comido / vivido", "я говорил/ел/жил"),
+                        LessonItem("tú has", "hablado / comido / vivido", "ты говорил..."),
+                        LessonItem("él/ella ha", "hablado / comido / vivido", "он/она..."),
+                        LessonItem("nosotros hemos", "hablado / comido / vivido", "мы..."),
+                        LessonItem("vosotros habéis", "hablado / comido / vivido", "вы..."),
+                        LessonItem("ellos han", "hablado / comido / vivido", "они...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Когда используется",
+                    items = listOf(
+                        LessonItem("hoy", "сегодня (день ещё не закончен)", "Hoy he comido pizza."),
+                        LessonItem("esta semana/mañana", "на этой неделе/утром", "Esta semana he trabajado mucho."),
+                        LessonItem("ya / todavía no", "уже / ещё не", "¿Ya has comido? — Todavía no."),
+                        LessonItem("alguna vez / nunca", "когда-нибудь / никогда", "¿Has estado en Madrid alguna vez?")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образуй Pretérito Perfecto: yo + comer",
+                    question = "Hoy ___ paella.",
+                    options = listOf("he comido", "comí", "como", "había comido"),
+                    correctAnswer = "he comido",
+                    explanation = "he + comido = P. Perfecto. hoy = сегодня (день не закончен) → P. Perfecto."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Has estado alguna vez en Rusia?",
+                    options = listOf("Ты когда-нибудь был в России?", "Ты был в России вчера?", "Ты живёшь в России?", "Ты едешь в Россию?"),
+                    correctAnswer = "Ты когда-нибудь был в России?",
+                    explanation = "alguna vez = когда-нибудь. ¿Has estado? = ты был? (P. Perfecto от estar)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Esta semana ___ mucho.",
+                    options = listOf("he trabajado", "trabajé", "trabajo", "trabajaba"),
+                    correctAnswer = "he trabajado",
+                    explanation = "esta semana = на этой неделе (ещё идёт) → P. Perfecto."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Todavía no he desayunado.",
+                    options = listOf("Я ещё не завтракал.", "Я уже позавтракал.", "Я никогда не завтракаю.", "Я не хочу завтракать."),
+                    correctAnswer = "Я ещё не завтракал.",
+                    explanation = "todavía no + P. Perfecto = ещё не (действие ожидается)."
+                )
+            )
+        ),
+
+        "u7_l1" to LessonContent(
+            intro = "Participios irregulares — неправильные причастия",
+            sections = listOf(
+                LessonSection(
+                    heading = "Самые важные неправильные participios",
+                    items = listOf(
+                        LessonItem("hacer → hecho", "делать → сделанный", "He hecho la tarea."),
+                        LessonItem("decir → dicho", "говорить → сказанный", "¿Qué has dicho?"),
+                        LessonItem("ver → visto", "видеть → увиденный", "He visto esa película."),
+                        LessonItem("escribir → escrito", "писать → написанный", "He escrito un email."),
+                        LessonItem("volver → vuelto", "возвращаться → вернувшийся", "Ha vuelto a casa."),
+                        LessonItem("abrir → abierto", "открывать → открытый", "Han abierto la tienda."),
+                        LessonItem("poner → puesto", "класть → положенный", "He puesto la mesa."),
+                        LessonItem("romper → roto", "ломать → сломанный", "He roto el vaso.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ещё важные",
+                    items = listOf(
+                        LessonItem("morir → muerto", "умирать → умерший", ""),
+                        LessonItem("cubrir → cubierto", "покрывать → покрытый", ""),
+                        LessonItem("descubrir → descubierto", "открывать → открытый", "He descubierto algo."),
+                        LessonItem("resolver → resuelto", "решать → решённый", "He resuelto el problema.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Participio от HACER",
+                    question = "He ___ los deberes.",
+                    options = listOf("hecho", "hacido", "hachado", "haciendo"),
+                    correctAnswer = "hecho",
+                    explanation = "hacer → hecho (неправильное). He hecho = я сделал."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Has visto esa serie?",
+                    options = listOf("Ты видел этот сериал?", "Ты смотришь этот сериал?", "Ты будешь смотреть сериал?", "Сериал хороший?"),
+                    correctAnswer = "Ты видел этот сериал?",
+                    explanation = "ver → visto. ¿Has visto? = ты видел? (P. Perfecto)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Participio от ESCRIBIR",
+                    question = "He ___ una carta.",
+                    options = listOf("escrito", "escribido", "escribto", "escrito"),
+                    correctAnswer = "escrito",
+                    explanation = "escribir → escrito (неправильное). He escrito = я написал."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное причастие",
+                    question = "Han ___ el museo a las 9.",
+                    options = listOf("abierto", "abrido", "abriendo", "abre"),
+                    correctAnswer = "abierto",
+                    explanation = "abrir → abierto (неправильное). Han abierto = они открыли."
+                )
+            )
+        ),
+
+        "u7_l2" to LessonContent(
+            intro = "Perfecto vs Indefinido — когда что выбрать",
+            sections = listOf(
+                LessonSection(
+                    heading = "Ключевое различие",
+                    items = listOf(
+                        LessonItem("P. Perfecto", "связь с настоящим", "Hoy he comido. (сегодня — день идёт)"),
+                        LessonItem("P. Indefinido", "полностью в прошлом", "Ayer comí. (вчера — день закончен)"),
+                        LessonItem("В Испании", "различие важно", "hoy→Perfecto, ayer→Indefinido"),
+                        LessonItem("В Латин. Америке", "Perfecto редко", "чаще используют только Indefinido")
+                    )
+                ),
+                LessonSection(
+                    heading = "Маркеры",
+                    items = listOf(
+                        LessonItem("→ Perfecto", "hoy, esta semana, este mes, ya, todavía no, alguna vez, nunca, hace poco", ""),
+                        LessonItem("→ Indefinido", "ayer, anteayer, el lunes, el año pasado, hace dos años, en 2020", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное время",
+                    question = "Este mes ___ tres libros.",
+                    options = listOf("he leído", "leí", "leo", "leía"),
+                    correctAnswer = "he leído",
+                    explanation = "este mes = в этом месяце (ещё идёт) → P. Perfecto."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное время",
+                    question = "El año pasado ___ a París.",
+                    options = listOf("fui", "he ido", "voy", "iba"),
+                    correctAnswer = "fui",
+                    explanation = "el año pasado = в прошлом году (закончено) → P. Indefinido."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи правильно",
+                    question = "Nunca he probado el sushi.",
+                    options = listOf("Я никогда не пробовал суши.", "Я вчера не пробовал суши.", "Я не пробую суши.", "Раньше я не ел суши."),
+                    correctAnswer = "Я никогда не пробовал суши.",
+                    explanation = "nunca + P. Perfecto = никогда не (опыт в жизни)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное время",
+                    question = "¿___ (tú) alguna vez flamenco?",
+                    options = listOf("Has bailado", "Bailaste", "Bailas", "Bailabas"),
+                    correctAnswer = "Has bailado",
+                    explanation = "alguna vez = когда-нибудь → P. Perfecto. ¿Has bailado alguna vez? = ты когда-нибудь танцевал фламенко?"
+                )
+            )
+        ),
+
+        "u7_l3" to LessonContent(
+            intro = "Ya, todavía, aún — уже, ещё, до сих пор",
+            sections = listOf(
+                LessonSection(
+                    heading = "YA — уже",
+                    items = listOf(
+                        LessonItem("Ya he comido.", "Я уже поел.", "+ P. Perfecto"),
+                        LessonItem("Ya lo sé.", "Я уже знаю.", "+ настоящее"),
+                        LessonItem("¿Ya has llegado?", "Ты уже приехал?", "вопрос"),
+                        LessonItem("Ya no trabajo aquí.", "Я больше здесь не работаю.", "ya no = больше не")
+                    )
+                ),
+                LessonSection(
+                    heading = "TODAVÍA / AÚN — ещё / до сих пор",
+                    items = listOf(
+                        LessonItem("Todavía no he comido.", "Я ещё не поел.", "todavía no = ещё не"),
+                        LessonItem("Todavía vivo aquí.", "Я до сих пор живу здесь.", "действие продолжается"),
+                        LessonItem("¿Todavía estudias?", "Ты ещё учишься?", ""),
+                        LessonItem("Aún no está listo.", "Ещё не готово.", "aún = todavía")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Ya has terminado?",
+                    options = listOf("Ты уже закончил?", "Ты ещё не закончил?", "Ты закончишь?", "Когда закончишь?"),
+                    correctAnswer = "Ты уже закончил?",
+                    explanation = "ya = уже. ¿Ya has terminado? = ты уже закончил?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «я ещё не готов»?",
+                    question = "___ no estoy listo.",
+                    options = listOf("Todavía", "Ya", "Siempre", "Nunca"),
+                    correctAnswer = "Todavía",
+                    explanation = "todavía no = ещё не. Todavía no estoy listo = я ещё не готов."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Ya no me gusta ese programa.",
+                    options = listOf("Мне больше не нравится эта программа.", "Мне ещё нравится программа.", "Мне уже нравится программа.", "Эта программа мне никогда не нравилась."),
+                    correctAnswer = "Мне больше не нравится эта программа.",
+                    explanation = "ya no = больше не (действие прекратилось)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное слово",
+                    question = "¿___ vives en ese barrio?",
+                    options = listOf("Todavía", "Ya no", "Nunca", "Siempre"),
+                    correctAnswer = "Todavía",
+                    explanation = "todavía = до сих пор / ещё. ¿Todavía vives ahí? = ты до сих пор живёшь там?"
+                )
+            )
+        ),
+
+        "u7_l4" to LessonContent(
+            intro = "Estar + gerundio — действие прямо сейчас",
+            sections = listOf(
+                LessonSection(
+                    heading = "Образование герундия",
+                    items = listOf(
+                        LessonItem("-AR → -ando", "hablar → hablando", "говорящий / говоря"),
+                        LessonItem("-ER/-IR → -iendo", "comer → comiendo", "едящий / едя"),
+                        LessonItem("-IR → -iendo", "vivir → viviendo", ""),
+                        LessonItem("ir → yendo", "идти → идя", "неправильный"),
+                        LessonItem("leer → leyendo", "читать → читая", "неправильный"),
+                        LessonItem("dormir → durmiendo", "спать → спя", "неправильный")
+                    )
+                ),
+                LessonSection(
+                    heading = "Estar + gerundio = сейчас",
+                    items = listOf(
+                        LessonItem("Estoy comiendo.", "Я ем (сейчас).", ""),
+                        LessonItem("Está durmiendo.", "Он/она спит (сейчас).", ""),
+                        LessonItem("¿Qué estás haciendo?", "Что ты делаешь (сейчас)?", ""),
+                        LessonItem("Estamos estudiando.", "Мы учимся (сейчас).", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образуй герундий: trabajar",
+                    question = "Estoy ___ en casa.",
+                    options = listOf("trabajando", "trabajado", "trabajar", "trabajo"),
+                    correctAnswer = "trabajando",
+                    explanation = "trabajar → trabajando (-AR → -ando). Estoy trabajando = я работаю (сейчас)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Qué estás haciendo?",
+                    options = listOf("Что ты делаешь (сейчас)?", "Что ты делал?", "Что ты будешь делать?", "Что ты сделал?"),
+                    correctAnswer = "Что ты делаешь (сейчас)?",
+                    explanation = "estar + gerundio = действие в процессе прямо сейчас."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Неправильный герундий: leer",
+                    question = "Está ___ un libro muy interesante.",
+                    options = listOf("leyendo", "leendo", "leído", "leer"),
+                    correctAnswer = "leyendo",
+                    explanation = "leer → leyendo (неправильный). -iendo → leyendo (i → y между гласными)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Los niños están durmiendo.",
+                    options = listOf("Дети спят (сейчас).", "Дети спали.", "Дети будут спать.", "Дети хотят спать."),
+                    correctAnswer = "Дети спят (сейчас).",
+                    explanation = "dormir → durmiendo (неправильный). están durmiendo = они спят прямо сейчас."
+                )
+            )
+        ),
+
+        "u7_l5" to LessonContent(
+            intro = "Seguir + gerundio и Llevar + gerundio",
+            sections = listOf(
+                LessonSection(
+                    heading = "SEGUIR + gerundio — продолжать делать",
+                    items = listOf(
+                        LessonItem("Sigo estudiando.", "Я продолжаю учиться.", ""),
+                        LessonItem("Sigue lloviendo.", "Дождь всё ещё идёт.", ""),
+                        LessonItem("¿Sigues viviendo aquí?", "Ты всё ещё живёшь здесь?", ""),
+                        LessonItem("Seguimos trabajando juntos.", "Мы продолжаем работать вместе.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "LLEVAR + gerundio — вот уже ... как",
+                    items = listOf(
+                        LessonItem("Llevo dos horas esperando.", "Я жду уже два часа.", ""),
+                        LessonItem("Lleva un año estudiando.", "Он учится уже год.", ""),
+                        LessonItem("¿Cuánto llevas esperando?", "Сколько ты уже ждёшь?", ""),
+                        LessonItem("Llevamos tres años casados.", "Мы женаты уже три года.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Sigo sin entender.",
+                    options = listOf("Я по-прежнему не понимаю.", "Я понял.", "Я продолжаю понимать.", "Я начал понимать."),
+                    correctAnswer = "Я по-прежнему не понимаю.",
+                    explanation = "seguir sin + infinitivo = по-прежнему не делать. Sigo sin entender = я до сих пор не понимаю."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Llevo tres horas estudiando.",
+                    options = listOf("Я учусь уже три часа.", "Я учился три часа.", "Через три часа начну учиться.", "Я учился три раза."),
+                    correctAnswer = "Я учусь уже три часа.",
+                    explanation = "llevar + время + gerundio = действие длится уже ... Llevo tres horas = уже три часа."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный глагол",
+                    question = "___ trabajando en la misma empresa desde 2018.",
+                    options = listOf("Sigo", "Llevo", "Estoy", "He"),
+                    correctAnswer = "Sigo",
+                    explanation = "seguir + gerundio = продолжать делать. Sigo trabajando = я продолжаю работать."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить «сколько ты уже ждёшь»?",
+                    question = "¿Cuánto ___ esperando?",
+                    options = listOf("llevas", "sigues", "estás", "has"),
+                    correctAnswer = "llevas",
+                    explanation = "llevar + gerundio = вот уже ... как. ¿Cuánto llevas esperando? = сколько ты уже ждёшь?"
+                )
+            )
+        ),
+
+        "u7_l6" to LessonContent(
+            intro = "Работа и карьера — лексика",
+            sections = listOf(
+                LessonSection(
+                    heading = "Работа и поиск",
+                    items = listOf(
+                        LessonItem("buscar empleo/trabajo", "искать работу", ""),
+                        LessonItem("el currículum (vitae)", "резюме", "enviar el currículum"),
+                        LessonItem("la entrevista de trabajo", "собеседование", "tener una entrevista"),
+                        LessonItem("el sueldo / el salario", "зарплата", "¿Cuánto es el sueldo?"),
+                        LessonItem("el contrato", "контракт", "firmar el contrato"),
+                        LessonItem("la jornada completa/parcial", "полный/неполный рабочий день", ""),
+                        LessonItem("el teletrabajo", "удалённая работа", "Trabajo en teletrabajo.")
+                    )
+                ),
+                LessonSection(
+                    heading = "На работе",
+                    items = listOf(
+                        LessonItem("el/la jefe/a", "начальник/ца", ""),
+                        LessonItem("el/la compañero/a", "коллега", "mis compañeros de trabajo"),
+                        LessonItem("la reunión", "совещание", "Tengo una reunión."),
+                        LessonItem("el plazo", "срок / дедлайн", ""),
+                        LessonItem("ascender", "повышать по службе", "Me han ascendido."),
+                        LessonItem("despedir", "увольнять", "Lo han despedido.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «собеседование»?",
+                    question = "Mañana tengo una ___ de trabajo.",
+                    options = listOf("entrevista", "reunión", "contrato", "currículum"),
+                    correctAnswer = "entrevista",
+                    explanation = "la entrevista de trabajo = собеседование."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Busco trabajo a jornada completa.",
+                    options = listOf("Я ищу работу на полный день.", "Я работаю полный день.", "У меня полный рабочий день.", "Я хочу работать меньше."),
+                    correctAnswer = "Я ищу работу на полный день.",
+                    explanation = "buscar trabajo = искать работу. jornada completa = полный рабочий день."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «Me han ascendido»?",
+                    question = "Me han ascendido en el trabajo.",
+                    options = listOf("Меня повысили на работе.", "Меня уволили.", "Меня нашли на работе.", "Я устроился на работу."),
+                    correctAnswer = "Меня повысили на работе.",
+                    explanation = "ascender = повышать. Me han ascendido = меня повысили (P. Perfecto пассивное значение)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как называется «удалённая работа»?",
+                    question = "удалённая работа = ___",
+                    options = listOf("el teletrabajo", "la jornada parcial", "el contrato", "el sueldo"),
+                    correctAnswer = "el teletrabajo",
+                    explanation = "el teletrabajo = удалённая работа / дистанционная работа."
+                )
+            )
+        ),
+
+        "u7_l7" to LessonContent(
+            intro = "Imperativo afirmativo — даём команды и советы",
+            sections = listOf(
+                LessonSection(
+                    heading = "Imperativo: tú (неформально)",
+                    items = listOf(
+                        LessonItem("hablar → habla", "говори", "¡Habla más despacio!"),
+                        LessonItem("comer → come", "ешь", "¡Come la verdura!"),
+                        LessonItem("escribir → escribe", "пиши", "¡Escribe tu nombre!"),
+                        LessonItem("ir → ve", "иди", "¡Ve a casa!"),
+                        LessonItem("ser → sé", "будь", "¡Sé amable!"),
+                        LessonItem("tener → ten", "имей/возьми", "¡Ten cuidado!"),
+                        LessonItem("venir → ven", "приходи", "¡Ven aquí!")
+                    )
+                ),
+                LessonSection(
+                    heading = "Imperativo: usted (формально)",
+                    items = listOf(
+                        LessonItem("hablar → hable", "говорите", "¡Hable más despacio!"),
+                        LessonItem("comer → coma", "ешьте", ""),
+                        LessonItem("ir → vaya", "идите", "¡Vaya todo recto!"),
+                        LessonItem("Местоимения — после глагола", "¡Dímelo! ¡Espérame!", "присоединяются слитно")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образуй imperativo tú: escuchar",
+                    question = "¡___ bien!",
+                    options = listOf("Escucha", "Escuche", "Escuchas", "Escuchad"),
+                    correctAnswer = "Escucha",
+                    explanation = "escuchar → escucha (imperativo tú). Как форма él/ella в presente."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Неправильный imperativo: venir",
+                    question = "¡___ aquí ahora mismo!",
+                    options = listOf("Ven", "Viene", "Venir", "Venid"),
+                    correctAnswer = "Ven",
+                    explanation = "venir → ven (неправильный императив). Запомни: di, haz, ve, pon, sal, sé, ten, ven."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¡Ten cuidado!",
+                    options = listOf("Осторожно! / Будь осторожен!", "Приходи сюда!", "Иди домой!", "Садись!"),
+                    correctAnswer = "Осторожно! / Будь осторожен!",
+                    explanation = "tener cuidado = быть осторожным. ten (imperative от tener) + cuidado."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Формальный императив: hablar",
+                    question = "Por favor, ___ más despacio. (usted)",
+                    options = listOf("hable", "habla", "hablar", "hablad"),
+                    correctAnswer = "hable",
+                    explanation = "hablar → hable (imperativo usted). Формальное обращение — окончание меняется."
+                )
+            )
+        ),
+
+        "u7_l8" to LessonContent(
+            intro = "Imperativo negativo — запрещаем и предостерегаем",
+            sections = listOf(
+                LessonSection(
+                    heading = "Образование: no + subjuntivo presente",
+                    items = listOf(
+                        LessonItem("hablar → no hables (tú)", "не говори", "¡No hables tan rápido!"),
+                        LessonItem("comer → no comas (tú)", "не ешь", "¡No comas eso!"),
+                        LessonItem("ir → no vayas (tú)", "не ходи", "¡No vayas allí!"),
+                        LessonItem("ser → no seas (tú)", "не будь", "¡No seas impaciente!"),
+                        LessonItem("hablar → no hable (usted)", "не говорите", "¡No hable tan fuerte!"),
+                        LessonItem("ir → no vaya (usted)", "не идите", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Местоимения в отрицательном императиве",
+                    items = listOf(
+                        LessonItem("Affirmativo", "Dímelo. — Скажи мне это.", "местоимение после"),
+                        LessonItem("Negativo", "No me lo digas. — Не говори мне.", "местоимение ДО"),
+                        LessonItem("Tócalo. ↔ No lo toques.", "Потрогай. ↔ Не трогай.", ""),
+                        LessonItem("Cómpralos. ↔ No los compres.", "Купи. ↔ Не покупай.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образуй отрицательный императив: hablar (tú)",
+                    question = "¡No ___ en clase!",
+                    options = listOf("hables", "hablas", "habla", "habléis"),
+                    correctAnswer = "hables",
+                    explanation = "imperativo negativo tú: no + subjuntivo → no hables."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¡No seas tan impaciente!",
+                    options = listOf("Не будь таким нетерпеливым!", "Не говори так быстро!", "Не уходи!", "Не будь так громко!"),
+                    correctAnswer = "Не будь таким нетерпеливым!",
+                    explanation = "ser → no seas (отриц. императив). impaciente = нетерпеливый."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Местоимения в отрицательном императиве",
+                    question = "No ___ (decirme la verdad).",
+                    options = listOf("me digas la verdad", "digas me la verdad", "dígame la verdad", "me diga la verdad"),
+                    correctAnswer = "me digas la verdad",
+                    explanation = "В отрицательном императиве местоимение стоит ДО глагола: no me digas."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Преобразуй в отрицательный",
+                    question = "Cómpralo. → No ___.",
+                    options = listOf("lo compres", "lo compras", "compres lo", "lo compre"),
+                    correctAnswer = "lo compres",
+                    explanation = "Cómpralo → No lo compres. Местоимение переходит ДО глагола: no lo compres."
+                )
+            )
+        ),
+
+        "u7_l9" to LessonContent(
+            intro = "У врача — симптомы и медицинский визит",
+            sections = listOf(
+                LessonSection(
+                    heading = "Симптомы",
+                    items = listOf(
+                        LessonItem("Me duele la cabeza.", "У меня болит голова.", ""),
+                        LessonItem("Tengo fiebre (38°).", "У меня температура 38.", ""),
+                        LessonItem("Tengo tos y mocos.", "У меня кашель и насморк.", ""),
+                        LessonItem("Me duele la garganta.", "У меня болит горло.", ""),
+                        LessonItem("Estoy mareado/a.", "У меня кружится голова.", ""),
+                        LessonItem("Tengo náuseas.", "Меня тошнит.", ""),
+                        LessonItem("Me he torcido el tobillo.", "Я подвернул лодыжку.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Диалог с врачом",
+                    items = listOf(
+                        LessonItem("¿Qué le pasa?", "Что вас беспокоит?", "врач"),
+                        LessonItem("¿Desde cuándo?", "С каких пор?", "врач"),
+                        LessonItem("Desde hace tres días.", "Уже три дня.", "пациент"),
+                        LessonItem("Le receto...", "Я вам выпишу...", "врач"),
+                        LessonItem("Tome dos pastillas al día.", "Принимайте по 2 таблетки в день.", ""),
+                        LessonItem("Guarde cama.", "Соблюдайте постельный режим.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «у меня болит горло»?",
+                    question = "Me duele ___.",
+                    options = listOf("la garganta", "el estómago", "la cabeza", "el brazo"),
+                    correctAnswer = "la garganta",
+                    explanation = "la garganta = горло. Me duele la garganta = у меня болит горло."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Врач спрашивает. Переведи",
+                    question = "¿Desde cuándo tiene estos síntomas?",
+                    options = listOf("С каких пор у вас эти симптомы?", "Какие у вас симптомы?", "Как давно вы болеете?", "Что вас беспокоит?"),
+                    correctAnswer = "С каких пор у вас эти симптомы?",
+                    explanation = "¿Desde cuándo? = с каких пор? / с когда?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Estoy mareado y tengo náuseas.",
+                    options = listOf("У меня кружится голова и тошнит.", "У меня болит голова и кашель.", "Я устал и у меня насморк.", "Мне плохо и я боюсь."),
+                    correctAnswer = "У меня кружится голова и тошнит.",
+                    explanation = "mareado = с головокружением. náuseas = тошнота."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «Guarde cama»?",
+                    question = "El médico dice: «Guarde cama».",
+                    options = listOf("Соблюдайте постельный режим.", "Выпейте таблетку.", "Идите домой.", "Отдыхайте больше."),
+                    correctAnswer = "Соблюдайте постельный режим.",
+                    explanation = "guardar cama = соблюдать постельный режим (буквально «хранить кровать»)."
+                )
+            )
+        ),
+
+        "u7_l10" to LessonContent(
+            intro = "OD + OI вместе: te lo doy, se lo digo",
+            sections = listOf(
+                LessonSection(
+                    heading = "Порядок местоимений",
+                    items = listOf(
+                        LessonItem("OI + OD + глагол", "me lo, te lo, se lo...", "сначала OI, потом OD"),
+                        LessonItem("Te lo doy.", "Я даю тебе это.", "te=тебе, lo=это"),
+                        LessonItem("Me la explica.", "Он объясняет мне это.", "me=мне, la=её"),
+                        LessonItem("Nos los manda.", "Он отправляет нам их.", "nos=нам, los=их")
+                    )
+                ),
+                LessonSection(
+                    heading = "le/les → se перед lo/la/los/las",
+                    items = listOf(
+                        LessonItem("le + lo → se lo", "ему это", "Se lo digo. (не le lo)"),
+                        LessonItem("les + la → se la", "им её", "Se la mando."),
+                        LessonItem("¿A quién?", "Уточнение через a", "Se lo digo a mi madre."),
+                        LessonItem("Con imperativo", "после глагола слитно", "¡Dáselo! = Отдай ему это!")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Замени: Doy el libro a ti.",
+                    question = "___ doy.",
+                    options = listOf("Te lo", "Lo te", "Me lo", "Se lo"),
+                    correctAnswer = "Te lo",
+                    explanation = "te = тебе (OI), lo = el libro (OD). Порядок: OI + OD → Te lo doy."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "le + lo = ?",
+                    question = "Digo la verdad a él. → ___ digo.",
+                    options = listOf("Se la", "Le la", "Lo le", "Se lo"),
+                    correctAnswer = "Se la",
+                    explanation = "le (ему) + la (la verdad) → se la. le/les всегда меняется на se перед lo/la/los/las."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Me lo puedes explicar?",
+                    options = listOf("Можешь мне это объяснить?", "Ты объяснишь мне это?", "Я могу тебе объяснить?", "Ты понимаешь меня?"),
+                    correctAnswer = "Можешь мне это объяснить?",
+                    explanation = "me = мне (OI), lo = это (OD). ¿Me lo puedes explicar? = можешь мне объяснить?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Императив с местоимениями",
+                    question = "Da el regalo a ella. → ¡___!",
+                    options = listOf("¡Dáselo!", "¡Se lo da!", "¡Dalo se!", "¡Le dáselo!"),
+                    correctAnswer = "¡Dáselo!",
+                    explanation = "da + se + lo → Dáselo (слитно, ударение сохраняется). le → se перед lo."
+                )
+            )
+        ),
+
+        "u7_l11" to LessonContent(
+            intro = "Одежда и мода — покупки и стиль",
+            sections = listOf(
+                LessonSection(
+                    heading = "Одежда",
+                    items = listOf(
+                        LessonItem("la talla", "размер (одежды)", "¿Qué talla usas?"),
+                        LessonItem("probarse", "примерять", "¿Puedo probármelo?"),
+                        LessonItem("quedar bien/mal", "идти хорошо/плохо", "Te queda muy bien."),
+                        LessonItem("quedar grande/pequeño", "быть большим/маленьким", "Me queda grande."),
+                        LessonItem("estar de moda", "быть в моде", "Esto está de moda."),
+                        LessonItem("pasado de moda", "немодный / устаревший", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "В магазине одежды",
+                    items = listOf(
+                        LessonItem("¿Tiene en la talla M?", "Есть в размере M?", ""),
+                        LessonItem("¿Lo tiene en otro color?", "Есть в другом цвете?", ""),
+                        LessonItem("el descuento / las rebajas", "скидка / распродажа", "¡Hay rebajas!"),
+                        LessonItem("¿Puedo devolver esto?", "Могу вернуть это?", ""),
+                        LessonItem("el ticket/recibo", "чек", "Guarda el recibo.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить «это мне идёт»?",
+                    question = "¿Me ___?",
+                    options = listOf("queda bien", "está bien", "es bien", "va bien"),
+                    correctAnswer = "queda bien",
+                    explanation = "quedar bien = идти/подходить. ¿Me queda bien? = мне идёт? Te queda genial = тебе очень идёт."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Me queda grande. Necesito una talla menos.",
+                    options = listOf("Мне велико. Нужен размер меньше.", "Мне мало. Нужен размер больше.", "Это мне идёт.", "Мне нравится этот размер."),
+                    correctAnswer = "Мне велико. Нужен размер меньше.",
+                    explanation = "quedar grande = быть большим. una talla menos = размер меньше."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «las rebajas»?",
+                    question = "¡Vamos de rebajas!",
+                    options = listOf("Пойдём на распродажу!", "Пойдём за подарками!", "Пойдём в магазин!", "Пойдём за скидкой!"),
+                    correctAnswer = "Пойдём на распродажу!",
+                    explanation = "las rebajas = распродажа (сезонная). ¡Hay rebajas! = распродажа!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Lo tienen en otro color?",
+                    options = listOf("Есть это в другом цвете?", "Сколько стоит этот цвет?", "Какого цвета эта вещь?", "Мне нравится этот цвет."),
+                    correctAnswer = "Есть это в другом цвете?",
+                    explanation = "¿Lo tienen en otro color? — стандартный вопрос в магазине одежды."
+                )
+            )
+        ),
+
+        "u7_l12" to LessonContent(
+            intro = "Придаточные предложения с QUE",
+            sections = listOf(
+                LessonSection(
+                    heading = "Глаголы мнения + que",
+                    items = listOf(
+                        LessonItem("creer que", "думать / считать что", "Creo que tienes razón."),
+                        LessonItem("pensar que", "думать что", "Pienso que es difícil."),
+                        LessonItem("opinar que", "считать что", "Opino que es importante."),
+                        LessonItem("saber que", "знать что", "Sé que estás cansado."),
+                        LessonItem("decir que", "говорить что", "Dice que viene mañana.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы чувств + que",
+                    items = listOf(
+                        LessonItem("esperar que", "надеяться что", "Espero que llegues pronto."),
+                        LessonItem("alegrarse de que", "радоваться что", "Me alegra que estés bien."),
+                        LessonItem("tener miedo de que", "бояться что", "Tengo miedo de que se enfade."),
+                        LessonItem("¡Qué bien que...!", "Как хорошо что...!", "¡Qué bien que hayas venido!")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Creo que llueve.",
+                    options = listOf("Я думаю, что идёт дождь.", "Я знаю, что идёт дождь.", "Я хочу, чтобы шёл дождь.", "Мне кажется, что я ошибся."),
+                    correctAnswer = "Я думаю, что идёт дождь.",
+                    explanation = "creer que = думать что. Creo que = я думаю что."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Составь предложение",
+                    question = "Sé ___ estás ocupado.",
+                    options = listOf("que", "si", "porque", "cuando"),
+                    correctAnswer = "que",
+                    explanation = "saber que = знать что. Sé que estás ocupado = я знаю, что ты занят."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Pienso que el español es interesante.",
+                    options = listOf("Я думаю, что испанский интересный.", "Мне нравится испанский.", "Испанский — интересный язык.", "Я учу интересный испанский."),
+                    correctAnswer = "Я думаю, что испанский интересный.",
+                    explanation = "pensar que = думать что. Pienso que = я думаю что."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Dice que no puede venir.",
+                    options = listOf("Он говорит, что не может прийти.", "Он не хочет приходить.", "Скажи ему, чтобы пришёл.", "Он говорит прийти."),
+                    correctAnswer = "Он говорит, что не может прийти.",
+                    explanation = "decir que = говорить что. Dice que = он говорит что."
+                )
+            )
+        ),
+
+        "u7_l13" to LessonContent(
+            intro = "Природа, погода и окружающая среда",
+            sections = listOf(
+                LessonSection(
+                    heading = "Природа",
+                    items = listOf(
+                        LessonItem("el campo", "деревня / поле", "Vivo en el campo."),
+                        LessonItem("el mar / el océano", "море / океан", ""),
+                        LessonItem("la montaña", "гора", "Vamos a la montaña."),
+                        LessonItem("el bosque", "лес", ""),
+                        LessonItem("el río", "река", ""),
+                        LessonItem("la playa", "пляж", "Voy a la playa."),
+                        LessonItem("el lago", "озеро", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Погода — продвинутый уровень",
+                    items = listOf(
+                        LessonItem("hace viento", "ветрено", "Hace mucho viento hoy."),
+                        LessonItem("hay niebla", "туман", "Hay mucha niebla."),
+                        LessonItem("hay tormenta", "гроза", "¡Hay tormenta!"),
+                        LessonItem("granizar", "идти граду", "Está granizando."),
+                        LessonItem("el pronóstico del tiempo", "прогноз погоды", ""),
+                        LessonItem("grados (°C)", "градусы", "Hace 25 grados.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Prefiero el campo a la ciudad.",
+                    options = listOf("Я предпочитаю деревню городу.", "Мне нравится город.", "Я живу за городом.", "Деревня лучше."),
+                    correctAnswer = "Я предпочитаю деревню городу.",
+                    explanation = "preferir A a B = предпочитать A вместо B."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «идёт гроза»?",
+                    question = "Hay ___.",
+                    options = listOf("tormenta", "niebla", "viento", "granizo"),
+                    correctAnswer = "tormenta",
+                    explanation = "hay tormenta = идёт гроза. hay niebla = туман. hay granizo = идёт град."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Según el pronóstico, mañana lloverá.",
+                    options = listOf("По прогнозу, завтра будет дождь.", "Сегодня идёт дождь.", "Вчера был дождь.", "Дождя не будет."),
+                    correctAnswer = "По прогнозу, завтра будет дождь.",
+                    explanation = "según = по (данным). el pronóstico = прогноз. lloverá = будет дождь (Futuro)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «hace 30 grados»?",
+                    question = "Hoy hace 30 grados.",
+                    options = listOf("Сегодня 30 градусов.", "Сегодня очень холодно.", "Сегодня 30 минут.", "Сегодня ветрено."),
+                    correctAnswer = "Сегодня 30 градусов.",
+                    explanation = "hacer X grados = быть X градусов (температура). Hace 30 grados = 30 градусов жары!"
+                )
+            )
         )
     )
 }
