@@ -4419,6 +4419,182 @@ object LessonContentData {
             )
         ),
 
+        "u5_l11" to LessonContent(
+            intro = "Irregulares: poder → pude, saber → supe",
+            sections = listOf(
+                LessonSection(
+                    heading = "Глаголы с основой на -ud-",
+                    items = listOf(
+                        LessonItem("poder → pud-", "pude, pudiste, pudo", "я смог, ты смог..."),
+                        LessonItem("saber → sup-", "supe, supiste, supo", "я узнал, ты узнал..."),
+                        LessonItem("poner → pus-", "puse, pusiste, puso", "я положил..."),
+                        LessonItem("caber → cup-", "cupe, cupiste, cupo", "я поместился...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры в контексте",
+                    items = listOf(
+                        LessonItem("No pude dormir.", "Я не смог поспать.", ""),
+                        LessonItem("¿Supiste la noticia?", "Ты узнал новость?", ""),
+                        LessonItem("¿Dónde pusiste las llaves?", "Куда ты положил ключи?", ""),
+                        LessonItem("Pude terminar a tiempo.", "Я смог закончить вовремя.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Indefinido от PODER: yo",
+                    question = "Ayer no ___ abrir la puerta.",
+                    options = listOf("pude", "podí", "podé", "puedo"),
+                    correctAnswer = "pude",
+                    explanation = "poder → pude (Indefinido irregular). No pude = я не смог."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Cuándo supiste la verdad?",
+                    options = listOf("Когда ты узнал правду?", "Ты знаешь правду?", "Расскажи мне правду.", "Что ты знаешь?"),
+                    correctAnswer = "Когда ты узнал правду?",
+                    explanation = "saber → supe/supiste (Indefinido). supiste = ты узнал."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Indefinido от PONER: ella",
+                    question = "Ella ___ el libro en la mesa.",
+                    options = listOf("puso", "ponió", "ponó", "pone"),
+                    correctAnswer = "puso",
+                    explanation = "poner → puso (él/ella). pus- + o = puso."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Al final pude terminar el proyecto.",
+                    options = listOf("В итоге я смог закончить проект.", "Я не смог закончить проект.", "Проект закончен.", "Мне нужно закончить проект."),
+                    correctAnswer = "В итоге я смог закончить проект.",
+                    explanation = "al final = в итоге/в конце концов. pude = я смог."
+                )
+            )
+        ),
+
+        "u5_l12" to LessonContent(
+            intro = "Irregulares: dar, ver, decir, venir — особые формы",
+            sections = listOf(
+                LessonSection(
+                    heading = "DAR и VER — короткие формы без акцента",
+                    items = listOf(
+                        LessonItem("dar: di, diste, dio", "я дал, ты дал, он дал", "dimos, disteis, dieron"),
+                        LessonItem("ver: vi, viste, vio", "я видел, ты видел, он видел", "vimos, visteis, vieron"),
+                        LessonItem("Без акцентов!", "di, vi (не dí, ví)", "односложные формы — без тильды")
+                    )
+                ),
+                LessonSection(
+                    heading = "DECIR и VENIR",
+                    items = listOf(
+                        LessonItem("decir → dij-", "dije, dijiste, dijo", "я сказал, ты сказал..."),
+                        LessonItem("", "dijimos, dijisteis, dijeron", "мы, вы, они сказали"),
+                        LessonItem("venir → vin-", "vine, viniste, vino", "я пришёл, ты пришёл..."),
+                        LessonItem("", "vinimos, vinisteis, vinieron", "мы, вы, они пришли")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Indefinido от DAR: yo",
+                    question = "Le ___ un regalo a mi madre.",
+                    options = listOf("di", "dé", "daré", "daba"),
+                    correctAnswer = "di",
+                    explanation = "dar → di (yo, Indefinido). Без акцента! Le di = я дал ей."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Qué dijiste?",
+                    options = listOf("Что ты сказал?", "Что ты говоришь?", "Что ты скажешь?", "Скажи мне что-нибудь."),
+                    correctAnswer = "Что ты сказал?",
+                    explanation = "decir → dijiste (tú, Indefinido). ¿Qué dijiste? = что ты сказал?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Indefinido от VENIR: ellos",
+                    question = "Mis amigos ___ a la fiesta.",
+                    options = listOf("vinieron", "venieron", "vineron", "vienen"),
+                    correctAnswer = "vinieron",
+                    explanation = "venir → vinieron (ellos). vin- + ieron = vinieron."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Vi una película increíble ayer.",
+                    options = listOf("Вчера я посмотрел потрясающий фильм.", "Я смотрю потрясающий фильм.", "Я увижу потрясающий фильм.", "Фильм был потрясающим."),
+                    correctAnswer = "Вчера я посмотрел потрясающий фильм.",
+                    explanation = "ver → vi (yo, Indefinido). ayer = вчера. increíble = невероятный/потрясающий."
+                )
+            )
+        ),
+
+        "u5_l13" to LessonContent(
+            intro = "Рассказ в прошлом — связный текст с Indefinido",
+            sections = listOf(
+                LessonSection(
+                    heading = "Связки для рассказа",
+                    items = listOf(
+                        LessonItem("primero", "сначала", "Primero me levanté."),
+                        LessonItem("después / luego", "потом / затем", "Después fui al trabajo."),
+                        LessonItem("más tarde", "позже", "Más tarde comí."),
+                        LessonItem("por la mañana/tarde/noche", "утром/днём/ночью", ""),
+                        LessonItem("al final", "в конце / в итоге", "Al final volví a casa."),
+                        LessonItem("de repente", "вдруг / внезапно", "De repente sonó el teléfono.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Пример рассказа: Mi sábado",
+                    items = listOf(
+                        LessonItem("Me levanté a las 10.", "Я встал в 10.", ""),
+                        LessonItem("Desayuné y salí a correr.", "Позавтракал и пошёл бегать.", ""),
+                        LessonItem("Luego quedé con Ana.", "Потом встретился с Аной.", ""),
+                        LessonItem("Fuimos al cine y vimos una peli.", "Мы пошли в кино и посмотрели фильм.", ""),
+                        LessonItem("Al final cené en casa.", "В конце поужинал дома.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери связку для начала рассказа",
+                    question = "___, me duché y desayuné.",
+                    options = listOf("Primero", "Al final", "De repente", "Luego"),
+                    correctAnswer = "Primero",
+                    explanation = "primero = сначала/во-первых. Используется для начала рассказа о последовательности событий."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "De repente empezó a llover.",
+                    options = listOf("Вдруг начался дождь.", "Потом начался дождь.", "Наконец начался дождь.", "Сначала начался дождь."),
+                    correctAnswer = "Вдруг начался дождь.",
+                    explanation = "de repente = вдруг/внезапно. empezó a llover = начался дождь."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Восстанови порядок: что идёт последним?",
+                    question = "Primero estudié, luego comí y ___...",
+                    options = listOf("al final me acosté", "primero dormí", "de repente salí", "después desayuné"),
+                    correctAnswer = "al final me acosté",
+                    explanation = "al final = в конце/в итоге. Используется для завершения рассказа."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Más tarde fui al supermercado.",
+                    options = listOf("Позже я пошёл в супермаркет.", "Сначала я пошёл в супермаркет.", "Вдруг я пошёл в супермаркет.", "Потом я не пошёл в магазин."),
+                    correctAnswer = "Позже я пошёл в супермаркет.",
+                    explanation = "más tarde = позже. fui = я пошёл (Indefinido от ir)."
+                )
+            )
+        ),
+
         // ══════════════════════════════════════════════
         //  A2 БЛОК 2 (unitId=6)
         // ══════════════════════════════════════════════

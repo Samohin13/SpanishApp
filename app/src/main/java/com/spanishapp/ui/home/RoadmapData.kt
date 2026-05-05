@@ -216,7 +216,10 @@ object RoadmapData {
                 RoadmapLesson("📅 Irregulares: tener → tuve, estar → estuve",      "content", "general"),
                 RoadmapLesson("📅 Irregulares: hacer → hice, querer → quise",      "content", "general"),
                 RoadmapLesson("📝 Por vs Para: основы",                             "content", "general"),
-                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "content",   "phrases"),
+                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "content", "phrases"),
+                RoadmapLesson("📅 Irregulares: poder → pude, saber → supe",        "content", "general"),
+                RoadmapLesson("📅 Irregulares: dar → di, ver → vi, decir → dije",  "content", "general"),
+                RoadmapLesson("🗣️ Рассказ в прошлом: связный текст",               "content", "general"),
                 RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all")
             )
         ),
