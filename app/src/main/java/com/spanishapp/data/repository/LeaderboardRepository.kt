@@ -53,16 +53,17 @@ class LeaderboardRepository @Inject constructor(
 
     /**
      * Реальный ISO-код страны устройства. Приоритет:
-     * 1) SIM-страна (физическая SIM, самое надёжное)
-     * 2) Network-страна (сеть оператора)
-     * 3) Locale (язык системы — может врать: KZ-житель часто имеет ru_RU)
+     * 1) Network-страна (где физически зарегистрирован в сети — самое точное:
+     *    KZ-житель с RU-симкой в роуминге получит "kz")
+     * 2) SIM-страна (где выпущена SIM — fallback при отсутствии сети)
+     * 3) Locale (язык системы — последняя надежда, может врать)
      */
     fun deviceCountryCode(): String {
         val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
-        val sim = tm?.simCountryIso?.uppercase().orEmpty()
-        if (sim.length == 2) return sim
         val net = tm?.networkCountryIso?.uppercase().orEmpty()
         if (net.length == 2) return net
+        val sim = tm?.simCountryIso?.uppercase().orEmpty()
+        if (sim.length == 2) return sim
         return Locale.getDefault().country.uppercase().ifBlank { "XX" }
     }
 
