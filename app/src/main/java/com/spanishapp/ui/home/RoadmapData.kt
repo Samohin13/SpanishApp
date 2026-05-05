@@ -494,26 +494,108 @@ object RoadmapData {
             )
         ),
 
+        // ── B2 ──────────────────────────────────────────────────────
         RoadmapUnit(
-            id = "b2_1",
-            title = "B2 · Блок 1: Сложные конструкции",
-            icon = "🏆",
-            description = "Subjuntivo Imperfecto, пассив, сложный синтаксис",
+            id = "13",
+            title = "Блок 1: Subjuntivo Avanzado",
+            icon = "🔮",
+            description = "Imperfecto y Pluscuamperfecto de Subjuntivo — гипотезы, желания в прошлом, нереальные условия",
             cefrLevel = "B2",
             color = Color(0xFF6A1B9A),
             lessons = listOf(
-                RoadmapLesson("🔮 Subjuntivo Imperfecto: -ra/-se форма",            "content", "general"),
-                RoadmapLesson("🔮 Si + Subj.Imp. + Condicional: нереальные условия","content", "general"),
-                RoadmapLesson("📝 Estilo indirecto: dijo que viniera",              "content", "general"),
-                RoadmapLesson("🎭 Voz pasiva: fue construido / es conocido",        "content", "general"),
-                RoadmapLesson("💬 Cláusulas relativas: que, quien, cuyo",           "vocab",   "phrases"),
-                RoadmapLesson("🎯 Мини-тест: Imperfecto + Pasiva",                  "quiz",    "all"),
-                RoadmapLesson("🔮 Subjuntivo Pluscuamperfecto: hubiera hablado",    "content", "general",  isPremium = true),
-                RoadmapLesson("🔮 Si hubiera sabido... — полные гипотезы",          "content", "general",  isPremium = true),
-                RoadmapLesson("📝 Perífrasis: llevar + ger., seguir + ger.",        "content", "general",  isPremium = true),
-                RoadmapLesson("🎭 Ser vs Estar с participio: está hecho/es hecho",  "content", "general",  isPremium = true),
-                RoadmapLesson("💬 Модизмы: no hay mal que... / a lo mejor",         "vocab",   "phrases",  isPremium = true),
-                RoadmapLesson("🎯 Финальный тест уровня B2",                        "quiz",    "all",      isPremium = true)
+                RoadmapLesson("🔮 Subjuntivo Imperfecto: -ra и -se формы",              "content", "general"),
+                RoadmapLesson("🔮 Образование: tablara/hablase, irregulares",           "content", "general"),
+                RoadmapLesson("🔮 Si + Imp.Subj. + Condicional: нереальные условия",   "content", "general"),
+                RoadmapLesson("🔮 Ojalá + Imp.Subj.: «Если бы только...»",             "content", "general"),
+                RoadmapLesson("🔮 Como si... — «как будто»",                            "content", "general"),
+                RoadmapLesson("🎯 Мини-тест: Subjuntivo Imperfecto",                    "quiz",    "all"),
+                RoadmapLesson("🔮 Pluscuamperfecto de Subjuntivo: hubiera + participio","content", "general"),
+                RoadmapLesson("🔮 Si hubiera sabido... — сожаление о прошлом",         "content", "general"),
+                RoadmapLesson("🔮 Condicional Compuesto: habría viajado",               "content", "general"),
+                RoadmapLesson("🔮 Que yo sepa / que yo recuerde — устойчивые формы",   "content", "general"),
+                RoadmapLesson("🔮 Aunque + Subj. vs Indicativo: оттенки смысла",       "content", "general"),
+                RoadmapLesson("🔮 Subj. в придаточных цели: para que, a fin de que",   "content", "general"),
+                RoadmapLesson("🔮 Subj. в придаточных времени: cuando llegues",        "content", "general"),
+                RoadmapLesson("🔮 Subj. в придаточных относительных: alguien que sepa","content", "general"),
+                RoadmapLesson("🏆 Чекпоинт Блока 1 B2",                                "quiz",    "all")
+            )
+        ),
+
+        RoadmapUnit(
+            id = "14",
+            title = "Блок 2: Pasiva y Perífrasis",
+            icon = "⚙️",
+            description = "Пассивный залог, перифразы, сложные глагольные конструкции",
+            cefrLevel = "B2",
+            color = Color(0xFF00695C),
+            lessons = listOf(
+                RoadmapLesson("⚙️ Voz pasiva con SER: fue construido",                 "content", "general"),
+                RoadmapLesson("⚙️ Estar + participio: está hecho / están cerrados",    "content", "general"),
+                RoadmapLesson("⚙️ Se pasivo y se impersonal",                          "content", "general"),
+                RoadmapLesson("⚙️ Perífrasis: ir a / acabar de / volver a",            "content", "general"),
+                RoadmapLesson("⚙️ Perífrasis: llevar + gerundio",                      "content", "general"),
+                RoadmapLesson("🎯 Мини-тест: Pasiva y Perífrasis",                     "quiz",    "all"),
+                RoadmapLesson("⚙️ Perífrasis: seguir / dejar de / ponerse a",          "content", "general"),
+                RoadmapLesson("⚙️ Participio como adjetivo: una puerta cerrada",       "content", "general"),
+                RoadmapLesson("⚙️ Gerundio: usos avanzados — habiendo llegado",        "content", "general"),
+                RoadmapLesson("⚙️ Infinitivo: como sujeto y complemento",              "content", "general"),
+                RoadmapLesson("💬 Cláusulas relativas: que, quien, cuyo, donde",       "content", "general"),
+                RoadmapLesson("💬 Estilo indirecto: cambio de tiempos verbales",       "content", "general"),
+                RoadmapLesson("💬 Ser vs Estar: нюансы и сложные случаи",              "content", "general"),
+                RoadmapLesson("💬 Nominalización: de verbo a sustantivo",              "content", "general"),
+                RoadmapLesson("🏆 Чекпоинт Блока 2 B2",                                "quiz",    "all")
+            )
+        ),
+
+        RoadmapUnit(
+            id = "15",
+            title = "Блок 3: Comunicación Formal",
+            icon = "✍️",
+            description = "Академический стиль, официальные письма, продвинутые коннекторы",
+            cefrLevel = "B2",
+            color = Color(0xFF1565C0),
+            lessons = listOf(
+                RoadmapLesson("✍️ Регистры: formal, neutro, coloquial",                "content", "general"),
+                RoadmapLesson("✍️ Carta formal: solicitud, queja, agradecimiento",     "content", "general"),
+                RoadmapLesson("✍️ Informe escrito: структура и обороты",               "content", "general"),
+                RoadmapLesson("✍️ Artículo de opinión: структура",                    "content", "general"),
+                RoadmapLesson("🔗 Коннекторы контраста: sin embargo, no obstante",    "content", "general"),
+                RoadmapLesson("🎯 Мини-тест: Conectores y Registro",                   "quiz",    "all"),
+                RoadmapLesson("🔗 Коннекторы причины: dado que, puesto que, ya que",   "content", "general"),
+                RoadmapLesson("🔗 Коннекторы следствия: de ahí que, de modo que",     "content", "general"),
+                RoadmapLesson("🔗 Коннекторы уступки: a pesar de que, si bien",       "content", "general"),
+                RoadmapLesson("🗣️ Аргументация: тезис, доказательство, вывод",        "content", "general"),
+                RoadmapLesson("🗣️ Цитирование: según, de acuerdo con, a juicio de",   "content", "general"),
+                RoadmapLesson("📚 Latinismos y cultismos: per se, a posteriori",       "content", "general"),
+                RoadmapLesson("📚 Nominalización в деловом языке",                    "content", "general"),
+                RoadmapLesson("📚 Léxico académico: demostrar, evidenciar, sostener",  "content", "general"),
+                RoadmapLesson("🏆 Чекпоинт Блока 3 B2",                                "quiz",    "all")
+            )
+        ),
+
+        RoadmapUnit(
+            id = "16",
+            title = "Блок 4: Léxico y Cultura",
+            icon = "🌟",
+            description = "Идиомы, пословицы, ложные друзья, латиноамериканский испанский, финальный чекпоинт B2",
+            cefrLevel = "B2",
+            color = Color(0xFFB71C1C),
+            lessons = listOf(
+                RoadmapLesson("🌟 Modismos B2: a rajatabla, en boca de todos",         "content", "general"),
+                RoadmapLesson("🌟 Modismos B2: no hay mal que... / a lo mejor",        "content", "general"),
+                RoadmapLesson("🌟 Refranes: El que mucho abarca...",                   "content", "general"),
+                RoadmapLesson("🌟 Eufemismos y lenguaje diplomático",                  "content", "general"),
+                RoadmapLesson("🌟 Lenguaje metafórico y figurado",                     "content", "general"),
+                RoadmapLesson("🎯 Мини-тест: Modismos y Refranes",                     "quiz",    "all"),
+                RoadmapLesson("🌍 Español latinoamericano: основные различия",         "content", "general"),
+                RoadmapLesson("🌍 Falsos amigos: embarazada, sensible, actual",        "content", "general"),
+                RoadmapLesson("🌍 Diminutivos y aumentativos: casita / hombrón",       "content", "general"),
+                RoadmapLesson("📱 Léxico moderno: startup, sostenibilidad, branding",  "content", "general"),
+                RoadmapLesson("💼 Léxico profesional: negocios, derecho, medicina",    "content", "general"),
+                RoadmapLesson("🎨 Cultura hispana: literatura, arte, historia",        "content", "general"),
+                RoadmapLesson("🔤 Tricky cases: sino/pero, también/tampoco, por/para", "content", "general"),
+                RoadmapLesson("🔤 Ortografía y puntuación avanzada",                   "content", "general"),
+                RoadmapLesson("🏆 ФИНАЛЬНЫЙ ЧЕКПОИНТ B2",                              "quiz",    "all")
             )
         )
     )

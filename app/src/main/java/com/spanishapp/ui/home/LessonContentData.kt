@@ -30,7 +30,7 @@ object LessonContentData {
         block05() + block06() + block07() + block08() +
         block09() + block10() + block11() + block12() +
         block13() + block14() + block15() + block16() +
-        block17() + block18()
+        block17() + block18() + block19()
 
     private fun block01(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
@@ -11630,6 +11630,1055 @@ object LessonContentData {
                     options = listOf("dieron", "tuvieron", "hicieron", "llevaron"),
                     correctAnswer = "hicieron",
                     explanation = "hacer las paces = помириться. «После трёх часов споров, наконец помирились.» ¡Enhorabuena, has terminado el curso B1! 🏆"
+                )
+            )
+        )
+    )
+
+    // ══════════════════════════════════════════════
+    //  БЛОК 1 B2: SUBJUNTIVO AVANZADO
+    //  unit id = 13, lessonIndex 0–14
+    // ══════════════════════════════════════════════
+    private fun block19(): Map<String, LessonContent> = mapOf(
+
+        // ── u13_l0: Subjuntivo Imperfecto: -ra и -se формы ────────────
+        "u13_l0" to LessonContent(
+            intro = "Subjuntivo Imperfecto (Pretérito Imperfecto de Subjuntivo) — это форма, без которой невозможно говорить о нереальных условиях, пожеланиях в прошлом и вежливых просьбах.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Две формы: -ra и -se",
+                    items = listOf(
+                        LessonItem("-ra форма (чаще)", "hablar → hablara, comer → comiera, vivir → viviera"),
+                        LessonItem("-se форма (книжная)", "hablar → hablase, comer → comiese, vivir → viviese"),
+                        LessonItem("Значение одинаковое", "обе формы взаимозаменяемы; -ra чаще в разговорной речи"),
+                        LessonItem("Основа", "от 3 л. мн.ч. Pretérito Indefinido: hablaron → hablara")
+                    )
+                ),
+                LessonSection(
+                    heading = "Когда используется",
+                    items = listOf(
+                        LessonItem("Нереальные условия", "Si tuviera dinero, viajaría. — Если бы у меня были деньги, я бы путешествовал."),
+                        LessonItem("Желания (ojalá)", "Ojalá fuera verano. — Если бы только было лето."),
+                        LessonItem("Косвенная речь (прошлое)", "Dijo que viniera. — Он сказал, чтобы я пришёл."),
+                        LessonItem("Вежливая просьба", "Quisiera un café, por favor. — Я бы хотел кофе, пожалуйста.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Спряжение HABLAR (образец)",
+                    items = listOf(
+                        LessonItem("yo", "hablara / hablase"),
+                        LessonItem("tú", "hablaras / hablases"),
+                        LessonItem("él/ella", "hablara / hablase"),
+                        LessonItem("nosotros", "habláramos / hablásemos"),
+                        LessonItem("vosotros", "hablarais / hablaseis"),
+                        LessonItem("ellos", "hablaran / hablasen")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo Imperfecto",
+                    question = "Si ___ más tiempo, estudiaría música.",
+                    options = listOf("tengo", "tuviera", "tendría", "tenga"),
+                    correctAnswer = "tuviera",
+                    explanation = "Si + Imp.Subj. (tuviera) + Condicional (estudiaría). «Если бы у меня было больше времени, я бы изучал музыку.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Вежливая просьба",
+                    question = "___ hablar con el director, por favor.",
+                    options = listOf("Quiero", "Querría", "Quisiera", "Quería"),
+                    correctAnswer = "Quisiera",
+                    explanation = "Quisiera — вежливая форма (Imp.Subj. от querer). «Я бы хотел поговорить с директором, пожалуйста.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образование формы",
+                    question = "3 л. мн.ч. Indefinido: «hablaron» → yo (Imp.Subj.) = ___",
+                    options = listOf("hablaré", "hablara", "hablaba", "hable"),
+                    correctAnswer = "hablara",
+                    explanation = "Правило: hablaron → убираем -ron → habla- + ра = hablara."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбор формы",
+                    question = "El médico recomendó que ___ más agua.",
+                    options = listOf("bebo", "bebía", "bebiera", "beberé"),
+                    correctAnswer = "bebiera",
+                    explanation = "recomendó que + Imp.Subj. Глагол воли в прошедшем требует Subjuntivo Imperfecto в придаточном."
+                )
+            )
+        ),
+
+        // ── u13_l1: Образование Imp.Subj.: irregulares ─────────────────
+        "u13_l1" to LessonContent(
+            intro = "Неправильные глаголы в Subjuntivo Imperfecto образуются от основы 3 л. мн.ч. Pretérito Indefinido — это главное правило, которое охватывает ВСЕ исключения.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Глаголы с изменением корня",
+                    items = listOf(
+                        LessonItem("ser / ir → fueron", "fuera, fueras, fuera, fuéramos, fuerais, fueran"),
+                        LessonItem("tener → tuvieron", "tuviera, tuvieras, tuviera..."),
+                        LessonItem("poder → pudieron", "pudiera, pudieras, pudiera..."),
+                        LessonItem("poner → pusieron", "pusiera, pusieras, pusiera..."),
+                        LessonItem("saber → supieron", "supiera, supieras, supiera..."),
+                        LessonItem("hacer → hicieron", "hiciera, hicieras, hiciera..."),
+                        LessonItem("venir → vinieron", "viniera, vinieras, viniera..."),
+                        LessonItem("querer → quisieron", "quisiera, quisieras, quisiera...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы на -ir с изменением",
+                    items = listOf(
+                        LessonItem("dormir → durmieron", "durmiera, durmieras, durmiera..."),
+                        LessonItem("sentir → sintieron", "sintiera, sintieras, sintiera..."),
+                        LessonItem("pedir → pidieron", "pidiera, pidieras, pidiera..."),
+                        LessonItem("seguir → siguieron", "siguiera, siguieras, siguiera...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ключевое правило",
+                    items = listOf(
+                        LessonItem("Шаг 1", "Возьми 3 л. мн.ч. Pretérito Indefinido: vinieron"),
+                        LessonItem("Шаг 2", "Убери -ron: vinie-"),
+                        LessonItem("Шаг 3", "Добавь окончания: -ra, -ras, -ra, -ramos, -rais, -ran"),
+                        LessonItem("Результат", "viniera, vinieras, viniera, viniéramos, vinierais, vinieran")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Неправильный глагол",
+                    question = "Quería que tú ___ (venir) a la fiesta.",
+                    options = listOf("vengas", "vinieras", "vendrías", "vienes"),
+                    correctAnswer = "vinieras",
+                    explanation = "quería que + Imp.Subj.: vinieras (от vinieron → vinieRAS). «Я хотел, чтобы ты пришёл на вечеринку.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Основа образования",
+                    question = "«Pudieran» — это Imp.Subj. от какого глагола?",
+                    options = listOf("poder", "poner", "pedir", "perder"),
+                    correctAnswer = "poder",
+                    explanation = "poder → pudieron (3 л. мн.ч. Indef.) → pudie- + ran = pudieran."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Глагол SER/IR",
+                    question = "Ojalá todo ___ (ser) más sencillo.",
+                    options = listOf("sea", "fuera", "sería", "fue"),
+                    correctAnswer = "fuera",
+                    explanation = "ojalá + Imp.Subj.: fuera (ser и ir совпадают в Indef.: fueron → fuera). «Если бы только всё было проще.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Неправильная форма",
+                    question = "El jefe esperaba que nosotros ___ (hacer) un buen trabajo.",
+                    options = listOf("hagamos", "hiciéramos", "haríamos", "hacemos"),
+                    correctAnswer = "hiciéramos",
+                    explanation = "esperaba que + Imp.Subj.: hiciéramos (hacer → hicieron → hiciéRAMOS). Ударение на слоге перед -ramos!"
+                )
+            )
+        ),
+
+        // ── u13_l2: Si + Imp.Subj. + Condicional ──────────────────────
+        "u13_l2" to LessonContent(
+            intro = "Конструкция Si + Imperfecto de Subjuntivo + Condicional — главный инструмент B2 для выражения нереальных условий в настоящем и будущем.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Структура",
+                    items = listOf(
+                        LessonItem("Si + Imp.Subj.", "Si tuviera dinero... — Если бы у меня были деньги..."),
+                        LessonItem("Condicional Simple", "...compraría una casa. — ...я бы купил дом."),
+                        LessonItem("Порядок свободный", "Compraría una casa si tuviera dinero."),
+                        LessonItem("ВАЖНО", "В главном предложении НЕ используется Subjuntivo!")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Si viviera en París,", "hablaría francés perfectamente."),
+                        LessonItem("Si pudiera volar,", "visitaría todos los países del mundo."),
+                        LessonItem("Si fuera médico,", "trabajaría en Médicos Sin Fronteras."),
+                        LessonItem("¿Qué harías", "si te tocara la lotería?")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ошибки и нюансы",
+                    items = listOf(
+                        LessonItem("❌ Si tendría dinero", "ОШИБКА: в if-клаузе не используют Condicional"),
+                        LessonItem("✅ Si tuviera dinero", "правильно: Imp.Subj. в if-клаузе"),
+                        LessonItem("Condicional с «si»?", "Только в значении «whether»: No sé si vendría. = «Не знаю, придёт ли он.»"),
+                        LessonItem("De + inf. = альтернатива", "De tener dinero, compraría... (книжный стиль)")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Нереальное условие",
+                    question = "Si ___ (hablar) chino, trabajaría en Shanghai.",
+                    options = listOf("hablaré", "hablara", "hablaría", "hablo"),
+                    correctAnswer = "hablara",
+                    explanation = "Si + Imp.Subj. (hablara) + Condicional (trabajaría). «Если бы я говорил по-китайски, я бы работал в Шанхае.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Распознай ошибку",
+                    question = "¿Qué ___ tú si ganaras un millón de euros?",
+                    options = listOf("harías", "hagas", "hicieras", "harás"),
+                    correctAnswer = "harías",
+                    explanation = "В главном предложении — Condicional Simple (harías). «Что бы ты сделал, если бы выиграл миллион евро?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбор конструкции",
+                    question = "Si ___ (ser) presidente, cambiaría muchas cosas.",
+                    options = listOf("soy", "sea", "fuera", "seré"),
+                    correctAnswer = "fuera",
+                    explanation = "Si + fuera (Imp.Subj. от ser) + cambiaría (Condicional). «Если бы я был президентом, я бы изменил многое.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ошибка в предложении",
+                    question = "Indica la oración CORRECTA:",
+                    options = listOf("Si tendría tiempo, llamaría.", "Si tuviera tiempo, llamaría.", "Si tuviera tiempo, llamara.", "Si tengo tiempo, llamaría."),
+                    correctAnswer = "Si tuviera tiempo, llamaría.",
+                    explanation = "Si + Imp.Subj. (tuviera) + Condicional (llamaría) — единственная правильная форма для нереального условия."
+                )
+            )
+        ),
+
+        // ── u13_l3: Ojalá + Imp.Subj. ──────────────────────────────────
+        "u13_l3" to LessonContent(
+            intro = "«Ojalá» — восклицание из арабского «inshallah». С Subjuntivo Imperfecto выражает маловероятные или нереальные желания.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Ojalá + Presente Subj. vs Imperfecto Subj.",
+                    items = listOf(
+                        LessonItem("Ojalá + Presente Subj.", "Желание возможное: Ojalá venga. — Надеюсь, придёт."),
+                        LessonItem("Ojalá + Imp.Subj.", "Желание нереальное: Ojalá viniera. — Если бы только он пришёл!"),
+                        LessonItem("Разница на практике", "Ojalá haga buen tiempo. (возможно) vs Ojalá hiciera buen tiempo. (нереально)"),
+                        LessonItem("Ojalá + Pluscuamp.Subj.", "Ojalá hubiera venido. — Жаль, что он не пришёл. (сожаление о прошлом)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Типичные выражения",
+                    items = listOf(
+                        LessonItem("Ojalá fuera rico.", "Если бы только я был богатым."),
+                        LessonItem("Ojalá tuviera más tiempo.", "Если бы только у меня было больше времени."),
+                        LessonItem("Ojalá pudiera ayudarte.", "Если бы я только мог тебе помочь."),
+                        LessonItem("Ojalá no hubiera dicho eso.", "Жаль, что я это сказал. (прошлое)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие формулы желания",
+                    items = listOf(
+                        LessonItem("Ojalá que...", "то же самое, «que» опционально"),
+                        LessonItem("Quién pudiera...", "Кто бы мог... (нереальное желание от 1 л.)"),
+                        LessonItem("Quién supiera hablar...", "Если бы кто-то умел говорить..."),
+                        LessonItem("¡Que + Subj.Pres.!", "пожелание другому: ¡Que te mejores! — Выздоравливай!")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Нереальное желание",
+                    question = "Ojalá ___ (poder) quedarme aquí para siempre.",
+                    options = listOf("pueda", "pudiera", "podría", "pude"),
+                    correctAnswer = "pudiera",
+                    explanation = "Ojalá + Imp.Subj. (pudiera) — нереальное, невозможное желание. «Если бы только я мог остаться здесь навсегда.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Возможное vs нереальное",
+                    question = "«Ojalá llueva mañana» — это выражает:",
+                    options = listOf("нереальное желание", "сожаление о прошлом", "возможное желание", "приказ"),
+                    correctAnswer = "возможное желание",
+                    explanation = "llueva — Presente de Subjuntivo → желание реальное/возможное. «Ojalá lloviera» → нереальное."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Quién + Imp.Subj.",
+                    question = "___ supiera tocar el piano como tú.",
+                    options = listOf("Ojalá", "Quién", "Si yo", "Que yo"),
+                    correctAnswer = "Quién",
+                    explanation = "Quién + Imp.Subj. = нереальное желание от 1 л. «Вот если бы я умел играть на пианино, как ты.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Формула",
+                    question = "«Ojalá ___ (tener) más vacaciones» — нереальное желание:",
+                    options = listOf("tenga", "tuviera", "tendré", "tengo"),
+                    correctAnswer = "tuviera",
+                    explanation = "Ojalá + Imp.Subj.: tuviera. «Если бы только у меня было больше отпуска.»"
+                )
+            )
+        ),
+
+        // ── u13_l4: Como si ─────────────────────────────────────────────
+        "u13_l4" to LessonContent(
+            intro = "«Como si» (как будто) всегда требует Subjuntivo — Imperfecto для настоящего/будущего, Pluscuamperfecto для прошлого.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Структура como si",
+                    items = listOf(
+                        LessonItem("como si + Imp.Subj.", "настоящее: Habla como si supiera todo. — Говорит, как будто знает всё."),
+                        LessonItem("como si + Pluscuamp.Subj.", "прошлое: Habla como si hubiera estado allí. — Говорит, как будто был там."),
+                        LessonItem("Главное предложение", "может быть в любом времени"),
+                        LessonItem("Нельзя Indicativo!", "❌ Habla como si sabe todo — ОШИБКА")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Me trató como si fuera un niño.", "Он обращался со мной, как с ребёнком."),
+                        LessonItem("Gasta dinero como si fuera millonario.", "Тратит деньги, как будто миллионер."),
+                        LessonItem("Actuó como si no hubiera pasado nada.", "Он вёл себя, как будто ничего не произошло."),
+                        LessonItem("Corría como si le persiguiera el diablo.", "Бежал, как будто за ним гнался дьявол.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Похожие конструкции",
+                    items = listOf(
+                        LessonItem("igual que si + Subj.", "то же что como si: igual que si fuera.."),
+                        LessonItem("como si nada", "как ни в чём не бывало (устойчивое)"),
+                        LessonItem("como si tal cosa", "как будто ничего особенного (разговорное)"),
+                        LessonItem("cual si + Subj.", "поэтическая форма como si")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Como si + настоящее",
+                    question = "Me habla como si ___ (ser) mi jefe.",
+                    options = listOf("sea", "fuera", "sería", "es"),
+                    correctAnswer = "fuera",
+                    explanation = "como si + Imp.Subj. (fuera) для настоящего. «Разговаривает со мной, как будто он мой начальник.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Нельзя Indicativo",
+                    question = "Baila como si ___ (haber) ensayado toda la vida.",
+                    options = listOf("ha", "haya", "hubiera", "había"),
+                    correctAnswer = "hubiera",
+                    explanation = "como si + Pluscuamp.Subj. (hubiera ensayado) — действие в прошлом. «Танцует, как будто репетировал всю жизнь.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбор времени",
+                    question = "Llegó tarde y entró como si no ___ (pasar) nada.",
+                    options = listOf("pase", "pasara", "hubiera pasado", "pasaría"),
+                    correctAnswer = "hubiera pasado",
+                    explanation = "como si + Pluscuamp.Subj. (hubiera pasado) — прошедшее действие, предшествующее llegó. «Опоздал и вошёл, как будто ничего не произошло.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Устойчивое выражение",
+                    question = "Le dije que había cometido un error y se quedó ___, sin reaccionar.",
+                    options = listOf("como si nada", "como si fuera", "como si hubiera", "como si tal"),
+                    correctAnswer = "como si nada",
+                    explanation = "como si nada = как ни в чём не бывало. Устойчивое выражение без глагола."
+                )
+            )
+        ),
+
+        // ── u13_l5: Мини-тест: Subjuntivo Imperfecto ───────────────────
+        "u13_l5" to LessonContent(
+            intro = "Мини-тест: Subjuntivo Imperfecto — закрепление форм и конструкций уроков 1–5.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Повторение: когда Imp.Subj.",
+                    items = listOf(
+                        LessonItem("Si + Imp.Subj. + Condicional", "нереальное условие в настоящем"),
+                        LessonItem("Ojalá + Imp.Subj.", "нереальное/маловероятное желание"),
+                        LessonItem("Como si + Imp.Subj.", "настоящее: как будто..."),
+                        LessonItem("Глагол воли в прошлом + que", "quería que viniera, pidió que hiciera")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ключевые неправильные формы",
+                    items = listOf(
+                        LessonItem("ser/ir", "fuera / fuese"),
+                        LessonItem("tener", "tuviera / tuviese"),
+                        LessonItem("poder", "pudiera / pudiese"),
+                        LessonItem("hacer", "hiciera / hiciese"),
+                        LessonItem("saber", "supiera / supiese"),
+                        LessonItem("querer", "quisiera / quisiese")
+                    )
+                ),
+                LessonSection(
+                    heading = "Типичные ошибки",
+                    items = listOf(
+                        LessonItem("❌ Si tendría...", "✅ Si tuviera — в if-клаузе нет Condicional"),
+                        LessonItem("❌ Como si sabe...", "✅ Como si supiera — после como si только Subj."),
+                        LessonItem("❌ Ojalá fuera posible + Indicativo", "✅ Ojalá fuera posible — только Subj."),
+                        LessonItem("Ударение nosotros", "tuviéramos, hiciéramos, fuéramos — акцент обязателен!")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тест 1",
+                    question = "Si ___ (saber) la respuesta, te la diría.",
+                    options = listOf("sé", "sabría", "supiera", "sepa"),
+                    correctAnswer = "supiera",
+                    explanation = "Si + Imp.Subj. (supiera) + Condicional (diría). «Если бы я знал ответ, я бы тебе сказал.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тест 2",
+                    question = "Ojalá ___ (poder) acompañarte, pero tengo trabajo.",
+                    options = listOf("puedo", "pueda", "pudiera", "podré"),
+                    correctAnswer = "pudiera",
+                    explanation = "Ojalá + Imp.Subj. (pudiera) — нереальное желание. «Если бы только я мог тебя сопроводить, но у меня работа.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тест 3",
+                    question = "Habla con todo el mundo como si ___ (conocer) de toda la vida.",
+                    options = listOf("conoce", "conozca", "conociera", "conocerá"),
+                    correctAnswer = "conociera",
+                    explanation = "como si + Imp.Subj. (conociera). «Разговаривает со всеми, как будто знает их всю жизнь.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Тест 4",
+                    question = "El profesor pidió que los alumnos ___ (hacer) los deberes.",
+                    options = listOf("hagan", "hacen", "hicieran", "harán"),
+                    correctAnswer = "hicieran",
+                    explanation = "pidió que + Imp.Subj. (hicieran). Глагол просьбы в прошлом требует Imp.Subj. в придаточном."
+                )
+            )
+        ),
+
+        // ── u13_l6: Pluscuamperfecto de Subjuntivo ─────────────────────
+        "u13_l6" to LessonContent(
+            intro = "Pluscuamperfecto de Subjuntivo (hubiera/hubiese + participio) используется для гипотез о прошлом и выражения сожаления о том, чего не случилось.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Образование",
+                    items = listOf(
+                        LessonItem("hubiera / hubiese + participio", "haber в Imp.Subj. + participio глагола"),
+                        LessonItem("yo hubiera hablado", "я бы поговорил (но не поговорил)"),
+                        LessonItem("tú hubieras comido", "ты бы поел (но не поел)"),
+                        LessonItem("él/ella hubiera vivido", "он/она бы жил(а)"),
+                        LessonItem("nosotros hubiéramos", "мы бы..."),
+                        LessonItem("vosotros hubierais", "вы бы..."),
+                        LessonItem("ellos hubieran", "они бы...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Когда используется",
+                    items = listOf(
+                        LessonItem("Сожаление о прошлом (ojalá)", "Ojalá hubiera estudiado más. — Жаль, что я больше не учился."),
+                        LessonItem("Условие в прошлом (si)", "Si hubiera sabido, habría venido. — Если бы я знал, я бы пришёл."),
+                        LessonItem("Como si (прошлое)", "Habló como si lo hubiera visto todo. — Говорил, как будто видел всё."),
+                        LessonItem("Косвенная речь (оценка)", "Dudaba de que hubiera llegado. — Сомневался, что он прибыл.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глагол haber в Imp.Subj.",
+                    items = listOf(
+                        LessonItem("yo hubiera / hubiese", "основа: hubieron → hubie-"),
+                        LessonItem("tú hubieras / hubieses", ""),
+                        LessonItem("él hubiera / hubiese", ""),
+                        LessonItem("nosotros hubiéramos / hubiésemos", ""),
+                        LessonItem("vosotros hubierais / hubieseis", ""),
+                        LessonItem("ellos hubieran / hubiesen", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Pluscuamperfecto de Subj.",
+                    question = "Ojalá ___ (estudiar) más para el examen.",
+                    options = listOf("estudiara", "hubiera estudiado", "habría estudiado", "haya estudiado"),
+                    correctAnswer = "hubiera estudiado",
+                    explanation = "Ojalá + Pluscuamp.Subj. (hubiera estudiado) — сожаление о прошлом. «Жаль, что я больше не готовился к экзамену.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образование формы",
+                    question = "«Hubieran llegado» — это форма какого времени?",
+                    options = listOf("Pretérito Perfecto Subj.", "Pluscuamperfecto Subj.", "Condicional Compuesto", "Futuro Perfecto"),
+                    correctAnswer = "Pluscuamperfecto Subj.",
+                    explanation = "hubieran (haber в Imp.Subj.) + llegado (participio) = Pluscuamperfecto de Subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Косвенная речь",
+                    question = "No creía que el tren ___ (salir) ya.",
+                    options = listOf("salga", "saliera", "hubiera salido", "habría salido"),
+                    correctAnswer = "hubiera salido",
+                    explanation = "no creía que + Pluscuamp.Subj. — действие предшествует моменту «no creía». «Не верил, что поезд уже ушёл.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сожаление о прошлом",
+                    question = "Como si ___ (ver) un fantasma, palideció.",
+                    options = listOf("ve", "viera", "hubiera visto", "habría visto"),
+                    correctAnswer = "hubiera visto",
+                    explanation = "como si + Pluscuamp.Subj. (hubiera visto) — реакция относится к прошедшему событию. «Побледнел, как будто увидел привидение.»"
+                )
+            )
+        ),
+
+        // ── u13_l7: Si hubiera sabido… — сожаление о прошлом ──────────
+        "u13_l7" to LessonContent(
+            intro = "Si + Pluscuamperfecto de Subjuntivo + Condicional Compuesto — выражение нереального условия в прошлом: «если бы тогда... то я бы тогда...»",
+            sections = listOf(
+                LessonSection(
+                    heading = "Структура",
+                    items = listOf(
+                        LessonItem("Si + Pluscuamp.Subj.", "Si hubiera sabido... — Если бы я знал..."),
+                        LessonItem("Condicional Compuesto", "...habría venido. — ...я бы пришёл."),
+                        LessonItem("Смысл", "оба действия НЕ состоялись в прошлом"),
+                        LessonItem("Порядок свободный", "Habría venido si hubiera sabido.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Si hubiera estudiado más,", "habría aprobado el examen."),
+                        LessonItem("Si no hubiera llovido,", "habríamos salido al parque."),
+                        LessonItem("Si hubiera sabido cocinar,", "habría preparado la cena."),
+                        LessonItem("¿Qué habrías hecho", "si hubieras estado en mi lugar?")
+                    )
+                ),
+                LessonSection(
+                    heading = "Смешанные условия",
+                    items = listOf(
+                        LessonItem("Прошлое → настоящее", "Si hubiera estudiado medicina, sería médico ahora."),
+                        LessonItem("Настоящее → прошлое", "Si fuera más valiente, habría pedido el aumento."),
+                        LessonItem("Конdicional Simple vs Compuesto", "habría = о прошлом; habría vs. сейчас — смотри контекст"),
+                        LessonItem("De + inf. compuesto", "De haber sabido, habría venido. (книжное)")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Нереальное прошлое",
+                    question = "Si ___ (llegar) a tiempo, no habríamos perdido el vuelo.",
+                    options = listOf("llegamos", "llegáramos", "hubiéramos llegado", "habríamos llegado"),
+                    correctAnswer = "hubiéramos llegado",
+                    explanation = "Si + Pluscuamp.Subj. (hubiéramos llegado) + Condicional Compuesto (habríamos perdido). «Если бы мы приехали вовремя, мы бы не опоздали на рейс.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional Compuesto",
+                    question = "Si hubiera dormido bien, no ___ (estar) tan cansado ahora.",
+                    options = listOf("estaré", "estuviera", "habría estado", "estaría"),
+                    correctAnswer = "habría estado",
+                    explanation = "Condicional Compuesto (habría estado) в главной части. «Если бы я хорошо поспал, я бы не устал так сейчас.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Смешанное условие",
+                    question = "Si hubiera estudiado Derecho, ___ (ser) abogado ahora.",
+                    options = listOf("habría sido", "sería", "sea", "fuera"),
+                    correctAnswer = "sería",
+                    explanation = "Смешанное: Si hubiera... (прошлое) + sería (Condicional Simple, сейчас). «Если бы он тогда изучал право, сейчас был бы адвокатом.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Книжная форма",
+                    question = "___ haber sabido la verdad, no habría dicho nada.",
+                    options = listOf("De", "Si", "Aunque", "Como"),
+                    correctAnswer = "De",
+                    explanation = "De + inf. compuesto = Si hubiera + Subj. (книжный стиль). «Если бы я знал правду, я бы ничего не сказал.»"
+                )
+            )
+        ),
+
+        // ── u13_l8: Condicional Compuesto ──────────────────────────────
+        "u13_l8" to LessonContent(
+            intro = "Condicional Compuesto (habría + participio) — «я бы сделал» о прошлом. Используется в гипотетических прошлых ситуациях и сожалениях.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Образование",
+                    items = listOf(
+                        LessonItem("habría + participio", "haber в Condicional + participio глагола"),
+                        LessonItem("yo habría hablado", "я бы поговорил"),
+                        LessonItem("tú habrías comido", "ты бы поел"),
+                        LessonItem("él/ella habría vivido", "он/она бы жил(а)"),
+                        LessonItem("nosotros habríamos", "мы бы..."),
+                        LessonItem("vosotros habríais", "вы бы..."),
+                        LessonItem("ellos habrían", "они бы...")
+                    )
+                ),
+                LessonSection(
+                    heading = "Значения",
+                    items = listOf(
+                        LessonItem("Нереальное прошлое (Si Pluscuamp.)", "Si hubiera sabido, habría venido."),
+                        LessonItem("Упрёк / сожаление", "Podrías haberme avisado. — Мог бы меня предупредить."),
+                        LessonItem("Предположение о прошлом", "Ya habrá llegado. → Ya habría llegado. (прошлое)"),
+                        LessonItem("Несостоявшееся будущее", "Mañana habríamos terminado... (если бы не помешало)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Condicional Simple vs Compuesto",
+                    items = listOf(
+                        LessonItem("Si tuviera dinero, compraría", "Simple → о настоящем/будущем"),
+                        LessonItem("Si hubiera tenido dinero, habría comprado", "Compuesto → о прошлом"),
+                        LessonItem("Debería / habría debido", "Debería haber ido vs habría debido ir"),
+                        LessonItem("Упрёк мягкий", "Habrías podido llamar. — Ты мог бы позвонить.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional Compuesto",
+                    question = "Si nos ___ (avisar), habríamos preparado algo especial.",
+                    options = listOf("avisas", "avisaras", "hubieras avisado", "habrías avisado"),
+                    correctAnswer = "hubieras avisado",
+                    explanation = "Si + Pluscuamp.Subj. (hubieras avisado). «Если бы ты предупредил, мы бы подготовили что-нибудь особенное.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Упрёк",
+                    question = "___ podido venir a la reunión. ¿Por qué no avisaste?",
+                    options = listOf("Habrías", "Hubieras", "Habías", "Tenías"),
+                    correctAnswer = "Habrías",
+                    explanation = "Habrías podido = Condicional Compuesto — мягкий упрёк. «Ты мог бы прийти на встречу. Почему не предупредил?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образование",
+                    question = "«Habríamos terminado» = ___ + terminado",
+                    options = listOf("habremos", "habríamos", "hubiéramos", "hayamos"),
+                    correctAnswer = "habríamos",
+                    explanation = "habríamos (haber в 1 л. мн.ч. Condicional) + terminado. Condicional Compuesto."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбор времени",
+                    question = "Si no ___ (perder) el tren, habríamos llegado a tiempo.",
+                    options = listOf("perdiéramos", "hubiéramos perdido", "habríamos perdido", "perdemos"),
+                    correctAnswer = "hubiéramos perdido",
+                    explanation = "Si + Pluscuamp.Subj. (hubiéramos perdido) + Cond.Comp. (habríamos llegado). Оба действия нереальны в прошлом."
+                )
+            )
+        ),
+
+        // ── u13_l9: Que yo sepa / que yo recuerde ──────────────────────
+        "u13_l9" to LessonContent(
+            intro = "Некоторые формы Subjuntivo Imperfecto встречаются как устойчивые вставные конструкции — их нужно знать наизусть.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Устойчивые вставные формулы",
+                    items = listOf(
+                        LessonItem("que yo sepa", "насколько я знаю (сомнение)"),
+                        LessonItem("que yo recuerde", "насколько я помню"),
+                        LessonItem("que yo vea", "насколько я вижу"),
+                        LessonItem("que yo entienda", "насколько я понимаю"),
+                        LessonItem("que yo sepa / recuerde", "всегда с Subjuntivo, даже без si/ojalá")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры в речи",
+                    items = listOf(
+                        LessonItem("Que yo sepa, no ha llamado nadie.", "Насколько я знаю, никто не звонил."),
+                        LessonItem("Que yo recuerde, vivía en Madrid.", "Насколько я помню, он жил в Мадриде."),
+                        LessonItem("No ha pasado nada, que yo vea.", "Насколько я вижу, ничего не произошло."),
+                        LessonItem("Que yo entienda, no es culpa tuya.", "Насколько я понимаю, это не твоя вина.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие устойчивые Subj.",
+                    items = listOf(
+                        LessonItem("Como quiera que sea", "как бы то ни было"),
+                        LessonItem("Sea como sea", "как бы то ни было, в любом случае"),
+                        LessonItem("Pase lo que pase", "что бы ни случилось"),
+                        LessonItem("Digan lo que digan", "что бы ни говорили"),
+                        LessonItem("Venga de donde venga", "откуда бы ни происходило")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Устойчивая конструкция",
+                    question = "___ yo sepa, el museo cierra los lunes.",
+                    options = listOf("Como", "Que", "Si", "Aunque"),
+                    correctAnswer = "Que",
+                    explanation = "Que yo sepa = насколько я знаю. Вставная конструкция с Subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Значение",
+                    question = "«Que yo recuerde, vivíamos cerca del mar» — что значит «que yo recuerde»?",
+                    options = listOf("чтобы я помнил", "насколько я помню", "хотя я и помню", "потому что помню"),
+                    correctAnswer = "насколько я помню",
+                    explanation = "Que yo recuerde = насколько я помню (осторожная, неуверенная ссылка на память)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Pase lo que pase",
+                    question = "___ lo que ___, no voy a rendirme.",
+                    options = listOf("Pase / pase", "Pasa / pasa", "Pasara / pasara", "Pasará / pasará"),
+                    correctAnswer = "Pase / pase",
+                    explanation = "Pase lo que pase = что бы ни случилось. Устойчивое выражение с Subj.Pres."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Sea como sea",
+                    question = "___ como ___, terminaremos este proyecto.",
+                    options = listOf("Sea / sea", "Es / es", "Fuera / fuera", "Sería / sería"),
+                    correctAnswer = "Sea / sea",
+                    explanation = "Sea como sea = как бы то ни было. «В любом случае мы закончим этот проект.»"
+                )
+            )
+        ),
+
+        // ── u13_l10: Aunque + Subj. vs Indicativo ──────────────────────
+        "u13_l10" to LessonContent(
+            intro = "«Aunque» (хотя/даже если) — уникальный союз, который меняет наклонение в зависимости от того, говорим ли мы о факте или о гипотезе.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Aunque + Indicativo vs Subjuntivo",
+                    items = listOf(
+                        LessonItem("Aunque + Indicativo", "факт или известное: Aunque llueve, saldré. (Хотя идёт дождь — я это знаю)"),
+                        LessonItem("Aunque + Subj.Pres.", "гипотеза о будущем: Aunque llueva, saldré. (Даже если будет дождь)"),
+                        LessonItem("Aunque + Subj.Imp.", "нереальное: Aunque lloviera, saldría. (Даже если бы шёл дождь)"),
+                        LessonItem("Смысловая разница!", "Indicativo = факт; Subjuntivo = гипотеза/уступка")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Aunque es difícil,", "lo intentaré. (факт: это трудно, я знаю)"),
+                        LessonItem("Aunque sea difícil,", "lo intentaré. (гипотеза: даже если окажется трудным)"),
+                        LessonItem("Aunque fuera difícil,", "lo intentaría. (нереальное: даже если бы было трудно)"),
+                        LessonItem("Aunque me lo pidas,", "no te lo daré. (будущая гипотеза)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие уступительные союзы с Subj.",
+                    items = listOf(
+                        LessonItem("por más que + Subj.", "сколько бы ни: Por más que estudie, no apruebo."),
+                        LessonItem("por mucho que + Subj.", "как бы много ни: Por mucho que coma, no engorda."),
+                        LessonItem("a pesar de que + Ind./Subj.", "несмотря на то, что"),
+                        LessonItem("aun cuando + Subj.", "книжное = aunque + Subj.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Факт vs гипотеза",
+                    question = "Aunque ___ (estar) cansado, siguió trabajando. (факт: он был устал)",
+                    options = listOf("esté", "estuvo", "estaba", "estuviera"),
+                    correctAnswer = "estaba",
+                    explanation = "Aunque + Indicativo (Imperfecto: estaba) = факт в прошлом. «Хотя он был устал, продолжил работать.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Будущая гипотеза",
+                    question = "Aunque ___ (llover) mañana, iremos al partido.",
+                    options = listOf("llueve", "llovía", "llueva", "lloviera"),
+                    correctAnswer = "llueva",
+                    explanation = "Aunque + Subj.Pres. (llueva) = гипотеза о будущем. «Даже если завтра будет дождь, мы пойдём на матч.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Por más que",
+                    question = "Por más que ___ (intentar), no consigo abrir la caja.",
+                    options = listOf("intento", "intente", "intentaré", "intentaba"),
+                    correctAnswer = "intente",
+                    explanation = "por más que + Subj.Pres. (intente). «Сколько бы я ни пытался, не могу открыть коробку.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Нереальное aunque",
+                    question = "Aunque me ___ (dar) un millón de euros, no haría eso.",
+                    options = listOf("da", "dé", "diera", "daría"),
+                    correctAnswer = "diera",
+                    explanation = "Aunque + Imp.Subj. (diera) = нереальное условие. «Даже если бы мне дали миллион евро, я бы этого не сделал.»"
+                )
+            )
+        ),
+
+        // ── u13_l11: Subj. в придаточных цели ──────────────────────────
+        "u13_l11" to LessonContent(
+            intro = "Придаточные цели (para que, a fin de que, con el fin de que) всегда требуют Subjuntivo, так как цель — это всегда что-то ещё не состоявшееся.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Para que + Subjuntivo",
+                    items = listOf(
+                        LessonItem("para que + Subj.Pres.", "Te lo explico para que lo entiendas. — Объясняю тебе, чтобы ты понял."),
+                        LessonItem("para que + Imp.Subj.", "Te lo explicaba para que lo entendieras. — Объяснял тебе, чтобы ты понял."),
+                        LessonItem("Субъект должен отличаться!", "Te lo digo (yo) para que lo sepas (tú). Если субъекты совпадают → para + infinitivo"),
+                        LessonItem("Совпадение субъектов", "Estudio para aprender. (не para que aprenda)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие целевые союзы",
+                    items = listOf(
+                        LessonItem("a fin de que + Subj.", "с целью того, чтобы (официальный)"),
+                        LessonItem("con el fin de que + Subj.", "с той целью, чтобы"),
+                        LessonItem("con el objeto de que + Subj.", "с тем, чтобы"),
+                        LessonItem("con vistas a que + Subj.", "с расчётом на то, чтобы")
+                    )
+                ),
+                LessonSection(
+                    heading = "Финальные конструкции без que",
+                    items = listOf(
+                        LessonItem("para + infinitivo", "тот же субъект: Vengo para ayudar."),
+                        LessonItem("a fin de + infinitivo", "официально: a fin de mejorar la situación"),
+                        LessonItem("con el fin de + infinitivo", "официально: con el fin de aumentar ventas"),
+                        LessonItem("de modo que + Subj.", "так, чтобы: Habla más despacio, de modo que te entendamos.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Para que + Subj.",
+                    question = "Te mando un mensaje para que ___ (saber) la hora.",
+                    options = listOf("sabes", "sepas", "supieras", "sabías"),
+                    correctAnswer = "sepas",
+                    explanation = "para que + Subj.Pres. (sepas) — разные субъекты (yo → tú). «Пишу тебе сообщение, чтобы ты знал время.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Совпадение субъектов",
+                    question = "Voy al gimnasio ___ estar en forma. (тот же субъект)",
+                    options = listOf("para que", "para", "a fin de que", "con el fin de que"),
+                    correctAnswer = "para",
+                    explanation = "Совпадение субъектов → para + infinitivo (не para que + Subj.). «Хожу в зал, чтобы быть в форме.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Прошедшее para que",
+                    question = "Le dejé las llaves para que ___ (poder) entrar.",
+                    options = listOf("puede", "pueda", "pudiera", "podría"),
+                    correctAnswer = "pudiera",
+                    explanation = "para que + Imp.Subj. (pudiera) — главное в прошлом. «Оставил ключи, чтобы он мог войти.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Официальный стиль",
+                    question = "Se ha redactado este informe ___ que todos los empleados ___ (estar) informados.",
+                    options = listOf("para / estén", "a fin de / estén", "con el fin de que / estén", "para que / están"),
+                    correctAnswer = "con el fin de que / estén",
+                    explanation = "con el fin de que + Subj.Pres. (estén) — официальный регистр. «Доклад составлен с целью информирования всех сотрудников.»"
+                )
+            )
+        ),
+
+        // ── u13_l12: Subj. в придаточных времени ──────────────────────
+        "u13_l12" to LessonContent(
+            intro = "Временные придаточные с союзами cuando, antes de que, después de que, hasta que, en cuanto используют Subjuntivo для выражения будущих действий.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Cuando + Subj. (будущее)",
+                    items = listOf(
+                        LessonItem("cuando + Subj.Pres.", "будущее: Cuando llegues, llámame. — Когда приедешь, позвони мне."),
+                        LessonItem("cuando + Indicativo", "настоящее/прошлое: Cuando llego, llamo. — Когда прихожу, звоню."),
+                        LessonItem("Правило", "будущее действие → Subjuntivo; привычка/прошлое → Indicativo"),
+                        LessonItem("cuando llegues ≠ cuando llegarás", "НЕ используй Futuro после cuando!")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие временные союзы",
+                    items = listOf(
+                        LessonItem("antes de que + Subj.", "до того, как: Sal antes de que llegue. — Уходи до его прихода."),
+                        LessonItem("después de que + Subj./Ind.", "после того, как: Después de que termines... — После того как закончишь..."),
+                        LessonItem("hasta que + Subj.", "до тех пор пока: Espera hasta que acabe. — Жди, пока не закончу."),
+                        LessonItem("en cuanto / tan pronto como", "как только: En cuanto pueda, te escribo.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Antes de que — особое внимание",
+                    items = listOf(
+                        LessonItem("antes de que + ВСЕГДА Subj.", "Antes de que vengas, prepararé todo."),
+                        LessonItem("antes de + inf. (один субъект)", "Antes de salir, apaga la luz."),
+                        LessonItem("Отличие", "antes de que = разные субъекты; antes de = один субъект"),
+                        LessonItem("En cuanto llegues,", "te llamaré. — Как только приедешь, позвоню.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Cuando + будущее",
+                    question = "Cuando ___ (tener) tiempo, visitaré a mis abuelos.",
+                    options = listOf("tengo", "tendré", "tenga", "tuviera"),
+                    correctAnswer = "tenga",
+                    explanation = "cuando + Subj.Pres. (tenga) — будущее действие. «Когда у меня будет время, навещу бабушку с дедушкой.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Antes de que",
+                    question = "Avísame antes de que ___ (salir).",
+                    options = listOf("sales", "salgas", "saldrás", "salieras"),
+                    correctAnswer = "salgas",
+                    explanation = "antes de que + Subj.Pres. (salgas). «Предупреди меня до того, как уйдёшь.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Hasta que + Subj.",
+                    question = "No me iré hasta que no ___ (terminar) el trabajo.",
+                    options = listOf("termino", "termine", "terminé", "terminaré"),
+                    correctAnswer = "termine",
+                    explanation = "hasta que + Subj.Pres. (termine) — будущее. «Не уйду, пока не закончу работу.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "En cuanto",
+                    question = "___ (llegar) el paquete, te aviso.",
+                    options = listOf("Cuando llega", "En cuanto llegue", "Cuando llegará", "Tan pronto llegó"),
+                    correctAnswer = "En cuanto llegue",
+                    explanation = "en cuanto + Subj.Pres. (llegue) — «как только». «Как только придёт посылка, сообщу тебе.»"
+                )
+            )
+        ),
+
+        // ── u13_l13: Subj. в придаточных относительных ─────────────────
+        "u13_l13" to LessonContent(
+            intro = "Придаточные определительные используют Subjuntivo, когда существительное, которое они определяют, неизвестно, неопределённо или не существует.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Indicativo vs Subjuntivo в relativas",
+                    items = listOf(
+                        LessonItem("Indicativo", "конкретный, известный: Busco al médico que habla ruso. (знаю конкретного)"),
+                        LessonItem("Subjuntivo", "неопределённый: Busco un médico que hable ruso. (любой, если такой есть)"),
+                        LessonItem("Negación → Subj.", "No hay nadie que sepa la respuesta. (никто не существует)"),
+                        LessonItem("Superlativo → Subj.", "Es el mejor libro que haya leído. (относительная оценка)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Necesito a alguien que sepa programar.", "Мне нужен кто-то, умеющий программировать."),
+                        LessonItem("¿Conoces a alguien que hable árabe?", "Ты знаешь кого-нибудь, кто говорит по-арабски?"),
+                        LessonItem("No hay nadie que te quiera más.", "Никто тебя не любит больше. (никто = Subj.)"),
+                        LessonItem("Busco una casa que tenga jardín.", "Ищу дом с садом. (любой, пока не найден)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Subj. после superlativo",
+                    items = listOf(
+                        LessonItem("el mejor que + Subj.", "Es el mejor restaurante que haya probado."),
+                        LessonItem("lo más/menos que + Subj.", "Lo más interesante que haya visto."),
+                        LessonItem("el único que + Subj.", "Eres el único que me entienda."),
+                        LessonItem("Почему Subj.?", "После превосходной степени — субъективная оценка, не абсолютный факт.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Определённый vs неопределённый",
+                    question = "Busco una secretaria que ___ (hablar) tres idiomas.",
+                    options = listOf("habla", "hable", "hablará", "hablaría"),
+                    correctAnswer = "hable",
+                    explanation = "Неопределённый референт (ещё не найдена) → Subj.Pres. (hable). «Ищу секретаря, который говорит на трёх языках.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Negación + Subj.",
+                    question = "No conozco a nadie que ___ (saber) hacer eso.",
+                    options = listOf("sabe", "sepa", "sabría", "supiera"),
+                    correctAnswer = "sepa",
+                    explanation = "nadie que + Subj.Pres. (sepa) — отрицание + неопределённость. «Не знаю никого, кто умел бы это делать.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Superlativo",
+                    question = "Es la película más emocionante que ___ (ver) en mi vida.",
+                    options = listOf("veo", "haya visto", "he visto", "veré"),
+                    correctAnswer = "haya visto",
+                    explanation = "Superlativo + que + Subj. (haya visto — Pret.Perfecto de Subj.). «Это самый захватывающий фильм, который я когда-либо видел.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Конкретный референт",
+                    question = "Ese es el médico que ___ (curar) a mi padre. (конкретный, известный)",
+                    options = listOf("cure", "curó", "curara", "haya curado"),
+                    correctAnswer = "curó",
+                    explanation = "Конкретный известный референт → Indicativo (curó — Indefinido). «Вот врач, который вылечил моего отца.»"
+                )
+            )
+        ),
+
+        // ── u13_l14: Чекпоинт Блока 1 B2 ──────────────────────────────
+        "u13_l14" to LessonContent(
+            intro = "Финальный чекпоинт Блока 1 B2. Ты освоил Subjuntivo Imperfecto и Pluscuamperfecto во всех ключевых конструкциях!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Что освоено в Блоке 1",
+                    items = listOf(
+                        LessonItem("Subj. Imperfecto", "образование от 3 л. мн.ч. Indefinido: -ra/-se формы"),
+                        LessonItem("Si + Imp.Subj. + Condicional", "нереальное условие настоящего"),
+                        LessonItem("Ojalá / Como si", "нереальные желания и сравнения"),
+                        LessonItem("Pluscuamp. Subj. + Cond.Comp.", "нереальное условие прошлого: Si hubiera..."),
+                        LessonItem("Устойчивые формулы", "que yo sepa, pase lo que pase, sea como sea"),
+                        LessonItem("Aunque / para que / cuando", "+ Subjuntivo в зависимости от смысла")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ключевые правила",
+                    items = listOf(
+                        LessonItem("❌ Si tendría", "✅ Si tuviera — в if-клаузе нет Condicional"),
+                        LessonItem("❌ Cuando vendrás", "✅ Cuando vengas — будущее требует Subj."),
+                        LessonItem("Aunque + Ind.", "факт известен"),
+                        LessonItem("Aunque + Subj.", "гипотеза/уступка"),
+                        LessonItem("Buscar a alguien + Ind.", "конкретный человек"),
+                        LessonItem("Buscar a alguien + Subj.", "неопределённый человек")
+                    )
+                ),
+                LessonSection(
+                    heading = "Следующий Блок 2: Pasiva y Perífrasis",
+                    items = listOf(
+                        LessonItem("Voz pasiva", "fue construido, es conocido"),
+                        LessonItem("Se pasivo e impersonal", "se vende, se habla español"),
+                        LessonItem("Perífrasis verbales", "acabar de, ir a, llevar + gerundio"),
+                        LessonItem("¡Enhorabuena!", "Блок 1 B2 завершён! 🎓")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал: Si + Subj.Imp.",
+                    question = "Si ___ (poder) cambiar una cosa del pasado, ¿qué elegirías?",
+                    options = listOf("puedo", "pudiera", "podré", "pueda"),
+                    correctAnswer = "pudiera",
+                    explanation = "Si + Imp.Subj. (pudiera) + Condicional (elegirías). «Если бы ты мог изменить одну вещь в прошлом, что бы ты выбрал?»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал: Si Pluscuamp. + Cond.Comp.",
+                    question = "Si ___ (estudiar) más, habría aprobado el examen de B2.",
+                    options = listOf("estudiara", "hubiera estudiado", "habría estudiado", "estudiaba"),
+                    correctAnswer = "hubiera estudiado",
+                    explanation = "Si + Pluscuamp.Subj. (hubiera estudiado) + Cond.Comp. (habría aprobado). Нереальное прошлое."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал: Cuando + Subj.",
+                    question = "___ (terminar) la universidad, viajaré por Latinoamérica.",
+                    options = listOf("Cuando termine", "Cuando terminaré", "Cuando terminé", "Cuando termino"),
+                    correctAnswer = "Cuando termine",
+                    explanation = "cuando + Subj.Pres. (termine) для будущего. «Когда я закончу университет, поеду по Латинской Америке.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал: Relativa + Subj.",
+                    question = "Necesitamos un candidato que ___ (tener) experiencia en ventas.",
+                    options = listOf("tiene", "tenía", "tenga", "tendría"),
+                    correctAnswer = "tenga",
+                    explanation = "Неопределённый референт (ещё не найден) → Subj.Pres. (tenga). «Нам нужен кандидат с опытом в продажах.»"
                 )
             )
         )
