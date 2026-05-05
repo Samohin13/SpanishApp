@@ -118,13 +118,24 @@ private fun applyBestVoice(tts: TextToSpeech, preferredName: String?) {
 /**
  * Определяет, стоит ли озвучивать строку испанским TTS.
  *  • Минимум 2 латинские буквы подряд (отсекает "a", "—", "?", "1", "___")
- *  • Без кириллицы (это перевод на русский — не для es-TTS)
+ *  • Минимум 2 разные буквы (отсекает алфавит "A a", "B b" — там 1 уникальная буква)
+ *  • Не больше 30% кириллицы (отсекает русские объяснения, разрешает редкие пометки)
  */
 fun isSpanishSpeakable(text: String?): Boolean {
     if (text.isNullOrBlank()) return false
     val cleaned = text.replace("_", " ").trim()
     if (cleaned.isEmpty()) return false
-    if (cleaned.any { it in 'Ѐ'..'ӿ' }) return false
+
+    val letters = cleaned.filter { it.isLetter() }
+    if (letters.length < 2) return false
+
+    val cyrillic = letters.count { it in 'Ѐ'..'ӿ' }
+    if (cyrillic.toDouble() / letters.length > 0.3) return false
+
+    // Алфавитные карточки типа "A a" — одна и та же буква в разных регистрах
+    val unique = letters.map { it.lowercaseChar() }.toSet()
+    if (unique.size < 2) return false
+
     return Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)
 }
 

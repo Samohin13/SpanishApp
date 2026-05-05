@@ -61,7 +61,13 @@ class SpanishTts @Inject constructor(
         if (text.isNullOrBlank()) return false
         val cleaned = text.replace("_", " ").trim()
         if (cleaned.isEmpty()) return false
-        if (cleaned.any { it in 'Ѐ'..'ӿ' }) return false
+        val letters = cleaned.filter { it.isLetter() }
+        if (letters.length < 2) return false
+        val cyrillic = letters.count { it in 'Ѐ'..'ӿ' }
+        if (cyrillic.toDouble() / letters.length > 0.3) return false
+        // Алфавитные карточки "A a" — 1 уникальная буква
+        val unique = letters.map { it.lowercaseChar() }.toSet()
+        if (unique.size < 2) return false
         return Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)
     }
 
