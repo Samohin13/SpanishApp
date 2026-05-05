@@ -57,37 +57,34 @@ class SpanishTts @Inject constructor(
      *  • Минимум 2 латинские буквы подряд (отсекает "a", "?", "1", "___")
      *  • Без кириллицы (русский перевод не озвучиваем)
      */
-    private fun isSpeakable(text: String?): Boolean {
-        if (text.isNullOrBlank()) return false
+    private fun inferSpeakText(text: String?): String? {
+        if (text.isNullOrBlank()) return null
         val cleaned = text.replace("_", " ").trim()
-        if (cleaned.isEmpty()) return false
         val letters = cleaned.filter { it.isLetter() }
-        if (letters.length < 2) return false
+        if (letters.isEmpty()) return null
         val cyrillic = letters.count { it in 'Ѐ'..'ӿ' }
-        if (cyrillic.toDouble() / letters.length > 0.3) return false
-        // Алфавитные карточки "A a" — 1 уникальная буква
-        val unique = letters.map { it.lowercaseChar() }.toSet()
-        if (unique.size < 2) return false
-        return Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)
+        val latin = letters.count { it !in 'Ѐ'..'ӿ' }
+        if (latin == 0) return null
+        if (cyrillic.toDouble() / letters.length > 0.5) return null
+        val uniqueFolded = letters.filter { it !in 'Ѐ'..'ӿ' }.map { it.lowercaseChar() }.toSet()
+        if (uniqueFolded.size == 1) return uniqueFolded.first().toString()
+        if (!Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)) return null
+        return cleaned.replace("___", " ").replace(Regex("\\s+"), " ").trim()
     }
-
-    private fun sanitize(text: String): String =
-        text.replace("___", " ")
-            .replace(Regex("\\s+"), " ")
-            .trim()
 
     /** Speak Spanish text aloud. @param slow — 0.66× rate for careful listening. */
     fun speak(text: String, slow: Boolean = false) {
         val t = tts ?: return
         if (!_isReady.value) return
-        if (!isSpeakable(text)) return
+        val speakText = inferSpeakText(text) ?: return
         t.setSpeechRate(if (slow) 0.6f else 0.9f)
-        t.speak(sanitize(text), TextToSpeech.QUEUE_FLUSH, null, "utterance_${System.currentTimeMillis()}")
+        t.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, "utterance_${System.currentTimeMillis()}")
     }
 
     suspend fun speakAndWait(text: String, slow: Boolean = false) =
         suspendCancellableCoroutine { cont ->
-            if (!isSpeakable(text)) {
+            val speakText = inferSpeakText(text)
+            if (speakText == null) {
                 if (cont.isActive) cont.resume(Unit)
                 return@suspendCancellableCoroutine
             }
@@ -102,7 +99,7 @@ class SpanishTts @Inject constructor(
                 }
             })
             tts?.setSpeechRate(if (slow) 0.6f else 0.9f)
-            tts?.speak(sanitize(text), TextToSpeech.QUEUE_FLUSH, null, id)
+            tts?.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, id)
             cont.invokeOnCancellation { tts?.stop() }
         }
 

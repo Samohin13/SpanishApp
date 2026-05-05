@@ -116,28 +116,44 @@ private fun applyBestVoice(tts: TextToSpeech, preferredName: String?) {
 }
 
 /**
- * Определяет, стоит ли озвучивать строку испанским TTS.
- *  • Минимум 2 латинские буквы подряд (отсекает "a", "—", "?", "1", "___")
- *  • Минимум 2 разные буквы (отсекает алфавит "A a", "B b" — там 1 уникальная буква)
- *  • Не больше 30% кириллицы (отсекает русские объяснения, разрешает редкие пометки)
+ * Умный инфер того, что именно нужно передавать в TTS для строки из урока.
+ *
+ * Три случая:
+ *  1. Алфавитная карточка "A a", "Ll ll" → одна уникальная буква → говорим только её
+ *  2. Реальное испанское слово/фраза → говорим полностью
+ *  3. Русское правило или перевод → null, кнопка не показывается
  */
-fun isSpanishSpeakable(text: String?): Boolean {
-    if (text.isNullOrBlank()) return false
+fun inferSpeakText(text: String?): String? {
+    if (text.isNullOrBlank()) return null
     val cleaned = text.replace("_", " ").trim()
-    if (cleaned.isEmpty()) return false
+    if (cleaned.isEmpty()) return null
 
     val letters = cleaned.filter { it.isLetter() }
-    if (letters.length < 2) return false
+    if (letters.isEmpty()) return null
 
     val cyrillic = letters.count { it in 'Ѐ'..'ӿ' }
-    if (cyrillic.toDouble() / letters.length > 0.3) return false
+    val latin = letters.count { it !in 'Ѐ'..'ӿ' }
 
-    // Алфавитные карточки типа "A a" — одна и та же буква в разных регистрах
-    val unique = letters.map { it.lowercaseChar() }.toSet()
-    if (unique.size < 2) return false
+    // Полностью русский текст — не озвучиваем
+    if (latin == 0) return null
+    // Преимущественно русский (>50%) — не озвучиваем
+    if (cyrillic.toDouble() / letters.length > 0.5) return null
 
-    return Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)
+    // Алфавитная карточка: одна уникальная буква в разных регистрах ("A a", "Ll ll", "RR rr")
+    val uniqueFolded = letters.filter { it !in 'Ѐ'..'ӿ' }.map { it.lowercaseChar() }.toSet()
+    if (uniqueFolded.size == 1) {
+        // Говорим ровно одну букву — это и есть нужный звук
+        return uniqueFolded.first().toString()
+    }
+
+    // Реальное испанское слово или фраза
+    if (!Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)) return null
+
+    return sanitizeForTts(cleaned)
 }
+
+/** Проверяет, стоит ли показывать кнопку озвучки для данной строки. */
+fun isSpanishSpeakable(text: String?): Boolean = inferSpeakText(text) != null
 
 /** Очищает текст перед озвучкой: убирает плейсхолдеры. */
 fun sanitizeForTts(text: String): String =
@@ -152,9 +168,8 @@ fun SpeakerButton(
     tint: Color = Color(0xFF9E9E9E),
     modifier: Modifier = Modifier
 ) {
-    if (!isSpanishSpeakable(text)) return
+    val speakText = remember(text) { inferSpeakText(text) } ?: return
 
-    val cleanText = remember(text) { sanitizeForTts(text) }
     var speaking by remember { mutableStateOf(false) }
 
     val iconTint by animateColorAsState(
@@ -173,7 +188,7 @@ fun SpeakerButton(
     IconButton(
         onClick = {
             tts?.stop()
-            tts?.speak(cleanText, TextToSpeech.QUEUE_FLUSH, null, "speak_${System.currentTimeMillis()}")
+            tts?.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, "speak_${System.currentTimeMillis()}")
             speaking = true
         },
         modifier = modifier.size(36.dp),
