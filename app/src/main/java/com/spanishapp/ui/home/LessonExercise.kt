@@ -4,7 +4,8 @@ enum class ExerciseType {
     MULTIPLE_CHOICE,   // 4 варианта, один верный
     FILL_BLANK,        // Вставь пропущенное слово
     TRANSLATE,         // Переведи фразу
-    BUILD_SENTENCE     // Составь предложение из слов
+    BUILD_SENTENCE,    // Составь предложение из слов
+    SPEAKING           // Произнеси слово — приложение проверяет
 }
 
 data class Exercise(

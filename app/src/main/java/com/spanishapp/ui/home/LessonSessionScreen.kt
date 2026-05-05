@@ -27,22 +27,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.core.content.ContextCompat
+import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.ui.components.SpeakerButton
 import com.spanishapp.ui.components.VoiceInstallPromptHost
 import com.spanishapp.ui.components.inferSpeakText
 import com.spanishapp.ui.components.rememberSpanishTts
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private val Green  = Color(0xFF4CAF50)
 private val Red    = Color(0xFFF44336)
 private val Purple = Color(0xFF7C4DFF)
 private val Orange = Color(0xFFFF9800)
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+private interface SpeechRecognizerEntryPoint {
+    fun spanishSpeechRecognizer(): SpanishSpeechRecognizer
+}
 
 // ─── Шаги сессии ───────────────────────────────────────────────────────────
 private sealed class SessionStep {
@@ -570,6 +594,19 @@ private fun ExerciseCard(
                         }
                     )
                 }
+
+                ExerciseType.SPEAKING -> {
+                    SpeakingInput(
+                        wordToSay   = exercise.correctAnswer,
+                        accentColor = accentColor,
+                        tts         = tts,
+                        answered    = answered,
+                        onAnswer    = { passed ->
+                            selectedOption = if (passed) exercise.correctAnswer else "__failed__"
+                            answered = true
+                        }
+                    )
+                }
             }
 
             // Объяснение
@@ -626,6 +663,179 @@ private fun ExerciseCard(
             }
 
             if (!answered) Spacer(Modifier.height(20.dp))
+        }
+    }
+}
+
+// ─── Произнеси слово (SPEAKING) ───────────────────────────────────────────
+@Composable
+private fun SpeakingInput(
+    wordToSay: String,
+    accentColor: Color,
+    tts: TextToSpeech?,
+    answered: Boolean,
+    onAnswer: (Boolean) -> Unit
+) {
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val recognizer = remember(ctx) {
+        EntryPointAccessors.fromApplication(
+            ctx.applicationContext,
+            SpeechRecognizerEntryPoint::class.java
+        ).spanishSpeechRecognizer()
+    }
+
+    var isListening  by remember { mutableStateOf(false) }
+    var recognized   by remember { mutableStateOf("") }
+    var score        by remember { mutableStateOf(0f) }
+    var errorMsg     by remember { mutableStateOf("") }
+
+    // Анимация пульсации микрофона
+    val infiniteTransition = rememberInfiniteTransition(label = "mic")
+    val micScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue  = 1.18f,
+        animationSpec = infiniteRepeatable(
+            animation  = tween(600),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "micScale"
+    )
+
+    val permLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            scope.launch {
+                isListening = true
+                val result = recognizer.checkPronunciation(wordToSay)
+                isListening  = false
+                recognized   = result.recognized
+                score        = result.score
+                errorMsg     = result.error
+                onAnswer(result.passed)
+            }
+        } else {
+            errorMsg = "Нет разрешения на микрофон"
+        }
+    }
+
+    fun startListening() {
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.RECORD_AUDIO)
+            == PackageManager.PERMISSION_GRANTED) {
+            scope.launch {
+                isListening = true
+                val result = recognizer.checkPronunciation(wordToSay)
+                isListening  = false
+                recognized   = result.recognized
+                score        = result.score
+                errorMsg     = result.error
+                onAnswer(result.passed)
+            }
+        } else {
+            permLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+
+        // Слово для произношения
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = accentColor.copy(alpha = 0.08f),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("🎤", fontSize = 28.sp)
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text       = wordToSay,
+                    fontSize   = 36.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color      = accentColor
+                )
+                Spacer(Modifier.height(6.dp))
+                // Послушать перед тем как говорить
+                SpeakerButton(text = wordToSay, tts = tts, tint = accentColor)
+            }
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        // Результат распознавания
+        AnimatedVisibility(visible = answered && recognized.isNotEmpty()) {
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = if (score >= 0.75f) Green.copy(0.1f) else Red.copy(0.1f),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = if (score >= 0.75f) "Отлично! 👏" else "Почти!",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = if (score >= 0.75f) Green else Red
+                    )
+                    Text(
+                        text = "Распознано: «$recognized»",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (score < 0.75f) {
+                        Text(
+                            text = "Нужно: «$wordToSay»",
+                            fontSize = 14.sp,
+                            color = Green,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
+        }
+
+        AnimatedVisibility(visible = errorMsg.isNotEmpty()) {
+            Text(errorMsg, color = Red, fontSize = 13.sp, modifier = Modifier.padding(top = 8.dp))
+        }
+
+        Spacer(Modifier.height(20.dp))
+
+        // Кнопка микрофона
+        if (!answered) {
+            Box(contentAlignment = Alignment.Center) {
+                if (isListening) {
+                    Box(
+                        Modifier
+                            .size(80.dp)
+                            .scale(micScale)
+                            .clip(CircleShape)
+                            .background(accentColor.copy(alpha = 0.15f))
+                    )
+                }
+                IconButton(
+                    onClick  = { if (!isListening) startListening() },
+                    enabled  = !isListening,
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(if (isListening) accentColor else accentColor.copy(0.15f))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Mic,
+                        contentDescription = "Произнести",
+                        tint = if (isListening) Color.White else accentColor,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = if (isListening) "Слушаю..." else "Нажми и произнеси",
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

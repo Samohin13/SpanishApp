@@ -102,6 +102,13 @@ object LessonContentData {
                     options = listOf("5 — каждая всегда одинаково", "12 — как в английском", "3 — A, E, O", "8 — зависит от соседних букв"),
                     correctAnswer = "5 — каждая всегда одинаково",
                     explanation = "5 гласных, каждая звучит одинаково всегда. Выучи один раз — и навсегда!"
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси слово вслух",
+                    question = "Послушай и повтори",
+                    correctAnswer = "amigo",
+                    explanation = "amigo — друг. «а-ми-го». Все 3 гласные звучат чётко: A=[а], I=[и], O=[о]."
                 )
             )
         ),
@@ -175,6 +182,13 @@ object LessonContentData {
                     options = listOf("B и V", "C и K", "G и J", "D и T"),
                     correctAnswer = "B и V",
                     explanation = "B и V в испанском — один и тот же звук [б/в]. В других языках так не бывает!"
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси слово вслух",
+                    question = "Послушай и повтори — G перед «a» = [г]",
+                    correctAnswer = "gato",
+                    explanation = "gato — кот. «га-то». G + a = [г], не [х]!"
                 )
             )
         ),
@@ -249,6 +263,13 @@ object LessonContentData {
                     options = listOf("perro", "pero", "padre", "parte"),
                     correctAnswer = "perro",
                     explanation = "perro (собака) — двойная RR, раскатистая. pero (но) — одна R, мягкая."
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси слово вслух",
+                    question = "Послушай и повтори — H молчит!",
+                    correctAnswer = "hola",
+                    explanation = "hola — привет. Произносится «ола» — H молчит всегда!"
                 )
             )
         ),
