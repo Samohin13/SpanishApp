@@ -7499,6 +7499,1019 @@ object LessonContentData {
                     explanation = "llevar = носить (одежду). Hoy llevo un abrigo = сегодня я ношу пальто."
                 )
             )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  БЛОК 1 B1: SUBJUNTIVO PRESENTE
+        //  u9_l0 – u9_l14
+        // ══════════════════════════════════════════════
+
+        // u9_l0 — Subjuntivo: что это и зачем
+        "u9_l0" to LessonContent(
+            intro = "Subjuntivo (сослагательное наклонение) — это особый способ выражения желаний, сомнений, эмоций и просьб. Это один из главных признаков B1.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Indicativo vs Subjuntivo",
+                    items = listOf(
+                        LessonItem("Sé que María viene.", "Знаю, что Мария придёт. (факт → indicativo)", ""),
+                        LessonItem("Quiero que María venga.", "Хочу, чтобы Мария пришла. (желание → subjuntivo)", ""),
+                        LessonItem("Es verdad que hablas bien.", "Правда, что ты говоришь хорошо. (факт)", ""),
+                        LessonItem("Es importante que hables bien.", "Важно, чтобы ты говорил хорошо. (оценка)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Когда нужен Subjuntivo",
+                    items = listOf(
+                        LessonItem("💭 Желания", "querer que, esperar que, desear que", ""),
+                        LessonItem("💡 Оценки", "es importante que, es bueno que", ""),
+                        LessonItem("😊 Эмоции", "me alegra que, temo que, siento que", ""),
+                        LessonItem("🚫 Сомнения", "no creo que, dudo que, no es verdad que", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Главное правило: два субъекта",
+                    items = listOf(
+                        LessonItem("Один субъект → infinitivo", "Quiero venir. (Я хочу прийти.)", ""),
+                        LessonItem("Два субъекта → que + subjuntivo", "Quiero que vengas. (Хочу, чтобы ТЫ пришёл.)", ""),
+                        LessonItem("Quiero venir.", "я хочу и я прихожу — один субъект", ""),
+                        LessonItem("Quiero que vengas.", "я хочу, а ты приходишь — два субъекта", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Indicativo или Subjuntivo?",
+                    question = "Sé que tú ___ muy inteligente.",
+                    options = listOf("eres (indicativo)", "seas (subjuntivo)", "fueras (subjuntivo)", "serías (condicional)"),
+                    correctAnswer = "eres (indicativo)",
+                    explanation = "saber que + indicativo: это факт. «Знаю, что ты очень умный» — говорим то, что есть."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Indicativo или Subjuntivo?",
+                    question = "Es importante que tú ___ bien.",
+                    options = listOf("comes (indicativo)", "comas (subjuntivo)", "comerías (condicional)", "comieras (subj.imp.)"),
+                    correctAnswer = "comas (subjuntivo)",
+                    explanation = "es importante que + subjuntivo: это оценочное суждение. «Важно, чтобы ты хорошо питался.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Один субъект или два?",
+                    question = "Quiero ___ a España este verano.",
+                    options = listOf("ir (infinitivo — один субъект)", "que vaya (subjuntivo — два субъекта)", "voy (indicativo)", "que vayas (другой субъект)"),
+                    correctAnswer = "ir (infinitivo — один субъект)",
+                    explanation = "«Хочу поехать в Испанию» — я хочу и я еду. Один субъект → infinitivo: ir."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Когда нужен subjuntivo?",
+                    question = "¿Cuándo se usa el subjuntivo?",
+                    options = listOf("Для фактов и реальных событий", "Для желаний, сомнений и эмоций с двумя субъектами", "Только в прошедшем времени", "Только в вопросах"),
+                    correctAnswer = "Для желаний, сомнений и эмоций с двумя субъектами",
+                    explanation = "Subjuntivo используется когда: желаем, оцениваем, чувствуем или сомневаемся — и говорим о действиях другого человека."
+                )
+            )
+        ),
+
+        // u9_l1 — Regulares -AR: hablar → hable
+        "u9_l1" to LessonContent(
+            intro = "Образование Subjuntivo для глаголов -AR — просто: берём форму yo Presente Indicativo, убираем -o и добавляем окончания на -e.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Секрет: форма yo → subjuntivo",
+                    items = listOf(
+                        LessonItem("hablar → yo hablo → habl-", "убираем -o, получаем основу", ""),
+                        LessonItem("+ е, -es, -e, -emos, -éis, -en", "окончания subjuntivo для -AR", ""),
+                        LessonItem("hable, hables, hable", "yo, tú, él/ella", ""),
+                        LessonItem("hablemos, habléis, hablen", "nosotros, vosotros, ellos", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры глаголов -AR",
+                    items = listOf(
+                        LessonItem("trabajar → trabaj-", "trabajE / trabajES / trabajE", ""),
+                        LessonItem("bailar → bail-", "bailE / bailES / bailE", ""),
+                        LessonItem("estudiar → estudi-", "estudiE / estudiES / estudiE", ""),
+                        LessonItem("escuchar → escuch-", "escuchE / escuchES / escuchE", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "В предложениях",
+                    items = listOf(
+                        LessonItem("Quiero que trabajES más.", "Хочу, чтобы ты больше работал.", ""),
+                        LessonItem("Es importante que estudiES.", "Важно, чтобы ты учился.", ""),
+                        LessonItem("Espero que bailEN bien.", "Надеюсь, они хорошо танцуют.", ""),
+                        LessonItem("Necesito que me escuchES.", "Мне нужно, чтобы ты меня слушал.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола hablar (tú)",
+                    question = "Quiero que tú ___ con el director.",
+                    options = listOf("hablas", "hables", "hablarás", "hablabas"),
+                    correctAnswer = "hables",
+                    explanation = "hablar → yo hablo → habl- + es = hables. Quiero que + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола trabajar (él)",
+                    question = "Es necesario que él ___ más.",
+                    options = listOf("trabaja", "trabajará", "trabaje", "trabajaría"),
+                    correctAnswer = "trabaje",
+                    explanation = "trabajar → yo trabajo → trabaj- + e = trabaje. Es necesario que + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола escuchar (nosotros)",
+                    question = "El profesor quiere que nosotros ___ con atención.",
+                    options = listOf("escuchamos", "escucharemos", "escuchemos", "escuchábamos"),
+                    correctAnswer = "escuchemos",
+                    explanation = "escuchar → escuch- + emos = escuchemos. Для nosotros окончание -emos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Найди ошибку",
+                    question = "¿Cuál está INCORRECTO en subjuntivo?",
+                    options = listOf("que yo hable ✓", "que tú estudies ✓", "que él trabajas ✗", "que ellos bailen ✓"),
+                    correctAnswer = "que él trabajas ✗",
+                    explanation = "«trabajas» — это форма indicativo (tú). Для él subjuntivo: trabaje. Никогда -as/-es из indicativo!"
+                )
+            )
+        ),
+
+        // u9_l2 — Regulares -ER/-IR: comer → coma, vivir → viva
+        "u9_l2" to LessonContent(
+            intro = "Для глаголов -ER и -IR принцип тот же: форма yo → убираем -o → добавляем окончания. Но окончания теперь на -a (противоположно -AR).",
+            sections = listOf(
+                LessonSection(
+                    heading = "Глаголы -ER: comer",
+                    items = listOf(
+                        LessonItem("comer → yo como → com-", "убираем -o", ""),
+                        LessonItem("+ -a, -as, -a, -amos, -áis, -an", "окончания для -ER/-IR", ""),
+                        LessonItem("coma, comas, coma", "yo, tú, él", ""),
+                        LessonItem("comamos, comáis, coman", "nosotros, vosotros, ellos", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы -IR: vivir",
+                    items = listOf(
+                        LessonItem("vivir → yo vivo → viv-", "убираем -o", ""),
+                        LessonItem("viva, vivas, viva", "yo, tú, él", ""),
+                        LessonItem("vivamos, viváis, vivan", "nosotros, vosotros, ellos", ""),
+                        LessonItem("escribir → escriba / escribas", "escribir спрягается так же", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Запомни: -AR → -e, -ER/-IR → -a",
+                    items = listOf(
+                        LessonItem("hablar → habl-E", "-AR меняет на -E (наоборот)", ""),
+                        LessonItem("comer → com-A", "-ER меняет на -A (наоборот)", ""),
+                        LessonItem("vivir → viv-A", "-IR меняет на -A (наоборот)", ""),
+                        LessonItem("Правило: всегда «наоборот»", "-AR → е, -ER/-IR → а", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола comer (tú)",
+                    question = "Es importante que tú ___ más verdura.",
+                    options = listOf("comes", "comas", "comerás", "comieras"),
+                    correctAnswer = "comas",
+                    explanation = "comer → como → com- + as = comas. Es importante que + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола vivir (ellos)",
+                    question = "Quiero que ellos ___ aquí.",
+                    options = listOf("viven", "vivirán", "vivan", "vivían"),
+                    correctAnswer = "vivan",
+                    explanation = "vivir → vivo → viv- + an = vivan. Quiero que + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола escribir (ella)",
+                    question = "Necesito que ella ___ el informe.",
+                    options = listOf("escribe", "escribirá", "escriba", "escribía"),
+                    correctAnswer = "escriba",
+                    explanation = "escribir → escribo → escrib- + a = escriba. Necesito que + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Espero que el médico ___ pronto.",
+                    options = listOf("viene", "vendrá", "venga", "venía"),
+                    correctAnswer = "venga",
+                    explanation = "venir → yo vengo → veng- + a = venga. Espero que + subjuntivo. Форма yo vengo — нерегулярная, поэтому основа veng-."
+                )
+            )
+        ),
+
+        // u9_l3 — Irregulares: ser → sea, ir → vaya, estar → esté
+        "u9_l3" to LessonContent(
+            intro = "Некоторые глаголы образуют Subjuntivo нерегулярно — их нужно просто выучить. Но их немного, и они очень часто используются.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Полностью нерегулярные",
+                    items = listOf(
+                        LessonItem("ser → sea, seas, sea", "seamos, seáis, sean", ""),
+                        LessonItem("ir → vaya, vayas, vaya", "vayamos, vayáis, vayan", ""),
+                        LessonItem("haber → haya", "только одна форма (hay → haya)", ""),
+                        LessonItem("saber → sepa, sepas, sepa", "sepamos, sepáis, sepan", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Estar и dar",
+                    items = listOf(
+                        LessonItem("estar → esté, estés, esté", "estemos, estéis, estén", ""),
+                        LessonItem("dar → dé, des, dé", "demos, deis, den", ""),
+                        LessonItem("Заметь: ударение на é!", "esté, estés, dé — тильда важна", ""),
+                        LessonItem("Без тильды — другое слово", "de (предлог) ≠ dé (subjuntivo)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры в речи",
+                    items = listOf(
+                        LessonItem("Quiero que seas feliz.", "Хочу, чтобы ты был счастлив. (ser)", ""),
+                        LessonItem("Espero que vayas.", "Надеюсь, ты пойдёшь. (ir)", ""),
+                        LessonItem("Es importante que estés aquí.", "Важно, чтобы ты был здесь. (estar)", ""),
+                        LessonItem("No creo que haya problema.", "Не думаю, что есть проблема. (haber)", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола ser (tú)",
+                    question = "Quiero que ___ más honesto.",
+                    options = listOf("eres", "serás", "seas", "fueras"),
+                    correctAnswer = "seas",
+                    explanation = "ser → sea / seas / sea. «Хочу, чтобы ты был честнее» — quiero que + seas."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола ir (ella)",
+                    question = "Necesito que ella ___ al médico.",
+                    options = listOf("va", "irá", "vaya", "iba"),
+                    correctAnswer = "vaya",
+                    explanation = "ir → vaya / vayas / vaya. «Нужно, чтобы она пошла к врачу» — necesito que + vaya."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола estar (nosotros)",
+                    question = "Es bueno que nosotros ___ juntos.",
+                    options = listOf("estamos", "estaremos", "estemos", "estábamos"),
+                    correctAnswer = "estemos",
+                    explanation = "estar → esté / estés / esté / estemos. Es bueno que + estemos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола saber (ellos)",
+                    question = "Espero que ellos ___ la verdad.",
+                    options = listOf("saben", "sabrán", "sepan", "sabían"),
+                    correctAnswer = "sepan",
+                    explanation = "saber → sepa / sepas / sepa / sepamos / sepáis / sepan. Espero que + sepan."
+                )
+            )
+        ),
+
+        // u9_l4 — Irregulares: e→ie, o→ue
+        "u9_l4" to LessonContent(
+            intro = "Многие глаголы изменяют гласную в корне: e→ie или o→ue. В Subjuntivo это изменение тоже происходит — но только в singular и 3 лице множественного.",
+            sections = listOf(
+                LessonSection(
+                    heading = "e→ie: querer, entender, pensar",
+                    items = listOf(
+                        LessonItem("querer → quiera, quieras, quiera", "qu→ quiera (e→ie)", ""),
+                        LessonItem("queramos, queráis, quieran", "nosotros/vosotros без изменения!", ""),
+                        LessonItem("entender → entienda, entiendas", "entienda, entendamos...", ""),
+                        LessonItem("pensar → piense, pienses, piense", "pensemos, penséis, piensen", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "o→ue: poder, volver, dormir",
+                    items = listOf(
+                        LessonItem("poder → pueda, puedas, pueda", "podamos, podáis, puedan", ""),
+                        LessonItem("volver → vuelva, vuelvas, vuelva", "volvamos, volváis, vuelvan", ""),
+                        LessonItem("dormir → duerma, duermas, duerma", "durmamos*, dormáis, duerman", ""),
+                        LessonItem("* dormir — исключение!", "nosotros: durmamos (u→u)", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "e→i: pedir, seguir, servir",
+                    items = listOf(
+                        LessonItem("pedir → pida, pidas, pida", "pidamos, pidáis, pidan", "e→i везде!"),
+                        LessonItem("seguir → siga, sigas, siga", "sigamos, sigáis, sigan", ""),
+                        LessonItem("servir → sirva, sirvas, sirva", "sirvamos, sirváis, sirvan", ""),
+                        LessonItem("Эти глаголы меняют везде", "даже в nosotros/vosotros", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола querer (tú)",
+                    question = "Espero que ___ venir mañana.",
+                    options = listOf("quieres", "querrás", "quieras", "quisieras"),
+                    correctAnswer = "quieras",
+                    explanation = "querer → quiera / quieras / quiera. e→ie в subjuntivo. Espero que + quieras."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола poder (él)",
+                    question = "Necesito que él ___ ayudarme.",
+                    options = listOf("puede", "podrá", "pueda", "podría"),
+                    correctAnswer = "pueda",
+                    explanation = "poder → pueda / puedas / pueda. o→ue в subjuntivo. Necesito que + pueda."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола volver (nosotros)",
+                    question = "Quieren que nosotros ___ pronto.",
+                    options = listOf("volvemos", "volveremos", "volvamos", "volveríamos"),
+                    correctAnswer = "volvamos",
+                    explanation = "volver → vuelva... но nosotros: volvamos (без изменения ue→o). Quieren que + volvamos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Subjuntivo глагола pedir (tú)",
+                    question = "Es mejor que ___ ayuda.",
+                    options = listOf("pides", "pedirás", "pidas", "pidieras"),
+                    correctAnswer = "pidas",
+                    explanation = "pedir → pida / pidas. e→i везде (тип e→i). Es mejor que + pidas."
+                )
+            )
+        ),
+
+        // u9_l5 — Querer que + Subjuntivo
+        "u9_l5" to LessonContent(
+            intro = "Querer — самый частый глагол с subjuntivo. Когда «я хочу, чтобы КТО-ТО ДРУГОЙ» что-то сделал — всегда querer que + subjuntivo.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Схема: querer + que + subjuntivo",
+                    items = listOf(
+                        LessonItem("Quiero que vengas.", "Хочу, чтобы ты пришёл. (tú)", ""),
+                        LessonItem("Quiero que venga.", "Хочу, чтобы он пришёл. (él)", ""),
+                        LessonItem("Ella quiere que estudiemos.", "Она хочет, чтобы мы учились.", ""),
+                        LessonItem("No quiero que llegues tarde.", "Не хочу, чтобы ты опаздывал.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Один субъект → infinitivo",
+                    items = listOf(
+                        LessonItem("Quiero VENIR. (я хочу и я приду)", "один субъект → infinitivo", ""),
+                        LessonItem("Quiero que vengas. (я хочу, ты придёшь)", "два субъекта → que + subj.", ""),
+                        LessonItem("Ella quiere IR al cine.", "она хочет пойти — сама", ""),
+                        LessonItem("Ella quiere que vayas al cine.", "она хочет, чтобы ТЫ пошёл", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Типичные фразы",
+                    items = listOf(
+                        LessonItem("¿Quieres que te ayude?", "Хочешь, чтобы я тебе помог?", ""),
+                        LessonItem("Mi madre quiere que sea médico.", "Мама хочет, чтобы я был врачом.", ""),
+                        LessonItem("No queremos que se vayan.", "Не хотим, чтобы они уходили.", ""),
+                        LessonItem("¿Qué quieres que haga?", "Что ты хочешь, чтобы я сделал?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Два субъекта — нужен subjuntivo?",
+                    question = "Mi jefe quiere que nosotros ___ el informe hoy.",
+                    options = listOf("terminamos", "terminemos", "terminaremos", "terminábamos"),
+                    correctAnswer = "terminemos",
+                    explanation = "Два субъекта: jefe (хочет) и nosotros (заканчиваем). Quiere que + subjuntivo: terminemos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Один или два субъекта?",
+                    question = "Quiero ___ a París el próximo año.",
+                    options = listOf("ir (infinitivo — один субъект)", "que vaya (субъект меняется)", "que vayas (tú идёшь)", "voy (indicativo)"),
+                    correctAnswer = "ir (infinitivo — один субъект)",
+                    explanation = "«Хочу поехать» — я хочу и я еду. Один субъект → infinitivo: quiero ir."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи на испанский",
+                    question = "«Не хочу, чтобы ты опаздывал»",
+                    options = listOf("No quiero que llegas tarde.", "No quiero que llegues tarde.", "No quiero llegar tarde.", "No quiero llegando tarde."),
+                    correctAnswer = "No quiero que llegues tarde.",
+                    explanation = "Два субъекта: я (no quiero) и ты (llegas). Нужен subjuntivo: llegues. No quiero que llegues tarde."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "¿Qué ___ que haga?",
+                    options = listOf("quieres", "quieras", "quería", "querrás"),
+                    correctAnswer = "quieres",
+                    explanation = "Здесь querer — главный глагол в вопросе: ¿Qué quieres...? — indicativo. Subjuntivo идёт дальше: que haga."
+                )
+            )
+        ),
+
+        // u9_l6 — Esperar / Necesitar / Pedir que
+        "u9_l6" to LessonContent(
+            intro = "Esperar, necesitar и pedir также требуют Subjuntivo когда субъекты разные. Эти глаголы выражают надежду, необходимость и просьбу.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Esperar que — надеяться",
+                    items = listOf(
+                        LessonItem("Espero que llueva mañana.", "Надеюсь, завтра будет дождь.", ""),
+                        LessonItem("Esperamos que vengas.", "Надеемся, ты придёшь.", ""),
+                        LessonItem("Espera que el médico llegue.", "Надеется, что врач придёт.", ""),
+                        LessonItem("¡Ojalá! = Espero que...", "Ojalá — усиленная надежда", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Necesitar que — нуждаться",
+                    items = listOf(
+                        LessonItem("Necesito que me ayudes.", "Мне нужно, чтобы ты помог мне.", ""),
+                        LessonItem("Ella necesita que estés aquí.", "Ей нужно, чтобы ты был здесь.", ""),
+                        LessonItem("Necesitamos que todos participen.", "Нам нужно, чтобы все участвовали.", ""),
+                        LessonItem("necesitar + inf. (один субъект)", "Necesito dormir = Мне нужно поспать.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Pedir que — просить",
+                    items = listOf(
+                        LessonItem("Te pido que seas honesto.", "Прошу тебя быть честным.", ""),
+                        LessonItem("El médico pide que descanses.", "Врач просит тебя отдыхать.", ""),
+                        LessonItem("Pidieron que no fumáramos.", "Попросили, чтобы мы не курили.", ""),
+                        LessonItem("pedir que ≠ preguntar", "pedir = просить; preguntar = спрашивать", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Esperar que + subjuntivo",
+                    question = "Espero que el examen ___ fácil.",
+                    options = listOf("es", "sea", "será", "era"),
+                    correctAnswer = "sea",
+                    explanation = "esperar que + subjuntivo: sea (ser → sea). «Надеюсь, что экзамен будет лёгким.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Necesitar que + subjuntivo",
+                    question = "Necesito que alguien me ___ con las maletas.",
+                    options = listOf("ayuda", "ayude", "ayudará", "ayudaba"),
+                    correctAnswer = "ayude",
+                    explanation = "necesitar que + subjuntivo: ayude (ayudar → ayude). «Мне нужно, чтобы кто-то помог с чемоданами.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Pedir que + subjuntivo",
+                    question = "El profesor les pide que ___ en silencio.",
+                    options = listOf("trabajan", "trabajen", "trabajarán", "trabajaban"),
+                    correctAnswer = "trabajen",
+                    explanation = "pedir que + subjuntivo: trabajen (trabajar → trabajen). «Учитель просит их работать в тишине.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи: «Надеюсь, ты выздоровеешь быстро»",
+                    question = "Espero que ___ rápido.",
+                    options = listOf("te recuperas", "te recuperes", "te recuperarás", "te recuperabas"),
+                    correctAnswer = "te recuperes",
+                    explanation = "esperar que + subjuntivo: recuperarse → te recuperes. «Надеюсь, ты быстро поправишься.»"
+                )
+            )
+        ),
+
+        // u9_l7 — Es importante / necesario / bueno que
+        "u9_l7" to LessonContent(
+            intro = "Безличные выражения (es importante, es necesario, es bueno...) + que + subjuntivo — это классика испанского. Ими выражают оценку и советы.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Безличные выражения + que",
+                    items = listOf(
+                        LessonItem("Es importante que...", "Важно, чтобы...", ""),
+                        LessonItem("Es necesario que...", "Необходимо, чтобы...", ""),
+                        LessonItem("Es bueno que...", "Хорошо, что... / Хорошо бы...", ""),
+                        LessonItem("Es mejor que...", "Лучше, чтобы...", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Ещё выражения",
+                    items = listOf(
+                        LessonItem("Es malo que...", "Плохо, что...", ""),
+                        LessonItem("Es una lástima que...", "Жаль, что...", ""),
+                        LessonItem("Es hora de que...", "Пора бы...", ""),
+                        LessonItem("Es posible que...", "Возможно, что...", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("Es importante que duermas bien.", "Важно, чтобы ты хорошо спал.", ""),
+                        LessonItem("Es una lástima que no puedas venir.", "Жаль, что ты не можешь прийти.", ""),
+                        LessonItem("Es mejor que llegues temprano.", "Лучше, чтобы ты пришёл рано.", ""),
+                        LessonItem("Es posible que llueva.", "Возможно, будет дождь.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Es importante que ___ suficiente agua cada día.",
+                    options = listOf("bebes", "bebas", "beberás", "bebías"),
+                    correctAnswer = "bebas",
+                    explanation = "es importante que + subjuntivo: beber → bebas. «Важно, чтобы ты пил достаточно воды каждый день.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное выражение",
+                    question = "___ que llegues a tiempo.",
+                    options = listOf("Es importante", "Sé", "Creo", "Veo"),
+                    correctAnswer = "Es importante",
+                    explanation = "Безличные выражения (es importante, es necesario...) + que + subjuntivo. С saber, creer, ver — indicativo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Es una lástima que + subjuntivo",
+                    question = "Es una lástima que no ___ venir a la fiesta.",
+                    options = listOf("puedes", "puedas", "podrás", "podías"),
+                    correctAnswer = "puedas",
+                    explanation = "es una lástima que + subjuntivo: poder → puedas. «Жаль, что ты не можешь прийти на вечеринку.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Es posible que + subjuntivo",
+                    question = "Es posible que mañana ___ frío.",
+                    options = listOf("hace", "haga", "hará", "haría"),
+                    correctAnswer = "haga",
+                    explanation = "es posible que + subjuntivo: hacer → haga (yo hago → hag-). «Возможно, завтра будет холодно.»"
+                )
+            )
+        ),
+
+        // u9_l8 — Me alegra que / Temo que — эмоции
+        "u9_l8" to LessonContent(
+            intro = "Глаголы эмоций — радость, грусть, страх, удивление — требуют Subjuntivo, когда описывают чувства относительно чужих действий.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Радость и печаль",
+                    items = listOf(
+                        LessonItem("Me alegra que estés aquí.", "Рад(а), что ты здесь. (alegrar)", ""),
+                        LessonItem("Me alegro de que hayas venido.", "Рад(а), что ты пришёл.", ""),
+                        LessonItem("Me entristece que te vayas.", "Мне грустно, что ты уходишь.", ""),
+                        LessonItem("Siento que no puedas quedar.", "Жалею, что ты не можешь остаться.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Страх и удивление",
+                    items = listOf(
+                        LessonItem("Temo que llegues tarde.", "Боюсь, что ты опоздаешь.", ""),
+                        LessonItem("Me sorprende que lo sepas.", "Меня удивляет, что ты это знаешь.", ""),
+                        LessonItem("Me preocupa que no comas.", "Меня беспокоит, что ты не ешь.", ""),
+                        LessonItem("Me molesta que llegues tarde.", "Меня раздражает, что ты опаздываешь.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Формула",
+                    items = listOf(
+                        LessonItem("Me + [эмоция] + que + subjuntivo", "стандартная схема", ""),
+                        LessonItem("Me alegra, me sorprende, me molesta", "reflexivo + que + subj.", ""),
+                        LessonItem("Temer que, sentir que, odiar que", "тоже + subjuntivo", ""),
+                        LessonItem("Estar feliz/triste de que + subj.", "también con estar", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Глагол эмоции + subjuntivo",
+                    question = "Me alegra que ___ tan bien en el trabajo.",
+                    options = listOf("estás", "estés", "estarás", "estabas"),
+                    correctAnswer = "estés",
+                    explanation = "me alegra que + subjuntivo: estar → estés. «Рад(а), что у тебя всё хорошо на работе.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Глагол страха + subjuntivo",
+                    question = "Temo que él no ___ la verdad.",
+                    options = listOf("dice", "diga", "dirá", "decía"),
+                    correctAnswer = "diga",
+                    explanation = "temer que + subjuntivo: decir → yo digo → dig- → diga. «Боюсь, что он не говорит правду.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Удивление + subjuntivo",
+                    question = "Me sorprende que no ___ la noticia.",
+                    options = listOf("sabes", "sepas", "sabrás", "sabías"),
+                    correctAnswer = "sepas",
+                    explanation = "me sorprende que + subjuntivo: saber → sepa / sepas. «Меня удивляет, что ты не знаешь новость.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Беспокойство + subjuntivo",
+                    question = "Me preocupa que los niños no ___ suficiente.",
+                    options = listOf("duermen", "duerman", "dormirán", "dormían"),
+                    correctAnswer = "duerman",
+                    explanation = "me preocupa que + subjuntivo: dormir → duerma / duerman (o→ue). «Меня беспокоит, что дети мало спят.»"
+                )
+            )
+        ),
+
+        // u9_l9 — No creer que / Dudar que — сомнение
+        "u9_l9" to LessonContent(
+            intro = "Когда мы сомневаемся или отрицаем что-то — используем Subjuntivo. Но внимание: «creer que» (утверждение) → Indicativo, «no creer que» (отрицание) → Subjuntivo.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Creer → No creer: смена наклонения",
+                    items = listOf(
+                        LessonItem("Creo que TIENE razón.", "Думаю, что он прав. (факт → indicativo)", ""),
+                        LessonItem("No creo que TENGA razón.", "Не думаю, что он прав. (сомнение → subjuntivo)", ""),
+                        LessonItem("Creo que ES verdad.", "Думаю, что это правда.", ""),
+                        LessonItem("No creo que SEA verdad.", "Не думаю, что это правда.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Dudar que и No es verdad que",
+                    items = listOf(
+                        LessonItem("Dudo que venga.", "Сомневаюсь, что он придёт.", ""),
+                        LessonItem("Dudo que sea tan fácil.", "Сомневаюсь, что это так просто.", ""),
+                        LessonItem("No es verdad que sea tonto.", "Неправда, что он глупый.", ""),
+                        LessonItem("No es cierto que lo sepa.", "Неверно, что он это знает.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие глаголы сомнения",
+                    items = listOf(
+                        LessonItem("Negar que + subjuntivo", "Niega que sea culpable. (отрицает вину)", ""),
+                        LessonItem("No estar seguro de que + subj.", "No estoy seguro de que venga.", ""),
+                        LessonItem("No parecer que + subjuntivo", "No parece que sepa la respuesta.", ""),
+                        LessonItem("¿Crees que + indicativo?", "¿Crees que tiene razón? (вопрос-уточнение)", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Creer vs No creer",
+                    question = "No creo que María ___ en casa ahora.",
+                    options = listOf("está", "esté", "estará", "estaba"),
+                    correctAnswer = "esté",
+                    explanation = "no creer que + subjuntivo: estar → esté. «Не думаю, что Мария сейчас дома.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Creer (утверждение) → indicativo",
+                    question = "Creo que él ___ la verdad.",
+                    options = listOf("dice", "diga", "dirá", "dijera"),
+                    correctAnswer = "dice",
+                    explanation = "creer que (утверждение) + indicativo: dice. «Думаю, что он говорит правду.» Без отрицания — indicativo!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Dudar que + subjuntivo",
+                    question = "Dudo que el equipo ___ el partido.",
+                    options = listOf("gana", "gane", "ganará", "ganaba"),
+                    correctAnswer = "gane",
+                    explanation = "dudar que + subjuntivo: ganar → gane. «Сомневаюсь, что команда выиграет матч.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "No es verdad que + subjuntivo",
+                    question = "No es verdad que ella ___ mal.",
+                    options = listOf("canta", "cante", "cantará", "cantaba"),
+                    correctAnswer = "cante",
+                    explanation = "no es verdad que + subjuntivo: cantar → cante. «Неправда, что она плохо поёт.»"
+                )
+            )
+        ),
+
+        // u9_l10 — Ojalá + Subjuntivo
+        "u9_l10" to LessonContent(
+            intro = "Ojalá — одно из самых красивых слов испанского. Произошло от арабского «wa sha Allah» (если бы Бог захотел). Всегда используется с Subjuntivo.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Ojalá + Subjuntivo Presente",
+                    items = listOf(
+                        LessonItem("¡Ojalá llueva!", "Надеюсь, будет дождь! (realistico)", ""),
+                        LessonItem("¡Ojalá vengas!", "Надеюсь, ты придёшь!", ""),
+                        LessonItem("¡Ojalá todo salga bien!", "Надеюсь, всё пройдёт хорошо!", ""),
+                        LessonItem("Ojalá (que) + subjuntivo", "«que» необязательно", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Разные ситуации",
+                    items = listOf(
+                        LessonItem("¡Ojalá apruebe el examen!", "Надеюсь, я сдам экзамен!", ""),
+                        LessonItem("¡Ojalá no haga frío!", "Надеюсь, не будет холодно!", ""),
+                        LessonItem("¡Ojalá mi jefe esté de buen humor!", "Надеюсь, шеф в хорошем настроении!", ""),
+                        LessonItem("¡Ojalá podamos vernos pronto!", "Надеюсь, скоро увидимся!", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Сила выражения",
+                    items = listOf(
+                        LessonItem("Espero que... (нейтрально)", "«Надеюсь, что...»", ""),
+                        LessonItem("¡Ojalá... (с силой желания)", "«Как бы хотелось, чтобы...»", ""),
+                        LessonItem("¡Ojalá! (одно слово)", "«Если бы!» / «Вот бы!»", ""),
+                        LessonItem("Muy frecuente en español", "очень употребительно в речи", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ojalá + subjuntivo",
+                    question = "¡Ojalá ___ buen tiempo mañana!",
+                    options = listOf("hace", "haga", "hará", "haría"),
+                    correctAnswer = "haga",
+                    explanation = "ojalá + subjuntivo: hacer → yo hago → hag- → haga. «Надеюсь, завтра будет хорошая погода!»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Ojalá + subjuntivo",
+                    question = "¡Ojalá tus padres ___ la noticia bien!",
+                    options = listOf("toman", "tomen", "tomarán", "tomaran"),
+                    correctAnswer = "tomen",
+                    explanation = "ojalá + subjuntivo: tomar → tomen. «Надеюсь, твои родители воспримут новость хорошо!»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи: «Надеюсь, ты сдашь экзамен!»",
+                    question = "¡Ojalá ___ el examen!",
+                    options = listOf("apruebas", "apruebes", "aprobarás", "apruebe"),
+                    correctAnswer = "apruebes",
+                    explanation = "ojalá + subjuntivo: aprobar (o→ue) → apruebes (tú). «Надеюсь, ты сдашь экзамен!»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Cuando vs Ojalá",
+                    question = "¿Cuándo se usa 'ojalá'?",
+                    options = listOf("Для описания фактов", "Для сильного желания или надежды", "Только в прошедшем времени", "Только в отрицательных предложениях"),
+                    correctAnswer = "Для сильного желания или надежды",
+                    explanation = "Ojalá выражает сильное желание или надежду. Всегда + subjuntivo. Одно из самых экспрессивных слов испанского!"
+                )
+            )
+        ),
+
+        // u9_l11 — Para que + Subjuntivo — цель
+        "u9_l11" to LessonContent(
+            intro = "Para que выражает цель чьего-то действия. Если цель касается другого человека — всегда Subjuntivo. Это непреложное правило!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Para que + Subjuntivo",
+                    items = listOf(
+                        LessonItem("Te explico para que entiendas.", "Объясняю, чтобы ты понял.", ""),
+                        LessonItem("Habla despacio para que yo entienda.", "Говори медленно, чтобы я понял.", ""),
+                        LessonItem("Lo hago para que estés contento.", "Делаю это, чтобы ты был доволен.", ""),
+                        LessonItem("Trabajo mucho para que vivamos bien.", "Много работаю, чтобы мы жили хорошо.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Para vs Para que",
+                    items = listOf(
+                        LessonItem("Estudio PARA aprender. (я учу)", "один субъект → para + infinitivo", ""),
+                        LessonItem("Estudio PARA QUE aprendas. (ты учишь)", "два субъекта → para que + subjuntivo", ""),
+                        LessonItem("Compro flores PARA sorprenderte.", "один субъект → para + inf.", ""),
+                        LessonItem("Compro flores PARA QUE te alegres.", "два субъекта → para que + subj.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие выражения цели",
+                    items = listOf(
+                        LessonItem("a fin de que + subjuntivo", "Con tal de que vengas... (лишь бы ты пришёл)", ""),
+                        LessonItem("con tal de que + subjuntivo", "A fin de que todo vaya bien.", ""),
+                        LessonItem("para que vs para", "Para él = для него; para que él venga = чтобы он пришёл", ""),
+                        LessonItem("Очень частое в речи", "Te llamo para que sepas = звоню, чтобы ты знал", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Para que + subjuntivo",
+                    question = "Te escribo para que ___ mis planes.",
+                    options = listOf("conoces", "conozcas", "conocerás", "conocías"),
+                    correctAnswer = "conozcas",
+                    explanation = "para que + subjuntivo: conocer → yo conozco → conozc- → conozcas. «Пишу тебе, чтобы ты знал мои планы.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Para vs Para que",
+                    question = "Voy al gimnasio ___ estar sano.",
+                    options = listOf("para que (+ subjuntivo)", "para (+ infinitivo)", "por que", "porque"),
+                    correctAnswer = "para (+ infinitivo)",
+                    explanation = "Один субъект (я иду и я буду здоровым) → para + infinitivo: para estar sano."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Para que + subjuntivo (dos sujetos)",
+                    question = "Habla más despacio para que yo te ___ bien.",
+                    options = listOf("entiendo", "entienda", "entenderé", "entendería"),
+                    correctAnswer = "entienda",
+                    explanation = "para que + subjuntivo: entender (e→ie) → entienda. Два субъекта: tú hablas + yo entiendo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи: «Оставлю записку, чтобы ты не забыл»",
+                    question = "Dejo una nota para que no lo _____.",
+                    options = listOf("olvidas", "olvides", "olvidarás", "olvidarías"),
+                    correctAnswer = "olvides",
+                    explanation = "para que + subjuntivo: olvidar → olvides. «Оставлю записку, чтобы ты не забыл.»"
+                )
+            )
+        ),
+
+        // u9_l12 — Cuando + Subjuntivo — будущее время
+        "u9_l12" to LessonContent(
+            intro = "В испанском, когда говорят о будущем с cuando, después de que, hasta que — используют Subjuntivo. Это одна из самых частых ошибок иностранцев!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Cuando + Subjuntivo (будущее)",
+                    items = listOf(
+                        LessonItem("Cuando llegues, llámame.", "Когда придёшь — позвони. (будущее)", ""),
+                        LessonItem("Cuando tengas tiempo, hablamos.", "Когда будет время, поговорим.", ""),
+                        LessonItem("Avísame cuando estés listo.", "Дай знать, когда будешь готов.", ""),
+                        LessonItem("Cuando sea mayor, seré médico.", "Когда вырасту, стану врачом.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Cuando + Indicativo (привычка/прошлое)",
+                    items = listOf(
+                        LessonItem("Cuando LLEGO a casa, como. (привычка)", "Indicativo: это происходит регулярно", ""),
+                        LessonItem("Cuando LLEGUÉ ayer, comí. (прошлое)", "Indicativo: конкретное прошлое событие", ""),
+                        LessonItem("Cuando LLEGUES, come. (будущее)", "Subjuntivo: ещё не произошло", ""),
+                        LessonItem("Правило: будущее = subjuntivo!", "Если ещё не произошло → subj.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Другие временные союзы + Subjuntivo (будущее)",
+                    items = listOf(
+                        LessonItem("hasta que llegues", "пока не придёшь", ""),
+                        LessonItem("después de que termines", "после того как закончишь", ""),
+                        LessonItem("en cuanto puedas", "как только сможешь", ""),
+                        LessonItem("mientras estés aquí", "пока ты здесь (будущее)", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Cuando + subjuntivo (будущее)",
+                    question = "Cuando ___ mayor, quiero viajar por el mundo.",
+                    options = listOf("soy", "sea", "seré", "era"),
+                    correctAnswer = "sea",
+                    explanation = "cuando + будущее → subjuntivo: ser → sea. «Когда стану взрослым, хочу путешествовать по миру.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Hasta que + subjuntivo (будущее)",
+                    question = "No me iré hasta que ___ la verdad.",
+                    options = listOf("dices", "digas", "dirás", "decías"),
+                    correctAnswer = "digas",
+                    explanation = "hasta que + будущее → subjuntivo: decir → yo digo → dig- → digas. «Не уйду, пока не скажешь правду.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "En cuanto + subjuntivo",
+                    question = "En cuanto ___ el trabajo, llámame.",
+                    options = listOf("terminas", "termines", "terminarás", "terminabas"),
+                    correctAnswer = "termines",
+                    explanation = "en cuanto + будущее → subjuntivo: terminar → termines. «Как только закончишь работу, позвони мне.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Cuando: привычка или будущее?",
+                    question = "Cuando llego a casa, siempre me ducho. (каждый день)",
+                    options = listOf("Subjuntivo — будущее действие", "Indicativo — привычка/регулярность", "Condicional — гипотетически", "Imperativo — приказ"),
+                    correctAnswer = "Indicativo — привычка/регулярность",
+                    explanation = "«siempre» указывает на привычку. Cuando + регулярное действие = indicativo. Subjuntivo только для будущего!"
+                )
+            )
+        ),
+
+        // u9_l13 — Aunque: факт vs гипотеза
+        "u9_l13" to LessonContent(
+            intro = "Aunque (хотя / даже если) — интересный союз: с Indicativo говорит о факте, с Subjuntivo — о гипотезе. Выбор наклонения меняет смысл!",
+            sections = listOf(
+                LessonSection(
+                    heading = "Aunque + Indicativo = факт",
+                    items = listOf(
+                        LessonItem("Aunque ES caro, lo compro.", "Хотя это дорого, я покупаю. (это правда — дорого)", ""),
+                        LessonItem("Aunque ESTÁ cansado, trabaja.", "Хотя устал, работает. (он действительно устал)", ""),
+                        LessonItem("Aunque LLUEVE, salgo.", "Хотя идёт дождь, выхожу. (дождь реален)", ""),
+                        LessonItem("= хотя (уступка реальному факту)", "Говорящий знает, что это правда", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Aunque + Subjuntivo = гипотеза",
+                    items = listOf(
+                        LessonItem("Aunque SEA caro, lo compraré.", "Даже если будет дорого, куплю. (неизвестно)", ""),
+                        LessonItem("Aunque ESTÉ cansado, iré.", "Даже если устану, пойду. (ещё неизвестно)", ""),
+                        LessonItem("Aunque LLUEVA, saldré.", "Даже если пойдёт дождь, выйду.", ""),
+                        LessonItem("= даже если (условие-гипотеза)", "Говорящий допускает возможность", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Сравни пары",
+                    items = listOf(
+                        LessonItem("Aunque tiene dinero, no gasta.", "У него есть деньги (это факт).", ""),
+                        LessonItem("Aunque tenga dinero, no gastará.", "Даже если будут деньги, не потратит.", ""),
+                        LessonItem("Aunque es difícil, lo hago.", "Трудно — это правда.", ""),
+                        LessonItem("Aunque sea difícil, lo haré.", "Даже если будет трудно.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Aunque + indicativo (факт)",
+                    question = "Aunque ___ mucho dinero, siempre ahorra. (у него есть — это факт)",
+                    options = listOf("tiene", "tenga", "tendrá", "tuviera"),
+                    correctAnswer = "tiene",
+                    explanation = "Это факт: у него есть деньги. Aunque + indicativo: tiene. «Хотя у него много денег, он всегда копит.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Aunque + subjuntivo (гипотеза)",
+                    question = "Vendré mañana aunque ___ mal tiempo. (не знаю, будет ли)",
+                    options = listOf("hace", "haga", "hará", "haría"),
+                    correctAnswer = "haga",
+                    explanation = "Гипотетическое условие: хотя бы плохая погода была — subjuntivo: haga. «Приду завтра, даже если будет плохая погода.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Aunque no ___ español, lo entiende todo. (реальный факт: не говорит)",
+                    options = listOf("habla", "hable", "hablará", "hablara"),
+                    correctAnswer = "habla",
+                    explanation = "Это реальный факт: не говорит по-испански. Aunque + indicativo: habla. «Хотя не говорит по-испански, всё понимает.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Смысл меняется!",
+                    question = "¿Qué diferencia hay? Aunque ES tarde... / Aunque SEA tarde...",
+                    options = listOf(
+                        "Нет разницы, оба варианта одинаковы",
+                        "ES = уже поздно (факт); SEA = возможно будет поздно (гипотеза)",
+                        "ES = будущее; SEA = прошлое",
+                        "ES = приказ; SEA = вопрос"
+                    ),
+                    correctAnswer = "ES = уже поздно (факт); SEA = возможно будет поздно (гипотеза)",
+                    explanation = "Именно так! Aunque es tarde = «хотя уже поздно» (факт). Aunque sea tarde = «даже если будет поздно» (гипотеза)."
+                )
+            )
+        ),
+
+        // u9_l14 — Чекпоинт: «Совет другу» (quiz)
+        "u9_l14" to LessonContent(
+            intro = "Чекпоинт «Совет другу». Ты выучил Subjuntivo Presente — теперь проверим! Представь, что даёшь советы другу по разным ситуациям.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Что мы изучили в Блоке 1",
+                    items = listOf(
+                        LessonItem("Образование Subjuntivo", "regulares (-AR/-ER/-IR) + нерегулярные", ""),
+                        LessonItem("Желания и просьбы", "querer / esperar / pedir / necesitar que", ""),
+                        LessonItem("Оценки и эмоции", "es importante que / me alegra que", ""),
+                        LessonItem("Сомнения и цель", "no creer que / para que / ojalá", ""),
+                        LessonItem("Временные союзы", "cuando / hasta que / aunque + subj.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Совет другу: он болеет",
+                    question = "Le recomiendo que ___ al médico hoy mismo.",
+                    options = listOf("va", "vaya", "irá", "iba"),
+                    correctAnswer = "vaya",
+                    explanation = "recomendar que + subjuntivo: ir → vaya. «Советую ему пойти к врачу сегодня же.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Эмоция по поводу новости",
+                    question = "Me alegra mucho que ___ un nuevo trabajo.",
+                    options = listOf("encontraste", "hayas encontrado", "encontrarás", "encuentres"),
+                    correctAnswer = "encuentres",
+                    explanation = "me alegra que + subjuntivo presente: encontrar → encuentres. «Рад(а), что ты нашёл новую работу.»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Надежда на встречу",
+                    question = "¡Ojalá ___ vernos pronto!",
+                    options = listOf("podemos", "podamos", "podremos", "podríamos"),
+                    correctAnswer = "podamos",
+                    explanation = "ojalá + subjuntivo: poder → podamos. «Надеюсь, скоро сможем увидеться!»"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Условие в будущем",
+                    question = "Cuando ___ las vacaciones, viajaremos juntos.",
+                    options = listOf("empiezan", "empiecen", "empezarán", "empezaban"),
+                    correctAnswer = "empiecen",
+                    explanation = "cuando + будущее → subjuntivo: empezar (e→ie) → empiecen. «Когда начнутся каникулы, путешествуем вместе.»"
+                )
+            )
         )
     )
 }

@@ -315,30 +315,47 @@ object RoadmapData {
         ),
 
         // ══════════════════════════════════════════════
-        //  B1: БЛОК 1 — ВЫРАЖАЕМ МНЕНИЯ
-        //  TODO: Удалить isPremium когда контент B1 готов
+        //  БЛОК 1 B1: SUBJUNTIVO PRESENTE  (уроки 1–15)
         // ══════════════════════════════════════════════
 
         RoadmapUnit(
-            id = "b1_1",
-            title = "B1 · Блок 1: Выражаем мнения",
-            icon = "💭",
-            description = "Subjuntivo Presente — желания, мнения, эмоции",
+            id = "9",
+            title = "Блок 1: Subjuntivo",
+            icon = "🔮",
+            description = "Presente de Subjuntivo — желания, мнения, эмоции, сомнения",
             cefrLevel = "B1",
             color = Color(0xFFE65100),
             lessons = listOf(
-                RoadmapLesson("🔮 Presente de Subjuntivo: что это и зачем",        "content", "general"),
-                RoadmapLesson("🔮 Regulares: que hable, que coma, que viva",        "content", "general"),
-                RoadmapLesson("💭 Querer que / Esperar que / Necesitar que",        "content", "general"),
-                RoadmapLesson("💭 Es importante que / Es necesario que",            "content", "general"),
-                RoadmapLesson("😊 Ojalá + Subjuntivo: выражаем желания",           "vocab",   "phrases"),
-                RoadmapLesson("🎯 Мини-тест: Subjuntivo",                           "quiz",    "all"),
-                RoadmapLesson("🔮 Irregulares: ser → sea, ir → vaya, haber → haya","content", "general",  isPremium = true),
-                RoadmapLesson("🔮 Dudar que / No creer que + Subjuntivo",          "content", "general",  isPremium = true),
-                RoadmapLesson("🌍 Condicional simple: hablaría, comería",           "content", "general",  isPremium = true),
-                RoadmapLesson("💬 Si tuviera tiempo... — гипотезы",                "vocab",   "phrases",  isPremium = true),
-                RoadmapLesson("📝 Pero vs Sino vs Sin embargo",                     "content", "general",  isPremium = true),
-                RoadmapLesson("🎯 Тест: Subjuntivo + Condicional",                  "quiz",    "all",      isPremium = true)
+                // 1
+                RoadmapLesson("🔮 Subjuntivo: что это и зачем",                     "content", "general"),
+                // 2
+                RoadmapLesson("🔮 Regulares -AR: hablar → hable",                   "content", "general"),
+                // 3
+                RoadmapLesson("🔮 Regulares -ER/-IR: comer → coma, vivir → viva",   "content", "general"),
+                // 4
+                RoadmapLesson("🔮 Irregulares: ser → sea, ir → vaya, estar → esté", "content", "general"),
+                // 5
+                RoadmapLesson("🔮 Irregulares: e→ie, o→ue (querer, poder)",         "content", "general"),
+                // 6
+                RoadmapLesson("💭 Querer que + Subjuntivo",                          "content", "general"),
+                // 7
+                RoadmapLesson("💭 Esperar / Necesitar / Pedir que",                  "content", "general"),
+                // 8
+                RoadmapLesson("💡 Es importante / necesario / bueno que",            "content", "general"),
+                // 9
+                RoadmapLesson("😊 Me alegra que / Temo que — эмоции",               "content", "general"),
+                // 10
+                RoadmapLesson("🚫 No creer que / Dudar que — сомнение",             "content", "general"),
+                // 11
+                RoadmapLesson("🌟 Ojalá + Subjuntivo — мечты и надежды",            "content", "phrases"),
+                // 12
+                RoadmapLesson("🎯 Para que + Subjuntivo — цель",                     "content", "general"),
+                // 13
+                RoadmapLesson("⏰ Cuando + Subjuntivo — будущее время",              "content", "general"),
+                // 14
+                RoadmapLesson("📝 Aunque: факт vs гипотеза",                         "content", "general"),
+                // 15  ЧЕКПОИНТ
+                RoadmapLesson("🏁 Чекпоинт: «Совет другу»",                         "quiz",    "all")
             )
         ),
 
