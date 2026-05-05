@@ -7,6 +7,7 @@ import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.LibroProgressEntity
 import com.spanishapp.domain.algorithm.LeaguePromotion
 import com.spanishapp.domain.algorithm.RatingUpdater
+import com.spanishapp.domain.algorithm.SpanishLemmatizer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -98,9 +99,10 @@ class LibrosViewModel @Inject constructor(
 
     fun lookupWord(word: String, sentence: String) {
         viewModelScope.launch {
-            // 1. Ищем само слово
-            val cleaned = word.trim().trimEnd { !it.isLetter() }.lowercase()
-            val wordResult = wordDao.search(cleaned).first().firstOrNull()
+            val cleaned = word.trim().trimEnd { !it.isLetter() }.trimStart { !it.isLetter() }.lowercase()
+
+            // 1. Ищем слово: сначала точное совпадение, затем лемматизация
+            val wordResult = findWithLemmatization(cleaned)
             val wordRu = wordResult?.russian ?: ""
 
             // 2. Разбираем предложение на значимые слова и ищем каждое
@@ -108,7 +110,7 @@ class LibrosViewModel @Inject constructor(
                 .distinct()
                 .take(10)
                 .mapNotNull { w ->
-                    val r = wordDao.search(w.lowercase()).first().firstOrNull()
+                    val r = findWithLemmatization(w.lowercase())
                     r?.let { w to it.russian }
                 }
 
@@ -120,6 +122,17 @@ class LibrosViewModel @Inject constructor(
                 visible = true
             )
         }
+    }
+
+    private suspend fun findWithLemmatization(word: String): com.spanishapp.data.db.entity.WordEntity? {
+        // Try each candidate lemma until one is found in the DB
+        val candidates = SpanishLemmatizer.candidates(word)
+        for (candidate in candidates) {
+            val result = wordDao.findBySpanish(candidate)
+            if (result != null) return result
+        }
+        // Final fallback: LIKE contains search (catches compound words, etc.)
+        return wordDao.search(word).first().firstOrNull()
     }
 
     fun dismissTranslation() {

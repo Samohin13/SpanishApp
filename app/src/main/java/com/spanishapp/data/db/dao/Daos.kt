@@ -67,6 +67,9 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE spanish LIKE '%' || :q || '%' OR russian LIKE '%' || :q || '%' ORDER BY CASE WHEN spanish LIKE :q || '%' THEN 0 ELSE 1 END LIMIT 80")
     fun search(q: String): Flow<List<WordEntity>>
 
+    @Query("SELECT * FROM words WHERE lower(trim(spanish)) = :q LIMIT 1")
+    suspend fun findBySpanish(q: String): WordEntity?
+
     @Query("SELECT * FROM words WHERE id = :id")
     suspend fun getById(id: Int): WordEntity?
 
