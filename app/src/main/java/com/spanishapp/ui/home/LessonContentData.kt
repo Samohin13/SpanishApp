@@ -30,7 +30,8 @@ object LessonContentData {
         block05() + block06() + block07() + block08() +
         block09() + block10() + block11() + block12() +
         block13() + block14() + block15() + block16() +
-        block17() + block18() + block19() + block20()
+        block17() + block18() + block19() + block20() +
+        block21()
 
     private fun block01(): Map<String, LessonContent> = mapOf(
         // ══════════════════════════════════════════════
@@ -13727,6 +13728,1010 @@ object LessonContentData {
                     options = listOf("vendrá", "vendría", "viniera", "haya venido"),
                     correctAnswer = "vendría",
                     explanation = "Futuro → Condicional en estilo indirecto: vendrá → vendría. «Обещал, что придёт на следующий день.»"
+                )
+            )
+        )
+    )
+
+    private fun block21(): Map<String, LessonContent> = mapOf(
+        // ══════════════════════════════════════════════
+        //  B2 БЛОК 3 (u15): COMUNICACIÓN FORMAL
+        // ══════════════════════════════════════════════
+
+        "u15_l0" to LessonContent(
+            intro = "Регистры речи: формальный, нейтральный, разговорный. Один и тот же смысл — три варианта.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Три уровня общения",
+                    items = listOf(
+                        LessonItem("Formal", "Le agradecería que…", "деловое письмо, начальник"),
+                        LessonItem("Neutral", "¿Podrías…?", "коллега, сосед"),
+                        LessonItem("Coloquial", "Oye, ¿me echas una mano?", "друг, семья")
+                    )
+                ),
+                LessonSection(
+                    heading = "Маркеры формального стиля",
+                    items = listOf(
+                        LessonItem("usted / ustedes", "вместо tú/vosotros", "обращение"),
+                        LessonItem("estimado/a", "уважаемый/ая", "приветствие"),
+                        LessonItem("atentamente", "с уважением", "прощание"),
+                        LessonItem("rogamos", "просим", "вместо «pedimos»")
+                    )
+                ),
+                LessonSection(
+                    heading = "Маркеры разговорного",
+                    items = listOf(
+                        LessonItem("tío / tía", "чувак / чувиха", "только друзьям"),
+                        LessonItem("vale", "ок", "согласие"),
+                        LessonItem("¡qué guay!", "круто!", "восторг"),
+                        LessonItem("o sea", "то есть", "уточнение")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какой регистр?",
+                    question = "«Le agradecería su pronta respuesta.»",
+                    options = listOf("formal", "neutral", "coloquial", "vulgar"),
+                    correctAnswer = "formal",
+                    explanation = "Le + agradecería + usted-форма — это formal."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Преобразуйте в formal",
+                    question = "«Oye, ¿puedes ayudarme?» →",
+                    options = listOf("¿Podría usted ayudarme?", "¿Me echas una mano?", "¡Échame un cable!", "¿Me ayudas, tío?"),
+                    correctAnswer = "¿Podría usted ayudarme?",
+                    explanation = "Condicional + usted = formal."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что НЕ formal?",
+                    question = "Выберите разговорное:",
+                    options = listOf("estimado señor", "atentamente", "vale, tío", "le ruego"),
+                    correctAnswer = "vale, tío",
+                    explanation = "vale + tío — типичный coloquial."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Прощание в письме",
+                    question = "Деловое письмо заканчивается:",
+                    options = listOf("¡Hasta luego!", "Atentamente,", "Un beso", "Chao"),
+                    correctAnswer = "Atentamente,",
+                    explanation = "Atentamente — стандартное formal-прощание."
+                )
+            )
+        ),
+
+        "u15_l1" to LessonContent(
+            intro = "Структура формального письма: заголовок → приветствие → тело → прощание → подпись.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Приветствие (saludo)",
+                    items = listOf(
+                        LessonItem("Estimado/a Sr./Sra. García:", "Уважаемый/ая г-н/г-жа Гарсия:", "имя известно"),
+                        LessonItem("Muy señor mío:", "Уважаемый господин:", "имя неизвестно"),
+                        LessonItem("A quien corresponda:", "Кого это касается:", "общее обращение")
+                    )
+                ),
+                LessonSection(
+                    heading = "Открывающая фраза",
+                    items = listOf(
+                        LessonItem("Me dirijo a usted para…", "Обращаюсь к Вам, чтобы…", "цель"),
+                        LessonItem("Por la presente le informo…", "Настоящим сообщаю…", "уведомление"),
+                        LessonItem("En respuesta a su carta…", "В ответ на Ваше письмо…", "ответ")
+                    )
+                ),
+                LessonSection(
+                    heading = "Прощание (despedida)",
+                    items = listOf(
+                        LessonItem("Atentamente,", "С уважением,", "стандарт"),
+                        LessonItem("Reciba un cordial saludo,", "Сердечный привет,", "теплее"),
+                        LessonItem("Quedo a su disposición.", "Остаюсь в Вашем распоряжении.", "+ готовность")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Имя адресата неизвестно",
+                    question = "Выберите приветствие:",
+                    options = listOf("Hola amigo", "Estimado Juan", "Muy señor mío", "Querido"),
+                    correctAnswer = "Muy señor mío",
+                    explanation = "Muy señor mío — когда имени не знаем."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Открывающая фраза",
+                    question = "Цель письма — предложить услугу:",
+                    options = listOf("Te escribo porque…", "Me dirijo a usted para…", "Oye…", "¿Qué tal?"),
+                    correctAnswer = "Me dirijo a usted para…",
+                    explanation = "Me dirijo a usted para + inf — стандарт цели."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал письма",
+                    question = "Закройте формально:",
+                    options = listOf("Atentamente,", "Besos,", "Un abrazo,", "Hasta pronto"),
+                    correctAnswer = "Atentamente,",
+                    explanation = "Atentamente — нейтрально-формальный финал."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что лишнее в formal?",
+                    question = "В деловом письме НЕ пишут:",
+                    options = listOf("Estimado", "Atentamente", "¡Hola tío!", "Le ruego"),
+                    correctAnswer = "¡Hola tío!",
+                    explanation = "tío — разговорное, недопустимо в formal."
+                )
+            )
+        ),
+
+        "u15_l2" to LessonContent(
+            intro = "Carta de presentación / motivación — сопроводительное письмо к резюме.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Структура",
+                    items = listOf(
+                        LessonItem("§1 quién soy", "представление + откуда узнал", "Mi nombre es… He visto…"),
+                        LessonItem("§2 qué ofrezco", "опыт + навыки", "Cuento con… años de experiencia…"),
+                        LessonItem("§3 por qué encajo", "мотивация + соответствие", "Considero que mi perfil…"),
+                        LessonItem("§4 cierre", "готовность к интервью", "Quedo a su disposición…")
+                    )
+                ),
+                LessonSection(
+                    heading = "Полезные фразы",
+                    items = listOf(
+                        LessonItem("Cuento con experiencia en…", "Имею опыт в…", ""),
+                        LessonItem("Me considero una persona…", "Считаю себя человеком…", "+ adj"),
+                        LessonItem("Estoy interesado/a en…", "Заинтересован/а в…", ""),
+                        LessonItem("Adjunto mi currículum.", "Прилагаю резюме.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Качества (для §3)",
+                    items = listOf(
+                        LessonItem("responsable", "ответственный", ""),
+                        LessonItem("proactivo/a", "инициативный/ая", ""),
+                        LessonItem("trabajador/a en equipo", "командный игрок", ""),
+                        LessonItem("orientado/a a resultados", "ориентирован/а на результат", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Опыт работы",
+                    question = "«Имею 5 лет опыта в маркетинге.»",
+                    options = listOf("Tengo 5 años trabajo", "Cuento con 5 años de experiencia en marketing", "Trabajo 5 años", "Soy 5 años"),
+                    correctAnswer = "Cuento con 5 años de experiencia en marketing",
+                    explanation = "Cuento con + experiencia en + поле."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Прилагаю CV",
+                    question = "Финальная фраза о приложении:",
+                    options = listOf("Adjunto mi currículum", "Mando mi CV", "Aquí está mi CV", "Tengo CV"),
+                    correctAnswer = "Adjunto mi currículum",
+                    explanation = "Adjunto — стандарт «прилагаю»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Самоописание",
+                    question = "«Считаю себя ответственным человеком.»",
+                    options = listOf("Soy responsable", "Me considero una persona responsable", "Tengo responsable", "Pienso responsable"),
+                    correctAnswer = "Me considero una persona responsable",
+                    explanation = "Me considero + una persona + adj."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Интерес к вакансии",
+                    question = "«Заинтересован в этой должности.»",
+                    options = listOf("Me interesa", "Estoy interesado en este puesto", "Quiero este trabajo", "Necesito puesto"),
+                    correctAnswer = "Estoy interesado en este puesto",
+                    explanation = "Estar interesado/a en + sustantivo."
+                )
+            )
+        ),
+
+        "u15_l3" to LessonContent(
+            intro = "Conectores de contraste — выражают противопоставление.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Сильное противопоставление",
+                    items = listOf(
+                        LessonItem("sin embargo", "однако", "запятая с двух сторон"),
+                        LessonItem("no obstante", "тем не менее", "формально"),
+                        LessonItem("por el contrario", "наоборот", "усиление")
+                    )
+                ),
+                LessonSection(
+                    heading = "Уступка",
+                    items = listOf(
+                        LessonItem("a pesar de + inf/sust", "несмотря на", "A pesar de la lluvia…"),
+                        LessonItem("a pesar de que + verbo", "несмотря на то, что", "+ ind/subj"),
+                        LessonItem("aunque + ind", "хотя (факт)", "Aunque llueve, salgo."),
+                        LessonItem("aunque + subj", "хотя бы и (предположение)", "Aunque llueva, saldré.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Мягкое противопоставление",
+                    items = listOf(
+                        LessonItem("en cambio", "зато / напротив", ""),
+                        LessonItem("mientras que", "тогда как", "сравнение"),
+                        LessonItem("ahora bien", "однако (вводное)", "формально")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Формальное «однако»",
+                    question = "El proyecto es ambicioso; ___, es viable.",
+                    options = listOf("pero", "sin embargo", "aunque", "mientras"),
+                    correctAnswer = "sin embargo",
+                    explanation = "sin embargo — формальный аналог «однако»."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "aunque + время",
+                    question = "Aunque mañana ___ frío, iremos. (предположение)",
+                    options = listOf("hace", "haga", "hará", "hizo"),
+                    correctAnswer = "haga",
+                    explanation = "Гипотетическое будущее → aunque + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Несмотря на + сущ.",
+                    question = "___ las dificultades, lo logramos.",
+                    options = listOf("Aunque", "A pesar de", "Sin embargo", "Mientras"),
+                    correctAnswer = "A pesar de",
+                    explanation = "A pesar de + sustantivo / infinitivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сравнение",
+                    question = "Yo prefiero el té, ___ él prefiere el café.",
+                    options = listOf("sin embargo", "mientras que", "aunque", "porque"),
+                    correctAnswer = "mientras que",
+                    explanation = "mientras que — для сопоставления."
+                )
+            )
+        ),
+
+        "u15_l4" to LessonContent(
+            intro = "Conectores de causa y consecuencia — причина и следствие.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Причина (causa)",
+                    items = listOf(
+                        LessonItem("porque", "потому что", "ответ на ¿por qué?"),
+                        LessonItem("ya que / puesto que", "поскольку", "формально, известная причина"),
+                        LessonItem("dado que", "учитывая, что", "очень формально"),
+                        LessonItem("debido a + sust", "из-за", "Debido a la lluvia…"),
+                        LessonItem("a causa de + sust", "по причине", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Следствие (consecuencia)",
+                    items = listOf(
+                        LessonItem("por lo tanto", "поэтому", "формально"),
+                        LessonItem("por consiguiente", "следовательно", "очень формально"),
+                        LessonItem("así que", "так что", "разговорно-нейтрально"),
+                        LessonItem("de modo que", "так что", "+ ind"),
+                        LessonItem("en consecuencia", "вследствие чего", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Следствие силы",
+                    items = listOf(
+                        LessonItem("tan… que…", "так… что…", "Tan cansado que se durmió."),
+                        LessonItem("tanto/a/os/as… que…", "столько… что…", "Tanta gente que no entré."),
+                        LessonItem("de tal modo que…", "так, что…", "формально")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Формальная причина",
+                    question = "___ no hay fondos, suspendemos el plan.",
+                    options = listOf("Porque", "Dado que", "Así que", "Pero"),
+                    correctAnswer = "Dado que",
+                    explanation = "Dado que — формальная причина в начале."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Следствие formal",
+                    question = "Los datos son insuficientes; ___, posponemos.",
+                    options = listOf("así que", "por lo tanto", "porque", "aunque"),
+                    correctAnswer = "por lo tanto",
+                    explanation = "por lo tanto — formal consequence."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Из-за + сущ.",
+                    question = "Llegué tarde ___ el tráfico.",
+                    options = listOf("porque", "debido a", "ya que", "puesto que"),
+                    correctAnswer = "debido a",
+                    explanation = "debido a + sustantivo (без que)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "tan/tanto",
+                    question = "Había ___ ruido que no oí nada.",
+                    options = listOf("tan", "tanto", "muy", "mucho"),
+                    correctAnswer = "tanto",
+                    explanation = "tanto + sustantivo (ruido); tan + adj/adv."
+                )
+            )
+        ),
+
+        "u15_l5" to LessonContent(
+            intro = "Мини-тест: регистр, письмо, conectores.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Чек-лист",
+                    items = listOf(
+                        LessonItem("formal vs coloquial", "umbral B2", ""),
+                        LessonItem("структура письма", "saludo → cuerpo → despedida", ""),
+                        LessonItem("contrastes", "sin embargo, a pesar de, aunque", ""),
+                        LessonItem("causa/consecuencia", "dado que, por lo tanto", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Готовые блоки",
+                    items = listOf(
+                        LessonItem("Me dirijo a usted para…", "цель письма", ""),
+                        LessonItem("Adjunto…", "приложение", ""),
+                        LessonItem("Quedo a su disposición.", "готовность", ""),
+                        LessonItem("Atentamente,", "финал", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Подсказка",
+                    items = listOf(
+                        LessonItem("aunque + ind", "факт", ""),
+                        LessonItem("aunque + subj", "гипотеза", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Регистр",
+                    question = "«¿Podría usted indicarme…?»",
+                    options = listOf("formal", "coloquial", "vulgar", "infantil"),
+                    correctAnswer = "formal",
+                    explanation = "Condicional + usted = formal."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Conector",
+                    question = "Es caro; ___, lo compraré.",
+                    options = listOf("porque", "no obstante", "dado que", "así"),
+                    correctAnswer = "no obstante",
+                    explanation = "no obstante = sin embargo (formal)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Saludo",
+                    question = "Имя адресата неизвестно:",
+                    options = listOf("Hola", "Querido", "Muy señor mío", "Tío"),
+                    correctAnswer = "Muy señor mío",
+                    explanation = "Стандарт для unknown."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "aunque",
+                    question = "Iré aunque ___ frío mañana. (гипотеза)",
+                    options = listOf("hace", "haga", "haría", "hacía"),
+                    correctAnswer = "haga",
+                    explanation = "Гипотеза → subjuntivo."
+                )
+            )
+        ),
+
+        "u15_l6" to LessonContent(
+            intro = "El informe — отчёт. Объективный, структурированный текст.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Структура",
+                    items = listOf(
+                        LessonItem("1. Introducción", "цель отчёта", "El presente informe tiene como objetivo…"),
+                        LessonItem("2. Desarrollo / Análisis", "данные + анализ", "Según los datos…"),
+                        LessonItem("3. Conclusiones", "выводы", "En conclusión…"),
+                        LessonItem("4. Recomendaciones", "предложения", "Se recomienda…")
+                    )
+                ),
+                LessonSection(
+                    heading = "Безличные обороты",
+                    items = listOf(
+                        LessonItem("Se observa que…", "Наблюдается, что…", ""),
+                        LessonItem("Cabe destacar…", "Стоит отметить…", ""),
+                        LessonItem("Resulta evidente que…", "Очевидно, что…", ""),
+                        LessonItem("Se concluye que…", "Можно заключить, что…", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Описание данных",
+                    items = listOf(
+                        LessonItem("aumentar / disminuir", "расти / снижаться", ""),
+                        LessonItem("incrementarse en un 20 %", "увеличиться на 20 %", ""),
+                        LessonItem("alcanzar un máximo", "достичь максимума", ""),
+                        LessonItem("mantenerse estable", "оставаться стабильным", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Безличность",
+                    question = "«Стоит отметить успех проекта.»",
+                    options = listOf("Hay que decir", "Cabe destacar", "Tengo que decir", "Quiero notar"),
+                    correctAnswer = "Cabe destacar",
+                    explanation = "Cabe destacar — формальный безличный оборот."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Цель отчёта",
+                    question = "Открытие informe:",
+                    options = listOf("Os cuento que…", "El presente informe tiene como objetivo…", "Hola, voy a contar…", "Hoy hablaré"),
+                    correctAnswer = "El presente informe tiene como objetivo…",
+                    explanation = "Стандарт открытия informe."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Рост на %",
+                    question = "«Продажи выросли на 15 %.»",
+                    options = listOf("Las ventas crecieron un 15 %", "Las ventas se incrementaron en un 15 %", "Las ventas subieron 15", "Hay 15 ventas"),
+                    correctAnswer = "Las ventas se incrementaron en un 15 %",
+                    explanation = "Формально: incrementarse en un X %."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал",
+                    question = "Заключение informe:",
+                    options = listOf("Bueno, eso es todo", "En conclusión, los resultados…", "Adiós", "Vale, ya está"),
+                    correctAnswer = "En conclusión, los resultados…",
+                    explanation = "En conclusión — формальный финал."
+                )
+            )
+        ),
+
+        "u15_l7" to LessonContent(
+            intro = "Artículo de opinión — мнение в журналистском стиле.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Структура аргумента",
+                    items = listOf(
+                        LessonItem("Tesis", "главное утверждение", "Considero que…"),
+                        LessonItem("Argumento 1", "первое доказательство", "En primer lugar,"),
+                        LessonItem("Argumento 2", "второе + пример", "Asimismo,"),
+                        LessonItem("Contraargumento", "учёт возражения", "Es cierto que… sin embargo…"),
+                        LessonItem("Conclusión", "итог", "En definitiva,")
+                    )
+                ),
+                LessonSection(
+                    heading = "Выражение мнения",
+                    items = listOf(
+                        LessonItem("Considero que + ind", "считаю, что", "уверенность"),
+                        LessonItem("Me parece que + ind", "мне кажется", ""),
+                        LessonItem("No creo que + subj", "не думаю, что", "сомнение"),
+                        LessonItem("Desde mi punto de vista,", "с моей точки зрения", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Усиление",
+                    items = listOf(
+                        LessonItem("sin lugar a dudas", "без сомнения", ""),
+                        LessonItem("evidentemente", "очевидно", ""),
+                        LessonItem("indudablemente", "несомненно", ""),
+                        LessonItem("cabe señalar que", "следует отметить", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Открытие",
+                    question = "Первый аргумент вводится:",
+                    options = listOf("Por último,", "En primer lugar,", "Sin embargo,", "Adiós"),
+                    correctAnswer = "En primer lugar,",
+                    explanation = "En primer lugar — стандарт первого аргумента."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Не верю",
+                    question = "«Не думаю, что это правда.»",
+                    options = listOf("No creo que es verdad", "No creo que sea verdad", "Creo que sea verdad", "No creo es verdad"),
+                    correctAnswer = "No creo que sea verdad",
+                    explanation = "no creer que + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал",
+                    question = "Заключительная фраза мнения:",
+                    options = listOf("En definitiva,", "Pero,", "Aunque,", "Porque,"),
+                    correctAnswer = "En definitiva,",
+                    explanation = "En definitiva — итоговый коннектор."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Уверенность",
+                    question = "«Несомненно, это лучший вариант.»",
+                    options = listOf("Quizás", "Indudablemente", "Tal vez", "A lo mejor"),
+                    correctAnswer = "Indudablemente",
+                    explanation = "Indudablemente = sin duda (формально)."
+                )
+            )
+        ),
+
+        "u15_l8" to LessonContent(
+            intro = "Cláusulas concesivas — уступительные конструкции продвинутого уровня.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Концессивы",
+                    items = listOf(
+                        LessonItem("aunque + ind/subj", "хотя", "ind = факт, subj = гипотеза"),
+                        LessonItem("a pesar de que + ind/subj", "несмотря на то, что", ""),
+                        LessonItem("pese a que + ind/subj", "несмотря на", "формально"),
+                        LessonItem("por más que + subj", "сколько бы ни", "Por más que llore, no cambiará."),
+                        LessonItem("por mucho que + subj", "как бы ни", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Конструкции с infinitivo",
+                    items = listOf(
+                        LessonItem("a pesar de + inf", "несмотря на", "A pesar de estar cansado…"),
+                        LessonItem("pese a + inf", "несмотря на", "формально"),
+                        LessonItem("aun + gerundio", "даже …ая", "Aun sabiéndolo, calló.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Двойные с subjuntivo",
+                    items = listOf(
+                        LessonItem("digan lo que digan", "что бы ни говорили", ""),
+                        LessonItem("hagas lo que hagas", "что бы ты ни делал", ""),
+                        LessonItem("sea como sea", "как бы то ни было", ""),
+                        LessonItem("pase lo que pase", "что бы ни случилось", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "por más que",
+                    question = "Por más que ___, no me hace caso.",
+                    options = listOf("hablo", "hable", "hablé", "hablaba"),
+                    correctAnswer = "hable",
+                    explanation = "por más que всегда + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "pase lo que pase",
+                    question = "«Что бы ни случилось, я с тобой.»",
+                    options = listOf("Pasa lo que pasa", "Pase lo que pase", "Pasaba lo que pasaba", "Pasará lo que pasará"),
+                    correctAnswer = "Pase lo que pase",
+                    explanation = "Удвоенный subjuntivo — устойчивая конструкция."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "aun + ger.",
+                    question = "«Даже зная это, он промолчал.»",
+                    options = listOf("Aun sabiéndolo, calló", "Aunque lo sé, calla", "Aunque sabe, calla", "Aún sabe, calló"),
+                    correctAnswer = "Aun sabiéndolo, calló",
+                    explanation = "aun + gerundio = «даже …ая» (без ударения)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "pese a",
+                    question = "Pese a ___ enfermo, fue al trabajo.",
+                    options = listOf("estar", "estaba", "esté", "estuviera"),
+                    correctAnswer = "estar",
+                    explanation = "pese a + infinitivo (без que)."
+                )
+            )
+        ),
+
+        "u15_l9" to LessonContent(
+            intro = "Citar y reformular — цитирование и переформулирование.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Прямое цитирование",
+                    items = listOf(
+                        LessonItem("según + persona/fuente", "согласно", "Según el autor…"),
+                        LessonItem("de acuerdo con", "в соответствии с", "формально"),
+                        LessonItem("tal como afirma…", "как утверждает", ""),
+                        LessonItem("«…», declara X.", "прямая речь + глагол", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Косвенное цитирование",
+                    items = listOf(
+                        LessonItem("X afirma que + ind", "X утверждает, что", ""),
+                        LessonItem("X sostiene que + ind", "X отстаивает, что", ""),
+                        LessonItem("X niega que + subj", "X отрицает, что", "subj!"),
+                        LessonItem("X duda que + subj", "X сомневается, что", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Переформулирование",
+                    items = listOf(
+                        LessonItem("es decir,", "то есть,", "пояснение"),
+                        LessonItem("dicho de otro modo,", "иначе говоря,", ""),
+                        LessonItem("en otras palabras,", "другими словами,", ""),
+                        LessonItem("o sea,", "то есть,", "разговорно")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Согласно автору",
+                    question = "___ el experto, el clima cambia.",
+                    options = listOf("Por", "Según", "Para", "Como"),
+                    correctAnswer = "Según",
+                    explanation = "según + persona/fuente."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Отрицание",
+                    question = "El ministro niega que ___ corrupción.",
+                    options = listOf("hay", "haya", "hubo", "habrá"),
+                    correctAnswer = "haya",
+                    explanation = "negar que + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переформулирование",
+                    question = "Связка «то есть» (формально):",
+                    options = listOf("o sea", "es decir", "vale", "bueno"),
+                    correctAnswer = "es decir",
+                    explanation = "es decir — formal; o sea — coloquial."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Утверждение",
+                    question = "El estudio ___ que el método funciona.",
+                    options = listOf("sostiene", "duda", "niega", "espera"),
+                    correctAnswer = "sostiene",
+                    explanation = "sostener que + ind = утверждать."
+                )
+            )
+        ),
+
+        "u15_l10" to LessonContent(
+            intro = "Léxico académico — лексика для эссе и презентаций.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Глаголы анализа",
+                    items = listOf(
+                        LessonItem("analizar", "анализировать", ""),
+                        LessonItem("evaluar", "оценивать", ""),
+                        LessonItem("contrastar", "сопоставлять", ""),
+                        LessonItem("plantear", "ставить (вопрос)", "plantear una hipótesis"),
+                        LessonItem("cuestionar", "ставить под вопрос", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Существительные",
+                    items = listOf(
+                        LessonItem("la hipótesis", "гипотеза", ""),
+                        LessonItem("el enfoque", "подход", ""),
+                        LessonItem("el ámbito", "сфера", "en el ámbito laboral"),
+                        LessonItem("el marco", "рамки", "en el marco de…"),
+                        LessonItem("la perspectiva", "перспектива / точка зрения", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Прилагательные",
+                    items = listOf(
+                        LessonItem("relevante", "значимый", ""),
+                        LessonItem("imprescindible", "необходимый", ""),
+                        LessonItem("exhaustivo", "исчерпывающий", "análisis exhaustivo"),
+                        LessonItem("integral", "целостный", "enfoque integral"),
+                        LessonItem("controvertido", "спорный", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Поставить гипотезу",
+                    question = "El autor ___ una hipótesis interesante.",
+                    options = listOf("plantea", "pone", "deja", "trae"),
+                    correctAnswer = "plantea",
+                    explanation = "plantear una hipótesis — устойчивое."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "В сфере",
+                    question = "En el ___ académico, esto es vital.",
+                    options = listOf("ámbito", "casa", "lugar", "mundo"),
+                    correctAnswer = "ámbito",
+                    explanation = "en el ámbito + adj — стандарт."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Спорный",
+                    question = "«Это спорная тема.»",
+                    options = listOf("difícil", "controvertido", "fácil", "bueno"),
+                    correctAnswer = "controvertido",
+                    explanation = "controvertido = вызывающий споры."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Подход",
+                    question = "Necesitamos un ___ integral.",
+                    options = listOf("enfoque", "tema", "punto", "lado"),
+                    correctAnswer = "enfoque",
+                    explanation = "enfoque integral — устойчиво."
+                )
+            )
+        ),
+
+        "u15_l11" to LessonContent(
+            intro = "Nominalización — превращение глаголов и прилагательных в существительные. Делает речь формальной.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Суффиксы существительных",
+                    items = listOf(
+                        LessonItem("-ción / -sión", "действие/результат", "construir → construcción"),
+                        LessonItem("-miento", "процесс", "crecer → crecimiento"),
+                        LessonItem("-aje", "процесс/собирательное", "aprender → aprendizaje"),
+                        LessonItem("-dad / -tad", "качество", "feliz → felicidad")
+                    )
+                ),
+                LessonSection(
+                    heading = "Преобразование verbo → sust.",
+                    items = listOf(
+                        LessonItem("decidir → la decisión", "решать → решение", ""),
+                        LessonItem("desarrollar → el desarrollo", "развивать → развитие", ""),
+                        LessonItem("evaluar → la evaluación", "оценивать → оценка", ""),
+                        LessonItem("conocer → el conocimiento", "знать → знание", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Преобразование adj. → sust.",
+                    items = listOf(
+                        LessonItem("libre → la libertad", "свободный → свобода", ""),
+                        LessonItem("igual → la igualdad", "равный → равенство", ""),
+                        LessonItem("real → la realidad", "реальный → реальность", ""),
+                        LessonItem("posible → la posibilidad", "возможный → возможность", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "decidir →",
+                    question = "Cущ. от глагола decidir:",
+                    options = listOf("la decisión", "el decidimiento", "la decidida", "decidible"),
+                    correctAnswer = "la decisión",
+                    explanation = "decidir → decisión (-sión)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "crecer →",
+                    question = "Сущ. от crecer (расти):",
+                    options = listOf("la crecida", "el crecimiento", "la creción", "el creco"),
+                    correctAnswer = "el crecimiento",
+                    explanation = "crecer → crecimiento (-miento)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "libre →",
+                    question = "Сущ. от libre:",
+                    options = listOf("la liberdad", "la libertad", "el libreo", "la libreza"),
+                    correctAnswer = "la libertad",
+                    explanation = "libre → libertad."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Преобразуйте",
+                    question = "«Es necesario crecer.» → формально:",
+                    options = listOf("Es necesario el crecimiento", "Crecer es necesario", "Hay que crecer", "Necesito crecer"),
+                    correctAnswer = "Es necesario el crecimiento",
+                    explanation = "Nominalización → sustantivo вместо инфинитива."
+                )
+            )
+        ),
+
+        "u15_l12" to LessonContent(
+            intro = "Discurso de presentación — структура устной презентации.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Введение",
+                    items = listOf(
+                        LessonItem("Buenos días a todos.", "Доброе утро всем.", "приветствие"),
+                        LessonItem("Mi nombre es… y hoy hablaré sobre…", "Меня зовут… и сегодня я расскажу о…", ""),
+                        LessonItem("La presentación se divide en…", "Презентация делится на…", "анонс структуры"),
+                        LessonItem("¿Por qué es importante este tema?", "Почему важна эта тема?", "хук")
+                    )
+                ),
+                LessonSection(
+                    heading = "Переходы",
+                    items = listOf(
+                        LessonItem("A continuación,", "Далее,", ""),
+                        LessonItem("Pasamos al siguiente punto:", "Переходим к следующему пункту:", ""),
+                        LessonItem("Como pueden ver en la diapositiva…", "Как видите на слайде…", ""),
+                        LessonItem("Esto nos lleva a…", "Это подводит нас к…", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Завершение",
+                    items = listOf(
+                        LessonItem("Para concluir,", "В заключение,", ""),
+                        LessonItem("En resumen, hemos visto que…", "Резюмируя, мы увидели, что…", ""),
+                        LessonItem("Gracias por su atención.", "Спасибо за внимание.", ""),
+                        LessonItem("¿Alguna pregunta?", "Есть вопросы?", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Открытие",
+                    question = "Анонс структуры:",
+                    options = listOf("Bueno, voy a hablar", "La presentación se divide en tres partes", "Hola tíos", "Empezamos ya"),
+                    correctAnswer = "La presentación se divide en tres partes",
+                    explanation = "Стандартный анонс."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переход",
+                    question = "К следующей мысли:",
+                    options = listOf("A continuación,", "Adiós,", "Pero,", "¿Vale?"),
+                    correctAnswer = "A continuación,",
+                    explanation = "Переходный коннектор."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал",
+                    question = "Завершение презентации:",
+                    options = listOf("Hasta luego", "Gracias por su atención", "Adiós tío", "Vale, ya"),
+                    correctAnswer = "Gracias por su atención",
+                    explanation = "Стандартное formal-завершение."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Слайд",
+                    question = "«Как видите на слайде…»",
+                    options = listOf("Como pueden ver en la diapositiva", "Mira la pantalla", "Aquí está", "Esto es"),
+                    correctAnswer = "Como pueden ver en la diapositiva",
+                    explanation = "Стандартная отсылка к слайду."
+                )
+            )
+        ),
+
+        "u15_l13" to LessonContent(
+            intro = "Reclamación / queja — жалоба и претензия в формальном стиле.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Открытие жалобы",
+                    items = listOf(
+                        LessonItem("Me dirijo a ustedes para presentar una queja.", "Обращаюсь, чтобы подать жалобу.", ""),
+                        LessonItem("Lamento comunicarles que…", "С сожалением сообщаю, что…", ""),
+                        LessonItem("Por la presente, solicito…", "Настоящим прошу…", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Описание проблемы",
+                    items = listOf(
+                        LessonItem("El servicio no cumplió con…", "Услуга не соответствовала…", ""),
+                        LessonItem("El producto presentaba defectos.", "Продукт имел дефекты.", ""),
+                        LessonItem("No se respetaron los plazos.", "Сроки не были соблюдены.", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Требования",
+                    items = listOf(
+                        LessonItem("Solicito el reembolso íntegro.", "Прошу полный возврат.", ""),
+                        LessonItem("Exijo una respuesta en un plazo de…", "Требую ответа в срок…", ""),
+                        LessonItem("Espero su pronta solución.", "Жду скорейшего решения.", ""),
+                        LessonItem("De lo contrario, tomaré medidas legales.", "В противном случае подам в суд.", "крайне формально")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Открытие жалобы",
+                    question = "Формальное начало:",
+                    options = listOf("Me dirijo a ustedes para presentar una queja", "Hola, tengo una queja", "Oigan, no me gustó", "Quiero quejarme"),
+                    correctAnswer = "Me dirijo a ustedes para presentar una queja",
+                    explanation = "Стандарт formal."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Возврат",
+                    question = "«Прошу полный возврат денег.»",
+                    options = listOf("Quiero mi dinero", "Solicito el reembolso íntegro", "Devuélveme", "Pido pasta"),
+                    correctAnswer = "Solicito el reembolso íntegro",
+                    explanation = "reembolso íntegro — formal."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Сроки",
+                    question = "«Сроки не были соблюдены.»",
+                    options = listOf("No se respetaron los plazos", "No vino a tiempo", "Tarde", "No llegó"),
+                    correctAnswer = "No se respetaron los plazos",
+                    explanation = "se pasivo + plazos."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Угроза formal",
+                    question = "«В противном случае…»",
+                    options = listOf("Si no,", "De lo contrario,", "Pero,", "Aunque,"),
+                    correctAnswer = "De lo contrario,",
+                    explanation = "De lo contrario — formal threat marker."
+                )
+            )
+        ),
+
+        "u15_l14" to LessonContent(
+            intro = "Чекпойнт Блока 3: формальная коммуникация во всех её проявлениях.",
+            sections = listOf(
+                LessonSection(
+                    heading = "Что освоено",
+                    items = listOf(
+                        LessonItem("регистры", "formal / neutral / coloquial", ""),
+                        LessonItem("формальное письмо", "saludo, cuerpo, despedida", ""),
+                        LessonItem("отчёт и презентация", "estructura objetiva", ""),
+                        LessonItem("conectores", "contraste, causa, consecuencia, concesión", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Лексика",
+                    items = listOf(
+                        LessonItem("nominalización", "-ción, -miento, -dad", ""),
+                        LessonItem("académico", "ámbito, enfoque, plantear", ""),
+                        LessonItem("citar", "según, sostener, negar que + subj", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Готовы к Блоку 4",
+                    items = listOf(
+                        LessonItem("Финальный блок B2", "léxico y cultura", ""),
+                        LessonItem("идиомы, refranes", "разговорная глубина", ""),
+                        LessonItem("регионализмы", "испанский в Латинской Америке", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал: conector",
+                    question = "Es difícil; ___, lo intentaremos.",
+                    options = listOf("porque", "no obstante", "dado que", "tan"),
+                    correctAnswer = "no obstante",
+                    explanation = "no obstante — formal contrast."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал: nominalización",
+                    question = "desarrollar → ?",
+                    options = listOf("desarrollamiento", "desarrollo", "desarrollación", "desarrolladura"),
+                    correctAnswer = "desarrollo",
+                    explanation = "desarrollar → el desarrollo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал: subj. в concesivа",
+                    question = "Por mucho que ___, no entenderás.",
+                    options = listOf("estudias", "estudies", "estudiabas", "estudiaste"),
+                    correctAnswer = "estudies",
+                    explanation = "por mucho que + subjuntivo."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Финал: queja",
+                    question = "«Жду скорейшего решения.»",
+                    options = listOf("Espero su pronta solución", "Quiero respuesta ya", "Resuelve esto", "Vamos rápido"),
+                    correctAnswer = "Espero su pronta solución",
+                    explanation = "pronta solución — formal."
                 )
             )
         )
