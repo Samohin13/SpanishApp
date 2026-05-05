@@ -3,6 +3,10 @@ package com.spanishapp.ui.games
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
+import com.spanishapp.domain.games.GameId
+import com.spanishapp.domain.games.GameLevelManager
+import com.spanishapp.domain.games.LevelDifficulty
+import com.spanishapp.domain.games.LevelParams
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,42 +17,76 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
+/**
+ * Что показывается на экране для текущего уровня:
+ * NUMBERS  — арабские цифры (1-10): «5 + 3»
+ * SPANISH  — испанский текст     (11-25): «veinte + cinco»
+ * AUDIO    — только символ «?»  (26-100): пользователь слышит TTS
+ */
+enum class MathDisplayMode { NUMBERS, SPANISH, AUDIO }
+
 data class MathGameState(
-    val expressionText: String = "",
+    val params: LevelParams = LevelDifficulty.forLevel(1),
+    val expressionText: String = "",     // текст для отображения (числа/испанский/«?»)
+    val expressionSpoken: String = "",   // текст для TTS (всегда испанский)
     val correctAnswer: Int = 0,
     val timeLeft: Float = 1f,
     val score: Int = 0,
+    val correctCount: Int = 0,
     val streak: Int = 0,
-    val level: String = "A1",
     val currentRound: Int = 0,
-    val totalRounds: Int = 10,
     val isGameOver: Boolean = false,
-    val lastCorrect: Boolean? = null
-)
+    val lastCorrect: Boolean? = null,
+    val displayMode: MathDisplayMode = MathDisplayMode.NUMBERS,
+    val finalStars: Int = 0,
+    val finalPercent: Int = 0,
+    val showLevelMap: Boolean = true
+) {
+    val totalRounds: Int get() = params.rounds
+    val level: Int get() = params.level
+}
 
 @HiltViewModel
 class MathViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MathGameState())
     val state = _state.asStateFlow()
 
     private var timerJob: kotlinx.coroutines.Job? = null
-    private var totalTime = 10f
     @Volatile private var roundResolved = false
 
-    fun startGame(difficulty: String) {
-        totalTime = when(difficulty) {
-            "A1" -> 15f
-            "A2-B1" -> 10f
-            else -> 7f
-        }
+    fun startLevel(level: Int) {
+        timerJob?.cancel()
         roundResolved = false
-        _state.value = MathGameState(level = difficulty)
+        val params = LevelDifficulty.forLevel(level)
+        _state.value = MathGameState(
+            params      = params,
+            displayMode = displayModeFor(level),
+            showLevelMap = false
+        )
         nextQuestion()
+    }
+
+    fun openLevelMap() {
+        timerJob?.cancel()
+        _state.value = _state.value.copy(showLevelMap = true, isGameOver = false)
+    }
+
+    /** Повторить произнесение задания. Доступно на всех уровнях. */
+    fun repeatQuestion() {
+        val s = _state.value
+        if (s.expressionSpoken.isNotBlank()) tts.speak(s.expressionSpoken)
+    }
+
+    private fun displayModeFor(level: Int): MathDisplayMode = when {
+        level <= 10 -> MathDisplayMode.NUMBERS
+        level <= 25 -> MathDisplayMode.SPANISH
+        else        -> MathDisplayMode.AUDIO
     }
 
     private fun nextQuestion() {
@@ -58,101 +96,165 @@ class MathViewModel @Inject constructor(
             return
         }
 
-        val (expression, answer) = generateExpression(s.level)
+        val (display, spoken, answer) = generateExpression(s.level, s.displayMode)
         roundResolved = false
 
         _state.value = s.copy(
-            expressionText = expression,
-            correctAnswer = answer,
-            timeLeft = 1f,
-            currentRound = s.currentRound + 1,
-            lastCorrect = null
+            expressionText   = display,
+            expressionSpoken = spoken,
+            correctAnswer    = answer,
+            timeLeft         = 1f,
+            currentRound     = s.currentRound + 1,
+            lastCorrect      = null
         )
 
-        if (s.level == "B2-C1") {
-            tts.speak(expression)
+        // КРИТИЧНО: озвучка на всех уровнях кроме 1-10 (где видны цифры).
+        // Это «Cálculo Auditivo» — игра должна работать на слух.
+        if (s.displayMode != MathDisplayMode.NUMBERS) {
+            tts.speak(spoken)
         }
-        
+
         startTimer()
     }
 
-    private fun generateExpression(difficulty: String): Pair<String, Int> {
-        return when (difficulty) {
-            "A1" -> {
-                val a = Random.nextInt(1, 21)
-                val b = Random.nextInt(1, 21)
+    private data class Expr(val display: String, val spoken: String, val answer: Int)
+
+    private fun generateExpression(level: Int, mode: MathDisplayMode): Expr {
+        // ── Подбор выражения по диапазону уровней ────────────
+        val (display, spoken, answer) = when {
+            level <= 10 -> {
+                // +/- от 1 до 10
+                val a = Random.nextInt(1, 11)
+                val b = Random.nextInt(1, 11)
                 if (Random.nextBoolean()) {
-                    "${NumberToSpanish.convert(a)} + ${NumberToSpanish.convert(b)}" to (a + b)
+                    val sum = a + b
+                    Triple("$a + $b", "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}", sum)
                 } else {
-                    val max = maxOf(a, b)
-                    val min = minOf(a, b)
-                    "${NumberToSpanish.convert(max)} - ${NumberToSpanish.convert(min)}" to (max - min)
+                    val mx = maxOf(a, b); val mn = minOf(a, b)
+                    Triple("$mx - $mn", "${NumberToSpanish.convert(mx)} menos ${NumberToSpanish.convert(mn)}", mx - mn)
                 }
             }
-            "A2-B1" -> {
-                val a = Random.nextInt(2, 11)
-                val b = Random.nextInt(2, 13)
+            level <= 25 -> {
+                // +/- от 1 до 20
+                val a = Random.nextInt(1, 21); val b = Random.nextInt(1, 21)
                 if (Random.nextBoolean()) {
-                    "${NumberToSpanish.convert(a)} x ${NumberToSpanish.convert(b)}" to (a * b)
+                    Triple(
+                        "${NumberToSpanish.convert(a)} + ${NumberToSpanish.convert(b)}",
+                        "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}",
+                        a + b
+                    )
+                } else {
+                    val mx = maxOf(a, b); val mn = minOf(a, b)
+                    Triple(
+                        "${NumberToSpanish.convert(mx)} - ${NumberToSpanish.convert(mn)}",
+                        "${NumberToSpanish.convert(mx)} menos ${NumberToSpanish.convert(mn)}",
+                        mx - mn
+                    )
+                }
+            }
+            level <= 40 -> {
+                // +/- от 1 до 50
+                val a = Random.nextInt(1, 51); val b = Random.nextInt(1, 51)
+                if (Random.nextBoolean()) {
+                    Triple("?", "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}", a + b)
+                } else {
+                    val mx = maxOf(a, b); val mn = minOf(a, b)
+                    Triple("?", "${NumberToSpanish.convert(mx)} menos ${NumberToSpanish.convert(mn)}", mx - mn)
+                }
+            }
+            level <= 55 -> {
+                // ×/÷ простые
+                val a = Random.nextInt(2, 11); val b = Random.nextInt(2, 11)
+                if (Random.nextBoolean()) {
+                    Triple("?", "${NumberToSpanish.convert(a)} por ${NumberToSpanish.convert(b)}", a * b)
                 } else {
                     val prod = a * b
-                    "${NumberToSpanish.convert(prod)} / ${NumberToSpanish.convert(a)}" to b
+                    Triple("?", "${NumberToSpanish.convert(prod)} dividido entre ${NumberToSpanish.convert(a)}", b)
                 }
             }
-            else -> { // B2-C1
-                val type = Random.nextInt(3)
-                when(type) {
+            level <= 70 -> {
+                // ×/÷ побольше
+                val a = Random.nextInt(2, 13); val b = Random.nextInt(2, 13)
+                if (Random.nextBoolean()) {
+                    Triple("?", "${NumberToSpanish.convert(a)} por ${NumberToSpanish.convert(b)}", a * b)
+                } else {
+                    val prod = a * b
+                    Triple("?", "${NumberToSpanish.convert(prod)} dividido entre ${NumberToSpanish.convert(a)}", b)
+                }
+            }
+            level <= 85 -> {
+                // la mitad / el doble / el triple
+                when (Random.nextInt(3)) {
                     0 -> {
                         val a = Random.nextInt(10, 101)
-                        "La mitad de ${NumberToSpanish.convert(a * 2)}" to a
+                        Triple("?", "La mitad de ${NumberToSpanish.convert(a * 2)}", a)
                     }
                     1 -> {
                         val a = Random.nextInt(5, 51)
-                        "El doble de ${NumberToSpanish.convert(a)}" to (a * 2)
+                        Triple("?", "El doble de ${NumberToSpanish.convert(a)}", a * 2)
                     }
                     else -> {
-                        val b = Random.nextInt(1, 31)
-                        "El triple de ${NumberToSpanish.convert(b)} menos ${NumberToSpanish.convert(5)}" to (b * 3 - 5)
+                        val a = Random.nextInt(3, 31)
+                        Triple("?", "El triple de ${NumberToSpanish.convert(a)}", a * 3)
+                    }
+                }
+            }
+            else -> {
+                // Комбинированные
+                when (Random.nextInt(3)) {
+                    0 -> {
+                        val a = Random.nextInt(5, 31); val b = Random.nextInt(2, 8)
+                        Triple("?", "El triple de ${NumberToSpanish.convert(a)} menos ${NumberToSpanish.convert(b)}", a * 3 - b)
+                    }
+                    1 -> {
+                        val a = Random.nextInt(20, 81); val b = Random.nextInt(5, 21)
+                        Triple("?", "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)} entre ${NumberToSpanish.convert(if (b % 5 == 0) 5 else 1)}",
+                               a + b / (if (b % 5 == 0) 5 else 1))
+                    }
+                    else -> {
+                        val a = Random.nextInt(10, 51)
+                        Triple("?", "La mitad del doble de ${NumberToSpanish.convert(a)}", a)
                     }
                 }
             }
         }
-    }
-
-    fun repeatQuestion() {
-        if (_state.value.level == "B2-C1") {
-            tts.speak(_state.value.expressionText)
+        // Mode-aware override (если режим NUMBERS — заменяем display на цифры)
+        return when (mode) {
+            MathDisplayMode.NUMBERS -> Expr(display, spoken, answer)
+            MathDisplayMode.SPANISH -> Expr(display, spoken, answer)
+            MathDisplayMode.AUDIO   -> Expr("?", spoken, answer)
         }
     }
 
     private fun startTimer() {
         timerJob?.cancel()
+        val baseSec = _state.value.params.timePerRoundSec
+        if (baseSec <= 0f) return   // 1-10 без таймера
         timerJob = viewModelScope.launch {
+            val step = 0.05f
             while (_state.value.timeLeft > 0 && !roundResolved) {
                 delay(50)
-                val newTime = (_state.value.timeLeft - (0.05f / totalTime)).coerceAtLeast(0f)
+                val newTime = (_state.value.timeLeft - (step / baseSec)).coerceAtLeast(0f)
                 _state.value = _state.value.copy(timeLeft = newTime)
             }
-            if (!roundResolved) onTimeOut()
+            if (!roundResolved) submitAnswer(null)
         }
-    }
-
-    private fun onTimeOut() {
-        submitAnswer(null)
     }
 
     fun submitAnswer(answer: Int?) {
         if (roundResolved) return
         roundResolved = true
         timerJob?.cancel()
-        val isCorrect = answer == _state.value.correctAnswer
-        val newStreak = if (isCorrect) _state.value.streak + 1 else 0
+        val s = _state.value
+        val isCorrect = answer == s.correctAnswer
+        val newStreak = if (isCorrect) s.streak + 1 else 0
         val points = if (isCorrect) (10 * (1 + newStreak * 0.1f)).toInt() else 0
-        
-        _state.value = _state.value.copy(
-            lastCorrect = isCorrect,
-            score = _state.value.score + points,
-            streak = newStreak
+
+        _state.value = s.copy(
+            lastCorrect  = isCorrect,
+            score        = s.score + points,
+            correctCount = if (isCorrect) s.correctCount + 1 else s.correctCount,
+            streak       = newStreak
         )
 
         viewModelScope.launch {
@@ -162,13 +264,24 @@ class MathViewModel @Inject constructor(
     }
 
     private fun finishGame() {
-        _state.value = _state.value.copy(isGameOver = true)
-        val finalScore = _state.value.score
+        val s = _state.value
+        val percent = if (s.totalRounds > 0) (s.correctCount * 100) / s.totalRounds else 0
+
         viewModelScope.launch {
-            val p = userProgressDao.getProgressOnce() ?: return@launch
-            val xpGain = (finalScore / 5).coerceAtLeast(5)
-            userProgressDao.update(p.copy(totalXp = p.totalXp + xpGain))
-            achievementManager.checkAndUnlock()
+            val stars = levelManager.completeLevel(GameId.MATH, s.level, percent)
+
+            val p = userProgressDao.getProgressOnce()
+            if (p != null) {
+                val xpGain = (s.score / 5).coerceAtLeast(5)
+                userProgressDao.update(p.copy(totalXp = p.totalXp + xpGain))
+                achievementManager.checkAndUnlock()
+            }
+
+            _state.value = s.copy(
+                isGameOver   = true,
+                finalStars   = stars,
+                finalPercent = percent
+            )
         }
     }
 }

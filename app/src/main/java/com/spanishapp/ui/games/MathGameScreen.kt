@@ -1,6 +1,5 @@
 package com.spanishapp.ui.games
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,8 +7,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.automirrored.filled.*
+import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,6 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.domain.games.GameId
+import com.spanishapp.ui.games.common.LevelCompleteSheet
+import com.spanishapp.ui.games.common.LevelMapScreen
+
+private val ACCENT = Color(0xFFF44336)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,178 +37,214 @@ fun MathGameScreen(
     viewModel: MathViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    var showDifficultySelection by remember { mutableStateOf(true) }
-    var inputVal by remember { mutableStateOf("") }
+    var inputVal by remember(state.currentRound) { mutableStateOf("") }
     val haptic = LocalHapticFeedback.current
 
+    when {
+        state.showLevelMap -> {
+            LevelMapScreen(
+                gameId  = GameId.MATH,
+                title   = "Cálculo · уровни",
+                accent  = ACCENT,
+                manager = viewModel.levelManager,
+                onBack  = { navController.popBackStack() },
+                onLevelStart = { lvl -> viewModel.startLevel(lvl) }
+            )
+        }
+        state.isGameOver -> {
+            MathGameContent(state, viewModel, haptic, inputVal,
+                onInput = { inputVal = it },
+                onBack  = { viewModel.openLevelMap() })
+            LevelCompleteSheet(
+                level   = state.level,
+                stars   = state.finalStars,
+                percent = state.finalPercent,
+                accent  = ACCENT,
+                onRetry = { viewModel.startLevel(state.level) },
+                onNext  = if (state.finalStars > 0 && state.level < 100)
+                              { { viewModel.startLevel(state.level + 1) } }
+                          else null,
+                onExit  = { viewModel.openLevelMap() }
+            )
+        }
+        else -> MathGameContent(state, viewModel, haptic, inputVal,
+            onInput = { inputVal = it },
+            onBack  = { viewModel.openLevelMap() })
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MathGameContent(
+    state: MathGameState,
+    viewModel: MathViewModel,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    inputVal: String,
+    onInput: (String) -> Unit,
+    onBack: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Cálculo Auditivo") },
+                title = {
+                    Column {
+                        Text("Уровень ${state.level} / 100", fontWeight = FontWeight.Bold)
+                        Text("${state.params.cefr.joinToString("+")} · ${state.params.mode.name.lowercase()}",
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                     }
                 }
             )
         }
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color(0xFFF8F8FA)),
-            contentAlignment = Alignment.Center
+                .background(Color(0xFFF8F8FA))
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            if (showDifficultySelection) {
-                DifficultySelection { diff ->
-                    viewModel.startGame(diff)
-                    showDifficultySelection = false
+            // Шапка
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                Column {
+                    Text("Очки: ${state.score}", fontWeight = FontWeight.Bold, color = ACCENT)
+                    if (state.streak > 1) {
+                        Text("Комбо: ×${state.streak}",
+                            color = Color(0xFFFF9500),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold)
+                    }
                 }
-            } else if (state.isGameOver) {
-                MathGameOverContent(state.score) {
-                    navController.popBackStack()
-                }
-            } else {
-                Column(
+                Text("Раунд ${state.currentRound}/${state.totalRounds}", color = Color.Gray)
+            }
+
+            // Таймер
+            if (state.params.timePerRoundSec > 0f) {
+                LinearProgressIndicator(
+                    progress = { state.timeLeft },
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp, vertical = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp)),
+                    color = if (state.timeLeft < 0.3f) Color.Red else ACCENT,
+                    trackColor = Color(0xFFE5E5EA)
+                )
+            }
+
+            // Выражение + кнопка озвучки
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                color = Color.White,
+                shadowElevation = 2.dp
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Header: Score and Streak
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column {
-                            Text("Очки: ${state.score}", fontWeight = FontWeight.Bold, color = Color(0xFF7B2FBE))
-                            if (state.streak > 1) {
-                                Text("Комбо: x${state.streak}", color = Color(0xFFFF9500), fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                            }
-                        }
-                        Text("Раунд: ${state.currentRound}/${state.totalRounds}", color = Color.Gray)
-                    }
-
-                    // Timer
-                    LinearProgressIndicator(
-                        progress = { state.timeLeft },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp)
-                            .clip(RoundedCornerShape(4.dp)),
-                        color = if (state.timeLeft < 0.3f) Color.Red else Color(0xFFE040FB),
-                        trackColor = Color(0xFFE5E5EA)
+                    Text(
+                        state.expressionText,
+                        fontSize = if (state.displayMode == MathDisplayMode.AUDIO) 56.sp else 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        lineHeight = if (state.displayMode == MathDisplayMode.AUDIO) 60.sp else 30.sp,
+                        color = if (state.displayMode == MathDisplayMode.AUDIO) ACCENT
+                                else Color(0xFF1A1A1A)
                     )
-
-                    // Expression
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp),
-                        color = Color.White,
-                        shadowElevation = 2.dp
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(20.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                state.expressionText,
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center,
-                                lineHeight = 28.sp
-                            )
-                            if (state.level == "B2-C1") {
-                                Spacer(Modifier.height(8.dp))
-                                IconButton(
-                                    onClick = { viewModel.repeatQuestion() },
-                                    modifier = Modifier.size(40.dp)
-                                ) {
-                                    Icon(Icons.AutoMirrored.Filled.VolumeUp, "Listen", tint = Color(0xFF7B2FBE))
-                                }
-                            }
+                    if (state.displayMode != MathDisplayMode.NUMBERS) {
+                        Spacer(Modifier.height(8.dp))
+                        IconButton(onClick = { viewModel.repeatQuestion() }) {
+                            Icon(Icons.AutoMirrored.Filled.VolumeUp, "Повторить",
+                                tint = ACCENT, modifier = Modifier.size(28.dp))
                         }
                     }
-
-                    // Feedback or Input Display
-                    Box(modifier = Modifier.height(50.dp).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        if (state.lastCorrect != null) {
-                            val isCorrect = state.lastCorrect ?: false
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Icon(
-                                    if (isCorrect) Icons.Default.Check else Icons.Default.Close,
-                                    null,
-                                    tint = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336)
-                                )
-                                Text(
-                                    if (isCorrect) "¡Excelente!" else "Incorrecto (era ${state.correctAnswer})",
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336)
-                                )
-                            }
-                        } else {
-                            Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = Color.White,
-                                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE5E5EA)),
-                                modifier = Modifier.width(140.dp).height(50.dp)
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Text(
-                                        inputVal.ifEmpty { "?" },
-                                        fontSize = 28.sp,
-                                        fontWeight = FontWeight.ExtraBold,
-                                        color = if (inputVal.isEmpty()) Color.LightGray else Color(0xFF7B2FBE)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    // Keypad
-                    MathKeypad(
-                        onDigit = { digit ->
-                            if (state.lastCorrect == null && inputVal.length < 5) {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                inputVal += digit
-                            }
-                        },
-                        onDelete = {
-                            if (state.lastCorrect == null && inputVal.isNotEmpty()) {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                inputVal = inputVal.dropLast(1)
-                            }
-                        },
-                        onClear = {
-                            if (state.lastCorrect == null) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                inputVal = ""
-                            }
-                        },
-                        onSubmit = {
-                            if (state.lastCorrect == null && inputVal.isNotBlank()) {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                val ans = inputVal.toIntOrNull()
-                                viewModel.submitAnswer(ans)
-                                inputVal = ""
-                            }
-                        },
-                        enabled = state.lastCorrect == null
-                    )
                 }
             }
+
+            // Поле ввода / результат
+            Box(modifier = Modifier
+                    .height(50.dp)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (state.lastCorrect != null) {
+                    val ok = state.lastCorrect == true
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Icon(
+                            if (ok) Icons.Default.Check else Icons.Default.Close, null,
+                            tint = if (ok) Color(0xFF4CAF50) else Color(0xFFF44336)
+                        )
+                        Text(
+                            if (ok) "¡Excelente!" else "Incorrecto (era ${state.correctAnswer})",
+                            fontWeight = FontWeight.Bold,
+                            color = if (ok) Color(0xFF4CAF50) else Color(0xFFF44336)
+                        )
+                    }
+                } else {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color.White,
+                        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE5E5EA)),
+                        modifier = Modifier
+                            .width(140.dp)
+                            .height(50.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                inputVal.ifEmpty { "?" },
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = if (inputVal.isEmpty()) Color.LightGray else ACCENT
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Цифровая клавиатура
+            MathKeypad(
+                onDigit = { d ->
+                    if (state.lastCorrect == null && inputVal.length < 5) {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        onInput(inputVal + d)
+                    }
+                },
+                onDelete = {
+                    if (state.lastCorrect == null && inputVal.isNotEmpty()) {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        onInput(inputVal.dropLast(1))
+                    }
+                },
+                onClear = {
+                    if (state.lastCorrect == null) {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onInput("")
+                    }
+                },
+                onSubmit = {
+                    if (state.lastCorrect == null && inputVal.isNotBlank()) {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.submitAnswer(inputVal.toIntOrNull())
+                        onInput("")
+                    }
+                },
+                enabled = state.lastCorrect == null
+            )
         }
     }
 }
 
 @Composable
-fun MathKeypad(
+private fun MathKeypad(
     onDigit: (String) -> Unit,
     onDelete: () -> Unit,
     onClear: () -> Unit,
@@ -223,19 +264,19 @@ fun MathKeypad(
         )
 
         rows.forEach { row ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
-            ) {
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
                 row.forEach { char ->
                     KeyButton(
                         text = char,
-                        modifier = Modifier.weight(1f).height(60.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(60.dp),
                         onClick = {
                             when (char) {
-                                "C" -> onClear()
+                                "C"   -> onClear()
                                 "DEL" -> onDelete()
-                                else -> onDigit(char)
+                                else  -> onDigit(char)
                             }
                         },
                         enabled = enabled,
@@ -247,10 +288,13 @@ fun MathKeypad(
 
         Button(
             onClick = onSubmit,
-            modifier = Modifier.fillMaxWidth().height(56.dp).padding(top = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(top = 4.dp),
             shape = RoundedCornerShape(16.dp),
             enabled = enabled,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B2FBE))
+            colors = ButtonDefaults.buttonColors(containerColor = ACCENT)
         ) {
             Text("ОТВЕТИТЬ", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
@@ -258,7 +302,7 @@ fun MathKeypad(
 }
 
 @Composable
-fun KeyButton(
+private fun KeyButton(
     text: String,
     modifier: Modifier,
     onClick: () -> Unit,
@@ -266,7 +310,7 @@ fun KeyButton(
     isAction: Boolean = false
 ) {
     Surface(
-        modifier = modifier.clickable(enabled = enabled) { onClick() },
+        modifier = modifier.clickable(enabled = enabled, onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         color = if (isAction) Color(0xFFE5E5EA) else Color.White,
         border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE5E5EA))
@@ -282,75 +326,6 @@ fun KeyButton(
                     color = if (isAction) Color.DarkGray else Color.Black
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun DifficultySelection(onSelect: (String) -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text("Выберите сложность", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
-        
-        DifficultyButton("Básico (A1)", "Числа 0-20, + и -", Color(0xFF4CAF50)) { onSelect("A1") }
-        DifficultyButton("Medio (A2-B1)", "Числа до 100, x и /", Color(0xFF2196F3)) { onSelect("A2-B1") }
-        DifficultyButton("Experto (B2-C1)", "Комбинированные задачи", Color(0xFFE91E63)) { onSelect("B2-C1") }
-    }
-}
-
-@Composable
-fun DifficultyButton(title: String, desc: String, color: Color, onClick: () -> Unit) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
-        color = Color.White,
-        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.5f))
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(Modifier.size(12.dp).clip(RoundedCornerShape(6.dp)).background(color))
-            Spacer(Modifier.width(16.dp))
-            Column {
-                Text(title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Text(desc, color = Color.Gray, fontSize = 14.sp)
-            }
-        }
-    }
-}
-
-@Composable
-fun MathGameOverContent(score: Int, onFinish: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text("🧮", fontSize = 64.sp)
-        Text("Математика окончена!", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Text(
-            "Ваш результат: $score очков",
-            fontSize = 18.sp,
-            color = Color.Gray
-        )
-        Text(
-            "+${(score / 5).coerceAtLeast(5)} XP",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF7B2FBE)
-        )
-        Spacer(Modifier.height(24.dp))
-        Button(
-            onClick = onFinish,
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier.width(200.dp).height(50.dp)
-        ) {
-            Text("В меню")
         }
     }
 }
