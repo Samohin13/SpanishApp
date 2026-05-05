@@ -6104,6 +6104,861 @@ object LessonContentData {
                     explanation = "hacer X grados = быть X градусов (температура). Hace 30 grados = 30 градусов жары!"
                 )
             )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A2 БЛОК 4 (unitId=8)
+        // ══════════════════════════════════════════════
+
+        "u8_l0" to LessonContent(
+            intro = "Futuro Simple: говорим о будущем",
+            sections = listOf(
+                LessonSection(
+                    heading = "Окончания Futuro Simple (все глаголы)",
+                    items = listOf(
+                        LessonItem("yo", "-é → hablaré", "я буду говорить"),
+                        LessonItem("tú", "-ás → hablarás", "ты будешь говорить"),
+                        LessonItem("él/ella", "-á → hablará", "он/она будет говорить"),
+                        LessonItem("nosotros", "-emos → hablaremos", "мы будем говорить"),
+                        LessonItem("vosotros", "-éis → hablaréis", "вы будете говорить"),
+                        LessonItem("ellos", "-án → hablarán", "они будут говорить")
+                    )
+                ),
+                LessonSection(
+                    heading = "Когда использовать",
+                    items = listOf(
+                        LessonItem("Планы / предсказания", "Mañana lloverá.", "завтра будет дождь"),
+                        LessonItem("Обещания", "Te llamaré esta noche.", "позвоню тебе"),
+                        LessonItem("Маркеры: mañana, el año que viene, en el futuro", "", ""),
+                        LessonItem("Для -ER/-IR так же!", "comeré, viviré", "основа инфинитива + окончание")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Образуй Futuro: yo + hablar",
+                    question = "Mañana ___ con el jefe.",
+                    options = listOf("hablaré", "hablé", "hablaría", "hablo"),
+                    correctAnswer = "hablaré",
+                    explanation = "hablar + é = hablaré. Futuro Simple: основа инфинитива + окончания."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "El año que viene viviremos en Madrid.",
+                    options = listOf("В следующем году мы будем жить в Мадриде.", "В прошлом году мы жили в Мадриде.", "Сейчас мы живём в Мадриде.", "Мы хотим жить в Мадриде."),
+                    correctAnswer = "В следующем году мы будем жить в Мадриде.",
+                    explanation = "el año que viene = следующий год. viviremos = мы будем жить (Futuro от vivir)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму",
+                    question = "Ellos ___ mañana por la mañana.",
+                    options = listOf("llegarán", "llegaron", "llegan", "llegaban"),
+                    correctAnswer = "llegarán",
+                    explanation = "llegar + án = llegarán. mañana = завтра — маркер будущего."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Обещание в Futuro",
+                    question = "Te ___ la verdad.",
+                    options = listOf("diré", "dije", "digo", "decía"),
+                    correctAnswer = "diré",
+                    explanation = "decir → diré (неправильный Futuro). Te diré = я скажу тебе."
+                )
+            )
+        ),
+
+        "u8_l1" to LessonContent(
+            intro = "Futuro irregular — неправильные глаголы",
+            sections = listOf(
+                LessonSection(
+                    heading = "Неправильные основы Futuro",
+                    items = listOf(
+                        LessonItem("tener → tendr-", "tendré, tendrás...", "у меня будет"),
+                        LessonItem("venir → vendr-", "vendré, vendrás...", "я приду"),
+                        LessonItem("salir → saldr-", "saldré, saldrás...", "я выйду"),
+                        LessonItem("poder → podr-", "podré, podrás...", "я смогу"),
+                        LessonItem("poner → pondr-", "pondré, pondrás...", "я положу"),
+                        LessonItem("saber → sabr-", "sabré, sabrás...", "я буду знать"),
+                        LessonItem("hacer → har-", "haré, harás...", "я сделаю"),
+                        LessonItem("decir → dir-", "diré, dirás...", "я скажу"),
+                        LessonItem("haber → habr-", "habrá...", "будет (безличное)")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("¿Qué harás este finde?", "Что будешь делать на выходных?", ""),
+                        LessonItem("Vendré a las 8.", "Я приду в 8.", ""),
+                        LessonItem("No podremos ir.", "Мы не сможем пойти.", ""),
+                        LessonItem("Habrá mucha gente.", "Будет много людей.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Futuro от TENER: yo",
+                    question = "El año que viene ___ más dinero.",
+                    options = listOf("tendré", "teneré", "tengo", "tendría"),
+                    correctAnswer = "tendré",
+                    explanation = "tener → tendr- + é = tendré. Основа меняется: tener → tendr-."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Podrás venir mañana?",
+                    options = listOf("Сможешь прийти завтра?", "Ты придёшь завтра?", "Ты пришёл вчера?", "Хочешь прийти?"),
+                    correctAnswer = "Сможешь прийти завтра?",
+                    explanation = "poder → podrás (tú). ¿Podrás venir? = сможешь прийти?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Futuro от HACER",
+                    question = "¿Qué ___ este fin de semana?",
+                    options = listOf("harás", "hacerás", "haces", "harías"),
+                    correctAnswer = "harás",
+                    explanation = "hacer → har- + ás = harás. ¿Qué harás? = что ты будешь делать?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Безличное habrá",
+                    question = "Mañana ___ una reunión importante.",
+                    options = listOf("habrá", "hay", "había", "ha habido"),
+                    correctAnswer = "habrá",
+                    explanation = "haber → habrá (Futuro безличное). habrá = будет (как hay = есть сейчас)."
+                )
+            )
+        ),
+
+        "u8_l2" to LessonContent(
+            intro = "Condicional Simple: вежливые просьбы и гипотезы",
+            sections = listOf(
+                LessonSection(
+                    heading = "Образование: инфинитив + окончания",
+                    items = listOf(
+                        LessonItem("yo", "-ía → hablaría", "я бы говорил"),
+                        LessonItem("tú", "-ías → hablarías", "ты бы говорил"),
+                        LessonItem("él/ella", "-ía → hablaría", "он/она бы говорил"),
+                        LessonItem("nosotros", "-íamos → hablaríamos", "мы бы говорили"),
+                        LessonItem("vosotros", "-íais → hablaríais", "вы бы говорили"),
+                        LessonItem("ellos", "-ían → hablarían", "они бы говорили")
+                    )
+                ),
+                LessonSection(
+                    heading = "Когда использовать",
+                    items = listOf(
+                        LessonItem("Вежливая просьба", "¿Podría ayudarme?", "Не могли бы вы помочь?"),
+                        LessonItem("Совет", "Yo en tu lugar estudiaría más.", "Я бы на твоём месте..."),
+                        LessonItem("Гипотеза", "Con dinero, viajaría.", "Если бы были деньги, путешествовал бы."),
+                        LessonItem("Желание (вежливо)", "Me gustaría ir.", "Я бы хотел пойти.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Вежливая просьба: образуй Condicional",
+                    question = "¿___ (poder, usted) hablar más despacio?",
+                    options = listOf("Podría", "Puede", "Podrá", "Pudo"),
+                    correctAnswer = "Podría",
+                    explanation = "poder → podría (Condicional). ¿Podría...? = не могли бы вы...? (вежливо)"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Me gustaría visitar Japón.",
+                    options = listOf("Я бы хотел посетить Японию.", "Мне нравится Япония.", "Я хочу в Японию.", "Я посещу Японию."),
+                    correctAnswer = "Я бы хотел посетить Японию.",
+                    explanation = "me gustaría = я бы хотел (Condicional от gustar). Вежливее чем quiero."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Совет",
+                    question = "Yo en tu lugar, ___ al médico.",
+                    options = listOf("iría", "voy", "iré", "fui"),
+                    correctAnswer = "iría",
+                    explanation = "ir → iría (Condicional). Yo en tu lugar iría = я бы на твоём месте пошёл."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Dónde vivirías si pudieras?",
+                    options = listOf("Где бы ты жил, если бы мог?", "Где ты живёшь сейчас?", "Где ты будешь жить?", "Где ты жил раньше?"),
+                    correctAnswer = "Где бы ты жил, если бы мог?",
+                    explanation = "vivirías = ты бы жил (Condicional). si pudieras = если бы мог (Subjuntivo)."
+                )
+            )
+        ),
+
+        "u8_l3" to LessonContent(
+            intro = "Condicional irregular — те же основы что и Futuro",
+            sections = listOf(
+                LessonSection(
+                    heading = "Неправильные основы (как в Futuro)",
+                    items = listOf(
+                        LessonItem("tener → tendr-", "tendría, tendrías...", "я бы имел"),
+                        LessonItem("venir → vendr-", "vendría, vendrías...", "я бы пришёл"),
+                        LessonItem("salir → saldr-", "saldría...", "я бы вышел"),
+                        LessonItem("poder → podr-", "podría...", "я бы смог"),
+                        LessonItem("hacer → har-", "haría...", "я бы сделал"),
+                        LessonItem("decir → dir-", "diría...", "я бы сказал"),
+                        LessonItem("saber → sabr-", "sabría...", "я бы знал"),
+                        LessonItem("haber → habr-", "habría...", "было бы")
+                    )
+                ),
+                LessonSection(
+                    heading = "Примеры",
+                    items = listOf(
+                        LessonItem("¿Qué harías tú?", "Что бы ты сделал?", ""),
+                        LessonItem("Yo lo haría diferente.", "Я бы сделал это иначе.", ""),
+                        LessonItem("No podría vivir sin música.", "Я бы не смог жить без музыки.", ""),
+                        LessonItem("Habría más problemas.", "Было бы больше проблем.", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional от HACER: yo",
+                    question = "¿Qué ___ tú en mi lugar?",
+                    options = listOf("harías", "hacerías", "haces", "hiciste"),
+                    correctAnswer = "harías",
+                    explanation = "hacer → har- + ías = harías. ¿Qué harías? = что бы ты сделал?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "No podría vivir sin internet.",
+                    options = listOf("Я бы не смог жить без интернета.", "Я не могу жить без интернета.", "Я не буду жить без интернета.", "Раньше я жил без интернета."),
+                    correctAnswer = "Я бы не смог жить без интернета.",
+                    explanation = "podría = я бы смог (Condicional). No podría = я бы не смог."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Condicional от VENIR",
+                    question = "¿___ (tú) a la fiesta si te invitara?",
+                    options = listOf("Vendrías", "Venirías", "Vienes", "Viniste"),
+                    correctAnswer = "Vendrías",
+                    explanation = "venir → vendr- + ías = vendrías. ¿Vendrías? = ты бы пришёл?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Diría que es una buena idea.",
+                    options = listOf("Я бы сказал, что это хорошая идея.", "Я говорю, что хорошая идея.", "Скажи, что это хорошая идея.", "Он скажет хорошую идею."),
+                    correctAnswer = "Я бы сказал, что это хорошая идея.",
+                    explanation = "diría = я бы сказал (Condicional от decir → dir-)."
+                )
+            )
+        ),
+
+        "u8_l4" to LessonContent(
+            intro = "Si + presente → futuro: реальные условия",
+            sections = listOf(
+                LessonSection(
+                    heading = "Реальное условие: Si + presente + futuro",
+                    items = listOf(
+                        LessonItem("Si + Presente Indicativo", "→ Futuro Simple", "реальное, возможное условие"),
+                        LessonItem("Si llueve,", "no saldré.", "Если будет дождь, не выйду."),
+                        LessonItem("Si tienes tiempo,", "llámame.", "Если есть время, позвони."),
+                        LessonItem("Si comes bien,", "estarás sano.", "Если будешь есть хорошо, будешь здоров.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Важные правила",
+                    items = listOf(
+                        LessonItem("После SI — никогда не Futuro!", "Si llueve (не lloverá)", "ошибка начинающих"),
+                        LessonItem("Порядок частей", "можно менять местами", "No saldré si llueve."),
+                        LessonItem("Si tengo dinero,", "viajaré.", "Если будут деньги, поеду."),
+                        LessonItem("Si estudias,", "aprobarás.", "Если будешь учиться, сдашь.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильную форму после SI",
+                    question = "Si ___ tiempo, iré al gimnasio.",
+                    options = listOf("tengo", "tendré", "tendría", "tuviera"),
+                    correctAnswer = "tengo",
+                    explanation = "После si + реальное условие → Presente Indicativo (не Futuro!). Si tengo = если у меня есть."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Si no estudias, no aprobarás el examen.",
+                    options = listOf("Если не будешь учиться, не сдашь экзамен.", "Я не учусь и не сдам.", "Учись, чтобы сдать экзамен.", "Если не сдашь, учись."),
+                    correctAnswer = "Если не будешь учиться, не сдашь экзамен.",
+                    explanation = "Si no estudias (если не учишься) + no aprobarás (не сдашь). Реальное условие."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Составь условное предложение",
+                    question = "Si hace buen tiempo, ___ a la playa.",
+                    options = listOf("iremos", "íbamos", "iríamos", "fuimos"),
+                    correctAnswer = "iremos",
+                    explanation = "Si + presente → futuro. iremos = мы пойдём (Futuro от ir)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Te ayudaré si me lo pides.",
+                    options = listOf("Я помогу тебе, если попросишь.", "Я помогаю тебе.", "Помоги мне, пожалуйста.", "Я бы помог, если бы попросил."),
+                    correctAnswer = "Я помогу тебе, если попросишь.",
+                    explanation = "te ayudaré = я помогу (Futuro). si me lo pides = если попросишь (Presente после si)."
+                )
+            )
+        ),
+
+        "u8_l5" to LessonContent(
+            intro = "Мечты и планы — лексика и выражения",
+            sections = listOf(
+                LessonSection(
+                    heading = "Выражение желаний",
+                    items = listOf(
+                        LessonItem("Me gustaría + inf", "Я бы хотел...", "Me gustaría viajar."),
+                        LessonItem("Quisiera + inf", "Я бы хотел... (вежливо)", "Quisiera reservar una mesa."),
+                        LessonItem("Espero + inf", "Я надеюсь...", "Espero aprobar el examen."),
+                        LessonItem("Sueño con + inf/noun", "Мечтаю о...", "Sueño con vivir en España."),
+                        LessonItem("Mi sueño es + inf", "Моя мечта — ...", "Mi sueño es ser escritor."),
+                        LessonItem("Tengo ganas de + inf", "Мне хочется...", "Tengo ganas de salir.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Планы на будущее",
+                    items = listOf(
+                        LessonItem("Pienso + inf", "Я планирую...", "Pienso estudiar medicina."),
+                        LessonItem("Voy a + inf", "Я собираюсь...", "Voy a aprender chino."),
+                        LessonItem("Tengo planes de + inf", "У меня планы...", "Tengo planes de mudarme."),
+                        LessonItem("Ojalá + subjuntivo", "Хотелось бы...", "¡Ojalá llueva!")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи вежливо: «я бы хотел стол»",
+                    question = "___ una mesa para dos.",
+                    options = listOf("Quisiera", "Quiero", "Querría", "Quería"),
+                    correctAnswer = "Quisiera",
+                    explanation = "quisiera = я бы хотел (Imperfecto Subjuntivo от querer, вежливая форма). Используется в ресторанах, магазинах."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Sueño con vivir cerca del mar.",
+                    options = listOf("Мечтаю жить рядом с морем.", "Я живу рядом с морем.", "Мне снится море.", "Хочу поехать к морю."),
+                    correctAnswer = "Мечтаю жить рядом с морем.",
+                    explanation = "soñar con = мечтать о. Sueño con vivir = мечтаю жить."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «мне хочется гулять»?",
+                    question = "Tengo ___ de salir a pasear.",
+                    options = listOf("ganas", "sueño", "planes", "miedo"),
+                    correctAnswer = "ganas",
+                    explanation = "tener ganas de + inf = хотеться, желать. Tengo ganas de = мне хочется."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Espero que todo salga bien.",
+                    options = listOf("Надеюсь, что всё получится.", "Я ожидаю хорошего.", "Всё будет хорошо.", "Я надеялся на лучшее."),
+                    correctAnswer = "Надеюсь, что всё получится.",
+                    explanation = "esperar que = надеяться что. salga bien = получится (Subjuntivo от salir)."
+                )
+            )
+        ),
+
+        "u8_l6" to LessonContent(
+            intro = "Неопределённые местоимения: algo, alguien, nada, nadie",
+            sections = listOf(
+                LessonSection(
+                    heading = "Утвердительные",
+                    items = listOf(
+                        LessonItem("algo", "что-то / кое-что", "Tengo algo para ti."),
+                        LessonItem("alguien", "кто-то / кое-кто", "Alguien llamó."),
+                        LessonItem("algún/alguna", "какой-то / некоторый", "Algún día lo haré."),
+                        LessonItem("algunos/algunas", "некоторые", "Algunos estudiantes llegaron.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Отрицательные",
+                    items = listOf(
+                        LessonItem("nada", "ничего", "No tengo nada."),
+                        LessonItem("nadie", "никто", "No hay nadie."),
+                        LessonItem("ningún/ninguna", "никакой", "No tengo ningún problema."),
+                        LessonItem("Двойное отрицание!", "No vino nadie. = Nadie vino.", "оба варианта правильны")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное местоимение",
+                    question = "¿Hay ___ en casa?",
+                    options = listOf("alguien", "algo", "nadie", "nada"),
+                    correctAnswer = "alguien",
+                    explanation = "alguien = кто-то (о людях). algo = что-то (о вещах). ¿Hay alguien? = есть кто-нибудь?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "No sé nada de español.",
+                    options = listOf("Я ничего не знаю по-испански.", "Я знаю что-то по-испански.", "Я немного знаю испанский.", "Я знаю испанский."),
+                    correctAnswer = "Я ничего не знаю по-испански.",
+                    explanation = "nada = ничего. No sé nada = я ничего не знаю (двойное отрицание нормально в испанском)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Двойное отрицание",
+                    question = "No vino ___ a la fiesta.",
+                    options = listOf("nadie", "alguien", "alguno", "nada"),
+                    correctAnswer = "nadie",
+                    explanation = "No vino nadie = никто не пришёл. No + глагол + nadie — стандартное двойное отрицание."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Tengo algo importante que decirte.",
+                    options = listOf("Мне есть что тебе сказать важное.", "Тебе нужно мне что-то сказать.", "Ничего важного нет.", "Я скажу тебе кое-что."),
+                    correctAnswer = "Мне есть что тебе сказать важное.",
+                    explanation = "algo = что-то/кое-что. Tengo algo que decirte = мне есть что тебе сказать."
+                )
+            )
+        ),
+
+        "u8_l7" to LessonContent(
+            intro = "Вероятность: probablemente, quizás, a lo mejor",
+            sections = listOf(
+                LessonSection(
+                    heading = "Выражение вероятности",
+                    items = listOf(
+                        LessonItem("a lo mejor + indicativo", "может быть (50/50)", "A lo mejor viene. = Может, придёт."),
+                        LessonItem("quizás/quizá + indicativo", "может быть", "Quizás tiene razón."),
+                        LessonItem("probablemente + indicativo", "вероятно", "Probablemente lloverá."),
+                        LessonItem("seguramente + indicativo", "наверняка", "Seguramente está en casa.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Степень уверенности",
+                    items = listOf(
+                        LessonItem("seguro (100%)", "точно", "Seguro que viene."),
+                        LessonItem("seguramente (90%)", "наверняка", ""),
+                        LessonItem("probablemente (70%)", "вероятно", ""),
+                        LessonItem("quizás / a lo mejor (50%)", "может быть", ""),
+                        LessonItem("tal vez (50%)", "возможно", "Tal vez tenga razón.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "A lo mejor mañana no hay clase.",
+                    options = listOf("Может, завтра не будет урока.", "Завтра точно не будет урока.", "Завтра урок отменили.", "Уроков больше не будет."),
+                    correctAnswer = "Может, завтра не будет урока.",
+                    explanation = "a lo mejor = может быть (примерно 50%). Не требует Subjuntivo!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери нужное слово",
+                    question = "___ está en casa. No contesta al teléfono.",
+                    options = listOf("Probablemente", "Seguro", "Nunca", "Siempre"),
+                    correctAnswer = "Probablemente",
+                    explanation = "probablemente = вероятно (70%). Вероятное объяснение ситуации."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Quizás tenga razón.",
+                    options = listOf("Может, он прав.", "Он точно прав.", "Он не прав.", "Я думаю, он прав."),
+                    correctAnswer = "Может, он прав.",
+                    explanation = "quizás = может быть. tener razón = быть правым."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какое выражение означает наибольшую уверенность?",
+                    question = "Выбери выражение с наибольшей уверенностью:",
+                    options = listOf("Seguramente", "Quizás", "A lo mejor", "Tal vez"),
+                    correctAnswer = "Seguramente",
+                    explanation = "seguramente = наверняка (~90%). quizás / a lo mejor / tal vez = может быть (~50%)."
+                )
+            )
+        ),
+
+        "u8_l8" to LessonContent(
+            intro = "Транспорт и дорога — продвинутый уровень",
+            sections = listOf(
+                LessonSection(
+                    heading = "Аренда и управление",
+                    items = listOf(
+                        LessonItem("alquilar un coche", "арендовать машину", "Quiero alquilar un coche."),
+                        LessonItem("conducir / manejar", "водить машину", "¿Sabes conducir?"),
+                        LessonItem("el carnet de conducir", "водительское удостоверение", ""),
+                        LessonItem("aparcar / estacionar", "парковаться", "No se puede aparcar aquí."),
+                        LessonItem("el aparcamiento", "парковка", "¿Hay aparcamiento cerca?"),
+                        LessonItem("la gasolinera", "заправочная станция", ""),
+                        LessonItem("el atasco / el embotellamiento", "пробка", "Hay mucho atasco.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Общественный транспорт",
+                    items = listOf(
+                        LessonItem("el abono / la tarjeta de transporte", "проездной", ""),
+                        LessonItem("transbordar", "делать пересадку", "Hay que transbordar en Sol."),
+                        LessonItem("la línea", "линия (метро/автобус)", "la línea 2"),
+                        LessonItem("perder el tren/autobús", "опоздать на поезд/автобус", "He perdido el tren."),
+                        LessonItem("el retraso", "опоздание / задержка", "El tren lleva retraso.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «водительское удостоверение»?",
+                    question = "el ___ de conducir",
+                    options = listOf("carnet", "billete", "abono", "permiso"),
+                    correctAnswer = "carnet",
+                    explanation = "el carnet de conducir = водительское удостоверение."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "He perdido el último metro.",
+                    options = listOf("Я опоздал на последнее метро.", "Я нашёл метро.", "Метро закрыто.", "Я еду на метро."),
+                    correctAnswer = "Я опоздал на последнее метро.",
+                    explanation = "perder el metro/tren = опоздать на метро/поезд. He perdido = я опоздал (P. Perfecto)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «el atasco»?",
+                    question = "Hay mucho atasco en la autopista.",
+                    options = listOf("Большая пробка на шоссе.", "Много машин на парковке.", "Авария на шоссе.", "Много людей на дороге."),
+                    correctAnswer = "Большая пробка на шоссе.",
+                    explanation = "el atasco = пробка. la autopista = шоссе/автострада."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "El tren lleva 20 minutos de retraso.",
+                    options = listOf("Поезд опаздывает на 20 минут.", "Поезд едет 20 минут.", "Поезд прибыл на 20 минут раньше.", "Поезд отходит через 20 минут."),
+                    correctAnswer = "Поезд опаздывает на 20 минут.",
+                    explanation = "llevar retraso = опаздывать. 20 minutos de retraso = на 20 минут."
+                )
+            )
+        ),
+
+        "u8_l9" to LessonContent(
+            intro = "Глаголы с предлогами: pensar en, soñar con, depender de...",
+            sections = listOf(
+                LessonSection(
+                    heading = "Глаголы с предлогом EN",
+                    items = listOf(
+                        LessonItem("pensar en", "думать о", "Pienso en ti."),
+                        LessonItem("confiar en", "доверять", "Confío en ti."),
+                        LessonItem("quedarse en", "оставаться в", "Me quedo en casa."),
+                        LessonItem("entrar en", "входить в", "Entré en la tienda.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Глаголы с другими предлогами",
+                    items = listOf(
+                        LessonItem("soñar con", "мечтать о / сниться", "Sueño con viajar."),
+                        LessonItem("depender de", "зависеть от", "Depende de ti."),
+                        LessonItem("olvidarse de", "забывать о", "Me olvidé de llamarte."),
+                        LessonItem("acordarse de", "вспоминать о", "¿Te acuerdas de mí?"),
+                        LessonItem("hablar de", "говорить о", "Hablamos del viaje."),
+                        LessonItem("preocuparse por", "беспокоиться о", "Me preocupo por ti."),
+                        LessonItem("interesarse por", "интересоваться", "Me interesa la música.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери предлог",
+                    question = "Siempre pienso ___ mi familia.",
+                    options = listOf("en", "de", "con", "por"),
+                    correctAnswer = "en",
+                    explanation = "pensar en = думать о. Siempre pienso en mi familia = я всегда думаю о своей семье."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Me olvidé de llamarte.",
+                    options = listOf("Я забыл позвонить тебе.", "Я вспомнил о тебе.", "Я хотел позвонить.", "Я позвоню тебе."),
+                    correctAnswer = "Я забыл позвонить тебе.",
+                    explanation = "olvidarse de + inf = забыть (сделать что-то). Me olvidé = я забыл."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери предлог",
+                    question = "Todo depende ___ ti.",
+                    options = listOf("de", "en", "con", "por"),
+                    correctAnswer = "de",
+                    explanation = "depender de = зависеть от. Depende de ti = зависит от тебя."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Te acuerdas de nuestra primera clase?",
+                    options = listOf("Ты помнишь наш первый урок?", "Ты забыл первый урок?", "Когда был наш первый урок?", "Ты ходил на первый урок?"),
+                    correctAnswer = "Ты помнишь наш первый урок?",
+                    explanation = "acordarse de = помнить / вспоминать. ¿Te acuerdas de...? = ты помнишь...?"
+                )
+            )
+        ),
+
+        "u8_l10" to LessonContent(
+            intro = "Испанская гастрономия — tapas, paella, tradición",
+            sections = listOf(
+                LessonSection(
+                    heading = "Типичные блюда",
+                    items = listOf(
+                        LessonItem("las tapas", "тапас (закуски)", "Vamos de tapas."),
+                        LessonItem("la paella", "паэлья (рис с морепродуктами)", ""),
+                        LessonItem("la tortilla española", "испанский омлет с картошкой", ""),
+                        LessonItem("el gazpacho", "гаспачо (холодный суп)", ""),
+                        LessonItem("el jamón ibérico", "иберийский хамон", ""),
+                        LessonItem("la sangría", "сангрия (напиток)", ""),
+                        LessonItem("el churro", "чурро (жареное тесто)", "churros con chocolate")
+                    )
+                ),
+                LessonSection(
+                    heading = "Традиции еды в Испании",
+                    items = listOf(
+                        LessonItem("ir de tapas", "идти на тапас (бар-хоппинг)", ""),
+                        LessonItem("la sobremesa", "беседа после еды за столом", "культурная традиция"),
+                        LessonItem("el menú del día", "бизнес-ланч (1-е, 2-е, десерт)", "самый дешёвый обед"),
+                        LessonItem("cenar tarde", "ужинать поздно (21–22 ч)", "испанская традиция"),
+                        LessonItem("picar algo", "перекусить", "¿Picamos algo?")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «la tortilla española»?",
+                    question = "La tortilla española es...",
+                    options = listOf("омлет с картошкой", "мексиканская лепёшка", "блин с начинкой", "суп"),
+                    correctAnswer = "омлет с картошкой",
+                    explanation = "La tortilla española = испанский омлет с картофелем и яйцами. Не путай с мексиканской tortilla!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Vamos de tapas esta tarde?",
+                    options = listOf("Пойдём на тапас сегодня вечером?", "Пойдём в ресторан?", "Хочешь поесть дома?", "Закажем доставку?"),
+                    correctAnswer = "Пойдём на тапас сегодня вечером?",
+                    explanation = "ir de tapas = идти в бары есть тапас. Типичная испанская традиция."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что такое «el menú del día»?",
+                    question = "el menú del día = ?",
+                    options = listOf("комплексный обед (1е+2е+десерт)", "меню ресторана", "блюдо дня", "завтрак"),
+                    correctAnswer = "комплексный обед (1е+2е+десерт)",
+                    explanation = "el menú del día = комплексный обед в будни. Включает первое, второе, десерт и напиток. Очень выгодно!"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "En España se cena muy tarde.",
+                    options = listOf("В Испании ужинают очень поздно.", "В Испании завтракают рано.", "В Испании обедают в обед.", "В Испании едят мало."),
+                    correctAnswer = "В Испании ужинают очень поздно.",
+                    explanation = "cenar = ужинать. tarde = поздно. se cena = ужинают (безличная конструкция)."
+                )
+            )
+        ),
+
+        "u8_l11" to LessonContent(
+            intro = "Cuantificadores: mucho, poco, bastante, demasiado",
+            sections = listOf(
+                LessonSection(
+                    heading = "Количественные слова",
+                    items = listOf(
+                        LessonItem("mucho/a/os/as", "много", "Tengo mucho trabajo."),
+                        LessonItem("poco/a/os/as", "мало", "Tengo poco tiempo."),
+                        LessonItem("bastante/s", "достаточно / довольно", "Tengo bastante dinero."),
+                        LessonItem("demasiado/a/os/as", "слишком много", "Comes demasiado."),
+                        LessonItem("suficiente/s", "достаточно", "No tengo suficiente información.")
+                    )
+                ),
+                LessonSection(
+                    heading = "С прилагательными (не согласуются)",
+                    items = listOf(
+                        LessonItem("muy + adj", "очень", "Es muy interesante."),
+                        LessonItem("bastante + adj", "довольно", "Es bastante fácil."),
+                        LessonItem("demasiado + adj", "слишком", "Es demasiado caro."),
+                        LessonItem("poco + adj", "не очень", "Es poco interesante."),
+                        LessonItem("ВАЖНО: mucho → muy", "перед adj → muy", "muy bueno (не mucho bueno!)")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильный вариант",
+                    question = "Esta película es ___ aburrida.",
+                    options = listOf("muy", "mucho", "muchos", "mucha"),
+                    correctAnswer = "muy",
+                    explanation = "Перед прилагательным: muy (не mucho). mucho → muy перед adj."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Comes demasiado rápido.",
+                    options = listOf("Ты ешь слишком быстро.", "Ты ешь очень быстро.", "Ты ешь достаточно быстро.", "Ты не ешь быстро."),
+                    correctAnswer = "Ты ешь слишком быстро.",
+                    explanation = "demasiado = слишком. Перед наречием не согласуется."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Выбери правильное слово",
+                    question = "No tenemos ___ tiempo para terminar.",
+                    options = listOf("suficiente", "bastante", "demasiado", "poco"),
+                    correctAnswer = "suficiente",
+                    explanation = "suficiente = достаточно. No tenemos suficiente tiempo = у нас недостаточно времени."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Hay bastante gente en la calle.",
+                    options = listOf("На улице довольно много народу.", "На улице мало народу.", "На улице слишком много народу.", "На улице никого нет."),
+                    correctAnswer = "На улице довольно много народу.",
+                    explanation = "bastante = достаточно / довольно много. bastante gente = довольно много людей."
+                )
+            )
+        ),
+
+        "u8_l12" to LessonContent(
+            intro = "Технологии и цифровой мир",
+            sections = listOf(
+                LessonSection(
+                    heading = "Устройства и интернет",
+                    items = listOf(
+                        LessonItem("el móvil / el celular", "мобильный телефон", ""),
+                        LessonItem("el ordenador / la computadora", "компьютер", ""),
+                        LessonItem("la tableta", "планшет", ""),
+                        LessonItem("el wifi / la wifi", "вайфай", "¿Hay wifi aquí?"),
+                        LessonItem("la contraseña", "пароль", "¿Cuál es la contraseña?"),
+                        LessonItem("descargar", "скачивать", "Descarga la app."),
+                        LessonItem("la aplicación / la app", "приложение", "")
+                    )
+                ),
+                LessonSection(
+                    heading = "Социальные сети и общение",
+                    items = listOf(
+                        LessonItem("las redes sociales", "социальные сети", ""),
+                        LessonItem("publicar / subir", "публиковать / загружать", "Subí una foto."),
+                        LessonItem("el seguidor / el seguido", "подписчик / подписка", ""),
+                        LessonItem("hacer una videollamada", "сделать видеозвонок", ""),
+                        LessonItem("el mensaje de voz", "голосовое сообщение", ""),
+                        LessonItem("el grupo de WhatsApp", "группа в WhatsApp", "")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить пароль от вайфая?",
+                    question = "¿Cuál es la ___ del wifi?",
+                    options = listOf("contraseña", "aplicación", "red", "clave"),
+                    correctAnswer = "contraseña",
+                    explanation = "la contraseña = пароль. ¿Cuál es la contraseña del wifi? — стандартный вопрос в кафе."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Descarga la aplicación en tu móvil.",
+                    options = listOf("Скачай приложение на телефон.", "Открой приложение.", "Удали приложение.", "Купи приложение."),
+                    correctAnswer = "Скачай приложение на телефон.",
+                    explanation = "descargar = скачивать. la aplicación = приложение."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «subir una foto»?",
+                    question = "Voy a subir esta foto a Instagram.",
+                    options = listOf("Загружу эту фото в Instagram.", "Сделаю фото.", "Скачаю фото.", "Удалю фото."),
+                    correctAnswer = "Загружу эту фото в Instagram.",
+                    explanation = "subir = загружать (в интернет). publicar = публиковать."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "¿Hacemos una videollamada esta tarde?",
+                    options = listOf("Созвонимся по видео сегодня вечером?", "Позвоним сегодня вечером?", "Увидимся сегодня вечером?", "Напишем сегодня вечером?"),
+                    correctAnswer = "Созвонимся по видео сегодня вечером?",
+                    explanation = "hacer una videollamada = сделать видеозвонок / созвониться по видео."
+                )
+            )
+        ),
+
+        "u8_l13" to LessonContent(
+            intro = "Спорт и здоровый образ жизни",
+            sections = listOf(
+                LessonSection(
+                    heading = "Спорт",
+                    items = listOf(
+                        LessonItem("hacer ejercicio", "заниматься спортом", "Hago ejercicio cada día."),
+                        LessonItem("ir al gimnasio", "ходить в зал", "Voy al gimnasio 3 veces."),
+                        LessonItem("correr / hacer running", "бегать", "Corro por el parque."),
+                        LessonItem("nadar", "плавать", "Nado en la piscina."),
+                        LessonItem("montar en bici", "кататься на велосипеде", ""),
+                        LessonItem("jugar al fútbol/tenis", "играть в футбол/теннис", "Juego al fútbol."),
+                        LessonItem("el partido", "матч / игра", "Ver un partido.")
+                    )
+                ),
+                LessonSection(
+                    heading = "Здоровый образ жизни",
+                    items = listOf(
+                        LessonItem("llevar una dieta sana", "соблюдать здоровую диету", ""),
+                        LessonItem("comer equilibrado", "питаться сбалансированно", ""),
+                        LessonItem("dormir bien", "хорошо спать", "Es importante dormir bien."),
+                        LessonItem("el estrés", "стресс", "Tengo mucho estrés."),
+                        LessonItem("relajarse", "расслабляться", "Necesito relajarme."),
+                        LessonItem("estar en forma", "быть в форме", "Estoy en buena forma.")
+                    )
+                )
+            ),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Hago ejercicio tres veces a la semana.",
+                    options = listOf("Я занимаюсь спортом три раза в неделю.", "Я хожу в зал три раза.", "Я бегаю три раза в неделю.", "Я плаваю три раза."),
+                    correctAnswer = "Я занимаюсь спортом три раза в неделю.",
+                    explanation = "hacer ejercicio = заниматься спортом. tres veces a la semana = три раза в неделю."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать «играть в теннис»?",
+                    question = "Juego ___ tenis los sábados.",
+                    options = listOf("al", "el", "a", "en"),
+                    correctAnswer = "al",
+                    explanation = "jugar al + вид спорта. al = a + el. Juego al tenis = я играю в теннис."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Переведи",
+                    question = "Llevo una dieta sana y duermo bien.",
+                    options = listOf("Я соблюдаю здоровую диету и хорошо сплю.", "Я ем много и сплю мало.", "Я на диете и не сплю.", "Я ем здоровое и занимаюсь спортом."),
+                    correctAnswer = "Я соблюдаю здоровую диету и хорошо сплю.",
+                    explanation = "llevar una dieta sana = соблюдать здоровую диету. dormir bien = хорошо спать."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Что значит «estar en forma»?",
+                    question = "Quiero estar en buena forma.",
+                    options = listOf("Хочу быть в хорошей форме.", "Хочу похудеть.", "Хочу заниматься спортом.", "Хочу быть здоровым."),
+                    correctAnswer = "Хочу быть в хорошей форме.",
+                    explanation = "estar en forma = быть в форме (физически). estar en buena forma = быть в хорошей форме."
+                )
+            )
         )
     )
 }
