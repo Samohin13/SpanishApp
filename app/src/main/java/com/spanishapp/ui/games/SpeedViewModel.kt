@@ -50,10 +50,12 @@ class SpeedViewModel @Inject constructor(
     private var timerJob: Job? = null
     private var roundStartTime = 0L
     private var dynamicTimeFactor = 1.0f
+    @Volatile private var roundResolved = false   // защита от двойного submit
 
     fun startGame(speed: SpeedLevel, cefr: String) {
         timerJob?.cancel()
         dynamicTimeFactor = 1.0f
+        roundResolved = false
         _state.value = SpeedPremiumState(level = speed, cefr = cefr)
         nextRound()
     }
@@ -66,22 +68,33 @@ class SpeedViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            // Fetch words based on CEFR
-            val words = wordDao.getRandomWords(20).filter { it.level == s.cefr }.ifEmpty { wordDao.getRandomWords(10) }
-            if (words.size >= 4) {
-                val correct = words.random()
-                val options = (words.filter { it.id != correct.id }.shuffled().take(3) + correct).map { it.russian }.shuffled()
-                
-                _state.value = s.copy(
-                    currentWord = correct,
-                    options = options,
-                    currentRound = s.currentRound + 1,
-                    timeLeft = 1f,
-                    lastCorrect = null
-                )
-                roundStartTime = System.currentTimeMillis()
-                startTimer()
+            // Берём пул из 80 случайных слов и фильтруем по CEFR.
+            // Если на нужном уровне получилось < 4 слов — добираем случайными.
+            val pool = wordDao.getRandomWords(80)
+            val cefrPool = pool.filter { it.level == s.cefr && it.russian.isNotBlank() }
+            val words = if (cefrPool.size >= 4) cefrPool
+                        else (cefrPool + pool.filter { it.russian.isNotBlank() }).distinctBy { it.id }.take(20)
+            if (words.size < 4) {
+                // на случай совсем пустой БД — пропускаем раунд
+                _state.value = s.copy(currentRound = s.currentRound + 1)
+                nextRound()
+                return@launch
             }
+
+            val correct = words.random()
+            val options = (words.filter { it.id != correct.id }.shuffled().take(3) + correct)
+                .map { it.russian }.shuffled()
+
+            roundResolved = false
+            _state.value = s.copy(
+                currentWord = correct,
+                options = options,
+                currentRound = s.currentRound + 1,
+                timeLeft = 1f,
+                lastCorrect = null
+            )
+            roundStartTime = System.currentTimeMillis()
+            startTimer()
         }
     }
 
@@ -90,16 +103,18 @@ class SpeedViewModel @Inject constructor(
         val base = _state.value.level.baseTime * dynamicTimeFactor
         timerJob = viewModelScope.launch {
             val step = 0.05f
-            while (_state.value.timeLeft > 0) {
+            while (_state.value.timeLeft > 0 && !roundResolved) {
                 delay(50)
                 val newTime = (_state.value.timeLeft - (step / base)).coerceAtLeast(0f)
                 _state.value = _state.value.copy(timeLeft = newTime)
             }
-            submitAnswer("") // Timeout
+            if (!roundResolved) submitAnswer("")   // Timeout
         }
     }
 
     fun submitAnswer(answer: String) {
+        if (roundResolved) return
+        roundResolved = true
         timerJob?.cancel()
         val s = _state.value
         val correctTranslation = s.currentWord?.russian ?: ""

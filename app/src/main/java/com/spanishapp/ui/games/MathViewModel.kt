@@ -38,6 +38,7 @@ class MathViewModel @Inject constructor(
 
     private var timerJob: kotlinx.coroutines.Job? = null
     private var totalTime = 10f
+    @Volatile private var roundResolved = false
 
     fun startGame(difficulty: String) {
         totalTime = when(difficulty) {
@@ -45,6 +46,7 @@ class MathViewModel @Inject constructor(
             "A2-B1" -> 10f
             else -> 7f
         }
+        roundResolved = false
         _state.value = MathGameState(level = difficulty)
         nextQuestion()
     }
@@ -57,7 +59,8 @@ class MathViewModel @Inject constructor(
         }
 
         val (expression, answer) = generateExpression(s.level)
-        
+        roundResolved = false
+
         _state.value = s.copy(
             expressionText = expression,
             correctAnswer = answer,
@@ -125,12 +128,12 @@ class MathViewModel @Inject constructor(
     private fun startTimer() {
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
-            while (_state.value.timeLeft > 0) {
+            while (_state.value.timeLeft > 0 && !roundResolved) {
                 delay(50)
                 val newTime = (_state.value.timeLeft - (0.05f / totalTime)).coerceAtLeast(0f)
                 _state.value = _state.value.copy(timeLeft = newTime)
             }
-            onTimeOut()
+            if (!roundResolved) onTimeOut()
         }
     }
 
@@ -139,6 +142,8 @@ class MathViewModel @Inject constructor(
     }
 
     fun submitAnswer(answer: Int?) {
+        if (roundResolved) return
+        roundResolved = true
         timerJob?.cancel()
         val isCorrect = answer == _state.value.correctAnswer
         val newStreak = if (isCorrect) _state.value.streak + 1 else 0

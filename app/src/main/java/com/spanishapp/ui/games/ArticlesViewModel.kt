@@ -18,6 +18,7 @@ data class ArticlesPremiumState(
     val currentWord: ArticleWordEntity? = null,
     val level: String = "A1",
     val score: Int = 0,
+    val correctCount: Int = 0,    // сколько верных ответов в этой игре
     val streak: Int = 0,
     val multiplier: Float = 1.0f,
     val currentRound: Int = 0,
@@ -109,6 +110,7 @@ class ArticlesViewModel @Inject constructor(
             _state.value = s.copy(
                 lastCorrect = isCorrect,
                 score = s.score + totalXpGain,
+                correctCount = if (isCorrect) s.correctCount + 1 else s.correctCount,
                 streak = newStreak,
                 multiplier = newMultiplier,
                 academicHint = if (!isCorrect) word.ruleHint else null
@@ -123,6 +125,27 @@ class ArticlesViewModel @Inject constructor(
         val s = _state.value
         _state.value = s.copy(isGameOver = true)
         viewModelScope.launch {
+            // Звёзды: 3 за 90%+, 2 за 70%+, 1 за 50%+
+            val percent = if (s.totalRounds > 0) (s.correctCount * 100) / s.totalRounds else 0
+            val stars = when {
+                percent >= 90 -> 3
+                percent >= 70 -> 2
+                percent >= 50 -> 1
+                else          -> 0
+            }
+            // Сохраняем лучший результат уровня
+            val existing = dao.getProgress(s.level)
+            val newBest = maxOf(existing?.bestScore ?: 0, percent)
+            val newStars = maxOf(existing?.stars ?: 0, stars)
+            dao.upsertProgress(
+                ArticleLevelProgressEntity(
+                    levelId = s.level,
+                    stars = newStars,
+                    isUnlocked = true,
+                    bestScore = newBest
+                )
+            )
+
             val p = userProgressDao.getProgressOnce() ?: return@launch
             userProgressDao.update(p.copy(totalXp = p.totalXp + s.score))
             achievementManager.checkAndUnlock()

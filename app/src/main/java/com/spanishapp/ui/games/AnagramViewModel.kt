@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
+import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.service.AchievementManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -41,13 +42,20 @@ class AnagramViewModel @Inject constructor(
 
     private fun nextRound() {
         viewModelScope.launch {
-            val words = wordDao.getRandomWords(20).filter { it.level == _state.value.cefr }.ifEmpty { wordDao.getRandomWords(5) }
+            // Берём пул побольше и фильтруем только однословные термины 3-10 букв
+            fun isSuitable(w: WordEntity): Boolean {
+                val clean = stripArticle(w.spanish).trim()
+                return !clean.contains(' ') && clean.length in 3..10
+            }
+            val pool = wordDao.getRandomWords(80)
+            val cefrPool = pool.filter { it.level == _state.value.cefr && isSuitable(it) }
+            val words = if (cefrPool.isNotEmpty()) cefrPool
+                        else pool.filter { isSuitable(it) }
             val word = words.randomOrNull() ?: return@launch
-            
-            // Premium: Keep accents (tildes) but shuffle them as separate tiles
+
             val cleanWord = stripArticle(word.spanish).lowercase().trim()
             val letters = cleanWord.map { it.toString() }.shuffled()
-            
+
             _state.value = _state.value.copy(
                 originalWord = cleanWord,
                 translation = word.russian,
