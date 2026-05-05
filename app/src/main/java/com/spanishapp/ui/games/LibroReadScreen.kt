@@ -801,14 +801,14 @@ fun LibroReadScreen(
                                 )
                             ) {
                                 Icon(
-                                    if (isSpeaking) Icons.Default.Stop else Icons.Default.PlayArrow,
+                                    if (isSpeaking) Icons.Default.Stop else Icons.Default.Headphones,
                                     contentDescription = null,
                                     tint = if (isSpeaking) Color(0xFFC62828) else levelColor,
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(Modifier.width(4.dp))
                                 Text(
-                                    if (isSpeaking) "Стоп" else "Слушать",
+                                    if (isSpeaking) "Стоп" else "Аудиокнига",
                                     color = if (isSpeaking) Color(0xFFC62828) else levelColor,
                                     fontSize = 14.sp
                                 )
