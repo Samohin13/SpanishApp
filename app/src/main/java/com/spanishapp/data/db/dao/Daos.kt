@@ -427,6 +427,12 @@ interface ArticleGameDao {
     @Query("SELECT * FROM article_words WHERE level = :level ORDER BY error_weight DESC, RANDOM() LIMIT :limit")
     suspend fun getWordsForLevel(level: String, limit: Int = 10): List<ArticleWordEntity>
 
+    @Query("SELECT * FROM article_words WHERE level IN (:levels) ORDER BY error_weight DESC, RANDOM() LIMIT :limit")
+    suspend fun getWordsForLevels(levels: List<String>, limit: Int = 10): List<ArticleWordEntity>
+
+    @Query("SELECT COUNT(*) FROM article_words WHERE level IN (:levels)")
+    suspend fun countForLevels(levels: List<String>): Int
+
     @Update
     suspend fun updateWord(word: ArticleWordEntity)
 

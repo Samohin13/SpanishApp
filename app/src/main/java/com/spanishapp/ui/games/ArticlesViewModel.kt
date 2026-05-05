@@ -4,8 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.ArticleGameDao
 import com.spanishapp.data.db.dao.UserProgressDao
+import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.ArticleLevelProgressEntity
 import com.spanishapp.data.db.entity.ArticleWordEntity
+import com.spanishapp.domain.games.GameId
+import com.spanishapp.domain.games.GameLevelManager
+import com.spanishapp.domain.games.LevelDifficulty
+import com.spanishapp.domain.games.LevelParams
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,25 +21,32 @@ import javax.inject.Inject
 
 data class ArticlesPremiumState(
     val currentWord: ArticleWordEntity? = null,
-    val level: String = "A1",
+    val params: LevelParams = LevelDifficulty.forLevel(1),
     val score: Int = 0,
-    val correctCount: Int = 0,    // сколько верных ответов в этой игре
+    val correctCount: Int = 0,
     val streak: Int = 0,
     val multiplier: Float = 1.0f,
     val currentRound: Int = 0,
-    val totalRounds: Int = 10,
     val isGameOver: Boolean = false,
     val lastCorrect: Boolean? = null,
     val academicHint: String? = null,
-    val lastResponseTime: Long = 0L
-)
+    // финальный экран
+    val finalStars: Int = 0,
+    val finalPercent: Int = 0,
+    val showLevelMap: Boolean = true   // экран выбора уровня по умолчанию
+) {
+    val totalRounds: Int get() = params.rounds
+    val level: Int get() = params.level
+}
 
 @HiltViewModel
 class ArticlesViewModel @Inject constructor(
     private val dao: ArticleGameDao,
+    private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ArticlesPremiumState())
@@ -44,15 +56,22 @@ class ArticlesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            if (dao.getWordCount() == 0) {
-                seedWords()
+            if (dao.getWordCount() < 200) {
+                seedFromDictionary()
             }
         }
     }
 
-    fun startGame(level: String) {
-        _state.value = ArticlesPremiumState(level = level)
+    /** Запустить уровень (1..100). */
+    fun startLevel(level: Int) {
+        val params = LevelDifficulty.forLevel(level)
+        _state.value = ArticlesPremiumState(params = params, showLevelMap = false)
         nextRound()
+    }
+
+    /** Вернуться к карте уровней. */
+    fun openLevelMap() {
+        _state.value = _state.value.copy(showLevelMap = true, isGameOver = false)
     }
 
     private fun nextRound() {
@@ -63,7 +82,7 @@ class ArticlesViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val words = dao.getWordsForLevel(s.level, 10)
+            val words = dao.getWordsForLevels(s.params.cefr, 30)
             if (words.isNotEmpty()) {
                 val word = words.random()
                 _state.value = s.copy(
@@ -73,6 +92,10 @@ class ArticlesViewModel @Inject constructor(
                     academicHint = null
                 )
                 questionStartTime = System.currentTimeMillis()
+            } else {
+                // Запасной вариант — добиваем seed
+                seedFromDictionary()
+                nextRound()
             }
         }
     }
@@ -84,25 +107,21 @@ class ArticlesViewModel @Inject constructor(
 
         val isCorrect = article == word.article
         val responseTime = System.currentTimeMillis() - questionStartTime
-        
+
         var xp = if (isCorrect) 10 else 0
-        var newStreak = if (isCorrect) s.streak + 1 else 0
-        var newMultiplier = 1.0f + (newStreak / 5) * 0.5f
-        
-        // Intuition bonus
-        if (isCorrect && responseTime < 1200) {
-            xp += 5
-        }
+        val newStreak = if (isCorrect) s.streak + 1 else 0
+        val newMultiplier = 1.0f + (newStreak / 5) * 0.5f
+
+        // бонус за быстрый ответ (только если не штрафной режим)
+        if (isCorrect && responseTime < 1200) xp += 5
 
         val totalXpGain = (xp * newMultiplier).toInt()
 
         viewModelScope.launch {
             if (isCorrect) {
                 tts.speak("${word.article} ${word.word}")
-                // Adaptive weight: decrease if correct
                 word.errorWeight = (word.errorWeight - 1).coerceAtLeast(0)
             } else {
-                // Adaptive weight: increase if wrong
                 word.errorWeight += 2
             }
             dao.updateWord(word)
@@ -123,72 +142,69 @@ class ArticlesViewModel @Inject constructor(
 
     private fun finishGame() {
         val s = _state.value
-        _state.value = s.copy(isGameOver = true)
+        val percent = if (s.totalRounds > 0) (s.correctCount * 100) / s.totalRounds else 0
+
         viewModelScope.launch {
-            // Звёзды: 3 за 90%+, 2 за 70%+, 1 за 50%+
-            val percent = if (s.totalRounds > 0) (s.correctCount * 100) / s.totalRounds else 0
-            val stars = when {
-                percent >= 90 -> 3
-                percent >= 70 -> 2
-                percent >= 50 -> 1
-                else          -> 0
-            }
-            // Сохраняем лучший результат уровня
-            val existing = dao.getProgress(s.level)
-            val newBest = maxOf(existing?.bestScore ?: 0, percent)
-            val newStars = maxOf(existing?.stars ?: 0, stars)
+            val stars = levelManager.completeLevel(GameId.ARTICLES, s.level, percent)
+
+            // Совместимость со старым `article_level_progress` (используется на главном экране)
+            val cefrTag = s.params.cefr.first()
+            val existing = dao.getProgress(cefrTag)
             dao.upsertProgress(
                 ArticleLevelProgressEntity(
-                    levelId = s.level,
-                    stars = newStars,
+                    levelId    = cefrTag,
+                    stars      = maxOf(existing?.stars ?: 0, stars),
                     isUnlocked = true,
-                    bestScore = newBest
+                    bestScore  = maxOf(existing?.bestScore ?: 0, percent)
                 )
             )
 
-            val p = userProgressDao.getProgressOnce() ?: return@launch
-            userProgressDao.update(p.copy(totalXp = p.totalXp + s.score))
-            achievementManager.checkAndUnlock()
+            val p = userProgressDao.getProgressOnce()
+            if (p != null) {
+                userProgressDao.update(p.copy(totalXp = p.totalXp + s.score))
+                achievementManager.checkAndUnlock()
+            }
+
+            _state.value = s.copy(
+                isGameOver  = true,
+                finalStars  = stars,
+                finalPercent = percent
+            )
         }
     }
 
-    private suspend fun seedWords() {
-        val words = listOf(
-            // A1 - Génesis
-            ArticleWordEntity(word = "casa", article = "la", level = "A1", ruleHint = "Слова на -a обычно женского рода."),
-            ArticleWordEntity(word = "perro", article = "el", level = "A1", ruleHint = "Слова на -o обычно мужского рода."),
-            ArticleWordEntity(word = "gato", article = "el", level = "A1", ruleHint = "Слова на -o обычно мужского рода."),
-            ArticleWordEntity(word = "mesa", article = "la", level = "A1", ruleHint = "Слова на -a обычно женского рода."),
-            // A2 - Desafío
-            ArticleWordEntity(word = "mapa", article = "el", level = "A2", ruleHint = "Исключение: el mapa."),
-            ArticleWordEntity(word = "foto", article = "la", level = "A2", ruleHint = "Исключение: la foto (сокращение от la fotografía)."),
-            ArticleWordEntity(word = "noche", article = "la", level = "A2", ruleHint = "Слова на -e часто женского рода, нужно запоминать."),
-            ArticleWordEntity(word = "luz", article = "la", level = "A2", ruleHint = "Слова на -z часто женского рода."),
-            // B1 - Estructura
-            ArticleWordEntity(word = "problema", article = "el", level = "B1", ruleHint = "Слова греческого происхождения на -ma мужского рода."),
-            ArticleWordEntity(word = "sistema", article = "el", level = "B1", ruleHint = "Слова греческого происхождения на -ma мужского рода."),
-            ArticleWordEntity(word = "planeta", article = "el", level = "B1", ruleHint = "Слова греческого происхождения на -ta мужского рода (el planeta)."),
-            ArticleWordEntity(word = "libertad", article = "la", level = "B1", ruleHint = "Суффикс -dad/-tad всегда женского рода."),
-            ArticleWordEntity(word = "nación", article = "la", level = "B1", ruleHint = "Суффикс -ción всегда женского рода."),
-            ArticleWordEntity(word = "costumbre", article = "la", level = "B1", ruleHint = "Суффикс -umbre всегда женского рода."),
-            ArticleWordEntity(word = "actitud", article = "la", level = "B1", ruleHint = "Суффикс -tud всегда женского рода."),
-            // B2 - Dominio
-            ArticleWordEntity(word = "agua", article = "el", level = "B2", ruleHint = "Перед ударной 'a' используется 'el' для красоты звучания, но слово остается женского рода."),
-            ArticleWordEntity(word = "hacha", article = "el", level = "B2", ruleHint = "Перед ударной 'ha' используется 'el' для благозвучия."),
-            ArticleWordEntity(word = "águila", article = "el", level = "B2", ruleHint = "Перед ударной 'á' используем 'el'."),
-            // C1 - Maestría
-            ArticleWordEntity(word = "capital (деньги)", article = "el", level = "C1", ruleHint = "El capital означает финансовый капитал."),
-            ArticleWordEntity(word = "capital (город)", article = "la", level = "C1", ruleHint = "La capital означает главный город страны."),
-            ArticleWordEntity(word = "orden (порядок)", article = "el", level = "C1", ruleHint = "El orden — порядок/организация."),
-            ArticleWordEntity(word = "orden (приказ)", article = "la", level = "C1", ruleHint = "La orden — приказ или религиозный орден.")
-        )
-        dao.insertWords(words)
-        
-        // Unlock A1 progress
-        dao.upsertProgress(ArticleLevelProgressEntity("A1", isUnlocked = true))
-        dao.upsertProgress(ArticleLevelProgressEntity("A2", isUnlocked = true))
-        dao.upsertProgress(ArticleLevelProgressEntity("B1", isUnlocked = true))
-        dao.upsertProgress(ArticleLevelProgressEntity("B2", isUnlocked = true))
-        dao.upsertProgress(ArticleLevelProgressEntity("C1", isUnlocked = true))
+    /**
+     * Засев `article_words` из основного словаря — извлекаем все
+     * существительные с артиклем `el / la` и сохраняем как кандидатов.
+     * Запускается при первом старте если в БД пусто.
+     */
+    private suspend fun seedFromDictionary() {
+        // ВАЖНО: getAllWordsOnce фильтрует по total_reviews > 0 — при первом
+        // запуске вернёт пусто. Используем getRandomWords без фильтра.
+        val all = wordDao.getRandomWords(12000)
+        val articles = all.mapNotNull { w ->
+            if (w.wordType != "noun") return@mapNotNull null
+            val s = w.spanish.trim().lowercase()
+            val (article, rest) = when {
+                s.startsWith("el ")  -> "el"  to s.removePrefix("el ").trim()
+                s.startsWith("la ")  -> "la"  to s.removePrefix("la ").trim()
+                else -> return@mapNotNull null
+            }
+            // отбрасываем многословные и спец-конструкции
+            if (rest.isBlank() || rest.contains(' ')) return@mapNotNull null
+            ArticleWordEntity(
+                word     = rest,
+                article  = article,
+                level    = w.level.ifBlank { "A1" },
+                ruleHint = ""
+            )
+        }
+        if (articles.isNotEmpty()) {
+            dao.insertWords(articles)
+        }
+        // и сами уровни уровней (legacy совместимость)
+        listOf("A1", "A2", "B1", "B2", "C1").forEach {
+            dao.upsertProgress(ArticleLevelProgressEntity(it, isUnlocked = true))
+        }
     }
 }
