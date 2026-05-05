@@ -1,31 +1,22 @@
 package com.spanishapp.ui.games
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.dao.UserProgressDao
+import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.WordEntity
+import com.spanishapp.domain.games.GameId
+import com.spanishapp.domain.games.GameLevelManager
+import com.spanishapp.domain.games.LevelDifficulty
+import com.spanishapp.domain.games.LevelParams
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
-
-enum class PalabraLevel(val title: String, val tag: String, val desc: String) {
-    A1("Básico", "A1", "3–5 букв, простые слоги"),
-    A2("Intermedio", "A2", "6–8 букв, B/V, H"),
-    B1("Acentuación", "B1", "5–9 букв, ударения (á, é...)"),
-    B2("Avanzado", "B2", "9–12 букв, CC, NN, LL"),
-    C1("Maestría", "C1", "12+ букв, термины")
-}
 
 data class LetterItem(
     val id: String = UUID.randomUUID().toString(),
@@ -46,85 +37,115 @@ data class PalabraQuestion(
 )
 
 data class PalabraState(
-    val selectedLevel: PalabraLevel = PalabraLevel.A1,
+    val params: LevelParams = LevelDifficulty.forLevel(1),
     val questions: List<PalabraQuestion> = emptyList(),
     val currentIndex: Int = 0,
     val score: Int = 0,
-    val showSetup: Boolean = true,
+    val correctCount: Int = 0,
     val isGameOver: Boolean = false,
-    val precisionCount: Int = 0, // Words completed without errors
+    val precisionCount: Int = 0,        // слов без единой ошибки
     val translationHintVisible: Boolean = false,
-    val ruleHint: String? = null
-)
+    val ruleHint: String? = null,
+    val showLevelMap: Boolean = true,
+    val finalStars: Int = 0,
+    val finalPercent: Int = 0
+) {
+    val level: Int get() = params.level
+    val totalRounds: Int get() = questions.size.coerceAtLeast(1)
+    val isAutoValidate: Boolean get() = params.level <= 40   // первые 40 уровней — поддавки
+}
 
 @HiltViewModel
 class PalabraMaestraViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PalabraState())
     val state = _state.asStateFlow()
 
-    fun setLevel(level: PalabraLevel) {
-        _state.value = _state.value.copy(selectedLevel = level)
-    }
-
-    fun startGame() {
+    fun startLevel(level: Int) {
         viewModelScope.launch {
-            val level = _state.value.selectedLevel
-            val allWords = withContext(Dispatchers.IO) {
-                wordDao.getWordsByLevelSync(level.tag)
-            }
-            
-            val filtered = when(level) {
-                PalabraLevel.A1 -> allWords.filter { stripArticle(it.spanish).length in 3..5 }
-                PalabraLevel.A2 -> allWords.filter { stripArticle(it.spanish).length in 6..8 }
-                PalabraLevel.B1 -> allWords.filter { w -> 
-                    val clean = stripArticle(w.spanish)
-                    clean.length in 5..9 && hasAccent(clean)
-                }
-                PalabraLevel.B2 -> allWords.filter { stripArticle(it.spanish).length in 9..12 }
-                PalabraLevel.C1 -> allWords.filter { stripArticle(it.spanish).length >= 12 }
-            }.shuffled().take(10)
+            val params = LevelDifficulty.forLevel(level)
+            val (minLen, maxLen) = lengthRange(level)
+            val needAccent = level in 56..70
+            val needDouble = level in 71..85
 
-            val questions = filtered.map { word ->
-                val cleanWord = stripArticle(word.spanish).lowercase()
-                val chars = cleanWord.map { it.toString() }
-                val shuffled = shuffleLetters(chars)
+            // Большой пул из нужного CEFR-слоя
+            val pool = wordDao.getRandomWords(400).filter {
+                it.level in params.cefr && it.spanish.isNotBlank() && it.russian.isNotBlank()
+            }
+            val candidates = pool.filter { w ->
+                val clean = stripArticle(w.spanish)
+                if (clean.contains(' ') || clean.contains('-')) return@filter false
+                if (clean.length !in minLen..maxLen) return@filter false
+                if (needAccent && !hasAccent(clean)) return@filter false
+                if (needDouble && !hasDoubleLetter(clean)) return@filter false
+                true
+            }.shuffled().distinctBy { stripArticle(it.spanish).lowercase() }
+
+            // Сколько раундов — из общей шкалы. Если кандидатов меньше — берём сколько есть.
+            val target = params.rounds.coerceAtMost(candidates.size).coerceAtLeast(1)
+            val picked = candidates.take(target)
+            if (picked.isEmpty()) return@launch
+
+            val questions = picked.map { word ->
+                val clean = stripArticle(word.spanish).lowercase()
+                val chars = clean.map { it.toString() }
                 PalabraQuestion(
-                    word = word,
-                    targetWord = cleanWord,
-                    shuffledLetters = shuffled,
+                    word            = word,
+                    targetWord      = clean,
+                    shuffledLetters = shuffleLetters(chars),
                     assembledLetters = List(chars.size) { null },
-                    startTime = System.currentTimeMillis()
+                    startTime       = System.currentTimeMillis()
                 )
             }
 
-            if (questions.isNotEmpty()) {
-                _state.value = _state.value.copy(
-                    questions = questions,
-                    currentIndex = 0,
-                    score = 0,
-                    showSetup = false,
-                    isGameOver = false,
-                    precisionCount = 0
-                )
-            }
+            _state.value = PalabraState(
+                params       = params,
+                questions    = questions,
+                showLevelMap = false
+            )
         }
     }
 
-    private fun hasAccent(s: String): Boolean {
-        val accents = listOf('á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü')
-        return s.lowercase().any { it in accents }
+    fun openLevelMap() {
+        _state.value = _state.value.copy(showLevelMap = true, isGameOver = false)
+    }
+
+    /**
+     * Длина целевого слова для уровня. Максимум 11 — длиннее на ассемблере
+     * становится больше пасьянсом, чем тренировкой.
+     */
+    private fun lengthRange(level: Int): Pair<Int, Int> = when {
+        level <= 10  -> 3 to 4
+        level <= 25  -> 4 to 5
+        level <= 40  -> 5 to 6
+        level <= 55  -> 6 to 7
+        level <= 70  -> 7 to 8
+        level <= 85  -> 8 to 9
+        else         -> 9 to 11
+    }
+
+    private fun hasAccent(s: String): Boolean =
+        s.lowercase().any { it in "áéíóúñü" }
+
+    /** Двойные буквы (ll, rr, cc, nn) — отметка для уровней 71-85. */
+    private fun hasDoubleLetter(s: String): Boolean {
+        val l = s.lowercase()
+        return l.contains("ll") || l.contains("rr") ||
+               l.contains("cc") || l.contains("nn")
     }
 
     private fun shuffleLetters(chars: List<String>): List<LetterItem> {
         var shuffled = chars.shuffled()
-        while (shuffled.joinToString("") == chars.joinToString("") && chars.size > 1) {
+        var attempts = 0
+        while (attempts < 5 && shuffled.joinToString("") == chars.joinToString("") && chars.size > 1) {
             shuffled = chars.shuffled()
+            attempts++
         }
         return shuffled.map { LetterItem(char = it) }
     }
@@ -137,62 +158,49 @@ class PalabraMaestraViewModel @Inject constructor(
         val emptyIndex = q.assembledLetters.indexOfFirst { it == null }
         if (emptyIndex == -1) return
 
-        // Add to assembled
         val newAssembled = q.assembledLetters.toMutableList()
         newAssembled[emptyIndex] = letter
-        
-        val newShuffled = q.shuffledLetters.map { 
-            if (it.id == letter.id) it.copy(isUsed = true) else it 
+        val newShuffled = q.shuffledLetters.map {
+            if (it.id == letter.id) it.copy(isUsed = true) else it
         }
+        var updated = q.copy(assembledLetters = newAssembled, shuffledLetters = newShuffled)
 
-        var updatedQ = q.copy(
-            assembledLetters = newAssembled,
-            shuffledLetters = newShuffled
-        )
-
-        val isAutoValidate = s.selectedLevel == PalabraLevel.A1 || s.selectedLevel == PalabraLevel.A2
-
-        if (isAutoValidate) {
-            val expectedChar = q.targetWord[emptyIndex].toString().lowercase()
-            if (letter.char.lowercase() != expectedChar) {
-                updatedQ = updatedQ.copy(mistakesCount = updatedQ.mistakesCount + 1)
+        if (s.isAutoValidate) {
+            val expected = q.targetWord[emptyIndex].toString().lowercase()
+            if (letter.char.lowercase() != expected) {
+                updated = updated.copy(mistakesCount = updated.mistakesCount + 1)
             }
-            
-            // Auto-finish only if word is complete and correct
+            // Авто-завершение, если слово целиком собрано верно
             if (newAssembled.all { it != null }) {
-                val assembledStr = newAssembled.joinToString("") { it?.char ?: "" }
-                if (assembledStr.lowercase() == q.targetWord.lowercase()) {
-                    updatedQ = updatedQ.copy(
+                val assembled = newAssembled.joinToString("") { it?.char ?: "" }.lowercase()
+                if (assembled == q.targetWord.lowercase()) {
+                    updated = updated.copy(
                         isChecked = true,
                         isCorrect = true,
-                        endTime = System.currentTimeMillis()
+                        endTime   = System.currentTimeMillis()
                     )
                     _state.value = s.copy(
-                        score = s.score + calculateScore(updatedQ),
-                        precisionCount = s.precisionCount + (if (updatedQ.mistakesCount == 0) 1 else 0)
+                        score          = s.score + calculateScore(updated),
+                        correctCount   = s.correctCount + 1,
+                        precisionCount = s.precisionCount + (if (updated.mistakesCount == 0) 1 else 0)
                     )
                     tts.speak(q.word.spanish)
                 }
             }
         }
-
-        updateCurrentQuestion(updatedQ)
+        updateCurrentQuestion(updated)
     }
 
     fun removeLetter(index: Int) {
         val s = _state.value
         val q = s.questions.getOrNull(s.currentIndex) ?: return
         if (q.isChecked) return
-        
         val letter = q.assembledLetters[index] ?: return
-        
-        val newAssembled = q.assembledLetters.toMutableList()
-        newAssembled[index] = null
-        
-        val newShuffled = q.shuffledLetters.map { 
-            if (it.id == letter.id) it.copy(isUsed = false) else it 
+
+        val newAssembled = q.assembledLetters.toMutableList(); newAssembled[index] = null
+        val newShuffled = q.shuffledLetters.map {
+            if (it.id == letter.id) it.copy(isUsed = false) else it
         }
-        
         updateCurrentQuestion(q.copy(assembledLetters = newAssembled, shuffledLetters = newShuffled))
     }
 
@@ -201,39 +209,38 @@ class PalabraMaestraViewModel @Inject constructor(
         val q = s.questions.getOrNull(s.currentIndex) ?: return
         if (q.assembledLetters.any { it == null }) return
 
-        val assembledStr = q.assembledLetters.joinToString("") { it?.char ?: "" }
-        val isCorrect = assembledStr == q.targetWord
-        
-        val updatedQ = q.copy(
+        val assembled = q.assembledLetters.joinToString("") { it?.char ?: "" }
+        val isCorrect = assembled == q.targetWord
+        val updated = q.copy(
             isChecked = true,
             isCorrect = isCorrect,
-            endTime = System.currentTimeMillis()
+            endTime   = System.currentTimeMillis()
         )
 
         _state.value = s.copy(
-            score = s.score + (if (isCorrect) calculateScore(updatedQ) else 0),
-            precisionCount = s.precisionCount + (if (isCorrect && updatedQ.mistakesCount == 0) 1 else 0)
+            score          = s.score + (if (isCorrect) calculateScore(updated) else 0),
+            correctCount   = s.correctCount + (if (isCorrect) 1 else 0),
+            precisionCount = s.precisionCount + (if (isCorrect && updated.mistakesCount == 0) 1 else 0)
         )
-        
+
         if (isCorrect) tts.speak(q.word.spanish)
-        updateCurrentQuestion(updatedQ)
+        updateCurrentQuestion(updated)
     }
 
     private fun calculateScore(q: PalabraQuestion): Int {
-        val durationSec = (q.endTime - q.startTime) / 1000
-        val base = 10
-        val multiplier = when {
-            durationSec < 5 -> 3.0
-            durationSec < 15 -> 1.5
-            else -> 1.0
+        val sec = (q.endTime - q.startTime) / 1000
+        val mult = when {
+            sec < 5  -> 3.0
+            sec < 15 -> 1.5
+            else     -> 1.0
         }
-        return (base * multiplier).toInt()
+        return (10 * mult).toInt()
     }
 
     private fun updateCurrentQuestion(q: PalabraQuestion) {
-        val updatedList = _state.value.questions.toMutableList()
-        updatedList[_state.value.currentIndex] = q
-        _state.value = _state.value.copy(questions = updatedList)
+        val list = _state.value.questions.toMutableList()
+        list[_state.value.currentIndex] = q
+        _state.value = _state.value.copy(questions = list)
     }
 
     fun nextQuestion() {
@@ -250,16 +257,28 @@ class PalabraMaestraViewModel @Inject constructor(
     }
 
     private fun finishGame() {
-        _state.value = _state.value.copy(isGameOver = true)
+        val s = _state.value
+        val percent = if (s.questions.isNotEmpty())
+            (s.correctCount * 100) / s.questions.size else 0
+
         viewModelScope.launch {
-            val p = userProgressDao.getProgressOnce() ?: return@launch
-            userProgressDao.update(p.copy(totalXp = p.totalXp + _state.value.score))
-            achievementManager.checkAndUnlock()
+            val stars = levelManager.completeLevel(GameId.PALABRA, s.level, percent)
+
+            val p = userProgressDao.getProgressOnce()
+            if (p != null) {
+                userProgressDao.update(p.copy(totalXp = p.totalXp + s.score))
+                achievementManager.checkAndUnlock()
+            }
+
+            _state.value = s.copy(
+                isGameOver   = true,
+                finalStars   = stars,
+                finalPercent = percent
+            )
         }
     }
 
-    // --- Hints ---
-
+    // ── Подсказки ──────────────────────────────────────────────
     fun showTranslation() {
         _state.value = _state.value.copy(translationHintVisible = true)
     }
@@ -273,27 +292,17 @@ class PalabraMaestraViewModel @Inject constructor(
         val s = _state.value
         val q = s.questions.getOrNull(s.currentIndex) ?: return
         if (q.isChecked) return
-        
         val firstChar = q.targetWord[0].toString().lowercase()
-        // Find this letter in shuffled (not used)
         val letterItem = q.shuffledLetters.find { it.char == firstChar && !it.isUsed } ?: return
-        
-        // If something else is in the first slot, remove it
-        if (q.assembledLetters[0] != null) {
-            removeLetter(0)
-        }
-        
-        // Add it to first slot
+        if (q.assembledLetters[0] != null) removeLetter(0)
         val newAssembled = _state.value.questions[s.currentIndex].assembledLetters.toMutableList()
         newAssembled[0] = letterItem
-        
-        val newShuffled = _state.value.questions[s.currentIndex].shuffledLetters.map { 
-            if (it.id == letterItem.id) it.copy(isUsed = true) else it 
+        val newShuffled = _state.value.questions[s.currentIndex].shuffledLetters.map {
+            if (it.id == letterItem.id) it.copy(isUsed = true) else it
         }
-        
         updateCurrentQuestion(_state.value.questions[s.currentIndex].copy(
             assembledLetters = newAssembled,
-            shuffledLetters = newShuffled
+            shuffledLetters  = newShuffled
         ))
     }
 
@@ -303,15 +312,21 @@ class PalabraMaestraViewModel @Inject constructor(
         val rule = when {
             word.contains('h') -> "Буква 'H' в испанском всегда немая (не произносится)."
             word.contains('ñ') -> "Буква 'Ñ' читается как мягкое 'нь' (как в слове каньон)."
-            word.contains('á') || word.contains('é') || word.contains('í') || word.contains('ó') || word.contains('ú') -> 
-                "Графическое ударение (tilde) ставится для выделения ударного слога вопреки общим правилам."
+            "áéíóú".any { it in word } ->
+                "Графическое ударение (tilde) выделяет ударный слог вопреки общим правилам."
             word.contains("ll") -> "Двойная 'LL' во многих диалектах читается как 'й'."
+            word.contains("rr") -> "Двойная 'RR' произносится как раскатистое 'рр'."
             else -> "Внимательно следите за порядком букв!"
         }
         _state.value = _state.value.copy(ruleHint = rule)
     }
 
     fun reset() {
-        _state.value = PalabraState()
+        _state.value = _state.value.copy(showLevelMap = true, isGameOver = false)
+    }
+
+    private fun stripArticle(s: String): String {
+        val regex = Regex("^(el|la|los|las|un|una|unos|unas)\\s+", RegexOption.IGNORE_CASE)
+        return s.trim().replace(regex, "").trim()
     }
 }
