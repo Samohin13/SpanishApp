@@ -71,41 +71,37 @@ object LessonContentData {
                 )
             ),
             exercises = listOf(
-                // Слышим букву → называем звук (тема урока: гласные)
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Какой звук у этой буквы?",
-                    question = "O  o",
-                    options = listOf("[о]", "[оу]", "[ой]", "[у]"),
-                    correctAnswer = "[о]",
-                    explanation = "«O» всегда читается [о]. Пример: sol = «соль» (солнце)."
+                    instruction = "Какой звук у буквы «U»?",
+                    question = "U  u",
+                    options = listOf("[у]", "[ю]", "[в]", "[оу]"),
+                    correctAnswer = "[у]",
+                    explanation = "«U» всегда [у]. uva = «у-ба» (виноград), luna = «лу-на» (луна)."
                 ),
-                // Заполни пропуск — слово из урока
                 Exercise(
-                    type = ExerciseType.FILL_BLANK,
-                    instruction = "Напиши пропущенное слово",
-                    question = "___ significa «isla» — остров, а начинается с гласной [и]",
-                    hint = "Буква «и» в испанском",
-                    correctAnswer = "I",
-                    explanation = "I — гласная [и]. isla = остров, начинается с «I»."
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какая буква делает звук [э]?",
+                    question = "Найди букву со звуком [э]",
+                    options = listOf("E", "A", "I", "O"),
+                    correctAnswer = "E",
+                    explanation = "«E» всегда [э]. mes = «мэс» (месяц), leche = «лэ-чэ» (молоко)."
                 ),
-                // Составь из слов — используем слова из примеров урока
                 Exercise(
-                    type = ExerciseType.BUILD_SENTENCE,
-                    instruction = "Составь предложение",
-                    question = "«Луна красивая» по-испански",
-                    words = listOf("La", "luna", "es", "hermosa"),
-                    correctAnswer = "La luna es hermosa",
-                    explanation = "luna (луна), es (это/есть), hermosa (красивая). Все гласные читаются чисто!"
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какое слово начинается с гласной [и]?",
+                    question = "Найди слово с буквой I в начале",
+                    options = listOf("isla", "ojo", "uva", "amigo"),
+                    correctAnswer = "isla",
+                    explanation = "isla — остров. Начинается с «I» = [и]. Читается «ис-ла»."
                 ),
-                // Контроль: главное правило урока
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Главное правило испанских гласных:",
-                    question = "Сколько звуков у гласных в испанском?",
-                    options = listOf("5 — всегда одинаковые", "12 — как в английском", "3 — A, E, O", "8 — зависит от соседних букв"),
-                    correctAnswer = "5 — всегда одинаковые",
-                    explanation = "В испанском 5 гласных и каждая всегда звучит одинаково. Выучи один раз — и навсегда!"
+                    question = "Сколько гласных в испанском и как они читаются?",
+                    options = listOf("5 — каждая всегда одинаково", "12 — как в английском", "3 — A, E, O", "8 — зависит от соседних букв"),
+                    correctAnswer = "5 — каждая всегда одинаково",
+                    explanation = "5 гласных, каждая звучит одинаково всегда. Выучи один раз — и навсегда!"
                 )
             )
         ),
@@ -148,41 +144,37 @@ object LessonContentData {
                 )
             ),
             exercises = listOf(
-                // B и V — главный сюрприз урока
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Как читается «V» в испанском?",
+                    instruction = "Как читается «vino»?",
                     question = "vino",
-                    options = listOf("[бино]", "[вино]", "[фино]", "[уино]"),
+                    options = listOf("[бино]", "[вино]", "[фино]", "[пино]"),
                     correctAnswer = "[бино]",
-                    explanation = "B и V в испанском звучат одинаково как [б/в]. vino = «бино» — вино."
+                    explanation = "B и V звучат одинаково — [б/в]. vino = «бино». Это главный сюрприз испанского!"
                 ),
-                // G перед e/i — ловушка
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Как читается это слово?",
+                    instruction = "Как читается «gente»?",
                     question = "gente",
                     options = listOf("[хэнтэ]", "[гэнтэ]", "[джэнтэ]", "[зэнтэ]"),
                     correctAnswer = "[хэнтэ]",
-                    explanation = "G перед e/i = [х]. gente = «хэнтэ» — люди."
+                    explanation = "G перед «e» и «i» = [х]. gente = «хэнтэ» — люди."
                 ),
-                // Вставь нужную форму — закрепление слов из теории
                 Exercise(
-                    type = ExerciseType.FILL_BLANK,
-                    instruction = "Напиши пропущенное слово",
-                    question = "___ es mi animal favorito (кот — мой любимый зверь)",
-                    hint = "gato — кот",
-                    correctAnswer = "gato",
-                    explanation = "gato — кот. G + a = [г]. Читается «га-то»."
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как читается «gato»?",
+                    question = "gato",
+                    options = listOf("[гато]", "[хато]", "[като]", "[джато]"),
+                    correctAnswer = "[гато]",
+                    explanation = "G перед «a», «o», «u» = [г]. gato = «га-то» — кот."
                 ),
-                // Составь предложение из слов урока
                 Exercise(
-                    type = ExerciseType.BUILD_SENTENCE,
-                    instruction = "Составь предложение",
-                    question = "«Жизнь хорошая» по-испански",
-                    words = listOf("La", "vida", "es", "buena"),
-                    correctAnswer = "La vida es buena",
-                    explanation = "vida (жизнь), buena (хорошая). D между гласными — мягкий звук."
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какие буквы в испанском звучат одинаково?",
+                    question = "Какая пара букв читается одинаково?",
+                    options = listOf("B и V", "C и K", "G и J", "D и T"),
+                    correctAnswer = "B и V",
+                    explanation = "B и V в испанском — один и тот же звук [б/в]. В других языках так не бывает!"
                 )
             )
         ),
@@ -226,41 +218,37 @@ object LessonContentData {
                 )
             ),
             exercises = listOf(
-                // H молчит — главный секрет
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Как читается «hola»?",
                     question = "hola",
-                    options = listOf("[ола]", "[хола]", "[гола]", "[jola]"),
+                    options = listOf("[ола]", "[хола]", "[гола]", "[ёла]"),
                     correctAnswer = "[ола]",
-                    explanation = "H в испанском всегда молчит. hola = «ола» — привет!"
+                    explanation = "H в испанском ВСЕГДА молчит. hola = «ола» — привет!"
                 ),
-                // Составь приветствие из урока
-                Exercise(
-                    type = ExerciseType.BUILD_SENTENCE,
-                    instruction = "Составь фразу",
-                    question = "«Привет! Как дела?» по-испански",
-                    words = listOf("Hola", "¿Qué", "tal?"),
-                    correctAnswer = "Hola ¿Qué tal?",
-                    explanation = "Hola — привет, ¿Qué tal? — как дела? H молчит, Q звучит [к]."
-                ),
-                // J = [х] — практика
-                Exercise(
-                    type = ExerciseType.FILL_BLANK,
-                    instruction = "Как звучит это слово? Запиши транскрипцию",
-                    question = "jamón — по-русски пишется [___амон]",
-                    hint = "J всегда [х]",
-                    correctAnswer = "х",
-                    explanation = "J всегда [х]. jamón = «хамон» — знаменитая испанская ветчина."
-                ),
-                // RR и Ñ — проверка
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Переведи слово",
-                    question = "perro",
-                    options = listOf("собака", "кошка", "птица", "рыба"),
-                    correctAnswer = "собака",
-                    explanation = "perro — собака. RR всегда раскатистый: «пэ-рро»."
+                    instruction = "Как читается «jamón»?",
+                    question = "jamón",
+                    options = listOf("[хамон]", "[джамон]", "[ямон]", "[гамон]"),
+                    correctAnswer = "[хамон]",
+                    explanation = "J всегда [х]. jamón = «хамон» — вяленая ветчина."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как читается «España»?",
+                    question = "España",
+                    options = listOf("[эспанья]", "[эспания]", "[эспана]", "[эспаня]"),
+                    correctAnswer = "[эспанья]",
+                    explanation = "Ñ читается как «нь». España = «эс-па-нья» — Испания."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Какое слово содержит раскатистый RR?",
+                    question = "Найди слово с RR",
+                    options = listOf("perro", "pero", "padre", "parte"),
+                    correctAnswer = "perro",
+                    explanation = "perro (собака) — двойная RR, раскатистая. pero (но) — одна R, мягкая."
                 )
             )
         ),
