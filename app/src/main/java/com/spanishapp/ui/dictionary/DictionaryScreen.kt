@@ -63,12 +63,25 @@ class DictionaryViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val wordsOnly: StateFlow<List<WordEntity>> = _allWords
-        .map { list -> list.filter { it.wordType != "phrase" } }
+        .map { list -> list.filter { !isPhrase(it) } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val phrases: StateFlow<List<WordEntity>> = _allWords
-        .map { list -> list.filter { it.wordType == "phrase" } }
+        .map { list -> list.filter { isPhrase(it) } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    private fun isPhrase(w: WordEntity): Boolean {
+        if (w.wordType == "phrase") return true
+        val s = w.spanish.trim()
+        // Восклицательные / вопросительные конструкции — это фразы
+        if (s.contains('¿') || s.contains('¡') || s.contains('?') || s.contains('!')) return true
+        // Считаем «слова» в испанской части, отбрасывая ведущий артикль
+        val tokens = s.split(' ').filter { it.isNotBlank() }
+        val articles = setOf("el","la","los","las","un","una","unos","unas")
+        val core = if (tokens.isNotEmpty() && tokens[0].lowercase() in articles) tokens.drop(1) else tokens
+        // 3+ значимых слова → это фраза, а не «слово»
+        return core.size >= 3
+    }
 
     // ── Мои списки ────────────────────────────────────────────
     val myLists: StateFlow<List<WordListEntity>> = wordDao.getAllLists()
@@ -228,7 +241,6 @@ fun DictionaryScreen(
                         query      = query,
                         words      = wordsOnly,
                         membership = membership,
-                        countLabel = "слов",
                         onQuery    = vm::setQuery,
                         onWordClick = { w ->
                             vm.loadMembership(w.id)
@@ -247,7 +259,6 @@ fun DictionaryScreen(
                         query      = query,
                         words      = phrases,
                         membership = membership,
-                        countLabel = "фраз",
                         onQuery    = vm::setQuery,
                         onWordClick = { w ->
                             vm.loadMembership(w.id)
@@ -322,7 +333,6 @@ private fun AllWordsContent(
     query: String,
     words: List<WordEntity>,
     membership: Map<Int, List<Int>>,
-    countLabel: String = "слов",
     onQuery: (String) -> Unit,
     onWordClick: (WordEntity) -> Unit,
     onAddToList: (WordEntity) -> Unit,
@@ -346,13 +356,6 @@ private fun AllWordsContent(
             modifier   = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 10.dp)
-        )
-
-        Text(
-            "${words.size} $countLabel",
-            style  = MaterialTheme.typography.bodySmall,
-            color  = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
         )
 
         LazyColumn(
