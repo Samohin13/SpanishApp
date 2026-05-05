@@ -338,6 +338,20 @@ object LessonContentData {
                     options = listOf("ha-BLAR (последний слог)", "HAB-lar (первый слог)", "hab-LAR (второй слог)", "Равное"),
                     correctAnswer = "ha-BLAR (последний слог)",
                     explanation = "Слова на согласную (не N/S) ударяются на последний слог. hablar = «а-БЛАР»."
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси с правильным ударением",
+                    question = "Ударение на последнем слоге — на «FÉ»",
+                    correctAnswer = "café",
+                    explanation = "café = «ка-ФЭ». Тильда показывает куда ударять. Попробуй ещё раз если не засчитало!"
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси вопросительное слово",
+                    question = "¿Dónde? — «где?» — ударение на «ДОН»",
+                    correctAnswer = "dónde",
+                    explanation = "¿Dónde? = «ДОН-дэ» — где? Тильда на «o» = ударный слог."
                 )
             )
         ),
@@ -2724,6 +2738,20 @@ object LessonContentData {
                     options = listOf("Разговорное «привет»", "До свидания", "Спокойной ночи", "Доброе утро"),
                     correctAnswer = "Разговорное «привет»",
                     explanation = "¡Buenas! — короткое приветствие, используется в любое время суток."
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси приветствие",
+                    question = "Послушай и повтори — самое универсальное приветствие",
+                    correctAnswer = "hola",
+                    explanation = "hola — привет! H молчит: «ола». Теперь ты умеешь здороваться по-испански!"
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси приветствие для утра",
+                    question = "Послушай и повтори — доброе утро",
+                    correctAnswer = "buenos días",
+                    explanation = "buenos días = доброе утро. Дифтонг «uе» в «buenos» — «буэнос»."
                 )
             )
         ),
@@ -2785,6 +2813,20 @@ object LessonContentData {
                     options = listOf("Cuídate", "Hasta pronto", "Nos vemos", "Un abrazo"),
                     correctAnswer = "Cuídate",
                     explanation = "Cuídate = береги себя (от cuidar = заботиться, беречь)."
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси прощание",
+                    question = "Послушай и повтори — самое простое «пока»",
+                    correctAnswer = "adiós",
+                    explanation = "adiós = пока / до свидания. Ударение на последнем слоге: «а-дьОС»."
+                ),
+                Exercise(
+                    type = ExerciseType.SPEAKING,
+                    instruction = "Произнеси прощание",
+                    question = "Послушай и повтори — «до встречи»",
+                    correctAnswer = "hasta luego",
+                    explanation = "hasta luego = до встречи. «аста луэго». H молчит!"
                 )
             )
         ),

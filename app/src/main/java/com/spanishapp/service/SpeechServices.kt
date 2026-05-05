@@ -116,8 +116,12 @@ class SpanishTts @Inject constructor(
 //  SPEECH RECOGNITION
 // ═════════════════════════════════════════════════════════════
 sealed class SpeechResult {
-    data class Success(val text: String, val confidence: Float) : SpeechResult()
-    data class Error(val message: String) : SpeechResult()
+    data class Success(
+        val text: String,
+        val confidence: Float,
+        val alternatives: List<Pair<String, Float>> = emptyList()
+    ) : SpeechResult()
+    data class Error(val message: String, val isSilence: Boolean = false) : SpeechResult()
     object Cancelled : SpeechResult()
 }
 
@@ -154,27 +158,31 @@ class SpanishSpeechRecognizer @Inject constructor(
             override fun onResults(results: Bundle?) {
                 _isListening.value = false
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                val scores = results?.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)
-                val best = matches?.firstOrNull()
-                if (best != null) {
-                    cont.resume(SpeechResult.Success(best, scores?.firstOrNull() ?: 1f))
+                val scores  = results?.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)
+                if (!matches.isNullOrEmpty()) {
+                    val alts = matches.mapIndexed { i, t ->
+                        t to (scores?.getOrNull(i) ?: 1f)
+                    }
+                    cont.resume(SpeechResult.Success(alts[0].first, alts[0].second, alts))
                 } else {
-                    cont.resume(SpeechResult.Error("Речь не распознана"))
+                    cont.resume(SpeechResult.Error("Не расслышал, попробуй ещё раз"))
                 }
                 recognizer.destroy()
             }
 
             override fun onError(error: Int) {
                 _isListening.value = false
+                val isSilence = error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT ||
+                                error == SpeechRecognizer.ERROR_NO_MATCH
                 val msg = when (error) {
-                    SpeechRecognizer.ERROR_AUDIO             -> "Ошибка аудио"
-                    SpeechRecognizer.ERROR_NO_MATCH          -> "Речь не распознана, попробуй ещё раз"
-                    SpeechRecognizer.ERROR_SPEECH_TIMEOUT    -> "Тайм-аут, говори громче"
-                    SpeechRecognizer.ERROR_NETWORK           -> "Нет интернета для распознавания"
+                    SpeechRecognizer.ERROR_SPEECH_TIMEOUT    -> "silence"
+                    SpeechRecognizer.ERROR_NO_MATCH          -> "no_match"
+                    SpeechRecognizer.ERROR_AUDIO             -> "Ошибка микрофона, попробуй ещё раз"
+                    SpeechRecognizer.ERROR_NETWORK           -> "Нет интернета для распознавания речи"
                     SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Нет разрешения на микрофон"
-                    else -> "Ошибка распознавания ($error)"
+                    else -> "Ошибка ($error), попробуй ещё раз"
                 }
-                cont.resume(SpeechResult.Error(msg))
+                cont.resume(SpeechResult.Error(msg, isSilence))
                 recognizer.destroy()
             }
 
@@ -195,32 +203,53 @@ class SpanishSpeechRecognizer @Inject constructor(
     suspend fun checkPronunciation(expected: String): PronunciationResult {
         return when (val result = listenOnce()) {
             is SpeechResult.Success -> {
-                val norm     = ::phoneticallyNormalize
-                val expNorm  = norm(expected)
-                val recNorm  = norm(result.text)
-                val similarity = stringSimilarity(recNorm, expNorm)
-                // Порог зависит от длины: короткие слова требуют точности
+                val expNorm = phoneticallyNormalize(expected)
                 val threshold = when {
                     expNorm.length <= 4 -> 0.90f
                     expNorm.length <= 7 -> 0.82f
                     else                -> 0.75f
                 }
-                // Для коротких слов (≤5 букв): первая буква должна совпадать
+
+                // Проверяем все альтернативы и берём лучшую по фонетическому сходству
+                val bestAlt = result.alternatives.maxByOrNull { (text, _) ->
+                    stringSimilarity(phoneticallyNormalize(text), expNorm)
+                } ?: (result.text to result.confidence)
+
+                val bestNorm   = phoneticallyNormalize(bestAlt.first)
+                val similarity = stringSimilarity(bestNorm, expNorm)
+
+                // Первая буква должна совпадать для коротких слов
                 val firstLetterOk = expNorm.length > 5 ||
-                    (recNorm.isNotEmpty() && expNorm.isNotEmpty() &&
-                     recNorm.first() == expNorm.first())
+                    (bestNorm.isNotEmpty() && expNorm.isNotEmpty() &&
+                     bestNorm.first() == expNorm.first())
+
                 val passed = similarity >= threshold && firstLetterOk
+
+                // Качество произношения по confidence + similarity
+                val quality = when {
+                    !passed                          -> PronunciationQuality.WRONG
+                    similarity >= 0.95f && result.confidence >= 0.8f -> PronunciationQuality.PERFECT
+                    similarity >= 0.85f              -> PronunciationQuality.GOOD
+                    else                             -> PronunciationQuality.ACCEPTABLE
+                }
+
                 PronunciationResult(
-                    recognized = result.text,
+                    recognized = bestAlt.first,
                     expected   = expected,
                     score      = similarity,
-                    passed     = passed
+                    passed     = passed,
+                    quality    = quality
                 )
             }
-            is SpeechResult.Error   -> PronunciationResult(
-                recognized = "", expected = expected, score = 0f, passed = false, error = result.message
+            is SpeechResult.Error -> PronunciationResult(
+                recognized = "",
+                expected   = expected,
+                score      = 0f,
+                passed     = false,
+                isSilence  = result.isSilence,
+                error      = if (result.isSilence) "" else result.message
             )
-            SpeechResult.Cancelled  -> PronunciationResult(
+            SpeechResult.Cancelled -> PronunciationResult(
                 recognized = "", expected = expected, score = 0f, passed = false
             )
         }
@@ -260,10 +289,14 @@ class SpanishSpeechRecognizer @Inject constructor(
     }
 }
 
+enum class PronunciationQuality { PERFECT, GOOD, ACCEPTABLE, WRONG }
+
 data class PronunciationResult(
     val recognized: String,
-    val expected: String,
-    val score: Float,
-    val passed: Boolean,
-    val error: String = ""
+    val expected:   String,
+    val score:      Float,
+    val passed:     Boolean,
+    val quality:    PronunciationQuality = PronunciationQuality.WRONG,
+    val isSilence:  Boolean = false,
+    val error:      String  = ""
 )
