@@ -351,7 +351,7 @@ private fun StatPill(emoji: String, value: String, bgColor: Color, textColor: Co
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
-private fun TopicCard(
+internal fun TopicCard(
     unit: RoadmapUnit,
     isExpanded: Boolean,
     onToggle: () -> Unit,
@@ -549,7 +549,7 @@ private fun TopicCard(
 // ── CEFR badge ────────────────────────────────────────────────
 
 @Composable
-private fun CefrBadge(level: String) {
+internal fun CefrBadge(level: String) {
     val (bg, text) = when (level) {
         "A1" -> Color(0xFF2E7D32) to Color.White
         "A2" -> Color(0xFF0277BD) to Color.White
@@ -699,7 +699,7 @@ private fun SubLessonRow(
 
 // TODO: Удалить когда реализована настоящая подписка
 @Composable
-private fun HomePremiumSheet(onDismiss: () -> Unit) {
+internal fun HomePremiumSheet(onDismiss: () -> Unit) {
     val Gold = Color(0xFFFF9500)
     Column(
         modifier = Modifier
