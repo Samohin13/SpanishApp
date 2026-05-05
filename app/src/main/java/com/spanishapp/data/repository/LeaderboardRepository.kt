@@ -1,5 +1,7 @@
 package com.spanishapp.data.repository
 
+import android.content.Context
+import android.telephony.TelephonyManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.AggregateSource
@@ -11,6 +13,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.domain.algorithm.LeagueResolver
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import java.util.Locale
 import javax.inject.Inject
@@ -39,7 +42,8 @@ data class LeaderboardData(
 
 @Singleton
 class LeaderboardRepository @Inject constructor(
-    private val userProgressDao: UserProgressDao
+    private val userProgressDao: UserProgressDao,
+    @ApplicationContext private val context: Context
 ) {
 
     private val auth: FirebaseAuth get() = Firebase.auth
@@ -47,9 +51,20 @@ class LeaderboardRepository @Inject constructor(
 
     private val collection get() = db.collection("leaderboard")
 
-    /** Текущий ISO-код страны по локали системы. KZ для Казахстана и т.п. */
-    fun deviceCountryCode(): String =
-        Locale.getDefault().country.uppercase().ifBlank { "XX" }
+    /**
+     * Реальный ISO-код страны устройства. Приоритет:
+     * 1) SIM-страна (физическая SIM, самое надёжное)
+     * 2) Network-страна (сеть оператора)
+     * 3) Locale (язык системы — может врать: KZ-житель часто имеет ru_RU)
+     */
+    fun deviceCountryCode(): String {
+        val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+        val sim = tm?.simCountryIso?.uppercase().orEmpty()
+        if (sim.length == 2) return sim
+        val net = tm?.networkCountryIso?.uppercase().orEmpty()
+        if (net.length == 2) return net
+        return Locale.getDefault().country.uppercase().ifBlank { "XX" }
+    }
 
     /** Возвращает uid анонимного пользователя — авторизует если нужно. */
     private suspend fun ensureAuth(): String {
