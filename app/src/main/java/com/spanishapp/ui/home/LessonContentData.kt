@@ -1115,7 +1115,7 @@ object LessonContentData {
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Образуй множественное число",
                     question = "ciudad → ?",
-                    options = listOf("ciudades", "ciudads", "ciudas", "ciudades"),
+                    options = listOf("ciudades", "ciudads", "ciudas", "ciudad"),
                     correctAnswer = "ciudades",
                     explanation = "ciudad оканчивается на согласную -d → добавляем -es → ciudades."
                 ),
@@ -1379,7 +1379,7 @@ object LessonContentData {
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "В чём отличие -IR от -ER?",
                     question = "«Мы» для -ER: com-emos. «Мы» для -IR: viv-___",
-                    options = listOf("-imos", "-emos", "-amos", "-imos"),
+                    options = listOf("-imos", "-emos", "-amos", "-ámos"),
                     correctAnswer = "-imos",
                     explanation = "-ER: nosotros -emos (comemos). -IR: nosotros -imos (vivimos). Только эти две формы отличаются."
                 ),
@@ -3229,7 +3229,7 @@ object LessonContentData {
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Переведи: «красная машина»",
                     question = "un coche ___",
-                    options = listOf("rojo", "roja", "roja coche", "rojо"),
+                    options = listOf("rojo", "roja", "rojos", "rojas"),
                     correctAnswer = "rojo",
                     explanation = "coche (машина) — мужского рода → rojo (не roja). El coche es rojo."
                 ),
@@ -3981,7 +3981,7 @@ object LessonContentData {
                         LessonItem("el ojo / los ojos", "глаз / глаза", ""),
                         LessonItem("la nariz", "нос", ""),
                         LessonItem("la boca", "рот", ""),
-                        LessonItem("la oreja / la oreja", "ухо / уши", ""),
+                        LessonItem("la oreja / las orejas", "ухо / уши", ""),
                         LessonItem("el cuello", "шея", ""),
                         LessonItem("el brazo", "рука (от плеча)", ""),
                         LessonItem("la mano", "рука (ладонь/кисть)", ""),
@@ -4108,7 +4108,7 @@ object LessonContentData {
                     heading = "Одежда",
                     items = listOf(
                         LessonItem("la camisa", "рубашка", ""),
-                        LessonItem("los pantalones", "брюки", "всегда мн. число"),
+                        LessonItem("los pantalones", "брюки", "обычно мн. число (есть и el pantalón)"),
                         LessonItem("el vestido", "платье", ""),
                         LessonItem("la falda", "юбка", ""),
                         LessonItem("el abrigo", "пальто", ""),
@@ -5665,7 +5665,7 @@ object LessonContentData {
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Participio от ESCRIBIR",
                     question = "He ___ una carta.",
-                    options = listOf("escrito", "escribido", "escribto", "escrito"),
+                    options = listOf("escrito", "escribido", "escribto", "escribiendo"),
                     correctAnswer = "escrito",
                     explanation = "escribir → escrito (неправильное). He escrito = я написал."
                 ),
