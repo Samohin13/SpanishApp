@@ -7335,6 +7335,170 @@ object LessonContentData {
                     explanation = "Condicional для предположения о лучшем варианте. alquilaría (я бы арендовал), cogería (я бы взял)."
                 )
             )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  A1 ЧЕКПОИНТЫ (добавлены в конец)
+        // ══════════════════════════════════════════════
+
+        // Блок 1: Паспортный контроль
+        "u1_l14" to LessonContent(
+            intro = "Чекпоинт Блока 1: Паспортный контроль — представь себя",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как ответить на вопрос о национальности?",
+                    question = "¿De dónde eres? — ___ ruso/a, de Rusia.",
+                    options = listOf("Soy", "Estoy", "Tengo", "Voy"),
+                    correctAnswer = "Soy",
+                    explanation = "SER для национальности и происхождения. Soy ruso de Rusia = я русский из России."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать фамилию?",
+                    question = "Me llamo Juan García. García es mi ___.",
+                    options = listOf("apellido", "nombre", "país", "número"),
+                    correctAnswer = "apellido",
+                    explanation = "apellido = фамилия. nombre = имя. Me llamo = мне зовут."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Артикли: выбери правильный",
+                    question = "___ pasaporte es azul. ___ país de origen es Rusia.",
+                    options = listOf("El / El", "La / El", "El / La", "Los / El"),
+                    correctAnswer = "El / El",
+                    explanation = "el pasaporte (м.р.) = паспорт. el país (м.р.) = страна."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как назвать своё имя по-испански?",
+                    question = "Сказать имя: «My name is Vladimir» → «___ Vladimir»",
+                    options = listOf("Me llamo", "Soy", "Tengo", "Estoy"),
+                    correctAnswer = "Me llamo",
+                    explanation = "Me llamo + nombre = мне зовут. Me llamo Vladimir = меня зовут Владимир."
+                )
+            )
+        ),
+
+        // Блок 2: Аренда жилья
+        "u2_l14" to LessonContent(
+            intro = "Чекпоинт Блока 2: Аренда жилья — описание комнаты",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить о наличии комнаты?",
+                    question = "¿___ una habitación doble disponible?",
+                    options = listOf("Hay", "Tiene", "Está", "Es"),
+                    correctAnswer = "Hay",
+                    explanation = "Hay = есть (наличие). ¿Hay una habitación? = есть ли комната?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Где находится мебель? Использь ESTAR + предлог",
+                    question = "La cama ___ ___ la habitación.",
+                    options = listOf("está / en", "es / en", "tiene / en", "está / de"),
+                    correctAnswer = "está / en",
+                    explanation = "ESTAR + предлог для местоположения. La cama está en la habitación = кровать находится в комнате."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать о размере комнаты?",
+                    question = "Esta habitación es muy ___ y ___ (большая и светлая).",
+                    options = listOf("grande / luminosa", "pequeña / oscura", "roja / azul", "nueva / vieja"),
+                    correctAnswer = "grande / luminosa",
+                    explanation = "grande = большая. luminosa = светлая. SER для описания качеств."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Множественное число: выбери правильно",
+                    question = "En mi casa ___ dos dormitorios, ___ camas y ___ sofás.",
+                    options = listOf("hay / hay / hay", "es / es / es", "están / están / están", "tiene / tiene / tiene"),
+                    correctAnswer = "hay / hay / hay",
+                    explanation = "Hay (существует) для множественного числа. Hay dos dormitorios = есть две спальни."
+                )
+            )
+        ),
+
+        // Блок 3: Обед в ресторане
+        "u3_l14" to LessonContent(
+            intro = "Чекпоинт Блока 3: Обед в ресторане — заказ еды",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Спряжение глагола QUERER",
+                    question = "¿Qué ___ (querer) ustedes? Nosotros ___ (querer) agua y pan.",
+                    options = listOf("quieren / queremos", "queremos / quieren", "quieres / queremos", "quiero / queremos"),
+                    correctAnswer = "quieren / queremos",
+                    explanation = "ustedes quieren (они хотят). nosotros queremos (мы хотим)."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Глагол PODER в ресторане",
+                    question = "¿___ (poder) traer la cuenta, por favor?",
+                    options = listOf("Puede", "Puedo", "Podemos", "Pueden"),
+                    correctAnswer = "Puede",
+                    explanation = "usted puede = вы можете (вежливо). ¿Puede traer...? = вы можете принести?"
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как спросить время в контексте еды?",
+                    question = "¿A ___ ___ el almuerzo? — A ___ doce.",
+                    options = listOf("qué hora es / las", "qué hora es / la", "qué hora / las", "cuál hora / las"),
+                    correctAnswer = "qué hora es / las",
+                    explanation = "¿A qué hora es el almuerzo? = в котором часу обед? A las doce = в двенадцать."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как сказать о предпочтениях в еде?",
+                    question = "A mí ___ gusta el pescado, pero a mi hermano no ___ gusta.",
+                    options = listOf("me / le", "le / me", "me / me", "le / le"),
+                    correctAnswer = "me / le",
+                    explanation = "me gusta = мне нравится. a mi hermano le gusta = моему брату нравится."
+                )
+            )
+        ),
+
+        // Блок 4: Один день в Мадриде (ФИНАЛЬНЫЙ БОСС)
+        "u4_l14" to LessonContent(
+            intro = "ФИНАЛЬНЫЙ БОСС A1: Один день в Мадриде",
+            sections = listOf(),
+            exercises = listOf(
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Глагол IR (идти/ехать)",
+                    question = "Mañana yo ___ al cine. Mi amiga ___ al parque. Nosotros ___ al museo.",
+                    options = listOf("voy / va / vamos", "vamos / voy / va", "voy / vamos / va", "va / voy / vamos"),
+                    correctAnswer = "voy / va / vamos",
+                    explanation = "yo voy, ella va, nosotros vamos. IR спрягается irregularly."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как использовать GUSTAR для описания дня?",
+                    question = "Me ___ mucho el arte. A mi familia le ___ los museos.",
+                    options = listOf("gusta / gustan", "gustan / gusta", "gusta / gusta", "gustan / gustan"),
+                    correctAnswer = "gusta / gustan",
+                    explanation = "me gusta el arte (ед.ч.). le gustan los museos (мн.ч.). GUSTAR согласуется с объектом."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Возвратные глаголы: что делать утром?",
+                    question = "Por la mañana me ___ a las 7, me ___ y me ___.",
+                    options = listOf("levanto / ducho / visto", "levanta / ducha / viste", "levantan / duchan / visten", "levantamos / duchamos / vestimos"),
+                    correctAnswer = "levanto / ducho / visto",
+                    explanation = "me levanto (встаю), me ducho (принимаю душ), me visto (одеваюсь). Возвратные в yo форме."
+                ),
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как описать погоду и одежду вместе?",
+                    question = "Hoy hace frío, así que ___ un abrigo y ___ botas.",
+                    options = listOf("llevo / llevo", "me llevo / me llevo", "tengo / tengo", "voy / voy"),
+                    correctAnswer = "llevo / llevo",
+                    explanation = "llevar = носить (одежду). Hoy llevo un abrigo = сегодня я ношу пальто."
+                )
+            )
         )
     )
 }
