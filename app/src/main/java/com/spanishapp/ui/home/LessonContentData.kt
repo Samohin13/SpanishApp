@@ -7796,8 +7796,8 @@ object LessonContentData {
                     items = listOf(
                         LessonItem("poder → pueda, puedas, pueda", "podamos, podáis, puedan", ""),
                         LessonItem("volver → vuelva, vuelvas, vuelva", "volvamos, volváis, vuelvan", ""),
-                        LessonItem("dormir → duerma, duermas, duerma", "durmamos*, dormáis, duerman", ""),
-                        LessonItem("* dormir — исключение!", "nosotros: durmamos (u→u)", "")
+                        LessonItem("dormir → duerma, duermas, duerma", "durmamos*, durmáis*, duerman", ""),
+                        LessonItem("* dormir — исключение!", "nosotros/vosotros: durm- (o→u)", "")
                     )
                 ),
                 LessonSection(
@@ -8279,8 +8279,8 @@ object LessonContentData {
                 LessonSection(
                     heading = "Другие выражения цели",
                     items = listOf(
-                        LessonItem("a fin de que + subjuntivo", "Con tal de que vengas... (лишь бы ты пришёл)", ""),
-                        LessonItem("con tal de que + subjuntivo", "A fin de que todo vaya bien.", ""),
+                        LessonItem("a fin de que + subjuntivo", "A fin de que todo vaya bien. (чтобы всё было хорошо)", ""),
+                        LessonItem("con tal de que + subjuntivo", "Con tal de que vengas... (лишь бы ты пришёл)", ""),
                         LessonItem("para que vs para", "Para él = для него; para que él venga = чтобы он пришёл", ""),
                         LessonItem("Очень частое в речи", "Te llamo para que sepas = звоню, чтобы ты знал", "")
                     )
@@ -8492,8 +8492,8 @@ object LessonContentData {
                     instruction = "Эмоция по поводу новости",
                     question = "Me alegra mucho que ___ un nuevo trabajo.",
                     options = listOf("encontraste", "hayas encontrado", "encontrarás", "encuentres"),
-                    correctAnswer = "encuentres",
-                    explanation = "me alegra que + subjuntivo presente: encontrar → encuentres. «Рад(а), что ты нашёл новую работу.»"
+                    correctAnswer = "hayas encontrado",
+                    explanation = "me alegra que + Pretérito Perfecto de Subjuntivo (haber + participio): hayas encontrado. «Рад(а), что ты нашёл новую работу.» — действие уже произошло."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
@@ -8628,7 +8628,7 @@ object LessonContentData {
                     question = "Si tuviera vacaciones, ___ a México.",
                     options = listOf("viajo", "viajé", "viajaré", "viajaría"),
                     correctAnswer = "viajaría",
-                    explanation = "Si + Imperfecto Subj. → Condicional: viajar + ía = viajaría. «Если бы были отпуск, поехал бы в Мексику.»"
+                    explanation = "Si + Imperfecto Subj. → Condicional: viajar + ía = viajaría. «Если бы был отпуск, поехал бы в Мексику.»"
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
@@ -8650,7 +8650,7 @@ object LessonContentData {
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Condicional глагола trabajar (nosotros)",
                     question = "Si fuera posible, ___ desde casa.",
-                    options = listOf("trabajamos", "trabajamos", "trabajaríamos", "trabajábamos"),
+                    options = listOf("trabajamos", "trabajaremos", "trabajaríamos", "trabajábamos"),
                     correctAnswer = "trabajaríamos",
                     explanation = "trabajar + íamos = trabajaríamos. «Если бы было возможно, работали бы из дома.»"
                 )
@@ -8719,7 +8719,7 @@ object LessonContentData {
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Condicional глагола escribir (nosotros)",
                     question = "Si tuviéramos más datos, ___ el artículo hoy.",
-                    options = listOf("escribimos", "escribimos", "escribiríamos", "escribiríamos"),
+                    options = listOf("escribimos", "escribiremos", "escribiríamos", "escribíamos"),
                     correctAnswer = "escribiríamos",
                     explanation = "escribir + íamos = escribiríamos. «Если бы у нас было больше данных, написали бы статью сегодня.»"
                 )
@@ -9356,7 +9356,7 @@ object LessonContentData {
                     items = listOf(
                         LessonItem("Quizás viene mañana.", "Наверное, придёт завтра. (почти уверен)", ""),
                         LessonItem("Tal vez tiene razón.", "Пожалуй, он прав.", ""),
-                        LessonItem("Oба варианта правильные!", "Выбор зависит от степени уверенности", ""),
+                        LessonItem("Оба варианта правильные!", "Выбор зависит от степени уверенности", ""),
                         LessonItem("Subj. = 30-50% уверенность", "Ind. = 50-70% уверенность", "")
                     )
                 ),
@@ -9383,25 +9383,25 @@ object LessonContentData {
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "A lo mejor — только indicativo",
                     question = "A lo mejor ___ un poco tarde.",
-                    options = listOf("llego", "llegue", "llegara", "llegara"),
+                    options = listOf("llego", "llegue", "llegara", "llegaría"),
                     correctAnswer = "llego",
                     explanation = "A lo mejor всегда + indicativo! «A lo mejor llego» = «наверное, опоздаю немного.»"
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Tal vez + subjuntivo или indicativo",
-                    question = "Tal vez ___ razón. (оба варианта могут быть верны)",
-                    options = listOf("Только «tiene» (indicativo)", "Только «tenga» (subjuntivo)", "И «tiene», и «tenga» правильно", "Только «tendría» (condicional)"),
-                    correctAnswer = "И «tiene», и «tenga» правильно",
-                    explanation = "С tal vez и quizás можно использовать и subjuntivo, и indicativo. Subjuntivo = меньше уверен, indicativo = чуть увереннее."
+                    instruction = "Tal vez + subjuntivo (меньшая уверенность)",
+                    question = "Tal vez ___ razón, no estoy seguro.",
+                    options = listOf("tiene", "tenga", "tendría", "tuviera"),
+                    correctAnswer = "tenga",
+                    explanation = "tal vez + subjuntivo выражает меньшую уверенность («может быть»). С indicativo (tiene) допустимо, но subjuntivo точнее передаёт сомнение «не уверен»."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Probablemente + subjuntivo",
-                    question = "Probablemente ___ tarde al trabajo.",
-                    options = listOf("llego", "llegue", "Оба варианта верны", "llegara"),
-                    correctAnswer = "Оба варианта верны",
-                    explanation = "Probablemente, posiblemente, quizás, tal vez — все могут использоваться с subj. или ind."
+                    question = "Probablemente ___ tarde al trabajo, hay mucho tráfico.",
+                    options = listOf("llego", "llegue", "llegaba", "llegara"),
+                    correctAnswer = "llegue",
+                    explanation = "probablemente + subjuntivo presente: llegue. Подчёркивает вероятность/неопределённость в настоящем. С indicativo (llego) тоже возможно, но subjuntivo стандартнее в предположениях."
                 )
             )
         ),
@@ -9516,11 +9516,11 @@ object LessonContentData {
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Quizás + subjuntivo или indicativo",
-                    question = "Quizás ___ a verte este fin de semana.",
-                    options = listOf("voy (indicativo)", "vaya (subjuntivo)", "Оба варианта верны", "iré (futuro)"),
-                    correctAnswer = "Оба варианта верны",
-                    explanation = "С quizás можно использовать и indicativo (voy) и subjuntivo (vaya). Subjuntivo = чуть менее уверен."
+                    instruction = "Quizás + subjuntivo (неопределённость)",
+                    question = "Quizás ___ a verte este fin de semana, aún no estoy seguro.",
+                    options = listOf("voy", "vaya", "iré", "fui"),
+                    correctAnswer = "vaya",
+                    explanation = "quizás + subjuntivo (vaya) подчёркивает неопределённость — соответствует «aún no estoy seguro». «Может быть, приду повидаться с тобой в эти выходные.»"
                 )
             )
         ),
@@ -10186,9 +10186,9 @@ object LessonContentData {
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Seguir + gerundio",
                     question = "A pesar de las dificultades, ___ intentándolo.",
-                    options = listOf("continúa / sigue", "Выберите одно из двух", "sigue", "siguió"),
+                    options = listOf("continúa", "sigue", "siguió", "seguirá"),
                     correctAnswer = "sigue",
-                    explanation = "seguir + gerundio: sigue intentándolo. «Несмотря на трудности, продолжает пытаться.»"
+                    explanation = "seguir + gerundio: sigue intentándolo. «Несмотря на трудности, продолжает пытаться.» Continúa тоже грамматически возможно, но требует глагола continuar в полной форме — выбираем sigue."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
@@ -10260,11 +10260,11 @@ object LessonContentData {
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Volver a + infinitivo",
+                    instruction = "Tener que + infinitivo (обязательство)",
                     question = "El equipo perdió el partido. ___ entrenar más duro.",
                     options = listOf("Acaban de", "Vuelven a", "Tienen que", "Siguen"),
                     correctAnswer = "Tienen que",
-                    explanation = "Здесь — обязательство: tienen que entrenar. «Команда проиграла. Им нужно тренироваться усерднее.»"
+                    explanation = "tener que + inf. = обязательство: tienen que entrenar. «Команда проиграла. Им нужно тренироваться усерднее.»"
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
@@ -10472,11 +10472,11 @@ object LessonContentData {
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "En resumen",
+                    instruction = "Подведение итога",
                     question = "___, el candidato tiene buena formación pero poca experiencia.",
-                    options = listOf("En definitiva", "En resumen", "Es decir", "Оба первых варианта верны"),
-                    correctAnswer = "Оба первых варианта верны",
-                    explanation = "en definitiva и en resumen оба подходят для подведения итога. Выбор зависит от стиля."
+                    options = listOf("En resumen", "Sin embargo", "Por ejemplo", "Aunque"),
+                    correctAnswer = "En resumen",
+                    explanation = "en resumen = «в общем/подводя итог». Подходит для краткого вывода. «В общем, у кандидата хорошее образование, но мало опыта.»"
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
@@ -10583,10 +10583,10 @@ object LessonContentData {
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
                     instruction = "Рабочий режим",
-                    question = "Trabajo ___ completa, de 9 a 18 horas.",
-                    options = listOf("a tiempo", "en jornada", "de contrato", "en puesto"),
-                    correctAnswer = "a tiempo",
-                    explanation = "a tiempo completa = полный рабочий день. «Я работаю полный день, с 9 до 18.»"
+                    question = "Trabajo a tiempo ___, de 9 a 18 horas.",
+                    options = listOf("completa", "completo", "entero", "total"),
+                    correctAnswer = "completo",
+                    explanation = "a tiempo completo = полный рабочий день (мужской род, согласуется с tiempo). «Я работаю полный день, с 9 до 18.» Противоположное: a tiempo parcial."
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
@@ -11406,11 +11406,11 @@ object LessonContentData {
                 ),
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Финальный тест: Modismos",
-                    question = "El equipo ___ a cabo el proyecto en tiempo récord.",
-                    options = listOf("llevó", "hizo", "tuvo", "puso"),
-                    correctAnswer = "llevó",
-                    explanation = "llevar a cabo = осуществить. «Команда осуществила проект в рекордные сроки.» ¡Enhorabuena! 🏆"
+                    instruction = "Финальный тест: Modismos и perífrasis",
+                    question = "Después de tres horas discutiendo, por fin ___ las paces.",
+                    options = listOf("dieron", "tuvieron", "hicieron", "llevaron"),
+                    correctAnswer = "hicieron",
+                    explanation = "hacer las paces = помириться. «После трёх часов споров, наконец помирились.» ¡Enhorabuena, has terminado el curso B1! 🏆"
                 )
             )
         )
