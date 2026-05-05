@@ -269,7 +269,7 @@ object Navigation {
             composable("profile")      { ProfileScreen(navController) }
             composable("achievements") { AchievementsScreen(navController) }
             composable("settings")     { SettingsScreen(navController) }
-            composable("settings_voice") { Placeholder("Настройка голоса") }
+            composable("settings_voice") { com.spanishapp.ui.settings.SettingsVoiceScreen(navController) }
 
             // ── Рейтинг / Лиги / Лидерборд ───────────────────
             composable("rating_full")  { RatingScreen(navController) }

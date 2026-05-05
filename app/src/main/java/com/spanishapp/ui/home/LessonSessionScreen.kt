@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.spanishapp.ui.components.SpeakerButton
+import com.spanishapp.ui.components.VoiceInstallPromptHost
 import com.spanishapp.ui.components.rememberSpanishTts
 import kotlinx.coroutines.delay
 
@@ -73,6 +74,9 @@ fun LessonSessionScreen(
 
     // TTS — инициализируется один раз для всего экрана
     val tts = rememberSpanishTts()
+
+    // Один раз показывает диалог установки HD-пакета, если он не установлен
+    VoiceInstallPromptHost(tts)
 
     val currentStep: SessionStep = when {
         stepIndex < sections.size ->
