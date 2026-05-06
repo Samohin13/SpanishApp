@@ -32,12 +32,13 @@ data class ArticlesPremiumState(
     val currentRound: Int = 0,
     val isGameOver: Boolean = false,
     val lastCorrect: Boolean? = null,
-    val chosenArticle: String? = null,  // какую кнопку нажал пользователь
+    val chosenArticle: String? = null,
+    val lastXpGain: Int = 0,                    // XP за последний ответ (для анимации)
+    val answerHistory: List<Boolean> = emptyList(), // история ответов текущего уровня
     val academicHint: String? = null,
-    // финальный экран
     val finalStars: Int = 0,
     val finalPercent: Int = 0,
-    val showLevelMap: Boolean = true   // экран выбора уровня по умолчанию
+    val showLevelMap: Boolean = true
 ) {
     val totalRounds: Int get() = params.rounds
     val level: Int get() = params.level
@@ -73,7 +74,11 @@ class ArticlesViewModel @Inject constructor(
     /** Запустить уровень (1..100). */
     fun startLevel(level: Int) {
         val params = LevelDifficulty.forLevel(level)
-        _state.value = ArticlesPremiumState(params = params, showLevelMap = false)
+        _state.value = ArticlesPremiumState(
+            params = params,
+            showLevelMap = false,
+            answerHistory = emptyList()
+        )
         nextRound()
     }
 
@@ -141,6 +146,8 @@ class ArticlesViewModel @Inject constructor(
             _state.value = s.copy(
                 lastCorrect = isCorrect,
                 chosenArticle = article,
+                lastXpGain = if (isCorrect) totalXpGain else 0,
+                answerHistory = s.answerHistory + isCorrect,
                 score = s.score + totalXpGain,
                 correctCount = if (isCorrect) s.correctCount + 1 else s.correctCount,
                 streak = newStreak,
