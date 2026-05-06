@@ -103,7 +103,7 @@ fun ArticlesGameScreen(
                 accent  = ACCENT,
                 onRetry = { viewModel.startLevel(state.level) },
                 onNext  = if (state.finalStars > 0 && state.level < 100)
-                              { { viewModel.startLevel(state.level + 1) } } else null,
+                              { { viewModel.startLevel(state.level + 1, isTransition = true) } } else null,
                 onExit  = { viewModel.openLevelMap() }
             )
         }

@@ -13,6 +13,7 @@ import com.spanishapp.domain.games.GameLevelManager
 import com.spanishapp.domain.games.LevelDifficulty
 import com.spanishapp.domain.games.LevelParams
 import com.spanishapp.service.AchievementManager
+import com.spanishapp.service.SoundPlayer
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -52,6 +53,7 @@ class ArticlesViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
+    private val soundPlayer: SoundPlayer,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
@@ -75,8 +77,9 @@ class ArticlesViewModel @Inject constructor(
         }
     }
 
-    /** Запустить уровень (1..100). */
-    fun startLevel(level: Int) {
+    /** Запустить уровень (1..100). isTransition=true — переход с предыдущего уровня (играет джингл). */
+    fun startLevel(level: Int, isTransition: Boolean = false) {
+        if (isTransition) soundPlayer.playLevelUp()
         val params = LevelDifficulty.forLevel(level)
         _state.value = ArticlesPremiumState(
             params = params,
@@ -142,9 +145,11 @@ class ArticlesViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (isCorrect) {
+                soundPlayer.playCorrect()
                 tts.speak("${word.article} ${word.word}")
                 word.errorWeight = (word.errorWeight - 1).coerceAtLeast(0)
             } else {
+                soundPlayer.playWrong()
                 word.errorWeight += 2
             }
             dao.updateWord(word)
@@ -194,6 +199,10 @@ class ArticlesViewModel @Inject constructor(
                 userProgressDao.update(p.copy(totalXp = p.totalXp + s.score))
                 achievementManager.checkAndUnlock()
             }
+
+            // Звук финала
+            if (stars == 3) soundPlayer.playPerfect()
+            else if (stars > 0) soundPlayer.playLevelDone()
 
             _state.value = s.copy(
                 isGameOver  = true,
