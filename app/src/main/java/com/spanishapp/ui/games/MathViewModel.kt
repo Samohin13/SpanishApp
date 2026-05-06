@@ -42,6 +42,7 @@ data class MathGameState(
     val lastCorrect: Boolean? = null,
     val displayMode: MathDisplayMode = MathDisplayMode.SPANISH,
     val audioEnabled: Boolean = true,
+    val answerHistory: List<Boolean> = emptyList(),  // для ProgressDots
     val finalStars: Int = 0,
     val finalPercent: Int = 0,
     val showLevelMap: Boolean = true
@@ -188,19 +189,10 @@ class MathViewModel @Inject constructor(
                     Triple("?", "${NumberToSpanish.convert(mx)} menos ${NumberToSpanish.convert(mn)}", mx - mn)
                 }
             }
-            level <= 55 -> {
-                // ×/÷ простые
-                val a = Random.nextInt(2, 11); val b = Random.nextInt(2, 11)
-                if (Random.nextBoolean()) {
-                    Triple("?", "${NumberToSpanish.convert(a)} por ${NumberToSpanish.convert(b)}", a * b)
-                } else {
-                    val prod = a * b
-                    Triple("?", "${NumberToSpanish.convert(prod)} dividido entre ${NumberToSpanish.convert(a)}", b)
-                }
-            }
             level <= 70 -> {
-                // ×/÷ побольше
-                val a = Random.nextInt(2, 13); val b = Random.nextInt(2, 13)
+                // ×/÷ : до 10 (уровни 41-55) или до 12 (уровни 56-70)
+                val maxFactor = if (level <= 55) 11 else 13
+                val a = Random.nextInt(2, maxFactor); val b = Random.nextInt(2, maxFactor)
                 if (Random.nextBoolean()) {
                     Triple("?", "${NumberToSpanish.convert(a)} por ${NumberToSpanish.convert(b)}", a * b)
                 } else {
@@ -281,11 +273,13 @@ class MathViewModel @Inject constructor(
             lastCorrect  = isCorrect,
             score        = s.score + points,
             correctCount = if (isCorrect) s.correctCount + 1 else s.correctCount,
-            streak       = newStreak
+            streak       = newStreak,
+            answerHistory = s.answerHistory + isCorrect
         )
 
         viewModelScope.launch {
-            delay(1200)
+            // На правильном ответе короче (поощряем темп), на ошибке — даём прочитать
+            delay(if (isCorrect) 800 else 1500)
             nextQuestion()
         }
     }

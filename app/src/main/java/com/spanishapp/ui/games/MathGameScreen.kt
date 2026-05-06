@@ -1,5 +1,8 @@
 package com.spanishapp.ui.games
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +17,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,8 +31,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.domain.games.GameId
+import com.spanishapp.ui.games.common.ComboBadge
+import com.spanishapp.ui.games.common.ConfettiEffect
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
+import com.spanishapp.ui.games.common.ProgressDots
+import com.spanishapp.ui.games.common.rememberShakeOffset
 
 private val ACCENT = Color(0xFFF44336)
 
@@ -39,7 +47,9 @@ fun MathGameScreen(
     viewModel: MathViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    var inputVal by remember(state.currentRound) { mutableStateOf("") }
+    // rememberSaveable переживает ротацию экрана; ключ — currentRound, чтобы
+    // ввод сбрасывался при смене раунда.
+    var inputVal by rememberSaveable(state.currentRound) { mutableStateOf("") }
     val haptic = LocalHapticFeedback.current
 
     when {
@@ -114,70 +124,102 @@ private fun MathGameContent(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(Color(0xFFF8F8FA))
-                .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Шапка
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween) {
-                Column {
-                    Text("Очки: ${state.score}", fontWeight = FontWeight.Bold, color = ACCENT)
-                    if (state.streak > 1) {
-                        Text("Комбо: ×${state.streak}",
-                            color = Color(0xFFFF9500),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold)
-                    }
+        // Конфетти при правильном ответе + тактильный фидбэк
+        var confettiKey by remember { mutableIntStateOf(0) }
+        LaunchedEffect(state.answerHistory.size) {
+            when (state.lastCorrect) {
+                true  -> {
+                    confettiKey++
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 }
-                Text("Раунд ${state.currentRound}/${state.totalRounds}", color = Color.Gray)
+                false -> haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                else  -> {}
             }
+        }
 
-            // Таймер
-            if (state.params.timePerRoundSec > 0f) {
-                LinearProgressIndicator(
-                    progress = { state.timeLeft },
+        // Тряска карточки при ошибке
+        val shakeX = rememberShakeOffset(
+            trigger = state.answerHistory.size,
+            isWrong = state.lastCorrect == false
+        )
+
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .background(Color(0xFFF8F8FA))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Шапка: счёт + раунд
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Text("Очки: ${state.score}", fontWeight = FontWeight.Bold, color = ACCENT)
+                    Text("Раунд ${state.currentRound}/${state.totalRounds}", color = Color.Gray)
+                }
+
+                // Точки прогресса
+                ProgressDots(
+                    history = state.answerHistory,
+                    total   = state.totalRounds,
+                    accent  = ACCENT
+                )
+
+                // Комбо-бейдж (от 3+)
+                AnimatedVisibility(
+                    visible = state.streak >= 3,
+                    enter = fadeIn(), exit = fadeOut()
+                ) {
+                    ComboBadge(streak = state.streak, accentColor = ACCENT)
+                }
+
+                // Таймер
+                if (state.params.timePerRoundSec > 0f) {
+                    LinearProgressIndicator(
+                        progress = { state.timeLeft },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(4.dp)),
+                        color = if (state.timeLeft < 0.3f) Color.Red else ACCENT,
+                        trackColor = Color(0xFFE5E5EA)
+                    )
+                }
+
+                // Выражение + кнопка озвучки (с тряской при ошибке)
+                Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(4.dp)),
-                    color = if (state.timeLeft < 0.3f) Color.Red else ACCENT,
-                    trackColor = Color(0xFFE5E5EA)
-                )
-            }
-
-            // Выражение + кнопка озвучки
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                color = Color.White,
-                shadowElevation = 2.dp
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .offset(x = shakeX.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    color = Color.White,
+                    shadowElevation = 2.dp
                 ) {
-                    Text(
-                        state.expressionText,
-                        fontSize = if (state.displayMode == MathDisplayMode.AUDIO) 56.sp else 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        lineHeight = if (state.displayMode == MathDisplayMode.AUDIO) 60.sp else 30.sp,
-                        color = if (state.displayMode == MathDisplayMode.AUDIO) ACCENT
-                                else Color(0xFF1A1A1A)
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    IconButton(onClick = { viewModel.repeatQuestion() }) {
-                        Icon(Icons.Default.Replay, "Повторить",
-                            tint = ACCENT, modifier = Modifier.size(28.dp))
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            state.expressionText,
+                            fontSize = if (state.displayMode == MathDisplayMode.AUDIO) 56.sp else 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            lineHeight = if (state.displayMode == MathDisplayMode.AUDIO) 60.sp else 30.sp,
+                            color = if (state.displayMode == MathDisplayMode.AUDIO) ACCENT
+                                    else Color(0xFF1A1A1A)
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        IconButton(onClick = { viewModel.repeatQuestion() }) {
+                            Icon(Icons.Default.Replay, "Повторить",
+                                tint = ACCENT, modifier = Modifier.size(28.dp))
+                        }
                     }
                 }
-            }
 
             // Поле ввода / результат
             Box(modifier = Modifier
@@ -249,7 +291,11 @@ private fun MathGameContent(
                 },
                 enabled = state.lastCorrect == null
             )
-        }
+            } // Column
+
+            // Конфетти как оверлей поверх всего экрана
+            ConfettiEffect(trigger = confettiKey)
+        } // Box
     }
 }
 
