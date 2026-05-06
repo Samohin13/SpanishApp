@@ -38,19 +38,21 @@ ASSET_ROOT = ROOT / "app" / "src" / "main" / "assets" / "article_images"
 RECRAFT_ENDPOINT = "https://external.api.recraft.ai/v1/images/generations"
 
 PROMPT_TEMPLATE = (
-    "authentic lifestyle photograph capturing a {subject} in its real "
-    "everyday setting, warm soft golden-hour natural sunlight streaming "
-    "in, cozy inviting atmosphere, naturally blurred environmental "
-    "context around the subject (kitchen, garden, street, room — "
-    "whatever fits the {subject}), the {subject} is the clear focal "
-    "point of the frame, shallow depth of field, rich warm natural "
-    "saturated colors, cinematic emotional mood, no people unless the "
-    "{subject} itself is a person, no text, no logos, photorealistic, "
-    "feels like a genuine slice of life captured by a skilled "
-    "photographer, unified warm cinematic style for a premium modern "
-    "language-learning app, evocative and full of life"
+    "warm hand-painted illustration of a {subject} set in sunny Spain, "
+    "Mediterranean atmosphere, terracotta-ochre-mustard color palette "
+    "with azure blue accents and white-stucco highlights, golden "
+    "Andalusian afternoon light, painterly textured artistic style, "
+    "the {subject} as the heart of the scene amid evocative Spanish "
+    "details (whitewashed walls, terracotta tiles, olive trees, "
+    "sun-warmed stones — whatever naturally fits the {subject}), warm "
+    "joyful inviting mood, authentic Spanish village or "
+    "Andalusian-coast feel, NOT photorealistic, NOT a photograph, NOT "
+    "a studio shot, no plain white background, no text, no logos, "
+    "rich painterly colors, hand-crafted look in the spirit of modern "
+    "European travel-poster art and warm editorial illustration, full "
+    "of emotion and life"
 )
-RECRAFT_STYLE = "realistic_image"
+RECRAFT_STYLE = "digital_illustration/hand_drawn"
 
 WORLD_1_TEST: list[tuple[str, str, str]] = [
     # (imageRef, prompt_word_en, spanish_word)
