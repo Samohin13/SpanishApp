@@ -62,10 +62,14 @@ class ArticlesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // Перезаливаем сид если БД пустая ИЛИ если в ней нет уровней (level_num=0 — старый seed).
-            val total = dao.getWordCount()
+            val total    = dao.getWordCount()
             val firstLvl = dao.getWordsForGameLevel(1)
-            if (total < 100 || firstLvl.isEmpty()) {
+            // Ресид если: БД пустая, уровень 1 пустой, ИЛИ уровень 1 содержит только "el" (старые данные)
+            val needReseed = total < 100
+                || firstLvl.isEmpty()
+                || firstLvl.none { it.article == "la" || it.article == "las" }
+            if (needReseed) {
+                dao.deleteAllWords()
                 seedFromJson()
             }
         }
@@ -104,8 +108,10 @@ class ArticlesViewModel @Inject constructor(
                 words = dao.getWordsForGameLevel(s.params.level)
             }
             if (words.isEmpty()) return@launch
-            val idx = s.currentRound.coerceIn(0, words.size - 1)
-            val word = words[idx]
+            // Детерминированный шафл: один и тот же уровень → всегда один и тот же порядок слов
+            val shuffled = words.shuffled(java.util.Random(s.params.level.toLong() * 31337L))
+            val idx  = s.currentRound.coerceIn(0, shuffled.size - 1)
+            val word = shuffled[idx]
             _state.value = s.copy(
                 currentWord = word,
                 currentRound = s.currentRound + 1,

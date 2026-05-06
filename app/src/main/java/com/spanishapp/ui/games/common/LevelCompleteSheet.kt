@@ -1,28 +1,32 @@
 package com.spanishapp.ui.games.common
 
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import kotlinx.coroutines.delay
+
+private val STAR_GOLD  = Color(0xFFFFC107)
+private val STAR_EMPTY = Color(0xFFE5E5EA)
 
 /**
- * Универсальный диалог «уровень пройден / провален».
- *
- * @param level       номер уровня
- * @param stars       заработанные звёзды (0..3)
- * @param percent     процент правильных ответов
- * @param accent      цвет игры
- * @param onRetry     повторить тот же уровень
- * @param onNext      перейти к следующему (null если уровень не пройден или последний)
- * @param onExit      вернуться на карту уровней
+ * Полноэкранный диалог результата уровня — Duolingo стиль.
  */
 @Composable
 fun LevelCompleteSheet(
@@ -35,73 +39,179 @@ fun LevelCompleteSheet(
     onExit: () -> Unit
 ) {
     val passed = stars > 0
-    Dialog(onDismissRequest = onExit) {
-        Surface(
-            shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 4.dp
+
+    // Звёзды появляются поочерёдно
+    val starVisible = remember { List(3) { mutableStateOf(false) } }
+    LaunchedEffect(Unit) {
+        for (i in 0 until stars) {
+            delay(300L + i * 250L)
+            starVisible[i].value = true
+        }
+    }
+
+    Dialog(
+        onDismissRequest = onExit,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.55f)),
+            contentAlignment = Alignment.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .widthIn(max = 320.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Surface(
+                modifier      = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                shape         = RoundedCornerShape(28.dp),
+                color         = Color.White,
+                shadowElevation = 16.dp
             ) {
-                Text(
-                    text = if (passed) "Уровень $level пройден!" else "Уровень $level не пройден",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (passed) accent else MaterialTheme.colorScheme.onSurface
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                // 3 звезды
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    repeat(3) { i ->
-                        Icon(
-                            Icons.Default.Star, null,
-                            tint = if (i < stars) Color(0xFFFFC107)
-                                   else Color(0xFFE5E5EA),
-                            modifier = Modifier.size(48.dp)
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                Text(
-                    "Точность: $percent%",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(Modifier.height(24.dp))
-
-                // Кнопки
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                Column(
+                    modifier              = Modifier.padding(28.dp),
+                    horizontalAlignment   = Alignment.CenterHorizontally
                 ) {
-                    OutlinedButton(
-                        onClick = onExit,
-                        modifier = Modifier.weight(1f)
-                    ) { Text("Меню") }
 
-                    OutlinedButton(
-                        onClick = onRetry,
-                        modifier = Modifier.weight(1f)
-                    ) { Text("Снова") }
+                    // ── Цветная шапка ─────────────────────────
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(90.dp)
+                            .background(
+                                Brush.horizontalGradient(
+                                    if (passed) listOf(Color(0xFF58CC02), Color(0xFF89E219))
+                                    else        listOf(Color(0xFFFF4B4B), Color(0xFFFF7043))
+                                ),
+                                shape = RoundedCornerShape(18.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text  = if (passed) "Уровень $level пройден!" else "Попробуй ещё раз",
+                                fontSize   = 20.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color      = Color.White,
+                                textAlign  = TextAlign.Center
+                            )
+                            if (passed) {
+                                Text(
+                                    "+${(percent / 10) * 5} XP бонус",
+                                    fontSize = 13.sp,
+                                    color    = Color.White.copy(alpha = 0.9f)
+                                )
+                            }
+                        }
+                    }
 
+                    Spacer(Modifier.height(24.dp))
+
+                    // ── Три звезды ────────────────────────────
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment     = Alignment.CenterVertically
+                    ) {
+                        repeat(3) { i ->
+                            AnimatedStar(
+                                filled  = i < stars,
+                                visible = if (i < stars) starVisible[i].value else true,
+                                size    = if (i == 1) 64.dp else 52.dp
+                            )
+                        }
+                    }
+
+                    Spacer(Modifier.height(20.dp))
+
+                    // ── Мотивационный текст + точность ────────
+                    val motivText = when {
+                        percent == 100 -> "Идеально! 🏆"
+                        percent >= 90  -> "Отлично! 🔥"
+                        percent >= 70  -> "Хорошо! 👍"
+                        percent >= 50  -> "Неплохо, продолжай!"
+                        else           -> "Нужно больше практики"
+                    }
+                    Text(
+                        motivText,
+                        fontSize   = 17.sp,
+                        fontWeight = FontWeight.Bold,
+                        color      = if (passed) Color(0xFF2E7D32) else Color(0xFFC62828)
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "Точность: $percent%",
+                        fontSize = 15.sp,
+                        color    = Color(0xFF8E8E93)
+                    )
+
+                    Spacer(Modifier.height(28.dp))
+
+                    // ── Кнопки ────────────────────────────────
                     if (passed && onNext != null) {
                         Button(
-                            onClick = onNext,
-                            modifier = Modifier.weight(1.4f),
-                            colors = ButtonDefaults.buttonColors(containerColor = accent)
-                        ) { Text("Дальше →") }
+                            onClick  = onNext,
+                            modifier = Modifier.fillMaxWidth().height(54.dp),
+                            shape    = RoundedCornerShape(16.dp),
+                            colors   = ButtonDefaults.buttonColors(containerColor = accent)
+                        ) {
+                            Text("Дальше →", fontWeight = FontWeight.ExtraBold,
+                                fontSize = 17.sp, letterSpacing = 0.5.sp)
+                        }
+                        Spacer(Modifier.height(10.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick  = onExit,
+                                modifier = Modifier.weight(1f).height(46.dp),
+                                shape    = RoundedCornerShape(14.dp),
+                                colors   = ButtonDefaults.outlinedButtonColors(contentColor = accent)
+                            ) { Text("Меню", fontWeight = FontWeight.SemiBold) }
+
+                            OutlinedButton(
+                                onClick  = onRetry,
+                                modifier = Modifier.weight(1f).height(46.dp),
+                                shape    = RoundedCornerShape(14.dp),
+                                colors   = ButtonDefaults.outlinedButtonColors(contentColor = accent)
+                            ) { Text("Снова", fontWeight = FontWeight.SemiBold) }
+                        }
+                    } else {
+                        Button(
+                            onClick  = onRetry,
+                            modifier = Modifier.fillMaxWidth().height(54.dp),
+                            shape    = RoundedCornerShape(16.dp),
+                            colors   = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF4B4B))
+                        ) {
+                            Text("Попробовать снова",
+                                fontWeight = FontWeight.ExtraBold, fontSize = 17.sp)
+                        }
+                        Spacer(Modifier.height(10.dp))
+                        TextButton(onClick = onExit, modifier = Modifier.fillMaxWidth()) {
+                            Text("Вернуться в меню", fontSize = 15.sp, color = Color(0xFF8E8E93))
+                        }
                     }
                 }
             }
         }
     }
+}
+
+// ── Анимированная звезда ─────────────────────────────────────
+
+@Composable
+private fun AnimatedStar(filled: Boolean, visible: Boolean, size: Dp) {
+    val scale by animateFloatAsState(
+        targetValue   = if (visible && filled) 1f else 0.55f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness    = Spring.StiffnessMedium
+        ),
+        label = "star"
+    )
+    Icon(
+        imageVector    = Icons.Default.Star,
+        contentDescription = null,
+        tint           = if (filled) STAR_GOLD else STAR_EMPTY,
+        modifier       = Modifier.size(size).scale(scale)
+    )
 }

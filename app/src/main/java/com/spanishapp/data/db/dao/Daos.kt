@@ -446,6 +446,9 @@ interface ArticleGameDao {
 
     @Query("SELECT COUNT(*) FROM article_words")
     suspend fun getWordCount(): Int
+
+    @Query("DELETE FROM article_words")
+    suspend fun deleteAllWords()
 }
 
 @Dao
