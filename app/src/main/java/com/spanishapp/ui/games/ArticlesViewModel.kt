@@ -32,6 +32,7 @@ data class ArticlesPremiumState(
     val currentRound: Int = 0,
     val isGameOver: Boolean = false,
     val lastCorrect: Boolean? = null,
+    val chosenArticle: String? = null,  // какую кнопку нажал пользователь
     val academicHint: String? = null,
     // финальный экран
     val finalStars: Int = 0,
@@ -104,6 +105,7 @@ class ArticlesViewModel @Inject constructor(
                 currentWord = word,
                 currentRound = s.currentRound + 1,
                 lastCorrect = null,
+                chosenArticle = null,
                 academicHint = null
             )
             questionStartTime = System.currentTimeMillis()
@@ -138,6 +140,7 @@ class ArticlesViewModel @Inject constructor(
 
             _state.value = s.copy(
                 lastCorrect = isCorrect,
+                chosenArticle = article,
                 score = s.score + totalXpGain,
                 correctCount = if (isCorrect) s.correctCount + 1 else s.correctCount,
                 streak = newStreak,
