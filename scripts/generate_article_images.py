@@ -54,10 +54,13 @@ WORLD_1_TEST: list[tuple[str, str, str]] = [
 
 
 def read_api_key() -> str:
+    env_key = os.environ.get("RECRAFT_API_KEY", "").strip()
+    if env_key:
+        return env_key
     if not LOCAL_PROPS.exists():
         sys.exit(
-            "ERROR: local.properties not found.\n"
-            "Create it in the project root and add:\n"
+            "ERROR: RECRAFT_API_KEY not in env, and local.properties not found.\n"
+            "Either set the env var or create local.properties with:\n"
             "    RECRAFT_API_KEY=your_new_key_here\n"
         )
     for line in LOCAL_PROPS.read_text(encoding="utf-8").splitlines():
@@ -65,7 +68,7 @@ def read_api_key() -> str:
         if line.startswith("RECRAFT_API_KEY="):
             return line.split("=", 1)[1].strip()
     sys.exit(
-        "ERROR: RECRAFT_API_KEY not found in local.properties.\n"
+        "ERROR: RECRAFT_API_KEY not found in env or local.properties.\n"
         "Add a line like: RECRAFT_API_KEY=re_xxx"
     )
 
