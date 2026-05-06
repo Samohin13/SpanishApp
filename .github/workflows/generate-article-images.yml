@@ -40,10 +40,10 @@ jobs:
 
       - name: Generate (${{ inputs.mode }})
         env:
-          RECRAFT_API_KEY: ${{ secrets.RECRAFT_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: |
-          if [ -z "$RECRAFT_API_KEY" ]; then
-            echo "ERROR: secret RECRAFT_API_KEY is empty."
+          if [ -z "$PEXELS_API_KEY" ]; then
+            echo "ERROR: secret PEXELS_API_KEY is empty."
             echo "Add it in Settings → Secrets and variables → Actions."
             exit 1
           fi

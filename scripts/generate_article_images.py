@@ -1,25 +1,22 @@
-"""Generate Articles game illustrations via Recraft V3 API.
+"""Download Articles game illustrations from Pexels (free stock photos).
 
 Usage:
+    python scripts/generate_article_images.py --one casa
     python scripts/generate_article_images.py --test       # 5 sample images
     python scripts/generate_article_images.py --world 1    # one world only
     python scripts/generate_article_images.py --all        # full batch (~180)
 
-API key is read from local.properties (key: RECRAFT_API_KEY) and is never
-echoed to stdout. Generated PNGs are saved to
-app/src/main/assets/article_images/world_<N>/<imageRef>.
+API key is read from local.properties (key: PEXELS_API_KEY) or env var.
+Get a free key at https://www.pexels.com/api/ — takes ~1 minute, no card.
 
-Pricing reference (verify on recraft.ai/pricing):
-    Recraft V3 raster_illustration ≈ 1 credit/image ≈ $0.04
-    Full batch of ~180 images ≈ $7-8
+Pexels License: free for commercial use, no attribution required.
+https://www.pexels.com/license/
 
 Notes:
-    * The list of (word, world, imageRef, prompt_word) is loaded from
-      docs/articles_game_design.md. For the first iteration we hardcode a
-      small WORLD_1_TEST list — replace with the parser once the design
-      doc is final.
-    * Images are saved as 1024×1024 PNG; final WebP 256×256 conversion is
-      a separate step (see scripts/compress_images.sh, TODO).
+    * Each query returns the top photo for the search term. Pass --pick N
+      (1..15) to choose a different result if the first one doesn't fit.
+    * Images are saved as 1024×1024 PNG (cropped from the largest variant
+      Pexels provides). Final WebP conversion is a separate step.
 """
 from __future__ import annotations
 
@@ -35,27 +32,10 @@ ROOT = Path(__file__).resolve().parent.parent
 LOCAL_PROPS = ROOT / "local.properties"
 ASSET_ROOT = ROOT / "app" / "src" / "main" / "assets" / "article_images"
 
-RECRAFT_ENDPOINT = "https://external.api.recraft.ai/v1/images/generations"
+PEXELS_ENDPOINT = "https://api.pexels.com/v1/search"
 
-PROMPT_TEMPLATE = (
-    "warm hand-painted illustration of a {subject} set in sunny Spain, "
-    "Mediterranean atmosphere, terracotta-ochre-mustard color palette "
-    "with azure blue accents and white-stucco highlights, golden "
-    "Andalusian afternoon light, painterly textured artistic style, "
-    "the {subject} as the heart of the scene amid evocative Spanish "
-    "details (whitewashed walls, terracotta tiles, olive trees, "
-    "sun-warmed stones — whatever naturally fits the {subject}), warm "
-    "joyful inviting mood, authentic Spanish village or "
-    "Andalusian-coast feel, NOT photorealistic, NOT a photograph, NOT "
-    "a studio shot, no plain white background, no text, no logos, "
-    "rich painterly colors, hand-crafted look in the spirit of modern "
-    "European travel-poster art and warm editorial illustration, full "
-    "of emotion and life"
-)
-RECRAFT_STYLE = "digital_illustration/hand_drawn"
-
+# (imageRef, English search query, Spanish word)
 WORLD_1_TEST: list[tuple[str, str, str]] = [
-    # (imageRef, prompt_word_en, spanish_word)
     ("casa.webp", "house", "casa"),
     ("libro.webp", "book", "libro"),
     ("perro.webp", "dog", "perro"),
@@ -65,88 +45,103 @@ WORLD_1_TEST: list[tuple[str, str, str]] = [
 
 
 def read_api_key() -> str:
-    env_key = os.environ.get("RECRAFT_API_KEY", "").strip()
+    env_key = os.environ.get("PEXELS_API_KEY", "").strip()
     if env_key:
         return env_key
     if not LOCAL_PROPS.exists():
         sys.exit(
-            "ERROR: RECRAFT_API_KEY not in env, and local.properties not found.\n"
-            "Either set the env var or create local.properties with:\n"
-            "    RECRAFT_API_KEY=your_new_key_here\n"
+            "ERROR: PEXELS_API_KEY not in env, and local.properties not found.\n"
+            "Get a free key at https://www.pexels.com/api/ and add to local.properties:\n"
+            "    PEXELS_API_KEY=your_key_here\n"
         )
     for line in LOCAL_PROPS.read_text(encoding="utf-8-sig").splitlines():
         line = line.strip().lstrip("﻿")
-        if line.startswith("RECRAFT_API_KEY="):
+        if line.startswith("PEXELS_API_KEY="):
             return line.split("=", 1)[1].strip()
     sys.exit(
-        "ERROR: RECRAFT_API_KEY not found in env or local.properties.\n"
-        "Add a line like: RECRAFT_API_KEY=re_xxx"
+        "ERROR: PEXELS_API_KEY not found in env or local.properties.\n"
+        "Get a free key at https://www.pexels.com/api/\n"
+        "Add a line like: PEXELS_API_KEY=xxxxxxxxxxxxxxxxxxxx"
     )
 
 
-def generate_one(api_key: str, prompt_word: str, style_id: str | None) -> bytes:
-    """Send one prompt, return PNG bytes."""
-    payload: dict = {
-        "prompt": PROMPT_TEMPLATE.format(subject=prompt_word),
-        "model": "recraftv3",
-        "style": RECRAFT_STYLE,
-        "size": "1024x1024",
-        "n": 1,
-        "response_format": "url",
-    }
-    if style_id:
-        payload["style_id"] = style_id
-        payload.pop("style", None)
-
-    resp = requests.post(
-        RECRAFT_ENDPOINT,
-        headers={"Authorization": f"Bearer {api_key}"},
-        json=payload,
-        timeout=120,
+def fetch_one(api_key: str, query: str, pick: int = 1) -> bytes:
+    """Search Pexels for `query`, return PNG bytes of the `pick`-th result (1-based)."""
+    resp = requests.get(
+        PEXELS_ENDPOINT,
+        headers={"Authorization": api_key},
+        params={
+            "query": query,
+            "per_page": max(pick, 5),
+            "orientation": "square",
+            "size": "large",
+        },
+        timeout=30,
     )
     resp.raise_for_status()
-    image_url = resp.json()["data"][0]["url"]
+    data = resp.json()
+    photos = data.get("photos", [])
+    if not photos:
+        # fallback to landscape if no square match
+        resp = requests.get(
+            PEXELS_ENDPOINT,
+            headers={"Authorization": api_key},
+            params={"query": query, "per_page": max(pick, 5), "size": "large"},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        photos = resp.json().get("photos", [])
+    if not photos:
+        raise RuntimeError(f"No Pexels photos found for query '{query}'")
 
-    img = requests.get(image_url, timeout=120)
+    idx = min(pick, len(photos)) - 1
+    photo = photos[idx]
+    src = photo["src"]
+    # large = ~940px, large2x = ~1880px; prefer large2x then large
+    image_url = src.get("large2x") or src.get("large") or src.get("original")
+    print(f"  → photographer: {photo.get('photographer', '?')} "
+          f"(photo id {photo.get('id')})")
+
+    img = requests.get(image_url, timeout=60)
     img.raise_for_status()
     return img.content
 
 
 def run_batch(items: list[tuple[str, str, str]], world: int,
-              style_id: str | None, force: bool = False) -> None:
+              pick: int = 1, force: bool = False) -> None:
     out_dir = ASSET_ROOT / f"world_{world}"
     out_dir.mkdir(parents=True, exist_ok=True)
     api_key = read_api_key()
 
-    for i, (image_ref, prompt_word, _spanish) in enumerate(items, 1):
+    for i, (image_ref, query, _spanish) in enumerate(items, 1):
         target = out_dir / image_ref.replace(".webp", ".png")
         if target.exists() and not force:
             print(f"[{i}/{len(items)}] skip (exists): {image_ref}")
             continue
-        print(f"[{i}/{len(items)}] generating {image_ref} (subject={prompt_word})")
+        print(f"[{i}/{len(items)}] fetching '{query}' for {image_ref}")
         try:
-            png = generate_one(api_key, prompt_word, style_id)
+            png = fetch_one(api_key, query, pick=pick)
             target.write_bytes(png)
         except requests.HTTPError as e:
             print(f"  HTTP error: {e.response.status_code} {e.response.text[:200]}")
         except Exception as e:
             print(f"  error: {e}")
-        time.sleep(1)  # polite throttle
+        time.sleep(0.5)  # polite throttle (Pexels limit: 200 req/hour)
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--one", default=None,
-                    help="generate exactly ONE image for the given subject "
-                         "(use this while iterating on the prompt to save credits)")
-    ap.add_argument("--test", action="store_true", help="generate 5 test images")
+                    help="fetch exactly ONE image for the given Spanish word "
+                         "(saves quota while testing)")
+    ap.add_argument("--test", action="store_true", help="fetch 5 test images")
     ap.add_argument("--world", type=int, choices=[1, 2, 3, 4, 5])
     ap.add_argument("--all", action="store_true")
-    ap.add_argument("--style-id", default=None,
-                    help="Recraft style_id for cross-batch consistency "
-                         "(create one via /v1/styles, then reuse)")
+    ap.add_argument("--pick", type=int, default=1,
+                    help="pick the Nth Pexels result (1..15) — default 1; "
+                         "raise this if the top photo isn't suitable")
     ap.add_argument("--force", action="store_true",
-                    help="re-generate images even if files already exist")
+                    help="re-download even if the file already exists")
     args = ap.parse_args()
 
     if args.one:
@@ -154,12 +149,11 @@ def main() -> None:
         if match is None:
             sys.exit(f"--one: no test entry for '{args.one}' "
                      f"(known: {', '.join(t[2] for t in WORLD_1_TEST)})")
-        run_batch([match], world=1, style_id=args.style_id, force=args.force)
+        run_batch([match], world=1, pick=args.pick, force=args.force)
         return
     if args.test:
-        run_batch(WORLD_1_TEST, world=1, style_id=args.style_id, force=args.force)
+        run_batch(WORLD_1_TEST, world=1, pick=args.pick, force=args.force)
     elif args.world:
-        # TODO: load full per-world list from docs/articles_game_design.md
         sys.exit(f"--world {args.world}: word list not implemented yet "
                  f"(parser for design doc TODO)")
     elif args.all:
