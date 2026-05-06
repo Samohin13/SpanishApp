@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -98,6 +100,16 @@ private fun MathGameContent(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                     }
+                },
+                actions = {
+                    IconButton(onClick = { viewModel.toggleAudio() }) {
+                        Icon(
+                            if (state.audioEnabled) Icons.AutoMirrored.Filled.VolumeUp
+                            else Icons.AutoMirrored.Filled.VolumeOff,
+                            contentDescription = if (state.audioEnabled) "Выключить звук" else "Включить звук",
+                            tint = if (state.audioEnabled) ACCENT else Color.Gray
+                        )
+                    }
                 }
             )
         }
@@ -159,12 +171,10 @@ private fun MathGameContent(
                         color = if (state.displayMode == MathDisplayMode.AUDIO) ACCENT
                                 else Color(0xFF1A1A1A)
                     )
-                    if (state.displayMode != MathDisplayMode.NUMBERS) {
-                        Spacer(Modifier.height(8.dp))
-                        IconButton(onClick = { viewModel.repeatQuestion() }) {
-                            Icon(Icons.AutoMirrored.Filled.VolumeUp, "Повторить",
-                                tint = ACCENT, modifier = Modifier.size(28.dp))
-                        }
+                    Spacer(Modifier.height(8.dp))
+                    IconButton(onClick = { viewModel.repeatQuestion() }) {
+                        Icon(Icons.Default.Replay, "Повторить",
+                            tint = ACCENT, modifier = Modifier.size(28.dp))
                     }
                 }
             }

@@ -19,9 +19,12 @@ import kotlin.random.Random
 
 /**
  * Что показывается на экране для текущего уровня:
- * NUMBERS  — арабские цифры (1-10): «5 + 3»
- * SPANISH  — испанский текст     (11-25): «veinte + cinco»
+ * NUMBERS  — арабские цифры (legacy, не используется): «5 + 3»
+ * SPANISH  — испанский текст     (1-25): «cinco más tres»
  * AUDIO    — только символ «?»  (26-100): пользователь слышит TTS
+ *
+ * Примеры всегда словесные — пользователь учится понимать числа на испанском.
+ * Ответ всегда вводится цифрами.
  */
 enum class MathDisplayMode { NUMBERS, SPANISH, AUDIO }
 
@@ -37,7 +40,8 @@ data class MathGameState(
     val currentRound: Int = 0,
     val isGameOver: Boolean = false,
     val lastCorrect: Boolean? = null,
-    val displayMode: MathDisplayMode = MathDisplayMode.NUMBERS,
+    val displayMode: MathDisplayMode = MathDisplayMode.SPANISH,
+    val audioEnabled: Boolean = true,
     val finalStars: Int = 0,
     val finalPercent: Int = 0,
     val showLevelMap: Boolean = true
@@ -67,9 +71,15 @@ class MathViewModel @Inject constructor(
         _state.value = MathGameState(
             params      = params,
             displayMode = displayModeFor(level),
+            audioEnabled = _state.value.audioEnabled,
             showLevelMap = false
         )
         nextQuestion()
+    }
+
+    /** Включить / выключить автоматическую озвучку. Кнопка «повторить» работает всегда. */
+    fun toggleAudio() {
+        _state.value = _state.value.copy(audioEnabled = !_state.value.audioEnabled)
     }
 
     fun openLevelMap() {
@@ -84,7 +94,6 @@ class MathViewModel @Inject constructor(
     }
 
     private fun displayModeFor(level: Int): MathDisplayMode = when {
-        level <= 10 -> MathDisplayMode.NUMBERS
         level <= 25 -> MathDisplayMode.SPANISH
         else        -> MathDisplayMode.AUDIO
     }
@@ -108,9 +117,10 @@ class MathViewModel @Inject constructor(
             lastCorrect      = null
         )
 
-        // КРИТИЧНО: озвучка на всех уровнях кроме 1-10 (где видны цифры).
-        // Это «Cálculo Auditivo» — игра должна работать на слух.
-        if (s.displayMode != MathDisplayMode.NUMBERS) {
+        // Озвучка примера на испанском, если пользователь не выключил звук.
+        // На уровнях 26+ (AUDIO) звук критичен — отключение там делает игру непроходимой,
+        // но это выбор пользователя; кнопка «повторить» работает всегда.
+        if (s.audioEnabled) {
             tts.speak(spoken)
         }
 
@@ -123,15 +133,22 @@ class MathViewModel @Inject constructor(
         // ── Подбор выражения по диапазону уровней ────────────
         val (display, spoken, answer) = when {
             level <= 10 -> {
-                // +/- от 1 до 10
+                // +/- от 1 до 10 (словами)
                 val a = Random.nextInt(1, 11)
                 val b = Random.nextInt(1, 11)
                 if (Random.nextBoolean()) {
-                    val sum = a + b
-                    Triple("$a + $b", "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}", sum)
+                    Triple(
+                        "${NumberToSpanish.convert(a)} + ${NumberToSpanish.convert(b)}",
+                        "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}",
+                        a + b
+                    )
                 } else {
                     val mx = maxOf(a, b); val mn = minOf(a, b)
-                    Triple("$mx - $mn", "${NumberToSpanish.convert(mx)} menos ${NumberToSpanish.convert(mn)}", mx - mn)
+                    Triple(
+                        "${NumberToSpanish.convert(mx)} - ${NumberToSpanish.convert(mn)}",
+                        "${NumberToSpanish.convert(mx)} menos ${NumberToSpanish.convert(mn)}",
+                        mx - mn
+                    )
                 }
             }
             level <= 25 -> {
