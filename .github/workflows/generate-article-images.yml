@@ -14,9 +14,13 @@ on:
         default: 'test'
         type: choice
         options:
-          - test
-          - world1
-          - all
+          - test        # 5 пробных картинок
+          - world1      # Мир 1: исчисляемые предметы (~80)
+          - world2      # Мир 2: абстрактные понятия (~28)
+          - world3      # Мир 3: дни и время (~25)
+          - world4      # Мир 4: титулы и звания (~16)
+          - world5      # Мир 5: вещества и категории (~23)
+          - all         # Все миры (~173 уникальных)
 
 permissions:
   contents: write
@@ -50,16 +54,20 @@ jobs:
           case "${{ inputs.mode }}" in
             test)   python scripts/generate_article_images.py --test ;;
             world1) python scripts/generate_article_images.py --world 1 ;;
+            world2) python scripts/generate_article_images.py --world 2 ;;
+            world3) python scripts/generate_article_images.py --world 3 ;;
+            world4) python scripts/generate_article_images.py --world 4 ;;
+            world5) python scripts/generate_article_images.py --world 5 ;;
             all)    python scripts/generate_article_images.py --all ;;
           esac
 
       - name: Show generated files
         run: |
           echo "=== Generated images ==="
-          find app/src/main/assets/article_images -type f -name '*.png' | sort
+          find app/src/main/assets/article_images -type f -name '*.png' 2>/dev/null | sort
           echo ""
           echo "=== Total ==="
-          find app/src/main/assets/article_images -type f -name '*.png' | wc -l
+          find app/src/main/assets/article_images -type f -name '*.png' 2>/dev/null | wc -l
 
       - name: Commit and push
         run: |

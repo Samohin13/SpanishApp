@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
@@ -146,13 +150,34 @@ private fun ArticlesGameContent(
                     color = Color.White,
                     shadowElevation = 4.dp
                 ) {
-                    Box(
-                        modifier = Modifier.padding(40.dp),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier.padding(vertical = 28.dp, horizontal = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        val ctx = LocalContext.current
+                        val imageRef = wordToImageRef(word.word)
+                        var showImage by remember(word.word) { mutableStateOf(true) }
+                        if (showImage) {
+                            SubcomposeAsyncImage(
+                                model = ImageRequest.Builder(ctx)
+                                    .data("file:///android_asset/article_images/$imageRef.png")
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = word.word,
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .size(160.dp)
+                                    .clip(RoundedCornerShape(16.dp)),
+                                error = {
+                                    showImage = false
+                                    Box(Modifier.size(0.dp))
+                                }
+                            )
+                        }
                         Text(
                             word.word,
-                            fontSize = 44.sp,
+                            fontSize = if (showImage) 36.sp else 44.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF1A1A1A),
                             textAlign = TextAlign.Center
@@ -256,5 +281,10 @@ private fun ArticleButton(
 
 private fun triggerHaptic(haptic: HapticFeedback, success: Boolean) {
     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-    @Suppress("UNUSED_PARAMETER") val unused = success   // оставлено для совместимости
+    @Suppress("UNUSED_PARAMETER") val unused = success
 }
+
+private fun wordToImageRef(word: String): String = word.lowercase()
+    .replace("á", "a").replace("é", "e").replace("í", "i")
+    .replace("ó", "o").replace("ú", "u").replace("ü", "u")
+    .replace("ñ", "n").replace("ä", "a").replace("ö", "o")
