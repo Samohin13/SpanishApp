@@ -140,19 +140,28 @@ private fun ArticlesGameContent(
 
             // Карточка слова
             state.currentWord?.let { word ->
+                val emoji = WordEmoji.get(word.word)
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),
                     color = Color.White,
                     shadowElevation = 4.dp
                 ) {
-                    Box(
-                        modifier = Modifier.padding(40.dp),
-                        contentAlignment = Alignment.Center
+                    Column(
+                        modifier = Modifier.padding(vertical = 32.dp, horizontal = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        if (emoji != null) {
+                            Text(
+                                text = emoji,
+                                fontSize = 72.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                         Text(
-                            word.word,
-                            fontSize = 44.sp,
+                            text = word.word,
+                            fontSize = if (emoji != null) 36.sp else 44.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF1A1A1A),
                             textAlign = TextAlign.Center
