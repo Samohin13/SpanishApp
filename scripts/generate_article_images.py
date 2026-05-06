@@ -63,8 +63,8 @@ def read_api_key() -> str:
             "Either set the env var or create local.properties with:\n"
             "    RECRAFT_API_KEY=your_new_key_here\n"
         )
-    for line in LOCAL_PROPS.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
+    for line in LOCAL_PROPS.read_text(encoding="utf-8-sig").splitlines():
+        line = line.strip().lstrip("﻿")
         if line.startswith("RECRAFT_API_KEY="):
             return line.split("=", 1)[1].strip()
     sys.exit(
