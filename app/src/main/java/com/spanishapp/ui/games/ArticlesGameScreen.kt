@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,9 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
+import java.text.Normalizer
 
 private val ACCENT = Color(0xFF7B2FBE)
 
@@ -140,32 +145,45 @@ private fun ArticlesGameContent(
 
             // Карточка слова
             state.currentWord?.let { word ->
-                val emoji = WordEmoji.get(word.word)
+                val context = LocalContext.current
+                val imageFile = stripAccents(word.word.lowercase())
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),
                     color = Color.White,
-                    shadowElevation = 4.dp
+                    shadowElevation = 6.dp
                 ) {
                     Column(
-                        modifier = Modifier.padding(vertical = 32.dp, horizontal = 24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        if (emoji != null) {
+                        // Картинка из assets
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data("file:///android_asset/word_images/$imageFile.png")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = word.word,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(220.dp)
+                                .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                        )
+                        // Название слова
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 20.dp, horizontal = 16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Text(
-                                text = emoji,
-                                fontSize = 72.sp,
+                                text = word.word,
+                                fontSize = 38.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF1A1A1A),
                                 textAlign = TextAlign.Center
                             )
                         }
-                        Text(
-                            text = word.word,
-                            fontSize = if (emoji != null) 36.sp else 44.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1A1A1A),
-                            textAlign = TextAlign.Center
-                        )
                     }
                 }
             }
@@ -261,6 +279,12 @@ private fun ArticleButton(
             Text(label, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
         }
     }
+}
+
+/** gato → gato, pájaro → pajaro, etc. */
+private fun stripAccents(s: String): String {
+    val normalized = Normalizer.normalize(s, Normalizer.Form.NFD)
+    return normalized.replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
 }
 
 private fun triggerHaptic(haptic: HapticFeedback, success: Boolean) {
