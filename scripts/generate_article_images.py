@@ -38,10 +38,12 @@ ASSET_ROOT = ROOT / "app" / "src" / "main" / "assets" / "article_images"
 RECRAFT_ENDPOINT = "https://external.api.recraft.ai/v1/images/generations"
 
 PROMPT_TEMPLATE = (
-    "flat vector illustration of {subject}, soft pastel background, "
-    "minimal style, centered composition, no text, no letters, "
-    "simple shapes, rounded corners, child-friendly, clean"
+    "professional studio photograph of a {subject}, soft natural lighting, "
+    "plain light neutral background, sharp focus, high detail, "
+    "centered composition, no text, no people unless the subject itself "
+    "is a person, photorealistic"
 )
+RECRAFT_STYLE = "realistic_image"
 
 WORLD_1_TEST: list[tuple[str, str, str]] = [
     # (imageRef, prompt_word_en, spanish_word)
@@ -78,7 +80,7 @@ def generate_one(api_key: str, prompt_word: str, style_id: str | None) -> bytes:
     payload: dict = {
         "prompt": PROMPT_TEMPLATE.format(subject=prompt_word),
         "model": "recraftv3",
-        "style": "digital_illustration",
+        "style": RECRAFT_STYLE,
         "size": "1024x1024",
         "n": 1,
         "response_format": "url",
@@ -101,14 +103,15 @@ def generate_one(api_key: str, prompt_word: str, style_id: str | None) -> bytes:
     return img.content
 
 
-def run_batch(items: list[tuple[str, str, str]], world: int, style_id: str | None) -> None:
+def run_batch(items: list[tuple[str, str, str]], world: int,
+              style_id: str | None, force: bool = False) -> None:
     out_dir = ASSET_ROOT / f"world_{world}"
     out_dir.mkdir(parents=True, exist_ok=True)
     api_key = read_api_key()
 
     for i, (image_ref, prompt_word, _spanish) in enumerate(items, 1):
         target = out_dir / image_ref.replace(".webp", ".png")
-        if target.exists():
+        if target.exists() and not force:
             print(f"[{i}/{len(items)}] skip (exists): {image_ref}")
             continue
         print(f"[{i}/{len(items)}] generating {image_ref} (subject={prompt_word})")
@@ -130,10 +133,12 @@ def main() -> None:
     ap.add_argument("--style-id", default=None,
                     help="Recraft style_id for cross-batch consistency "
                          "(create one via /v1/styles, then reuse)")
+    ap.add_argument("--force", action="store_true",
+                    help="re-generate images even if files already exist")
     args = ap.parse_args()
 
     if args.test:
-        run_batch(WORLD_1_TEST, world=1, style_id=args.style_id)
+        run_batch(WORLD_1_TEST, world=1, style_id=args.style_id, force=args.force)
     elif args.world:
         # TODO: load full per-world list from docs/articles_game_design.md
         sys.exit(f"--world {args.world}: word list not implemented yet "
