@@ -25,7 +25,7 @@ import com.spanishapp.data.db.entity.*
         LibroProgressEntity::class,
         GameLevelProgressEntity::class
     ],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -216,6 +216,32 @@ abstract class AppDatabase : RoomDatabase() {
                         PRIMARY KEY(game_id, level_num)
                     )
                 """.trimIndent())
+            }
+        }
+
+        // ── v11: пересобираем article_words под 100-уровневую структуру ──
+        // Старая таблица была сидирована автогенерацией из словаря с RANDOM.
+        // Новая — детерминированная: levelNum (1..100), position (0..9), is_plural, russian, block.
+        // Прогресс уровней (article_level_progress) — отдельная таблица, не трогаем.
+        val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE IF EXISTS article_words")
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS article_words (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        word TEXT NOT NULL,
+                        article TEXT NOT NULL,
+                        level TEXT NOT NULL,
+                        rule_hint TEXT NOT NULL,
+                        error_weight INTEGER NOT NULL DEFAULT 0,
+                        level_num INTEGER NOT NULL DEFAULT 0,
+                        position INTEGER NOT NULL DEFAULT 0,
+                        is_plural INTEGER NOT NULL DEFAULT 0,
+                        russian TEXT NOT NULL DEFAULT '',
+                        block TEXT NOT NULL DEFAULT ''
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS idx_article_words_level_num ON article_words(level_num, position)")
             }
         }
     }

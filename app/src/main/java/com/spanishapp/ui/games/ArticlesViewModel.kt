@@ -1,5 +1,6 @@
 package com.spanishapp.ui.games
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.ArticleGameDao
@@ -14,9 +15,11 @@ import com.spanishapp.domain.games.LevelParams
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import javax.inject.Inject
 
 data class ArticlesPremiumState(
@@ -41,6 +44,7 @@ data class ArticlesPremiumState(
 
 @HiltViewModel
 class ArticlesViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val dao: ArticleGameDao,
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
@@ -56,8 +60,11 @@ class ArticlesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            if (dao.getWordCount() < 200) {
-                seedFromDictionary()
+            // Перезаливаем сид если БД пустая ИЛИ если в ней нет уровней (level_num=0 — старый seed).
+            val total = dao.getWordCount()
+            val firstLvl = dao.getWordsForGameLevel(1)
+            if (total < 100 || firstLvl.isEmpty()) {
+                seedFromJson()
             }
         }
     }
@@ -82,21 +89,24 @@ class ArticlesViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val words = dao.getWordsForLevels(s.params.cefr, 30)
-            if (words.isNotEmpty()) {
-                val word = words.random()
-                _state.value = s.copy(
-                    currentWord = word,
-                    currentRound = s.currentRound + 1,
-                    lastCorrect = null,
-                    academicHint = null
-                )
-                questionStartTime = System.currentTimeMillis()
-            } else {
-                // Запасной вариант — добиваем seed
-                seedFromDictionary()
-                nextRound()
+            // Детерминированный набор слов для уровня (1..100), без RANDOM:
+            // позиция в раунде = currentRound (0..9). Если в БД < 10 слов на уровне —
+            // пересеиваем и берём первое слово.
+            var words = dao.getWordsForGameLevel(s.params.level)
+            if (words.size < s.totalRounds) {
+                seedFromJson()
+                words = dao.getWordsForGameLevel(s.params.level)
             }
+            if (words.isEmpty()) return@launch
+            val idx = s.currentRound.coerceIn(0, words.size - 1)
+            val word = words[idx]
+            _state.value = s.copy(
+                currentWord = word,
+                currentRound = s.currentRound + 1,
+                lastCorrect = null,
+                academicHint = null
+            )
+            questionStartTime = System.currentTimeMillis()
         }
     }
 
@@ -174,35 +184,51 @@ class ArticlesViewModel @Inject constructor(
     }
 
     /**
-     * Засев `article_words` из основного словаря — извлекаем все
-     * существительные с артиклем `el / la` и сохраняем как кандидатов.
-     * Запускается при первом старте если в БД пусто.
+     * Засев `article_words` из ассета `articles_levels.json` — детерминированно
+     * по 100 уровням × 10 раундов. Источник правды: docs/articles_levels.json.
+     * Запускается один раз: при первом старте или после миграции 10→11.
      */
-    private suspend fun seedFromDictionary() {
-        // ВАЖНО: getAllWordsOnce фильтрует по total_reviews > 0 — при первом
-        // запуске вернёт пусто. Используем getRandomWords без фильтра.
-        val all = wordDao.getRandomWords(12000)
-        val articles = all.mapNotNull { w ->
-            if (w.wordType != "noun") return@mapNotNull null
-            val s = w.spanish.trim().lowercase()
-            val (article, rest) = when {
-                s.startsWith("el ")  -> "el"  to s.removePrefix("el ").trim()
-                s.startsWith("la ")  -> "la"  to s.removePrefix("la ").trim()
-                else -> return@mapNotNull null
+    private suspend fun seedFromJson() {
+        val raw = try {
+            appContext.assets.open("articles_levels.json")
+                .bufferedReader(Charsets.UTF_8)
+                .use { it.readText() }
+        } catch (_: Exception) {
+            return  // ассет не найден — оставляем БД пустой, UI покажет сообщение
+        }
+        val arr = JSONArray(raw)
+        val rows = mutableListOf<ArticleWordEntity>()
+        for (i in 0 until arr.length()) {
+            val lvlObj = arr.getJSONObject(i)
+            val levelNum = lvlObj.getInt("level")
+            val block = lvlObj.optString("block", "")
+            val ruleHint = lvlObj.optString("rule_hint", "")
+            val cefr = when {
+                levelNum <= 30 -> "A1"
+                levelNum <= 50 -> "A2"
+                levelNum <= 80 -> "B1"
+                else            -> "B2"
             }
-            // отбрасываем многословные и спец-конструкции
-            if (rest.isBlank() || rest.contains(' ')) return@mapNotNull null
-            ArticleWordEntity(
-                word     = rest,
-                article  = article,
-                level    = w.level.ifBlank { "A1" },
-                ruleHint = ""
-            )
+            val words = lvlObj.getJSONArray("words")
+            for (pos in 0 until words.length()) {
+                val w = words.getJSONObject(pos)
+                rows += ArticleWordEntity(
+                    word      = w.getString("word"),
+                    article   = w.getString("article"),
+                    level     = cefr,
+                    ruleHint  = ruleHint,
+                    levelNum  = levelNum,
+                    position  = pos,
+                    isPlural  = w.optBoolean("is_plural", false),
+                    russian   = w.optString("russian", ""),
+                    block     = block
+                )
+            }
         }
-        if (articles.isNotEmpty()) {
-            dao.insertWords(articles)
+        if (rows.isNotEmpty()) {
+            dao.insertWords(rows)
         }
-        // и сами уровни уровней (legacy совместимость)
+        // legacy совместимость — все CEFR-уровни в article_level_progress открыты
         listOf("A1", "A2", "B1", "B2", "C1").forEach {
             dao.upsertProgress(ArticleLevelProgressEntity(it, isUnlocked = true))
         }

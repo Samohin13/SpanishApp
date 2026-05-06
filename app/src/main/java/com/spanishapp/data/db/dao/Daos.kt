@@ -424,10 +424,15 @@ interface ArticleGameDao {
     @Query("UPDATE article_level_progress SET isUnlocked = 1 WHERE levelId = :levelId")
     suspend fun unlockLevel(levelId: String)
 
-    @Query("SELECT * FROM article_words WHERE level = :level ORDER BY error_weight DESC, RANDOM() LIMIT :limit")
+    // ── Детерминированный набор слов для уровня (1..100), без RANDOM ──
+    @Query("SELECT * FROM article_words WHERE level_num = :levelNum ORDER BY position ASC")
+    suspend fun getWordsForGameLevel(levelNum: Int): List<ArticleWordEntity>
+
+    // Совместимость: CEFR-фильтр для старых вызовов (используется тестами/просмотром).
+    @Query("SELECT * FROM article_words WHERE level = :level ORDER BY level_num ASC, position ASC LIMIT :limit")
     suspend fun getWordsForLevel(level: String, limit: Int = 10): List<ArticleWordEntity>
 
-    @Query("SELECT * FROM article_words WHERE level IN (:levels) ORDER BY error_weight DESC, RANDOM() LIMIT :limit")
+    @Query("SELECT * FROM article_words WHERE level IN (:levels) ORDER BY level_num ASC, position ASC LIMIT :limit")
     suspend fun getWordsForLevels(levels: List<String>, limit: Int = 10): List<ArticleWordEntity>
 
     @Query("SELECT COUNT(*) FROM article_words WHERE level IN (:levels)")

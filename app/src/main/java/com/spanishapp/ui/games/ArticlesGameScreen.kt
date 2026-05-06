@@ -222,31 +222,58 @@ private fun ArticlesGameContent(
 
             Spacer(Modifier.weight(1f))
 
-            // Кнопки EL / LA
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                ArticleButton(
-                    label = "EL",
-                    gradient = Brush.verticalGradient(
-                        listOf(Color(0xFF2196F3), Color(0xFF1976D2))),
-                    enabled = state.lastCorrect == null,
-                    onClick = {
-                        viewModel.submitAnswer("el")
-                        triggerHaptic(haptic, state.currentWord?.article == "el")
-                    },
-                    modifier = Modifier.weight(1f)
-                )
-                ArticleButton(
-                    label = "LA",
-                    gradient = Brush.verticalGradient(
-                        listOf(Color(0xFFFF8A65), Color(0xFFD84315))),
-                    enabled = state.lastCorrect == null,
-                    onClick = {
-                        viewModel.submitAnswer("la")
-                        triggerHaptic(haptic, state.currentWord?.article == "la")
-                    },
-                    modifier = Modifier.weight(1f)
-                )
+            // Кнопки EL / LA / LOS / LAS — сетка 2×2
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    ArticleButton(
+                        label = "EL",
+                        gradient = Brush.verticalGradient(
+                            listOf(Color(0xFF2196F3), Color(0xFF1976D2))),
+                        enabled = state.lastCorrect == null,
+                        onClick = {
+                            viewModel.submitAnswer("el")
+                            triggerHaptic(haptic, state.currentWord?.article == "el")
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                    ArticleButton(
+                        label = "LA",
+                        gradient = Brush.verticalGradient(
+                            listOf(Color(0xFFFF8A65), Color(0xFFD84315))),
+                        enabled = state.lastCorrect == null,
+                        onClick = {
+                            viewModel.submitAnswer("la")
+                            triggerHaptic(haptic, state.currentWord?.article == "la")
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    ArticleButton(
+                        label = "LOS",
+                        gradient = Brush.verticalGradient(
+                            listOf(Color(0xFF4FC3F7), Color(0xFF0288D1))),
+                        enabled = state.lastCorrect == null,
+                        onClick = {
+                            viewModel.submitAnswer("los")
+                            triggerHaptic(haptic, state.currentWord?.article == "los")
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                    ArticleButton(
+                        label = "LAS",
+                        gradient = Brush.verticalGradient(
+                            listOf(Color(0xFFF06292), Color(0xFFC2185B))),
+                        enabled = state.lastCorrect == null,
+                        onClick = {
+                            viewModel.submitAnswer("las")
+                            triggerHaptic(haptic, state.currentWord?.article == "las")
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
     }

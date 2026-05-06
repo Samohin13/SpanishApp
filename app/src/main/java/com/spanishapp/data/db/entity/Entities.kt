@@ -164,10 +164,15 @@ data class LessonProgressEntity(
 data class ArticleWordEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val word: String,
-    val article: String,  // "el" или "la"
-    val level: String,    // A1, A2, B1, B2, C1
+    val article: String,                                       // "el" / "la" / "los" / "las"
+    val level: String,                                          // CEFR: A1, A2, B1, B2, C1
     @ColumnInfo(name = "rule_hint") val ruleHint: String,
-    @ColumnInfo(name = "error_weight") var errorWeight: Int = 0
+    @ColumnInfo(name = "error_weight") var errorWeight: Int = 0,
+    @ColumnInfo(name = "level_num") val levelNum: Int = 0,      // 1..100 — игровой уровень
+    @ColumnInfo(name = "position") val position: Int = 0,       // 0..9 — порядок внутри уровня
+    @ColumnInfo(name = "is_plural") val isPlural: Boolean = false,
+    val russian: String = "",
+    val block: String = ""                                       // напр. "A1-base", "exceptions-ma"
 )
 
 @Entity(tableName = "article_level_progress")
