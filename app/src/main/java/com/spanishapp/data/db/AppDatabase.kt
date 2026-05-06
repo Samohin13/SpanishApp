@@ -223,6 +223,8 @@ abstract class AppDatabase : RoomDatabase() {
         // Старая таблица была сидирована автогенерацией из словаря с RANDOM.
         // Новая — детерминированная: levelNum (1..100), position (0..9), is_plural, russian, block.
         // Прогресс уровней (article_level_progress) — отдельная таблица, не трогаем.
+        // ВАЖНО: схема CREATE TABLE должна 1-в-1 совпадать с тем, что Room генерирует
+        // для @Entity, иначе Room упадёт с "Migration didn't properly handle".
         val MIGRATION_10_11 = object : Migration(10, 11) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("DROP TABLE IF EXISTS article_words")
@@ -233,15 +235,14 @@ abstract class AppDatabase : RoomDatabase() {
                         article TEXT NOT NULL,
                         level TEXT NOT NULL,
                         rule_hint TEXT NOT NULL,
-                        error_weight INTEGER NOT NULL DEFAULT 0,
-                        level_num INTEGER NOT NULL DEFAULT 0,
-                        position INTEGER NOT NULL DEFAULT 0,
-                        is_plural INTEGER NOT NULL DEFAULT 0,
-                        russian TEXT NOT NULL DEFAULT '',
-                        block TEXT NOT NULL DEFAULT ''
+                        error_weight INTEGER NOT NULL,
+                        level_num INTEGER NOT NULL,
+                        position INTEGER NOT NULL,
+                        is_plural INTEGER NOT NULL,
+                        russian TEXT NOT NULL,
+                        block TEXT NOT NULL
                     )
                 """.trimIndent())
-                db.execSQL("CREATE INDEX IF NOT EXISTS idx_article_words_level_num ON article_words(level_num, position)")
             }
         }
     }
