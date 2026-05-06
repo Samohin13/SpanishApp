@@ -6,7 +6,21 @@
 
 import json, os, sys, time, unicodedata, requests
 
-API_KEY = "sQGtknJ2GqNCnMJMBptWekBnqiT0Rtxr1frd2LSW46BpthPoLOLNJ0HSLYS7p8dt"
+
+def _read_api_key() -> str:
+    key = os.environ.get("RECRAFT_API_KEY", "").strip()
+    if key:
+        return key
+    lp = os.path.join(os.path.dirname(__file__), "local.properties")
+    if os.path.exists(lp):
+        for line in open(lp, encoding="utf-8-sig"):
+            line = line.strip().lstrip("﻿")
+            if line.startswith("RECRAFT_API_KEY="):
+                return line.split("=", 1)[1].strip()
+    sys.exit("ERROR: RECRAFT_API_KEY not found (env var or local.properties)")
+
+
+API_KEY = _read_api_key()
 API_URL = "https://external.api.recraft.ai/v1/images/generations"
 OUT_DIR = r"app\src\main\assets\word_images"
 BATCH_SIZE = 50
