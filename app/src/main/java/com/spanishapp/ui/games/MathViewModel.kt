@@ -79,12 +79,21 @@ class MathViewModel @Inject constructor(
 
     /** Включить / выключить автоматическую озвучку. Кнопка «повторить» работает всегда. */
     fun toggleAudio() {
-        _state.value = _state.value.copy(audioEnabled = !_state.value.audioEnabled)
+        val newValue = !_state.value.audioEnabled
+        _state.value = _state.value.copy(audioEnabled = newValue)
+        if (!newValue) tts.stop()  // прервать текущее произнесение
     }
 
     fun openLevelMap() {
         timerJob?.cancel()
+        tts.stop()
         _state.value = _state.value.copy(showLevelMap = true, isGameOver = false)
+    }
+
+    override fun onCleared() {
+        timerJob?.cancel()
+        tts.stop()
+        super.onCleared()
     }
 
     /** Повторить произнесение задания. Доступно на всех уровнях. */
@@ -220,26 +229,27 @@ class MathViewModel @Inject constructor(
                 // Комбинированные
                 when (Random.nextInt(3)) {
                     0 -> {
+                        // «Тройное a минус b»
                         val a = Random.nextInt(5, 31); val b = Random.nextInt(2, 8)
                         Triple("?", "El triple de ${NumberToSpanish.convert(a)} menos ${NumberToSpanish.convert(b)}", a * 3 - b)
                     }
                     1 -> {
-                        val a = Random.nextInt(20, 81); val b = Random.nextInt(5, 21)
-                        Triple("?", "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)} entre ${NumberToSpanish.convert(if (b % 5 == 0) 5 else 1)}",
-                               a + b / (if (b % 5 == 0) 5 else 1))
+                        // «Двойное a плюс b»
+                        val a = Random.nextInt(10, 51); val b = Random.nextInt(5, 21)
+                        Triple("?", "El doble de ${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}", a * 2 + b)
                     }
                     else -> {
-                        val a = Random.nextInt(10, 51)
-                        Triple("?", "La mitad del doble de ${NumberToSpanish.convert(a)}", a)
+                        // «Половина a минус b», a всегда чётное
+                        val a = Random.nextInt(10, 51) * 2; val b = Random.nextInt(2, 11)
+                        Triple("?", "La mitad de ${NumberToSpanish.convert(a)} menos ${NumberToSpanish.convert(b)}", a / 2 - b)
                     }
                 }
             }
         }
-        // Mode-aware override (если режим NUMBERS — заменяем display на цифры)
+        // В AUDIO-режиме скрываем выражение (только «?»), в SPANISH показываем словами.
         return when (mode) {
-            MathDisplayMode.NUMBERS -> Expr(display, spoken, answer)
-            MathDisplayMode.SPANISH -> Expr(display, spoken, answer)
-            MathDisplayMode.AUDIO   -> Expr("?", spoken, answer)
+            MathDisplayMode.AUDIO -> Expr("?", spoken, answer)
+            else                  -> Expr(display, spoken, answer)
         }
     }
 
