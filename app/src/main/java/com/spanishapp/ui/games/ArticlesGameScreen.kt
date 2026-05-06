@@ -117,14 +117,16 @@ private fun ArticlesGameContent(
     ) {
         // ── Контент ───────────────────────────────────────────
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Хедер: назад + точки-прогресс + счётчик
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 4.dp, end = 16.dp, top = 20.dp, bottom = 8.dp), // top=20 — не лезет в статус-бар
+                    .padding(start = 4.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBack) {
