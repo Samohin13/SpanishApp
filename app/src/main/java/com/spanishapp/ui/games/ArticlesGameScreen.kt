@@ -163,7 +163,7 @@ private fun ArticlesGameContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 4.dp, end = 16.dp, top = 10.dp, bottom = 6.dp),
+                    .padding(start = 4.dp, end = 16.dp, top = 20.dp, bottom = 8.dp), // top=20 — не лезет в статус-бар
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBack) {
@@ -171,7 +171,7 @@ private fun ArticlesGameContent(
                 }
                 Row(
                     modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
                 ) {
                     repeat(state.totalRounds) { i ->
                         ProgressDot(
@@ -187,9 +187,25 @@ private fun ArticlesGameContent(
                 )
             }
 
-            Spacer(Modifier.height(10.dp))
+            // ── XP + верных — крупно, над картинкой ──────────
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "⚡ ${state.score} XP",
+                    fontSize = 22.sp, color = ACCENT, fontWeight = FontWeight.ExtraBold
+                )
+                Text(
+                    "✅ ${state.correctCount} верных",
+                    fontSize = 20.sp, color = Color(0xFF3A3A3C), fontWeight = FontWeight.Bold
+                )
+            }
 
-            // Картинка (с тряской)
+            // Картинка (с тряской) — квадратная
             word?.let { w ->
                 val context   = LocalContext.current
                 val imageFile = stripAccents(w.word.lowercase())
@@ -198,7 +214,7 @@ private fun ArticlesGameContent(
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp)
                         .offset(x = shakeOffset.value.dp)
-                        .height(220.dp)
+                        .aspectRatio(1f)              // квадрат
                         .clip(RoundedCornerShape(24.dp))
                         .background(Color.White)
                 ) {
@@ -261,20 +277,6 @@ private fun ArticlesGameContent(
                 exit  = scaleOut() + fadeOut()
             ) {
                 ComboBadge(streak = state.streak)
-            }
-
-            // XP строка
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 6.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("⚡ ${state.score} XP", fontSize = 13.sp, color = ACCENT, fontWeight = FontWeight.SemiBold)
-                Text(
-                    "${state.correctCount} верных",
-                    fontSize = 13.sp, color = Color(0xFF8E8E93)
-                )
             }
 
             Spacer(Modifier.weight(1f))
