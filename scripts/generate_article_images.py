@@ -136,6 +136,9 @@ def run_batch(items: list[tuple[str, str, str]], world: int,
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--one", default=None,
+                    help="generate exactly ONE image for the given subject "
+                         "(use this while iterating on the prompt to save credits)")
     ap.add_argument("--test", action="store_true", help="generate 5 test images")
     ap.add_argument("--world", type=int, choices=[1, 2, 3, 4, 5])
     ap.add_argument("--all", action="store_true")
@@ -146,6 +149,13 @@ def main() -> None:
                     help="re-generate images even if files already exist")
     args = ap.parse_args()
 
+    if args.one:
+        match = next((t for t in WORLD_1_TEST if t[2] == args.one), None)
+        if match is None:
+            sys.exit(f"--one: no test entry for '{args.one}' "
+                     f"(known: {', '.join(t[2] for t in WORLD_1_TEST)})")
+        run_batch([match], world=1, style_id=args.style_id, force=args.force)
+        return
     if args.test:
         run_batch(WORLD_1_TEST, world=1, style_id=args.style_id, force=args.force)
     elif args.world:
