@@ -38,10 +38,12 @@ ASSET_ROOT = ROOT / "app" / "src" / "main" / "assets" / "article_images"
 RECRAFT_ENDPOINT = "https://external.api.recraft.ai/v1/images/generations"
 
 PROMPT_TEMPLATE = (
-    "professional studio photograph of a {subject}, soft natural lighting, "
-    "plain light neutral background, sharp focus, high detail, "
-    "centered composition, no text, no people unless the subject itself "
-    "is a person, photorealistic"
+    "clean product photography of a single {subject}, "
+    "pure plain white seamless background, "
+    "full subject visible centered in frame, "
+    "soft even studio lighting, sharp focus throughout entire subject, "
+    "no environment, no props, no surface, no text, "
+    "photorealistic, encyclopedia-style catalog photo"
 )
 RECRAFT_STYLE = "realistic_image"
 
