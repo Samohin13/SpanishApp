@@ -155,9 +155,13 @@ class ArticlesViewModel @Inject constructor(
                 academicHint = if (!isCorrect) word.ruleHint else null
             )
 
-            kotlinx.coroutines.delay(if (isCorrect) 1000 else 2500)
-            nextRound()
+            // Авто-переход убран — теперь пользователь нажимает CONTINUAR (как в Duolingo)
         }
+    }
+
+    /** Вызывается кнопкой CONTINUAR после ответа. */
+    fun continueToNext() {
+        nextRound()
     }
 
     private fun finishGame() {
