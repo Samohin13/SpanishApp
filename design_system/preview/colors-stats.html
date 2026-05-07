@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Stats colors</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body {
+    margin:0; padding:24px;
+    background:
+      radial-gradient(50% 60% at 80% 10%, rgba(255,180,0,.18) 0%, transparent 60%),
+      radial-gradient(45% 55% at 15% 85%, rgba(214,40,103,.12) 0%, transparent 60%),
+      linear-gradient(160deg, #FFFFFF 0%, #FFF8F2 100%);
+    font-family:var(--font-sans); color:#264653;
+    min-height:100vh;
+  }
+  .row { display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; }
+  .sw { display:flex; flex-direction:column; gap:8px; width:140px; }
+  .chip {
+    height:88px; border-radius:14px; position:relative; overflow:hidden;
+    border:1px solid rgba(15,4,24,.08);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.45) inset,
+      0 -2px 0 rgba(15,4,24,.10) inset,
+      0 1px 2px rgba(15,4,24,.08),
+      0 8px 18px -6px rgba(15,4,24,.16),
+      0 18px 28px -10px rgba(15,4,24,.18);
+  }
+  .chip::before {
+    content:""; position:absolute; left:0; right:0; top:0; height:50%;
+    background: linear-gradient(180deg, rgba(255,255,255,.30) 0%, rgba(255,255,255,0) 100%);
+  }
+  .chip.gold   { background: linear-gradient(180deg,#FFCC33,#FF9500); }
+  .chip.orange { background: linear-gradient(180deg,#FF8B5C,#FF6B00); }
+  .chip.peach  { background: linear-gradient(180deg,#FFF6EE,#FFEEDC); border-color: rgba(15,4,24,.10); }
+  .label { font-size:12.5px; font-weight:800; color:#264653; }
+  .hex   { font-size:10.5px; color:#5E5E66; font-family:ui-monospace,Menlo,monospace; font-weight:600; }
+  .role  { font-size:10.5px; color:#8A6E5C; }
+
+  /* — pills with animated SVG icons — */
+  .pills { margin-top:6px; display:flex; gap:10px; }
+  .pill {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 14px 7px 10px; border-radius:9999px;
+    background:#FFF; font-weight:800; font-size:14px;
+    border:1px solid rgba(15,4,24,.06);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.95) inset,
+      0 1px 2px rgba(15,4,24,.06),
+      0 6px 12px -4px rgba(15,4,24,.10),
+      0 14px 22px -10px rgba(15,4,24,.14);
+  }
+  .pill .glyph { width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; }
+
+  /* XP star */
+  .pill.xp { color:#FF9500; }
+  .pill.xp .star { animation: starPulse 2.2s ease-in-out infinite; transform-origin: 50% 50%; }
+  @keyframes starPulse {
+    0%,100% { transform: scale(1) rotate(0);     filter: drop-shadow(0 0 0 rgba(255,149,0,0)); }
+    50%     { transform: scale(1.2) rotate(72deg); filter: drop-shadow(0 0 4px rgba(255,180,0,.6)); }
+  }
+
+  /* Streak fire */
+  .pill.fire { color:#FF6B00; }
+  .pill.fire .flame-base  { transform-origin: 50% 95%; animation: flameSway 1.4s ease-in-out infinite; }
+  .pill.fire .flame-inner { transform-origin: 50% 95%; animation: flameSway 1.0s ease-in-out infinite reverse; }
+  .pill.fire .flame-spark { animation: spark 1.6s ease-in-out infinite; }
+  @keyframes flameSway {
+    0%,100% { transform: scaleY(1)    skewX(-2deg); }
+    50%     { transform: scaleY(1.10) skewX(3deg); }
+  }
+  @keyframes spark {
+    0%   { transform: translateY(0)   scale(.8); opacity:0; }
+    30%  { opacity:1; }
+    100% { transform: translateY(-9px) scale(.4); opacity:0; }
+  }
+</style>
+</head><body>
+<div class="row">
+  <div class="sw"><div class="chip gold"></div><div class="label">Gold</div><div class="hex">#FF9500</div><div class="role">XP · sparkles</div></div>
+  <div class="sw"><div class="chip orange"></div><div class="label">Orange</div><div class="hex">#FF6B00</div><div class="role">Streak fire</div></div>
+  <div class="sw"><div class="chip peach"></div><div class="label">Stat Pill BG</div><div class="hex">#FFF1E6</div><div class="role">Soft accent</div></div>
+  <div class="sw" style="width:auto">
+    <div class="label">In-context · animated</div>
+    <div class="pills">
+      <span class="pill xp">
+        <span class="glyph">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path class="star" d="M11 2.5 L13.4 8.2 L19.5 8.7 L14.9 12.7 L16.4 18.6 L11 15.3 L5.6 18.6 L7.1 12.7 L2.5 8.7 L8.6 8.2 Z" fill="#FF9500"/>
+          </svg>
+        </span>
+        1240
+      </span>
+      <span class="pill fire">
+        <span class="glyph">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle class="flame-spark" cx="11" cy="6" r="1.1" fill="#FFD23F"/>
+            <path class="flame-base" d="M11 3.5 C 13 6.5, 16 8, 16 13 C 16 16.3, 13.8 18.5, 11 18.5 C 8.2 18.5, 6 16.3, 6 13 C 6 10.5, 8 9, 8.5 6.5 C 9.2 8.5, 10.2 8.5, 11 6.5 Z" fill="url(#flameG2)"/>
+            <path class="flame-inner" d="M11 8 C 12 10, 13.5 11, 13.5 13.4 C 13.5 15.2, 12.4 16.5, 11 16.5 C 9.6 16.5, 8.5 15.2, 8.5 13.4 C 8.5 11.8, 9.5 10.8, 9.8 9.5 C 10.2 10.5, 10.6 10.5, 11 9.5 Z" fill="#FFD23F"/>
+            <defs>
+              <linearGradient id="flameG2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#FF9500"/>
+                <stop offset="1" stop-color="#FF3D00"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        12
+      </span>
+    </div>
+    <div class="role" style="margin-top:6px">⭐ pulse + rotate · 🔥 sway + spark</div>
+  </div>
+</div>
+</body></html>

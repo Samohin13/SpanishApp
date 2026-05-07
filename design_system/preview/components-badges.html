@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Pills · Badges</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body {
+    margin:0; padding:24px;
+    background: linear-gradient(160deg,#FFFFFF 0%, #F4F4F8 100%);
+    font-family:var(--font-sans); color:#1A1A1A;
+  }
+  .row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .row + .row { margin-top:16px; }
+
+  /* — STAT PILL base — */
+  .stat {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 14px 7px 10px; border-radius:9999px;
+    background:#FFF; font-weight:800; font-size:15px;
+    border:1px solid rgba(15,4,24,.06);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.95) inset,
+      0 1px 2px rgba(15,4,24,.06),
+      0 6px 12px -4px rgba(15,4,24,.10),
+      0 14px 22px -10px rgba(15,4,24,.14);
+    position:relative; overflow:hidden;
+  }
+  .stat .glyph {
+    width:22px; height:22px; display:inline-flex;
+    align-items:center; justify-content:center; flex-shrink:0;
+  }
+
+  /* ── FIRE (streak) ── animated SVG flame ── */
+  .stat.streak { color:#FF6B00; }
+  .stat.streak .flame-base {
+    transform-origin: 50% 95%;
+    animation: flameSway 1.4s ease-in-out infinite;
+  }
+  .stat.streak .flame-inner {
+    transform-origin: 50% 95%;
+    animation: flameSway 1.0s ease-in-out infinite reverse;
+  }
+  .stat.streak .flame-spark {
+    animation: spark 1.6s ease-in-out infinite;
+  }
+  @keyframes flameSway {
+    0%,100% { transform: scaleY(1)    skewX(-2deg); }
+    50%     { transform: scaleY(1.10) skewX(3deg); }
+  }
+  @keyframes spark {
+    0%   { transform: translateY(0)   scale(.8); opacity:0; }
+    30%  { opacity:1; }
+    100% { transform: translateY(-9px) scale(.4); opacity:0; }
+  }
+
+  /* ── XP STAR ── pulse + rotate ── */
+  .stat.xp { color:#7B2FBE; }
+  .stat.xp .star {
+    animation: starPulse 2.2s ease-in-out infinite;
+    transform-origin: 50% 50%;
+  }
+  @keyframes starPulse {
+    0%,100% { transform: scale(1) rotate(0deg);     filter: drop-shadow(0 0 0 rgba(123,47,190,0)); }
+    50%     { transform: scale(1.18) rotate(72deg); filter: drop-shadow(0 0 4px rgba(224,64,251,.55)); }
+  }
+
+  /* ── SPARKLE (level) ── twinkle ── */
+  .stat.lvl { color:#FF9500; }
+  .stat.lvl .spk-1 { animation: tw 1.6s ease-in-out infinite; transform-origin: center; }
+  .stat.lvl .spk-2 { animation: tw 1.6s ease-in-out infinite .55s; transform-origin: center; }
+  .stat.lvl .spk-3 { animation: tw 1.6s ease-in-out infinite 1.05s; transform-origin: center; }
+  @keyframes tw {
+    0%,100% { transform: scale(.4); opacity:.3; }
+    50%     { transform: scale(1.0); opacity:1; }
+  }
+
+  /* — CEFR badge — depth + breath — */
+  .cefr {
+    display:inline-block; padding:5px 11px; border-radius:7px;
+    color:#fff; font-weight:900; font-size:11.5px; letter-spacing:.6px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.30) inset,
+      0 -1px 0 rgba(0,0,0,.18) inset,
+      0 1px 2px rgba(15,4,24,.20),
+      0 4px 10px -2px rgba(15,4,24,.24);
+    text-shadow: 0 1px 0 rgba(0,0,0,.25);
+    animation: cefrBreath 3s ease-in-out infinite;
+  }
+  @keyframes cefrBreath {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-1px); }
+  }
+
+  /* — LESSON-TYPE chip — animated icons — */
+  .chip-tag {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:5px 11px 5px 8px; border-radius:9px;
+    font-size:11.5px; font-weight:700;
+    border:1px solid rgba(15,4,24,.04);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.7) inset,
+      0 1px 2px rgba(15,4,24,.05),
+      0 4px 8px -3px rgba(15,4,24,.08);
+  }
+  .chip-tag .ico { width:14px; height:14px; display:inline-flex; }
+
+  /* book — pages flip */
+  .ico-book .page-r { transform-origin: 50% 50%; animation: pageFlip 3.5s ease-in-out infinite; }
+  @keyframes pageFlip {
+    0%,80%,100% { transform: rotateY(0deg); }
+    40%         { transform: rotateY(-160deg); }
+  }
+  .ico-book { perspective:60px; }
+
+  /* A — wiggle */
+  .ico-a { animation: aWiggle 2.5s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes aWiggle {
+    0%,100% { transform: rotate(0deg); }
+    25%     { transform: rotate(-6deg); }
+    75%     { transform: rotate(6deg); }
+  }
+
+  /* speech bubble — bounce */
+  .ico-chat { animation: chatBounce 1.6s ease-in-out infinite; }
+  .ico-chat .dot1 { animation: dotPulse 1.2s ease-in-out infinite; }
+  .ico-chat .dot2 { animation: dotPulse 1.2s ease-in-out infinite .2s; }
+  .ico-chat .dot3 { animation: dotPulse 1.2s ease-in-out infinite .4s; }
+  @keyframes chatBounce {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-2px); }
+  }
+  @keyframes dotPulse {
+    0%,100% { opacity:.3; }
+    50%     { opacity:1; }
+  }
+
+  /* stack — gentle hover */
+  .ico-stack .layer-top { animation: floatY 2.2s ease-in-out infinite; }
+  .ico-stack .layer-mid { animation: floatY 2.2s ease-in-out infinite .35s; }
+  @keyframes floatY {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-1px); }
+  }
+
+  /* pencil — write */
+  .ico-pencil { animation: pencilWrite 2s ease-in-out infinite; transform-origin: 90% 90%; }
+  @keyframes pencilWrite {
+    0%,100% { transform: rotate(0deg)  translateX(0); }
+    25%     { transform: rotate(-3deg) translateX(-1px); }
+    75%     { transform: rotate(3deg)  translateX(1px); }
+  }
+
+  .legend {
+    font-size:11px; color:#5E5E66; width:100%; margin-top:14px;
+    font-family:ui-monospace,Menlo,monospace;
+    padding:9px 12px; border-radius:9px;
+    background:rgba(255,255,255,.7); border:1px solid rgba(15,4,24,.06);
+  }
+</style>
+</head><body>
+
+  <div class="row">
+    <!-- LEVEL · sparkles -->
+    <span class="stat lvl">
+      <span class="glyph">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path class="spk-1" d="M11 3 L12 7 L16 8 L12 9 L11 13 L10 9 L6 8 L10 7 Z" fill="#FF9500"/>
+          <path class="spk-2" d="M17 13 L17.6 14.8 L19.4 15.4 L17.6 16 L17 17.8 L16.4 16 L14.6 15.4 L16.4 14.8 Z" fill="#FFB347"/>
+          <path class="spk-3" d="M5 14 L5.5 15.4 L6.9 15.9 L5.5 16.4 L5 17.8 L4.5 16.4 L3.1 15.9 L4.5 15.4 Z" fill="#FFB347"/>
+        </svg>
+      </span>
+      1240
+    </span>
+
+    <!-- STREAK · animated flame -->
+    <span class="stat streak">
+      <span class="glyph">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <circle class="flame-spark" cx="11" cy="6" r="1.1" fill="#FFD23F"/>
+          <path class="flame-base" d="M11 3.5 C 13 6.5, 16 8, 16 13 C 16 16.3, 13.8 18.5, 11 18.5 C 8.2 18.5, 6 16.3, 6 13 C 6 10.5, 8 9, 8.5 6.5 C 9.2 8.5, 10.2 8.5, 11 6.5 Z" fill="url(#flameG)"/>
+          <path class="flame-inner" d="M11 8 C 12 10, 13.5 11, 13.5 13.4 C 13.5 15.2, 12.4 16.5, 11 16.5 C 9.6 16.5, 8.5 15.2, 8.5 13.4 C 8.5 11.8, 9.5 10.8, 9.8 9.5 C 10.2 10.5, 10.6 10.5, 11 9.5 Z" fill="#FFD23F"/>
+          <defs>
+            <linearGradient id="flameG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FF9500"/>
+              <stop offset="1" stop-color="#FF3D00"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </span>
+      12
+    </span>
+
+    <!-- XP · star pulse -->
+    <span class="stat xp">
+      <span class="glyph">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path class="star" d="M11 2.5 L13.4 8.2 L19.5 8.7 L14.9 12.7 L16.4 18.6 L11 15.3 L5.6 18.6 L7.1 12.7 L2.5 8.7 L8.6 8.2 Z" fill="#7B2FBE"/>
+        </svg>
+      </span>
+      1240 XP
+    </span>
+  </div>
+
+  <div class="row">
+    <span class="cefr" style="background:linear-gradient(180deg,#3DA350,#1F6B33);">A1</span>
+    <span class="cefr" style="background:linear-gradient(180deg,#1A95E5,#0277BD); animation-delay:.4s;">A2</span>
+    <span class="cefr" style="background:linear-gradient(180deg,#FF9C40,#E65100); animation-delay:.8s;">B1</span>
+    <span class="cefr" style="background:linear-gradient(180deg,#9543CB,#6A1B9A); animation-delay:1.2s;">B2</span>
+  </div>
+
+  <div class="row">
+    <!-- THEORY · book pages flip -->
+    <span class="chip-tag" style="background:#E8F5E9;color:#2E7D32">
+      <span class="ico ico-book">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="2" y="2.5" width="5" height="9" rx=".7" fill="#2E7D32"/>
+          <rect class="page-r" x="7" y="2.5" width="5" height="9" rx=".7" fill="#4CAF50"/>
+        </svg>
+      </span>
+      Теория
+    </span>
+
+    <!-- GRAMMAR · A wiggle -->
+    <span class="chip-tag" style="background:#E3F2FD;color:#0277BD">
+      <span class="ico">
+        <svg class="ico-a" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M3.5 12 L7 2.5 L10.5 12 M5 9 L9 9" stroke="#0277BD" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </span>
+      grammar
+    </span>
+
+    <!-- PHRASE · chat bubble bounce -->
+    <span class="chip-tag" style="background:#F3E5F5;color:#6A1B9A">
+      <span class="ico">
+        <svg class="ico-chat" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 3.5 H12 V9.5 H6 L4 11.5 V9.5 H2 Z" fill="#6A1B9A"/>
+          <circle class="dot1" cx="5"   cy="6.5" r=".7" fill="#fff"/>
+          <circle class="dot2" cx="7"   cy="6.5" r=".7" fill="#fff"/>
+          <circle class="dot3" cx="9"   cy="6.5" r=".7" fill="#fff"/>
+        </svg>
+      </span>
+      phrase
+    </span>
+
+    <!-- CONTENT · stack float -->
+    <span class="chip-tag" style="background:#E8EAF6;color:#283593">
+      <span class="ico ico-stack">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect           x="2"   y="9"   width="10" height="2" rx=".5" fill="#283593"/>
+          <rect class="layer-mid" x="2.5" y="6"   width="9"  height="2" rx=".5" fill="#3949AB"/>
+          <rect class="layer-top" x="3"   y="3"   width="8"  height="2" rx=".5" fill="#5C6BC0"/>
+        </svg>
+      </span>
+      content
+    </span>
+
+    <!-- PRACTICE · pencil write -->
+    <span class="chip-tag" style="background:#FFF3E0;color:#E65100">
+      <span class="ico">
+        <svg class="ico-pencil" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 12 L4 11 L11 4 L9 2 L2 9 Z" fill="#FF9500" stroke="#E65100" stroke-width="1" stroke-linejoin="round"/>
+          <path d="M2 12 L4 11" stroke="#E65100" stroke-width="1.2"/>
+        </svg>
+      </span>
+      Практика
+    </span>
+  </div>
+
+  <div class="legend">
+    Все иконки — SVG с CSS-анимациями · 🔥 пламя качается, искра подлетает · ⭐ XP пульсирует и крутится · ✨ блёстки twinkle · 📖 страница перелистывается · A wiggle · 💬 точки бегут · ✏️ пишет
+  </div>
+</body></html>

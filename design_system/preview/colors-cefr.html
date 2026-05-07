@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<title>CEFR colors</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; padding:22px;
+         background:#FAF7F2;
+         font-family:var(--font-sans); }
+  .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; }
+
+  .card { position:relative; border-radius:20px; overflow:hidden;
+          aspect-ratio: 3/4;
+          box-shadow: 0 14px 36px rgba(20,12,40,.18),
+                      0 1px 0 rgba(255,255,255,.6) inset;
+          display:flex; flex-direction:column;
+          color:#fff; padding:16px 16px 14px;
+          isolation:isolate; }
+
+  /* Soft gloss highlight */
+  .card::before {
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(120% 60% at 20% 0%,
+        rgba(255,255,255,.35) 0%,
+        rgba(255,255,255,.10) 35%,
+        rgba(255,255,255,0) 60%),
+      radial-gradient(80% 60% at 100% 100%,
+        rgba(0,0,0,.30) 0%,
+        rgba(0,0,0,0) 60%);
+    z-index:1; pointer-events:none;
+  }
+  /* Subtle grain for premium feel */
+  .card::after {
+    content:""; position:absolute; inset:0;
+    background-image:
+      radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 3px 3px;
+    mix-blend-mode: overlay; opacity:.5;
+    z-index:1; pointer-events:none;
+  }
+
+  /* === Gradient palettes per level ============================ */
+  .a1 { background:
+    radial-gradient(120% 80% at 0% 0%, #6EE7B7 0%, transparent 55%),
+    linear-gradient(155deg, #10B981 0%, #047857 55%, #064E3B 100%); }
+  .a2 { background:
+    radial-gradient(120% 80% at 0% 0%, #93C5FD 0%, transparent 55%),
+    linear-gradient(155deg, #3B82F6 0%, #1E40AF 55%, #0F1E5A 100%); }
+  .b1 { background:
+    radial-gradient(120% 80% at 0% 0%, #FDE68A 0%, transparent 55%),
+    linear-gradient(155deg, #F59E0B 0%, #DC2626 55%, #7F1D1D 100%); }
+  .b2 { background:
+    radial-gradient(120% 80% at 0% 0%, #F0ABFC 0%, transparent 55%),
+    linear-gradient(155deg, #A855F7 0%, #6B21A8 55%, #2E1065 100%); }
+
+  .badge { z-index:2; position:relative;
+           font-weight:900; font-size:34px; letter-spacing:-.02em;
+           line-height:1;
+           text-shadow: 0 2px 8px rgba(0,0,0,.25); }
+
+  .meta { z-index:2; position:relative; margin-top:auto;
+          display:flex; flex-direction:column; gap:3px; }
+  .desc { font-size:13px; font-weight:700; letter-spacing:-.005em;
+          text-shadow: 0 1px 4px rgba(0,0,0,.25); }
+  .ru   { font-size:11px; opacity:.85; font-weight:500; }
+  .hex  { font-size:10px; font-family:ui-monospace,Menlo,monospace;
+          opacity:.8; margin-top:2px; letter-spacing:.3px; }
+
+  /* Tiny gradient swatch row showing the gradient stops */
+  .stops { display:flex; gap:3px; margin-top:8px; z-index:2; position:relative; }
+  .stops span { width:14px; height:14px; border-radius:4px;
+                box-shadow: 0 1px 0 rgba(0,0,0,.3),
+                            inset 0 1px 0 rgba(255,255,255,.25); }
+</style>
+</head><body>
+<div class="grid">
+
+  <div class="card a1">
+    <div class="badge">A1</div>
+    <div class="meta">
+      <div class="stops">
+        <span style="background:#6EE7B7"></span>
+        <span style="background:#10B981"></span>
+        <span style="background:#064E3B"></span>
+      </div>
+      <div class="desc">Beginner</div>
+      <div class="ru">Начинающий</div>
+      <div class="hex">#6EE7B7 → #064E3B</div>
+    </div>
+  </div>
+
+  <div class="card a2">
+    <div class="badge">A2</div>
+    <div class="meta">
+      <div class="stops">
+        <span style="background:#93C5FD"></span>
+        <span style="background:#3B82F6"></span>
+        <span style="background:#0F1E5A"></span>
+      </div>
+      <div class="desc">Elementary</div>
+      <div class="ru">Элементарный</div>
+      <div class="hex">#93C5FD → #0F1E5A</div>
+    </div>
+  </div>
+
+  <div class="card b1">
+    <div class="badge">B1</div>
+    <div class="meta">
+      <div class="stops">
+        <span style="background:#FDE68A"></span>
+        <span style="background:#F59E0B"></span>
+        <span style="background:#7F1D1D"></span>
+      </div>
+      <div class="desc">Intermediate</div>
+      <div class="ru">Средний</div>
+      <div class="hex">#FDE68A → #7F1D1D</div>
+    </div>
+  </div>
+
+  <div class="card b2">
+    <div class="badge">B2</div>
+    <div class="meta">
+      <div class="stops">
+        <span style="background:#F0ABFC"></span>
+        <span style="background:#A855F7"></span>
+        <span style="background:#2E1065"></span>
+      </div>
+      <div class="desc">Upper</div>
+      <div class="ru">Выше среднего</div>
+      <div class="hex">#F0ABFC → #2E1065</div>
+    </div>
+  </div>
+
+</div>
+</body></html>

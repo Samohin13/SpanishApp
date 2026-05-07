@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<title>Buttons</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body {
+    margin:0; padding:28px;
+    background:
+      radial-gradient(50% 60% at 80% 10%, rgba(255,180,0,.10) 0%, transparent 60%),
+      radial-gradient(45% 55% at 15% 85%, rgba(214,40,103,.07) 0%, transparent 60%),
+      linear-gradient(160deg, #FFFFFF 0%, #FFF8F2 60%, #FFEFE3 100%);
+    font-family:var(--font-sans); color:#2A2730;
+    min-height:100vh;
+  }
+
+  .group {
+    margin-bottom:18px; padding:20px 22px;
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(12px) saturate(135%);
+    -webkit-backdrop-filter: blur(12px) saturate(135%);
+    border:1px solid rgba(15,4,24,.05);
+    border-radius:18px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.9) inset,
+      0 4px 12px -8px rgba(15,4,24,.08);
+  }
+  .group h3 {
+    margin:0 0 4px; font-size:11px; font-weight:800;
+    letter-spacing:.10em; text-transform:uppercase;
+    color:#FF6B35; font-family:ui-monospace,Menlo,monospace;
+  }
+  .group .desc { font-size:12px; color:#7A7682; margin:0 0 14px; line-height:1.5; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+
+  .btn {
+    font-family:var(--font-sans); font-weight:700; font-size:14px;
+    padding:12px 20px; border-radius:13px;
+    border:0; cursor:pointer; line-height:1; color:#fff;
+    position:relative; isolation:isolate;
+    transition: transform .18s cubic-bezier(.34,1.4,.5,1),
+                box-shadow .18s, filter .18s;
+  }
+  .btn:active { transform: translateY(1px) scale(.99); }
+  .btn:hover  { transform: translateY(-1px); filter: brightness(1.04); }
+  .btn::before {
+    content:""; position:absolute; left:0; right:0; top:0; height:48%;
+    border-radius:inherit; pointer-events:none;
+    background: linear-gradient(180deg, rgba(255,255,255,.18) 0%, rgba(255,255,255,0) 100%);
+  }
+
+  /* Primary · sunset, soft */
+  .btn.primary {
+    background: linear-gradient(180deg, #FF8854 0%, #F26A3A 60%, #E55A2B 100%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.28) inset,
+      0 -1px 0 rgba(120,40,0,.10) inset,
+      0 2px 6px -2px rgba(229,90,43,.22),
+      0 6px 14px -6px rgba(229,90,43,.20);
+  }
+
+  /* Accent · gold, soft */
+  .btn.accent {
+    background: linear-gradient(180deg, #FFD068 0%, #FFB42E 60%, #F0A018 100%);
+    color:#5C3A00; text-shadow: 0 1px 0 rgba(255,255,255,.35);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.50) inset,
+      0 -1px 0 rgba(80,40,0,.10) inset,
+      0 2px 6px -2px rgba(240,160,24,.22),
+      0 6px 14px -6px rgba(240,160,24,.18);
+  }
+
+  /* Magenta · premium */
+  .btn.magenta {
+    background: linear-gradient(180deg, #E04A85 0%, #C8366E 60%, #B22A5D 100%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.24) inset,
+      0 -1px 0 rgba(80,10,40,.12) inset,
+      0 2px 6px -2px rgba(178,42,93,.20),
+      0 6px 14px -6px rgba(178,42,93,.18);
+  }
+
+  /* Outline · neutral */
+  .btn.outline {
+    background: rgba(255,255,255,.75);
+    color:#2A2730;
+    border:1px solid rgba(15,4,24,.10);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.95) inset,
+      0 1px 3px -1px rgba(15,4,24,.05);
+  }
+  .btn.outline::before { display:none; }
+  .btn.outline:hover { background: rgba(255,255,255,.92); }
+
+  /* Ghost / text */
+  .btn.text {
+    background:transparent; color:#7A7682; padding:10px 12px;
+  }
+  .btn.text::before { display:none; }
+  .btn.text:hover { background: rgba(15,4,24,.04); color:#2A2730; }
+
+  /* Disabled */
+  .btn[disabled] {
+    cursor:not-allowed; opacity:.45; filter:grayscale(.3);
+    transform:none !important;
+  }
+
+  /* Icon-only round */
+  .btn.icon {
+    padding:0; width:42px; height:42px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+
+  /* Size variants */
+  .btn.sm { padding:9px 14px; font-size:12.5px; border-radius:10px; }
+  .btn.lg { padding:15px 24px; font-size:15px; border-radius:15px; }
+
+  /* tiny chip-style row label */
+  .lbl { font-size:10.5px; color:#9A95A3; font-family:ui-monospace,Menlo,monospace;
+         margin-right:8px; min-width:64px; }
+</style>
+</head><body>
+
+  <div class="group">
+    <h3>primary · CTA</h3>
+    <p class="desc">Sunset orange · мягкие тени, тёплый, не режет глаз. Главный CTA: «Empezar», «Продолжить», «Сохранить».</p>
+    <div class="row">
+      <span class="lbl">default</span>
+      <button class="btn primary sm">Empezar</button>
+      <button class="btn primary">Empezar — 7 дней</button>
+      <button class="btn primary lg">Продолжить урок</button>
+      <button class="btn primary" disabled>Загрузка…</button>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>accent · gold</h3>
+    <p class="desc">Тёплое золото для XP, level-up, наград. Тени едва заметные.</p>
+    <div class="row">
+      <span class="lbl">default</span>
+      <button class="btn accent sm">+45 XP</button>
+      <button class="btn accent">Получить награду</button>
+      <button class="btn accent lg">Уровень 7 ★</button>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>magenta · premium</h3>
+    <p class="desc">Для премиум-CTA и редких акцентов. Цвет приглушён до читаемого розового.</p>
+    <div class="row">
+      <span class="lbl">default</span>
+      <button class="btn magenta sm">Premium</button>
+      <button class="btn magenta">Попробовать Premium</button>
+      <button class="btn magenta lg">Перейти на Premium</button>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>secondary · outline</h3>
+    <p class="desc">Полупрозрачный белый, тонкая граница, минимальная тень. Для «Назад», «Отмена», «Пропустить».</p>
+    <div class="row">
+      <span class="lbl">default</span>
+      <button class="btn outline sm">Назад</button>
+      <button class="btn outline">Пропустить</button>
+      <button class="btn outline lg">Сохранить позже</button>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>ghost · text</h3>
+    <p class="desc">Без фона, только текст. Закрытие модалок, навигация в шапке.</p>
+    <div class="row">
+      <span class="lbl">default</span>
+      <button class="btn text sm">Закрыть</button>
+      <button class="btn text">Подробнее</button>
+      <button class="btn text">Не сейчас</button>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3>icon · round</h3>
+    <p class="desc">42×42 круглые. Для toolbar и контекстных действий.</p>
+    <div class="row">
+      <span class="lbl">default</span>
+      <button class="btn icon primary" aria-label="play">▶</button>
+      <button class="btn icon accent" aria-label="star">★</button>
+      <button class="btn icon magenta" aria-label="heart">♥</button>
+      <button class="btn icon outline" aria-label="close">✕</button>
+    </div>
+  </div>
+
+</body></html>

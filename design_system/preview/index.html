@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<title>ESPEAK · Design System</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html,body { margin:0; padding:0; background:var(--bg-light);
+    font-family:var(--font-sans); color:var(--fg-1); min-height:100vh; }
+
+  /* Header */
+  .header {
+    background:#0D0604;
+    padding:32px 48px 28px;
+    display:flex; align-items:center; gap:18px;
+    position:sticky; top:0; z-index:100;
+    box-shadow: 0 1px 0 rgba(255,255,255,.06);
+  }
+  .header img { width:44px; height:44px; border-radius:10px; display:block; }
+  .header-text .name { font-size:22px; font-weight:800; letter-spacing:-.02em; color:#FFFFFF; }
+  .header-text .sub  { font-size:11px; color:rgba(255,255,255,.38); font-weight:600;
+                       letter-spacing:.08em; text-transform:uppercase; margin-top:2px; }
+  .header-badge {
+    margin-left:auto; padding:5px 12px; border-radius:999px;
+    background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.10);
+    font-size:11px; font-weight:700; color:rgba(255,255,255,.55);
+    letter-spacing:.06em; text-transform:uppercase;
+  }
+
+  /* Layout */
+  .body { padding:48px 48px 96px; max-width:1100px; margin:0 auto;
+          display:flex; flex-direction:column; gap:48px; }
+
+  /* Section heading */
+  .section-title {
+    font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--fg-3); font-family:ui-monospace,Menlo,monospace;
+    padding-bottom:10px; border-bottom:1px solid var(--border);
+    margin-bottom:4px;
+  }
+
+  /* Grid of cards */
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:16px; }
+
+  .tile {
+    background:#FFFFFF; border:1px solid var(--border);
+    border-radius:var(--radius-xl); padding:20px;
+    text-decoration:none; color:inherit;
+    display:flex; flex-direction:column; gap:10px;
+    transition: box-shadow .18s, transform .18s, border-color .18s;
+    cursor:pointer;
+  }
+  .tile:hover {
+    box-shadow: var(--shadow-card-lg);
+    border-color: var(--brand-purple-pale);
+    transform: translateY(-2px);
+  }
+
+  /* Preview thumbnail area */
+  .thumb {
+    height:96px; border-radius:var(--radius-lg); overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px;
+  }
+
+  /* Per-section thumb colours */
+  .thumb.colors   { background:linear-gradient(135deg,#F3E8FF 0%,var(--brand-purple-pale) 100%); }
+  .thumb.type     { background:var(--bg-gray); }
+  .thumb.spacing  { background:linear-gradient(135deg,#E8F0FE 0%,#C5D8FF 100%); }
+  .thumb.comp     { background:linear-gradient(135deg,#FFF3E0 0%,#FFE0B2 100%); }
+  .thumb.brand    { background:#0D0604; }
+
+  .tile-name { font-size:14px; font-weight:700; color:var(--fg-1); }
+  .tile-desc { font-size:12px; color:var(--fg-2); line-height:1.5; }
+
+  /* Mini colour swatches used in thumb */
+  .swatch-row { display:flex; gap:5px; }
+  .sw { width:22px; height:22px; border-radius:6px; }
+
+  /* Type specimen */
+  .type-specimen { line-height:1; }
+  .type-specimen .big { font-size:36px; font-weight:800; letter-spacing:-.02em; color:var(--fg-1); }
+  .type-specimen .sm2 { font-size:12px; color:var(--fg-2); font-weight:500; }
+
+  /* Spacing dots */
+  .spacing-dots { display:flex; align-items:flex-end; gap:4px; }
+  .spacing-dots span { background:var(--brand-purple); border-radius:2px; width:6px; opacity:.7; }
+
+  /* Component preview pills */
+  .comp-pills { display:flex; gap:6px; flex-wrap:wrap; }
+  .cpill { padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; }
+
+  /* Brand thumb */
+  .brand-bars { display:flex; align-items:flex-end; gap:4px; height:48px; }
+  .brand-bars span { border-radius:3px; width:10px; }
+</style>
+</head><body>
+
+<!-- Header -->
+<div class="header">
+  <img src="../brand/app-icon-source.png" alt="ESPEAK"/>
+  <div class="header-text">
+    <div class="name">ESPEAK</div>
+    <div class="sub">Design System</div>
+  </div>
+  <div class="header-badge">v1.0 · Approved</div>
+</div>
+
+<div class="body">
+
+  <!-- ── BRAND ── -->
+  <div>
+    <div class="section-title">Brand</div>
+    <div class="grid">
+
+      <a class="tile" href="../brand/AppIcon.html" target="_blank">
+        <div class="thumb brand" style="justify-content:center">
+          <img src="../brand/app-icon-source.png" width="64" height="64" style="border-radius:14px;display:block"/>
+        </div>
+        <div class="tile-name">App Icon</div>
+        <div class="tile-desc">Финальная иконка · density · home screen mock · adaptive</div>
+      </a>
+
+      <a class="tile" href="logo.html" target="_blank">
+        <div class="thumb brand" style="gap:12px">
+          <img src="../brand/app-icon-source.png" width="36" height="36" style="border-radius:8px;display:block"/>
+          <span style="font-size:20px;font-weight:800;color:#FFFFFF;letter-spacing:-.02em">ESPEAK</span>
+        </div>
+        <div class="tile-name">Logo</div>
+        <div class="tile-desc">Lockup тёмный и светлый · wordmark · density</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── COLORS ── -->
+  <div>
+    <div class="section-title">Colors</div>
+    <div class="grid">
+
+      <a class="tile" href="colors-brand.html" target="_blank">
+        <div class="thumb colors">
+          <div class="swatch-row">
+            <div class="sw" style="background:var(--brand-purple)"></div>
+            <div class="sw" style="background:var(--brand-purple-light)"></div>
+            <div class="sw" style="background:var(--brand-pink)"></div>
+            <div class="sw" style="background:var(--brand-purple-pale)"></div>
+          </div>
+        </div>
+        <div class="tile-name">Brand Colors</div>
+        <div class="tile-desc">Purple · Pink · Pale — основная палитра продукта</div>
+      </a>
+
+      <a class="tile" href="colors-cefr.html" target="_blank">
+        <div class="thumb colors" style="background:linear-gradient(135deg,#E8F5E9,#E3F2FD)">
+          <div class="swatch-row">
+            <div class="sw" style="background:var(--cefr-a1)"></div>
+            <div class="sw" style="background:var(--cefr-a2)"></div>
+            <div class="sw" style="background:var(--cefr-b1)"></div>
+            <div class="sw" style="background:var(--cefr-b2)"></div>
+          </div>
+        </div>
+        <div class="tile-name">CEFR Colors</div>
+        <div class="tile-desc">A1 · A2 · B1 · B2 — уровни владения языком</div>
+      </a>
+
+      <a class="tile" href="colors-stats.html" target="_blank">
+        <div class="thumb colors" style="background:linear-gradient(135deg,#FFF3E0,#FFE0B2)">
+          <div class="swatch-row">
+            <div class="sw" style="background:var(--stat-gold)"></div>
+            <div class="sw" style="background:var(--stat-orange)"></div>
+            <div class="sw" style="background:var(--stat-gold-bg)"></div>
+          </div>
+        </div>
+        <div class="tile-name">Stats Colors</div>
+        <div class="tile-desc">Gold · Orange — XP, streak, прогресс</div>
+      </a>
+
+      <a class="tile" href="colors-neutrals.html" target="_blank">
+        <div class="thumb colors" style="background:linear-gradient(135deg,#F8F8FA,#E5E5EA)">
+          <div class="swatch-row">
+            <div class="sw" style="background:var(--fg-1)"></div>
+            <div class="sw" style="background:var(--fg-2)"></div>
+            <div class="sw" style="background:var(--fg-3)"></div>
+            <div class="sw" style="background:var(--border)"></div>
+          </div>
+        </div>
+        <div class="tile-name">Neutrals</div>
+        <div class="tile-desc">Текст · Границы · Фоны поверхностей</div>
+      </a>
+
+      <a class="tile" href="gradients.html" target="_blank">
+        <div class="thumb colors" style="background:var(--grad-xp)"></div>
+        <div class="tile-name">Gradients</div>
+        <div class="tile-desc">XP · Streak · Splash · Course-card</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── TYPE ── -->
+  <div>
+    <div class="section-title">Typography</div>
+    <div class="grid">
+
+      <a class="tile" href="type-display.html" target="_blank">
+        <div class="thumb type" style="align-items:flex-start;padding:14px 16px">
+          <div class="type-specimen">
+            <div class="big">Aa</div>
+            <div class="sm2">Display · Headline</div>
+          </div>
+        </div>
+        <div class="tile-name">Display & Headline</div>
+        <div class="tile-desc">34px ExtraBold → 20px Bold</div>
+      </a>
+
+      <a class="tile" href="type-body.html" target="_blank">
+        <div class="thumb type" style="align-items:flex-start;padding:14px 16px">
+          <div class="type-specimen">
+            <div class="big" style="font-size:24px;font-weight:400">Aa</div>
+            <div class="sm2">Body · Label</div>
+          </div>
+        </div>
+        <div class="tile-name">Body & Label</div>
+        <div class="tile-desc">16px Regular → 11px SemiBold uppercase</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── SPACING ── -->
+  <div>
+    <div class="section-title">Spacing & Shape</div>
+    <div class="grid">
+
+      <a class="tile" href="spacing.html" target="_blank">
+        <div class="thumb spacing">
+          <div class="spacing-dots">
+            <span style="height:16px"></span>
+            <span style="height:24px"></span>
+            <span style="height:32px"></span>
+            <span style="height:48px"></span>
+            <span style="height:20px"></span>
+          </div>
+        </div>
+        <div class="tile-name">Spacing</div>
+        <div class="tile-desc">4 · 8 · 12 · 14 · 16 · 18 · 20 · 24 · 32 · 48px</div>
+      </a>
+
+      <a class="tile" href="radii.html" target="_blank">
+        <div class="thumb spacing" style="gap:8px">
+          <div style="width:36px;height:36px;background:var(--brand-purple);border-radius:6px;opacity:.7"></div>
+          <div style="width:36px;height:36px;background:var(--brand-purple);border-radius:12px;opacity:.85"></div>
+          <div style="width:36px;height:36px;background:var(--brand-purple);border-radius:20px"></div>
+          <div style="width:36px;height:36px;background:var(--brand-purple);border-radius:50%"></div>
+        </div>
+        <div class="tile-name">Border Radius</div>
+        <div class="tile-desc">6 · 8 · 12 · 14 · 16 · 20 · 24 · 28 · pill</div>
+      </a>
+
+      <a class="tile" href="shadows.html" target="_blank">
+        <div class="thumb spacing" style="background:#FFFFFF">
+          <div style="width:72px;height:44px;background:#FFFFFF;border-radius:12px;
+               box-shadow:var(--shadow-card-lg)"></div>
+        </div>
+        <div class="tile-name">Shadows</div>
+        <div class="tile-desc">Card · Card-lg · Locked · Row</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── COMPONENTS ── -->
+  <div>
+    <div class="section-title">Components</div>
+    <div class="grid">
+
+      <a class="tile" href="components-buttons.html" target="_blank">
+        <div class="thumb comp">
+          <div class="comp-pills">
+            <div class="cpill" style="background:var(--brand-purple);color:#fff">Empezar</div>
+            <div class="cpill" style="background:var(--brand-purple-pale);color:var(--brand-purple)">Далее</div>
+          </div>
+        </div>
+        <div class="tile-name">Buttons</div>
+        <div class="tile-desc">Primary · Secondary · Ghost · Disabled</div>
+      </a>
+
+      <a class="tile" href="components-badges.html" target="_blank">
+        <div class="thumb comp">
+          <div class="comp-pills">
+            <div class="cpill" style="background:var(--tag-vocab-bg);color:var(--tag-vocab-fg)">Vocab</div>
+            <div class="cpill" style="background:var(--tag-grammar-bg);color:var(--tag-grammar-fg)">Grammar</div>
+          </div>
+        </div>
+        <div class="tile-name">Badges</div>
+        <div class="tile-desc">Lesson type tags · CEFR level chips</div>
+      </a>
+
+      <a class="tile" href="components-course-card.html" target="_blank">
+        <div class="thumb comp" style="background:linear-gradient(135deg,#EDE0F8,#F3E8FF)">
+          <div style="background:#FFFFFF;border-radius:12px;padding:10px 14px;
+               box-shadow:var(--shadow-card);font-size:12px;font-weight:700;color:var(--fg-1)">
+            Урок · A1 Beginner
+          </div>
+        </div>
+        <div class="tile-name">Course Card</div>
+        <div class="tile-desc">Карточка курса · прогресс · уровень</div>
+      </a>
+
+      <a class="tile" href="components-topic-card.html" target="_blank">
+        <div class="thumb comp" style="background:linear-gradient(135deg,#E8EAF6,#E3F2FD)">
+          <div style="background:#FFFFFF;border-radius:10px;padding:10px 14px;
+               box-shadow:var(--shadow-card);font-size:12px;font-weight:700;color:var(--fg-1)">
+            Topic Card
+          </div>
+        </div>
+        <div class="tile-name">Topic Card</div>
+        <div class="tile-desc">Тема урока · иконка · прогресс</div>
+      </a>
+
+      <a class="tile" href="components-progress.html" target="_blank">
+        <div class="thumb comp">
+          <div style="width:140px;height:10px;border-radius:999px;background:var(--bg-gray);overflow:hidden">
+            <div style="width:60%;height:100%;background:var(--grad-xp);border-radius:999px"></div>
+          </div>
+        </div>
+        <div class="tile-name">Progress</div>
+        <div class="tile-desc">XP bar · streak · lesson progress</div>
+      </a>
+
+      <a class="tile" href="components-bottomnav.html" target="_blank">
+        <div class="thumb comp" style="background:var(--bg-white)">
+          <div style="display:flex;gap:24px;align-items:center">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--brand-purple)"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--fg-3)"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--fg-3)"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--fg-3)"></div>
+          </div>
+        </div>
+        <div class="tile-name">Bottom Nav</div>
+        <div class="tile-desc">Tab bar · активное · неактивное состояние</div>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+</body></html>

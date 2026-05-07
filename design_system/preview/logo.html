@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<title>Logo · ESPEAK</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  html,body { margin:0; padding:0; background:#F8F8FA;
+    font-family:var(--font-sans); color:var(--fg-1); min-height:100vh; }
+  .stage { padding:64px 48px 96px; display:flex; flex-direction:column; gap:48px; max-width:1200px; margin:0 auto; }
+  h2 { margin:0 0 6px; font-size:18px; font-weight:800; }
+  .sub { font-size:13px; color:var(--fg-2); max-width:720px; line-height:1.6; }
+  .row { display:flex; gap:32px; flex-wrap:wrap; align-items:flex-end; }
+  .label { font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+           color:var(--fg-3); font-family:ui-monospace,Menlo,monospace; text-align:center; }
+  .card { display:flex; flex-direction:column; gap:14px; align-items:center; }
+
+  .ico { display:block; overflow:hidden; border-radius:64px;
+         box-shadow: 0 24px 60px -16px rgba(0,0,0,.45), 0 8px 20px rgba(0,0,0,.15); }
+  .ico img { display:block; width:100%; height:100%; object-fit:cover; }
+  .ico.md  { border-radius:36px; }
+  .ico.sm  { border-radius:22px; }
+  .ico.xs  { border-radius:11px; }
+  .ico.xxs { border-radius:7px; }
+  .round   { border-radius:50% !important; }
+
+  .density { display:flex; gap:24px; align-items:flex-end; flex-wrap:wrap; }
+  .d-cap { font-size:10px; color:var(--fg-3); font-family:ui-monospace,Menlo,monospace;
+           text-align:center; margin-top:10px; letter-spacing:.10em; }
+
+  .springboard {
+    display:grid; grid-template-columns:repeat(4, 1fr);
+    gap:18px 22px; padding:28px 22px;
+    background: linear-gradient(180deg,#89CFF0 0%,#FFD6B0 100%);
+    border-radius:42px; width:340px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.18);
+  }
+  .sb-app { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .sb-tile { width:62px; height:62px; border-radius:14px; background:#fff;
+             box-shadow:0 4px 10px rgba(0,0,0,.12); overflow:hidden; }
+  .sb-tile.maps { background:linear-gradient(135deg,#7DD37D,#4A9A4A); }
+  .sb-tile.cam  { background:#1A1A1A; }
+  .sb-tile.msg  { background:linear-gradient(135deg,#5BD75B,#2BAA2B); }
+  .sb-tile.mus  { background:linear-gradient(135deg,#FF6B8A,#C8104E); }
+  .sb-tile.cal  { background:#fff; }
+  .sb-tile.set  { background:linear-gradient(135deg,#C0C0C8,#8A8A92); }
+  .sb-tile.cls  { background:#1A1A1A; }
+  .sb-name { font-size:9.5px; color:rgba(255,255,255,.95); font-weight:600;
+             text-shadow:0 1px 2px rgba(0,0,0,.3); }
+
+  .lockup { display:inline-flex; align-items:center; gap:18px; padding:24px 32px;
+            border-radius:20px; }
+  .lockup.dark  { background:#0D0604; }
+  .lockup.light { background:#FFFFFF; border:1px solid var(--border); }
+  .lockup-text .name { font-size:26px; font-weight:800; letter-spacing:-.02em; line-height:1; }
+  .lockup.dark  .lockup-text .name { color:#FFFFFF; }
+  .lockup.light .lockup-text .name { color:var(--fg-1); }
+  .lockup-text .sub2 { font-size:11px; font-weight:600; letter-spacing:.06em;
+                       text-transform:uppercase; margin-top:4px; }
+  .lockup.dark  .lockup-text .sub2 { color:rgba(255,255,255,.40); }
+  .lockup.light .lockup-text .sub2 { color:var(--fg-2); }
+</style>
+</head><body>
+
+<div class="stage">
+
+  <div>
+    <div class="label" style="text-align:left;color:var(--brand-purple)">Logo · ESPEAK</div>
+    <h2 style="font-size:36px;letter-spacing:-.02em;margin-bottom:10px">Логотип</h2>
+    <p class="sub">Оригинальный знак без изменений + wordmark <b>ESPEAK</b>. Тёмный и светлый lockup — точно как в App Icon.</p>
+  </div>
+
+  <!-- HERO + springboard -->
+  <div class="row" style="gap:44px; align-items:center">
+    <div class="card">
+      <div class="ico" style="width:288px;height:288px">
+        <img src="../brand/app-icon-source.png" alt="ESPEAK" width="288" height="288"/>
+      </div>
+      <div class="label">знак · 288px</div>
+    </div>
+
+    <div class="card">
+      <div class="springboard">
+        <div class="sb-app"><div class="sb-tile maps"></div><div class="sb-name">Maps</div></div>
+        <div class="sb-app"><div class="sb-tile cam"></div><div class="sb-name">Camera</div></div>
+        <div class="sb-app"><div class="sb-tile msg"></div><div class="sb-name">Messages</div></div>
+        <div class="sb-app"><div class="sb-tile mus"></div><div class="sb-name">Music</div></div>
+        <div class="sb-app">
+          <div class="sb-tile">
+            <img src="../brand/app-icon-source.png" width="62" height="62" style="display:block;object-fit:cover"/>
+          </div>
+          <div class="sb-name">ESPEAK</div>
+        </div>
+        <div class="sb-app"><div class="sb-tile cal"></div><div class="sb-name">Calendar</div></div>
+        <div class="sb-app"><div class="sb-tile set"></div><div class="sb-name">Settings</div></div>
+        <div class="sb-app"><div class="sb-tile cls"></div><div class="sb-name">Clock</div></div>
+      </div>
+      <div class="label">on home screen</div>
+    </div>
+
+    <div class="card">
+      <div class="ico round" style="width:160px;height:160px">
+        <img src="../brand/app-icon-source.png" alt="ESPEAK" width="160" height="160"/>
+      </div>
+      <div class="label">android · adaptive</div>
+    </div>
+  </div>
+
+  <hr style="border:0;height:1px;background:var(--border);margin:8px 0"/>
+
+  <!-- Density -->
+  <div><h2>Density</h2>
+    <p class="sub">Знак читается на всех размерах.</p>
+  </div>
+  <div class="density">
+    <div><div class="ico md" style="width:160px;height:160px"><img src="../brand/app-icon-source.png" width="160" height="160"/></div><div class="d-cap">160</div></div>
+    <div><div class="ico sm" style="width:96px;height:96px"><img src="../brand/app-icon-source.png" width="96" height="96"/></div><div class="d-cap">96</div></div>
+    <div><div class="ico xs" style="width:48px;height:48px"><img src="../brand/app-icon-source.png" width="48" height="48"/></div><div class="d-cap">48</div></div>
+    <div><div class="ico xxs" style="width:32px;height:32px"><img src="../brand/app-icon-source.png" width="32" height="32"/></div><div class="d-cap">32</div></div>
+    <div><div class="ico" style="width:20px;height:20px;border-radius:4px"><img src="../brand/app-icon-source.png" width="20" height="20"/></div><div class="d-cap">20</div></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div style="width:16px;height:16px;border-radius:3px;overflow:hidden">
+        <img src="../brand/app-icon-source.png" width="16" height="16" style="display:block;object-fit:cover"/>
+      </div>
+      <div class="d-cap">16 · fav</div>
+    </div>
+  </div>
+
+  <hr style="border:0;height:1px;background:var(--border);margin:8px 0"/>
+
+  <!-- Logo lockup — точно как в App Icon -->
+  <div><h2>Логотип — lockup</h2>
+    <p class="sub">Знак + wordmark. Два варианта: на тёмном и светлом фоне.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:20px;align-items:flex-start">
+    <div class="lockup dark">
+      <div class="ico" style="width:52px;height:52px;border-radius:12px">
+        <img src="../brand/app-icon-source.png" width="52" height="52"/>
+      </div>
+      <div class="lockup-text">
+        <div class="name">ESPEAK</div>
+        <div class="sub2">Испанский язык</div>
+      </div>
+    </div>
+    <div class="lockup light">
+      <div class="ico" style="width:52px;height:52px;border-radius:12px">
+        <img src="../brand/app-icon-source.png" width="52" height="52"/>
+      </div>
+      <div class="lockup-text">
+        <div class="name">ESPEAK</div>
+        <div class="sub2">Испанский язык</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body></html>

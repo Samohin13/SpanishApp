@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<title>XP &amp; streak</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body {
+    margin:0; padding:24px;
+    background:
+      radial-gradient(50% 60% at 80% 10%, rgba(255,180,0,.10) 0%, transparent 60%),
+      radial-gradient(45% 55% at 15% 85%, rgba(214,40,103,.07) 0%, transparent 60%),
+      linear-gradient(160deg,#FFFFFF 0%,#FFF8F2 60%,#FFEFE3 100%);
+    font-family:var(--font-sans); color:#2A2730;
+    min-height:100vh;
+  }
+  .stack { display:flex; flex-direction:column; gap:16px; max-width:520px; margin:0 auto; }
+
+  .label { font-size:10.5px; font-weight:800; letter-spacing:.10em;
+           text-transform:uppercase; color:#FF6B35;
+           font-family:ui-monospace,Menlo,monospace; margin:0 0 8px; }
+
+  .card {
+    padding:18px 20px; border-radius:18px;
+    background: linear-gradient(180deg, rgba(255,255,255,.88) 0%, rgba(255,255,255,.70) 100%);
+    backdrop-filter: blur(14px) saturate(140%);
+    border:1px solid rgba(255,255,255,.55);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.95) inset,
+      0 1px 2px rgba(15,4,24,.05),
+      0 6px 14px -8px rgba(15,4,24,.10);
+    position:relative; overflow:hidden;
+  }
+  .card::before {
+    content:""; position:absolute; left:0; right:0; top:0; height:50%;
+    background: linear-gradient(180deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 100%);
+    pointer-events:none; border-radius:inherit;
+  }
+  .card > * { position:relative; z-index:1; }
+
+  .row { display:flex; align-items:center; gap:14px; }
+  .num { font-size:28px; font-weight:900; letter-spacing:-.02em; }
+  .num.streak { color:#E55A2B; }
+  .num.xp { color:#264653; }
+  .sub { font-size:13px; color:#7A7682; font-weight:600; }
+  .small { font-size:11.5px; color:#2E7D5C; font-weight:700; margin-top:8px; }
+
+  .track { flex:1; height:10px; border-radius:9999px;
+           background: rgba(15,4,24,.05); overflow:hidden;
+           box-shadow: 0 1px 2px rgba(15,4,24,.05) inset; }
+  .fill {
+    height:100%; border-radius:9999px;
+    background: linear-gradient(90deg,#FFB400 0%,#FF6B35 50%,#D62867 100%);
+    background-size:200% 100%;
+    animation: shimmer 2.6s linear infinite;
+    box-shadow: 0 0 12px rgba(255,107,53,.5);
+    position:relative;
+  }
+  .fill::after {
+    content:""; position:absolute; left:0; right:0; top:0; height:50%;
+    background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0));
+    border-radius:inherit;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 0%   0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .lvl {
+    width:44px; height:44px; border-radius:9999px;
+    background: linear-gradient(155deg,#FFB400 0%,#FF6B35 50%,#D62867 100%);
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:16px; letter-spacing:-.02em;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.4) inset,
+      0 -1px 0 rgba(15,4,24,.16) inset,
+      0 4px 10px -2px rgba(255,107,53,.45);
+    position:relative;
+  }
+
+  /* ============ FLAME ICON ============ */
+  .flame-wrap {
+    width:52px; height:52px; position:relative;
+    display:flex; align-items:center; justify-content:center;
+    filter: drop-shadow(0 2px 6px rgba(229,90,43,.35));
+  }
+  .flame-outer {
+    transform-origin: 50% 92%;
+    animation: flameSway 1.8s ease-in-out infinite;
+  }
+  .flame-inner {
+    transform-origin: 50% 88%;
+    animation: flameSway 1.4s ease-in-out infinite reverse;
+  }
+  .flame-spark {
+    animation: spark 2.2s ease-out infinite;
+    transform-origin: 50% 50%;
+  }
+  @keyframes flameSway {
+    0%,100% { transform: rotate(-3deg) scaleY(1); }
+    50%     { transform: rotate( 4deg) scaleY(1.06); }
+  }
+  @keyframes spark {
+    0%   { transform: translateY(0)    scale(.4); opacity:0; }
+    20%  { opacity:1; }
+    100% { transform: translateY(-22px) scale(1); opacity:0; }
+  }
+
+  /* ============ STAR ICON ============ */
+  .star-wrap {
+    width:52px; height:52px; position:relative;
+    display:flex; align-items:center; justify-content:center;
+    filter: drop-shadow(0 2px 6px rgba(38,70,83,.18));
+  }
+  .star-body {
+    transform-origin: 50% 50%;
+    animation: starPulse 2.4s ease-in-out infinite;
+  }
+  .star-glow {
+    transform-origin: 50% 50%;
+    animation: starGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes starPulse {
+    0%,100% { transform: scale(1)    rotate(0); }
+    50%     { transform: scale(1.08) rotate(8deg); }
+  }
+  @keyframes starGlow {
+    0%,100% { opacity:.25; transform: scale(.95); }
+    50%     { opacity:.55; transform: scale(1.20); }
+  }
+
+  .legend {
+    font-size:11px; color:#9A95A3;
+    font-family:ui-monospace,Menlo,monospace; text-align:center;
+  }
+</style>
+</head><body>
+
+<div class="stack">
+
+  <div>
+    <p class="label">XP · level progress</p>
+    <div class="card">
+      <div class="row">
+        <div class="lvl">7</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;color:#5E5E66;margin-bottom:6px;">
+            <span>Уровень 7</span><span>620 / 1000 XP</span>
+          </div>
+          <div class="track"><div class="fill" style="width:62%"></div></div>
+        </div>
+        <div class="star-wrap" aria-label="XP star">
+          <svg width="44" height="44" viewBox="0 0 44 44">
+            <defs>
+              <radialGradient id="starG" cx="50%" cy="40%" r="60%">
+                <stop offset="0%"  stop-color="#FFE066"/>
+                <stop offset="60%" stop-color="#FFB400"/>
+                <stop offset="100%" stop-color="#FF6B35"/>
+              </radialGradient>
+              <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%"  stop-color="#FFD23F" stop-opacity=".55"/>
+                <stop offset="100%" stop-color="#FFD23F" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle class="star-glow" cx="22" cy="22" r="20" fill="url(#starGlow)"/>
+            <path class="star-body"
+              d="M22 5 L26.5 16 L38 17.4 L29.4 25 L31.8 36.2 L22 30.4 L12.2 36.2 L14.6 25 L6 17.4 L17.5 16 Z"
+              fill="url(#starG)"
+              stroke="#E55A2B" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M22 9 L24.5 16.5 L31 17 L26 21.6"
+                  fill="rgba(255,255,255,.5)" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <p class="label">streak · daily progress</p>
+    <div class="card">
+      <div class="row">
+        <div class="flame-wrap" aria-label="streak flame">
+          <svg width="48" height="52" viewBox="0 0 48 52">
+            <defs>
+              <linearGradient id="flameOut" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%"  stop-color="#FFD23F"/>
+                <stop offset="50%" stop-color="#FF6B35"/>
+                <stop offset="100%" stop-color="#D62867"/>
+              </linearGradient>
+              <linearGradient id="flameIn" x1="50%" y1="0%" x2="50%" y2="100%">
+                <stop offset="0%"  stop-color="#FFFFFF"/>
+                <stop offset="60%" stop-color="#FFE066"/>
+                <stop offset="100%" stop-color="#FFB400"/>
+              </linearGradient>
+            </defs>
+            <!-- outer flame -->
+            <path class="flame-outer"
+              d="M24 4 C18 14, 8 18, 8 30 C8 42, 16 50, 24 50 C32 50, 40 42, 40 30 C40 22, 34 18, 30 12 C28 18, 26 18, 24 14 Z"
+              fill="url(#flameOut)"
+              stroke="rgba(120,30,0,.22)" stroke-width="1"/>
+            <!-- inner flame -->
+            <path class="flame-inner"
+              d="M24 18 C20 24, 15 28, 15 36 C15 44, 19 48, 24 48 C29 48, 33 44, 33 36 C33 30, 30 26, 27 22 C26 26, 25 26, 24 22 Z"
+              fill="url(#flameIn)" opacity=".90"/>
+            <!-- spark -->
+            <circle class="flame-spark" cx="24" cy="14" r="2.2" fill="#FFE066"/>
+          </svg>
+        </div>
+        <div style="flex:1">
+          <div><span class="num streak">12</span>
+               <span class="sub" style="margin-left:4px">дней подряд</span></div>
+          <div class="track" style="margin-top:8px"><div class="fill" style="width:75%"></div></div>
+        </div>
+      </div>
+      <div class="small">✓ Сегодня — 8 / 10 минут</div>
+    </div>
+  </div>
+
+  <div>
+    <p class="label">stat pills · animated</p>
+    <div class="card" style="display:flex;gap:10px;flex-wrap:wrap;">
+      <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;
+                   border-radius:9999px;background:rgba(255,107,53,.10);
+                   border:1px solid rgba(255,107,53,.18);font-weight:800;color:#E55A2B;">
+        <span class="flame-wrap" style="width:28px;height:28px;">
+          <svg width="22" height="24" viewBox="0 0 48 52">
+            <path class="flame-outer"
+              d="M24 4 C18 14, 8 18, 8 30 C8 42, 16 50, 24 50 C32 50, 40 42, 40 30 C40 22, 34 18, 30 12 C28 18, 26 18, 24 14 Z"
+              fill="url(#flameOut)"/>
+            <path class="flame-inner"
+              d="M24 18 C20 24, 15 28, 15 36 C15 44, 19 48, 24 48 C29 48, 33 44, 33 36 C33 30, 30 26, 27 22 C26 26, 25 26, 24 22 Z"
+              fill="url(#flameIn)" opacity=".90"/>
+          </svg>
+        </span>
+        <span>12</span>
+      </span>
+
+      <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;
+                   border-radius:9999px;background:rgba(255,180,0,.12);
+                   border:1px solid rgba(255,180,0,.22);font-weight:800;color:#A86A00;">
+        <span class="star-wrap" style="width:24px;height:24px;">
+          <svg width="22" height="22" viewBox="0 0 44 44">
+            <path class="star-body"
+              d="M22 5 L26.5 16 L38 17.4 L29.4 25 L31.8 36.2 L22 30.4 L12.2 36.2 L14.6 25 L6 17.4 L17.5 16 Z"
+              fill="url(#starG)"
+              stroke="#E55A2B" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>620 XP</span>
+      </span>
+
+      <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;
+                   border-radius:9999px;background:rgba(38,70,83,.08);
+                   border:1px solid rgba(38,70,83,.14);font-weight:800;color:#264653;">
+        <span style="width:8px;height:8px;border-radius:50%;background:#2E7D5C;
+                     box-shadow:0 0 0 4px rgba(46,125,92,.18); animation:starGlow 2s ease-in-out infinite"></span>
+        <span>Online</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="legend">flame · 2-layer sway + rising spark · star · pulse + halo · все SVG, без эмодзи</div>
+
+</div>
+
+</body></html>

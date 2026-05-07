@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Course card</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; padding:20px; background:var(--bg-gray); font-family:var(--font-sans); color:var(--fg-1); }
+  .card { width:100%; background:#fff; border-radius:20px; overflow:hidden;
+          box-shadow:0 6px 24px rgba(124,77,255,.18); }
+  .header { height:100px; padding:0 18px; display:flex; align-items:center; justify-content:space-between;
+            color:#fff;
+            background:linear-gradient(90deg,#7C4DFF,rgba(124,77,255,.72)); }
+  .left { display:flex; flex-direction:column; gap:4px; }
+  .icon { font-size:40px; line-height:1; margin-bottom:6px; }
+  .title-row { display:flex; align-items:center; gap:8px; }
+  .cefr { background:rgba(46,125,50,.85); color:#fff; font-weight:800; font-size:11px;
+          padding:3px 9px; border-radius:6px; }
+  .title { font-size:16px; font-weight:800; }
+  .right { text-align:right; }
+  .right .b { font-size:14px; font-weight:700; }
+  .right .s { font-size:11px; opacity:.8; }
+  .body { padding:14px 18px; display:flex; flex-direction:column; gap:10px; }
+  .desc { font-size:13px; color:var(--fg-2); line-height:18px; }
+  .pbar { height:7px; border-radius:4px; background:rgba(124,77,255,.15); }
+  .cta { font-size:12px; font-weight:600; color:#7C4DFF; }
+</style>
+</head><body>
+<div class="card">
+  <div class="header">
+    <div class="left">
+      <div class="icon">🚀</div>
+      <div class="title-row"><span class="cefr">A1</span><span class="title">Начинающий</span></div>
+    </div>
+    <div class="right">
+      <div class="b">4 блоков</div><div class="s">60 уроков</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="desc">60 микро-уроков · 4 блока: Взлёт, Мой мир, Действие, Выживание</div>
+    <div class="pbar"></div>
+    <div class="cta">Начать обучение →</div>
+  </div>
+</div>
+</body></html>

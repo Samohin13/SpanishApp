@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Neutral colors</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body {
+    margin:0; padding:28px;
+    background:
+      radial-gradient(40% 50% at 15% 20%, rgba(123,47,190,.18) 0%, transparent 60%),
+      radial-gradient(45% 55% at 85% 80%, rgba(224,64,251,.14) 0%, transparent 60%),
+      radial-gradient(35% 45% at 70% 15%, rgba(255,149,0,.12) 0%, transparent 65%),
+      linear-gradient(160deg, #FFFFFF 0%, #F4F4F8 60%, #E9E9EF 100%);
+    font-family:var(--font-sans);
+    min-height:100vh;
+  }
+
+  .row {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:18px;
+  }
+
+  .sw { display:flex; flex-direction:column; gap:8px; }
+
+  .chip {
+    height:96px; border-radius:18px; position:relative;
+    overflow:hidden;
+    border: 1px solid rgba(15, 4, 24, 0.08);
+    /* Glassmorphism: translucent fill + backdrop blur over colorful body bg */
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    /* Layered shadows: ambient + key + tight contact + inner highlight */
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.95) inset,
+      0 0 0 0.5px rgba(255,255,255,0.6) inset,
+      0 -1px 0 rgba(15, 4, 24, 0.05) inset,
+      0 1px 2px rgba(15, 4, 24, 0.06),
+      0 8px 16px -6px rgba(15, 4, 24, 0.10),
+      0 22px 32px -12px rgba(15, 4, 24, 0.14);
+    transition: transform .35s cubic-bezier(.34,1.4,.5,1), box-shadow .35s, border-color .35s;
+  }
+  .chip:hover {
+    transform: translateY(-3px);
+    border-color: rgba(15, 4, 24, 0.12);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.95) inset,
+      0 0 0 0.5px rgba(255,255,255,0.7) inset,
+      0 -1px 0 rgba(15, 4, 24, 0.06) inset,
+      0 2px 4px rgba(15, 4, 24, 0.08),
+      0 14px 22px -6px rgba(15, 4, 24, 0.14),
+      0 32px 44px -14px rgba(15, 4, 24, 0.20);
+  }
+
+  /* Glossy top sheen */
+  .chip::before {
+    content:""; position:absolute; inset:0;
+    background:
+      linear-gradient(180deg,
+        rgba(255,255,255,0.50) 0%,
+        rgba(255,255,255,0.08) 45%,
+        rgba(255,255,255,0) 60%);
+    pointer-events:none;
+  }
+  /* Subtle bottom darken */
+  .chip::after {
+    content:""; position:absolute; left:0; right:0; bottom:0; height:35%;
+    background: linear-gradient(180deg, rgba(15,4,24,0) 0%, rgba(15,4,24,0.05) 100%);
+    pointer-events:none;
+  }
+
+  .chip.white {
+    background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(250,250,252,0.70) 100%);
+  }
+  .chip.light {
+    background: linear-gradient(180deg, rgba(252,252,254,0.70) 0%, rgba(245,245,248,0.60) 100%);
+  }
+  .chip.gray {
+    background: linear-gradient(180deg, rgba(245,245,248,0.65) 0%, rgba(235,235,241,0.55) 100%);
+  }
+  .chip.border {
+    background: linear-gradient(180deg, rgba(237,237,242,0.60) 0%, rgba(225,225,232,0.55) 100%);
+    border-color: rgba(15, 4, 24, 0.14);
+  }
+
+  .label { font-size:13px; font-weight:700; color:#1A1A1A; letter-spacing:-0.01em; }
+  .hex { font-size:11px; color:#5E5E66; font-family:ui-monospace,Menlo,monospace; font-weight:600; }
+  .role { font-size:11px; color:#8E8E93; }
+
+  .text-row {
+    margin-top:24px; padding:20px 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.70) 0%, rgba(250,250,252,0.60) 100%);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border-radius:18px;
+    border: 1px solid rgba(15, 4, 24, 0.08);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.95) inset,
+      0 0 0 0.5px rgba(255,255,255,0.55) inset,
+      0 1px 2px rgba(15, 4, 24, 0.04),
+      0 12px 24px -8px rgba(15, 4, 24, 0.10),
+      0 28px 40px -16px rgba(15, 4, 24, 0.14);
+    display:flex; align-items:flex-end; gap:24px; flex-wrap:wrap;
+  }
+  .text-sample { display:flex; flex-direction:column; gap:3px; }
+  .text-sample .t { font-weight:700; font-size:15px; letter-spacing:-0.01em; }
+  .text-sample .h {
+    font-family:ui-monospace,Menlo,monospace; font-size:10px;
+    color:#8E8E93; font-weight:600;
+  }
+</style>
+</head><body>
+<div class="row">
+  <div class="sw">
+    <div class="chip white"></div>
+    <div class="label">BG White</div><div class="hex">#FFFFFF</div>
+    <div class="role">Cards · header</div>
+  </div>
+  <div class="sw">
+    <div class="chip light"></div>
+    <div class="label">BG Light</div><div class="hex">#F8F8FA</div>
+    <div class="role">SpanishBackground</div>
+  </div>
+  <div class="sw">
+    <div class="chip gray"></div>
+    <div class="label">BG Gray</div><div class="hex">#F0F0F5</div>
+    <div class="role">Home wrapper</div>
+  </div>
+  <div class="sw">
+    <div class="chip border"></div>
+    <div class="label">Border</div><div class="hex">#E5E5EA</div>
+    <div class="role">Hairlines · pills</div>
+  </div>
+</div>
+<div class="text-row">
+  <div class="text-sample"><div class="t" style="color:#1A1A1A">Текст 1 · Primary</div><div class="h">#1A1A1A · fg-1</div></div>
+  <div class="text-sample"><div class="t" style="color:#8E8E93">Текст 2 · Secondary</div><div class="h">#8E8E93 · fg-2</div></div>
+  <div class="text-sample"><div class="t" style="color:#AEAEB2">Tertiary</div><div class="h">#AEAEB2 · fg-3</div></div>
+  <div class="text-sample"><div class="t" style="color:#C7C7CC">Lock · Disabled</div><div class="h">#C7C7CC · fg-lock</div></div>
+</div>
+</body></html>
