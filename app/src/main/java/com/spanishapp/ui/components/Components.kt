@@ -49,7 +49,7 @@ val bottomNavItems = listOf(
 
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Box(modifier = modifier.fillMaxSize().background(Color(0xFFFFF8F2))) {
+    Box(modifier = modifier.fillMaxSize().background(Color(0xFFF8F8FA))) {
         content()
     }
 }

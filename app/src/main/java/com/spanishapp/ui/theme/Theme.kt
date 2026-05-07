@@ -31,13 +31,14 @@ object AppColors {
 
     // ── Backgrounds & surfaces ────────────────────────────────
     val BgWhite      = Color(0xFFFFFFFF)
-    val BgLight      = Color(0xFFFFF8F2)   // Warm peach tint for page wrappers
+    val BgLight      = Color(0xFFF8F8FA)   // Cool gray — SpanishBackground
+    val BgGray       = Color(0xFFF0F0F5)   // Home wrapper
     val CardBg       = Color(0xFFFFFFFF)
-    val BorderColor  = Color(0xFFE8E5E0)   // Warm gray border
+    val BorderColor  = Color(0xFFE5E5EA)   // Cool gray border
 
     // ── Text ──────────────────────────────────────────────────
-    val TextPrimary   = Color(0xFF264653)  // Ocean — headlines, body text
-    val TextSecondary = Color(0xFF8A8A93)
+    val TextPrimary   = Color(0xFF1A1A1A)  // Near-black primary text
+    val TextSecondary = Color(0xFF8E8E93)
     val TextTertiary  = Color(0xFFAEAEB2)
     val LockGray      = Color(0xFFC7C7CC)
 

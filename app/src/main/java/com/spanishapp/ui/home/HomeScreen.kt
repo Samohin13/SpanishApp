@@ -63,14 +63,26 @@ data class RoadmapLesson(
 //  Palette — Sunset over Barcelona
 // ═══════════════════════════════════════════════════════════════
 
-private val Purple      = Color(0xFFFF6B35)  // Orange primary
+private val Orange      = Color(0xFFFF6B35)  // Primary CTA
+private val Purple      = Color(0xFFFF6B35)  // alias
 private val Pink        = Color(0xFFD62867)  // Magenta accent
-private val GoldColor   = Color(0xFFFFB400)  // Sun / XP
-private val OrangeColor = Color(0xFFFF5C35)  // Deep orange / streak
-private val TextMain    = Color(0xFF264653)  // Ocean
-private val TextGray    = Color(0xFF8A8A93)
+private val GoldColor   = Color(0xFFFF9500)  // Sun / XP
+private val OrangeColor = Color(0xFFFF6B00)  // Streak fire
+private val TextMain    = Color(0xFF1A1A1A)  // Near-black primary text
+private val TextGray    = Color(0xFF8E8E93)  // Secondary text
 private val LockGray    = Color(0xFFC7C7CC)
-private val BgGray      = Color(0xFFFFF8F2)  // Warm peach page background
+private val BgGray      = Color(0xFFF0F0F5)  // Cool gray home wrapper
+private val BgLight     = Color(0xFFF8F8FA)  // SpanishBackground
+
+// CEFR level gradients (deep glossy)
+private val A1Start     = Color(0xFF6EE7B7)
+private val A1End       = Color(0xFF064E3B)
+private val A2Start     = Color(0xFF93C5FD)
+private val A2End       = Color(0xFF0F1E5A)
+private val B1Start     = Color(0xFFFDE68A)
+private val B1End       = Color(0xFF7F1D1D)
+private val B2Start     = Color(0xFFF0ABFC)
+private val B2End       = Color(0xFF2E1065)
 
 // ═══════════════════════════════════════════════════════════════
 //  HOME SCREEN
@@ -92,7 +104,7 @@ fun HomeScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(BgGray)
+            .background(Color(0xFFF0F0F5))
             .statusBarsPadding(),
         contentPadding = PaddingValues(bottom = 32.dp)
     ) {
@@ -180,10 +192,10 @@ fun HomeScreen(
 
         // ── Course cards ───────────────────────────────────────
         val courseData = listOf(
-            CourseCardData("A1", "Начинающий", "🚀", Color(0xFF7C4DFF), "60 микро-уроков", "4 блока"),
-            CourseCardData("A2", "Элементарный", "🌍", Color(0xFF00BCD4), "60 уроков", "4 блока"),
-            CourseCardData("B1", "Средний", "📚", Color(0xFF4CAF50), "скоро", "4 блока"),
-            CourseCardData("B2", "Выше среднего", "🎓", Color(0xFF6A1B9A), "скоро", "4 блока")
+            CourseCardData("A1", "Начинающий",    "🚀", A1Start, A1End, "60 микро-уроков", "4 блока"),
+            CourseCardData("A2", "Элементарный",  "🌍", A2Start, A2End, "60 уроков",       "4 блока"),
+            CourseCardData("B1", "Средний",        "📚", B1Start, B1End, "скоро",           "4 блока"),
+            CourseCardData("B2", "Выше среднего",  "🎓", B2Start, B2End, "скоро",           "4 блока")
         )
 
         itemsIndexed(courseData) { _, course ->
@@ -222,7 +234,8 @@ data class CourseCardData(
     val level: String,
     val title: String,
     val icon: String,
-    val color: Color,
+    val colorStart: Color,
+    val colorEnd: Color,
     val subtitle: String,
     val blocksLabel: String
 )
@@ -237,16 +250,21 @@ private fun CourseCard(
     onClick: () -> Unit,
     onPremiumClick: () -> Unit = {}
 ) {
-    val accentColor = if (isLocked) LockGray else course.color
+    val headerBrush = if (isLocked)
+        Brush.horizontalGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
+    else
+        Brush.horizontalGradient(listOf(course.colorStart, course.colorEnd))
+
+    val accentColor = if (isLocked) LockGray else course.colorStart
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 14.dp)
             .shadow(
-                elevation = if (isLocked) 2.dp else 6.dp,
+                elevation = if (isLocked) 2.dp else 8.dp,
                 shape = RoundedCornerShape(20.dp),
-                spotColor = accentColor.copy(alpha = 0.35f)
+                spotColor = course.colorEnd.copy(alpha = 0.4f)
             )
             .clip(RoundedCornerShape(20.dp))
             .background(Color.White)
@@ -257,19 +275,12 @@ private fun CourseCard(
             )
     ) {
         Column {
-            // ── Header ──────────────────────────────────────────
+            // ── Header — deep glossy gradient ───────────────────
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp)
-                    .background(
-                        if (isLocked)
-                            Brush.horizontalGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
-                        else
-                            Brush.horizontalGradient(
-                                listOf(accentColor, accentColor.copy(alpha = 0.72f))
-                            )
-                    )
+                    .background(headerBrush)
             ) {
                 Row(
                     modifier = Modifier
@@ -279,10 +290,7 @@ private fun CourseCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        // Large emoji icon
                         Text(course.icon, fontSize = 40.sp, modifier = Modifier.padding(bottom = 8.dp))
-
-                        // Level and title
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             CefrBadge(course.level)
                             Text(
@@ -295,23 +303,12 @@ private fun CourseCard(
                             )
                         }
                     }
-
-                    // Right info
                     if (isLocked) {
                         Icon(Icons.Default.Lock, null, tint = Color.White.copy(.8f), modifier = Modifier.size(24.dp))
                     } else {
                         Column(horizontalAlignment = Alignment.End) {
-                            Text(
-                                "$unitsCount блоков",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Text(
-                                "60 уроков",
-                                fontSize = 11.sp,
-                                color = Color.White.copy(.8f)
-                            )
+                            Text("$unitsCount блоков", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text("60 уроков", fontSize = 11.sp, color = Color.White.copy(.8f))
                         }
                     }
                 }
@@ -326,10 +323,7 @@ private fun CourseCard(
                     maxLines = 2,
                     lineHeight = 18.sp
                 )
-
                 Spacer(Modifier.height(12.dp))
-
-                // Progress bar placeholder
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -337,10 +331,7 @@ private fun CourseCard(
                         .clip(RoundedCornerShape(4.dp))
                         .background(accentColor.copy(alpha = 0.15f))
                 )
-
                 Spacer(Modifier.height(8.dp))
-
-                // Call-to-action
                 Text(
                     if (isLocked) "Заблокировано" else "Начать обучение →",
                     fontSize = 12.sp,
@@ -852,7 +843,7 @@ private fun StreakCard(
                     .size(48.dp)
                     .clip(CircleShape)
                     .background(
-                        Brush.radialGradient(listOf(GoldColor, OrangeColor))
+                        Brush.horizontalGradient(listOf(Color(0xFFFFD23F), Color(0xFFFF6B00)))
                     )
                     .scale(if (streak > 0) flameScale else 1f),
                 contentAlignment = Alignment.Center
@@ -897,7 +888,7 @@ private fun StreakCard(
                                 .fillMaxHeight()
                                 .fillMaxWidth(progress)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(Brush.horizontalGradient(listOf(GoldColor, OrangeColor)))
+                                .background(Brush.horizontalGradient(listOf(Color(0xFFFFD23F), Color(0xFFFF6B00))))
                         )
                     }
                 }
