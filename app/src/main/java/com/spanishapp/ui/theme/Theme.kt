@@ -16,45 +16,45 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 
 object AppColors {
-    // ── Purple spectrum (primary) ─────────────────────────────
-    val Purple       = Color(0xFF7B2FBE)
-    val PurpleLight  = Color(0xFF9C4FDC)
-    val PurplePale   = Color(0xFFF3E8FF)
-    val PurplePill   = Color(0xFFEDE0F8)
+    // ── Sunset over Barcelona (primary) ──────────────────────
+    val Purple       = Color(0xFFFF6B35)   // Orange — primary CTAs, nav, active states
+    val PurpleLight  = Color(0xFFFF8B5C)   // Orange-light — gradient second stop
+    val PurplePale   = Color(0xFFFFF1E6)   // Peach — pill backgrounds, tints
+    val PurplePill   = Color(0xFFFFDECF)   // Peach dark — selected chip background
 
-    // ── Gradient accent ───────────────────────────────────────
-    val Pink         = Color(0xFFE040FB)
+    // ── Accent ────────────────────────────────────────────────
+    val Pink         = Color(0xFFD62867)   // Magenta — premium, accents, gradient end
 
     // ── Stats ─────────────────────────────────────────────────
-    val Gold         = Color(0xFFFF9500)
-    val Orange       = Color(0xFFFF6B00)
+    val Gold         = Color(0xFFFFB400)   // Sun — XP, level badges
+    val Orange       = Color(0xFFFF5C35)   // Deep orange — streak fire
 
     // ── Backgrounds & surfaces ────────────────────────────────
     val BgWhite      = Color(0xFFFFFFFF)
-    val BgLight      = Color(0xFFF8F8FA)
+    val BgLight      = Color(0xFFFFF8F2)   // Warm peach tint for page wrappers
     val CardBg       = Color(0xFFFFFFFF)
-    val BorderColor  = Color(0xFFE5E5EA)
+    val BorderColor  = Color(0xFFE8E5E0)   // Warm gray border
 
     // ── Text ──────────────────────────────────────────────────
-    val TextPrimary   = Color(0xFF1A1A1A)
-    val TextSecondary = Color(0xFF8E8E93)
+    val TextPrimary   = Color(0xFF264653)  // Ocean — headlines, body text
+    val TextSecondary = Color(0xFF8A8A93)
     val TextTertiary  = Color(0xFFAEAEB2)
     val LockGray      = Color(0xFFC7C7CC)
 
-    // ── Compatibility aliases (used by game screens) ──────────
+    // ── Compatibility aliases ─────────────────────────────────
     val Amber      = Gold
     val Olive      = Purple
     val Terracotta = Purple
     val Ochre      = Gold
-    val Teal       = PurpleLight
+    val Teal       = Purple
     val Primary    = Purple
     val GoldDark   = Gold
-    val Info       = PurpleLight
+    val Info       = Pink
     val Success    = Color(0xFF34C759)
     val Warning    = Gold
     val Error      = Color(0xFFFF3B30)
     val Red        = Color(0xFFFF3B30)
-    val Coral      = Color(0xFFFF6B6B)
+    val Coral      = Pink
 
     // ── Legacy surface names ──────────────────────────────────
     val D_Bg             = BgWhite
@@ -69,7 +69,7 @@ object AppColors {
     val BgDeep     = BgWhite
     val Surface1   = BgLight
     val Surface2   = BorderColor
-    val Surface3   = Color(0xFFEEEEF2)
+    val Surface3   = Color(0xFFEEECE8)
     val Divider    = BorderColor
 }
 
@@ -88,29 +88,29 @@ val AppTypography = Typography(
 )
 
 private val LightColors = lightColorScheme(
-    primary              = AppColors.Purple,
+    primary              = AppColors.Purple,        // Orange #FF6B35
     onPrimary            = Color.White,
-    primaryContainer     = AppColors.PurplePale,
-    onPrimaryContainer   = AppColors.Purple,
+    primaryContainer     = AppColors.PurplePale,    // Peach #FFF1E6
+    onPrimaryContainer   = Color(0xFF8B2500),       // Deep burnt orange for text on peach
 
-    secondary            = AppColors.Pink,
+    secondary            = AppColors.Pink,          // Magenta #D62867
     onSecondary          = Color.White,
-    secondaryContainer   = AppColors.PurplePill,
-    onSecondaryContainer = AppColors.Purple,
+    secondaryContainer   = AppColors.PurplePill,    // Peach dark #FFDECC
+    onSecondaryContainer = AppColors.Pink,
 
-    tertiary             = AppColors.Gold,
+    tertiary             = AppColors.Gold,          // Sun #FFB400
     onTertiary           = Color.White,
 
     background           = AppColors.BgWhite,
-    onBackground         = AppColors.TextPrimary,
+    onBackground         = AppColors.TextPrimary,   // Ocean #264653
 
     surface              = AppColors.CardBg,
     onSurface            = AppColors.TextPrimary,
-    surfaceVariant       = AppColors.BgLight,
+    surfaceVariant       = AppColors.BgLight,       // Warm peach tint #FFF8F2
     surfaceContainer     = AppColors.BgLight,
     onSurfaceVariant     = AppColors.TextSecondary,
 
-    outline              = AppColors.BorderColor,
+    outline              = AppColors.BorderColor,   // Warm gray #E8E5E0
     outlineVariant       = AppColors.BorderColor,
 
     error                = AppColors.Error

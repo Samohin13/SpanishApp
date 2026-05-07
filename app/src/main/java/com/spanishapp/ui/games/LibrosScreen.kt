@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 
-private val LibrosPurple = Color(0xFF7B2FBE)
+private val LibrosPurple = Color(0xFFFF6B35)  // Orange primary (sunset palette)
 private val LevelColors = mapOf(
     "A1" to Color(0xFF43A047),
     "A2" to Color(0xFF1E88E5),

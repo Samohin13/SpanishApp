@@ -33,14 +33,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// ── Design tokens ──────────────────────────────────────────────
-private val Purple     = Color(0xFF7B2FBE)
-private val PurplePale = Color(0xFFF3E8FF)
-private val Pink       = Color(0xFFE040FB)
-private val TextMain   = Color(0xFF1A1A1A)
-private val TextGray   = Color(0xFF8E8E93)
-private val BgGray     = Color(0xFFF8F8FA)
-private val CardBorder = Color(0xFFE5E5EA)
+// ── Design tokens — Sunset palette ────────────────────────────
+private val Purple     = Color(0xFFFF6B35)  // Orange primary
+private val PurplePale = Color(0xFFFFF1E6)  // Peach tint
+private val Pink       = Color(0xFFD62867)  // Magenta accent
+private val TextMain   = Color(0xFF264653)  // Ocean
+private val TextGray   = Color(0xFF8A8A93)
+private val BgGray     = Color(0xFFFFF8F2)  // Warm peach bg
+private val CardBorder = Color(0xFFE8E5E0)
 
 // ── ViewModel ──────────────────────────────────────────────────
 

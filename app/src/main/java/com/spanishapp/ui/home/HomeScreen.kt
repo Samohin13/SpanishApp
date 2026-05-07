@@ -60,17 +60,17 @@ data class RoadmapLesson(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  Palette
+//  Palette — Sunset over Barcelona
 // ═══════════════════════════════════════════════════════════════
 
-private val Purple      = Color(0xFF7B2FBE)
-private val Pink        = Color(0xFFE040FB)
-private val GoldColor   = Color(0xFFFF9500)
-private val OrangeColor = Color(0xFFFF6B00)
-private val TextMain    = Color(0xFF1A1A1A)
-private val TextGray    = Color(0xFF8E8E93)
+private val Purple      = Color(0xFFFF6B35)  // Orange primary
+private val Pink        = Color(0xFFD62867)  // Magenta accent
+private val GoldColor   = Color(0xFFFFB400)  // Sun / XP
+private val OrangeColor = Color(0xFFFF5C35)  // Deep orange / streak
+private val TextMain    = Color(0xFF264653)  // Ocean
+private val TextGray    = Color(0xFF8A8A93)
 private val LockGray    = Color(0xFFC7C7CC)
-private val BgGray      = Color(0xFFF0F0F5)
+private val BgGray      = Color(0xFFFFF8F2)  // Warm peach page background
 
 // ═══════════════════════════════════════════════════════════════
 //  HOME SCREEN
@@ -137,8 +137,8 @@ fun HomeScreen(
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    StatPill("✨", "${state.totalXp}", Color(0xFFFFF3E0), GoldColor, GoldColor.copy(.3f))
-                    StatPill("🔥", "${state.currentStreak}", Color(0xFFFFF3E0), OrangeColor, OrangeColor.copy(.3f))
+                    StatPill("✨", "${state.totalXp} XP", Color(0xFFFFF1E6), GoldColor, GoldColor.copy(.3f))
+                    StatPill("🔥", "${state.currentStreak}", Color(0xFFFFF1E6), OrangeColor, OrangeColor.copy(.3f))
                 }
             }
         }
@@ -798,7 +798,7 @@ internal fun HomePremiumSheet(onDismiss: () -> Unit) {
             onClick = onDismiss,
             modifier = Modifier.fillMaxWidth().height(54.dp),
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple)
+            colors = ButtonDefaults.buttonColors(containerColor = Purple)  // Purple = Orange in sunset palette
         ) {
             Text("Попробовать бесплатно 7 дней", fontWeight = FontWeight.Bold)
         }
@@ -846,12 +846,22 @@ private fun StreakCard(
             modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Flame
-            Text(
-                text = if (streak > 0) "🔥" else "💤",
-                fontSize = 40.sp,
-                modifier = Modifier.scale(if (streak > 0) flameScale else 1f)
-            )
+            // Flame icon circle with gradient
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(
+                        Brush.radialGradient(listOf(GoldColor, OrangeColor))
+                    )
+                    .scale(if (streak > 0) flameScale else 1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = if (streak > 0) "🔥" else "💤",
+                    fontSize = 24.sp
+                )
+            }
 
             Spacer(Modifier.width(16.dp))
 
@@ -879,7 +889,7 @@ private fun StreakCard(
                         .fillMaxWidth()
                         .height(7.dp)
                         .clip(RoundedCornerShape(4.dp))
-                        .background(OrangeColor.copy(alpha = 0.12f))
+                        .background(GoldColor.copy(alpha = 0.15f))
                 ) {
                     if (progress > 0f) {
                         Box(
@@ -887,7 +897,7 @@ private fun StreakCard(
                                 .fillMaxHeight()
                                 .fillMaxWidth(progress)
                                 .clip(RoundedCornerShape(4.dp))
-                                .background(Brush.horizontalGradient(listOf(OrangeColor, GoldColor)))
+                                .background(Brush.horizontalGradient(listOf(GoldColor, OrangeColor)))
                         )
                     }
                 }

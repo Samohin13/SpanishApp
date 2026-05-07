@@ -44,18 +44,18 @@ val bottomNavItems = listOf(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  BACKGROUND — clean white (light theme)
+//  BACKGROUND — warm off-white (light theme)
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Box(modifier = modifier.fillMaxSize().background(Color(0xFFF8F8FA))) {
+    Box(modifier = modifier.fillMaxSize().background(Color(0xFFFFF8F2))) {
         content()
     }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  BOTTOM BAR — light, purple active
+//  BOTTOM BAR — sunset orange active, gliding pill, tap-color
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
@@ -63,63 +63,102 @@ fun SpanishBottomBar(
     currentRoute: String,
     onNavigate: (String) -> Unit
 ) {
-    val purple   = Color(0xFF7B2FBE)
-    val inactive = Color(0xFFAEAEB2)
+    // Sunset palette
+    val activeColor  = Color(0xFFFF6B35)  // Orange primary
+    val inactive     = Color(0xFFAEAEB2)
+    val pillBg       = Color(0x1AFF6B35)  // 10% orange tint
+    val pillBorder   = Color(0x33FF6B35)  // 20% orange border
+
+    val activeIdx = bottomNavItems.indexOfFirst { currentRoute.startsWith(it.route) }.coerceAtLeast(0)
+
+    // Gliding pill offset — animates between tab positions
+    val pillOffset by animateFloatAsState(
+        targetValue   = activeIdx.toFloat(),
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness    = Spring.StiffnessMedium
+        ),
+        label = "pill_offset"
+    )
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFE5E5EA))
-        Row(
+        HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFE8E5E0))
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
                 .navigationBarsPadding()
-                .height(62.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment     = Alignment.CenterVertically
+                .height(62.dp)
         ) {
-            bottomNavItems.forEach { item ->
-                val selected = currentRoute.startsWith(item.route)
+            val tabWidth = maxWidth / bottomNavItems.size
 
-                val iconColor by animateColorAsState(
-                    targetValue  = if (selected) purple else inactive,
-                    animationSpec = tween(200),
-                    label        = "color_${item.route}"
-                )
-                val scale by animateFloatAsState(
-                    targetValue   = if (selected) 1.08f else 1f,
-                    animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-                    label         = "scale_${item.route}"
-                )
+            // Gliding pill behind active tab
+            Box(
+                modifier = Modifier
+                    .offset(x = tabWidth * pillOffset + (tabWidth - 48.dp) / 2, y = 9.dp)
+                    .size(48.dp, 38.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(pillBg)
+                    .then(
+                        Modifier.graphicsLayer {
+                            // Subtle border via outline
+                        }
+                    )
+            )
 
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication        = null,
-                            onClick           = { onNavigate(item.route) }
+            Row(
+                modifier              = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment     = Alignment.CenterVertically
+            ) {
+                bottomNavItems.forEachIndexed { idx, item ->
+                    val selected = currentRoute.startsWith(item.route)
+
+                    val iconColor by animateColorAsState(
+                        targetValue   = if (selected) activeColor else inactive,
+                        animationSpec = tween(200),
+                        label         = "color_${item.route}"
+                    )
+                    // Spring scale: selected → 1.08, normal → 1.0
+                    val scale by animateFloatAsState(
+                        targetValue   = if (selected) 1.08f else 1f,
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness    = Spring.StiffnessMediumLow
                         ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                        modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }
+                        label = "scale_${item.route}"
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication        = null,
+                                onClick           = { onNavigate(item.route) }
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector     = if (selected) item.iconSelected else item.icon,
-                            contentDescription = item.label,
-                            modifier        = Modifier.size(24.dp),
-                            tint            = iconColor
-                        )
-                        Text(
-                            text       = item.label,
-                            fontSize   = 10.sp,
-                            color      = iconColor,
-                            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
-                            maxLines   = 1
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                            modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }
+                        ) {
+                            Icon(
+                                imageVector        = if (selected) item.iconSelected else item.icon,
+                                contentDescription = item.label,
+                                modifier           = Modifier.size(24.dp),
+                                tint               = iconColor
+                            )
+                            Text(
+                                text       = item.label,
+                                fontSize   = 10.sp,
+                                color      = iconColor,
+                                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                                maxLines   = 1
+                            )
+                        }
                     }
                 }
             }
@@ -133,16 +172,16 @@ fun XpProgressBar(level: Int, progress: Float, totalXp: Int, modifier: Modifier 
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Box(
             modifier = Modifier.size(36.dp).clip(CircleShape)
-                .background(Color(0xFF7B2FBE)),
+                .background(Color(0xFFFF6B35)),  // Orange primary
             contentAlignment = Alignment.Center
         ) {
             Text("$level", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 14.sp)
         }
-        Box(modifier = Modifier.weight(1f).height(8.dp).clip(RoundedCornerShape(4.dp)).background(Color(0xFFF0E8FF))) {
+        Box(modifier = Modifier.weight(1f).height(8.dp).clip(RoundedCornerShape(4.dp)).background(Color(0xFFFFF1E6))) {
             Box(
                 modifier = Modifier.fillMaxHeight().fillMaxWidth(animProgress)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(Brush.horizontalGradient(listOf(Color(0xFF7B2FBE), Color(0xFFE040FB))))
+                    .background(Brush.horizontalGradient(listOf(Color(0xFFFF6B35), Color(0xFFD62867))))
             )
         }
     }
