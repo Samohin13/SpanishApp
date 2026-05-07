@@ -10,6 +10,7 @@ import com.spanishapp.domain.games.GameId
 import com.spanishapp.domain.games.GameLevelManager
 import com.spanishapp.domain.games.LevelDifficulty
 import com.spanishapp.domain.games.LevelParams
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,6 +74,7 @@ class SopaViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
+    private val ratingUpdater: RatingUpdater,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
@@ -244,6 +246,7 @@ class SopaViewModel @Inject constructor(
         if (foundWordIndex != -1) {
             val foundWord = s.words[foundWordIndex]
             tts.speak(foundWord.word)
+            viewModelScope.launch { ratingUpdater.applyGameAnswer(true) }
             val now = SystemClock.elapsedRealtime()
             val isCombo = now - lastFindTime < 5000
             lastFindTime = now

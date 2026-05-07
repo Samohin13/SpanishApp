@@ -1,19 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Cloud + device-transfer бэкап включает только нужное.
+  Аутентификационные токены Firebase хранятся в Google Play Services
+  и в Auto-Backup не попадают.
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <include domain="sharedpref" path="voice_prefs.xml"/>
+        <include domain="sharedpref" path="theme_prefs.xml"/>
+        <include domain="sharedpref" path="user_settings.xml"/>
+        <include domain="database" path="spanish_app.db"/>
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <include domain="sharedpref" path="voice_prefs.xml"/>
+        <include domain="sharedpref" path="theme_prefs.xml"/>
+        <include domain="sharedpref" path="user_settings.xml"/>
+        <include domain="database" path="spanish_app.db"/>
     </device-transfer>
-    -->
 </data-extraction-rules>

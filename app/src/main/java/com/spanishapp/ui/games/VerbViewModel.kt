@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.ConjugationDao
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.ConjugationEntity
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,7 +76,8 @@ class VerbViewModel @Inject constructor(
     private val conjugationDao: ConjugationDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    private val ratingUpdater: RatingUpdater
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(VerbTrainingState())
@@ -214,6 +216,7 @@ class VerbViewModel @Inject constructor(
             nearMissCount = s.nearMissCount + (if (correct && near) 1 else 0),
             score         = s.score + deltaScore
         )
+        viewModelScope.launch { ratingUpdater.applyGameAnswer(correct) }
 
         if (correct) tts.speak(q.correctAnswer)
     }
@@ -242,6 +245,7 @@ class VerbViewModel @Inject constructor(
             correctCount = s.correctCount + (if (correct) 1 else 0),
             score        = s.score + (if (correct) 10 else 0)
         )
+        viewModelScope.launch { ratingUpdater.applyGameAnswer(correct) }
         if (correct) tts.speak(q.correctAnswer)
     }
 

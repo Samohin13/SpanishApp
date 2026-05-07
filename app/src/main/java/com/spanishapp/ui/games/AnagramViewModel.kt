@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.WordEntity
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -29,7 +30,8 @@ data class AnagramPremiumState(
 class AnagramViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
-    private val achievementManager: AchievementManager
+    private val achievementManager: AchievementManager,
+    private val ratingUpdater: RatingUpdater
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AnagramPremiumState())
@@ -119,7 +121,9 @@ class AnagramViewModel @Inject constructor(
         val isCorrect = assembled == s.originalWord
         
         _state.value = s.copy(isCorrect = isCorrect)
-        
+
+        viewModelScope.launch { ratingUpdater.applyGameAnswer(isCorrect) }
+
         if (isCorrect) {
             viewModelScope.launch {
                 delay(1000)

@@ -7,6 +7,7 @@ import com.spanishapp.domain.games.GameId
 import com.spanishapp.domain.games.GameLevelManager
 import com.spanishapp.domain.games.LevelDifficulty
 import com.spanishapp.domain.games.LevelParams
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,6 +57,7 @@ class MathViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
+    private val ratingUpdater: RatingUpdater,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
@@ -278,6 +280,7 @@ class MathViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
+            ratingUpdater.applyGameAnswer(isCorrect)
             // На правильном ответе короче (поощряем темп), на ошибке — даём прочитать
             delay(if (isCorrect) 800 else 1500)
             nextQuestion()
