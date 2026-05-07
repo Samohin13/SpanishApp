@@ -1,0 +1,21 @@
+name = "hablaru-ai-proxy"
+main = "src/index.js"
+compatibility_date = "2025-04-01"
+
+# Скриптовый план (free tier даёт 100k запросов/день — этого с лихвой)
+# При надобности перейти на paid: $5/мес = 10M запросов.
+
+# Установить секреты ОДИН РАЗ через wrangler:
+#   wrangler secret put GEMINI_API_KEY
+#   wrangler secret put FIREBASE_PROJECT_ID
+#
+# В этот файл секреты НЕ кладём.
+
+[vars]
+# Открытые переменные можно задать здесь (необязательно).
+
+# Routes — задать после подключения custom domain (либо использовать
+# дефолтный *.workers.dev URL).
+# routes = [
+#   { pattern = "ai.hablaru.app/*", zone_name = "hablaru.app" }
+# ]

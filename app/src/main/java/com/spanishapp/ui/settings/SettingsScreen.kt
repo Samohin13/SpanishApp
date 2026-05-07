@@ -360,8 +360,18 @@ fun SettingsScreen(
             }
 
             SettingsSection("Конфиденциальность и данные") {
-                SettingsItem(Icons.Default.PrivacyTip, "Политика конфиденциальности") { /* URL */ }
-                SettingsItem(Icons.Default.Description, "Условия использования") { /* URL */ }
+                SettingsItem(Icons.Default.PrivacyTip, "Политика конфиденциальности") {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md"
+                    ))
+                    runCatching { context.startActivity(intent) }
+                }
+                SettingsItem(Icons.Default.Description, "Условия использования") {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md"
+                    ))
+                    runCatching { context.startActivity(intent) }
+                }
                 SettingsItem(Icons.Default.FileUpload, "Экспорт данных") { /* Логика экспорта */ }
             }
 

@@ -1,8 +1,44 @@
-# SpanishApp — Android приложение для изучения испанского языка
+# SpanishApp / HablaRu — Android приложение для изучения испанского языка
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-04, сессия 8 (Рейтинговая система + лиги «Путь до Мадрида» + лидерборд)**
+> Последнее обновление: **2026-05-07, сессия 9 (полный аудит + чистка к релизу)**
+
+## 9. Сессия 9 — pre-release аудит и чистка (2026-05-07)
+
+**Ветка**: `claude/eager-shaw-a2c9d7`. См. полный план в [PLAN.md](PLAN.md).
+
+### Сделано в этой сессии:
+- ✅ **Имя приложения** унифицировано: `ESPEAK` → `@string/app_name` (HablaRu) в манифесте.
+- ✅ **CAMERA permission** удалён (не использовался).
+- ✅ **backup_rules.xml + data_extraction_rules.xml** заполнены — auth-токены исключены, БД и preferences включены.
+- ✅ **`fallbackToDestructiveMigration()`** теперь только в debug-сборке (`AppModule.kt`).
+- ✅ **Мёртвые маршруты** `dialogue/{id}` и `grammar/{id}` (рисовали 🚧) удалены — фактический контент уже inline в DialoguesScreen и GrammarScreen.
+- ✅ **Двойной импорт `ui.games.*`** в Navigation.kt убран.
+- ✅ **AnagramsGameScreen** добавлена в GamesScreen (раньше была доступна только через deeplink).
+- ✅ **RatingUpdater подключён ко всем играм**: добавлен метод `applyGameAnswer(correct: Boolean)` в `RatingUpdater.kt`. Подключено в: ArticlesViewModel, SpeedViewModel, AnagramViewModel, MathViewModel, CrosswordViewModel, SopaViewModel, PalabraMaestraViewModel, VerbViewModel. Раньше работало только для Flashcards и Libros.
+- ✅ **Listening assets удалены** — 1089 mp3 (~16 МБ) + sentences.json + SentencesRepository.kt. Игры не было, ассеты были мёртвым грузом.
+- ✅ **ProGuard правила** прописаны в `proguard-rules.pro`: Room, Hilt, Firebase, Serialization, Compose, Glance, WorkManager, Lottie, Coil.
+- ✅ **`isMinifyEnabled = true` + `isShrinkResources = true`** для release.
+- ✅ **Signing config skeleton** в `app/build.gradle.kts` через `keystore.properties` (есть `keystore.properties.example`, реальный файл в `.gitignore`).
+- ✅ **PRIVACY_POLICY.md** создан (шаблон, заменить email и URL перед публикацией).
+- ✅ **Ссылка на Privacy Policy** добавлена в `SettingsScreen` (открывает GitHub URL).
+
+### Что осталось (см. PLAN.md):
+- 🔴 **APK 207 МБ из-за `assets/word_images/`** — 150 PNG по ~1.4 МБ каждая. **Превысит лимит Google Play 150 МБ**. Нужно сжать через squoosh.app / tinify / ImageMagick (целевой средний 30–50 КБ).
+- 🔴 **API-ключ Gemini в plain-text BuildConfig** — нужен backend-прокси (Cloud Function / Worker).
+- 🔴 **Создать release.keystore** через Android Studio + заполнить `keystore.properties`.
+- 🔴 **Опубликовать Privacy Policy** на публичный URL и обновить ссылку в SettingsScreen.
+- 🟡 Грамматика A2/B1/B2 — всего 9 уроков на 4 уровня.
+- 🟡 Локализация — только русский, всё захардкожено в Compose.
+
+### Реальное состояние (контрастно с предыдущими секциями):
+- AppDatabase **version=11** (а не 9 как в §8.1).
+- AI-чат на самом деле **Gemini 1.5 Flash**, не Claude (`AiChatRepository.kt:25`).
+- **22 блока контента** уроков (не 60 микро-уроков).
+- **50 рассказов Libros** (не 25).
+- **~159 глаголов спряжения** (не 20).
+- **8 игр** в GamesScreen (после добавления Anagrams) + универсальная система 100 уровней через `GameLevelManager`.
 
 ## 8.1. Рейтинговая система (новое в сессии 8)
 

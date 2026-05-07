@@ -34,12 +34,51 @@ android {
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
     }
 
+    signingConfigs {
+        // Release-keystore: настраивается через keystore.properties (см. README).
+        // Если файл отсутствует — release-сборка собирается без подписи (для CI/dev).
+        val keystorePropsFile = rootProject.file("keystore.properties")
+        if (keystorePropsFile.exists()) {
+            create("release") {
+                val ksProps = Properties().apply {
+                    keystorePropsFile.inputStream().use { load(it) }
+                }
+                storeFile = rootProject.file(ksProps.getProperty("storeFile") ?: "release.keystore")
+                storePassword = ksProps.getProperty("storePassword")
+                keyAlias = ksProps.getProperty("keyAlias")
+                keyPassword = ksProps.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
+            )
+            // Подпишем release только если keystore.properties есть.
+            if (rootProject.file("keystore.properties").exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
+        debug {
+            // Debug-сборка не минифицируется — быстрее и удобнее отлаживать.
+            isMinifyEnabled = false
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/AL2.0",
+                "META-INF/LGPL2.1",
+                "META-INF/*.kotlin_module",
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE*",
+                "META-INF/NOTICE*"
             )
         }
     }

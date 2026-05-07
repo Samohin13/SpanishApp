@@ -12,6 +12,7 @@ import com.spanishapp.domain.games.GameId
 import com.spanishapp.domain.games.GameLevelManager
 import com.spanishapp.domain.games.LevelDifficulty
 import com.spanishapp.domain.games.LevelParams
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SoundPlayer
 import com.spanishapp.service.SpanishTts
@@ -54,6 +55,7 @@ class ArticlesViewModel @Inject constructor(
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
     private val soundPlayer: SoundPlayer,
+    private val ratingUpdater: RatingUpdater,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
@@ -153,6 +155,7 @@ class ArticlesViewModel @Inject constructor(
                 word.errorWeight += 2
             }
             dao.updateWord(word)
+            ratingUpdater.applyGameAnswer(isCorrect)
 
             _state.value = s.copy(
                 lastCorrect = isCorrect,

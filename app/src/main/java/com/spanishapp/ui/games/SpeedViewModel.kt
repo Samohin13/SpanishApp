@@ -9,6 +9,7 @@ import com.spanishapp.domain.games.GameId
 import com.spanishapp.domain.games.GameLevelManager
 import com.spanishapp.domain.games.LevelDifficulty
 import com.spanishapp.domain.games.LevelParams
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -45,6 +46,7 @@ class SpeedViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
+    private val ratingUpdater: RatingUpdater,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 

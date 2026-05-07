@@ -40,4 +40,11 @@ class RatingUpdater @Inject constructor(
 
         return if (newLeague.tier > oldLeague.tier) LeaguePromotion(oldLeague, newLeague) else null
     }
+
+    /**
+     * Упрощённая обёртка для игр без контекста SM2:
+     * easeFactor=2.5 (нейтральный), quality 4 на правильный ответ и 2 на ошибку.
+     */
+    suspend fun applyGameAnswer(correct: Boolean): LeaguePromotion? =
+        applyAnswer(easeFactor = 2.5f, quality = if (correct) 4 else 2)
 }

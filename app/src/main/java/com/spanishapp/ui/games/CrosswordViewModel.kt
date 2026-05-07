@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -61,7 +62,8 @@ class CrosswordViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    private val ratingUpdater: RatingUpdater
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CrosswordGameState())
@@ -352,6 +354,7 @@ class CrosswordViewModel @Inject constructor(
         val newErrors = _state.value.errors.toMutableSet().also { it.remove(cell) }
 
         _state.value = _state.value.copy(grid = newGrid, errors = newErrors, mistakesInCurrentLevel = newMistakes)
+        viewModelScope.launch { ratingUpdater.applyGameAnswer(char.uppercaseChar() == correctChar) }
         checkWordSolved()
         moveToNextCell()
         checkWin()

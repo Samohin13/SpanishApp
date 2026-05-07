@@ -2,6 +2,7 @@ package com.spanishapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.spanishapp.BuildConfig
 import com.spanishapp.data.db.*
 import com.spanishapp.data.db.dao.*
 import dagger.Module
@@ -21,8 +22,8 @@ object AppModule {
     // ── Room Database ─────────────────────────────────────────
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "spanish_app.db")
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+        val builder = Room.databaseBuilder(context, AppDatabase::class.java, "spanish_app.db")
             .addMigrations(
                 AppDatabase.MIGRATION_1_2,
                 AppDatabase.MIGRATION_2_3,
@@ -35,8 +36,12 @@ object AppModule {
                 AppDatabase.MIGRATION_9_10,
                 AppDatabase.MIGRATION_10_11
             )
-            .fallbackToDestructiveMigration()
-            .build()
+        // Destructive migration only for debug builds — protects production user data.
+        if (BuildConfig.DEBUG) {
+            builder.fallbackToDestructiveMigration()
+        }
+        return builder.build()
+    }
 
     @Provides fun provideWordDao(db: AppDatabase): WordDao = db.wordDao()
     @Provides fun provideConjugationDao(db: AppDatabase): ConjugationDao = db.conjugationDao()

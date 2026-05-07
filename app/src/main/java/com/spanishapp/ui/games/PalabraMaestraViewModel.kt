@@ -9,6 +9,7 @@ import com.spanishapp.domain.games.GameId
 import com.spanishapp.domain.games.GameLevelManager
 import com.spanishapp.domain.games.LevelDifficulty
 import com.spanishapp.domain.games.LevelParams
+import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -61,6 +62,7 @@ class PalabraMaestraViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
+    private val ratingUpdater: RatingUpdater,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
@@ -184,6 +186,7 @@ class PalabraMaestraViewModel @Inject constructor(
                         correctCount   = s.correctCount + 1,
                         precisionCount = s.precisionCount + (if (updated.mistakesCount == 0) 1 else 0)
                     )
+                    viewModelScope.launch { ratingUpdater.applyGameAnswer(true) }
                     tts.speak(q.word.spanish)
                 }
             }
@@ -222,6 +225,7 @@ class PalabraMaestraViewModel @Inject constructor(
             correctCount   = s.correctCount + (if (isCorrect) 1 else 0),
             precisionCount = s.precisionCount + (if (isCorrect && updated.mistakesCount == 0) 1 else 0)
         )
+        viewModelScope.launch { ratingUpdater.applyGameAnswer(isCorrect) }
 
         if (isCorrect) tts.speak(q.word.spanish)
         updateCurrentQuestion(updated)

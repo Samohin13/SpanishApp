@@ -5,14 +5,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,11 +22,8 @@ import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
 import com.spanishapp.ui.chat.AiChatScreen
 import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.games.*
-import com.spanishapp.ui.games.LibrosScreen
-import com.spanishapp.ui.games.LibroReadScreen
 import com.spanishapp.ui.dictionary.DictionaryScreen
 import com.spanishapp.ui.dictionary.WeakWordsScreen
-import com.spanishapp.ui.games.*
 import com.spanishapp.ui.home.HomeScreen
 import com.spanishapp.ui.home.CourseDetailScreen
 import com.spanishapp.ui.home.LessonContentScreen
@@ -240,18 +232,12 @@ object Navigation {
             composable("conjugation_quiz") { VerbTrainingScreen(navController) }
 
             // ── Диалоги ───────────────────────────────────────
+            // Detail-экран не нужен: DialoguesScreen раскрывает реплики inline + TTS.
             composable("dialogues") { DialoguesScreen(navController) }
-            composable(
-                "dialogue/{id}",
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
-            ) { Placeholder("Диалог") }
 
             // ── Грамматика ────────────────────────────────────
+            // Detail-экран не нужен: GrammarScreen раскрывает урок inline.
             composable("grammar") { GrammarScreen(navController) }
-            composable(
-                "grammar/{id}",
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
-            ) { Placeholder("Урок грамматики") }
 
             // ── ИИ-чат ───────────────────────────────────────
             composable("ai_chat") { AiChatScreen(navController) }
@@ -278,13 +264,6 @@ object Navigation {
             // ── Словарь ───────────────────────────────────────
             composable("dictionary")  { DictionaryScreen(navController) }
             composable("weak_words")  { WeakWordsScreen(navController) }
-        }
-    }
-
-    @Composable
-    private fun Placeholder(name: String) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("🚧  $name", style = MaterialTheme.typography.titleMedium)
         }
     }
 }
