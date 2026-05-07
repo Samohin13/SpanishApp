@@ -131,9 +131,9 @@
   - Создать `release.keystore` через Android Studio → Build → Generate Signed Bundle.
   - Положить пароль в `local.properties` (`KEYSTORE_PASSWORD=...`, `KEY_PASSWORD=...`, `KEY_ALIAS=...`).
   - Добавить блок `signingConfigs.release { ... }` в `build.gradle.kts` и `signingConfig = signingConfigs.getByName("release")` в `buildTypes.release`.
-- [ ] **2.2. API-ключ Gemini в plain-text BuildConfig** — `build.gradle.kts:31–34`. Любой может декомпилировать APK.
-  - Вариант A (правильный): вынести AI-чат на свой backend-прокси (Cloud Function / Cloudflare Worker), подписывать запросы через Firebase App Check.
-  - Вариант B (минимум): обфускация ключа + жёсткий ratelimit на стороне Google AI Studio + Firebase App Check.
+- [x] **2.2. API-ключ Gemini в plain-text BuildConfig** — _Worker готов в `backend/cloudflare-worker/`._
+  - Worker (Cloudflare) с проверкой Firebase ID-token уже написан и готов к деплою.
+  - **Что осталось пользователю**: выполнить инструкции в `backend/cloudflare-worker/README.md` (5 минут) + переключить `AiChatRepository.kt` на новый URL после деплоя.
 - [ ] **2.3. Имя приложения несогласовано** — в `AndroidManifest.xml:18,27` стоит `ESPEAK`, в `strings.xml` — `HablaRu`. На Play и иконке будут разные надписи.
   - Решить финальное название.
   - Заменить на `@string/app_name` везде в манифесте.
