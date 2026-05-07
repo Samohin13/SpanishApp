@@ -1,0 +1,56 @@
+rules_version = '2';
+
+// ────────────────────────────────────────────────────────────────────
+//  HablaRu — Firestore Security Rules
+//
+//  Что делать:
+//  1. Открой https://console.firebase.google.com/project/spanishapp-35092/firestore/rules
+//  2. Скопируй ВЕСЬ этот файл и вставь там.
+//  3. Нажми "Publish" (Опубликовать).
+//
+//  Также включи Anonymous Authentication:
+//  https://console.firebase.google.com/project/spanishapp-35092/authentication/providers
+//  → Sign-in method → Anonymous → Enable.
+// ────────────────────────────────────────────────────────────────────
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Лидерборд ──────────────────────────────────────────────────
+    // Каждый юзер пишет ТОЛЬКО свою запись (uid = id документа).
+    // Читать может любой авторизованный — для отображения топа.
+    match /leaderboard/{uid} {
+      allow read: if request.auth != null;
+
+      allow create, update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly([
+            'nickname', 'country', 'skillRating',
+            'peakRating', 'league', 'updatedAt'
+           ])
+        && request.resource.data.nickname is string
+        && request.resource.data.nickname.size() <= 32
+        && request.resource.data.country is string
+        && request.resource.data.country.size() <= 4
+        && request.resource.data.skillRating is int
+        && request.resource.data.skillRating >= 0
+        && request.resource.data.skillRating <= 4000
+        && request.resource.data.peakRating is int
+        && request.resource.data.league is int
+        && request.resource.data.league >= 1
+        && request.resource.data.league <= 8;
+
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── Профили пользователей (если будут) ─────────────────────────
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── Всё остальное запрещено по умолчанию ───────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
