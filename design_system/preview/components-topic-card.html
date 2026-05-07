@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Topic card</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; padding:20px; background:var(--bg-gray); font-family:var(--font-sans); color:var(--fg-1); }
+  .card { width:100%; background:#fff; border-radius:20px; overflow:hidden;
+          box-shadow:0 6px 24px rgba(124,77,255,.18); }
+  .header { height:72px; padding:0 18px; display:flex; align-items:center; justify-content:space-between;
+            color:#fff; background:linear-gradient(90deg,#7C4DFF,rgba(124,77,255,.72)); }
+  .left { display:flex; align-items:center; gap:12px; }
+  .avatar { width:44px; height:44px; border-radius:9999px; background:rgba(255,255,255,.25);
+            display:flex; align-items:center; justify-content:center; font-size:22px; }
+  .meta { display:flex; flex-direction:column; }
+  .meta .s { font-size:11px; color:rgba(255,255,255,.8); font-weight:500; }
+  .meta .t { font-size:18px; font-weight:800; }
+  .right { display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+  .cefr { background:rgba(46,125,50,.85); color:#fff; font-weight:800; font-size:11px; padding:3px 9px; border-radius:6px; }
+  .body { padding:14px 18px; display:flex; flex-direction:column; gap:10px; }
+  .desc { font-size:13px; color:var(--fg-2); line-height:18px; }
+  .pwrap { display:flex; align-items:center; gap:10px; }
+  .pbar { flex:1; height:7px; border-radius:4px; background:rgba(124,77,255,.15); position:relative; overflow:hidden; }
+  .fill { position:absolute; inset:0 60% 0 0; background:linear-gradient(90deg,#7C4DFF,rgba(124,77,255,.7)); border-radius:4px; }
+  .pct { font-size:12px; font-weight:600; color:#7C4DFF; }
+  .arr { color:#7C4DFF; }
+</style>
+</head><body>
+<div class="card">
+  <div class="header">
+    <div class="left">
+      <div class="avatar">🚀</div>
+      <div class="meta"><span class="s">Блок 1</span><span class="t">Взлёт</span></div>
+    </div>
+    <div class="right"><span class="cefr">A1</span><div style="font-size:12px; font-weight:700">8/15</div></div>
+  </div>
+  <div class="body">
+    <div class="desc">Первые 15 уроков — алфавит, приветствие, числа до 20, простые глаголы.</div>
+    <div class="pwrap">
+      <div class="pbar"><div class="fill"></div></div>
+      <div class="pct">40%</div>
+      <div class="arr">⌄</div>
+    </div>
+  </div>
+</div>
+</body></html>

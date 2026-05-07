@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Spacing scale</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body {
+    margin:0; padding:24px;
+    background:
+      radial-gradient(50% 60% at 80% 10%, rgba(255,180,0,.18) 0%, transparent 60%),
+      radial-gradient(45% 55% at 15% 85%, rgba(214,40,103,.14) 0%, transparent 60%),
+      linear-gradient(160deg, #FFFFFF 0%, #FFF8F2 60%, #FFEFE3 100%);
+    font-family:var(--font-sans); color:#264653;
+    min-height:100vh;
+  }
+  .grid {
+    display:grid; gap:14px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .card {
+    padding:16px; border-radius:14px;
+    background: linear-gradient(180deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,.65) 100%);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border:1px solid rgba(255,255,255,.55);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.95) inset,
+      0 -1px 0 rgba(15,4,24,.04) inset,
+      0 1px 2px rgba(15,4,24,.06),
+      0 8px 18px -6px rgba(15,4,24,.12),
+      0 22px 36px -14px rgba(214,40,103,.14);
+    display:flex; flex-direction:column; gap:10px;
+    position:relative; overflow:hidden;
+    transition: transform .35s cubic-bezier(.34,1.4,.5,1), box-shadow .35s;
+  }
+  .card::before {
+    content:""; position:absolute; left:0; right:0; top:0; height:50%;
+    background: linear-gradient(180deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 100%);
+    pointer-events:none; border-radius:inherit;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.95) inset,
+      0 -1px 0 rgba(15,4,24,.04) inset,
+      0 1px 2px rgba(15,4,24,.06),
+      0 14px 26px -6px rgba(15,4,24,.16),
+      0 30px 48px -14px rgba(214,40,103,.22);
+  }
+  .card > * { position:relative; z-index:1; }
+  .head {
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .tok {
+    font-family:ui-monospace,Menlo,monospace; font-size:10.5px;
+    font-weight:800; color:#FF6B35;
+    background:#FFF1E6; border:1px solid rgba(255,107,53,.18);
+    padding:2px 7px; border-radius:5px;
+  }
+  .px {
+    font-family:ui-monospace,Menlo,monospace; font-size:11px;
+    color:#264653; font-weight:700;
+  }
+  .role { font-size:11px; color:#8A6E5C; margin-top:-3px; }
+
+  .demo {
+    display:flex; align-items:center; justify-content:center;
+    height:64px; padding:8px;
+    background:
+      linear-gradient(180deg, rgba(250,250,252,.7) 0%, rgba(244,244,248,.85) 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border:1px dashed rgba(15,4,24,.10);
+    border-radius:10px;
+    position:relative; overflow:hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.8) inset,
+      0 1px 2px rgba(15,4,24,.04) inset;
+  }
+  .bar {
+    background: linear-gradient(180deg,#FF8B5C,#FF6B35);
+    height:14px; border-radius:3px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.4) inset,
+      0 -1px 0 rgba(15,4,24,.18) inset,
+      0 3px 6px -1px rgba(255,107,53,.45),
+      0 8px 14px -4px rgba(214,40,103,.20);
+  }
+
+  /* sample components */
+  .ico-text { display:inline-flex; align-items:center;
+              padding:6px 10px; background:#FFF;
+              border:1px solid rgba(15,4,24,.10); border-radius:8px;
+              font-size:12px; font-weight:700; color:#264653; }
+  .ico-text .dot { width:10px; height:10px; border-radius:50%;
+                   background: radial-gradient(circle,#FFD23F,#FF9500); }
+  .pill {
+    display:inline-flex; align-items:center;
+    padding:6px 12px; background:#FFF1E6; color:#FF6B35;
+    border-radius:9999px; font-size:11.5px; font-weight:700;
+    border:1px solid rgba(255,107,53,.18);
+  }
+  .pill .dot { width:6px; height:6px; border-radius:50%; background:#FF6B35; }
+  .row-pills { display:inline-flex; }
+  .mini-card { width:54px; height:38px; border-radius:8px;
+               background: linear-gradient(135deg,#FF8B5C,#D62867);
+               box-shadow:
+                 0 1px 0 rgba(255,255,255,.35) inset,
+                 0 -1px 0 rgba(15,4,24,.18) inset,
+                 0 6px 14px -3px rgba(214,40,103,.45),
+                 0 14px 22px -8px rgba(214,40,103,.28);
+               position:relative; overflow:hidden; }
+  .mini-card::after {
+    content:""; position:absolute; left:0; right:0; top:0; height:50%;
+    background: linear-gradient(180deg, rgba(255,255,255,.30) 0%, rgba(255,255,255,0) 100%);
+  }
+  .row-cards { display:inline-flex; }
+  .screen-frame {
+    width:120px; height:54px; background:#FFF;
+    border:1px solid rgba(15,4,24,.10); border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    color:#8A6E5C; font-size:9.5px; font-weight:700;
+    box-shadow: 0 4px 8px -3px rgba(15,4,24,.08);
+  }
+  .legend {
+    margin-top:14px; padding:10px 14px;
+    background:rgba(255,255,255,.7); backdrop-filter: blur(8px);
+    border:1px solid rgba(15,4,24,.06); border-radius:10px;
+    font-size:11.5px; color:#5E5E66;
+  }
+  .legend b { color:#264653; }
+</style>
+</head><body>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="head"><span class="tok">1</span><span class="px">4 px</span></div>
+    <div class="role">Иконка ↔ текст</div>
+    <div class="demo"><span class="ico-text"><span class="dot"></span><span style="width:4px"></span>1240 XP</span></div>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="tok">2</span><span class="px">8 px</span></div>
+    <div class="role">Внутри pill</div>
+    <div class="demo"><span class="pill"><span class="dot"></span><span style="width:8px"></span>+45 XP</span></div>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="tok">3</span><span class="px">12 px</span></div>
+    <div class="role">Между stat-pills</div>
+    <div class="demo">
+      <div class="row-pills" style="gap:12px">
+        <span class="pill">+45 XP</span>
+        <span class="pill">🔥 12</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="tok">4 ★</span><span class="px">14 px</span></div>
+    <div class="role">Гориз. padding страницы</div>
+    <div class="demo"><div class="bar" style="width:160px"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="tok">5</span><span class="px">16 px</span></div>
+    <div class="role">Между карточками</div>
+    <div class="demo">
+      <div class="row-cards" style="gap:16px">
+        <div class="mini-card"></div>
+        <div class="mini-card" style="background:linear-gradient(135deg,#FFB400,#FF6B35)"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="tok">6</span><span class="px">18 px</span></div>
+    <div class="role">Padding внутри карточки</div>
+    <div class="demo"><div class="bar" style="width:200px"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="tok">7</span><span class="px">20 px</span></div>
+    <div class="role">Padding тела экрана</div>
+    <div class="demo"><div class="screen-frame">экран</div></div>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="tok">8</span><span class="px">24 px</span></div>
+    <div class="role">Onboarding screen pad</div>
+    <div class="demo"><div class="bar" style="width:240px"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="head"><span class="tok">10</span><span class="px">32 px</span></div>
+    <div class="role">Между секциями</div>
+    <div class="demo"><div class="bar" style="width:280px"></div></div>
+  </div>
+
+</div>
+
+<div class="legend">
+  <b>Что это:</b> 9 шагов отступа из 4-px сетки — каждый показан на компоненте, где реально применяется. <b>★ tok 4 (14 px)</b> — основной горизонтальный padding всех экранов. <b>Что от вас:</b> проверьте, что отступы не слишком тесные / просторные.
+</div>
+
+</body></html>

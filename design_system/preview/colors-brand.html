@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<title>Brand colors — Закат над Барселоной</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body {
+    margin:0; padding:24px;
+    background:
+      radial-gradient(50% 60% at 80% 10%, rgba(255,180,0,.18) 0%, transparent 60%),
+      radial-gradient(45% 55% at 15% 85%, rgba(214,40,103,.14) 0%, transparent 60%),
+      linear-gradient(160deg, #FFFFFF 0%, #FFF8F2 60%, #FFEFE3 100%);
+    font-family:var(--font-sans); color:#264653;
+    min-height:100vh;
+  }
+  .head {
+    display:flex; align-items:baseline; gap:14px; margin-bottom:14px;
+    padding:0 4px;
+  }
+  .name { font-size:18px; font-weight:900; color:#264653; letter-spacing:-.015em; }
+  .vibe { font-size:11.5px; color:#8A6E5C; }
+  .badge {
+    margin-left:auto; font-family:ui-monospace,Menlo,monospace;
+    font-size:10px; font-weight:800; letter-spacing:.08em;
+    background: linear-gradient(180deg,#FF8B5C,#FF6B35); color:#fff;
+    padding:4px 9px; border-radius:6px; text-transform:uppercase;
+    box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 4px 10px -2px rgba(255,107,53,.45);
+  }
+
+  .hero {
+    height:96px; border-radius:18px; margin-bottom:18px; position:relative; overflow:hidden;
+    background:
+      radial-gradient(70% 100% at 80% 20%, #FFE066 0%, transparent 55%),
+      linear-gradient(110deg, #FFB400 0%, #FF8B5C 30%, #FF6B35 55%, #D62867 100%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.4) inset,
+      0 1px 2px rgba(15,4,24,.10),
+      0 14px 28px -10px rgba(214,40,103,.40),
+      0 30px 50px -20px rgba(214,40,103,.30);
+  }
+  .hero::after {
+    content:""; position:absolute; inset:0;
+    background-image: radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px);
+    background-size:4px 4px; mix-blend-mode:overlay; opacity:.6;
+  }
+  .hero .label {
+    position:absolute; left:18px; bottom:14px; color:#fff;
+    font-size:18px; font-weight:900; letter-spacing:-.01em;
+    text-shadow: 0 1px 2px rgba(15,4,24,.30);
+  }
+
+  .row { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+  .sw { display:flex; flex-direction:column; gap:7px; }
+  .chip {
+    height:80px; border-radius:14px; position:relative; overflow:hidden;
+    border:1px solid rgba(15,4,24,.08);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.45) inset,
+      0 -2px 0 rgba(15,4,24,.10) inset,
+      0 1px 2px rgba(15,4,24,.08),
+      0 8px 18px -6px rgba(15,4,24,.16),
+      0 18px 28px -10px rgba(15,4,24,.18);
+    transition: transform .35s cubic-bezier(.34,1.4,.5,1);
+  }
+  .chip:hover { transform: translateY(-3px); }
+  .chip::before {
+    content:""; position:absolute; left:0; right:0; top:0; height:50%;
+    background: linear-gradient(180deg, rgba(255,255,255,.30) 0%, rgba(255,255,255,0) 100%);
+    z-index:1;
+  }
+  /* Dot-print texture — same as hero, applied to every chip */
+  .chip::after {
+    content:""; position:absolute; inset:0;
+    background-image: radial-gradient(rgba(255,255,255,.22) 1px, transparent 1px);
+    background-size:4px 4px;
+    mix-blend-mode:overlay; opacity:.7;
+  }
+  /* Pale chip needs darker dots so they remain visible */
+  .chip.pale::after {
+    background-image: radial-gradient(rgba(255,107,53,.28) 1px, transparent 1px);
+    mix-blend-mode:multiply; opacity:.55;
+  }
+  .chip.pale { border-color: rgba(15,4,24,.10); }
+
+  .star {
+    position:absolute; top:7px; right:8px; z-index:1;
+    font-size:9.5px; font-weight:900; color:#fff;
+    background:rgba(15,4,24,.30); backdrop-filter: blur(4px);
+    padding:3px 8px; border-radius:9999px;
+    letter-spacing:.5px;
+  }
+  .label { font-size:11.5px; font-weight:800; color:#264653; letter-spacing:-.005em; }
+  .hex   { font-size:10px; color:#5E5E66;
+           font-family:ui-monospace,Menlo,monospace; font-weight:600; }
+  .role  { font-size:10px; color:#8A6E5C; }
+</style>
+</head><body>
+
+  <div class="head">
+    <div class="name">Закат над Барселоной</div>
+    <div class="vibe">Тёплый, дружелюбный, гендер-нейтральный · primary без фиолета</div>
+    <div class="badge">selected</div>
+  </div>
+
+  <div class="hero">
+    <div class="label">Sunset gradient · Orange → Magenta</div>
+  </div>
+
+  <div class="row">
+    <div class="sw">
+      <div class="chip" style="background:linear-gradient(180deg,#FF8B5C,#FF6B35);">
+        <span class="star">PRIMARY</span>
+      </div>
+      <div class="label">Orange</div>
+      <div class="hex">#FF6B35</div>
+      <div class="role">CTAs · nav · streak</div>
+    </div>
+    <div class="sw">
+      <div class="chip" style="background:linear-gradient(180deg,#E84A86,#D62867);"></div>
+      <div class="label">Magenta</div>
+      <div class="hex">#D62867</div>
+      <div class="role">Pro · accent · XP gradient end</div>
+    </div>
+    <div class="sw">
+      <div class="chip" style="background:linear-gradient(180deg,#FFCC33,#FFB400);"></div>
+      <div class="label">Sun</div>
+      <div class="hex">#FFB400</div>
+      <div class="role">XP · stars · level</div>
+    </div>
+    <div class="sw">
+      <div class="chip" style="background:linear-gradient(180deg,#3A6573,#264653);"></div>
+      <div class="label">Ocean</div>
+      <div class="hex">#264653</div>
+      <div class="role">Headlines · text-1</div>
+    </div>
+    <div class="sw">
+      <div class="chip pale" style="background:linear-gradient(180deg,#FFF6EE,#FFEEDC);"></div>
+      <div class="label">Peach</div>
+      <div class="hex">#FFF1E6</div>
+      <div class="role">App bg · pill bg</div>
+    </div>
+  </div>
+
+</body></html>

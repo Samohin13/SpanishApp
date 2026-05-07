@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<title>EASPEAK · Play Store · 2026</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  :root {
+    --ink: #0E0418;
+    --ink-2: #2A2730;
+    --ink-3: #5C5664;
+    --paper: #F6F2EC;
+    --sun: #FFC840;
+    --orange: #FF6B35;
+    --red: #E61E15;
+    --rose: #C8102E;
+    --night: #0B0810;
+    --glass: rgba(255,252,247,.06);
+    --glass-line: rgba(255,252,247,.10);
+  }
+  html, body { margin:0; padding:0;
+    background:
+      radial-gradient(80% 60% at 20% 10%, #1B1320 0%, transparent 60%),
+      radial-gradient(60% 60% at 90% 90%, #1B1024 0%, transparent 60%),
+      #0A0610;
+    font-family: var(--font-sans, "Söhne", "Inter", system-ui, sans-serif);
+    color:#FFFCF7; min-height:100vh;
+  }
+  .stage { padding:48px 36px 80px; }
+
+  /* ------- Editorial header bar over the deck ------- */
+  .top-bar {
+    max-width:1248px; margin:0 auto 32px; display:flex; align-items:center;
+    justify-content:space-between; gap:24px; padding:0 12px;
+  }
+  .top-bar .lockup { display:inline-flex; align-items:center; gap:14px; }
+  .top-bar .mark {
+    width:34px; height:34px; border-radius:9px; position:relative; overflow:hidden;
+    background: radial-gradient(120% 80% at 30% 0%, #2A2530, #100C16 65%);
+    box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .top-bar .mark .b { display:inline-flex; gap:1.5px; align-items:center; }
+  .top-bar .mark .b span {
+    width:3px; border-radius:9999px;
+    background: linear-gradient(180deg,#FF3B2D,#B30E08);
+  }
+  .top-bar .mark .b span.s { background: linear-gradient(180deg,#FFC840,#FF8A1F); }
+  .top-bar .wm { font-weight:900; letter-spacing:-.02em; font-size:18px; }
+  .top-bar .wm em { font-style:normal;
+    background:linear-gradient(135deg,#FFD23F 0%,#FF8A1F 50%,#E61E15 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .top-bar .meta { font-family:ui-monospace,Menlo,monospace; font-size:11px;
+                   letter-spacing:.16em; text-transform:uppercase; color:#9A95A3; }
+  .top-bar .meta b { color:#FFC840; font-weight:800; }
+
+  /* ------- Deck grid ------- */
+  .deck { display:grid; gap:32px;
+          grid-template-columns: repeat(auto-fit, minmax(360px, 380px));
+          justify-content:center;
+          max-width:1248px; margin:0 auto; }
+
+  /* ------- Slide ------- */
+  .shot {
+    width:380px; height:676px;
+    border-radius:32px;
+    position:relative; overflow:hidden; isolation:isolate;
+    color:#FFFCF7;
+    background:#101018;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.06) inset,
+      0 -1px 0 rgba(0,0,0,.55) inset,
+      0 30px 60px -20px rgba(0,0,0,.7);
+  }
+  .shot::after {
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background-image: radial-gradient(rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size:3px 3px; mix-blend-mode:overlay; opacity:.5;
+  }
+
+  /* Backgrounds — minimal, pigment-rich, no decorative chips */
+  .bg-night {
+    background:
+      radial-gradient(70% 50% at 18% 12%, rgba(255,200,64,.18) 0%, transparent 60%),
+      radial-gradient(70% 60% at 88% 92%, rgba(229,30,21,.18) 0%, transparent 60%),
+      linear-gradient(180deg, #0E0814 0%, #0A0610 100%);
+  }
+  .bg-sun {
+    background:
+      radial-gradient(80% 60% at 80% 20%, rgba(255,255,250,.35) 0%, transparent 60%),
+      linear-gradient(170deg, #FF8A1F 0%, #E61E15 60%, #6B0F1E 100%);
+  }
+  .bg-paper {
+    background:
+      radial-gradient(60% 50% at 90% 10%, rgba(255,200,64,.30) 0%, transparent 60%),
+      linear-gradient(170deg, #F6F2EC 0%, #E9E1D4 100%);
+    color: var(--ink);
+  }
+  .bg-paper .meta-row,
+  .bg-paper .nbr,
+  .bg-paper .lbl { color: var(--ink-3) !important; }
+  .bg-paper .head em { background:linear-gradient(135deg,#FF8A1F 0%,#E61E15 70%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .bg-deep {
+    background:
+      radial-gradient(60% 40% at 20% 20%, rgba(255,200,64,.14), transparent 60%),
+      linear-gradient(170deg, #1A0F22 0%, #08060C 100%);
+  }
+  .bg-rose {
+    background:
+      radial-gradient(60% 50% at 20% 90%, rgba(255,200,64,.20), transparent 60%),
+      linear-gradient(170deg, #C8102E 0%, #6B0F1E 100%);
+  }
+
+  /* ------- Editorial layer (numbering + label rail) ------- */
+  .header {
+    position:absolute; top:28px; left:28px; right:28px; z-index:3;
+    display:flex; align-items:center; justify-content:space-between;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+  }
+  .nbr { color:#FFFCF7; opacity:.85; }
+  .nbr b { color: var(--sun); font-weight:800; }
+  .lbl { color:#FFFCF7; opacity:.7; display:inline-flex; align-items:center; gap:8px; }
+  .lbl .dot { width:6px; height:6px; border-radius:50%; background:var(--sun); box-shadow:0 0 8px var(--sun); }
+
+  /* ------- Headline block ------- */
+  .copy {
+    position:absolute; left:28px; right:28px; top:74px; z-index:3;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .head {
+    font-size:36px;
+    font-weight:900; letter-spacing:-.035em; line-height:.96;
+    margin:0; text-wrap: balance;
+    overflow-wrap:break-word; word-break:normal; hyphens:none;
+  }
+  .head em { font-style:normal;
+    background:linear-gradient(135deg,#FFD23F 0%,#FF8A1F 50%,#E61E15 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .lede {
+    font-size:13px; line-height:1.4;
+    max-width: 92%; opacity:.86; font-weight:500; margin:0;
+  }
+  .bg-paper .lede { color: var(--ink-2); opacity:.95; }
+
+  /* tiny stat row replacing the badge */
+  .stats { display:flex; gap:18px; margin-top:6px; }
+  .stat { display:flex; flex-direction:column; gap:2px; }
+  .stat .v { font-size:18px; font-weight:900; letter-spacing:-.02em; }
+  .stat .v em { font-style:normal; color:var(--sun); }
+  .stat .k { font-family:ui-monospace,Menlo,monospace; font-size:9px;
+             letter-spacing:.14em; text-transform:uppercase; opacity:.65; }
+
+  /* ------- Real device frame ------- */
+  .device {
+    position:absolute; left:50%; bottom:-40px; transform: translateX(-50%);
+    width: 76%; aspect-ratio: 9 / 19;
+    border-radius:48px;
+    background: linear-gradient(180deg, #1A1620 0%, #08060C 100%);
+    padding:8px;
+    box-shadow:
+      0 2px 0 rgba(255,255,255,.06) inset,
+      0 -2px 0 rgba(0,0,0,.6) inset,
+      0 30px 60px -10px rgba(0,0,0,.65);
+    z-index:2;
+  }
+  .device .screen {
+    width:100%; height:100%; border-radius:42px; overflow:hidden;
+    background: #FAFAFC; color: var(--ink); position:relative;
+    display:flex; flex-direction:column;
+  }
+  .device .island {
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:34%; height:22px; background:#000; border-radius:14px; z-index:5;
+  }
+
+  /* ------- In-app chrome (consistent across slides) ------- */
+  .app {
+    height:100%; box-sizing:border-box; padding:44px 16px 14px;
+    display:flex; flex-direction:column; gap:10px;
+    background: linear-gradient(180deg, #FFF8F2 0%, #FAFAFC 60%);
+    color: var(--ink);
+  }
+  .app .topbar { display:flex; align-items:center; justify-content:space-between; padding:0 4px; }
+  .app .av {
+    width:30px; height:30px; border-radius:50%;
+    background: linear-gradient(135deg,#FFC840,#FF6B35,#C8102E);
+    display:inline-flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:900; font-size:12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
+  }
+  .app .lvl {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 8px; border-radius:9999px;
+    background:#fff; border:1px solid rgba(15,4,24,.08);
+    font-size:10px; font-weight:800; letter-spacing:.06em; color:var(--ink);
+  }
+  .app .lvl b { color:#E61E15; }
+  .app h3 {
+    font-size:18px; font-weight:900; letter-spacing:-.02em; line-height:1.1;
+    margin:6px 0 0; color: var(--ink); text-wrap:balance;
+  }
+  .app .sub {
+    font-family: ui-monospace, Menlo, monospace; font-size:9.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:#7A7682;
+  }
+
+  /* Card variants */
+  .card {
+    background:#fff; border:1px solid rgba(15,4,24,.06);
+    border-radius:16px; padding:12px;
+    box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 6px 16px -8px rgba(15,4,24,.10);
+  }
+  .card.dark { background:#100C16; color:#FFFCF7; border-color:rgba(255,255,255,.06); }
+  .card .title { font-size:12px; font-weight:800; line-height:1.3; }
+  .card .meta { display:flex; gap:8px; font-family:ui-monospace,Menlo,monospace;
+                font-size:9px; color:#7A7682; letter-spacing:.10em; text-transform:uppercase; margin-top:6px; }
+
+  /* sentence card */
+  .sentence { font-size:13px; line-height:1.45; font-weight:600; color:#0E0418; }
+  .sentence b { color:#E61E15; }
+  .word-tap {
+    display:inline-block; padding:1px 4px; margin:0 1px;
+    border-radius:6px; background:rgba(255,200,64,.22);
+    box-shadow: inset 0 0 0 1px rgba(229,90,43,.18);
+  }
+
+  /* waveform */
+  .wave { display:flex; align-items:center; gap:3px; height:38px;
+          padding:0 4px; }
+  .wave span {
+    width:3px; border-radius:9999px;
+    background: linear-gradient(180deg,#FF6B35,#C8102E);
+  }
+
+  /* progress */
+  .prog { height:5px; border-radius:9999px; background:rgba(15,4,24,.06); overflow:hidden; }
+  .prog > i {
+    display:block; height:100%;
+    background: linear-gradient(90deg,#FFC840,#FF6B35,#E61E15);
+  }
+
+  /* streak grid */
+  .streak { display:grid; grid-template-columns: repeat(7, 1fr); gap:4px; }
+  .streak i {
+    aspect-ratio:1; border-radius:5px; background:rgba(15,4,24,.05);
+    display:block;
+  }
+  .streak i.on { background: linear-gradient(135deg,#FFC840,#FF6B35); }
+  .streak i.peak { background: linear-gradient(135deg,#FF6B35,#C8102E); box-shadow: 0 0 0 1.5px #fff inset, 0 0 0 2.5px #C8102E; }
+
+  /* leader row */
+  .row {
+    display:flex; align-items:center; gap:10px; padding:8px 4px;
+    border-bottom:1px solid rgba(15,4,24,.06);
+  }
+  .row:last-child { border-bottom:none; }
+  .row .av-sm { width:24px; height:24px; border-radius:50%; flex-shrink:0; }
+  .row .av-sm.a { background:linear-gradient(135deg,#FFC840,#FF6B35); }
+  .row .av-sm.b { background:linear-gradient(135deg,#FF6B35,#C8102E); }
+  .row .av-sm.c { background:linear-gradient(135deg,#264653,#0F2A36); }
+  .row .av-sm.d { background:linear-gradient(135deg,#7A7682,#3A3640); }
+  .row .nm { font-size:12px; font-weight:700; flex:1; }
+  .row .pts { font-family:ui-monospace,Menlo,monospace; font-size:11px;
+              font-weight:800; color:#E61E15; }
+  .row .me { background: rgba(255,200,64,.16); border-radius:10px; margin:0 -6px; padding:8px 10px; }
+
+  /* mic CTA */
+  .mic-cta {
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:14px 0;
+  }
+  .mic-cta .mic {
+    width:68px; height:68px; border-radius:50%;
+    background: radial-gradient(circle at 30% 25%, #FFFCEC, #FFC840 30%, #FF6B35 60%, #C8102E 95%);
+    box-shadow:
+      0 0 0 4px rgba(255,200,64,.18),
+      0 0 0 10px rgba(229,30,21,.10),
+      0 12px 24px rgba(229,30,21,.4);
+    position:relative;
+  }
+  .mic-cta .mic::before {
+    content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:18px; height:26px; border-radius:9px; background:#fff;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.05) inset;
+  }
+  .mic-cta .lbl-mic { font-size:11px; font-weight:800; color:#0E0418; letter-spacing:.04em; }
+
+  /* tabbar */
+  .tabbar {
+    margin-top:auto; padding:8px 6px; display:flex; justify-content:space-around;
+    border-top:1px solid rgba(15,4,24,.06); background:#fff;
+  }
+  .tabbar i {
+    width:22px; height:22px; border-radius:6px; background:rgba(15,4,24,.08);
+    display:inline-block;
+  }
+  .tabbar i.act { background: linear-gradient(135deg,#FF6B35,#C8102E); }
+
+  /* ------- Glass pill (one per slide, intentional) ------- */
+  .glass-pill {
+    position:absolute; z-index:4; bottom:28px; left:28px; right:28px;
+    display:inline-flex; align-items:center; gap:10px;
+    padding:8px 14px 8px 8px; border-radius:9999px;
+    background: var(--glass);
+    border:1px solid var(--glass-line);
+    backdrop-filter: blur(14px) saturate(140%);
+    font-size:10.5px; font-weight:700; letter-spacing:.02em; color:#FFFCF7;
+    line-height:1.3;
+  }
+  .bg-paper .glass-pill { color: var(--ink);
+    background: rgba(15,4,24,.06); border-color: rgba(15,4,24,.10); }
+  .glass-pill .av { width:22px; height:22px; border-radius:50%;
+    background: linear-gradient(135deg,#FFC840,#FF6B35,#C8102E);
+    display:inline-flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:900; font-size:10px; }
+
+  /* ------- Footer mark ------- */
+  .footer {
+    position:absolute; right:28px; bottom:24px; z-index:4;
+    font-family:ui-monospace,Menlo,monospace; font-size:9.5px;
+    letter-spacing:.20em; text-transform:uppercase; opacity:.7;
+  }
+  .footer b { color:var(--sun); font-weight:800; }
+  .bg-paper .footer { opacity:.55; }
+  .bg-paper .footer b { color: var(--red); }
+
+  /* ------- Section caption under the deck ------- */
+  .caption {
+    max-width:1248px; margin:48px auto 0; padding: 0 12px;
+    display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start;
+  }
+  .caption .legend {
+    flex:1; min-width:280px; font-size:13px; line-height:1.55; color:#9A95A3;
+  }
+  .caption .legend b { color:#FFFCF7; }
+  .caption .specs {
+    font-family:ui-monospace,Menlo,monospace; font-size:11px;
+    letter-spacing:.06em; color:#7A7682; line-height:1.7;
+  }
+  .caption .specs b { color:#FFC840; font-weight:800; }
+</style>
+</head>
+
+<body>
+<div class="stage">
+
+  <!-- header -->
+  <div class="top-bar">
+    <div class="lockup">
+      <div class="mark"><div class="b">
+        <span style="height:8px"></span><span style="height:14px" class="s"></span>
+        <span style="height:10px"></span><span style="height:16px"></span><span style="height:7px"></span>
+      </div></div>
+      <div class="wm">EA<em>SPEAK</em></div>
+    </div>
+    <div class="meta">Play Store · 1284×2778 · <b>v 2026.01</b></div>
+  </div>
+
+  <!-- deck -->
+  <div class="deck">
+
+    <!-- 01 -->
+    <div class="shot bg-night">
+      <div class="header">
+        <div class="nbr"><b>01</b> · Hero</div>
+        <div class="lbl"><span class="dot"></span> EASPEAK</div>
+      </div>
+      <div class="copy">
+        <h1 class="head">Habla<br/><em>como nativo.</em></h1>
+        <p class="lede">12 минут в день. Реальные сцены из Барселоны и Мадрида. Голос-ИИ слушает каждое слово.</p>
+        <div class="stats">
+          <div class="stat"><div class="v"><em>4.9</em></div><div class="k">App rating</div></div>
+          <div class="stat"><div class="v"><em>1.2M</em></div><div class="k">Learners</div></div>
+          <div class="stat"><div class="v"><em>12</em></div><div class="k">Min · day</div></div>
+        </div>
+      </div>
+      <div class="device">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="app">
+            <div class="topbar">
+              <div class="av">M</div>
+              <div class="lvl"><b>●</b> A2 · día 14</div>
+            </div>
+            <h3>En la cafetería</h3>
+            <div class="sub">Speaking · 4 min · escena 03</div>
+            <div class="card">
+              <div class="sentence">— ¿Me pones <span class="word-tap">un cortado</span>, por favor?</div>
+              <div class="meta"><span>tú</span><span>·</span><span>0:02</span></div>
+            </div>
+            <div class="card dark">
+              <div class="wave">
+                <span style="height:8px"></span><span style="height:14px"></span>
+                <span style="height:22px"></span><span style="height:30px"></span>
+                <span style="height:24px"></span><span style="height:18px"></span>
+                <span style="height:10px"></span><span style="height:6px"></span>
+                <span style="height:14px"></span><span style="height:22px"></span>
+                <span style="height:18px"></span><span style="height:10px"></span>
+                <span style="height:6px"></span>
+              </div>
+              <div style="font-size:10px;font-family:ui-monospace,Menlo,monospace;color:#FFC840;letter-spacing:.1em;margin-top:6px">PRONUNCIACIÓN · 92%</div>
+            </div>
+            <div class="mic-cta">
+              <div class="mic"></div>
+              <div class="lbl-mic">Mantén para hablar</div>
+            </div>
+            <div class="tabbar"><i class="act"></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">EASPEAK · <b>2026</b></div>
+    </div>
+
+    <!-- 02 -->
+    <div class="shot bg-paper">
+      <div class="header">
+        <div class="nbr"><b>02</b> · Lessons</div>
+        <div class="lbl"><span class="dot"></span> contenido real</div>
+      </div>
+      <div class="copy">
+        <h1 class="head">Aprende<br/><em>en escenas.</em></h1>
+        <p class="lede">Кафе, такси, барселонский рынок, чат с собеседником. Никаких карточек.</p>
+        <div class="stats">
+          <div class="stat"><div class="v"><em>148</em></div><div class="k">Escenas</div></div>
+          <div class="stat"><div class="v"><em>A1 → B2</em></div><div class="k">Niveles</div></div>
+        </div>
+      </div>
+      <div class="device">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="app">
+            <div class="topbar">
+              <div class="av">M</div>
+              <div class="lvl"><b>●</b> hoy</div>
+            </div>
+            <h3>Mi camino</h3>
+            <div class="sub">3 escenas · 12 min</div>
+            <div class="card">
+              <div class="title">El mercado de la Boquería</div>
+              <div class="prog" style="margin-top:8px"><i style="width:78%"></i></div>
+              <div class="meta"><span>A2</span><span>·</span><span>4 min</span><span>·</span><span style="color:#E61E15;font-weight:800">EN VIVO</span></div>
+            </div>
+            <div class="card">
+              <div class="title">Pedir un taxi en Madrid</div>
+              <div class="prog" style="margin-top:8px"><i style="width:35%"></i></div>
+              <div class="meta"><span>A2</span><span>·</span><span>5 min</span></div>
+            </div>
+            <div class="card">
+              <div class="title">Charla con un local</div>
+              <div class="prog" style="margin-top:8px"><i style="width:0%"></i></div>
+              <div class="meta"><span>B1</span><span>·</span><span>3 min</span><span>·</span><span>nuevo</span></div>
+            </div>
+            <div class="tabbar"><i></i><i class="act"></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">EASPEAK · <b>2026</b></div>
+    </div>
+
+    <!-- 03 -->
+    <div class="shot bg-sun">
+      <div class="header">
+        <div class="nbr"><b>03</b> · Voice AI</div>
+        <div class="lbl"><span class="dot"></span> pronunciación</div>
+      </div>
+      <div class="copy">
+        <h1 class="head">Tu voz,<br/><em>medida.</em></h1>
+        <p class="lede">Ритм, ударение, фонема за фонемой. Поправляем там, где сложно — без шейминга.</p>
+        <div class="stats">
+          <div class="stat"><div class="v"><em>92%</em></div><div class="k">Accuracy</div></div>
+          <div class="stat"><div class="v"><em>0.4s</em></div><div class="k">Feedback</div></div>
+        </div>
+      </div>
+      <div class="device">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="app">
+            <div class="topbar">
+              <div class="av">M</div>
+              <div class="lvl"><b>●</b> análisis</div>
+            </div>
+            <h3>Lo dices así</h3>
+            <div class="sub">Frase · 0:02</div>
+            <div class="card">
+              <div style="font-size:14px;font-weight:800;letter-spacing:-.01em">— ¿Me pones un <span style="color:#E61E15">cortado</span>?</div>
+              <div class="wave" style="margin-top:10px">
+                <span style="height:6px"></span><span style="height:12px"></span><span style="height:20px"></span>
+                <span style="height:28px"></span><span style="height:36px"></span><span style="height:30px"></span>
+                <span style="height:20px"></span><span style="height:14px"></span><span style="height:26px"></span>
+                <span style="height:32px"></span><span style="height:24px"></span><span style="height:14px"></span>
+                <span style="height:8px"></span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="title">Detalle por fonema</div>
+              <div style="display:flex;gap:6px;margin-top:8px;font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:800">
+                <span style="padding:4px 7px;border-radius:6px;background:rgba(34,139,87,.15);color:#1F8A5B">/k/</span>
+                <span style="padding:4px 7px;border-radius:6px;background:rgba(34,139,87,.15);color:#1F8A5B">/o/</span>
+                <span style="padding:4px 7px;border-radius:6px;background:rgba(229,30,21,.16);color:#E61E15">/r/</span>
+                <span style="padding:4px 7px;border-radius:6px;background:rgba(34,139,87,.15);color:#1F8A5B">/t/</span>
+                <span style="padding:4px 7px;border-radius:6px;background:rgba(255,180,0,.20);color:#A86A00">/a/</span>
+                <span style="padding:4px 7px;border-radius:6px;background:rgba(34,139,87,.15);color:#1F8A5B">/d/</span>
+                <span style="padding:4px 7px;border-radius:6px;background:rgba(34,139,87,.15);color:#1F8A5B">/o/</span>
+              </div>
+              <div class="meta" style="margin-top:8px"><span>Trabajamos /r/ multivibrante</span></div>
+            </div>
+            <div class="tabbar"><i></i><i></i><i class="act"></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">EASPEAK · <b>2026</b></div>
+    </div>
+
+    <!-- 04 -->
+    <div class="shot bg-deep">
+      <div class="header">
+        <div class="nbr"><b>04</b> · Streak</div>
+        <div class="lbl"><span class="dot"></span> hábito</div>
+      </div>
+      <div class="copy">
+        <h1 class="head">Doce minutos.<br/><em>Cada día.</em></h1>
+        <p class="lede">Утро · обед · перед сном — выбираешь свой ритм. Серии, цели, уведомления, что не бесят.</p>
+        <div class="stats">
+          <div class="stat"><div class="v"><em>14</em></div><div class="k">Días seguidos</div></div>
+          <div class="stat"><div class="v"><em>168</em></div><div class="k">Min · semana</div></div>
+        </div>
+      </div>
+      <div class="device">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="app">
+            <div class="topbar">
+              <div class="av">M</div>
+              <div class="lvl"><b>●</b> racha</div>
+            </div>
+            <h3>14 días seguidos</h3>
+            <div class="sub">tu mejor racha — 21</div>
+            <div class="card">
+              <div class="title">Esta semana</div>
+              <div class="streak" style="margin-top:8px">
+                <i class="on"></i><i class="on"></i><i class="on"></i>
+                <i class="on"></i><i class="on"></i><i class="on"></i>
+                <i class="peak"></i>
+              </div>
+              <div class="meta" style="margin-top:8px"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span style="color:#E61E15">D · hoy</span></div>
+            </div>
+            <div class="card">
+              <div class="title">Próxima meta</div>
+              <div class="prog" style="margin-top:8px"><i style="width:67%"></i></div>
+              <div class="meta" style="margin-top:8px"><span>21 días → libro de Lorca</span></div>
+            </div>
+            <div class="card dark" style="margin-top:auto">
+              <div style="font-size:11px;letter-spacing:.06em;opacity:.8">21:00 — 5 min de cierre</div>
+              <div style="font-size:13px;font-weight:800;margin-top:4px">Vamos a por un cortado virtual</div>
+            </div>
+            <div class="tabbar"><i></i><i></i><i></i><i class="act"></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">EASPEAK · <b>2026</b></div>
+    </div>
+
+    <!-- 05 -->
+    <div class="shot bg-rose">
+      <div class="header">
+        <div class="nbr"><b>05</b> · Liga</div>
+        <div class="lbl"><span class="dot"></span> compite</div>
+      </div>
+      <div class="copy">
+        <h1 class="head">No solo<br/><em>aprendes.</em></h1>
+        <p class="lede">Понедельная лига. Топ-10 переходят выше, остальные — ¡vuelve la próxima! Никаких лайков. Только минуты речи.</p>
+        <div class="stats">
+          <div class="stat"><div class="v"><em>#3</em></div><div class="k">Esta liga</div></div>
+          <div class="stat"><div class="v"><em>2 480</em></div><div class="k">Pts</div></div>
+        </div>
+      </div>
+      <div class="device">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="app">
+            <div class="topbar">
+              <div class="av">M</div>
+              <div class="lvl"><b>●</b> liga oro</div>
+            </div>
+            <h3>Liga oro · día 5</h3>
+            <div class="sub">acaba el domingo</div>
+            <div class="card" style="padding:6px 12px">
+              <div class="row"><span class="av-sm a"></span><span class="nm">Lucía S.</span><span class="pts">3 120</span></div>
+              <div class="row"><span class="av-sm b"></span><span class="nm">Dani R.</span><span class="pts">2 940</span></div>
+              <div class="row me"><span class="av-sm c" style="background:linear-gradient(135deg,#FFC840,#E61E15)"></span><span class="nm">tú</span><span class="pts">2 480</span></div>
+              <div class="row"><span class="av-sm c"></span><span class="nm">Marc B.</span><span class="pts">2 310</span></div>
+              <div class="row"><span class="av-sm d"></span><span class="nm">Inés V.</span><span class="pts">1 980</span></div>
+            </div>
+            <div class="card dark">
+              <div style="font-size:11px;letter-spacing:.06em;opacity:.8">faltan</div>
+              <div style="font-size:18px;font-weight:900;letter-spacing:-.02em;margin-top:2px">2 días · 460 pts</div>
+              <div class="prog" style="margin-top:8px;background:rgba(255,255,255,.10)"><i style="width:74%"></i></div>
+            </div>
+            <div class="tabbar"><i></i><i></i><i></i><i></i><i class="act"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">EASPEAK · <b>2026</b></div>
+    </div>
+
+    <!-- 06 -->
+    <div class="shot bg-night">
+      <div class="header">
+        <div class="nbr"><b>06</b> · Empieza</div>
+        <div class="lbl"><span class="dot"></span> gratis</div>
+      </div>
+      <div class="copy">
+        <h1 class="head">Tu primer<br/><em>cortado.</em></h1>
+        <p class="lede">Открой первую сцену сразу — без регистрации. Если зайдёт — продолжишь.</p>
+        <div class="stats">
+          <div class="stat"><div class="v"><em>0₽</em></div><div class="k">Para empezar</div></div>
+          <div class="stat"><div class="v"><em>3 min</em></div><div class="k">Sin registro</div></div>
+        </div>
+      </div>
+      <div class="glass-pill">
+        <span class="av">M</span>
+        <span>«Empecé en agosto. Ahora pido cortado en Sevilla.» — María, A2 → B1</span>
+      </div>
+      <div class="device" style="bottom:-90px">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="app" style="background:linear-gradient(180deg,#0E0814,#08060C);color:#FFFCF7">
+            <div class="topbar">
+              <div class="av">·</div>
+              <div class="lvl" style="background:rgba(255,255,255,.06);color:#FFC840;border-color:rgba(255,200,64,.20)"><b>●</b> demo</div>
+            </div>
+            <h3 style="color:#FFFCF7">Empieza ahora</h3>
+            <div class="sub" style="color:#9A95A3">una escena · 3 min · gratis</div>
+            <div class="card dark" style="margin-top:8px">
+              <div class="title">En la cafetería</div>
+              <div class="meta" style="color:#9A95A3"><span>A1</span><span>·</span><span>3 min</span><span>·</span><span style="color:#FFC840">empezar →</span></div>
+            </div>
+            <div class="mic-cta" style="margin-top:auto">
+              <div class="mic"></div>
+              <div class="lbl-mic" style="color:#FFFCF7">Mantén para hablar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">EASPEAK · <b>2026</b></div>
+    </div>
+
+  </div>
+
+  <div class="caption">
+    <div class="legend">
+      <b>2026 editorial system.</b> Шесть скринов на единой типографической сетке: моноширинная навигация сверху, объёмный заголовок-курсив с sunset-акцентом, lede-текст в одном весе, статистика вместо штампованных «бейджей». Один реальный device-frame в кадре, никаких поворотов и наклонов. Glass-пилл с цитатой — только в финальном CTA-слайде.
+    </div>
+    <div class="specs">
+      grid · <b>9:16 · 1284×2778</b><br/>
+      type · <b>display 56 / -.04em</b><br/>
+      bg · <b>5 фонов: night · paper · sun · deep · rose</b><br/>
+      device · <b>real iPhone-like frame, без rotation</b>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<title>Type — body & labels</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; padding:24px; background:var(--bg-white); font-family:var(--font-sans); color:var(--fg-1); }
+  .row { display:flex; align-items:baseline; gap:16px; padding:8px 0; border-bottom:1px dashed var(--border); }
+  .row:last-child { border-bottom:0; }
+  .label { font-size:11px; color:var(--fg-3); font-family:ui-monospace,Menlo,monospace; min-width:140px; }
+  .sample { flex:1; }
+</style>
+</head><body>
+  <div class="row"><div class="label">titleLarge · 18 · 700</div><div class="sample" style="font-size:18px; font-weight:700">Начать обучение →</div></div>
+  <div class="row"><div class="label">titleMedium · 16 · 600</div><div class="sample" style="font-size:16px; font-weight:600">Tarjetas с интервальным повторением</div></div>
+  <div class="row"><div class="label">bodyLarge · 16 · 400</div><div class="sample" style="font-size:16px; font-weight:400">Продолжай изучать испанский язык каждый день — даже 10 минут.</div></div>
+  <div class="row"><div class="label">bodyMedium · 14 · 400</div><div class="sample" style="font-size:14px; font-weight:400; color:var(--fg-2)">¡Hola, María! Будем учиться вместе.</div></div>
+  <div class="row"><div class="label">labelLarge · 13 · 600</div><div class="sample" style="font-size:13px; font-weight:600; color:var(--brand-purple)">Заблокировано</div></div>
+  <div class="row"><div class="label">labelMedium · 12 · 500</div><div class="sample" style="font-size:12px; font-weight:500; color:var(--fg-2)">$X / $Y мин · 60 уроков</div></div>
+  <div class="row"><div class="label">labelSmall · 11 · 700 · .5sp</div><div class="sample" style="font-size:11px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:var(--fg-2)">CEFR · A1 · BLOCK 1</div></div>
+</body></html>
