@@ -921,8 +921,8 @@ private fun StreakCard(
 
 @Composable
 private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?) {
-    val WordBlue = Color(0xFF1565C0)
-    val WordBg   = Color(0xFFE8F0FE)
+    val WordAccent = Purple          // Orange #FF6B35
+    val WordBg     = Color(0xFFFFF1E6) // Peach tint
 
     Surface(
         modifier = Modifier
@@ -937,7 +937,7 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
             // Label
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("📖", fontSize = 14.sp)
-                Text("Слово дня", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = WordBlue)
+                Text("Слово дня", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = WordAccent)
             }
 
             Spacer(Modifier.height(10.dp))
@@ -948,10 +948,10 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
                     text = word.spanish,
                     fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = WordBlue,
+                    color = TextMain,
                     modifier = Modifier.weight(1f)
                 )
-                SpeakerButton(text = word.spanish, tts = tts, tint = WordBlue)
+                SpeakerButton(text = word.spanish, tts = tts, tint = WordAccent)
             }
 
             // Russian translation
@@ -959,7 +959,7 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
                 text = word.russian,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = TextMain
+                color = TextGray
             )
 
             if (word.example.isNotBlank()) {
@@ -976,7 +976,7 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
                         text = "\"${word.example}\"",
                         fontSize = 13.sp,
                         fontStyle = FontStyle.Italic,
-                        color = WordBlue.copy(alpha = 0.85f),
+                        color = TextGray,
                         lineHeight = 18.sp
                     )
                 }
