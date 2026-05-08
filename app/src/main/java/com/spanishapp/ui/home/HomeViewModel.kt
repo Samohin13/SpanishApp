@@ -102,7 +102,8 @@ class HomeViewModel @Inject constructor(
                 )
             }
 
-            val unlocked = true // TODO: restore progression lock after testing
+            // Все юниты разблокированы — premium-логика убрана.
+            val unlocked = true
 
             val lessonsWithProgress = unit.lessons.mapIndexed { idx, lesson ->
                 lesson.copy(isCompleted = "u${unitId}_l${idx}" in completedKeys)

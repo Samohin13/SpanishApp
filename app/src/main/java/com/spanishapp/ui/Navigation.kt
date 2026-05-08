@@ -39,7 +39,6 @@ import com.spanishapp.ui.leaderboard.LeaderboardScreen
 import com.spanishapp.ui.settings.SettingsScreen
 import com.spanishapp.ui.pronunciation.PronunciationScreen
 import com.spanishapp.ui.dialogues.DialoguesScreen
-import com.spanishapp.ui.onboarding.OnboardingScreen
 import com.spanishapp.ui.auth.WelcomeScreen
 import com.spanishapp.ui.auth.RegisterScreen
 import com.spanishapp.ui.auth.LoginScreen
@@ -231,9 +230,6 @@ object Navigation {
                 val vm: LessonIntroViewModel = hiltViewModel()
                 LessonSessionScreen(navController, unitId, lessonIndex, vm)
             }
-
-            // ── Онбординг ─────────────────────────────────────
-            composable("onboarding") { OnboardingScreen(navController) }
 
             // ── Карточки ──────────────────────────────────────
             composable(
