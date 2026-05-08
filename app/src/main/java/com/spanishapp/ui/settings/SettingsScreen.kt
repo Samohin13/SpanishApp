@@ -171,7 +171,6 @@ class SettingsViewModel @Inject constructor(
     val ttsEnabled = appPreferences.ttsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val soundEffects = appPreferences.soundEffectsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val vibration = appPreferences.vibrationEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
-    val vibrationIntensity = appPreferences.vibrationIntensity.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 2)
     val reminders = appPreferences.remindersEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val reminderHour = appPreferences.reminderHour.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 19)
     val reminderMinute = appPreferences.reminderMinute.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
@@ -181,14 +180,9 @@ class SettingsViewModel @Inject constructor(
     fun setUiLanguage(lang: String) = viewModelScope.launch { appPreferences.setUiLanguage(lang) }
     fun toggleTts(e: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(e) }
     fun toggleSoundEffects(e: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(e) }
-    fun toggleVibration(e: Boolean) = viewModelScope.launch { appPreferences.setVibrationEnabled(e) }
-    fun setVibrationIntensity(level: Int) = viewModelScope.launch {
-        appPreferences.setVibrationIntensity(level)
-        // Preview the new intensity right after the user picks it.
-        if (level > 0) vibrationHelper.tick(level)
-    }
-    fun previewVibration(level: Int) {
-        if (level > 0) vibrationHelper.pulse(level)
+    fun toggleVibration(e: Boolean) = viewModelScope.launch {
+        appPreferences.setVibrationEnabled(e)
+        if (e) vibrationHelper.tick(70)  // small confirmation tick when turning ON
     }
 
     fun toggleReminders(context: android.content.Context, enabled: Boolean) = viewModelScope.launch {
@@ -244,7 +238,6 @@ fun SettingsScreen(
     val soundEffects by vm.soundEffects.collectAsStateWithLifecycle()
     val ttsEnabled by vm.ttsEnabled.collectAsStateWithLifecycle()
     val vibration by vm.vibration.collectAsStateWithLifecycle()
-    val vibrationIntensity by vm.vibrationIntensity.collectAsStateWithLifecycle()
     val themeMode by vm.themeMode.collectAsStateWithLifecycle()
     val fontSize by vm.fontSize.collectAsStateWithLifecycle()
     
@@ -393,11 +386,7 @@ fun SettingsScreen(
             SettingsSection(stringResource(R.string.settings_section_sound)) {
                 SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.settings_sound_effects), soundEffects) { vm.toggleSoundEffects(it) }
                 SettingsSwitchItem(Icons.Default.RecordVoiceOver, stringResource(R.string.settings_voice_announcer), ttsEnabled) { vm.toggleTts(it) }
-                VibrationIntensityItem(
-                    intensity = vibrationIntensity,
-                    onSelect = { vm.setVibrationIntensity(it) },
-                    onTest = { vm.previewVibration(vibrationIntensity) }
-                )
+                SettingsSwitchItem(Icons.Default.Vibration, stringResource(R.string.set_vibration), vibration) { vm.toggleVibration(it) }
                 SettingsItem(Icons.Default.InterpreterMode, stringResource(R.string.set_voice_setup)) { navController.navigate("settings_voice") }
             }
 
@@ -767,40 +756,3 @@ fun SettingsSwitchItem(icon: ImageVector, title: String, checked: Boolean, onChe
     }
 }
 
-@Composable
-fun VibrationIntensityItem(
-    intensity: Int,
-    onSelect: (Int) -> Unit,
-    onTest: () -> Unit
-) {
-    // Local slider value so dragging is smooth; we commit to DataStore on release.
-    var sliderValue by remember(intensity) { mutableStateOf(intensity.toFloat()) }
-    val current = sliderValue.toInt()
-    val onColor = MaterialTheme.colorScheme.primary
-
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Vibration, null, modifier = Modifier.size(24.dp), tint = onColor)
-            Spacer(Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.set_vibration), style = MaterialTheme.typography.bodyLarge)
-                Text(
-                    text = if (current == 0) stringResource(R.string.vib_off) else "$current%",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            if (current > 0) {
-                TextButton(onClick = onTest) { Text(stringResource(R.string.vib_test)) }
-            }
-        }
-        Slider(
-            value = sliderValue,
-            onValueChange = { sliderValue = it },
-            onValueChangeFinished = { onSelect(sliderValue.toInt()) },
-            valueRange = 0f..100f,
-            steps = 0,  // continuous
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
