@@ -29,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.spanishapp.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -174,6 +176,8 @@ class SettingsViewModel @Inject constructor(
     val reminderMinute = appPreferences.reminderMinute.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
     val themeMode = appPreferences.themeMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ThemeMode.AUTO)
     val fontSize = appPreferences.fontSize.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "MEDIUM")
+    val uiLanguage = appPreferences.uiLanguage.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "system")
+    fun setUiLanguage(lang: String) = viewModelScope.launch { appPreferences.setUiLanguage(lang) }
     fun toggleTts(e: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(e) }
     fun toggleSoundEffects(e: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(e) }
     fun toggleBgMusic(e: Boolean) = viewModelScope.launch { appPreferences.setBgMusicEnabled(e) }
@@ -400,8 +404,16 @@ fun SettingsScreen(
             }
 
             SettingsSection("Языки") {
-                SettingsItem(Icons.Default.Language, "Язык интерфейса", "Русский") { showLanguageDialog = true }
-                SettingsItem(Icons.Default.Public, "Изучаемый язык", "Испанский") { /* Пока только один язык */ }
+                val uiLang by vm.uiLanguage.collectAsStateWithLifecycle()
+                val uiLangLabel = when (uiLang) {
+                    "ru" -> "Русский"
+                    "en" -> "English"
+                    else -> "Системный"
+                }
+                SettingsItem(Icons.Default.Language, stringResource(R.string.settings_language_ui), uiLangLabel) {
+                    showLanguageDialog = true
+                }
+                SettingsItem(Icons.Default.Public, stringResource(R.string.settings_language_target), stringResource(R.string.settings_target_spanish)) { /* Пока только один язык */ }
             }
 
             SettingsSection("Подписка") {
@@ -630,11 +642,47 @@ fun SettingsScreen(
     }
 
     if (showLanguageDialog) {
+        val uiLang by vm.uiLanguage.collectAsStateWithLifecycle()
+        val activity = (context as? android.app.Activity)
         AlertDialog(
             onDismissRequest = { showLanguageDialog = false },
-            title = { Text("Язык интерфейса") },
-            text = { Text("В данной версии доступен только Русский язык.") },
-            confirmButton = { TextButton(onClick = { showLanguageDialog = false }) { Text("OK") } }
+            title = { Text(stringResource(R.string.settings_language_ui)) },
+            text = {
+                Column {
+                    val options = listOf(
+                        "system" to "Системный",
+                        "ru" to "Русский",
+                        "en" to "English"
+                    )
+                    options.forEach { (code, label) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    if (code != uiLang) {
+                                        vm.setUiLanguage(code)
+                                        showLanguageDialog = false
+                                        // Перезапускаем активность чтобы перечитать локаль.
+                                        activity?.recreate()
+                                    } else {
+                                        showLanguageDialog = false
+                                    }
+                                }
+                                .padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = code == uiLang, onClick = null)
+                            Spacer(Modifier.width(12.dp))
+                            Text(label)
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLanguageDialog = false }) {
+                    Text(stringResource(R.string.btn_close))
+                }
+            }
         )
     }
 
