@@ -26,8 +26,9 @@ class HapticPrefViewModel @Inject constructor(
     appPreferences: AppPreferences,
     val vibrator: VibrationHelper
 ) : ViewModel() {
+    /** Vibration strength as percent (0..100). 0 = disabled. */
     val intensity: StateFlow<Int> = appPreferences.vibrationIntensity
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 2)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 70)
 }
 
 /**
@@ -40,17 +41,16 @@ class HapticPrefViewModel @Inject constructor(
 fun rememberCheckedHaptic(): HapticFeedback {
     val real = LocalHapticFeedback.current
     val vm: HapticPrefViewModel = hiltViewModel()
-    val level by vm.intensity.collectAsState()
+    val percent by vm.intensity.collectAsState()
     val helper = vm.vibrator
 
-    return remember(real, level, helper) {
+    return remember(real, percent, helper) {
         object : HapticFeedback {
             override fun performHapticFeedback(hapticFeedbackType: HapticFeedbackType) {
-                if (level <= 0) return
+                if (percent <= 0) return
                 when (hapticFeedbackType) {
-                    HapticFeedbackType.LongPress -> helper.tick(level)
                     HapticFeedbackType.TextHandleMove -> real.performHapticFeedback(hapticFeedbackType)
-                    else -> helper.tick(level)
+                    else -> helper.tick(percent)
                 }
             }
         }
