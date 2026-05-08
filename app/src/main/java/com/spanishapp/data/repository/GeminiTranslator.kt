@@ -1,0 +1,123 @@
+package com.spanishapp.data.repository
+
+import android.util.Log
+import android.util.LruCache
+import com.spanishapp.BuildConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
+import org.json.JSONObject
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/**
+ * Узкоспециализированный fallback для перевода испанских слов и
+ * предложений через Gemini, когда локального словаря недостаточно.
+ *
+ * Кэширует результаты в LruCache (256 записей) — повторные запросы
+ * по одному и тому же слову / предложению уходят без сети.
+ *
+ * Использование: только когда WordDao не нашёл слово даже после
+ * лемматизации. Для частых слов локальный поиск всегда быстрее.
+ */
+@Singleton
+class GeminiTranslator @Inject constructor(
+    private val okHttpClient: OkHttpClient
+) {
+    private val cache = LruCache<String, String>(256)
+
+    private val json = Json { ignoreUnknownKeys = true }
+
+    private companion object {
+        const val MODEL = "gemini-1.5-flash"
+        fun apiUrl() =
+            "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
+                "?key=${BuildConfig.GEMINI_API_KEY}"
+    }
+
+    /**
+     * Возвращает короткий русский перевод слова в контексте предложения,
+     * либо пустую строку при ошибке. Безопасно вызывать на UI-нити —
+     * сама делает переключение на IO.
+     */
+    suspend fun translateWord(word: String, sentence: String): String =
+        withContext(Dispatchers.IO) {
+            val key = "w|${word.lowercase()}"
+            cache.get(key)?.let { return@withContext it }
+
+            val prompt = buildString {
+                append("Переведи испанское слово '")
+                append(word)
+                append("' на русский. Контекст предложения: \"")
+                append(sentence)
+                append("\". Ответь ОДНИМ словом или короткой фразой (max 5 слов) на русском, без объяснений и кавычек.")
+            }
+
+            val result = callGemini(prompt) ?: ""
+            if (result.isNotBlank()) cache.put(key, result)
+            result
+        }
+
+    /**
+     * Полный перевод предложения. Можно вызывать опционально, например
+     * если локальный лукап вернул мало слов.
+     */
+    suspend fun translateSentence(sentence: String): String =
+        withContext(Dispatchers.IO) {
+            val key = "s|${sentence.lowercase()}"
+            cache.get(key)?.let { return@withContext it }
+
+            val prompt = "Переведи на русский: \"$sentence\". Ответь только переводом."
+            val result = callGemini(prompt) ?: ""
+            if (result.isNotBlank()) cache.put(key, result)
+            result
+        }
+
+    private fun callGemini(prompt: String): String? {
+        if (BuildConfig.GEMINI_API_KEY.isBlank()) {
+            Log.w("GeminiTranslator", "GEMINI_API_KEY пустой, пропускаем запрос")
+            return null
+        }
+        val payload = JSONObject().apply {
+            put("contents", JSONArray().put(
+                JSONObject().put("parts", JSONArray().put(
+                    JSONObject().put("text", prompt)
+                ))
+            ))
+            put("generationConfig", JSONObject().apply {
+                put("temperature", 0.2)
+                put("maxOutputTokens", 60)
+            })
+        }.toString()
+        val body = payload.toRequestBody("application/json".toMediaType())
+
+        return runCatching {
+            val request = Request.Builder()
+                .url(apiUrl())
+                .post(body)
+                .header("Content-Type", "application/json")
+                .build()
+            okHttpClient.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) return@runCatching null
+                val text = response.body?.string() ?: return@runCatching null
+                json.parseToJsonElement(text).jsonObject["candidates"]
+                    ?.jsonArray?.firstOrNull()
+                    ?.jsonObject?.get("content")
+                    ?.jsonObject?.get("parts")
+                    ?.jsonArray?.firstOrNull()
+                    ?.jsonObject?.get("text")
+                    ?.jsonPrimitive?.content
+                    ?.trim()
+                    ?.removeSurrounding("\"")
+            }
+        }.onFailure { Log.w("GeminiTranslator", "translate failed", it) }.getOrNull()
+    }
+}
