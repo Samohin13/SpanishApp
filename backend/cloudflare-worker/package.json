@@ -1,8 +1,8 @@
 {
-  "name": "hablaru-ai-proxy",
+  "name": "ESPEAK-ai-proxy",
   "version": "1.0.0",
   "private": true,
-  "description": "Cloudflare Worker proxy for Gemini API (HablaRu app)",
+  "description": "Cloudflare Worker proxy for Gemini API (ESPEAK app)",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"

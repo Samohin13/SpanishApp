@@ -1,4 +1,4 @@
-# SpanishApp / HablaRu — Android приложение для изучения испанского языка
+# SpanishApp / ESPEAK — Android приложение для изучения испанского языка
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
@@ -9,7 +9,7 @@
 **Ветка**: `claude/eager-shaw-a2c9d7`. См. полный план в [PLAN.md](PLAN.md).
 
 ### Сделано в этой сессии:
-- ✅ **Имя приложения** унифицировано: `ESPEAK` → `@string/app_name` (HablaRu) в манифесте.
+- ✅ **Имя приложения** унифицировано: `ESPEAK` → `@string/app_name` (ESPEAK) в манифесте.
 - ✅ **CAMERA permission** удалён (не использовался).
 - ✅ **backup_rules.xml + data_extraction_rules.xml** заполнены — auth-токены исключены, БД и preferences включены.
 - ✅ **`fallbackToDestructiveMigration()`** теперь только в debug-сборке (`AppModule.kt`).

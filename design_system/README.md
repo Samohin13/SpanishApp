@@ -2,7 +2,7 @@
 
 > **EASPEAK** — Russian-language Android app for learning Spanish (CEFR A1 → B2). Kotlin + Jetpack Compose, with an AI tutor (Claude), spaced-repetition flashcards, mini-games, and a "Path to Madrid" league/leaderboard system.
 
-The brand mark on the splash screen reads **EASPEAK** (a play on _español_ + _speak_); internal Android `app_name` is `HablaRu`. We use **EASPEAK** as the canonical product name in this design system.
+The brand mark on the splash screen reads **EASPEAK** (a play on _español_ + _speak_); internal Android `app_name` is `ESPEAK`. We use **EASPEAK** as the canonical product name in this design system.
 
 ---
 

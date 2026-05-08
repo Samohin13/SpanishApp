@@ -1,4 +1,4 @@
-name = "hablaru-ai-proxy"
+name = "ESPEAK-ai-proxy"
 main = "src/index.js"
 compatibility_date = "2025-04-01"
 
@@ -17,5 +17,5 @@ compatibility_date = "2025-04-01"
 # Routes — задать после подключения custom domain (либо использовать
 # дефолтный *.workers.dev URL).
 # routes = [
-#   { pattern = "ai.hablaru.app/*", zone_name = "hablaru.app" }
+#   { pattern = "ai.ESPEAK.app/*", zone_name = "ESPEAK.app" }
 # ]

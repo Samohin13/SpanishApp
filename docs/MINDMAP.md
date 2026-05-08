@@ -1,4 +1,4 @@
-# SpanishApp / HablaRu — карта приложения
+# SpanishApp / ESPEAK — карта приложения
 
 > Mermaid mindmap. Откроется автоматически в:
 > GitHub, GitLab, Notion, VS Code (плагин Markdown Preview Mermaid Support),
@@ -8,7 +8,7 @@
 
 ```mermaid
 mindmap
-  root((HablaRu))
+  root((ESPEAK))
     Auth и онбординг
       Welcome
       Register
@@ -225,7 +225,7 @@ mindmap
 
 ## Если нужен .xmind файл
 
-Скажи — сгенерирую и положу в `docs/HablaRu.xmind`.
+Скажи — сгенерирую и положу в `docs/ESPEAK.xmind`.
 Также могу выгрузить в:
 - `.mm` (FreeMind/XMind import)
 - PNG через mermaid-cli
