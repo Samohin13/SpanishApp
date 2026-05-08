@@ -23,9 +23,10 @@ import com.spanishapp.data.db.entity.*
         ArticleWordEntity::class,
         LessonProgressEntity::class,
         LibroProgressEntity::class,
-        GameLevelProgressEntity::class
+        GameLevelProgressEntity::class,
+        DailyXpEntity::class
     ],
-    version = 11,
+    version = 12,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -42,6 +43,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun lessonProgressDao(): LessonProgressDao
     abstract fun libroProgressDao(): LibroProgressDao
     abstract fun gameLevelProgressDao(): GameLevelProgressDao
+    abstract fun dailyXpDao(): DailyXpDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -241,6 +243,19 @@ abstract class AppDatabase : RoomDatabase() {
                         is_plural INTEGER NOT NULL,
                         russian TEXT NOT NULL,
                         block TEXT NOT NULL
+                    )
+                """.trimIndent())
+            }
+        }
+
+        // ── v12: дневная история XP для графика прогресса в Profile ──
+        val MIGRATION_11_12 = object : Migration(11, 12) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS daily_xp (
+                        day TEXT PRIMARY KEY NOT NULL,
+                        xp INTEGER NOT NULL DEFAULT 0,
+                        minutes INTEGER NOT NULL DEFAULT 0
                     )
                 """.trimIndent())
             }
