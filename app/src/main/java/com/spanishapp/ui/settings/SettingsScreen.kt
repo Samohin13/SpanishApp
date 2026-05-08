@@ -376,14 +376,14 @@ fun SettingsScreen(
             }
 
             // ── Биометрический замок ─────────────────────────────
-            val appLockOn by viewModel.appLockEnabled.collectAsStateWithLifecycle()
-            if (viewModel.biometricUsable) {
+            val appLockOn by vm.appLockEnabled.collectAsStateWithLifecycle()
+            if (vm.biometricUsable) {
                 SettingsSection("Безопасность") {
                     SettingsSwitchItem(
                         icon = Icons.Default.Fingerprint,
                         title = "Защита приложения биометрией",
                         checked = appLockOn,
-                        onCheckedChange = { viewModel.setAppLockEnabled(it) }
+                        onCheckedChange = { vm.setAppLockEnabled(it) }
                     )
                     if (appLockOn) {
                         Text(

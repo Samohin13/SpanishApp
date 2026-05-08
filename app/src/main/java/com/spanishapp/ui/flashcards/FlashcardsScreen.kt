@@ -4,10 +4,13 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -21,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -254,14 +258,83 @@ private fun SessionBody(
 
         Spacer(Modifier.weight(0.5f))
 
-        FlipCard(
-            word = word,
-            direction = state.currentDirection,
-            showBack = state.showBack,
-            onFlip = onFlip,
-            onSpeak = onSpeak,
-            onSpeakExample = onSpeakExample
-        )
+        // Swipe-жесты на перевернутой карточке:
+        //   →  GOOD ("Помню")
+        //   ←  HARD ("Забыл")
+        //   ↑  EASY ("Легко")
+        val scope = rememberCoroutineScope()
+        val offsetX = remember { Animatable(0f) }
+        val offsetY = remember { Animatable(0f) }
+        val swipeThreshold = with(LocalDensity.current) { 120.dp.toPx() }
+
+        // При смене карточки — мгновенно сбрасываем offset, новая карточка
+        // начинает с центра.
+        LaunchedEffect(state.currentIndex) {
+            offsetX.snapTo(0f)
+            offsetY.snapTo(0f)
+        }
+
+        Box(
+            modifier = Modifier
+                .graphicsLayer {
+                    translationX = offsetX.value
+                    translationY = offsetY.value
+                    rotationZ = (offsetX.value / 30f).coerceIn(-15f, 15f)
+                    alpha = (1f - (kotlin.math.abs(offsetX.value) / 800f)).coerceIn(0.4f, 1f)
+                }
+                .pointerInput(state.showBack, state.currentIndex) {
+                    if (!state.showBack) return@pointerInput
+                    detectDragGestures(
+                        onDragEnd = {
+                            val xPx = offsetX.value
+                            val yPx = offsetY.value
+                            val ans = when {
+                                yPx < -swipeThreshold              -> ReviewButton.EASY
+                                xPx >  swipeThreshold              -> ReviewButton.GOOD
+                                xPx < -swipeThreshold              -> ReviewButton.HARD
+                                else                               -> null
+                            }
+                            if (ans != null) {
+                                // Анимация «улёта» карточки.
+                                scope.launch {
+                                    val targetX = if (ans == ReviewButton.EASY) xPx else xPx * 4f
+                                    val targetY = if (ans == ReviewButton.EASY) -1500f else yPx
+                                    offsetX.animateTo(targetX, tween(220))
+                                    offsetY.animateTo(targetY, tween(220))
+                                    onAnswer(ans)
+                                }
+                            } else {
+                                // Возвращаем карточку обратно в центр.
+                                scope.launch { offsetX.animateTo(0f, spring()) }
+                                scope.launch { offsetY.animateTo(0f, spring()) }
+                            }
+                        }
+                    ) { change, drag ->
+                        change.consume()
+                        scope.launch { offsetX.snapTo(offsetX.value + drag.x) }
+                        scope.launch { offsetY.snapTo(offsetY.value + drag.y.coerceAtMost(0f)) }
+                    }
+                }
+        ) {
+            FlipCard(
+                word = word,
+                direction = state.currentDirection,
+                showBack = state.showBack,
+                onFlip = onFlip,
+                onSpeak = onSpeak,
+                onSpeakExample = onSpeakExample
+            )
+        }
+
+        // Подсказка о жестах появляется только на обороте карточки.
+        AnimatedVisibility(visible = state.showBack) {
+            Text(
+                "← Забыл  ·  ↑ Легко  ·  Помню →",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
 
         Spacer(Modifier.weight(1f))
 
