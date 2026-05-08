@@ -125,7 +125,7 @@ fun AiChatScreen(
     val isSending by vm.isSending.collectAsState()
     val error     by vm.error.collectAsState()
     var input     by remember { mutableStateOf("") }
-    val haptic    = LocalHapticFeedback.current
+    val haptic    = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     val listState = rememberLazyListState()
 
