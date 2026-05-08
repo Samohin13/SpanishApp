@@ -272,18 +272,6 @@ fun SettingsScreen(
         }
     }
 
-    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-                cropImageLauncher.launch(CropImageContractOptions(null, CropImageOptions(
-                    imageSourceIncludeGallery = true, imageSourceIncludeCamera = true,
-                    guidelines = CropImageView.Guidelines.ON, aspectRatioX = 1, aspectRatioY = 1,
-                    fixAspectRatio = true, cropShape = CropImageView.CropShape.OVAL
-                )))
-        } else {
-            Toast.makeText(context, context.getString(R.string.set_camera_perm_hint), Toast.LENGTH_SHORT).show()
-        }
-    }
-
     var showNameDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -334,17 +322,23 @@ fun SettingsScreen(
                         )
                     }
                     SmallFloatingActionButton(
-                        onClick = { 
-                            val status = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                            if (status == PackageManager.PERMISSION_GRANTED) {
-                                cropImageLauncher.launch(CropImageContractOptions(null, CropImageOptions(
-                                    imageSourceIncludeGallery = true, imageSourceIncludeCamera = true,
-                                    guidelines = CropImageView.Guidelines.ON, aspectRatioX = 1, aspectRatioY = 1,
-                                    fixAspectRatio = true, cropShape = CropImageView.CropShape.OVAL
-                                )))
-                            } else {
-                                permissionLauncher.launch(Manifest.permission.CAMERA)
-                            }
+                        onClick = {
+                            // Launch the picker directly. Cropper shows a chooser (Gallery/Camera);
+                            // it handles the CAMERA permission prompt itself if the user picks Camera.
+                            // Gallery via SAF needs no runtime permission on modern Android.
+                            cropImageLauncher.launch(
+                                CropImageContractOptions(
+                                    null,
+                                    CropImageOptions(
+                                        imageSourceIncludeGallery = true,
+                                        imageSourceIncludeCamera = true,
+                                        guidelines = CropImageView.Guidelines.ON,
+                                        aspectRatioX = 1, aspectRatioY = 1,
+                                        fixAspectRatio = true,
+                                        cropShape = CropImageView.CropShape.OVAL
+                                    )
+                                )
+                            )
                         },
                         modifier = Modifier.size(40.dp),
                         shape = CircleShape,
