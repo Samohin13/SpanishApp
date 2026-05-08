@@ -127,6 +127,26 @@
     <string name="course_locked">Locked</string>
     <string name="course_start_learning">Start learning →</string>
 
+    <!-- ── AI Chat ── -->
+    <string name="chat_assistant_name">AI tutor</string>
+    <string name="chat_status_online">online</string>
+    <string name="chat_message_placeholder">Message…</string>
+    <string name="chat_correction_label">Correction</string>
+    <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
+    <string name="chat_welcome_subtitle">I\'ll help you practice Spanish. What would you like to talk about?</string>
+    <string name="chat_error_network">No internet connection</string>
+    <string name="chat_error_rate_limit">Rate limit exceeded, please wait</string>
+    <string name="chat_error_generic">Error: %1$s</string>
+
+    <!-- ── Pronunciation ── -->
+    <string name="pron_listen">Listen</string>
+    <string name="pron_speak">Speak</string>
+    <string name="pron_listening">Listening…</string>
+    <string name="pron_score_excellent">Excellent!</string>
+    <string name="pron_score_good">Good</string>
+    <string name="pron_score_try_again">Try again</string>
+    <string name="pron_next">Next</string>
+
     <!-- ── LessonIntro / Content ── -->
     <string name="lesson_intro_vocab">Learn new words and phrases for everyday conversation. We picked the most important ones for this topic.</string>
     <string name="lesson_intro_grammar">Understand how sentences work. Grammar is the skeleton of any language.</string>

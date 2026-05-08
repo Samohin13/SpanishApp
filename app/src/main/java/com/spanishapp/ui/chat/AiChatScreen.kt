@@ -153,8 +153,8 @@ fun AiChatScreen(
                         }
                         Spacer(Modifier.width(12.dp))
                         Column {
-                            Text("ИИ-помощник", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text("онлайн", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                            Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_assistant_name), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_status_online), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                         }
                     }
                 },
@@ -241,7 +241,7 @@ fun AiChatScreen(
                     OutlinedTextField(
                         value = input,
                         onValueChange = { input = it },
-                        placeholder = { Text("Сообщение...") },
+                        placeholder = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder)) },
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(24.dp),
                         maxLines = 5,
@@ -345,7 +345,7 @@ private fun CorrectionCard(correction: ChatCorrection) {
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "Исправление",
+                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_correction_label),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = accent
@@ -422,7 +422,7 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
         
         Spacer(Modifier.height(12.dp))
         
-        Text("Я помогу тебе практиковать испанский язык. О чем хочешь поговорить?", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+        Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_welcome_subtitle), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         
         Spacer(Modifier.height(32.dp))
 
