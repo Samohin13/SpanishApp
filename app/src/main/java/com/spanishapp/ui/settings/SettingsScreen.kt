@@ -170,13 +170,36 @@ class SettingsViewModel @Inject constructor(
     val bgMusic = appPreferences.bgMusicEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
     val vibration = appPreferences.vibrationEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val reminders = appPreferences.remindersEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+    val reminderHour = appPreferences.reminderHour.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 19)
+    val reminderMinute = appPreferences.reminderMinute.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
     val themeMode = appPreferences.themeMode.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ThemeMode.AUTO)
     val fontSize = appPreferences.fontSize.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "MEDIUM")
     fun toggleTts(e: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(e) }
     fun toggleSoundEffects(e: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(e) }
     fun toggleBgMusic(e: Boolean) = viewModelScope.launch { appPreferences.setBgMusicEnabled(e) }
     fun toggleVibration(e: Boolean) = viewModelScope.launch { appPreferences.setVibrationEnabled(e) }
-    fun toggleReminders(e: Boolean) = viewModelScope.launch { appPreferences.setRemindersEnabled(e) }
+
+    fun toggleReminders(context: android.content.Context, enabled: Boolean) = viewModelScope.launch {
+        appPreferences.setRemindersEnabled(enabled)
+        if (enabled) {
+            com.spanishapp.service.DailyReminderWorker.schedule(
+                context,
+                appPreferences.reminderHour.first(),
+                appPreferences.reminderMinute.first()
+            )
+        } else {
+            com.spanishapp.service.DailyReminderWorker.cancel(context)
+        }
+    }
+
+    fun setReminderTime(context: android.content.Context, hour: Int, minute: Int) = viewModelScope.launch {
+        appPreferences.setReminderTime(hour, minute)
+        // Перепланируем worker на новое время — REPLACE policy внутри schedule().
+        if (appPreferences.remindersEnabled.first()) {
+            com.spanishapp.service.DailyReminderWorker.schedule(context, hour, minute)
+        }
+    }
+
     fun setThemeMode(m: ThemeMode) = viewModelScope.launch { appPreferences.setThemeMode(m) }
     fun setFontSize(s: String) = viewModelScope.launch { appPreferences.setFontSize(s) }
     fun logout() = viewModelScope.launch { authRepository.setLoggedIn(false) }
@@ -325,9 +348,31 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.BarChart, "Статистика прогресса") { navController.navigate("achievements") }
             }
 
+            val reminderHour by vm.reminderHour.collectAsStateWithLifecycle()
+            val reminderMinute by vm.reminderMinute.collectAsStateWithLifecycle()
             SettingsSection("Уведомления") {
-                SettingsSwitchItem(Icons.Default.Notifications, "Напоминания о занятиях", reminders) { vm.toggleReminders(it) }
-                SettingsSwitchItem(Icons.Default.EventAvailable, "Ежедневные уведомления и стрики", reminders) { /* Можно разделить ключи в будущем */ }
+                SettingsSwitchItem(
+                    Icons.Default.Notifications,
+                    "Напоминания о занятиях",
+                    reminders
+                ) { vm.toggleReminders(context, it) }
+                if (reminders) {
+                    SettingsItem(
+                        Icons.Default.AccessTime,
+                        "Время напоминания",
+                        "%02d:%02d".format(reminderHour, reminderMinute)
+                    ) {
+                        // Системный TimePickerDialog — без зависимостей и без
+                        // экспериментальных Material3 API.
+                        android.app.TimePickerDialog(
+                            context,
+                            { _, h, m -> vm.setReminderTime(context, h, m) },
+                            reminderHour,
+                            reminderMinute,
+                            true
+                        ).show()
+                    }
+                }
             }
 
             SettingsSection("Звук и вибрация") {
