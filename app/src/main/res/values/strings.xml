@@ -140,6 +140,26 @@
     <string name="course_locked">Заблокировано</string>
     <string name="course_start_learning">Начать обучение →</string>
 
+    <!-- ── AI Chat ──────────────────────────────────────────── -->
+    <string name="chat_assistant_name">ИИ-помощник</string>
+    <string name="chat_status_online">онлайн</string>
+    <string name="chat_message_placeholder">Сообщение…</string>
+    <string name="chat_correction_label">Исправление</string>
+    <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
+    <string name="chat_welcome_subtitle">Я помогу тебе практиковать испанский язык. О чём хочешь поговорить?</string>
+    <string name="chat_error_network">Нет интернета</string>
+    <string name="chat_error_rate_limit">Превышен лимит запросов, подожди</string>
+    <string name="chat_error_generic">Ошибка: %1$s</string>
+
+    <!-- ── Pronunciation ────────────────────────────────────── -->
+    <string name="pron_listen">Слушать</string>
+    <string name="pron_speak">Сказать</string>
+    <string name="pron_listening">Слушаю…</string>
+    <string name="pron_score_excellent">Отлично!</string>
+    <string name="pron_score_good">Хорошо</string>
+    <string name="pron_score_try_again">Попробуй ещё раз</string>
+    <string name="pron_next">Следующее</string>
+
     <!-- ── LessonIntro / Content ────────────────────────────── -->
     <string name="lesson_intro_vocab">Изучи новые слова и фразы для общения. Мы подобрали самые важные выражения для этой темы.</string>
     <string name="lesson_intro_grammar">Разберись, как строятся предложения. Грамматика — это скелет языка.</string>
