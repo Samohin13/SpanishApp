@@ -340,7 +340,7 @@ fun SettingsScreen(
 
             // ── Секции настроек ──
             SettingsSection(stringResource(R.string.settings_section_profile)) {
-                SettingsItem(Icons.Default.Edit, "Изменить имя", progress.displayName) { showNameDialog = true }
+                SettingsItem(Icons.Default.Edit, stringResource(R.string.settings_change_name), progress.displayName) { showNameDialog = true }
                 SettingsItem(Icons.Default.Translate, "Уровень испанского", when(progress.currentLevel) {
                     "A1" -> "A1 — Начинающий"
                     "A2" -> "A2 — Элементарный"
@@ -348,7 +348,7 @@ fun SettingsScreen(
                     "B2" -> "B2 — Выше среднего"
                     else -> progress.currentLevel
                 }) { showLevelDialog = true }
-                SettingsItem(Icons.Default.Timer, "Дневная цель", "${progress.dailyGoalMinutes} мин") { showGoalDialog = true }
+                SettingsItem(Icons.Default.Timer, stringResource(R.string.settings_daily_goal), "${progress.dailyGoalMinutes} ${stringResource(R.string.settings_minutes_short)}") { showGoalDialog = true }
                 SettingsItem(Icons.Default.BarChart, "Статистика прогресса") { navController.navigate("achievements") }
             }
 
@@ -380,8 +380,8 @@ fun SettingsScreen(
             }
 
             SettingsSection(stringResource(R.string.settings_section_sound)) {
-                SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, "Эффекты звуков", soundEffects) { vm.toggleSoundEffects(it) }
-                SettingsSwitchItem(Icons.Default.RecordVoiceOver, "Голос диктора", ttsEnabled) { vm.toggleTts(it) }
+                SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.settings_sound_effects), soundEffects) { vm.toggleSoundEffects(it) }
+                SettingsSwitchItem(Icons.Default.RecordVoiceOver, stringResource(R.string.settings_voice_announcer), ttsEnabled) { vm.toggleTts(it) }
                 SettingsSwitchItem(Icons.Default.MusicNote, "Музыка на фоне", bgMusic) { vm.toggleBgMusic(it) }
                 SettingsSwitchItem(Icons.Default.Vibration, "Вибрация и тактильная отдача", vibration) { vm.toggleVibration(it) }
                 SettingsItem(Icons.Default.InterpreterMode, "Настройка голоса") { navController.navigate("settings_voice") }
@@ -416,14 +416,14 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.Public, stringResource(R.string.settings_language_target), stringResource(R.string.settings_target_spanish)) { /* Пока только один язык */ }
             }
 
-            SettingsSection("Подписка") {
-                SettingsItem(Icons.Default.Star, "Управление подпиской") { /* Открыть маркет или экран оплаты */ }
-                SettingsItem(Icons.Default.Restore, "Восстановление покупок") { /* Логика восстановления */ }
+            SettingsSection(stringResource(R.string.settings_section_subscription)) {
+                SettingsItem(Icons.Default.Star, stringResource(R.string.settings_subscription_manage)) { /* Открыть маркет или экран оплаты */ }
+                SettingsItem(Icons.Default.Restore, stringResource(R.string.settings_subscription_restore)) { /* Логика восстановления */ }
             }
 
-            SettingsSection("Помощь и поддержка") {
-                SettingsItem(Icons.AutoMirrored.Filled.HelpOutline, "Центр помощи") { /* Ссылка на FAQ или поддержку */ }
-                SettingsItem(Icons.Default.MailOutline, "Связаться с нами") { 
+            SettingsSection(stringResource(R.string.settings_section_help)) {
+                SettingsItem(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.settings_help_center)) { /* Ссылка на FAQ или поддержку */ }
+                SettingsItem(Icons.Default.MailOutline, stringResource(R.string.settings_contact)) {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("mailto:support@spanishapp.com")
                         putExtra(Intent.EXTRA_SUBJECT, "Поддержка SpanishApp")
@@ -466,14 +466,14 @@ fun SettingsScreen(
                     ))
                     runCatching { context.startActivity(intent) }
                 }
-                SettingsItem(Icons.Default.FileUpload, "Экспорт данных") { /* Логика экспорта */ }
+                SettingsItem(Icons.Default.FileUpload, stringResource(R.string.settings_export)) { /* Логика экспорта */ }
             }
 
-            SettingsSection("Дополнительно") {
-                SettingsItem(Icons.Default.Leaderboard, "Лидерборды") {
+            SettingsSection(stringResource(R.string.settings_section_other)) {
+                SettingsItem(Icons.Default.Leaderboard, stringResource(R.string.settings_leaderboards)) {
                     navController.navigate("leaderboard")
                 }
-                SettingsItem(Icons.Default.Refresh, "Сброс прогресса") { showResetDialog = true }
+                SettingsItem(Icons.Default.Refresh, stringResource(R.string.settings_reset_progress)) { showResetDialog = true }
                 SettingsItem(Icons.Default.Share, stringResource(R.string.settings_share)) {
                     // Пока приложение не опубликовано в Play, ссылка ведёт на GitHub.
                     // После релиза заменить на https://play.google.com/store/apps/details?id=com.spanishapp

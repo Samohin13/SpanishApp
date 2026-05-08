@@ -55,6 +55,28 @@
     <string name="settings_section_security">Безопасность</string>
     <string name="settings_section_privacy">Конфиденциальность и данные</string>
     <string name="settings_section_account">Управление аккаунтом</string>
+    <string name="settings_section_subscription">Подписка</string>
+    <string name="settings_section_help">Помощь и поддержка</string>
+    <string name="settings_section_other">Дополнительно</string>
+
+    <string name="settings_change_name">Изменить имя</string>
+    <string name="settings_daily_goal">Дневная цель</string>
+    <string name="settings_minutes_short">мин</string>
+    <string name="settings_sound_effects">Эффекты звуков</string>
+    <string name="settings_voice_announcer">Голос диктора</string>
+    <string name="settings_voice_setup">Настройка голоса</string>
+    <string name="settings_subscription_manage">Управление подпиской</string>
+    <string name="settings_subscription_restore">Восстановление покупок</string>
+    <string name="settings_help_center">Центр помощи</string>
+    <string name="settings_contact">Связаться с нами</string>
+    <string name="settings_export">Экспорт данных</string>
+    <string name="settings_leaderboards">Лидерборды</string>
+    <string name="settings_reset_progress">Сброс прогресса</string>
+    <string name="settings_protection_biometric">Защита приложения биометрией</string>
+    <string name="settings_biometric_hint">При следующем открытии приложения попросим отпечаток или лицо.</string>
+    <string name="settings_reminder_time">Время напоминания</string>
+    <string name="settings_reminders_label">Напоминания о занятиях</string>
+    <string name="settings_share_text">Учу испанский в ESPEAK 🇪🇸 — попробуй: %1$s</string>
 
     <string name="settings_language_ui">Язык интерфейса</string>
     <string name="settings_language_target">Изучаемый язык</string>
