@@ -200,6 +200,9 @@ interface ConjugationDao {
     @Query("SELECT DISTINCT verb FROM conjugations ORDER BY verb")
     fun getAllVerbs(): Flow<List<String>>
 
+    @Query("SELECT DISTINCT verb FROM conjugations WHERE is_irregular = 1 ORDER BY verb")
+    fun getIrregularVerbs(): Flow<List<String>>
+
     @Query("SELECT * FROM conjugations WHERE is_irregular = 1 ORDER BY RANDOM() LIMIT :limit")
     fun getIrregular(limit: Int = 20): Flow<List<ConjugationEntity>>
 

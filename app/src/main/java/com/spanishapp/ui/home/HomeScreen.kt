@@ -847,21 +847,24 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
 
             if (word.example.isNotBlank()) {
                 Spacer(Modifier.height(10.dp))
-                // Example sentence
-                Box(
+                // Example sentence — clickable, длинный тап = TTS
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(10.dp))
                         .background(WordBg)
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                        .padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "\"${word.example}\"",
                         fontSize = 13.sp,
                         fontStyle = FontStyle.Italic,
                         color = WordBlue.copy(alpha = 0.85f),
-                        lineHeight = 18.sp
+                        lineHeight = 18.sp,
+                        modifier = Modifier.weight(1f).padding(vertical = 6.dp)
                     )
+                    SpeakerButton(text = word.example, tts = tts, tint = WordBlue)
                 }
             }
 
