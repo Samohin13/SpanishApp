@@ -143,8 +143,10 @@ class DatabaseSeeder @Inject constructor(
     }
 
     // ── Grammar lessons ───────────────────────────────────────
+    // Idempotent: insertAll uses OnConflictStrategy.IGNORE, so existing rows
+    // (and their isCompleted flags) are preserved while any newly-added lesson
+    // IDs from GrammarContent are appended on every app launch.
     private suspend fun seedLessons() {
-        if (db.lessonDao().getCount() > 0) return
         db.lessonDao().insertAll(GrammarContent.getAll())
     }
 
