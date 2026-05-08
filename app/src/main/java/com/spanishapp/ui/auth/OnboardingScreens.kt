@@ -268,7 +268,7 @@ fun ReasonSelectionScreen(
                     border = if (selectedReason == reason) null
                         else androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            Color.LightGray.copy(0.4f)
+                            MaterialTheme.colorScheme.outline.copy(0.4f)
                         )
                 ) {
                     Text(reason, modifier = Modifier.padding(20.dp), fontSize = 18.sp)

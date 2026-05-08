@@ -96,7 +96,7 @@ fun SettingsVoiceScreen(
                     text       = if (voices.isEmpty()) "Голоса не найдены" else "Доступные голоса (${voices.size})",
                     fontSize   = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color      = Color(0xFF8E8E93),
+                    color      = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier   = Modifier.padding(start = 4.dp, top = 4.dp)
                 )
             }
@@ -146,7 +146,7 @@ fun SettingsVoiceScreen(
                 ) {
                     Column(Modifier.padding(16.dp)) {
                         Text("Скорость речи", fontWeight = FontWeight.Bold)
-                        Text("Чем меньше — тем медленнее", fontSize = 12.sp, color = Color(0xFF8E8E93))
+                        Text("Чем меньше — тем медленнее", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Slider(
                             value         = settings.rate,
                             onValueChange = { viewModel.setRate(it) },
@@ -155,7 +155,7 @@ fun SettingsVoiceScreen(
                         )
                         Spacer(Modifier.height(12.dp))
                         Text("Тон голоса", fontWeight = FontWeight.Bold)
-                        Text("Ниже — глубже", fontSize = 12.sp, color = Color(0xFF8E8E93))
+                        Text("Ниже — глубже", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Slider(
                             value         = settings.pitch,
                             onValueChange = { viewModel.setPitch(it) },
@@ -294,7 +294,7 @@ private fun VoiceCard(
                                else if (voice.gender == Gender.MALE) "Мужской голос"
                                else "Голос",
                     fontSize = 12.sp,
-                    color    = Color(0xFF8E8E93)
+                    color    = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             IconButton(onClick = onPreview, modifier = Modifier.size(40.dp)) {

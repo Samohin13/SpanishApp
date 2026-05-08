@@ -77,7 +77,7 @@ fun RegisterScreen(
             Text(
                 "Создайте аккаунт, чтобы сохранять прогресс",
                 fontSize = 16.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -214,14 +214,14 @@ fun RegisterScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 Text(
                     "или через",
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
-                HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
             }
 
             Spacer(Modifier.height(8.dp))
@@ -256,13 +256,13 @@ private fun StrengthCheck(passed: Boolean, label: String) {
         Icon(
             imageVector = if (passed) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
             contentDescription = null,
-            tint = if (passed) Color(0xFF2E7D32) else Color.Gray,
+            tint = if (passed) Color(0xFF2E7D32) else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(16.dp)
         )
         Text(
             text = label,
             fontSize = 12.sp,
-            color = if (passed) Color(0xFF2E7D32) else Color.Gray,
+            color = if (passed) Color(0xFF2E7D32) else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(start = 6.dp)
         )
     }

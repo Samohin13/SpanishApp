@@ -98,12 +98,12 @@ fun LessonContentScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         },
         bottomBar = {
-            Surface(shadowElevation = 8.dp, color = Color.White) {
+            Surface(shadowElevation = 8.dp, color = MaterialTheme.colorScheme.surface) {
                 Button(
                     onClick = {
                         if (!isMarked) {
@@ -156,7 +156,7 @@ fun LessonContentScreen(
                             text = content.intro,
                             fontSize = 15.sp,
                             lineHeight = 22.sp,
-                            color = Color(0xFF1A1A1A)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -241,13 +241,13 @@ private fun ContentRow(item: LessonItem, accentColor: Color) {
                 text = item.right,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF1A1A1A)
+                color = MaterialTheme.colorScheme.onSurface
             )
             if (item.note.isNotBlank()) {
                 Text(
                     text = item.note,
                     fontSize = 12.sp,
-                    color = Color(0xFF8E8E93),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 16.sp
                 )
             }

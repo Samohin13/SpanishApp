@@ -152,7 +152,7 @@ fun FlashcardsSetupScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 16.dp)
                 ) {
                     Text(
@@ -175,7 +175,7 @@ fun FlashcardsSetupScreen(
                 Row(
                     modifier            = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {

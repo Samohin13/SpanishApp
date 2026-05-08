@@ -75,7 +75,7 @@ fun WelcomeScreen(
                 "Начни свой путь к свободному испанскому языку прямо сейчас",
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 24.sp
             )
 
@@ -117,14 +117,14 @@ fun WelcomeScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 Text(
                     "или войти через",
                     modifier = Modifier.padding(horizontal = 16.dp),
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
-                HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray.copy(alpha = 0.5f))
+                HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
             }
 
             Spacer(Modifier.height(20.dp))
@@ -151,7 +151,7 @@ fun WelcomeScreen(
                 .padding(vertical = 8.dp)
                 .clickable { openLink(privacyUrl) },
             textAlign = TextAlign.Center,
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 11.sp,
             lineHeight = 16.sp
         )
@@ -166,10 +166,10 @@ fun SocialLoginButton(
     Surface(
         onClick = onClick,
         shape = CircleShape,
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         modifier = Modifier
             .size(60.dp)
-            .border(1.dp, Color.LightGray.copy(alpha = 0.3f), CircleShape),
+            .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f), CircleShape),
         shadowElevation = 1.dp
     ) {
         Box(contentAlignment = Alignment.Center) {

@@ -37,10 +37,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 
 private val Purple = Color(0xFF7B2FBE)
-private val BgGray = Color(0xFFF8F8FA)
-private val TextMain = Color(0xFF1A1A1A)
-private val TextGray = Color(0xFF8E8E93)
-private val CardBorder = Color(0xFFE5E5EA)
+private val BgGray
+    @Composable get() = MaterialTheme.colorScheme.background
+private val TextMain
+    @Composable get() = MaterialTheme.colorScheme.onSurface
+private val TextGray
+    @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
+private val CardBorder
+    @Composable get() = MaterialTheme.colorScheme.outline
 private val Gold = Color(0xFFFF9500)
 private val SuccessGreen = Color(0xFF4CAF50)
 
@@ -90,7 +94,7 @@ fun CrosswordGameScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
         }
     ) { padding ->
@@ -140,7 +144,7 @@ fun RulesDialog(onDismiss: () -> Unit) {
                 shape = RoundedCornerShape(12.dp)
             ) { Text("Понятно", color = Color.White, fontWeight = FontWeight.Bold) }
         },
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(20.dp)
     )
 }
@@ -191,7 +195,7 @@ fun LevelCell(level: Int, stars: Int, isLocked: Boolean, onClick: () -> Unit) {
         Surface(
             modifier = Modifier.size(80.dp),
             shape = RoundedCornerShape(20.dp),
-            color = if (isLocked) Color(0xFFE5E5EA) else Color.White,
+            color = if (isLocked) MaterialTheme.colorScheme.outline else Color.White,
             border = if (isLocked) null else androidx.compose.foundation.BorderStroke(2.dp, Purple),
             shadowElevation = if (isLocked) 0.dp else 4.dp
         ) {
@@ -204,7 +208,7 @@ fun LevelCell(level: Int, stars: Int, isLocked: Boolean, onClick: () -> Unit) {
         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             repeat(3) { i ->
                 Icon(Icons.Default.Star, null, modifier = Modifier.size(16.dp),
-                    tint = if (i < stars) Gold else Color(0xFFE5E5EA))
+                    tint = if (i < stars) Gold else MaterialTheme.colorScheme.outline)
             }
         }
     }
@@ -583,7 +587,7 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             repeat(3) { i ->
                 Icon(Icons.Default.Star, null, modifier = Modifier.size(48.dp),
-                    tint = if (i < stars) Gold else Color(0xFFE5E5EA))
+                    tint = if (i < stars) Gold else MaterialTheme.colorScheme.outline)
             }
         }
         Spacer(Modifier.height(32.dp))

@@ -72,7 +72,7 @@ fun ForgotPasswordScreen(
             Text(
                 "Введите email, на который зарегистрирован аккаунт. Мы отправим ссылку для сброса пароля.",
                 fontSize = 14.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 20.sp
             )
 

@@ -63,10 +63,10 @@ fun LibrosScreen(
                         Icon(Icons.Default.ArrowBack, "Назад")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
         },
-        containerColor = Color(0xFFF8F8FA)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
@@ -132,7 +132,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -163,7 +163,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                         libro.title,
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
-                        color = Color(0xFF1A1A1A)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     if (item.isCompleted) {
                         Spacer(Modifier.width(6.dp))
@@ -190,7 +190,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                     // Точки сложности
                     DifficultyDots(libro.difficulty)
                     Spacer(Modifier.width(8.dp))
-                    Text(libro.topic, fontSize = 12.sp, color = Color(0xFF8E8E93))
+                    Text(libro.topic, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 if (item.isCompleted) {
                     Spacer(Modifier.height(4.dp))
@@ -230,7 +230,7 @@ fun DifficultyDots(difficulty: Int, size: Int = 10) {
                     .clip(androidx.compose.foundation.shape.CircleShape)
                     .background(
                         if (index < difficulty) Color(0xFFE53935)
-                        else Color(0xFFE0E0E0)
+                        else MaterialTheme.colorScheme.outline
                     )
             )
         }

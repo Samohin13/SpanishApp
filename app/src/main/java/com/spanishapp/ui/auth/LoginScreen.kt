@@ -130,9 +130,9 @@ fun LoginScreen(
             Spacer(Modifier.height(16.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                HorizontalDivider(Modifier.weight(1f), color = Color.LightGray.copy(0.5f))
-                Text("или через", Modifier.padding(horizontal = 16.dp), color = Color.Gray, fontSize = 12.sp)
-                HorizontalDivider(Modifier.weight(1f), color = Color.LightGray.copy(0.5f))
+                HorizontalDivider(Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(0.5f))
+                Text("или через", Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                HorizontalDivider(Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(0.5f))
             }
 
             Spacer(Modifier.height(16.dp))

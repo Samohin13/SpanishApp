@@ -171,7 +171,7 @@ private fun StoryText(
         text = annotated,
         fontSize = 17.sp,
         lineHeight = 26.sp,
-        color = Color(0xFF1A1A1A),
+        color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
             .pointerInput(text) {
@@ -385,10 +385,10 @@ private fun ReadingAloudPanel(
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 "Предложение ${state.currentIdx + 1} из ${state.sentences.size}",
-                fontSize = 13.sp, color = Color(0xFF8E8E93)
+                fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             TextButton(onClick = onExit, contentPadding = PaddingValues(0.dp)) {
-                Text("← Выйти", fontSize = 13.sp, color = Color(0xFF8E8E93))
+                Text("← Выйти", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Spacer(Modifier.height(4.dp))
@@ -420,7 +420,7 @@ private fun ReadingAloudPanel(
         // ── Карточка с предложением ──
         Card(
             shape = RoundedCornerShape(18.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(3.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -449,7 +449,7 @@ private fun ReadingAloudPanel(
                     Spacer(Modifier.height(10.dp))
                     Text(annotated, fontSize = 18.sp, lineHeight = 28.sp)
                 } else {
-                    Text(sentence, fontSize = 18.sp, lineHeight = 28.sp, color = Color(0xFF1A1A1A))
+                    Text(sentence, fontSize = 18.sp, lineHeight = 28.sp, color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         }
@@ -459,7 +459,7 @@ private fun ReadingAloudPanel(
             Spacer(Modifier.height(10.dp))
             Box(
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFFF0F0F5)).padding(10.dp)
+                    .background(MaterialTheme.colorScheme.background).padding(10.dp)
             ) {
                 Text(
                     "Ты сказал: «${state.recognizedText}»",
@@ -485,7 +485,7 @@ private fun ReadingAloudPanel(
         if (result == null) {
             Text(
                 if (state.isListening) "Слушаю…" else "Нажми микрофон и читай предложение вслух",
-                fontSize = 13.sp, color = Color(0xFF8E8E93), textAlign = TextAlign.Center
+                fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(12.dp))
             Box(contentAlignment = Alignment.Center, modifier = Modifier.size(90.dp)) {
@@ -583,14 +583,14 @@ private fun ReadingDonePanel(
         Spacer(Modifier.height(16.dp))
 
         Text("$pct%", fontSize = 48.sp, fontWeight = FontWeight.ExtraBold, color = levelColor)
-        Text("$correctWords из $totalWords слов произнесено верно", fontSize = 14.sp, color = Color(0xFF8E8E93))
+        Text("$correctWords из $totalWords слов произнесено верно", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
         Spacer(Modifier.height(20.dp))
 
         // Разбивка по предложениям
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(2.dp),
             modifier = Modifier.fillMaxWidth().weight(1f)
         ) {
@@ -615,7 +615,7 @@ private fun ReadingDonePanel(
                         Column(Modifier.weight(1f)) {
                             Text(
                                 sentences.getOrElse(i) { "" },
-                                fontSize = 12.sp, color = Color(0xFF333333),
+                                fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                             )
                             Text("$sc / $st слов", fontSize = 11.sp,
@@ -725,10 +725,10 @@ fun LibroReadScreen(
                         Icon(Icons.Default.ArrowBack, "Назад")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
         },
-        containerColor = Color(0xFFF8F8FA)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
 
         when (val s = state) {
@@ -751,7 +751,7 @@ fun LibroReadScreen(
                         // Карточка с текстом (вес 1 — занимает всё свободное место)
                         Card(
                             shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(3.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -806,7 +806,7 @@ fun LibroReadScreen(
                             "Прочитайте рассказ, затем ответьте на ${libro.questions.size} вопроса. " +
                             "Для зачёта нужно ${LibrosData.PASS_CORRECT} из ${libro.questions.size}.",
                             fontSize = 12.sp,
-                            color = Color(0xFF8E8E93),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             lineHeight = 18.sp
                         )
 
@@ -950,7 +950,7 @@ fun LibroReadScreen(
 
                     Card(
                         shape = RoundedCornerShape(18.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(2.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -966,8 +966,8 @@ fun LibroReadScreen(
                     q.options.forEachIndexed { idx, option ->
                         val isSelected  = selectedAnswer == idx
                         val bgColor     = if (isSelected) levelColor else Color.White
-                        val textColor   = if (isSelected) Color.White else Color(0xFF1A1A1A)
-                        val borderColor = if (isSelected) levelColor else Color(0xFFE0E0E0)
+                        val textColor   = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
+                        val borderColor = if (isSelected) levelColor else MaterialTheme.colorScheme.outline
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -1036,7 +1036,7 @@ fun LibroReadScreen(
                         if (passed) "Отлично! Рассказ прочитан!" else "Почти! Попробуй ещё раз",
                         fontSize = 22.sp, fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        color = if (passed) LibroGreen else Color(0xFF1A1A1A)
+                        color = if (passed) LibroGreen else MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(12.dp))
                     Text("Правильных ответов: ${s.correct} из ${s.total} ($pct%)", fontSize = 16.sp, color = Color(0xFF555555))
