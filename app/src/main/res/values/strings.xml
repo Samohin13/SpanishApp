@@ -89,6 +89,17 @@
     <string name="achievements_summary_progress">прогресс</string>
     <string name="achievements_new_badge">NEW</string>
 
+    <!-- ── Games hub ────────────────────────────────────────── -->
+    <string name="games_title">Juegos 🎮</string>
+    <string name="game_articles_desc">Артикли el / la</string>
+    <string name="game_speed_desc">Перевод на время</string>
+    <string name="game_verbos_desc">Спряжения глаголов</string>
+    <string name="game_sopa_desc">Филворд</string>
+    <string name="game_palabra_desc">Орфография</string>
+    <string name="game_math_desc">Математика на слух</string>
+    <string name="game_crossword_desc">100 уровней</string>
+    <string name="game_libros_desc">Рассказы + тесты</string>
+
     <!-- ── Profile stats ────────────────────────────────────── -->
     <string name="profile_stat_words">Слов</string>
     <string name="profile_stat_days">Дня</string>

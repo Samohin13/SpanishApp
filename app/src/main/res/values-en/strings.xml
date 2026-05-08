@@ -76,6 +76,17 @@
     <string name="achievements_summary_progress">progress</string>
     <string name="achievements_new_badge">NEW</string>
 
+    <!-- ── Games hub ── -->
+    <string name="games_title">Juegos 🎮</string>
+    <string name="game_articles_desc">Articles el / la</string>
+    <string name="game_speed_desc">Translation under time</string>
+    <string name="game_verbos_desc">Verb conjugations</string>
+    <string name="game_sopa_desc">Word search</string>
+    <string name="game_palabra_desc">Spelling</string>
+    <string name="game_math_desc">Math by ear</string>
+    <string name="game_crossword_desc">100 levels</string>
+    <string name="game_libros_desc">Stories + quizzes</string>
+
     <!-- ── Profile stats ── -->
     <string name="profile_stat_words">Words</string>
     <string name="profile_stat_days">Days</string>
