@@ -30,17 +30,18 @@ import androidx.compose.ui.unit.sp
 
 data class NavItem(
     val route: String,
-    val label: String,
+    @androidx.annotation.StringRes val labelRes: Int,
     val icon: ImageVector,
     val iconSelected: ImageVector
 )
 
 val bottomNavItems = listOf(
-    NavItem("home",       "Главная",  Icons.Outlined.Home,          Icons.Filled.Home),
-    NavItem("games",      "Игры",     Icons.Outlined.Gamepad,       Icons.Filled.Gamepad),
-    NavItem("flashcards", "Tarjetas", Icons.Outlined.Style,         Icons.Filled.Style),
-    NavItem("dictionary", "Словарь",  Icons.AutoMirrored.Outlined.MenuBook, Icons.AutoMirrored.Filled.MenuBook),
-    NavItem("profile",    "Профиль",  Icons.Outlined.Person,        Icons.Filled.Person)
+    NavItem("home",       com.spanishapp.R.string.nav_home,       Icons.Outlined.Home,          Icons.Filled.Home),
+    NavItem("games",      com.spanishapp.R.string.nav_games,      Icons.Outlined.Gamepad,       Icons.Filled.Gamepad),
+    // "Tarjetas" — испанское название, бренд карточек, не локализуем
+    NavItem("flashcards", com.spanishapp.R.string.title_flashcards, Icons.Outlined.Style,       Icons.Filled.Style),
+    NavItem("dictionary", com.spanishapp.R.string.nav_dictionary, Icons.AutoMirrored.Outlined.MenuBook, Icons.AutoMirrored.Filled.MenuBook),
+    NavItem("profile",    com.spanishapp.R.string.nav_profile,    Icons.Outlined.Person,        Icons.Filled.Person)
 )
 
 // ═══════════════════════════════════════════════════════════════
@@ -145,14 +146,15 @@ fun SpanishBottomBar(
                             verticalArrangement = Arrangement.spacedBy(2.dp),
                             modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }
                         ) {
+                            val itemLabel = androidx.compose.ui.res.stringResource(item.labelRes)
                             Icon(
                                 imageVector        = if (selected) item.iconSelected else item.icon,
-                                contentDescription = item.label,
+                                contentDescription = itemLabel,
                                 modifier           = Modifier.size(24.dp),
                                 tint               = iconColor
                             )
                             Text(
-                                text       = item.label,
+                                text       = itemLabel,
                                 fontSize   = 10.sp,
                                 color      = iconColor,
                                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
