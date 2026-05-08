@@ -89,6 +89,18 @@
     <string name="achievements_summary_progress">прогресс</string>
     <string name="achievements_new_badge">NEW</string>
 
+    <!-- ── HomeScreen course cards ──────────────────────────── -->
+    <string name="course_a1_subtitle">Начинающий</string>
+    <string name="course_a2_subtitle">Элементарный</string>
+    <string name="course_b1_subtitle">Средний</string>
+    <string name="course_b2_subtitle">Выше среднего</string>
+    <string name="course_lessons_60_micro">60 микро-уроков</string>
+    <string name="course_lessons_60">60 уроков</string>
+    <string name="course_lessons_soon">скоро</string>
+    <string name="course_blocks_4">4 блока</string>
+    <string name="course_locked">Заблокировано</string>
+    <string name="course_start_learning">Начать обучение →</string>
+
     <!-- ── Conjugation ──────────────────────────────────────── -->
     <string name="conj_search_placeholder">Поиск глагола…</string>
     <string name="conj_filter_all">Все</string>

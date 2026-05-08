@@ -76,6 +76,18 @@
     <string name="achievements_summary_progress">progress</string>
     <string name="achievements_new_badge">NEW</string>
 
+    <!-- ── HomeScreen course cards ── -->
+    <string name="course_a1_subtitle">Beginner</string>
+    <string name="course_a2_subtitle">Elementary</string>
+    <string name="course_b1_subtitle">Intermediate</string>
+    <string name="course_b2_subtitle">Upper-intermediate</string>
+    <string name="course_lessons_60_micro">60 micro-lessons</string>
+    <string name="course_lessons_60">60 lessons</string>
+    <string name="course_lessons_soon">soon</string>
+    <string name="course_blocks_4">4 blocks</string>
+    <string name="course_locked">Locked</string>
+    <string name="course_start_learning">Start learning →</string>
+
     <!-- ── Conjugation ── -->
     <string name="conj_search_placeholder">Search verb…</string>
     <string name="conj_filter_all">All</string>
