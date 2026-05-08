@@ -773,30 +773,34 @@ fun VibrationIntensityItem(
     onSelect: (Int) -> Unit,
     onTest: () -> Unit
 ) {
-    val labels = listOf(
-        stringResource(R.string.vib_off),
-        stringResource(R.string.vib_light),
-        stringResource(R.string.vib_medium),
-        stringResource(R.string.vib_strong)
-    )
+    // Local slider value so dragging is smooth; we commit to DataStore on release.
+    var sliderValue by remember(intensity) { mutableStateOf(intensity.toFloat()) }
+    val current = sliderValue.toInt()
+    val onColor = MaterialTheme.colorScheme.primary
+
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Vibration, null, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
+            Icon(Icons.Default.Vibration, null, modifier = Modifier.size(24.dp), tint = onColor)
             Spacer(Modifier.width(16.dp))
-            Text(stringResource(R.string.set_vibration), modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-            if (intensity > 0) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(stringResource(R.string.set_vibration), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = if (current == 0) stringResource(R.string.vib_off) else "$current%",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (current > 0) {
                 TextButton(onClick = onTest) { Text(stringResource(R.string.vib_test)) }
             }
         }
-        Spacer(Modifier.height(8.dp))
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-            labels.forEachIndexed { idx, label ->
-                SegmentedButton(
-                    selected = intensity == idx,
-                    onClick = { onSelect(idx) },
-                    shape = SegmentedButtonDefaults.itemShape(idx, labels.size)
-                ) { Text(label, style = MaterialTheme.typography.labelMedium) }
-            }
-        }
+        Slider(
+            value = sliderValue,
+            onValueChange = { sliderValue = it },
+            onValueChangeFinished = { onSelect(sliderValue.toInt()) },
+            valueRange = 0f..100f,
+            steps = 0,  // continuous
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

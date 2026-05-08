@@ -28,23 +28,18 @@ class VibrationHelper @Inject constructor(
     }
 
     /**
-     * Tactile tick scaled by [level] (0..3). 0 = off (no-op).
+     * Tactile tick scaled by [percent] (0..100). 0 = off (no-op).
      * Single short pulse — for button presses, toggles, answer feedback.
      */
-    fun tick(level: Int) {
+    fun tick(percent: Int) {
         val v = vibrator ?: return
-        if (!v.hasVibrator() || level <= 0) return
+        if (!v.hasVibrator() || percent <= 0) return
 
-        val durationMs = when (level.coerceIn(1, 3)) {
-            1 -> 12L
-            2 -> 22L
-            else -> 35L
-        }
-        val amplitude = when (level.coerceIn(1, 3)) {
-            1 -> 80
-            2 -> 160
-            else -> 255
-        }
+        val p = percent.coerceIn(1, 100)
+        // Duration 10..40ms scales linearly with intensity.
+        val durationMs = (10 + (p * 30 / 100)).toLong()
+        // Amplitude must be ≥1 on API 26+ (1..255).
+        val amplitude = (p * 255 / 100).coerceIn(1, 255)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val effect = if (v.hasAmplitudeControl()) {
@@ -60,17 +55,13 @@ class VibrationHelper @Inject constructor(
     }
 
     /** A heavier "success" pattern — for level-up/correct events. */
-    fun pulse(level: Int) {
+    fun pulse(percent: Int) {
         val v = vibrator ?: return
-        if (!v.hasVibrator() || level <= 0) return
+        if (!v.hasVibrator() || percent <= 0) return
 
+        val amp = (percent * 255 / 100).coerceIn(1, 255)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val pattern = longArrayOf(0, 25, 60, 25)
-            val amp = when (level.coerceIn(1, 3)) {
-                1 -> 80
-                2 -> 160
-                else -> 255
-            }
             val amplitudes = intArrayOf(0, amp, 0, amp)
             val effect = if (v.hasAmplitudeControl()) {
                 VibrationEffect.createWaveform(pattern, amplitudes, -1)
