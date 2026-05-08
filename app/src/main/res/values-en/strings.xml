@@ -258,4 +258,118 @@
     <string name="onboarding_knowledge_question">Do you know Spanish?</string>
     <string name="onboarding_knowledge_subtitle">This will help us customize the program for you</string>
 
+    <!-- ════ Game: Articles ════ -->
+    <string name="art_levels_title">Artículos · levels</string>
+    <string name="art_correct_count">✅ %1$d correct</string>
+
+    <!-- ════ Game: Speed ════ -->
+    <string name="speed_levels_title">Rápido · levels</string>
+    <string name="speed_level_of">Level %1$d / 100</string>
+    <string name="speed_round_of">Round %1$d/%2$d</string>
+    <string name="speed_xp">XP: %1$d</string>
+    <string name="speed_no_timer">no timer</string>
+
+    <!-- ════ Game: Math ════ -->
+    <string name="math_levels_title">Cálculo · levels</string>
+    <string name="math_level_of">Level %1$d / 100</string>
+    <string name="math_round_of">Round %1$d/%2$d</string>
+    <string name="math_score">Score: %1$d</string>
+    <string name="math_audio_off">Mute audio</string>
+    <string name="math_audio_on">Enable audio</string>
+    <string name="math_repeat">Repeat</string>
+    <string name="math_submit">SUBMIT</string>
+
+    <!-- ════ Game: Crossword ════ -->
+    <string name="crw_title">Crucigrama</string>
+    <string name="crw_rules">Rules</string>
+    <string name="crw_how_to_play">How to play</string>
+    <string name="crw_rule_select_title">Selecting a word</string>
+    <string name="crw_rule_select_body">Tap any cell of the crossword — it will turn purple, and the translation of the word to guess will appear at the bottom.</string>
+    <string name="crw_rule_swap_title">Switching word and direction</string>
+    <string name="crw_rule_swap_body">The number in the corner of a cell marks the start of a word. Tap it to jump to that word. If two words pass through a cell (horizontal and vertical), each tap toggles the direction.</string>
+    <string name="crw_rule_keyboard_title">Typing accented letters</string>
+    <string name="crw_rule_keyboard_body">To type Á, É, Í, Ó, Ú, Ü or Ñ, hold the corresponding key — a menu with the variant will appear. If a yellow hint is shown below, the current word contains such letters.</string>
+    <string name="crw_rule_hints_title">Hints</string>
+    <string name="crw_rule_hints_body">You earn coins for correct answers:\n• \"Letter\" — reveals one letter (10 coins)\n• \"Word\" — reveals the whole word (50 coins)</string>
+    <string name="crw_rule_zoom_title">Zoom and pan</string>
+    <string name="crw_rule_zoom_body">Pinch with two fingers to zoom in or out. Drag with one finger to pan across the board.</string>
+    <string name="crw_understood">Got it</string>
+    <string name="crw_select_level">Selecciona Nivel</string>
+    <string name="crw_choose_cell">Choose a cell</string>
+    <string name="crw_hold_for_input">Hold key to type: %1$s</string>
+    <string name="crw_hint_letter">Letter (10)</string>
+    <string name="crw_hint_word">Word (50)</string>
+    <string name="crw_completed">Crossword completed</string>
+    <string name="crw_coins_reward">+%1$d coins</string>
+    <string name="crw_menu">MENU</string>
+    <string name="crw_next">NEXT</string>
+
+    <!-- ════ Game: Sopa de Letras ════ -->
+    <string name="sopa_levels_title">Sopa de Letras · levels</string>
+    <string name="sopa_level_of">Level %1$d / 100</string>
+    <string name="sopa_subtitle">%1$s · %2$d×%2$d · %3$d words</string>
+    <string name="sopa_score">Score: %1$d</string>
+    <string name="sopa_combo">Combo ×%1$d!</string>
+    <string name="sopa_found">Found %1$d / %2$d</string>
+    <string name="sopa_find_words">Find the words:</string>
+    <string name="sopa_ghost">👻 Ghost: list hidden</string>
+    <string name="sopa_clear_selection">Clear selection</string>
+
+    <!-- ════ Game: Palabra Maestra ════ -->
+    <string name="palabra_levels_title">Palabra Maestra · levels</string>
+    <string name="palabra_level_of">Level %1$d / 100</string>
+    <string name="palabra_word_of">Word %1$d/%2$d</string>
+    <string name="palabra_score">Score: %1$d</string>
+    <string name="palabra_next">NEXT</string>
+    <string name="palabra_check">CHECK</string>
+    <string name="palabra_hint_translation">Translation</string>
+    <string name="palabra_hint_audio">Audio</string>
+    <string name="palabra_hint_first_letter">1st letter</string>
+    <string name="palabra_hint_rule">Rule</string>
+    <string name="palabra_translation_label">Translation: %1$s</string>
+
+    <!-- ════ Game: Verb Training ════ -->
+    <string name="verb_title">Verbos · trainer</string>
+    <string name="verb_settings">Settings</string>
+    <string name="verb_section_mode">Training mode</string>
+    <string name="verb_section_tenses">Tenses</string>
+    <string name="verb_section_groups">Verb groups</string>
+    <string name="verb_section_extra">More options</string>
+    <string name="verb_section_count">How many questions</string>
+    <string name="verb_group_regular">Regular</string>
+    <string name="verb_group_irregular">Irregular (ser, estar, ir...)</string>
+    <string name="verb_include_reflexive">Include reflexive verbs (lavarse)</string>
+    <string name="verb_voseo">Voseo (vos instead of tú)</string>
+    <string name="verb_accept_no_accent">Accept input without accents</string>
+    <string name="verb_question_of">Question %1$d/%2$d</string>
+    <string name="verb_score">Score: %1$d</string>
+    <string name="verb_listen">Listen</string>
+    <string name="verb_listen_and_write">Listen and write the form you hear</string>
+    <string name="verb_inverso_question">Which verb, tense and person does this form belong to?</string>
+    <string name="verb_dropdown_infinitive">Infinitive</string>
+    <string name="verb_dropdown_tense">Tense</string>
+    <string name="verb_dropdown_person">Person</string>
+    <string name="verb_next">Next</string>
+    <string name="verb_check">Check</string>
+    <string name="verb_input_placeholder">Type the form…</string>
+    <string name="verb_dont_know">I don\'t know</string>
+    <string name="verb_feedback_near_miss">Almost! Missing accents: %1$s</string>
+    <string name="verb_feedback_correct">¡Correcto!  %1$s</string>
+    <string name="verb_feedback_wrong">Correct: %1$s</string>
+    <string name="verb_results_title">Training complete</string>
+    <string name="verb_stat_accuracy">Accuracy</string>
+    <string name="verb_stat_correct">Correct</string>
+    <string name="verb_stat_no_accent">No accents</string>
+    <string name="verb_weak_forms">Tough forms:</string>
+    <string name="verb_to_menu">To menu</string>
+    <string name="verb_again">Again</string>
+    <string name="verb_mode_conjugar_title">Conjugar</string>
+    <string name="verb_mode_conjugar_desc">Tense + person + infinitive → form</string>
+    <string name="verb_mode_inverso_title">Inverso</string>
+    <string name="verb_mode_inverso_desc">Form → infinitive + person + tense</string>
+    <string name="verb_mode_hueco_title">Hueco</string>
+    <string name="verb_mode_hueco_desc">Fill in the blank in a phrase</string>
+    <string name="verb_mode_auditivo_title">Auditivo</string>
+    <string name="verb_mode_auditivo_desc">Hear a form and write it down</string>
+
 </resources>

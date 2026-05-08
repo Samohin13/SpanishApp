@@ -271,4 +271,132 @@
     <string name="onboarding_knowledge_question">Ты знаешь испанский?</string>
     <string name="onboarding_knowledge_subtitle">Это поможет настроить программу под тебя</string>
 
+    <!-- ════════════════════════════════════════════════════════
+         Game: Articles
+         ════════════════════════════════════════════════════════ -->
+    <string name="art_levels_title">Artículos · уровни</string>
+    <string name="art_correct_count">✅ %1$d верных</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Game: Speed
+         ════════════════════════════════════════════════════════ -->
+    <string name="speed_levels_title">Rápido · уровни</string>
+    <string name="speed_level_of">Уровень %1$d / 100</string>
+    <string name="speed_round_of">Раунд %1$d/%2$d</string>
+    <string name="speed_xp">XP: %1$d</string>
+    <string name="speed_no_timer">без таймера</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Game: Math
+         ════════════════════════════════════════════════════════ -->
+    <string name="math_levels_title">Cálculo · уровни</string>
+    <string name="math_level_of">Уровень %1$d / 100</string>
+    <string name="math_round_of">Раунд %1$d/%2$d</string>
+    <string name="math_score">Очки: %1$d</string>
+    <string name="math_audio_off">Выключить звук</string>
+    <string name="math_audio_on">Включить звук</string>
+    <string name="math_repeat">Повторить</string>
+    <string name="math_submit">ОТВЕТИТЬ</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Game: Crossword
+         ════════════════════════════════════════════════════════ -->
+    <string name="crw_title">Crucigrama</string>
+    <string name="crw_rules">Правила</string>
+    <string name="crw_how_to_play">Как играть</string>
+    <string name="crw_rule_select_title">Выбор слова</string>
+    <string name="crw_rule_select_body">Нажмите на любую ячейку кроссворда — она выделится фиолетовым, а снизу появится перевод слова, которое нужно угадать.</string>
+    <string name="crw_rule_swap_title">Смена слова и направления</string>
+    <string name="crw_rule_swap_body">Цифра в углу ячейки — начало слова. Нажмите на неё, чтобы перейти к этому слову. Если через ячейку проходят два слова (горизонтальное и вертикальное), каждое нажатие переключает направление.</string>
+    <string name="crw_rule_keyboard_title">Ввод букв с ударением</string>
+    <string name="crw_rule_keyboard_body">Чтобы ввести Á, É, Í, Ó, Ú, Ü или Ñ, удержите соответствующую клавишу — появится меню с нужным вариантом. Если снизу горит жёлтая подсказка, в текущем слове есть такие буквы.</string>
+    <string name="crw_rule_hints_title">Подсказки</string>
+    <string name="crw_rule_hints_body">За правильные ответы начисляются монеты:\n• «Буква» — открывает одну букву (10 монет)\n• «Слово» — открывает слово целиком (50 монет)</string>
+    <string name="crw_rule_zoom_title">Масштаб и прокрутка</string>
+    <string name="crw_rule_zoom_body">Сведите или разведите два пальца, чтобы уменьшить или увеличить кроссворд. Перетащите одним пальцем для прокрутки поля в нужном направлении.</string>
+    <string name="crw_understood">Понятно</string>
+    <string name="crw_select_level">Selecciona Nivel</string>
+    <string name="crw_choose_cell">Выберите ячейку</string>
+    <string name="crw_hold_for_input">Удержи клавишу для ввода: %1$s</string>
+    <string name="crw_hint_letter">Буква (10)</string>
+    <string name="crw_hint_word">Слово (50)</string>
+    <string name="crw_completed">Кроссворд пройден</string>
+    <string name="crw_coins_reward">+%1$d монет</string>
+    <string name="crw_menu">МЕНЮ</string>
+    <string name="crw_next">ДАЛЕЕ</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Game: Sopa de Letras
+         ════════════════════════════════════════════════════════ -->
+    <string name="sopa_levels_title">Sopa de Letras · уровни</string>
+    <string name="sopa_level_of">Уровень %1$d / 100</string>
+    <string name="sopa_subtitle">%1$s · %2$d×%2$d · %3$d слов</string>
+    <string name="sopa_score">Очки: %1$d</string>
+    <string name="sopa_combo">Combo ×%1$d!</string>
+    <string name="sopa_found">Найдено %1$d / %2$d</string>
+    <string name="sopa_find_words">Найдите слова:</string>
+    <string name="sopa_ghost">👻 Ghost: список скрыт</string>
+    <string name="sopa_clear_selection">Сбросить выделение</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Game: Palabra Maestra
+         ════════════════════════════════════════════════════════ -->
+    <string name="palabra_levels_title">Palabra Maestra · уровни</string>
+    <string name="palabra_level_of">Уровень %1$d / 100</string>
+    <string name="palabra_word_of">Слово %1$d/%2$d</string>
+    <string name="palabra_score">Очки: %1$d</string>
+    <string name="palabra_next">ДАЛЕЕ</string>
+    <string name="palabra_check">ПРОВЕРИТЬ</string>
+    <string name="palabra_hint_translation">Перевод</string>
+    <string name="palabra_hint_audio">Аудио</string>
+    <string name="palabra_hint_first_letter">1-я буква</string>
+    <string name="palabra_hint_rule">Правило</string>
+    <string name="palabra_translation_label">Перевод: %1$s</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Game: Verb Training
+         ════════════════════════════════════════════════════════ -->
+    <string name="verb_title">Verbos · тренажёр</string>
+    <string name="verb_settings">Настройки</string>
+    <string name="verb_section_mode">Режим тренировки</string>
+    <string name="verb_section_tenses">Времена</string>
+    <string name="verb_section_groups">Группы глаголов</string>
+    <string name="verb_section_extra">Дополнительно</string>
+    <string name="verb_section_count">Сколько вопросов</string>
+    <string name="verb_group_regular">Регулярные</string>
+    <string name="verb_group_irregular">Неправильные (ser, estar, ir...)</string>
+    <string name="verb_include_reflexive">Включать рефлексивные (lavarse)</string>
+    <string name="verb_voseo">Voseo (vos вместо tú)</string>
+    <string name="verb_accept_no_accent">Засчитывать ввод без акцентов</string>
+    <string name="verb_question_of">Вопрос %1$d/%2$d</string>
+    <string name="verb_score">Очки: %1$d</string>
+    <string name="verb_listen">Слушать</string>
+    <string name="verb_listen_and_write">Послушайте и запишите услышанную форму</string>
+    <string name="verb_inverso_question">Эта форма от какого глагола, времени и лица?</string>
+    <string name="verb_dropdown_infinitive">Инфинитив</string>
+    <string name="verb_dropdown_tense">Время</string>
+    <string name="verb_dropdown_person">Лицо</string>
+    <string name="verb_next">Далее</string>
+    <string name="verb_check">Проверить</string>
+    <string name="verb_input_placeholder">Введите форму…</string>
+    <string name="verb_dont_know">Не знаю</string>
+    <string name="verb_feedback_near_miss">Почти! Не хватает акцентов: %1$s</string>
+    <string name="verb_feedback_correct">¡Correcto!  %1$s</string>
+    <string name="verb_feedback_wrong">Правильно: %1$s</string>
+    <string name="verb_results_title">Тренировка завершена</string>
+    <string name="verb_stat_accuracy">Точность</string>
+    <string name="verb_stat_correct">Правильно</string>
+    <string name="verb_stat_no_accent">Без акцентов</string>
+    <string name="verb_weak_forms">Сложные формы:</string>
+    <string name="verb_to_menu">В меню</string>
+    <string name="verb_again">Ещё раз</string>
+    <string name="verb_mode_conjugar_title">Conjugar</string>
+    <string name="verb_mode_conjugar_desc">Время + лицо + инфинитив → форма</string>
+    <string name="verb_mode_inverso_title">Inverso</string>
+    <string name="verb_mode_inverso_desc">Форма → инфинитив + лицо + время</string>
+    <string name="verb_mode_hueco_title">Hueco</string>
+    <string name="verb_mode_hueco_desc">Заполни пропуск во фразе</string>
+    <string name="verb_mode_auditivo_title">Auditivo</string>
+    <string name="verb_mode_auditivo_desc">Услышь форму и запиши</string>
+
 </resources>

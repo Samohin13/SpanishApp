@@ -24,12 +24,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.ComboBadge
 import com.spanishapp.ui.games.common.ConfettiEffect
@@ -56,7 +58,7 @@ fun MathGameScreen(
         state.showLevelMap -> {
             LevelMapScreen(
                 gameId  = GameId.MATH,
-                title   = "Cálculo · уровни",
+                title   = stringResource(R.string.math_levels_title),
                 accent  = ACCENT,
                 manager = viewModel.levelManager,
                 onBack  = { navController.popBackStack() },
@@ -100,7 +102,7 @@ private fun MathGameContent(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Уровень ${state.level} / 100", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.math_level_of, state.level), fontWeight = FontWeight.Bold)
                         Text("${state.params.cefr.joinToString("+")} · ${state.params.mode.name.lowercase()}",
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -116,7 +118,7 @@ private fun MathGameContent(
                         Icon(
                             if (state.audioEnabled) Icons.AutoMirrored.Filled.VolumeUp
                             else Icons.AutoMirrored.Filled.VolumeOff,
-                            contentDescription = if (state.audioEnabled) "Выключить звук" else "Включить звук",
+                            contentDescription = if (state.audioEnabled) stringResource(R.string.math_audio_off) else stringResource(R.string.math_audio_on),
                             tint = if (state.audioEnabled) ACCENT else Color.Gray
                         )
                     }
@@ -159,8 +161,8 @@ private fun MathGameContent(
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                    Text("Очки: ${state.score}", fontWeight = FontWeight.Bold, color = ACCENT)
-                    Text("Раунд ${state.currentRound}/${state.totalRounds}", color = Color.Gray)
+                    Text(stringResource(R.string.math_score, state.score), fontWeight = FontWeight.Bold, color = ACCENT)
+                    Text(stringResource(R.string.math_round_of, state.currentRound, state.totalRounds), color = Color.Gray)
                 }
 
                 // Точки прогресса
@@ -215,7 +217,7 @@ private fun MathGameContent(
                         )
                         Spacer(Modifier.height(8.dp))
                         IconButton(onClick = { viewModel.repeatQuestion() }) {
-                            Icon(Icons.Default.Replay, "Повторить",
+                            Icon(Icons.Default.Replay, stringResource(R.string.math_repeat),
                                 tint = ACCENT, modifier = Modifier.size(28.dp))
                         }
                     }
@@ -352,7 +354,7 @@ private fun MathKeypad(
             enabled = enabled,
             colors = ButtonDefaults.buttonColors(containerColor = ACCENT)
         ) {
-            Text("ОТВЕТИТЬ", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.math_submit), fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

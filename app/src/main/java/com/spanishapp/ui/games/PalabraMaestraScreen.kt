@@ -19,12 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
@@ -49,7 +51,7 @@ fun PalabraMaestraScreen(
         state.showLevelMap -> {
             LevelMapScreen(
                 gameId  = GameId.PALABRA,
-                title   = "Palabra Maestra · уровни",
+                title   = stringResource(R.string.palabra_levels_title),
                 accent  = ACCENT,
                 manager = viewModel.levelManager,
                 onBack  = { navController.popBackStack() },
@@ -88,7 +90,7 @@ private fun PalabraActiveGame(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Уровень ${state.level} / 100", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.palabra_level_of, state.level), fontWeight = FontWeight.Bold)
                         Text("${state.params.cefr.joinToString("+")} · ${state.params.mode.name.lowercase()}",
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -114,9 +116,9 @@ private fun PalabraActiveGame(
             // Прогресс
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Слово ${state.currentIndex + 1}/${state.questions.size}",
+                Text(stringResource(R.string.palabra_word_of, state.currentIndex + 1, state.questions.size),
                     color = ACCENT, fontWeight = FontWeight.Bold)
-                Text("Очки: ${state.score}", color = ACCENT, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.palabra_score, state.score), color = ACCENT, fontWeight = FontWeight.Bold)
             }
 
             LinearProgressIndicator(
@@ -225,7 +227,7 @@ private fun PalabraActiveGame(
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = ACCENT)
                 ) {
-                    Text("ДАЛЕЕ", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(stringResource(R.string.palabra_next), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 }
             }
 
@@ -243,23 +245,23 @@ private fun PalabraActiveGame(
                             colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
                             shape = RoundedCornerShape(12.dp)
                         ) {
-                            Text("ПРОВЕРИТЬ", fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.palabra_check), fontWeight = FontWeight.Bold)
                         }
                     }
 
                     Row(modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        HintButton(Icons.Default.Translate, "Перевод",
+                        HintButton(Icons.Default.Translate, stringResource(R.string.palabra_hint_translation),
                             Modifier.weight(1f)) { viewModel.showTranslation() }
-                        HintButton(Icons.AutoMirrored.Filled.VolumeUp, "Аудио",
+                        HintButton(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.palabra_hint_audio),
                             Modifier.weight(1f)) { viewModel.playAudio() }
                     }
                     if (state.params.hintsAllowed > 0) {
                         Row(modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            HintButton(Icons.Default.Lightbulb, "1-я буква",
+                            HintButton(Icons.Default.Lightbulb, stringResource(R.string.palabra_hint_first_letter),
                                 Modifier.weight(1f)) { viewModel.useFirstLetterHint() }
-                            HintButton(Icons.Default.MenuBook, "Правило",
+                            HintButton(Icons.Default.MenuBook, stringResource(R.string.palabra_hint_rule),
                                 Modifier.weight(1f)) { viewModel.showRuleHint() }
                         }
                     }
@@ -267,7 +269,7 @@ private fun PalabraActiveGame(
 
                 if (state.translationHintVisible) {
                     Text(
-                        "Перевод: ${q.word.russian}",
+                        stringResource(R.string.palabra_translation_label, q.word.russian),
                         modifier = Modifier.padding(top = 14.dp),
                         color = ACCENT,
                         fontWeight = FontWeight.SemiBold
