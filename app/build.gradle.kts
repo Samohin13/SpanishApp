@@ -131,6 +131,7 @@ dependencies {
     implementation(libs.androidx.glance)
     implementation(libs.androidx.glance.material3)
     implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.biometric)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
