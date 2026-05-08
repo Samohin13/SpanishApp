@@ -142,10 +142,63 @@
     <string name="pron_listen">Listen</string>
     <string name="pron_speak">Speak</string>
     <string name="pron_listening">Listening…</string>
-    <string name="pron_score_excellent">Excellent!</string>
-    <string name="pron_score_good">Good</string>
-    <string name="pron_score_try_again">Try again</string>
-    <string name="pron_next">Next</string>
+    <string name="pron_score_excellent">Excellent! Almost perfect!</string>
+    <string name="pron_score_good">Good! Keep going!</string>
+    <string name="pron_score_ok">Not bad, try again</string>
+    <string name="pron_score_try_again">Listen again and repeat</string>
+    <string name="pron_next">Next →</string>
+    <string name="pron_title">Pronunciation 🎤</string>
+    <string name="pron_word_count">Words: %1$d</string>
+    <string name="pron_idle_hint">Tap 🔊 to listen, then 🎤 to repeat</string>
+    <string name="pron_now_speak">Speak now…</string>
+    <string name="pron_phase_result">Result</string>
+    <string name="pron_listen_btn">Listen</string>
+    <string name="pron_listen_slow">Slowly 🐢</string>
+    <string name="pron_again">Again</string>
+    <string name="pron_press_speak">Tap and speak</string>
+    <string name="pron_you_said">You said: \"%1$s\"</string>
+    <string name="pron_target">Target: \"%1$s\"</string>
+
+    <!-- ── Lesson Session ──────────────────────────────────── -->
+    <string name="ls_close_cd">Close</string>
+    <string name="ls_got_it">GOT IT!</string>
+    <string name="ls_continue">CONTINUE →</string>
+    <string name="ls_got_continue">GOT IT, CONTINUE →</string>
+    <string name="ls_speak_cd">Speak</string>
+    <string name="ls_no_mic_permission">Microphone permission denied</string>
+    <string name="ls_listen_then_repeat">← listen, then repeat</string>
+    <string name="ls_distracted">Looks like you got distracted — tap again!</string>
+    <string name="ls_louder">I can\'t hear you. Speak louder and clearer.</string>
+    <string name="ls_not_counted">This doesn\'t count as a mistake</string>
+    <string name="ls_try_msg_1">Not quite right — try again</string>
+    <string name="ls_try_msg_2">Listen again and repeat slowly</string>
+    <string name="ls_try_msg_3">Tough one — once more, you\'ve got this!</string>
+    <string name="ls_recognized">Heard: \"%1$s\"</string>
+    <string name="ls_needed">Need: \"%1$s\"</string>
+    <string name="ls_listening_dots">🎙 Listening...</string>
+    <string name="ls_tap_again">Tap again</string>
+    <string name="ls_try_again_count">Try again (%1$d/%2$d)</string>
+    <string name="ls_tap_to_say">Tap and speak</string>
+    <string name="ls_hard_word_hint">Tough word? Skip and come back later</string>
+    <string name="ls_skip_as_wrong">Skip (counts as wrong)</string>
+    <string name="ls_input_answer">Type your answer...</string>
+    <string name="ls_correct_is">Correct: %1$s</string>
+    <string name="ls_check">CHECK</string>
+    <string name="ls_tap_words_below">Tap the words below →</string>
+    <string name="ls_verdict_perfect">Perfect!</string>
+    <string name="ls_verdict_great">Great result!</string>
+    <string name="ls_verdict_good">Good job!</string>
+    <string name="ls_verdict_keep_going">Keep going!</string>
+    <string name="ls_stat_accuracy">Accuracy</string>
+    <string name="ls_stat_combo">Combo</string>
+    <string name="ls_stat_correct">Correct</string>
+    <string name="ls_next_lesson">NEXT LESSON →</string>
+    <string name="ls_exit_to_menu">Exit to menu</string>
+    <string name="ls_done_caps">DONE</string>
+    <string name="ls_quit_title">Quit lesson?</string>
+    <string name="ls_quit_text">Your progress won\'t be saved.</string>
+    <string name="ls_quit_confirm">Quit</string>
+    <string name="ls_quit_resume">Continue</string>
 
     <!-- ── LessonIntro / Content ── -->
     <string name="lesson_intro_vocab">Learn new words and phrases for everyday conversation. We picked the most important ones for this topic.</string>
@@ -204,5 +257,231 @@
     <string name="onboarding_reason_question">Why are you learning Spanish?</string>
     <string name="onboarding_knowledge_question">Do you know Spanish?</string>
     <string name="onboarding_knowledge_subtitle">This will help us customize the program for you</string>
+
+    <!-- ════ Game: Articles ════ -->
+    <string name="art_levels_title">Artículos · levels</string>
+    <string name="art_correct_count">✅ %1$d correct</string>
+
+    <!-- ════ Game: Speed ════ -->
+    <string name="speed_levels_title">Rápido · levels</string>
+    <string name="speed_level_of">Level %1$d / 100</string>
+    <string name="speed_round_of">Round %1$d/%2$d</string>
+    <string name="speed_xp">XP: %1$d</string>
+    <string name="speed_no_timer">no timer</string>
+
+    <!-- ════ Game: Math ════ -->
+    <string name="math_levels_title">Cálculo · levels</string>
+    <string name="math_level_of">Level %1$d / 100</string>
+    <string name="math_round_of">Round %1$d/%2$d</string>
+    <string name="math_score">Score: %1$d</string>
+    <string name="math_audio_off">Mute audio</string>
+    <string name="math_audio_on">Enable audio</string>
+    <string name="math_repeat">Repeat</string>
+    <string name="math_submit">SUBMIT</string>
+
+    <!-- ════ Game: Crossword ════ -->
+    <string name="crw_title">Crucigrama</string>
+    <string name="crw_rules">Rules</string>
+    <string name="crw_how_to_play">How to play</string>
+    <string name="crw_rule_select_title">Selecting a word</string>
+    <string name="crw_rule_select_body">Tap any cell of the crossword — it will turn purple, and the translation of the word to guess will appear at the bottom.</string>
+    <string name="crw_rule_swap_title">Switching word and direction</string>
+    <string name="crw_rule_swap_body">The number in the corner of a cell marks the start of a word. Tap it to jump to that word. If two words pass through a cell (horizontal and vertical), each tap toggles the direction.</string>
+    <string name="crw_rule_keyboard_title">Typing accented letters</string>
+    <string name="crw_rule_keyboard_body">To type Á, É, Í, Ó, Ú, Ü or Ñ, hold the corresponding key — a menu with the variant will appear. If a yellow hint is shown below, the current word contains such letters.</string>
+    <string name="crw_rule_hints_title">Hints</string>
+    <string name="crw_rule_hints_body">You earn coins for correct answers:\n• \"Letter\" — reveals one letter (10 coins)\n• \"Word\" — reveals the whole word (50 coins)</string>
+    <string name="crw_rule_zoom_title">Zoom and pan</string>
+    <string name="crw_rule_zoom_body">Pinch with two fingers to zoom in or out. Drag with one finger to pan across the board.</string>
+    <string name="crw_understood">Got it</string>
+    <string name="crw_select_level">Selecciona Nivel</string>
+    <string name="crw_choose_cell">Choose a cell</string>
+    <string name="crw_hold_for_input">Hold key to type: %1$s</string>
+    <string name="crw_hint_letter">Letter (10)</string>
+    <string name="crw_hint_word">Word (50)</string>
+    <string name="crw_completed">Crossword completed</string>
+    <string name="crw_coins_reward">+%1$d coins</string>
+    <string name="crw_menu">MENU</string>
+    <string name="crw_next">NEXT</string>
+
+    <!-- ════ Game: Sopa de Letras ════ -->
+    <string name="sopa_levels_title">Sopa de Letras · levels</string>
+    <string name="sopa_level_of">Level %1$d / 100</string>
+    <string name="sopa_subtitle">%1$s · %2$d×%2$d · %3$d words</string>
+    <string name="sopa_score">Score: %1$d</string>
+    <string name="sopa_combo">Combo ×%1$d!</string>
+    <string name="sopa_found">Found %1$d / %2$d</string>
+    <string name="sopa_find_words">Find the words:</string>
+    <string name="sopa_ghost">👻 Ghost: list hidden</string>
+    <string name="sopa_clear_selection">Clear selection</string>
+
+    <!-- ════ Game: Palabra Maestra ════ -->
+    <string name="palabra_levels_title">Palabra Maestra · levels</string>
+    <string name="palabra_level_of">Level %1$d / 100</string>
+    <string name="palabra_word_of">Word %1$d/%2$d</string>
+    <string name="palabra_score">Score: %1$d</string>
+    <string name="palabra_next">NEXT</string>
+    <string name="palabra_check">CHECK</string>
+    <string name="palabra_hint_translation">Translation</string>
+    <string name="palabra_hint_audio">Audio</string>
+    <string name="palabra_hint_first_letter">1st letter</string>
+    <string name="palabra_hint_rule">Rule</string>
+    <string name="palabra_translation_label">Translation: %1$s</string>
+
+    <!-- ════ Game: Verb Training ════ -->
+    <string name="verb_title">Verbos · trainer</string>
+    <string name="verb_settings">Settings</string>
+    <string name="verb_section_mode">Training mode</string>
+    <string name="verb_section_tenses">Tenses</string>
+    <string name="verb_section_groups">Verb groups</string>
+    <string name="verb_section_extra">More options</string>
+    <string name="verb_section_count">How many questions</string>
+    <string name="verb_group_regular">Regular</string>
+    <string name="verb_group_irregular">Irregular (ser, estar, ir...)</string>
+    <string name="verb_include_reflexive">Include reflexive verbs (lavarse)</string>
+    <string name="verb_voseo">Voseo (vos instead of tú)</string>
+    <string name="verb_accept_no_accent">Accept input without accents</string>
+    <string name="verb_question_of">Question %1$d/%2$d</string>
+    <string name="verb_score">Score: %1$d</string>
+    <string name="verb_listen">Listen</string>
+    <string name="verb_listen_and_write">Listen and write the form you hear</string>
+    <string name="verb_inverso_question">Which verb, tense and person does this form belong to?</string>
+    <string name="verb_dropdown_infinitive">Infinitive</string>
+    <string name="verb_dropdown_tense">Tense</string>
+    <string name="verb_dropdown_person">Person</string>
+    <string name="verb_next">Next</string>
+    <string name="verb_check">Check</string>
+    <string name="verb_input_placeholder">Type the form…</string>
+    <string name="verb_dont_know">I don\'t know</string>
+    <string name="verb_feedback_near_miss">Almost! Missing accents: %1$s</string>
+    <string name="verb_feedback_correct">¡Correcto!  %1$s</string>
+    <string name="verb_feedback_wrong">Correct: %1$s</string>
+    <string name="verb_results_title">Training complete</string>
+    <string name="verb_stat_accuracy">Accuracy</string>
+    <string name="verb_stat_correct">Correct</string>
+    <string name="verb_stat_no_accent">No accents</string>
+    <string name="verb_weak_forms">Tough forms:</string>
+    <string name="verb_to_menu">To menu</string>
+    <string name="verb_again">Again</string>
+    <string name="verb_mode_conjugar_title">Conjugar</string>
+    <string name="verb_mode_conjugar_desc">Tense + person + infinitive → form</string>
+    <string name="verb_mode_inverso_title">Inverso</string>
+    <string name="verb_mode_inverso_desc">Form → infinitive + person + tense</string>
+    <string name="verb_mode_hueco_title">Hueco</string>
+    <string name="verb_mode_hueco_desc">Fill in the blank in a phrase</string>
+    <string name="verb_mode_auditivo_title">Auditivo</string>
+    <string name="verb_mode_auditivo_desc">Hear a form and write it down</string>
+
+    <!-- Dictionary -->
+    <string name="dict_title">Dictionary</string>
+    <string name="dict_list">List</string>
+    <string name="dict_tab_all">All words</string>
+    <string name="dict_tab_phrases">Phrases</string>
+    <string name="dict_tab_my_lists">My lists</string>
+    <string name="dict_search_placeholder">Search…</string>
+    <string name="dict_recent_search">Recent searches</string>
+    <string name="dict_clear">Clear</string>
+    <string name="dict_lists_count">%1$d/20 lists</string>
+    <string name="dict_new_list">New list</string>
+    <string name="dict_no_lists">No lists yet</string>
+    <string name="dict_no_lists_hint">Create a list to collect words</string>
+    <string name="dict_rename_list">Rename list</string>
+    <string name="dict_name">Name</string>
+    <string name="dict_save">Save</string>
+    <string name="dict_cancel">Cancel</string>
+    <string name="dict_words_count">%1$d/150 words</string>
+    <string name="dict_export_cd">Export</string>
+    <string name="dict_export_txt">Text (TXT)</string>
+    <string name="dict_export_csv">Table (CSV)</string>
+    <string name="dict_export_pdf">Print / PDF</string>
+    <string name="dict_list_empty">List is empty</string>
+    <string name="dict_list_empty_hint">Tap “+” next to a word in the “All words” tab</string>
+    <string name="dict_badge_irregular">irreg.</string>
+    <string name="dict_badge_stem">stem</string>
+    <string name="dict_progress_learned">learned</string>
+    <string name="dict_progress_weak">weak</string>
+    <string name="dict_progress_in_progress">learning</string>
+    <string name="dict_progress_new">new</string>
+    <string name="dict_rename">Rename</string>
+    <string name="dict_delete">Delete</string>
+    <string name="dict_translation">Translation</string>
+    <string name="dict_example">Example</string>
+    <string name="dict_add_to_list">Add to list</string>
+    <string name="dict_stat_reviews">Reviews</string>
+    <string name="dict_stat_accuracy">Accuracy</string>
+    <string name="dict_stat_status">Status</string>
+    <string name="dict_stat_status_learned">✓ Learned</string>
+    <string name="dict_add_word_to_list">Add “%1$s” to list</string>
+    <string name="dict_no_lists_yet">You don\'t have any lists yet</string>
+    <string name="dict_list_full">List is full (150/150)</string>
+    <string name="dict_create_new_list">Create new list</string>
+    <string name="dict_max_lists_error">Maximum 20 lists. Delete one to create a new one.</string>
+    <string name="dict_name_label">Name (up to 30 characters)</string>
+    <string name="dict_create">Create</string>
+    <string name="dict_share_list">Share list</string>
+
+    <!-- Weak Words -->
+    <string name="weak_title">Weak words</string>
+    <string name="weak_train_all">Practice all weak words (%1$d)</string>
+    <string name="weak_hint">Words with accuracy below 60%%. Practice them more often — they\'ll become easy.</string>
+    <string name="weak_reviews_count">%1$d reviews</string>
+    <string name="weak_empty_title">No weak words!</string>
+    <string name="weak_empty_subtitle">All words are well learned.\nKeep going at this pace.</string>
+
+    <!-- Libros (list) -->
+    <string name="libros_read_progress">Read: %1$d / %2$d</string>
+    <string name="libros_back">Back</string>
+    <string name="libros_filter_all">All</string>
+    <string name="libros_empty_for_level">%1$s level stories\nare coming in the next update</string>
+    <string name="libros_best_score">Best score: %1$d%%</string>
+    <string name="libros_repeat">Repeat</string>
+    <string name="libros_read">Read</string>
+
+    <!-- Libro Read -->
+    <string name="lread_back">Back</string>
+    <string name="lread_asking_ai">Asking AI…</string>
+    <string name="lread_not_in_dict">not found in dictionary</string>
+    <string name="lread_words_in_sentence">Words in the sentence:</string>
+    <string name="lread_stt_silence">Didn\'t hear you — try again</string>
+    <string name="lread_stt_error">Recognition error</string>
+    <string name="lread_no_mic_perm">No microphone permission</string>
+    <string name="lread_sentence_of">Sentence %1$d of %2$d</string>
+    <string name="lread_exit">← Exit</string>
+    <string name="lread_listen">Listen</string>
+    <string name="lread_excellent">✓ Excellent!</string>
+    <string name="lread_words_correct">%1$d / %2$d words correct</string>
+    <string name="lread_you_said">You said: “%1$s”</string>
+    <string name="lread_listening">Listening…</string>
+    <string name="lread_press_mic_hint">Press the mic and read the sentence aloud</string>
+    <string name="lread_microphone">Microphone</string>
+    <string name="lread_see_result">See result →</string>
+    <string name="lread_next_sentence">Next sentence →</string>
+    <string name="lread_repeat_sentence">🔄 Repeat sentence</string>
+    <string name="lread_pron_excellent">Excellent pronunciation!</string>
+    <string name="lread_pron_good">Good job!</string>
+    <string name="lread_pron_ok">Not bad, keep going!</string>
+    <string name="lread_pron_practice">Practice a bit more</string>
+    <string name="lread_reading_result">Reading result</string>
+    <string name="lread_words_summary">%1$d of %2$d words pronounced correctly</string>
+    <string name="lread_words_short">%1$d / %2$d words</string>
+    <string name="lread_start_quiz">Start quiz →</string>
+    <string name="lread_reread">← Reread story</string>
+    <string name="lread_long_press_hint">Long-press a word for translation</string>
+    <string name="lread_topic_label">🏷️ Topic: </string>
+    <string name="lread_intro_hint">Read the story, then answer %1$d questions. You need %2$d of %1$d to pass.</string>
+    <string name="lread_stop">Stop</string>
+    <string name="lread_audiobook">Audiobook</string>
+    <string name="lread_read_aloud">Read aloud</string>
+    <string name="lread_question_of">Question %1$d of %2$d</string>
+    <string name="lread_quiz_back">← Back</string>
+    <string name="lread_finish">Finish</string>
+    <string name="lread_next">Next →</string>
+    <string name="lread_passed_title">Great! Story read!</string>
+    <string name="lread_failed_title">Almost! Try again</string>
+    <string name="lread_correct_answers">Correct answers: %1$d of %2$d (%3$d%%)</string>
+    <string name="lread_passed_note">✓ Story marked as read in your library</string>
+    <string name="lread_failed_note">You need %1$d of %2$d. Reread the text and try again!</string>
+    <string name="lread_back_to_list">← Back to stories</string>
+    <string name="lread_reread_short">Reread story</string>
 
 </resources>

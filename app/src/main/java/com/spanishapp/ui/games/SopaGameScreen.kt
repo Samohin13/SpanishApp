@@ -25,6 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
@@ -54,7 +56,7 @@ fun SopaGameScreen(
         state.showLevelMap -> {
             LevelMapScreen(
                 gameId  = GameId.SOPA,
-                title   = "Sopa de Letras · уровни",
+                title   = stringResource(R.string.sopa_levels_title),
                 accent  = ACCENT,
                 manager = viewModel.levelManager,
                 onBack  = { navController.popBackStack() },
@@ -96,8 +98,8 @@ private fun SopaGameContent(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Уровень ${state.level} / 100", fontWeight = FontWeight.Bold)
-                        Text("${state.params.cefr.joinToString("+")} · $cells×$cells · ${state.words.size} слов",
+                        Text(stringResource(R.string.sopa_level_of, state.level), fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.sopa_subtitle, state.params.cefr.joinToString("+"), cells, state.words.size),
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
@@ -131,11 +133,11 @@ private fun SopaGameContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text("Очки: ${state.score}", fontWeight = FontWeight.Bold, color = ACCENT)
-                    if (state.combo > 1) Text("Combo ×${state.combo}!",
+                    Text(stringResource(R.string.sopa_score, state.score), fontWeight = FontWeight.Bold, color = ACCENT)
+                    if (state.combo > 1) Text(stringResource(R.string.sopa_combo, state.combo),
                         color = Color(0xFFF44336),
                         fontWeight = FontWeight.Black, fontSize = 12.sp)
-                    Text("Найдено ${state.words.count { it.isFound }} / ${state.words.size}",
+                    Text(stringResource(R.string.sopa_found, state.words.count { it.isFound }, state.words.size),
                         fontSize = 12.sp, color = Color.Gray)
                 }
                 if (state.hasTimer) {
@@ -259,7 +261,7 @@ private fun SopaGameContent(
                     Column(modifier = Modifier
                         .padding(12.dp)
                         .verticalScroll(scroll)) {
-                        Text("Найдите слова:", color = ACCENT, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text(stringResource(R.string.sopa_find_words), color = ACCENT, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         Spacer(Modifier.height(8.dp))
 
                         val words = state.words
@@ -302,7 +304,7 @@ private fun SopaGameContent(
                 }
             } else {
                 Spacer(Modifier.weight(1f))
-                Text("👻 Ghost: список скрыт",
+                Text(stringResource(R.string.sopa_ghost),
                     color = Color.Gray, fontSize = 12.sp)
             }
 
@@ -317,7 +319,7 @@ private fun SopaGameContent(
             ) {
                 Icon(Icons.Default.Refresh, null)
                 Spacer(Modifier.width(8.dp))
-                Text("Сбросить выделение")
+                Text(stringResource(R.string.sopa_clear_selection))
             }
         }
     }

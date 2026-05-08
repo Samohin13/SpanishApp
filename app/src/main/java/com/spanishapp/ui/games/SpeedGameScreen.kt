@@ -16,12 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
@@ -41,7 +43,7 @@ fun SpeedGameScreen(
         state.showLevelMap -> {
             LevelMapScreen(
                 gameId  = GameId.SPEED,
-                title   = "Rápido · уровни",
+                title   = stringResource(R.string.speed_levels_title),
                 accent  = ACCENT,
                 manager = viewModel.levelManager,
                 onBack  = { navController.popBackStack() },
@@ -86,7 +88,7 @@ private fun SpeedGameContent(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Уровень ${state.level} / 100", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.speed_level_of, state.level), fontWeight = FontWeight.Bold)
                         Text("${state.params.cefr.joinToString("+")} · ${state.params.mode.name.lowercase()}",
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -120,9 +122,9 @@ private fun SpeedGameContent(
                             color = Color(0xFFFF9500), fontWeight = FontWeight.Bold)
                     }
                 }
-                Text("Раунд ${state.currentRound}/${state.totalRounds}",
+                Text(stringResource(R.string.speed_round_of, state.currentRound, state.totalRounds),
                     fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text("XP: ${state.score}", fontWeight = FontWeight.Bold, color = ACCENT)
+                Text(stringResource(R.string.speed_xp, state.score), fontWeight = FontWeight.Bold, color = ACCENT)
             }
 
             Spacer(Modifier.height(16.dp))
@@ -139,7 +141,7 @@ private fun SpeedGameContent(
                     trackColor = MaterialTheme.colorScheme.outline
                 )
             } else {
-                Text("без таймера", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.speed_no_timer), fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
             Spacer(Modifier.weight(0.5f))

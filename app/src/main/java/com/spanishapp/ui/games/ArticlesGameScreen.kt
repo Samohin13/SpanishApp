@@ -23,6 +23,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -33,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.spanishapp.R
 import com.spanishapp.data.db.entity.ArticleWordEntity
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.*
@@ -61,7 +63,7 @@ fun ArticlesGameScreen(
     when {
         state.showLevelMap -> LevelMapScreen(
             gameId       = GameId.ARTICLES,
-            title        = "Artículos · уровни",
+            title        = stringResource(R.string.art_levels_title),
             accent       = ACCENT,
             manager      = viewModel.levelManager,
             onBack       = { navController.popBackStack() },
@@ -162,7 +164,7 @@ private fun ArticlesGameContent(
                     fontSize = 22.sp, color = ACCENT, fontWeight = FontWeight.ExtraBold
                 )
                 Text(
-                    "✅ ${state.correctCount} верных",
+                    stringResource(R.string.art_correct_count, state.correctCount),
                     fontSize = 20.sp, color = Color(0xFF3A3A3C), fontWeight = FontWeight.Bold
                 )
             }

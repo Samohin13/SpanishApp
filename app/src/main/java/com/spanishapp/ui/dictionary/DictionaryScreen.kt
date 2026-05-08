@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import com.spanishapp.R
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -229,7 +231,7 @@ fun DictionaryScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text(if (selectedId == null) "Словарь" else myLists.firstOrNull { it.id == selectedId }?.name ?: "Список") },
+                title = { Text(if (selectedId == null) stringResource(R.string.dict_title) else myLists.firstOrNull { it.id == selectedId }?.name ?: stringResource(R.string.dict_list)) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = {
@@ -251,11 +253,11 @@ fun DictionaryScreen(
             if (selectedId == null) {
                 TabRow(selectedTabIndex = tab) {
                     Tab(selected = tab == 0, onClick = { tab = 0 },
-                        text = { Text("Все слова") })
+                        text = { Text(stringResource(R.string.dict_tab_all)) })
                     Tab(selected = tab == 1, onClick = { tab = 1 },
-                        text = { Text("Фразы") })
+                        text = { Text(stringResource(R.string.dict_tab_phrases)) })
                     Tab(selected = tab == 2, onClick = { tab = 2 },
-                        text = { Text("Мои списки") })
+                        text = { Text(stringResource(R.string.dict_tab_my_lists)) })
                 }
             }
 
@@ -426,7 +428,7 @@ private fun AllWordsContent(
                     onQuery(v)
                     historyExpanded = false
                 },
-                placeholder = { Text("Поиск…") },
+                placeholder = { Text(stringResource(R.string.dict_search_placeholder)) },
                 leadingIcon = {
                     IconButton(
                         onClick = {
@@ -475,14 +477,14 @@ private fun AllWordsContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Недавний поиск",
+                    Text(stringResource(R.string.dict_recent_search),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                     TextButton(onClick = {
                         onClearHistory()
                         historyExpanded = false
                     }) {
-                        Text("Очистить", style = MaterialTheme.typography.labelSmall)
+                        Text(stringResource(R.string.dict_clear), style = MaterialTheme.typography.labelSmall)
                     }
                 }
                 HorizontalDivider()
@@ -705,7 +707,7 @@ private fun MyListsContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment     = Alignment.CenterVertically
         ) {
-            Text("${lists.size}/20 списков", style = MaterialTheme.typography.bodySmall,
+            Text(stringResource(R.string.dict_lists_count, lists.size), style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             if (lists.size < 20) {
                 FilledTonalButton(
@@ -714,7 +716,7 @@ private fun MyListsContent(
                 ) {
                     Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Новый список")
+                    Text(stringResource(R.string.dict_new_list))
                 }
             }
         }
@@ -724,9 +726,9 @@ private fun MyListsContent(
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("📋", fontSize = 48.sp)
-                    Text("Нет списков", style = MaterialTheme.typography.titleMedium,
+                    Text(stringResource(R.string.dict_no_lists), style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Создайте список, чтобы собирать слова",
+                    Text(stringResource(R.string.dict_no_lists_hint),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -752,12 +754,12 @@ private fun MyListsContent(
         var text by remember { mutableStateOf(list.name) }
         AlertDialog(
             onDismissRequest = { renaming = null },
-            title = { Text("Переименовать список") },
+            title = { Text(stringResource(R.string.dict_rename_list)) },
             text = {
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
-                    label = { Text("Название") },
+                    label = { Text(stringResource(R.string.dict_name)) },
                     singleLine = true
                 )
             },
@@ -765,10 +767,10 @@ private fun MyListsContent(
                 TextButton(onClick = {
                     if (text.isNotBlank()) onRenameList(list, text)
                     renaming = null
-                }) { Text("Сохранить") }
+                }) { Text(stringResource(R.string.dict_save)) }
             },
             dismissButton = {
-                TextButton(onClick = { renaming = null }) { Text("Отмена") }
+                TextButton(onClick = { renaming = null }) { Text(stringResource(R.string.dict_cancel)) }
             }
         )
     }
@@ -790,6 +792,7 @@ private fun ListWordsContent(
 ) {
     val context = LocalContext.current
     var exportMenu by remember { mutableStateOf(false) }
+    val shareTitle = stringResource(R.string.dict_share_list)
 
     Column(Modifier.fillMaxSize()) {
         Row(
@@ -800,14 +803,14 @@ private fun ListWordsContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "${words.size}/150 слов",
+                stringResource(R.string.dict_words_count, words.size),
                 style    = MaterialTheme.typography.bodySmall,
                 color    = MaterialTheme.colorScheme.onSurfaceVariant
             )
             if (words.isNotEmpty()) {
                 Box {
                     IconButton(onClick = { exportMenu = true }, modifier = Modifier.size(36.dp)) {
-                        Icon(Icons.Default.Share, "Экспорт",
+                        Icon(Icons.Default.Share, stringResource(R.string.dict_export_cd),
                             modifier = Modifier.size(20.dp),
                             tint = MaterialTheme.colorScheme.primary)
                     }
@@ -816,27 +819,27 @@ private fun ListWordsContent(
                         onDismissRequest = { exportMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Текст (TXT)") },
+                            text = { Text(stringResource(R.string.dict_export_txt)) },
                             leadingIcon = { Icon(Icons.Default.Description, null) },
                             onClick = {
                                 exportMenu = false
-                                shareAsText(context, exportAsTxt(words), "spanish_words.txt")
+                                shareAsText(context, exportAsTxt(words), "spanish_words.txt", shareTitle)
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Таблица (CSV)") },
+                            text = { Text(stringResource(R.string.dict_export_csv)) },
                             leadingIcon = { Icon(Icons.Default.TableChart, null) },
                             onClick = {
                                 exportMenu = false
-                                shareAsText(context, exportAsCsv(words), "spanish_words.csv")
+                                shareAsText(context, exportAsCsv(words), "spanish_words.csv", shareTitle)
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Печать / PDF") },
+                            text = { Text(stringResource(R.string.dict_export_pdf)) },
                             leadingIcon = { Icon(Icons.Default.Print, null) },
                             onClick = {
                                 exportMenu = false
-                                shareAsText(context, exportAsTxt(words), "spanish_words.txt")
+                                shareAsText(context, exportAsTxt(words), "spanish_words.txt", shareTitle)
                             }
                         )
                     }
@@ -849,9 +852,9 @@ private fun ListWordsContent(
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("📝", fontSize = 48.sp)
-                    Text("Список пуст", style = MaterialTheme.typography.titleMedium,
+                    Text(stringResource(R.string.dict_list_empty), style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Нажмите «+» у слова в разделе «Все слова»",
+                    Text(stringResource(R.string.dict_list_empty_hint),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -918,8 +921,8 @@ private fun WordRow(
                         color      = MaterialTheme.colorScheme.onSurface
                     )
                     when (word.verbSubtype) {
-                        "irregular" -> VerbBadge("неправ.", Color(0xFFE11D48))
-                        "stem"      -> VerbBadge("откл.", Color(0xFFD97706))
+                        "irregular" -> VerbBadge(stringResource(R.string.dict_badge_irregular), Color(0xFFE11D48))
+                        "stem"      -> VerbBadge(stringResource(R.string.dict_badge_stem), Color(0xFFD97706))
                     }
                     if (word.category.startsWith("adult_")) {
                         VerbBadge("18+", Color(0xFF9C27B0))
@@ -1129,7 +1132,7 @@ private fun ListCard(
                 Text(list.name, style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold)
                 Text(
-                    "${list.wordCount}/150 слов",
+                    stringResource(R.string.dict_words_count, list.wordCount),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -1154,12 +1157,12 @@ private fun ListCard(
                 }
                 DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
                     DropdownMenuItem(
-                        text     = { Text("Переименовать") },
+                        text     = { Text(stringResource(R.string.dict_rename)) },
                         leadingIcon = { Icon(Icons.Default.Edit, null) },
                         onClick  = { showMenu = false; onRename() }
                     )
                     DropdownMenuItem(
-                        text     = { Text("Удалить", color = MaterialTheme.colorScheme.error) },
+                        text     = { Text(stringResource(R.string.dict_delete), color = MaterialTheme.colorScheme.error) },
                         leadingIcon = { Icon(Icons.Default.Delete, null,
                             tint = MaterialTheme.colorScheme.error) },
                         onClick  = { showMenu = false; onDelete() }
@@ -1220,14 +1223,14 @@ private fun WordDetailSheet(
             HorizontalDivider()
 
             // Перевод
-            Text("Перевод", style = MaterialTheme.typography.labelMedium,
+            Text(stringResource(R.string.dict_translation), style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary)
             Text(word.russian, style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium)
 
             // Пример
             if (word.example.isNotBlank()) {
-                Text("Пример", style = MaterialTheme.typography.labelMedium,
+                Text(stringResource(R.string.dict_example), style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary)
                 Surface(shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerHigh) {
@@ -1242,7 +1245,7 @@ private fun WordDetailSheet(
             // Мои списки
             if (myLists.isNotEmpty()) {
                 HorizontalDivider()
-                Text("Добавить в список", style = MaterialTheme.typography.labelMedium,
+                Text(stringResource(R.string.dict_add_to_list), style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary)
                 myLists.forEach { list ->
                     val inList = listIds.contains(list.id)
@@ -1277,9 +1280,9 @@ private fun WordDetailSheet(
                 HorizontalDivider()
                 val acc = (word.correctReviews * 100f / word.totalReviews).toInt()
                 Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                    StatItem("Повторений", "${word.totalReviews}")
-                    StatItem("Точность", "$acc%")
-                    if (word.isLearned) StatItem("Статус", "✓ Выучено")
+                    StatItem(stringResource(R.string.dict_stat_reviews), "${word.totalReviews}")
+                    StatItem(stringResource(R.string.dict_stat_accuracy), "$acc%")
+                    if (word.isLearned) StatItem(stringResource(R.string.dict_stat_status), stringResource(R.string.dict_stat_status_learned))
                 }
             }
         }
@@ -1316,12 +1319,12 @@ private fun AddToListSheet(
             .padding(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
-            Text("Добавить «${word.spanish}» в список",
+            Text(stringResource(R.string.dict_add_word_to_list, word.spanish),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
 
             if (myLists.isEmpty()) {
-                Text("У вас ещё нет списков",
+                Text(stringResource(R.string.dict_no_lists_yet),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
@@ -1346,7 +1349,7 @@ private fun AddToListSheet(
                                     fontWeight = if (inList) FontWeight.SemiBold else FontWeight.Normal,
                                     color = if (full) MaterialTheme.colorScheme.onSurfaceVariant
                                             else MaterialTheme.colorScheme.onSurface)
-                                if (full) Text("Список заполнен (150/150)",
+                                if (full) Text(stringResource(R.string.dict_list_full),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 else Text("${list.wordCount}/150",
@@ -1368,7 +1371,7 @@ private fun AddToListSheet(
                     modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("Создать новый список")
+                    Text(stringResource(R.string.dict_create_new_list))
                 }
             }
         }
@@ -1386,18 +1389,18 @@ private fun CreateListDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title   = { Text("Новый список") },
+        title   = { Text(stringResource(R.string.dict_new_list)) },
         text    = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (error) {
-                    Text("Максимум 20 списков. Удалите один, чтобы создать новый.",
+                    Text(stringResource(R.string.dict_max_lists_error),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium)
                 } else {
                     OutlinedTextField(
                         value         = name,
                         onValueChange = { if (it.length <= 30) name = it },
-                        label         = { Text("Название (до 30 символов)") },
+                        label         = { Text(stringResource(R.string.dict_name_label)) },
                         singleLine    = true,
                         isError       = name.isBlank() && name.isNotEmpty()
                     )
@@ -1412,11 +1415,11 @@ private fun CreateListDialog(
                 TextButton(
                     onClick  = { if (name.isNotBlank()) onCreate(name) },
                     enabled  = name.isNotBlank()
-                ) { Text("Создать") }
+                ) { Text(stringResource(R.string.dict_create)) }
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Отмена") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.dict_cancel)) }
         }
     )
 }
@@ -1454,11 +1457,11 @@ private fun csvEscape(s: String): String {
     return if (needsEscape) "\"${s.replace("\"", "\"\"")}\"" else s
 }
 
-private fun shareAsText(context: android.content.Context, text: String, subject: String) {
+private fun shareAsText(context: android.content.Context, text: String, subject: String, chooserTitle: String = subject) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_SUBJECT, subject)
         putExtra(Intent.EXTRA_TEXT, text)
     }
-    context.startActivity(Intent.createChooser(intent, "Поделиться списком"))
+    context.startActivity(Intent.createChooser(intent, chooserTitle))
 }

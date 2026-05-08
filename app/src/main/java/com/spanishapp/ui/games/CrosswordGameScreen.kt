@@ -28,6 +28,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 
 private val Purple = Color(0xFF7B2FBE)
 private val BgGray
@@ -66,7 +68,7 @@ fun CrosswordGameScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Crucigrama", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.crw_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (state.showSetup) navController.popBackStack()
@@ -77,7 +79,7 @@ fun CrosswordGameScreen(
                 },
                 actions = {
                     IconButton(onClick = { showRules = true }) {
-                        Icon(Icons.AutoMirrored.Filled.HelpOutline, contentDescription = "Правила")
+                        Icon(Icons.AutoMirrored.Filled.HelpOutline, contentDescription = stringResource(R.string.crw_rules))
                     }
                     Surface(
                         color = Gold.copy(alpha = 0.1f),
@@ -119,22 +121,22 @@ fun CrosswordGameScreen(
 fun RulesDialog(onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Как играть", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextMain) },
+        title = { Text(stringResource(R.string.crw_how_to_play), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextMain) },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                RuleItem(Icons.Default.TouchApp, "Выбор слова",
-                    "Нажмите на любую ячейку кроссворда — она выделится фиолетовым, а снизу появится перевод слова, которое нужно угадать.")
-                RuleItem(Icons.Default.SwapHoriz, "Смена слова и направления",
-                    "Цифра в углу ячейки — начало слова. Нажмите на неё, чтобы перейти к этому слову. Если через ячейку проходят два слова (горизонтальное и вертикальное), каждое нажатие переключает направление.")
-                RuleItem(Icons.Default.Keyboard, "Ввод букв с ударением",
-                    "Чтобы ввести Á, É, Í, Ó, Ú, Ü или Ñ, удержите соответствующую клавишу — появится меню с нужным вариантом. Если снизу горит жёлтая подсказка, в текущем слове есть такие буквы.")
-                RuleItem(Icons.Default.Lightbulb, "Подсказки",
-                    "За правильные ответы начисляются монеты:\n• «Буква» — открывает одну букву (10 монет)\n• «Слово» — открывает слово целиком (50 монет)")
-                RuleItem(Icons.Default.ZoomIn, "Масштаб и прокрутка",
-                    "Сведите или разведите два пальца, чтобы уменьшить или увеличить кроссворд. Перетащите одним пальцем для прокрутки поля в нужном направлении.")
+                RuleItem(Icons.Default.TouchApp, stringResource(R.string.crw_rule_select_title),
+                    stringResource(R.string.crw_rule_select_body))
+                RuleItem(Icons.Default.SwapHoriz, stringResource(R.string.crw_rule_swap_title),
+                    stringResource(R.string.crw_rule_swap_body))
+                RuleItem(Icons.Default.Keyboard, stringResource(R.string.crw_rule_keyboard_title),
+                    stringResource(R.string.crw_rule_keyboard_body))
+                RuleItem(Icons.Default.Lightbulb, stringResource(R.string.crw_rule_hints_title),
+                    stringResource(R.string.crw_rule_hints_body))
+                RuleItem(Icons.Default.ZoomIn, stringResource(R.string.crw_rule_zoom_title),
+                    stringResource(R.string.crw_rule_zoom_body))
             }
         },
         confirmButton = {
@@ -142,7 +144,7 @@ fun RulesDialog(onDismiss: () -> Unit) {
                 onClick = onDismiss,
                 colors = ButtonDefaults.buttonColors(containerColor = Purple),
                 shape = RoundedCornerShape(12.dp)
-            ) { Text("Понятно", color = Color.White, fontWeight = FontWeight.Bold) }
+            ) { Text(stringResource(R.string.crw_understood), color = Color.White, fontWeight = FontWeight.Bold) }
         },
         containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(20.dp)
@@ -168,7 +170,7 @@ fun CrosswordLevelSelection(state: CrosswordGameState, viewModel: CrosswordViewM
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Selecciona Nivel", fontSize = 24.sp, fontWeight = FontWeight.Bold,
+        Text(stringResource(R.string.crw_select_level), fontSize = 24.sp, fontWeight = FontWeight.Bold,
             color = TextMain, modifier = Modifier.padding(bottom = 24.dp))
         androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
             columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(3),
@@ -337,7 +339,7 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        currentWord?.russian ?: "Выберите ячейку",
+                        currentWord?.russian ?: stringResource(R.string.crw_choose_cell),
                         fontSize = 18.sp, fontWeight = FontWeight.Bold,
                         color = TextMain, textAlign = TextAlign.Center
                     )
@@ -355,7 +357,7 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
                     ) {
                         Icon(Icons.Default.Info, null, tint = Gold, modifier = Modifier.size(14.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text("Удержи клавишу для ввода: ${accentedChars.joinToString(", ")}",
+                        Text(stringResource(R.string.crw_hold_for_input, accentedChars.joinToString(", ")),
                             fontSize = 12.sp, color = Gold)
                     }
                 }
@@ -366,8 +368,8 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
                         .padding(horizontal = 16.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    HintChip(Icons.Default.Lightbulb,    "Буква (10)", state.coins >= 10,  Modifier.weight(1f)) { viewModel.useHintLetter() }
-                    HintChip(Icons.Default.AutoFixHigh,  "Слово (50)", state.coins >= 50,  Modifier.weight(1f)) { viewModel.useHintWord()   }
+                    HintChip(Icons.Default.Lightbulb,    stringResource(R.string.crw_hint_letter), state.coins >= 10,  Modifier.weight(1f)) { viewModel.useHintLetter() }
+                    HintChip(Icons.Default.AutoFixHigh,  stringResource(R.string.crw_hint_word), state.coins >= 50,  Modifier.weight(1f)) { viewModel.useHintWord()   }
                 }
 
                 Spacer(Modifier.height(8.dp))
@@ -582,7 +584,7 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
     ) {
         Text("🏆", fontSize = 80.sp)
         Text("¡Excelente!", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = TextMain)
-        Text("Кроссворд пройден", fontSize = 18.sp, color = TextGray)
+        Text(stringResource(R.string.crw_completed), fontSize = 18.sp, color = TextGray)
         Spacer(Modifier.height(16.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             repeat(3) { i ->
@@ -592,7 +594,7 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
         }
         Spacer(Modifier.height(32.dp))
         Surface(color = Gold.copy(alpha = 0.1f), shape = RoundedCornerShape(16.dp)) {
-            Text("+${stars * 15} монет",
+            Text(stringResource(R.string.crw_coins_reward, stars * 15),
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
                 color = Gold, fontWeight = FontWeight.Bold, fontSize = 20.sp)
         }
@@ -603,13 +605,13 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
                 border = androidx.compose.foundation.BorderStroke(2.dp, Purple)) {
                 Icon(Icons.Default.Home, null, tint = Purple)
                 Spacer(Modifier.width(8.dp))
-                Text("МЕНЮ", color = Purple, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.crw_menu), color = Purple, fontWeight = FontWeight.Bold)
             }
             Button(onClick = { viewModel.startLevel(state.level + 1) },
                 modifier = Modifier.weight(1.4f).height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Purple),
                 shape = RoundedCornerShape(16.dp)) {
-                Text("ДАЛЕЕ", color = Color.White, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.crw_next), color = Color.White, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.width(8.dp))
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, null)
             }

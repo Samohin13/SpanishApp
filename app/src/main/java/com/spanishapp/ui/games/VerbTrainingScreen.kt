@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,6 +32,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
+
+@Composable
+private fun verbModeTitle(mode: VerbTrainingMode): String = when (mode) {
+    VerbTrainingMode.CONJUGAR -> stringResource(R.string.verb_mode_conjugar_title)
+    VerbTrainingMode.INVERSO  -> stringResource(R.string.verb_mode_inverso_title)
+    VerbTrainingMode.HUECO    -> stringResource(R.string.verb_mode_hueco_title)
+    VerbTrainingMode.AUDITIVO -> stringResource(R.string.verb_mode_auditivo_title)
+}
+
+@Composable
+private fun verbModeDesc(mode: VerbTrainingMode): String = when (mode) {
+    VerbTrainingMode.CONJUGAR -> stringResource(R.string.verb_mode_conjugar_desc)
+    VerbTrainingMode.INVERSO  -> stringResource(R.string.verb_mode_inverso_desc)
+    VerbTrainingMode.HUECO    -> stringResource(R.string.verb_mode_hueco_desc)
+    VerbTrainingMode.AUDITIVO -> stringResource(R.string.verb_mode_auditivo_desc)
+}
 
 private val ACCENT      = Color(0xFF2196F3)
 private val ACCENT_DARK = Color(0xFF1565C0)
@@ -55,7 +73,7 @@ fun VerbTrainingScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Verbos · тренажёр", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.verb_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (state.showSetup || state.isGameOver) navController.popBackStack()
@@ -97,9 +115,9 @@ private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        Text("Настройки", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = TextMain)
+        Text(stringResource(R.string.verb_settings), fontSize = 22.sp, fontWeight = FontWeight.Bold, color = TextMain)
 
-        SectionCard(title = "Режим тренировки") {
+        SectionCard(title = stringResource(R.string.verb_section_mode)) {
             VerbTrainingMode.entries.forEach { mode ->
                 val sel = cfg.mode == mode
                 Surface(
@@ -120,15 +138,15 @@ private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
                             colors = RadioButtonDefaults.colors(selectedColor = ACCENT))
                         Spacer(Modifier.width(8.dp))
                         Column {
-                            Text(mode.title, fontWeight = FontWeight.SemiBold, color = TextMain)
-                            Text(mode.desc, fontSize = 12.sp, color = TextGray)
+                            Text(verbModeTitle(mode), fontWeight = FontWeight.SemiBold, color = TextMain)
+                            Text(verbModeDesc(mode), fontSize = 12.sp, color = TextGray)
                         }
                     }
                 }
             }
         }
 
-        SectionCard(title = "Времена") {
+        SectionCard(title = stringResource(R.string.verb_section_tenses)) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 vm.availableTenses().forEach { t ->
@@ -149,34 +167,34 @@ private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
             }
         }
 
-        SectionCard(title = "Группы глаголов") {
+        SectionCard(title = stringResource(R.string.verb_section_groups)) {
             Column {
-                ToggleRow("Регулярные", VerbGroup.REGULAR in cfg.groups) { on ->
+                ToggleRow(stringResource(R.string.verb_group_regular), VerbGroup.REGULAR in cfg.groups) { on ->
                     val g = if (on) cfg.groups + VerbGroup.REGULAR else cfg.groups - VerbGroup.REGULAR
                     if (g.isNotEmpty()) vm.updateConfig(cfg.copy(groups = g))
                 }
-                ToggleRow("Неправильные (ser, estar, ir...)", VerbGroup.IRREGULAR in cfg.groups) { on ->
+                ToggleRow(stringResource(R.string.verb_group_irregular), VerbGroup.IRREGULAR in cfg.groups) { on ->
                     val g = if (on) cfg.groups + VerbGroup.IRREGULAR else cfg.groups - VerbGroup.IRREGULAR
                     if (g.isNotEmpty()) vm.updateConfig(cfg.copy(groups = g))
                 }
             }
         }
 
-        SectionCard(title = "Дополнительно") {
+        SectionCard(title = stringResource(R.string.verb_section_extra)) {
             Column {
-                ToggleRow("Включать рефлексивные (lavarse)", cfg.includeReflexive) {
+                ToggleRow(stringResource(R.string.verb_include_reflexive), cfg.includeReflexive) {
                     vm.updateConfig(cfg.copy(includeReflexive = it))
                 }
-                ToggleRow("Voseo (vos вместо tú)", cfg.isVoseo) {
+                ToggleRow(stringResource(R.string.verb_voseo), cfg.isVoseo) {
                     vm.updateConfig(cfg.copy(isVoseo = it))
                 }
-                ToggleRow("Засчитывать ввод без акцентов", cfg.acceptNoAccent) {
+                ToggleRow(stringResource(R.string.verb_accept_no_accent), cfg.acceptNoAccent) {
                     vm.updateConfig(cfg.copy(acceptNoAccent = it))
                 }
             }
         }
 
-        SectionCard(title = "Сколько вопросов") {
+        SectionCard(title = stringResource(R.string.verb_section_count)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(10, 20, 30).forEach { n ->
                     FilterChip(
@@ -269,9 +287,9 @@ private fun TrainingContent(state: VerbTrainingState, vm: VerbViewModel) {
     ) {
         Row(modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Вопрос ${state.currentIndex + 1}/${state.total}",
+            Text(stringResource(R.string.verb_question_of, state.currentIndex + 1, state.total),
                 color = ACCENT, fontWeight = FontWeight.Bold, fontSize = 13.sp)
-            Text("Очки: ${state.score}", color = ACCENT, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.verb_score, state.score), color = ACCENT, fontWeight = FontWeight.Bold)
         }
         LinearProgressIndicator(
             progress = { (state.currentIndex + 1).toFloat() / state.total },
@@ -337,11 +355,11 @@ private fun AuditivoCard(q: VerbQuestion, vm: VerbViewModel) {
                 onClick = { vm.replayAudio() },
                 modifier = Modifier.size(72.dp)
             ) {
-                Icon(Icons.AutoMirrored.Filled.VolumeUp, "Слушать",
+                Icon(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.verb_listen),
                     tint = ACCENT, modifier = Modifier.size(56.dp))
             }
             Spacer(Modifier.height(8.dp))
-            Text("Послушайте и запишите услышанную форму",
+            Text(stringResource(R.string.verb_listen_and_write),
                 fontSize = 13.sp, color = TextGray, textAlign = TextAlign.Center)
         }
     }
@@ -367,7 +385,7 @@ private fun InversoCard(q: VerbQuestion, vm: VerbViewModel) {
             modifier = Modifier.padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Эта форма от какого глагола, времени и лица?",
+            Text(stringResource(R.string.verb_inverso_question),
                 fontSize = 13.sp, color = TextGray, textAlign = TextAlign.Center)
             Spacer(Modifier.height(8.dp))
             Text(q.correctAnswer,
@@ -376,12 +394,12 @@ private fun InversoCard(q: VerbQuestion, vm: VerbViewModel) {
     }
 
     Spacer(Modifier.height(8.dp))
-    DropdownPicker("Инфинитив", q.conjugation.verb,
+    DropdownPicker(stringResource(R.string.verb_dropdown_infinitive), q.conjugation.verb,
         listOf(q.conjugation.verb), pickedInf) { pickedInf = it }
-    DropdownPicker("Время", q.conjugation.tense,
+    DropdownPicker(stringResource(R.string.verb_dropdown_tense), q.conjugation.tense,
         listOf("presente","preterito","imperfecto","futuro","condicional","subjuntivo"),
         pickedTense) { pickedTense = it }
-    DropdownPicker("Лицо", "yo/tú/...",
+    DropdownPicker(stringResource(R.string.verb_dropdown_person), "yo/tú/...",
         (0..5).map { vm.getPronoun(it) },
         if (pickedPron < 0) "" else vm.getPronoun(pickedPron)
     ) { selected ->
@@ -397,7 +415,7 @@ private fun InversoCard(q: VerbQuestion, vm: VerbViewModel) {
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
             shape = RoundedCornerShape(14.dp)
-        ) { Text("Далее", fontWeight = FontWeight.Bold) }
+        ) { Text(stringResource(R.string.verb_next), fontWeight = FontWeight.Bold) }
     } else {
         Button(
             onClick = { vm.submitInverso(pickedInf, pickedTense, pickedPron) },
@@ -405,7 +423,7 @@ private fun InversoCard(q: VerbQuestion, vm: VerbViewModel) {
             colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
             shape = RoundedCornerShape(14.dp),
             enabled = pickedInf.isNotBlank() && pickedTense.isNotBlank() && pickedPron >= 0
-        ) { Text("Проверить", fontWeight = FontWeight.Bold) }
+        ) { Text(stringResource(R.string.verb_check), fontWeight = FontWeight.Bold) }
     }
 }
 
@@ -458,7 +476,7 @@ private fun AnswerArea(q: VerbQuestion, vm: VerbViewModel) {
     OutlinedTextField(
         value = input,
         onValueChange = { if (!q.isChecked) input = it },
-        placeholder = { Text("Введите форму…") },
+        placeholder = { Text(stringResource(R.string.verb_input_placeholder)) },
         singleLine = true,
         readOnly = q.isChecked,
         modifier = Modifier
@@ -504,14 +522,14 @@ private fun AnswerArea(q: VerbQuestion, vm: VerbViewModel) {
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
             shape = RoundedCornerShape(14.dp)
-        ) { Text("Далее", fontWeight = FontWeight.Bold) }
+        ) { Text(stringResource(R.string.verb_next), fontWeight = FontWeight.Bold) }
     } else {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(
                 onClick = { vm.submitAnswer("") },
                 modifier = Modifier.weight(1f).height(50.dp),
                 shape = RoundedCornerShape(14.dp)
-            ) { Text("Не знаю") }
+            ) { Text(stringResource(R.string.verb_dont_know)) }
 
             Button(
                 onClick = { vm.submitAnswer(input.text) },
@@ -519,7 +537,7 @@ private fun AnswerArea(q: VerbQuestion, vm: VerbViewModel) {
                 colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
                 shape = RoundedCornerShape(14.dp),
                 enabled = input.text.isNotBlank()
-            ) { Text("Проверить", fontWeight = FontWeight.Bold) }
+            ) { Text(stringResource(R.string.verb_check), fontWeight = FontWeight.Bold) }
         }
     }
 }
@@ -528,11 +546,11 @@ private fun AnswerArea(q: VerbQuestion, vm: VerbViewModel) {
 private fun FeedbackBanner(q: VerbQuestion) {
     val (color, icon, text) = when {
         q.isCorrect == true && q.nearMiss ->
-            Triple(Orange, Icons.Default.Check, "Почти! Не хватает акцентов: ${q.correctAnswer}")
+            Triple(Orange, Icons.Default.Check, stringResource(R.string.verb_feedback_near_miss, q.correctAnswer))
         q.isCorrect == true ->
-            Triple(Green, Icons.Default.Check, "¡Correcto!  ${q.correctAnswer}")
+            Triple(Green, Icons.Default.Check, stringResource(R.string.verb_feedback_correct, q.correctAnswer))
         else ->
-            Triple(Red, Icons.Default.Close, "Правильно: ${q.correctAnswer}")
+            Triple(Red, Icons.Default.Close, stringResource(R.string.verb_feedback_wrong, q.correctAnswer))
     }
     Surface(
         modifier = Modifier
@@ -584,7 +602,7 @@ private fun DropdownPicker(label: String, hint: String, options: List<String>, s
 }
 
 private fun prettyOption(label: String, raw: String): String =
-    if (label == "Время") prettyTense(raw) else raw
+    if (label == "Время" || label == "Tense") prettyTense(raw) else raw
 
 // ══════════════════════════════════════════════════════════════
 //  РЕЗУЛЬТАТЫ
@@ -605,21 +623,21 @@ private fun ResultsContent(state: VerbTrainingState, vm: VerbViewModel, onExit: 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("🎯", fontSize = 64.sp)
-        Text("Тренировка завершена",
+        Text(stringResource(R.string.verb_results_title),
             fontSize = 22.sp, fontWeight = FontWeight.Bold, color = TextMain)
         Spacer(Modifier.height(20.dp))
 
         Row(modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround) {
-            Stat("Точность", "$percent%")
-            Stat("Правильно", "${state.correctCount}/$total")
-            if (state.nearMissCount > 0) Stat("Без акцентов", "${state.nearMissCount}")
+            Stat(stringResource(R.string.verb_stat_accuracy), "$percent%")
+            Stat(stringResource(R.string.verb_stat_correct), "${state.correctCount}/$total")
+            if (state.nearMissCount > 0) Stat(stringResource(R.string.verb_stat_no_accent), "${state.nearMissCount}")
         }
 
         Spacer(Modifier.height(28.dp))
 
         if (weak.isNotEmpty()) {
-            Text("Сложные формы:", fontSize = 14.sp, color = TextGray,
+            Text(stringResource(R.string.verb_weak_forms), fontSize = 14.sp, color = TextGray,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
                     .align(Alignment.Start)
@@ -660,7 +678,7 @@ private fun ResultsContent(state: VerbTrainingState, vm: VerbViewModel, onExit: 
                 onClick = onExit,
                 modifier = Modifier.weight(1f).height(50.dp),
                 shape = RoundedCornerShape(14.dp)
-            ) { Text("В меню") }
+            ) { Text(stringResource(R.string.verb_to_menu)) }
 
             OutlinedButton(
                 onClick = { vm.openSetup() },
@@ -669,7 +687,7 @@ private fun ResultsContent(state: VerbTrainingState, vm: VerbViewModel, onExit: 
             ) {
                 Icon(Icons.Default.Replay, null, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(4.dp))
-                Text("Ещё раз")
+                Text(stringResource(R.string.verb_again))
             }
         }
 

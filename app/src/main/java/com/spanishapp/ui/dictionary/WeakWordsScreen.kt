@@ -12,7 +12,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.spanishapp.R
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,7 +60,7 @@ fun WeakWordsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Слабые слова") },
+                title = { Text(stringResource(R.string.weak_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -84,7 +86,7 @@ fun WeakWordsScreen(
                             containerColor = AppColors.Terracotta
                         )
                     ) {
-                        Text("Тренировать все слабые слова (${words.size})",
+                        Text(stringResource(R.string.weak_train_all, words.size),
                              style = MaterialTheme.typography.titleMedium)
                     }
                 }
@@ -110,7 +112,7 @@ fun WeakWordsScreen(
                     ) {
                         Text("⚠️", fontSize = 20.sp)
                         Text(
-                            "Слова с точностью меньше 60%. Повторяй их чаще — и они станут лёгкими.",
+                            stringResource(R.string.weak_hint),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -205,7 +207,7 @@ private fun WeakWordCard(word: WordEntity, onSpeak: () -> Unit) {
                 )
 
                 Text(
-                    "${word.totalReviews} повторений",
+                    stringResource(R.string.weak_reviews_count, word.totalReviews),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     modifier = Modifier.padding(top = 3.dp)
@@ -235,12 +237,12 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         ) {
             Text("🎉", fontSize = 56.sp)
             Text(
-                "Слабых слов нет!",
+                stringResource(R.string.weak_empty_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "Все слова освоены хорошо.\nПродолжай заниматься в таком темпе.",
+                stringResource(R.string.weak_empty_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center

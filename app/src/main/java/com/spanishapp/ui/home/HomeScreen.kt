@@ -331,7 +331,7 @@ private fun CourseCard(
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    if (isLocked) courseLockedLabel else courseStartLabel,
+                    if (isLocked) stringResource(R.string.course_locked) else stringResource(R.string.course_start_learning),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = accentColor

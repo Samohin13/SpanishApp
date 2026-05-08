@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.spanishapp.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,7 +54,7 @@ fun LibrosScreen(
                     Column {
                         Text("Libros 📚", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         Text(
-                            "Прочитано: $readCount / $totalCount",
+                            stringResource(R.string.libros_read_progress, readCount, totalCount),
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -60,7 +62,7 @@ fun LibrosScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, "Назад")
+                        Icon(Icons.Default.ArrowBack, stringResource(R.string.libros_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -74,6 +76,7 @@ fun LibrosScreen(
         ) {
             // Фильтр по уровню
             item {
+                val allLabel = stringResource(R.string.libros_filter_all)
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -83,10 +86,11 @@ fun LibrosScreen(
                         val selected = filter == level
                         val color = if (level == "Все") LibrosPurple
                                     else LevelColors[level] ?: LibrosPurple
+                        val display = if (level == "Все") allLabel else level
                         FilterChip(
                             selected = selected,
                             onClick = { vm.setFilter(level) },
-                            label = { Text(level, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal) },
+                            label = { Text(display, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal) },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = color,
                                 selectedLabelColor = Color.White
@@ -103,7 +107,7 @@ fun LibrosScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "Рассказы уровня $filter\nпоявятся в следующем обновлении",
+                            stringResource(R.string.libros_empty_for_level, filter),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 15.sp
                         )
@@ -195,7 +199,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                 if (item.isCompleted) {
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "Лучший результат: ${item.bestScore}%",
+                        stringResource(R.string.libros_best_score, item.bestScore),
                         fontSize = 11.sp,
                         color = Color(0xFF43A047)
                     )
@@ -210,7 +214,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                     .padding(horizontal = 10.dp, vertical = 6.dp)
             ) {
                 Text(
-                    if (item.isCompleted) "Повторить" else "Читать",
+                    if (item.isCompleted) stringResource(R.string.libros_repeat) else stringResource(R.string.libros_read),
                     color = if (item.isCompleted) Color(0xFF2E7D32) else Color.White,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold
