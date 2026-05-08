@@ -44,12 +44,12 @@ val bottomNavItems = listOf(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  BACKGROUND — warm off-white (light theme)
+//  BACKGROUND — adaptive (light: warm off-white, dark: dark surface)
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
 fun SpanishBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Box(modifier = modifier.fillMaxSize().background(Color(0xFFF8F8FA))) {
+    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         content()
     }
 }

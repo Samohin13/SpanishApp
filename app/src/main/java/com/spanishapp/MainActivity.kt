@@ -4,16 +4,19 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.FragmentActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.spanishapp.data.prefs.AppPreferences
+import com.spanishapp.data.prefs.ThemeMode
 import com.spanishapp.service.AppLockManager
 import com.spanishapp.ui.Navigation
 import com.spanishapp.ui.components.SpanishBackground
@@ -26,13 +29,23 @@ import javax.inject.Inject
 class MainActivity : FragmentActivity() {
 
     @Inject lateinit var appLockManager: AppLockManager
+    @Inject lateinit var appPreferences: AppPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SpanishAppTheme(darkTheme = false) {
+            val themeMode by appPreferences.themeMode.collectAsStateWithLifecycle(
+                initialValue = ThemeMode.AUTO
+            )
+            val systemDark = isSystemInDarkTheme()
+            val darkTheme = when (themeMode) {
+                ThemeMode.AUTO  -> systemDark
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK  -> true
+            }
+            SpanishAppTheme(darkTheme = darkTheme) {
                 SpanishBackground {
                     SpanishAppRoot()
                 }
@@ -67,7 +80,7 @@ fun SpanishAppRoot() {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xFFF8F8FA),
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             if (showBottomBar) {
                 SpanishBottomBar(
