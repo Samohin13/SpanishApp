@@ -63,7 +63,7 @@ fun CourseDetailScreen(
     }
 
     Scaffold(
-        containerColor = Color(0xFFF0F0F5),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = {
@@ -72,7 +72,7 @@ fun CourseDetailScreen(
                         Text(
                             "${unitsForCourse.size} блоков",
                             fontSize = 12.sp,
-                            color = Color(0xFF8E8E93)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 },
@@ -82,8 +82,8 @@ fun CourseDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color(0xFF1A1A1A)
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -92,7 +92,7 @@ fun CourseDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color(0xFFF0F0F5)),
+                .background(MaterialTheme.colorScheme.background),
             contentPadding = PaddingValues(vertical = 16.dp, horizontal = 14.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -100,7 +100,7 @@ fun CourseDetailScreen(
             item {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 2.dp,
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -109,13 +109,13 @@ fun CourseDetailScreen(
                             "О курсе",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1A1A1A)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
                             courseDescription,
                             fontSize = 13.sp,
-                            color = Color(0xFF8E8E93),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             lineHeight = 18.sp
                         )
                     }
