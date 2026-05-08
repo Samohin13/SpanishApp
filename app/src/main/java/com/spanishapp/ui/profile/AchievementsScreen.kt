@@ -1,9 +1,16 @@
 package com.spanishapp.ui.profile
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -11,6 +18,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +35,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+
+// Достижение считается «свежим», если разблокировано за последние сутки.
+private const val FRESH_UNLOCK_WINDOW_MS = 24L * 60L * 60L * 1000L
 
 // ── ViewModel ─────────────────────────────────────────────────
 
@@ -48,7 +60,11 @@ fun AchievementsScreen(
 ) {
     val achievements by vm.achievements.collectAsState()
 
-    val unlocked = achievements.filter { it.isUnlocked }
+    // Свежеразблокированные — наверх среди unlocked.
+    val now = remember(achievements) { System.currentTimeMillis() }
+    val unlocked = achievements
+        .filter { it.isUnlocked }
+        .sortedByDescending { it.unlockedAt }
     val locked   = achievements.filter { !it.isUnlocked }
 
     Scaffold(
@@ -88,16 +104,33 @@ fun AchievementsScreen(
                 item {
                     SectionLabel("🏆 Получены (${unlocked.size})")
                 }
-                items(unlocked, key = { it.id }) { a ->
-                    AchievementCard(a, unlocked = true)
+                itemsIndexed(
+                    list = unlocked,
+                    key = { _, a -> a.id }
+                ) { index, a ->
+                    val isFresh = a.unlockedAt > 0 && (now - a.unlockedAt) < FRESH_UNLOCK_WINDOW_MS
+                    AnimatedAchievementCard(
+                        achievement = a,
+                        unlocked    = true,
+                        isFresh     = isFresh,
+                        index       = index
+                    )
                 }
                 item { Spacer(Modifier.height(8.dp)) }
             }
 
             // ── Locked ───────────────────────────────────────
             item { SectionLabel("🔒 Ещё не получены (${locked.size})") }
-            items(locked, key = { it.id }) { a ->
-                AchievementCard(a, unlocked = false)
+            itemsIndexed(
+                list = locked,
+                key = { _, a -> a.id }
+            ) { index, a ->
+                AnimatedAchievementCard(
+                    achievement = a,
+                    unlocked    = false,
+                    isFresh     = false,
+                    index       = unlocked.size + index
+                )
             }
         }
     }
@@ -144,8 +177,40 @@ private fun SectionLabel(text: String) {
     )
 }
 
+/**
+ * Карточка с анимацией появления (slide-in справа + fade).
+ * Свежие достижения дополнительно мягко пульсируют.
+ */
 @Composable
-private fun AchievementCard(a: AchievementEntity, unlocked: Boolean) {
+private fun AnimatedAchievementCard(
+    achievement: AchievementEntity,
+    unlocked: Boolean,
+    isFresh: Boolean,
+    index: Int
+) {
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(achievement.id) {
+        // Шахматный порядок появления — каждая карточка с лёгкой задержкой.
+        kotlinx.coroutines.delay(40L * index)
+        visible = true
+    }
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInHorizontally(animationSpec = tween(300)) { it / 4 } +
+                fadeIn(animationSpec = tween(300)) +
+                scaleIn(initialScale = 0.95f, animationSpec = tween(300))
+    ) {
+        AchievementCard(
+            a = achievement,
+            unlocked = unlocked,
+            isFresh = isFresh
+        )
+    }
+}
+
+@Composable
+private fun AchievementCard(a: AchievementEntity, unlocked: Boolean, isFresh: Boolean = false) {
     val icon = when {
         a.requirementType == "streak"    -> "🔥"
         a.requirementType == "words"     -> "📚"
@@ -155,12 +220,28 @@ private fun AchievementCard(a: AchievementEntity, unlocked: Boolean) {
         else -> "🏅"
     }
 
+    // Лёгкая пульсация иконки для свежих достижений.
+    val iconScale: Float = if (isFresh) {
+        val transition = rememberInfiniteTransition(label = "fresh-pulse")
+        val animated by transition.animateFloat(
+            initialValue = 1f,
+            targetValue = 1.08f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(900),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "fresh-pulse"
+        )
+        animated
+    } else 1f
+
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = if (unlocked)
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-        else
-            MaterialTheme.colorScheme.surface,
+        color = when {
+            isFresh  -> AppColors.Gold.copy(alpha = 0.18f)
+            unlocked -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+            else     -> MaterialTheme.colorScheme.surface
+        },
         tonalElevation = if (unlocked) 0.dp else 1.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -173,7 +254,8 @@ private fun AchievementCard(a: AchievementEntity, unlocked: Boolean) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = if (unlocked) AppColors.Gold.copy(alpha = 0.15f)
-                        else MaterialTheme.colorScheme.surfaceVariant
+                        else MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.scale(iconScale)
             ) {
                 Text(
                     if (unlocked) icon else "🔒",
@@ -183,13 +265,30 @@ private fun AchievementCard(a: AchievementEntity, unlocked: Boolean) {
             }
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    a.titleRu,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (unlocked) MaterialTheme.colorScheme.onSurface
-                            else MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        a.titleRu,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (unlocked) MaterialTheme.colorScheme.onSurface
+                                else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (isFresh) {
+                        Spacer(Modifier.width(8.dp))
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = AppColors.Gold
+                        ) {
+                            Text(
+                                "NEW",
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
                 Text(
                     a.descriptionRu,
                     style = MaterialTheme.typography.bodySmall,
