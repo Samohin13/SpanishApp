@@ -30,6 +30,7 @@ class AppPreferences @Inject constructor(
         val REMINDER_HOUR    = intPreferencesKey("reminder_hour")    // 0..23
         val REMINDER_MINUTE  = intPreferencesKey("reminder_minute")  // 0..59
         val FONT_SIZE        = stringPreferencesKey("font_size") // SMALL, MEDIUM, LARGE
+        val UI_LANGUAGE      = stringPreferencesKey("ui_language") // "ru", "en", "system"
     }
 
     val soundEffectsEnabled: Flow<Boolean> = context.dataStore.data.map { it[SOUND_EFFECTS] ?: true }
@@ -54,6 +55,10 @@ class AppPreferences @Inject constructor(
 
     val fontSize: Flow<String> = context.dataStore.data.map { it[FONT_SIZE] ?: "MEDIUM" }
     suspend fun setFontSize(size: String) = context.dataStore.edit { it[FONT_SIZE] = size }
+
+    /** Язык UI: "ru", "en" или "system" (по умолчанию). */
+    val uiLanguage: Flow<String> = context.dataStore.data.map { it[UI_LANGUAGE] ?: "system" }
+    suspend fun setUiLanguage(lang: String) = context.dataStore.edit { it[UI_LANGUAGE] = lang }
 
     /** Глобальный тумблер звука (TTS). По умолчанию — включён. */
     val ttsEnabled: Flow<Boolean> = context.dataStore.data

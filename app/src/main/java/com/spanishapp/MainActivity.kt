@@ -1,9 +1,13 @@
 package com.spanishapp
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.FragmentActivity
+import com.spanishapp.util.LocaleHelper
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +34,26 @@ class MainActivity : FragmentActivity() {
 
     @Inject lateinit var appLockManager: AppLockManager
     @Inject lateinit var appPreferences: AppPreferences
+
+    /**
+     * Применяем выбранный пользователем язык UI ДО создания UI.
+     * При изменении в Settings вызываем activity.recreate() —
+     * attachBaseContext перечитает свежее значение из DataStore.
+     *
+     * runBlocking здесь оправдан: это одноразовое чтение одного флага
+     * на главной нити при старте Activity, и без него мы не знаем,
+     * какой язык применять к ресурсам Compose.
+     */
+    override fun attachBaseContext(newBase: Context) {
+        // На раннем этапе Hilt ещё не доступен — собираем DataStore
+        // через AppPreferences с обычным ApplicationContext.
+        val lang = runBlocking {
+            runCatching {
+                AppPreferences(newBase.applicationContext).uiLanguage.first()
+            }.getOrDefault("system")
+        }
+        super.attachBaseContext(LocaleHelper.applyLocale(newBase, lang))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()

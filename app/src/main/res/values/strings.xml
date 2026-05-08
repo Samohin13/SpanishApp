@@ -8,4 +8,77 @@
     <!-- URL опубликованной политики конфиденциальности. Заменить на финальный после публикации. -->
     <string name="privacy_policy_url" translatable="false">https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md</string>
     <string name="terms_url" translatable="false">https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md</string>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Базовые строки UI. Дополняются постепенно по мере
+         перевода экранов. EN/UK переводы в values-en/values-uk.
+         ═══════════════════════════════════════════════════════ -->
+
+    <!-- ── Bottom navigation ────────────────────────────────── -->
+    <string name="nav_home">Главная</string>
+    <string name="nav_games">Игры</string>
+    <string name="nav_dictionary">Словарь</string>
+    <string name="nav_profile">Профиль</string>
+    <string name="nav_grammar">Грамматика</string>
+
+    <!-- ── Общие кнопки ─────────────────────────────────────── -->
+    <string name="btn_continue">Далее</string>
+    <string name="btn_back">Назад</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="btn_confirm">Подтвердить</string>
+    <string name="btn_save">Сохранить</string>
+    <string name="btn_close">Закрыть</string>
+    <string name="btn_start_learning">Начать обучение</string>
+
+    <!-- ── Заголовки экранов ────────────────────────────────── -->
+    <string name="title_settings">Настройки</string>
+    <string name="title_profile">Профиль</string>
+    <string name="title_achievements">Достижения</string>
+    <string name="title_dictionary">Словарь</string>
+    <string name="title_weak_words">Слабые слова</string>
+    <string name="title_quiz">Тест</string>
+    <string name="title_dialogues">Диалоги</string>
+    <string name="title_grammar">Грамматика</string>
+    <string name="title_conjugation">Спряжения</string>
+    <string name="title_pronunciation">Произношение</string>
+    <string name="title_ai_chat">AI-репетитор</string>
+    <string name="title_leaderboard">Лидерборд</string>
+    <string name="title_libros">Рассказы</string>
+    <string name="title_flashcards">Карточки</string>
+
+    <!-- ── Settings секции ──────────────────────────────────── -->
+    <string name="settings_section_profile">Профиль</string>
+    <string name="settings_section_notifications">Уведомления</string>
+    <string name="settings_section_sound">Звук и вибрация</string>
+    <string name="settings_section_appearance">Внешний вид</string>
+    <string name="settings_section_languages">Языки</string>
+    <string name="settings_section_security">Безопасность</string>
+    <string name="settings_section_privacy">Конфиденциальность и данные</string>
+    <string name="settings_section_account">Управление аккаунтом</string>
+
+    <string name="settings_language_ui">Язык интерфейса</string>
+    <string name="settings_language_target">Изучаемый язык</string>
+    <string name="settings_target_spanish">Испанский</string>
+    <string name="settings_logout">Выйти из аккаунта</string>
+    <string name="settings_share">Поделиться приложением</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_terms">Условия использования</string>
+
+    <!-- ── Welcome / Auth ───────────────────────────────────── -->
+    <string name="welcome_subtitle">Начни свой путь к свободному испанскому языку прямо сейчас</string>
+    <string name="welcome_already_have_account">У меня уже есть аккаунт</string>
+    <string name="welcome_login_with">или войти через</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Пароль</string>
+    <string name="auth_password_confirm">Повторите пароль</string>
+    <string name="auth_register">Зарегистрироваться</string>
+    <string name="auth_login">Войти</string>
+    <string name="auth_forgot_password">Забыли пароль?</string>
+
+    <!-- ── HomeScreen ───────────────────────────────────────── -->
+    <string name="home_greeting">Привет! 👋</string>
+    <string name="home_subtitle">Продолжай изучать испанский язык</string>
+    <string name="home_word_of_day">Слово дня</string>
+    <string name="home_streak_studied_today">Сегодня позанимался</string>
+
 </resources>
