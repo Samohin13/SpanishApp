@@ -1,6 +1,7 @@
 package com.spanishapp.ui.auth
 
-import com.spanishapp.ui.components.BrandIcons
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,13 +14,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,9 +36,12 @@ fun RegisterScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    
+    val context = LocalContext.current
+    val privacyUrl = stringResource(R.string.privacy_policy_url)
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.isRegistered) {
@@ -61,7 +72,7 @@ fun RegisterScreen(
                 .verticalScroll(rememberScrollState())
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
                 "Создайте аккаунт, чтобы сохранять прогресс",
@@ -70,6 +81,7 @@ fun RegisterScreen(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
+            // ── Email ────────────────────────────────────────────
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it; viewModel.clearErrors() },
@@ -86,6 +98,7 @@ fun RegisterScreen(
                 singleLine = true
             )
 
+            // ── Пароль ────────────────────────────────────────────
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it; viewModel.clearErrors() },
@@ -96,7 +109,7 @@ fun RegisterScreen(
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Next
                 ),
                 leadingIcon = { Icon(Icons.Default.Lock, null) },
                 trailingIcon = {
@@ -108,14 +121,76 @@ fun RegisterScreen(
                 singleLine = true
             )
 
+            // ── Live-индикатор силы пароля ────────────────────────
+            if (password.isNotEmpty()) {
+                PasswordStrengthIndicator(password = password)
+            }
+
+            // ── Подтверждение пароля ──────────────────────────────
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it; viewModel.clearErrors() },
+                label = { Text("Повторите пароль") },
+                modifier = Modifier.fillMaxWidth(),
+                isError = state.confirmPasswordError != null ||
+                    (confirmPassword.isNotEmpty() && confirmPassword != password),
+                supportingText = {
+                    when {
+                        state.confirmPasswordError != null -> Text(state.confirmPasswordError!!)
+                        confirmPassword.isNotEmpty() && confirmPassword != password ->
+                            Text("Пароли не совпадают")
+                        confirmPassword.isNotEmpty() && confirmPassword == password ->
+                            Text("Пароли совпадают", color = Color(0xFF2E7D32))
+                    }
+                },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                leadingIcon = { Icon(Icons.Default.Lock, null) },
+                singleLine = true
+            )
+
+            // ── Чекбокс «Я согласен с Privacy Policy» ─────────────
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = state.acceptedTerms,
+                    onCheckedChange = { viewModel.setAcceptedTerms(it) }
+                )
+                val annotated = buildAnnotatedString {
+                    append("Я прочитал и согласен с ")
+                    withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                        append("Политикой конфиденциальности")
+                    }
+                }
+                Text(
+                    text = annotated,
+                    fontSize = 13.sp,
+                    color = Color.DarkGray,
+                    modifier = Modifier.weight(1f).padding(start = 4.dp),
+                    lineHeight = 18.sp
+                )
+                IconButton(onClick = {
+                    runCatching {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl)))
+                    }
+                }) {
+                    Icon(Icons.Default.OpenInNew, contentDescription = "Открыть политику", modifier = Modifier.size(18.dp))
+                }
+            }
+
             if (state.generalError != null) {
                 Text(state.generalError!!, color = MaterialTheme.colorScheme.error, fontSize = 14.sp)
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(4.dp))
 
             Button(
-                onClick = { viewModel.register(email, password) },
+                onClick = { viewModel.register(email, password, confirmPassword) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -133,9 +208,8 @@ fun RegisterScreen(
                 Text("Уже есть аккаунт? Войти")
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
 
-            // Социальные кнопки на экране регистрации
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -150,35 +224,46 @@ fun RegisterScreen(
                 HorizontalDivider(modifier = Modifier.weight(1f), color = Color.LightGray.copy(alpha = 0.5f))
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(8.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SocialLoginButton(
-                    onClick = { viewModel.socialLogin("google") },
-                    content = {
-                        Icon(
-                            imageVector = BrandIcons.Google,
-                            contentDescription = "Google",
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.Unspecified
-                        )
-                    }
-                )
-                SocialLoginButton(
-                    onClick = { viewModel.socialLogin("apple") },
-                    content = {
-                        Icon(
-                            imageVector = BrandIcons.Apple,
-                            contentDescription = "Apple",
-                            modifier = Modifier.size(20.dp),
-                            tint = Color.Black
-                        )
-                    }
-                )
-            }
+            GoogleSignInButton(viewModel = viewModel, iconSize = 20, enabled = !state.isLoading)
         }
+    }
+}
+
+/**
+ * 3 чекмарка под полем пароля: ≥8 символов, цифра, буква.
+ */
+@Composable
+private fun PasswordStrengthIndicator(password: String) {
+    val hasLength = password.length >= 8
+    val hasDigit = password.any { it.isDigit() }
+    val hasLetter = password.any { it.isLetter() }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        StrengthCheck(passed = hasLength, label = "Минимум 8 символов")
+        StrengthCheck(passed = hasDigit, label = "Хотя бы одна цифра")
+        StrengthCheck(passed = hasLetter, label = "Хотя бы одна буква")
+    }
+}
+
+@Composable
+private fun StrengthCheck(passed: Boolean, label: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = if (passed) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
+            contentDescription = null,
+            tint = if (passed) Color(0xFF2E7D32) else Color.Gray,
+            modifier = Modifier.size(16.dp)
+        )
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = if (passed) Color(0xFF2E7D32) else Color.Gray,
+            modifier = Modifier.padding(start = 6.dp)
+        )
     }
 }

@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.spanishapp.ui.components.BrandIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,7 +27,7 @@ fun LoginScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -64,21 +63,33 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = {
+                    email = it
+                    if (state.generalError != null) viewModel.clearErrors()
+                },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
                 leadingIcon = { Icon(Icons.Default.Email, null) },
                 singleLine = true
             )
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = {
+                    password = it
+                    if (state.generalError != null) viewModel.clearErrors()
+                },
                 label = { Text("Пароль") },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
                 leadingIcon = { Icon(Icons.Default.Lock, null) },
                 trailingIcon = {
                     val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
@@ -126,14 +137,7 @@ fun LoginScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                SocialLoginButton(onClick = { viewModel.socialLogin("google") }, content = {
-                    Icon(BrandIcons.Google, "Google", Modifier.size(20.dp), tint = Color.Unspecified)
-                })
-                SocialLoginButton(onClick = { viewModel.socialLogin("apple") }, content = {
-                    Icon(BrandIcons.Apple, "Apple", Modifier.size(20.dp), tint = Color.Black)
-                })
-            }
+            GoogleSignInButton(viewModel = viewModel, iconSize = 20, enabled = !state.isLoading)
         }
     }
 }

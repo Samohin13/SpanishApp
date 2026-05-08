@@ -1,5 +1,6 @@
 package com.spanishapp.ui.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.GoogleAuthProvider
@@ -20,14 +21,17 @@ data class AuthUiState(
     val isLoading: Boolean = false,
     val emailError: String? = null,
     val passwordError: String? = null,
+    val confirmPasswordError: String? = null,
     val generalError: String? = null,
+    val successMessage: String? = null,
     val isRegistered: Boolean = false,
     val isLoggedIn: Boolean? = null,
     val userLevel: String? = null,
     val userName: String? = null,
     val userAge: Int? = null,
     val userReason: String? = null,
-    val onboardingCompleted: Boolean = false
+    val onboardingCompleted: Boolean = false,
+    val acceptedTerms: Boolean = false
 )
 
 @HiltViewModel
@@ -94,14 +98,14 @@ class AuthViewModel @Inject constructor(
                 val age = document.getLong("age")?.toInt()
                 val reason = document.getString("reason")
                 val level = document.getString("level")
-                
+
                 name?.let { authRepository.setUserName(it) }
                 age?.let { authRepository.setUserAge(it) }
                 reason?.let { authRepository.setUserReason(it) }
                 level?.let { authRepository.setUserLevel(it) }
             }
         } catch (e: Exception) {
-            // Log error
+            Log.w("AuthViewModel", "syncUserDataFromFirestore failed", e)
         }
     }
 
@@ -114,35 +118,63 @@ class AuthViewModel @Inject constructor(
             "level" to uiState.value.userLevel,
             "updatedAt" to System.currentTimeMillis()
         )
-        
+
         viewModelScope.launch {
             try {
                 db.collection("users").document(currentUser.uid).set(data).await()
             } catch (e: Exception) {
-                // Log error
+                Log.w("AuthViewModel", "saveUserDataToFirestore failed", e)
             }
         }
     }
 
-    fun register(email: String, pass: String) {
+    fun register(email: String, pass: String, confirmPass: String) {
         val emailErr = AuthValidator.getEmailError(email)
         val passErr = AuthValidator.getPasswordError(pass)
+        val confirmErr = when {
+            confirmPass.isBlank() -> "Повторите пароль"
+            confirmPass != pass -> "Пароли не совпадают"
+            else -> null
+        }
+        val termsErr = if (!_uiState.value.acceptedTerms)
+            "Для регистрации нужно согласиться с политикой конфиденциальности"
+        else null
 
-        if (emailErr != null || passErr != null) {
-            _uiState.update { it.copy(emailError = emailErr, passwordError = passErr) }
+        if (emailErr != null || passErr != null || confirmErr != null || termsErr != null) {
+            _uiState.update {
+                it.copy(
+                    emailError = emailErr,
+                    passwordError = passErr,
+                    confirmPasswordError = confirmErr,
+                    generalError = termsErr
+                )
+            }
             return
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, emailError = null, passwordError = null, generalError = null) }
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    emailError = null,
+                    passwordError = null,
+                    confirmPasswordError = null,
+                    generalError = null
+                )
+            }
             try {
                 auth.createUserWithEmailAndPassword(email, pass).await()
                 authRepository.setLoggedIn(true)
                 _uiState.update { it.copy(isLoading = false, isRegistered = true) }
             } catch (e: Exception) {
+                Log.w("AuthViewModel", "register failed", e)
                 _uiState.update { it.copy(isLoading = false, generalError = e.localizedMessage) }
             }
         }
+    }
+
+    fun setAcceptedTerms(accepted: Boolean) {
+        _uiState.update { it.copy(acceptedTerms = accepted, generalError = null) }
     }
 
     fun login(email: String, pass: String) {
@@ -158,6 +190,7 @@ class AuthViewModel @Inject constructor(
                 authRepository.setLoggedIn(true)
                 _uiState.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
+                Log.w("AuthViewModel", "login failed", e)
                 _uiState.update { it.copy(isLoading = false, generalError = e.localizedMessage) }
             }
         }
@@ -169,14 +202,24 @@ class AuthViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, generalError = null) }
+            _uiState.update { it.copy(isLoading = true, generalError = null, successMessage = null) }
             try {
                 auth.sendPasswordResetEmail(email).await()
-                _uiState.update { it.copy(isLoading = false, generalError = "Инструкции отправлены на почту") }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        successMessage = "Инструкции отправлены на $email"
+                    )
+                }
             } catch (e: Exception) {
+                Log.w("AuthViewModel", "resetPassword failed", e)
                 _uiState.update { it.copy(isLoading = false, generalError = e.localizedMessage) }
             }
         }
+    }
+
+    fun consumeSuccessMessage() {
+        _uiState.update { it.copy(successMessage = null) }
     }
 
     fun logout() {
@@ -236,12 +279,20 @@ class AuthViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = false) }
                 }
             } catch (e: Exception) {
+                Log.w("AuthViewModel", "loginWithGoogle failed", e)
                 _uiState.update { it.copy(isLoading = false, generalError = "Google Auth Error: ${e.localizedMessage}") }
             }
         }
     }
 
     fun clearErrors() {
-        _uiState.update { it.copy(emailError = null, passwordError = null, generalError = null) }
+        _uiState.update {
+            it.copy(
+                emailError = null,
+                passwordError = null,
+                confirmPasswordError = null,
+                generalError = null
+            )
+        }
     }
 }
