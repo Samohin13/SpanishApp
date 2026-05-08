@@ -572,11 +572,4 @@
     <string name="set_dlg_name_label">Имя</string>
     <string name="set_dlg_name_save">Сохранить</string>
 
-    <!-- Vibration intensity -->
-    <string name="vib_off">Выкл.</string>
-    <string name="vib_light">Слабо</string>
-    <string name="vib_medium">Средне</string>
-    <string name="vib_strong">Сильно</string>
-    <string name="vib_test">Проверить</string>
-
 </resources>
