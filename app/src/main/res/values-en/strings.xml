@@ -159,6 +159,47 @@
     <string name="pron_you_said">You said: \"%1$s\"</string>
     <string name="pron_target">Target: \"%1$s\"</string>
 
+    <!-- ── Lesson Session ──────────────────────────────────── -->
+    <string name="ls_close_cd">Close</string>
+    <string name="ls_got_it">GOT IT!</string>
+    <string name="ls_continue">CONTINUE →</string>
+    <string name="ls_got_continue">GOT IT, CONTINUE →</string>
+    <string name="ls_speak_cd">Speak</string>
+    <string name="ls_no_mic_permission">Microphone permission denied</string>
+    <string name="ls_listen_then_repeat">← listen, then repeat</string>
+    <string name="ls_distracted">Looks like you got distracted — tap again!</string>
+    <string name="ls_louder">I can\'t hear you. Speak louder and clearer.</string>
+    <string name="ls_not_counted">This doesn\'t count as a mistake</string>
+    <string name="ls_try_msg_1">Not quite right — try again</string>
+    <string name="ls_try_msg_2">Listen again and repeat slowly</string>
+    <string name="ls_try_msg_3">Tough one — once more, you\'ve got this!</string>
+    <string name="ls_recognized">Heard: \"%1$s\"</string>
+    <string name="ls_needed">Need: \"%1$s\"</string>
+    <string name="ls_listening_dots">🎙 Listening...</string>
+    <string name="ls_tap_again">Tap again</string>
+    <string name="ls_try_again_count">Try again (%1$d/%2$d)</string>
+    <string name="ls_tap_to_say">Tap and speak</string>
+    <string name="ls_hard_word_hint">Tough word? Skip and come back later</string>
+    <string name="ls_skip_as_wrong">Skip (counts as wrong)</string>
+    <string name="ls_input_answer">Type your answer...</string>
+    <string name="ls_correct_is">Correct: %1$s</string>
+    <string name="ls_check">CHECK</string>
+    <string name="ls_tap_words_below">Tap the words below →</string>
+    <string name="ls_verdict_perfect">Perfect!</string>
+    <string name="ls_verdict_great">Great result!</string>
+    <string name="ls_verdict_good">Good job!</string>
+    <string name="ls_verdict_keep_going">Keep going!</string>
+    <string name="ls_stat_accuracy">Accuracy</string>
+    <string name="ls_stat_combo">Combo</string>
+    <string name="ls_stat_correct">Correct</string>
+    <string name="ls_next_lesson">NEXT LESSON →</string>
+    <string name="ls_exit_to_menu">Exit to menu</string>
+    <string name="ls_done_caps">DONE</string>
+    <string name="ls_quit_title">Quit lesson?</string>
+    <string name="ls_quit_text">Your progress won\'t be saved.</string>
+    <string name="ls_quit_confirm">Quit</string>
+    <string name="ls_quit_resume">Continue</string>
+
     <!-- ── LessonIntro / Content ── -->
     <string name="lesson_intro_vocab">Learn new words and phrases for everyday conversation. We picked the most important ones for this topic.</string>
     <string name="lesson_intro_grammar">Understand how sentences work. Grammar is the skeleton of any language.</string>

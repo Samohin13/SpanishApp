@@ -172,6 +172,47 @@
     <string name="pron_you_said">Ты сказал(а): \"%1$s\"</string>
     <string name="pron_target">Эталон: \"%1$s\"</string>
 
+    <!-- ── Lesson Session ──────────────────────────────────── -->
+    <string name="ls_close_cd">Закрыть</string>
+    <string name="ls_got_it">ПОНЯТНО!</string>
+    <string name="ls_continue">ДАЛЕЕ →</string>
+    <string name="ls_got_continue">ПОНЯЛ, ДАЛЕЕ →</string>
+    <string name="ls_speak_cd">Произнести</string>
+    <string name="ls_no_mic_permission">Нет разрешения на микрофон</string>
+    <string name="ls_listen_then_repeat">← послушай, затем повтори</string>
+    <string name="ls_distracted">Кажется, ты отвлёкся — нажми снова!</string>
+    <string name="ls_louder">Не слышу тебя. Говори громче и чётче.</string>
+    <string name="ls_not_counted">Это не считается ошибкой</string>
+    <string name="ls_try_msg_1">Не совсем точно — попробуй ещё раз</string>
+    <string name="ls_try_msg_2">Послушай ещё раз и повтори медленно</string>
+    <string name="ls_try_msg_3">Сложно — ещё раз, ты справишься!</string>
+    <string name="ls_recognized">Распознано: «%1$s»</string>
+    <string name="ls_needed">Нужно: «%1$s»</string>
+    <string name="ls_listening_dots">🎙 Слушаю...</string>
+    <string name="ls_tap_again">Нажми снова</string>
+    <string name="ls_try_again_count">Попробуй ещё раз (%1$d/%2$d)</string>
+    <string name="ls_tap_to_say">Нажми и произнеси</string>
+    <string name="ls_hard_word_hint">Сложное слово? Пропусти и вернись позже</string>
+    <string name="ls_skip_as_wrong">Пропустить (засчитается как ошибка)</string>
+    <string name="ls_input_answer">Введи ответ...</string>
+    <string name="ls_correct_is">Правильно: %1$s</string>
+    <string name="ls_check">ПРОВЕРИТЬ</string>
+    <string name="ls_tap_words_below">Нажимай на слова ниже →</string>
+    <string name="ls_verdict_perfect">Идеально!</string>
+    <string name="ls_verdict_great">Отличный результат!</string>
+    <string name="ls_verdict_good">Хорошая работа!</string>
+    <string name="ls_verdict_keep_going">Не сдавайся!</string>
+    <string name="ls_stat_accuracy">Точность</string>
+    <string name="ls_stat_combo">Комбо</string>
+    <string name="ls_stat_correct">Верно</string>
+    <string name="ls_next_lesson">СЛЕДУЮЩИЙ УРОК →</string>
+    <string name="ls_exit_to_menu">Выйти в меню</string>
+    <string name="ls_done_caps">ГОТОВО</string>
+    <string name="ls_quit_title">Выйти из урока?</string>
+    <string name="ls_quit_text">Прогресс этого урока не сохранится.</string>
+    <string name="ls_quit_confirm">Выйти</string>
+    <string name="ls_quit_resume">Продолжить</string>
+
     <!-- ── LessonIntro / Content ────────────────────────────── -->
     <string name="lesson_intro_vocab">Изучи новые слова и фразы для общения. Мы подобрали самые важные выражения для этой темы.</string>
     <string name="lesson_intro_grammar">Разберись, как строятся предложения. Грамматика — это скелет языка.</string>

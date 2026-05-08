@@ -22,6 +22,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
+import com.spanishapp.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -251,7 +253,7 @@ private fun SessionTopBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onClose, modifier = Modifier.size(32.dp)) {
-                Icon(Icons.Default.Close, contentDescription = "Закрыть",
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.ls_close_cd),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Spacer(Modifier.width(8.dp))
@@ -388,7 +390,7 @@ private fun TheoryCard(
             shape  = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(containerColor = accentColor)
         ) {
-            Text("ПОНЯТНО!", fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+            Text(stringResource(R.string.ls_got_it), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
         }
     }
 }
@@ -660,7 +662,7 @@ private fun ExerciseCard(
                     )
                 ) {
                     Text(
-                        text       = if (isCorrectAnswer) "ДАЛЕЕ →" else "ПОНЯЛ, ДАЛЕЕ →",
+                        text       = if (isCorrectAnswer) stringResource(R.string.ls_continue) else stringResource(R.string.ls_got_continue),
                         fontSize   = 16.sp,
                         fontWeight = FontWeight.ExtraBold
                     )
@@ -687,6 +689,7 @@ private fun SpeakingInput(
 ) {
     val ctx   = LocalContext.current
     val scope = rememberCoroutineScope()
+    val noMicPermissionStr = stringResource(R.string.ls_no_mic_permission)
     val recognizer = remember(ctx) {
         EntryPointAccessors.fromApplication(
             ctx.applicationContext,
@@ -734,7 +737,7 @@ private fun SpeakingInput(
             doListen(recognizer, wordToSay,
                 onStart  = { isListening = true; isSilence = false; errorMsg = ""; showResult = false },
                 onResult = ::handleResult)
-        } else errorMsg = "Нет разрешения на микрофон"
+        } else errorMsg = noMicPermissionStr
     }
 
     fun startListening() {
@@ -762,7 +765,7 @@ private fun SpeakingInput(
                 Text(wordToSay, fontSize = 38.sp, fontWeight = FontWeight.ExtraBold, color = accentColor)
                 Spacer(Modifier.height(4.dp))
                 SpeakerButton(text = wordToSay, tts = tts, tint = accentColor)
-                Text("← послушай, затем повтори",
+                Text(stringResource(R.string.ls_listen_then_repeat),
                     fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
@@ -778,11 +781,11 @@ private fun SpeakingInput(
                     Spacer(Modifier.width(10.dp))
                     Column {
                         Text(
-                            if (failCount == 0) "Кажется, ты отвлёкся — нажми снова!"
-                            else "Не слышу тебя. Говори громче и чётче.",
+                            if (failCount == 0) stringResource(R.string.ls_distracted)
+                            else stringResource(R.string.ls_louder),
                             fontWeight = FontWeight.SemiBold, fontSize = 14.sp
                         )
-                        Text("Это не считается ошибкой",
+                        Text(stringResource(R.string.ls_not_counted),
                             fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
@@ -801,15 +804,15 @@ private fun SpeakingInput(
                 modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     val msg = when {
-                        failCount == 1 -> "Не совсем точно — попробуй ещё раз"
-                        failCount == 2 -> "Послушай ещё раз и повтори медленно"
-                        else           -> "Сложно — ещё раз, ты справишься!"
+                        failCount == 1 -> stringResource(R.string.ls_try_msg_1)
+                        failCount == 2 -> stringResource(R.string.ls_try_msg_2)
+                        else           -> stringResource(R.string.ls_try_msg_3)
                     }
                     Text("❌  $msg", fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = Red)
                     Spacer(Modifier.height(4.dp))
-                    Text("Распознано: «$recognized»", fontSize = 13.sp,
+                    Text(stringResource(R.string.ls_recognized, recognized), fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("Нужно: «$wordToSay»", fontSize = 13.sp,
+                    Text(stringResource(R.string.ls_needed, wordToSay), fontSize = 13.sp,
                         color = accentColor, fontWeight = FontWeight.SemiBold)
                 }
             }
@@ -829,7 +832,7 @@ private fun SpeakingInput(
                 modifier = Modifier.size(72.dp).clip(CircleShape)
                     .background(if (isListening) accentColor else accentColor.copy(0.15f))
             ) {
-                Icon(Icons.Default.Mic, contentDescription = "Произнести",
+                Icon(Icons.Default.Mic, contentDescription = stringResource(R.string.ls_speak_cd),
                     tint = if (isListening) Color.White else accentColor,
                     modifier = Modifier.size(32.dp))
             }
@@ -837,10 +840,10 @@ private fun SpeakingInput(
         Spacer(Modifier.height(6.dp))
         Text(
             text = when {
-                isListening  -> "🎙 Слушаю..."
-                isSilence    -> "Нажми снова"
-                failCount > 0 -> "Попробуй ещё раз (${failCount}/${MAX_FAILS})"
-                else         -> "Нажми и произнеси"
+                isListening  -> stringResource(R.string.ls_listening_dots)
+                isSilence    -> stringResource(R.string.ls_tap_again)
+                failCount > 0 -> stringResource(R.string.ls_try_again_count, failCount, MAX_FAILS)
+                else         -> stringResource(R.string.ls_tap_to_say)
             },
             fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -849,7 +852,7 @@ private fun SpeakingInput(
         AnimatedVisibility(visible = failCount >= MAX_FAILS) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Spacer(Modifier.height(16.dp))
-                Text("Сложное слово? Пропусти и вернись позже",
+                Text(stringResource(R.string.ls_hard_word_hint),
                     fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(6.dp))
                 OutlinedButton(
@@ -857,7 +860,7 @@ private fun SpeakingInput(
                     shape   = RoundedCornerShape(14.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Пропустить (засчитается как ошибка)",
+                    Text(stringResource(R.string.ls_skip_as_wrong),
                         fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
@@ -898,7 +901,7 @@ private fun FillBlankInput(
         onValueChange = { if (!answered) typed = it },
         enabled       = !answered,
         singleLine    = true,
-        placeholder   = { Text("Введи ответ...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+        placeholder   = { Text(stringResource(R.string.ls_input_answer), color = MaterialTheme.colorScheme.onSurfaceVariant) },
         modifier      = Modifier.fillMaxWidth(),
         shape         = RoundedCornerShape(14.dp),
         colors        = OutlinedTextFieldDefaults.colors(
@@ -930,7 +933,7 @@ private fun FillBlankInput(
     // Показываем правильный ответ если ошибся
     AnimatedVisibility(visible = answered && !isCorrect) {
         Text(
-            text = "Правильно: $correctAnswer",
+            text = stringResource(R.string.ls_correct_is, correctAnswer),
             color = Green,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
@@ -952,7 +955,7 @@ private fun FillBlankInput(
             shape    = RoundedCornerShape(14.dp),
             colors   = ButtonDefaults.buttonColors(containerColor = accentColor)
         ) {
-            Text("ПРОВЕРИТЬ", fontWeight = FontWeight.ExtraBold)
+            Text(stringResource(R.string.ls_check), fontWeight = FontWeight.ExtraBold)
         }
     }
 }
@@ -981,7 +984,7 @@ private fun BuildSentenceInput(
     ) {
         Box(Modifier.padding(12.dp)) {
             if (chosen.isEmpty()) {
-                Text("Нажимай на слова ниже →", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+                Text(stringResource(R.string.ls_tap_words_below), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(chosen) { word ->
@@ -1035,7 +1038,7 @@ private fun BuildSentenceInput(
     // Показываем правильный ответ если ошибся
     AnimatedVisibility(visible = answered && !isCorrect) {
         Text(
-            text = "Правильно: $correctAnswer",
+            text = stringResource(R.string.ls_correct_is, correctAnswer),
             color = Green,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
@@ -1057,7 +1060,7 @@ private fun BuildSentenceInput(
                 modifier = Modifier.weight(1f).height(52.dp),
                 shape    = RoundedCornerShape(14.dp),
                 colors   = ButtonDefaults.buttonColors(containerColor = accentColor)
-            ) { Text("ПРОВЕРИТЬ", fontWeight = FontWeight.ExtraBold) }
+            ) { Text(stringResource(R.string.ls_check), fontWeight = FontWeight.ExtraBold) }
         }
     }
 }
@@ -1092,10 +1095,10 @@ private fun VictoryScreen(
 
     // Иконка и сообщение зависят от точности
     val (trophy, verdict) = when {
-        accuracy == 100 -> "🏆" to "Идеально!"
-        accuracy >= 75  -> "⭐" to "Отличный результат!"
-        accuracy >= 50  -> "👍" to "Хорошая работа!"
-        else            -> "💪" to "Не сдавайся!"
+        accuracy == 100 -> "🏆" to stringResource(R.string.ls_verdict_perfect)
+        accuracy >= 75  -> "⭐" to stringResource(R.string.ls_verdict_great)
+        accuracy >= 50  -> "👍" to stringResource(R.string.ls_verdict_good)
+        else            -> "💪" to stringResource(R.string.ls_verdict_keep_going)
     }
 
     Column(
@@ -1152,7 +1155,7 @@ private fun VictoryScreen(
             if (totalExercises > 0) {
                 StatTile(
                     value      = "$accuracy%",
-                    label      = "Точность",
+                    label      = stringResource(R.string.ls_stat_accuracy),
                     icon       = "🎯",
                     accentColor = if (accuracy >= 75) Green else Orange,
                     modifier   = Modifier.weight(1f)
@@ -1161,7 +1164,7 @@ private fun VictoryScreen(
             if (bestCombo >= 2) {
                 StatTile(
                     value      = "🔥$bestCombo",
-                    label      = "Комбо",
+                    label      = stringResource(R.string.ls_stat_combo),
                     icon       = "",
                     accentColor = Orange,
                     modifier   = Modifier.weight(1f)
@@ -1169,7 +1172,7 @@ private fun VictoryScreen(
             } else {
                 StatTile(
                     value      = "$correctCount/$totalExercises",
-                    label      = "Верно",
+                    label      = stringResource(R.string.ls_stat_correct),
                     icon       = "✓",
                     accentColor = accentColor,
                     modifier   = Modifier.weight(1f)
@@ -1188,7 +1191,7 @@ private fun VictoryScreen(
                 shape  = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = accentColor)
             ) {
-                Text("СЛЕДУЮЩИЙ УРОК →", fontSize = 17.sp, fontWeight = FontWeight.ExtraBold)
+                Text(stringResource(R.string.ls_next_lesson), fontSize = 17.sp, fontWeight = FontWeight.ExtraBold)
             }
             Spacer(Modifier.height(12.dp))
         }
@@ -1204,7 +1207,7 @@ private fun VictoryScreen(
             )
         ) {
             Text(
-                text       = if (hasNextLesson) "Выйти в меню" else "ГОТОВО",
+                text       = if (hasNextLesson) stringResource(R.string.ls_exit_to_menu) else stringResource(R.string.ls_done_caps),
                 fontSize   = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -1253,15 +1256,15 @@ private fun StatTile(
 private fun QuitDialog(onQuit: () -> Unit, onResume: () -> Unit) {
     AlertDialog(
         onDismissRequest = onResume,
-        title   = { Text("Выйти из урока?", fontWeight = FontWeight.Bold) },
-        text    = { Text("Прогресс этого урока не сохранится.") },
+        title   = { Text(stringResource(R.string.ls_quit_title), fontWeight = FontWeight.Bold) },
+        text    = { Text(stringResource(R.string.ls_quit_text)) },
         confirmButton = {
             TextButton(onClick = onQuit) {
-                Text("Выйти", color = Red, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.ls_quit_confirm), color = Red, fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
-            Button(onClick = onResume) { Text("Продолжить") }
+            Button(onClick = onResume) { Text(stringResource(R.string.ls_quit_resume)) }
         }
     )
 }
