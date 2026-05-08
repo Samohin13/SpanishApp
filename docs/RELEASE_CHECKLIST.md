@@ -1,10 +1,10 @@
-# HablaRu — чек-лист релиза в Google Play
+# ESPEAK — чек-лист релиза в Google Play
 
 > Финальный пошаговый план. Отмечай выполненное `[x]`.
 
 ## ✅ Уже сделано (автоматически)
 
-- [x] Имя приложения = HablaRu
+- [x] Имя приложения = ESPEAK
 - [x] Permissions очищены (нет лишнего CAMERA)
 - [x] Backup rules настроены
 - [x] ProGuard правила прописаны
@@ -51,7 +51,7 @@
 - [ ] Заполнить профиль разработчика
 
 #### 5.2 Создать приложение
-- [ ] **Create app** → название `HablaRu`
+- [ ] **Create app** → название `ESPEAK`
 - [ ] Тип: **App** + Free
 - [ ] Declarations — заполнить (Developer Program Policies, US export laws)
 
@@ -74,7 +74,7 @@
   - Audio: только во время использования (произношение), не покидает устройство
 
 #### 5.7 Store listing
-- [ ] **App name:** HablaRu
+- [ ] **App name:** ESPEAK
 - [ ] **Short description** (80 символов): пример → `Учи испанский: карточки, игры, AI-репетитор и рассказы — для русскоговорящих.`
 - [ ] **Full description** (4000 символов): расписать про функции
 - [ ] **App icon** (512×512 PNG)
@@ -93,7 +93,7 @@
 #### 5.8 Загрузка AAB
 - [ ] **Production → Create new release**
 - [ ] Upload `app/build/outputs/bundle/release/app-release.aab`
-- [ ] **Release notes** на 1–2 языках (en + ru): `Первая версия HablaRu! Карточки, 8 игр, AI-репетитор.`
+- [ ] **Release notes** на 1–2 языках (en + ru): `Первая версия ESPEAK! Карточки, 8 игр, AI-репетитор.`
 - [ ] **Save** → **Review release** → **Start rollout**
 
 #### 5.9 Ждать review

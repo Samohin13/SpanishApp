@@ -49,9 +49,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
+import com.spanishapp.data.prefs.AppLockPreferences
 import com.spanishapp.data.prefs.AppPreferences
 import com.spanishapp.data.prefs.ThemeMode
 import com.spanishapp.data.repository.AuthRepository
+import com.spanishapp.service.AppLockManager
 import com.spanishapp.util.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -64,8 +66,22 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val appPreferences: AppPreferences,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val appLockPreferences: AppLockPreferences,
+    private val appLockManager: AppLockManager
 ) : ViewModel() {
+
+    val appLockEnabled = appLockPreferences.isEnabled
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    val biometricUsable: Boolean get() = appLockManager.biometricAvailability().isUsable
+
+    fun setAppLockEnabled(enabled: Boolean) = viewModelScope.launch {
+        appLockPreferences.setEnabled(enabled)
+        // Включая впервые — считаем что эта сессия уже разблокирована,
+        // чтобы юзер не отправился на app_lock экран сразу же после клика.
+        if (enabled) appLockManager.markUnlocked()
+    }
 
     private val storage = FirebaseStorage.getInstance("gs://spanishapp-35092.firebasestorage.app")
     private val auth = FirebaseAuth.getInstance()
@@ -356,6 +372,27 @@ fun SettingsScreen(
                         putExtra(Intent.EXTRA_SUBJECT, "Поддержка SpanishApp")
                     }
                     context.startActivity(Intent.createChooser(intent, "Отправить письмо"))
+                }
+            }
+
+            // ── Биометрический замок ─────────────────────────────
+            val appLockOn by viewModel.appLockEnabled.collectAsStateWithLifecycle()
+            if (viewModel.biometricUsable) {
+                SettingsSection("Безопасность") {
+                    SettingsSwitchItem(
+                        icon = Icons.Default.Fingerprint,
+                        title = "Защита приложения биометрией",
+                        checked = appLockOn,
+                        onCheckedChange = { viewModel.setAppLockEnabled(it) }
+                    )
+                    if (appLockOn) {
+                        Text(
+                            "При следующем открытии приложения попросим отпечаток или лицо.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                        )
+                    }
                 }
             }
 

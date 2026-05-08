@@ -1,4 +1,4 @@
-# HablaRu — Cloudflare Worker proxy для Gemini
+# ESPEAK — Cloudflare Worker proxy для Gemini
 
 Зачем нужен: **API-ключ Gemini не должен быть в скомпилированном APK** (любой декомпилирует и достанет). Worker держит ключ у себя и проксирует запросы, проверяя Firebase ID-token аутентифицированных пользователей.
 
@@ -52,11 +52,11 @@ wrangler secret put FIREBASE_PROJECT_ID
 wrangler deploy
 ```
 
-В выводе будет URL вроде `https://hablaru-ai-proxy.YOUR-USERNAME.workers.dev` — это твой proxy.
+В выводе будет URL вроде `https://ESPEAK-ai-proxy.YOUR-USERNAME.workers.dev` — это твой proxy.
 
 ### 6. (опционально) Custom domain
 
-В Cloudflare Dashboard → Workers → Routes — привяжи к своему домену, чтобы было `https://ai.hablaru.app/chat`.
+В Cloudflare Dashboard → Workers → Routes — привяжи к своему домену, чтобы было `https://ai.ESPEAK.app/chat`.
 
 ## Переключение Android-приложения на прокси
 
@@ -75,7 +75,7 @@ defaultConfig {
 ### Шаг 2. В local.properties
 
 ```properties
-AI_PROXY_URL=https://hablaru-ai-proxy.YOUR-USERNAME.workers.dev
+AI_PROXY_URL=https://ESPEAK-ai-proxy.YOUR-USERNAME.workers.dev
 ```
 
 ### Шаг 3. В AiChatRepository.kt

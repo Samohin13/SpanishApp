@@ -134,7 +134,7 @@
 - [x] **2.2. API-ключ Gemini в plain-text BuildConfig** — _Worker готов в `backend/cloudflare-worker/`._
   - Worker (Cloudflare) с проверкой Firebase ID-token уже написан и готов к деплою.
   - **Что осталось пользователю**: выполнить инструкции в `backend/cloudflare-worker/README.md` (5 минут) + переключить `AiChatRepository.kt` на новый URL после деплоя.
-- [ ] **2.3. Имя приложения несогласовано** — в `AndroidManifest.xml:18,27` стоит `ESPEAK`, в `strings.xml` — `HablaRu`. На Play и иконке будут разные надписи.
+- [ ] **2.3. Имя приложения несогласовано** — в `AndroidManifest.xml:18,27` стоит `ESPEAK`, в `strings.xml` — `ESPEAK`. На Play и иконке будут разные надписи.
   - Решить финальное название.
   - Заменить на `@string/app_name` везде в манифесте.
 - [ ] **2.4. Privacy Policy** — обязательно для Google Play, особенно из-за RECORD_AUDIO, INTERNET, Firebase Auth, аналитики.
@@ -272,7 +272,7 @@
 | `applicationId = com.spanishapp` | ✅ | |
 | `versionCode=5 / versionName=1.4` | ✅ | Обновить перед загрузкой |
 | **Signing config** | 🔴 | **ОТСУТСТВУЕТ — БЛОКАТОР** |
-| **Имя приложения** | 🔴 | ESPEAK vs HablaRu — конфликт |
+| **Имя приложения** | 🔴 | ESPEAK vs ESPEAK — конфликт |
 | **Иконка** | 🟡 | adaptive icon есть, проверить визуал |
 | **Privacy Policy** | 🔴 | Нет страницы и ссылки |
 | **API-ключи в APK** | 🔴 | Gemini ключ в plain-text |

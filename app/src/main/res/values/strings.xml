@@ -1,4 +1,11 @@
 <resources>
-    <string name="app_name">HablaRu</string>
+    <string name="app_name">ESPEAK</string>
     <string name="widget_description">Слово дня на испанском</string>
+
+    <!-- Google Sign-In Web Client ID (из google-services.json, client_type=3). -->
+    <string name="default_web_client_id" translatable="false">664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com</string>
+
+    <!-- URL опубликованной политики конфиденциальности. Заменить на финальный после публикации. -->
+    <string name="privacy_policy_url" translatable="false">https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md</string>
+    <string name="terms_url" translatable="false">https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md</string>
 </resources>

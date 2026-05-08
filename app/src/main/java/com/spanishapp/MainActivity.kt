@@ -14,6 +14,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.spanishapp.service.AppLockManager
 import com.spanishapp.ui.Navigation
 import com.spanishapp.ui.components.SpanishBackground
 import com.spanishapp.ui.components.SpanishBottomBar
@@ -23,6 +24,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var appLockManager: AppLockManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -34,6 +37,18 @@ class MainActivity : ComponentActivity() {
                     SpanishAppRoot()
                 }
             }
+        }
+    }
+
+    /**
+     * При уходе в background — сбрасываем флаг разблокировки.
+     * При следующем запуске Navigation сам отправит на app_lock,
+     * если App Lock включён в настройках.
+     */
+    override fun onStop() {
+        super.onStop()
+        if (!isChangingConfigurations) {
+            appLockManager.lock()
         }
     }
 }

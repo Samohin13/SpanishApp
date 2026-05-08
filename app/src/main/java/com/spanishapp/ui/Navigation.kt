@@ -52,6 +52,40 @@ import com.spanishapp.ui.auth.LevelSelectionScreen
 import com.spanishapp.ui.auth.PlacementTestScreen
 import com.spanishapp.ui.auth.PlacementResultScreen
 import com.spanishapp.ui.auth.AuthViewModel
+import com.spanishapp.ui.auth.AppLockScreen
+import com.spanishapp.data.prefs.AppLockPreferences
+import com.spanishapp.service.AppLockManager
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+
+/**
+ * ViewModel-затычка для считывания AppLock состояния прямо в NavHost.
+ * Нужно чтобы определить стартовый экран (home или app_lock).
+ */
+@HiltViewModel
+class AppLockGateViewModel @Inject constructor(
+    val appLockPreferences: AppLockPreferences,
+    val appLockManager: AppLockManager
+) : ViewModel() {
+    val state: StateFlow<AppLockGateState> = combine(
+        appLockPreferences.isEnabled,
+        appLockManager.isUnlocked
+    ) { enabled, unlocked ->
+        AppLockGateState(enabled = enabled, unlocked = unlocked)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AppLockGateState())
+}
+
+data class AppLockGateState(val enabled: Boolean = false, val unlocked: Boolean = false) {
+    val shouldShowLock: Boolean get() = enabled && !unlocked
+}
 
 object Navigation {
 
@@ -59,18 +93,24 @@ object Navigation {
     fun SpanishNavHost(
         navController: NavHostController,
         modifier: Modifier = Modifier,
-        authViewModel: AuthViewModel = hiltViewModel()
+        authViewModel: AuthViewModel = hiltViewModel(),
+        appLockGate: AppLockGateViewModel = hiltViewModel()
     ) {
         val authState by authViewModel.uiState.collectAsStateWithLifecycle()
-        
+        val lockState by appLockGate.state.collectAsState()
+
         // Используем remember, чтобы зафиксировать начальный экран только ПРИ ПЕРВОМ определении состояния
         // Это предотвратит "полеты" экранов при обновлении userName, age и т.д.
-        val initialStartDest = remember(authState.isLoggedIn, authState.onboardingCompleted) {
+        val initialStartDest = remember(
+            authState.isLoggedIn,
+            authState.onboardingCompleted,
+            lockState.shouldShowLock
+        ) {
             when {
                 authState.isLoggedIn == null -> null // Еще грузимся
                 authState.isLoggedIn == true -> {
                     if (authState.onboardingCompleted) {
-                        "home"
+                        if (lockState.shouldShowLock) "app_lock" else "home"
                     } else {
                         // Если залогинен, но онбординг не закончен, проверяем где остановились
                         when {
@@ -117,6 +157,9 @@ object Navigation {
                 PlacementResultScreen(navController, level)
             }
             composable("level_selection") { LevelSelectionScreen(navController) }
+
+            // ── Биометрический замок ───────────────────────────
+            composable("app_lock") { AppLockScreen(navController) }
 
             // ── Главная ───────────────────────────────────────
             composable("home") { HomeScreen(navController) }

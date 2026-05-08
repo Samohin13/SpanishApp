@@ -6,6 +6,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -48,6 +50,7 @@ private fun calcLevel(correct: Int) = when {
     else -> "A1"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlacementTestScreen(
     navController: NavHostController,
@@ -57,24 +60,69 @@ fun PlacementTestScreen(
     var correctCount by remember { mutableIntStateOf(0) }
     var selectedIndex by remember { mutableIntStateOf(-1) }
     var answered by remember { mutableStateOf(false) }
+    var showAbortDialog by remember { mutableStateOf(false) }
 
     val question = QUESTIONS[currentIndex]
     val progress = (currentIndex + 1).toFloat() / QUESTIONS.size
 
+    if (showAbortDialog) {
+        AlertDialog(
+            onDismissRequest = { showAbortDialog = false },
+            title = { Text("Прервать тест?") },
+            text = { Text("Прогресс ответа на этом вопросе не сохранится.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showAbortDialog = false
+                    navController.popBackStack()
+                }) { Text("Прервать", fontWeight = FontWeight.Bold) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAbortDialog = false }) {
+                    Text("Продолжить тест")
+                }
+            }
+        )
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("${currentIndex + 1} / ${QUESTIONS.size}", fontWeight = FontWeight.SemiBold)
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        if (currentIndex == 0 && !answered) navController.popBackStack()
+                        else showAbortDialog = true
+                    }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                    }
+                },
+                actions = {
+                    Surface(
+                        color = Color(0xFFE8F5E9),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.padding(end = 12.dp)
+                    ) {
+                        Text(
+                            "✓ $correctCount",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF2E7D32),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(padding)
             .background(AppColors.BgWhite)
             .padding(24.dp)
     ) {
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            "Вопрос ${currentIndex + 1} из ${QUESTIONS.size}",
-            fontSize = 13.sp,
-            color = AppColors.TextSecondary
-        )
-        Spacer(Modifier.height(8.dp))
         LinearProgressIndicator(
             progress = { progress },
             modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
@@ -152,6 +200,7 @@ fun PlacementTestScreen(
             }
         }
     }
+    }
 }
 
 @Composable
@@ -168,7 +217,7 @@ fun PlacementResultScreen(
         else -> Triple("🌱", "Отличное начало!", "Всё начинается с первого шага.\nПрограмма настроена на A1.")
     }
 
-    val isPremiumLevel = level in listOf("A2", "B1", "B2")
+    val isUpcomingLevel = level in listOf("A2", "B1", "B2")
 
     Column(
         modifier = Modifier
@@ -205,7 +254,7 @@ fun PlacementResultScreen(
             lineHeight = 22.sp
         )
 
-        if (isPremiumLevel) {
+        if (isUpcomingLevel) {
             Spacer(Modifier.height(16.dp))
             Box(
                 modifier = Modifier
