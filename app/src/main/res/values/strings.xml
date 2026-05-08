@@ -155,10 +155,22 @@
     <string name="pron_listen">Слушать</string>
     <string name="pron_speak">Сказать</string>
     <string name="pron_listening">Слушаю…</string>
-    <string name="pron_score_excellent">Отлично!</string>
-    <string name="pron_score_good">Хорошо</string>
-    <string name="pron_score_try_again">Попробуй ещё раз</string>
-    <string name="pron_next">Следующее</string>
+    <string name="pron_score_excellent">Отлично! Почти идеально!</string>
+    <string name="pron_score_good">Хорошо! Продолжай!</string>
+    <string name="pron_score_ok">Неплохо, ещё попробуй</string>
+    <string name="pron_score_try_again">Послушай ещё раз и повтори</string>
+    <string name="pron_next">Следующее →</string>
+    <string name="pron_title">Произношение 🎤</string>
+    <string name="pron_word_count">Слов: %1$d</string>
+    <string name="pron_idle_hint">Нажми 🔊 чтобы услышать, затем 🎤 чтобы повторить</string>
+    <string name="pron_now_speak">Говори сейчас…</string>
+    <string name="pron_phase_result">Результат</string>
+    <string name="pron_listen_btn">Послушать</string>
+    <string name="pron_listen_slow">Медленно 🐢</string>
+    <string name="pron_again">Ещё раз</string>
+    <string name="pron_press_speak">Нажми и говори</string>
+    <string name="pron_you_said">Ты сказал(а): \"%1$s\"</string>
+    <string name="pron_target">Эталон: \"%1$s\"</string>
 
     <!-- ── LessonIntro / Content ────────────────────────────── -->
     <string name="lesson_intro_vocab">Изучи новые слова и фразы для общения. Мы подобрали самые важные выражения для этой темы.</string>

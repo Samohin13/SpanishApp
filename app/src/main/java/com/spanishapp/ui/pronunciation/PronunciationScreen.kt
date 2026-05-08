@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -183,7 +184,7 @@ fun PronunciationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Произношение 🎤") },
+                title = { Text(stringResource(com.spanishapp.R.string.pron_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -191,7 +192,7 @@ fun PronunciationScreen(
                 },
                 actions = {
                     Text(
-                        "Слов: ${state.totalPracticed}",
+                        stringResource(com.spanishapp.R.string.pron_word_count, state.totalPracticed),
                         modifier = Modifier.padding(end = 16.dp),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -233,9 +234,9 @@ private fun PronunciationContent(
         // Инструкция
         Text(
             when (state.phase) {
-                PronunciationPhase.IDLE      -> "Нажми 🔊 чтобы услышать, затем 🎤 чтобы повторить"
-                PronunciationPhase.LISTENING -> "Говори сейчас…"
-                PronunciationPhase.RESULT    -> "Результат"
+                PronunciationPhase.IDLE      -> stringResource(com.spanishapp.R.string.pron_idle_hint)
+                PronunciationPhase.LISTENING -> stringResource(com.spanishapp.R.string.pron_now_speak)
+                PronunciationPhase.RESULT    -> stringResource(com.spanishapp.R.string.pron_phase_result)
             },
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -287,7 +288,7 @@ private fun PronunciationContent(
             ) {
                 Icon(Icons.Default.VolumeUp, null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(6.dp))
-                Text("Послушать")
+                Text(stringResource(com.spanishapp.R.string.pron_listen_btn))
             }
             OutlinedButton(
                 onClick = { vm.playWordSlow() },
@@ -295,7 +296,7 @@ private fun PronunciationContent(
             ) {
                 Icon(Icons.Default.VolumeUp, null, modifier = Modifier.size(14.dp))
                 Spacer(Modifier.width(6.dp))
-                Text("Медленно 🐢")
+                Text(stringResource(com.spanishapp.R.string.pron_listen_slow))
             }
         }
 
@@ -342,12 +343,12 @@ private fun PronunciationContent(
                         onClick = { vm.tryAgain() },
                         shape = RoundedCornerShape(14.dp),
                         modifier = Modifier.weight(1f).height(52.dp)
-                    ) { Text("Ещё раз") }
+                    ) { Text(stringResource(com.spanishapp.R.string.pron_again)) }
                     Button(
                         onClick = { vm.nextWordAction() },
                         shape = RoundedCornerShape(14.dp),
                         modifier = Modifier.weight(1f).height(52.dp)
-                    ) { Text("Следующее →") }
+                    ) { Text(stringResource(com.spanishapp.R.string.pron_next)) }
                 }
             }
             else -> {
@@ -394,7 +395,7 @@ private fun MicButton(isListening: Boolean, onClick: () -> Unit) {
     }
     Spacer(Modifier.height(8.dp))
     Text(
-        if (isListening) "Слушаю…" else "Нажми и говори",
+        if (isListening) stringResource(com.spanishapp.R.string.pron_listening) else stringResource(com.spanishapp.R.string.pron_press_speak),
         style = MaterialTheme.typography.labelLarge,
         color = if (isListening) AppColors.Terracotta
         else MaterialTheme.colorScheme.onSurfaceVariant
@@ -417,10 +418,10 @@ private fun PronunciationResultBadge(score: Int, spokenText: String, target: Str
         else        -> "💪"
     }
     val msg = when {
-        score >= 90 -> "Отлично! Почти идеально!"
-        score >= 70 -> "Хорошо! Продолжай!"
-        score >= 50 -> "Неплохо, ещё попробуй"
-        else        -> "Послушай ещё раз и повтори"
+        score >= 90 -> stringResource(com.spanishapp.R.string.pron_score_excellent)
+        score >= 70 -> stringResource(com.spanishapp.R.string.pron_score_good)
+        score >= 50 -> stringResource(com.spanishapp.R.string.pron_score_ok)
+        else        -> stringResource(com.spanishapp.R.string.pron_score_try_again)
     }
 
     Surface(
@@ -449,13 +450,13 @@ private fun PronunciationResultBadge(score: Int, spokenText: String, target: Str
             if (spokenText.isNotBlank()) {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Ты сказал(а): \"$spokenText\"",
+                    stringResource(com.spanishapp.R.string.pron_you_said, spokenText),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    "Эталон: \"$target\"",
+                    stringResource(com.spanishapp.R.string.pron_target, target),
                     style = MaterialTheme.typography.bodySmall,
                     color = color,
                     fontWeight = FontWeight.Medium,

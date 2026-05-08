@@ -142,10 +142,22 @@
     <string name="pron_listen">Listen</string>
     <string name="pron_speak">Speak</string>
     <string name="pron_listening">Listening…</string>
-    <string name="pron_score_excellent">Excellent!</string>
-    <string name="pron_score_good">Good</string>
-    <string name="pron_score_try_again">Try again</string>
-    <string name="pron_next">Next</string>
+    <string name="pron_score_excellent">Excellent! Almost perfect!</string>
+    <string name="pron_score_good">Good! Keep going!</string>
+    <string name="pron_score_ok">Not bad, try again</string>
+    <string name="pron_score_try_again">Listen again and repeat</string>
+    <string name="pron_next">Next →</string>
+    <string name="pron_title">Pronunciation 🎤</string>
+    <string name="pron_word_count">Words: %1$d</string>
+    <string name="pron_idle_hint">Tap 🔊 to listen, then 🎤 to repeat</string>
+    <string name="pron_now_speak">Speak now…</string>
+    <string name="pron_phase_result">Result</string>
+    <string name="pron_listen_btn">Listen</string>
+    <string name="pron_listen_slow">Slowly 🐢</string>
+    <string name="pron_again">Again</string>
+    <string name="pron_press_speak">Tap and speak</string>
+    <string name="pron_you_said">You said: \"%1$s\"</string>
+    <string name="pron_target">Target: \"%1$s\"</string>
 
     <!-- ── LessonIntro / Content ── -->
     <string name="lesson_intro_vocab">Learn new words and phrases for everyday conversation. We picked the most important ones for this topic.</string>
