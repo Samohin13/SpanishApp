@@ -21,8 +21,9 @@ class AiChatRepository @Inject constructor(
 ) {
 
     companion object {
-        // Gemini 1.5 Flash — бесплатно: 15 RPM, 1500 RPD
-        private const val MODEL = "gemini-1.5-flash"
+        // Gemini 2.0 Flash — текущая бесплатная Flash-модель.
+        // Ранее использовался "gemini-1.5-flash" — Google убрал это имя из v1beta.
+        private const val MODEL = "gemini-2.0-flash"
 
         /**
          * If [BuildConfig.AI_PROXY_URL] is set in local.properties, use it —
