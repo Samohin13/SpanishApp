@@ -191,11 +191,20 @@ fun HomeScreen(
         }
 
         // ── Course cards ───────────────────────────────────────
+        // stringResource внутри LazyColumn item-context допустим.
+        val a1Title = stringResource(R.string.course_a1_subtitle)
+        val a2Title = stringResource(R.string.course_a2_subtitle)
+        val b1Title = stringResource(R.string.course_b1_subtitle)
+        val b2Title = stringResource(R.string.course_b2_subtitle)
+        val lessons60Micro = stringResource(R.string.course_lessons_60_micro)
+        val lessons60 = stringResource(R.string.course_lessons_60)
+        val lessonsSoon = stringResource(R.string.course_lessons_soon)
+        val blocks4 = stringResource(R.string.course_blocks_4)
         val courseData = listOf(
-            CourseCardData("A1", "Начинающий",    "🚀", A1Start, A1End, "60 микро-уроков", "4 блока"),
-            CourseCardData("A2", "Элементарный",  "🌍", A2Start, A2End, "60 уроков",       "4 блока"),
-            CourseCardData("B1", "Средний",        "📚", B1Start, B1End, "скоро",           "4 блока"),
-            CourseCardData("B2", "Выше среднего",  "🎓", B2Start, B2End, "скоро",           "4 блока")
+            CourseCardData("A1", a1Title, "🚀", A1Start, A1End, lessons60Micro, blocks4),
+            CourseCardData("A2", a2Title, "🌍", A2Start, A2End, lessons60,      blocks4),
+            CourseCardData("B1", b1Title, "📚", B1Start, B1End, lessonsSoon,    blocks4),
+            CourseCardData("B2", b2Title, "🎓", B2Start, B2End, lessonsSoon,    blocks4)
         )
 
         itemsIndexed(courseData) { _, course ->
@@ -291,7 +300,7 @@ private fun CourseCard(
                     } else {
                         Column(horizontalAlignment = Alignment.End) {
                             Text("$unitsCount блоков", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            Text("60 уроков", fontSize = 11.sp, color = Color.White.copy(.8f))
+                            Text(stringResource(R.string.course_lessons_60), fontSize = 11.sp, color = Color.White.copy(.8f))
                         }
                     }
                 }
@@ -316,7 +325,7 @@ private fun CourseCard(
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    if (isLocked) "Заблокировано" else "Начать обучение →",
+                    if (isLocked) stringResource(R.string.course_locked) else stringResource(R.string.course_start_learning),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = accentColor
@@ -492,7 +501,7 @@ internal fun TopicCard(
 
                     // Процент или "Заблокировано"
                     if (unit.isLocked) {
-                        Text("Заблокировано", fontSize = 11.sp, color = LockGray)
+                        Text(stringResource(R.string.course_locked), fontSize = 11.sp, color = LockGray)
                     } else {
                         Text(
                             "${(unit.progress * 100).toInt()}%",
