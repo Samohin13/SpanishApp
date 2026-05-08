@@ -199,7 +199,7 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfileHeader(
-                name = p.displayName.ifBlank { "Estudiante" },
+                name = p.displayName.ifBlank { androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name) },
                 level = p.currentLevel,
                 appLevel = appLevel,
                 progress = progress,
@@ -212,9 +212,9 @@ fun ProfileScreen(
             )
             Spacer(Modifier.height(24.dp))
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                StatBox(value = "${state.learnedCount}", label = "Слов", icon = "📚", modifier = Modifier.weight(1f))
-                StatBox(value = "${p.currentStreak}", label = "Дня", icon = "🔥", modifier = Modifier.weight(1f) )
-                StatBox(value = "${p.totalStudyMinutes}", label = "Мин", icon = "⏱", modifier = Modifier.weight(1f))
+                StatBox(value = "${state.learnedCount}", label = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_stat_words), icon = "📚", modifier = Modifier.weight(1f))
+                StatBox(value = "${p.currentStreak}", label = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_stat_days), icon = "🔥", modifier = Modifier.weight(1f) )
+                StatBox(value = "${p.totalStudyMinutes}", label = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_stat_minutes), icon = "⏱", modifier = Modifier.weight(1f))
             }
             Spacer(Modifier.height(24.dp))
             // ── Путь до Мадрида ─────────────────────────────────
