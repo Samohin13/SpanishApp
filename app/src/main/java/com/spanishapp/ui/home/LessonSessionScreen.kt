@@ -898,7 +898,7 @@ private fun FillBlankInput(
         onValueChange = { if (!answered) typed = it },
         enabled       = !answered,
         singleLine    = true,
-        placeholder   = { Text("Введи ответ...", color = Color.Gray) },
+        placeholder   = { Text("Введи ответ...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
         modifier      = Modifier.fillMaxWidth(),
         shape         = RoundedCornerShape(14.dp),
         colors        = OutlinedTextFieldDefaults.colors(
@@ -981,7 +981,7 @@ private fun BuildSentenceInput(
     ) {
         Box(Modifier.padding(12.dp)) {
             if (chosen.isEmpty()) {
-                Text("Нажимай на слова ниже →", color = Color.Gray, fontSize = 14.sp)
+                Text("Нажимай на слова ниже →", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(chosen) { word ->

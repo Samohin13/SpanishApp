@@ -139,7 +139,7 @@ fun AppLockScreen(
         Text(
             "Разблокируй биометрией, чтобы продолжить",
             fontSize = 14.sp,
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
 

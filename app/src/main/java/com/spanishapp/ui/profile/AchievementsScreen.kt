@@ -2,6 +2,7 @@ package com.spanishapp.ui.profile
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -105,7 +106,7 @@ fun AchievementsScreen(
                     SectionLabel("🏆 Получены (${unlocked.size})")
                 }
                 itemsIndexed(
-                    list = unlocked,
+                    items = unlocked,
                     key = { _, a -> a.id }
                 ) { index, a ->
                     val isFresh = a.unlockedAt > 0 && (now - a.unlockedAt) < FRESH_UNLOCK_WINDOW_MS
@@ -122,7 +123,7 @@ fun AchievementsScreen(
             // ── Locked ───────────────────────────────────────
             item { SectionLabel("🔒 Ещё не получены (${locked.size})") }
             itemsIndexed(
-                list = locked,
+                items = locked,
                 key = { _, a -> a.id }
             ) { index, a ->
                 AnimatedAchievementCard(

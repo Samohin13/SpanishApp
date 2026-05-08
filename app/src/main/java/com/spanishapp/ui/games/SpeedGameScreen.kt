@@ -104,7 +104,7 @@ private fun SpeedGameContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color(0xFFF8F8FA))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -121,7 +121,7 @@ private fun SpeedGameContent(
                     }
                 }
                 Text("Раунд ${state.currentRound}/${state.totalRounds}",
-                    fontSize = 13.sp, color = Color.Gray)
+                    fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("XP: ${state.score}", fontWeight = FontWeight.Bold, color = ACCENT)
             }
 
@@ -136,10 +136,10 @@ private fun SpeedGameContent(
                         .height(10.dp)
                         .clip(RoundedCornerShape(5.dp)),
                     color = if (state.timeLeft < 0.3f) Color.Red else ACCENT,
-                    trackColor = Color(0xFFE5E5EA)
+                    trackColor = MaterialTheme.colorScheme.outline
                 )
             } else {
-                Text("без таймера", fontSize = 11.sp, color = Color.Gray)
+                Text("без таймера", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
             Spacer(Modifier.weight(0.5f))
@@ -176,7 +176,7 @@ private fun SpeedGameContent(
                         },
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            if (isCorrectShown) Color(0xFF4CAF50) else Color(0xFFE5E5EA)
+                            if (isCorrectShown) Color(0xFF4CAF50) else MaterialTheme.colorScheme.outline
                         )
                     ) {
                         Box(contentAlignment = Alignment.Center) {

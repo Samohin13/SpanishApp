@@ -389,7 +389,7 @@ fun SettingsScreen(
                         Text(
                             "При следующем открытии приложения попросим отпечаток или лицо.",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                         )
                     }
@@ -444,7 +444,7 @@ fun SettingsScreen(
                 Text(
                     text = "SpanishApp Версия 1.4\nСделано с ❤️ для изучения испанского",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
             }
@@ -634,9 +634,9 @@ fun SettingsItem(icon: ImageVector, title: String, summary: String? = null, text
         Spacer(Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(title, style = MaterialTheme.typography.bodyLarge, color = textColor)
-            if (summary != null) Text(summary, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+            if (summary != null) Text(summary, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        if (onClick != null) Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, modifier = Modifier.size(20.dp), tint = Color.LightGray)
+        if (onClick != null) Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.outline)
     }
 }
 
