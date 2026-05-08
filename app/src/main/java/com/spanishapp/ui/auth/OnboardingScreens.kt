@@ -272,7 +272,15 @@ fun ReasonSelectionScreen(
                             MaterialTheme.colorScheme.outline.copy(0.4f)
                         )
                 ) {
-                    Text(reason, modifier = Modifier.padding(20.dp), fontSize = 18.sp)
+                    // Card containerColor is hardcoded white, so the text must be explicitly
+                    // dark — otherwise it inherits onSurface from the dark theme and becomes
+                    // unreadable (white-on-white).
+                    Text(
+                        reason,
+                        modifier = Modifier.padding(20.dp),
+                        fontSize = 18.sp,
+                        color = AppColors.TextPrimary
+                    )
                 }
             }
 
@@ -366,7 +374,14 @@ fun KnowledgeCheckScreen(
                     Text("🌱", fontSize = 32.sp)
                     Spacer(Modifier.width(16.dp))
                     Column {
-                        Text(stringResource(R.string.onboarding_kc_zero), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        // Card has a light peach background — force dark text so it stays
+                        // readable in dark theme too.
+                        Text(
+                            stringResource(R.string.onboarding_kc_zero),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = AppColors.TextPrimary
+                        )
                         Text(
                             stringResource(R.string.onboarding_kc_zero_sub),
                             fontSize = 13.sp,
