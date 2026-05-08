@@ -193,7 +193,7 @@ private fun QuizQuestionContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    "КАК ПЕРЕВОДИТСЯ?",
+                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.quiz_translate_prompt),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
@@ -252,8 +252,10 @@ private fun QuizQuestionContent(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
             ) {
                 Text(
-                    if (state.currentIndex + 1 >= state.questions.size) "РЕЗУЛЬТАТЫ"
-                    else "СЛЕДУЮЩИЙ ВОПРОС",
+                    if (state.currentIndex + 1 >= state.questions.size)
+                        androidx.compose.ui.res.stringResource(com.spanishapp.R.string.quiz_results)
+                    else
+                        androidx.compose.ui.res.stringResource(com.spanishapp.R.string.quiz_next_question),
                     fontWeight = FontWeight.ExtraBold
                 )
             }
@@ -318,7 +320,7 @@ private fun QuizResult(score: Int, total: Int, onRetry: () -> Unit, onBack: () -
     ) {
         Text("🏁", fontSize = 72.sp)
         Spacer(Modifier.height(16.dp))
-        Text("Тест завершен", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.quiz_finished), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
         Surface(shape = RoundedCornerShape(12.dp), color = Color(0xFF2196F3).copy(alpha = 0.15f)) {
             Text("$score из $total верных",
@@ -335,11 +337,11 @@ private fun QuizResult(score: Int, total: Int, onRetry: () -> Unit, onBack: () -
             shape = RoundedCornerShape(18.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
         ) {
-            Text("ПОПРОБОВАТЬ СНОВА", fontWeight = FontWeight.ExtraBold)
+            Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.quiz_try_again), fontWeight = FontWeight.ExtraBold)
         }
         
         TextButton(onClick = onBack, modifier = Modifier.padding(top = 12.dp)) {
-            Text("ВЫЙТИ В МЕНЮ", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.quiz_exit_to_menu), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

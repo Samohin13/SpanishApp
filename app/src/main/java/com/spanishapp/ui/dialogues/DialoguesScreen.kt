@@ -128,13 +128,13 @@ fun DialoguesScreen(
                     ) {
                         Text("💬", fontSize = 64.sp)
                         Text(
-                            "Уровень $level в разработке",
+                            androidx.compose.ui.res.stringResource(com.spanishapp.R.string.dial_level_in_development, level),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            "Скоро здесь появятся живые диалоги для практики языка.",
+                            androidx.compose.ui.res.stringResource(com.spanishapp.R.string.dial_coming_soon),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -238,7 +238,7 @@ private fun DialogueCardContent(
                         shape = RoundedCornerShape(14.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = AppColors.Teal)
                     ) {
-                        Text("ЗАВЕРШИТЬ ПРАКТИКУ", fontWeight = FontWeight.Bold)
+                        Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.dial_finish_practice), fontWeight = FontWeight.Bold)
                     }
                 }
             }

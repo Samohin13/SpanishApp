@@ -19,7 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.data.repository.LeaderboardData
 import com.spanishapp.data.repository.LeaderboardEntry
 import com.spanishapp.domain.algorithm.LeagueResolver
@@ -42,7 +44,7 @@ fun LeaderboardScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = { Text("Лидеры", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.lb_leaders), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -83,7 +85,7 @@ fun LeaderboardScreen(
                 Tab(
                     selected = tab == Tab.WORLD,
                     onClick = { tab = Tab.WORLD },
-                    text = { Text("🌍 Мир", fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
+                    text = { Text(stringResource(R.string.lb_world_tab), fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
                 )
             }
 
@@ -98,9 +100,9 @@ fun LeaderboardScreen(
             if (data == null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(state.error ?: "Нет данных", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(state.error ?: stringResource(R.string.lb_no_data), color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Spacer(Modifier.height(8.dp))
-                        Button(onClick = { vm.refresh() }) { Text("Обновить") }
+                        Button(onClick = { vm.refresh() }) { Text(stringResource(R.string.lb_refresh)) }
                     }
                 }
                 return@Column
@@ -109,7 +111,7 @@ fun LeaderboardScreen(
             val rows = if (tab == Tab.LOCAL) data.countryRows else data.worldRows
             val myRank = if (tab == Tab.LOCAL) data.myCountryRank else data.myWorldRank
             val total = if (tab == Tab.LOCAL) data.countryTotal else data.worldTotal
-            val tabName = if (tab == Tab.LOCAL) CountryNames.nameOf(state.deviceCountry) else "мире"
+            val tabName = if (tab == Tab.LOCAL) CountryNames.nameOf(state.deviceCountry) else stringResource(R.string.lb_world)
 
             // Шапка с моим рангом
             if (myRank != null) {
@@ -119,7 +121,7 @@ fun LeaderboardScreen(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
                 ) {
                     Text(
-                        "Ты #$myRank из $total в $tabName",
+                        stringResource(R.string.lb_my_rank, myRank, total, tabName),
                         modifier = Modifier.padding(12.dp),
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
@@ -129,7 +131,7 @@ fun LeaderboardScreen(
 
             if (rows.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Пока никого нет — будь первым!", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.lb_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(
@@ -146,7 +148,7 @@ fun LeaderboardScreen(
                     item { Spacer(Modifier.height(24.dp)) }
                     item {
                         TextButton(onClick = { vm.optOut() }, modifier = Modifier.fillMaxWidth()) {
-                            Text("Выйти из лидерборда", color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(R.string.lb_opt_out), color = MaterialTheme.colorScheme.error)
                         }
                     }
                 }
@@ -170,13 +172,13 @@ private fun OptInBlock(
         Text("🌍", fontSize = 56.sp)
         Spacer(Modifier.height(12.dp))
         Text(
-            "Войти в общий рейтинг?",
+            stringResource(R.string.lb_join_title),
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            "Мы сохраним только ник, страну и рейтинг. Ты сможешь сравнивать себя с игроками своей страны и со всем миром.",
+            stringResource(R.string.lb_join_explain),
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -184,7 +186,7 @@ private fun OptInBlock(
         OutlinedTextField(
             value = name,
             onValueChange = { name = it.take(20) },
-            label = { Text("Ник") },
+            label = { Text(stringResource(R.string.lb_nickname)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -198,7 +200,7 @@ private fun OptInBlock(
             shape = RoundedCornerShape(16.dp),
             enabled = name.isNotBlank()
         ) {
-            Text("Войти в рейтинг", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.lb_join_button), fontWeight = FontWeight.Bold)
         }
     }
 }
