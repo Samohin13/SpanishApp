@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.domain.algorithm.LeaguePromotion
 import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpeechResult
@@ -252,7 +254,7 @@ private fun BottomTranslationBox(
                                     )
                                     Spacer(Modifier.width(6.dp))
                                     Text(
-                                        "Спрашиваю AI…",
+                                        stringResource(R.string.lread_asking_ai),
                                         fontSize = 13.sp,
                                         color = Color(0xFFB0BEC5)
                                     )
@@ -267,7 +269,7 @@ private fun BottomTranslationBox(
                             }
                             else -> {
                                 Text(
-                                    "не найдено в словаре",
+                                    stringResource(R.string.lread_not_in_dict),
                                     fontSize = 14.sp,
                                     color = Color(0xFF78909C)
                                 )
@@ -285,7 +287,7 @@ private fun BottomTranslationBox(
                     HorizontalDivider(color = Color(0xFF283593))
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Слова в предложении:",
+                        stringResource(R.string.lread_words_in_sentence),
                         fontSize = 11.sp,
                         color = Color(0xFF78909C),
                         fontWeight = FontWeight.Medium
@@ -328,6 +330,9 @@ private fun ReadingAloudPanel(
     val sentence = state.sentences.getOrNull(state.currentIdx) ?: return
     val result   = state.results.getOrNull(state.currentIdx)
     var sttError by remember(state.currentIdx) { mutableStateOf<String?>(null) }
+    val errSilence = stringResource(R.string.lread_stt_silence)
+    val errRecog = stringResource(R.string.lread_stt_error)
+    val errNoMic = stringResource(R.string.lread_no_mic_perm)
 
     val infiniteTransition = rememberInfiniteTransition(label = "mic")
     val micScale by infiniteTransition.animateFloat(
@@ -352,8 +357,8 @@ private fun ReadingAloudPanel(
                     ))
                 }
                 is SpeechResult.Error -> {
-                    sttError = if (r.isSilence) "Не услышал — попробуй ещё раз"
-                               else r.message.ifBlank { "Ошибка распознавания" }
+                    sttError = if (r.isSilence) errSilence
+                               else r.message.ifBlank { errRecog }
                     onUpdate(state.copy(isListening = false, recognizedText = ""))
                 }
                 SpeechResult.Cancelled -> onUpdate(state.copy(isListening = false))
@@ -365,7 +370,7 @@ private fun ReadingAloudPanel(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) startListening()
-        else sttError = "Нет разрешения на микрофон"
+        else sttError = errNoMic
     }
 
     fun checkPermAndListen() {
@@ -384,11 +389,11 @@ private fun ReadingAloudPanel(
         // ── Прогресс ──
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                "Предложение ${state.currentIdx + 1} из ${state.sentences.size}",
+                stringResource(R.string.lread_sentence_of, state.currentIdx + 1, state.sentences.size),
                 fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             TextButton(onClick = onExit, contentPadding = PaddingValues(0.dp)) {
-                Text("← Выйти", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.lread_exit), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Spacer(Modifier.height(4.dp))
@@ -412,7 +417,7 @@ private fun ReadingAloudPanel(
         ) {
             Icon(Icons.Default.VolumeUp, null, tint = levelColor, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
-            Text("Послушать", color = levelColor, fontSize = 13.sp)
+            Text(stringResource(R.string.lread_listen), color = levelColor, fontSize = 13.sp)
         }
 
         Spacer(Modifier.height(10.dp))
@@ -441,7 +446,8 @@ private fun ReadingAloudPanel(
                     val total   = result.wordChecks.size
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
-                            if (correct == total) "✓ Отлично!" else "$correct / $total слов верно",
+                            if (correct == total) stringResource(R.string.lread_excellent)
+                            else stringResource(R.string.lread_words_correct, correct, total),
                             fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
                             color = if (correct == total) Color(0xFF2E7D32) else Color(0xFFE65100)
                         )
@@ -462,7 +468,7 @@ private fun ReadingAloudPanel(
                     .background(MaterialTheme.colorScheme.background).padding(10.dp)
             ) {
                 Text(
-                    "Ты сказал: «${state.recognizedText}»",
+                    stringResource(R.string.lread_you_said, state.recognizedText),
                     fontSize = 13.sp, color = Color(0xFF555555), fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
                 )
             }
@@ -484,7 +490,8 @@ private fun ReadingAloudPanel(
         // ── Кнопка микрофона ──
         if (result == null) {
             Text(
-                if (state.isListening) "Слушаю…" else "Нажми микрофон и читай предложение вслух",
+                if (state.isListening) stringResource(R.string.lread_listening)
+                else stringResource(R.string.lread_press_mic_hint),
                 fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(12.dp))
@@ -505,7 +512,7 @@ private fun ReadingAloudPanel(
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             if (state.isListening) Icons.Default.Stop else Icons.Default.Mic,
-                            contentDescription = "Микрофон",
+                            contentDescription = stringResource(R.string.lread_microphone),
                             tint = Color.White, modifier = Modifier.size(30.dp)
                         )
                     }
@@ -530,7 +537,7 @@ private fun ReadingAloudPanel(
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = levelColor)
             ) {
-                Text(if (isLast) "Посмотреть итог →" else "Следующее предложение →", fontWeight = FontWeight.Bold)
+                Text(if (isLast) stringResource(R.string.lread_see_result) else stringResource(R.string.lread_next_sentence), fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(8.dp))
             OutlinedButton(
@@ -541,7 +548,7 @@ private fun ReadingAloudPanel(
                 },
                 modifier = Modifier.fillMaxWidth().height(46.dp),
                 shape = RoundedCornerShape(14.dp)
-            ) { Text("🔄 Повторить предложение") }
+            ) { Text(stringResource(R.string.lread_repeat_sentence)) }
         }
     }
 }
@@ -564,10 +571,10 @@ private fun ReadingDonePanel(
         pct >= 90 -> "🌟"; pct >= 75 -> "👏"; pct >= 55 -> "👍"; else -> "💪"
     }
     val comment = when {
-        pct >= 90 -> "Превосходное произношение!"
-        pct >= 75 -> "Хорошая работа!"
-        pct >= 55 -> "Неплохо, продолжай!"
-        else      -> "Потренируйся ещё немного"
+        pct >= 90 -> stringResource(R.string.lread_pron_excellent)
+        pct >= 75 -> stringResource(R.string.lread_pron_good)
+        pct >= 55 -> stringResource(R.string.lread_pron_ok)
+        else      -> stringResource(R.string.lread_pron_practice)
     }
 
     Column(
@@ -577,13 +584,13 @@ private fun ReadingDonePanel(
         Spacer(Modifier.height(16.dp))
         Text(emoji, fontSize = 52.sp)
         Spacer(Modifier.height(12.dp))
-        Text("Результат чтения", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.lread_reading_result), fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(4.dp))
         Text(comment, fontSize = 15.sp, color = Color(0xFF555555))
         Spacer(Modifier.height(16.dp))
 
         Text("$pct%", fontSize = 48.sp, fontWeight = FontWeight.ExtraBold, color = levelColor)
-        Text("$correctWords из $totalWords слов произнесено верно", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.lread_words_summary, correctWords, totalWords), fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
         Spacer(Modifier.height(20.dp))
 
@@ -618,7 +625,7 @@ private fun ReadingDonePanel(
                                 fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                             )
-                            Text("$sc / $st слов", fontSize = 11.sp,
+                            Text(stringResource(R.string.lread_words_short, sc, st), fontSize = 11.sp,
                                 color = if (allOk) Color(0xFF2E7D32) else Color(0xFFE65100),
                                 fontWeight = FontWeight.SemiBold)
                         }
@@ -634,7 +641,7 @@ private fun ReadingDonePanel(
             modifier = Modifier.fillMaxWidth().height(52.dp),
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = levelColor)
-        ) { Text("Начать тест →", fontWeight = FontWeight.Bold) }
+        ) { Text(stringResource(R.string.lread_start_quiz), fontWeight = FontWeight.Bold) }
 
         Spacer(Modifier.height(8.dp))
 
@@ -642,7 +649,7 @@ private fun ReadingDonePanel(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth().height(46.dp),
             shape = RoundedCornerShape(14.dp)
-        ) { Text("← Перечитать рассказ") }
+        ) { Text(stringResource(R.string.lread_reread)) }
     }
 }
 
@@ -722,7 +729,7 @@ fun LibroReadScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, "Назад")
+                        Icon(Icons.Default.ArrowBack, stringResource(R.string.lread_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -767,7 +774,7 @@ fun LibroReadScreen(
                                     Text("📖", fontSize = 22.sp)
                                     Spacer(Modifier.width(8.dp))
                                     Text(
-                                        "Зажмите слово для перевода",
+                                        stringResource(R.string.lread_long_press_hint),
                                         fontSize = 13.sp,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -796,15 +803,14 @@ fun LibroReadScreen(
                                 .background(levelColor.copy(alpha = 0.08f))
                                 .padding(12.dp)
                         ) {
-                            Text("🏷️ Тема: ", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = levelColor)
+                            Text(stringResource(R.string.lread_topic_label), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = levelColor)
                             Text(libro.topic, fontSize = 13.sp, color = Color(0xFF555555))
                         }
 
                         Spacer(Modifier.height(8.dp))
 
                         Text(
-                            "Прочитайте рассказ, затем ответьте на ${libro.questions.size} вопроса. " +
-                            "Для зачёта нужно ${LibrosData.PASS_CORRECT} из ${libro.questions.size}.",
+                            stringResource(R.string.lread_intro_hint, libro.questions.size, LibrosData.PASS_CORRECT),
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             lineHeight = 18.sp
@@ -843,7 +849,7 @@ fun LibroReadScreen(
                                 )
                                 Spacer(Modifier.width(4.dp))
                                 Text(
-                                    if (isSpeaking) "Стоп" else "Аудиокнига",
+                                    if (isSpeaking) stringResource(R.string.lread_stop) else stringResource(R.string.lread_audiobook),
                                     color = if (isSpeaking) Color(0xFFC62828) else levelColor,
                                     fontSize = 14.sp
                                 )
@@ -865,7 +871,7 @@ fun LibroReadScreen(
                             ) {
                                 Icon(Icons.Default.Mic, null, modifier = Modifier.size(18.dp))
                                 Spacer(Modifier.width(4.dp))
-                                Text("Читать вслух", fontSize = 14.sp)
+                                Text(stringResource(R.string.lread_read_aloud), fontSize = 14.sp)
                             }
                         }
 
@@ -881,7 +887,7 @@ fun LibroReadScreen(
                             shape = RoundedCornerShape(14.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = levelColor)
                         ) {
-                            Text("Начать тест →", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.lread_start_quiz), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -935,7 +941,7 @@ fun LibroReadScreen(
 
                 Column(Modifier.fillMaxSize().padding(padding).padding(20.dp)) {
                     Text(
-                        "Вопрос ${s.qIndex + 1} из $totalQ",
+                        stringResource(R.string.lread_question_of, s.qIndex + 1, totalQ),
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -1000,7 +1006,7 @@ fun LibroReadScreen(
                                 onClick = { state = s.copy(qIndex = s.qIndex - 1) },
                                 modifier = Modifier.weight(1f).height(50.dp),
                                 shape = RoundedCornerShape(14.dp)
-                            ) { Text("← Назад") }
+                            ) { Text(stringResource(R.string.lread_quiz_back)) }
                         }
                         Button(
                             onClick = {
@@ -1016,7 +1022,7 @@ fun LibroReadScreen(
                             modifier = Modifier.weight(1f).height(50.dp),
                             shape = RoundedCornerShape(14.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = levelColor)
-                        ) { Text(if (s.qIndex == totalQ - 1) "Завершить" else "Дальше →", fontWeight = FontWeight.Bold) }
+                        ) { Text(if (s.qIndex == totalQ - 1) stringResource(R.string.lread_finish) else stringResource(R.string.lread_next), fontWeight = FontWeight.Bold) }
                     }
                 }
             }
@@ -1033,13 +1039,13 @@ fun LibroReadScreen(
                     Text(if (passed) "🎉" else "💪", fontSize = 64.sp)
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        if (passed) "Отлично! Рассказ прочитан!" else "Почти! Попробуй ещё раз",
+                        if (passed) stringResource(R.string.lread_passed_title) else stringResource(R.string.lread_failed_title),
                         fontSize = 22.sp, fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         color = if (passed) LibroGreen else MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(12.dp))
-                    Text("Правильных ответов: ${s.correct} из ${s.total} ($pct%)", fontSize = 16.sp, color = Color(0xFF555555))
+                    Text(stringResource(R.string.lread_correct_answers, s.correct, s.total, pct), fontSize = 16.sp, color = Color(0xFF555555))
                     Spacer(Modifier.height(8.dp))
                     Box(
                         Modifier.clip(RoundedCornerShape(12.dp))
@@ -1047,8 +1053,8 @@ fun LibroReadScreen(
                             .padding(horizontal = 16.dp, vertical = 10.dp)
                     ) {
                         Text(
-                            if (passed) "✓ Рассказ отмечен как прочитанный в вашей библиотеке"
-                            else "Нужно ${LibrosData.PASS_CORRECT} из ${s.total}. Перечитайте текст и попробуйте снова!",
+                            if (passed) stringResource(R.string.lread_passed_note)
+                            else stringResource(R.string.lread_failed_note, LibrosData.PASS_CORRECT, s.total),
                             color = if (passed) LibroGreen else Color(0xFFE65100),
                             fontSize = 13.sp
                         )
@@ -1059,14 +1065,14 @@ fun LibroReadScreen(
                         modifier = Modifier.fillMaxWidth().height(52.dp),
                         shape = RoundedCornerShape(14.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = if (passed) LibroGreen else levelColor)
-                    ) { Text("← К списку рассказов", fontWeight = FontWeight.Bold) }
+                    ) { Text(stringResource(R.string.lread_back_to_list), fontWeight = FontWeight.Bold) }
                     if (!passed) {
                         Spacer(Modifier.height(12.dp))
                         OutlinedButton(
                             onClick = { state = ReadState.Reading },
                             modifier = Modifier.fillMaxWidth().height(50.dp),
                             shape = RoundedCornerShape(14.dp)
-                        ) { Text("Перечитать рассказ") }
+                        ) { Text(stringResource(R.string.lread_reread_short)) }
                     }
                 }
             }

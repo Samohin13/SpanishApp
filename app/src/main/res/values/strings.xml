@@ -399,4 +399,124 @@
     <string name="verb_mode_auditivo_title">Auditivo</string>
     <string name="verb_mode_auditivo_desc">Услышь форму и запиши</string>
 
+    <!-- ════════════════════════════════════════════════════════
+         Dictionary
+         ════════════════════════════════════════════════════════ -->
+    <string name="dict_title">Словарь</string>
+    <string name="dict_list">Список</string>
+    <string name="dict_tab_all">Все слова</string>
+    <string name="dict_tab_phrases">Фразы</string>
+    <string name="dict_tab_my_lists">Мои списки</string>
+    <string name="dict_search_placeholder">Поиск…</string>
+    <string name="dict_recent_search">Недавний поиск</string>
+    <string name="dict_clear">Очистить</string>
+    <string name="dict_lists_count">%1$d/20 списков</string>
+    <string name="dict_new_list">Новый список</string>
+    <string name="dict_no_lists">Нет списков</string>
+    <string name="dict_no_lists_hint">Создайте список, чтобы собирать слова</string>
+    <string name="dict_rename_list">Переименовать список</string>
+    <string name="dict_name">Название</string>
+    <string name="dict_save">Сохранить</string>
+    <string name="dict_cancel">Отмена</string>
+    <string name="dict_words_count">%1$d/150 слов</string>
+    <string name="dict_export_cd">Экспорт</string>
+    <string name="dict_export_txt">Текст (TXT)</string>
+    <string name="dict_export_csv">Таблица (CSV)</string>
+    <string name="dict_export_pdf">Печать / PDF</string>
+    <string name="dict_list_empty">Список пуст</string>
+    <string name="dict_list_empty_hint">Нажмите «+» у слова в разделе «Все слова»</string>
+    <string name="dict_badge_irregular">неправ.</string>
+    <string name="dict_badge_stem">откл.</string>
+    <string name="dict_progress_learned">выучено</string>
+    <string name="dict_progress_weak">слабое</string>
+    <string name="dict_progress_in_progress">учу</string>
+    <string name="dict_progress_new">новое</string>
+    <string name="dict_rename">Переименовать</string>
+    <string name="dict_delete">Удалить</string>
+    <string name="dict_translation">Перевод</string>
+    <string name="dict_example">Пример</string>
+    <string name="dict_add_to_list">Добавить в список</string>
+    <string name="dict_stat_reviews">Повторений</string>
+    <string name="dict_stat_accuracy">Точность</string>
+    <string name="dict_stat_status">Статус</string>
+    <string name="dict_stat_status_learned">✓ Выучено</string>
+    <string name="dict_add_word_to_list">Добавить «%1$s» в список</string>
+    <string name="dict_no_lists_yet">У вас ещё нет списков</string>
+    <string name="dict_list_full">Список заполнен (150/150)</string>
+    <string name="dict_create_new_list">Создать новый список</string>
+    <string name="dict_max_lists_error">Максимум 20 списков. Удалите один, чтобы создать новый.</string>
+    <string name="dict_name_label">Название (до 30 символов)</string>
+    <string name="dict_create">Создать</string>
+    <string name="dict_share_list">Поделиться списком</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Weak Words
+         ════════════════════════════════════════════════════════ -->
+    <string name="weak_title">Слабые слова</string>
+    <string name="weak_train_all">Тренировать все слабые слова (%1$d)</string>
+    <string name="weak_hint">Слова с точностью меньше 60%%. Повторяй их чаще — и они станут лёгкими.</string>
+    <string name="weak_reviews_count">%1$d повторений</string>
+    <string name="weak_empty_title">Слабых слов нет!</string>
+    <string name="weak_empty_subtitle">Все слова освоены хорошо.\nПродолжай заниматься в таком темпе.</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Libros (list)
+         ════════════════════════════════════════════════════════ -->
+    <string name="libros_read_progress">Прочитано: %1$d / %2$d</string>
+    <string name="libros_back">Назад</string>
+    <string name="libros_filter_all">Все</string>
+    <string name="libros_empty_for_level">Рассказы уровня %1$s\nпоявятся в следующем обновлении</string>
+    <string name="libros_best_score">Лучший результат: %1$d%%</string>
+    <string name="libros_repeat">Повторить</string>
+    <string name="libros_read">Читать</string>
+
+    <!-- ════════════════════════════════════════════════════════
+         Libro Read
+         ════════════════════════════════════════════════════════ -->
+    <string name="lread_back">Назад</string>
+    <string name="lread_asking_ai">Спрашиваю AI…</string>
+    <string name="lread_not_in_dict">не найдено в словаре</string>
+    <string name="lread_words_in_sentence">Слова в предложении:</string>
+    <string name="lread_stt_silence">Не услышал — попробуй ещё раз</string>
+    <string name="lread_stt_error">Ошибка распознавания</string>
+    <string name="lread_no_mic_perm">Нет разрешения на микрофон</string>
+    <string name="lread_sentence_of">Предложение %1$d из %2$d</string>
+    <string name="lread_exit">← Выйти</string>
+    <string name="lread_listen">Послушать</string>
+    <string name="lread_excellent">✓ Отлично!</string>
+    <string name="lread_words_correct">%1$d / %2$d слов верно</string>
+    <string name="lread_you_said">Ты сказал: «%1$s»</string>
+    <string name="lread_listening">Слушаю…</string>
+    <string name="lread_press_mic_hint">Нажми микрофон и читай предложение вслух</string>
+    <string name="lread_microphone">Микрофон</string>
+    <string name="lread_see_result">Посмотреть итог →</string>
+    <string name="lread_next_sentence">Следующее предложение →</string>
+    <string name="lread_repeat_sentence">🔄 Повторить предложение</string>
+    <string name="lread_pron_excellent">Превосходное произношение!</string>
+    <string name="lread_pron_good">Хорошая работа!</string>
+    <string name="lread_pron_ok">Неплохо, продолжай!</string>
+    <string name="lread_pron_practice">Потренируйся ещё немного</string>
+    <string name="lread_reading_result">Результат чтения</string>
+    <string name="lread_words_summary">%1$d из %2$d слов произнесено верно</string>
+    <string name="lread_words_short">%1$d / %2$d слов</string>
+    <string name="lread_start_quiz">Начать тест →</string>
+    <string name="lread_reread">← Перечитать рассказ</string>
+    <string name="lread_long_press_hint">Зажмите слово для перевода</string>
+    <string name="lread_topic_label">🏷️ Тема: </string>
+    <string name="lread_intro_hint">Прочитайте рассказ, затем ответьте на %1$d вопроса. Для зачёта нужно %2$d из %1$d.</string>
+    <string name="lread_stop">Стоп</string>
+    <string name="lread_audiobook">Аудиокнига</string>
+    <string name="lread_read_aloud">Читать вслух</string>
+    <string name="lread_question_of">Вопрос %1$d из %2$d</string>
+    <string name="lread_quiz_back">← Назад</string>
+    <string name="lread_finish">Завершить</string>
+    <string name="lread_next">Дальше →</string>
+    <string name="lread_passed_title">Отлично! Рассказ прочитан!</string>
+    <string name="lread_failed_title">Почти! Попробуй ещё раз</string>
+    <string name="lread_correct_answers">Правильных ответов: %1$d из %2$d (%3$d%%)</string>
+    <string name="lread_passed_note">✓ Рассказ отмечен как прочитанный в вашей библиотеке</string>
+    <string name="lread_failed_note">Нужно %1$d из %2$d. Перечитайте текст и попробуйте снова!</string>
+    <string name="lread_back_to_list">← К списку рассказов</string>
+    <string name="lread_reread_short">Перечитать рассказ</string>
+
 </resources>

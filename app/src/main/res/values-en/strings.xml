@@ -372,4 +372,116 @@
     <string name="verb_mode_auditivo_title">Auditivo</string>
     <string name="verb_mode_auditivo_desc">Hear a form and write it down</string>
 
+    <!-- Dictionary -->
+    <string name="dict_title">Dictionary</string>
+    <string name="dict_list">List</string>
+    <string name="dict_tab_all">All words</string>
+    <string name="dict_tab_phrases">Phrases</string>
+    <string name="dict_tab_my_lists">My lists</string>
+    <string name="dict_search_placeholder">Search…</string>
+    <string name="dict_recent_search">Recent searches</string>
+    <string name="dict_clear">Clear</string>
+    <string name="dict_lists_count">%1$d/20 lists</string>
+    <string name="dict_new_list">New list</string>
+    <string name="dict_no_lists">No lists yet</string>
+    <string name="dict_no_lists_hint">Create a list to collect words</string>
+    <string name="dict_rename_list">Rename list</string>
+    <string name="dict_name">Name</string>
+    <string name="dict_save">Save</string>
+    <string name="dict_cancel">Cancel</string>
+    <string name="dict_words_count">%1$d/150 words</string>
+    <string name="dict_export_cd">Export</string>
+    <string name="dict_export_txt">Text (TXT)</string>
+    <string name="dict_export_csv">Table (CSV)</string>
+    <string name="dict_export_pdf">Print / PDF</string>
+    <string name="dict_list_empty">List is empty</string>
+    <string name="dict_list_empty_hint">Tap “+” next to a word in the “All words” tab</string>
+    <string name="dict_badge_irregular">irreg.</string>
+    <string name="dict_badge_stem">stem</string>
+    <string name="dict_progress_learned">learned</string>
+    <string name="dict_progress_weak">weak</string>
+    <string name="dict_progress_in_progress">learning</string>
+    <string name="dict_progress_new">new</string>
+    <string name="dict_rename">Rename</string>
+    <string name="dict_delete">Delete</string>
+    <string name="dict_translation">Translation</string>
+    <string name="dict_example">Example</string>
+    <string name="dict_add_to_list">Add to list</string>
+    <string name="dict_stat_reviews">Reviews</string>
+    <string name="dict_stat_accuracy">Accuracy</string>
+    <string name="dict_stat_status">Status</string>
+    <string name="dict_stat_status_learned">✓ Learned</string>
+    <string name="dict_add_word_to_list">Add “%1$s” to list</string>
+    <string name="dict_no_lists_yet">You don\'t have any lists yet</string>
+    <string name="dict_list_full">List is full (150/150)</string>
+    <string name="dict_create_new_list">Create new list</string>
+    <string name="dict_max_lists_error">Maximum 20 lists. Delete one to create a new one.</string>
+    <string name="dict_name_label">Name (up to 30 characters)</string>
+    <string name="dict_create">Create</string>
+    <string name="dict_share_list">Share list</string>
+
+    <!-- Weak Words -->
+    <string name="weak_title">Weak words</string>
+    <string name="weak_train_all">Practice all weak words (%1$d)</string>
+    <string name="weak_hint">Words with accuracy below 60%%. Practice them more often — they\'ll become easy.</string>
+    <string name="weak_reviews_count">%1$d reviews</string>
+    <string name="weak_empty_title">No weak words!</string>
+    <string name="weak_empty_subtitle">All words are well learned.\nKeep going at this pace.</string>
+
+    <!-- Libros (list) -->
+    <string name="libros_read_progress">Read: %1$d / %2$d</string>
+    <string name="libros_back">Back</string>
+    <string name="libros_filter_all">All</string>
+    <string name="libros_empty_for_level">%1$s level stories\nare coming in the next update</string>
+    <string name="libros_best_score">Best score: %1$d%%</string>
+    <string name="libros_repeat">Repeat</string>
+    <string name="libros_read">Read</string>
+
+    <!-- Libro Read -->
+    <string name="lread_back">Back</string>
+    <string name="lread_asking_ai">Asking AI…</string>
+    <string name="lread_not_in_dict">not found in dictionary</string>
+    <string name="lread_words_in_sentence">Words in the sentence:</string>
+    <string name="lread_stt_silence">Didn\'t hear you — try again</string>
+    <string name="lread_stt_error">Recognition error</string>
+    <string name="lread_no_mic_perm">No microphone permission</string>
+    <string name="lread_sentence_of">Sentence %1$d of %2$d</string>
+    <string name="lread_exit">← Exit</string>
+    <string name="lread_listen">Listen</string>
+    <string name="lread_excellent">✓ Excellent!</string>
+    <string name="lread_words_correct">%1$d / %2$d words correct</string>
+    <string name="lread_you_said">You said: “%1$s”</string>
+    <string name="lread_listening">Listening…</string>
+    <string name="lread_press_mic_hint">Press the mic and read the sentence aloud</string>
+    <string name="lread_microphone">Microphone</string>
+    <string name="lread_see_result">See result →</string>
+    <string name="lread_next_sentence">Next sentence →</string>
+    <string name="lread_repeat_sentence">🔄 Repeat sentence</string>
+    <string name="lread_pron_excellent">Excellent pronunciation!</string>
+    <string name="lread_pron_good">Good job!</string>
+    <string name="lread_pron_ok">Not bad, keep going!</string>
+    <string name="lread_pron_practice">Practice a bit more</string>
+    <string name="lread_reading_result">Reading result</string>
+    <string name="lread_words_summary">%1$d of %2$d words pronounced correctly</string>
+    <string name="lread_words_short">%1$d / %2$d words</string>
+    <string name="lread_start_quiz">Start quiz →</string>
+    <string name="lread_reread">← Reread story</string>
+    <string name="lread_long_press_hint">Long-press a word for translation</string>
+    <string name="lread_topic_label">🏷️ Topic: </string>
+    <string name="lread_intro_hint">Read the story, then answer %1$d questions. You need %2$d of %1$d to pass.</string>
+    <string name="lread_stop">Stop</string>
+    <string name="lread_audiobook">Audiobook</string>
+    <string name="lread_read_aloud">Read aloud</string>
+    <string name="lread_question_of">Question %1$d of %2$d</string>
+    <string name="lread_quiz_back">← Back</string>
+    <string name="lread_finish">Finish</string>
+    <string name="lread_next">Next →</string>
+    <string name="lread_passed_title">Great! Story read!</string>
+    <string name="lread_failed_title">Almost! Try again</string>
+    <string name="lread_correct_answers">Correct answers: %1$d of %2$d (%3$d%%)</string>
+    <string name="lread_passed_note">✓ Story marked as read in your library</string>
+    <string name="lread_failed_note">You need %1$d of %2$d. Reread the text and try again!</string>
+    <string name="lread_back_to_list">← Back to stories</string>
+    <string name="lread_reread_short">Reread story</string>
+
 </resources>
