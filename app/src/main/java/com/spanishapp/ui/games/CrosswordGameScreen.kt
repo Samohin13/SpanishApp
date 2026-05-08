@@ -489,7 +489,7 @@ fun CrosswordGrid(state: CrosswordGameState) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     var accentMenuKey by remember { mutableStateOf<Char?>(null) }
 
     val rows = listOf("QWERTYUIOP", "ASDFGHJKLÑ", "ZXCVBNM")

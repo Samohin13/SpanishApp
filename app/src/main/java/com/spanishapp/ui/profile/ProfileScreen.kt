@@ -135,7 +135,7 @@ fun ProfileScreen(
     val state by vm.state.collectAsState()
     val categoryRatings by vm.categoryRatings.collectAsState()
     val p = state.progress
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     val appLevel  = XpSystem.levelForXp(p.totalXp)
     val progress  = XpSystem.progressToNextLevel(p.totalXp)
     val league = LeagueResolver.fromTier(p.currentLeague.coerceAtLeast(1))

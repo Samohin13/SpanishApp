@@ -27,7 +27,7 @@ fun LessonIntroScreen(
     lessonIndex: Int,
     viewModel: LessonIntroViewModel
 ) {
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     // Достаём данные из RoadmapData по индексам
     val unit   = remember(unitId) { RoadmapData.units.getOrNull(unitId - 1) }

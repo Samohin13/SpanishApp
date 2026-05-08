@@ -35,7 +35,7 @@ fun SpeedGameScreen(
     viewModel: SpeedViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     when {
         state.showLevelMap -> {

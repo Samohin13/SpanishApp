@@ -50,7 +50,7 @@ fun MathGameScreen(
     // rememberSaveable переживает ротацию экрана; ключ — currentRound, чтобы
     // ввод сбрасывался при смене раунда.
     var inputVal by rememberSaveable(state.currentRound) { mutableStateOf("") }
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     when {
         state.showLevelMap -> {
