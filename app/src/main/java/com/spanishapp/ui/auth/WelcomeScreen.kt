@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.spanishapp.R
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -24,7 +25,6 @@ import androidx.compose.foundation.clickable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.spanishapp.R
 
 @Composable
 fun WelcomeScreen(
@@ -72,7 +72,7 @@ fun WelcomeScreen(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                "Начни свой путь к свободному испанскому языку прямо сейчас",
+                stringResource(R.string.welcome_subtitle),
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -97,7 +97,7 @@ fun WelcomeScreen(
                 shape = MaterialTheme.shapes.medium,
                 enabled = !state.isLoading
             ) {
-                Text("Начать обучение", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.btn_start_learning), fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(Modifier.height(12.dp))
@@ -108,7 +108,7 @@ fun WelcomeScreen(
                 shape = MaterialTheme.shapes.medium,
                 enabled = !state.isLoading
             ) {
-                Text("У меня уже есть аккаунт", fontSize = 18.sp)
+                Text(stringResource(R.string.welcome_already_have_account), fontSize = 18.sp)
             }
 
             Spacer(Modifier.height(40.dp))
@@ -119,7 +119,7 @@ fun WelcomeScreen(
             ) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 Text(
-                    "или войти через",
+                    stringResource(R.string.welcome_login_with),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp

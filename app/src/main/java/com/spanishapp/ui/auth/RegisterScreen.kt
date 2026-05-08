@@ -85,7 +85,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it; viewModel.clearErrors() },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.auth_email)) },
                 placeholder = { Text("example@mail.com") },
                 modifier = Modifier.fillMaxWidth(),
                 isError = state.emailError != null,
@@ -102,7 +102,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it; viewModel.clearErrors() },
-                label = { Text("Пароль") },
+                label = { Text(stringResource(R.string.auth_password)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = state.passwordError != null,
                 supportingText = { if (state.passwordError != null) Text(state.passwordError!!) },
@@ -130,7 +130,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it; viewModel.clearErrors() },
-                label = { Text("Повторите пароль") },
+                label = { Text(stringResource(R.string.auth_password_confirm)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = state.confirmPasswordError != null ||
                     (confirmPassword.isNotEmpty() && confirmPassword != password),
@@ -200,7 +200,7 @@ fun RegisterScreen(
                 if (state.isLoading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("Зарегистрироваться", fontSize = 18.sp)
+                    Text(stringResource(R.string.auth_register), fontSize = 18.sp)
                 }
             }
 
