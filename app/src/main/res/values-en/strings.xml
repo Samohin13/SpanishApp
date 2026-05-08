@@ -537,4 +537,11 @@
     <string name="set_dlg_name_label">Name</string>
     <string name="set_dlg_name_save">Save</string>
 
+    <!-- Vibration intensity -->
+    <string name="vib_off">Off</string>
+    <string name="vib_light">Light</string>
+    <string name="vib_medium">Medium</string>
+    <string name="vib_strong">Strong</string>
+    <string name="vib_test">Test</string>
+
 </resources>

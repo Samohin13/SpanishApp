@@ -70,7 +70,8 @@ class SettingsViewModel @Inject constructor(
     private val appPreferences: AppPreferences,
     private val authRepository: AuthRepository,
     private val appLockPreferences: AppLockPreferences,
-    private val appLockManager: AppLockManager
+    private val appLockManager: AppLockManager,
+    private val vibrationHelper: com.spanishapp.service.VibrationHelper
 ) : ViewModel() {
 
     val appLockEnabled = appLockPreferences.isEnabled
@@ -170,6 +171,7 @@ class SettingsViewModel @Inject constructor(
     val ttsEnabled = appPreferences.ttsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val soundEffects = appPreferences.soundEffectsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val vibration = appPreferences.vibrationEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+    val vibrationIntensity = appPreferences.vibrationIntensity.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 2)
     val reminders = appPreferences.remindersEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val reminderHour = appPreferences.reminderHour.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 19)
     val reminderMinute = appPreferences.reminderMinute.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
@@ -180,6 +182,14 @@ class SettingsViewModel @Inject constructor(
     fun toggleTts(e: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(e) }
     fun toggleSoundEffects(e: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(e) }
     fun toggleVibration(e: Boolean) = viewModelScope.launch { appPreferences.setVibrationEnabled(e) }
+    fun setVibrationIntensity(level: Int) = viewModelScope.launch {
+        appPreferences.setVibrationIntensity(level)
+        // Preview the new intensity right after the user picks it.
+        if (level > 0) vibrationHelper.tick(level)
+    }
+    fun previewVibration(level: Int) {
+        if (level > 0) vibrationHelper.pulse(level)
+    }
 
     fun toggleReminders(context: android.content.Context, enabled: Boolean) = viewModelScope.launch {
         appPreferences.setRemindersEnabled(enabled)
@@ -234,6 +244,7 @@ fun SettingsScreen(
     val soundEffects by vm.soundEffects.collectAsStateWithLifecycle()
     val ttsEnabled by vm.ttsEnabled.collectAsStateWithLifecycle()
     val vibration by vm.vibration.collectAsStateWithLifecycle()
+    val vibrationIntensity by vm.vibrationIntensity.collectAsStateWithLifecycle()
     val themeMode by vm.themeMode.collectAsStateWithLifecycle()
     val fontSize by vm.fontSize.collectAsStateWithLifecycle()
     
@@ -388,7 +399,11 @@ fun SettingsScreen(
             SettingsSection(stringResource(R.string.settings_section_sound)) {
                 SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.settings_sound_effects), soundEffects) { vm.toggleSoundEffects(it) }
                 SettingsSwitchItem(Icons.Default.RecordVoiceOver, stringResource(R.string.settings_voice_announcer), ttsEnabled) { vm.toggleTts(it) }
-                SettingsSwitchItem(Icons.Default.Vibration, stringResource(R.string.set_vibration), vibration) { vm.toggleVibration(it) }
+                VibrationIntensityItem(
+                    intensity = vibrationIntensity,
+                    onSelect = { vm.setVibrationIntensity(it) },
+                    onTest = { vm.previewVibration(vibrationIntensity) }
+                )
                 SettingsItem(Icons.Default.InterpreterMode, stringResource(R.string.set_voice_setup)) { navController.navigate("settings_voice") }
             }
 
@@ -755,5 +770,39 @@ fun SettingsSwitchItem(icon: ImageVector, title: String, checked: Boolean, onChe
         Spacer(Modifier.width(16.dp))
         Text(title, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
         Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}
+
+@Composable
+fun VibrationIntensityItem(
+    intensity: Int,
+    onSelect: (Int) -> Unit,
+    onTest: () -> Unit
+) {
+    val labels = listOf(
+        stringResource(R.string.vib_off),
+        stringResource(R.string.vib_light),
+        stringResource(R.string.vib_medium),
+        stringResource(R.string.vib_strong)
+    )
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.Vibration, null, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
+            Spacer(Modifier.width(16.dp))
+            Text(stringResource(R.string.set_vibration), modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+            if (intensity > 0) {
+                TextButton(onClick = onTest) { Text(stringResource(R.string.vib_test)) }
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+            labels.forEachIndexed { idx, label ->
+                SegmentedButton(
+                    selected = intensity == idx,
+                    onClick = { onSelect(idx) },
+                    shape = SegmentedButtonDefaults.itemShape(idx, labels.size)
+                ) { Text(label, style = MaterialTheme.typography.labelMedium) }
+            }
+        }
     }
 }

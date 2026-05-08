@@ -26,6 +26,7 @@ class AppPreferences @Inject constructor(
         val SOUND_EFFECTS    = booleanPreferencesKey("sound_effects")
         val BG_MUSIC         = booleanPreferencesKey("bg_music")
         val VIBRATION        = booleanPreferencesKey("vibration")
+        val VIBRATION_INTENSITY = intPreferencesKey("vibration_intensity") // 0=off,1=light,2=medium,3=strong
         val REMINDERS        = booleanPreferencesKey("reminders")
         val REMINDER_HOUR    = intPreferencesKey("reminder_hour")    // 0..23
         val REMINDER_MINUTE  = intPreferencesKey("reminder_minute")  // 0..59
@@ -39,8 +40,21 @@ class AppPreferences @Inject constructor(
     val bgMusicEnabled: Flow<Boolean> = context.dataStore.data.map { it[BG_MUSIC] ?: false }
     suspend fun setBgMusicEnabled(enabled: Boolean) = context.dataStore.edit { it[BG_MUSIC] = enabled }
 
-    val vibrationEnabled: Flow<Boolean> = context.dataStore.data.map { it[VIBRATION] ?: true }
-    suspend fun setVibrationEnabled(enabled: Boolean) = context.dataStore.edit { it[VIBRATION] = enabled }
+    /**
+     * Vibration intensity: 0=off, 1=light, 2=medium, 3=strong.
+     * Migrates from legacy boolean: if intensity is unset, derive from VIBRATION (true→2, false→0).
+     */
+    val vibrationIntensity: Flow<Int> = context.dataStore.data.map {
+        it[VIBRATION_INTENSITY] ?: if (it[VIBRATION] != false) 2 else 0
+    }
+    suspend fun setVibrationIntensity(level: Int) = context.dataStore.edit {
+        it[VIBRATION_INTENSITY] = level.coerceIn(0, 3)
+        it[VIBRATION] = level > 0  // keep legacy in sync
+    }
+
+    /** Backward-compat boolean derived from intensity. */
+    val vibrationEnabled: Flow<Boolean> = vibrationIntensity.map { it > 0 }
+    suspend fun setVibrationEnabled(enabled: Boolean) = setVibrationIntensity(if (enabled) 2 else 0)
 
     val remindersEnabled: Flow<Boolean> = context.dataStore.data.map { it[REMINDERS] ?: true }
     suspend fun setRemindersEnabled(enabled: Boolean) = context.dataStore.edit { it[REMINDERS] = enabled }
