@@ -140,6 +140,23 @@
     <string name="course_locked">Заблокировано</string>
     <string name="course_start_learning">Начать обучение →</string>
 
+    <!-- ── LessonIntro / Content ────────────────────────────── -->
+    <string name="lesson_intro_vocab">Изучи новые слова и фразы для общения. Мы подобрали самые важные выражения для этой темы.</string>
+    <string name="lesson_intro_grammar">Разберись, как строятся предложения. Грамматика — это скелет языка.</string>
+    <string name="lesson_intro_phrase">Потренируй готовые разговорные фразы — настоящий язык живых людей.</string>
+    <string name="lesson_intro_quiz">Проверь свои знания! Пройди тест, чтобы открыть следующий раздел.</string>
+    <string name="lesson_reward_xp">Опыт</string>
+    <string name="lesson_reward_next">Следующий\nурок</string>
+    <string name="lesson_reward_progress">Прогресс\nблока</string>
+    <string name="lesson_start_button">ПОЕХАЛИ!</string>
+    <string name="lesson_later">Не сейчас</string>
+    <string name="lesson_in_development_title">Урок в разработке</string>
+    <string name="lesson_in_development_subtitle">Скоро здесь появится теория!</string>
+    <string name="lesson_mark_as_done">Отметить как пройденный</string>
+    <string name="lesson_done">Готово!</string>
+    <string name="lesson_understood">Понятно! (+15 XP)</string>
+    <string name="lesson_block_label">Блок %1$s · %2$s</string>
+
     <!-- ── PlacementTest ────────────────────────────────────── -->
     <string name="placement_abort_title">Прервать тест?</string>
     <string name="placement_abort_message">Прогресс ответа на этом вопросе не сохранится.</string>

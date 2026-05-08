@@ -54,10 +54,10 @@ fun LessonIntroScreen(
     }
 
     val description = when (lesson.type) {
-        "vocab"   -> "Изучи новые слова и фразы для общения. Мы подобрали самые важные выражения для этой темы."
-        "grammar" -> "Разберись, как строятся предложения. Грамматика — это скелет языка."
-        "phrase"  -> "Потренируй готовые разговорные фразы — настоящий язык живых людей."
-        else      -> "Проверь свои знания! Пройди тест, чтобы открыть следующий раздел."
+        "vocab"   -> androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_intro_vocab)
+        "grammar" -> androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_intro_grammar)
+        "phrase"  -> androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_intro_phrase)
+        else      -> androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_intro_quiz)
     }
 
     val cefrBadge = unit.cefrLevel  // "A1", "A2", "B1", "B2"
@@ -140,9 +140,9 @@ fun LessonIntroScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    RewardItem("✨ +15 XP", "Опыт")
-                    RewardItem("🔓", "Следующий\nурок")
-                    RewardItem("🎯", "Прогресс\nблока")
+                    RewardItem("✨ +15 XP", androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_reward_xp))
+                    RewardItem("🔓", androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_reward_next))
+                    RewardItem("🎯", androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_reward_progress))
                 }
             }
 
@@ -170,14 +170,14 @@ fun LessonIntroScreen(
                 shape = RoundedCornerShape(20.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = accentColor)
             ) {
-                Text("ПОЕХАЛИ!", fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
+                Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_start_button), fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
             }
 
             TextButton(
                 onClick = { navController.popBackStack() },
                 modifier = Modifier.padding(top = 8.dp)
             ) {
-                Text("Не сейчас", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_later), color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
