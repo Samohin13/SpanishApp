@@ -37,8 +37,6 @@ fun CourseDetailScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var expandedUnitId by remember { mutableStateOf<String?>(null) }
-    var showPremiumSheet by remember { mutableStateOf(false) }
-    val premiumSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val unitsForCourse = remember(state.roadmapUnits, courseLevel) {
         state.roadmapUnits.filter { it.cefrLevel == courseLevel }
@@ -133,29 +131,17 @@ fun CourseDetailScreen(
                         expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
                     },
                     onLessonClick = { lessonIndex ->
-                        if (!unit.isLocked) {
-                            if (unit.id.toIntOrNull() != null) {
-                                navController.navigate("lesson_intro/${unit.id}/$lessonIndex") {
-                                    popUpTo("course_detail/{courseLevel}") { inclusive = false }
-                                }
-                            } else {
-                                showPremiumSheet = true
+                        if (!unit.isLocked && unit.id.toIntOrNull() != null) {
+                            navController.navigate("lesson_intro/${unit.id}/$lessonIndex") {
+                                popUpTo("course_detail/{courseLevel}") { inclusive = false }
                             }
                         }
+                        // Для preview-юнитов A2/B1/B2 (id не int) клик игнорируется —
+                        // контент ещё в разработке.
                     },
-                    onPremiumClick = { showPremiumSheet = true }
+                    onPremiumClick = { /* premium убран — все курсы открыты */ }
                 )
             }
-        }
-    }
-
-    if (showPremiumSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showPremiumSheet = false },
-            sheetState = premiumSheetState,
-            containerColor = Color.White
-        ) {
-            HomePremiumSheet(onDismiss = { showPremiumSheet = false })
         }
     }
 }
