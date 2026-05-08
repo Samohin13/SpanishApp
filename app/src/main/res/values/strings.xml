@@ -5,9 +5,10 @@
     <!-- Google Sign-In Web Client ID (из google-services.json, client_type=3). -->
     <string name="default_web_client_id" translatable="false">664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com</string>
 
-    <!-- URL опубликованной политики конфиденциальности. Заменить на финальный после публикации. -->
-    <string name="privacy_policy_url" translatable="false">https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md</string>
-    <string name="terms_url" translatable="false">https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md</string>
+    <!-- URL опубликованной политики конфиденциальности. Указывает на GitHub Pages,
+         который должен быть включён в Settings → Pages репозитория (см. docs/PUBLISH_PRIVACY_POLICY.md). -->
+    <string name="privacy_policy_url" translatable="false">https://samohin13.github.io/SpanishApp/PRIVACY_POLICY</string>
+    <string name="terms_url" translatable="false">https://samohin13.github.io/SpanishApp/PRIVACY_POLICY</string>
 
     <!-- ═══════════════════════════════════════════════════════
          Базовые строки UI. Дополняются постепенно по мере
