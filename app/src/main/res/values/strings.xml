@@ -571,5 +571,6 @@
     <string name="set_dlg_name_title">Изменить имя</string>
     <string name="set_dlg_name_label">Имя</string>
     <string name="set_dlg_name_save">Сохранить</string>
+    <string name="set_notif_perm_denied">Без разрешения на уведомления напоминания не будут приходить. Включи в системных настройках.</string>
 
 </resources>

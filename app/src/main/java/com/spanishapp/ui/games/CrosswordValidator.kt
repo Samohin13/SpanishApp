@@ -58,7 +58,7 @@ internal object CrosswordValidator {
         }
         words.forEach { w ->
             val intersects = words.any { other ->
-                other.id != w.id && cellSets[w.id]!!.intersect(cellSets[other.id]!!).isNotEmpty()
+                other.id != w.id && (cellSets[w.id].orEmpty()).intersect(cellSets[other.id].orEmpty()).isNotEmpty()
             }
             if (!intersects)
                 errs.add("'${w.spanish}' has no intersection with any other word")
@@ -69,7 +69,7 @@ internal object CrosswordValidator {
             w.id to words
                 .filter { other ->
                     other.id != w.id &&
-                    cellSets[w.id]!!.intersect(cellSets[other.id]!!).isNotEmpty()
+                    (cellSets[w.id].orEmpty()).intersect(cellSets[other.id].orEmpty()).isNotEmpty()
                 }
                 .map { it.id }
                 .toSet()

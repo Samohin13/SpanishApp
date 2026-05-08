@@ -536,5 +536,6 @@
     <string name="set_dlg_name_title">Change name</string>
     <string name="set_dlg_name_label">Name</string>
     <string name="set_dlg_name_save">Save</string>
+    <string name="set_notif_perm_denied">Without notification permission reminders won\'t be delivered. Enable it in system settings.</string>
 
 </resources>
