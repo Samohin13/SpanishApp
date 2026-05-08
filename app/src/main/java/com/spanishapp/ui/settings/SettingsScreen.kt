@@ -413,14 +413,24 @@ fun SettingsScreen(
             }
 
             SettingsSection("Дополнительно") {
-                SettingsItem(Icons.Default.Leaderboard, "Лидерборды и соцсети") { /* Навигация в лидерборды */ }
+                SettingsItem(Icons.Default.Leaderboard, "Лидерборды") {
+                    navController.navigate("leaderboard")
+                }
                 SettingsItem(Icons.Default.Refresh, "Сброс прогресса") { showResetDialog = true }
                 SettingsItem(Icons.Default.Share, "Поделиться приложением") {
+                    // Пока приложение не опубликовано в Play, ссылка ведёт на GitHub.
+                    // После релиза заменить на https://play.google.com/store/apps/details?id=com.spanishapp
+                    val playUrl = "https://github.com/Samohin13/SpanishApp"
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, "Учи испанский со мной в SpanishApp! 🇪🇸")
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "Учу испанский в ESPEAK 🇪🇸 — попробуй: $playUrl"
+                        )
                     }
-                    context.startActivity(Intent.createChooser(intent, "Поделиться"))
+                    runCatching {
+                        context.startActivity(Intent.createChooser(intent, "Поделиться приложением"))
+                    }
                 }
             }
 

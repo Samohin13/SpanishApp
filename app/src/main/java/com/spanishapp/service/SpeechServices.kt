@@ -8,9 +8,14 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import com.spanishapp.data.prefs.AppPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Locale
 import javax.inject.Inject
@@ -22,11 +27,18 @@ import kotlin.coroutines.resume
 // ═════════════════════════════════════════════════════════════
 @Singleton
 class SpanishTts @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val appPreferences: AppPreferences
 ) {
     private var tts: TextToSpeech? = null
     private val _isReady = MutableStateFlow(false)
     val isReady: StateFlow<Boolean> = _isReady
+
+    // Кэшируем состояние тоггла «Голос диктора» — обновляется при каждом
+    // изменении настройки. Если выключено — speak() становится no-op.
+    @Volatile private var enabled: Boolean = true
+
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val preferredLocales = listOf(
         Locale("es", "ES"),
@@ -35,7 +47,13 @@ class SpanishTts @Inject constructor(
         Locale("es")
     )
 
-    init { initialize() }
+    init {
+        initialize()
+        // Подписываемся на изменения настройки
+        scope.launch {
+            appPreferences.ttsEnabled.collect { enabled = it }
+        }
+    }
 
     private fun initialize() {
         tts = TextToSpeech(context) { status ->
@@ -74,6 +92,7 @@ class SpanishTts @Inject constructor(
 
     /** Speak Spanish text aloud. @param slow — 0.66× rate for careful listening. */
     fun speak(text: String, slow: Boolean = false) {
+        if (!enabled) return  // Юзер отключил голос диктора в настройках.
         val t = tts ?: return
         if (!_isReady.value) return
         val speakText = inferSpeakText(text) ?: return
@@ -83,6 +102,10 @@ class SpanishTts @Inject constructor(
 
     suspend fun speakAndWait(text: String, slow: Boolean = false) =
         suspendCancellableCoroutine { cont ->
+            if (!enabled) {  // Юзер отключил голос диктора — не блокируем сценарий
+                if (cont.isActive) cont.resume(Unit)
+                return@suspendCancellableCoroutine
+            }
             val speakText = inferSpeakText(text)
             if (speakText == null) {
                 if (cont.isActive) cont.resume(Unit)

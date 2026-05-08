@@ -3,12 +3,19 @@
 
     <style name="Theme.SpanishApp" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <!-- Splash Screen Theme (SplashScreen API, Android 12+) -->
+    <!-- Splash Screen Theme (SplashScreen API, Android 12+).
+         Цвета совпадают с брендом «Sunset over Barcelona» — оранжевый Purple
+         в Color.kt = #FF6B35. -->
     <style name="Theme.SpanishApp.Splash" parent="Theme.SplashScreen">
-        <!-- Цвет фона сплеш-экрана -->
-        <item name="windowSplashScreenBackground">#FF5722</item>
-        <!-- Иконка в центре (adaptive icon) -->
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- Фон сплэш-экрана -->
+        <item name="windowSplashScreenBackground">#FF6B35</item>
+
+        <!-- Иконка в центре (adaptive icon foreground) -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+
+        <!-- Подложка под иконку (Android 12+ автоматически окрашивает) -->
+        <item name="windowSplashScreenIconBackgroundColor">#FFFFFF</item>
+
         <!-- Тема которая применяется после скрытия сплеша -->
         <item name="postSplashScreenTheme">@style/Theme.SpanishApp</item>
     </style>
