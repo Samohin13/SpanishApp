@@ -81,4 +81,24 @@
     <string name="home_word_of_day">Слово дня</string>
     <string name="home_streak_studied_today">Сегодня позанимался</string>
 
+    <!-- ── Achievements ─────────────────────────────────────── -->
+    <string name="achievements_section_unlocked">🏆 Получены (%1$d)</string>
+    <string name="achievements_section_locked">🔒 Ещё не получены (%1$d)</string>
+    <string name="achievements_summary_count">достижений</string>
+    <string name="achievements_summary_xp_label">XP получено</string>
+    <string name="achievements_summary_progress">прогресс</string>
+    <string name="achievements_new_badge">NEW</string>
+
+    <!-- ── Onboarding шаги ──────────────────────────────────── -->
+    <string name="onboarding_name_question">Как тебя зовут?</string>
+    <string name="onboarding_name_subtitle">Так мы будем обращаться к тебе в приложении</string>
+    <string name="onboarding_name_label">Имя или никнейм</string>
+    <string name="onboarding_name_placeholder">Например: Сергей</string>
+    <string name="onboarding_age_question">Сколько тебе лет?</string>
+    <string name="onboarding_age_subtitle">Это поможет настроить программу под твой темп</string>
+    <string name="onboarding_age_years">лет</string>
+    <string name="onboarding_reason_question">Зачем ты учишь испанский?</string>
+    <string name="onboarding_knowledge_question">Ты знаешь испанский?</string>
+    <string name="onboarding_knowledge_subtitle">Это поможет настроить программу под тебя</string>
+
 </resources>

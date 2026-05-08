@@ -103,7 +103,7 @@ fun AchievementsScreen(
             // ── Unlocked ─────────────────────────────────────
             if (unlocked.isNotEmpty()) {
                 item {
-                    SectionLabel("🏆 Получены (${unlocked.size})")
+                    SectionLabel(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.achievements_section_unlocked, unlocked.size))
                 }
                 itemsIndexed(
                     items = unlocked,
@@ -121,7 +121,7 @@ fun AchievementsScreen(
             }
 
             // ── Locked ───────────────────────────────────────
-            item { SectionLabel("🔒 Ещё не получены (${locked.size})") }
+            item { SectionLabel(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.achievements_section_locked, locked.size)) }
             itemsIndexed(
                 items = locked,
                 key = { _, a -> a.id }
@@ -150,10 +150,10 @@ private fun AchievementSummary(unlocked: Int, total: Int, totalXp: Int) {
             modifier = Modifier.padding(20.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            SummaryItem("🏅", "$unlocked / $total", "достижений")
-            SummaryItem("⭐", "+$totalXp", "XP получено")
+            SummaryItem("🏅", "$unlocked / $total", androidx.compose.ui.res.stringResource(com.spanishapp.R.string.achievements_summary_count))
+            SummaryItem("⭐", "+$totalXp", androidx.compose.ui.res.stringResource(com.spanishapp.R.string.achievements_summary_xp_label))
             val pct = if (total > 0) (unlocked * 100 / total) else 0
-            SummaryItem("📊", "$pct%", "прогресс")
+            SummaryItem("📊", "$pct%", androidx.compose.ui.res.stringResource(com.spanishapp.R.string.achievements_summary_progress))
         }
     }
 }

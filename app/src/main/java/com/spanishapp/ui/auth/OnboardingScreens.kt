@@ -18,7 +18,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import com.spanishapp.R
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,10 +62,10 @@ fun NameEntryScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Как тебя зовут?", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.onboarding_name_question), fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Так мы будем обращаться к тебе в приложении",
+                stringResource(R.string.onboarding_name_subtitle),
                 fontSize = 14.sp,
                 color = AppColors.TextSecondary,
                 textAlign = TextAlign.Center
@@ -77,8 +79,8 @@ fun NameEntryScreen(
                     if (newValue.length <= 20) name = newValue
                     touched = true
                 },
-                label = { Text("Имя или никнейм") },
-                placeholder = { Text("Например: Сергей") },
+                label = { Text(stringResource(R.string.onboarding_name_label)) },
+                placeholder = { Text(stringResource(R.string.onboarding_name_placeholder)) },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Default.Person, null) },
                 isError = nameError != null,
@@ -148,10 +150,10 @@ fun AgeSelectionScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Сколько тебе лет?", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.onboarding_age_question), fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Это поможет настроить программу под твой темп",
+                stringResource(R.string.onboarding_age_subtitle),
                 color = AppColors.TextSecondary,
                 textAlign = TextAlign.Center
             )
@@ -159,7 +161,7 @@ fun AgeSelectionScreen(
             Spacer(Modifier.height(48.dp))
 
             Text(
-                "$age лет",
+                "$age ${stringResource(R.string.onboarding_age_years)}",
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.primary
@@ -246,7 +248,7 @@ fun ReasonSelectionScreen(
         ) {
             Spacer(Modifier.height(24.dp))
             Text(
-                "Зачем ты учишь испанский?",
+                stringResource(R.string.onboarding_reason_question),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -329,14 +331,14 @@ fun KnowledgeCheckScreen(
             Text("🇪🇸", fontSize = 64.sp)
             Spacer(Modifier.height(24.dp))
             Text(
-                "Ты знаешь испанский?",
+                stringResource(R.string.onboarding_knowledge_question),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Это поможет настроить программу под тебя",
+                stringResource(R.string.onboarding_knowledge_subtitle),
                 fontSize = 14.sp,
                 color = AppColors.TextSecondary,
                 textAlign = TextAlign.Center
