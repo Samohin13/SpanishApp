@@ -1,8 +1,8 @@
 package com.spanishapp.ui.auth
 
-import androidx.activity.ComponentActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.fragment.app.FragmentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fingerprint
@@ -51,7 +51,7 @@ fun AppLockScreen(
     viewModel: AppLockViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val activity = context as? ComponentActivity
+    val activity = context as? FragmentActivity
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var promptShown by remember { mutableStateOf(false) }
 
