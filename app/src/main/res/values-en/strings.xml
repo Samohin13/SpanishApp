@@ -127,6 +127,23 @@
     <string name="course_locked">Locked</string>
     <string name="course_start_learning">Start learning →</string>
 
+    <!-- ── LessonIntro / Content ── -->
+    <string name="lesson_intro_vocab">Learn new words and phrases for everyday conversation. We picked the most important ones for this topic.</string>
+    <string name="lesson_intro_grammar">Understand how sentences work. Grammar is the skeleton of any language.</string>
+    <string name="lesson_intro_phrase">Practice ready-to-use phrases — the language real people speak.</string>
+    <string name="lesson_intro_quiz">Test yourself! Pass the quiz to unlock the next section.</string>
+    <string name="lesson_reward_xp">Experience</string>
+    <string name="lesson_reward_next">Next\nlesson</string>
+    <string name="lesson_reward_progress">Block\nprogress</string>
+    <string name="lesson_start_button">LET\'S GO!</string>
+    <string name="lesson_later">Not now</string>
+    <string name="lesson_in_development_title">Lesson in development</string>
+    <string name="lesson_in_development_subtitle">Theory will appear here soon!</string>
+    <string name="lesson_mark_as_done">Mark as completed</string>
+    <string name="lesson_done">Done!</string>
+    <string name="lesson_understood">Got it! (+15 XP)</string>
+    <string name="lesson_block_label">Block %1$s · %2$s</string>
+
     <!-- ── PlacementTest ── -->
     <string name="placement_abort_title">Stop the test?</string>
     <string name="placement_abort_message">Your answer to this question won\'t be saved.</string>

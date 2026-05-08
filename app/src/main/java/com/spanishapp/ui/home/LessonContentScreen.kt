@@ -57,14 +57,14 @@ fun LessonContentScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("🚧", fontSize = 48.sp)
                     Spacer(Modifier.height(12.dp))
-                    Text("Урок в разработке", fontWeight = FontWeight.Bold)
+                    Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_in_development_title), fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(6.dp))
-                    Text("Скоро здесь появится теория!", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_in_development_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.height(24.dp))
                     Button(onClick = {
                         viewModel.markLessonComplete(unitId, lessonIndex)
                         navController.popBackStack()
-                    }) { Text("Отметить как пройденный") }
+                    }) { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_mark_as_done)) }
                 }
             }
         }
@@ -81,7 +81,7 @@ fun LessonContentScreen(
                 title = {
                     Column {
                         Text(
-                            text = "Блок ${unit.id} · ${unit.cefrLevel}",
+                            text = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_block_label, unit.id, unit.cefrLevel),
                             fontSize = 12.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -124,7 +124,7 @@ fun LessonContentScreen(
                         Spacer(Modifier.width(8.dp))
                     }
                     Text(
-                        text = if (isMarked) "Готово!" else "Понятно! (+15 XP)",
+                        text = if (isMarked) androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_done) else androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_understood),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
