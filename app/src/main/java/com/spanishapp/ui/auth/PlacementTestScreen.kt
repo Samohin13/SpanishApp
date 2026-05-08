@@ -28,26 +28,48 @@ private data class Question(
     val correctIndex: Int
 )
 
-private val QUESTIONS = listOf(
-    // A1
+// 20 вопросов: 5 A1 + 5 A2 + 5 B1 + 5 B2.
+// Случайно перемешиваем при каждом запуске чтобы юзер не запоминал
+// порядок при повторном прохождении.
+private val ALL_QUESTIONS: List<Question> = listOf(
+    // ── A1: базовая лексика и простая грамматика ──
     Question("Что значит «familia»?", listOf("Еда", "Семья", "Работа", "Город"), 1),
     Question("Как сказать «Здравствуйте» по-испански?", listOf("Gracias", "Adiós", "Hola", "Por favor"), 2),
-    // A2
-    Question("«Ayer yo ___ al mercado» (ir)", listOf("voy", "iré", "vaya", "fui"), 3),
+    Question("«Yo ___ estudiante.» Какой глагол?", listOf("soy", "estoy", "tengo", "voy"), 0),
+    Question("Что значит «¿De dónde eres?»", listOf("Сколько тебе лет?", "Откуда ты?", "Как тебя зовут?", "Что делаешь?"), 1),
+    Question("Выберите правильную форму: «Mi madre ___ médica.»", listOf("es", "está", "hay", "tiene"), 0),
+
+    // ── A2: прошедшее время, частые конструкции ──
+    Question("«Ayer yo ___ al mercado.» (ir)", listOf("voy", "iré", "vaya", "fui"), 3),
     Question("Что значит «¿Cuánto cuesta?»", listOf("Как тебя зовут?", "Который час?", "Где находится?", "Сколько стоит?"), 3),
-    // B1
+    Question("«Esta camisa es ___ que la otra.»", listOf("más bonita", "muy bonita", "tan bonita", "bonitísima"), 0),
+    Question("Какое значение у «Acabo de comer»?", listOf("Я скоро поем", "Я только что поел", "Я ем", "Я не буду есть"), 1),
+    Question("Выберите перевод «давай побудем здесь»: «___ aquí.»", listOf("Quedémonos", "Nos quedaríamos", "Quedamos", "Nos quedaron"), 0),
+
+    // ── B1: subjuntivo, condicional, более тонкие нюансы ──
     Question("«Es importante que tú ___ (estudiar)»", listOf("estudias", "estudies", "estudiará", "estudié"), 1),
     Question("Что значит «a lo mejor»?", listOf("Никогда", "Всегда", "Возможно", "Обязательно"), 2),
-    // B2
+    Question("«Si tuviera dinero, ___ a Japón.»", listOf("voy", "iría", "iba", "vaya"), 1),
+    Question("«Cuando ___ a casa, llámame.» (будущее)", listOf("llegas", "llegues", "llegabas", "llegarás"), 1),
+    Question("Выберите перевод «не было ничего вкусного»: «No había nada ___»", listOf("rico", "ricas", "rica", "rico que comer"), 3),
+
+    // ── B2: продвинутая грамматика и идиомы ──
     Question("«No hay mal que por bien no venga» означает:", listOf("Всё проходит", "Чем хуже, тем лучше", "Нет худа без добра", "Удача переменчива"), 2),
-    Question("Выберите правильный вариант: «Si hubiera sabido, ___ antes»", listOf("vendría", "vengo", "vine", "habría venido"), 3),
+    Question("«Si hubiera sabido, ___ antes»", listOf("vendría", "vengo", "vine", "habría venido"), 3),
+    Question("Что значит «echar de menos»?", listOf("Скучать по чему-то", "Уменьшать", "Отказываться", "Бросать"), 0),
+    Question("«Una vez que ___ el informe, lo enviaremos.»", listOf("terminamos", "terminemos", "termináramos", "terminaríamos"), 1),
+    Question("«Por mucho que ___, no me convencerás.»", listOf("dices", "digas", "decías", "dirás"), 1),
 )
 
+// Перемешиваем единожды на старте теста — список затем используется как есть.
+private val QUESTIONS: List<Question> = ALL_QUESTIONS.shuffled()
+
 private fun calcLevel(correct: Int) = when {
-    correct >= 7 -> "B2"
-    correct >= 5 -> "B1"
-    correct >= 3 -> "A2"
-    else -> "A1"
+    // 20 вопросов — пороги пропорциональны (75/55/30%).
+    correct >= 15 -> "B2"
+    correct >= 11 -> "B1"
+    correct >= 6  -> "A2"
+    else          -> "A1"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
