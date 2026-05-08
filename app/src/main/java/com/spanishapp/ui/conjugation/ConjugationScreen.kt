@@ -133,7 +133,7 @@ fun ConjugationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Спряжения") },
+                title = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_conjugation)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)

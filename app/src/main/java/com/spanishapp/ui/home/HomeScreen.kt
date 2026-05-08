@@ -35,6 +35,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.spanishapp.R
 import com.spanishapp.ui.components.*
 
 // ── Roadmap Data Model ────────────────────────────────────────
@@ -161,9 +163,9 @@ fun HomeScreen(
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 20.dp)
             ) {
-                Text("Привет! 👋", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.home_greeting), fontSize = 26.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.height(2.dp))
-                Text("Продолжай изучать испанский язык", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.home_subtitle), fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -820,7 +822,7 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
             // Label
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("📖", fontSize = 14.sp)
-                Text("Слово дня", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = WordBlue)
+                Text(stringResource(R.string.home_word_of_day), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = WordBlue)
             }
 
             Spacer(Modifier.height(10.dp))
