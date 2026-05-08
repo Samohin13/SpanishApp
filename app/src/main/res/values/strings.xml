@@ -89,6 +89,18 @@
     <string name="achievements_summary_progress">прогресс</string>
     <string name="achievements_new_badge">NEW</string>
 
+    <!-- ── Conjugation ──────────────────────────────────────── -->
+    <string name="conj_search_placeholder">Поиск глагола…</string>
+    <string name="conj_filter_all">Все</string>
+    <string name="conj_filter_regular">Правильные</string>
+    <string name="conj_filter_irregular">⚡ Неправильные</string>
+    <string name="conj_count_all">%1$d глаголов</string>
+    <string name="conj_count_regular">%1$d правильных</string>
+    <string name="conj_count_irregular">%1$d неправильных</string>
+    <string name="conj_hint_tap">нажми чтобы раскрыть таблицу</string>
+    <string name="conj_irregular_label">Неправильный глагол</string>
+    <string name="conj_quiz_action">Викторина</string>
+
     <!-- ── Onboarding шаги ──────────────────────────────────── -->
     <string name="onboarding_name_question">Как тебя зовут?</string>
     <string name="onboarding_name_subtitle">Так мы будем обращаться к тебе в приложении</string>
