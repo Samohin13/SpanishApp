@@ -1,5 +1,6 @@
 package com.spanishapp.ui.chat
 
+import android.content.Context
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,8 +38,10 @@ import androidx.navigation.NavHostController
 import com.spanishapp.data.db.entity.ChatMessageEntity
 import com.spanishapp.data.repository.AiChatRepository
 import com.spanishapp.service.SpanishTts
+import com.spanishapp.R
 import com.spanishapp.ui.theme.AppColors
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -73,7 +77,8 @@ private fun parseCorrections(json: String): List<ChatCorrection> {
 @HiltViewModel
 class AiChatViewModel @Inject constructor(
     private val repo: AiChatRepository,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    @ApplicationContext private val appContext: Context
 ) : ViewModel() {
 
     private val sessionId = "default"
@@ -95,11 +100,11 @@ class AiChatViewModel @Inject constructor(
             val result = repo.sendMessage(text.trim(), sessionId)
             result.onFailure { e ->
                 _error.value = when {
-                    e.message?.contains("401") == true -> "Неверный API ключ Anthropic"
-                    e.message?.contains("429") == true -> "Превышен лимит запросов, подожди"
+                    e.message?.contains("401") == true -> appContext.getString(R.string.chat_error_invalid_key)
+                    e.message?.contains("429") == true -> appContext.getString(R.string.chat_error_rate_limit)
                     e.message?.contains("network") == true ||
-                    e.message?.contains("timeout") == true -> "Нет интернета"
-                    else -> "Ошибка: ${e.message}"
+                    e.message?.contains("timeout") == true -> appContext.getString(R.string.chat_error_network)
+                    else -> appContext.getString(R.string.chat_error_generic, e.message ?: "")
                 }
             }
             _isSending.value = false
@@ -219,7 +224,7 @@ fun AiChatScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(error ?: "", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
-                        IconButton(onClick = vm::clearError) { Icon(Icons.Default.Close, "Закрыть") }
+                        IconButton(onClick = vm::clearError) { Icon(Icons.Default.Close, stringResource(R.string.chat_close_cd)) }
                     }
                 }
             }

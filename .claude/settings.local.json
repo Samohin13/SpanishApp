@@ -18,7 +18,8 @@
       "mcp__Claude_in_Chrome__computer",
       "Bash(./gradlew :app:compileDebugKotlin)",
       "Bash(python replace_colors.py)",
-      "Bash(./gradlew.bat assembleDebug)"
+      "Bash(./gradlew.bat assembleDebug)",
+      "Bash(grep -vE '\\(\\\\.firstOrNull|\\\\.firstNotNullOf|//|/\\\\*\\)')"
     ]
   },
   "sandbox": {

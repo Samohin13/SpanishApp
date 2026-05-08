@@ -47,7 +47,7 @@ fun NameEntryScreen(
                 title = { Text("Знакомство") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
                     }
                 }
             )
@@ -136,7 +136,7 @@ fun AgeSelectionScreen(
                 title = { Text("Возраст") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
                     }
                 }
             )
@@ -182,8 +182,7 @@ fun AgeSelectionScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        "Если тебе младше 13 лет, попроси родителей помочь с регистрацией " +
-                            "и согласием на использование приложения.",
+                        stringResource(R.string.onboarding_under13_hint),
                         fontSize = 13.sp,
                         color = Color(0xFF6A4F00),
                         textAlign = TextAlign.Center,
@@ -232,7 +231,7 @@ fun ReasonSelectionScreen(
                 title = { Text("Цель обучения") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
                     }
                 }
             )
@@ -313,7 +312,7 @@ fun KnowledgeCheckScreen(
                 title = { Text("Знание языка") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
                     }
                 }
             )
@@ -367,9 +366,9 @@ fun KnowledgeCheckScreen(
                     Text("🌱", fontSize = 32.sp)
                     Spacer(Modifier.width(16.dp))
                     Column {
-                        Text("Начинаю с нуля", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text(stringResource(R.string.onboarding_kc_zero), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Text(
-                            "Испанский для меня новый язык",
+                            stringResource(R.string.onboarding_kc_zero_sub),
                             fontSize = 13.sp,
                             color = AppColors.TextSecondary
                         )
@@ -395,13 +394,13 @@ fun KnowledgeCheckScreen(
                     Spacer(Modifier.width(16.dp))
                     Column {
                         Text(
-                            "Уже знаю испанский",
+                            stringResource(R.string.onboarding_kc_some),
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
                             color = Color.White
                         )
                         Text(
-                            "Пройду короткий тест — $PLACEMENT_TEST_QUESTIONS вопросов",
+                            stringResource(R.string.onboarding_kc_some_sub, PLACEMENT_TEST_QUESTIONS),
                             fontSize = 13.sp,
                             color = Color.White.copy(alpha = 0.75f)
                         )

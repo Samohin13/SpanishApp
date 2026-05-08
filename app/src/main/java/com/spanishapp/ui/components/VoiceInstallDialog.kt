@@ -11,7 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.spanishapp.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spanishapp.domain.voice.VoicePackInstaller
@@ -90,7 +92,7 @@ private fun VoiceInstallDialog(
         },
         title = {
             Text(
-                "Хочешь голос как у носителя?",
+                stringResource(R.string.voice_install_title),
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
@@ -98,7 +100,7 @@ private fun VoiceInstallDialog(
         text = {
             Column {
                 Text(
-                    "Сейчас используется стандартный голос, который может звучать роботизированно.",
+                    stringResource(R.string.voice_install_body),
                     fontSize = 14.sp
                 )
                 Spacer(Modifier.height(10.dp))
@@ -108,16 +110,16 @@ private fun VoiceInstallDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(Modifier.padding(12.dp)) {
-                        Text("✨ HD-пакет от Google", fontWeight = FontWeight.Bold, fontSize = 13.sp)
-                        Text("• Естественное произношение", fontSize = 12.sp)
-                        Text("• Мужские и женские голоса", fontSize = 12.sp)
-                        Text("• Кастильский, мексиканский, аргентинский", fontSize = 12.sp)
-                        Text("• Бесплатно, ~15 МБ", fontSize = 12.sp, color = Color(0xFF8E8E93))
+                        Text(stringResource(R.string.voice_install_pack_title), fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Text(stringResource(R.string.voice_install_pack_line1), fontSize = 12.sp)
+                        Text(stringResource(R.string.voice_install_pack_line2), fontSize = 12.sp)
+                        Text(stringResource(R.string.voice_install_pack_line3), fontSize = 12.sp)
+                        Text(stringResource(R.string.voice_install_pack_line4), fontSize = 12.sp, color = Color(0xFF8E8E93))
                     }
                 }
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Откроется системный установщик Google. Тапни «Español» — и всё.",
+                    stringResource(R.string.voice_install_footer),
                     fontSize = 12.sp,
                     color = Color(0xFF8E8E93)
                 )
@@ -128,11 +130,11 @@ private fun VoiceInstallDialog(
                 onClick = onInstall,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C4DFF))
             ) {
-                Text("УСТАНОВИТЬ", fontWeight = FontWeight.ExtraBold)
+                Text(stringResource(R.string.voice_install_confirm), fontWeight = FontWeight.ExtraBold)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Позже") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.voice_install_later)) }
         }
     )
 }

@@ -20,10 +20,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.spanishapp.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -42,24 +44,20 @@ fun CourseDetailScreen(
         state.roadmapUnits.filter { it.cefrLevel == courseLevel }
     }
 
-    val courseTitle = remember(courseLevel) {
-        when (courseLevel) {
-            "A1" -> "Курс A1: Начинающий"
-            "A2" -> "Курс A2: Элементарный"
-            "B1" -> "Курс B1: Средний"
-            "B2" -> "Курс B2: Выше среднего"
-            else -> "Курс $courseLevel"
-        }
+    val courseTitle = when (courseLevel) {
+        "A1" -> stringResource(R.string.course_title_a1)
+        "A2" -> stringResource(R.string.course_title_a2)
+        "B1" -> stringResource(R.string.course_title_b1)
+        "B2" -> stringResource(R.string.course_title_b2)
+        else -> stringResource(R.string.course_title_default, courseLevel)
     }
 
-    val courseDescription = remember(courseLevel) {
-        when (courseLevel) {
-            "A1" -> "Основы испанского языка. Научись представляться, говорить о семье и строить простые предложения."
-            "A2" -> "Развивай навыки общения. Путешествия, покупки, описание прошлого."
-            "B1" -> "Свободное общение. Сложные временные конструкции и субъективное наклонение."
-            "B2" -> "Продвинутый уровень. Идиомы, специальная лексика и сложные грамматические структуры."
-            else -> "Курс испанского языка уровня $courseLevel"
-        }
+    val courseDescription = when (courseLevel) {
+        "A1" -> stringResource(R.string.course_desc_a1)
+        "A2" -> stringResource(R.string.course_desc_a2)
+        "B1" -> stringResource(R.string.course_desc_b1)
+        "B2" -> stringResource(R.string.course_desc_b2)
+        else -> stringResource(R.string.course_desc_default, courseLevel)
     }
 
     Scaffold(
@@ -78,7 +76,7 @@ fun CourseDetailScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.btn_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -106,7 +104,7 @@ fun CourseDetailScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            "О курсе",
+                            stringResource(R.string.course_about_tab),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface

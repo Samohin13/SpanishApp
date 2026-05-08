@@ -13,7 +13,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.spanishapp.R
 import com.spanishapp.data.prefs.VoicePreferences
 import com.spanishapp.data.prefs.VoiceSettings
 import dagger.hilt.EntryPoint
@@ -196,7 +198,7 @@ fun SpeakerButton(
     ) {
         Icon(
             imageVector = Icons.Default.VolumeUp,
-            contentDescription = "Произнести",
+            contentDescription = stringResource(R.string.speaker_button_cd),
             tint = iconTint,
             modifier = Modifier.size(20.dp)
         )
