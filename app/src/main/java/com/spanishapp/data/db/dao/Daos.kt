@@ -467,6 +467,31 @@ interface LibroProgressDao {
 }
 
 @Dao
+interface DailyXpDao {
+    /** Прибавить N XP к указанному дню (создаёт строку если её нет). */
+    @Query("""
+        INSERT INTO daily_xp(day, xp, minutes) VALUES(:day, :amount, 0)
+        ON CONFLICT(day) DO UPDATE SET xp = xp + :amount
+    """)
+    suspend fun addXp(day: String, amount: Int)
+
+    /** Прибавить N минут к указанному дню. */
+    @Query("""
+        INSERT INTO daily_xp(day, xp, minutes) VALUES(:day, 0, :amount)
+        ON CONFLICT(day) DO UPDATE SET minutes = minutes + :amount
+    """)
+    suspend fun addMinutes(day: String, amount: Int)
+
+    /** Все дни (для графиков). Сортировка по дню по возрастанию. */
+    @Query("SELECT * FROM daily_xp ORDER BY day ASC")
+    fun observeAll(): Flow<List<DailyXpEntity>>
+
+    /** Последние N дней (включая сегодня). */
+    @Query("SELECT * FROM daily_xp WHERE day >= :sinceDay ORDER BY day ASC")
+    fun observeSince(sinceDay: String): Flow<List<DailyXpEntity>>
+}
+
+@Dao
 interface GameLevelProgressDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(progress: GameLevelProgressEntity)

@@ -192,6 +192,15 @@ data class LibroProgressEntity(
     @ColumnInfo(name = "completed_at") val completedAt: Long = 0L
 )
 
+// Дневное накопление XP — для графика прогресса в Profile.
+// Один день = одна строка. Ключ — день в формате yyyy-MM-dd.
+@Entity(tableName = "daily_xp")
+data class DailyXpEntity(
+    @PrimaryKey @ColumnInfo(name = "day") val day: String,  // "2026-05-08"
+    @ColumnInfo(name = "xp") val xp: Int = 0,
+    @ColumnInfo(name = "minutes") val minutes: Int = 0
+)
+
 // Универсальный прогресс уровней игр (100 уровней на каждую игру).
 // Композитный ключ: (gameId, levelNum)
 @Entity(

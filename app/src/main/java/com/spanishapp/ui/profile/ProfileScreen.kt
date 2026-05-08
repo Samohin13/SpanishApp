@@ -62,11 +62,33 @@ class ProfileViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val wordDao: WordDao,
     private val achievementDao: AchievementDao,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val dailyXpDao: com.spanishapp.data.db.dao.DailyXpDao
 ) : ViewModel() {
 
     private val _categoryRatings = MutableStateFlow<List<CategoryRatingUi>>(emptyList())
     val categoryRatings: StateFlow<List<CategoryRatingUi>> = _categoryRatings.asStateFlow()
+
+    /**
+     * История XP за последние 7 дней. Возвращает 7 элементов даже если
+     * в БД нет данных за какие-то дни (заполняем нулями).
+     */
+    val xpHistory: StateFlow<List<DailyXpPoint>> = run {
+        val sinceDay = java.time.LocalDate.now().minusDays(6).toString()
+        dailyXpDao.observeSince(sinceDay)
+            .map { rows ->
+                val byDay = rows.associateBy { it.day }
+                (0..6).map { offset ->
+                    val day = java.time.LocalDate.now().minusDays((6 - offset).toLong())
+                    val key = day.toString()
+                    DailyXpPoint(
+                        date = day,
+                        xp = byDay[key]?.xp ?: 0
+                    )
+                }
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }
 
     val state: StateFlow<ProfileUiState> = combine(
         userProgressDao.getProgress(),
@@ -126,6 +148,12 @@ data class CategoryRatingUi(
     val learned: Int
 )
 
+/** Одна точка графика XP за день. */
+data class DailyXpPoint(
+    val date: java.time.LocalDate,
+    val xp: Int
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -134,6 +162,7 @@ fun ProfileScreen(
 ) {
     val state by vm.state.collectAsState()
     val categoryRatings by vm.categoryRatings.collectAsState()
+    val xpHistory by vm.xpHistory.collectAsState()
     val p = state.progress
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     val appLevel  = XpSystem.levelForXp(p.totalXp)
@@ -177,7 +206,10 @@ fun ProfileScreen(
                 photoUrl = state.photoUrl
             )
             Spacer(Modifier.height(24.dp))
-            WeeklyActivityChart(modifier = Modifier.padding(horizontal = 24.dp))
+            WeeklyActivityChart(
+                history = xpHistory,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
             Spacer(Modifier.height(24.dp))
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 StatBox(value = "${state.learnedCount}", label = "Слов", icon = "📚", modifier = Modifier.weight(1f))
@@ -410,19 +442,84 @@ private fun StatBox(value: String, label: String, icon: String, modifier: Modifi
 }
 
 @Composable
-private fun WeeklyActivityChart(modifier: Modifier = Modifier) {
-    val days = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
-    val activity = listOf(0.4f, 0.8f, 0.6f, 1f, 0.3f, 0.5f, 0.7f)
-    Surface(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface, tonalElevation = 2.dp) {
+private fun WeeklyActivityChart(
+    history: List<DailyXpPoint>,
+    modifier: Modifier = Modifier
+) {
+    // Если истории ещё нет (первый запуск, нет данных) — показываем
+    // 7 пустых столбиков с подписями последних 7 дней.
+    val points = if (history.size == 7) history else {
+        (0..6).map { offset ->
+            DailyXpPoint(
+                date = java.time.LocalDate.now().minusDays((6 - offset).toLong()),
+                xp = 0
+            )
+        }
+    }
+    val maxXp = (points.maxOfOrNull { it.xp } ?: 0).coerceAtLeast(1)
+    val ruDayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+    val total = points.sumOf { it.xp }
+
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp
+    ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            Text("Actividad semanal", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Активность за неделю",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    "+$total XP",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             Spacer(Modifier.height(20.dp))
-            Row(modifier = Modifier.fillMaxWidth().height(120.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
-                activity.forEachIndexed { index, value ->
+            Row(
+                modifier = Modifier.fillMaxWidth().height(120.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                points.forEach { point ->
+                    val ratio = point.xp.toFloat() / maxXp
+                    val dayIdx = point.date.dayOfWeek.value - 1  // 1..7 → 0..6
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Box(modifier = Modifier.width(12.dp).fillMaxHeight(value).clip(CircleShape).background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)))))
+                        // Минимальная высота 4% чтобы пустые дни были видны как точки
+                        Box(
+                            modifier = Modifier
+                                .width(14.dp)
+                                .fillMaxHeight(ratio.coerceAtLeast(0.04f))
+                                .clip(CircleShape)
+                                .background(
+                                    if (point.xp > 0)
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                MaterialTheme.colorScheme.primary,
+                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                                            )
+                                        )
+                                    else
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                                MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
+                                            )
+                                        )
+                                )
+                        )
                         Spacer(Modifier.height(8.dp))
-                        Text(days[index], style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            ruDayNames[dayIdx],
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             }

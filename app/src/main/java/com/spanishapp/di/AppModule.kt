@@ -34,7 +34,8 @@ object AppModule {
                 AppDatabase.MIGRATION_7_8,
                 AppDatabase.MIGRATION_8_9,
                 AppDatabase.MIGRATION_9_10,
-                AppDatabase.MIGRATION_10_11
+                AppDatabase.MIGRATION_10_11,
+                AppDatabase.MIGRATION_11_12
             )
         // Destructive migration only for debug builds — protects production user data.
         if (BuildConfig.DEBUG) {
@@ -56,6 +57,7 @@ object AppModule {
     @Provides fun provideLessonProgressDao(db: AppDatabase): LessonProgressDao = db.lessonProgressDao()
     @Provides fun provideLibroProgressDao(db: AppDatabase): LibroProgressDao = db.libroProgressDao()
     @Provides fun provideGameLevelProgressDao(db: AppDatabase): GameLevelProgressDao = db.gameLevelProgressDao()
+    @Provides fun provideDailyXpDao(db: AppDatabase): DailyXpDao = db.dailyXpDao()
 
     // ── OkHttp  (Anthropic API) ────────────────────────────────
     @Provides

@@ -36,7 +36,8 @@ data class SpeedGameState(
 class GamesViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
-    private val achievementManager: AchievementManager
+    private val achievementManager: AchievementManager,
+    private val xpTracker: com.spanishapp.service.XpTracker
 ) : ViewModel() {
 
     // ── Articles Game ─────────────────────────────────────────
@@ -146,8 +147,7 @@ class GamesViewModel @Inject constructor(
 
     private fun addXp(amount: Int) {
         viewModelScope.launch {
-            val p = userProgressDao.getProgressOnce() ?: return@launch
-            userProgressDao.update(p.copy(totalXp = p.totalXp + amount))
+            xpTracker.add(xp = amount, words = 0)
             achievementManager.checkAndUnlock()
         }
     }

@@ -48,7 +48,8 @@ class FlashcardsViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
     private val tts: SpanishTts,
-    private val ratingUpdater: RatingUpdater
+    private val ratingUpdater: RatingUpdater,
+    private val xpTracker: com.spanishapp.service.XpTracker
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FlashcardsUiState())
@@ -163,7 +164,7 @@ class FlashcardsViewModel @Inject constructor(
         if (finished) {
             viewModelScope.launch {
                 val learnedDelta = _state.value.correctCount
-                userProgressDao.addXpAndWords(_state.value.earnedXp, learnedDelta)
+                xpTracker.add(_state.value.earnedXp, learnedDelta)
             }
         }
     }
