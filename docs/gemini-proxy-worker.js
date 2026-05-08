@@ -27,7 +27,16 @@ const GEMINI_HOST = "https://generativelanguage.googleapis.com";
 // Block everything else so the proxy cannot be repurposed by attackers.
 const ALLOWED_MODELS = [
   "gemini-1.5-flash",
+  "gemini-1.5-flash-latest",
+  "gemini-1.5-flash-002",
   "gemini-1.5-pro",
+  "gemini-1.5-pro-latest",
+  "gemini-2.0-flash",
+  "gemini-2.0-flash-001",
+  "gemini-2.0-flash-exp",
+  "gemini-2.5-flash",
+  "gemini-2.5-flash-preview",
+  "gemini-flash-latest",
 ];
 
 // Light per-IP rate limit. The free Workers KV / Durable Objects
