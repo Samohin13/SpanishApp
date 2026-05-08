@@ -57,7 +57,8 @@ data class QuizState(
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val wordDao: WordDao,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    private val ratingUpdater: com.spanishapp.domain.algorithm.RatingUpdater
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(QuizState())
@@ -94,6 +95,7 @@ class QuizViewModel @Inject constructor(
             score = if (correct) s.score + 1 else s.score
         )
         if (correct) tts.speak(s.current?.word?.spanish ?: "")
+        viewModelScope.launch { ratingUpdater.applyGameAnswer(correct) }
     }
 
     fun next() {

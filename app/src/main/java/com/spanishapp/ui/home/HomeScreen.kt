@@ -97,8 +97,6 @@ fun HomeScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val wordOfDay by viewModel.wordOfTheDay.collectAsStateWithLifecycle()
     var expandedUnitId by remember { mutableStateOf<String?>(null) }
-    var showPremiumSheet by remember { mutableStateOf(false) }
-    val premiumSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val tts = rememberSpanishTts()
 
     LazyColumn(
@@ -202,28 +200,11 @@ fun HomeScreen(
             CourseCard(
                 course = course,
                 unitsCount = state.roadmapUnits.count { it.cefrLevel == course.level },
-                isLocked = false, // TODO: restore subscription lock after testing
-                onClick = {
-                    if (true) {
-                        navController.navigate("course_detail/${course.level}")
-                    } else {
-                        showPremiumSheet = true
-                    }
-                },
-                onPremiumClick = { showPremiumSheet = true }
+                isLocked = false,
+                onClick = { navController.navigate("course_detail/${course.level}") },
+                onPremiumClick = { /* premium убран — все курсы открыты */ }
             )
             Spacer(Modifier.height(12.dp))
-        }
-    }
-
-    // TODO: Удалить sheet когда контент A2/B1/B2 будет готов и платная подписка реализована
-    if (showPremiumSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showPremiumSheet = false },
-            sheetState = premiumSheetState,
-            containerColor = Color.White
-        ) {
-            HomePremiumSheet(onDismiss = { showPremiumSheet = false })
         }
     }
 }
@@ -708,95 +689,6 @@ private fun SubLessonRow(
                 lesson.isCompleted -> {}
                 else               -> Icon(Icons.Default.ChevronRight, null, tint = unitColor, modifier = Modifier.size(18.dp))
             }
-        }
-    }
-}
-
-// TODO: Удалить когда реализована настоящая подписка
-@Composable
-internal fun HomePremiumSheet(onDismiss: () -> Unit) {
-    val Gold = Color(0xFFFF9500)
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .padding(bottom = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("🔒", fontSize = 48.sp)
-        Spacer(Modifier.height(12.dp))
-        Text("Этот урок по подписке", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
-        Text(
-            "Урок 1 каждого уровня бесплатен.\nДальше — по подписке.",
-            fontSize = 14.sp,
-            color = TextGray,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            lineHeight = 20.sp
-        )
-        Spacer(Modifier.height(24.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(Color(0xFFFFF8E1))
-                .padding(16.dp)
-        ) {
-            Column {
-                Row { Text("🎁  ", fontSize = 14.sp); Text("7 дней бесплатного триала", fontSize = 14.sp) }
-                Spacer(Modifier.height(4.dp))
-                Row { Text("✅  ", fontSize = 14.sp); Text("Все уровни A2, B1, B2", fontSize = 14.sp) }
-                Spacer(Modifier.height(4.dp))
-                Row { Text("🤖  ", fontSize = 14.sp); Text("ИИ-репетитор на Claude", fontSize = 14.sp) }
-            }
-        }
-
-        Spacer(Modifier.height(20.dp))
-
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White)
-                    .border(1.5.dp, Color(0xFFE5E5EA), RoundedCornerShape(12.dp))
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("Месяц", fontSize = 13.sp, color = TextGray)
-                Text("$4.99", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
-                Text("в месяц", fontSize = 11.sp, color = TextGray)
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Gold)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("🔥 Выгодно", fontSize = 11.sp, color = Color.White.copy(alpha = 0.9f))
-                Text("Год", fontSize = 13.sp, color = Color.White)
-                Text("$29.99", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
-                Text("≈ $2.50 / мес", fontSize = 11.sp, color = Color.White.copy(alpha = 0.8f))
-            }
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        Button(
-            onClick = onDismiss,
-            modifier = Modifier.fillMaxWidth().height(54.dp),
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple)  // Purple = Orange in sunset palette
-        ) {
-            Text("Попробовать бесплатно 7 дней", fontWeight = FontWeight.Bold)
-        }
-
-        Spacer(Modifier.height(12.dp))
-        TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-            Text("Закрыть", color = TextGray)
         }
     }
 }
