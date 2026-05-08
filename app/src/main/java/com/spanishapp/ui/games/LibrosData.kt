@@ -2421,6 +2421,389 @@ object LibrosData {
         ),
 
         Libro(
+            id = 66,
+            title = "Un Día en la Ciudad",
+            level = "B1", difficulty = 2, topic = "Городская жизнь",
+            text = """
+                Cada vez que Marcos sale a la ciudad para hacer recados, vuelve a casa con la sensación de haber vivido tres días en uno.
+                Empieza la mañana cogiendo el metro a las ocho, junto con cientos de personas con caras de sueño.
+                A las nueve está en el banco firmando papeles que no entiende del todo, pero que su gestor le ha asegurado que son rutinarios.
+                Después se acerca al ayuntamiento para renovar el pasaporte: una hora de espera, cinco minutos de trámite, otra media hora para imprimir el justificante.
+                Antes de comer pasa por la farmacia, recoge un paquete en correos y consigue, milagrosamente, encontrar zapatos cómodos en rebajas.
+                Cuando se sienta finalmente en una terraza con una caña, son las cuatro de la tarde y siente que la ciudad le ha consumido toda la energía del día.
+                Mira a la gente pasar y piensa que vivir aquí es eso: correr todo el día para tachar cosas de una lista que nunca termina.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo describe Marcos la sensación al volver a casa?",
+                    listOf("Como si hubiera vivido un día corto", "Como si hubiera vivido tres días en uno", "Como si no hubiera hecho nada importante"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hace en el ayuntamiento?",
+                    listOf("Cobra una multa", "Renueva el pasaporte", "Pregunta por una vivienda social"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿A qué hora se sienta finalmente en una terraza?",
+                    listOf("A las dos del mediodía", "A las cuatro de la tarde", "A las seis de la tarde"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál es la reflexión final sobre la vida en la ciudad?",
+                    listOf("Que es emocionante y llena de oportunidades", "Que es correr todo el día por una lista que nunca termina", "Que es más tranquila de lo que parece"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 67,
+            title = "La Primera Cena",
+            level = "B1", difficulty = 2, topic = "Любовь / Кухня",
+            text = """
+                Cuando Pablo invitó a Carmen a cenar a su casa por primera vez, decidió que quería impresionarla cocinando él mismo en lugar de pedir comida.
+                El problema era que Pablo, a sus treinta años, prácticamente no había cocinado nunca: vivía a base de ensaladas frías y comida congelada.
+                Eligió una receta de risotto en un blog de cocina, compró todos los ingredientes y se puso a las cuatro de la tarde, dándose tres horas con margen.
+                A las seis, la cocina parecía un campo de batalla: arroz pegado en la sartén, tomate por toda la encimera, una nube de humo saliendo del horno donde había olvidado un pan.
+                Cuando Carmen llamó al timbre a las siete y media, Pablo abrió la puerta sudando, con un delantal manchado y cara de derrota.
+                «¿Pedimos pizza?», le preguntó, intentando sonreír.
+                Carmen se rió, se quitó la chaqueta y le dijo: «Mejor te enseño a hacer un risotto que sí salga».
+                Cocinaron juntos, salió mejor que la primera vez, y a las once de la noche todavía estaban en la cocina, hablando.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué quiso Pablo cocinar en lugar de pedir comida?",
+                    listOf("Porque la comida pedida le sentaba mal", "Para impresionar a Carmen", "Porque no tenía dinero"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál era el problema de Pablo?",
+                    listOf("No le gustaba el risotto", "Prácticamente no había cocinado nunca", "No tenía utensilios"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hizo Carmen al ver el desastre?",
+                    listOf("Se enfadó y se fue", "Se rió y le enseñó a hacerlo bien", "Pidió pizza por teléfono"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Hasta qué hora estuvieron en la cocina?",
+                    listOf("Hasta las diez", "Hasta las once", "Hasta medianoche"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 68,
+            title = "El Profesor que No Olvido",
+            level = "B1", difficulty = 3, topic = "Образование / Воспоминания",
+            text = """
+                Cuando le pregunté a mi padre quién había sido la persona más influyente en su vida, no dudó en responder: el señor Méndez, su profesor de literatura del instituto.
+                «No nos enseñaba a aprobar exámenes», me dijo. «Nos enseñaba a leer.»
+                Méndez, según contaba mi padre, podía pasarse media hora analizando una sola frase de Cervantes y al final de aquella clase nadie quería que sonara el timbre.
+                Suspendía a los alumnos que se aprendían los resúmenes de memoria pero les ponía un sobresaliente a los que escribían algo realmente personal, aunque tuviera errores ortográficos.
+                Cuando mi padre se hizo arquitecto y no escritor, le mandó una carta agradeciéndole no solo lo que le había enseñado, sino también la libertad que le había dado para no seguir sus pasos.
+                Méndez murió en 2019, a los noventa años.
+                Mi padre fue al funeral y se sorprendió al ver que la iglesia estaba llena de personas de tres generaciones que habían sido sus alumnos.
+                Cada uno tenía una historia diferente, pero todos recordaban una frase suya en común: «Un libro que no te cambia es un libro que no has leído de verdad».
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué decía mi padre que les enseñaba el señor Méndez?",
+                    listOf("A pasar exámenes", "A leer", "A escribir bien"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿A quién suspendía Méndez?",
+                    listOf("A los que llegaban tarde", "A los que se aprendían los resúmenes de memoria", "A los que tenían errores ortográficos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué le mandó mi padre al hacerse arquitecto?",
+                    listOf("Una invitación a su boda", "Una carta de agradecimiento", "Su primer proyecto"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué frase recordaban todos sus alumnos?",
+                    listOf("Que un libro que no te cambia es un libro que no has leído", "Que la literatura salva vidas", "Que hay que leer todos los días"),
+                    correctIndex = 0
+                )
+            )
+        ),
+
+        Libro(
+            id = 69,
+            title = "El Mensaje en la Botella",
+            level = "B1", difficulty = 4, topic = "Море / Связь",
+            text = """
+                En agosto, mientras paseaba por la playa de Calella al atardecer, Lucía vio una botella de cristal medio enterrada en la arena.
+                Dentro había un papel doblado que parecía haber pasado tiempo en el mar.
+                El mensaje, escrito a mano en italiano, estaba firmado por una tal Giulia y tenía fecha de tres años antes.
+                Decía algo así: «Si alguien encuentra esta botella, por favor, escribe a esta dirección. Mi abuelo era pescador y hacía esto con sus amigos: lanzaban botellas para que el mar las llevara y un día volvieran a alguien».
+                Lucía dudó si responder. Tres años eran muchos: a lo mejor Giulia ya no vivía en esa dirección, o ni siquiera era cierta la historia.
+                Aun así, le escribió un correo desde el mismo bar de la playa donde estaba.
+                Una semana después, Giulia le respondió con tres páginas: el abuelo había muerto el invierno anterior, y aquella había sido una de las últimas botellas que habían lanzado juntos antes de que él se pusiera enfermo.
+                Lucía y Giulia siguieron escribiéndose durante meses. En primavera, Giulia viajó a España y se conocieron por primera vez frente a la misma playa donde había aparecido la botella.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué encontró Lucía en la playa?",
+                    listOf("Un cofre con monedas antiguas", "Una botella de cristal con un mensaje", "Un cuaderno mojado"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Quién había escrito el mensaje?",
+                    listOf("Una pescadora francesa", "Una italiana llamada Giulia", "Un amigo de su padre"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué tradición tenía el abuelo de Giulia?",
+                    listOf("Lanzar botellas con sus amigos pescadores", "Escribir cartas en el verano", "Coleccionar mensajes en botellas"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué pasó al final?",
+                    listOf("Lucía y Giulia se conocieron en persona en la misma playa", "Lucía nunca recibió respuesta", "Giulia ya había muerto cuando Lucía escribió"),
+                    correctIndex = 0
+                )
+            )
+        ),
+
+        Libro(
+            id = 70,
+            title = "La Reforma de la Cocina",
+            level = "B1", difficulty = 5, topic = "Дом / Терпение",
+            text = """
+                Cuando los Hernández compraron un piso de los años setenta a buen precio, sabían que tendrían que reformarlo, pero no imaginaban hasta qué punto.
+                Lo que iba a ser una reforma de tres meses se convirtió en una odisea de casi un año.
+                El primer mes el albañil descubrió que las tuberías de la cocina estaban tan oxidadas que era más rápido cambiar todas que parchear.
+                El segundo mes apareció humedad en una pared que hubo que abrir entera.
+                Después vino el lío de los electricistas, los problemas con el ascensor para subir el material y, finalmente, una huelga de transportes que retrasó tres semanas la entrega de los muebles.
+                Los Hernández vivieron seis meses en casa de los suegros con dos hijos pequeños, lo que puso a prueba todos los matrimonios involucrados.
+                Cuando por fin pudieron volver a su piso, lloraron como niños al ver la cocina nueva, no porque fuera espectacular, sino porque significaba que aquella prueba había terminado.
+                Hoy, dos años después, cuando alguien les pregunta si volverían a comprar un piso para reformar, los dos responden a la vez: «Nunca jamás».
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuánto tiempo se suponía que duraría la reforma?",
+                    listOf("Un mes", "Tres meses", "Seis meses"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué problema apareció el segundo mes?",
+                    listOf("Una huelga de albañiles", "Humedad en una pared que hubo que abrir entera", "Falta de presupuesto"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Dónde vivieron durante la reforma?",
+                    listOf("En un hotel", "En casa de los suegros con dos hijos pequeños", "En la casa de la abuela"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Volverían a comprar un piso para reformar?",
+                    listOf("Sí, sin duda", "Solo si el precio es muy bueno", "Nunca jamás"),
+                    correctIndex = 2
+                )
+            )
+        ),
+
+        Libro(
+            id = 71,
+            title = "La Autenticidad en la Era de los Algoritmos",
+            level = "B2", difficulty = 2, topic = "Технологии / Идентичность",
+            text = """
+                Hace apenas una década, lo más íntimo que mostrabas a un desconocido era una conversación de café; hoy compartimos rutinas, comidas, opiniones políticas y caras semidesnudas con miles de personas a las que nunca veremos.
+                Lo curioso es que, cuanto más nos exponemos, más nos cuesta saber quiénes somos realmente.
+                Los algoritmos premian un cierto tipo de personalidad: la que reacciona, opina rápido, polariza, simplifica.
+                Quien no encaja en esa lógica, simplemente desaparece de los feeds.
+                Empezamos, sin darnos cuenta, a actuar para una audiencia silenciosa, a moldear nuestros pensamientos en función de lo que sabemos que recibirá likes.
+                Tras un tiempo, dejamos de distinguir lo que pensamos sinceramente de lo que pensamos para mostrar.
+                Es un proceso lento, casi invisible, pero terriblemente eficaz.
+                Volver a la autenticidad, en este contexto, ya no significa ser «uno mismo» como antes, sino reaprender qué partes de nosotros son nuestras y cuáles son una construcción mediada por la métrica.
+                Quizá el verdadero acto de rebeldía contemporáneo no sea tener una opinión fuerte sobre todo, sino atreverse a no opinar; no compartir; permanecer, durante un rato cada día, completamente fuera del alcance de los demás.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "Según el texto, ¿qué premian los algoritmos?",
+                    listOf("La complejidad y los matices", "Personalidades que reaccionan rápido, polarizan y simplifican", "El silencio reflexivo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué pasa cuando alguien no encaja en esa lógica?",
+                    listOf("Se vuelve más popular", "Desaparece de los feeds", "Recibe más interacción"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál es el peligro descrito según el autor?",
+                    listOf("Volverse adicto a las redes", "Dejar de distinguir entre lo que pensamos y lo que pensamos para mostrar", "Aislarse socialmente"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál sería el «verdadero acto de rebeldía contemporáneo»?",
+                    listOf("Tener opiniones fuertes sobre todo", "Atreverse a no opinar, no compartir, permanecer fuera de alcance un rato cada día", "Borrar todas las redes sociales"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 72,
+            title = "Lo que Entiendes a los Cuarenta",
+            level = "B2", difficulty = 3, topic = "Возраст / Размышления",
+            text = """
+                A los cuarenta años uno empieza a comprender ciertas cosas que a los veinte le parecían inverosímiles, y a los treinta sospechosas.
+                Que el éxito profesional, por ejemplo, no es una línea ascendente sino un péndulo que oscila entre temporadas brillantes y períodos en los que apenas sabes para qué te levantas por las mañanas.
+                Que las amistades verdaderas no son las que aguantan veinte años sin esfuerzo, sino las que sobreviven a momentos en los que ambas partes tendrían razones legítimas para abandonar.
+                Que la salud, eso que durante décadas dabas por descontado, empieza a llamarte la atención con pequeñas señales: una rodilla que cruje, una espalda que se queja, una digestión que ya no perdona ciertos excesos.
+                Que muchos de los miedos de la juventud eran imaginarios, y que los miedos reales, los que de verdad te quitan el sueño, no se descubren hasta que tienes un hijo dormido al lado.
+                Y, sobre todo, que el tiempo del que tanto hablaban los adultos cuando tú eras joven existe efectivamente, aunque no funciona como uno cree: no es un río constante, sino una sucesión de aceleraciones extrañas en las que de repente diciembre vuelve a estar a la vuelta de la esquina.
+                A los cuarenta uno todavía no es sabio, pero al menos ha dejado de tener prisa por aparentarlo.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo describe el autor el éxito profesional?",
+                    listOf("Como una línea ascendente clara", "Como un péndulo entre temporadas brillantes y períodos difíciles", "Como una decepción inevitable"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "Según el texto, ¿qué son las amistades verdaderas?",
+                    listOf("Las que duran sin esfuerzo veinte años", "Las que sobreviven a momentos en los que ambas partes podrían abandonar", "Las que se hacen en la infancia"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuándo se descubren los miedos «reales» según el autor?",
+                    listOf("En la adolescencia", "Cuando tienes un hijo dormido al lado", "Cuando empieza la jubilación"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo funciona el tiempo según la conclusión?",
+                    listOf("Como un río constante y predecible", "Como una sucesión de aceleraciones extrañas", "Como un círculo que vuelve sobre sí mismo"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 73,
+            title = "El Perdón que No Llegó a Tiempo",
+            level = "B2", difficulty = 4, topic = "Семья / Прощение",
+            text = """
+                Roberto y su padre habían dejado de hablarse después de una discusión absurda sobre dinero hace nueve años.
+                Empezó como un préstamo no devuelto, escaló a reproches sobre toda una vida en común y terminó con una frase que ninguno de los dos olvidaría: «Para mí, ya no eres mi hijo».
+                Durante los años siguientes, ambos esperaron que el otro diera el primer paso.
+                A través de la madre y los hermanos, Roberto sabía que su padre seguía orgulloso pero que también lo echaba de menos: hablaba de él con los nietos, conservaba sus fotos, se interesaba por su carrera.
+                Roberto, por su parte, escribió tres cartas que jamás llegó a enviar, todas guardadas en un cajón al lado de su despacho.
+                Cuando recibió la llamada del hospital una mañana de febrero, dejó todo y cogió el primer tren, pero llegó cuarenta minutos tarde: su padre había muerto sin recuperar la conciencia.
+                Roberto se quedó solo en la habitación con el cuerpo durante una hora, hablándole al hombre que ya no podía oírle, diciéndole todo lo que tendría que haberle dicho aquel día, antes, durante los nueve años de silencio.
+                Volvió a casa, sacó las tres cartas del cajón y las quemó una a una.
+                «No esperéis», es la única lección que repite ahora cuando alguien le habla de un conflicto familiar.
+                «No esperéis. El otro puede irse antes de que estéis preparados.»
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuánto tiempo llevaban Roberto y su padre sin hablarse?",
+                    listOf("Tres años", "Nueve años", "Quince años"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hizo Roberto durante esos años?",
+                    listOf("Escribió tres cartas que nunca envió", "Llamó cada Navidad sin éxito", "Visitó a su padre en secreto"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Por cuánto tiempo no llegó a tiempo al hospital?",
+                    listOf("Veinte minutos", "Cuarenta minutos", "Dos horas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál es la única lección que Roberto repite ahora?",
+                    listOf("Nunca discutir por dinero", "No esperar, el otro puede irse antes de que estés preparado", "Escribir cartas siempre"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 74,
+            title = "El Silencio Olvidado",
+            level = "B2", difficulty = 4, topic = "Тишина / Современность",
+            text = """
+                Hace cien años, el silencio formaba parte de la vida cotidiana de cualquier persona: durante las comidas, en los trayectos a pie, en las largas tardes leyendo o cosiendo.
+                Hoy, mucha gente no soporta más de tres minutos sin estímulo: en cuanto sale de una reunión, abre el móvil; en cuanto llega a casa, enciende la televisión; en cuanto se mete en la cama, pone un podcast para «relajarse».
+                Hemos sustituido el silencio por un ruido de fondo permanente, casi imperceptible, que nos acompaña desde que nos levantamos hasta que nos dormimos.
+                El problema no es solo la pérdida de horas valiosas en redes y plataformas, sino algo más profundo: hemos perdido la capacidad de aburrirnos, y con ella, una de las puertas tradicionales hacia la creatividad y la introspección.
+                Los grandes pensadores de la historia describían el aburrimiento como un estado fértil, incómodo pero necesario, donde las ideas que llevamos meses incubando finalmente emergen.
+                Hoy, ese vacío lo llenamos con vídeos cortos, scrolling infinito y «contenido» rápido que pasa sin dejar huella.
+                Quizá lo más radical que pueda hacer una persona en 2026 sea, sencillamente, sentarse en una silla durante media hora sin ningún aparato cerca y resistir la tentación de interrumpir el silencio.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "Según el texto, ¿con qué hemos sustituido el silencio?",
+                    listOf("Con la música clásica", "Con un ruido de fondo permanente", "Con conversaciones largas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué capacidad hemos perdido junto con el silencio?",
+                    listOf("La capacidad de aburrirnos", "La capacidad de leer libros largos", "La capacidad de hablar entre nosotros"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cómo describían los grandes pensadores el aburrimiento?",
+                    listOf("Como una pérdida de tiempo", "Como un estado fértil, incómodo pero necesario", "Como un síntoma de depresión"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué propone el autor como acto «radical»?",
+                    listOf("Borrar las redes sociales", "Sentarse media hora sin aparatos y resistir la tentación de interrumpir el silencio", "Salir al campo el fin de semana"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 75,
+            title = "El Primer Amor, Veinte Años Después",
+            level = "B2", difficulty = 5, topic = "Любовь / Время",
+            text = """
+                Cuando Daniela vio en LinkedIn la solicitud de Iván, tardó varios minutos en reconocer al chico de diecisiete años con el que había compartido el primer beso de su vida.
+                Veinte años después, ambos eran personas distintas: él trabajaba en logística en Buenos Aires, divorciado con dos hijos; ella era profesora de filosofía en Madrid, soltera por convicción.
+                Aceptó la solicitud sin pensarlo demasiado, esperando una conversación cordial de cinco minutos.
+                Pero las conversaciones se alargaron noches enteras, pasaron del español neutro de los primeros mensajes a las muletillas adolescentes que ambos creían haber olvidado, y, sin que ninguno de los dos lo formulara abiertamente, reconstruyeron en pocas semanas lo que se había roto en una despedida apresurada en el aeropuerto en agosto de 2005.
+                Pero veinte años no son veinte años: son hijos, divorcios, ciudades, idiomas internos diferentes, costumbres adquiridas con otras personas que ya no se pueden desaprender.
+                Cuando Iván viajó a Madrid en marzo, los dos se vieron por primera vez frente al café que ella había elegido cuidadosamente.
+                Hablaron durante horas, se rieron, se confesaron cosas íntimas, pero ambos sabían, sin necesidad de decirlo, que aquello no podía continuar.
+                No porque el sentimiento no existiera —existía, intenso y desconcertante—, sino porque no eran ya las personas que habían sentido aquello, y reconstruir un puente con materiales nuevos no era lo mismo que reparar el viejo.
+                Se despidieron con un abrazo largo y sin promesas falsas.
+                Daniela lloró todo el camino de vuelta a casa.
+                Iván volvió a Buenos Aires y nunca más se escribieron, y eso, paradójicamente, fue la mayor prueba de respeto que se habían dado en veinte años.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo se reencontraron Daniela e Iván?",
+                    listOf("Por una solicitud en LinkedIn", "En un funeral común", "Por un mensaje en Instagram"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué descubrieron al hablar durante semanas?",
+                    listOf("Que ya no tenían nada en común", "Que reconstruyeron rápidamente lo que se había roto en 2005", "Que solo querían ser amigos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué entendieron tras verse en Madrid?",
+                    listOf("Que querían empezar una relación", "Que el sentimiento existía pero que ya no eran las mismas personas", "Que el reencuentro había sido un error desde el inicio"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo interpreta el narrador que no volvieran a escribirse?",
+                    listOf("Como una pelea final", "Como la mayor prueba de respeto entre los dos", "Como un acto de cobardía"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
             id = 65,
             title = "Memoria de un Verano que No Recuerdo",
             level = "B2", difficulty = 5, topic = "Память / Фотография",
