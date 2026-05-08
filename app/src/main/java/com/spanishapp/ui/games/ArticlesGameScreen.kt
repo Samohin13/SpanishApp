@@ -92,7 +92,7 @@ private fun ArticlesGameContent(
     viewModel: ArticlesViewModel,
     onBack: () -> Unit
 ) {
-    val haptic     = LocalHapticFeedback.current
+    val haptic     = com.spanishapp.ui.components.rememberCheckedHaptic()
     val answered   = state.lastCorrect != null
     val isCorrect  = state.lastCorrect == true
     val word       = state.currentWord

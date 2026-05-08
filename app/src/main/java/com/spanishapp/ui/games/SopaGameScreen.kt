@@ -87,7 +87,7 @@ private fun SopaGameContent(
     viewModel: SopaViewModel,
     onBack: () -> Unit
 ) {
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     var gridSize by remember { mutableStateOf(IntSize.Zero) }
     val cells = state.config.gridSize
 
