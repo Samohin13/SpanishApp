@@ -104,7 +104,7 @@ fun GrammarScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("🚧", fontSize = 40.sp)
                         Spacer(Modifier.height(8.dp))
-                        Text("Уроки для $level скоро появятся",
+                        Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.gram_coming_soon, level),
                              style = MaterialTheme.typography.bodyLarge,
                              color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }

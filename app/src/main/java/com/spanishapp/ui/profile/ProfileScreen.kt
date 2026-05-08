@@ -127,7 +127,7 @@ class ProfileViewModel @Inject constructor(
             val info = CategoryMeta.infoFor(row.category)
             CategoryRatingUi(
                 key = row.category,
-                label = info.label,
+                labelRes = info.labelRes,
                 icon = info.icon,
                 flags = MasteryRating.flags(row.total, row.learned, row.totalReviews, row.correctReviews),
                 score = MasteryRating.score(row.total, row.learned, row.totalReviews, row.correctReviews),
@@ -150,7 +150,7 @@ data class ProfileUiState(
 
 data class CategoryRatingUi(
     val key: String,
-    val label: String,
+    @androidx.annotation.StringRes val labelRes: Int,
     val icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
     val flags: Int,
     val score: Float,
@@ -386,7 +386,7 @@ private fun CategoryRatingCard(
                             Spacer(Modifier.width(8.dp))
                         }
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(item.label, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                            Text(androidx.compose.ui.res.stringResource(item.labelRes), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                             Text("${item.learned}/${item.total} слов", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         SpanishFlagRating(filled = item.flags)

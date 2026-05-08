@@ -536,5 +536,145 @@
     <string name="set_dlg_name_title">Change name</string>
     <string name="set_dlg_name_label">Name</string>
     <string name="set_dlg_name_save">Save</string>
+    <string name="set_notif_perm_denied">Without notification permission reminders won\'t be delivered. Enable it in system settings.</string>
+
+    <!-- Quiz -->
+    <string name="quiz_translate_prompt">TRANSLATE</string>
+    <string name="quiz_results">RESULTS</string>
+    <string name="quiz_next_question">NEXT QUESTION</string>
+    <string name="quiz_finished">Quiz finished</string>
+    <string name="quiz_try_again">TRY AGAIN</string>
+    <string name="quiz_exit_to_menu">EXIT TO MENU</string>
+
+    <!-- Dialogues -->
+    <string name="dial_level_in_development">Level %1$s coming soon</string>
+    <string name="dial_coming_soon">Live dialogues are coming soon for language practice.</string>
+    <string name="dial_finish_practice">FINISH PRACTICE</string>
+
+    <!-- Grammar -->
+    <string name="gram_coming_soon">Lessons for %1$s coming soon</string>
+
+    <!-- Rating screen -->
+    <string name="rating_sort_weak">Weakest first</string>
+    <string name="rating_sort_strong">Strongest first</string>
+    <string name="rating_sort_alpha">Alphabetical</string>
+    <string name="rating_topic_progress">Topic progress</string>
+    <string name="rating_now">Now:</string>
+    <string name="rating_empty">Start training to see your stats.</string>
+
+    <!-- Leaderboard -->
+    <string name="lb_leaders">Leaders</string>
+    <string name="lb_no_data">No data</string>
+    <string name="lb_refresh">Refresh</string>
+    <string name="lb_world">the world</string>
+    <string name="lb_world_tab">🌍 World</string>
+    <string name="lb_my_rank">You\'re #%1$d of %2$d in %3$s</string>
+    <string name="lb_empty">No one yet — be the first!</string>
+    <string name="lb_opt_out">Leave leaderboard</string>
+    <string name="lb_join_title">Join the global ranking?</string>
+    <string name="lb_join_explain">We\'ll only save your nickname, country and rating. You\'ll be able to compare yourself with players in your country and the world.</string>
+    <string name="lb_nickname">Nickname</string>
+    <string name="lb_join_button">Join ranking</string>
+
+    <!-- Voice settings -->
+    <string name="voice_announcer">Announcer voice</string>
+    <string name="voice_not_found">No voices found</string>
+    <string name="voice_available">Available voices (%1$d)</string>
+    <string name="voice_rate">Speech rate</string>
+    <string name="voice_rate_hint">Lower = slower</string>
+    <string name="voice_pitch">Voice pitch</string>
+    <string name="voice_pitch_hint">Lower = deeper</string>
+    <string name="voice_hd_installed">HD voices installed</string>
+    <string name="voice_pack">Voice pack</string>
+    <string name="voice_found_count">Found: %1$d voices</string>
+    <string name="voice_pack_promo">Install the HD pack — voice will sound natural, like a native.</string>
+    <string name="voice_pack_size">📦 ~15 MB · free from Google</string>
+    <string name="voice_install_pack">INSTALL PACK</string>
+    <string name="voice_manage_in_android">Manage in Android settings</string>
+    <string name="voice_female">Female voice</string>
+    <string name="voice_male">Male voice</string>
+    <string name="voice_neutral">Voice</string>
+    <string name="voice_preview">Preview</string>
+    <string name="voice_selected">Selected</string>
+
+    <!-- App lock -->
+    <string name="lock_error_biometric_failed">Error: can\'t show biometric prompt</string>
+    <string name="lock_error_lockout">Too many attempts. Wait or sign in again.</string>
+    <string name="lock_error_not_recognized">Not recognized. Try again.</string>
+    <string name="lock_title_unlock">Unlock ESPEAK</string>
+    <string name="lock_subtitle_unlock">Use fingerprint or face</string>
+    <string name="lock_sign_in_again">Sign in again</string>
+    <string name="lock_app_locked">App is locked</string>
+    <string name="lock_unlock_hint">Unlock with biometrics to continue</string>
+    <string name="lock_unlock">Unlock</string>
+    <string name="lock_sign_out">Sign out</string>
+
+    <!-- Categories -->
+    <string name="cat_all">All</string>
+    <string name="cat_all_words">All words</string>
+    <string name="cat_unknown">Category</string>
+    <string name="cat_acciones">Actions</string>
+    <string name="cat_animales">Animals</string>
+    <string name="cat_arte">Art</string>
+    <string name="cat_auxiliares">Auxiliaries</string>
+    <string name="cat_calidad">Quality</string>
+    <string name="cat_cantidad">Quantity</string>
+    <string name="cat_casa">Home</string>
+    <string name="cat_ciudad">City</string>
+    <string name="cat_colores">Colors</string>
+    <string name="cat_comercio">Commerce</string>
+    <string name="cat_comida">Food</string>
+    <string name="cat_compras">Shopping</string>
+    <string name="cat_comunicacion">Communication</string>
+    <string name="cat_conocimiento">Knowledge</string>
+    <string name="cat_cortesia">Courtesy</string>
+    <string name="cat_cotidiano">Daily life</string>
+    <string name="cat_creatividad">Creativity</string>
+    <string name="cat_cuerpo">Body</string>
+    <string name="cat_cultura">Culture</string>
+    <string name="cat_deporte">Sport</string>
+    <string name="cat_despedidas">Farewells</string>
+    <string name="cat_educacion">Education</string>
+    <string name="cat_emociones">Emotions</string>
+    <string name="cat_entretenimiento">Entertainment</string>
+    <string name="cat_estados">States</string>
+    <string name="cat_expresiones">Expressions</string>
+    <string name="cat_familia_personas">Family</string>
+    <string name="cat_finanzas">Finance</string>
+    <string name="cat_fisico">Physical state</string>
+    <string name="cat_general">General</string>
+    <string name="cat_hotel">Hotel</string>
+    <string name="cat_lugares">Places</string>
+    <string name="cat_materiales">Materials</string>
+    <string name="cat_media">Media</string>
+    <string name="cat_modal">Modals</string>
+    <string name="cat_movimiento">Movement</string>
+    <string name="cat_naturaleza">Nature</string>
+    <string name="cat_numeros">Numbers</string>
+    <string name="cat_orden">Order</string>
+    <string name="cat_pensamiento">Thinking</string>
+    <string name="cat_percepcion">Perception</string>
+    <string name="cat_personal">Personal</string>
+    <string name="cat_personas">People</string>
+    <string name="cat_precio">Price</string>
+    <string name="cat_preguntas">Questions</string>
+    <string name="cat_profesiones">Professions</string>
+    <string name="cat_redes_sociales">Social media</string>
+    <string name="cat_reglas">Rules</string>
+    <string name="cat_restaurante">Restaurant</string>
+    <string name="cat_ropa">Clothing</string>
+    <string name="cat_salud">Health</string>
+    <string name="cat_saludos">Greetings</string>
+    <string name="cat_social">Social</string>
+    <string name="cat_sociedad">Society</string>
+    <string name="cat_tamano">Size</string>
+    <string name="cat_tecnologia">Technology</string>
+    <string name="cat_tiempo">Time</string>
+    <string name="cat_trabajo">Work</string>
+    <string name="cat_transporte">Transport</string>
+    <string name="cat_valor">Value</string>
+    <string name="cat_velocidad">Speed</string>
+    <string name="cat_viaje">Travel</string>
+    <string name="cat_vida">Life</string>
 
 </resources>

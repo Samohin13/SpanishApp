@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.service.AppLockManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -55,9 +57,16 @@ fun AppLockScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var promptShown by remember { mutableStateOf(false) }
 
+    val errBiometricFailed = stringResource(R.string.lock_error_biometric_failed)
+    val errLockout = stringResource(R.string.lock_error_lockout)
+    val errNotRecognized = stringResource(R.string.lock_error_not_recognized)
+    val titleUnlock = stringResource(R.string.lock_title_unlock)
+    val subtitleUnlock = stringResource(R.string.lock_subtitle_unlock)
+    val signInAgain = stringResource(R.string.lock_sign_in_again)
+
     fun showBiometricPrompt() {
         val act = activity ?: run {
-            errorMessage = "Ошибка: не удалось показать биометрию"
+            errorMessage = errBiometricFailed
             return
         }
         val executor = ContextCompat.getMainExecutor(act)
@@ -81,7 +90,7 @@ fun AppLockScreen(
                         }
                         BiometricPrompt.ERROR_LOCKOUT,
                         BiometricPrompt.ERROR_LOCKOUT_PERMANENT -> {
-                            errorMessage = "Слишком много попыток. Подожди или войди заново."
+                            errorMessage = errLockout
                         }
                         else -> {
                             errorMessage = errString.toString()
@@ -89,14 +98,14 @@ fun AppLockScreen(
                     }
                 }
                 override fun onAuthenticationFailed() {
-                    errorMessage = "Не распознано. Попробуй ещё раз."
+                    errorMessage = errNotRecognized
                 }
             }
         )
         val info = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Разблокировать ESPEAK")
-            .setSubtitle("Используй отпечаток или лицо")
-            .setNegativeButtonText("Войти заново")
+            .setTitle(titleUnlock)
+            .setSubtitle(subtitleUnlock)
+            .setNegativeButtonText(signInAgain)
             .setAllowedAuthenticators(
                 BiometricManager.Authenticators.BIOMETRIC_STRONG or
                     BiometricManager.Authenticators.BIOMETRIC_WEAK
@@ -129,7 +138,7 @@ fun AppLockScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            "Приложение заблокировано",
+            stringResource(R.string.lock_app_locked),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
         )
@@ -137,7 +146,7 @@ fun AppLockScreen(
         Spacer(Modifier.height(8.dp))
 
         Text(
-            "Разблокируй биометрией, чтобы продолжить",
+            stringResource(R.string.lock_unlock_hint),
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -161,7 +170,7 @@ fun AppLockScreen(
         ) {
             Icon(Icons.Default.Fingerprint, null)
             Spacer(Modifier.width(8.dp))
-            Text("Разблокировать", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.lock_unlock), fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
 
         Spacer(Modifier.height(12.dp))
@@ -176,7 +185,7 @@ fun AppLockScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Выйти из аккаунта", color = MaterialTheme.colorScheme.error)
+            Text(stringResource(R.string.lock_sign_out), color = MaterialTheme.colorScheme.error)
         }
     }
 }

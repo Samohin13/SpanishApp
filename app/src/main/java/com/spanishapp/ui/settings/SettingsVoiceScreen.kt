@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +33,7 @@ import com.spanishapp.domain.voice.FriendlyVoice
 import com.spanishapp.domain.voice.Gender
 import com.spanishapp.domain.voice.VoiceCatalog
 import com.spanishapp.domain.voice.VoicePackInstaller
+import com.spanishapp.R
 import com.spanishapp.ui.components.rememberSpanishTts
 
 private val Purple   = Color(0xFF7C4DFF)
@@ -63,10 +65,10 @@ fun SettingsVoiceScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Голос диктора", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.voice_announcer), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_back))
                     }
                 }
             )
@@ -93,7 +95,7 @@ fun SettingsVoiceScreen(
             // ── Заголовок списка ───────────────────────────────────
             item {
                 Text(
-                    text       = if (voices.isEmpty()) "Голоса не найдены" else "Доступные голоса (${voices.size})",
+                    text       = if (voices.isEmpty()) stringResource(R.string.voice_not_found) else stringResource(R.string.voice_available, voices.size),
                     fontSize   = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     color      = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -145,8 +147,8 @@ fun SettingsVoiceScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(Modifier.padding(16.dp)) {
-                        Text("Скорость речи", fontWeight = FontWeight.Bold)
-                        Text("Чем меньше — тем медленнее", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.voice_rate), fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.voice_rate_hint), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Slider(
                             value         = settings.rate,
                             onValueChange = { viewModel.setRate(it) },
@@ -154,8 +156,8 @@ fun SettingsVoiceScreen(
                             steps         = 9
                         )
                         Spacer(Modifier.height(12.dp))
-                        Text("Тон голоса", fontWeight = FontWeight.Bold)
-                        Text("Ниже — глубже", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.voice_pitch), fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.voice_pitch_hint), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Slider(
                             value         = settings.pitch,
                             onValueChange = { viewModel.setPitch(it) },
@@ -197,16 +199,16 @@ private fun VoicePackBanner(
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
                     Text(
-                        text       = if (hdInstalled) "HD-голоса установлены" else "Голосовой пакет",
+                        text       = if (hdInstalled) stringResource(R.string.voice_hd_installed) else stringResource(R.string.voice_pack),
                         fontWeight = FontWeight.Bold,
                         fontSize   = 16.sp,
                         color      = tint
                     )
                     Text(
                         text     = if (hdInstalled)
-                                       "Найдено: $voicesCount голосов"
+                                       stringResource(R.string.voice_found_count, voicesCount)
                                    else
-                                       "Установи HD-пакет — голос станет естественным, как у носителя.",
+                                       stringResource(R.string.voice_pack_promo),
                         fontSize = 13.sp,
                         color    = tint.copy(alpha = 0.8f)
                     )
@@ -215,7 +217,7 @@ private fun VoicePackBanner(
             Spacer(Modifier.height(12.dp))
             if (!hdInstalled) {
                 Text(
-                    text     = "📦 ~15 МБ · бесплатно от Google",
+                    text     = stringResource(R.string.voice_pack_size),
                     fontSize = 12.sp,
                     color    = tint.copy(alpha = 0.7f),
                     modifier = Modifier.padding(bottom = 10.dp)
@@ -226,7 +228,7 @@ private fun VoicePackBanner(
                     shape    = RoundedCornerShape(14.dp),
                     colors   = ButtonDefaults.buttonColors(containerColor = Purple)
                 ) {
-                    Text("УСТАНОВИТЬ ПАКЕТ", fontWeight = FontWeight.ExtraBold)
+                    Text(stringResource(R.string.voice_install_pack), fontWeight = FontWeight.ExtraBold)
                 }
             } else {
                 OutlinedButton(
@@ -236,7 +238,7 @@ private fun VoicePackBanner(
                 ) {
                     Icon(Icons.Default.Settings, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("Управлять в настройках Android", fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.voice_manage_in_android), fontWeight = FontWeight.SemiBold)
                 }
             }
         }
@@ -290,9 +292,9 @@ private fun VoiceCard(
                     }
                 }
                 Text(
-                    text     = if (voice.gender == Gender.FEMALE) "Женский голос"
-                               else if (voice.gender == Gender.MALE) "Мужской голос"
-                               else "Голос",
+                    text     = if (voice.gender == Gender.FEMALE) stringResource(R.string.voice_female)
+                               else if (voice.gender == Gender.MALE) stringResource(R.string.voice_male)
+                               else stringResource(R.string.voice_neutral),
                     fontSize = 12.sp,
                     color    = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -300,13 +302,13 @@ private fun VoiceCard(
             IconButton(onClick = onPreview, modifier = Modifier.size(40.dp)) {
                 Icon(
                     Icons.Default.PlayArrow,
-                    contentDescription = "Прослушать",
+                    contentDescription = stringResource(R.string.voice_preview),
                     tint = Purple,
                     modifier = Modifier.size(24.dp)
                 )
             }
             if (isSelected) {
-                Icon(Icons.Default.CheckCircle, contentDescription = "Выбрано", tint = Purple)
+                Icon(Icons.Default.CheckCircle, contentDescription = stringResource(R.string.voice_selected), tint = Purple)
             }
         }
     }

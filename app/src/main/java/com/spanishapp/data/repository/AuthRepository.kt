@@ -47,6 +47,11 @@ class AuthRepository @Inject constructor(
         context.dataStore.edit { it[USER_PHOTO] = url }
     }
 
+    /** Removes the stored photo URL (so the avatar falls back to placeholder). */
+    suspend fun clearUserPhoto() {
+        context.dataStore.edit { it.remove(USER_PHOTO) }
+    }
+
     suspend fun setLoggedIn(loggedIn: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[IS_LOGGED_IN] = loggedIn

@@ -571,5 +571,145 @@
     <string name="set_dlg_name_title">Изменить имя</string>
     <string name="set_dlg_name_label">Имя</string>
     <string name="set_dlg_name_save">Сохранить</string>
+    <string name="set_notif_perm_denied">Без разрешения на уведомления напоминания не будут приходить. Включи в системных настройках.</string>
+
+    <!-- ── Quiz ─────────────────────────────────────────────── -->
+    <string name="quiz_translate_prompt">КАК ПЕРЕВОДИТСЯ?</string>
+    <string name="quiz_results">РЕЗУЛЬТАТЫ</string>
+    <string name="quiz_next_question">СЛЕДУЮЩИЙ ВОПРОС</string>
+    <string name="quiz_finished">Тест завершён</string>
+    <string name="quiz_try_again">ПОПРОБОВАТЬ СНОВА</string>
+    <string name="quiz_exit_to_menu">ВЫЙТИ В МЕНЮ</string>
+
+    <!-- ── Dialogues ────────────────────────────────────────── -->
+    <string name="dial_level_in_development">Уровень %1$s в разработке</string>
+    <string name="dial_coming_soon">Скоро здесь появятся живые диалоги для практики языка.</string>
+    <string name="dial_finish_practice">ЗАВЕРШИТЬ ПРАКТИКУ</string>
+
+    <!-- ── Grammar ──────────────────────────────────────────── -->
+    <string name="gram_coming_soon">Уроки для %1$s скоро появятся</string>
+
+    <!-- ── Rating screen ────────────────────────────────────── -->
+    <string name="rating_sort_weak">Слабые сверху</string>
+    <string name="rating_sort_strong">Сильные сверху</string>
+    <string name="rating_sort_alpha">По алфавиту</string>
+    <string name="rating_topic_progress">Прогресс по темам</string>
+    <string name="rating_now">Сейчас:</string>
+    <string name="rating_empty">Начни тренировки, чтобы увидеть свой прогресс.</string>
+
+    <!-- ── Leaderboard ──────────────────────────────────────── -->
+    <string name="lb_leaders">Лидеры</string>
+    <string name="lb_no_data">Нет данных</string>
+    <string name="lb_refresh">Обновить</string>
+    <string name="lb_world">мире</string>
+    <string name="lb_world_tab">🌍 Мир</string>
+    <string name="lb_my_rank">Ты #%1$d из %2$d в %3$s</string>
+    <string name="lb_empty">Пока никого нет — будь первым!</string>
+    <string name="lb_opt_out">Выйти из лидерборда</string>
+    <string name="lb_join_title">Войти в общий рейтинг?</string>
+    <string name="lb_join_explain">Мы сохраним только ник, страну и рейтинг. Ты сможешь сравнивать себя с игроками своей страны и со всем миром.</string>
+    <string name="lb_nickname">Ник</string>
+    <string name="lb_join_button">Войти в рейтинг</string>
+
+    <!-- ── Voice settings ───────────────────────────────────── -->
+    <string name="voice_announcer">Голос диктора</string>
+    <string name="voice_not_found">Голоса не найдены</string>
+    <string name="voice_available">Доступные голоса (%1$d)</string>
+    <string name="voice_rate">Скорость речи</string>
+    <string name="voice_rate_hint">Чем меньше — тем медленнее</string>
+    <string name="voice_pitch">Тон голоса</string>
+    <string name="voice_pitch_hint">Ниже — глубже</string>
+    <string name="voice_hd_installed">HD-голоса установлены</string>
+    <string name="voice_pack">Голосовой пакет</string>
+    <string name="voice_found_count">Найдено: %1$d голосов</string>
+    <string name="voice_pack_promo">Установи HD-пакет — голос станет естественным, как у носителя.</string>
+    <string name="voice_pack_size">📦 ~15 МБ · бесплатно от Google</string>
+    <string name="voice_install_pack">УСТАНОВИТЬ ПАКЕТ</string>
+    <string name="voice_manage_in_android">Управлять в настройках Android</string>
+    <string name="voice_female">Женский голос</string>
+    <string name="voice_male">Мужской голос</string>
+    <string name="voice_neutral">Голос</string>
+    <string name="voice_preview">Прослушать</string>
+    <string name="voice_selected">Выбрано</string>
+
+    <!-- ── App lock ─────────────────────────────────────────── -->
+    <string name="lock_error_biometric_failed">Ошибка: не удалось показать биометрию</string>
+    <string name="lock_error_lockout">Слишком много попыток. Подожди или войди заново.</string>
+    <string name="lock_error_not_recognized">Не распознано. Попробуй ещё раз.</string>
+    <string name="lock_title_unlock">Разблокировать ESPEAK</string>
+    <string name="lock_subtitle_unlock">Используй отпечаток или лицо</string>
+    <string name="lock_sign_in_again">Войти заново</string>
+    <string name="lock_app_locked">Приложение заблокировано</string>
+    <string name="lock_unlock_hint">Разблокируй биометрией, чтобы продолжить</string>
+    <string name="lock_unlock">Разблокировать</string>
+    <string name="lock_sign_out">Выйти из аккаунта</string>
+
+    <!-- ── Categories ───────────────────────────────────────── -->
+    <string name="cat_all">Все</string>
+    <string name="cat_all_words">Все слова</string>
+    <string name="cat_unknown">Категория</string>
+    <string name="cat_acciones">Действия</string>
+    <string name="cat_animales">Животные</string>
+    <string name="cat_arte">Искусство</string>
+    <string name="cat_auxiliares">Вспомогательные</string>
+    <string name="cat_calidad">Качество</string>
+    <string name="cat_cantidad">Количество</string>
+    <string name="cat_casa">Дом</string>
+    <string name="cat_ciudad">Город</string>
+    <string name="cat_colores">Цвета</string>
+    <string name="cat_comercio">Коммерция</string>
+    <string name="cat_comida">Еда</string>
+    <string name="cat_compras">Покупки</string>
+    <string name="cat_comunicacion">Общение</string>
+    <string name="cat_conocimiento">Знания</string>
+    <string name="cat_cortesia">Вежливость</string>
+    <string name="cat_cotidiano">Повседневное</string>
+    <string name="cat_creatividad">Творчество</string>
+    <string name="cat_cuerpo">Тело</string>
+    <string name="cat_cultura">Культура</string>
+    <string name="cat_deporte">Спорт</string>
+    <string name="cat_despedidas">Прощания</string>
+    <string name="cat_educacion">Образование</string>
+    <string name="cat_emociones">Эмоции</string>
+    <string name="cat_entretenimiento">Развлечения</string>
+    <string name="cat_estados">Состояния</string>
+    <string name="cat_expresiones">Выражения</string>
+    <string name="cat_familia_personas">Семья</string>
+    <string name="cat_finanzas">Финансы</string>
+    <string name="cat_fisico">Физ. состояние</string>
+    <string name="cat_general">Общее</string>
+    <string name="cat_hotel">Отель</string>
+    <string name="cat_lugares">Места</string>
+    <string name="cat_materiales">Материалы</string>
+    <string name="cat_media">Медиа</string>
+    <string name="cat_modal">Модальные</string>
+    <string name="cat_movimiento">Движение</string>
+    <string name="cat_naturaleza">Природа</string>
+    <string name="cat_numeros">Числа</string>
+    <string name="cat_orden">Порядок</string>
+    <string name="cat_pensamiento">Мышление</string>
+    <string name="cat_percepcion">Восприятие</string>
+    <string name="cat_personal">Личное</string>
+    <string name="cat_personas">Люди</string>
+    <string name="cat_precio">Цена</string>
+    <string name="cat_preguntas">Вопросы</string>
+    <string name="cat_profesiones">Профессии</string>
+    <string name="cat_redes_sociales">Соцсети</string>
+    <string name="cat_reglas">Правила</string>
+    <string name="cat_restaurante">Ресторан</string>
+    <string name="cat_ropa">Одежда</string>
+    <string name="cat_salud">Здоровье</string>
+    <string name="cat_saludos">Приветствия</string>
+    <string name="cat_social">Социальное</string>
+    <string name="cat_sociedad">Общество</string>
+    <string name="cat_tamano">Размер</string>
+    <string name="cat_tecnologia">Технологии</string>
+    <string name="cat_tiempo">Время</string>
+    <string name="cat_trabajo">Работа</string>
+    <string name="cat_transporte">Транспорт</string>
+    <string name="cat_valor">Ценность</string>
+    <string name="cat_velocidad">Скорость</string>
+    <string name="cat_viaje">Путешествие</string>
+    <string name="cat_vida">Жизнь</string>
 
 </resources>

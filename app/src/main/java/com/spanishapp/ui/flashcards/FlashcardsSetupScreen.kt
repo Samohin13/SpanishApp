@@ -58,7 +58,7 @@ data class LevelInfo(
 
 data class CategoryProgress(
     val key: String,
-    val label: String,
+    @androidx.annotation.StringRes val labelRes: Int,
     val total: Int,
     val mastered: Int,
 ) {
@@ -103,12 +103,12 @@ class FlashcardsSetupViewModel @Inject constructor(
             _categories.value = cats
 
             val list = buildList {
-                add(CategoryProgress("all", "Все слова", allTotal, allMastered))
+                add(CategoryProgress("all", com.spanishapp.R.string.cat_all_words, allTotal, allMastered))
                 cats.forEach { cat ->
                     val t = wordDao.countByLevelAndCategory(level, cat)
                     val m = wordDao.countMasteredByLevelAndCategory(level, cat)
                     val info = CategoryMeta.infoFor(cat)
-                    add(CategoryProgress(cat, info.label, t, m))
+                    add(CategoryProgress(cat, info.labelRes, t, m))
                 }
             }
             _categoryProgress.value = list
@@ -359,7 +359,7 @@ private fun CategoryRow(cat: CategoryProgress, onClick: () -> Unit) {
                 )
                 Spacer(Modifier.width(10.dp))
                 Text(
-                    info.label,
+                    androidx.compose.ui.res.stringResource(info.labelRes),
                     modifier   = Modifier.weight(1f),
                     fontSize   = 15.sp,
                     fontWeight = FontWeight.SemiBold,

@@ -209,7 +209,46 @@ class SettingsViewModel @Inject constructor(
     fun setThemeMode(m: ThemeMode) = viewModelScope.launch { appPreferences.setThemeMode(m) }
     fun setFontSize(s: String) = viewModelScope.launch { appPreferences.setFontSize(s) }
     fun logout() = viewModelScope.launch { authRepository.setLoggedIn(false) }
-    fun deleteAccount() = viewModelScope.launch { authRepository.setLoggedIn(false) }
+
+    /**
+     * Permanently deletes the user's account: Firestore document, Firebase Storage avatar,
+     * Firebase Auth user, and all local Room/DataStore state. Best-effort: logs and
+     * continues if any remote step fails (so user is never stuck unable to delete).
+     */
+    fun deleteAccount() = viewModelScope.launch {
+        val user = auth.currentUser
+        val uid = user?.uid
+
+        // 1. Firestore profile doc
+        if (uid != null) {
+            runCatching { db.collection("users").document(uid).delete().await() }
+                .onFailure { Log.w("SettingsVM", "Firestore delete failed", it) }
+            runCatching { db.collection("leaderboard").document(uid).delete().await() }
+                .onFailure { Log.w("SettingsVM", "Leaderboard delete failed", it) }
+        }
+
+        // 2. Storage avatar
+        if (uid != null) {
+            runCatching { storage.reference.child("avatars/$uid.jpg").delete().await() }
+                .onFailure { Log.w("SettingsVM", "Avatar delete failed", it) }
+        }
+
+        // 3. Firebase Auth user (may need recent re-auth — if it fails we still log out)
+        runCatching { user?.delete()?.await() }
+            .onFailure { Log.w("SettingsVM", "Auth.delete failed (recent login may be required)", it) }
+
+        // 4. Local Room: reset progress to defaults
+        runCatching { userProgressDao.update(UserProgressEntity()) }
+
+        // 5. DataStore: clear name, photo, level, login flag
+        runCatching {
+            authRepository.setUserName("")
+            authRepository.clearUserPhoto()
+            authRepository.setUserLevel("A1")
+            authRepository.setLoggedIn(false)
+        }
+    }
+
     fun resetProgress() = viewModelScope.launch { userProgressDao.update(UserProgressEntity()) }
 
     fun updateLevel(level: String) = viewModelScope.launch {
@@ -358,12 +397,38 @@ fun SettingsScreen(
 
             val reminderHour by vm.reminderHour.collectAsStateWithLifecycle()
             val reminderMinute by vm.reminderMinute.collectAsStateWithLifecycle()
+
+            // Android 13+ requires runtime POST_NOTIFICATIONS permission;
+            // without it, scheduled reminders are silently suppressed.
+            val notifPermissionLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { granted ->
+                if (granted) vm.toggleReminders(context, true)
+                else Toast.makeText(
+                    context,
+                    context.getString(R.string.set_notif_perm_denied),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
             SettingsSection(stringResource(R.string.settings_section_notifications)) {
                 SettingsSwitchItem(
                     Icons.Default.Notifications,
                     stringResource(R.string.set_reminders),
                     reminders
-                ) { vm.toggleReminders(context, it) }
+                ) { newValue ->
+                    if (!newValue) {
+                        vm.toggleReminders(context, false)
+                    } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        val granted = ContextCompat.checkSelfPermission(
+                            context, android.Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+                        if (granted) vm.toggleReminders(context, true)
+                        else notifPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        vm.toggleReminders(context, true)
+                    }
+                }
                 if (reminders) {
                     SettingsItem(
                         Icons.Default.AccessTime,
@@ -416,16 +481,14 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.Language, stringResource(R.string.settings_language_ui), uiLangLabel) {
                     showLanguageDialog = true
                 }
-                SettingsItem(Icons.Default.Public, stringResource(R.string.settings_language_target), stringResource(R.string.settings_target_spanish)) { /* Пока только один язык */ }
+                // Target language is currently always Spanish — show as info row, no click.
+                SettingsItem(Icons.Default.Public, stringResource(R.string.settings_language_target), stringResource(R.string.settings_target_spanish))
             }
 
-            SettingsSection(stringResource(R.string.settings_section_subscription)) {
-                SettingsItem(Icons.Default.Star, stringResource(R.string.settings_subscription_manage)) { /* Открыть маркет или экран оплаты */ }
-                SettingsItem(Icons.Default.Restore, stringResource(R.string.settings_subscription_restore)) { /* Логика восстановления */ }
-            }
+            // Subscription / Help-center sections removed — no implementation yet.
+            // Re-add when monetization or FAQ flow is built.
 
             SettingsSection(stringResource(R.string.settings_section_help)) {
-                SettingsItem(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.settings_help_center)) { /* Ссылка на FAQ или поддержку */ }
                 val emailSubject = stringResource(R.string.set_email_subject)
                 val emailChooser = stringResource(R.string.set_email_chooser)
                 SettingsItem(Icons.Default.MailOutline, stringResource(R.string.settings_contact)) {
@@ -471,7 +534,7 @@ fun SettingsScreen(
                     ))
                     runCatching { context.startActivity(intent) }
                 }
-                SettingsItem(Icons.Default.FileUpload, stringResource(R.string.settings_export)) { /* Логика экспорта */ }
+                // Export data removed — feature not implemented yet.
             }
 
             SettingsSection(stringResource(R.string.settings_section_other)) {

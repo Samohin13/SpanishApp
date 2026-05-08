@@ -14,17 +14,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.ui.components.LeagueBadge
 import com.spanishapp.ui.components.SpanishFlagRating
 
-private enum class SortMode(val label: String) {
-    WEAK("Слабые сверху"), STRONG("Сильные сверху"), ALPHABET("По алфавиту")
+private enum class SortMode(val labelRes: Int) {
+    WEAK(R.string.rating_sort_weak), STRONG(R.string.rating_sort_strong), ALPHABET(R.string.rating_sort_alpha)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,11 +43,12 @@ fun RatingScreen(
     // Refresh when entering screen
     LaunchedEffect(Unit) { vm.refreshCategoryRatings() }
 
-    val sorted = remember(items, sortMode) {
+    val context = LocalContext.current
+    val sorted = remember(items, sortMode, context) {
         when (sortMode) {
             SortMode.WEAK -> items.sortedBy { it.score }
             SortMode.STRONG -> items.sortedByDescending { it.score }
-            SortMode.ALPHABET -> items.sortedBy { it.label }
+            SortMode.ALPHABET -> items.sortedBy { context.getString(it.labelRes) }
         }
     }
 
@@ -54,7 +57,7 @@ fun RatingScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = { Text("Прогресс по темам", fontWeight = FontWeight.Bold) },
+                title = { Text(androidx.compose.ui.res.stringResource(R.string.rating_topic_progress), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -75,7 +78,7 @@ fun RatingScreen(
                     modifier = Modifier.padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Сейчас:", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(androidx.compose.ui.res.stringResource(R.string.rating_now), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.width(8.dp))
                     LeagueBadge(league = league)
                     Spacer(Modifier.weight(1f))
@@ -91,7 +94,7 @@ fun RatingScreen(
                     val selected = sortMode == mode
                     AssistChip(
                         onClick = { sortMode = mode },
-                        label = { Text(mode.label, fontSize = 12.sp) },
+                        label = { Text(androidx.compose.ui.res.stringResource(mode.labelRes), fontSize = 12.sp) },
                         colors = AssistChipDefaults.assistChipColors(
                             containerColor = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surface
                         )
@@ -104,7 +107,7 @@ fun RatingScreen(
             if (sorted.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        "Начни тренировки, чтобы увидеть свой прогресс.",
+                        androidx.compose.ui.res.stringResource(R.string.rating_empty),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 14.sp
                     )
@@ -142,7 +145,7 @@ private fun CategoryRow(item: CategoryRatingUi) {
                 Spacer(Modifier.width(12.dp))
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text(item.label, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                Text(androidx.compose.ui.res.stringResource(item.labelRes), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                 Text(
                     "${item.learned}/${item.total} • ${(item.score * 100).toInt()}%",
                     fontSize = 11.sp,
