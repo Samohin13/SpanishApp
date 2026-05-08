@@ -2838,6 +2838,756 @@ object LibrosData {
                     correctIndex = 1
                 )
             )
+        ),
+        Libro(
+            id = 76,
+            title = "El idioma que nunca aprendí",
+            level = "B2", difficulty = 4, topic = "Язык / Идентичность",
+            text = """
+                Mis abuelos hablaban una lengua que nadie en casa quiso enseñarme. Decían, con una mezcla de pudor y prudencia, que ese idioma no servía para abrirse paso en el mundo nuevo, y que sería mejor que yo creciera limpio de acentos extraños. Lo curioso es que, aun así, esa lengua me rodeó durante toda la infancia: en las canciones que mi abuela tarareaba mientras cocinaba, en las palabras sueltas que mi abuelo soltaba al enfadarse, en las cartas amarillas que llegaban dos veces al año desde un país que yo no sabría situar en un mapa. Hoy, cuando intento recuperar esos sonidos, descubro que se me escapan como agua entre los dedos. Podría aprender la gramática en cualquier academia, pero lo que perdí no es el idioma sino el modo en que ese idioma me hubiera hecho sentir en casa. A veces sospecho que cada generación elige, sin saberlo, qué silencios va a heredar a la siguiente, y que mi tarea no es resucitar palabras muertas sino aprender a vivir con la curiosa nostalgia de algo que nunca fue del todo mío.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué los abuelos no le enseñaron su lengua?",
+                    listOf("Porque la habían olvidado", "Por una mezcla de pudor y deseo de que el nieto se integrara", "Porque era una lengua secreta"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo describe la presencia de esa lengua en su infancia?",
+                    listOf("Una ausencia rodeada de fragmentos: canciones, enfados, cartas", "Un aprendizaje constante en la escuela", "Algo que solo escuchaba en la televisión"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué cree haber perdido en realidad?",
+                    listOf("La gramática del idioma", "El modo en que ese idioma le habría hecho sentir en casa", "La capacidad de viajar al país de origen"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué intuye sobre las generaciones?",
+                    listOf("Que cada una elige qué silencios heredar a la siguiente", "Que cada una habla mejor que la anterior", "Que el olvido es siempre involuntario"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 77,
+            title = "Caminar despacio",
+            level = "B2", difficulty = 3, topic = "Время / Ритм жизни",
+            text = """
+                Desde que decidí caminar despacio por la ciudad, he descubierto que los demás avanzan como si huyeran de algo que ni ellos mismos podrían nombrar. Yo también huía antes, sin darme cuenta, y solo me detuve cuando una pequeña lesión me obligó a renunciar a mi paso habitual. Al principio sentí frustración: las distancias parecían crecer, los semáforos se ponían rojos antes de tiempo, las escaleras mecánicas avanzaban más rápido que mi cuerpo. Pero, con las semanas, esa lentitud forzada se convirtió en una manera distinta de pertenecer al barrio. Empecé a notar fachadas que llevaba años pasando sin ver, a saludar a vecinos cuyos nombres ignoraba, a escuchar el modo en que las palomas se levantan en bloque cuando alguien dobla una esquina. Sospecho que la prisa no es solo una elección personal sino un acuerdo silencioso entre todos para no preguntarnos hacia dónde corremos. Quien camina despacio rompe ese pacto, y por eso, al cruzarse con uno, los demás bajan la mirada como si los hubieran sorprendido en una mentira.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué empezó a caminar despacio el narrador?",
+                    listOf("Por moda urbana", "Por una pequeña lesión que le obligó a renunciar a su paso habitual", "Por imitar a un amigo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué descubrió tras semanas de lentitud?",
+                    listOf("Que la ciudad era hostil", "Una manera distinta de pertenecer al barrio", "Que prefería no salir de casa"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué piensa el narrador sobre la prisa?",
+                    listOf("Que es un acuerdo silencioso para no preguntarse hacia dónde se corre", "Que es necesaria para sobrevivir económicamente", "Que es exclusiva de las grandes capitales"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cómo reaccionan los demás al cruzarse con alguien lento?",
+                    listOf("Le sonríen con admiración", "Le ignoran con perfecta naturalidad", "Bajan la mirada como si los hubieran sorprendido en una mentira"),
+                    correctIndex = 2
+                )
+            )
+        ),
+        Libro(
+            id = 78,
+            title = "La cortesía de los desconocidos",
+            level = "B2", difficulty = 4, topic = "Доброта / Незнакомцы",
+            text = """
+                Hay una forma de bondad que solo existe entre personas que no volverán a verse jamás. La he encontrado en aeropuertos extranjeros donde alguien se ha ofrecido a guardarme la maleta sin más motivo que la coincidencia, en hospitales nocturnos donde otro paciente me ha contado su vida mientras esperábamos al médico, en autobuses interurbanos donde una anciana me ha cedido su sándwich porque me notaba pálido. Esas atenciones no aspiran a ser recordadas ni piden gratitud futura: están limpias del cálculo que casi siempre contamina nuestras relaciones más estables. Quizá por eso me conmueven tanto. A veces pienso que el verdadero retrato moral de una sociedad no se mide por sus leyes ni por sus discursos públicos, sino por la calidad de la cortesía que ofrece a quienes pasan de largo. Donde los desconocidos se tratan con cuidado, hay una infraestructura invisible que sostiene todo lo demás. Donde se ignoran o se temen, las instituciones más sólidas terminan, antes o después, mostrándose huecas.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué tipo de bondad describe el texto?",
+                    listOf("La que existe entre familiares cercanos", "La que existe entre personas que no volverán a verse", "La que se compra con dinero"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué le conmueven tanto esos gestos?",
+                    listOf("Porque están limpios del cálculo de las relaciones estables", "Porque siempre obtiene algo a cambio", "Porque se publican en redes sociales"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cómo se mide, según el narrador, el retrato moral de una sociedad?",
+                    listOf("Por sus leyes y discursos públicos", "Por la cortesía que ofrece a los desconocidos", "Por su producto interior bruto"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué ocurre donde los desconocidos se ignoran o se temen?",
+                    listOf("Las instituciones más sólidas terminan mostrándose huecas", "Surge una nueva forma de comunidad digital", "La economía se fortalece a corto plazo"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 79,
+            title = "Algoritmos de afecto",
+            level = "B2", difficulty = 5, topic = "Этика / Технологии",
+            text = """
+                Mi sobrino, que tiene diecisiete años, asegura sin ironía que prefiere conversar con su asistente virtual que con la mayoría de sus profesores. Dice que la máquina le escucha sin interrumpirle, no le juzga por su torpeza al expresarse y nunca le devuelve las cosas con esa paciencia condescendiente que tantos adultos confunden con la pedagogía. Yo intento explicarle que esa atención impecable es, en el fondo, una simulación cuidadosamente diseñada para fidelizarlo, y que un programa que jamás se cansa de uno no puede, por definición, quererlo. Él me responde, con una lucidez que me incomoda, que el cariño humano también está hecho de protocolos aprendidos, y que la diferencia entre una madre que escucha por costumbre y un sistema que escucha por instrucción es más estrecha de lo que estamos dispuestos a admitir. No sé si tiene razón. Lo que me preocupa no es tanto que las máquinas aprendan a fingir afecto, sino que generaciones enteras crezcan convencidas de que el afecto, en el fondo, nunca fue otra cosa que una rutina más o menos sofisticada.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué prefiere el sobrino conversar con su asistente virtual?",
+                    listOf("Porque le escucha sin interrumpir y sin juzgar su torpeza", "Porque le da mejores notas en clase", "Porque es más rápido escribiendo que él"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué argumento ofrece el narrador en contra?",
+                    listOf("Que esa atención es una simulación diseñada para fidelizarlo", "Que las máquinas son técnicamente lentas", "Que está prohibido por la ley usarlas"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué responde el sobrino que incomoda al narrador?",
+                    listOf("Que el cariño humano también está hecho de protocolos aprendidos", "Que él prefiere igualmente a su madre", "Que ya no le interesa el tema"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cuál es el verdadero temor del narrador?",
+                    listOf("Que las máquinas se vuelvan más inteligentes que él", "Que generaciones enteras crean que el afecto fue siempre una rutina sofisticada", "Que los profesores pierdan su trabajo"),
+                    correctIndex = 1
+                )
+            )
+        ),
+        Libro(
+            id = 80,
+            title = "La oficina vacía",
+            level = "B2", difficulty = 4, topic = "Работа / Смысл",
+            text = """
+                Llevo doce años cumpliendo, con una puntualidad que ya nadie agradece, las tareas de un puesto cuya utilidad concreta he dejado hace tiempo de comprender. Redacto informes que nadie lee del todo, asisto a reuniones donde se acuerdan acuerdos previos, archivo expedientes que probablemente serán destruidos cuando el almacén se quede pequeño. Mis compañeros, en privado, comparten la misma sospecha: estamos ocupados, pero quizá no estemos haciendo nada. Lo extraño no es que el trabajo carezca de sentido —eso, en alguna medida, le ocurre a casi todos—, sino que la institución entera dependa de que sigamos fingiendo que sí lo tiene. Si uno de nosotros se atreviera a decirlo en voz alta, el problema no sería su honestidad sino la incomodidad que provocaría en los demás, obligados a defender una rutina que, sin nuestra mutua complicidad, se desmoronaría en un solo día. A veces sospecho que parte de mi sueldo no se me paga por lo que produzco, sino por mi disposición a no hacer la pregunta más obvia.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué describe el narrador sobre su trabajo?",
+                    listOf("Que es muy creativo y útil", "Que ha dejado de comprender su utilidad concreta", "Que recibe muchos elogios por él"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué sospechan en privado los compañeros?",
+                    listOf("Que están ocupados pero quizá no haciendo nada", "Que les van a despedir mañana", "Que el jefe es brillante"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué pasaría si alguien dijera la verdad en voz alta?",
+                    listOf("Recibiría un ascenso", "Provocaría incomodidad y rompería una complicidad mutua", "Nadie lo notaría"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué intuye el narrador que le pagan en parte?",
+                    listOf("Por su disposición a no hacer la pregunta más obvia", "Por su talento administrativo excepcional", "Por su antigüedad en la empresa"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 81,
+            title = "Soledad pública",
+            level = "B2", difficulty = 4, topic = "Город / Одиночество",
+            text = """
+                Hay una soledad muy particular que solo se siente rodeado de gente. La he experimentado los viernes por la noche, cuando los bares de mi barrio se llenan de conversaciones cruzadas y yo, sentado al fondo con un libro abierto que no llego a leer, descubro que todos esos rostros felices no me incluyen ni necesitan incluirme. No es una soledad triste, exactamente; es más bien el reconocimiento sereno de que la alegría ajena, por más cercana que esté, sigue siendo materialmente impenetrable. En esos momentos comprendo a quienes huyen de las ciudades grandes con la esperanza de que el silencio de un pueblo pequeño los console. Pero también sé que ese tipo de silencio sería todavía peor: allí, al menos, podría imaginar que los demás se sienten como yo. En la ciudad, en cambio, la evidencia es brutal: la fiesta existe, sucede a tres metros, y uno no está dentro. Quizá la madurez consista en aceptar esa distancia sin esperar que algún día, por fin, se cierre.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuándo siente esa soledad particular?",
+                    listOf("Cuando está solo en casa", "Rodeado de gente, sobre todo en bares llenos los viernes", "Cuando trabaja en silencio"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo describe la alegría de los demás?",
+                    listOf("Como una farsa colectiva", "Como algo materialmente impenetrable aunque cercano", "Como un ejemplo a imitar"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué piensa que el silencio del pueblo sería peor?",
+                    listOf("Porque no podría imaginar que los demás se sienten como él... espera, sí podría", "Porque allí no encontraría la evidencia brutal de la fiesta ajena, pero la realidad sería otra", "Porque allí la evidencia de no pertenecer no estaría visible y sería aún peor"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿En qué consiste, según él, la madurez?",
+                    listOf("En aceptar esa distancia sin esperar que se cierre", "En cerrar esa distancia a toda costa", "En mudarse al campo definitivamente"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 82,
+            title = "Lo que no se traduce",
+            level = "B2", difficulty = 5, topic = "Перевод / Язык",
+            text = """
+                He trabajado veinte años como traductora literaria y aún me sorprende descubrir, en cada libro nuevo, palabras que se niegan a cruzar la frontera. No me refiero a los términos técnicos, que siempre encuentran su equivalencia con cierta paciencia, sino a esas pequeñas piezas afectivas —un diminutivo cariñoso, un giro irónico, un silencio cultural— que un idioma deja caer con naturalidad y otro recibe con torpeza. Mis primeros años creía que el deber del traductor era forzar el paso de esas palabras como contrabandista, inventando equivalencias improbables o explicándolas a pie de página. Hoy, en cambio, prefiero respetar la frontera y dejar que el lector intuya el hueco. Hay vacíos que, aceptados con honestidad, comunican más que cualquier glosa erudita. Traducir bien, he llegado a creer, no consiste en hacer pasar por completa una obra que en su lengua original ya estaba hecha de ausencias, sino en construir, en otra lengua, un edificio comparable cuyas grietas se parezcan a las del primero. Lo demás es vanidad disfrazada de fidelidad.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué le sorprende a la traductora en cada libro nuevo?",
+                    listOf("La velocidad con que termina su trabajo", "Palabras que se niegan a cruzar la frontera entre lenguas", "La calidad creciente de los autores jóvenes"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hacía en sus primeros años profesionales?",
+                    listOf("Forzar el paso con equivalencias improbables y notas a pie de página", "Negarse a traducir lo intraducible", "Cambiar de profesión cada pocos años"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué prefiere hacer ahora?",
+                    listOf("Respetar la frontera y dejar que el lector intuya el hueco", "Reescribir completamente el libro original", "Traducir solo libros sencillos"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué considera vanidad disfrazada de fidelidad?",
+                    listOf("Construir un edificio comparable con grietas parecidas", "Pretender hacer pasar por completa una obra hecha originalmente de ausencias", "Dejar al lector con dudas sobre el sentido"),
+                    correctIndex = 1
+                )
+            )
+        ),
+        Libro(
+            id = 83,
+            title = "El padre que callaba",
+            level = "B2", difficulty = 4, topic = "Семья / Молчание",
+            text = """
+                Mi padre pertenecía a esa generación de hombres a los que se les enseñó que hablar de sí mismos era una forma de debilidad. Durante toda mi infancia interpreté su silencio como frialdad, y crecí convencido de que entre nosotros no existía algo que mereciera el nombre de afecto. Solo después de su muerte, ordenando los cajones de su escritorio, descubrí cuadernos enteros donde había anotado, año tras año, los pequeños hechos de mi vida que yo le había contado y que él jamás había comentado en voz alta. Los apuntaba con una caligrafía meticulosa, sin opiniones ni reproches, como quien guarda recibos importantes. Aquella tarde entendí, demasiado tarde, que su modo de quererme no había sido el silencio, sino la atención obstinada bajo el silencio. Me he pasado los años siguientes sospechando que muchos malentendidos entre padres e hijos no se deben a la falta de amor, sino a las gramáticas distintas con que cada generación aprende a expresarlo, y a la lentitud, casi siempre injusta, con que aprendemos a leer la del otro.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo interpretaba el narrador el silencio paterno en su infancia?",
+                    listOf("Como respeto mutuo", "Como frialdad y ausencia de afecto", "Como una broma habitual"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué descubrió tras la muerte del padre?",
+                    listOf("Cuadernos donde el padre anotaba meticulosamente los hechos de su vida", "Cartas dirigidas a otra familia", "Una herencia económica importante"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué entendió aquella tarde?",
+                    listOf("Que su padre quería a otra persona", "Que el modo de quererle había sido la atención obstinada bajo el silencio", "Que debía publicar los cuadernos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿A qué atribuye los malentendidos entre generaciones?",
+                    listOf("A las gramáticas distintas con que cada una expresa el afecto", "A la falta total de amor", "A factores económicos exclusivamente"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 84,
+            title = "Nostalgia ajena",
+            level = "B2", difficulty = 5, topic = "Память / Поколения",
+            text = """
+                Cada vez con más frecuencia me sorprendo sintiendo nostalgia por épocas que no viví. Veo fotografías de calles madrileñas de los años cincuenta, escucho grabaciones de cantantes que murieron antes de que yo naciera, leo cartas escritas en alfabetos cuyas reglas ortográficas ya nadie respeta, y experimento una añoranza profunda, casi corporal, por un mundo del que no formé parte. Al principio sospeché que se trataba de una pose romántica, una manera elegante de despreciar el presente. Pero con los años he llegado a otra hipótesis: en una sociedad donde casi nada se conserva más de cinco años, la nostalgia por lo que no fue nuestro es quizá el único modo que tenemos algunos de inventarnos un pasado lo bastante denso como para sostener el peso del presente. La memoria heredada, aunque sea de segunda mano, ofrece raíces que la propia experiencia, demasiado breve y fragmentada, no alcanza a producir. Lo que la psicología llama melancolía, sospecho, es a veces un acto involuntario de arquitectura interior.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué le sorprende experimentar al narrador?",
+                    listOf("Nostalgia por épocas que no vivió", "Repulsión por todo lo antiguo", "Indiferencia hacia el pasado"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cuál fue su primera sospecha sobre ese sentimiento?",
+                    listOf("Que era una enfermedad mental grave", "Que era una pose romántica para despreciar el presente", "Que era hereditaria"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hipótesis posterior elabora?",
+                    listOf("Que la nostalgia ajena ofrece raíces que la propia experiencia, breve y fragmentada, no produce", "Que es un fenómeno exclusivo de su generación", "Que se cura viajando"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cómo redefine la melancolía al final?",
+                    listOf("Como un trastorno clínico claro", "Como una moda pasajera", "Como un acto involuntario de arquitectura interior"),
+                    correctIndex = 2
+                )
+            )
+        ),
+        Libro(
+            id = 85,
+            title = "Música de los veinte años",
+            level = "B2", difficulty = 3, topic = "Музыка / Время",
+            text = """
+                Hay canciones que solo entendí cuando dejaron de hablarle a quien yo era para empezar a hablarle a quien había sido. A los veinte años las escuchaba como banda sonora del presente; a los cuarenta, las mismas notas suenan de otra manera, como si el cantante hubiera regresado a corregir lo que entonces no supe escuchar. Lo curioso es que las letras no han cambiado: el cambio está en el oyente. Cuando un amigo más joven me pide que le explique por qué tal disco fue importante para mi generación, descubro que no puedo. Puedo describir el contexto histórico, las modas, los códigos compartidos, pero no la sensación, irrepetible, de que aquellas canciones nos pertenecían en exclusiva mientras sonaban. Quizá por eso desconfío de quienes proclaman que la música actual es peor que la de antes: lo que añoran no es una calidad superior, sino la edad en la que la música tuvo, por última vez, la capacidad de explicarles enteros. Después, ningún disco vuelve a hacerlo.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuándo entendió ciertas canciones, según el narrador?",
+                    listOf("Cuando empezaron a hablarle a quien había sido", "Cuando las escuchó por primera vez", "Cuando aprendió inglés"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué ha cambiado en realidad?",
+                    listOf("Las letras se reescribieron", "Cambió el oyente, no las canciones", "La calidad técnica de la grabación"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué no puede explicarle a un amigo más joven?",
+                    listOf("La sensación irrepetible de que las canciones les pertenecían", "La fecha exacta del lanzamiento", "El nombre del cantante principal"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué cree que añoran quienes dicen que la música era mejor antes?",
+                    listOf("La edad en que la música tuvo capacidad de explicarles enteros", "Una superior maestría técnica de los músicos", "Los precios bajos de los discos"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 86,
+            title = "El privilegio de dudar",
+            level = "B2", difficulty = 5, topic = "Сомнение / Этика",
+            text = """
+                Hubo un tiempo en que dudar en público se consideraba una virtud intelectual; hoy, en cambio, casi cualquier vacilación se interpreta como cobardía o como simpatía clandestina con el adversario. Las redes premian la afirmación contundente, la respuesta inmediata, la indignación encajada en pocos caracteres, y castigan con frialdad a quien admite no saber del todo. Yo he aprendido, con cierta vergüenza, a fingir convicciones más firmes de las que tengo simplemente para no quedarme fuera de las conversaciones. Cuando me retiro a mis cuadernos privados, sin embargo, sigo descubriendo que mis posiciones más sinceras son tibias, contradictorias, abiertas. Y empiezo a sospechar que la sinceridad pública, en estos tiempos, exige un valor distinto al de antes: no el de levantar la voz contra el poder, sino el de admitir, frente a una audiencia exigente, que sobre muchísimas cosas todavía no se ha terminado de pensar. Quizá la libertad intelectual del próximo siglo se mida menos por lo que uno se atreva a afirmar que por lo que se permita seguir dudando sin avergonzarse.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo se interpreta hoy la duda pública, según el narrador?",
+                    listOf("Como virtud intelectual", "Como cobardía o simpatía clandestina con el adversario", "Como humor refinado"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué admite haber aprendido con vergüenza?",
+                    listOf("A fingir convicciones más firmes de las que tiene", "A escribir más rápido en redes", "A evitar las conversaciones por completo"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué exige hoy la sinceridad pública, según él?",
+                    listOf("Levantar la voz contra el poder, como antes", "Admitir frente a la audiencia que aún no se ha terminado de pensar", "Escribir libros académicos extensos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo cree que se medirá la libertad intelectual del próximo siglo?",
+                    listOf("Por lo que uno afirme con contundencia", "Por la cantidad de seguidores", "Por lo que uno se permita seguir dudando sin avergonzarse"),
+                    correctIndex = 2
+                )
+            )
+        ),
+        Libro(
+            id = 87,
+            title = "La ciudad extranjera",
+            level = "B2", difficulty = 4, topic = "Путешествия / Иностранец",
+            text = """
+                He vivido seis años en una ciudad cuyo idioma sigo sin dominar del todo. Al principio creía que aquello era un fracaso temporal, una etapa que la rutina disolvería; ahora sospecho que la distancia lingüística forma parte indisociable de mi vida aquí, y que probablemente nunca llegaré a sentirme tan a gusto como un nativo en su café del barrio. Lo curioso es que esa imperfección, lejos de empobrecerme, me ha enseñado una atención particular: como no puedo confiar en lo que entiendo de oídas, miro más, observo gestos, traduzco silencios. Soy, en cierto modo, un lector permanente de un texto que no termina de revelarme su sentido. Cuando regreso a mi país, me doy cuenta de que allí, donde todo es transparente, vivo más distraído, casi perezosamente. Ser extranjero, he comprendido, es un trabajo agotador y a la vez una escuela inesperada: te obliga a no dar nada por sentado y, con los años, te entrena para sospechar que en ningún sitio se está del todo en casa.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué pensaba al principio sobre la barrera del idioma?",
+                    listOf("Que era un fracaso temporal que la rutina disolvería", "Que era irrelevante", "Que sería su mayor talento"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué le ha enseñado la imperfección lingüística?",
+                    listOf("A mirar más, observar gestos y traducir silencios", "A aislarse de los demás", "A escribir mejor en su propio idioma"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cómo se siente cuando regresa a su país?",
+                    listOf("Más concentrado y atento que nunca", "Más distraído y casi perezoso, porque allí todo es transparente", "Profundamente extranjero también"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué conclusión final extrae sobre ser extranjero?",
+                    listOf("Que se está mejor sin viajar nunca", "Que entrena para sospechar que en ningún sitio se está del todo en casa", "Que solo merece la pena con un buen sueldo"),
+                    correctIndex = 1
+                )
+            )
+        ),
+        Libro(
+            id = 88,
+            title = "Fotografías sin nadie",
+            level = "B2", difficulty = 4, topic = "Фотография / Отсутствие",
+            text = """
+                Desde hace algunos años fotografío únicamente lugares vacíos: estaciones a las cinco de la mañana, parques bajo la lluvia, oficinas el día después de un despido colectivo. Mis amigos, que esperan retratos amables, me reprochan esa manía como si yo cultivase deliberadamente la tristeza. Pero lo que busco no es tristeza, sino la huella de una presencia que se acaba de retirar. Un banco recién desocupado conserva, durante unos minutos, el calor del cuerpo que estuvo allí; una taza con restos de café aún testimonia una conversación que ha terminado; un patio escolar después del recreo guarda una vibración que ningún ruido podría reproducir. Mis fotografías, creo, no documentan la soledad, sino el instante exacto en que la compañía se transforma en su propio recuerdo. Tal vez por eso me cuesta tanto retratar a personas: cuando aparecen vivas en el encuadre, ocupan tanto espacio que ya no se ve aquello que mi cámara realmente persigue, esa lenta sedimentación del haber estado.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué fotografía exclusivamente desde hace años?",
+                    listOf("Retratos familiares", "Lugares vacíos", "Animales de compañía"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué busca en realidad el narrador?",
+                    listOf("La huella de una presencia que se acaba de retirar", "Cultivar deliberadamente la tristeza", "Vender las fotografías a coleccionistas"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué cree que documentan sus fotografías?",
+                    listOf("La soledad como tema permanente", "La belleza arquitectónica", "El instante en que la compañía se transforma en su propio recuerdo"),
+                    correctIndex = 2
+                ),
+                LibroQuestion(
+                    "¿Por qué le cuesta retratar a personas?",
+                    listOf("Porque las personas vivas ocupan tanto espacio que tapan lo que la cámara persigue", "Porque ya no le interesan los seres humanos", "Porque su cámara es de mala calidad"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 89,
+            title = "El consuelo de la rutina",
+            level = "B2", difficulty = 3, topic = "Привычки / Утешение",
+            text = """
+                Durante años creí que la rutina era el enemigo del alma sensible: un mecanismo que aplanaba los días y convertía la vida en una sucesión de gestos automáticos. Hoy, en cambio, me parece uno de los pocos consuelos sólidos que la edad ha sabido entregarme. Levantarme a la misma hora, preparar el café del mismo modo, caminar siempre por la misma acera bajo los mismos árboles, son actos que durante mi juventud habría descrito con desprecio y que ahora reconozco como una arquitectura mínima contra el caos. La rutina no anestesia: protege. Ofrece un suelo firme desde el que afrontar las pérdidas, las noticias inesperadas, los duelos íntimos. He visto a personas más jóvenes despreciar la repetición como si fuera una rendición, y he querido decirles, sin éxito, que el verdadero acto de coraje no consiste en romper diariamente la propia vida, sino en sostenerla con paciencia hasta que sus pequeños hábitos se conviertan en un refugio. Pero esa lección, sospecho, no se transmite: cada cual la aprende, si la aprende, demasiado tarde.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo veía la rutina en su juventud?",
+                    listOf("Como un consuelo necesario", "Como enemiga del alma sensible", "Como una obligación familiar"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo la describe ahora?",
+                    listOf("Como una arquitectura mínima contra el caos", "Como una pérdida de tiempo lamentable", "Como un signo de mediocridad"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué función atribuye a la rutina?",
+                    listOf("Anestesia los sentimientos por completo", "Protege y ofrece suelo firme ante las pérdidas", "Permite ganar más dinero"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué piensa sobre transmitir esta lección a los jóvenes?",
+                    listOf("Que se transmite fácilmente con paciencia", "Que cada cual la aprende, si la aprende, demasiado tarde", "Que basta con dar un curso universitario"),
+                    correctIndex = 1
+                )
+            )
+        ),
+        Libro(
+            id = 90,
+            title = "Performar la vida",
+            level = "B2", difficulty = 5, topic = "Соцсети / Перформанс",
+            text = """
+                Una amiga me confesó, medio en broma, que a veces interrumpe momentos felices para fotografiarlos antes de que terminen, y que esa interrupción ha llegado a producirle más placer que el momento mismo. La frase me persiguió durante semanas. He empezado a fijarme en el modo en que las personas, yo incluida, vivimos cada vez más como si una cámara invisible nos siguiera de cerca, ajustando expresiones, eligiendo ángulos, buscando frases que pudieran sobrevivir como cita. La vida, antes destinada a ser vivida y olvidada, se ha convertido en un material en bruto cuyo valor real depende de su posterior puesta en escena. Lo inquietante no es la vanidad, que ha existido siempre, sino el desplazamiento sutil de la experiencia hacia su versión documentada. Lo que no se publica empieza a parecer, secretamente, lo que no ha ocurrido. Y sospecho que dentro de unos años nos costará distinguir si nuestros recuerdos más felices fueron felices porque vivimos algo intenso o porque conseguimos, finalmente, una buena fotografía.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué le confesó la amiga al narrador?",
+                    listOf("Que la fotografía le aburría", "Que interrumpe momentos felices para fotografiarlos y eso le da más placer", "Que ya no usa redes sociales"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo describe la vida contemporánea?",
+                    listOf("Como un material en bruto cuyo valor depende de su puesta en escena", "Como un acontecimiento puramente íntimo", "Como una repetición de la del siglo pasado"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué cree que le ocurre a lo no publicado?",
+                    listOf("Empieza a parecer secretamente lo que no ha ocurrido", "Se vuelve más auténtico que nunca", "Se conserva intacto en la memoria"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué duda tendremos en pocos años, según él?",
+                    listOf("Si nuestros recuerdos felices lo fueron por la experiencia o por la fotografía conseguida", "Si los teléfonos seguirán existiendo", "Si vale la pena tener amigos"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 91,
+            title = "Lenguas que mueren",
+            level = "B2", difficulty = 5, topic = "Язык / Утрата",
+            text = """
+                En el pueblo de mi abuela quedan menos de treinta personas que hablan, con cierta soltura, una lengua que en su juventud se escuchaba en cada calle. Los lingüistas que la visitan llegan equipados con grabadoras y cuestionarios, convencidos de que documentar es preservar; mi abuela, en cambio, sostiene con sereno escepticismo que una lengua sin niños es una lengua que ya ha muerto, aunque tarde décadas en enterrarse. Lo que se pierde con un idioma, me explicó una tarde, no es solamente un vocabulario, sino un modo de bromear, de consolar a un enfermo, de llamar a un animal, de despedirse de un muerto. Cada lengua organiza el alma de un modo distinto, y cuando desaparece no la sustituye otra: queda un hueco con forma de aquella manera particular de mirar el mundo. Los archivos académicos, decía, harán que algún día alguien pueda recitar palabras correctas en una conferencia, pero esas palabras serán cadáveres bien ordenados, no seres vivos.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuántos hablantes quedan en el pueblo?",
+                    listOf("Menos de treinta personas", "Más de mil", "Solo la abuela"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué piensa la abuela sobre los esfuerzos de los lingüistas?",
+                    listOf("Que son la salvación definitiva de la lengua", "Que una lengua sin niños es una lengua ya muerta", "Que deberían pagar por las grabaciones"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué se pierde realmente con un idioma, según ella?",
+                    listOf("Un vocabulario y nada más", "Un modo de bromear, consolar, llamar y despedirse", "Únicamente expresiones obscenas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué metáfora final usa para los archivos académicos?",
+                    listOf("Cadáveres bien ordenados, no seres vivos", "Semillas listas para germinar", "Joyas valiosísimas"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 92,
+            title = "El amigo a distancia",
+            level = "B2", difficulty = 4, topic = "Дружба / Расстояние",
+            text = """
+                Tengo un amigo al que veo, en el mejor de los casos, una vez cada tres años. Vive en otro continente, en una zona horaria contraria a la mía, y sin embargo lo considero, sin esfuerzo, la persona que mejor me conoce. Hemos aprendido a compensar la distancia con una correspondencia paciente: largos correos electrónicos donde nos contamos lo que jamás contaríamos a quienes nos rodean a diario. Sospecho que la cercanía geográfica, paradójicamente, dificulta cierta clase de honestidad: cuando uno comparte el mismo café, los mismos amigos, las mismas obligaciones laborales, hablar con franqueza puede tener consecuencias prácticas que enturbian la palabra. La distancia, en cambio, ofrece una libertad extraña: lo que digo allí no me romperá un horario ni una reputación inmediata. Quizá la verdadera amistad, contra lo que el cine repite, no se mide por la cantidad de horas compartidas, sino por la calidad de aquello que dos personas se atreven a confiarse cuando ya nada material las obliga a seguir hablándose.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Con qué frecuencia ve a ese amigo?",
+                    listOf("Cada semana", "En el mejor de los casos, una vez cada tres años", "Diariamente por videollamada"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo compensan la distancia?",
+                    listOf("Con visitas mensuales", "Con largos correos electrónicos donde se cuentan lo que no contarían a otros", "Con regalos costosos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué la cercanía dificulta cierta honestidad?",
+                    listOf("Porque hablar con franqueza puede tener consecuencias prácticas en la vida cotidiana", "Porque los amigos cercanos no escuchan", "Porque el café los distrae"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cómo redefine la amistad verdadera?",
+                    listOf("Por la calidad de lo que dos personas se confían sin obligación material", "Por la cantidad de horas compartidas", "Por los viajes pagados a medias"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 93,
+            title = "Sueños y realidad",
+            level = "B2", difficulty = 4, topic = "Сны / Реальность",
+            text = """
+                Llevo un cuaderno donde anoto, cada mañana, los sueños que consigo recordar. Lo hago desde hace casi diez años, y al releer cuadernos antiguos descubro que los sueños se parecen entre sí mucho más que los días que los rodean: las mismas casas borrosas reaparecen una década después, los mismos rostros, las mismas escaleras imposibles. Mientras tanto, mi vida diurna ha cambiado tanto que apenas reconozco al joven que escribió las primeras páginas. Esa simetría invertida me intriga: durante el día parecemos protagonistas de una transformación constante, y por la noche, en cambio, regresamos al mismo decorado interior, como si en alguna parte de nosotros existiera un espacio que se niega a evolucionar. A veces sospecho que la realidad cotidiana es lo verdaderamente fugaz, y que los sueños conservan, con su monotonía obstinada, una versión más estable de lo que somos. Si fuera así, los biógrafos del futuro deberían leer menos diarios y más cuadernos de sueños, donde late, sin disfraz, una identidad que el día se empeña en ocultar.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué descubre al releer los cuadernos antiguos?",
+                    listOf("Que los sueños son cada vez más distintos", "Que los sueños se parecen entre sí más que los días", "Que su letra ha mejorado mucho"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué simetría le intriga?",
+                    listOf("Que de día se transforma y de noche regresa al mismo decorado interior", "Que duerme cada vez menos horas", "Que ahora tiene pesadillas constantes"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué hipótesis le sugiere esta observación?",
+                    listOf("Que los sueños son meros residuos sin importancia", "Que la realidad cotidiana es lo verdaderamente fugaz", "Que conviene dormir menos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué deberían leer los biógrafos del futuro, según él?",
+                    listOf("Solo cartas oficiales", "Menos diarios y más cuadernos de sueños", "Únicamente expedientes médicos"),
+                    correctIndex = 1
+                )
+            )
+        ),
+        Libro(
+            id = 94,
+            title = "Rituales analógicos",
+            level = "B2", difficulty = 4, topic = "Технологии / Ритуалы",
+            text = """
+                Aún tengo en un cajón el último teléfono fijo de mi familia, un aparato gris cuyo cable enrollado conserva la forma de tantas conversaciones. Mis hijos lo miran como un objeto arqueológico: no entienden por qué uno tenía que estar atado a la pared para hablar con un amigo, ni por qué los recados pasaban por el oído atento de toda la casa antes de llegar a su destinatario. Yo intento explicarles que aquello no era solamente un atraso técnico, sino un ritual social: las llamadas se preparaban, se temían un poco, se esperaban junto al teléfono como quien espera un tren. Cada conversación tenía un peso que el envío instantáneo de un mensaje ha logrado borrar casi por completo. No defiendo el regreso a esa lentitud, que también tenía sus injusticias: simplemente sospecho que cada vez que una herramienta promete eliminar un inconveniente, elimina, de paso, una pequeña ceremonia con la que sin saberlo dotábamos a la vida diaria de una solemnidad mínima. Y la suma de esas ceremonias perdidas explica, quizá, por qué tantos días recientes se nos pasan sin dejar huella.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo ven sus hijos el viejo teléfono fijo?",
+                    listOf("Como un objeto arqueológico incomprensible", "Como un equipo de moda retro", "Como un juguete que les regalaron"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué intenta explicarles el padre?",
+                    listOf("Que aquello era un ritual social, no solo atraso técnico", "Que era un castigo familiar", "Que aún funciona perfectamente"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué efecto tiene la mensajería instantánea según el narrador?",
+                    listOf("Ha conservado el peso de cada conversación", "Ha borrado casi por completo el peso de cada conversación", "Ha mejorado la ortografía general"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿A qué atribuye que muchos días recientes pasen sin dejar huella?",
+                    listOf("A la suma de pequeñas ceremonias perdidas", "Al exceso de cafeína", "A la duración del sueño"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 95,
+            title = "La ética del recuerdo",
+            level = "B2", difficulty = 5, topic = "Память / Этика",
+            text = """
+                Una antigua amiga me pidió hace poco que retirase una foto donde aparecíamos juntas a los veinte años. Su petición me incomodó: aquella imagen no decía nada vergonzoso de ella, y formaba parte de un álbum compartido en el que figuran muchos otros. Pero después comprendí que mi resistencia, aparentemente neutral, encerraba una idea peligrosa: la de creer que mis recuerdos son enteramente míos, aun cuando otras personas aparezcan en ellos. La memoria, le respondí finalmente, no es una propiedad privada con vallas claras; es un terreno cooperativo donde cada uno sigue teniendo, durante toda la vida, un derecho mínimo sobre la versión que los demás guardan de nosotros. Decidí retirar la foto, no porque la suya fuese una razón irrebatible, sino porque entendí que la ética del recuerdo, igual que la ética del lenguaje, exige a veces ceder, callar, borrar. Hay generosidades que solo se ejercen en el silencio, y la memoria compartida, sospecho, depende menos de lo que conservamos juntos que de lo que estamos dispuestos a soltar cuando otro nos lo pide.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué le pidió la antigua amiga?",
+                    listOf("Que recuperase la foto perdida", "Que retirase una foto donde aparecían juntas a los veinte años", "Que le enviase copias para imprimir"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué idea peligrosa descubre en su propia resistencia?",
+                    listOf("Creer que sus recuerdos son enteramente suyos aunque aparezcan otros", "Pensar que las fotos antiguas son mejores", "Suponer que las redes son seguras"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cómo redefine la memoria?",
+                    listOf("Como propiedad privada con vallas claras", "Como terreno cooperativo donde cada uno tiene derecho mínimo", "Como un archivo público sin restricciones"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿De qué depende, según él, la memoria compartida?",
+                    listOf("De lo que estamos dispuestos a soltar cuando otro nos lo pide", "De la calidad de las cámaras", "Del número de seguidores en redes"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 96,
+            title = "Leer en voz alta",
+            level = "B2", difficulty = 3, topic = "Чтение / Голос",
+            text = """
+                Mi madre, ya muy mayor, ha dejado de leer en silencio: dice que las palabras se le escapan si no las pronuncia. Al principio interpreté esa lentitud como un signo de declive y me entristeció verla regresar, en cierto modo, a una infancia escolar. Sin embargo, sentándome a su lado durante las tardes, descubrí que su lectura en voz alta tiene un efecto inesperado sobre los textos: lo que antes me parecía prosa periodística se vuelve, en su boca, casi musical; los párrafos se reorganizan según una respiración íntima, y aparecen ironías o piedades que la lectura silenciosa solía aplastar. He comprendido que pronunciar un texto no es un acto técnico inferior al de leer mentalmente, sino una manera distinta y quizá más antigua de comprender. Antes de los libros ampliamente impresos, durante siglos, leer y leer en voz alta eran prácticamente la misma cosa. Mi madre, sin proponérselo, ha vuelto a esa tradición. Y a veces sospecho que es ella, en realidad, quien me está enseñando algo a mí.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué dejó de leer en silencio la madre?",
+                    listOf("Por una decisión filosófica", "Porque las palabras se le escapan si no las pronuncia", "Porque perdió las gafas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo interpretó el narrador esa novedad al principio?",
+                    listOf("Como un signo de declive triste", "Como un experimento literario", "Como una broma materna"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué efecto tiene la lectura en voz alta sobre los textos?",
+                    listOf("Los reduce a sonidos sin sentido", "Los vuelve casi musicales y revela ironías o piedades ocultas", "Los hace más difíciles de seguir"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué conclusión extrae al final?",
+                    listOf("Que la madre, sin proponérselo, le está enseñando algo a él", "Que debe pedirle que vuelva al silencio", "Que va a comprarle audiolibros"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 97,
+            title = "Vidas paralelas",
+            level = "B2", difficulty = 5, topic = "Идентичность / Выбор",
+            text = """
+                Hay decisiones que tomamos en cinco minutos y a las que dedicamos, sin advertirlo, las tres décadas siguientes preguntándonos cómo habría sido elegir lo contrario. Yo tomé una de esas decisiones a los veinticuatro años: rechacé un trabajo en otra ciudad por motivos sentimentales que hoy, vistos con calma, me parecen menores. La vida que esa negativa hizo posible ha sido razonable y, en muchos aspectos, dichosa. Pero en alguna grieta interior se ha mantenido viva, durante todo este tiempo, la persona que yo habría sido si hubiese aceptado: un fantasma cortés que cada cierto tiempo se asoma para preguntarme cómo me va. No es nostalgia exactamente, ni arrepentimiento; es la conciencia incómoda de que nuestras biografías son siempre la versión sobreviviente entre muchas otras posibles, y de que lo que llamamos identidad no es la suma de lo que hemos hecho, sino el residuo de aquello a lo que renunciamos sin saber del todo lo que hacíamos. Sospecho que envejecer, en buena parte, consiste en aprender a convivir, sin amargura, con esos fantasmas educados.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué decisión tomó a los veinticuatro años?",
+                    listOf("Aceptó un trabajo en otra ciudad", "Rechazó un trabajo en otra ciudad por motivos sentimentales", "Decidió no trabajar nunca"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo describe a la persona que habría sido?",
+                    listOf("Como un enemigo amenazante", "Como un fantasma cortés que se asoma de vez en cuando", "Como un total desconocido sin importancia"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo redefine la identidad?",
+                    listOf("Como suma de lo hecho", "Como residuo de aquello a lo que renunciamos sin saberlo del todo", "Como un dato administrativo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿En qué consiste, según él, envejecer?",
+                    listOf("En aprender a convivir sin amargura con esos fantasmas educados", "En olvidar todas las decisiones pasadas", "En reescribir la propia biografía"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 98,
+            title = "Arte y dinero",
+            level = "B2", difficulty = 5, topic = "Искусство / Деньги",
+            text = """
+                Una galerista a la que respeto me confesó hace poco que ya no compra cuadros porque le emocionen, sino porque le parecen una inversión razonable. Lo decía sin vergüenza, casi con orgullo profesional, como si haber separado el gusto del cálculo fuese un signo de madurez. Yo intenté no juzgarla, pero su frase me persiguió varios días. ¿En qué momento exacto, me preguntaba, una sociedad transforma sus emociones estéticas en una rama menor de la ingeniería financiera? Sin duda el arte siempre tuvo precios, mecenas y especulaciones, pero hubo siglos enteros en los que el precio era una consecuencia tardía de una conmoción anterior. Hoy parece haberse invertido el orden: primero se establece el valor de mercado y, después, los espectadores aprenden, dócilmente, a sentir lo que esa cifra les sugiere. No me atrevo a culpar a la galerista, que opera en un sistema que no inventó. Pero sospecho que, cuando un cuadro deja de mirarnos para limitarse a cotizarnos, perdemos algo más importante que un patrimonio: perdemos la capacidad de ser interpelados sin permiso.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué compra ahora cuadros la galerista?",
+                    listOf("Porque le emocionan profundamente", "Porque le parecen una inversión razonable", "Porque le obligan los clientes"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué orden parece haberse invertido en el arte contemporáneo?",
+                    listOf("Antes el precio venía después de la conmoción; ahora el valor de mercado precede al sentir", "Ahora el arte es siempre gratis", "Ya no hay galeristas profesionales"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿A quién no se atreve a culpar el narrador?",
+                    listOf("A la galerista, que opera en un sistema que no inventó", "A los pintores fallecidos", "A los museos públicos"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué pierde la sociedad cuando un cuadro deja de mirarnos?",
+                    listOf("Únicamente patrimonio económico", "La capacidad de ser interpelados sin permiso", "Su pasado histórico de manera definitiva"),
+                    correctIndex = 1
+                )
+            )
+        ),
+        Libro(
+            id = 99,
+            title = "Reencontrarse en una librería",
+            level = "B2", difficulty = 4, topic = "Книги / Случайность",
+            text = """
+                La semana pasada, en una librería de viejo, me topé con un ejemplar de una novela que leí a los diecisiete años y que llevaba más de dos décadas sin recordar. Lo abrí con la curiosidad con que uno escucha una grabación olvidada de su propia voz adolescente. Encontré, en el margen, anotaciones a lápiz hechas por mí mismo en aquella época: signos de admiración, frases subrayadas con pasión, comentarios ingenuos que hoy me harían sonreír de no ser porque, leyéndolos, sentí algo parecido a la ternura por un desconocido. Aquel chico que escribió en los márgenes ya no existe, y sin embargo me dejó en aquella novela un mensaje que solo yo, aún más mayor, podía recibir. He pensado mucho en esa coincidencia. Tal vez los libros son los únicos artefactos capaces de reunir, por unos minutos, distintas versiones de uno mismo: no como en una fotografía, donde el yo pasado aparece en silencio, sino como en una conversación interrumpida hace años que el azar nos permite, finalmente, retomar.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Con qué se topó en la librería de viejo?",
+                    listOf("Con un libro firmado por un autor famoso", "Con una novela que había leído a los diecisiete años con sus propias anotaciones", "Con una primera edición valiosísima"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué sintió al leer las anotaciones antiguas?",
+                    listOf("Vergüenza absoluta y ganas de tirarlo", "Algo parecido a la ternura por un desconocido", "Pura indiferencia"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿En qué se diferencian los libros de las fotografías, según él?",
+                    listOf("En que los libros pesan más físicamente", "En que el yo pasado aparece en silencio en la foto, mientras que el libro permite retomar una conversación", "En que las fotografías son más caras"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué metáfora final usa para describir el reencuentro?",
+                    listOf("Una conversación interrumpida hace años que el azar permite retomar", "Un examen escolar repetido por error", "Una herencia legal complicada"),
+                    correctIndex = 0
+                )
+            )
+        ),
+        Libro(
+            id = 100,
+            title = "Una despedida sin nombre",
+            level = "B2", difficulty = 5, topic = "Прощание / Зрелость",
+            text = """
+                Hay despedidas que no llegan acompañadas de palabras. Sucede a menudo entre adultos que comparten una larga historia: en algún momento del último encuentro, sin que medie un anuncio, ambos saben que no volverán a sentarse así, y sin embargo siguen hablando del tiempo, de un viaje, de la salud de alguien. La despedida ocurre en silencio, por debajo de la conversación, como una corriente subterránea que ninguno de los dos quiere reconocer en voz alta. Después, cada cual regresa a su vida y no hay ningún rito que marque lo sucedido. Solo años más tarde uno se da cuenta de que aquella tarde anodina fue, en realidad, el final. Esta clase de despedidas solían parecerme cobardes; ahora las creo, en muchos casos, las más piadosas. Nombrar el final habría obligado a los dos a aceptar, en aquel mismo instante, una pérdida para la que ninguno estaba preparado. El silencio les dejó conservar, al menos, la ilusión de un próximo encuentro. Y quizá la madurez consista en aprender a despedirse así, dejando que sea el tiempo, y no nuestras palabras, quien escriba el último capítulo.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cómo son las despedidas que describe el narrador?",
+                    listOf("Solemnes y planificadas", "Sin palabras, como una corriente subterránea bajo la conversación", "Llenas de gritos y reproches"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuándo se dan cuenta los protagonistas de que aquello fue el final?",
+                    listOf("En el mismo momento de la despedida", "Solo años más tarde", "Nunca llegan a darse cuenta"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo veía antes el narrador estas despedidas mudas?",
+                    listOf("Como cobardes", "Como ejemplares", "Como divertidas"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿En qué consiste la madurez, según él?",
+                    listOf("En despedirse así, dejando que el tiempo escriba el último capítulo", "En anunciar siempre con claridad el final", "En no despedirse jamás de nadie"),
+                    correctIndex = 0
+                )
+            )
         )
     )
 
