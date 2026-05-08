@@ -127,6 +127,23 @@
     <string name="course_locked">Locked</string>
     <string name="course_start_learning">Start learning →</string>
 
+    <!-- ── PlacementTest ── -->
+    <string name="placement_abort_title">Stop the test?</string>
+    <string name="placement_abort_message">Your answer to this question won\'t be saved.</string>
+    <string name="placement_abort_confirm">Stop</string>
+    <string name="placement_abort_continue">Continue test</string>
+    <string name="placement_next_question">Next question</string>
+    <string name="placement_show_result">See result</string>
+    <string name="placement_change_level">Change level</string>
+
+    <!-- ── LevelSelection ── -->
+    <string name="level_select_title">Choose your level</string>
+    <string name="level_select_change_later">You can change it later in Settings</string>
+    <string name="level_upcoming_badge">soon</string>
+    <string name="level_upcoming_dialog_title">Level %1$s in development</string>
+    <string name="level_upcoming_continue_a1">Start with A1</string>
+    <string name="level_upcoming_anyway">%1$s anyway</string>
+
     <!-- ── Conjugation ── -->
     <string name="conj_search_placeholder">Search verb…</string>
     <string name="conj_filter_all">All</string>

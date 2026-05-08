@@ -90,17 +90,17 @@ fun PlacementTestScreen(
     if (showAbortDialog) {
         AlertDialog(
             onDismissRequest = { showAbortDialog = false },
-            title = { Text("Прервать тест?") },
-            text = { Text("Прогресс ответа на этом вопросе не сохранится.") },
+            title = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.placement_abort_title)) },
+            text = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.placement_abort_message)) },
             confirmButton = {
                 TextButton(onClick = {
                     showAbortDialog = false
                     navController.popBackStack()
-                }) { Text("Прервать", fontWeight = FontWeight.Bold) }
+                }) { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.placement_abort_confirm), fontWeight = FontWeight.Bold) }
             },
             dismissButton = {
                 TextButton(onClick = { showAbortDialog = false }) {
-                    Text("Продолжить тест")
+                    Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.placement_abort_continue))
                 }
             }
         )
@@ -216,7 +216,10 @@ fun PlacementTestScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.Purple)
             ) {
                 Text(
-                    if (currentIndex < QUESTIONS.size - 1) "Следующий вопрос" else "Узнать результат",
+                    if (currentIndex < QUESTIONS.size - 1)
+                        androidx.compose.ui.res.stringResource(com.spanishapp.R.string.placement_next_question)
+                    else
+                        androidx.compose.ui.res.stringResource(com.spanishapp.R.string.placement_show_result),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -318,7 +321,7 @@ fun PlacementResultScreen(
                 popUpTo("placement_result/$level") { inclusive = true }
             }
         }) {
-            Text("Изменить уровень", color = AppColors.TextSecondary)
+            Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.placement_change_level), color = AppColors.TextSecondary)
         }
     }
 }
