@@ -403,7 +403,7 @@ private fun ExerciseCard(
     onCorrect: () -> Unit,
     onWrong: () -> Unit
 ) {
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var answered       by remember { mutableStateOf(false) }
@@ -1075,7 +1075,7 @@ private fun VictoryScreen(
     onNextLesson: () -> Unit,
     onFinish: () -> Unit
 ) {
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     var displayedXp by remember { mutableStateOf(0) }
     LaunchedEffect(Unit) {

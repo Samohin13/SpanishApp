@@ -50,7 +50,7 @@ fun FlashcardsScreen(
     viewModel: FlashcardsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val haptic = LocalHapticFeedback.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     var leaguePromotion by remember { mutableStateOf<LeaguePromotion?>(null) }
     LaunchedEffect(viewModel) {

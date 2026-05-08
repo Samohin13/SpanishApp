@@ -3,6 +3,7 @@ package com.spanishapp.service
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
+import com.spanishapp.data.prefs.AppPreferences
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,12 +12,25 @@ import kotlin.math.*
 /**
  * Генерирует и воспроизводит короткие музыкальные звуки через AudioTrack.
  * Без внешних файлов — чистые синусоидальные тона с огибающей (без щелчков).
+ *
+ * Уважает настройку `soundEffectsEnabled` в AppPreferences:
+ * если выключено — все play*() становятся no-op.
  */
 @Singleton
-class SoundPlayer @Inject constructor() {
+class SoundPlayer @Inject constructor(
+    private val appPreferences: AppPreferences
+) {
 
     private val scope      = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val sampleRate = 44100
+
+    @Volatile private var enabled: Boolean = true
+
+    init {
+        scope.launch {
+            appPreferences.soundEffectsEnabled.collect { enabled = it }
+        }
+    }
 
     // ── Публичные звуки ───────────────────────────────────────
 
@@ -61,6 +75,7 @@ class SoundPlayer @Inject constructor() {
     private data class Note(val freq: Float, val ms: Int, val volume: Float = 0.55f)
 
     private fun play(vararg notes: Note) {
+        if (!enabled) return
         scope.launch {
             for (n in notes) renderAndPlay(n.freq, n.ms, n.volume)
         }
