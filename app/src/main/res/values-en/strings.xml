@@ -68,4 +68,24 @@
     <string name="home_word_of_day">Word of the day</string>
     <string name="home_streak_studied_today">Studied today</string>
 
+    <!-- ── Achievements ── -->
+    <string name="achievements_section_unlocked">🏆 Unlocked (%1$d)</string>
+    <string name="achievements_section_locked">🔒 Locked (%1$d)</string>
+    <string name="achievements_summary_count">achievements</string>
+    <string name="achievements_summary_xp_label">XP earned</string>
+    <string name="achievements_summary_progress">progress</string>
+    <string name="achievements_new_badge">NEW</string>
+
+    <!-- ── Onboarding ── -->
+    <string name="onboarding_name_question">What\'s your name?</string>
+    <string name="onboarding_name_subtitle">This is how we\'ll address you in the app</string>
+    <string name="onboarding_name_label">Name or nickname</string>
+    <string name="onboarding_name_placeholder">For example: Sergey</string>
+    <string name="onboarding_age_question">How old are you?</string>
+    <string name="onboarding_age_subtitle">This helps us tailor the pace for you</string>
+    <string name="onboarding_age_years">years old</string>
+    <string name="onboarding_reason_question">Why are you learning Spanish?</string>
+    <string name="onboarding_knowledge_question">Do you know Spanish?</string>
+    <string name="onboarding_knowledge_subtitle">This will help us customize the program for you</string>
+
 </resources>
