@@ -252,6 +252,173 @@ object DialogueContent {
   {"speaker":"A","es":"Me alegra que pensemos igual en esto.","ru":"Рада, что мы думаем одинаково в этом."},
   {"speaker":"B","es":"Es un tema demasiado importante para ignorarlo.","ru":"Это слишком важная тема, чтобы её игнорировать."}
 ]"""
+        ),
+
+        // ── A2 ──────────────────────────────────────────────────
+
+        DialogueEntity(
+            id = 16, level = "A2",
+            title = "В аэропорту: регистрация",
+            situation = "Сдача багажа на стойке регистрации",
+            linesJson = """[
+  {"speaker":"A","es":"Buenos días. Su pasaporte y billete, por favor.","ru":"Доброе утро. Ваш паспорт и билет, пожалуйста."},
+  {"speaker":"B","es":"Aquí los tiene.","ru":"Вот, пожалуйста."},
+  {"speaker":"A","es":"¿Cuántas maletas factura?","ru":"Сколько чемоданов сдаёте?"},
+  {"speaker":"B","es":"Una maleta grande y una de mano.","ru":"Один большой чемодан и одну ручную кладь."},
+  {"speaker":"A","es":"Ponga la maleta aquí, por favor. Pesa veinticinco kilos — está dentro del límite.","ru":"Поставьте чемодан сюда, пожалуйста. Весит двадцать пять килограммов — в пределах нормы."},
+  {"speaker":"B","es":"¿La puerta de embarque?","ru":"Какой выход на посадку?"},
+  {"speaker":"A","es":"Puerta B12. Embarque a las diez y media.","ru":"Выход B12. Посадка в десять тридцать."},
+  {"speaker":"B","es":"Muchas gracias. ¡Buen día!","ru":"Большое спасибо. Хорошего дня!"}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 17, level = "A2",
+            title = "В отеле: заселение",
+            situation = "Регистрация в отеле, вопросы про номер",
+            linesJson = """[
+  {"speaker":"A","es":"Buenas tardes. Tengo una reserva a nombre de Pavlov.","ru":"Добрый день. У меня бронь на имя Павлов."},
+  {"speaker":"B","es":"Un momento, por favor… Sí, una habitación doble por tres noches.","ru":"Минутку, пожалуйста… Да, двухместный номер на три ночи."},
+  {"speaker":"A","es":"¿La habitación tiene wifi?","ru":"В номере есть Wi-Fi?"},
+  {"speaker":"B","es":"Sí, gratis. La contraseña está en la tarjeta de la habitación.","ru":"Да, бесплатный. Пароль на карточке номера."},
+  {"speaker":"A","es":"¿A qué hora es el desayuno?","ru":"Во сколько завтрак?"},
+  {"speaker":"B","es":"De siete a diez en el restaurante de la planta baja.","ru":"С семи до десяти в ресторане на первом этаже."},
+  {"speaker":"A","es":"¿Y la salida?","ru":"А выселение?"},
+  {"speaker":"B","es":"Antes de las doce. Aquí tiene su llave, habitación 305.","ru":"До двенадцати. Вот ваш ключ, номер 305."}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 18, level = "A2",
+            title = "У врача",
+            situation = "Приём у врача, описание симптомов",
+            linesJson = """[
+  {"speaker":"A","es":"Buenos días. ¿Qué le pasa?","ru":"Доброе утро. Что вас беспокоит?"},
+  {"speaker":"B","es":"Me duele mucho la cabeza desde ayer.","ru":"У меня сильно болит голова со вчерашнего дня."},
+  {"speaker":"A","es":"¿Tiene fiebre?","ru":"У вас есть температура?"},
+  {"speaker":"B","es":"Sí, tengo treinta y ocho grados.","ru":"Да, тридцать восемь."},
+  {"speaker":"A","es":"¿Le duele la garganta también?","ru":"Горло тоже болит?"},
+  {"speaker":"B","es":"Un poco, y tengo tos.","ru":"Немного, и есть кашель."},
+  {"speaker":"A","es":"Parece una gripe. Le voy a recetar un antibiótico.","ru":"Похоже на грипп. Я выпишу вам антибиотик."},
+  {"speaker":"B","es":"¿Cuánto tiempo lo tomo?","ru":"Сколько времени принимать?"},
+  {"speaker":"A","es":"Una pastilla cada ocho horas durante una semana.","ru":"Одна таблетка каждые восемь часов в течение недели."}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 19, level = "A2",
+            title = "В ресторане",
+            situation = "Заказ ужина, оплата",
+            linesJson = """[
+  {"speaker":"A","es":"Buenas noches. ¿Tienen mesa para dos?","ru":"Добрый вечер. У вас есть столик на двоих?"},
+  {"speaker":"B","es":"Sí, junto a la ventana. Síganme, por favor.","ru":"Да, у окна. Следуйте за мной, пожалуйста."},
+  {"speaker":"A","es":"Gracias. ¿Qué nos recomienda?","ru":"Спасибо. Что вы порекомендуете?"},
+  {"speaker":"B","es":"La paella de mariscos está deliciosa hoy.","ru":"Паэлья с морепродуктами сегодня великолепна."},
+  {"speaker":"A","es":"Perfecto. Una paella y una ensalada mixta, por favor.","ru":"Отлично. Одну паэлью и смешанный салат, пожалуйста."},
+  {"speaker":"B","es":"¿Para beber?","ru":"Что будете пить?"},
+  {"speaker":"A","es":"Una botella de vino tinto y agua sin gas.","ru":"Бутылку красного вина и воду без газа."},
+  {"speaker":"B","es":"Enseguida se lo traigo.","ru":"Сейчас принесу."},
+  {"speaker":"A","es":"La cuenta, por favor.","ru":"Счёт, пожалуйста."},
+  {"speaker":"B","es":"Aquí tiene. Son cuarenta y dos euros.","ru":"Вот, пожалуйста. Сорок два евро."}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 20, level = "A2",
+            title = "На вокзале",
+            situation = "Покупка билета на поезд",
+            linesJson = """[
+  {"speaker":"A","es":"Hola, quiero un billete a Sevilla, por favor.","ru":"Здравствуйте, мне билет до Севильи, пожалуйста."},
+  {"speaker":"B","es":"¿Para hoy o para otro día?","ru":"На сегодня или на другой день?"},
+  {"speaker":"A","es":"Para mañana por la mañana.","ru":"На завтра утром."},
+  {"speaker":"B","es":"Hay un AVE a las nueve y otro a las once.","ru":"Есть AVE в девять и другой в одиннадцать."},
+  {"speaker":"A","es":"El de las nueve, por favor. ¿Cuánto cuesta?","ru":"Тот, что в девять, пожалуйста. Сколько стоит?"},
+  {"speaker":"B","es":"Setenta y ocho euros en clase turista.","ru":"Семьдесят восемь евро в эконом-классе."},
+  {"speaker":"A","es":"¿Hay descuento para estudiantes?","ru":"Есть скидка для студентов?"},
+  {"speaker":"B","es":"Sí, un veinticinco por ciento. ¿Tiene carnet?","ru":"Да, двадцать пять процентов. У вас есть студенческий?"},
+  {"speaker":"A","es":"Sí, aquí tiene.","ru":"Да, вот."}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 21, level = "A2",
+            title = "Прокат машины",
+            situation = "Аренда автомобиля в туристическом офисе",
+            linesJson = """[
+  {"speaker":"A","es":"Buenos días. Quería alquilar un coche.","ru":"Доброе утро. Я хотел бы взять машину в аренду."},
+  {"speaker":"B","es":"¿Para cuántos días?","ru":"На сколько дней?"},
+  {"speaker":"A","es":"Cinco días, hasta el sábado.","ru":"Пять дней, до субботы."},
+  {"speaker":"B","es":"¿Qué tipo de coche prefiere?","ru":"Какой тип машины вы предпочитаете?"},
+  {"speaker":"A","es":"Algo pequeño, automático si es posible.","ru":"Что-то маленькое, желательно автомат."},
+  {"speaker":"B","es":"Tenemos un Renault Clio automático por treinta euros al día.","ru":"У нас есть Renault Clio с автоматом за тридцать евро в день."},
+  {"speaker":"A","es":"¿El seguro está incluido?","ru":"Страховка включена?"},
+  {"speaker":"B","es":"El seguro básico sí, pero el completo es diez euros más.","ru":"Базовая — да, но полная на десять евро дороже."},
+  {"speaker":"A","es":"Quiero el seguro completo, por favor.","ru":"Хочу полную страховку, пожалуйста."}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 22, level = "A2",
+            title = "На почте",
+            situation = "Отправка посылки",
+            linesJson = """[
+  {"speaker":"A","es":"Quiero enviar este paquete a Rusia.","ru":"Хочу отправить эту посылку в Россию."},
+  {"speaker":"B","es":"¿Qué hay dentro?","ru":"Что внутри?"},
+  {"speaker":"A","es":"Ropa y libros, regalos para mi familia.","ru":"Одежда и книги, подарки семье."},
+  {"speaker":"B","es":"Pongamos en la aduana 'efectos personales'. ¿Urgente o ordinario?","ru":"Запишем в таможне 'личные вещи'. Срочно или обычно?"},
+  {"speaker":"A","es":"¿Cuánto tarda cada uno?","ru":"Сколько идёт каждый вариант?"},
+  {"speaker":"B","es":"Urgente, una semana. Ordinario, hasta tres.","ru":"Срочно — неделя. Обычно — до трёх."},
+  {"speaker":"A","es":"Urgente entonces.","ru":"Тогда срочно."},
+  {"speaker":"B","es":"Cuarenta y ocho euros con seguro hasta cien.","ru":"Сорок восемь евро со страховкой до ста."}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 23, level = "A2",
+            title = "Спросить дорогу",
+            situation = "Как пройти к достопримечательности",
+            linesJson = """[
+  {"speaker":"A","es":"Perdone, ¿cómo se llega al museo del Prado?","ru":"Извините, как добраться до музея Прадо?"},
+  {"speaker":"B","es":"Está cerca. Vaya recto dos calles, después gire a la derecha.","ru":"Это близко. Пройдите прямо два квартала, потом поверните направо."},
+  {"speaker":"A","es":"¿Y luego?","ru":"А потом?"},
+  {"speaker":"B","es":"Verá una plaza grande. El museo está al otro lado.","ru":"Увидите большую площадь. Музей на другой стороне."},
+  {"speaker":"A","es":"¿Cuánto se tarda andando?","ru":"Сколько идти пешком?"},
+  {"speaker":"B","es":"Unos diez minutos.","ru":"Около десяти минут."},
+  {"speaker":"A","es":"Muchas gracias.","ru":"Большое спасибо."},
+  {"speaker":"B","es":"De nada. ¡Que disfrute la visita!","ru":"Не за что. Приятного посещения!"}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 24, level = "A2",
+            title = "У парикмахера",
+            situation = "Стрижка и обслуживание",
+            linesJson = """[
+  {"speaker":"A","es":"Buenas tardes. Tengo cita a las cuatro.","ru":"Добрый день. У меня запись на четыре."},
+  {"speaker":"B","es":"Sí, claro. ¿Cómo quiere el corte?","ru":"Да, конечно. Какую стрижку хотите?"},
+  {"speaker":"A","es":"No muy corto, sólo un poco más arreglado.","ru":"Не очень коротко, просто немного поаккуратнее."},
+  {"speaker":"B","es":"¿Quiere también lavarse el pelo?","ru":"Хотите помыть голову?"},
+  {"speaker":"A","es":"Sí, por favor.","ru":"Да, пожалуйста."},
+  {"speaker":"B","es":"¿Le pongo gel o prefiere natural?","ru":"Нанести гель или предпочитаете естественно?"},
+  {"speaker":"A","es":"Natural, gracias. ¿Cuánto es?","ru":"Естественно, спасибо. Сколько с меня?"},
+  {"speaker":"B","es":"Veinte euros. ¿Paga con tarjeta o efectivo?","ru":"Двадцать евро. Оплачиваете картой или наличными?"}
+]"""
+        ),
+
+        DialogueEntity(
+            id = 25, level = "A2",
+            title = "Жалоба в магазине",
+            situation = "Возврат бракованного товара",
+            linesJson = """[
+  {"speaker":"A","es":"Compré esta camisa ayer, pero tiene un agujero.","ru":"Я купил эту рубашку вчера, но в ней дыра."},
+  {"speaker":"B","es":"Lo siento mucho. ¿Tiene el ticket?","ru":"Очень сожалею. У вас есть чек?"},
+  {"speaker":"A","es":"Sí, aquí tiene.","ru":"Да, вот."},
+  {"speaker":"B","es":"¿Quiere cambiarla por otra o devolver el dinero?","ru":"Хотите заменить или вернуть деньги?"},
+  {"speaker":"A","es":"Prefiero el reembolso, por favor.","ru":"Предпочитаю возврат, пожалуйста."},
+  {"speaker":"B","es":"De acuerdo. Le devuelvo treinta euros.","ru":"Хорошо. Возвращаю вам тридцать евро."},
+  {"speaker":"A","es":"Disculpe las molestias.","ru":"Простите за неудобства."},
+  {"speaker":"B","es":"Al contrario, gracias por avisar.","ru":"Наоборот, спасибо что сказали."}
+]"""
         )
     )
 }

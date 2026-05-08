@@ -218,6 +218,267 @@ object GrammarContent {
               ]
             }
             """.trimIndent()
+        ),
+
+        // ── A2 (продолжение) ────────────────────────────────────
+        LessonEntity(
+            id = 10, level = "A2", category = "grammar",
+            title = "Pretérito Perfecto",
+            topic = "Прошедшее перфектное (haber + participio)",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Pretérito Perfecto описывает действия в прошлом, связанные с настоящим. 'Я уже поел', 'я никогда не был в Мадриде'. Состоит из haber (настоящее) + причастие (-ado/-ido).",
+              "rules": [
+                "haber: he, has, ha, hemos, habéis, han",
+                "Причастие: hablar→hablado, comer→comido, vivir→vivido",
+                "Неправильные: hacer→hecho, decir→dicho, ver→visto, escribir→escrito, abrir→abierto, poner→puesto"
+              ],
+              "tip": "Маркеры: hoy (сегодня), esta semana (на этой неделе), ya (уже), todavía no (ещё не), nunca (никогда), alguna vez (когда-либо).",
+              "examples": [
+                {"es": "Hoy he comido paella.", "ru": "Сегодня я ел паэлью."},
+                {"es": "¿Has visto la nueva película?", "ru": "Ты видел новый фильм?"},
+                {"es": "Nunca he estado en Madrid.", "ru": "Я никогда не был в Мадриде."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 11, level = "A2", category = "grammar",
+            title = "Imperativo — Повелительное наклонение",
+            topic = "Команды и просьбы",
+            xpReward = 22,
+            contentJson = """
+            {
+              "theory": "Imperativo используется для команд, советов и инструкций. Утвердительная и отрицательная формы образуются по-разному.",
+              "rules": [
+                "Утвердительная (tú): hablar→habla, comer→come, vivir→vive (= 3-е лицо ед.ч.)",
+                "Утвердительная (usted): hable, coma, viva (= subjuntivo)",
+                "Отрицательная: всегда subjuntivo с no — no hables, no comas",
+                "Неправильные tú: ven (venir), pon (poner), sal (salir), haz (hacer), di (decir), ten (tener), sé (ser), ve (ir)"
+              ],
+              "tip": "Местоимения присоединяются к концу утвердительной формы: dímelo (скажи мне это). С отрицательной — перед глаголом: no me lo digas.",
+              "examples": [
+                {"es": "¡Habla más alto, por favor!", "ru": "Говори громче, пожалуйста!"},
+                {"es": "No comas tan rápido.", "ru": "Не ешь так быстро."},
+                {"es": "Por favor, ven aquí.", "ru": "Пожалуйста, иди сюда."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 12, level = "A2", category = "grammar",
+            title = "Comparativo y Superlativo",
+            topic = "Сравнения и превосходная степень",
+            xpReward = 18,
+            contentJson = """
+            {
+              "theory": "Сравнения в испанском строятся через más/menos + прилагательное + que. Превосходная степень — el/la más + прилагательное + de.",
+              "rules": [
+                "Больше/меньше: más alto que, menos alto que",
+                "Одинаково: tan alto como (такой же высокий как)",
+                "Превосходная: el más alto de la clase (самый высокий в классе)",
+                "Неправильные: bueno→mejor, malo→peor, grande→mayor, pequeño→menor"
+              ],
+              "tip": "Ловушка: 'más bueno' допустимо для морального качества (más bueno que el pan = очень добрый), но обычно говорят 'mejor'.",
+              "examples": [
+                {"es": "Madrid es más grande que Barcelona.", "ru": "Мадрид больше, чем Барселона."},
+                {"es": "Este libro es el más interesante de todos.", "ru": "Эта книга самая интересная из всех."},
+                {"es": "Mi hermano es tan alto como mi padre.", "ru": "Мой брат такой же высокий, как и мой отец."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 13, level = "A2", category = "grammar",
+            title = "Por vs Para",
+            topic = "Два предлога 'для'",
+            xpReward = 22,
+            contentJson = """
+            {
+              "theory": "Por и para — оба переводятся как 'для', но используются в разных ситуациях. Это самая частая ловушка для русскоговорящих.",
+              "rules": [
+                "POR: причина, время в течение, перемещение через, обмен/цена, средство",
+                "PARA: цель, получатель, направление, дедлайн, мнение",
+                "POR la mañana — утром (в течение)",
+                "PARA mañana — к завтра (дедлайн)"
+              ],
+              "tip": "Запомни простой пример: 'Estudio español POR mi novia' (из-за неё) vs 'Estudio español PARA viajar' (чтобы путешествовать).",
+              "examples": [
+                {"es": "Este regalo es para ti.", "ru": "Этот подарок для тебя. (получатель)"},
+                {"es": "Lo hago por amor.", "ru": "Я делаю это из любви. (причина)"},
+                {"es": "Camino por el parque.", "ru": "Я иду через парк. (перемещение)"},
+                {"es": "Necesito el informe para el lunes.", "ru": "Мне нужен отчёт к понедельнику. (дедлайн)"}
+              ]
+            }
+            """.trimIndent()
+        ),
+
+        // ── B1 (продолжение) ────────────────────────────────────
+        LessonEntity(
+            id = 14, level = "B1", category = "grammar",
+            title = "Condicional Simple",
+            topic = "Условное наклонение",
+            xpReward = 28,
+            contentJson = """
+            {
+              "theory": "Condicional выражает гипотетические ситуации, вежливые просьбы, советы и действия в прошлом, ожидаемые в будущем. Образуется от инфинитива + окончания.",
+              "rules": [
+                "Окончания: -ía, -ías, -ía, -íamos, -íais, -ían",
+                "hablar → hablaría, hablarías, hablaría...",
+                "Неправильные основы такие же как в Futuro: tendr-, podr-, har-, dir-",
+                "Использование: Si tuviera dinero, viajaría (Если бы у меня были деньги, я бы путешествовал)"
+              ],
+              "tip": "Очень вежливая форма: '¿Podría ayudarme?' (Не могли бы вы мне помочь?) vs прямая 'puede ayudarme'.",
+              "examples": [
+                {"es": "Me gustaría un café, por favor.", "ru": "Я бы хотел кофе, пожалуйста."},
+                {"es": "Yo en tu lugar hablaría con él.", "ru": "На твоём месте я бы поговорил с ним."},
+                {"es": "Dijo que vendría mañana.", "ru": "Он сказал, что придёт завтра."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 15, level = "B1", category = "grammar",
+            title = "Pretérito Pluscuamperfecto",
+            topic = "Предпрошедшее время",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Pluscuamperfecto описывает действие, которое произошло раньше другого действия в прошлом. 'Я уже поел, когда она пришла'.",
+              "rules": [
+                "Состав: imperfecto от haber + participio",
+                "había, habías, había, habíamos, habíais, habían + hablado/comido/vivido",
+                "Те же неправильные participios: hecho, dicho, visto, escrito"
+              ],
+              "tip": "По-русски часто переводится как 'уже было сделано'. Маркеры: ya (уже), antes de que, cuando.",
+              "examples": [
+                {"es": "Cuando llegué, ella ya había salido.", "ru": "Когда я пришёл, она уже ушла."},
+                {"es": "Nunca había probado sushi antes de ese día.", "ru": "Я никогда не пробовал суши до того дня."},
+                {"es": "Me dijo que había estudiado en Salamanca.", "ru": "Он сказал, что учился в Саламанке."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 16, level = "B1", category = "grammar",
+            title = "Subjuntivo después de conjunciones",
+            topic = "Subjuntivo с союзами",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "После определённых союзов почти всегда стоит Subjuntivo. Это касается выражений цели, времени (будущего), уступок, условий.",
+              "rules": [
+                "Цель: para que + subj. (чтобы)",
+                "Будущее время: cuando, hasta que, en cuanto + subj.",
+                "Уступка: aunque + subj. (даже если)",
+                "Условие: a menos que (если только не), con tal de que (при условии что)"
+              ],
+              "tip": "Cuando + indicativo = регулярное действие. Cuando + subjuntivo = будущее. 'Cuando llegues, llámame' (когда придёшь, позвони).",
+              "examples": [
+                {"es": "Te ayudo para que aprendas más rápido.", "ru": "Я помогаю тебе, чтобы ты быстрее учился."},
+                {"es": "Cuando tengas tiempo, llámame.", "ru": "Когда у тебя будет время, позвони мне."},
+                {"es": "Iré a la fiesta aunque no me inviten.", "ru": "Я пойду на вечеринку, даже если меня не пригласят."}
+              ]
+            }
+            """.trimIndent()
+        ),
+
+        // ── B2 ─────────────────────────────────────────────────
+        LessonEntity(
+            id = 17, level = "B2", category = "grammar",
+            title = "Subjuntivo Imperfecto",
+            topic = "Сослагательное прошедшее",
+            xpReward = 35,
+            contentJson = """
+            {
+              "theory": "Subjuntivo Imperfecto используется в условных предложениях с гипотетическими ситуациями ('если бы я был богатым'), вежливых формах и прошлом контексте.",
+              "rules": [
+                "Образование: 3-е лицо мн.ч. Pretérito Indefinido без -on + ra/se",
+                "hablar → hablaron → hablara/hablase",
+                "tener → tuvieron → tuviera/tuviese",
+                "Формы -ra и -se синонимичны, -ra чаще в современном языке"
+              ],
+              "tip": "Классическая конструкция: 'Si + imperfecto subj., condicional' — Si tuviera tiempo, viajaría más.",
+              "examples": [
+                {"es": "Si fuera rico, compraría una casa en España.", "ru": "Если бы я был богат, купил бы дом в Испании."},
+                {"es": "Quería que vinieras a la fiesta.", "ru": "Я хотел, чтобы ты пришёл на вечеринку."},
+                {"es": "Quisiera reservar una mesa.", "ru": "Я хотел бы забронировать столик. (вежливо)"}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 18, level = "B2", category = "grammar",
+            title = "Voz pasiva",
+            topic = "Страдательный залог",
+            xpReward = 28,
+            contentJson = """
+            {
+              "theory": "В испанском есть два способа выражения страдательного залога: с глаголом ser (формально) и с местоимением se (более естественно).",
+              "rules": [
+                "Ser + participio: 'La carta fue escrita por Juan' (письмо было написано Хуаном)",
+                "Pasiva refleja с se: 'Se vende coche' (продаётся машина)",
+                "Se impersonal: 'Se habla español aquí' (здесь говорят по-испански)"
+              ],
+              "tip": "В разговорной речи испанцы редко используют ser + participio — предпочитают активный залог или se-конструкции.",
+              "examples": [
+                {"es": "El edificio fue construido en 1920.", "ru": "Здание было построено в 1920 году."},
+                {"es": "Se venden libros usados aquí.", "ru": "Здесь продаются подержанные книги."},
+                {"es": "En España se cena tarde.", "ru": "В Испании ужинают поздно."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 19, level = "B2", category = "grammar",
+            title = "Estilo indirecto",
+            topic = "Косвенная речь",
+            xpReward = 32,
+            contentJson = """
+            {
+              "theory": "При передаче чужих слов времена 'сдвигаются' назад: presente → imperfecto, indefinido → pluscuamperfecto, futuro → condicional.",
+              "rules": [
+                "Direct: 'Estudio español' → Indirect: dijo que estudiaba español",
+                "Direct: 'Estudié ayer' → dijo que había estudiado ayer",
+                "Direct: 'Estudiaré mañana' → dijo que estudiaría al día siguiente",
+                "Imperativo → que + subjuntivo: 'Ven' → me dijo que viniera"
+              ],
+              "tip": "Меняй местоимения и временные маркеры: hoy→aquel día, ayer→el día anterior, mañana→al día siguiente.",
+              "examples": [
+                {"es": "Me dijo que vendría más tarde.", "ru": "Он сказал, что придёт позже."},
+                {"es": "Preguntó si yo había visto la película.", "ru": "Он спросил, видел ли я фильм."},
+                {"es": "Le pidió que la llamara.", "ru": "Он попросил, чтобы она ему позвонила."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 20, level = "B2", category = "grammar",
+            title = "Perífrasis verbales",
+            topic = "Глагольные конструкции",
+            xpReward = 26,
+            contentJson = """
+            {
+              "theory": "Перифразы — устойчивые сочетания вспомогательного глагола + инфинитива/герундия/причастия. Они выражают оттенки модальности и аспекта.",
+              "rules": [
+                "ir a + inf — собираться (близкое будущее): voy a comer",
+                "estar + gerundio — длящееся действие: estoy comiendo",
+                "acabar de + inf — только что: acabo de llegar",
+                "volver a + inf — снова: vuelvo a leer este libro",
+                "tener que + inf — должен: tengo que estudiar",
+                "deber + inf — следует: debes descansar",
+                "soler + inf — обычно: suelo desayunar a las ocho"
+              ],
+              "tip": "Hay que + inf — безличное 'нужно/надо' (без подлежащего): hay que estudiar.",
+              "examples": [
+                {"es": "Acabo de llegar a casa.", "ru": "Я только что пришёл домой."},
+                {"es": "Estamos viendo una película.", "ru": "Мы (сейчас) смотрим фильм."},
+                {"es": "Tienes que descansar más.", "ru": "Тебе нужно больше отдыхать."},
+                {"es": "Suelo correr por las mañanas.", "ru": "Я обычно бегаю по утрам."}
+              ]
+            }
+            """.trimIndent()
         )
     )
 }
