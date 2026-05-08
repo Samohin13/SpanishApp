@@ -521,17 +521,15 @@ fun SettingsScreen(
                 }
             }
 
+            val privacyUrl = stringResource(R.string.privacy_policy_url)
+            val termsUrl = stringResource(R.string.terms_url)
             SettingsSection(stringResource(R.string.settings_section_privacy)) {
                 SettingsItem(Icons.Default.PrivacyTip, stringResource(R.string.settings_privacy_policy)) {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-                        "https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md"
-                    ))
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl))
                     runCatching { context.startActivity(intent) }
                 }
                 SettingsItem(Icons.Default.Description, stringResource(R.string.settings_terms)) {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-                        "https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md"
-                    ))
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(termsUrl))
                     runCatching { context.startActivity(intent) }
                 }
                 // Export data removed — feature not implemented yet.

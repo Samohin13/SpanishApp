@@ -1,0 +1,15 @@
+title: ESPEAK
+description: Mobile app for learning Spanish, focused on Russian speakers.
+theme: jekyll-theme-cayman
+include:
+  - PRIVACY_POLICY.md
+exclude:
+  - .claude/
+  - .idea/
+  - app/
+  - gradle/
+  - "*.gradle*"
+  - "*.kt*"
+  - build/
+  - .kotlin/
+  - assets/
