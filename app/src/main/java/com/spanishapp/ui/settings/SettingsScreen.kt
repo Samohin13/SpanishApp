@@ -280,7 +280,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Настройки", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.title_settings), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
@@ -339,7 +339,7 @@ fun SettingsScreen(
             }
 
             // ── Секции настроек ──
-            SettingsSection("Профиль") {
+            SettingsSection(stringResource(R.string.settings_section_profile)) {
                 SettingsItem(Icons.Default.Edit, "Изменить имя", progress.displayName) { showNameDialog = true }
                 SettingsItem(Icons.Default.Translate, "Уровень испанского", when(progress.currentLevel) {
                     "A1" -> "A1 — Начинающий"
@@ -354,7 +354,7 @@ fun SettingsScreen(
 
             val reminderHour by vm.reminderHour.collectAsStateWithLifecycle()
             val reminderMinute by vm.reminderMinute.collectAsStateWithLifecycle()
-            SettingsSection("Уведомления") {
+            SettingsSection(stringResource(R.string.settings_section_notifications)) {
                 SettingsSwitchItem(
                     Icons.Default.Notifications,
                     "Напоминания о занятиях",
@@ -379,7 +379,7 @@ fun SettingsScreen(
                 }
             }
 
-            SettingsSection("Звук и вибрация") {
+            SettingsSection(stringResource(R.string.settings_section_sound)) {
                 SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, "Эффекты звуков", soundEffects) { vm.toggleSoundEffects(it) }
                 SettingsSwitchItem(Icons.Default.RecordVoiceOver, "Голос диктора", ttsEnabled) { vm.toggleTts(it) }
                 SettingsSwitchItem(Icons.Default.MusicNote, "Музыка на фоне", bgMusic) { vm.toggleBgMusic(it) }
@@ -387,7 +387,7 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.InterpreterMode, "Настройка голоса") { navController.navigate("settings_voice") }
             }
 
-            SettingsSection("Внешний вид") {
+            SettingsSection(stringResource(R.string.settings_section_appearance)) {
                 val themeLabel = when(themeMode) {
                     ThemeMode.AUTO -> "Системная"
                     ThemeMode.LIGHT -> "Светлая"
@@ -403,7 +403,7 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.TextFields, "Размер шрифта", fontLabel) { showFontDialog = true }
             }
 
-            SettingsSection("Языки") {
+            SettingsSection(stringResource(R.string.settings_section_languages)) {
                 val uiLang by vm.uiLanguage.collectAsStateWithLifecycle()
                 val uiLangLabel = when (uiLang) {
                     "ru" -> "Русский"
@@ -435,7 +435,7 @@ fun SettingsScreen(
             // ── Биометрический замок ─────────────────────────────
             val appLockOn by vm.appLockEnabled.collectAsStateWithLifecycle()
             if (vm.biometricUsable) {
-                SettingsSection("Безопасность") {
+                SettingsSection(stringResource(R.string.settings_section_security)) {
                     SettingsSwitchItem(
                         icon = Icons.Default.Fingerprint,
                         title = "Защита приложения биометрией",
@@ -453,14 +453,14 @@ fun SettingsScreen(
                 }
             }
 
-            SettingsSection("Конфиденциальность и данные") {
-                SettingsItem(Icons.Default.PrivacyTip, "Политика конфиденциальности") {
+            SettingsSection(stringResource(R.string.settings_section_privacy)) {
+                SettingsItem(Icons.Default.PrivacyTip, stringResource(R.string.settings_privacy_policy)) {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
                         "https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md"
                     ))
                     runCatching { context.startActivity(intent) }
                 }
-                SettingsItem(Icons.Default.Description, "Условия использования") {
+                SettingsItem(Icons.Default.Description, stringResource(R.string.settings_terms)) {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
                         "https://github.com/Samohin13/SpanishApp/blob/master/PRIVACY_POLICY.md"
                     ))
@@ -474,7 +474,7 @@ fun SettingsScreen(
                     navController.navigate("leaderboard")
                 }
                 SettingsItem(Icons.Default.Refresh, "Сброс прогресса") { showResetDialog = true }
-                SettingsItem(Icons.Default.Share, "Поделиться приложением") {
+                SettingsItem(Icons.Default.Share, stringResource(R.string.settings_share)) {
                     // Пока приложение не опубликовано в Play, ссылка ведёт на GitHub.
                     // После релиза заменить на https://play.google.com/store/apps/details?id=com.spanishapp
                     val playUrl = "https://github.com/Samohin13/SpanishApp"
@@ -491,8 +491,8 @@ fun SettingsScreen(
                 }
             }
 
-            SettingsSection("Управление аккаунтом") {
-                SettingsItem(Icons.AutoMirrored.Filled.Logout, "Выйти из аккаунта", textColor = MaterialTheme.colorScheme.error) { showLogoutDialog = true }
+            SettingsSection(stringResource(R.string.settings_section_account)) {
+                SettingsItem(Icons.AutoMirrored.Filled.Logout, stringResource(R.string.settings_logout), textColor = MaterialTheme.colorScheme.error) { showLogoutDialog = true }
                 SettingsItem(Icons.Default.DeleteForever, "Удалить аккаунт (с подтверждением)", textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }
             }
 
