@@ -175,7 +175,6 @@ object Navigation {
             composable("games") { GamesScreen(navController) }
             composable("game_articles") { ArticlesGameScreen(navController) }
             composable("game_speed") { SpeedGameScreen(navController) }
-            composable("game_anagrams") { AnagramsGameScreen(navController) }
             composable("game_math") { MathGameScreen(navController) }
             composable("game_crossword") { CrosswordGameScreen(navController) }
             composable("game_sopa") { SopaGameScreen(navController) }

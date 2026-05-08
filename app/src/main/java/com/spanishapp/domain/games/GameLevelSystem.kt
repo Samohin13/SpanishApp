@@ -15,7 +15,6 @@ object GameId {
     const val SOPA     = "sopa"
     const val PALABRA  = "palabra"
     const val MATH     = "math"
-    const val ANAGRAM  = "anagram"
     // crossword использует свою собственную систему 100 уровней
     // libros — не трогаем
 }

@@ -50,8 +50,6 @@ private val GAMES: List<Game> = listOf(
         Icons.Default.Calculate, Color(0xFFF44336), "game_math"),
     Game("Crucigrama", "100 уровней",
         Icons.Default.BorderAll, Color(0xFF26A69A), "game_crossword"),
-    Game("Anagramas", "Собери слово",
-        Icons.Default.Shuffle, Color(0xFFFF6B35), "game_anagrams"),
     Game("Libros", "Рассказы + тесты",
         Icons.Default.MenuBook, Color(0xFF7B2FBE), "game_libros")
 )
