@@ -92,11 +92,16 @@ fun SpanishBottomBar(
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        HorizontalDivider(thickness = 0.5.dp, color = Color(0xFFE8E5E0))
+        // Theme-aware: in dark mode the surface color matches the GamesScreen cards
+        // (a slightly-elevated dark gray); in light mode it's near-white.
+        HorizontalDivider(
+            thickness = 0.5.dp,
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+        )
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
                 .navigationBarsPadding()
                 .height(62.dp)
         ) {
