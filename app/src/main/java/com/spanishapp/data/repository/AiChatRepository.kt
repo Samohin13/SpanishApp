@@ -23,9 +23,21 @@ class AiChatRepository @Inject constructor(
     companion object {
         // Gemini 1.5 Flash — бесплатно: 15 RPM, 1500 RPD
         private const val MODEL = "gemini-1.5-flash"
-        private fun apiUrl() =
-            "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
-            "?key=${BuildConfig.GEMINI_API_KEY}"
+
+        /**
+         * If [BuildConfig.AI_PROXY_URL] is set in local.properties, use it —
+         * the proxy hides the API key from the APK. Otherwise fall back to
+         * direct Gemini calls with the bundled key (dev/local builds only).
+         */
+        private fun apiUrl(): String {
+            val proxy = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
+            return if (proxy.isNotEmpty()) {
+                "$proxy/v1beta/models/$MODEL:generateContent"
+            } else {
+                "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
+                    "?key=${BuildConfig.GEMINI_API_KEY}"
+            }
+        }
 
         private val SYSTEM_PROMPT = """
             Eres un tutor de español amigable y paciente para hablantes de ruso.

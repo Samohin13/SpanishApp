@@ -32,6 +32,11 @@ android {
         buildConfigField("String", "ANTHROPIC_API_KEY", "\"$anthropicKey\"")
         val geminiKey = localProps.getProperty("GEMINI_KEY") ?: ""
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
+        // Proxy URL for production: hides the API key from the APK.
+        // When non-empty, AiChatRepository routes requests through it.
+        // When empty, falls back to direct Gemini calls with GEMINI_API_KEY (dev only).
+        val aiProxyUrl = localProps.getProperty("AI_PROXY_URL") ?: ""
+        buildConfigField("String", "AI_PROXY_URL", "\"$aiProxyUrl\"")
     }
 
     signingConfigs {
