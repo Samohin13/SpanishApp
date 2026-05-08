@@ -70,7 +70,16 @@ fun SpanishBottomBar(
     val pillBg       = Color(0x1AFF6B35)  // 10% orange tint
     val pillBorder   = Color(0x33FF6B35)  // 20% orange border
 
-    val activeIdx = bottomNavItems.indexOfFirst { currentRoute.startsWith(it.route) }.coerceAtLeast(0)
+    // Sub-routes that don't have their own bottom-nav tab — visually keep the parent tab highlighted.
+    val effectiveRoute = when {
+        currentRoute.startsWith("settings")     -> "profile"
+        currentRoute.startsWith("achievements") -> "profile"
+        currentRoute.startsWith("leaderboard")  -> "profile"
+        currentRoute.startsWith("rating")       -> "profile"
+        currentRoute.startsWith("weak_words")   -> "dictionary"
+        else -> currentRoute
+    }
+    val activeIdx = bottomNavItems.indexOfFirst { effectiveRoute.startsWith(it.route) }.coerceAtLeast(0)
 
     // Gliding pill offset — animates between tab positions
     val pillOffset by animateFloatAsState(
@@ -113,7 +122,7 @@ fun SpanishBottomBar(
                 verticalAlignment     = Alignment.CenterVertically
             ) {
                 bottomNavItems.forEachIndexed { idx, item ->
-                    val selected = currentRoute.startsWith(item.route)
+                    val selected = effectiveRoute.startsWith(item.route)
 
                     val iconColor by animateColorAsState(
                         targetValue   = if (selected) activeColor else inactive,

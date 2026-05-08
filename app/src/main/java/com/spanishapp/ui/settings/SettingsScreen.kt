@@ -146,7 +146,7 @@ class SettingsViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("SettingsVM", "Upload failed", e)
                 _localPhotoUri.value = null // Откатываем картинку в случае ошибки
-                _errorEvent.emit("Ошибка сохранения в облако: ${e.localizedMessage}")
+                _errorEvent.emit("upload_error|${e.localizedMessage ?: ""}")
             } finally {
                 _isPhotoLoading.value = false
             }
@@ -169,7 +169,6 @@ class SettingsViewModel @Inject constructor(
     val progress: StateFlow<UserProgressEntity> = userProgressDao.getProgress().filterNotNull().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UserProgressEntity())
     val ttsEnabled = appPreferences.ttsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val soundEffects = appPreferences.soundEffectsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
-    val bgMusic = appPreferences.bgMusicEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
     val vibration = appPreferences.vibrationEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val reminders = appPreferences.remindersEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     val reminderHour = appPreferences.reminderHour.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 19)
@@ -180,7 +179,6 @@ class SettingsViewModel @Inject constructor(
     fun setUiLanguage(lang: String) = viewModelScope.launch { appPreferences.setUiLanguage(lang) }
     fun toggleTts(e: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(e) }
     fun toggleSoundEffects(e: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(e) }
-    fun toggleBgMusic(e: Boolean) = viewModelScope.launch { appPreferences.setBgMusicEnabled(e) }
     fun toggleVibration(e: Boolean) = viewModelScope.launch { appPreferences.setVibrationEnabled(e) }
 
     fun toggleReminders(context: android.content.Context, enabled: Boolean) = viewModelScope.launch {
@@ -229,20 +227,28 @@ fun SettingsScreen(
     vm: SettingsViewModel = hiltViewModel()
 ) {
     val progress by vm.progress.collectAsStateWithLifecycle()
+    val userName by vm.userName.collectAsStateWithLifecycle()
     val isPhotoLoading by vm.isPhotoLoading.collectAsStateWithLifecycle()
     val userPhotoUrl by vm.userPhotoUrl.collectAsStateWithLifecycle()
     val reminders by vm.reminders.collectAsStateWithLifecycle()
     val soundEffects by vm.soundEffects.collectAsStateWithLifecycle()
     val ttsEnabled by vm.ttsEnabled.collectAsStateWithLifecycle()
-    val bgMusic by vm.bgMusic.collectAsStateWithLifecycle()
     val vibration by vm.vibration.collectAsStateWithLifecycle()
     val themeMode by vm.themeMode.collectAsStateWithLifecycle()
     val fontSize by vm.fontSize.collectAsStateWithLifecycle()
     
     val context = LocalContext.current
+    val uploadErrorPrefix = stringResource(R.string.set_upload_error, "")
+    val uploadErrorTpl = stringResource(R.string.set_upload_error, "::ERR::")
 
     LaunchedEffect(Unit) {
-        vm.errorEvent.collect { error -> Toast.makeText(context, error, Toast.LENGTH_LONG).show() }
+        vm.errorEvent.collect { error ->
+            val text = if (error.startsWith("upload_error|")) {
+                val detail = error.removePrefix("upload_error|")
+                uploadErrorTpl.replace("::ERR::", detail)
+            } else error
+            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+        }
     }
     
     val cropImageLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
@@ -263,7 +269,7 @@ fun SettingsScreen(
                     fixAspectRatio = true, cropShape = CropImageView.CropShape.OVAL
                 )))
         } else {
-            Toast.makeText(context, "Разрешите доступ к камере в настройках", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.set_camera_perm_hint), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -283,7 +289,7 @@ fun SettingsScreen(
                 title = { Text(stringResource(R.string.title_settings), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
                     }
                 }
             )
@@ -311,7 +317,7 @@ fun SettingsScreen(
                                 .crossfade(true)
                                 .diskCachePolicy(CachePolicy.DISABLED) // Чтобы сразу видеть новое фото
                                 .build(),
-                            contentDescription = "Аватар",
+                            contentDescription = stringResource(R.string.set_avatar_cd),
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize().clip(CircleShape)
                         )
@@ -340,16 +346,16 @@ fun SettingsScreen(
 
             // ── Секции настроек ──
             SettingsSection(stringResource(R.string.settings_section_profile)) {
-                SettingsItem(Icons.Default.Edit, stringResource(R.string.settings_change_name), progress.displayName) { showNameDialog = true }
-                SettingsItem(Icons.Default.Translate, "Уровень испанского", when(progress.currentLevel) {
-                    "A1" -> "A1 — Начинающий"
-                    "A2" -> "A2 — Элементарный"
-                    "B1" -> "B1 — Средний"
-                    "B2" -> "B2 — Выше среднего"
+                SettingsItem(Icons.Default.Edit, stringResource(R.string.settings_change_name), userName?.takeIf { it.isNotBlank() } ?: progress.displayName) { showNameDialog = true }
+                SettingsItem(Icons.Default.Translate, stringResource(R.string.set_spanish_level), when(progress.currentLevel) {
+                    "A1" -> stringResource(R.string.set_level_a1)
+                    "A2" -> stringResource(R.string.set_level_a2)
+                    "B1" -> stringResource(R.string.set_level_b1)
+                    "B2" -> stringResource(R.string.set_level_b2)
                     else -> progress.currentLevel
                 }) { showLevelDialog = true }
                 SettingsItem(Icons.Default.Timer, stringResource(R.string.settings_daily_goal), "${progress.dailyGoalMinutes} ${stringResource(R.string.settings_minutes_short)}") { showGoalDialog = true }
-                SettingsItem(Icons.Default.BarChart, "Статистика прогресса") { navController.navigate("achievements") }
+                SettingsItem(Icons.Default.BarChart, stringResource(R.string.set_progress_stats)) { navController.navigate("achievements") }
             }
 
             val reminderHour by vm.reminderHour.collectAsStateWithLifecycle()
@@ -357,13 +363,13 @@ fun SettingsScreen(
             SettingsSection(stringResource(R.string.settings_section_notifications)) {
                 SettingsSwitchItem(
                     Icons.Default.Notifications,
-                    "Напоминания о занятиях",
+                    stringResource(R.string.set_reminders),
                     reminders
                 ) { vm.toggleReminders(context, it) }
                 if (reminders) {
                     SettingsItem(
                         Icons.Default.AccessTime,
-                        "Время напоминания",
+                        stringResource(R.string.set_reminder_time),
                         "%02d:%02d".format(reminderHour, reminderMinute)
                     ) {
                         // Системный TimePickerDialog — без зависимостей и без
@@ -382,33 +388,32 @@ fun SettingsScreen(
             SettingsSection(stringResource(R.string.settings_section_sound)) {
                 SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.settings_sound_effects), soundEffects) { vm.toggleSoundEffects(it) }
                 SettingsSwitchItem(Icons.Default.RecordVoiceOver, stringResource(R.string.settings_voice_announcer), ttsEnabled) { vm.toggleTts(it) }
-                SettingsSwitchItem(Icons.Default.MusicNote, "Музыка на фоне", bgMusic) { vm.toggleBgMusic(it) }
-                SettingsSwitchItem(Icons.Default.Vibration, "Вибрация и тактильная отдача", vibration) { vm.toggleVibration(it) }
-                SettingsItem(Icons.Default.InterpreterMode, "Настройка голоса") { navController.navigate("settings_voice") }
+                SettingsSwitchItem(Icons.Default.Vibration, stringResource(R.string.set_vibration), vibration) { vm.toggleVibration(it) }
+                SettingsItem(Icons.Default.InterpreterMode, stringResource(R.string.set_voice_setup)) { navController.navigate("settings_voice") }
             }
 
             SettingsSection(stringResource(R.string.settings_section_appearance)) {
                 val themeLabel = when(themeMode) {
-                    ThemeMode.AUTO -> "Системная"
-                    ThemeMode.LIGHT -> "Светлая"
-                    ThemeMode.DARK -> "Темная"
+                    ThemeMode.AUTO -> stringResource(R.string.set_theme_system)
+                    ThemeMode.LIGHT -> stringResource(R.string.set_theme_light)
+                    ThemeMode.DARK -> stringResource(R.string.set_theme_dark)
                 }
                 val fontLabel = when(fontSize) {
-                    "SMALL" -> "Маленький"
-                    "MEDIUM" -> "Средний"
-                    "LARGE" -> "Большой"
+                    "SMALL" -> stringResource(R.string.set_font_small)
+                    "MEDIUM" -> stringResource(R.string.set_font_medium)
+                    "LARGE" -> stringResource(R.string.set_font_large)
                     else -> fontSize
                 }
-                SettingsItem(Icons.Default.Palette, "Тёмная / светлая тема", themeLabel) { showThemeDialog = true }
-                SettingsItem(Icons.Default.TextFields, "Размер шрифта", fontLabel) { showFontDialog = true }
+                SettingsItem(Icons.Default.Palette, stringResource(R.string.set_theme_setting), themeLabel) { showThemeDialog = true }
+                SettingsItem(Icons.Default.TextFields, stringResource(R.string.set_font_title), fontLabel) { showFontDialog = true }
             }
 
             SettingsSection(stringResource(R.string.settings_section_languages)) {
                 val uiLang by vm.uiLanguage.collectAsStateWithLifecycle()
                 val uiLangLabel = when (uiLang) {
-                    "ru" -> "Русский"
-                    "en" -> "English"
-                    else -> "Системный"
+                    "ru" -> stringResource(R.string.set_lang_ru)
+                    "en" -> stringResource(R.string.set_lang_en)
+                    else -> stringResource(R.string.set_lang_system)
                 }
                 SettingsItem(Icons.Default.Language, stringResource(R.string.settings_language_ui), uiLangLabel) {
                     showLanguageDialog = true
@@ -423,12 +428,14 @@ fun SettingsScreen(
 
             SettingsSection(stringResource(R.string.settings_section_help)) {
                 SettingsItem(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.settings_help_center)) { /* Ссылка на FAQ или поддержку */ }
+                val emailSubject = stringResource(R.string.set_email_subject)
+                val emailChooser = stringResource(R.string.set_email_chooser)
                 SettingsItem(Icons.Default.MailOutline, stringResource(R.string.settings_contact)) {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("mailto:support@spanishapp.com")
-                        putExtra(Intent.EXTRA_SUBJECT, "Поддержка SpanishApp")
+                        putExtra(Intent.EXTRA_SUBJECT, emailSubject)
                     }
-                    context.startActivity(Intent.createChooser(intent, "Отправить письмо"))
+                    context.startActivity(Intent.createChooser(intent, emailChooser))
                 }
             }
 
@@ -438,13 +445,13 @@ fun SettingsScreen(
                 SettingsSection(stringResource(R.string.settings_section_security)) {
                     SettingsSwitchItem(
                         icon = Icons.Default.Fingerprint,
-                        title = "Защита приложения биометрией",
+                        title = stringResource(R.string.set_protect_biometric),
                         checked = appLockOn,
                         onCheckedChange = { vm.setAppLockEnabled(it) }
                     )
                     if (appLockOn) {
                         Text(
-                            "При следующем открытии приложения попросим отпечаток или лицо.",
+                            stringResource(R.string.set_biometric_hint),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
@@ -474,32 +481,28 @@ fun SettingsScreen(
                     navController.navigate("leaderboard")
                 }
                 SettingsItem(Icons.Default.Refresh, stringResource(R.string.settings_reset_progress)) { showResetDialog = true }
+                val shareTextTpl = stringResource(R.string.set_share_text, "https://github.com/Samohin13/SpanishApp")
+                val shareChooser = stringResource(R.string.set_share_chooser)
                 SettingsItem(Icons.Default.Share, stringResource(R.string.settings_share)) {
-                    // Пока приложение не опубликовано в Play, ссылка ведёт на GitHub.
-                    // После релиза заменить на https://play.google.com/store/apps/details?id=com.spanishapp
-                    val playUrl = "https://github.com/Samohin13/SpanishApp"
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
-                        putExtra(
-                            Intent.EXTRA_TEXT,
-                            "Учу испанский в ESPEAK 🇪🇸 — попробуй: $playUrl"
-                        )
+                        putExtra(Intent.EXTRA_TEXT, shareTextTpl)
                     }
                     runCatching {
-                        context.startActivity(Intent.createChooser(intent, "Поделиться приложением"))
+                        context.startActivity(Intent.createChooser(intent, shareChooser))
                     }
                 }
             }
 
             SettingsSection(stringResource(R.string.settings_section_account)) {
                 SettingsItem(Icons.AutoMirrored.Filled.Logout, stringResource(R.string.settings_logout), textColor = MaterialTheme.colorScheme.error) { showLogoutDialog = true }
-                SettingsItem(Icons.Default.DeleteForever, "Удалить аккаунт (с подтверждением)", textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }
+                SettingsItem(Icons.Default.DeleteForever, stringResource(R.string.set_delete_account_full), textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }
             }
 
             // ── О приложении ──
             Box(modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp), contentAlignment = Alignment.Center) {
                 Text(
-                    text = "SpanishApp Версия 1.4\nСделано с ❤️ для изучения испанского",
+                    text = stringResource(R.string.set_about_text),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -512,54 +515,57 @@ fun SettingsScreen(
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
-            title = { Text("Выход") },
-            text = { Text("Выйти из аккаунта?") },
-            confirmButton = { Button(onClick = { vm.logout(); showLogoutDialog = false }) { Text("Выйти") } },
-            dismissButton = { TextButton(onClick = { showLogoutDialog = false }) { Text("Отмена") } }
+            title = { Text(stringResource(R.string.set_dlg_logout_title)) },
+            text = { Text(stringResource(R.string.set_dlg_logout_text)) },
+            confirmButton = { Button(onClick = { vm.logout(); showLogoutDialog = false }) { Text(stringResource(R.string.set_dlg_logout_confirm)) } },
+            dismissButton = { TextButton(onClick = { showLogoutDialog = false }) { Text(stringResource(R.string.btn_cancel)) } }
         )
     }
 
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Удаление аккаунта") },
-            text = { Text("Вы уверены? Весь прогресс будет удален безвозвратно.") },
-            confirmButton = { 
+            title = { Text(stringResource(R.string.set_dlg_delete_title)) },
+            text = { Text(stringResource(R.string.set_dlg_delete_text)) },
+            confirmButton = {
                 Button(
                     onClick = { vm.deleteAccount(); showDeleteDialog = false },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                ) { Text("Удалить", color = Color.White) }
+                ) { Text(stringResource(R.string.set_dlg_delete_confirm), color = Color.White) }
             },
-            dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text("Отмена") } }
+            dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.btn_cancel)) } }
         )
     }
 
     if (showResetDialog) {
         AlertDialog(
             onDismissRequest = { showResetDialog = false },
-            title = { Text("Сброс прогресса") },
-            text = { Text("Весь ваш игровой прогресс будет обнулен. Вы уверены?") },
-            confirmButton = { 
+            title = { Text(stringResource(R.string.set_dlg_reset_title)) },
+            text = { Text(stringResource(R.string.set_dlg_reset_text)) },
+            confirmButton = {
                 Button(
                     onClick = { vm.resetProgress(); showResetDialog = false },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                ) { Text("Сбросить", color = Color.White) }
+                ) { Text(stringResource(R.string.set_dlg_reset_confirm), color = Color.White) }
             },
-            dismissButton = { TextButton(onClick = { showResetDialog = false }) { Text("Отмена") } }
+            dismissButton = { TextButton(onClick = { showResetDialog = false }) { Text(stringResource(R.string.btn_cancel)) } }
         )
     }
 
     if (showThemeDialog) {
+        val themeAuto = stringResource(R.string.set_theme_system)
+        val themeLight = stringResource(R.string.set_theme_light)
+        val themeDark = stringResource(R.string.set_theme_dark)
         AlertDialog(
             onDismissRequest = { showThemeDialog = false },
-            title = { Text("Тема оформления") },
+            title = { Text(stringResource(R.string.set_theme_title)) },
             text = {
                 Column {
                     ThemeMode.values().forEach { mode ->
                         val label = when(mode) {
-                            ThemeMode.AUTO -> "Системная"
-                            ThemeMode.LIGHT -> "Светлая"
-                            ThemeMode.DARK -> "Темная"
+                            ThemeMode.AUTO -> themeAuto
+                            ThemeMode.LIGHT -> themeLight
+                            ThemeMode.DARK -> themeDark
                         }
                         Row(
                             Modifier.fillMaxWidth().clickable { vm.setThemeMode(mode); showThemeDialog = false }.padding(12.dp),
@@ -576,10 +582,14 @@ fun SettingsScreen(
     }
 
     if (showFontDialog) {
-        val sizes = listOf("SMALL" to "Маленький", "MEDIUM" to "Средний", "LARGE" to "Большой")
+        val sizes = listOf(
+            "SMALL" to stringResource(R.string.set_font_small),
+            "MEDIUM" to stringResource(R.string.set_font_medium),
+            "LARGE" to stringResource(R.string.set_font_large)
+        )
         AlertDialog(
             onDismissRequest = { showFontDialog = false },
-            title = { Text("Размер шрифта") },
+            title = { Text(stringResource(R.string.set_font_title)) },
             text = {
                 Column {
                     sizes.forEach { (key, label) ->
@@ -598,10 +608,15 @@ fun SettingsScreen(
     }
 
     if (showLevelDialog) {
-        val levels = listOf("A1" to "Начинающий", "A2" to "Элементарный", "B1" to "Средний", "B2" to "Выше среднего")
+        val levels = listOf(
+            "A1" to stringResource(R.string.set_level_a1_short),
+            "A2" to stringResource(R.string.set_level_a2_short),
+            "B1" to stringResource(R.string.set_level_b1_short),
+            "B2" to stringResource(R.string.set_level_b2_short)
+        )
         AlertDialog(
             onDismissRequest = { showLevelDialog = false },
-            title = { Text("Уровень испанского") },
+            title = { Text(stringResource(R.string.set_spanish_level)) },
             text = {
                 Column {
                     levels.forEach { (key, label) ->
@@ -623,7 +638,7 @@ fun SettingsScreen(
         val goals = listOf(5, 10, 15, 20, 30)
         AlertDialog(
             onDismissRequest = { showGoalDialog = false },
-            title = { Text("Дневная цель") },
+            title = { Text(stringResource(R.string.set_dlg_goal_title)) },
             text = {
                 Column {
                     goals.forEach { mins ->
@@ -632,7 +647,7 @@ fun SettingsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(selected = progress.dailyGoalMinutes == mins, onClick = { vm.updateGoal(mins); showGoalDialog = false })
-                            Text("$mins минут в день", modifier = Modifier.padding(start = 8.dp))
+                            Text(stringResource(R.string.set_dlg_goal_minutes, mins), modifier = Modifier.padding(start = 8.dp))
                         }
                     }
                 }
@@ -650,9 +665,9 @@ fun SettingsScreen(
             text = {
                 Column {
                     val options = listOf(
-                        "system" to "Системный",
-                        "ru" to "Русский",
-                        "en" to "English"
+                        "system" to stringResource(R.string.set_lang_system),
+                        "ru" to stringResource(R.string.set_lang_ru),
+                        "en" to stringResource(R.string.set_lang_en)
                     )
                     options.forEach { (code, label) ->
                         Row(
@@ -687,24 +702,24 @@ fun SettingsScreen(
     }
 
     if (showNameDialog) {
-        var tempName by remember { mutableStateOf(progress.displayName) }
+        var tempName by remember { mutableStateOf(userName?.takeIf { it.isNotBlank() } ?: progress.displayName) }
         val nameError by vm.nameError.collectAsStateWithLifecycle()
         AlertDialog(
             onDismissRequest = { showNameDialog = false; vm.clearNameError() },
-            title = { Text("Изменить имя") },
+            title = { Text(stringResource(R.string.set_dlg_name_title)) },
             text = {
                 OutlinedTextField(
                     value = tempName, onValueChange = { tempName = it; vm.clearNameError() },
-                    label = { Text("Имя") }, isError = nameError != null,
+                    label = { Text(stringResource(R.string.set_dlg_name_label)) }, isError = nameError != null,
                     supportingText = { if (nameError != null) Text(nameError!!, color = MaterialTheme.colorScheme.error) },
                     singleLine = true, modifier = Modifier.fillMaxWidth()
                 )
             },
             confirmButton = {
-                Button(onClick = { 
+                Button(onClick = {
                     vm.updateName(tempName)
                     if (AuthValidator.getNameError(tempName) == null) showNameDialog = false
-                }) { Text("Сохранить") }
+                }) { Text(stringResource(R.string.set_dlg_name_save)) }
             }
         )
     }

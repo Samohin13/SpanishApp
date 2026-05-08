@@ -484,4 +484,57 @@
     <string name="lread_back_to_list">← Back to stories</string>
     <string name="lread_reread_short">Reread story</string>
 
+    <!-- ── Settings — extra labels (i18n cleanup) ── -->
+    <string name="set_avatar_cd">Avatar</string>
+    <string name="set_camera_perm_hint">Please allow camera access in Settings</string>
+    <string name="set_upload_error">Cloud save error: %1$s</string>
+    <string name="set_spanish_level">Spanish level</string>
+    <string name="set_level_a1">A1 — Beginner</string>
+    <string name="set_level_a2">A2 — Elementary</string>
+    <string name="set_level_b1">B1 — Intermediate</string>
+    <string name="set_level_b2">B2 — Upper-intermediate</string>
+    <string name="set_level_a1_short">Beginner</string>
+    <string name="set_level_a2_short">Elementary</string>
+    <string name="set_level_b1_short">Intermediate</string>
+    <string name="set_level_b2_short">Upper-intermediate</string>
+    <string name="set_progress_stats">Progress statistics</string>
+    <string name="set_reminders">Study reminders</string>
+    <string name="set_reminder_time">Reminder time</string>
+    <string name="set_vibration">Vibration and haptics</string>
+    <string name="set_voice_setup">Voice setup</string>
+    <string name="set_theme_title">Theme</string>
+    <string name="set_theme_system">System</string>
+    <string name="set_theme_light">Light</string>
+    <string name="set_theme_dark">Dark</string>
+    <string name="set_theme_setting">Dark / light theme</string>
+    <string name="set_font_title">Font size</string>
+    <string name="set_font_small">Small</string>
+    <string name="set_font_medium">Medium</string>
+    <string name="set_font_large">Large</string>
+    <string name="set_lang_system">System</string>
+    <string name="set_lang_ru">Русский</string>
+    <string name="set_lang_en">English</string>
+    <string name="set_protect_biometric">App lock with biometrics</string>
+    <string name="set_biometric_hint">Next time you open the app, we\'ll ask for your fingerprint or face.</string>
+    <string name="set_email_subject">ESPEAK support</string>
+    <string name="set_email_chooser">Send email</string>
+    <string name="set_share_text">I\'m learning Spanish with ESPEAK 🇪🇸 — try it: %1$s</string>
+    <string name="set_share_chooser">Share the app</string>
+    <string name="set_delete_account_full">Delete account (with confirmation)</string>
+    <string name="set_about_text">ESPEAK Version 1.4\nMade with ❤️ for learning Spanish</string>
+    <string name="set_dlg_logout_title">Sign out</string>
+    <string name="set_dlg_logout_text">Sign out of your account?</string>
+    <string name="set_dlg_logout_confirm">Sign out</string>
+    <string name="set_dlg_delete_title">Delete account</string>
+    <string name="set_dlg_delete_text">Are you sure? All your progress will be permanently deleted.</string>
+    <string name="set_dlg_delete_confirm">Delete</string>
+    <string name="set_dlg_reset_title">Reset progress</string>
+    <string name="set_dlg_reset_text">All your game progress will be erased. Are you sure?</string>
+    <string name="set_dlg_reset_confirm">Reset</string>
+    <string name="set_dlg_goal_title">Daily goal</string>
+    <string name="set_dlg_goal_minutes">%1$d minutes a day</string>
+    <string name="set_dlg_name_title">Change name</string>
+    <string name="set_dlg_name_label">Name</string>
+    <string name="set_dlg_name_save">Save</string>
+
 </resources>

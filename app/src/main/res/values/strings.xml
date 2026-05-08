@@ -519,4 +519,57 @@
     <string name="lread_back_to_list">← К списку рассказов</string>
     <string name="lread_reread_short">Перечитать рассказ</string>
 
+    <!-- ── Settings — extra labels (i18n cleanup) ───────────── -->
+    <string name="set_avatar_cd">Аватар</string>
+    <string name="set_camera_perm_hint">Разрешите доступ к камере в настройках</string>
+    <string name="set_upload_error">Ошибка сохранения в облако: %1$s</string>
+    <string name="set_spanish_level">Уровень испанского</string>
+    <string name="set_level_a1">A1 — Начинающий</string>
+    <string name="set_level_a2">A2 — Элементарный</string>
+    <string name="set_level_b1">B1 — Средний</string>
+    <string name="set_level_b2">B2 — Выше среднего</string>
+    <string name="set_level_a1_short">Начинающий</string>
+    <string name="set_level_a2_short">Элементарный</string>
+    <string name="set_level_b1_short">Средний</string>
+    <string name="set_level_b2_short">Выше среднего</string>
+    <string name="set_progress_stats">Статистика прогресса</string>
+    <string name="set_reminders">Напоминания о занятиях</string>
+    <string name="set_reminder_time">Время напоминания</string>
+    <string name="set_vibration">Вибрация и тактильная отдача</string>
+    <string name="set_voice_setup">Настройка голоса</string>
+    <string name="set_theme_title">Тема оформления</string>
+    <string name="set_theme_system">Системная</string>
+    <string name="set_theme_light">Светлая</string>
+    <string name="set_theme_dark">Тёмная</string>
+    <string name="set_theme_setting">Тёмная / светлая тема</string>
+    <string name="set_font_title">Размер шрифта</string>
+    <string name="set_font_small">Маленький</string>
+    <string name="set_font_medium">Средний</string>
+    <string name="set_font_large">Большой</string>
+    <string name="set_lang_system">Системный</string>
+    <string name="set_lang_ru">Русский</string>
+    <string name="set_lang_en">English</string>
+    <string name="set_protect_biometric">Защита приложения биометрией</string>
+    <string name="set_biometric_hint">При следующем открытии приложения попросим отпечаток или лицо.</string>
+    <string name="set_email_subject">Поддержка ESPEAK</string>
+    <string name="set_email_chooser">Отправить письмо</string>
+    <string name="set_share_text">Учу испанский в ESPEAK 🇪🇸 — попробуй: %1$s</string>
+    <string name="set_share_chooser">Поделиться приложением</string>
+    <string name="set_delete_account_full">Удалить аккаунт (с подтверждением)</string>
+    <string name="set_about_text">ESPEAK Версия 1.4\nСделано с ❤️ для изучения испанского</string>
+    <string name="set_dlg_logout_title">Выход</string>
+    <string name="set_dlg_logout_text">Выйти из аккаунта?</string>
+    <string name="set_dlg_logout_confirm">Выйти</string>
+    <string name="set_dlg_delete_title">Удаление аккаунта</string>
+    <string name="set_dlg_delete_text">Вы уверены? Весь прогресс будет удален безвозвратно.</string>
+    <string name="set_dlg_delete_confirm">Удалить</string>
+    <string name="set_dlg_reset_title">Сброс прогресса</string>
+    <string name="set_dlg_reset_text">Весь ваш игровой прогресс будет обнулён. Вы уверены?</string>
+    <string name="set_dlg_reset_confirm">Сбросить</string>
+    <string name="set_dlg_goal_title">Дневная цель</string>
+    <string name="set_dlg_goal_minutes">%1$d минут в день</string>
+    <string name="set_dlg_name_title">Изменить имя</string>
+    <string name="set_dlg_name_label">Имя</string>
+    <string name="set_dlg_name_save">Сохранить</string>
+
 </resources>

@@ -117,12 +117,41 @@ private val LightColors = lightColorScheme(
     error                = AppColors.Error
 )
 
+private val DarkColors = darkColorScheme(
+    primary              = AppColors.Purple,           // Keep brand orange — readable on dark
+    onPrimary            = Color.White,
+    primaryContainer     = Color(0xFF5C2A0F),          // Deep burnt orange container
+    onPrimaryContainer   = Color(0xFFFFDECF),
+
+    secondary            = AppColors.Pink,
+    onSecondary          = Color.White,
+    secondaryContainer   = Color(0xFF4A0F2A),
+    onSecondaryContainer = Color(0xFFFFD0DE),
+
+    tertiary             = AppColors.Gold,
+    onTertiary           = Color(0xFF1A1100),
+
+    background           = Color(0xFF121212),
+    onBackground         = Color(0xFFEDEDED),
+
+    surface              = Color(0xFF1C1C1E),
+    onSurface            = Color(0xFFEDEDED),
+    surfaceVariant       = Color(0xFF2C2C2E),
+    surfaceContainer     = Color(0xFF1C1C1E),
+    onSurfaceVariant     = Color(0xFFB0B0B0),
+
+    outline              = Color(0xFF3A3A3C),
+    outlineVariant       = Color(0xFF2C2C2E),
+
+    error                = AppColors.Error
+)
+
 @Composable
 fun SpanishAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = LightColors // Currently only light theme supported as per colors
+    val colorScheme = if (darkTheme) DarkColors else LightColors
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
