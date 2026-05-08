@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AddComment
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -38,7 +40,33 @@ import com.spanishapp.ui.theme.AppColors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import javax.inject.Inject
+
+/**
+ * Распарсенная коррекция ошибки из CORRECTIONS_JSON:[{...}].
+ * AiChatRepository вырезает блок из текста и сохраняет JSON в correctionJson поле.
+ */
+data class ChatCorrection(
+    val original: String,
+    val corrected: String,
+    val explanation: String
+)
+
+private fun parseCorrections(json: String): List<ChatCorrection> {
+    if (json.isBlank()) return emptyList()
+    return runCatching {
+        val arr = JSONArray(json)
+        (0 until arr.length()).map { i ->
+            val obj = arr.getJSONObject(i)
+            ChatCorrection(
+                original    = obj.optString("original"),
+                corrected   = obj.optString("corrected"),
+                explanation = obj.optString("explanation")
+            )
+        }.filter { it.original.isNotBlank() && it.corrected.isNotBlank() }
+    }.getOrDefault(emptyList())
+}
 
 // ── ViewModel ─────────────────────────────────────────────────
 
@@ -191,7 +219,7 @@ fun AiChatScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(error ?: "", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
-                        IconButton(onClick = vm::clearError) { Icon(Icons.Default.AddComment, null) }
+                        IconButton(onClick = vm::clearError) { Icon(Icons.Default.Close, "Закрыть") }
                     }
                 }
             }
@@ -253,6 +281,7 @@ fun AiChatScreen(
 @Composable
 private fun ChatBubble(message: ChatMessageEntity, onSpeak: () -> Unit) {
     val isUser = message.role == "user"
+    val corrections = remember(message.correctionJson) { parseCorrections(message.correctionJson) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -275,10 +304,79 @@ private fun ChatBubble(message: ChatMessageEntity, onSpeak: () -> Unit) {
                 )
             }
         }
-        
+
         if (!isUser) {
             IconButton(onClick = onSpeak, modifier = Modifier.padding(top = 2.dp).size(32.dp)) {
                 Icon(Icons.Default.VolumeUp, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+            }
+        }
+
+        // Карточки исправлений — показываем под bubble юзера, потому что
+        // они относятся к ЕГО предыдущему сообщению (AI исправляет последнее
+        // user-сообщение). Карточки прикреплены к ответу AI в БД, но
+        // визуально удобнее, когда они сразу под сообщением AI.
+        if (!isUser && corrections.isNotEmpty()) {
+            Spacer(Modifier.height(4.dp))
+            corrections.forEach { c ->
+                CorrectionCard(c)
+                Spacer(Modifier.height(6.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun CorrectionCard(correction: ChatCorrection) {
+    val accent = Color(0xFFFF8C00)  // янтарный — как marker исправлений
+
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = accent.copy(alpha = 0.08f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = 0.35f)),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.EditNote,
+                    contentDescription = null,
+                    tint = accent,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    "Исправление",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = accent
+                )
+            }
+            Spacer(Modifier.height(6.dp))
+
+            // Original (зачёркнуто)
+            Text(
+                correction.original,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textDecoration = androidx.compose.ui.text.style.TextDecoration.LineThrough
+            )
+
+            // Corrected (жирно, цветом акцента)
+            Text(
+                correction.corrected,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = accent
+            )
+
+            if (correction.explanation.isNotBlank()) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    correction.explanation,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    lineHeight = 16.sp
+                )
             }
         }
     }
