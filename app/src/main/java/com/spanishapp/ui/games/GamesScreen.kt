@@ -29,29 +29,23 @@ import androidx.navigation.NavHostController
 
 private data class Game(
     val title: String,
-    val description: String,
+    @androidx.annotation.StringRes val descriptionRes: Int,
     val icon: ImageVector,
     val color: Color,
     val route: String
 )
 
+// Описания через @StringRes — переключаются по языку. Названия игр
+// (Artículos, Rápido, etc.) — испанский бренд, не локализуем.
 private val GAMES: List<Game> = listOf(
-    Game("Artículos", "Артикли el / la",
-        Icons.Default.Category, Color(0xFF7B2FBE), "game_articles"),
-    Game("Rápido", "Перевод на время",
-        Icons.Default.Timer, Color(0xFFE040FB), "game_speed"),
-    Game("Verbos", "Спряжения глаголов",
-        Icons.Default.Translate, Color(0xFF2196F3), "conjugation_quiz"),
-    Game("Sopa de Letras", "Филворд",
-        Icons.Default.GridOn, Color(0xFF4CAF50), "game_sopa"),
-    Game("Palabra Maestra", "Орфография",
-        Icons.Default.TextFields, Color(0xFFFF9500), "game_palabra"),
-    Game("Cálculo", "Математика на слух",
-        Icons.Default.Calculate, Color(0xFFF44336), "game_math"),
-    Game("Crucigrama", "100 уровней",
-        Icons.Default.BorderAll, Color(0xFF26A69A), "game_crossword"),
-    Game("Libros", "Рассказы + тесты",
-        Icons.Default.MenuBook, Color(0xFF7B2FBE), "game_libros")
+    Game("Artículos",      com.spanishapp.R.string.game_articles_desc,  Icons.Default.Category,   Color(0xFF7B2FBE), "game_articles"),
+    Game("Rápido",         com.spanishapp.R.string.game_speed_desc,     Icons.Default.Timer,      Color(0xFFE040FB), "game_speed"),
+    Game("Verbos",         com.spanishapp.R.string.game_verbos_desc,    Icons.Default.Translate,  Color(0xFF2196F3), "conjugation_quiz"),
+    Game("Sopa de Letras", com.spanishapp.R.string.game_sopa_desc,      Icons.Default.GridOn,     Color(0xFF4CAF50), "game_sopa"),
+    Game("Palabra Maestra",com.spanishapp.R.string.game_palabra_desc,   Icons.Default.TextFields, Color(0xFFFF9500), "game_palabra"),
+    Game("Cálculo",        com.spanishapp.R.string.game_math_desc,      Icons.Default.Calculate,  Color(0xFFF44336), "game_math"),
+    Game("Crucigrama",     com.spanishapp.R.string.game_crossword_desc, Icons.Default.BorderAll,  Color(0xFF26A69A), "game_crossword"),
+    Game("Libros",         com.spanishapp.R.string.game_libros_desc,    Icons.Default.MenuBook,   Color(0xFF7B2FBE), "game_libros")
 )
 
 @Composable
@@ -74,7 +68,7 @@ fun GamesScreen(
         item(span = { GridItemSpan(2) }) {
             Column {
                 Text(
-                    "Juegos 🎮",
+                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.games_title),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -133,7 +127,7 @@ private fun GameCard(
                     maxLines = 1
                 )
                 Text(
-                    game.description,
+                    androidx.compose.ui.res.stringResource(game.descriptionRes),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 14.sp,
