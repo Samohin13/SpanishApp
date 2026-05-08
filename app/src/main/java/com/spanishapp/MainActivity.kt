@@ -15,6 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -63,15 +65,31 @@ class MainActivity : FragmentActivity() {
             val themeMode by appPreferences.themeMode.collectAsStateWithLifecycle(
                 initialValue = ThemeMode.AUTO
             )
+            val fontSize by appPreferences.fontSize.collectAsStateWithLifecycle(
+                initialValue = "MEDIUM"
+            )
             val systemDark = isSystemInDarkTheme()
             val darkTheme = when (themeMode) {
                 ThemeMode.AUTO  -> systemDark
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK  -> true
             }
-            SpanishAppTheme(darkTheme = darkTheme) {
-                SpanishBackground {
-                    SpanishAppRoot()
+            val fontScale = when (fontSize) {
+                "SMALL" -> 0.9f
+                "LARGE" -> 1.15f
+                else -> 1.0f
+            }
+            val baseDensity = LocalDensity.current
+            CompositionLocalProvider(
+                LocalDensity provides Density(
+                    density = baseDensity.density,
+                    fontScale = baseDensity.fontScale * fontScale
+                )
+            ) {
+                SpanishAppTheme(darkTheme = darkTheme) {
+                    SpanishBackground {
+                        SpanishAppRoot()
+                    }
                 }
             }
         }

@@ -213,7 +213,8 @@ fun ProfileScreen(
                 level = p.currentLevel,
                 appLevel = appLevel,
                 progress = progress,
-                photoUrl = state.photoUrl
+                photoUrl = state.photoUrl,
+                onAvatarClick = { navController.navigate("settings") }
             )
             Spacer(Modifier.height(24.dp))
             WeeklyActivityChart(
@@ -397,12 +398,14 @@ private fun CategoryRatingCard(
 }
 
 @Composable
-private fun ProfileHeader(name: String, level: String, appLevel: Int, progress: Float, photoUrl: String?) {
+private fun ProfileHeader(name: String, level: String, appLevel: Int, progress: Float, photoUrl: String?, onAvatarClick: (() -> Unit)? = null) {
     val context = LocalContext.current
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(contentAlignment = Alignment.BottomEnd) {
             Surface(
-                modifier = Modifier.size(100.dp),
+                modifier = Modifier.size(100.dp).then(
+                    if (onAvatarClick != null) Modifier.clickable { onAvatarClick() } else Modifier
+                ),
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.primaryContainer,
                 tonalElevation = 2.dp
