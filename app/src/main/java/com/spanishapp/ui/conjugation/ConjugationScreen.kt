@@ -40,6 +40,8 @@ import javax.inject.Inject
 
 // ── ViewModel ─────────────────────────────────────────────────
 
+enum class VerbFilter { ALL, REGULAR, IRREGULAR }
+
 @HiltViewModel
 class ConjugationViewModel @Inject constructor(
     private val dao: ConjugationDao,
@@ -49,14 +51,33 @@ class ConjugationViewModel @Inject constructor(
     private val _allVerbs: StateFlow<List<String>> = dao.getAllVerbs()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    private val _irregularVerbs: StateFlow<Set<String>> = dao.getIrregularVerbs()
+        .map { it.toSet() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
+
+    /** Все неправильные глаголы — для отметки ⚡ в карточках. */
+    val irregularVerbs: StateFlow<Set<String>> = _irregularVerbs
+
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
 
-    val verbs: StateFlow<List<String>> = combine(_allVerbs, _query) { all, q ->
-        if (q.isBlank()) all else all.filter { it.contains(q.trim(), ignoreCase = true) }
+    private val _filter = MutableStateFlow(VerbFilter.ALL)
+    val filter: StateFlow<VerbFilter> = _filter.asStateFlow()
+
+    val verbs: StateFlow<List<String>> = combine(
+        _allVerbs, _irregularVerbs, _query, _filter
+    ) { all, irregular, q, f ->
+        val byFilter = when (f) {
+            VerbFilter.ALL -> all
+            VerbFilter.IRREGULAR -> all.filter { it in irregular }
+            VerbFilter.REGULAR -> all.filter { it !in irregular }
+        }
+        if (q.isBlank()) byFilter
+        else byFilter.filter { it.contains(q.trim(), ignoreCase = true) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun setQuery(q: String) { _query.value = q }
+    fun setFilter(f: VerbFilter) { _filter.value = f }
 
     private val _selectedVerb = MutableStateFlow<String?>(null)
     val selectedVerb: StateFlow<String?> = _selectedVerb.asStateFlow()
@@ -98,6 +119,8 @@ fun ConjugationScreen(
 ) {
     val verbs        by vm.verbs.collectAsState()
     val query        by vm.query.collectAsState()
+    val filter       by vm.filter.collectAsState()
+    val irregularSet by vm.irregularVerbs.collectAsState()
     val selectedVerb by vm.selectedVerb.collectAsState()
     val conjugations by vm.conjugations.collectAsState()
 
@@ -150,6 +173,30 @@ fun ConjugationScreen(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             )
 
+            // ── Фильтр: все / правильные / неправильные ──────────
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = filter == VerbFilter.ALL,
+                    onClick = { vm.setFilter(VerbFilter.ALL) },
+                    label = { Text("Все") }
+                )
+                FilterChip(
+                    selected = filter == VerbFilter.REGULAR,
+                    onClick = { vm.setFilter(VerbFilter.REGULAR) },
+                    label = { Text("Правильные") }
+                )
+                FilterChip(
+                    selected = filter == VerbFilter.IRREGULAR,
+                    onClick = { vm.setFilter(VerbFilter.IRREGULAR) },
+                    label = { Text("⚡ Неправильные") }
+                )
+            }
+
         LazyColumn(
             contentPadding = PaddingValues(
                 start = 16.dp, end = 16.dp,
@@ -160,8 +207,13 @@ fun ConjugationScreen(
         ) {
             // ── Hint ─────────────────────────────────────────
             item {
+                val hintText = when (filter) {
+                    VerbFilter.ALL       -> "${verbs.size} глаголов"
+                    VerbFilter.REGULAR   -> "${verbs.size} правильных"
+                    VerbFilter.IRREGULAR -> "${verbs.size} неправильных"
+                }
                 Text(
-                    "${verbs.size} глаголов · нажми чтобы раскрыть таблицу",
+                    "$hintText · нажми чтобы раскрыть таблицу",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 4.dp)
@@ -171,12 +223,14 @@ fun ConjugationScreen(
             // ── Verb list ─────────────────────────────────────
             items(verbs, key = { it }) { verb ->
                 val isSelected = verb == selectedVerb
+                val isIrregular = verb in irregularSet
                 VerbCard(
-                    verb       = verb,
-                    isSelected = isSelected,
-                    byTense    = if (isSelected) byTense else emptyMap(),
-                    onToggle   = { vm.selectVerb(verb) },
-                    onSpeak    = { vm.speak(it) }
+                    verb        = verb,
+                    isSelected  = isSelected,
+                    isIrregular = isIrregular,
+                    byTense     = if (isSelected) byTense else emptyMap(),
+                    onToggle    = { vm.selectVerb(verb) },
+                    onSpeak     = { vm.speak(it) }
                 )
             }
         }
@@ -190,6 +244,7 @@ fun ConjugationScreen(
 private fun VerbCard(
     verb: String,
     isSelected: Boolean,
+    isIrregular: Boolean,
     byTense: Map<String, List<ConjugationEntity>>,
     onToggle: () -> Unit,
     onSpeak: (String) -> Unit
@@ -212,14 +267,20 @@ private fun VerbCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        verb,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    if (isSelected && byTense.values.flatten().firstOrNull()?.isIrregular == true) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            "⚡ Неправильный глагол",
+                            verb,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (isIrregular) {
+                            Spacer(Modifier.width(8.dp))
+                            Text("⚡", fontSize = 16.sp)
+                        }
+                    }
+                    if (isSelected && isIrregular) {
+                        Text(
+                            "Неправильный глагол",
                             style = MaterialTheme.typography.labelSmall,
                             color = AppColors.Gold
                         )
