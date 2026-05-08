@@ -67,7 +67,7 @@ fun GamesScreen(
         columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F8FA))
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 80.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -79,7 +79,7 @@ fun GamesScreen(
                     "Juegos 🎮",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1A1A)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(4.dp))
             }
@@ -107,7 +107,7 @@ private fun GameCard(
             .height(160.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 2.dp
     ) {
         Column(
@@ -131,13 +131,13 @@ private fun GameCard(
                     game.title,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1A1A),
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1
                 )
                 Text(
                     game.description,
                     fontSize = 12.sp,
-                    color = Color(0xFF8E8E93),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 14.sp,
                     maxLines = 2
                 )

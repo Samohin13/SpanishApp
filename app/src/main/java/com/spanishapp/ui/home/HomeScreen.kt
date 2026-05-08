@@ -102,7 +102,7 @@ fun HomeScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF0F0F5))
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
         contentPadding = PaddingValues(bottom = 32.dp)
     ) {
@@ -111,7 +111,7 @@ fun HomeScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 20.dp, vertical = 14.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment     = Alignment.CenterVertically
@@ -158,12 +158,12 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 20.dp)
             ) {
-                Text("Привет! 👋", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = TextMain)
+                Text("Привет! 👋", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.height(2.dp))
-                Text("Продолжай изучать испанский язык", fontSize = 15.sp, color = TextGray)
+                Text("Продолжай изучать испанский язык", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -248,7 +248,7 @@ private fun CourseCard(
                 spotColor = course.colorEnd.copy(alpha = 0.4f)
             )
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -367,7 +367,7 @@ internal fun TopicCard(
                 spotColor = accentColor.copy(alpha = 0.35f)
             )
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -640,7 +640,7 @@ private fun SubLessonRow(
                     text       = lesson.title,
                     fontSize   = 14.sp,
                     fontWeight = if (lesson.isCompleted) FontWeight.Normal else FontWeight.Medium,
-                    color      = if (effectiveLocked) TextGray.copy(.55f) else TextMain,
+                    color      = if (effectiveLocked) TextGray.copy(.55f) else MaterialTheme.colorScheme.onSurface,
                     maxLines   = 2,
                     lineHeight = 18.sp
                 )
@@ -721,7 +721,7 @@ private fun StreakCard(
             .fillMaxWidth()
             .padding(horizontal = 14.dp),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 4.dp,
         tonalElevation = 0.dp
     ) {
@@ -812,7 +812,7 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
             .fillMaxWidth()
             .padding(horizontal = 14.dp),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 4.dp,
         tonalElevation = 0.dp
     ) {
@@ -842,7 +842,7 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
                 text = word.russian,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = TextMain
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             if (word.example.isNotBlank()) {
