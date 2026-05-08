@@ -16,9 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +69,7 @@ fun LoginScreen(
                     email = it
                     if (state.generalError != null) viewModel.clearErrors()
                 },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.auth_email)) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -83,7 +85,7 @@ fun LoginScreen(
                     password = it
                     if (state.generalError != null) viewModel.clearErrors()
                 },
-                label = { Text("Пароль") },
+                label = { Text(stringResource(R.string.auth_password)) },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
@@ -102,7 +104,7 @@ fun LoginScreen(
 
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
                 TextButton(onClick = { navController.navigate("forgot_password") }) {
-                    Text("Забыли пароль?", fontSize = 14.sp)
+                    Text(stringResource(R.string.auth_forgot_password), fontSize = 14.sp)
                 }
             }
 
@@ -119,7 +121,7 @@ fun LoginScreen(
                 if (state.isLoading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("Войти", fontSize = 18.sp)
+                    Text(stringResource(R.string.auth_login), fontSize = 18.sp)
                 }
             }
 
