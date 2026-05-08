@@ -21,9 +21,10 @@ class AiChatRepository @Inject constructor(
 ) {
 
     companion object {
-        // Gemini 2.0 Flash — текущая бесплатная Flash-модель.
-        // Ранее использовался "gemini-1.5-flash" — Google убрал это имя из v1beta.
-        private const val MODEL = "gemini-2.0-flash"
+        // gemini-flash-latest — Google-managed alias на актуальную бесплатную Flash-модель.
+        // Старое имя "gemini-1.5-flash" убрано из v1beta; "gemini-2.0-flash" имеет квоту 0
+        // на текущем ключе. Этот alias работает без сюрпризов.
+        private const val MODEL = "gemini-flash-latest"
 
         /**
          * If [BuildConfig.AI_PROXY_URL] is set in local.properties, use it —
