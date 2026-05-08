@@ -1893,7 +1893,569 @@ object LibrosData {
             )
         )
 
-        // B1 (51–75), B2 (76–100) — добавляются en siguientes sesiones
+        // ══════════════════════════════════════════════
+        //  БЛОК B1 — Intermedio (рассказы 51–60)
+        // ══════════════════════════════════════════════
+
+        Libro(
+            id = 51,
+            title = "El Cambio de Trabajo",
+            level = "B1", difficulty = 1, topic = "Работа / Решения",
+            text = """
+                Tras diez años en la misma empresa, Elena se sentía estancada profesionalmente.
+                Cada lunes, cuando entraba en la oficina, sentía que no aprendía nada nuevo desde hacía años.
+                Aunque el sueldo era cómodo y sus compañeros eran agradables, algo dentro de ella le decía que era el momento de cambiar.
+                Empezó a actualizar su currículum por las noches y a hacer entrevistas en otras empresas durante los descansos para almorzar.
+                Después de tres meses de búsqueda, recibió una oferta interesante en una startup tecnológica con menos sueldo pero más posibilidades de crecer.
+                Su madre le dijo que estaba loca, pero su pareja la apoyó.
+                Hoy, dos años después, Elena dirige un equipo de quince personas y no se arrepiente de haber dado el salto.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué Elena decidió cambiar de trabajo?",
+                    listOf("Porque su sueldo era bajo", "Porque se sentía estancada profesionalmente", "Porque no se llevaba bien con sus compañeros"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuándo actualizaba su currículum?",
+                    listOf("Durante el horario de trabajo", "Por las noches", "Los fines de semana"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo reaccionó su madre?",
+                    listOf("La apoyó completamente", "Le dijo que estaba loca", "No quiso opinar"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál es la situación de Elena ahora?",
+                    listOf("Quiere volver al trabajo anterior", "Dirige un equipo de quince personas", "Está buscando trabajo otra vez"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 52,
+            title = "El Reencuentro",
+            level = "B1", difficulty = 1, topic = "Дружба / Воспоминания",
+            text = """
+                Veinte años después de terminar el colegio, Carlos recibió una invitación al reencuentro de su clase.
+                Al principio dudó si ir: había perdido el contacto con casi todos y no sabía si tendría algo en común con ellos.
+                Finalmente decidió asistir, más por curiosidad que por entusiasmo.
+                Cuando llegó al restaurante donde se celebraba la cena, apenas reconoció a algunos compañeros: el tiempo había cambiado mucho a todos.
+                Hablando con su antiguo mejor amigo Pablo, descubrió que ahora vivía en la misma calle que él, a solo tres edificios de distancia.
+                «¿Cómo es posible que llevemos cinco años de vecinos sin saberlo?», se rieron los dos.
+                Esa noche Carlos se dio cuenta de que algunas amistades, aunque parezcan perdidas, simplemente esperan el momento adecuado para volver.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué dudaba Carlos en ir al reencuentro?",
+                    listOf("Estaba muy ocupado con el trabajo", "Había perdido el contacto con casi todos", "No le caía bien su antigua clase"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué descubrió Carlos al hablar con Pablo?",
+                    listOf("Que vivía en la misma calle a tres edificios", "Que se había mudado a otro país", "Que se había casado con una compañera de clase"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cuánto tiempo llevaban siendo vecinos sin saberlo?",
+                    listOf("Dos años", "Cinco años", "Diez años"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué moraleja saca Carlos al final?",
+                    listOf("Que es mejor no asistir a reuniones del pasado", "Que algunas amistades esperan el momento adecuado para volver", "Que el tiempo cambia demasiado a las personas"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 53,
+            title = "El Viaje en Tren",
+            level = "B1", difficulty = 2, topic = "Путешествия / Знакомства",
+            text = """
+                Aquel viaje en tren de Madrid a Barcelona iba a ser largo, pero Sofía estaba contenta de tener tiempo para leer.
+                A los pocos minutos de salir, una mujer mayor se sentó frente a ella y empezó a hablar sin parar.
+                Sofía intentó concentrarse en su libro, pero la mujer tenía historias fascinantes: había trabajado como traductora en la ONU durante treinta años.
+                Sin darse cuenta, Sofía cerró su libro y empezó a hacer preguntas.
+                La mujer le contó cómo había aprendido cinco idiomas, los lugares donde había vivido y los líderes mundiales que había conocido.
+                Cuando el tren llegó a Barcelona, Sofía sintió que había vivido un curso de historia contemporánea en tres horas.
+                «Hay viajes que no son por la distancia que recorres, sino por la gente que conoces», escribió esa misma noche en su diario.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué planeaba hacer Sofía durante el viaje?",
+                    listOf("Trabajar en su ordenador", "Leer su libro", "Dormir todo el camino"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿En qué había trabajado la mujer mayor?",
+                    listOf("Como profesora de idiomas", "Como traductora en la ONU", "Como diplomática en Europa"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuántos idiomas hablaba la mujer?",
+                    listOf("Tres", "Cinco", "Siete"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué reflexión escribió Sofía en su diario?",
+                    listOf("Que prefiere viajar sola y leer", "Que algunos viajes son por la gente que conoces, no la distancia", "Que la próxima vez tomará un avión"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 54,
+            title = "La Receta de la Abuela",
+            level = "B1", difficulty = 2, topic = "Семья / Кухня",
+            text = """
+                Después de la muerte de su abuela, Andrés heredó una caja con cartas, fotos y, lo más importante, un cuaderno con recetas escritas a mano.
+                La paella de su abuela era legendaria en la familia y nadie había logrado reproducirla nunca, ni siquiera su madre.
+                Andrés decidió intentarlo. Compró todos los ingredientes que indicaba la receta y siguió las instrucciones al pie de la letra.
+                El resultado fue decepcionante: el arroz quedó demasiado seco y faltaba algo del sabor que él recordaba.
+                Llamó a su tía Lola para pedirle consejo. Ella se rió por teléfono y le dijo: «Hijo, las recetas de tu abuela siempre tenían un ingrediente secreto que nunca escribía: probaba el plato a media cocción y ajustaba a ojo».
+                Andrés volvió a intentarlo varias veces. A la cuarta paella, su madre lo probó y por primera vez en años, lloró de emoción.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué heredó Andrés de su abuela?",
+                    listOf("La casa familiar", "Una caja con cartas, fotos y un cuaderno de recetas", "Su colección de joyas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué no salía bien la paella la primera vez?",
+                    listOf("Faltaba un ingrediente clave", "El arroz estaba seco y faltaba sabor", "Usó el sartén equivocado"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál era el secreto de la abuela según la tía Lola?",
+                    listOf("Usar mariscos especiales", "Probar el plato a media cocción y ajustar a ojo", "Cocinar siempre en domingo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hizo finalmente la madre de Andrés?",
+                    listOf("Lo abrazó y le dio un consejo", "Lloró de emoción al probar la paella", "Le pidió que no cocinara más"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 55,
+            title = "La Mudanza",
+            level = "B1", difficulty = 2, topic = "Жизнь / Перемены",
+            text = """
+                Cuando le ofrecieron un ascenso que implicaba mudarse de Sevilla a Bilbao, Jorge tuvo dos semanas para decidir.
+                Sevilla era su ciudad: el sol, los amigos, el bar de toda la vida donde lo conocían por su nombre.
+                Bilbao significaba lluvia, frío y empezar de cero a los treinta y cinco años.
+                Habló con su pareja, que aceptó acompañarle, y eso le dio el empujón final.
+                La primera semana en Bilbao fue difícil: la lluvia constante le deprimía y la comida le parecía demasiado pesada.
+                Pero un sábado fue al casco viejo, comió pintxos en una taberna llena de gente y, por primera vez, sintió que podría llamar a Bilbao «su nueva casa».
+                Tres años después, cuando la empresa le ofreció volver a Sevilla, Jorge dijo que no: ya no era el mismo y Bilbao tampoco lo era.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuánto tiempo tuvo Jorge para decidir?",
+                    listOf("Dos semanas", "Un mes", "Tres días"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué le ayudó a tomar la decisión?",
+                    listOf("Que su madre lo apoyó", "Que su pareja aceptó acompañarle", "Que le ofrecieron mucho dinero"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuándo empezó a sentirse en casa en Bilbao?",
+                    listOf("El primer día", "Un sábado en el casco viejo comiendo pintxos", "Después de seis meses"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hizo cuando le ofrecieron volver a Sevilla?",
+                    listOf("Aceptó inmediatamente", "Dijo que no", "Pidió más tiempo para pensar"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 56,
+            title = "El Idioma Olvidado",
+            level = "B1", difficulty = 3, topic = "Язык / Идентичность",
+            text = """
+                Marta había nacido en España de padres polacos pero nunca había aprendido polaco bien: solo entendía algunas palabras del cocinar de su madre.
+                Cuando murió su abuela en Cracovia y Marta viajó al funeral, se sintió completamente extranjera entre su propia familia.
+                Sus primos hablaban polaco con velocidad y ella solo podía sonreír y asentir.
+                A su regreso a Madrid, Marta se inscribió en clases de polaco para principiantes, aunque tenía treinta y dos años.
+                El primer año fue frustrante: la gramática del polaco era brutal y a veces se preguntaba por qué se torturaba.
+                Después de tres años de estudio, Marta volvió a Polonia para Navidad y mantuvo su primera conversación completa en polaco con su tío.
+                Él le dijo, con lágrimas en los ojos: «Tu abuela estaría tan orgullosa».
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿De dónde son los padres de Marta?",
+                    listOf("De Polonia", "De Rusia", "De República Checa"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cuándo decidió aprender polaco?",
+                    listOf("De pequeña, en el colegio", "Después del funeral de su abuela", "Cuando se mudó a Cracovia"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo describe ella el primer año de estudio?",
+                    listOf("Fácil y divertido", "Frustrante por la gramática brutal", "Aburrido pero útil"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué le dijo su tío en Cracovia?",
+                    listOf("Que hablaba mejor que sus primos", "Que su abuela estaría orgullosa", "Que debería volver a vivir en Polonia"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 57,
+            title = "El Pequeño Negocio",
+            level = "B1", difficulty = 3, topic = "Предпринимательство",
+            text = """
+                Después de quedarse sin trabajo durante la pandemia, Roberto abrió una pequeña panadería artesanal en su barrio.
+                Las primeras semanas casi no entraba nadie y Roberto comía pan duro a diario, pensando en cerrar.
+                Una vecina jubilada empezó a venir cada mañana y a recomendar la panadería a sus amigas del grupo de gimnasia.
+                Poco a poco, el boca a boca hizo su trabajo y la cola por las mañanas empezó a salir hasta la calle.
+                Roberto contrató a una joven estudiante para los fines de semana y empezó a hacer talleres de pan los sábados por la tarde.
+                Tres años después, Roberto ya tenía dos panaderías y rechazaba ofertas de cadenas grandes que querían comprar su marca.
+                «Mi marca soy yo y mi barrio», explicaba a quien le preguntaba por qué no aceptaba.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué Roberto abrió la panadería?",
+                    listOf("Era su sueño desde niño", "Se quedó sin trabajo durante la pandemia", "Heredó el local"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Quién empezó a recomendar el negocio?",
+                    listOf("Una vecina jubilada", "Un crítico gastronómico", "Su antigua jefa"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Cuántas panaderías tiene tres años después?",
+                    listOf("Una", "Dos", "Cinco"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué rechaza las ofertas de las cadenas grandes?",
+                    listOf("Porque ofrecen poco dinero", "Porque su marca es él y su barrio", "Porque quiere jubilarse pronto"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 58,
+            title = "La Carta Encontrada",
+            level = "B1", difficulty = 4, topic = "Семейная история",
+            text = """
+                Mientras vaciaba el desván de la casa de su padre, recientemente fallecido, Lucía encontró un sobre amarillento entre las páginas de un libro viejo.
+                Era una carta escrita en 1962, dirigida a su madre y firmada con un nombre que ella no reconocía: Tomás.
+                La carta hablaba de un amor imposible y terminaba con la frase: «Si no me esperas, lo entenderé. Pero no te olvidaré jamás».
+                Lucía siempre había creído que sus padres se habían enamorado en el colegio y nunca habían amado a nadie más.
+                Decidió no decir nada a su madre, ya con ochenta y cinco años, para no abrir heridas viejas.
+                Pero la carta cambió la forma en que veía a su madre: ya no la imaginaba solo como ama de casa, sino como una joven mujer que había tomado una decisión difícil hacía sesenta años.
+                Guardó la carta en su propio cajón y a veces la leía, intentando entender mejor a la mujer que la había criado.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Dónde encontró Lucía la carta?",
+                    listOf("En un cajón de la cocina", "Entre las páginas de un libro viejo", "En el bolsillo de un abrigo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿De qué año era la carta?",
+                    listOf("De 1952", "De 1962", "De 1972"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué Lucía no le dijo nada a su madre?",
+                    listOf("Estaba enfadada con ella", "Para no abrir heridas viejas", "No supo cómo hacerlo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo cambió la carta su forma de ver a su madre?",
+                    listOf("Ya no la respetaba igual", "La imaginaba como una joven que tomó una decisión difícil", "Decidió alejarse de ella"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 59,
+            title = "El Voluntariado",
+            level = "B1", difficulty = 4, topic = "Социальная жизнь",
+            text = """
+                Cuando se jubiló a los sesenta y cinco años, Antonio se sintió perdido: cuarenta años trabajando como profesor habían terminado de un día para otro.
+                Sus hijos vivían fuera, su esposa todavía trabajaba y él pasaba las mañanas mirando la televisión sin saber qué hacer.
+                Una amiga le recomendó que se ofreciera como voluntario en una asociación que enseñaba a leer a adultos sin estudios.
+                Al principio se resistió: «Soy demasiado mayor para empezar algo así», decía.
+                Pero la primera clase con cinco hombres de unos cuarenta años, todos avergonzados de no saber leer, le rompió el corazón y le devolvió un sentido a su tiempo.
+                Dos años después, Antonio dedica veinte horas semanales al voluntariado y dice que estos son los años más útiles de su vida.
+                «Cada vez que un alumno lee una palabra entera por primera vez, vuelvo a sentir lo que me hizo ser profesor», explica.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué se sintió perdido Antonio al jubilarse?",
+                    listOf("No tenía amigos cerca", "Cuarenta años de trabajo terminaron de golpe", "Su esposa se había ido"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Quién le sugirió el voluntariado?",
+                    listOf("Su esposa", "Una amiga", "Su antiguo jefe"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿A quién enseña en la asociación?",
+                    listOf("A niños con dificultades", "A adultos sin estudios", "A inmigrantes recién llegados"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuántas horas dedica ahora al voluntariado?",
+                    listOf("Cinco horas", "Diez horas", "Veinte horas"),
+                    correctIndex = 2
+                )
+            )
+        ),
+
+        Libro(
+            id = 60,
+            title = "El Concierto Inesperado",
+            level = "B1", difficulty = 5, topic = "Музыка / Дружба",
+            text = """
+                Manuel y Diego habían tocado juntos en una banda de rock cuando tenían veinte años, pero la vida los había llevado por caminos diferentes.
+                Treinta años después, Diego, ya enfermo de cáncer, le mandó a Manuel un mensaje pidiéndole un favor: tocar juntos una vez más antes de que fuera demasiado tarde.
+                Manuel hacía dos décadas que no cogía la guitarra, pero aceptó sin dudar.
+                Pasaron tres semanas ensayando en el salón de la casa de Diego, recordando canciones que creían haber olvidado.
+                El concierto se organizó en un pequeño bar del barrio, con cincuenta personas que conocían su historia: amigos, familiares, antiguos compañeros del colegio.
+                Diego apenas podía cantar al final por la enfermedad, pero los ojos le brillaban como cuando tenían veinte años.
+                Manuel guardó la grabación de aquella noche en una caja especial y, después de la muerte de Diego seis meses después, no pudo escucharla durante mucho tiempo.
+                Ahora, cuando la pone, sonríe en lugar de llorar.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuántos años llevaba Manuel sin tocar la guitarra?",
+                    listOf("Una década", "Dos décadas", "Tres décadas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Dónde tocaron el concierto?",
+                    listOf("En un teatro grande", "En un pequeño bar del barrio", "En la casa de Diego"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Por qué Diego apenas podía cantar?",
+                    listOf("Estaba muy nervioso", "Estaba enfermo de cáncer", "Había perdido la voz por el ensayo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hace Manuel ahora cuando escucha la grabación?",
+                    listOf("Sonríe en lugar de llorar", "No puede escucharla todavía", "La comparte en redes sociales"),
+                    correctIndex = 0
+                )
+            )
+        ),
+
+        // ══════════════════════════════════════════════
+        //  БЛОК B2 — Avanzado (рассказы 61–65)
+        // ══════════════════════════════════════════════
+
+        Libro(
+            id = 61,
+            title = "El Algoritmo de la Soledad",
+            level = "B2", difficulty = 1, topic = "Технологии / Общество",
+            text = """
+                Cuando Natalia cumplió cuarenta años, decidió hacer un experimento: pasaría un mes entero sin redes sociales para entender cómo había cambiado su vida desde que se había hecho dependiente de ellas.
+                Los primeros días fueron desconcertantes; sentía un impulso constante de coger el móvil cada pocos minutos, aunque no había nada que mirar.
+                A medida que pasaban las semanas, empezó a darse cuenta de que durante años había estado consumiendo vidas ajenas mientras la suya pasaba en silencio frente a una pantalla.
+                Recuperó hábitos que había abandonado: leer novelas, llamar a amigos por teléfono, salir a caminar sin documentar el paseo en historias de Instagram.
+                Cuando, al cabo de un mes, volvió a abrir las aplicaciones, le sorprendió la cantidad de notificaciones acumuladas y, sobre todo, lo poco que importaba ya nada de aquello.
+                Natalia decidió no volver a publicar en redes y, aunque sus seguidores fueron disminuyendo, ella sintió que recuperaba algo más valioso: el control sobre su propia atención.
+                «No hemos perdido el contacto unos con otros», escribió en su diario. «Hemos perdido el contacto con nosotros mismos».
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿En qué consistía el experimento de Natalia?",
+                    listOf("Pasar un mes sin redes sociales", "Vivir un mes sin internet", "Estar un mes sin móvil"),
+                    correctIndex = 0
+                ),
+                LibroQuestion(
+                    "¿Qué descubrió durante ese mes?",
+                    listOf("Que extrañaba mucho a sus contactos", "Que había estado consumiendo vidas ajenas mientras la suya pasaba en silencio", "Que sus amigos no la echaban de menos"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hizo después del experimento?",
+                    listOf("Volvió a publicar como antes", "Decidió no volver a publicar en redes", "Borró todas las aplicaciones para siempre"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál es la conclusión de Natalia en su diario?",
+                    listOf("Hemos perdido el contacto con nosotros mismos", "Las redes son útiles si se usan con moderación", "Es imposible vivir sin tecnología hoy"),
+                    correctIndex = 0
+                )
+            )
+        ),
+
+        Libro(
+            id = 62,
+            title = "La Tierra que Ya No Era",
+            level = "B2", difficulty = 2, topic = "Эмиграция / Идентичность",
+            text = """
+                Después de veintidós años viviendo en Madrid, Julián volvió a Buenos Aires para el funeral de su padre.
+                Había salido de Argentina huyendo de la crisis económica, dejando atrás un país que para él significaba imposibilidad.
+                Cuando aterrizó, esperaba reconocer las calles de su infancia, pero la ciudad había cambiado tanto que se sintió extranjero en su propio barrio.
+                El edificio donde había crecido tenía un código de seguridad que él no conocía, los kioscos donde compraba caramelos eran ahora cafeterías de moda, y sus antiguos amigos del colegio hablaban con un acento que ya no sonaba al suyo.
+                Tras dos semanas, Julián entendió que la nostalgia que había sentido durante años no era por una Buenos Aires real, sino por una Buenos Aires de su memoria que ya no existía y probablemente nunca había existido del todo.
+                Volvió a Madrid con una sensación extraña: no se sentía completamente español, pero ya no podía decir que era argentino tampoco.
+                Era algo nuevo, sin nombre, que solo entienden los que han vivido entre dos países durante demasiado tiempo.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué había salido Julián de Argentina?",
+                    listOf("Por trabajo", "Huyendo de la crisis económica", "Por amor"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo se sintió al volver a su barrio?",
+                    listOf("En casa, como si no se hubiera ido", "Extranjero en su propio barrio", "Profundamente feliz"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué entiende Julián sobre su nostalgia?",
+                    listOf("Que era una pérdida real de su patria", "Que era por una Buenos Aires que ya no existía y quizás nunca existió del todo", "Que era una emoción inventada"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo describe su identidad al final?",
+                    listOf("Completamente española", "Completamente argentina", "Algo nuevo, sin nombre, propio de quien vive entre dos países"),
+                    correctIndex = 2
+                )
+            )
+        ),
+
+        Libro(
+            id = 63,
+            title = "El Libro que lo Cambió Todo",
+            level = "B2", difficulty = 3, topic = "Литература / Личностный рост",
+            text = """
+                Existen libros que se leen y se olvidan, libros que entretienen unas horas y luego quedan en una estantería como simple decoración.
+                Pero hay otros, mucho menos frecuentes, que llegan a la vida de uno en el momento exacto y lo dejan diferente para siempre.
+                Para Inés, ese libro fue una novela rusa del siglo diecinueve que le regaló un profesor cuando tenía dieciocho años y atravesaba una crisis existencial sin saberlo.
+                Lo leyó en tres semanas, subrayando frases hasta el punto de que el ejemplar se volvió ilegible, y al terminarlo se dio cuenta de que ya no podía continuar estudiando la carrera que había elegido por presión familiar.
+                Cambió a Filosofía a los pocos meses, una decisión que sus padres tardaron años en aceptar.
+                Veinte años después, Inés es profesora universitaria y conserva aquel libro destrozado en su mesilla, no por sentimentalismo sino como recordatorio de que las palabras adecuadas en el momento adecuado pueden alterar el rumbo de una existencia más que cualquier consejo, terapia o conversación profunda.
+                A veces, cuando algún alumno suyo se siente perdido, Inés le presta el libro sin decir mucho.
+                Algunos lo devuelven impasibles; otros, transformados.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Cuándo leyó Inés el libro que cambió su vida?",
+                    listOf("A los veintiocho años, recién casada", "A los dieciocho, en una crisis existencial sin saberlo", "A los treinta, antes de empezar a enseñar"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué decisión tomó después de leerlo?",
+                    listOf("Empezar a escribir su propia novela", "Cambiar de carrera a Filosofía", "Mudarse a otro país"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo reaccionaron sus padres?",
+                    listOf("Inmediatamente la apoyaron", "Tardaron años en aceptar la decisión", "Nunca se lo perdonaron"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué hace Inés ahora con el libro?",
+                    listOf("Lo guarda en el sótano", "Lo presta a alumnos perdidos sin decir mucho", "Lo regaló hace años"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 64,
+            title = "El Peso de la Elección",
+            level = "B2", difficulty = 4, topic = "Психология / Современная жизнь",
+            text = """
+                En el supermercado del barrio había, cuando él era niño, tres tipos de aceite y dos marcas de pan.
+                Hoy, frente a la estantería del aceite, Ricardo cuenta veintinueve variedades distintas y siente, no la libertad que se supone que da la abundancia, sino una especie de parálisis silenciosa que le cuesta describir.
+                Lleva años leyendo sobre la llamada «paradoja de la elección»: la idea de que más opciones, lejos de hacernos más felices, nos generan ansiedad y arrepentimiento porque siempre podemos imaginar que la opción no elegida habría sido mejor.
+                En su trabajo como diseñador de productos, Ricardo intenta aplicar esta idea reduciendo intencionadamente las variantes que ofrece a sus clientes.
+                Sus jefes lo critican: «La gente quiere elegir», le dicen.
+                Pero cuando lanza una nueva línea con tres opciones en lugar de quince, las ventas suben un treinta por ciento y los clientes reportan estar más satisfechos.
+                Ricardo no pretende haber descubierto nada nuevo, simplemente recuerda en silencio una verdad que parecemos haber olvidado: que demasiada libertad de elección puede pesar tanto como la falta de ella.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Qué siente Ricardo frente a las veintinueve variedades de aceite?",
+                    listOf("Felicidad por la abundancia", "Una parálisis silenciosa difícil de describir", "Curiosidad por probar todas"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿En qué consiste la «paradoja de la elección»?",
+                    listOf("En que más opciones siempre nos hacen más felices", "En que más opciones generan ansiedad y arrepentimiento", "En que las marcas eligen por nosotros"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué pasó cuando lanzó tres opciones en lugar de quince?",
+                    listOf("Las ventas bajaron drásticamente", "Las ventas subieron un treinta por ciento y los clientes estaban más satisfechos", "No hubo ningún cambio"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cuál es la verdad que parecemos haber olvidado, según el texto?",
+                    listOf("Que la abundancia es siempre buena", "Que demasiada libertad de elección puede pesar tanto como la falta de ella", "Que los productos artesanales son mejores"),
+                    correctIndex = 1
+                )
+            )
+        ),
+
+        Libro(
+            id = 65,
+            title = "Memoria de un Verano que No Recuerdo",
+            level = "B2", difficulty = 5, topic = "Память / Фотография",
+            text = """
+                Mi madre conserva en un álbum una fotografía de un verano de mi infancia que yo, por más que lo intento, no logro recordar.
+                En la imagen aparezco con seis o siete años, sonriendo en la orilla del mar, sosteniendo un pez pequeño que, según ella, había pescado yo solo después de horas de paciencia.
+                Cuando me cuenta esa historia, lo hace con tanto detalle que durante un tiempo creí recordarla yo también: el sabor del bocadillo de aquella mañana, la sensación del sol quemándome los hombros, el orgullo al ver el pez moverse en el cubo.
+                Pero un día comprendí que mi memoria de aquel día no era mi memoria, sino la memoria de mi madre prestada a través de la repetición.
+                Aquello me dejó pensando durante semanas: cuántos de mis recuerdos más vívidos son realmente míos y cuántos son construcciones colectivas, fotografías miradas mil veces hasta volverse experiencia, anécdotas familiares contadas tantas veces que terminamos creyendo haberlas vivido.
+                Quizá la identidad sea menos un archivo personal que un préstamo permanente que hacemos con la gente que nos rodea, y la memoria, lejos de ser una cámara, sea más bien un colectivo de voces que se confunden con la nuestra hasta que ya no sabemos cuál era la original.
+                Cierro el álbum con cierta inquietud, pero también con una extraña gratitud: tal vez no recuerde aquel verano, pero gracias a mi madre ese día existe en alguna parte, aunque no sea exactamente dentro de mí.
+            """.trimIndent(),
+            questions = listOf(
+                LibroQuestion(
+                    "¿Por qué el narrador no recuerda aquel verano por sí mismo?",
+                    listOf("Porque era demasiado pequeño y olvidó todo", "Porque su memoria del día es la memoria prestada de su madre", "Porque su madre le inventó la historia"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Qué reflexión le provoca esa fotografía?",
+                    listOf("Que las fotos nunca son fiables", "Que muchos recuerdos podrían ser construcciones colectivas más que personales", "Que quiere ser fotógrafo"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Cómo describe la identidad al final del texto?",
+                    listOf("Como un archivo personal completo", "Como un préstamo permanente con la gente que nos rodea", "Como un secreto guardado"),
+                    correctIndex = 1
+                ),
+                LibroQuestion(
+                    "¿Con qué sentimiento cierra el álbum?",
+                    listOf("Con pura tristeza", "Con inquietud y también extraña gratitud", "Con indiferencia total"),
+                    correctIndex = 1
+                )
+            )
+        )
     )
 
     fun getById(id: Int): Libro? = all.firstOrNull { it.id == id }
