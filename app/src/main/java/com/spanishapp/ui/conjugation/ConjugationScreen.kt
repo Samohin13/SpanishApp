@@ -141,7 +141,7 @@ fun ConjugationScreen(
                 },
                 actions = {
                     IconButton(onClick = { navController.navigate("conjugation_quiz") }) {
-                        Icon(Icons.Default.Quiz, contentDescription = "Викторина",
+                        Icon(Icons.Default.Quiz, contentDescription = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_quiz_action),
                              tint = AppColors.Teal)
                     }
                 }
@@ -157,7 +157,7 @@ fun ConjugationScreen(
             OutlinedTextField(
                 value = query,
                 onValueChange = vm::setQuery,
-                placeholder = { Text("Поиск глагола…") },
+                placeholder = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_search_placeholder)) },
                 leadingIcon  = { Icon(Icons.Default.Search, null) },
                 trailingIcon = {
                     AnimatedVisibility(query.isNotEmpty()) {
@@ -183,17 +183,17 @@ fun ConjugationScreen(
                 FilterChip(
                     selected = filter == VerbFilter.ALL,
                     onClick = { vm.setFilter(VerbFilter.ALL) },
-                    label = { Text("Все") }
+                    label = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_filter_all)) }
                 )
                 FilterChip(
                     selected = filter == VerbFilter.REGULAR,
                     onClick = { vm.setFilter(VerbFilter.REGULAR) },
-                    label = { Text("Правильные") }
+                    label = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_filter_regular)) }
                 )
                 FilterChip(
                     selected = filter == VerbFilter.IRREGULAR,
                     onClick = { vm.setFilter(VerbFilter.IRREGULAR) },
-                    label = { Text("⚡ Неправильные") }
+                    label = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_filter_irregular)) }
                 )
             }
 
@@ -208,12 +208,12 @@ fun ConjugationScreen(
             // ── Hint ─────────────────────────────────────────
             item {
                 val hintText = when (filter) {
-                    VerbFilter.ALL       -> "${verbs.size} глаголов"
-                    VerbFilter.REGULAR   -> "${verbs.size} правильных"
-                    VerbFilter.IRREGULAR -> "${verbs.size} неправильных"
+                    VerbFilter.ALL       -> androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_count_all, verbs.size)
+                    VerbFilter.REGULAR   -> androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_count_regular, verbs.size)
+                    VerbFilter.IRREGULAR -> androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_count_irregular, verbs.size)
                 }
                 Text(
-                    "$hintText · нажми чтобы раскрыть таблицу",
+                    "$hintText · ${androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_hint_tap)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 4.dp)
@@ -280,7 +280,7 @@ private fun VerbCard(
                     }
                     if (isSelected && isIrregular) {
                         Text(
-                            "Неправильный глагол",
+                            androidx.compose.ui.res.stringResource(com.spanishapp.R.string.conj_irregular_label),
                             style = MaterialTheme.typography.labelSmall,
                             color = AppColors.Gold
                         )

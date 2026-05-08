@@ -76,6 +76,18 @@
     <string name="achievements_summary_progress">progress</string>
     <string name="achievements_new_badge">NEW</string>
 
+    <!-- ── Conjugation ── -->
+    <string name="conj_search_placeholder">Search verb…</string>
+    <string name="conj_filter_all">All</string>
+    <string name="conj_filter_regular">Regular</string>
+    <string name="conj_filter_irregular">⚡ Irregular</string>
+    <string name="conj_count_all">%1$d verbs</string>
+    <string name="conj_count_regular">%1$d regular</string>
+    <string name="conj_count_irregular">%1$d irregular</string>
+    <string name="conj_hint_tap">tap to expand the table</string>
+    <string name="conj_irregular_label">Irregular verb</string>
+    <string name="conj_quiz_action">Quiz</string>
+
     <!-- ── Onboarding ── -->
     <string name="onboarding_name_question">What\'s your name?</string>
     <string name="onboarding_name_subtitle">This is how we\'ll address you in the app</string>
