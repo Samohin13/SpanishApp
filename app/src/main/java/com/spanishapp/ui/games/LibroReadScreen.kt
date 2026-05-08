@@ -219,24 +219,59 @@ private fun BottomTranslationBox(
                     verticalAlignment = Alignment.Top
                 ) {
                     Column(Modifier.weight(1f)) {
-                        Text(
-                            translation.word,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
-                            color = Color.White
-                        )
-                        if (translation.wordRu.isNotEmpty()) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                translation.wordRu,
-                                fontSize = 16.sp,
-                                color = Color(0xFFB0BEC5)
+                                translation.word,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp,
+                                color = Color.White
                             )
-                        } else {
-                            Text(
-                                "не найдено в словаре",
-                                fontSize = 14.sp,
-                                color = Color(0xFF78909C)
-                            )
+                            if (translation.fromAi) {
+                                Spacer(Modifier.width(8.dp))
+                                Surface(
+                                    color = Color(0xFFFF9500).copy(alpha = 0.25f),
+                                    shape = RoundedCornerShape(6.dp)
+                                ) {
+                                    Text(
+                                        "✨ AI",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFFFFAB40),
+                                        modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
+                                    )
+                                }
+                            }
+                        }
+                        when {
+                            translation.isLoadingAi -> {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(12.dp),
+                                        strokeWidth = 2.dp,
+                                        color = Color(0xFFFFAB40)
+                                    )
+                                    Spacer(Modifier.width(6.dp))
+                                    Text(
+                                        "Спрашиваю AI…",
+                                        fontSize = 13.sp,
+                                        color = Color(0xFFB0BEC5)
+                                    )
+                                }
+                            }
+                            translation.wordRu.isNotEmpty() && translation.wordRu != "—" -> {
+                                Text(
+                                    translation.wordRu,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFB0BEC5)
+                                )
+                            }
+                            else -> {
+                                Text(
+                                    "не найдено в словаре",
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF78909C)
+                                )
+                            }
                         }
                     }
                     IconButton(onClick = onDismiss) {

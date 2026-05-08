@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.LibroProgressDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.LibroProgressEntity
+import com.spanishapp.data.repository.GeminiTranslator
 import com.spanishapp.domain.algorithm.LeaguePromotion
 import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.domain.algorithm.SpanishLemmatizer
@@ -26,7 +27,9 @@ data class TranslationState(
     val wordRu: String = "",
     val sentence: String = "",
     val sentenceWords: List<Pair<String, String>> = emptyList(), // es → ru
-    val visible: Boolean = false
+    val visible: Boolean = false,
+    val isLoadingAi: Boolean = false,
+    val fromAi: Boolean = false  // перевод получен через Gemini-fallback
 )
 
 // ── ViewModel ─────────────────────────────────────────────────
@@ -35,7 +38,8 @@ data class TranslationState(
 class LibrosViewModel @Inject constructor(
     private val dao: LibroProgressDao,
     private val wordDao: WordDao,
-    private val ratingUpdater: RatingUpdater
+    private val ratingUpdater: RatingUpdater,
+    private val geminiTranslator: GeminiTranslator
 ) : ViewModel() {
 
     private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
@@ -103,7 +107,7 @@ class LibrosViewModel @Inject constructor(
 
             // 1. Ищем слово: сначала точное совпадение, затем лемматизация
             val wordResult = findWithLemmatization(cleaned)
-            val wordRu = wordResult?.russian ?: ""
+            val localTranslation = wordResult?.russian ?: ""
 
             // 2. Разбираем предложение на значимые слова и ищем каждое
             val sentenceWords = extractContentWords(sentence)
@@ -114,13 +118,33 @@ class LibrosViewModel @Inject constructor(
                     r?.let { w to it.russian }
                 }
 
+            // 3. Сразу показываем local-результат — даже если перевод пуст,
+            // у юзера откроется бокс с "загрузка AI…" вместо тишины.
+            val noLocal = localTranslation.isBlank()
             _translation.value = TranslationState(
                 word = word,
-                wordRu = wordRu,
+                wordRu = localTranslation,
                 sentence = sentence,
                 sentenceWords = sentenceWords,
-                visible = true
+                visible = true,
+                isLoadingAi = noLocal,
+                fromAi = false
             )
+
+            // 4. Fallback на Gemini, если локально не нашли
+            if (noLocal) {
+                val aiTranslation = geminiTranslator.translateWord(cleaned, sentence)
+                // Юзер мог уже закрыть подсказку — обновим только если она ещё видна
+                _translation.update { current ->
+                    if (current.visible && current.word == word) {
+                        current.copy(
+                            wordRu = aiTranslation.ifBlank { "—" },
+                            isLoadingAi = false,
+                            fromAi = aiTranslation.isNotBlank()
+                        )
+                    } else current
+                }
+            }
         }
     }
 
