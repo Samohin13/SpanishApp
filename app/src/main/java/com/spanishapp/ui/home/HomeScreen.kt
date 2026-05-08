@@ -432,7 +432,7 @@ internal fun TopicCard(
                         Column {
                             // Номер блока
                             Text(
-                                text = "Блок ${unit.id}",
+                                text = stringResource(R.string.home_block_n, unit.id),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = Color.White.copy(alpha = 0.80f)
@@ -774,7 +774,7 @@ private fun StreakCard(
                         color = if (streak > 0) OrangeColor else TextGray
                     )
                     Text(
-                        text = "дней подряд",
+                        text = stringResource(R.string.home_streak_days),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = TextGray
@@ -805,8 +805,8 @@ private fun StreakCard(
                 Spacer(Modifier.height(4.dp))
 
                 Text(
-                    text = if (studiedToday) "✓ Сегодня занимался  $todayMinutes / $goalMinutes мин"
-                           else "Ещё не занимался сегодня",
+                    text = if (studiedToday) stringResource(R.string.home_studied_today, todayMinutes, goalMinutes)
+                           else stringResource(R.string.home_not_studied_yet),
                     fontSize = 12.sp,
                     color = if (studiedToday) Color(0xFF2E7D32) else TextGray
                 )

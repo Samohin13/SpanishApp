@@ -712,4 +712,39 @@
     <string name="cat_viaje">Путешествие</string>
     <string name="cat_vida">Жизнь</string>
 
+    <!-- Final i18n cleanup -->
+    <string name="course_title_a1">Курс A1: Начинающий</string>
+    <string name="course_title_a2">Курс A2: Элементарный</string>
+    <string name="course_title_b1">Курс B1: Средний</string>
+    <string name="course_title_b2">Курс B2: Выше среднего</string>
+    <string name="course_title_default">Курс %1$s</string>
+    <string name="course_desc_a1">Основы испанского языка. Научись представляться, говорить о семье и строить простые предложения.</string>
+    <string name="course_desc_a2">Развивай навыки общения. Путешествия, покупки, описание прошлого.</string>
+    <string name="course_desc_b1">Свободное общение. Сложные временные конструкции и субъективное наклонение.</string>
+    <string name="course_desc_b2">Продвинутый уровень. Идиомы, специальная лексика и сложные грамматические структуры.</string>
+    <string name="course_desc_default">Курс испанского языка уровня %1$s</string>
+    <string name="course_about_tab">О курсе</string>
+    <string name="home_block_n">Блок %1$s</string>
+    <string name="home_streak_days">дней подряд</string>
+    <string name="home_studied_today">✓ Сегодня занимался  %1$d / %2$d мин</string>
+    <string name="home_not_studied_yet">Ещё не занимался сегодня</string>
+    <string name="onboarding_kc_zero">Начинаю с нуля</string>
+    <string name="onboarding_kc_zero_sub">Испанский для меня новый язык</string>
+    <string name="onboarding_kc_some">Уже знаю испанский</string>
+    <string name="onboarding_kc_some_sub">Пройду короткий тест — %1$d вопросов</string>
+    <string name="onboarding_under13_hint">Если тебе младше 13 лет, попроси родителей помочь с регистрацией и согласием на использование приложения.</string>
+    <string name="voice_install_title">Хочешь голос как у носителя?</string>
+    <string name="voice_install_body">Сейчас используется стандартный голос, который может звучать роботизированно.</string>
+    <string name="voice_install_pack_title">✨ HD-пакет от Google</string>
+    <string name="voice_install_pack_line1">• Естественное произношение</string>
+    <string name="voice_install_pack_line2">• Мужские и женские голоса</string>
+    <string name="voice_install_pack_line3">• Кастильский, мексиканский, аргентинский</string>
+    <string name="voice_install_pack_line4">• Бесплатно, ~15 МБ</string>
+    <string name="voice_install_footer">Откроется системный установщик Google. Тапни «Español» — и всё.</string>
+    <string name="voice_install_confirm">УСТАНОВИТЬ</string>
+    <string name="voice_install_later">Позже</string>
+    <string name="speaker_button_cd">Произнести</string>
+    <string name="league_region">Регион: %1$s</string>
+    <string name="chat_error_invalid_key">Неверный API ключ Anthropic</string>
+    <string name="chat_close_cd">Закрыть</string>
 </resources>

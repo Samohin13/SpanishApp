@@ -677,4 +677,39 @@
     <string name="cat_viaje">Travel</string>
     <string name="cat_vida">Life</string>
 
+    <!-- Final i18n cleanup -->
+    <string name="course_title_a1">A1 Course: Beginner</string>
+    <string name="course_title_a2">A2 Course: Elementary</string>
+    <string name="course_title_b1">B1 Course: Intermediate</string>
+    <string name="course_title_b2">B2 Course: Upper Intermediate</string>
+    <string name="course_title_default">%1$s Course</string>
+    <string name="course_desc_a1">Spanish basics. Learn to introduce yourself, talk about family, and build simple sentences.</string>
+    <string name="course_desc_a2">Build your communication skills. Travel, shopping, describing the past.</string>
+    <string name="course_desc_b1">Fluent communication. Complex tenses and the subjunctive mood.</string>
+    <string name="course_desc_b2">Advanced level. Idioms, specialized vocabulary, and complex grammar structures.</string>
+    <string name="course_desc_default">Spanish course at level %1$s</string>
+    <string name="course_about_tab">About the course</string>
+    <string name="home_block_n">Block %1$s</string>
+    <string name="home_streak_days">days in a row</string>
+    <string name="home_studied_today">✓ Studied %1$d / %2$d min today</string>
+    <string name="home_not_studied_yet">Haven\'t studied today yet</string>
+    <string name="onboarding_kc_zero">Starting from scratch</string>
+    <string name="onboarding_kc_zero_sub">Spanish is a new language to me</string>
+    <string name="onboarding_kc_some">Already know some Spanish</string>
+    <string name="onboarding_kc_some_sub">I\'ll take a short test — %1$d questions</string>
+    <string name="onboarding_under13_hint">If you\'re under 13, ask your parents to help with registration and consent to use the app.</string>
+    <string name="voice_install_title">Want a native-speaker voice?</string>
+    <string name="voice_install_body">The default voice is in use right now, which can sound robotic.</string>
+    <string name="voice_install_pack_title">✨ Google HD voice pack</string>
+    <string name="voice_install_pack_line1">• Natural pronunciation</string>
+    <string name="voice_install_pack_line2">• Male and female voices</string>
+    <string name="voice_install_pack_line3">• Castilian, Mexican, Argentinian</string>
+    <string name="voice_install_pack_line4">• Free, ~15 MB</string>
+    <string name="voice_install_footer">The Google system installer will open. Tap «Español» — that\'s it.</string>
+    <string name="voice_install_confirm">INSTALL</string>
+    <string name="voice_install_later">Later</string>
+    <string name="speaker_button_cd">Speak</string>
+    <string name="league_region">Region: %1$s</string>
+    <string name="chat_error_invalid_key">Invalid Anthropic API key</string>
+    <string name="chat_close_cd">Close</string>
 </resources>
