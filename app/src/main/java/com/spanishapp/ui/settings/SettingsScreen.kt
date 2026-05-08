@@ -229,6 +229,7 @@ fun SettingsScreen(
     vm: SettingsViewModel = hiltViewModel()
 ) {
     val progress by vm.progress.collectAsStateWithLifecycle()
+    val userName by vm.userName.collectAsStateWithLifecycle()
     val isPhotoLoading by vm.isPhotoLoading.collectAsStateWithLifecycle()
     val userPhotoUrl by vm.userPhotoUrl.collectAsStateWithLifecycle()
     val reminders by vm.reminders.collectAsStateWithLifecycle()
@@ -340,7 +341,7 @@ fun SettingsScreen(
 
             // ── Секции настроек ──
             SettingsSection(stringResource(R.string.settings_section_profile)) {
-                SettingsItem(Icons.Default.Edit, stringResource(R.string.settings_change_name), progress.displayName) { showNameDialog = true }
+                SettingsItem(Icons.Default.Edit, stringResource(R.string.settings_change_name), userName?.takeIf { it.isNotBlank() } ?: progress.displayName) { showNameDialog = true }
                 SettingsItem(Icons.Default.Translate, "Уровень испанского", when(progress.currentLevel) {
                     "A1" -> "A1 — Начинающий"
                     "A2" -> "A2 — Элементарный"
@@ -687,7 +688,7 @@ fun SettingsScreen(
     }
 
     if (showNameDialog) {
-        var tempName by remember { mutableStateOf(progress.displayName) }
+        var tempName by remember { mutableStateOf(userName?.takeIf { it.isNotBlank() } ?: progress.displayName) }
         val nameError by vm.nameError.collectAsStateWithLifecycle()
         AlertDialog(
             onDismissRequest = { showNameDialog = false; vm.clearNameError() },

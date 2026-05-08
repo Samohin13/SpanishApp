@@ -95,14 +95,23 @@ class ProfileViewModel @Inject constructor(
         wordDao.learnedCount(),
         achievementDao.unlockedCount(),
         achievementDao.getAll().map { it.size },
-        authRepository.userPhotoUrl
-    ) { progress, learned, unlocked, total, photoUrl ->
+        authRepository.userPhotoUrl,
+        authRepository.userName
+    ) { values ->
+        @Suppress("UNCHECKED_CAST")
+        val progress = values[0] as UserProgressEntity?
+        val learned = values[1] as Int
+        val unlocked = values[2] as Int
+        val total = values[3] as Int
+        val photoUrl = values[4] as String?
+        val authName = (values[5] as String?).orEmpty()
         ProfileUiState(
             progress             = progress ?: UserProgressEntity(),
             learnedCount         = learned,
             unlockedAchievements = unlocked,
             totalAchievements    = total,
-            photoUrl             = photoUrl
+            photoUrl             = photoUrl,
+            authName             = authName
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState())
 
@@ -135,7 +144,8 @@ data class ProfileUiState(
     val learnedCount: Int = 0,
     val unlockedAchievements: Int = 0,
     val totalAchievements: Int = 0,
-    val photoUrl: String? = null
+    val photoUrl: String? = null,
+    val authName: String = ""
 )
 
 data class CategoryRatingUi(
@@ -199,7 +209,7 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfileHeader(
-                name = p.displayName.ifBlank { androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name) },
+                name = state.authName.ifBlank { p.displayName }.ifBlank { androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name) },
                 level = p.currentLevel,
                 appLevel = appLevel,
                 progress = progress,
