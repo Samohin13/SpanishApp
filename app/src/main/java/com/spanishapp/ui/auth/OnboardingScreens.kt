@@ -297,7 +297,7 @@ fun ReasonSelectionScreen(
 
 // ── 4. Уже знаешь / с нуля ─────────────────────────────────────────
 
-private const val PLACEMENT_TEST_QUESTIONS = 8
+private const val PLACEMENT_TEST_QUESTIONS = 20
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
