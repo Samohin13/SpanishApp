@@ -3,6 +3,7 @@ package com.spanishapp.data.prefs
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,6 +27,8 @@ class AppPreferences @Inject constructor(
         val BG_MUSIC         = booleanPreferencesKey("bg_music")
         val VIBRATION        = booleanPreferencesKey("vibration")
         val REMINDERS        = booleanPreferencesKey("reminders")
+        val REMINDER_HOUR    = intPreferencesKey("reminder_hour")    // 0..23
+        val REMINDER_MINUTE  = intPreferencesKey("reminder_minute")  // 0..59
         val FONT_SIZE        = stringPreferencesKey("font_size") // SMALL, MEDIUM, LARGE
     }
 
@@ -40,6 +43,14 @@ class AppPreferences @Inject constructor(
 
     val remindersEnabled: Flow<Boolean> = context.dataStore.data.map { it[REMINDERS] ?: true }
     suspend fun setRemindersEnabled(enabled: Boolean) = context.dataStore.edit { it[REMINDERS] = enabled }
+
+    /** Час напоминания (0..23). По умолчанию 19:00. */
+    val reminderHour: Flow<Int> = context.dataStore.data.map { it[REMINDER_HOUR] ?: 19 }
+    val reminderMinute: Flow<Int> = context.dataStore.data.map { it[REMINDER_MINUTE] ?: 0 }
+    suspend fun setReminderTime(hour: Int, minute: Int) = context.dataStore.edit {
+        it[REMINDER_HOUR] = hour.coerceIn(0, 23)
+        it[REMINDER_MINUTE] = minute.coerceIn(0, 59)
+    }
 
     val fontSize: Flow<String> = context.dataStore.data.map { it[FONT_SIZE] ?: "MEDIUM" }
     suspend fun setFontSize(size: String) = context.dataStore.edit { it[FONT_SIZE] = size }

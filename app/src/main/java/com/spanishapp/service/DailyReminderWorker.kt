@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Ежедневное напоминание заниматься испанским.
+ * Время задаётся в Settings (по умолчанию 19:00).
  * Простой Worker без Hilt (нет DI-зависимостей — нет KSP-проблем).
- * Срабатывает один раз в сутки в ~19:00.
  */
 class DailyReminderWorker(
     context: Context,
@@ -24,12 +24,16 @@ class DailyReminderWorker(
         const val NOTIF_ID   = 1001
         const val WORK_NAME  = "daily_reminder_work"
 
-        /** Запланировать ежедневное напоминание (~19:00). */
-        fun schedule(context: Context) {
+        /**
+         * Запланировать ежедневное напоминание на указанное время.
+         * Если уже было запланировано — заменяет (REPLACE policy),
+         * чтобы изменения времени в Settings вступили в силу сразу.
+         */
+        fun schedule(context: Context, hour: Int = 19, minute: Int = 0) {
             val now    = Calendar.getInstance()
             val target = Calendar.getInstance().apply {
-                set(Calendar.HOUR_OF_DAY, 19)
-                set(Calendar.MINUTE, 0)
+                set(Calendar.HOUR_OF_DAY, hour.coerceIn(0, 23))
+                set(Calendar.MINUTE, minute.coerceIn(0, 59))
                 set(Calendar.SECOND, 0)
                 if (before(now)) add(Calendar.DAY_OF_YEAR, 1)
             }
@@ -41,9 +45,14 @@ class DailyReminderWorker(
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
+                ExistingPeriodicWorkPolicy.REPLACE,
                 request
             )
+        }
+
+        /** Отменить напоминания (юзер выключил toggle). */
+        fun cancel(context: Context) {
+            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
         }
     }
 
