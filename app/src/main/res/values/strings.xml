@@ -140,6 +140,23 @@
     <string name="course_locked">Заблокировано</string>
     <string name="course_start_learning">Начать обучение →</string>
 
+    <!-- ── PlacementTest ────────────────────────────────────── -->
+    <string name="placement_abort_title">Прервать тест?</string>
+    <string name="placement_abort_message">Прогресс ответа на этом вопросе не сохранится.</string>
+    <string name="placement_abort_confirm">Прервать</string>
+    <string name="placement_abort_continue">Продолжить тест</string>
+    <string name="placement_next_question">Следующий вопрос</string>
+    <string name="placement_show_result">Узнать результат</string>
+    <string name="placement_change_level">Изменить уровень</string>
+
+    <!-- ── LevelSelection ───────────────────────────────────── -->
+    <string name="level_select_title">Выбери свой уровень</string>
+    <string name="level_select_change_later">Можно изменить позже в настройках</string>
+    <string name="level_upcoming_badge">скоро</string>
+    <string name="level_upcoming_dialog_title">Уровень %1$s в разработке</string>
+    <string name="level_upcoming_continue_a1">Начать с A1</string>
+    <string name="level_upcoming_anyway">Всё равно %1$s</string>
+
     <!-- ── Conjugation ──────────────────────────────────────── -->
     <string name="conj_search_placeholder">Поиск глагола…</string>
     <string name="conj_filter_all">Все</string>

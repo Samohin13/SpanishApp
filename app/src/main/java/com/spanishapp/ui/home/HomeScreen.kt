@@ -101,6 +101,26 @@ fun HomeScreen(
     var expandedUnitId by remember { mutableStateOf<String?>(null) }
     val tts = rememberSpanishTts()
 
+    // Локализованные подписи карточек курсов — читаются здесь (в @Composable
+    // контексте HomeScreen), потому что внутри LazyColumn item-lambda
+    // stringResource() недоступен.
+    val courseDataLocal = listOf(
+        CourseCardData("A1", stringResource(R.string.course_a1_subtitle), "🚀", A1Start, A1End,
+            stringResource(R.string.course_lessons_60_micro), stringResource(R.string.course_blocks_4)),
+        CourseCardData("A2", stringResource(R.string.course_a2_subtitle), "🌍", A2Start, A2End,
+            stringResource(R.string.course_lessons_60),       stringResource(R.string.course_blocks_4)),
+        CourseCardData("B1", stringResource(R.string.course_b1_subtitle), "📚", B1Start, B1End,
+            stringResource(R.string.course_lessons_soon),     stringResource(R.string.course_blocks_4)),
+        CourseCardData("B2", stringResource(R.string.course_b2_subtitle), "🎓", B2Start, B2End,
+            stringResource(R.string.course_lessons_soon),     stringResource(R.string.course_blocks_4))
+    )
+    val courseLockedLabel = stringResource(R.string.course_locked)
+    val courseStartLabel = stringResource(R.string.course_start_learning)
+    val course60LessonsLabel = stringResource(R.string.course_lessons_60)
+    val homeGreeting = stringResource(R.string.home_greeting)
+    val homeSubtitleStr = stringResource(R.string.home_subtitle)
+    val homeWordOfDayLabel = stringResource(R.string.home_word_of_day)
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -163,9 +183,9 @@ fun HomeScreen(
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 20.dp)
             ) {
-                Text(stringResource(R.string.home_greeting), fontSize = 26.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                Text(homeGreeting, fontSize = 26.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.height(2.dp))
-                Text(stringResource(R.string.home_subtitle), fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(homeSubtitleStr, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -191,21 +211,7 @@ fun HomeScreen(
         }
 
         // ── Course cards ───────────────────────────────────────
-        // stringResource внутри LazyColumn item-context допустим.
-        val a1Title = stringResource(R.string.course_a1_subtitle)
-        val a2Title = stringResource(R.string.course_a2_subtitle)
-        val b1Title = stringResource(R.string.course_b1_subtitle)
-        val b2Title = stringResource(R.string.course_b2_subtitle)
-        val lessons60Micro = stringResource(R.string.course_lessons_60_micro)
-        val lessons60 = stringResource(R.string.course_lessons_60)
-        val lessonsSoon = stringResource(R.string.course_lessons_soon)
-        val blocks4 = stringResource(R.string.course_blocks_4)
-        val courseData = listOf(
-            CourseCardData("A1", a1Title, "🚀", A1Start, A1End, lessons60Micro, blocks4),
-            CourseCardData("A2", a2Title, "🌍", A2Start, A2End, lessons60,      blocks4),
-            CourseCardData("B1", b1Title, "📚", B1Start, B1End, lessonsSoon,    blocks4),
-            CourseCardData("B2", b2Title, "🎓", B2Start, B2End, lessonsSoon,    blocks4)
-        )
+        val courseData = courseDataLocal
 
         itemsIndexed(courseData) { _, course ->
             CourseCard(
@@ -325,7 +331,7 @@ private fun CourseCard(
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    if (isLocked) stringResource(R.string.course_locked) else stringResource(R.string.course_start_learning),
+                    if (isLocked) courseLockedLabel else courseStartLabel,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = accentColor

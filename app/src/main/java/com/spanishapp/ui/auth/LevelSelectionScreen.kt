@@ -80,14 +80,14 @@ fun LevelSelectionScreen(
         ) {
             Spacer(Modifier.height(16.dp))
             Text(
-                "Выбери свой уровень",
+                androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_select_title),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Можно изменить позже в настройках",
+                androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_select_change_later),
                 fontSize = 13.sp,
                 color = AppColors.TextSecondary
             )
@@ -124,7 +124,7 @@ fun LevelSelectionScreen(
                                 color = Color(0xFFFFF3E0)
                             ) {
                                 Text(
-                                    "скоро",
+                                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_upcoming_badge),
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = Color(0xFFE65100),
@@ -189,7 +189,7 @@ private fun UpcomingLevelDialog(
                 Text("⏳", fontSize = 36.sp)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Уровень ${level.code} в разработке",
+                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_upcoming_dialog_title, level.code),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center
@@ -206,12 +206,12 @@ private fun UpcomingLevelDialog(
         },
         confirmButton = {
             TextButton(onClick = onSwitchToA1) {
-                Text("Начать с A1", fontWeight = FontWeight.Bold)
+                Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_upcoming_continue_a1), fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {
             TextButton(onClick = onChooseAnyway) {
-                Text("Всё равно ${level.code}")
+                Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_upcoming_anyway, level.code))
             }
         }
     )
