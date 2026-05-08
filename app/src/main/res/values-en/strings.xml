@@ -76,6 +76,12 @@
     <string name="achievements_summary_progress">progress</string>
     <string name="achievements_new_badge">NEW</string>
 
+    <!-- ── Profile stats ── -->
+    <string name="profile_stat_words">Words</string>
+    <string name="profile_stat_days">Days</string>
+    <string name="profile_stat_minutes">Min</string>
+    <string name="profile_default_name">Estudiante</string>
+
     <!-- ── HomeScreen course cards ── -->
     <string name="course_a1_subtitle">Beginner</string>
     <string name="course_a2_subtitle">Elementary</string>

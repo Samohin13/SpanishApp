@@ -89,6 +89,12 @@
     <string name="achievements_summary_progress">прогресс</string>
     <string name="achievements_new_badge">NEW</string>
 
+    <!-- ── Profile stats ────────────────────────────────────── -->
+    <string name="profile_stat_words">Слов</string>
+    <string name="profile_stat_days">Дня</string>
+    <string name="profile_stat_minutes">Мин</string>
+    <string name="profile_default_name">Estudiante</string>
+
     <!-- ── HomeScreen course cards ──────────────────────────── -->
     <string name="course_a1_subtitle">Начинающий</string>
     <string name="course_a2_subtitle">Элементарный</string>
