@@ -52,10 +52,16 @@ private fun verbModeDesc(mode: VerbTrainingMode): String = when (mode) {
 
 private val ACCENT      = Color(0xFF2196F3)
 private val ACCENT_DARK = Color(0xFF1565C0)
-private val BgGray      = Color(0xFFF8F8FA)
-private val TextMain    = Color(0xFF1A1A1A)
-private val TextGray    = Color(0xFF8E8E93)
-private val CardBorder  = Color(0xFFE5E5EA)
+private val BgGray
+    @Composable get() = MaterialTheme.colorScheme.background
+private val TextMain
+    @Composable get() = MaterialTheme.colorScheme.onSurface
+private val TextGray
+    @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
+private val CardBorder
+    @Composable get() = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+private val CardSurface
+    @Composable get() = MaterialTheme.colorScheme.surface
 private val Green       = Color(0xFF4CAF50)
 private val Red         = Color(0xFFF44336)
 private val Orange      = Color(0xFFFF9500)
@@ -126,7 +132,7 @@ private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
                         .padding(vertical = 4.dp)
                         .clickable { vm.updateConfig(cfg.copy(mode = mode)) },
                     shape = RoundedCornerShape(12.dp),
-                    color = if (sel) ACCENT.copy(alpha = 0.10f) else Color.White,
+                    color = if (sel) ACCENT.copy(alpha = 0.10f) else CardSurface,
                     border = androidx.compose.foundation.BorderStroke(
                         if (sel) 2.dp else 1.dp,
                         if (sel) ACCENT else CardBorder
@@ -236,7 +242,7 @@ private fun SectionCard(title: String, content: @Composable () -> Unit) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
-            color = Color.White,
+            color = CardSurface,
             border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
         ) { Column(modifier = Modifier.padding(12.dp)) { content() } }
     }
@@ -340,7 +346,7 @@ private fun AuditivoCard(q: VerbQuestion, vm: VerbViewModel) {
             .fillMaxWidth()
             .padding(vertical = 12.dp),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = CardSurface,
         shadowElevation = 2.dp
     ) {
         Column(
@@ -378,7 +384,7 @@ private fun InversoCard(q: VerbQuestion, vm: VerbViewModel) {
             .fillMaxWidth()
             .padding(vertical = 12.dp),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = CardSurface,
         shadowElevation = 2.dp
     ) {
         Column(
@@ -434,7 +440,7 @@ private fun QuestionCard(title: String, bigLine: String, hint: String?) {
             .fillMaxWidth()
             .padding(vertical = 12.dp),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = CardSurface,
         shadowElevation = 2.dp
     ) {
         Column(
@@ -503,7 +509,7 @@ private fun AnswerArea(q: VerbQuestion, vm: VerbViewModel) {
                             selection = TextRange(before.length + ch.length))
                     },
                 shape = RoundedCornerShape(8.dp),
-                color = Color.White,
+                color = CardSurface,
                 border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
             ) {
                 Box(contentAlignment = Alignment.Center) {
@@ -580,7 +586,7 @@ private fun DropdownPicker(label: String, hint: String, options: List<String>, s
                 .clickable { expanded = true },
             shape = RoundedCornerShape(12.dp),
             border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder),
-            color = Color.White
+            color = CardSurface
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(label, fontSize = 11.sp, color = TextGray)

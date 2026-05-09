@@ -174,7 +174,7 @@ private fun SpeedGameContent(
                         shape = RoundedCornerShape(16.dp),
                         color = when {
                             isCorrectShown -> Color(0xFF4CAF50).copy(alpha = 0.20f)
-                            else            -> Color.White
+                            else            -> MaterialTheme.colorScheme.surface
                         },
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,

@@ -59,7 +59,7 @@ fun LevelMapScreen(
     }
 
     Scaffold(
-        containerColor = Color(0xFFF8F8FA),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = {
@@ -121,17 +121,20 @@ private fun LevelCell(
     onClick: () -> Unit
 ) {
     val params = LevelDifficulty.forLevel(level)
+    val cs = MaterialTheme.colorScheme
     val bgColor = when {
-        !unlocked -> Color(0xFFE5E5EA)
+        !unlocked -> cs.surfaceVariant
         stars > 0 -> accent.copy(alpha = 0.18f)
         isNext    -> accent
-        else      -> Color.White
+        else      -> cs.surface
     }
     val textColor = when {
-        !unlocked -> Color(0xFFC7C7CC)
+        !unlocked -> cs.onSurfaceVariant.copy(alpha = 0.5f)
         isNext    -> Color.White
-        else      -> Color(0xFF1A1A1A)
+        else      -> cs.onSurface
     }
+    val lockTint = cs.onSurfaceVariant.copy(alpha = 0.5f)
+    val starOff = cs.outline.copy(alpha = 0.4f)
 
     Surface(
         shape    = RoundedCornerShape(14.dp),
@@ -144,7 +147,7 @@ private fun LevelCell(
         Box(contentAlignment = Alignment.Center) {
             if (!unlocked) {
                 Icon(Icons.Default.Lock, null,
-                    tint = Color(0xFFC7C7CC),
+                    tint = lockTint,
                     modifier = Modifier.size(20.dp))
             } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -160,7 +163,7 @@ private fun LevelCell(
                                 Icon(
                                     Icons.Default.Star, null,
                                     tint = if (i < stars) Color(0xFFFFC107)
-                                           else Color(0xFFE5E5EA),
+                                           else starOff,
                                     modifier = Modifier.size(8.dp)
                                 )
                             }

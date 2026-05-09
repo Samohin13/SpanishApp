@@ -40,9 +40,14 @@ import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
 
 private val ACCENT = Color(0xFF4CAF50)
-private val BgGray = Color(0xFFF8F8FA)
-private val TextMain = Color(0xFF1A1A1A)
-private val CardBorder = Color(0xFFE5E5EA)
+private val BgGray
+    @Composable get() = MaterialTheme.colorScheme.background
+private val TextMain
+    @Composable get() = MaterialTheme.colorScheme.onSurface
+private val CardBorder
+    @Composable get() = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+private val CardSurface
+    @Composable get() = MaterialTheme.colorScheme.surface
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -164,7 +169,7 @@ private fun SopaGameContent(
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Color.White)
+                    .background(CardSurface)
                     .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
                     .onGloballyPositioned { gridSize = it.size }
                     .pointerInput(cells) {
@@ -254,7 +259,7 @@ private fun SopaGameContent(
                         .fillMaxWidth()
                         .weight(1f),
                     shape = RoundedCornerShape(16.dp),
-                    color = Color.White,
+                    color = CardSurface,
                     border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
                 ) {
                     val scroll = rememberScrollState()

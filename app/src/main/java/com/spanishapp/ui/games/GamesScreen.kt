@@ -45,7 +45,9 @@ private val GAMES: List<Game> = listOf(
     Game("Palabra Maestra",com.spanishapp.R.string.game_palabra_desc,   Icons.Default.TextFields, Color(0xFFFF9500), "game_palabra"),
     Game("Cálculo",        com.spanishapp.R.string.game_math_desc,      Icons.Default.Calculate,  Color(0xFFF44336), "game_math"),
     Game("Crucigrama",     com.spanishapp.R.string.game_crossword_desc, Icons.Default.BorderAll,  Color(0xFF26A69A), "game_crossword"),
-    Game("Libros",         com.spanishapp.R.string.game_libros_desc,    Icons.Default.MenuBook,   Color(0xFF7B2FBE), "game_libros")
+    Game("Libros",         com.spanishapp.R.string.game_libros_desc,    Icons.Default.MenuBook,   Color(
+        0xFFBEA62F
+    ), "game_libros")
 )
 
 @Composable

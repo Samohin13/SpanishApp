@@ -42,7 +42,14 @@ import java.text.Normalizer
 
 // ── Цвета ─────────────────────────────────────────────────────
 private val ACCENT        = Color(0xFF7B2FBE)
-private val BG            = Color(0xFFF0EEF8)
+private val BG
+    @Composable get() = MaterialTheme.colorScheme.background
+private val ImageCardBg
+    @Composable get() = MaterialTheme.colorScheme.surface
+private val PrimaryText
+    @Composable get() = MaterialTheme.colorScheme.onSurface
+private val SecondaryText
+    @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
 private val COLOR_EL      = Color(0xFF1565C0)
 private val COLOR_LA      = Color(0xFFB71C1C)
 private val COLOR_LOS     = Color(0xFF00695C)
@@ -132,7 +139,7 @@ private fun ArticlesGameContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color(0xFF3A3A3C))
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = PrimaryText)
                 }
                 Box(
                     modifier = Modifier.weight(1f),
@@ -147,7 +154,7 @@ private fun ArticlesGameContent(
                 Spacer(Modifier.width(10.dp))
                 Text(
                     "${state.currentRound}/${state.totalRounds}",
-                    fontSize = 13.sp, color = Color(0xFF8E8E93), fontWeight = FontWeight.SemiBold
+                    fontSize = 13.sp, color = SecondaryText, fontWeight = FontWeight.SemiBold
                 )
             }
 
@@ -165,7 +172,7 @@ private fun ArticlesGameContent(
                 )
                 Text(
                     stringResource(R.string.art_correct_count, state.correctCount),
-                    fontSize = 20.sp, color = Color(0xFF3A3A3C), fontWeight = FontWeight.Bold
+                    fontSize = 20.sp, color = PrimaryText, fontWeight = FontWeight.Bold
                 )
             }
 
@@ -180,7 +187,7 @@ private fun ArticlesGameContent(
                         .offset(x = shakeOffset.dp)
                         .aspectRatio(1f)              // квадрат
                         .clip(RoundedCornerShape(24.dp))
-                        .background(Color.White)
+                        .background(ImageCardBg)
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(context)
@@ -225,7 +232,7 @@ private fun ArticlesGameContent(
                 text = word?.word ?: "",
                 fontSize = 46.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF1A1A2E),
+                color = PrimaryText,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(horizontal = 24.dp)

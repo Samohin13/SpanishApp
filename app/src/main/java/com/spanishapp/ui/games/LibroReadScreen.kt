@@ -971,7 +971,7 @@ fun LibroReadScreen(
                     val labels = listOf("A", "B", "C")
                     q.options.forEachIndexed { idx, option ->
                         val isSelected  = selectedAnswer == idx
-                        val bgColor     = if (isSelected) levelColor else Color.White
+                        val bgColor     = if (isSelected) levelColor else MaterialTheme.colorScheme.surface
                         val textColor   = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
                         val borderColor = if (isSelected) levelColor else MaterialTheme.colorScheme.outline
                         Row(

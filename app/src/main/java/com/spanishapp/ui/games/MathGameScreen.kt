@@ -148,7 +148,7 @@ private fun MathGameContent(
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(padding)
-            .background(Color(0xFFF8F8FA))
+            .background(MaterialTheme.colorScheme.background)
         ) {
             Column(
                 modifier = Modifier
@@ -189,7 +189,7 @@ private fun MathGameContent(
                             .height(8.dp)
                             .clip(RoundedCornerShape(4.dp)),
                         color = if (state.timeLeft < 0.3f) Color.Red else ACCENT,
-                        trackColor = Color(0xFFE5E5EA)
+                        trackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     )
                 }
 
@@ -199,7 +199,7 @@ private fun MathGameContent(
                         .fillMaxWidth()
                         .offset(x = shakeX.dp),
                     shape = RoundedCornerShape(20.dp),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 2.dp
                 ) {
                     Column(
@@ -213,7 +213,7 @@ private fun MathGameContent(
                             textAlign = TextAlign.Center,
                             lineHeight = if (state.displayMode == MathDisplayMode.AUDIO) 60.sp else 30.sp,
                             color = if (state.displayMode == MathDisplayMode.AUDIO) ACCENT
-                                    else Color(0xFF1A1A1A)
+                                    else MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(8.dp))
                         IconButton(onClick = { viewModel.repeatQuestion() }) {
@@ -246,8 +246,8 @@ private fun MathGameContent(
                 } else {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = Color.White,
-                        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE5E5EA)),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
                         modifier = Modifier
                             .width(140.dp)
                             .height(50.dp)
@@ -370,18 +370,18 @@ private fun KeyButton(
     Surface(
         modifier = modifier.clickable(enabled = enabled, onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        color = if (isAction) Color(0xFFE5E5EA) else Color.White,
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE5E5EA))
+        color = if (isAction) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
     ) {
         Box(contentAlignment = Alignment.Center) {
             if (text == "DEL") {
-                Icon(Icons.Default.Backspace, null, tint = Color.DarkGray)
+                Icon(Icons.Default.Backspace, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 Text(
                     text,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (isAction) Color.DarkGray else Color.Black
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

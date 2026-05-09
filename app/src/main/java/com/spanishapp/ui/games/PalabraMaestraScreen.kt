@@ -32,10 +32,16 @@ import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
 
 private val ACCENT = Color(0xFFFF9500)
-private val BgGray = Color(0xFFF8F8FA)
-private val TextMain = Color(0xFF1A1A1A)
-private val TextGray = Color(0xFF8E8E93)
-private val CardBorder = Color(0xFFE5E5EA)
+private val BgGray
+    @Composable get() = MaterialTheme.colorScheme.background
+private val TextMain
+    @Composable get() = MaterialTheme.colorScheme.onSurface
+private val TextGray
+    @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
+private val CardBorder
+    @Composable get() = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+private val CardSurface
+    @Composable get() = MaterialTheme.colorScheme.surface
 private val Green = Color(0xFF4CAF50)
 private val Red   = Color(0xFFF44336)
 
@@ -156,7 +162,7 @@ private fun PalabraActiveGame(
                             q.isChecked && q.isCorrect == false -> Red
                             isWrongAuto -> Red.copy(alpha = 0.4f)
                             letter != null -> ACCENT.copy(alpha = 0.07f)
-                            else -> Color.White
+                            else -> CardSurface
                         },
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,
@@ -192,7 +198,7 @@ private fun PalabraActiveGame(
                                 .size(50.dp)
                                 .clickable(enabled = !isUsed) { viewModel.onLetterClick(letter) },
                             shape = RoundedCornerShape(12.dp),
-                            color = if (isUsed) BgGray else Color.White,
+                            color = if (isUsed) BgGray else CardSurface,
                             shadowElevation = if (isUsed) 0.dp else 2.dp,
                             border = if (isUsed) null
                                      else androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
@@ -306,7 +312,7 @@ private fun HintButton(icon: ImageVector, label: String, modifier: Modifier, onC
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
         border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder),
-        color = Color.White
+        color = CardSurface
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
