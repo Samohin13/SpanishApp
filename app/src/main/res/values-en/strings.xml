@@ -718,4 +718,17 @@
     <string name="set_about_source">Source code on GitHub</string>
     <string name="set_about_licenses">Open-source licenses</string>
     <string name="set_about_made_with_love">Made with ❤️ for learning Spanish</string>
+
+    <!-- Chat welcome screen — capability cards -->
+    <string name="chat_cap_answer_title">Replies in Spanish</string>
+    <string name="chat_cap_answer_desc">Hard words come with translation in [brackets]. If you write in English, it explains both ways.</string>
+    <string name="chat_cap_correct_title">Corrects mistakes</string>
+    <string name="chat_cap_correct_desc">Shows the right version with ✏️ and explains the error.</string>
+    <string name="chat_cap_speak_title">Speaks responses</string>
+    <string name="chat_cap_speak_desc">Tap 🔊 under any message to hear it pronounced.</string>
+    <string name="chat_cap_adapt_title">Adapts to your level</string>
+    <string name="chat_cap_adapt_desc">A1/A2 — simple phrases. B1+ — idioms and complex tenses.</string>
+    <string name="chat_cap_stream_title">Streams in real time</string>
+    <string name="chat_cap_stream_desc">Text appears word by word — no waiting for the full reply.</string>
+    <string name="chat_try_label">Try asking:</string>
 </resources>
