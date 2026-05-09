@@ -166,52 +166,32 @@ private fun RuleItem(icon: ImageVector, title: String, body: String) {
 
 @Composable
 fun CrosswordLevelSelection(state: CrosswordGameState, viewModel: CrosswordViewModel) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(stringResource(R.string.crw_select_level), fontSize = 24.sp, fontWeight = FontWeight.Bold,
-            color = TextMain, modifier = Modifier.padding(bottom = 24.dp))
-        androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
-            columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(100) { index ->
-                val level = index + 1
-                val stars = state.levelStars[level] ?: 0
-                val isLocked = level > (state.levelStars.size + 1) && level > 1
-                LevelCell(level, stars, isLocked) { if (!isLocked) viewModel.startLevel(level) }
-            }
-        }
-    }
-}
+    // Use the same 5-column layout + GameLevelCell as the rest of the games
+    // (Articulos / Math / Speed / Sopa / Palabra / Verbos) for visual consistency.
+    val maxCleared = state.levelStars.size  // crossword tracks levelStars: Map<Int, Int>
+    val nextLevel = (maxCleared + 1).coerceAtMost(100)
 
-@Composable
-fun LevelCell(level: Int, stars: Int, isLocked: Boolean, onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable(enabled = !isLocked) { onClick() }
+    androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+        columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(5),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Surface(
-            modifier = Modifier.size(80.dp),
-            shape = RoundedCornerShape(20.dp),
-            color = if (isLocked) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
-            border = if (isLocked) null else androidx.compose.foundation.BorderStroke(2.dp, Purple),
-            shadowElevation = if (isLocked) 0.dp else 4.dp
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                if (isLocked) Icon(Icons.Default.Lock, null, tint = TextGray, modifier = Modifier.size(24.dp))
-                else Text(level.toString(), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Purple)
-            }
-        }
-        Spacer(Modifier.height(4.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            repeat(3) { i ->
-                Icon(Icons.Default.Star, null, modifier = Modifier.size(16.dp),
-                    tint = if (i < stars) Gold else MaterialTheme.colorScheme.outline)
-            }
+        items(100) { index ->
+            val level = index + 1
+            val stars = state.levelStars[level] ?: 0
+            val unlocked = level <= nextLevel
+            val isNext = level == nextLevel
+
+            com.spanishapp.ui.games.common.GameLevelCell(
+                level    = level,
+                stars    = stars,
+                unlocked = unlocked,
+                isNext   = isNext,
+                accent   = Purple,
+                onClick  = { if (unlocked) viewModel.startLevel(level) }
+            )
         }
     }
 }

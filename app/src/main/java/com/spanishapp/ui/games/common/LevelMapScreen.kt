@@ -94,7 +94,7 @@ fun LevelMapScreen(
                 val unlocked = level <= nextLevel
                 val isNext = level == nextLevel
 
-                LevelCell(
+                GameLevelCell(
                     level    = level,
                     stars    = entry?.stars ?: 0,
                     unlocked = unlocked,
@@ -111,8 +111,12 @@ fun LevelMapScreen(
     }
 }
 
+/**
+ * Re-usable level tile shared by all games. Crossword imports this so its
+ * level grid matches Articulos/Math/Speed/etc. visually.
+ */
 @Composable
-private fun LevelCell(
+fun GameLevelCell(
     level: Int,
     stars: Int,
     unlocked: Boolean,
