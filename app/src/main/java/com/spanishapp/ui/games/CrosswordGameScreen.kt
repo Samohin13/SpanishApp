@@ -104,7 +104,7 @@ fun CrosswordGameScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(BgGray)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             when {
                 state.showSetup  -> CrosswordLevelSelection(state, viewModel)
@@ -300,7 +300,7 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 12.dp
         ) {
             Column(modifier = Modifier.padding(bottom = 8.dp)) {
@@ -423,7 +423,7 @@ fun CrosswordGrid(state: CrosswordGameState) {
                                     !isCell    -> Color.Transparent
                                     isSelected -> Purple
                                     isSolved   -> SuccessGreen.copy(alpha = 0.2f)
-                                    else       -> Color.White
+                                    else       -> MaterialTheme.colorScheme.surfaceVariant
                                 }
                             )
                             .border(
@@ -433,7 +433,7 @@ fun CrosswordGrid(state: CrosswordGameState) {
                                     isSelected -> Purple
                                     isError    -> Color.Red
                                     isSolved   -> SuccessGreen
-                                    else       -> CardBorder
+                                    else       -> CardBorder.copy(alpha = 0.4f)
                                 },
                                 RoundedCornerShape(6.dp)
                             ),
@@ -508,9 +508,9 @@ fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
                             Popup(alignment = Alignment.TopCenter,
                                 onDismissRequest = { accentMenuKey = null }) {
                                 Surface(modifier = Modifier.padding(bottom = 8.dp),
-                                    color = Color.White, shape = RoundedCornerShape(8.dp),
+                                    color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp),
                                     shadowElevation = 8.dp,
-                                    border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)) {
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder.copy(alpha = 0.3f))) {
                                     Row(modifier = Modifier.padding(4.dp)) {
                                         accentsMap[char]?.forEach { acc ->
                                             Box(
@@ -538,13 +538,14 @@ fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun KeyItem(
-    text: String, modifier: Modifier, color: Color = Color.White,
+    text: String, modifier: Modifier,
+    color: Color = MaterialTheme.colorScheme.surfaceVariant,
     onLongClick: (() -> Unit)? = null, onClick: () -> Unit
 ) {
     Surface(
         modifier = modifier.height(44.dp).combinedClickable(onClick = onClick, onLongClick = onLongClick),
         color = color, shape = RoundedCornerShape(6.dp), shadowElevation = 1.dp,
-        border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
+        border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder.copy(alpha = 0.3f))
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(text, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = TextMain)
