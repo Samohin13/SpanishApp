@@ -121,12 +121,13 @@ fun HomeScreen(
     val homeSubtitleStr = stringResource(R.string.home_subtitle)
     val homeWordOfDayLabel = stringResource(R.string.home_word_of_day)
 
+    Box(modifier = Modifier.fillMaxSize()) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
-        contentPadding = PaddingValues(bottom = 32.dp)
+        contentPadding = PaddingValues(bottom = 96.dp)  // extra space so FAB doesn't cover content
     ) {
         // ── Header ─────────────────────────────────────────────
         item {
@@ -222,6 +223,26 @@ fun HomeScreen(
                 onPremiumClick = { /* premium убран — все курсы открыты */ }
             )
             Spacer(Modifier.height(12.dp))
+        }
+    }
+
+        // ── AI-Chat FAB ─────────────────────────────────────────
+        // Spanish-themed bull icon (game-icons:taurus, CC-BY 3.0).
+        FloatingActionButton(
+            onClick = { navController.navigate("ai_chat") },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 20.dp, bottom = 20.dp)
+                .size(60.dp),
+            containerColor = Orange,
+            contentColor = Color.White,
+            shape = CircleShape
+        ) {
+            Icon(
+                painter = androidx.compose.ui.res.painterResource(R.drawable.ic_bull),
+                contentDescription = stringResource(R.string.title_ai_chat),
+                modifier = Modifier.size(30.dp)
+            )
         }
     }
 }
