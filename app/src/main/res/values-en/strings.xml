@@ -712,4 +712,10 @@
     <string name="league_region">Region: %1$s</string>
     <string name="chat_error_invalid_key">Invalid Anthropic API key</string>
     <string name="chat_close_cd">Close</string>
+
+    <string name="set_about_section">About</string>
+    <string name="set_about_version">Version</string>
+    <string name="set_about_source">Source code on GitHub</string>
+    <string name="set_about_licenses">Open-source licenses</string>
+    <string name="set_about_made_with_love">Made with ❤️ for learning Spanish</string>
 </resources>

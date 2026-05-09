@@ -558,10 +558,37 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.DeleteForever, stringResource(R.string.set_delete_account_full), textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }
             }
 
-            // ── О приложении ──
-            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp), contentAlignment = Alignment.Center) {
+            // ── О приложении ──────────────────────────────────────
+            SettingsSection(stringResource(R.string.set_about_section)) {
+                SettingsItem(
+                    icon = Icons.Default.Info,
+                    title = stringResource(R.string.set_about_version),
+                    summary = "${com.spanishapp.BuildConfig.VERSION_NAME} (build ${com.spanishapp.BuildConfig.VERSION_CODE})"
+                )
+                SettingsItem(
+                    icon = Icons.Default.Code,
+                    title = stringResource(R.string.set_about_source)
+                ) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "https://github.com/Samohin13/SpanishApp"
+                    ))
+                    runCatching { context.startActivity(intent) }
+                }
+                SettingsItem(
+                    icon = Icons.Default.Gavel,
+                    title = stringResource(R.string.set_about_licenses)
+                ) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "https://github.com/Samohin13/SpanishApp/blob/master/LICENSES.md"
+                    ))
+                    runCatching { context.startActivity(intent) }
+                }
+            }
+
+            // ── Подвал ────────────────────────────────────────────
+            Box(modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp), contentAlignment = Alignment.Center) {
                 Text(
-                    text = stringResource(R.string.set_about_text),
+                    text = stringResource(R.string.set_about_made_with_love),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center

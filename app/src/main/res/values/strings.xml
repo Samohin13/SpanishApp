@@ -558,6 +558,11 @@
     <string name="set_share_chooser">Поделиться приложением</string>
     <string name="set_delete_account_full">Удалить аккаунт (с подтверждением)</string>
     <string name="set_about_text">ESPEAK Версия 1.4\nСделано с ❤️ для изучения испанского</string>
+    <string name="set_about_section">О приложении</string>
+    <string name="set_about_version">Версия</string>
+    <string name="set_about_source">Исходный код на GitHub</string>
+    <string name="set_about_licenses">Лицензии открытого ПО</string>
+    <string name="set_about_made_with_love">Сделано с ❤️ для изучения испанского</string>
     <string name="set_dlg_logout_title">Выход</string>
     <string name="set_dlg_logout_text">Выйти из аккаунта?</string>
     <string name="set_dlg_logout_confirm">Выйти</string>
