@@ -896,11 +896,11 @@ private fun WordRow(
     onSpeak: () -> Unit
 ) {
     val highlightColor = MaterialTheme.colorScheme.primary
-    Surface(
-        onClick    = onWordClick,
-        shape      = RoundedCornerShape(14.dp),
-        color      = MaterialTheme.colorScheme.surfaceContainer,
-        modifier   = Modifier.fillMaxWidth()
+    com.spanishapp.ui.components.PressableCard(
+        onClick = onWordClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Row(
             modifier          = Modifier.padding(start = 10.dp, end = 4.dp, top = 10.dp, bottom = 10.dp),
@@ -1106,11 +1106,11 @@ private fun ListCard(
     val color = DictionaryViewModel.LIST_COLORS[list.colorIndex % DictionaryViewModel.LIST_COLORS.size]
     var showMenu by remember { mutableStateOf(false) }
 
-    Surface(
+    com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
-        shape   = RoundedCornerShape(16.dp),
-        color   = MaterialTheme.colorScheme.surfaceContainer,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Row(
             modifier          = Modifier.padding(start = 16.dp, end = 4.dp, top = 14.dp, bottom = 14.dp),

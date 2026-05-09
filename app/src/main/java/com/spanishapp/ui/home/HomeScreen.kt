@@ -276,22 +276,13 @@ private fun CourseCard(
 
     val accentColor = if (isLocked) LockGray else course.colorStart
 
-    Box(
+    PressableCard(
+        onClick = if (isLocked) onPremiumClick else onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp)
-            .shadow(
-                elevation = if (isLocked) 2.dp else 8.dp,
-                shape = RoundedCornerShape(20.dp),
-                spotColor = course.colorEnd.copy(alpha = 0.4f)
-            )
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = if (isLocked) onPremiumClick else onClick
-            )
+            .padding(horizontal = 14.dp),
+        shape = RoundedCornerShape(20.dp),
+        shadowElevation = if (isLocked) 2.dp else 8.dp
     ) {
         Column {
             // ── Header — deep glossy gradient ───────────────────
