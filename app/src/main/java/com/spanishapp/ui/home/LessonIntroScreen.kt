@@ -38,13 +38,14 @@ fun LessonIntroScreen(
         return
     }
 
-    val lottieUrl = when (lesson.type) {
-        "vocab"   -> "https://lottie.host/575239a2-5b92-491c-99c5-84631383777f/2mInRjJ968.json"
-        "grammar" -> "https://lottie.host/8e3126f5-5730-4e3a-9653-5d51d1822c95/f4mH8i3K0I.json"
-        else      -> "https://lottie.host/640103b4-4e14-4112-9e9d-111162d08a0d/7VzD6iE1T2.json"
+    // Bundled raw assets — no network dependency, instant playback.
+    val lottieRes = when (lesson.type) {
+        "vocab"   -> com.spanishapp.R.raw.lottie_vocab
+        "grammar" -> com.spanishapp.R.raw.lottie_grammar
+        else      -> com.spanishapp.R.raw.lottie_quiz
     }
 
-    val composition by rememberLottieComposition(LottieCompositionSpec.Url(lottieUrl))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieRes))
     val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever)
 
     val accentColor = when (lesson.type) {
