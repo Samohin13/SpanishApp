@@ -149,13 +149,29 @@ class LibrosViewModel @Inject constructor(
     }
 
     private suspend fun findWithLemmatization(word: String): com.spanishapp.data.db.entity.WordEntity? {
-        // Try each candidate lemma until one is found in the DB
-        val candidates = SpanishLemmatizer.candidates(word)
-        for (candidate in candidates) {
-            val result = wordDao.findBySpanish(candidate)
-            if (result != null) return result
+        // 1. Exact match (already lowercase).
+        wordDao.findBySpanish(word)?.let { return it }
+
+        // 2. Many noun entries are stored WITH an article ("el nombre", "la casa").
+        //    Try each article prefix BEFORE falling back to verb lemmatization —
+        //    otherwise "nombre" would be wrongly resolved to the verb "nombrar"
+        //    (called "называть") instead of the noun "имя".
+        for (article in listOf("el ", "la ", "los ", "las ", "un ", "una ")) {
+            wordDao.findBySpanish(article + word)?.let { return it }
         }
-        // Final fallback: LIKE contains search (catches compound words, etc.)
+
+        // 3. Lemmatization candidates (verb infinitives, noun base forms, etc.).
+        //    Skip the first candidate — it's the same as `word`, already tried.
+        val candidates = SpanishLemmatizer.candidates(word).drop(1)
+        for (candidate in candidates) {
+            wordDao.findBySpanish(candidate)?.let { return it }
+            // Also try article-prefixed for any candidate that might be a noun.
+            for (article in listOf("el ", "la ")) {
+                wordDao.findBySpanish(article + candidate)?.let { return it }
+            }
+        }
+
+        // 4. Final fallback: LIKE contains search (catches compound words, etc.).
         return wordDao.search(word).first().firstOrNull()
     }
 
