@@ -72,7 +72,7 @@ fun RatingScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.surface,
-                tonalElevation = 2.dp
+                shadowElevation = 2.dp
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -129,7 +129,7 @@ private fun CategoryRow(item: CategoryRatingUi) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 1.dp
+        shadowElevation = 1.dp
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
