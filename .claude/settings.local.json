@@ -23,7 +23,10 @@
       "Bash(cat)",
       "Read(//tmp/**)",
       "Bash(chmod +x /tmp/verify.sh)",
-      "Bash(/tmp/verify.sh /tmp/sets_draft.txt)"
+      "Bash(/tmp/verify.sh /tmp/sets_draft.txt)",
+      "Bash(py)",
+      "Bash(git pull *)",
+      "Bash(python .tmp_validate.py)"
     ]
   },
   "sandbox": {

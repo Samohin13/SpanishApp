@@ -534,6 +534,113 @@ object FlashcardSetData {
                    "el community manager", "la red neuronal", "el hipervínculo", "el commit", "el debug",
                    "la copia espejo", "la latencia", "la web responsiva")))
 
+        // ════════════════════════════════════════════════════════
+        //  Дополнительные verb-only сеты (≥5 verb-сетов на уровень)
+        // ════════════════════════════════════════════════════════
+
+        add(FlashcardSet("a1_21_verbs_daily", "A1", 21, "Глаголы повседневных действий", "🚶",
+            listOf("escuchar", "mirar", "abrir", "cerrar", "beber",
+                   "jugar", "llegar", "salir", "entrar", "llevar",
+                   "tomar", "encontrar", "esperar", "buscar", "tocar")))
+
+        add(FlashcardSet("a1_22_verbs_motion", "A1", 22, "Глаголы движения", "🏃",
+            listOf("correr", "saltar", "sentarse", "levantarse", "quitarse",
+                   "traer", "andar", "nadar", "pasear", "bailar",
+                   "caer", "manejar", "coger", "nacer")))
+
+        add(FlashcardSet("a1_23_verbs_speech", "A1", 23, "Глаголы общения и речи", "💬",
+            listOf("preguntar", "responder", "llamar", "contar", "saludar",
+                   "disculpar", "agradecer", "presentar", "sonreír", "oír",
+                   "describir", "besar", "abrazar", "cantar")))
+
+        add(FlashcardSet("a1_24_verbs_home", "A1", 24, "Глаголы дома и быта", "🏠",
+            listOf("cocinar", "limpiar", "peinarse", "acostarse", "cepillarse",
+                   "despertar", "preparar", "poner", "quitar", "romper",
+                   "mezclar", "levantar", "olvidar", "recordar (memoria)")))
+
+        add(FlashcardSet("a2_21_verbs_routine", "A2", 21, "Возвратные глаголы рутины", "🪥",
+            listOf("despertarse", "dormirse", "afeitarse", "maquillarse", "prepararse",
+                   "ponerse", "relajarse", "equivocarse", "quejarse", "disculparse",
+                   "mudarse", "quedarse", "reunirse", "olvidarse", "enfadarse")))
+
+        add(FlashcardSet("a2_22_verbs_travel", "A2", 22, "Глаголы путешествий и движения", "✈️",
+            listOf("alquilar", "cancelar", "continuar", "girar", "cruzar",
+                   "parar", "aparecer", "desaparecer", "retirarse", "visitar",
+                   "navegar", "montar", "planear", "tardar", "avanzar")))
+
+        add(FlashcardSet("a2_23_verbs_kitchen", "A2", 23, "Глаголы кухни и приготовления", "🍳",
+            listOf("calentar", "cenar", "almorzar", "desayunar", "masticar",
+                   "tragar", "probar", "envolver", "colgar", "fotografiar",
+                   "dibujar", "pintar", "planchar", "barrer", "encender", "apagar")))
+
+        add(FlashcardSet("a2_24_verbs_money", "A2", 24, "Глаголы покупок и обмена", "💸",
+            listOf("cobrar", "devolver", "permitir", "prohibir", "incluir",
+                   "obtener", "guardar", "prometer", "firmar", "entregar",
+                   "enviar", "mandar", "repartir", "compartir", "separar", "dividir")))
+
+        add(FlashcardSet("a2_25_verbs_health", "A2", 25, "Глаголы здоровья и тела", "🩹",
+            listOf("recetar", "recuperarse", "enfermar", "asustarse", "toser",
+                   "sangrar", "sudar", "bostezar", "roncar", "caerse",
+                   "dañar", "esconderse", "salvar", "sobrevivir", "solucionar", "reparar")))
+
+        add(FlashcardSet("b1_21_verbs_thought", "B1", 21, "Глаголы мнений и размышлений", "🧐",
+            listOf("considerar", "suponer", "asegurar", "confesar", "confiar",
+                   "confundir", "observar", "contemplar", "plantear", "predecir",
+                   "preferir", "pretender", "revelar", "indicar", "mencionar",
+                   "informar", "expresar")))
+
+        add(FlashcardSet("b1_22_verbs_emotion", "B1", 22, "Глаголы эмоций и чувств", "💖",
+            listOf("aburrir", "animar", "divertirse", "enorgullecerse", "avergonzarse",
+                   "arrepentirse", "desanimar", "interesar", "sufrir", "temer",
+                   "preocuparse", "enfrentarse", "desafiar", "simular", "disimular",
+                   "engañar")))
+
+        add(FlashcardSet("b1_23_verbs_change", "B1", 23, "Глаголы перемен и развития", "🔄",
+            listOf("adaptar", "adaptarse", "convertirse", "desarrollarse", "envejecer",
+                   "madurar", "evolucionar", "renacer", "aflojar", "intensificar",
+                   "incrementar", "reforzar", "minimizar", "optimizar", "perfeccionar")))
+
+        add(FlashcardSet("b1_24_verbs_achieve", "B1", 24, "Глаголы достижений и попыток", "🎯",
+            listOf("conseguir", "lograr", "aprovechar", "luchar", "derrotar",
+                   "fracasar", "rechazar", "persistir", "perseverar", "destacar",
+                   "escalar", "escapar", "impedir", "huir", "aceptar")))
+
+        add(FlashcardSet("b1_25_verbs_business", "B1", 25, "Глаголы бизнеса и работы", "💼",
+            listOf("actuar", "controlar", "autorizar", "dimitir", "jubilarse",
+                   "programar", "planificar", "promover", "proponer", "proyectar",
+                   "gobernar", "ejercer", "ejecutar", "emprender", "invertir",
+                   "liquidar", "negarse")))
+
+        add(FlashcardSet("b2_21_verbs_analysis", "B2", 21, "Глаголы анализа и критики", "🔍",
+            listOf("cuestionar", "contrastar", "deliberar", "determinar", "esclarecer",
+                   "exponer", "ponderar", "puntualizar", "recalcar", "sopesar",
+                   "vislumbrar", "entrever", "ojear", "citar", "categorizar",
+                   "establecer")))
+
+        add(FlashcardSet("b2_22_verbs_legal", "B2", 22, "Глаголы юридического и делового языка", "⚖️",
+            listOf("abogar", "acatar", "adoptar", "adquirir", "exigir",
+                   "garantizar", "homologar", "implementar", "oficializar", "ratificar",
+                   "reclamar", "reivindicar", "restituir", "retribuir", "saldar",
+                   "suplir", "vedar")))
+
+        add(FlashcardSet("b2_23_verbs_science", "B2", 23, "Научные глаголы", "🔬",
+            listOf("circular", "coexistir", "emerger", "erupcionar", "expirar",
+                   "generar", "hallar", "implicar", "perdurar", "perecer",
+                   "quebrar", "refinar", "reformar", "rejuvenecer", "semejar",
+                   "asemejar", "subsistir")))
+
+        add(FlashcardSet("b2_24_verbs_modal", "B2", 24, "Сложные модальные и идиоматические", "🌀",
+            listOf("abstenerse", "aportar", "acoger", "afianzar", "afrontar",
+                   "alentar", "desertar", "descartar", "resignarse", "reconciliarse",
+                   "rememorar", "remunerar", "reconocer", "obsequiar", "operar",
+                   "pensionar")))
+
+        add(FlashcardSet("b2_25_verbs_abstract", "B2", 25, "Глаголы абстрактных действий", "🌐",
+            listOf("fomentar", "impulsar", "facilitar", "fortalecer", "maximizar",
+                   "inhabilitar", "estandarizar", "sofreír", "escalfar", "rehogar",
+                   "garabatear", "bocetar", "esquematizar", "ensamblar", "edificar",
+                   "derruir")))
+
     }
 
     fun byLevel(level: String): List<FlashcardSet> = all.filter { it.level == level }.sortedBy { it.order }
