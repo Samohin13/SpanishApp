@@ -44,10 +44,19 @@ import javax.inject.Inject
 
 // ── State ──────────────────────────────────────────────────────
 
+/** Three practice formats — randomized across the session for variety. */
+enum class PracticeMode {
+    MULTIPLE_CHOICE,   // ES word → pick the right RU translation
+    TYPING,            // RU word → assemble Spanish from scrambled letters
+    LISTENING          // audio (TTS) → pick the right RU translation
+}
+
 data class PracticeRound(
     val word: WordEntity,
-    val options: List<String>,   // 4 Russian translations
-    val correctIndex: Int
+    val mode: PracticeMode,
+    val options: List<String>,    // 4 RU options for MC/LISTENING (empty for TYPING)
+    val correctIndex: Int,        // index in options (for MC/LISTENING)
+    val scrambledLetters: List<Char> // for TYPING
 )
 
 data class PracticeState(
@@ -57,7 +66,10 @@ data class PracticeState(
     val currentIndex: Int = 0,
     val correctCount: Int = 0,
     val wrongCount: Int = 0,
-    val pickedIndex: Int? = null,    // user's last pick — locks UI for ~600ms before next
+    val pickedIndex: Int? = null,        // last MC/LISTENING pick
+    val typedAnswer: String = "",        // current typing buffer
+    val typingChecked: Boolean = false,  // user pressed Enter — show feedback
+    val typingCorrect: Boolean = false,
     val error: String? = null
 )
 
@@ -85,26 +97,46 @@ class PracticeViewModel @Inject constructor(
                 )
                 return@launch
             }
-            val rounds = weak.map { word ->
-                // Pick 3 distractors from the same level so the choice is plausible.
+            // Mix the three modes so the session feels varied. Cycle pattern:
+            // MC → TYPING → LISTENING → MC → TYPING → ... (deterministic, all
+            // weak words seen in every mode they're suitable for).
+            val modes = arrayOf(
+                PracticeMode.MULTIPLE_CHOICE,
+                PracticeMode.TYPING,
+                PracticeMode.LISTENING
+            )
+            val rounds = weak.mapIndexed { idx, word ->
+                val mode = modes[idx % modes.size]
                 val distractors = wordDao.randomDistractors(
                     level = word.level,
                     excludeId = word.id,
                     limit = 3
                 )
-                val all = (listOf(word) + distractors).map { it.russian }.shuffled()
+                val ruOptions = (listOf(word) + distractors).map { it.russian }.shuffled()
+                // Strip articles for typing mode so user types just "casa" not "la casa".
+                // TTS still reads the full form for LISTENING.
+                val target = stripArticle(word.spanish).lowercase()
+                val scrambled = target.toList().shuffled()
                 PracticeRound(
                     word = word,
-                    options = all,
-                    correctIndex = all.indexOf(word.russian)
+                    mode = mode,
+                    options = if (mode == PracticeMode.TYPING) emptyList() else ruOptions,
+                    correctIndex = if (mode == PracticeMode.TYPING) -1
+                                   else ruOptions.indexOf(word.russian),
+                    scrambledLetters = scrambled
                 )
-            }
+            }.shuffled()
             _state.value = PracticeState(
                 isLoading = false,
                 rounds = rounds
             )
         }
     }
+
+    private fun stripArticle(spanish: String): String =
+        spanish.trim().replace(
+            Regex("^(el|la|los|las|un|una)\\s+", RegexOption.IGNORE_CASE), ""
+        )
 
     fun speakCurrent() {
         val s = _state.value
@@ -132,6 +164,54 @@ class PracticeViewModel @Inject constructor(
         )
     }
 
+    /** TYPING mode: append a letter to the buffer. */
+    fun typeLetter(c: Char) {
+        val s = _state.value
+        if (s.typingChecked) return
+        _state.value = s.copy(typedAnswer = s.typedAnswer + c)
+    }
+
+    /** TYPING mode: pop last letter. */
+    fun typeBackspace() {
+        val s = _state.value
+        if (s.typingChecked || s.typedAnswer.isEmpty()) return
+        _state.value = s.copy(typedAnswer = s.typedAnswer.dropLast(1))
+    }
+
+    /** TYPING mode: clear buffer. */
+    fun typeClear() {
+        val s = _state.value
+        if (s.typingChecked) return
+        _state.value = s.copy(typedAnswer = "")
+    }
+
+    /** TYPING mode: submit answer for verification. */
+    fun typeCheck() {
+        val s = _state.value
+        if (s.typingChecked) return
+        val round = s.rounds.getOrNull(s.currentIndex) ?: return
+        if (s.typedAnswer.isBlank()) return
+        val target = stripArticle(round.word.spanish).lowercase().trim()
+        val typed = s.typedAnswer.lowercase().trim()
+        val correct = normalizeSpanish(typed) == normalizeSpanish(target)
+
+        viewModelScope.launch {
+            val quality = if (correct) 4 else 1
+            wordDao.update(SM2.review(round.word, quality))
+        }
+        _state.value = s.copy(
+            typingChecked = true,
+            typingCorrect = correct,
+            correctCount = s.correctCount + if (correct) 1 else 0,
+            wrongCount = s.wrongCount + if (!correct) 1 else 0
+        )
+    }
+
+    /** Loose comparison: ignore accents so "papa" == "papá". */
+    private fun normalizeSpanish(s: String): String =
+        s.replace('á', 'a').replace('é', 'e').replace('í', 'i')
+         .replace('ó', 'o').replace('ú', 'u').replace('ü', 'u')
+
     fun next() {
         val s = _state.value
         val nextIdx = s.currentIndex + 1
@@ -139,6 +219,9 @@ class PracticeViewModel @Inject constructor(
         _state.value = s.copy(
             currentIndex = nextIdx,
             pickedIndex = null,
+            typedAnswer = "",
+            typingChecked = false,
+            typingCorrect = false,
             isFinished = finished
         )
     }
@@ -199,23 +282,39 @@ fun PracticeScreen(
                 else -> {
                     val round = state.rounds.getOrNull(state.currentIndex)
                     if (round != null) {
-                        RoundView(
-                            round = round,
-                            picked = state.pickedIndex,
-                            onPick = { idx ->
-                                haptic.performHapticFeedback(
-                                    if (idx == round.correctIndex)
-                                        androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress
-                                    else
-                                        androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove
-                                )
-                                vm.pick(idx)
-                                // Auto-advance after a short pause so the user
-                                // sees the feedback color.
-                            },
-                            onSpeak = { vm.speakCurrent() },
-                            onNext = { vm.next() }
-                        )
+                        when (round.mode) {
+                            PracticeMode.MULTIPLE_CHOICE,
+                            PracticeMode.LISTENING -> ChoiceRoundView(
+                                round = round,
+                                picked = state.pickedIndex,
+                                onPick = { idx ->
+                                    haptic.performHapticFeedback(
+                                        if (idx == round.correctIndex)
+                                            androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress
+                                        else
+                                            androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove
+                                    )
+                                    vm.pick(idx)
+                                },
+                                onSpeak = { vm.speakCurrent() },
+                                onNext = { vm.next() }
+                            )
+                            PracticeMode.TYPING -> TypingRoundView(
+                                round = round,
+                                typed = state.typedAnswer,
+                                checked = state.typingChecked,
+                                isCorrect = state.typingCorrect,
+                                onLetter = { vm.typeLetter(it) },
+                                onBackspace = { vm.typeBackspace() },
+                                onClear = { vm.typeClear() },
+                                onCheck = {
+                                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    vm.typeCheck()
+                                },
+                                onNext = { vm.next() },
+                                onSpeak = { vm.speakCurrent() }
+                            )
+                        }
                     }
                 }
             }
@@ -224,35 +323,74 @@ fun PracticeScreen(
 }
 
 @Composable
-private fun RoundView(
+private fun ChoiceRoundView(
     round: PracticeRound,
     picked: Int?,
     onPick: (Int) -> Unit,
     onSpeak: () -> Unit,
     onNext: () -> Unit
 ) {
+    val isListening = round.mode == PracticeMode.LISTENING
+    // Auto-play TTS once when a LISTENING round opens.
+    LaunchedEffect(round.word.id, isListening) {
+        if (isListening) onSpeak()
+    }
+
     Column(
         modifier = Modifier.fillMaxSize().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.weight(0.6f))
 
-        // Spanish word + speaker
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        if (isListening) {
+            // LISTENING — hide the word, show only a big play button.
             Text(
-                round.word.spanish,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
+                "🎧 Послушай и выбери перевод",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(Modifier.width(10.dp))
-            IconButton(onClick = onSpeak, modifier = Modifier.size(40.dp)) {
+            Spacer(Modifier.height(20.dp))
+            IconButton(
+                onClick = onSpeak,
+                modifier = Modifier
+                    .size(96.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+            ) {
                 Icon(
                     Icons.Default.VolumeUp, null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(28.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(48.dp)
                 )
+            }
+            // Only reveal the actual word AFTER the user picks.
+            if (picked != null) {
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    round.word.spanish,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        } else {
+            // MULTIPLE_CHOICE — show the Spanish word + speaker for optional play.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    round.word.spanish,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.width(10.dp))
+                IconButton(onClick = onSpeak, modifier = Modifier.size(40.dp)) {
+                    Icon(
+                        Icons.Default.VolumeUp, null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
             }
         }
         if (round.word.example.isNotBlank() && picked != null) {
@@ -414,6 +552,174 @@ private fun FinishedView(
             TextButton(onClick = onExit) {
                 Text("Назад", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
+        }
+    }
+}
+
+// ── Typing mode (assemble Spanish from scrambled letters) ──────
+
+@Composable
+private fun TypingRoundView(
+    round: PracticeRound,
+    typed: String,
+    checked: Boolean,
+    isCorrect: Boolean,
+    onLetter: (Char) -> Unit,
+    onBackspace: () -> Unit,
+    onClear: () -> Unit,
+    onCheck: () -> Unit,
+    onNext: () -> Unit,
+    onSpeak: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.height(20.dp))
+
+        Text(
+            "✏️ Собери испанское слово из букв",
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(10.dp))
+        Text(
+            round.word.russian,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.weight(0.5f))
+
+        // Typed buffer with feedback color after check.
+        val bufferColor = when {
+            !checked  -> MaterialTheme.colorScheme.surface
+            isCorrect -> Color(0xFF1B5E20)
+            else      -> Color(0xFF8B0000)
+        }
+        Surface(
+            modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
+            shape = RoundedCornerShape(14.dp),
+            color = bufferColor,
+            border = androidx.compose.foundation.BorderStroke(
+                1.5.dp,
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+            )
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    typed.ifEmpty { "—" },
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (checked || typed.isNotEmpty()) Color.White
+                            else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // After check: show correct answer if wrong + speaker.
+        if (checked && !isCorrect) {
+            Spacer(Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Правильно: ${round.word.spanish}",
+                    fontSize = 15.sp,
+                    color = Color(0xFF4CAF50),
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.width(8.dp))
+                IconButton(onClick = onSpeak, modifier = Modifier.size(28.dp)) {
+                    Icon(
+                        Icons.Default.VolumeUp, null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.weight(0.5f))
+
+        // Letter keys grid — 5 per row.
+        if (!checked) {
+            val rows = round.scrambledLetters.chunked(5)
+            rows.forEach { rowChars ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
+                ) {
+                    rowChars.forEach { c ->
+                        LetterKey(c) { onLetter(c) }
+                    }
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+
+            // Action row: Clear / Backspace / Check
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = onClear,
+                    modifier = Modifier.weight(1f).height(52.dp),
+                    shape = RoundedCornerShape(14.dp)
+                ) { Text("Очистить") }
+                OutlinedButton(
+                    onClick = onBackspace,
+                    modifier = Modifier.weight(1f).height(52.dp),
+                    shape = RoundedCornerShape(14.dp)
+                ) { Text("⌫") }
+                Button(
+                    onClick = onCheck,
+                    enabled = typed.isNotBlank(),
+                    modifier = Modifier.weight(1.4f).height(52.dp),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Text("Проверить", fontWeight = FontWeight.Bold)
+                }
+            }
+        } else {
+            Button(
+                onClick = onNext,
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    if (isCorrect) "Верно — далее →" else "Запомню — далее →",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LetterKey(c: Char, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.size(width = 52.dp, height = 56.dp),
+        shape = RoundedCornerShape(10.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+        ),
+        shadowElevation = 1.dp
+    ) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            Text(
+                c.toString(),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
