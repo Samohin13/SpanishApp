@@ -429,22 +429,26 @@ fun SettingsScreen(
                         vm.toggleReminders(context, true)
                     }
                 }
+                var showTimePicker by remember { mutableStateOf(false) }
                 if (reminders) {
                     SettingsItem(
                         Icons.Default.AccessTime,
                         stringResource(R.string.set_reminder_time),
                         "%02d:%02d".format(reminderHour, reminderMinute)
                     ) {
-                        // Системный TimePickerDialog — без зависимостей и без
-                        // экспериментальных Material3 API.
-                        android.app.TimePickerDialog(
-                            context,
-                            { _, h, m -> vm.setReminderTime(context, h, m) },
-                            reminderHour,
-                            reminderMinute,
-                            true
-                        ).show()
+                        showTimePicker = true
                     }
+                }
+                if (showTimePicker) {
+                    TimePickerSheet(
+                        initialHour = reminderHour,
+                        initialMinute = reminderMinute,
+                        onConfirm = { h, m ->
+                            vm.setReminderTime(context, h, m)
+                            showTimePicker = false
+                        },
+                        onDismiss = { showTimePicker = false }
+                    )
                 }
             }
 
@@ -824,5 +828,44 @@ fun SettingsSwitchItem(icon: ImageVector, title: String, checked: Boolean, onChe
         Text(title, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
         Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
+}
+
+/** Material3 time picker wrapped in an AlertDialog — fully theme-aware. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerSheet(
+    initialHour: Int,
+    initialMinute: Int,
+    onConfirm: (hour: Int, minute: Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val state = rememberTimePickerState(
+        initialHour = initialHour,
+        initialMinute = initialMinute,
+        is24Hour = true
+    )
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = { onConfirm(state.hour, state.minute) }) {
+                Text(stringResource(R.string.btn_save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.btn_cancel))
+            }
+        },
+        title = { Text(stringResource(R.string.set_reminder_time)) },
+        text = {
+            // Center the time picker so it fits on small screens.
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                TimePicker(state = state)
+            }
+        }
+    )
 }
 

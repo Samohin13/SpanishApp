@@ -73,7 +73,7 @@ fun SettingsVoiceScreen(
                 }
             )
         },
-        containerColor = LightBg
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -260,7 +260,7 @@ private fun VoiceCard(
     }
     Surface(
         shape    = RoundedCornerShape(14.dp),
-        color    = if (isSelected) Purple.copy(alpha = 0.07f) else Color.White,
+        color    = if (isSelected) Purple.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surface,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onSelect)
