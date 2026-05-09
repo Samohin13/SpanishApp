@@ -287,6 +287,15 @@ object Navigation {
             composable("grammar") { GrammarScreen(navController) }
 
             // ── ИИ-чат ───────────────────────────────────────
+            // Theme picker (replaces direct entry into AI chat).
+            composable("ai_chat_sessions") {
+                com.spanishapp.ui.chat.ChatSessionsScreen(navController)
+            }
+            composable(
+                "ai_chat?sessionId={sessionId}",
+                arguments = listOf(navArgument("sessionId") { defaultValue = "default" })
+            ) { AiChatScreen(navController) }
+            // Backward-compat: legacy "ai_chat" without args still opens default session.
             composable("ai_chat") { AiChatScreen(navController) }
 
             // ── Произношение ──────────────────────────────────

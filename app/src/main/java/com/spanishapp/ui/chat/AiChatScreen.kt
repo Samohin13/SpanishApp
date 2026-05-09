@@ -89,10 +89,13 @@ class AiChatViewModel @Inject constructor(
     private val repo: AiChatRepository,
     private val tts: SpanishTts,
     private val stt: com.spanishapp.service.SpanishSpeechRecognizer,
-    @ApplicationContext private val appContext: Context
+    @ApplicationContext private val appContext: Context,
+    savedStateHandle: androidx.lifecycle.SavedStateHandle
 ) : ViewModel() {
 
-    private val sessionId = "default"
+    /** Read from nav arg `sessionId={...}`. Defaults to free chat. */
+    val sessionId: String = savedStateHandle.get<String>("sessionId") ?: "default"
+    val theme: ChatSessionTheme = ChatSessions.byId(sessionId) ?: ChatSessions.all.first()
 
     val messages: StateFlow<List<ChatMessageEntity>> = repo.getMessages(sessionId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -118,7 +121,7 @@ class AiChatViewModel @Inject constructor(
         _error.value = null
         viewModelScope.launch {
             try {
-                repo.streamMessage(text.trim(), sessionId).collect { progressive ->
+                repo.streamMessage(text.trim(), sessionId, theme.systemPromptExtra).collect { progressive ->
                     // Strip the trailing CORRECTIONS_JSON marker for nicer display
                     // while streaming (it'll be parsed cleanly when persisted).
                     val display = progressive.substringBefore("CORRECTIONS_JSON:")
@@ -235,12 +238,21 @@ fun AiChatScreen(
                                 .background(MaterialTheme.colorScheme.primaryContainer),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("✨", fontSize = 18.sp)
+                            // Theme emoji (e.g., ✈️ for travel) instead of generic ✨.
+                            Text(vm.theme.emoji, fontSize = 18.sp)
                         }
                         Spacer(Modifier.width(12.dp))
                         Column {
-                            Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_assistant_name), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_status_online), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                            Text(
+                                vm.theme.title,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_status_online),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 },

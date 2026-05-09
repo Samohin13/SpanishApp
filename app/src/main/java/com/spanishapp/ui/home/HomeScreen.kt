@@ -229,7 +229,7 @@ fun HomeScreen(
         // ── AI-Chat FAB ─────────────────────────────────────────
         // Spanish-themed bull icon (game-icons:taurus, CC-BY 3.0).
         FloatingActionButton(
-            onClick = { navController.navigate("ai_chat") },
+            onClick = { navController.navigate("ai_chat_sessions") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 20.dp, bottom = 20.dp)

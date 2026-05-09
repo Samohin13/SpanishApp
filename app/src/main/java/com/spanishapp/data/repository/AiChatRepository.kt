@@ -154,7 +154,8 @@ class AiChatRepository @Inject constructor(
      */
     fun streamMessage(
         userText: String,
-        sessionId: String = "default"
+        sessionId: String = "default",
+        extraSystemPrompt: String = ""
     ): Flow<String> = flow {
         // Save user message first so it appears in UI immediately.
         chatMessageDao.insert(
@@ -162,7 +163,7 @@ class AiChatRepository @Inject constructor(
         )
 
         val history = chatMessageDao.getSessionOnce(sessionId).takeLast(20)
-        val body = buildGeminiRequest(history)
+        val body = buildGeminiRequest(history, extraSystemPrompt = extraSystemPrompt)
 
         val request = Request.Builder()
             .url(streamUrl())
@@ -283,14 +284,18 @@ class AiChatRepository @Inject constructor(
     // ── Build Gemini REST body ────────────────────────────────
     private fun buildGeminiRequest(
         messages: List<ChatMessageEntity>,
-        withSystem: Boolean = true
+        withSystem: Boolean = true,
+        extraSystemPrompt: String = ""
     ): RequestBody {
         val json = buildJsonObject {
-            // System instruction (Gemini 1.5 supports it)
+            // System instruction (Gemini 1.5 supports it). Optional theme-specific
+            // prompt is appended so e.g. "Travel" mode adds airport scenarios.
             if (withSystem) {
+                val fullPrompt = if (extraSystemPrompt.isBlank()) SYSTEM_PROMPT
+                                 else "$SYSTEM_PROMPT\n\n$extraSystemPrompt"
                 putJsonObject("system_instruction") {
                     putJsonObject("parts") {
-                        put("text", SYSTEM_PROMPT)
+                        put("text", fullPrompt)
                     }
                 }
             }
