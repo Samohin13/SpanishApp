@@ -18,6 +18,7 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -81,6 +84,7 @@ private fun parseCorrections(json: String): List<ChatCorrection> {
 class AiChatViewModel @Inject constructor(
     private val repo: AiChatRepository,
     private val tts: SpanishTts,
+    private val stt: com.spanishapp.service.SpanishSpeechRecognizer,
     @ApplicationContext private val appContext: Context
 ) : ViewModel() {
 
@@ -135,6 +139,27 @@ class AiChatViewModel @Inject constructor(
 
     fun newChat() = viewModelScope.launch { repo.clearSession(sessionId) }
 
+    val isListening: StateFlow<Boolean> = stt.isListening
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    /**
+     * Records a single Spanish utterance via [SpanishSpeechRecognizer].
+     * On success, emits the recognized text via [onResult] so the caller
+     * can drop it into the input field. Errors are surfaced through [error].
+     */
+    fun startVoice(onResult: (String) -> Unit) {
+        if (isListening.value) return
+        viewModelScope.launch {
+            when (val r = stt.listenOnce()) {
+                is com.spanishapp.service.SpeechResult.Success -> onResult(r.text)
+                is com.spanishapp.service.SpeechResult.Error -> {
+                    if (!r.isSilence) _error.value = r.message
+                }
+                is com.spanishapp.service.SpeechResult.Cancelled -> { /* user cancelled */ }
+            }
+        }
+    }
+
     fun speak(text: String) = viewModelScope.launch { tts.speak(text) }
 }
 
@@ -150,8 +175,28 @@ fun AiChatScreen(
     val isSending      by vm.isSending.collectAsState()
     val streamingText  by vm.streamingText.collectAsState()
     val error          by vm.error.collectAsState()
+    var showClearDialog by remember { mutableStateOf(false) }
+    val isListening by vm.isListening.collectAsState()
+    val context = LocalContext.current
     var input     by remember { mutableStateOf("") }
     val haptic    = com.spanishapp.ui.components.rememberCheckedHaptic()
+
+    // RECORD_AUDIO permission flow for the mic button.
+    val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) vm.startVoice { recognized -> input = recognized }
+    }
+    fun launchVoiceInput() {
+        val granted = androidx.core.content.ContextCompat.checkSelfPermission(
+            context, android.Manifest.permission.RECORD_AUDIO
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (granted) {
+            vm.startVoice { recognized -> input = recognized }
+        } else {
+            micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+        }
+    }
 
     val listState = rememberLazyListState()
 
@@ -197,10 +242,13 @@ fun AiChatScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { 
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        vm.newChat() 
-                    }) {
+                    IconButton(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            // Only ask to confirm if there's actually a history to wipe.
+                            if (messages.isEmpty()) vm.newChat() else showClearDialog = true
+                        }
+                    ) {
                         Icon(Icons.Default.AddComment, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
@@ -264,6 +312,20 @@ fun AiChatScreen(
                         } else if (isSending) {
                             item("typing") { TypingIndicator() }
                         }
+
+                        // Quick-replies under the most recent assistant message
+                        // (only when not currently streaming and last msg is from AI).
+                        val lastIsAssistant = messages.lastOrNull()?.role == "assistant"
+                        if (lastIsAssistant && !isSending && streamingText.isEmpty()) {
+                            item("quick_replies") {
+                                QuickReplies(
+                                    onPick = { preset ->
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        vm.send(preset)
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -312,12 +374,40 @@ fun AiChatScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .padding(horizontal = 12.dp, vertical = 12.dp)
                         .navigationBarsPadding()
                         .imePadding(),
                     verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    // ── Mic button — voice input via SpanishSpeechRecognizer.
+                    val micPulse by androidx.compose.animation.core.rememberInfiniteTransition(label = "mic_pulse").animateFloat(
+                        initialValue = 1f,
+                        targetValue = 1.18f,
+                        animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+                            animation = androidx.compose.animation.core.tween(550, easing = androidx.compose.animation.core.LinearEasing),
+                            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
+                        ),
+                        label = "mic_pulse_anim"
+                    )
+                    IconButton(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            launchVoiceInput()
+                        },
+                        enabled = !isSending && !isListening,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .scale(if (isListening) micPulse else 1f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Mic,
+                            contentDescription = stringResource(com.spanishapp.R.string.chat_voice_input_cd),
+                            tint = if (isListening) Color(0xFFFF3D00) else MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+
                     // Animated gradient border around the text field.
                     Box(
                         modifier = Modifier
@@ -420,6 +510,30 @@ fun AiChatScreen(
                 }
             }
         }
+    }
+
+    if (showClearDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearDialog = false },
+            title = { Text(stringResource(com.spanishapp.R.string.chat_clear_title)) },
+            text  = { Text(stringResource(com.spanishapp.R.string.chat_clear_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.newChat()
+                    showClearDialog = false
+                }) {
+                    Text(
+                        stringResource(com.spanishapp.R.string.chat_clear_confirm),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearDialog = false }) {
+                    Text(stringResource(com.spanishapp.R.string.btn_cancel))
+                }
+            }
+        )
     }
 }
 
@@ -673,6 +787,36 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
         }
 
         Spacer(Modifier.height(16.dp))
+    }
+}
+
+/**
+ * Quick-reply chips that appear under the most recent AI message.
+ * Each preset is sent verbatim — Gemini interprets them in the current
+ * conversation context, so "Объясни проще" automatically refers to the
+ * preceding assistant message.
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun QuickReplies(onPick: (String) -> Unit) {
+    val presets = listOf(
+        "💡 " to stringResource(com.spanishapp.R.string.chat_quick_simpler),
+        "📝 " to stringResource(com.spanishapp.R.string.chat_quick_example),
+        "🔍 " to stringResource(com.spanishapp.R.string.chat_quick_check),
+        "🎯 " to stringResource(com.spanishapp.R.string.chat_quick_practice)
+    )
+    androidx.compose.foundation.layout.FlowRow(
+        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        presets.forEach { (emoji, text) ->
+            SuggestionChip(
+                onClick = { onPick(text) },
+                label = { Text("$emoji$text", fontSize = 13.sp) },
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.padding(vertical = 2.dp)
+            )
+        }
     }
 }
 
