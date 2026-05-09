@@ -273,7 +273,9 @@ private fun SessionBody(
         val scope = rememberCoroutineScope()
         val offsetX = remember { Animatable(0f) }
         val offsetY = remember { Animatable(0f) }
-        val swipeThreshold = with(LocalDensity.current) { 120.dp.toPx() }
+        // Lower threshold (was 120dp) so even small drags from the edge trigger
+        // an answer — important for one-handed thumb reach.
+        val swipeThreshold = with(LocalDensity.current) { 80.dp.toPx() }
 
         // При смене карточки — мгновенно сбрасываем offset, новая карточка
         // начинает с центра.
@@ -282,18 +284,15 @@ private fun SessionBody(
             offsetY.snapTo(0f)
         }
 
+        // OUTER wrapper captures swipes across the FULL width/height of the
+        // session area — not just the card surface. Lets one-handed users start
+        // a drag from anywhere on the screen edges and still trigger the action,
+        // mirror-comfortable for both right- and left-handed grips.
         Box(
             modifier = Modifier
-                .graphicsLayer {
-                    translationX = offsetX.value
-                    translationY = offsetY.value
-                    rotationZ = (offsetX.value / 30f).coerceIn(-15f, 15f)
-                    alpha = (1f - (kotlin.math.abs(offsetX.value) / 800f)).coerceIn(0.4f, 1f)
-                }
+                .fillMaxWidth()
+                .weight(2.5f)
                 .pointerInput(state.currentIndex) {
-                    // Swipe gestures work on BOTH sides — user can commit answer
-                    // without ever flipping (Tinder-style). Tap-to-flip stays
-                    // available for "I want to peek at the answer" moments.
                     detectDragGestures(
                         onDragEnd = {
                             val xPx = offsetX.value
@@ -305,7 +304,6 @@ private fun SessionBody(
                                 else                               -> null
                             }
                             if (ans != null) {
-                                // Анимация «улёта» карточки.
                                 scope.launch {
                                     val targetX = if (ans == ReviewButton.EASY) xPx else xPx * 4f
                                     val targetY = if (ans == ReviewButton.EASY) -1500f else yPx
@@ -314,7 +312,6 @@ private fun SessionBody(
                                     onAnswer(ans)
                                 }
                             } else {
-                                // Возвращаем карточку обратно в центр.
                                 scope.launch { offsetX.animateTo(0f, spring()) }
                                 scope.launch { offsetY.animateTo(0f, spring()) }
                             }
@@ -324,19 +321,29 @@ private fun SessionBody(
                         scope.launch { offsetX.snapTo(offsetX.value + drag.x) }
                         scope.launch { offsetY.snapTo(offsetY.value + drag.y.coerceAtMost(0f)) }
                     }
-                }
+                },
+            contentAlignment = Alignment.Center
         ) {
-            FlipCard(
-                word = word,
-                direction = state.currentDirection,
-                showBack = state.showBack,
-                onFlip = onFlip,
-                onSpeak = onSpeak,
-                onSpeakExample = onSpeakExample
-            )
+            // INNER box only carries the visual transform — keeps card visually
+            // attached to the finger while the gesture is read from the OUTER area.
+            Box(
+                modifier = Modifier.graphicsLayer {
+                    translationX = offsetX.value
+                    translationY = offsetY.value
+                    rotationZ = (offsetX.value / 30f).coerceIn(-15f, 15f)
+                    alpha = (1f - (kotlin.math.abs(offsetX.value) / 800f)).coerceIn(0.4f, 1f)
+                }
+            ) {
+                FlipCard(
+                    word = word,
+                    direction = state.currentDirection,
+                    showBack = state.showBack,
+                    onFlip = onFlip,
+                    onSpeak = onSpeak,
+                    onSpeakExample = onSpeakExample
+                )
+            }
         }
-
-        Spacer(Modifier.weight(1f))
 
         // Permanent swipe legend — works on both front and back of the card.
         // User can tap to flip & peek, but the primary interaction is the swipe.

@@ -26,7 +26,8 @@
       "Bash(/tmp/verify.sh /tmp/sets_draft.txt)",
       "Bash(py)",
       "Bash(git pull *)",
-      "Bash(python .tmp_validate.py)"
+      "Bash(python .tmp_validate.py)",
+      "Bash(awk ' *)"
     ]
   },
   "sandbox": {
