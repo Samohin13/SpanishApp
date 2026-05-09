@@ -766,4 +766,14 @@
     <string name="chat_cap_stream_title">Печатает в реальном времени</string>
     <string name="chat_cap_stream_desc">Текст появляется по словам, не нужно ждать весь ответ.</string>
     <string name="chat_try_label">Попробуй спросить:</string>
+
+    <!-- Chat: clear / quick replies / voice input -->
+    <string name="chat_clear_title">Очистить чат?</string>
+    <string name="chat_clear_text">История сообщений будет удалена. Это действие нельзя отменить.</string>
+    <string name="chat_clear_confirm">Очистить</string>
+    <string name="chat_quick_simpler">Объясни проще</string>
+    <string name="chat_quick_example">Дай пример</string>
+    <string name="chat_quick_check">Проверь грамматику</string>
+    <string name="chat_quick_practice">Давай попрактикуем</string>
+    <string name="chat_voice_input_cd">Голосовой ввод</string>
 </resources>

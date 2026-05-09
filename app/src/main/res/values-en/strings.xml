@@ -731,4 +731,14 @@
     <string name="chat_cap_stream_title">Streams in real time</string>
     <string name="chat_cap_stream_desc">Text appears word by word — no waiting for the full reply.</string>
     <string name="chat_try_label">Try asking:</string>
+
+    <!-- Chat: clear / quick replies / voice input -->
+    <string name="chat_clear_title">Clear chat?</string>
+    <string name="chat_clear_text">All messages will be deleted. This can\'t be undone.</string>
+    <string name="chat_clear_confirm">Clear</string>
+    <string name="chat_quick_simpler">Explain simpler</string>
+    <string name="chat_quick_example">Give an example</string>
+    <string name="chat_quick_check">Check grammar</string>
+    <string name="chat_quick_practice">Let\'s practice</string>
+    <string name="chat_voice_input_cd">Voice input</string>
 </resources>
