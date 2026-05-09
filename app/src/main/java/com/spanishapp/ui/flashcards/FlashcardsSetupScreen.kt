@@ -136,7 +136,7 @@ fun FlashcardsSetupScreen(
     val catCount  = catProgress.size.coerceAtLeast(1) - 1  // subtract "all"
 
     Scaffold(
-        containerColor = BgGray,
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost   = { SnackbarHost(snackbarHost) }
     ) { padding ->
         LazyColumn(
@@ -159,13 +159,13 @@ fun FlashcardsSetupScreen(
                         "Tarjetas",
                         fontSize   = 26.sp,
                         fontWeight = FontWeight.Bold,
-                        color      = TextMain
+                        color      = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
                         "Учи новые слова по уровням",
                         fontSize = 15.sp,
-                        color    = TextGray
+                        color    = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -209,8 +209,8 @@ fun FlashcardsSetupScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     shape  = RoundedCornerShape(16.dp),
-                    color  = Color.White,
-                    border = BorderStroke(1.dp, CardBorder)
+                    color  = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
                 ) {
                     Row(
                         modifier          = Modifier.padding(16.dp),
@@ -237,12 +237,12 @@ fun FlashcardsSetupScreen(
                                 "Уровень $selectedLevel",
                                 fontSize   = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color      = TextMain
+                                color      = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 "$catCount категорий",
                                 fontSize = 13.sp,
-                                color    = TextGray
+                                color    = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                         // Level progress
@@ -285,13 +285,17 @@ private fun LevelTab(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val unselectedBg = MaterialTheme.colorScheme.surface
+    val unselectedText = MaterialTheme.colorScheme.onSurfaceVariant
+    val unselectedBorder = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+
     val bgColor by animateColorAsState(
-        targetValue   = if (isSelected) Purple else Color.White,
+        targetValue   = if (isSelected) Purple else unselectedBg,
         animationSpec = tween(200),
         label         = "level_bg"
     )
     val textColor by animateColorAsState(
-        targetValue   = if (isSelected) Color.White else TextGray,
+        targetValue   = if (isSelected) Color.White else unselectedText,
         animationSpec = tween(200),
         label         = "level_text"
     )
@@ -301,7 +305,7 @@ private fun LevelTab(
         modifier = modifier.height(44.dp),
         shape    = RoundedCornerShape(12.dp),
         color    = bgColor,
-        border   = BorderStroke(1.dp, if (isSelected) Purple else CardBorder)
+        border   = BorderStroke(1.dp, if (isSelected) Purple else unselectedBorder)
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Row(
@@ -312,7 +316,7 @@ private fun LevelTab(
                     Icon(
                         Icons.Default.Lock,
                         contentDescription = null,
-                        tint     = if (isSelected) Color.White else TextGray,
+                        tint     = if (isSelected) Color.White else unselectedText,
                         modifier = Modifier.size(12.dp)
                     )
                 }
@@ -343,8 +347,8 @@ private fun CategoryRow(cat: CategoryProgress, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape  = RoundedCornerShape(16.dp),
-        color  = Color.White,
-        border = BorderStroke(1.dp, CardBorder)
+        color  = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
             Row(
@@ -363,13 +367,13 @@ private fun CategoryRow(cat: CategoryProgress, onClick: () -> Unit) {
                     modifier   = Modifier.weight(1f),
                     fontSize   = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color      = TextMain
+                    color      = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     "${cat.mastered}/${cat.total}",
                     fontSize   = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color      = if (cat.ratio >= 1f) Purple else TextGray
+                    color      = if (cat.ratio >= 1f) Purple else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.width(8.dp))
                 Icon(
