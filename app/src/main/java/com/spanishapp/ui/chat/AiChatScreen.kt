@@ -290,6 +290,10 @@ fun AiChatScreen(
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                     vm.speak(msg.content)
                                 },
+                                onSpeakWord = { word ->
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    vm.speak(word)
+                                },
                                 modifier = Modifier.animateItem(
                                     fadeInSpec = tween(280),
                                     placementSpec = spring(
@@ -314,6 +318,10 @@ fun AiChatScreen(
                                         correctionJson = ""
                                     ),
                                     onSpeak = { /* no-op while streaming */ },
+                                    onSpeakWord = { word ->
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        vm.speak(word)
+                                    },
                                     modifier = Modifier
                                 )
                             }
@@ -553,29 +561,40 @@ fun AiChatScreen(
  * highlights [translations in brackets] with the brand color.
  * Strips the literal asterisks/brackets from the visible text.
  */
-private fun renderChatMarkdown(text: String, accentColor: Color): AnnotatedString =
+/** Tag attached to **bold** spans so we can look them up on tap and play TTS. */
+private const val SPEAK_TAG = "speak"
+
+private fun renderChatMarkdown(
+    text: String,
+    accentColor: Color,
+    bracketColor: Color
+): AnnotatedString =
     buildAnnotatedString {
         var i = 0
         while (i < text.length) {
             val rest = text.substring(i)
-            // **bold**
+            // **bold** — Spanish words/phrases. Mark with annotation for tap-to-speak.
             val boldMatch = Regex("""^\*\*(.+?)\*\*""").find(rest)
             if (boldMatch != null) {
-                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(boldMatch.groupValues[1])
+                val word = boldMatch.groupValues[1]
+                pushStringAnnotation(tag = SPEAK_TAG, annotation = word)
+                withStyle(
+                    SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = accentColor,
+                        textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline
+                    )
+                ) {
+                    append(word)
                 }
+                pop()
                 i += boldMatch.value.length
                 continue
             }
-            // [translation]
+            // [translation] — Russian gloss in brackets, slightly muted.
             val brMatch = Regex("""^\[([^\[\]]+)\]""").find(rest)
             if (brMatch != null) {
-                withStyle(
-                    SpanStyle(
-                        color = accentColor,
-                        fontWeight = FontWeight.Medium
-                    )
-                ) {
+                withStyle(SpanStyle(color = bracketColor, fontSize = 14.sp)) {
                     append("[${brMatch.groupValues[1]}]")
                 }
                 i += brMatch.value.length
@@ -590,6 +609,7 @@ private fun renderChatMarkdown(text: String, accentColor: Color): AnnotatedStrin
 private fun ChatBubble(
     message: ChatMessageEntity,
     onSpeak: () -> Unit,
+    onSpeakWord: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val isUser = message.role == "user"
@@ -635,16 +655,33 @@ private fun ChatBubble(
                 modifier = Modifier.weight(1f, fill = false)
             ) {
                 Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
-                    Text(
-                        text = if (isUser) {
-                            AnnotatedString(message.content)
-                        } else {
-                            renderChatMarkdown(message.content, MaterialTheme.colorScheme.primary)
-                        },
-                        fontSize = 16.sp,
-                        lineHeight = 22.sp,
-                        color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-                    )
+                    if (isUser) {
+                        Text(
+                            text = AnnotatedString(message.content),
+                            fontSize = 16.sp,
+                            lineHeight = 22.sp,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        // AI message — bold Spanish words are tappable for TTS.
+                        val accent = MaterialTheme.colorScheme.primary
+                        val onSurfaceMuted = MaterialTheme.colorScheme.onSurfaceVariant
+                        val annotated = remember(message.content, accent, onSurfaceMuted) {
+                            renderChatMarkdown(message.content, accent, onSurfaceMuted)
+                        }
+                        androidx.compose.foundation.text.ClickableText(
+                            text = annotated,
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontSize = 16.sp,
+                                lineHeight = 22.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            ),
+                            onClick = { offset ->
+                                annotated.getStringAnnotations(SPEAK_TAG, offset, offset)
+                                    .firstOrNull()?.let { ann -> onSpeakWord(ann.item) }
+                            }
+                        )
+                    }
                 }
             }
         }
