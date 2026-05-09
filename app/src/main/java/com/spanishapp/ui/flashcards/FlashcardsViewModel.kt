@@ -49,8 +49,12 @@ class FlashcardsViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val tts: SpanishTts,
     private val ratingUpdater: RatingUpdater,
-    private val xpTracker: com.spanishapp.service.XpTracker
+    private val xpTracker: com.spanishapp.service.XpTracker,
+    private val setProgressDao: com.spanishapp.data.db.dao.FlashcardSetProgressDao
 ) : ViewModel() {
+
+    /** Set ID being practiced this session (null = legacy category mode). */
+    private var activeSetId: String? = null
 
     private val _state = MutableStateFlow(FlashcardsUiState())
     val state: StateFlow<FlashcardsUiState> = _state.asStateFlow()
@@ -67,6 +71,7 @@ class FlashcardsViewModel @Inject constructor(
         sessionSize: Int = 20
     ) {
         mode = direction
+        activeSetId = null
         viewModelScope.launch {
             val cards = buildSessionDeck(level, category, sessionSize)
             if (cards.isEmpty()) {
@@ -87,6 +92,52 @@ class FlashcardsViewModel @Inject constructor(
                 currentDirection = resolveDirection(direction),
                 level = level,
                 category = category,
+                sessionSize = cards.size
+            )
+        }
+    }
+
+    /**
+     * Start a session for a Daily Set: deck = exactly the words listed in the
+     * set's [FlashcardSet.wordsSpanish], in shuffled order, no SM-2 mixing.
+     * After the session ends, [maybeSaveSetCompletion] persists stars + best %.
+     */
+    fun startSetSession(setId: String, direction: FlashcardDirection) {
+        mode = direction
+        activeSetId = setId
+        viewModelScope.launch {
+            val set = FlashcardSetData.byId(setId)
+            if (set == null) {
+                _state.value = FlashcardsUiState(
+                    isLoading = false,
+                    isFinished = true,
+                    level = "A1",
+                    category = "set",
+                    error = "Сет не найден"
+                )
+                return@launch
+            }
+            val cards = wordDao.findBySpanishMany(
+                set.wordsSpanish.map { it.lowercase().trim() }
+            ).shuffled()
+            if (cards.isEmpty()) {
+                _state.value = FlashcardsUiState(
+                    isLoading = false,
+                    isFinished = true,
+                    level = set.level,
+                    category = "set",
+                    error = "В этом сете пока нет слов в словаре"
+                )
+                return@launch
+            }
+            _state.value = FlashcardsUiState(
+                isLoading = false,
+                cards = cards,
+                currentIndex = 0,
+                showBack = false,
+                currentDirection = resolveDirection(direction),
+                level = set.level,
+                category = "set",
                 sessionSize = cards.size
             )
         }
@@ -165,6 +216,27 @@ class FlashcardsViewModel @Inject constructor(
             viewModelScope.launch {
                 val learnedDelta = _state.value.correctCount
                 xpTracker.add(_state.value.earnedXp, learnedDelta)
+                // If this was a Daily Set session, persist stars + best %.
+                activeSetId?.let { setId ->
+                    val total = _state.value.cards.size
+                    val correct = _state.value.correctCount
+                    val percent = if (total > 0) (correct * 100 / total) else 0
+                    val stars = when {
+                        percent >= 90 -> 3
+                        percent >= 70 -> 2
+                        percent >= 50 -> 1
+                        else          -> 0
+                    }
+                    val existing = setProgressDao.getOne(setId)
+                    setProgressDao.upsert(
+                        com.spanishapp.data.db.entity.FlashcardSetProgressEntity(
+                            setId = setId,
+                            stars = maxOf(existing?.stars ?: 0, stars),
+                            bestPercent = maxOf(existing?.bestPercent ?: 0, percent),
+                            completedAt = System.currentTimeMillis()
+                        )
+                    )
+                }
             }
         }
     }

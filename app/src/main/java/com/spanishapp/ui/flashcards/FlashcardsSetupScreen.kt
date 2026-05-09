@@ -1,23 +1,19 @@
 package com.spanishapp.ui.flashcards
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,7 +22,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.spanishapp.data.db.dao.FlashcardSetProgressDao
 import com.spanishapp.data.db.dao.WordDao
+import com.spanishapp.data.db.entity.WordEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,85 +32,69 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// ── Design tokens — Sunset palette ────────────────────────────
-private val Purple     = Color(0xFFFF6B35)  // Orange primary
-private val PurplePale = Color(0xFFFFF1E6)  // Peach tint
-private val Pink       = Color(0xFFD62867)  // Magenta accent
-private val TextMain   = Color(0xFF264653)  // Ocean
-private val TextGray   = Color(0xFF8A8A93)
-private val BgGray     = Color(0xFFFFF8F2)  // Warm peach bg
-private val CardBorder = Color(0xFFE8E5E0)
-
-// ── ViewModel ──────────────────────────────────────────────────
-
 private val LEVELS = listOf("A1", "A2", "B1", "B2")
-private val LEVEL_EMOJIS = mapOf("A1" to "🐣", "A2" to "🐥", "B1" to "🦜", "B2" to "🦅")
-private const val UNLOCK_THRESHOLD = 0.8f
 
-data class LevelInfo(
-    val key: String,
+// ── UI state types ─────────────────────────────────────────────
+
+/** One row in the sets list. */
+data class SetRowUi(
+    val set: FlashcardSet,
+    val mastered: Int,    // count of words from the set already learned
+    val total: Int,       // size of the set (= set.wordsSpanish.size, capped to DB hits)
+    val stars: Int,       // 0..3 from FlashcardSetProgressEntity
     val unlocked: Boolean,
-    val masteredRatio: Float,
-    val masteredCount: Int,
-    val totalCount: Int,
-)
-
-data class CategoryProgress(
-    val key: String,
-    @androidx.annotation.StringRes val labelRes: Int,
-    val total: Int,
-    val mastered: Int,
+    val isNext: Boolean
 ) {
     val ratio: Float get() = if (total > 0) mastered.toFloat() / total else 0f
 }
 
+// ── ViewModel ──────────────────────────────────────────────────
+
 @HiltViewModel
 class FlashcardsSetupViewModel @Inject constructor(
-    private val wordDao: WordDao
+    private val wordDao: WordDao,
+    private val setDao: FlashcardSetProgressDao
 ) : ViewModel() {
 
-    private val _levels = MutableStateFlow<List<LevelInfo>>(emptyList())
-    val levels: StateFlow<List<LevelInfo>> = _levels.asStateFlow()
+    private val _selectedLevel = MutableStateFlow("A1")
+    val selectedLevel: StateFlow<String> = _selectedLevel.asStateFlow()
 
-    private val _categoryProgress = MutableStateFlow<List<CategoryProgress>>(emptyList())
-    val categoryProgress: StateFlow<List<CategoryProgress>> = _categoryProgress.asStateFlow()
+    private val _setsForLevel = MutableStateFlow<List<SetRowUi>>(emptyList())
+    val setsForLevel: StateFlow<List<SetRowUi>> = _setsForLevel.asStateFlow()
 
-    // keep for compatibility with FlashcardsViewModel
-    private val _categories = MutableStateFlow<List<String>>(emptyList())
-    val categories: StateFlow<List<String>> = _categories.asStateFlow()
-
-    fun loadLevels() {
-        viewModelScope.launch {
-            val result = mutableListOf<LevelInfo>()
-            var prevMastered = true
-            for (lvl in LEVELS) {
-                val total    = wordDao.countByLevel(lvl)
-                val mastered = if (total > 0) wordDao.countMasteredByLevel(lvl) else 0
-                val ratio    = if (total > 0) mastered.toFloat() / total else 0f
-                result += LevelInfo(lvl, prevMastered, ratio, mastered, total)
-                prevMastered = ratio >= UNLOCK_THRESHOLD
-            }
-            _levels.value = result
-        }
+    fun selectLevel(level: String) {
+        _selectedLevel.value = level
+        loadSetsFor(level)
     }
 
-    fun loadCategoriesWithProgress(level: String) {
+    fun loadSetsFor(level: String) {
         viewModelScope.launch {
-            val cats       = wordDao.categoriesForLevel(level)
-            val allTotal   = wordDao.countByLevel(level)
-            val allMastered = wordDao.countMasteredByLevel(level)
-            _categories.value = cats
+            val sets = FlashcardSetData.byLevel(level)
+            val progressMap = setDao.getAll().associateBy { it.setId }
 
-            val list = buildList {
-                add(CategoryProgress("all", com.spanishapp.R.string.cat_all_words, allTotal, allMastered))
-                cats.forEach { cat ->
-                    val t = wordDao.countByLevelAndCategory(level, cat)
-                    val m = wordDao.countMasteredByLevelAndCategory(level, cat)
-                    val info = CategoryMeta.infoFor(cat)
-                    add(CategoryProgress(cat, info.labelRes, t, m))
-                }
+            // Find the next-to-do (first locked-in-progress) set so we highlight it.
+            var prevReady = true
+            val rows = sets.map { set ->
+                val words = wordDao.findBySpanishMany(
+                    set.wordsSpanish.map { it.lowercase().trim() }
+                )
+                val total = words.size
+                val mastered = words.count { it.isLearned }
+                val ratio = if (total > 0) mastered.toFloat() / total else 0f
+                val unlocked = prevReady
+                val isNext = unlocked && ratio < FlashcardSetData.UNLOCK_RATIO
+                val row = SetRowUi(
+                    set = set,
+                    mastered = mastered,
+                    total = total,
+                    stars = progressMap[set.id]?.stars ?: 0,
+                    unlocked = unlocked,
+                    isNext = isNext && prevReady
+                )
+                prevReady = ratio >= FlashcardSetData.UNLOCK_RATIO
+                row
             }
-            _categoryProgress.value = list
+            _setsForLevel.value = rows
         }
     }
 }
@@ -124,30 +106,21 @@ fun FlashcardsSetupScreen(
     navController: NavHostController,
     viewModel: FlashcardsSetupViewModel = hiltViewModel()
 ) {
-    var selectedLevel by remember { mutableStateOf("A1") }
-    val levels        by viewModel.levels.collectAsState()
-    val catProgress   by viewModel.categoryProgress.collectAsState()
-    val snackbarHost  = remember { SnackbarHostState() }
-    val scope         = rememberCoroutineScope()
+    val selectedLevel by viewModel.selectedLevel.collectAsState()
+    val sets          by viewModel.setsForLevel.collectAsState()
 
-    LaunchedEffect(Unit) { viewModel.loadLevels() }
-    LaunchedEffect(selectedLevel) { viewModel.loadCategoriesWithProgress(selectedLevel) }
-
-    val levelInfo = levels.firstOrNull { it.key == selectedLevel }
-    val catCount  = catProgress.size.coerceAtLeast(1) - 1  // subtract "all"
+    LaunchedEffect(selectedLevel) { viewModel.loadSetsFor(selectedLevel) }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        snackbarHost   = { SnackbarHost(snackbarHost) }
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         LazyColumn(
-            modifier        = Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .statusBarsPadding(),
-            contentPadding  = PaddingValues(bottom = 32.dp)
+            contentPadding = PaddingValues(bottom = 32.dp)
         ) {
-
             // ── Header ─────────────────────────────────────────
             item {
                 Column(
@@ -158,15 +131,15 @@ fun FlashcardsSetupScreen(
                 ) {
                     Text(
                         "Tarjetas",
-                        fontSize   = 26.sp,
+                        fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
-                        color      = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        "Учи новые слова по уровням",
+                        "Маленькие наборы слов на каждый день",
                         fontSize = 15.sp,
-                        color    = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -174,28 +147,18 @@ fun FlashcardsSetupScreen(
             // ── Level tabs ─────────────────────────────────────
             item {
                 Row(
-                    modifier            = Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    val displayLevels = levels.ifEmpty {
-                        LEVELS.mapIndexed { i, k -> LevelInfo(k, i == 0, 0f, 0, 0) }
-                    }
-                    displayLevels.forEach { info ->
-                        LevelTab(
-                            info       = info,
-                            isSelected = selectedLevel == info.key,
-                            modifier   = Modifier.weight(1f),
-                            onClick    = {
-                                if (info.unlocked) {
-                                    selectedLevel = info.key
-                                } else {
-                                    val prev = LEVELS.getOrNull(LEVELS.indexOf(info.key) - 1) ?: "A1"
-                                    scope.launch { snackbarHost.showSnackbar("Пройди $prev на 80%") }
-                                }
-                            }
+                    LEVELS.forEach { lvl ->
+                        LevelChip(
+                            label = lvl,
+                            selected = selectedLevel == lvl,
+                            modifier = Modifier.weight(1f),
+                            onClick = { viewModel.selectLevel(lvl) }
                         )
                     }
                 }
@@ -203,219 +166,175 @@ fun FlashcardsSetupScreen(
 
             item { Spacer(Modifier.height(12.dp)) }
 
-            // ── Level info row ─────────────────────────────────
-            item {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    shape  = RoundedCornerShape(16.dp),
-                    color  = MaterialTheme.colorScheme.surface,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
-                ) {
-                    Row(
-                        modifier          = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+            // ── Empty state ─────────────────────────────────────
+            if (sets.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(32.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        // Badge
-                        Box(
-                            modifier = Modifier
-                                .size(52.dp)
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(Purple),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                selectedLevel,
-                                fontSize   = 18.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color      = Color.White
-                            )
-                        }
-                        Spacer(Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                "Уровень $selectedLevel",
-                                fontSize   = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color      = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                "$catCount категорий",
-                                fontSize = 13.sp,
-                                color    = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        // Level progress
-                        levelInfo?.let {
-                            Text(
-                                "${it.masteredCount}/${it.totalCount}",
-                                fontSize   = 13.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color      = Purple
-                            )
-                        }
+                        Text(
+                            "Сеты для уровня $selectedLevel скоро появятся 🚧",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 14.sp
+                        )
                     }
                 }
             }
 
-            item { Spacer(Modifier.height(8.dp)) }
-
-            // ── Category rows ──────────────────────────────────
-            // Keyed by category id so items reflow smoothly when level changes
-            // (rather than re-creating the whole list).
-            items(catProgress, key = { it.key }) { cat ->
-                CategoryRow(
-                    cat     = cat,
+            // ── Sets list ─────────────────────────────────────
+            items(sets, key = { it.set.id }) { row ->
+                SetRow(
+                    row = row,
                     onClick = {
-                        navController.navigate(
-                            "flashcards_session?level=$selectedLevel&category=${cat.key}&direction=ES_TO_RU"
-                        )
+                        if (row.unlocked) {
+                            navController.navigate(
+                                "flashcards_session?level=${row.set.level}" +
+                                    "&category=set&direction=ES_TO_RU&setId=${row.set.id}"
+                            )
+                        }
                     },
-                    modifier = Modifier.animateItem()
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .animateItem()
                 )
-                Spacer(Modifier.height(6.dp))
             }
         }
     }
 }
 
-// ── Level tab ──────────────────────────────────────────────────
+// ── Cells ──────────────────────────────────────────────────────
 
 @Composable
-private fun LevelTab(
-    info: LevelInfo,
-    isSelected: Boolean,
+private fun LevelChip(
+    label: String,
+    selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val unselectedBg = MaterialTheme.colorScheme.surface
-    val unselectedText = MaterialTheme.colorScheme.onSurfaceVariant
-    val unselectedBorder = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-
-    val bgColor by animateColorAsState(
-        targetValue   = if (isSelected) Purple else unselectedBg,
-        animationSpec = tween(200),
-        label         = "level_bg"
-    )
-    val textColor by animateColorAsState(
-        targetValue   = if (isSelected) Color.White else unselectedText,
-        animationSpec = tween(200),
-        label         = "level_text"
-    )
-
+    val accent = MaterialTheme.colorScheme.primary
     Surface(
-        onClick  = onClick,
+        onClick = onClick,
         modifier = modifier.height(44.dp),
-        shape    = RoundedCornerShape(12.dp),
-        color    = bgColor,
-        border   = BorderStroke(1.dp, if (isSelected) Purple else unselectedBorder)
+        shape = RoundedCornerShape(12.dp),
+        color = if (selected) accent else MaterialTheme.colorScheme.surface,
+        border = if (selected) null
+            else androidx.compose.foundation.BorderStroke(
+                1.dp,
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+            )
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Row(
-                verticalAlignment     = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                if (!info.unlocked) {
-                    Icon(
-                        Icons.Default.Lock,
-                        contentDescription = null,
-                        tint     = if (isSelected) Color.White else unselectedText,
-                        modifier = Modifier.size(12.dp)
-                    )
-                }
-                Text(
-                    info.key,
-                    fontSize   = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color      = textColor
-                )
-            }
+            Text(
+                label,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (selected) Color.White
+                else MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
 
-// ── Category row ───────────────────────────────────────────────
-
 @Composable
-private fun CategoryRow(
-    cat: CategoryProgress,
+private fun SetRow(
+    row: SetRowUi,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val info = if (cat.key == "all") {
-        CategoryMeta.infoFor("all")
-    } else {
-        CategoryMeta.infoFor(cat.key)
-    }
-
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(16.dp)
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        backgroundColor = MaterialTheme.colorScheme.surface,
+        shadowElevation = if (row.unlocked) 3.dp else 0.dp,
+        enabled = row.unlocked
     ) {
-        Column(
-            modifier = Modifier
-                .border(
-                    1.dp,
-                    MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                    RoundedCornerShape(16.dp)
-                )
-                .padding(horizontal = 16.dp, vertical = 14.dp)
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier          = Modifier.fillMaxWidth()
+            // Big emoji circle
+            val accent = MaterialTheme.colorScheme.primary
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (!row.unlocked) MaterialTheme.colorScheme.surfaceVariant
+                        else if (row.isNext) accent
+                        else accent.copy(alpha = 0.15f)
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    info.icon,
-                    contentDescription = null,
-                    tint     = Purple,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(Modifier.width(10.dp))
-                Text(
-                    androidx.compose.ui.res.stringResource(info.labelRes),
-                    modifier   = Modifier.weight(1f),
-                    fontSize   = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color      = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    "${cat.mastered}/${cat.total}",
-                    fontSize   = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color      = if (cat.ratio >= 1f) Purple else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.width(8.dp))
-                Icon(
-                    Icons.Default.ChevronRight,
-                    contentDescription = null,
-                    tint     = Color(0xFFC7C7CC),
-                    modifier = Modifier.size(18.dp)
-                )
+                if (!row.unlocked) {
+                    Icon(
+                        Icons.Default.Lock,
+                        null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                        modifier = Modifier.size(22.dp)
+                    )
+                } else {
+                    Text(row.set.emoji, fontSize = 28.sp)
+                }
             }
 
-            if (cat.total > 0) {
-                Spacer(Modifier.height(8.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(5.dp)
-                        .clip(RoundedCornerShape(3.dp))
-                        .background(PurplePale)
-                ) {
+            Spacer(Modifier.width(14.dp))
+
+            // Title + progress
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Сет ${row.set.order} · ${row.set.title}",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (row.unlocked) MaterialTheme.colorScheme.onSurface
+                    else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(4.dp))
+                if (row.unlocked) {
+                    // Progress text + bar
+                    Text(
+                        "${row.mastered} / ${row.total} слов",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(6.dp))
                     Box(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(cat.ratio.coerceIn(0f, 1f))
+                            .fillMaxWidth()
+                            .height(6.dp)
                             .clip(RoundedCornerShape(3.dp))
-                            .background(
-                                Brush.horizontalGradient(listOf(Purple, Pink))
-                            )
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(row.ratio.coerceIn(0f, 1f))
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(accent)
+                        )
+                    }
+                } else {
+                    Text(
+                        "Откроется после прохождения предыдущего сета",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                }
+            }
+
+            // Stars
+            if (row.unlocked) {
+                Spacer(Modifier.width(10.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                    repeat(3) { i ->
+                        Icon(
+                            Icons.Default.Star, null,
+                            modifier = Modifier.size(14.dp),
+                            tint = if (i < row.stars) Color(0xFFFFC107)
+                            else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                        )
+                    }
                 }
             }
         }

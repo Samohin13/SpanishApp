@@ -70,6 +70,10 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE lower(trim(spanish)) = :q LIMIT 1")
     suspend fun findBySpanish(q: String): WordEntity?
 
+    /** Lookup a batch of words by their Spanish surface forms (already lowercased). */
+    @Query("SELECT * FROM words WHERE lower(trim(spanish)) IN (:words)")
+    suspend fun findBySpanishMany(words: List<String>): List<WordEntity>
+
     @Query("SELECT * FROM words WHERE id = :id")
     suspend fun getById(id: Int): WordEntity?
 
@@ -513,4 +517,19 @@ interface GameLevelProgressDao {
 
     @Query("SELECT COALESCE(SUM(stars), 0) FROM game_level_progress WHERE game_id = :gameId")
     suspend fun totalStars(gameId: String): Int
+}
+
+@Dao
+interface FlashcardSetProgressDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(progress: FlashcardSetProgressEntity)
+
+    @Query("SELECT * FROM flashcard_set_progress")
+    fun observeAll(): Flow<List<FlashcardSetProgressEntity>>
+
+    @Query("SELECT * FROM flashcard_set_progress")
+    suspend fun getAll(): List<FlashcardSetProgressEntity>
+
+    @Query("SELECT * FROM flashcard_set_progress WHERE set_id = :setId LIMIT 1")
+    suspend fun getOne(setId: String): FlashcardSetProgressEntity?
 }

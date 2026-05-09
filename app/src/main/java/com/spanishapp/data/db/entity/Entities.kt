@@ -214,3 +214,16 @@ data class GameLevelProgressEntity(
     @ColumnInfo(name = "best_score") val bestScore: Int = 0,    // % правильных (0..100)
     @ColumnInfo(name = "completed_at") val completedAt: Long = 0L
 )
+
+/**
+ * Прогресс прохождения flashcard-сета (Daily Sets system).
+ * Один сет = один ID из FlashcardSetData. Mastered count считается на лету
+ * по таблице `words` (isLearned), здесь храним только звёзды и timestamp.
+ */
+@Entity(tableName = "flashcard_set_progress")
+data class FlashcardSetProgressEntity(
+    @PrimaryKey @ColumnInfo(name = "set_id") val setId: String,
+    @ColumnInfo(name = "stars") val stars: Int = 0,                 // 0..3
+    @ColumnInfo(name = "best_percent") val bestPercent: Int = 0,    // 0..100
+    @ColumnInfo(name = "completed_at") val completedAt: Long = 0L
+)

@@ -24,9 +24,10 @@ import com.spanishapp.data.db.entity.*
         LessonProgressEntity::class,
         LibroProgressEntity::class,
         GameLevelProgressEntity::class,
-        DailyXpEntity::class
+        DailyXpEntity::class,
+        FlashcardSetProgressEntity::class
     ],
-    version = 12,
+    version = 13,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -44,6 +45,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun libroProgressDao(): LibroProgressDao
     abstract fun gameLevelProgressDao(): GameLevelProgressDao
     abstract fun dailyXpDao(): DailyXpDao
+    abstract fun flashcardSetProgressDao(): FlashcardSetProgressDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -256,6 +258,20 @@ abstract class AppDatabase : RoomDatabase() {
                         day TEXT PRIMARY KEY NOT NULL,
                         xp INTEGER NOT NULL DEFAULT 0,
                         minutes INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent())
+            }
+        }
+
+        // ── v13: прогресс по flashcard-сетам (Daily Sets) ──
+        val MIGRATION_12_13 = object : Migration(12, 13) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS flashcard_set_progress (
+                        set_id TEXT PRIMARY KEY NOT NULL,
+                        stars INTEGER NOT NULL DEFAULT 0,
+                        best_percent INTEGER NOT NULL DEFAULT 0,
+                        completed_at INTEGER NOT NULL DEFAULT 0
                     )
                 """.trimIndent())
             }
