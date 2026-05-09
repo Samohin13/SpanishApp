@@ -5,6 +5,8 @@ import com.spanishapp.data.db.dao.ChatMessageDao
 import com.spanishapp.data.db.entity.ChatMessageEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
@@ -38,6 +40,17 @@ class AiChatRepository @Inject constructor(
             } else {
                 "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
                     "?key=${BuildConfig.GEMINI_API_KEY}"
+            }
+        }
+
+        /** Server-Sent-Events streaming endpoint. */
+        private fun streamUrl(): String {
+            val proxy = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
+            return if (proxy.isNotEmpty()) {
+                "$proxy/v1beta/models/$MODEL:streamGenerateContent"
+            } else {
+                "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:streamGenerateContent" +
+                    "?key=${BuildConfig.GEMINI_API_KEY}&alt=sse"
             }
         }
 
@@ -120,6 +133,87 @@ class AiChatRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    // ── Streaming send ────────────────────────────────────────
+    /**
+     * Streams Gemini's response token-by-token. Each emit is the FULL
+     * accumulated text so far (caller can render progressively without
+     * tracking deltas itself).
+     *
+     * On completion, persists the final assistant message to Room.
+     * On any error, throws — caller wraps with try/catch + UI error state.
+     */
+    fun streamMessage(
+        userText: String,
+        sessionId: String = "default"
+    ): Flow<String> = flow {
+        // Save user message first so it appears in UI immediately.
+        chatMessageDao.insert(
+            ChatMessageEntity(role = "user", content = userText, sessionId = sessionId)
+        )
+
+        val history = chatMessageDao.getSessionOnce(sessionId).takeLast(20)
+        val body = buildGeminiRequest(history)
+
+        val request = Request.Builder()
+            .url(streamUrl())
+            .post(body)
+            .header("Content-Type", "application/json")
+            .header("Accept", "text/event-stream")
+            .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        if (!response.isSuccessful) {
+            val errBody = response.body?.string() ?: ""
+            throw Exception("Gemini error ${response.code}: $errBody")
+        }
+
+        val source = response.body?.source()
+            ?: throw Exception("Empty response body")
+
+        val accumulated = StringBuilder()
+        val parser = Json { ignoreUnknownKeys = true }
+
+        // SSE format: each event is "data: {json}\n\n". Read line-by-line.
+        while (!source.exhausted()) {
+            val line = source.readUtf8Line() ?: break
+            if (!line.startsWith("data:")) continue
+            val payload = line.removePrefix("data:").trim()
+            if (payload.isEmpty() || payload == "[DONE]") continue
+
+            // Each chunk: { "candidates": [{ "content": { "parts": [{"text":"..."}]}}] }
+            runCatching {
+                val obj = parser.parseToJsonElement(payload).jsonObject
+                val text = obj["candidates"]
+                    ?.jsonArray?.firstOrNull()
+                    ?.jsonObject?.get("content")
+                    ?.jsonObject?.get("parts")
+                    ?.jsonArray?.firstOrNull()
+                    ?.jsonObject?.get("text")
+                    ?.jsonPrimitive?.content
+                    ?: ""
+                if (text.isNotEmpty()) {
+                    accumulated.append(text)
+                    emit(accumulated.toString())
+                }
+            }
+        }
+
+        // Persist the final message (strip CORRECTIONS_JSON tail).
+        val full = accumulated.toString()
+        val correctionJson = extractCorrections(full)
+        val cleanText = full.substringBefore("CORRECTIONS_JSON:").trim()
+        if (cleanText.isNotEmpty()) {
+            chatMessageDao.insert(
+                ChatMessageEntity(
+                    role           = "assistant",
+                    content        = cleanText,
+                    sessionId      = sessionId,
+                    correctionJson = correctionJson
+                )
+            )
+        }
+    }.flowOn(Dispatchers.IO)
 
     // ── Grammar check only ────────────────────────────────────
     suspend fun checkGrammar(spanishText: String): Result<GrammarCheckResult> =

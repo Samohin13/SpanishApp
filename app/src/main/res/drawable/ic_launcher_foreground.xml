@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Foreground adaptive icon: белая буква "E" (Español) + звезда
-    Safe zone: 72×72dp по центру 108×108dp canvas
+    Foreground adaptive icon: white bull silhouette (game-icons:taurus, CC-BY 3.0
+    by Lorc — same source as the in-app AI-Chat FAB so the brand stays consistent).
+
+    Path is from the source 512×512 SVG. We scale it to fit the 72×72 safe zone
+    centered inside the 108×108 adaptive-icon canvas:
+        scale = 72/512 = 0.140625
+        translate = (108 - 72) / 2 = 18  → centers within the safe area.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-
-    <!-- Буква "E" жирная, по центру safe zone -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="
-            M30,22 L30,86 L78,86 L78,75 L43,75 L43,61 L73,61 L73,50 L43,50 L43,33 L78,33 L78,22 Z" />
-
-    <!-- Маленькая звезда справа вверху — символ качества / изучения -->
-    <path
-        android:fillColor="#FFC107"
-        android:pathData="
-            M80,18 L82.4,24.8 L89.5,24.8 L83.9,28.9 L86.1,35.8 L80,31.5 L73.9,35.8 L76.1,28.9 L70.5,24.8 L77.6,24.8 Z" />
-
+    <group
+        android:translateX="18"
+        android:translateY="18"
+        android:scaleX="0.140625"
+        android:scaleY="0.140625">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M30.882,30.14s33.525,-10.81 92.088,19.64c60.996,31.72 85.628,116.77 132.906,117.86c47.283,-1.09 71.92,-86.14 132.912,-117.858c58.558,-30.45 92.088,-19.643 92.088,-19.643v85.483s-38.062,-2.453 -58.934,13.507c-15.165,11.593 -45.23,54.296 -71.375,80.08c38.867,27.833 63.966,71.877 63.966,121.45c0,84.162 -72.343,152.39 -161.587,152.39S91.353,414.821 91.353,330.659c0,-51.03 26.6,-96.205 67.432,-123.865c-25.558,-25.957 -54.263,-66.43 -68.965,-77.67c-20.877,-15.96 -58.938,-13.506 -58.938,-13.506zM179.45,330.49c0,40.01 32.98,72.44 73.664,72.44s73.67,-32.435 73.67,-72.44s-32.98,-72.44 -73.67,-72.44c-40.688,0 -73.664,32.436 -73.664,72.44" />
+    </group>
 </vector>

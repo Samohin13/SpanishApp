@@ -70,13 +70,16 @@ export default {
     }
 
     const url = new URL(request.url);
-    // Expected path: /v1beta/models/<model>:generateContent
+    // Expected paths:
+    //   /v1beta/models/<model>:generateContent       (one-shot)
+    //   /v1beta/models/<model>:streamGenerateContent (Server-Sent Events stream)
     const match = url.pathname.match(
-      /^\/v1beta\/models\/([a-z0-9.\-]+):generateContent\/?$/i,
+      /^\/v1beta\/models\/([a-z0-9.\-]+):(stream)?generateContent\/?$/i,
     );
     if (!match) return jsonError(404, "Unknown endpoint");
 
     const model = match[1];
+    const isStream = !!match[2];
     if (!ALLOWED_MODELS.includes(model)) {
       return jsonError(400, `Model ${model} not allowed`);
     }
@@ -89,8 +92,12 @@ export default {
     }
 
     // Forward body as-is to Gemini, appending the secret key as a query param.
+    // For stream mode pass the upstream body through unchanged so chunks reach
+    // the client as they arrive (no buffering).
+    const verb = isStream ? "streamGenerateContent" : "generateContent";
+    const sseSuffix = isStream ? "&alt=sse" : "";
     const upstream = await fetch(
-      `${GEMINI_HOST}/v1beta/models/${model}:generateContent?key=${env.GEMINI_KEY}`,
+      `${GEMINI_HOST}/v1beta/models/${model}:${verb}?key=${env.GEMINI_KEY}${sseSuffix}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -98,7 +105,19 @@ export default {
       },
     );
 
-    // Mirror upstream response (body + status), strip non-CORS-safe headers.
+    if (isStream) {
+      // Pass-through SSE stream — preserves chunked transfer to the client.
+      return new Response(upstream.body, {
+        status: upstream.status,
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          ...corsHeaders(),
+        },
+      });
+    }
+
+    // One-shot: read full text and return.
     const text = await upstream.text();
     return new Response(text, {
       status: upstream.status,

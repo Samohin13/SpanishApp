@@ -91,25 +91,42 @@ class AiChatViewModel @Inject constructor(
     private val _isSending = MutableStateFlow(false)
     val isSending: StateFlow<Boolean> = _isSending.asStateFlow()
 
+    /**
+     * In-flight assistant text being streamed token-by-token.
+     * Empty when no streaming is happening or when the final message has been
+     * persisted (then it appears in [messages]).
+     */
+    private val _streamingText = MutableStateFlow("")
+    val streamingText: StateFlow<String> = _streamingText.asStateFlow()
+
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
     fun send(text: String) {
         if (text.isBlank() || _isSending.value) return
         _isSending.value = true
+        _streamingText.value = ""
         _error.value = null
         viewModelScope.launch {
-            val result = repo.sendMessage(text.trim(), sessionId)
-            result.onFailure { e ->
+            try {
+                repo.streamMessage(text.trim(), sessionId).collect { progressive ->
+                    // Strip the trailing CORRECTIONS_JSON marker for nicer display
+                    // while streaming (it'll be parsed cleanly when persisted).
+                    val display = progressive.substringBefore("CORRECTIONS_JSON:")
+                    _streamingText.value = display
+                }
+            } catch (e: Exception) {
                 _error.value = when {
                     e.message?.contains("401") == true -> appContext.getString(R.string.chat_error_invalid_key)
                     e.message?.contains("429") == true -> appContext.getString(R.string.chat_error_rate_limit)
-                    e.message?.contains("network") == true ||
-                    e.message?.contains("timeout") == true -> appContext.getString(R.string.chat_error_network)
+                    e.message?.contains("network", ignoreCase = true) == true ||
+                    e.message?.contains("timeout", ignoreCase = true) == true -> appContext.getString(R.string.chat_error_network)
                     else -> appContext.getString(R.string.chat_error_generic, e.message ?: "")
                 }
+            } finally {
+                _streamingText.value = ""
+                _isSending.value = false
             }
-            _isSending.value = false
         }
     }
 
@@ -128,9 +145,10 @@ fun AiChatScreen(
     navController: NavHostController,
     vm: AiChatViewModel = hiltViewModel()
 ) {
-    val messages  by vm.messages.collectAsState()
-    val isSending by vm.isSending.collectAsState()
-    val error     by vm.error.collectAsState()
+    val messages       by vm.messages.collectAsState()
+    val isSending      by vm.isSending.collectAsState()
+    val streamingText  by vm.streamingText.collectAsState()
+    val error          by vm.error.collectAsState()
     var input     by remember { mutableStateOf("") }
     val haptic    = com.spanishapp.ui.components.rememberCheckedHaptic()
 
@@ -139,6 +157,13 @@ fun AiChatScreen(
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             listState.animateScrollToItem(messages.size - 1)
+        }
+    }
+    // Keep the streaming bubble in view as text grows.
+    LaunchedEffect(streamingText) {
+        if (streamingText.isNotEmpty()) {
+            // Scroll to last index (streaming bubble is appended after messages).
+            listState.animateScrollToItem(messages.size)
         }
     }
 
@@ -218,8 +243,25 @@ fun AiChatScreen(
                                 )
                             )
                         }
-                        if (isSending) {
-                            item { TypingIndicator() }
+                        // Streaming preview: while Gemini is generating, show a
+                        // ChatBubble with the partial text. Disappears when the
+                        // final message lands in `messages`.
+                        if (streamingText.isNotEmpty()) {
+                            item(key = "streaming") {
+                                ChatBubble(
+                                    message = ChatMessageEntity(
+                                        id = -1,
+                                        role = "assistant",
+                                        content = streamingText,
+                                        sessionId = "default",
+                                        correctionJson = ""
+                                    ),
+                                    onSpeak = { /* no-op while streaming */ },
+                                    modifier = Modifier
+                                )
+                            }
+                        } else if (isSending) {
+                            item("typing") { TypingIndicator() }
                         }
                     }
                 }
