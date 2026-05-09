@@ -28,6 +28,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -537,6 +541,44 @@ fun AiChatScreen(
     }
 }
 
+/**
+ * Lightweight markdown for chat: makes **bold** parts bold and
+ * highlights [translations in brackets] with the brand color.
+ * Strips the literal asterisks/brackets from the visible text.
+ */
+private fun renderChatMarkdown(text: String, accentColor: Color): AnnotatedString =
+    buildAnnotatedString {
+        var i = 0
+        while (i < text.length) {
+            val rest = text.substring(i)
+            // **bold**
+            val boldMatch = Regex("""^\*\*(.+?)\*\*""").find(rest)
+            if (boldMatch != null) {
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(boldMatch.groupValues[1])
+                }
+                i += boldMatch.value.length
+                continue
+            }
+            // [translation]
+            val brMatch = Regex("""^\[([^\[\]]+)\]""").find(rest)
+            if (brMatch != null) {
+                withStyle(
+                    SpanStyle(
+                        color = accentColor,
+                        fontWeight = FontWeight.Medium
+                    )
+                ) {
+                    append("[${brMatch.groupValues[1]}]")
+                }
+                i += brMatch.value.length
+                continue
+            }
+            append(text[i])
+            i++
+        }
+    }
+
 @Composable
 private fun ChatBubble(
     message: ChatMessageEntity,
@@ -550,27 +592,62 @@ private fun ChatBubble(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = if (isUser) Alignment.End else Alignment.Start
     ) {
-        Surface(
-            shape = RoundedCornerShape(
-                topStart = 20.dp, topEnd = 20.dp,
-                bottomStart = if (isUser) 20.dp else 4.dp,
-                bottomEnd = if (isUser) 4.dp else 20.dp
-            ),
-            color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-            tonalElevation = if (isUser) 0.dp else 2.dp
+        // AI messages get a bull avatar to the left so the conversation
+        // looks like a chat with a character, not a wall of text.
+        Row(
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
-                Text(
-                    message.content,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-                )
+            if (!isUser) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFFF6B35)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = androidx.compose.ui.res.painterResource(com.spanishapp.R.drawable.ic_bull),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                Spacer(Modifier.width(10.dp))
+            }
+
+            Surface(
+                shape = RoundedCornerShape(
+                    topStart = 22.dp, topEnd = 22.dp,
+                    bottomStart = if (isUser) 22.dp else 6.dp,
+                    bottomEnd = if (isUser) 6.dp else 22.dp
+                ),
+                color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                shadowElevation = if (isUser) 0.dp else 2.dp,
+                modifier = Modifier.weight(1f, fill = false)
+            ) {
+                Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
+                    Text(
+                        text = if (isUser) {
+                            AnnotatedString(message.content)
+                        } else {
+                            renderChatMarkdown(message.content, MaterialTheme.colorScheme.primary)
+                        },
+                        fontSize = 16.sp,
+                        lineHeight = 22.sp,
+                        color = if (isUser) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
 
         if (!isUser) {
-            IconButton(onClick = onSpeak, modifier = Modifier.padding(top = 2.dp).size(32.dp)) {
-                Icon(Icons.Default.VolumeUp, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+            IconButton(
+                onClick = onSpeak,
+                modifier = Modifier.padding(top = 4.dp, start = 46.dp).size(32.dp)
+            ) {
+                Icon(Icons.Default.VolumeUp, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
             }
         }
 
