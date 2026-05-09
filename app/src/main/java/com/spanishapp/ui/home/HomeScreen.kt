@@ -627,7 +627,10 @@ private fun SubLessonRow(
             else             -> onClick
         },
         modifier  = Modifier.fillMaxWidth(),
-        color     = if (effectiveLocked) Color(0xFFF7F7F7) else Color(0xFFFAFAFF),
+        color     = if (effectiveLocked)
+            MaterialTheme.colorScheme.surfaceVariant
+        else
+            MaterialTheme.colorScheme.surface,
         shape     = RoundedCornerShape(14.dp),
         shadowElevation = if (effectiveLocked) 0.dp else 1.dp
     ) {
@@ -643,7 +646,7 @@ private fun SubLessonRow(
                     .background(
                         when {
                             lesson.isCompleted -> unitColor
-                            effectiveLocked    -> Color(0xFFE0E0E0)
+                            effectiveLocked    -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                             else               -> unitColor.copy(alpha = 0.12f)
                         }
                     ),
