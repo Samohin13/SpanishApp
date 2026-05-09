@@ -197,7 +197,7 @@ fun LevelCell(level: Int, stars: Int, isLocked: Boolean, onClick: () -> Unit) {
         Surface(
             modifier = Modifier.size(80.dp),
             shape = RoundedCornerShape(20.dp),
-            color = if (isLocked) MaterialTheme.colorScheme.outline else Color.White,
+            color = if (isLocked) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
             border = if (isLocked) null else androidx.compose.foundation.BorderStroke(2.dp, Purple),
             shadowElevation = if (isLocked) 0.dp else 4.dp
         ) {
