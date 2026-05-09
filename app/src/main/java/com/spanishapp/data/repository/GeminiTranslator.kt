@@ -37,10 +37,22 @@ class GeminiTranslator @Inject constructor(
     private val json = Json { ignoreUnknownKeys = true }
 
     private companion object {
-        const val MODEL = "gemini-1.5-flash"
-        fun apiUrl() =
-            "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
-                "?key=${BuildConfig.GEMINI_API_KEY}"
+        // gemini-1.5-flash was removed from v1beta — use the maintained alias.
+        const val MODEL = "gemini-flash-latest"
+
+        /**
+         * Routes through the Cloudflare Worker proxy when configured (release
+         * builds), otherwise direct Gemini call with bundled key (dev only).
+         */
+        fun apiUrl(): String {
+            val proxy = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
+            return if (proxy.isNotEmpty()) {
+                "$proxy/v1beta/models/$MODEL:generateContent"
+            } else {
+                "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
+                    "?key=${BuildConfig.GEMINI_API_KEY}"
+            }
+        }
     }
 
     /**
@@ -82,8 +94,11 @@ class GeminiTranslator @Inject constructor(
         }
 
     private fun callGemini(prompt: String): String? {
-        if (BuildConfig.GEMINI_API_KEY.isBlank()) {
-            Log.w("GeminiTranslator", "GEMINI_API_KEY пустой, пропускаем запрос")
+        // Allow direct mode (key in BuildConfig) OR proxy mode (URL in BuildConfig).
+        val hasProxy = BuildConfig.AI_PROXY_URL.isNotBlank()
+        val hasKey   = BuildConfig.GEMINI_API_KEY.isNotBlank()
+        if (!hasProxy && !hasKey) {
+            Log.w("GeminiTranslator", "Neither AI_PROXY_URL nor GEMINI_API_KEY set, skipping")
             return null
         }
         val payload = JSONObject().apply {
