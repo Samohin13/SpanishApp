@@ -74,7 +74,7 @@ fun LevelSelectionScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(AppColors.BgWhite)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -83,13 +83,14 @@ fun LevelSelectionScreen(
                 androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_select_title),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_select_change_later),
                 fontSize = 13.sp,
-                color = AppColors.TextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(32.dp))
 
@@ -102,10 +103,12 @@ fun LevelSelectionScreen(
                         .fillMaxWidth()
                         .padding(vertical = 6.dp)
                         .clip(RoundedCornerShape(14.dp))
-                        .background(if (isSelected) AppColors.PurplePale else Color.White)
+                        .background(
+                            if (isSelected) AppColors.PurplePale else MaterialTheme.colorScheme.surface
+                        )
                         .border(
                             2.dp,
-                            if (isSelected) AppColors.Purple else AppColors.BorderColor,
+                            if (isSelected) AppColors.Purple else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
                             RoundedCornerShape(14.dp)
                         )
                         .clickable { selected = level.code }

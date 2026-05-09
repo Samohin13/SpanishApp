@@ -315,6 +315,7 @@ fun KnowledgeCheckScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = { Text("Знание языка") },
@@ -330,7 +331,6 @@ fun KnowledgeCheckScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(AppColors.BgWhite)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -341,17 +341,19 @@ fun KnowledgeCheckScreen(
                 stringResource(R.string.onboarding_knowledge_question),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 stringResource(R.string.onboarding_knowledge_subtitle),
                 fontSize = 14.sp,
-                color = AppColors.TextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(48.dp))
 
+            // "Start from scratch" card — theme-aware surface (matches Games tiles).
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -363,9 +365,9 @@ fun KnowledgeCheckScreen(
                             launchSingleTop = true
                         }
                     },
-                colors = CardDefaults.cardColors(containerColor = AppColors.PurplePale),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(0.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Row(
                     modifier = Modifier.padding(20.dp),
@@ -374,18 +376,16 @@ fun KnowledgeCheckScreen(
                     Text("🌱", fontSize = 32.sp)
                     Spacer(Modifier.width(16.dp))
                     Column {
-                        // Card has a light peach background — force dark text so it stays
-                        // readable in dark theme too.
                         Text(
                             stringResource(R.string.onboarding_kc_zero),
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
-                            color = AppColors.TextPrimary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             stringResource(R.string.onboarding_kc_zero_sub),
                             fontSize = 13.sp,
-                            color = AppColors.TextSecondary
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
