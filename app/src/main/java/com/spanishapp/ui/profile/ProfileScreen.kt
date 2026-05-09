@@ -279,7 +279,7 @@ private fun PathToMadridCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 2.dp
+        shadowElevation = 2.dp
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -336,7 +336,7 @@ private fun SkillRatingCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 2.dp
+        shadowElevation = 2.dp
     ) {
         Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
@@ -365,7 +365,7 @@ private fun CategoryRatingCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 2.dp
+        shadowElevation = 2.dp
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -408,7 +408,7 @@ private fun ProfileHeader(name: String, level: String, appLevel: Int, progress: 
                 ),
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.primaryContainer,
-                tonalElevation = 2.dp
+                shadowElevation = 2.dp
             ) {
                 if (photoUrl != null) {
                     AsyncImage(
@@ -444,7 +444,7 @@ private fun ProfileHeader(name: String, level: String, appLevel: Int, progress: 
 
 @Composable
 private fun StatBox(value: String, label: String, icon: String, modifier: Modifier = Modifier) {
-    Surface(modifier = modifier, shape = RoundedCornerShape(24.dp), color = MaterialTheme.colorScheme.surface, tonalElevation = 4.dp, shadowElevation = 1.dp) {
+    Surface(modifier = modifier, shape = RoundedCornerShape(24.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 3.dp) {
         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Text(icon, fontSize = 24.sp)
             Spacer(Modifier.height(4.dp))
@@ -477,7 +477,7 @@ private fun WeeklyActivityChart(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 2.dp
+        shadowElevation = 2.dp
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -542,7 +542,13 @@ private fun WeeklyActivityChart(
 
 @Composable
 private fun AchievementsSection(unlocked: Int, total: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Card(onClick = onClick, modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f))) {
+    Card(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
         Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(modifier = Modifier.size(48.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
                 Icon(Icons.Default.EmojiEvents, null, tint = Color.White)
