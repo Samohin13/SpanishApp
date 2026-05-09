@@ -148,7 +148,10 @@ private fun SessionCompleteBody(
     onRestart: () -> Unit,
     onExit: () -> Unit
 ) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.Url("https://lottie.host/7ca331be-49c0-4822-835f-1481b4737f7a/2A8XlF5X9r.json"))
+    // Bundled raw asset (no network round-trip, works offline).
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(com.spanishapp.R.raw.lottie_victory)
+    )
     val progress by animateLottieCompositionAsState(composition)
 
     Column(
