@@ -281,33 +281,8 @@ private fun BottomTranslationBox(
                     }
                 }
 
-                // Слова предложения
-                if (translation.sentenceWords.isNotEmpty()) {
-                    Spacer(Modifier.height(12.dp))
-                    HorizontalDivider(color = Color(0xFF283593))
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        stringResource(R.string.lread_words_in_sentence),
-                        fontSize = 11.sp,
-                        color = Color(0xFF78909C),
-                        fontWeight = FontWeight.Medium
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        items(translation.sentenceWords) { (es, ru) ->
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(Color(0xFF283593))
-                                    .padding(horizontal = 10.dp, vertical = 6.dp)
-                            ) {
-                                Text(es, fontSize = 13.sp, color = Color.White, fontWeight = FontWeight.SemiBold)
-                                Text(ru, fontSize = 11.sp, color = Color(0xFFB0BEC5))
-                            }
-                        }
-                    }
-                }
+                // "Words in sentence" panel removed — user only needs the
+                // translation of the long-pressed word, not all surrounding words.
             }
         }
     }

@@ -155,7 +155,14 @@ class SpanishSpeechRecognizer @Inject constructor(
     private val _isListening = MutableStateFlow(false)
     val isListening: StateFlow<Boolean> = _isListening
 
-    suspend fun listenOnce(): SpeechResult = suspendCancellableCoroutine { cont ->
+    /**
+     * Recognize speech once.
+     *
+     * @param language BCP-47 locale tag. Default `es-ES` (Spanish-Spain) for
+     *   pronunciation games. Pass `ru-RU` for AI-chat dictation when the user
+     *   speaks Russian, or other locales as needed.
+     */
+    suspend fun listenOnce(language: String = "es-ES"): SpeechResult = suspendCancellableCoroutine { cont ->
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             cont.resume(SpeechResult.Error("Распознавание речи недоступно на этом устройстве"))
             return@suspendCancellableCoroutine
@@ -165,8 +172,8 @@ class SpanishSpeechRecognizer @Inject constructor(
 
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES")
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "es-ES")
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, language)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, language)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false)
         }

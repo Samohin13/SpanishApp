@@ -154,7 +154,11 @@ class AiChatViewModel @Inject constructor(
     fun startVoice(onResult: (String) -> Unit) {
         if (isListening.value) return
         viewModelScope.launch {
-            when (val r = stt.listenOnce()) {
+            // Chat dictation defaults to Russian — most users compose questions
+            // in Russian. Spanish utterances are still recognized partially via
+            // the recognizer's tolerance; for pure Spanish use the pronunciation
+            // games where the recognizer is locked to es-ES.
+            when (val r = stt.listenOnce(language = "ru-RU")) {
                 is com.spanishapp.service.SpeechResult.Success -> onResult(r.text)
                 is com.spanishapp.service.SpeechResult.Error -> {
                     if (!r.isSilence) _error.value = r.message
@@ -352,13 +356,15 @@ fun AiChatScreen(
 
             // Animated AI-style gradient border (yellow → orange → red, looping).
             // Using infiniteTransition phase shift to animate the gradient angle.
+            // Seamless gradient loop: phase oscillates 0→1→0 (Reverse), so the
+            // gradient drifts left-then-right with no visible "jump" reset.
             val infiniteTransition = androidx.compose.animation.core.rememberInfiniteTransition(label = "ai_border")
             val phase by infiniteTransition.animateFloat(
                 initialValue = 0f,
                 targetValue = 1f,
                 animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-                    animation = androidx.compose.animation.core.tween(2400, easing = androidx.compose.animation.core.LinearEasing),
-                    repeatMode = androidx.compose.animation.core.RepeatMode.Restart
+                    animation = androidx.compose.animation.core.tween(3500, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+                    repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
                 ),
                 label = "ai_border_phase"
             )
@@ -371,7 +377,8 @@ fun AiChatScreen(
             )
 
             Surface(
-                tonalElevation = 8.dp,
+                // tonalElevation overlays primary tint in M3 dark = brown.
+                // Use shadowElevation only for the soft drop-shadow.
                 shadowElevation = 8.dp,
                 color = MaterialTheme.colorScheme.surface
             ) {
