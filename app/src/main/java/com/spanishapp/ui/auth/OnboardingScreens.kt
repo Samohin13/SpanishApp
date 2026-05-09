@@ -226,6 +226,7 @@ fun ReasonSelectionScreen(
     var selectedReason by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = { Text("Цель обучения") },
@@ -250,36 +251,43 @@ fun ReasonSelectionScreen(
                 stringResource(R.string.onboarding_reason_question),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
             Spacer(Modifier.height(32.dp))
 
             reasons.forEach { reason ->
+                val isSelected = selectedReason == reason
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 6.dp)
                         .clickable { selectedReason = reason },
                     colors = CardDefaults.cardColors(
-                        containerColor = if (selectedReason == reason)
-                            MaterialTheme.colorScheme.primaryContainer
-                        else Color.White
+                        containerColor = if (isSelected)
+                            MaterialTheme.colorScheme.primary  // brand orange
+                        else
+                            MaterialTheme.colorScheme.surface  // theme-aware gray
                     ),
-                    border = if (selectedReason == reason) null
+                    border = if (isSelected) null
                         else androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            MaterialTheme.colorScheme.outline.copy(0.4f)
-                        )
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = if (isSelected) 4.dp else 1.dp
+                    )
                 ) {
-                    // Card containerColor is hardcoded white, so the text must be explicitly
-                    // dark — otherwise it inherits onSurface from the dark theme and becomes
-                    // unreadable (white-on-white).
                     Text(
                         reason,
                         modifier = Modifier.padding(20.dp),
                         fontSize = 18.sp,
-                        color = AppColors.TextPrimary
+                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                        color = if (isSelected)
+                            MaterialTheme.colorScheme.onPrimary  // white on orange
+                        else
+                            MaterialTheme.colorScheme.onSurface  // theme-aware
                     )
                 }
             }
