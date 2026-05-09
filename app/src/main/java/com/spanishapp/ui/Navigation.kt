@@ -131,10 +131,13 @@ object Navigation {
             navController = navController,
             startDestination = initialStartDest,
             modifier = modifier,
-            enterTransition = { slideInHorizontally(tween(260)) { it / 5 } + fadeIn(tween(260)) },
-            exitTransition = { slideOutHorizontally(tween(260)) { -it / 5 } + fadeOut(tween(260)) },
-            popEnterTransition = { slideInHorizontally(tween(260)) { -it / 5 } + fadeIn(tween(260)) },
-            popExitTransition = { slideOutHorizontally(tween(260)) { it / 5 } + fadeOut(tween(260)) }
+            // Forward navigation: incoming screen slides in from the right ~30%,
+            // outgoing one fades + drifts left ~15% (parallax depth feel).
+            enterTransition = { slideInHorizontally(tween(300)) { it / 3 } + fadeIn(tween(300)) },
+            exitTransition = { slideOutHorizontally(tween(300)) { -it / 6 } + fadeOut(tween(220)) },
+            // Back navigation: mirror.
+            popEnterTransition = { slideInHorizontally(tween(300)) { -it / 6 } + fadeIn(tween(300)) },
+            popExitTransition = { slideOutHorizontally(tween(300)) { it / 3 } + fadeOut(tween(220)) }
         ) {
             // ── Авторизация ──────────────────────────────────
             composable("welcome") { WelcomeScreen(navController) }

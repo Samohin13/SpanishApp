@@ -200,12 +200,22 @@ fun AiChatScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(messages, key = { it.id }) { msg ->
+                            // Each new message slides up + fades in. Existing
+                            // messages reflow smoothly when a new one arrives.
                             ChatBubble(
                                 message = msg,
-                                onSpeak = { 
+                                onSpeak = {
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                    vm.speak(msg.content) 
-                                }
+                                    vm.speak(msg.content)
+                                },
+                                modifier = Modifier.animateItem(
+                                    fadeInSpec = tween(280),
+                                    placementSpec = spring(
+                                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                                        stiffness = Spring.StiffnessMediumLow
+                                    ),
+                                    fadeOutSpec = tween(180)
+                                )
                             )
                         }
                         if (isSending) {
@@ -371,12 +381,16 @@ fun AiChatScreen(
 }
 
 @Composable
-private fun ChatBubble(message: ChatMessageEntity, onSpeak: () -> Unit) {
+private fun ChatBubble(
+    message: ChatMessageEntity,
+    onSpeak: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val isUser = message.role == "user"
     val corrections = remember(message.correctionJson) { parseCorrections(message.correctionJson) }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalAlignment = if (isUser) Alignment.End else Alignment.Start
     ) {
         Surface(
