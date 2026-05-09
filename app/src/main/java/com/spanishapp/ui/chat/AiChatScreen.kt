@@ -5,6 +5,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -552,36 +553,126 @@ private fun TypingIndicator() {
     }
 }
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 private fun WelcomeHint(onSuggestion: (String) -> Unit) {
+    val scrollState = androidx.compose.foundation.rememberScrollState()
     Column(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(horizontal = 24.dp, vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // ── Icon + greeting ─────────────────────────────────────
         Box(
-            modifier = Modifier.size(80.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primaryContainer),
+            modifier = Modifier
+                .size(80.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFFF6B35)),  // brand orange
             contentAlignment = Alignment.Center
-        ) { Text("👋", fontSize = 40.sp) }
-        
-        Spacer(Modifier.height(24.dp))
-        
-        Text("¡Hola! Soy tu tutor personal.", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-        
-        Spacer(Modifier.height(12.dp))
-        
-        Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_welcome_subtitle), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
-        
-        Spacer(Modifier.height(32.dp))
-
-        val prompts = listOf("¿Cómo se dice 'погода'?", "Cuéntame un chiste", "Practiquemos el pretérito")
-        prompts.forEach { prompt ->
-            SuggestionChip(
-                onClick = { onSuggestion(prompt) },
-                label = { Text(prompt) },
-                modifier = Modifier.padding(vertical = 4.dp),
-                shape = CircleShape
+        ) {
+            androidx.compose.material3.Icon(
+                painter = androidx.compose.ui.res.painterResource(com.spanishapp.R.drawable.ic_bull),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(44.dp)
             )
         }
+        Spacer(Modifier.height(16.dp))
+        Text(
+            "¡Hola! Soy tu tutor personal.",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_welcome_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        // ── Capability cards ────────────────────────────────────
+        val capabilities = listOf(
+            Triple("💬", stringResource(com.spanishapp.R.string.chat_cap_answer_title),
+                       stringResource(com.spanishapp.R.string.chat_cap_answer_desc)),
+            Triple("✏️", stringResource(com.spanishapp.R.string.chat_cap_correct_title),
+                       stringResource(com.spanishapp.R.string.chat_cap_correct_desc)),
+            Triple("🔊", stringResource(com.spanishapp.R.string.chat_cap_speak_title),
+                       stringResource(com.spanishapp.R.string.chat_cap_speak_desc)),
+            Triple("🎯", stringResource(com.spanishapp.R.string.chat_cap_adapt_title),
+                       stringResource(com.spanishapp.R.string.chat_cap_adapt_desc)),
+            Triple("⚡", stringResource(com.spanishapp.R.string.chat_cap_stream_title),
+                       stringResource(com.spanishapp.R.string.chat_cap_stream_desc))
+        )
+        capabilities.forEach { (emoji, title, desc) ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                shape = RoundedCornerShape(14.dp),
+                color = MaterialTheme.colorScheme.surface,
+                shadowElevation = 1.dp
+            ) {
+                Row(
+                    modifier = Modifier.padding(14.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Text(emoji, fontSize = 22.sp)
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            title,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            desc,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(20.dp))
+
+        // ── Try-it suggestions ──────────────────────────────────
+        Text(
+            stringResource(com.spanishapp.R.string.chat_try_label),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start
+        )
+        Spacer(Modifier.height(8.dp))
+        val prompts = listOf(
+            "Hola, soy nuevo en español",
+            "¿Cómo se dice 'погода'?",
+            "Tengo 25 anos y vivo en Moscu",
+            "Объясни разницу между ser и estar",
+            "Practiquemos el pretérito"
+        )
+        androidx.compose.foundation.layout.FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            prompts.forEach { prompt ->
+                SuggestionChip(
+                    onClick = { onSuggestion(prompt) },
+                    label = { Text(prompt, fontSize = 13.sp) },
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    shape = RoundedCornerShape(20.dp)
+                )
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
     }
 }
+

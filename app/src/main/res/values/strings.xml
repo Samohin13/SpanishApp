@@ -753,4 +753,17 @@
     <string name="league_region">Регион: %1$s</string>
     <string name="chat_error_invalid_key">Неверный API ключ Anthropic</string>
     <string name="chat_close_cd">Закрыть</string>
+
+    <!-- Chat welcome screen — capability cards -->
+    <string name="chat_cap_answer_title">Отвечает на испанском</string>
+    <string name="chat_cap_answer_desc">Сложные слова переводит в [скобках]. Если пишешь по-русски — объясняет на двух языках.</string>
+    <string name="chat_cap_correct_title">Исправляет ошибки</string>
+    <string name="chat_cap_correct_desc">Покажет правильный вариант с пометкой ✏️ и объяснит ошибку по-русски.</string>
+    <string name="chat_cap_speak_title">Озвучивает ответы</string>
+    <string name="chat_cap_speak_desc">Тапни 🔊 под сообщением — услышишь как звучит фраза.</string>
+    <string name="chat_cap_adapt_title">Адаптируется к уровню</string>
+    <string name="chat_cap_adapt_desc">A1/A2 — простые фразы. B1+ — идиомы и сложные времена.</string>
+    <string name="chat_cap_stream_title">Печатает в реальном времени</string>
+    <string name="chat_cap_stream_desc">Текст появляется по словам, не нужно ждать весь ответ.</string>
+    <string name="chat_try_label">Попробуй спросить:</string>
 </resources>
