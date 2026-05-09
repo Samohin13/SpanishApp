@@ -142,14 +142,14 @@ fun PlacementTestScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
-            .background(AppColors.BgWhite)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp)
     ) {
         LinearProgressIndicator(
             progress = { progress },
             modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
             color = AppColors.Purple,
-            trackColor = AppColors.PurplePale
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
         )
 
         Spacer(Modifier.height(40.dp))
@@ -158,17 +158,19 @@ fun PlacementTestScreen(
             question.text,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
             lineHeight = 28.sp
         )
 
         Spacer(Modifier.height(32.dp))
 
+        val unselectedSurface = MaterialTheme.colorScheme.surface
         question.options.forEachIndexed { index, option ->
             val bgColor = when {
-                !answered -> if (selectedIndex == index) AppColors.PurplePale else Color.White
+                !answered -> if (selectedIndex == index) AppColors.PurplePale else unselectedSurface
                 index == question.correctIndex -> Color(0xFFE8F5E9)
                 index == selectedIndex && selectedIndex != question.correctIndex -> Color(0xFFFFEBEE)
-                else -> Color.White
+                else -> unselectedSurface
             }
             val borderColor = when {
                 !answered -> if (selectedIndex == index) AppColors.Purple else AppColors.BorderColor
@@ -247,14 +249,20 @@ fun PlacementResultScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppColors.BgWhite)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(emoji, fontSize = 72.sp)
         Spacer(Modifier.height(24.dp))
-        Text(title, fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Text(
+            title,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
         Spacer(Modifier.height(12.dp))
 
         Box(
