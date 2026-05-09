@@ -542,12 +542,11 @@ private fun WeeklyActivityChart(
 
 @Composable
 private fun AchievementsSection(unlocked: Int, total: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Card(
+    com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shadowElevation = 2.dp
     ) {
         Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(modifier = Modifier.size(48.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {

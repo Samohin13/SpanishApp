@@ -135,19 +135,19 @@ private fun LessonCard(lesson: LessonEntity, onComplete: () -> Unit) {
         runCatching { JSONObject(lesson.contentJson) }.getOrNull()
     }
 
-    Surface(
+    com.spanishapp.ui.components.PressableCard(
+        onClick = { expanded = !expanded },
+        modifier = Modifier.fillMaxWidth().animateContentSize(),
         shape = RoundedCornerShape(18.dp),
-        color = if (lesson.isCompleted)
+        backgroundColor = if (lesson.isCompleted)
             MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
-        else MaterialTheme.colorScheme.surface,
-        tonalElevation = if (lesson.isCompleted) 0.dp else 1.dp,
-        modifier = Modifier.fillMaxWidth().animateContentSize()
+        else MaterialTheme.colorScheme.surface
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
             // Header
             Row(
-                modifier = Modifier.fillMaxWidth().clickable { expanded = !expanded },
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
