@@ -19,6 +19,7 @@ import androidx.navigation.navArgument
 import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
+import com.spanishapp.ui.flashcards.PracticeScreen
 import com.spanishapp.ui.chat.AiChatScreen
 import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.games.*
@@ -241,6 +242,8 @@ object Navigation {
                     navArgument("level") { defaultValue = "A1" }
                 )
             ) { FlashcardsSetupScreen(navController) }
+
+            composable("practice") { PracticeScreen(navController) }
 
             composable(
                 "flashcards_session?level={level}&category={category}&direction={direction}&setId={setId}",

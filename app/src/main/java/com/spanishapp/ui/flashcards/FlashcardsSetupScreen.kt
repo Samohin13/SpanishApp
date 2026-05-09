@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -62,6 +63,14 @@ class FlashcardsSetupViewModel @Inject constructor(
     private val _setsForLevel = MutableStateFlow<List<SetRowUi>>(emptyList())
     val setsForLevel: StateFlow<List<SetRowUi>> = _setsForLevel.asStateFlow()
 
+    /** Number of weak words across the whole vocabulary (drives Practice tile). */
+    private val _weakCount = MutableStateFlow(0)
+    val weakCount: StateFlow<Int> = _weakCount.asStateFlow()
+
+    init {
+        viewModelScope.launch { _weakCount.value = wordDao.countWeakAll() }
+    }
+
     fun selectLevel(level: String) {
         _selectedLevel.value = level
         loadSetsFor(level)
@@ -108,6 +117,7 @@ fun FlashcardsSetupScreen(
 ) {
     val selectedLevel by viewModel.selectedLevel.collectAsState()
     val sets          by viewModel.setsForLevel.collectAsState()
+    val weakCount     by viewModel.weakCount.collectAsState()
 
     LaunchedEffect(selectedLevel) { viewModel.loadSetsFor(selectedLevel) }
 
@@ -142,6 +152,17 @@ fun FlashcardsSetupScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+            }
+
+            // ── Practice tile (Tobo-style) ─────────────────────
+            // Goes to a multiple-choice quiz over weak words. Always visible —
+            // shows "0" when fresh, encourages user to come back after sessions.
+            item {
+                PracticeTile(
+                    weakCount = weakCount,
+                    onClick = { navController.navigate("practice") },
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
             }
 
             // ── Level tabs ─────────────────────────────────────
@@ -338,5 +359,69 @@ private fun SetRow(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun PracticeTile(
+    weakCount: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val accent = Color(0xFFE8A317)  // gold — matches Tobo's reference
+    com.spanishapp.ui.components.PressableCard(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        backgroundColor = accent,
+        shadowElevation = 4.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(18.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Refresh, null,
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+            Spacer(Modifier.width(14.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Практика",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    if (weakCount == 0)
+                        "Слабых слов нет — занимайся карточками"
+                    else
+                        "$weakCount ${pluralWords(weakCount)} требуют повторения",
+                    fontSize = 13.sp,
+                    color = Color.White.copy(alpha = 0.85f)
+                )
+            }
+        }
+    }
+}
+
+/** Russian pluralization for "слово" — 1 слово / 2-4 слова / 5+ слов. */
+private fun pluralWords(n: Int): String {
+    val mod10 = n % 10
+    val mod100 = n % 100
+    return when {
+        mod100 in 11..14 -> "слов"
+        mod10 == 1       -> "слово"
+        mod10 in 2..4    -> "слова"
+        else             -> "слов"
     }
 }

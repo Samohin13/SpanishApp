@@ -133,6 +133,39 @@ interface WordDao {
     @Query("SELECT DISTINCT category FROM words WHERE level = :level ORDER BY category")
     suspend fun categoriesForLevel(level: String): List<String>
 
+    /** Count of "weak" words across all levels (accuracy < 60%, ≥3 reviews). */
+    @Query("""
+        SELECT COUNT(*) FROM words
+        WHERE total_reviews > 2
+          AND (correct_reviews * 1.0 / total_reviews) < 0.6
+    """)
+    suspend fun countWeakAll(): Int
+
+    /** Count of "due" words (need review per SM-2: nextReview ≤ now). */
+    @Query("""
+        SELECT COUNT(*) FROM words
+        WHERE total_reviews > 0 AND next_review > 0 AND next_review <= :now
+    """)
+    suspend fun countDue(now: Long): Int
+
+    /** Random distractors at the same level (used to build multiple-choice options). */
+    @Query("""
+        SELECT * FROM words
+        WHERE level = :level AND id != :excludeId
+        ORDER BY RANDOM() LIMIT :limit
+    """)
+    suspend fun randomDistractors(level: String, excludeId: Int, limit: Int): List<WordEntity>
+
+    /** All weak words (no category filter), ordered worst-first. */
+    @Query("""
+        SELECT * FROM words
+        WHERE total_reviews > 2
+          AND (correct_reviews * 1.0 / total_reviews) < 0.6
+        ORDER BY (correct_reviews * 1.0 / total_reviews) ASC
+        LIMIT :limit
+    """)
+    suspend fun getAllWeak(limit: Int): List<WordEntity>
+
     // ── Level mastery (for unlock progression) ────────────────
     @Query("SELECT COUNT(*) FROM words WHERE level = :level")
     suspend fun countByLevel(level: String): Int
