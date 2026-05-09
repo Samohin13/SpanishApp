@@ -262,14 +262,17 @@ fun FlashcardsSetupScreen(
             item { Spacer(Modifier.height(8.dp)) }
 
             // ── Category rows ──────────────────────────────────
-            items(catProgress) { cat ->
+            // Keyed by category id so items reflow smoothly when level changes
+            // (rather than re-creating the whole list).
+            items(catProgress, key = { it.key }) { cat ->
                 CategoryRow(
                     cat     = cat,
                     onClick = {
                         navController.navigate(
                             "flashcards_session?level=$selectedLevel&category=${cat.key}&direction=ES_TO_RU"
                         )
-                    }
+                    },
+                    modifier = Modifier.animateItem()
                 )
                 Spacer(Modifier.height(6.dp))
             }
@@ -335,7 +338,11 @@ private fun LevelTab(
 // ── Category row ───────────────────────────────────────────────
 
 @Composable
-private fun CategoryRow(cat: CategoryProgress, onClick: () -> Unit) {
+private fun CategoryRow(
+    cat: CategoryProgress,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val info = if (cat.key == "all") {
         CategoryMeta.infoFor("all")
     } else {
@@ -344,7 +351,7 @@ private fun CategoryRow(cat: CategoryProgress, onClick: () -> Unit) {
 
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(16.dp)

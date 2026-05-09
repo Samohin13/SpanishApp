@@ -117,7 +117,8 @@ fun GrammarScreen(
                     items(lessons, key = { it.id }) { lesson ->
                         LessonCard(
                             lesson    = lesson,
-                            onComplete = { vm.markCompleted(lesson) }
+                            onComplete = { vm.markCompleted(lesson) },
+                            modifier   = Modifier.animateItem()
                         )
                     }
                 }
@@ -129,7 +130,11 @@ fun GrammarScreen(
 // ── Lesson card ───────────────────────────────────────────────
 
 @Composable
-private fun LessonCard(lesson: LessonEntity, onComplete: () -> Unit) {
+private fun LessonCard(
+    lesson: LessonEntity,
+    onComplete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var expanded by remember { mutableStateOf(false) }
     val content  = remember(lesson.contentJson) {
         runCatching { JSONObject(lesson.contentJson) }.getOrNull()
@@ -137,7 +142,7 @@ private fun LessonCard(lesson: LessonEntity, onComplete: () -> Unit) {
 
     com.spanishapp.ui.components.PressableCard(
         onClick = { expanded = !expanded },
-        modifier = Modifier.fillMaxWidth().animateContentSize(),
+        modifier = modifier.fillMaxWidth().animateContentSize(),
         shape = RoundedCornerShape(18.dp),
         backgroundColor = if (lesson.isCompleted)
             MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
