@@ -472,8 +472,8 @@ private fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -
     Surface(
         modifier = modifier.fillMaxSize(),
         shape = RoundedCornerShape(32.dp),
-        tonalElevation = 8.dp,
-        shadowElevation = 4.dp,
+        // tonalElevation overlays primary tint = brown in M3 dark. Use shadow only.
+        shadowElevation = 6.dp,
         color = MaterialTheme.colorScheme.surface,
         border = androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
     ) {
@@ -492,18 +492,35 @@ private fun CardFront(
         FlashcardDirection.RU_TO_ES -> word.russian
         FlashcardDirection.MIXED -> word.spanish
     }
-    
+    // Strip article so emoji lookup matches ("el gato" → "gato").
+    val emoji = remember(word.spanish) {
+        val cleaned = word.spanish
+            .replace(Regex("^(el|la|los|las|un|una)\\s+", RegexOption.IGNORE_CASE), "")
+            .trim()
+        com.spanishapp.ui.games.WordEmoji.get(cleaned)
+    }
+
     Box(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            frontText,
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.ExtraBold,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            // Big illustrative emoji (when known) — same approach Tobo uses,
+            // gives the word a visual hook without requiring per-word PNGs.
+            if (emoji != null) {
+                Text(emoji, fontSize = 96.sp)
+            }
+            Text(
+                frontText,
+                style = MaterialTheme.typography.displayMedium,
+                fontWeight = FontWeight.ExtraBold,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
 
         Text(
             "НАЖМИ, ЧТОБЫ ПЕРЕВЕРНУТЬ",
