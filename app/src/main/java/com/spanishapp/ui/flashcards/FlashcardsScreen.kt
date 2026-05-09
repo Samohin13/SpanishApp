@@ -290,8 +290,10 @@ private fun SessionBody(
                     rotationZ = (offsetX.value / 30f).coerceIn(-15f, 15f)
                     alpha = (1f - (kotlin.math.abs(offsetX.value) / 800f)).coerceIn(0.4f, 1f)
                 }
-                .pointerInput(state.showBack, state.currentIndex) {
-                    if (!state.showBack) return@pointerInput
+                .pointerInput(state.currentIndex) {
+                    // Swipe gestures work on BOTH sides — user can commit answer
+                    // without ever flipping (Tinder-style). Tap-to-flip stays
+                    // available for "I want to peek at the answer" moments.
                     detectDragGestures(
                         onDragEnd = {
                             val xPx = offsetX.value
@@ -334,68 +336,33 @@ private fun SessionBody(
             )
         }
 
-        // Подсказка о жестах появляется только на обороте карточки.
-        AnimatedVisibility(visible = state.showBack) {
-            Text(
-                "← Забыл  ·  ↑ Легко  ·  Помню →",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-
         Spacer(Modifier.weight(1f))
 
-        AnimatedContent(
-            targetState = state.showBack,
-            transitionSpec = {
-                (fadeIn() + scaleIn()).togetherWith(fadeOut() + scaleOut())
-            },
-            label = "controls"
-        ) { isShowingBack ->
-            if (!isShowingBack) {
-                Button(
-                    onClick = onFlip,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Text("Показать перевод", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                }
-            } else {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    RatingAction(
-                        text = "Забыл",
-                        icon = Icons.Default.Close,
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.weight(1f)
-                    ) { onAnswer(ReviewButton.HARD) }
-
-                    RatingAction(
-                        text = "Помню",
-                        icon = Icons.Default.Check,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.weight(1f)
-                    ) { onAnswer(ReviewButton.GOOD) }
-
-                    RatingAction(
-                        text = "Легко",
-                        icon = Icons.Default.AutoAwesome,
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                        modifier = Modifier.weight(1f)
-                    ) { onAnswer(ReviewButton.EASY) }
-                }
-            }
+        // Permanent swipe legend — works on both front and back of the card.
+        // User can tap to flip & peek, but the primary interaction is the swipe.
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp, top = 12.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SwipeLegend("←", "Забыл",  MaterialTheme.colorScheme.error)
+            SwipeLegend("↑", "Легко",  MaterialTheme.colorScheme.tertiary)
+            SwipeLegend("→", "Помню", MaterialTheme.colorScheme.primary)
         }
-        
-        Spacer(Modifier.height(20.dp))
+    }
+}
+
+@Composable
+private fun SwipeLegend(arrow: String, label: String, color: Color) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(arrow, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = color)
+        Text(
+            label,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
@@ -528,7 +495,7 @@ private fun CardFront(
         }
 
         Text(
-            "НАЖМИ, ЧТОБЫ ПЕРЕВЕРНУТЬ",
+            "НАЖМИ, ЧТОБЫ ПРОВЕРИТЬ",
             modifier = Modifier.align(Alignment.BottomCenter),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),

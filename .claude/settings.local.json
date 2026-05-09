@@ -19,7 +19,11 @@
       "Bash(./gradlew :app:compileDebugKotlin)",
       "Bash(python replace_colors.py)",
       "Bash(./gradlew.bat assembleDebug)",
-      "Bash(grep -vE '\\(\\\\.firstOrNull|\\\\.firstNotNullOf|//|/\\\\*\\)')"
+      "Bash(grep -vE '\\(\\\\.firstOrNull|\\\\.firstNotNullOf|//|/\\\\*\\)')",
+      "Bash(cat)",
+      "Read(//tmp/**)",
+      "Bash(chmod +x /tmp/verify.sh)",
+      "Bash(/tmp/verify.sh /tmp/sets_draft.txt)"
     ]
   },
   "sandbox": {
