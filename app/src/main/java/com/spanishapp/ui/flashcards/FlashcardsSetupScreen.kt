@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
@@ -37,17 +38,24 @@ private val LEVELS = listOf("A1", "A2", "B1", "B2")
 
 // ── UI state types ─────────────────────────────────────────────
 
+/** Trophy tier earned by the best session for this set. */
+enum class TrophyTier {
+    NONE,    // never practiced or below 50%
+    BRONZE,  // 50-69%
+    SILVER,  // 70-89%
+    GOLD     // 90-100%
+}
+
 /** One row in the sets list. */
 data class SetRowUi(
     val set: FlashcardSet,
-    val mastered: Int,    // count of words from the set already learned
-    val total: Int,       // size of the set (= set.wordsSpanish.size, capped to DB hits)
-    val stars: Int,       // 0..3 from FlashcardSetProgressEntity
+    val total: Int,            // size of the set (= words actually present in DB)
+    val bestPercent: Int,      // 0..100, best session result so far
+    val tier: TrophyTier,
+    val isCompleted: Boolean,  // true if user finished at least one session
     val unlocked: Boolean,
     val isNext: Boolean
-) {
-    val ratio: Float get() = if (total > 0) mastered.toFloat() / total else 0f
-}
+)
 
 // ── ViewModel ──────────────────────────────────────────────────
 
@@ -69,6 +77,14 @@ class FlashcardsSetupViewModel @Inject constructor(
 
     init {
         viewModelScope.launch { _weakCount.value = wordDao.countWeakAll() }
+        // Re-emit set list whenever ANY set's progress changes — so completing
+        // a session and navigating back instantly refreshes stars/unlocks.
+        viewModelScope.launch {
+            setDao.observeAll().collect {
+                loadSetsFor(_selectedLevel.value)
+                _weakCount.value = wordDao.countWeakAll()
+            }
+        }
     }
 
     fun selectLevel(level: String) {
@@ -81,26 +97,36 @@ class FlashcardsSetupViewModel @Inject constructor(
             val sets = FlashcardSetData.byLevel(level)
             val progressMap = setDao.getAll().associateBy { it.setId }
 
-            // Find the next-to-do (first locked-in-progress) set so we highlight it.
-            var prevReady = true
+            // Unlock = previous set was completed at least once (any session).
+            // We don't gate on accuracy — the user is free to retry weak sets
+            // anytime via Practice mode without being blocked from progressing.
+            var prevCompleted = true   // first set always unlocked
             val rows = sets.map { set ->
                 val words = wordDao.findBySpanishMany(
                     set.wordsSpanish.map { it.lowercase().trim() }
                 )
                 val total = words.size
-                val mastered = words.count { it.isLearned }
-                val ratio = if (total > 0) mastered.toFloat() / total else 0f
-                val unlocked = prevReady
-                val isNext = unlocked && ratio < FlashcardSetData.UNLOCK_RATIO
+                val progress = progressMap[set.id]
+                val bestPercent = progress?.bestPercent ?: 0
+                val isCompleted = (progress?.completedAt ?: 0L) > 0L
+                val tier = when {
+                    bestPercent >= 90 -> TrophyTier.GOLD
+                    bestPercent >= 70 -> TrophyTier.SILVER
+                    bestPercent >= 50 -> TrophyTier.BRONZE
+                    else              -> TrophyTier.NONE
+                }
+                val unlocked = prevCompleted
+                val isNext = unlocked && !isCompleted
                 val row = SetRowUi(
                     set = set,
-                    mastered = mastered,
                     total = total,
-                    stars = progressMap[set.id]?.stars ?: 0,
+                    bestPercent = bestPercent,
+                    tier = tier,
+                    isCompleted = isCompleted,
                     unlocked = unlocked,
-                    isNext = isNext && prevReady
+                    isNext = isNext
                 )
-                prevReady = ratio >= FlashcardSetData.UNLOCK_RATIO
+                prevCompleted = isCompleted
                 row
             }
             _setsForLevel.value = rows
@@ -313,13 +339,18 @@ private fun SetRow(
                 )
                 Spacer(Modifier.height(4.dp))
                 if (row.unlocked) {
-                    // Progress text + bar
+                    // Show: not started / best result so far
+                    val statusText = when {
+                        !row.isCompleted -> "${row.total} слов · ещё не пройден"
+                        else             -> "Лучший результат: ${row.bestPercent}%"
+                    }
                     Text(
-                        "${row.mastered} / ${row.total} слов",
+                        statusText,
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(6.dp))
+                    val progressFraction = row.bestPercent / 100f
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -330,7 +361,7 @@ private fun SetRow(
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .fillMaxWidth(row.ratio.coerceIn(0f, 1f))
+                                .fillMaxWidth(progressFraction.coerceIn(0f, 1f))
                                 .clip(RoundedCornerShape(3.dp))
                                 .background(accent)
                         )
@@ -344,20 +375,37 @@ private fun SetRow(
                 }
             }
 
-            // Stars
-            if (row.unlocked) {
+            // Trophy tier (Bronze / Silver / Gold) — replaces the previous 3-star row.
+            if (row.unlocked && row.tier != TrophyTier.NONE) {
                 Spacer(Modifier.width(10.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                    repeat(3) { i ->
-                        Icon(
-                            Icons.Default.Star, null,
-                            modifier = Modifier.size(14.dp),
-                            tint = if (i < row.stars) Color(0xFFFFC107)
-                            else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-                        )
-                    }
-                }
+                TrophyBadge(row.tier)
             }
+        }
+    }
+}
+
+@Composable
+private fun TrophyBadge(tier: TrophyTier) {
+    val (color, label) = when (tier) {
+        TrophyTier.GOLD   -> Color(0xFFFFC107) to "GOLD"
+        TrophyTier.SILVER -> Color(0xFFB0BEC5) to "SILVER"
+        TrophyTier.BRONZE -> Color(0xFFCD7F32) to "BRONZE"
+        TrophyTier.NONE   -> Color.Transparent to ""
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .clip(CircleShape)
+                .background(color.copy(alpha = 0.18f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.EmojiEvents,
+                contentDescription = label,
+                tint = color,
+                modifier = Modifier.size(22.dp)
+            )
         }
     }
 }

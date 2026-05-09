@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -349,13 +350,24 @@ private fun FinishedView(
     onRestart: () -> Unit,
     onExit: () -> Unit
 ) {
+    val composition by com.airbnb.lottie.compose.rememberLottieComposition(
+        com.airbnb.lottie.compose.LottieCompositionSpec.RawRes(com.spanishapp.R.raw.lottie_victory)
+    )
+    val lottieProgress by com.airbnb.lottie.compose.animateLottieCompositionAsState(composition)
+
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         if (error != null) {
-            Text("🌱", fontSize = 64.sp)
+            // Empty state — no trophy. Plain Material icon for the leaf.
+            Icon(
+                Icons.Default.Refresh,
+                null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(72.dp)
+            )
             Spacer(Modifier.height(16.dp))
             Text(
                 error,
@@ -369,12 +381,16 @@ private fun FinishedView(
                 Text("Назад", fontWeight = FontWeight.Bold)
             }
         } else {
-            val percent = if (total > 0) (correct * 100 / total) else 0
-            Text(
-                if (percent >= 80) "🏆" else if (percent >= 50) "👍" else "💪",
-                fontSize = 72.sp
-            )
-            Spacer(Modifier.height(16.dp))
+            // Lottie trophy — same animation used at the end of flashcard sessions
+            // for visual consistency across the app's reward screens.
+            Box(modifier = Modifier.size(160.dp), contentAlignment = Alignment.Center) {
+                com.airbnb.lottie.compose.LottieAnimation(
+                    composition = composition,
+                    progress = { lottieProgress },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            Spacer(Modifier.height(8.dp))
             Text(
                 "$correct / $total",
                 fontSize = 36.sp,
