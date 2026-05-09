@@ -23,6 +23,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -229,6 +231,26 @@ fun AiChatScreen(
                 }
             }
 
+            // Animated AI-style gradient border (yellow → orange → red, looping).
+            // Using infiniteTransition phase shift to animate the gradient angle.
+            val infiniteTransition = androidx.compose.animation.core.rememberInfiniteTransition(label = "ai_border")
+            val phase by infiniteTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 1f,
+                animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+                    animation = androidx.compose.animation.core.tween(2400, easing = androidx.compose.animation.core.LinearEasing),
+                    repeatMode = androidx.compose.animation.core.RepeatMode.Restart
+                ),
+                label = "ai_border_phase"
+            )
+            val aiColors = listOf(
+                Color(0xFFFFD600), // yellow
+                Color(0xFFFF9800), // orange
+                Color(0xFFFF3D00), // red
+                Color(0xFFFF9800), // orange
+                Color(0xFFFFD600)  // yellow (loop seamlessly)
+            )
+
             Surface(
                 tonalElevation = 8.dp,
                 shadowElevation = 8.dp,
@@ -243,38 +265,103 @@ fun AiChatScreen(
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    OutlinedTextField(
-                        value = input,
-                        onValueChange = { input = it },
-                        placeholder = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder)) },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(24.dp),
-                        maxLines = 5,
-                        enabled = !isSending,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-                        )
-                    )
-                    
-                    FloatingActionButton(
-                        onClick = { 
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            vm.send(input)
-                            input = "" 
-                        },
-                        containerColor = if (input.isNotBlank()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = if (input.isNotBlank()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(48.dp),
-                        shape = CircleShape,
-                        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
+                    // Animated gradient border around the text field.
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .drawBehind {
+                                val borderWidth = 1.5.dp.toPx()
+                                val cornerRadius = androidx.compose.ui.geometry.CornerRadius(24.dp.toPx())
+                                val brush = Brush.linearGradient(
+                                    colors = aiColors,
+                                    start = androidx.compose.ui.geometry.Offset(
+                                        x = size.width * (phase - 0.5f),
+                                        y = 0f
+                                    ),
+                                    end = androidx.compose.ui.geometry.Offset(
+                                        x = size.width * (phase + 0.5f),
+                                        y = size.height
+                                    )
+                                )
+                                drawRoundRect(
+                                    brush = brush,
+                                    cornerRadius = cornerRadius,
+                                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = borderWidth)
+                                )
+                            }
                     ) {
-                        if (isSending) {
-                            CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
-                        } else {
-                            Icon(Icons.AutoMirrored.Filled.Send, null, modifier = Modifier.size(20.dp))
+                        OutlinedTextField(
+                            value = input,
+                            onValueChange = { input = it },
+                            placeholder = {
+                                Text(
+                                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            },
+                            textStyle = androidx.compose.ui.text.TextStyle(color = MaterialTheme.colorScheme.onSurface),
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(24.dp),
+                            maxLines = 5,
+                            enabled = !isSending,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                // Hide the default OutlinedTextField border — we draw our own animated one.
+                                unfocusedBorderColor = Color.Transparent,
+                                focusedBorderColor = Color.Transparent,
+                                disabledBorderColor = Color.Transparent,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                disabledTextColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        )
+                    }
+
+                    // Send button with the same animated gradient ring (when idle).
+                    val sendActive = input.isNotBlank()
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .drawBehind {
+                                val borderWidth = 1.5.dp.toPx()
+                                val brush = Brush.linearGradient(
+                                    colors = aiColors,
+                                    start = androidx.compose.ui.geometry.Offset(
+                                        x = size.width * (phase - 0.5f),
+                                        y = 0f
+                                    ),
+                                    end = androidx.compose.ui.geometry.Offset(
+                                        x = size.width * (phase + 0.5f),
+                                        y = size.height
+                                    )
+                                )
+                                drawCircle(
+                                    brush = brush,
+                                    radius = (size.minDimension - borderWidth) / 2f,
+                                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = borderWidth)
+                                )
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                vm.send(input)
+                                input = ""
+                            },
+                            containerColor = if (sendActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest,
+                            contentColor = if (sendActive) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(44.dp),
+                            shape = CircleShape,
+                            elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
+                        ) {
+                            if (isSending) {
+                                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
+                            } else {
+                                Icon(Icons.AutoMirrored.Filled.Send, null, modifier = Modifier.size(20.dp))
+                            }
                         }
                     }
                 }
