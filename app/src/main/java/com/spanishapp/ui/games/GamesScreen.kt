@@ -93,14 +93,13 @@ private fun GameCard(
     progress: GameProgressInfo?,
     onClick: () -> Unit
 ) {
-    Surface(
+    com.spanishapp.ui.components.PressableCard(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
-            .clickable(onClick = onClick),
+            .height(160.dp),
         shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
+        shadowElevation = 4.dp
     ) {
         Column(
             modifier = Modifier
