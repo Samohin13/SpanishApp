@@ -15,7 +15,39 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalTime
 import javax.inject.Inject
+
+// ── Daily-rotating greeting helpers ─────────────────────────────
+// Time-of-day driven greeting + a deterministic daily motivation.
+// Both update once per real day so the home screen feels alive without
+// being random-on-every-recomposition.
+
+private val MOTIVATIONS = listOf(
+    "Каждое слово — шаг ближе к Испании 🇪🇸",
+    "Маленький прогресс лучше нулевого",
+    "Mañana = завтра. Hoy = сегодня. Делай сегодня.",
+    "5 минут в день меняют всё",
+    "Tu español está mejorando 💪",
+    "Practica hoy, brilla mañana",
+    "Полиглоты не рождаются — они тренируются",
+    "Ещё один день — ещё одно слово"
+)
+
+internal fun greetingFor(time: LocalTime): String {
+    val h = time.hour
+    return when {
+        h in 5..10  -> "Доброе утро, готов учиться?"
+        h in 11..16 -> "Добрый день! Время для испанского"
+        h in 17..21 -> "Добрый вечер, продолжаем?"
+        else        -> "Ночные занятия — ¡vamos!"
+    }
+}
+
+internal fun motivationFor(date: LocalDate): String {
+    val idx = (date.toEpochDay().mod(MOTIVATIONS.size.toLong())).toInt()
+    return MOTIVATIONS[idx]
+}
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(

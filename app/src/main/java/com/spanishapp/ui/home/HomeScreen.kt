@@ -8,7 +8,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -20,9 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.util.lerp
+import kotlin.math.absoluteValue
+import java.time.LocalDate
+import java.time.LocalTime
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -76,15 +84,16 @@ private val LockGray    = Color(0xFFC7C7CC)
 private val BgGray      = Color(0xFFF0F0F5)  // Cool gray home wrapper
 private val BgLight     = Color(0xFFF8F8FA)  // SpanishBackground
 
-// CEFR level gradients (deep glossy)
-private val A1Start     = Color(0xFF6EE7B7)
-private val A1End       = Color(0xFF064E3B)
-private val A2Start     = Color(0xFF93C5FD)
-private val A2End       = Color(0xFF0F1E5A)
-private val B1Start     = Color(0xFFFDE68A)
-private val B1End       = Color(0xFF7F1D1D)
-private val B2Start     = Color(0xFFF0ABFC)
-private val B2End       = Color(0xFF2E1065)
+// CEFR level gradients — vivid + contrasting per level (3.9).
+// A1 purple, A2 teal, B1 green, B2 orange.
+private val A1Start     = Color(0xFF7C3AED)  // bright violet
+private val A1End       = Color(0xFF5B21B6)  // deep violet
+private val A2Start     = Color(0xFF06B6D4)  // bright teal
+private val A2End       = Color(0xFF0E7490)  // deep teal
+private val B1Start     = Color(0xFF22C55E)  // bright green
+private val B1End       = Color(0xFF15803D)  // deep green
+private val B2Start     = Color(0xFFF97316)  // bright orange
+private val B2End       = Color(0xFFC2410C)  // deep orange
 
 // ═══════════════════════════════════════════════════════════════
 //  HOME SCREEN
@@ -117,15 +126,23 @@ fun HomeScreen(
     val courseLockedLabel = stringResource(R.string.course_locked)
     val courseStartLabel = stringResource(R.string.course_start_learning)
     val course60LessonsLabel = stringResource(R.string.course_lessons_60)
-    val homeGreeting = stringResource(R.string.home_greeting)
-    val homeSubtitleStr = stringResource(R.string.home_subtitle)
     val homeWordOfDayLabel = stringResource(R.string.home_word_of_day)
 
+    // Time-of-day greeting + daily-rotating motivation (3.1).
+    // Recomputed once per recomposition; the day-of-epoch key keeps the
+    // animation in AnimatedScreenTitle from replaying on every state tick.
+    val today = remember { LocalDate.now() }
+    val greeting = remember(today) { greetingFor(LocalTime.now()) }
+    val motivation = remember(today) { motivationFor(today) }
+
     Box(modifier = Modifier.fillMaxSize()) {
+    // Faint Spain-cities skyline behind the whole feed (3.5).
+    com.spanishapp.ui.components.SpanishCitiesWatermark(
+        modifier = Modifier.fillMaxSize()
+    )
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
         contentPadding = PaddingValues(bottom = 96.dp)  // extra space so FAB doesn't cover content
     ) {
@@ -184,9 +201,16 @@ fun HomeScreen(
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 20.dp)
             ) {
-                Text(homeGreeting, fontSize = 26.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                // Animated entrance — replayKey on greeting so the morning →
+                // afternoon transition triggers the staggered re-reveal (3.8).
+                com.spanishapp.ui.components.AnimatedScreenTitle(
+                    text = greeting,
+                    fontSize = 26.sp,
+                    bold = true,
+                    replayKey = greeting
+                )
                 Spacer(Modifier.height(2.dp))
-                Text(homeSubtitleStr, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(motivation, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -213,18 +237,64 @@ fun HomeScreen(
             }
         }
 
-        // ── Course cards ───────────────────────────────────────
+        // ── Course pager ───────────────────────────────────────
+        // Horizontal carousel: ~85% width per page, peek of neighbours,
+        // current page scales up while siblings fade and shrink (3.2).
         val courseData = courseDataLocal
-
-        itemsIndexed(courseData) { _, course ->
-            CourseCard(
-                course = course,
-                unitsCount = state.roadmapUnits.count { it.cefrLevel == course.level },
-                isLocked = false,
-                onClick = { navController.navigate("course_detail/${course.level}") },
-                onPremiumClick = { /* premium убран — все курсы открыты */ }
-            )
-            Spacer(Modifier.height(12.dp))
+        item {
+            val pagerState = rememberPagerState(pageCount = { courseData.size })
+            Column {
+                HorizontalPager(
+                    state = pagerState,
+                    pageSize = PageSize.Fixed(320.dp),
+                    contentPadding = PaddingValues(horizontal = 32.dp),
+                    pageSpacing = 12.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) { page ->
+                    val course = courseData[page]
+                    val pageOffset =
+                        (pagerState.currentPage - page + pagerState.currentPageOffsetFraction)
+                            .absoluteValue
+                            .coerceIn(0f, 1f)
+                    Box(
+                        modifier = Modifier.graphicsLayer {
+                            val s = lerp(0.92f, 1f, 1f - pageOffset)
+                            scaleX = s
+                            scaleY = s
+                            alpha = lerp(0.6f, 1f, 1f - pageOffset)
+                        }
+                    ) {
+                        CourseCard(
+                            course = course,
+                            unitsCount = state.roadmapUnits.count { it.cefrLevel == course.level },
+                            isLocked = false,
+                            onClick = { navController.navigate("course_detail/${course.level}") },
+                            onPremiumClick = { /* premium убран — все курсы открыты */ }
+                        )
+                    }
+                }
+                Spacer(Modifier.height(12.dp))
+                // Dots indicator — active dot uses the current course's start color.
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    courseData.forEachIndexed { idx, course ->
+                        val isActive = pagerState.currentPage == idx
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .size(if (isActive) 10.dp else 7.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    if (isActive) course.colorStart
+                                    else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                                )
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -271,10 +341,19 @@ private fun CourseCard(
     onClick: () -> Unit,
     onPremiumClick: () -> Unit = {}
 ) {
+    // Diagonal gradient with a third (lighter) accent stop for depth (3.6).
     val headerBrush = if (isLocked)
-        Brush.horizontalGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
+        Brush.linearGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
     else
-        Brush.horizontalGradient(listOf(course.colorStart, course.colorEnd))
+        Brush.linearGradient(
+            colors = listOf(
+                course.colorStart,
+                course.colorEnd,
+                course.colorStart.copy(alpha = 0.85f)
+            ),
+            start = Offset.Zero,
+            end = Offset(1000f, 1000f)
+        )
 
     val accentColor = if (isLocked) LockGray else course.colorStart
 
@@ -287,40 +366,52 @@ private fun CourseCard(
         shadowElevation = if (isLocked) 2.dp else 8.dp
     ) {
         Column {
-            // ── Header — deep glossy gradient ───────────────────
+            // ── Header — diagonal gradient + skyline watermark ──
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
+                    .height(140.dp)
                     .background(headerBrush)
             ) {
+                // Subtle white skyline overlay on each card header (3.5).
+                com.spanishapp.ui.components.SpanishCitiesWatermark(
+                    color = Color.White.copy(alpha = 0.10f)
+                )
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 18.dp),
+                        .padding(horizontal = 18.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(course.icon, fontSize = 40.sp, modifier = Modifier.padding(bottom = 8.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Text(course.icon, fontSize = 36.sp)
                             CefrBadge(course.level)
-                            Text(
-                                course.title,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = Color.White,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
                         }
+                        Spacer(Modifier.height(6.dp))
+                        // Headline-feel title — 28sp ExtraBold tight tracking (3.4).
+                        Text(
+                            course.title,
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = (-0.5).sp,
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                     if (isLocked) {
                         Icon(Icons.Default.Lock, null, tint = Color.White.copy(.8f), modifier = Modifier.size(24.dp))
                     } else {
+                        // Just the unit count with a packet emoji — no "блоков" label (3.3).
                         Column(horizontalAlignment = Alignment.End) {
-                            Text("$unitsCount блоков", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                            Text(stringResource(R.string.course_lessons_60), fontSize = 11.sp, color = Color.White.copy(.8f))
+                            Text(
+                                "📦 $unitsCount",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
                         }
                     }
                 }
@@ -444,13 +535,17 @@ internal fun TopicCard(
                         }
 
                         Column {
-                            // Номер блока
-                            Text(
-                                text = stringResource(R.string.home_block_n, unit.id),
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color.White.copy(alpha = 0.80f)
-                            )
+                            // Если title уже начинается с "Блок" — не повторяем
+                            // подпись "Блок N" (3.7: убираем дубликат).
+                            val titleStartsWithBlock = unit.title.trimStart().startsWith("Блок", ignoreCase = true)
+                            if (!titleStartsWithBlock) {
+                                Text(
+                                    text = stringResource(R.string.home_block_n, unit.id),
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.White.copy(alpha = 0.80f)
+                                )
+                            }
                             // Название блока
                             Text(
                                 text = unit.title,
