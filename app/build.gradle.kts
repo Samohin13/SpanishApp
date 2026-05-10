@@ -37,6 +37,11 @@ android {
         // When empty, falls back to direct Gemini calls with GEMINI_API_KEY (dev only).
         val aiProxyUrl = localProps.getProperty("AI_PROXY_URL") ?: ""
         buildConfigField("String", "AI_PROXY_URL", "\"$aiProxyUrl\"")
+        // Shared secret sent in X-App-Secret header so the Worker rejects
+        // random requests from anyone who discovers the proxy URL. Must
+        // match Cloudflare env var APP_SECRET.
+        val aiProxySecret = localProps.getProperty("AI_PROXY_SECRET") ?: ""
+        buildConfigField("String", "AI_PROXY_SECRET", "\"$aiProxySecret\"")
     }
 
     signingConfigs {

@@ -115,11 +115,17 @@ class GeminiTranslator @Inject constructor(
         val body = payload.toRequestBody("application/json".toMediaType())
 
         return runCatching {
-            val request = Request.Builder()
+            val builder = Request.Builder()
                 .url(apiUrl())
                 .post(body)
                 .header("Content-Type", "application/json")
-                .build()
+            // Same shared-secret check as AiChatRepository — proxy needs it.
+            val proxy = BuildConfig.AI_PROXY_URL.trim()
+            val secret = BuildConfig.AI_PROXY_SECRET.trim()
+            if (proxy.isNotEmpty() && secret.isNotEmpty()) {
+                builder.header("X-App-Secret", secret)
+            }
+            val request = builder.build()
             okHttpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) return@runCatching null
                 val text = response.body?.string() ?: return@runCatching null

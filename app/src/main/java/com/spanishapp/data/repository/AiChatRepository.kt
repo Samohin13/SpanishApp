@@ -54,6 +54,21 @@ class AiChatRepository @Inject constructor(
             }
         }
 
+        /**
+         * Adds the X-App-Secret header when the proxy is in use AND a secret
+         * was configured at build time. The Worker rejects mismatching
+         * requests with 403 — protects the proxy from random callers who
+         * stumble onto the public URL.
+         */
+        private fun Request.Builder.withProxySecret(): Request.Builder {
+            val proxy = BuildConfig.AI_PROXY_URL.trim()
+            val secret = BuildConfig.AI_PROXY_SECRET.trim()
+            if (proxy.isNotEmpty() && secret.isNotEmpty()) {
+                header("X-App-Secret", secret)
+            }
+            return this
+        }
+
         private val SYSTEM_PROMPT = """
             Ты — дружелюбный репетитор испанского для русскоязычных НАЧИНАЮЩИХ (A1/A2).
 
@@ -107,6 +122,7 @@ class AiChatRepository @Inject constructor(
                 .url(apiUrl())
                 .post(body)
                 .header("Content-Type", "application/json")
+                .withProxySecret()
                 .build()
 
             val response = okHttpClient.newCall(request).execute()
@@ -170,6 +186,7 @@ class AiChatRepository @Inject constructor(
             .post(body)
             .header("Content-Type", "application/json")
             .header("Accept", "text/event-stream")
+            .withProxySecret()
             .build()
 
         val response = okHttpClient.newCall(request).execute()
@@ -251,6 +268,7 @@ class AiChatRepository @Inject constructor(
                     .url(apiUrl())
                     .post(body)
                     .header("Content-Type", "application/json")
+                    .withProxySecret()
                     .build()
 
                 val response = okHttpClient.newCall(request).execute()
