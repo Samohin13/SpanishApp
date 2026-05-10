@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -25,14 +26,26 @@ private data class LevelOption(
     val code: String,
     val emoji: String,
     val title: String,
-    val subtitle: String
+    val subtitle: String,
+    val gradientStart: Color,
+    val gradientEnd:   Color
 )
 
+// Brand colours mirror the CourseCard gradients on HomeScreen so the user
+// sees the same level palette they'll see throughout the app.
 private val LEVELS = listOf(
-    LevelOption("A1", "🌱", "A1 — Новичок", "Первые слова и фразы"),
-    LevelOption("A2", "⭐", "A2 — Основы", "Простые разговоры и покупки"),
-    LevelOption("B1", "🚀", "B1 — Средний", "Свободное общение на большинство тем"),
-    LevelOption("B2", "🏆", "B2 — Выше среднего", "Сложные тексты и дискуссии"),
+    LevelOption("A1", "🌱", "A1 — Новичок",
+        "Первые слова и фразы",
+        Color(0xFF7C3AED), Color(0xFFA855F7)),
+    LevelOption("A2", "⭐", "A2 — Основы",
+        "Простые разговоры и покупки",
+        Color(0xFF06B6D4), Color(0xFF0EA5E9)),
+    LevelOption("B1", "🚀", "B1 — Средний",
+        "Свободное общение на большинство тем",
+        Color(0xFF22C55E), Color(0xFF16A34A)),
+    LevelOption("B2", "🏆", "B2 — Выше среднего",
+        "Сложные тексты и дискуссии",
+        Color(0xFFF97316), Color(0xFFEA580C)),
 )
 
 // Уровни, контент для которых ещё в активной разработке.
@@ -103,41 +116,63 @@ fun LevelSelectionScreen(
                 val isSelected = selected == level.code
                 val isUpcoming = level.code in UPCOMING_LEVELS
 
-                Box(
+                Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 6.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(
-                            if (isSelected) AppColors.PurplePale else MaterialTheme.colorScheme.surface
-                        )
-                        .border(
-                            2.dp,
-                            if (isSelected) AppColors.Purple else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            RoundedCornerShape(14.dp)
-                        )
-                        .clickable { selected = level.code }
-                        .padding(18.dp)
+                        .padding(vertical = 8.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .clickable { selected = level.code },
+                    shape = RoundedCornerShape(20.dp),
+                    shadowElevation = if (isSelected) 12.dp else 8.dp,
+                    color = Color.Transparent
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(level.emoji, fontSize = 28.sp)
-                        Spacer(Modifier.width(16.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text(level.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                            Text(level.subtitle, fontSize = 13.sp, color = AppColors.TextSecondary)
-                        }
-                        if (isUpcoming) {
-                            Surface(
-                                shape = RoundedCornerShape(8.dp),
-                                color = Color(0xFFFFF3E0)
-                            ) {
-                                Text(
-                                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_upcoming_badge),
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFFE65100),
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(
+                                Brush.linearGradient(
+                                    colors = listOf(level.gradientStart, level.gradientEnd)
                                 )
+                            )
+                            .border(
+                                width = if (isSelected) 3.dp else 0.dp,
+                                color = if (isSelected) Color.White else Color.Transparent,
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                            .padding(horizontal = 20.dp, vertical = 22.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(level.emoji, fontSize = 36.sp)
+                            Spacer(Modifier.width(18.dp))
+                            Column(Modifier.weight(1f)) {
+                                Text(
+                                    level.title,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 28.sp,
+                                    color = Color.White
+                                )
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    level.subtitle,
+                                    fontSize = 15.sp,
+                                    color = Color.White.copy(alpha = 0.85f),
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                            if (isUpcoming) {
+                                Surface(
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = Color.White.copy(alpha = 0.22f)
+                                ) {
+                                    Text(
+                                        androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_upcoming_badge),
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                                    )
+                                }
                             }
                         }
                     }

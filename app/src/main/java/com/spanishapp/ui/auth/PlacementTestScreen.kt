@@ -168,19 +168,40 @@ fun PlacementTestScreen(
         Spacer(Modifier.height(32.dp))
 
         val unselectedSurface = MaterialTheme.colorScheme.surface
+        val unselectedBorder  = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+        val selectedBg        = MaterialTheme.colorScheme.primaryContainer
+        val selectedFg        = MaterialTheme.colorScheme.onPrimaryContainer
+        val selectedBorder    = MaterialTheme.colorScheme.primary
+        // Solid colors for post-check state — readable on both light & dark.
+        val correctBg   = Color(0xFF1B5E20)   // dark green
+        val correctFg   = Color.White
+        val wrongBg     = Color(0xFF8B0000)   // dark red
+        val wrongFg     = Color.White
+        val onSurface   = MaterialTheme.colorScheme.onSurface
+
         question.options.forEachIndexed { index, option ->
+            val isCorrect      = index == question.correctIndex
+            val isPickedWrong  = index == selectedIndex && !isCorrect
+
             val bgColor = when {
-                !answered -> if (selectedIndex == index) AppColors.PurplePale else unselectedSurface
-                index == question.correctIndex -> Color(0xFFE8F5E9)
-                index == selectedIndex && selectedIndex != question.correctIndex -> Color(0xFFFFEBEE)
+                !answered -> if (selectedIndex == index) selectedBg else unselectedSurface
+                isCorrect -> correctBg
+                isPickedWrong -> wrongBg
                 else -> unselectedSurface
             }
             val borderColor = when {
-                !answered -> if (selectedIndex == index) AppColors.Purple else AppColors.BorderColor
-                index == question.correctIndex -> Color(0xFF4CAF50)
-                index == selectedIndex && selectedIndex != question.correctIndex -> AppColors.Error
-                else -> AppColors.BorderColor
+                !answered -> if (selectedIndex == index) selectedBorder else unselectedBorder
+                isCorrect -> correctBg
+                isPickedWrong -> wrongBg
+                else -> unselectedBorder
             }
+            val textColor = when {
+                !answered -> if (selectedIndex == index) selectedFg else onSurface
+                isCorrect -> correctFg
+                isPickedWrong -> wrongFg
+                else -> onSurface
+            }
+            val borderWidth = if (!answered && selectedIndex == index) 2.dp else 1.5.dp
 
             Box(
                 modifier = Modifier
@@ -188,7 +209,7 @@ fun PlacementTestScreen(
                     .padding(vertical = 6.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(bgColor)
-                    .border(1.5.dp, borderColor, RoundedCornerShape(12.dp))
+                    .border(borderWidth, borderColor, RoundedCornerShape(12.dp))
                     .clickable(enabled = !answered) {
                         selectedIndex = index
                         answered = true
@@ -196,7 +217,7 @@ fun PlacementTestScreen(
                     }
                     .padding(16.dp)
             ) {
-                Text(option, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(option, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = textColor)
             }
         }
 

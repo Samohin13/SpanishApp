@@ -48,11 +48,10 @@ fun LessonIntroScreen(
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieRes))
     val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever)
 
-    val accentColor = when (lesson.type) {
-        "vocab"   -> MaterialTheme.colorScheme.primary
-        "grammar" -> MaterialTheme.colorScheme.secondary
-        else      -> MaterialTheme.colorScheme.tertiary
-    }
+    // Use the lesson's parent unit colour as accent so each block keeps
+    // its own brand hue (Purple/Teal/Green/Orange) — was falling back to
+    // MaterialTheme primary which made every block look identical.
+    val accentColor = unit.color
 
     val description = when (lesson.type) {
         "vocab"   -> androidx.compose.ui.res.stringResource(com.spanishapp.R.string.lesson_intro_vocab)

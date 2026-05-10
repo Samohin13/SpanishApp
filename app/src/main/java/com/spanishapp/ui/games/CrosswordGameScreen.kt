@@ -38,7 +38,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.R
 
-private val Purple = Color(0xFF7B2FBE)
+// Accent colour for Crucigrama. MUST match the icon tint used in
+// GamesScreen.kt (Crucigrama icon = 0xFF26A69A teal). The variable name
+// "Purple" is legacy; kept to minimise diff. — see fix(colors) phase 4.
+private val Purple = Color(0xFF26A69A)
 private val BgGray
     @Composable get() = MaterialTheme.colorScheme.background
 private val TextMain
