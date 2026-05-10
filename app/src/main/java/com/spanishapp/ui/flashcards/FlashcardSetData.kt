@@ -641,6 +641,102 @@ object FlashcardSetData {
                    "garabatear", "bocetar", "esquematizar", "ensamblar", "edificar",
                    "derruir")))
 
+        // ════════════════════════════════════════════════════════
+        //  Сессия 12 — +5 verb-сетов и +3 тематических на каждый уровень
+        // ════════════════════════════════════════════════════════
+
+        // ── A1: 5 verb sets ──
+        add(FlashcardSet("a1_25_verbs_movement", "A1", 25, "🚶 Глаголы движения", "🚶",
+            listOf("caminar", "correr", "saltar", "bailar")))
+        add(FlashcardSet("a1_26_verbs_eating", "A1", 26, "🍴 Глаголы еды", "🍴",
+            listOf("comer", "beber", "cocinar", "probar")))
+        add(FlashcardSet("a1_27_verbs_home", "A1", 27, "🛏 Глаголы дома", "🛏",
+            listOf("dormir", "lavarse", "vestirse", "levantarse")))
+        add(FlashcardSet("a1_28_verbs_communication", "A1", 28, "💬 Глаголы общения", "💬",
+            listOf("hablar", "escuchar", "preguntar", "responder")))
+        add(FlashcardSet("a1_29_verbs_feelings", "A1", 29, "❤️ Глаголы чувств", "❤️",
+            listOf("amar", "odiar", "gustar", "preferir")))
+
+        // ── A1: 3 themed sets ──
+        add(FlashcardSet("a1_30_theme_art", "A1", 30, "🎨 Искусство (basics)", "🎨",
+            listOf("el arte", "el museo", "el pintor", "el cuadro",
+                   "la música", "el cantante", "bailar", "cantar")))
+        add(FlashcardSet("a1_31_theme_business", "A1", 31, "💼 Работа (basics)", "💼",
+            listOf("el trabajo", "la oficina", "el jefe", "el sueldo",
+                   "trabajar", "ganar", "el horario", "la reunión")))
+        add(FlashcardSet("a1_32_theme_travel", "A1", 32, "✈️ Путешествия+", "✈️",
+            listOf("el aeropuerto", "el pasaporte", "el equipaje", "el vuelo",
+                   "el hotel", "la habitación", "el mapa", "la maleta")))
+
+        // ── A2: 5 verb sets ──
+        add(FlashcardSet("a2_26_verbs_learning", "A2", 26, "🏫 Глаголы учёбы", "🏫",
+            listOf("estudiar", "aprender", "enseñar", "practicar")))
+        add(FlashcardSet("a2_27_verbs_work", "A2", 27, "💼 Глаголы работы", "💼",
+            listOf("trabajar", "ganar", "pagar", "vender")))
+        add(FlashcardSet("a2_28_verbs_road", "A2", 28, "🚗 Глаголы дороги", "🚗",
+            listOf("conducir", "viajar", "volar", "aterrizar")))
+        add(FlashcardSet("a2_29_verbs_goals", "A2", 29, "🎯 Глаголы цели", "🎯",
+            listOf("intentar", "lograr", "decidir", "cambiar")))
+        add(FlashcardSet("a2_30_verbs_cooperation", "A2", 30, "🤝 Глаголы взаимодействия", "🤝",
+            listOf("ayudar", "compartir", "regalar", "prestar")))
+
+        // ── A2: 3 themed sets ──
+        add(FlashcardSet("a2_31_theme_art", "A2", 31, "🎨 Искусство (artes)", "🎨",
+            listOf("el cine", "la película", "el director", "el actor",
+                   "la actriz", "el estreno", "la entrada", "el escenario")))
+        add(FlashcardSet("a2_32_theme_business", "A2", 32, "💼 Бизнес (A2)", "💼",
+            listOf("el cliente", "la empresa", "el contrato", "el proyecto",
+                   "la oferta", "comprar", "vender", "el precio")))
+        add(FlashcardSet("a2_33_theme_travel", "A2", 33, "✈️ Путешествия (A2)", "✈️",
+            listOf("la frontera", "el visado", "la reserva", "el guía",
+                   "la excursión", "el monumento", "la playa", "bronceado")))
+
+        // ── B1: 5 verb sets ──
+        add(FlashcardSet("b1_26_verbs_thought", "B1", 26, "🧠 Глаголы мысли", "🧠",
+            listOf("pensar", "creer", "dudar", "recordar")))
+        add(FlashcardSet("b1_27_verbs_analysis", "B1", 27, "❓ Глаголы анализа", "❓",
+            listOf("analizar", "comparar", "explicar", "entender")))
+        add(FlashcardSet("b1_28_verbs_emotions", "B1", 28, "🎭 Глаголы эмоций (B1)", "🎭",
+            listOf("enfadarse", "alegrarse", "preocuparse", "aburrirse")))
+        add(FlashcardSet("b1_29_verbs_desire", "B1", 29, "🤔 Глаголы желания", "🤔",
+            listOf("querer", "desear", "esperar", "necesitar")))
+        add(FlashcardSet("b1_30_verbs_discussion", "B1", 30, "🗣 Глаголы дискуссии", "🗣",
+            listOf("discutir", "opinar", "convencer", "sugerir")))
+
+        // ── B1: 3 themed sets ──
+        add(FlashcardSet("b1_31_theme_art", "B1", 31, "🎨 Искусство (B1)", "🎨",
+            listOf("la exposición", "la galería", "la escultura", "el retrato",
+                   "la obra", "el estilo", "inspirar", "crear")))
+        add(FlashcardSet("b1_32_theme_business", "B1", 32, "💼 Бизнес (B1)", "💼",
+            listOf("la negociación", "la reunión", "el presupuesto", "el inversor",
+                   "la estrategia", "el mercado", "el beneficio", "la pérdida")))
+        add(FlashcardSet("b1_33_theme_travel", "B1", 33, "✈️ Путешествия (B1)", "✈️",
+            listOf("la aduana", "el itinerario", "la cancelación", "el retraso",
+                   "el viajero", "la mochila", "la aventura", "el albergue")))
+
+        // ── B2: 5 verb sets ──
+        add(FlashcardSet("b2_26_verbs_argumentation", "B2", 26, "📊 Глаголы аргументации", "📊",
+            listOf("argumentar", "demostrar", "refutar", "concluir")))
+        add(FlashcardSet("b2_27_verbs_change", "B2", 27, "🌐 Глаголы изменений", "🌐",
+            listOf("desarrollar", "evolucionar", "transformar", "mejorar")))
+        add(FlashcardSet("b2_28_verbs_decisions", "B2", 28, "⚖️ Глаголы решений", "⚖️",
+            listOf("juzgar", "evaluar", "proponer", "rechazar")))
+        add(FlashcardSet("b2_29_verbs_achievement", "B2", 29, "🎓 Глаголы достижений", "🎓",
+            listOf("conseguir", "alcanzar", "superar", "dominar")))
+        add(FlashcardSet("b2_30_verbs_problem", "B2", 30, "🔧 Глаголы решения проблем", "🔧",
+            listOf("resolver", "arreglar", "enfrentarse", "gestionar")))
+
+        // ── B2: 3 themed sets ──
+        add(FlashcardSet("b2_31_theme_art", "B2", 31, "🎨 Искусство (B2)", "🎨",
+            listOf("el patrimonio", "la vanguardia", "la corriente", "el matiz",
+                   "la composición", "la perspectiva", "el legado", "el genio")))
+        add(FlashcardSet("b2_32_theme_business", "B2", 32, "💼 Бизнес (B2)", "💼",
+            listOf("la fusión", "la adquisición", "el accionista", "la rentabilidad",
+                   "el consejero", "la directiva", "la auditoría", "la quiebra")))
+        add(FlashcardSet("b2_33_theme_travel", "B2", 33, "✈️ Путешествия (B2)", "✈️",
+            listOf("el itinerante", "el destino", "la transición", "el visado",
+                   "el periplo", "la inmersión", "el alojamiento", "el trayecto")))
+
     }
 
     fun byLevel(level: String): List<FlashcardSet> = all.filter { it.level == level }.sortedBy { it.order }

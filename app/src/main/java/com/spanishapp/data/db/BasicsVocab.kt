@@ -69,6 +69,27 @@ object BasicsVocab {
         // ── Базовые ответы / приветствия (отсутствовавшие) ──
         w("hola", "привет", "¡Hola! ¿Cómo estás?", "A1", "saludos", "phrase"),
         w("sí", "да", "Sí, claro.", "A1", "respuestas", "adverb"),
-        w("no", "нет", "No, gracias.", "A1", "respuestas", "adverb")
+        w("no", "нет", "No, gracias.", "A1", "respuestas", "adverb"),
+
+        // ── Дополнительные глаголы для flashcard-сетов ──
+        w("aburrirse", "скучать", "Me aburro en clase.", "B1", "emociones", "verb"),
+        w("desear", "желать", "Deseo viajar a España.", "B1", "general", "verb"),
+        w("sugerir", "предлагать", "Te sugiero esta opción.", "B1", "comunicacion", "verb"),
+        w("concluir", "заключать/завершать", "Concluyó su discurso con un ejemplo.", "B2", "academico", "verb"),
+        w("dominar", "владеть/доминировать", "Domina tres idiomas.", "B2", "general", "verb"),
+        w("gestionar", "управлять/решать", "Gestiona el proyecto con eficacia.", "B2", "trabajo", "verb"),
+
+        // ── Дополнительные слова для тематических сетов ──
+        w("la negociación", "переговоры", "La negociación duró horas.", "B1", "trabajo"),
+        w("la pérdida", "потеря/убыток", "Una gran pérdida para la empresa.", "B1", "economia"),
+        w("la aventura", "приключение", "Una aventura inolvidable.", "B1", "viajes"),
+        w("inspirar", "вдохновлять", "Su obra inspira a muchos.", "B1", "arte", "verb"),
+        w("la composición", "композиция", "La composición de la obra es perfecta.", "B2", "arte"),
+        w("el consejero", "советник/член правления", "El consejero delegado dimitió.", "B2", "trabajo"),
+        w("la directiva", "руководство/директива", "La directiva tomó la decisión.", "B2", "trabajo"),
+        w("la auditoría", "аудит", "La auditoría reveló irregularidades.", "B2", "economia"),
+        w("el itinerante", "путешественник-кочевник", "Un itinerante recorre el mundo.", "B2", "viajes"),
+        w("el periplo", "странствие", "Un largo periplo por Asia.", "B2", "viajes"),
+        w("la inmersión", "погружение", "Una inmersión cultural total.", "B2", "viajes")
     )
 }
