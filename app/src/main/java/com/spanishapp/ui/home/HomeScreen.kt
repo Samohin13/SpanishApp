@@ -669,33 +669,29 @@ private fun DotsIndicator(count: Int, current: Int, accent: Color) {
 //  PHASE 2 — Word of Day mega-card with quiz pager
 // ═══════════════════════════════════════════════════════════════
 
-@OptIn(ExperimentalFoundationApi::class)
+/**
+ * Compact Word of Day card. Tapping anywhere opens a bottom-sheet with the
+ * full 4-mode quiz (was previously embedded in the card itself, but that
+ * made the card ~360dp tall with visual noise the user disliked).
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun WordOfDayQuizCard(
     word: WordOfDay,
     tts: android.speech.tts.TextToSpeech?,
     viewModel: HomeViewModel
 ) {
-    val pagerState = rememberPagerState(pageCount = { 4 })
+    var showQuiz by remember { mutableStateOf(false) }
 
-    // Distractors loaded once per word — used by all three multi-choice modes.
-    var distractors by remember(word.wordId) { mutableStateOf<List<WordEntity>>(emptyList()) }
-    LaunchedEffect(word.wordId) {
-        if (word.wordId != 0) distractors = viewModel.loadDistractors(word)
-    }
-
-    // Card: neutral surfaceContainer (NOT primaryContainer — that renders as
-    // a muddy brown in dark theme). Brand identity comes from a thin accent
-    // stripe on the left edge instead of full-bleed colour, which avoids the
-    // option-button-blending problem and looks cleaner in both themes.
     Surface(
+        onClick = { if (word.wordId != 0) showQuiz = true },
         modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shadowElevation = 4.dp
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            // Left brand stripe — purple accent.
+            // Left brand stripe — primary accent.
             Box(
                 modifier = Modifier
                     .width(4.dp)
@@ -732,7 +728,6 @@ private fun WordOfDayQuizCard(
                         modifier = Modifier.weight(1f),
                         lineHeight = 32.sp
                     )
-                    // Solid primary speak button — readable in any theme.
                     Box(
                         modifier = Modifier
                             .size(40.dp)
@@ -755,40 +750,124 @@ private fun WordOfDayQuizCard(
                 )
 
                 Spacer(Modifier.height(8.dp))
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                    thickness = 1.dp
-                )
-                Spacer(Modifier.height(8.dp))
-
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxWidth().height(170.dp),
-                    pageSpacing = 8.dp
-                ) { page ->
-                    when (page) {
-                        0 -> FillBlankQuiz(word, distractors, tts) {
-                            viewModel.markWordOfDayPractised()
-                        }
-                        1 -> TranslationQuiz(word, distractors) {
-                            viewModel.markWordOfDayPractised()
-                        }
-                        2 -> PronunciationQuiz(word, distractors, tts) {
-                            viewModel.markWordOfDayPractised()
-                        }
-                        3 -> LetterAssemblyQuiz(word) {
-                            viewModel.markWordOfDayPractised()
-                        }
-                    }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        if (word.wasPracticed) "Закрепить ещё раз" else "Тапни — закрепи слово",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text("→", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
                 }
-
-                Spacer(Modifier.height(6.dp))
-                DotsIndicator(
-                    count = 4,
-                    current = pagerState.currentPage,
-                    accent = MaterialTheme.colorScheme.primary
-                )
             }
+        }
+    }
+
+    if (showQuiz) {
+        WordOfDayQuizSheet(
+            word = word,
+            tts = tts,
+            viewModel = viewModel,
+            onDismiss = { showQuiz = false }
+        )
+    }
+}
+
+/**
+ * Bottom sheet hosting the 4-mode quiz pager. Opens when the user taps the
+ * compact Word of Day card. ~75% screen height, dismissible by drag-down.
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@Composable
+private fun WordOfDayQuizSheet(
+    word: WordOfDay,
+    tts: android.speech.tts.TextToSpeech?,
+    viewModel: HomeViewModel,
+    onDismiss: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val pagerState = rememberPagerState(pageCount = { 4 })
+
+    var distractors by remember(word.wordId) { mutableStateOf<List<WordEntity>>(emptyList()) }
+    LaunchedEffect(word.wordId) {
+        if (word.wordId != 0) distractors = viewModel.loadDistractors(word)
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp)
+                .padding(bottom = 24.dp)
+        ) {
+            // Header — same word + speak inside the sheet for context.
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            word.spanish,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        LevelPill(word.level)
+                    }
+                    Text(
+                        word.russian,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SpeakerButton(text = word.spanish, tts = tts, tint = Color.White)
+                }
+            }
+
+            Spacer(Modifier.height(14.dp))
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                thickness = 1.dp
+            )
+            Spacer(Modifier.height(14.dp))
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth().height(280.dp),
+                pageSpacing = 12.dp
+            ) { page ->
+                when (page) {
+                    0 -> FillBlankQuiz(word, distractors, tts) { viewModel.markWordOfDayPractised() }
+                    1 -> TranslationQuiz(word, distractors)    { viewModel.markWordOfDayPractised() }
+                    2 -> PronunciationQuiz(word, distractors, tts) { viewModel.markWordOfDayPractised() }
+                    3 -> LetterAssemblyQuiz(word)              { viewModel.markWordOfDayPractised() }
+                }
+            }
+
+            Spacer(Modifier.height(10.dp))
+            DotsIndicator(
+                count = 4,
+                current = pagerState.currentPage,
+                accent = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
