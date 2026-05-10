@@ -1,5 +1,12 @@
 package com.spanishapp.ui.profile
 
+
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,8 +17,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -50,9 +62,13 @@ import com.spanishapp.ui.components.LeaguePath
 import com.spanishapp.ui.components.SpanishBackground
 import com.spanishapp.ui.components.SpanishFlagRating
 import com.spanishapp.ui.flashcards.CategoryMeta
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 // ... (ViewModel remains the same)
@@ -68,6 +84,54 @@ class ProfileViewModel @Inject constructor(
 
     private val _categoryRatings = MutableStateFlow<List<CategoryRatingUi>>(emptyList())
     val categoryRatings: StateFlow<List<CategoryRatingUi>> = _categoryRatings.asStateFlow()
+
+    /** Локальный Uri выбранного фото — показываем мгновенно, пока идёт загрузка. */
+    private val _localPhotoUri = MutableStateFlow<Uri?>(null)
+    val localPhotoUri: StateFlow<Uri?> = _localPhotoUri.asStateFlow()
+
+    private val _isPhotoUploading = MutableStateFlow(false)
+    val isPhotoUploading: StateFlow<Boolean> = _isPhotoUploading.asStateFlow()
+
+    /**
+     * Photo picker callback: показываем сразу локально, грузим в Firebase Storage,
+     * сохраняем URL в DataStore (его подхватит и HomeScreen). Если Firebase падает —
+     * локальный Uri остаётся как fallback.
+     */
+    fun onPhotoPicked(context: android.content.Context, uri: Uri) {
+        _localPhotoUri.value = uri
+        _isPhotoUploading.value = true
+        viewModelScope.launch {
+            try {
+                val auth = FirebaseAuth.getInstance()
+                var user = auth.currentUser
+                if (user == null) {
+                    user = auth.signInAnonymously().await().user
+                }
+                val uid = user?.uid ?: throw IllegalStateException("No user uid")
+
+                val bitmap = context.contentResolver.openInputStream(uri).use { stream ->
+                    BitmapFactory.decodeStream(stream)
+                } ?: throw IllegalStateException("Can't decode bitmap")
+
+                val baos = ByteArrayOutputStream()
+                bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, baos)
+                val data = baos.toByteArray()
+
+                val storage = FirebaseStorage.getInstance()
+                val ref = storage.reference.child("users/$uid/avatar.jpg")
+                ref.putBytes(data).await()
+                val downloadUrl = ref.downloadUrl.await().toString()
+                authRepository.setUserPhotoUrl(downloadUrl)
+                Log.d("ProfileVM", "Avatar uploaded: $downloadUrl")
+            } catch (e: Exception) {
+                Log.w("ProfileVM", "Avatar upload failed, keeping local Uri", e)
+                // Фоллбэк: сохраним локальный Uri как «фото» — Coil умеет читать content://
+                runCatching { authRepository.setUserPhotoUrl(uri.toString()) }
+            } finally {
+                _isPhotoUploading.value = false
+            }
+        }
+    }
 
     /**
      * История XP за последние 7 дней. Возвращает 7 элементов даже если
@@ -173,7 +237,20 @@ fun ProfileScreen(
     val state by vm.state.collectAsState()
     val categoryRatings by vm.categoryRatings.collectAsState()
     val xpHistory by vm.xpHistory.collectAsState()
+    val localPhotoUri by vm.localPhotoUri.collectAsState()
+    val isPhotoUploading by vm.isPhotoUploading.collectAsState()
     val p = state.progress
+    val context = LocalContext.current
+
+    // Modern photo picker — нет runtime permission, поддерживается с Android 13,
+    // на старых версиях системой подменяется на legacy intent автоматически.
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) vm.onPhotoPicked(context, uri)
+    }
+    val effectivePhotoUrl: String? = localPhotoUri?.toString() ?: state.photoUrl
+    val todayXp = xpHistory.lastOrNull()?.xp ?: 0
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     val appLevel  = XpSystem.levelForXp(p.totalXp)
     val progress  = XpSystem.progressToNextLevel(p.totalXp)
@@ -213,25 +290,71 @@ fun ProfileScreen(
                 .padding(bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfileHeader(
+            HeroBlock(
                 name = state.authName.ifBlank { p.displayName }.ifBlank { androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name) },
-                level = p.currentLevel,
+                photoUrl = effectivePhotoUrl,
+                isPhotoUploading = isPhotoUploading,
+                league = league,
+                skillRating = p.skillRating,
                 appLevel = appLevel,
-                progress = progress,
-                photoUrl = state.photoUrl,
-                onAvatarClick = { navController.navigate("settings") }
+                appLevelProgress = progress,
+                onAvatarClick = {
+                    photoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
             )
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(20.dp))
+            // ── 3 цветные counter-pill ─────────────────────────
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                CounterPill(
+                    icon = "🔥",
+                    value = "${p.currentStreak}",
+                    label = "Серия",
+                    bg = Color(0xFFFFE0CC),
+                    fg = Color(0xFFB8431B),
+                    modifier = Modifier.weight(1f)
+                )
+                CounterPill(
+                    icon = "⭐",
+                    value = "${p.totalXp}",
+                    label = "XP всего",
+                    bg = Color(0xFFFFF1C2),
+                    fg = Color(0xFF8A6A00),
+                    modifier = Modifier.weight(1f)
+                )
+                CounterPill(
+                    icon = "🎯",
+                    value = "$todayXp",
+                    label = "XP сегодня",
+                    bg = Color(0xFFD7F0DC),
+                    fg = Color(0xFF1F7A3A),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            // ── Прогресс до следующей лиги ─────────────────────
+            LeagueProgressCard(
+                league = league,
+                leagueProgress = leagueProgress,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(Modifier.height(16.dp))
+            // ── Mini-stats: 3 колонки ──────────────────────────
+            MiniStatsCard(
+                wordsLearned = state.learnedCount,
+                lessonsDone = p.lessonsCompleted,
+                longestStreak = p.longestStreak,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(Modifier.height(20.dp))
             WeeklyActivityChart(
                 history = xpHistory,
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
-            Spacer(Modifier.height(24.dp))
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                StatBox(value = "${state.learnedCount}", label = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_stat_words), icon = "📚", modifier = Modifier.weight(1f))
-                StatBox(value = "${p.currentStreak}", label = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_stat_days), icon = "🔥", modifier = Modifier.weight(1f) )
-                StatBox(value = "${p.totalStudyMinutes}", label = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_stat_minutes), icon = "⏱", modifier = Modifier.weight(1f))
-            }
             Spacer(Modifier.height(24.dp))
             // ── Путь до Мадрида ─────────────────────────────────
             PathToMadridCard(
@@ -543,6 +666,259 @@ private fun WeeklyActivityChart(
             }
         }
     }
+}
+
+// ── HERO: большой аватар + ник + лига + skill rating ───────
+@Composable
+private fun HeroBlock(
+    name: String,
+    photoUrl: String?,
+    isPhotoUploading: Boolean,
+    league: League,
+    skillRating: Int,
+    appLevel: Int,
+    appLevelProgress: Float,
+    onAvatarClick: () -> Unit
+) {
+    val context = LocalContext.current
+    val accent = Color(league.accentColorHex)
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(contentAlignment = Alignment.BottomEnd) {
+            Surface(
+                modifier = Modifier.size(96.dp).clickable { onAvatarClick() },
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shadowElevation = 4.dp
+            ) {
+                if (photoUrl != null) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(photoUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Аватар",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize().clip(CircleShape)
+                    )
+                } else {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                        Text(
+                            name.take(1).uppercase(),
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+                if (isPhotoUploading) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.35f))) {
+                        CircularProgressIndicator(modifier = Modifier.size(28.dp), color = Color.White, strokeWidth = 3.dp)
+                    }
+                }
+            }
+            // FAB-камера снизу справа (как маркер «можно тапнуть»)
+            Box(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clickable { onAvatarClick() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.CameraAlt, null, tint = Color.White, modifier = Modifier.size(16.dp))
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        Text(name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold)
+        Spacer(Modifier.height(6.dp))
+        // Лига badge
+        Row(
+            modifier = Modifier.clip(CircleShape).background(accent.copy(alpha = 0.15f)).padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(league.emoji, fontSize = 14.sp)
+            Spacer(Modifier.width(6.dp))
+            Text(league.city, color = accent, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+        }
+        Spacer(Modifier.height(8.dp))
+        // Skill rating большим шрифтом
+        Text(
+            skillRating.toString(),
+            fontSize = 32.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text("Skill rating", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.height(12.dp))
+        // Тонкий прогресс-бар уровня XP
+        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            LinearProgressIndicator(
+                progress = { appLevelProgress },
+                modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "Nivel $appLevel · ещё ${((1f - appLevelProgress) * 100).toInt()} XP",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+// ── Цветная пилюля счётчика ────────────────────────────────
+@Composable
+private fun CounterPill(
+    icon: String,
+    value: String,
+    label: String,
+    bg: Color,
+    fg: Color,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(20.dp),
+        color = bg,
+        shadowElevation = 0.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 14.dp, horizontal = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(icon, fontSize = 20.sp)
+            Spacer(Modifier.height(4.dp))
+            Text(value, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = fg)
+            Text(label, fontSize = 10.sp, color = fg.copy(alpha = 0.8f))
+        }
+    }
+}
+
+// ── Карточка прогресса до следующей лиги (с анимацией) ────
+@Composable
+private fun LeagueProgressCard(
+    league: League,
+    leagueProgress: Float,
+    modifier: Modifier = Modifier
+) {
+    val accent = Color(league.accentColorHex)
+    val next = LeagueResolver.next(league)
+    val animated by animateFloatAsState(
+        targetValue = leagueProgress.coerceIn(0f, 1f),
+        animationSpec = tween(durationMillis = 900, easing = FastOutSlowInEasing),
+        label = "leagueProgress"
+    )
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 2.dp
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    if (next != null) "До следующей лиги" else "👑 Высшая лига",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    "${(animated * 100).toInt()}%",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = accent
+                )
+            }
+            Spacer(Modifier.height(10.dp))
+            LinearProgressIndicator(
+                progress = { animated },
+                modifier = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape),
+                color = accent,
+                trackColor = accent.copy(alpha = 0.15f)
+            )
+            if (next != null) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Следующая остановка: ${next.emoji} ${next.city}",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+// ── Mini-stats: 3 колонки ──────────────────────────────────
+@Composable
+private fun MiniStatsCard(
+    wordsLearned: Int,
+    lessonsDone: Int,
+    longestStreak: Int,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 2.dp
+    ) {
+        Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+            MiniStatColumn(
+                icon = Icons.Default.CheckCircle,
+                value = wordsLearned.toString(),
+                label = "Слов",
+                tint = Color(0xFF1F7A3A),
+                modifier = Modifier.weight(1f)
+            )
+            VerticalDivider()
+            MiniStatColumn(
+                icon = Icons.Default.School,
+                value = lessonsDone.toString(),
+                label = "Уроков",
+                tint = Color(0xFF3D5AFE),
+                modifier = Modifier.weight(1f)
+            )
+            VerticalDivider()
+            MiniStatColumn(
+                icon = Icons.Default.LocalFireDepartment,
+                value = longestStreak.toString(),
+                label = "Макс. серия",
+                tint = Color(0xFFB8431B),
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun MiniStatColumn(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    value: String,
+    label: String,
+    tint: Color,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(icon, null, tint = tint, modifier = Modifier.size(22.dp))
+        Spacer(Modifier.height(4.dp))
+        Text(value, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
+        Text(label, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun VerticalDivider() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .height(40.dp)
+            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+    )
 }
 
 @Composable
