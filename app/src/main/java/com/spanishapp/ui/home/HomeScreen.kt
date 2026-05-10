@@ -684,97 +684,111 @@ private fun WordOfDayQuizCard(
         if (word.wordId != 0) distractors = viewModel.loadDistractors(word)
     }
 
+    // Card: neutral surfaceContainer (NOT primaryContainer — that renders as
+    // a muddy brown in dark theme). Brand identity comes from a thin accent
+    // stripe on the left edge instead of full-bleed colour, which avoids the
+    // option-button-blending problem and looks cleaner in both themes.
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
         shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
+        color = MaterialTheme.colorScheme.surfaceContainer,
         shadowElevation = 4.dp
     ) {
-        Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    "✨ СЛОВО ДНЯ",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                LevelPill(word.level)
-                Spacer(Modifier.weight(1f))
-                if (word.wasPracticed) {
-                    Text("✓", fontSize = 18.sp, color = Color(0xFF2E7D32))
-                }
-            }
-
-            Spacer(Modifier.height(8.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    word.spanish,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.weight(1f),
-                    lineHeight = 36.sp
-                )
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.12f)),
-                    contentAlignment = Alignment.Center
+        Row(modifier = Modifier.fillMaxWidth()) {
+            // Left brand stripe — purple accent.
+            Box(
+                modifier = Modifier
+                    .width(4.dp)
+                    .fillMaxHeight()
+                    .background(MaterialTheme.colorScheme.primary)
+            )
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    SpeakerButton(
-                        text = word.spanish,
-                        tts = tts,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    Text(
+                        "✨ СЛОВО ДНЯ",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                }
-            }
-
-            Text(
-                word.russian,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
-            )
-
-            Spacer(Modifier.height(10.dp))
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.15f),
-                thickness = 1.dp
-            )
-            Spacer(Modifier.height(10.dp))
-
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth().height(220.dp),
-                pageSpacing = 8.dp
-            ) { page ->
-                when (page) {
-                    0 -> FillBlankQuiz(word, distractors, tts) {
-                        viewModel.markWordOfDayPractised()
-                    }
-                    1 -> TranslationQuiz(word, distractors) {
-                        viewModel.markWordOfDayPractised()
-                    }
-                    2 -> PronunciationQuiz(word, distractors, tts) {
-                        viewModel.markWordOfDayPractised()
-                    }
-                    3 -> LetterAssemblyQuiz(word) {
-                        viewModel.markWordOfDayPractised()
+                    LevelPill(word.level)
+                    Spacer(Modifier.weight(1f))
+                    if (word.wasPracticed) {
+                        Text("✓", fontSize = 16.sp, color = Color(0xFF4CAF50))
                     }
                 }
-            }
 
-            Spacer(Modifier.height(8.dp))
-            DotsIndicator(
-                count = 4,
-                current = pagerState.currentPage,
-                accent = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+                Spacer(Modifier.height(6.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        word.spanish,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.weight(1f),
+                        lineHeight = 32.sp
+                    )
+                    // Solid primary speak button — readable in any theme.
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        SpeakerButton(
+                            text = word.spanish,
+                            tts = tts,
+                            tint = Color.White
+                        )
+                    }
+                }
+
+                Text(
+                    word.russian,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(Modifier.height(8.dp))
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+                    thickness = 1.dp
+                )
+                Spacer(Modifier.height(8.dp))
+
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxWidth().height(170.dp),
+                    pageSpacing = 8.dp
+                ) { page ->
+                    when (page) {
+                        0 -> FillBlankQuiz(word, distractors, tts) {
+                            viewModel.markWordOfDayPractised()
+                        }
+                        1 -> TranslationQuiz(word, distractors) {
+                            viewModel.markWordOfDayPractised()
+                        }
+                        2 -> PronunciationQuiz(word, distractors, tts) {
+                            viewModel.markWordOfDayPractised()
+                        }
+                        3 -> LetterAssemblyQuiz(word) {
+                            viewModel.markWordOfDayPractised()
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(6.dp))
+                DotsIndicator(
+                    count = 4,
+                    current = pagerState.currentPage,
+                    accent = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }
@@ -1071,17 +1085,28 @@ private fun OptionButtons(
         options.forEach { opt ->
             val isPicked = picked == opt
             val isCorrect = opt == correct
+            // Use surfaceContainerHighest (lighter than the card's
+            // surfaceContainer) so options visibly pop, plus a 1.5dp border
+            // to guarantee separation from the card. Earlier "surface" blended
+            // into the brown card and the 4th option looked invisible.
             val bg = when {
-                picked == null -> MaterialTheme.colorScheme.surface
+                picked == null -> MaterialTheme.colorScheme.surfaceContainerHighest
                 isPicked && isCorrect -> Color(0xFFC8E6C9)
                 isPicked && !isCorrect -> Color(0xFFFFCDD2)
                 isCorrect && picked != correct -> Color(0xFFC8E6C9)
-                else -> MaterialTheme.colorScheme.surface
+                else -> MaterialTheme.colorScheme.surfaceContainerHighest
+            }
+            val borderColor = when {
+                picked == null -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                isCorrect      -> Color(0xFF4CAF50)
+                isPicked       -> Color(0xFFE53935)
+                else           -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
             }
             Surface(
                 onClick = { if (picked != correct) onPick(opt) },
                 shape = RoundedCornerShape(10.dp),
                 color = bg,
+                border = androidx.compose.foundation.BorderStroke(1.5.dp, borderColor),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
