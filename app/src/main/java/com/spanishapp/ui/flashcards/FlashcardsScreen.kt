@@ -52,6 +52,7 @@ fun FlashcardsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    com.spanishapp.ui.components.TrackStudyMinutes()
 
     var leaguePromotion by remember { mutableStateOf<LeaguePromotion?>(null) }
     LaunchedEffect(viewModel) {

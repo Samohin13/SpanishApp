@@ -639,6 +639,7 @@ fun LibroReadScreen(
 ) {
     val libro = remember(libroId) { LibrosData.getById(libroId) }
     if (libro == null) { LaunchedEffect(Unit) { navController.popBackStack() }; return }
+    com.spanishapp.ui.components.TrackStudyMinutes()
 
     val levelColor = mapOf(
         "A1" to Color(0xFF43A047), "A2" to Color(0xFF1E88E5),

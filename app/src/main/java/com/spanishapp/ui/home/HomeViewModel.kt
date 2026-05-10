@@ -24,6 +24,7 @@ class HomeViewModel @Inject constructor(
     private val lessonDao: LessonDao,
     private val dailyWordDao: DailyWordDao,
     private val lessonProgressDao: LessonProgressDao,
+    private val dailyXpDao: com.spanishapp.data.db.dao.DailyXpDao,
     private val achievementManager: AchievementManager,
     private val authRepository: AuthRepository
 ) : ViewModel() {
@@ -35,7 +36,8 @@ class HomeViewModel @Inject constructor(
         wordDao.learnedCount(),
         lessonDao.getNextLessons(),
         lessonProgressDao.getAllCompletedKeys(),
-        authRepository.userPhotoUrl
+        authRepository.userPhotoUrl,
+        dailyXpDao.observeSince(LocalDate.now().toString())
     ) { args ->
         val progress = args[0] as? UserProgressEntity
         val dueWords = args[1] as List<WordEntity>
@@ -43,15 +45,19 @@ class HomeViewModel @Inject constructor(
         val nextLessons = args[3] as List<LessonEntity>
         val completedKeysList = args[4] as List<String>
         val photoUrl = args[5] as? String
+        @Suppress("UNCHECKED_CAST")
+        val todayXpRows = args[6] as List<com.spanishapp.data.db.entity.DailyXpEntity>
 
         val completedKeys = completedKeysList.toSet()
         val p = progress ?: UserProgressEntity()
+        val todayMinutes = todayXpRows.firstOrNull()?.minutes ?: 0
+        val todayXp = todayXpRows.firstOrNull()?.xp ?: 0
 
         val plan = AdaptiveLearning.planSession(
             dueWordsCount       = dueWords.size,
             dailyGoalMinutes    = p.dailyGoalMinutes,
             currentLevel        = p.currentLevel,
-            studiedTodayMinutes = todayStudyMinutes(p),
+            studiedTodayMinutes = todayMinutes,
             weakWordsCount      = 0
         )
         val shouldLevelUp = AdaptiveLearning.shouldLevelUp(
@@ -73,8 +79,10 @@ class HomeViewModel @Inject constructor(
             learnedCount     = learnedCount,
             dueWordsCount    = dueWords.size,
             dailyGoalMinutes = p.dailyGoalMinutes,
-            todayMinutes     = todayStudyMinutes(p),
-            studiedToday     = p.lastStudyDate >= LocalDate.now().toEpochDay() * 86_400_000L,
+            todayMinutes     = todayMinutes,
+            todayXp          = todayXp,
+            streakFreezes    = p.streakFreezesAvailable,
+            studiedToday     = todayMinutes > 0 || p.lastStreakUpdateDate == LocalDate.now().toString(),
             nextLessons      = nextLessons.map { it.title },
             sessionPlan      = plan,
             spanishLevel     = p.currentLevel,
@@ -150,13 +158,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun todayStudyMinutes(p: UserProgressEntity): Int {
-        val todayStart = LocalDate.now().toEpochDay() * 86_400_000L
-        return if (p.lastStudyDate >= todayStart) {
-            val studiedToday = (System.currentTimeMillis() - p.lastStudyDate) / 60000
-            minOf(studiedToday.toInt(), p.dailyGoalMinutes)
-        } else 0
-    }
 }
 
 data class HomeUiState(
@@ -171,6 +172,8 @@ data class HomeUiState(
     val dueWordsCount: Int = 0,
     val dailyGoalMinutes: Int = 10,
     val todayMinutes: Int = 0,
+    val todayXp: Int = 0,
+    val streakFreezes: Int = 2,
     val studiedToday: Boolean = false,
     val nextLessons: List<String> = emptyList(),
     val sessionPlan: AdaptiveLearning.SessionPlan = AdaptiveLearning.SessionPlan(5, 5, false, false, 10),

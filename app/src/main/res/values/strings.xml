@@ -734,6 +734,15 @@
     <string name="home_streak_days">дней подряд</string>
     <string name="home_studied_today">✓ Сегодня занимался  %1$d / %2$d мин</string>
     <string name="home_not_studied_yet">Ещё не занимался сегодня</string>
+    <string name="home_freezes_label">· %1$d заморозки</string>
+    <string name="home_goal_reached">🎉 Цель дня выполнена!</string>
+    <string name="home_goal_unit">мин</string>
+    <string name="achievement_unlocked_title">Достижение разблокировано!</string>
+    <string name="achievement_unlocked_xp">+%1$d XP</string>
+    <string name="settings_sync_now">🔄 Синхронизировать сейчас</string>
+    <string name="settings_sync_success">Прогресс сохранён в облако</string>
+    <string name="settings_sync_error">Не удалось синхронизировать</string>
+    <string name="settings_sync_signin_required">Войдите через Google для синхронизации</string>
     <string name="onboarding_kc_zero">Начинаю с нуля</string>
     <string name="onboarding_kc_zero_sub">Испанский для меня новый язык</string>
     <string name="onboarding_kc_some">Уже знаю испанский</string>

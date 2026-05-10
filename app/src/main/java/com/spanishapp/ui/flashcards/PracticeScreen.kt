@@ -242,6 +242,7 @@ fun PracticeScreen(
 ) {
     val state by vm.state.collectAsState()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    com.spanishapp.ui.components.TrackStudyMinutes()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,

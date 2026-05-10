@@ -37,4 +37,7 @@ class XpTracker @Inject constructor(
         if (minutes <= 0) return
         dailyXpDao.addMinutes(LocalDate.now().toString(), minutes)
     }
+
+    /** Удобный alias: +1 минута учёбы (для LaunchedEffect-таймера на учебных экранах). */
+    suspend fun recordMinute() = addStudyMinutes(1)
 }

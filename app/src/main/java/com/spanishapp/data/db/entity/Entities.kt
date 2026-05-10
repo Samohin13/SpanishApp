@@ -118,7 +118,11 @@ data class UserProgressEntity(
     @ColumnInfo(name = "last_rating_update") val lastRatingUpdate: Long = 0L,
     @ColumnInfo(name = "current_league") val currentLeague: Int = 1,
     @ColumnInfo(name = "peak_league") val peakLeague: Int = 1,
-    @ColumnInfo(name = "leaderboard_opt_in") val leaderboardOptIn: Boolean = false
+    @ColumnInfo(name = "leaderboard_opt_in") val leaderboardOptIn: Boolean = false,
+    // ── Streak freezes (added in v14) ────────────────────────
+    @ColumnInfo(name = "streak_freezes_available") val streakFreezesAvailable: Int = 2,
+    @ColumnInfo(name = "last_streak_update_date") val lastStreakUpdateDate: String = "",
+    @ColumnInfo(name = "weekly_freeze_reset_date") val weeklyFreezeResetDate: String = ""
 )
 
 @Entity(tableName = "chat_messages")

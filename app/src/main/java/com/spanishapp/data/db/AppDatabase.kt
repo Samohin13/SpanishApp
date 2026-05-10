@@ -27,7 +27,7 @@ import com.spanishapp.data.db.entity.*
         DailyXpEntity::class,
         FlashcardSetProgressEntity::class
     ],
-    version = 13,
+    version = 14,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -260,6 +260,15 @@ abstract class AppDatabase : RoomDatabase() {
                         minutes INTEGER NOT NULL DEFAULT 0
                     )
                 """.trimIndent())
+            }
+        }
+
+        // ── v14: streak freezes (2 в неделю, восполняются по понедельникам) ──
+        val MIGRATION_13_14 = object : Migration(13, 14) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN streak_freezes_available INTEGER NOT NULL DEFAULT 2")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN last_streak_update_date TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN weekly_freeze_reset_date TEXT NOT NULL DEFAULT ''")
             }
         }
 

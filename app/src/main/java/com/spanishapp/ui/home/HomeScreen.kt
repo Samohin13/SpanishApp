@@ -198,7 +198,9 @@ fun HomeScreen(
                 streak       = state.currentStreak,
                 studiedToday = state.studiedToday,
                 todayMinutes = state.todayMinutes,
-                goalMinutes  = state.dailyGoalMinutes
+                goalMinutes  = state.dailyGoalMinutes,
+                freezes      = state.streakFreezes,
+                todayXp      = state.todayXp
             )
             Spacer(Modifier.height(12.dp))
         }
@@ -734,7 +736,9 @@ private fun StreakCard(
     streak: Int,
     studiedToday: Boolean,
     todayMinutes: Int,
-    goalMinutes: Int
+    goalMinutes: Int,
+    freezes: Int,
+    todayXp: Int
 ) {
     val flameScale by rememberInfiniteTransition(label = "flame").animateFloat(
         initialValue = 1f,
@@ -747,6 +751,12 @@ private fun StreakCard(
     )
 
     val progress = if (goalMinutes > 0) (todayMinutes.toFloat() / goalMinutes).coerceIn(0f, 1f) else 0f
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(600, easing = FastOutSlowInEasing),
+        label = "ringProgress"
+    )
+    val goalReached = progress >= 1f
 
     Surface(
         modifier = Modifier
@@ -764,7 +774,7 @@ private fun StreakCard(
             // Flame icon circle with gradient
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(56.dp)
                     .clip(CircleShape)
                     .background(
                         Brush.horizontalGradient(listOf(Color(0xFFFFD23F), Color(0xFFFF6B00)))
@@ -774,14 +784,14 @@ private fun StreakCard(
             ) {
                 Text(
                     text = if (streak > 0) "🔥" else "💤",
-                    fontSize = 24.sp
+                    fontSize = 26.sp
                 )
             }
 
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.width(14.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         text = "$streak",
                         fontSize = 28.sp,
@@ -790,41 +800,65 @@ private fun StreakCard(
                     )
                     Text(
                         text = stringResource(R.string.home_streak_days),
-                        fontSize = 14.sp,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,
                         color = TextGray
                     )
                 }
-
-                Spacer(Modifier.height(6.dp))
-
-                // Daily goal progress bar
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(7.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(GoldColor.copy(alpha = 0.15f))
-                ) {
-                    if (progress > 0f) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(progress)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(Brush.horizontalGradient(listOf(Color(0xFFFFD23F), Color(0xFFFF6B00))))
+                Spacer(Modifier.height(2.dp))
+                // Freezes row: ❄❄ visualisation
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    repeat(2) { idx ->
+                        Text(
+                            text = if (idx < freezes) "❄" else "·",
+                            fontSize = 14.sp,
+                            color = if (idx < freezes) Color(0xFF42A5F5) else TextGray.copy(.5f)
                         )
                     }
+                    Text(
+                        text = stringResource(R.string.home_freezes_label, freezes),
+                        fontSize = 11.sp,
+                        color = TextGray
+                    )
                 }
-
                 Spacer(Modifier.height(4.dp))
-
                 Text(
-                    text = if (studiedToday) stringResource(R.string.home_studied_today, todayMinutes, goalMinutes)
+                    text = if (goalReached) stringResource(R.string.home_goal_reached)
+                           else if (studiedToday) stringResource(R.string.home_studied_today, todayMinutes, goalMinutes)
                            else stringResource(R.string.home_not_studied_yet),
                     fontSize = 12.sp,
-                    color = if (studiedToday) Color(0xFF2E7D32) else TextGray
+                    color = if (goalReached) Color(0xFF2E7D32) else if (studiedToday) Color(0xFF2E7D32) else TextGray
                 )
+            }
+
+            // ── Daily goal ring (Phase 2) ──
+            Box(
+                modifier = Modifier.size(64.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    progress = { 1f },
+                    modifier = Modifier.size(64.dp),
+                    color = GoldColor.copy(alpha = 0.18f),
+                    strokeWidth = 6.dp,
+                    trackColor = Color.Transparent
+                )
+                CircularProgressIndicator(
+                    progress = { animatedProgress },
+                    modifier = Modifier.size(64.dp),
+                    color = OrangeColor,
+                    strokeWidth = 6.dp,
+                    trackColor = Color.Transparent
+                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "$todayMinutes/$goalMinutes",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (goalReached) Color(0xFF2E7D32) else OrangeColor
+                    )
+                    Text(stringResource(R.string.home_goal_unit), fontSize = 9.sp, color = TextGray)
+                }
             }
         }
     }

@@ -84,6 +84,7 @@ fun LessonSessionScreen(
     lessonIndex: Int,
     viewModel: LessonIntroViewModel
 ) {
+    com.spanishapp.ui.components.TrackStudyMinutes()
     val unit    = remember(unitId) { RoadmapData.units.getOrNull(unitId - 1) }
     val lesson  = remember(unit, lessonIndex) { unit?.lessons?.getOrNull(lessonIndex) }
     val content = remember(unitId, lessonIndex) { LessonContentData.lessons["u${unitId}_l${lessonIndex}"] }

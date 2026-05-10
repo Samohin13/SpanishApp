@@ -334,6 +334,27 @@ interface UserProgressDao {
 
     @Query("UPDATE user_progress SET display_name = :name")
     suspend fun updateDisplayName(name: String)
+
+    // ── Streak system v2 (freezes) ──────────────────────────
+    @Query("""
+        UPDATE user_progress SET
+            current_streak = :streak,
+            longest_streak = MAX(longest_streak, :streak),
+            last_study_date = :lastStudyMs,
+            streak_freezes_available = :freezes,
+            last_streak_update_date = :lastUpdateDate,
+            weekly_freeze_reset_date = :resetDate
+    """)
+    suspend fun updateStreakFull(
+        streak: Int,
+        lastStudyMs: Long,
+        freezes: Int,
+        lastUpdateDate: String,
+        resetDate: String
+    )
+
+    @Query("UPDATE user_progress SET daily_goal_minutes = :minutes")
+    suspend fun updateDailyGoal(minutes: Int)
 }
 
 @Dao
