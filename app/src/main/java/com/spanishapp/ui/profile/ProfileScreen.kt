@@ -50,6 +50,7 @@ import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.domain.algorithm.MasteryRating
 import com.spanishapp.domain.algorithm.XpSystem
 import com.spanishapp.ui.components.PressableCard
+import com.spanishapp.ui.components.StaggeredEntrance
 import com.spanishapp.ui.flashcards.CategoryMeta
 import com.spanishapp.ui.home.PathTileTrophyBackdrop
 import com.spanishapp.ui.home.drawCityAnchor
@@ -284,96 +285,119 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 32.dp)
         ) {
-            HeroBlock(
-                name = state.authName.ifBlank { p.displayName }.ifBlank {
-                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name)
-                },
-                photoUrl = effectivePhotoUrl,
-                isPhotoUploading = isPhotoUploading,
-                league = league,
-                onAvatarClick = {
-                    photoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            StaggeredEntrance(index = 0) {
+                Column {
+                    HeroBlock(
+                        name = state.authName.ifBlank { p.displayName }.ifBlank {
+                            androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name)
+                        },
+                        photoUrl = effectivePhotoUrl,
+                        isPhotoUploading = isPhotoUploading,
+                        league = league,
+                        onAvatarClick = {
+                            photoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }
                     )
+                    Spacer(Modifier.height(24.dp))
                 }
-            )
-            Spacer(Modifier.height(24.dp))
-
-            // ── SKILL RATING ────────────────────────────────────
-            SectionHeader("SKILL RATING", AccentPurple, modifier = Modifier.padding(horizontal = 24.dp))
-            Spacer(Modifier.height(8.dp))
-            SkillRatingTile(
-                rating = p.skillRating,
-                appLevel = appLevel,
-                appLevelProgress = appLevelProgress,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            // ── АКТИВНОСТЬ ──────────────────────────────────────
-            SectionHeader("АКТИВНОСТЬ", AccentViolet, modifier = Modifier.padding(horizontal = 24.dp))
-            Spacer(Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                ActivityStatTile("🔥", p.currentStreak.toString(), "СЕРИЯ ДНЕЙ", AccentViolet,  Modifier.weight(1f))
-                ActivityStatTile("⭐", p.totalXp.toString(),       "XP ВСЕГО",    AccentEmerald, Modifier.weight(1f))
-                ActivityStatTile("🎯", todayXp.toString(),         "XP СЕГОДНЯ",  AccentTeal,    Modifier.weight(1f))
             }
 
-            Spacer(Modifier.height(20.dp))
+            // ── SKILL RATING ────────────────────────────────────
+            StaggeredEntrance(index = 1) {
+                Column {
+                    SectionHeader("SKILL RATING", AccentPurple, modifier = Modifier.padding(horizontal = 24.dp))
+                    Spacer(Modifier.height(8.dp))
+                    SkillRatingTile(
+                        rating = p.skillRating,
+                        appLevel = appLevel,
+                        appLevelProgress = appLevelProgress,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
+
+            // ── АКТИВНОСТЬ ──────────────────────────────────────
+            StaggeredEntrance(index = 2) {
+                Column {
+                    SectionHeader("АКТИВНОСТЬ", AccentViolet, modifier = Modifier.padding(horizontal = 24.dp))
+                    Spacer(Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        ActivityStatTile("🔥", p.currentStreak.toString(), "СЕРИЯ ДНЕЙ", AccentViolet,  Modifier.weight(1f))
+                        ActivityStatTile("⭐", p.totalXp.toString(),       "XP ВСЕГО",    AccentEmerald, Modifier.weight(1f))
+                        ActivityStatTile("🎯", todayXp.toString(),         "XP СЕГОДНЯ",  AccentTeal,    Modifier.weight(1f))
+                    }
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
 
             // ── ПУТЬ ДО МАДРИДА (единственная тёплая секция) ────
-            SectionHeader("ПУТЬ ДО МАДРИДА", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
-            Spacer(Modifier.height(8.dp))
-            PathToMadridTile(
-                league = league,
-                peakLeague = peakLeague,
-                leagueProgress = leagueProgress,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(Modifier.height(20.dp))
+            StaggeredEntrance(index = 3) {
+                Column {
+                    SectionHeader("ПУТЬ ДО МАДРИДА", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
+                    Spacer(Modifier.height(8.dp))
+                    PathToMadridTile(
+                        league = league,
+                        peakLeague = peakLeague,
+                        leagueProgress = leagueProgress,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
 
             // ── СТАТИСТИКА ──────────────────────────────────────
-            SectionHeader("СТАТИСТИКА", AccentGreen, modifier = Modifier.padding(horizontal = 24.dp))
-            Spacer(Modifier.height(8.dp))
-            StatsTile(
-                wordsLearned = state.learnedCount,
-                lessonsDone = p.lessonsCompleted,
-                longestStreak = p.longestStreak,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(Modifier.height(20.dp))
+            StaggeredEntrance(index = 4) {
+                Column {
+                    SectionHeader("СТАТИСТИКА", AccentGreen, modifier = Modifier.padding(horizontal = 24.dp))
+                    Spacer(Modifier.height(8.dp))
+                    StatsTile(
+                        wordsLearned = state.learnedCount,
+                        lessonsDone = p.lessonsCompleted,
+                        longestStreak = p.longestStreak,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
 
             // ── АКТИВНОСТЬ ЗА НЕДЕЛЮ ────────────────────────────
-            SectionHeader("АКТИВНОСТЬ ЗА НЕДЕЛЮ", AccentBlue, modifier = Modifier.padding(horizontal = 24.dp))
-            Spacer(Modifier.height(8.dp))
-            WeeklyHeatmapTile(
-                history = xpHistory,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(Modifier.height(20.dp))
+            StaggeredEntrance(index = 5) {
+                Column {
+                    SectionHeader("АКТИВНОСТЬ ЗА НЕДЕЛЮ", AccentBlue, modifier = Modifier.padding(horizontal = 24.dp))
+                    Spacer(Modifier.height(8.dp))
+                    WeeklyHeatmapTile(
+                        history = xpHistory,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
 
             // ── ДОСТИЖЕНИЯ ──────────────────────────────────────
-            SectionHeader(
-                "ДОСТИЖЕНИЯ",
-                AccentRose,
-                trailing = "↗",
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
-            Spacer(Modifier.height(8.dp))
-            AchievementsTeaserTile(
-                achievements = achievements,
-                unlocked = state.unlockedAchievements,
-                total = state.totalAchievements,
-                onClick = { navController.navigate("achievements") },
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+            StaggeredEntrance(index = 6) {
+                Column {
+                    SectionHeader(
+                        "ДОСТИЖЕНИЯ",
+                        AccentRose,
+                        trailing = "↗",
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    AchievementsTeaserTile(
+                        achievements = achievements,
+                        unlocked = state.unlockedAchievements,
+                        total = state.totalAchievements,
+                        onClick = { navController.navigate("achievements") },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            }
         }
     }
 }

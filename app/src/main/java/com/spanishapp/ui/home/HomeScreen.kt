@@ -144,115 +144,145 @@ fun HomeScreen(
         ) {
             // ── Compact header (~72dp) ─────────────────────────
             item {
-                CompactHeader(
-                    greeting       = greeting,
-                    motivation     = motivation,
-                    photoUrl       = state.userPhotoUrl,
-                    onAvatar       = { navController.navigate("profile") },
-                    onSettings     = { navController.navigate("settings") }
-                )
+                StaggeredEntrance(index = 0) {
+                    CompactHeader(
+                        greeting       = greeting,
+                        motivation     = motivation,
+                        photoUrl       = state.userPhotoUrl,
+                        onAvatar       = { navController.navigate("profile") },
+                        onSettings     = { navController.navigate("settings") }
+                    )
+                }
             }
 
             // ── Stats bar (single row) ─────────────────────────
             item {
-                Spacer(Modifier.height(8.dp))
-                StatsBar(
-                    streak       = state.currentStreak,
-                    todayMinutes = state.todayMinutes,
-                    goalMinutes  = state.dailyGoalMinutes,
-                    todayXp      = state.todayXp,
-                    skillRating  = state.skillRating,
-                    league       = state.currentLeague,
-                    onClick      = { navController.navigate("profile") }
-                )
-                Spacer(Modifier.height(12.dp))
+                StaggeredEntrance(index = 1) {
+                    Column {
+                        Spacer(Modifier.height(8.dp))
+                        StatsBar(
+                            streak       = state.currentStreak,
+                            todayMinutes = state.todayMinutes,
+                            goalMinutes  = state.dailyGoalMinutes,
+                            todayXp      = state.todayXp,
+                            skillRating  = state.skillRating,
+                            league       = state.currentLeague,
+                            onClick      = { navController.navigate("profile") }
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
             }
 
             // ── Continue Pager ─────────────────────────────────
             item {
-                ContinuePager(
-                    lastLesson  = lastLesson,
-                    lastBook    = lastBook,
-                    nextSet     = nextSet,
-                    weakWord    = weakWord,
-                    onLesson    = { l ->
-                        navController.navigate("lesson_intro/${l.unitId}/${l.lessonIndex}")
-                    },
-                    onBook      = { id -> navController.navigate("libro/$id") },
-                    onSet       = { setId ->
-                        navController.navigate(
-                            "flashcards_session?level=A1&category=all&direction=ES_TO_RU&setId=$setId"
+                StaggeredEntrance(index = 2) {
+                    Column {
+                        ContinuePager(
+                            lastLesson  = lastLesson,
+                            lastBook    = lastBook,
+                            nextSet     = nextSet,
+                            weakWord    = weakWord,
+                            onLesson    = { l ->
+                                navController.navigate("lesson_intro/${l.unitId}/${l.lessonIndex}")
+                            },
+                            onBook      = { id -> navController.navigate("libro/$id") },
+                            onSet       = { setId ->
+                                navController.navigate(
+                                    "flashcards_session?level=A1&category=all&direction=ES_TO_RU&setId=$setId"
+                                )
+                            },
+                            onWeak      = { navController.navigate("practice") }
                         )
-                    },
-                    onWeak      = { navController.navigate("practice") }
-                )
-                Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
             }
 
             // ── Word of Day mega-card with quiz pager ─────────
             wordOfDay?.let { word ->
                 item {
-                    WordOfDayQuizCard(
-                        word        = word,
-                        tts         = tts,
-                        viewModel   = viewModel
-                    )
-                    Spacer(Modifier.height(12.dp))
+                    StaggeredEntrance(index = 3) {
+                        Column {
+                            WordOfDayQuizCard(
+                                word        = word,
+                                tts         = tts,
+                                viewModel   = viewModel
+                            )
+                            Spacer(Modifier.height(12.dp))
+                        }
+                    }
                 }
             }
 
             // ── Course pills (above Bento per user feedback) ──────────
             item {
-                CoursePills(
-                    activeLevel = state.spanishLevel,
-                    onClick = { lvl -> navController.navigate("course_detail/$lvl") }
-                )
-                Spacer(Modifier.height(16.dp))
+                StaggeredEntrance(index = 4) {
+                    Column {
+                        CoursePills(
+                            activeLevel = state.spanishLevel,
+                            onClick = { lvl -> navController.navigate("course_detail/$lvl") }
+                        )
+                        Spacer(Modifier.height(16.dp))
+                    }
+                }
             }
 
             // ── Bento 2×2 (premium redesign) ──────────────────────────
             item {
-                BentoRow(
-                    book          = lastBook,
-                    rating        = state.skillRating,
-                    league        = state.currentLeague,
-                    recent        = recentWords,
-                    goals         = dailyGoals,
-                    onBookClick   = {
-                        lastBook?.let { navController.navigate("libro/${it.libroId}") }
-                            ?: navController.navigate("game_libros")
-                    },
-                    onLeagueClick = { navController.navigate("leaderboard") },
-                    onDictClick   = { navController.navigate("dictionary") },
-                    onWordChip    = { w -> sheetWord = w },
-                    onGoalClick   = { /* informational */ }
-                )
-                Spacer(Modifier.height(12.dp))
+                StaggeredEntrance(index = 5) {
+                    Column {
+                        BentoRow(
+                            book          = lastBook,
+                            rating        = state.skillRating,
+                            league        = state.currentLeague,
+                            recent        = recentWords,
+                            goals         = dailyGoals,
+                            onBookClick   = {
+                                lastBook?.let { navController.navigate("libro/${it.libroId}") }
+                                    ?: navController.navigate("game_libros")
+                            },
+                            onLeagueClick = { navController.navigate("leaderboard") },
+                            onDictClick   = { navController.navigate("dictionary") },
+                            onWordChip    = { w -> sheetWord = w },
+                            onGoalClick   = { /* informational */ }
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
             }
 
             // ── Streak heatmap ─────────────────────────────────
             item {
-                WeekHeatmap(weeklyMinutes)
-                Spacer(Modifier.height(12.dp))
+                StaggeredEntrance(index = 6) {
+                    Column {
+                        WeekHeatmap(weeklyMinutes)
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
             }
 
             // ── Quick Actions (very bottom per user feedback) ─────────
             item {
-                QuickActionsRow(
-                    onRandom = {
-                        scope.launch { randomWord = viewModel.pickRandomWord() }
-                    },
-                    onPronounce = { navController.navigate("pronunciation") },
-                    onWeak      = { navController.navigate("practice") },
-                    onGame      = {
-                        val games = listOf(
-                            "game_articles", "game_speed", "game_math",
-                            "game_crossword", "game_sopa", "game_palabra"
+                StaggeredEntrance(index = 7) {
+                    Column {
+                        QuickActionsRow(
+                            onRandom = {
+                                scope.launch { randomWord = viewModel.pickRandomWord() }
+                            },
+                            onPronounce = { navController.navigate("pronunciation") },
+                            onWeak      = { navController.navigate("practice") },
+                            onGame      = {
+                                val games = listOf(
+                                    "game_articles", "game_speed", "game_math",
+                                    "game_crossword", "game_sopa", "game_palabra"
+                                )
+                                navController.navigate(games.random())
+                            }
                         )
-                        navController.navigate(games.random())
+                        Spacer(Modifier.height(20.dp))
                     }
-                )
-                Spacer(Modifier.height(20.dp))
+                }
             }
         }
 

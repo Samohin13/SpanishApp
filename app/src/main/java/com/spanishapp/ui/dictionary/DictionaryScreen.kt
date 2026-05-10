@@ -7,7 +7,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import com.spanishapp.ui.components.StaggeredEntrance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -552,7 +554,28 @@ private fun AllWordsContent(
                                 )
                             }
                         }
-                        items(group.words, key = { it.id }) { word ->
+                        itemsIndexed(group.words, key = { _, it -> it.id }) { idx, word ->
+                            val rowContent: @Composable () -> Unit = {
+                                WordRow(
+                                    word        = word,
+                                    query       = query,
+                                    isInAnyList = !membership[word.id].isNullOrEmpty(),
+                                    onWordClick = { onWordClick(word) },
+                                    onAddToList = { onAddToList(word) },
+                                    onSpeak     = { onSpeak(word) }
+                                )
+                            }
+                            if (idx < 10) {
+                                StaggeredEntrance(index = idx) { rowContent() }
+                            } else {
+                                rowContent()
+                            }
+                        }
+                    }
+                } else {
+                    // Поиск активен или мало слов — без группировки
+                    itemsIndexed(words, key = { _, it -> it.id }) { idx, word ->
+                        val rowContent: @Composable () -> Unit = {
                             WordRow(
                                 word        = word,
                                 query       = query,
@@ -562,18 +585,11 @@ private fun AllWordsContent(
                                 onSpeak     = { onSpeak(word) }
                             )
                         }
-                    }
-                } else {
-                    // Поиск активен или мало слов — без группировки
-                    items(words, key = { it.id }) { word ->
-                        WordRow(
-                            word        = word,
-                            query       = query,
-                            isInAnyList = !membership[word.id].isNullOrEmpty(),
-                            onWordClick = { onWordClick(word) },
-                            onAddToList = { onAddToList(word) },
-                            onSpeak     = { onSpeak(word) }
-                        )
+                        if (idx < 10) {
+                            StaggeredEntrance(index = idx) { rowContent() }
+                        } else {
+                            rowContent()
+                        }
                     }
                 }
             }
@@ -752,13 +768,20 @@ private fun MyListsContent(
                 contentPadding     = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(lists, key = { it.id }) { list ->
-                    ListCard(
-                        list       = list,
-                        onClick    = { onSelectList(list) },
-                        onRename   = { renaming = list },
-                        onDelete   = { onDeleteList(list) }
-                    )
+                itemsIndexed(lists, key = { _, it -> it.id }) { idx, list ->
+                    val cardContent: @Composable () -> Unit = {
+                        ListCard(
+                            list       = list,
+                            onClick    = { onSelectList(list) },
+                            onRename   = { renaming = list },
+                            onDelete   = { onDeleteList(list) }
+                        )
+                    }
+                    if (idx < 10) {
+                        StaggeredEntrance(index = idx) { cardContent() }
+                    } else {
+                        cardContent()
+                    }
                 }
             }
         }
@@ -878,16 +901,23 @@ private fun ListWordsContent(
                 contentPadding     = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                items(words, key = { it.id }) { word ->
-                    WordRow(
-                        word        = word,
-                        isInAnyList = true,
-                        showRemove  = true,
-                        onWordClick = { onWordClick(word) },
-                        onAddToList = { onAddToList(word) },
-                        onRemove    = { onRemove(word) },
-                        onSpeak     = { onSpeak(word) }
-                    )
+                itemsIndexed(words, key = { _, it -> it.id }) { idx, word ->
+                    val rowContent: @Composable () -> Unit = {
+                        WordRow(
+                            word        = word,
+                            isInAnyList = true,
+                            showRemove  = true,
+                            onWordClick = { onWordClick(word) },
+                            onAddToList = { onAddToList(word) },
+                            onRemove    = { onRemove(word) },
+                            onSpeak     = { onSpeak(word) }
+                        )
+                    }
+                    if (idx < 10) {
+                        StaggeredEntrance(index = idx) { rowContent() }
+                    } else {
+                        rowContent()
+                    }
                 }
             }
         }

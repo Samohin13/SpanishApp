@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import com.spanishapp.ui.components.StaggeredEntrance
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -159,24 +161,26 @@ fun FlashcardsSetupScreen(
         ) {
             // ── Header ─────────────────────────────────────────
             item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                        .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 16.dp)
-                ) {
-                    Text(
-                        "Tarjetas",
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        "Маленькие наборы слов на каждый день",
-                        fontSize = 15.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                StaggeredEntrance(index = 0) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 16.dp)
+                    ) {
+                        Text(
+                            "Tarjetas",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            "Маленькие наборы слов на каждый день",
+                            fontSize = 15.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
 
@@ -184,29 +188,33 @@ fun FlashcardsSetupScreen(
             // Goes to a multiple-choice quiz over weak words. Always visible —
             // shows "0" when fresh, encourages user to come back after sessions.
             item {
-                PracticeTile(
-                    weakCount = weakCount,
-                    onClick = { navController.navigate("practice") },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+                StaggeredEntrance(index = 1) {
+                    PracticeTile(
+                        weakCount = weakCount,
+                        onClick = { navController.navigate("practice") },
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
             }
 
             // ── Level tabs ─────────────────────────────────────
             item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    LEVELS.forEach { lvl ->
-                        LevelChip(
-                            label = lvl,
-                            selected = selectedLevel == lvl,
-                            modifier = Modifier.weight(1f),
-                            onClick = { viewModel.selectLevel(lvl) }
-                        )
+                StaggeredEntrance(index = 2) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        LEVELS.forEach { lvl ->
+                            LevelChip(
+                                label = lvl,
+                                selected = selectedLevel == lvl,
+                                modifier = Modifier.weight(1f),
+                                onClick = { viewModel.selectLevel(lvl) }
+                            )
+                        }
                     }
                 }
             }
@@ -230,21 +238,29 @@ fun FlashcardsSetupScreen(
             }
 
             // ── Sets list ─────────────────────────────────────
-            items(sets, key = { it.set.id }) { row ->
-                SetRow(
-                    row = row,
-                    onClick = {
-                        if (row.unlocked) {
-                            navController.navigate(
-                                "flashcards_session?level=${row.set.level}" +
-                                    "&category=set&direction=ES_TO_RU&setId=${row.set.id}"
-                            )
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
-                        .animateItem()
-                )
+            // First 10 cards stagger in; longer lists pass through to keep scroll smooth.
+            itemsIndexed(sets, key = { _, it -> it.set.id }) { idx, row ->
+                val rowContent: @Composable () -> Unit = {
+                    SetRow(
+                        row = row,
+                        onClick = {
+                            if (row.unlocked) {
+                                navController.navigate(
+                                    "flashcards_session?level=${row.set.level}" +
+                                        "&category=set&direction=ES_TO_RU&setId=${row.set.id}"
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 4.dp)
+                            .animateItem()
+                    )
+                }
+                if (idx < 10) {
+                    StaggeredEntrance(index = idx + 3) { rowContent() }
+                } else {
+                    rowContent()
+                }
             }
         }
     }
