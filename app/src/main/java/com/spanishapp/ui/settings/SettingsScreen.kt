@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import com.spanishapp.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -328,7 +329,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.title_settings), fontWeight = FontWeight.Bold) },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "⚙️ " + stringResource(R.string.title_settings), fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))

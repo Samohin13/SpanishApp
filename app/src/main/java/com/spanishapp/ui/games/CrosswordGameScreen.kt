@@ -71,7 +71,7 @@ fun CrosswordGameScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.crw_title), fontWeight = FontWeight.Bold) },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🧩 " + stringResource(R.string.crw_title), fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (state.showSetup) navController.popBackStack()
@@ -99,7 +99,7 @@ fun CrosswordGameScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
             )
         }
     ) { padding ->
@@ -149,7 +149,7 @@ fun RulesDialog(onDismiss: () -> Unit) {
                 shape = RoundedCornerShape(12.dp)
             ) { Text(stringResource(R.string.crw_understood), color = Color.White, fontWeight = FontWeight.Bold) }
         },
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         shape = RoundedCornerShape(20.dp)
     )
 }
@@ -303,7 +303,7 @@ fun CrosswordActiveContent(state: CrosswordGameState, viewModel: CrosswordViewMo
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            color = MaterialTheme.colorScheme.surface,
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
             shadowElevation = 12.dp
         ) {
             Column(modifier = Modifier.padding(bottom = 8.dp)) {
@@ -511,7 +511,7 @@ fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
                             Popup(alignment = Alignment.TopCenter,
                                 onDismissRequest = { accentMenuKey = null }) {
                                 Surface(modifier = Modifier.padding(bottom = 8.dp),
-                                    color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp),
+                                    color = MaterialTheme.colorScheme.surfaceContainerHighest, shape = RoundedCornerShape(8.dp),
                                     shadowElevation = 8.dp,
                                     border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder.copy(alpha = 0.3f))) {
                                     Row(modifier = Modifier.padding(4.dp)) {

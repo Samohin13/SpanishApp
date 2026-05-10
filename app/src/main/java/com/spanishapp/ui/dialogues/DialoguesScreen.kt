@@ -82,7 +82,7 @@ fun DialoguesScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_dialogues), fontWeight = FontWeight.Bold) },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "💬 " + androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_dialogues), fontSize = 18.sp) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -173,7 +173,7 @@ private fun DialogueCardContent(
     Surface(
         onClick = { expanded = !expanded },
         shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.4f),
         border = androidx.compose.foundation.BorderStroke(
             1.dp, 
             if (dialogue.isCompleted) AppColors.Teal.copy(alpha = 0.3f) 

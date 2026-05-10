@@ -162,7 +162,7 @@ fun FlashcardsSetupScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                         .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 16.dp)
                 ) {
                     Text(
@@ -196,7 +196,7 @@ fun FlashcardsSetupScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -264,7 +264,7 @@ private fun LevelChip(
         onClick = onClick,
         modifier = modifier.height(44.dp),
         shape = RoundedCornerShape(12.dp),
-        color = if (selected) accent else MaterialTheme.colorScheme.surface,
+        color = if (selected) accent else MaterialTheme.colorScheme.surfaceContainerHighest,
         border = if (selected) null
             else androidx.compose.foundation.BorderStroke(
                 1.dp,
@@ -293,7 +293,7 @@ private fun SetRow(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        backgroundColor = MaterialTheme.colorScheme.surface,
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         shadowElevation = if (row.unlocked) 3.dp else 0.dp,
         enabled = row.unlocked
     ) {

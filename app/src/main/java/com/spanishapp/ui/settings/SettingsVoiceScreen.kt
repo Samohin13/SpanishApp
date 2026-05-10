@@ -65,7 +65,7 @@ fun SettingsVoiceScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.voice_announcer), fontWeight = FontWeight.Bold) },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🔊 " + stringResource(R.string.voice_announcer), fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_back))
@@ -260,7 +260,7 @@ private fun VoiceCard(
     }
     Surface(
         shape    = RoundedCornerShape(14.dp),
-        color    = if (isSelected) Purple.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surface,
+        color    = if (isSelected) Purple.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceContainerHighest,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onSelect)

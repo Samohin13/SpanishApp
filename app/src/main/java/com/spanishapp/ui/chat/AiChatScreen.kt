@@ -400,7 +400,7 @@ fun AiChatScreen(
                 // tonalElevation overlays primary tint in M3 dark = brown.
                 // Use shadowElevation only for the soft drop-shadow.
                 shadowElevation = 8.dp,
-                color = MaterialTheme.colorScheme.surface
+                color = MaterialTheme.colorScheme.surfaceContainerHighest
             ) {
                 Row(
                     modifier = Modifier
@@ -662,7 +662,7 @@ private fun ChatBubble(
                     bottomStart = if (isUser) 22.dp else 6.dp,
                     bottomEnd = if (isUser) 6.dp else 22.dp
                 ),
-                color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest,
                 shadowElevation = if (isUser) 0.dp else 2.dp,
                 modifier = Modifier.weight(1f, fill = false)
             ) {
@@ -862,7 +862,7 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
                 shape = RoundedCornerShape(14.dp),
-                color = MaterialTheme.colorScheme.surface,
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 shadowElevation = 1.dp
             ) {
                 Row(

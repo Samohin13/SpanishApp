@@ -443,7 +443,7 @@ private fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -
         shape = RoundedCornerShape(32.dp),
         // tonalElevation overlays primary tint = brown in M3 dark. Use shadow only.
         shadowElevation = 6.dp,
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
         border = androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
     ) {
         content()

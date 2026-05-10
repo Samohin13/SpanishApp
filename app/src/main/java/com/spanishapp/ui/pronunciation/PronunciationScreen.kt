@@ -185,7 +185,7 @@ fun PronunciationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(com.spanishapp.R.string.pron_title)) },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🎤 " + stringResource(com.spanishapp.R.string.pron_title), fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)

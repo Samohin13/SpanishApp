@@ -44,7 +44,7 @@ fun ForgotPasswordScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Восстановление пароля") },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🔒 Восстановление", fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")

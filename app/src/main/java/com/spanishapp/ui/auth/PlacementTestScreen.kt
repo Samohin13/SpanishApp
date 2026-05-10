@@ -167,7 +167,7 @@ fun PlacementTestScreen(
 
         Spacer(Modifier.height(32.dp))
 
-        val unselectedSurface = MaterialTheme.colorScheme.surface
+        val unselectedSurface = MaterialTheme.colorScheme.surfaceContainerHighest
         val unselectedBorder  = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
         val selectedBg        = MaterialTheme.colorScheme.primaryContainer
         val selectedFg        = MaterialTheme.colorScheme.onPrimaryContainer

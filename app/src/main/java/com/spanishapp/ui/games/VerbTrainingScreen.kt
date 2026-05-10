@@ -62,7 +62,7 @@ private val TextGray
 private val CardBorder
     @Composable get() = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
 private val CardSurface
-    @Composable get() = MaterialTheme.colorScheme.surface
+    @Composable get() = MaterialTheme.colorScheme.surfaceContainerHighest
 private val Green       = Color(0xFF4CAF50)
 private val Red         = Color(0xFFF44336)
 private val Orange      = Color(0xFFFF9500)
@@ -80,7 +80,7 @@ fun VerbTrainingScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.verb_title), fontWeight = FontWeight.Bold) },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🔤 " + stringResource(R.string.verb_title), fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (state.showSetup || state.isGameOver) navController.popBackStack()

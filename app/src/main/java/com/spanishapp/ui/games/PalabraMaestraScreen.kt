@@ -41,7 +41,7 @@ private val TextGray
 private val CardBorder
     @Composable get() = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
 private val CardSurface
-    @Composable get() = MaterialTheme.colorScheme.surface
+    @Composable get() = MaterialTheme.colorScheme.surfaceContainerHighest
 private val Green = Color(0xFF4CAF50)
 private val Red   = Color(0xFFF44336)
 

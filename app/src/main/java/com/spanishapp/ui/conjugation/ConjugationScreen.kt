@@ -133,7 +133,7 @@ fun ConjugationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_conjugation)) },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🔄 " + androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_conjugation), fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -254,7 +254,7 @@ private fun VerbCard(
         tonalElevation = if (isSelected) 4.dp else 1.dp,
         color = if (isSelected)
             MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
-        else MaterialTheme.colorScheme.surface,
+        else MaterialTheme.colorScheme.surfaceContainerHighest,
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()

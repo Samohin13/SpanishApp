@@ -44,7 +44,7 @@ fun NameEntryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Знакомство") },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "👋 Знакомство", fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -133,7 +133,7 @@ fun AgeSelectionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Возраст") },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🎂 Возраст", fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -229,7 +229,7 @@ fun ReasonSelectionScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("Цель обучения") },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🎯 Цель обучения", fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -268,7 +268,7 @@ fun ReasonSelectionScreen(
                         containerColor = if (isSelected)
                             MaterialTheme.colorScheme.primary  // brand orange
                         else
-                            MaterialTheme.colorScheme.surface  // theme-aware gray
+                            MaterialTheme.colorScheme.surfaceContainerHighest  // theme-aware gray
                     ),
                     border = if (isSelected) null
                         else androidx.compose.foundation.BorderStroke(
@@ -326,7 +326,7 @@ fun KnowledgeCheckScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("Знание языка") },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "📚 Знание языка", fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -373,7 +373,7 @@ fun KnowledgeCheckScreen(
                             launchSingleTop = true
                         }
                     },
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
                 shape = RoundedCornerShape(16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {

@@ -65,7 +65,7 @@ fun LibrosScreen(
                         Icon(Icons.Default.ArrowBack, stringResource(R.string.libros_back))
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
             )
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -136,7 +136,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(

@@ -498,10 +498,10 @@ private fun OptionTile(
     onClick: () -> Unit
 ) {
     val (bg, fg, border) = when {
-        !pickedAny       -> Triple(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.onSurface, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
+        !pickedAny       -> Triple(MaterialTheme.colorScheme.surfaceContainerHighest, MaterialTheme.colorScheme.onSurface, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
         isCorrect        -> Triple(Color(0xFF1B5E20), Color.White, Color(0xFF4CAF50))
         isPicked         -> Triple(Color(0xFF8B0000), Color.White, Color(0xFFFF5252))
-        else             -> Triple(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+        else             -> Triple(MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.5f), MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
     }
 
     Surface(

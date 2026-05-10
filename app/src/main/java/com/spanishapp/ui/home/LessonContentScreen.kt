@@ -42,7 +42,7 @@ fun LessonContentScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(lesson.title, fontSize = 16.sp, fontWeight = FontWeight.Bold) },
+                    title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "📖 " + lesson.title, fontSize = 16.sp) },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
                             Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
@@ -99,12 +99,12 @@ fun LessonContentScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
                 )
             )
         },
         bottomBar = {
-            Surface(shadowElevation = 8.dp, color = MaterialTheme.colorScheme.surface) {
+            Surface(shadowElevation = 8.dp, color = MaterialTheme.colorScheme.surfaceContainerHighest) {
                 Button(
                     onClick = {
                         if (!isMarked) {

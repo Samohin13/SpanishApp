@@ -47,7 +47,7 @@ private val TextMain
 private val CardBorder
     @Composable get() = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
 private val CardSurface
-    @Composable get() = MaterialTheme.colorScheme.surface
+    @Composable get() = MaterialTheme.colorScheme.surfaceContainerHighest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

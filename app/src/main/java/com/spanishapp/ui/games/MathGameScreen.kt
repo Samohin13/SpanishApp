@@ -199,7 +199,7 @@ private fun MathGameContent(
                         .fillMaxWidth()
                         .offset(x = shakeX.dp),
                     shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.surface,
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     shadowElevation = 2.dp
                 ) {
                     Column(
@@ -246,7 +246,7 @@ private fun MathGameContent(
                 } else {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.surface,
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
                         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
                         modifier = Modifier
                             .width(140.dp)
@@ -370,7 +370,7 @@ private fun KeyButton(
     Surface(
         modifier = modifier.clickable(enabled = enabled, onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        color = if (isAction) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
+        color = if (isAction) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surfaceContainerHighest,
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
     ) {
         Box(contentAlignment = Alignment.Center) {

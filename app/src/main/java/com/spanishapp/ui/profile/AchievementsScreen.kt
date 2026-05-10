@@ -148,7 +148,7 @@ fun AchievementsScreen(
 private fun AchievementSummary(unlocked: Int, total: Int, totalXp: Int) {
     Surface(
         shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
         shadowElevation = 2.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -247,7 +247,7 @@ private fun AchievementCard(a: AchievementEntity, unlocked: Boolean, isFresh: Bo
         color = when {
             isFresh  -> AppColors.Gold.copy(alpha = 0.18f)
             unlocked -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-            else     -> MaterialTheme.colorScheme.surface
+            else     -> MaterialTheme.colorScheme.surfaceContainerHighest
         },
         shadowElevation = if (unlocked) 0.dp else 1.dp,
         modifier = Modifier.fillMaxWidth()

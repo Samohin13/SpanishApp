@@ -45,7 +45,7 @@ private val ACCENT        = Color(0xFF7B2FBE)
 private val BG
     @Composable get() = MaterialTheme.colorScheme.background
 private val ImageCardBg
-    @Composable get() = MaterialTheme.colorScheme.surface
+    @Composable get() = MaterialTheme.colorScheme.surfaceContainerHighest
 private val PrimaryText
     @Composable get() = MaterialTheme.colorScheme.onSurface
 private val SecondaryText

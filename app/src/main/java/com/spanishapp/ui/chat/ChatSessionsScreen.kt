@@ -79,7 +79,7 @@ private fun ThemeCard(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        backgroundColor = MaterialTheme.colorScheme.surface,
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         shadowElevation = 3.dp
     ) {
         Row(

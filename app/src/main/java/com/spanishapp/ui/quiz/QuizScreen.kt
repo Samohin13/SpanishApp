@@ -125,7 +125,7 @@ fun QuizScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_quiz), fontWeight = FontWeight.Bold) },
+                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "❓ " + androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_quiz), fontSize = 18.sp) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -183,7 +183,7 @@ private fun QuizQuestionContent(
         // Основная карточка
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f),
+            color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.4f),
             border = borderStroke(),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -281,10 +281,10 @@ private fun QuizOptionItem(
     val scale by animateFloatAsState(targetScale, label = "scale")
 
     val bgColor = when {
-        !answered -> MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+        !answered -> MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.4f)
         isCorrect -> AppColors.Teal.copy(alpha = 0.2f)
         isSelected -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
-        else -> MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
+        else -> MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.2f)
     }
 
     Surface(

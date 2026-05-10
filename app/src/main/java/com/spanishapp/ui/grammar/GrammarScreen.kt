@@ -151,7 +151,7 @@ private fun LessonCard(
         shape = RoundedCornerShape(18.dp),
         backgroundColor = if (lesson.isCompleted)
             MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
-        else MaterialTheme.colorScheme.surface
+        else MaterialTheme.colorScheme.surfaceContainerHighest
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 

@@ -400,7 +400,7 @@ private fun ReadingAloudPanel(
         // ── Карточка с предложением ──
         Card(
             shape = RoundedCornerShape(18.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
             elevation = CardDefaults.cardElevation(3.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -572,7 +572,7 @@ private fun ReadingDonePanel(
         // Разбивка по предложениям
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
             elevation = CardDefaults.cardElevation(2.dp),
             modifier = Modifier.fillMaxWidth().weight(1f)
         ) {
@@ -708,7 +708,7 @@ fun LibroReadScreen(
                         Icon(Icons.Default.ArrowBack, stringResource(R.string.lread_back))
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
             )
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -734,7 +734,7 @@ fun LibroReadScreen(
                         // Карточка с текстом (вес 1 — занимает всё свободное место)
                         Card(
                             shape = RoundedCornerShape(20.dp),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
                             elevation = CardDefaults.cardElevation(3.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -932,7 +932,7 @@ fun LibroReadScreen(
 
                     Card(
                         shape = RoundedCornerShape(18.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
                         elevation = CardDefaults.cardElevation(2.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -947,7 +947,7 @@ fun LibroReadScreen(
                     val labels = listOf("A", "B", "C")
                     q.options.forEachIndexed { idx, option ->
                         val isSelected  = selectedAnswer == idx
-                        val bgColor     = if (isSelected) levelColor else MaterialTheme.colorScheme.surface
+                        val bgColor     = if (isSelected) levelColor else MaterialTheme.colorScheme.surfaceContainerHighest
                         val textColor   = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
                         val borderColor = if (isSelected) levelColor else MaterialTheme.colorScheme.outline
                         Row(

@@ -533,7 +533,7 @@ private fun AllWordsContent(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.surface)
+                                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                                     .padding(vertical = 4.dp, horizontal = 4.dp)
                             ) {
                                 Text(
