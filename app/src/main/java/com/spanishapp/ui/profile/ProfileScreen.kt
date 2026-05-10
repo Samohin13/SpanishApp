@@ -213,11 +213,15 @@ data class DailyXpPoint(
 // ═══════════════════════════════════════════════════════════
 //  Палитра акцентов — те же оттенки, что и на HomeScreen.
 // ═══════════════════════════════════════════════════════════
-private val AccentOrange = Color(0xFFFF9500)
-private val AccentGold   = Color(0xFFFFC107)
-private val AccentTeal   = Color(0xFF06B6D4)
-private val AccentGreen  = Color(0xFF22C55E)
-private val AccentBlue   = Color(0xFF06B6D4)
+private val AccentOrange  = Color(0xFFFF9500)   // brand-warm — kept for Path-to-Madrid only
+private val AccentGold    = Color(0xFFFFC107)   // legacy, no longer used in section accents
+private val AccentTeal    = Color(0xFF06B6D4)
+private val AccentGreen   = Color(0xFF22C55E)
+private val AccentBlue    = Color(0xFF3B82F6)
+private val AccentPurple  = Color(0xFF7C3AED)
+private val AccentViolet  = Color(0xFF8B5CF6)
+private val AccentEmerald = Color(0xFF10B981)
+private val AccentRose    = Color(0xFFF43F5E)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -286,8 +290,8 @@ fun ProfileScreen(
             )
             Spacer(Modifier.height(24.dp))
 
-            // ── ⭐ SKILL RATING ─────────────────────────────────
-            SectionHeader("⭐ SKILL RATING", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
+            // ── SKILL RATING ────────────────────────────────────
+            SectionHeader("SKILL RATING", AccentPurple, modifier = Modifier.padding(horizontal = 24.dp))
             Spacer(Modifier.height(8.dp))
             SkillRatingTile(
                 rating = p.skillRating,
@@ -298,22 +302,22 @@ fun ProfileScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // ── 🔥 АКТИВНОСТЬ ───────────────────────────────────
-            SectionHeader("🔥 АКТИВНОСТЬ", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
+            // ── АКТИВНОСТЬ ──────────────────────────────────────
+            SectionHeader("АКТИВНОСТЬ", AccentViolet, modifier = Modifier.padding(horizontal = 24.dp))
             Spacer(Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                ActivityStatTile("🔥", p.currentStreak.toString(), "СЕРИЯ ДНЕЙ", AccentOrange, Modifier.weight(1f))
-                ActivityStatTile("⭐", p.totalXp.toString(),       "XP ВСЕГО",    AccentGold,   Modifier.weight(1f))
-                ActivityStatTile("🎯", todayXp.toString(),         "XP СЕГОДНЯ",  AccentTeal,   Modifier.weight(1f))
+                ActivityStatTile("🔥", p.currentStreak.toString(), "СЕРИЯ ДНЕЙ", AccentViolet,  Modifier.weight(1f))
+                ActivityStatTile("⭐", p.totalXp.toString(),       "XP ВСЕГО",    AccentEmerald, Modifier.weight(1f))
+                ActivityStatTile("🎯", todayXp.toString(),         "XP СЕГОДНЯ",  AccentTeal,    Modifier.weight(1f))
             }
 
             Spacer(Modifier.height(20.dp))
 
-            // ── 🏛 ПУТЬ ДО МАДРИДА ──────────────────────────────
-            SectionHeader("🏛 ПУТЬ ДО МАДРИДА", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
+            // ── ПУТЬ ДО МАДРИДА (единственная тёплая секция) ────
+            SectionHeader("ПУТЬ ДО МАДРИДА", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
             Spacer(Modifier.height(8.dp))
             PathToMadridTile(
                 league = league,
@@ -324,8 +328,8 @@ fun ProfileScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // ── 📊 СТАТИСТИКА ───────────────────────────────────
-            SectionHeader("📊 СТАТИСТИКА", AccentGreen, modifier = Modifier.padding(horizontal = 24.dp))
+            // ── СТАТИСТИКА ──────────────────────────────────────
+            SectionHeader("СТАТИСТИКА", AccentGreen, modifier = Modifier.padding(horizontal = 24.dp))
             Spacer(Modifier.height(8.dp))
             StatsTile(
                 wordsLearned = state.learnedCount,
@@ -336,8 +340,8 @@ fun ProfileScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // ── 📈 АКТИВНОСТЬ ЗА НЕДЕЛЮ ────────────────────────
-            SectionHeader("📈 АКТИВНОСТЬ ЗА НЕДЕЛЮ", AccentBlue, modifier = Modifier.padding(horizontal = 24.dp))
+            // ── АКТИВНОСТЬ ЗА НЕДЕЛЮ ────────────────────────────
+            SectionHeader("АКТИВНОСТЬ ЗА НЕДЕЛЮ", AccentBlue, modifier = Modifier.padding(horizontal = 24.dp))
             Spacer(Modifier.height(8.dp))
             WeeklyHeatmapTile(
                 history = xpHistory,
@@ -346,10 +350,10 @@ fun ProfileScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // ── 🏆 ДОСТИЖЕНИЯ ───────────────────────────────────
+            // ── ДОСТИЖЕНИЯ ──────────────────────────────────────
             SectionHeader(
-                "🏆 ДОСТИЖЕНИЯ",
-                AccentGold,
+                "ДОСТИЖЕНИЯ",
+                AccentRose,
                 trailing = "↗",
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
@@ -552,7 +556,7 @@ private fun SkillRatingTile(
     appLevelProgress: Float,
     modifier: Modifier = Modifier
 ) {
-    ProfileTile(accent = AccentOrange, modifier = modifier.fillMaxWidth(), height = 160.dp) {
+    ProfileTile(accent = AccentPurple, modifier = modifier.fillMaxWidth(), height = 160.dp) {
         Text(
             rating.toString(),
             fontSize = 64.sp,
@@ -571,15 +575,15 @@ private fun SkillRatingTile(
         LinearProgressIndicator(
             progress = { appLevelProgress },
             modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
-            color = AccentOrange,
-            trackColor = AccentOrange.copy(alpha = 0.18f)
+            color = AccentPurple,
+            trackColor = AccentPurple.copy(alpha = 0.18f)
         )
         Spacer(Modifier.height(4.dp))
         Text(
             "${(appLevelProgress * 100).toInt()}%",
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
-            color = AccentOrange
+            color = AccentPurple
         )
     }
 }
@@ -802,9 +806,9 @@ private fun WeeklyHeatmapTile(
             points.forEach { point ->
                 val color = when {
                     point.xp == 0  -> MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                    point.xp < 10  -> AccentOrange.copy(alpha = 0.35f)
-                    point.xp < 30  -> AccentOrange.copy(alpha = 0.65f)
-                    else           -> AccentOrange
+                    point.xp < 10  -> AccentBlue.copy(alpha = 0.35f)
+                    point.xp < 30  -> AccentBlue.copy(alpha = 0.65f)
+                    else           -> AccentBlue
                 }
                 val dayIdx = point.date.dayOfWeek.value - 1
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -839,7 +843,7 @@ private fun AchievementsTeaserTile(
 ) {
     // Сортировка: разблокированные сверху, потом самые «близкие» к разблокировке.
     val top3 = achievements.take(3)
-    ProfileTile(accent = AccentGold, modifier = modifier.fillMaxWidth(), onClick = onClick) {
+    ProfileTile(accent = AccentRose, modifier = modifier.fillMaxWidth(), onClick = onClick) {
         if (top3.isEmpty()) {
             Text(
                 "Достижения скоро появятся.",

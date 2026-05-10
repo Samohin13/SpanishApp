@@ -535,7 +535,7 @@ private fun ContinuePager(
 
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp)) {
         Text(
-            "📌 ПРОДОЛЖИ",
+            "ПРОДОЛЖИ",
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1486,12 +1486,12 @@ private fun BentoTile(
 
 @Composable
 private fun BentoHeader(emoji: String, label: String, accent: Color, modifier: Modifier = Modifier) {
+    // `emoji` parameter retained for source-compat; intentionally not rendered
+    // (per design feedback: drop leading emojis from section labels).
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(emoji, fontSize = 16.sp)
         Text(
             label,
             fontSize = 11.sp,
@@ -1791,7 +1791,18 @@ internal fun TopicCard(
                                 .background(Color.White.copy(alpha = 0.25f)),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(unit.icon, fontSize = 22.sp)
+                            // Was `unit.icon` (emoji like 🚀 / 🏠). Per design
+                            // feedback we replaced the emoji with the block
+                            // number ("01", "02"...) for a cleaner look.
+                            val blockNum = unit.id.toIntOrNull()
+                            val label = if (blockNum != null) blockNum.toString().padStart(2, '0')
+                                        else unit.id
+                            Text(
+                                label,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.White
+                            )
                         }
 
                         Column {
