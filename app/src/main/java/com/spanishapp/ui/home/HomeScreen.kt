@@ -4,12 +4,12 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,18 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.util.lerp
-import kotlin.math.absoluteValue
 import java.time.LocalDate
 import java.time.LocalTime
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,7 +42,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.spanishapp.R
+import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.ui.components.*
+import kotlinx.coroutines.launch
 
 // ── Roadmap Data Model ────────────────────────────────────────
 
@@ -70,30 +69,33 @@ data class RoadmapLesson(
 )
 
 // ═══════════════════════════════════════════════════════════════
-//  Palette — Sunset over Barcelona
+//  Palette
 // ═══════════════════════════════════════════════════════════════
 
-private val Orange      = Color(0xFFFF6B35)  // Primary CTA
-private val Purple      = Color(0xFFFF6B35)  // alias
-private val Pink        = Color(0xFFD62867)  // Magenta accent
-private val GoldColor   = Color(0xFFFF9500)  // Sun / XP
-private val OrangeColor = Color(0xFFFF6B00)  // Streak fire
-private val TextMain    = Color(0xFF1A1A1A)  // Near-black primary text
-private val TextGray    = Color(0xFF8E8E93)  // Secondary text
+private val Orange      = Color(0xFFFF6B35)
+private val Purple      = Color(0xFFFF6B35)
+private val GoldColor   = Color(0xFFFF9500)
+private val OrangeColor = Color(0xFFFF6B00)
+private val TextGray    = Color(0xFF8E8E93)
 private val LockGray    = Color(0xFFC7C7CC)
-private val BgGray      = Color(0xFFF0F0F5)  // Cool gray home wrapper
-private val BgLight     = Color(0xFFF8F8FA)  // SpanishBackground
 
-// CEFR level gradients — vivid + contrasting per level (3.9).
-// A1 purple, A2 teal, B1 green, B2 orange.
-private val A1Start     = Color(0xFF7C3AED)  // bright violet
-private val A1End       = Color(0xFF5B21B6)  // deep violet
-private val A2Start     = Color(0xFF06B6D4)  // bright teal
-private val A2End       = Color(0xFF0E7490)  // deep teal
-private val B1Start     = Color(0xFF22C55E)  // bright green
-private val B1End       = Color(0xFF15803D)  // deep green
-private val B2Start     = Color(0xFFF97316)  // bright orange
-private val B2End       = Color(0xFFC2410C)  // deep orange
+// CEFR pill colours.
+private val A1Color = Color(0xFF7C3AED)
+private val A2Color = Color(0xFF06B6D4)
+private val B1Color = Color(0xFF22C55E)
+private val B2Color = Color(0xFFF97316)
+
+// Continue-pager per-page accents.
+private val LessonAccent = Color(0xFF7C3AED)
+private val BookAccent   = Color(0xFF22C55E)
+private val SetAccent    = Color(0xFFF97316)
+private val WeakAccent   = Color(0xFF06B6D4)
+
+// League names per current_league index (1..8).
+private val LEAGUE_NAMES = listOf(
+    "Aldea", "Santiago", "Bilbao", "Zaragoza",
+    "Valencia", "Sevilla", "Barcelona", "Madrid"
+)
 
 // ═══════════════════════════════════════════════════════════════
 //  HOME SCREEN
@@ -105,204 +107,150 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val wordOfDay by viewModel.wordOfTheDay.collectAsStateWithLifecycle()
-    var expandedUnitId by remember { mutableStateOf<String?>(null) }
+    val state         by viewModel.uiState.collectAsStateWithLifecycle()
+    val wordOfDay     by viewModel.wordOfTheDay.collectAsStateWithLifecycle()
+    val lastLesson    by viewModel.lastLessonInProgress.collectAsStateWithLifecycle()
+    val lastBook      by viewModel.lastBookInProgress.collectAsStateWithLifecycle()
+    val nextSet       by viewModel.nextIncompleteSet.collectAsStateWithLifecycle()
+    val weakWord      by viewModel.weakSampleWord.collectAsStateWithLifecycle()
+    val recentWords   by viewModel.recentWords.collectAsStateWithLifecycle()
+    val weeklyMinutes by viewModel.weeklyMinutes.collectAsStateWithLifecycle()
+    val dailyGoals    by viewModel.dailyGoals.collectAsStateWithLifecycle()
     val tts = rememberSpanishTts()
+    val scope = rememberCoroutineScope()
 
-    // Локализованные подписи карточек курсов — читаются здесь (в @Composable
-    // контексте HomeScreen), потому что внутри LazyColumn item-lambda
-    // stringResource() недоступен.
-    val courseDataLocal = listOf(
-        CourseCardData("A1", stringResource(R.string.course_a1_subtitle), "🚀", A1Start, A1End,
-            stringResource(R.string.course_lessons_60_micro), stringResource(R.string.course_blocks_4)),
-        CourseCardData("A2", stringResource(R.string.course_a2_subtitle), "🌍", A2Start, A2End,
-            stringResource(R.string.course_lessons_60),       stringResource(R.string.course_blocks_4)),
-        CourseCardData("B1", stringResource(R.string.course_b1_subtitle), "📚", B1Start, B1End,
-            stringResource(R.string.course_lessons_soon),     stringResource(R.string.course_blocks_4)),
-        CourseCardData("B2", stringResource(R.string.course_b2_subtitle), "🎓", B2Start, B2End,
-            stringResource(R.string.course_lessons_soon),     stringResource(R.string.course_blocks_4))
-    )
-    val courseLockedLabel = stringResource(R.string.course_locked)
-    val courseStartLabel = stringResource(R.string.course_start_learning)
-    val course60LessonsLabel = stringResource(R.string.course_lessons_60)
-    val homeWordOfDayLabel = stringResource(R.string.home_word_of_day)
-
-    // Time-of-day greeting + daily-rotating motivation (3.1).
-    // Recomputed once per recomposition; the day-of-epoch key keeps the
-    // animation in AnimatedScreenTitle from replaying on every state tick.
     val today = remember { LocalDate.now() }
     val greeting = remember(today) { greetingFor(LocalTime.now()) }
     val motivation = remember(today) { motivationFor(today) }
 
+    // For random-word and word-detail bottom sheets.
+    var randomWord by remember { mutableStateOf<WordEntity?>(null) }
+    var sheetWord by remember { mutableStateOf<WordEntity?>(null) }
+
     Box(modifier = Modifier.fillMaxSize()) {
-    // Faint Spain-cities skyline behind the whole feed (3.5).
-    com.spanishapp.ui.components.SpanishCitiesWatermark(
-        modifier = Modifier.fillMaxSize()
-    )
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        contentPadding = PaddingValues(bottom = 96.dp)  // extra space so FAB doesn't cover content
-    ) {
-        // ── Header ─────────────────────────────────────────────
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = 20.dp, vertical = 14.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment     = Alignment.CenterVertically
-            ) {
-                val context = LocalContext.current
-                Surface(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { navController.navigate("profile") }
-                        ),
-                    shape = CircleShape,
-                    color = Purple,
-                    tonalElevation = 2.dp
-                ) {
-                    if (state.userPhotoUrl != null) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data(state.userPhotoUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = "Профиль",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize().clip(CircleShape)
-                        )
-                    } else {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(Icons.Default.Person, null, tint = Color.White, modifier = Modifier.size(22.dp))
-                        }
-                    }
-                }
+        SpanishCitiesWatermark(modifier = Modifier.fillMaxSize())
 
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    StatPill("✨", "${state.totalXp} XP", Color(0xFFFFF1E6), GoldColor, GoldColor.copy(.3f))
-                    StatPill("🔥", "${state.currentStreak}", Color(0xFFFFF1E6), OrangeColor, OrangeColor.copy(.3f))
-                }
-            }
-        }
-
-        // ── Greeting ───────────────────────────────────────────
-        item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 20.dp)
-            ) {
-                // Animated entrance — replayKey on greeting so the morning →
-                // afternoon transition triggers the staggered re-reveal (3.8).
-                com.spanishapp.ui.components.AnimatedScreenTitle(
-                    text = greeting,
-                    fontSize = 26.sp,
-                    bold = true,
-                    replayKey = greeting
-                )
-                Spacer(Modifier.height(2.dp))
-                Text(motivation, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        }
-
-        item { Spacer(Modifier.height(16.dp)) }
-
-        // ── Streak card ────────────────────────────────────────
-        item {
-            StreakCard(
-                streak       = state.currentStreak,
-                studiedToday = state.studiedToday,
-                todayMinutes = state.todayMinutes,
-                goalMinutes  = state.dailyGoalMinutes,
-                freezes      = state.streakFreezes,
-                todayXp      = state.todayXp
-            )
-            Spacer(Modifier.height(12.dp))
-        }
-
-        // ── Word of day card ───────────────────────────────────
-        wordOfDay?.let { word ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
+            contentPadding = PaddingValues(bottom = 96.dp)
+        ) {
+            // ── Compact header (~72dp) ─────────────────────────
             item {
-                WordOfDayCard(word = word, tts = tts)
-                Spacer(Modifier.height(12.dp))
+                CompactHeader(
+                    greeting       = greeting,
+                    motivation     = motivation,
+                    photoUrl       = state.userPhotoUrl,
+                    onAvatar       = { navController.navigate("profile") },
+                    onSettings     = { navController.navigate("settings") }
+                )
             }
-        }
 
-        // ── Course pager ───────────────────────────────────────
-        // Horizontal carousel: ~85% width per page, peek of neighbours,
-        // current page scales up while siblings fade and shrink (3.2).
-        val courseData = courseDataLocal
-        item {
-            val pagerState = rememberPagerState(pageCount = { courseData.size })
-            Column {
-                HorizontalPager(
-                    state = pagerState,
-                    pageSize = PageSize.Fixed(320.dp),
-                    contentPadding = PaddingValues(horizontal = 32.dp),
-                    pageSpacing = 12.dp,
-                    modifier = Modifier.fillMaxWidth()
-                ) { page ->
-                    val course = courseData[page]
-                    val pageOffset =
-                        (pagerState.currentPage - page + pagerState.currentPageOffsetFraction)
-                            .absoluteValue
-                            .coerceIn(0f, 1f)
-                    Box(
-                        modifier = Modifier.graphicsLayer {
-                            val s = lerp(0.92f, 1f, 1f - pageOffset)
-                            scaleX = s
-                            scaleY = s
-                            alpha = lerp(0.6f, 1f, 1f - pageOffset)
-                        }
-                    ) {
-                        CourseCard(
-                            course = course,
-                            unitsCount = state.roadmapUnits.count { it.cefrLevel == course.level },
-                            isLocked = false,
-                            onClick = { navController.navigate("course_detail/${course.level}") },
-                            onPremiumClick = { /* premium убран — все курсы открыты */ }
-                        )
-                    }
-                }
+            // ── Stats bar (single row) ─────────────────────────
+            item {
+                Spacer(Modifier.height(8.dp))
+                StatsBar(
+                    streak       = state.currentStreak,
+                    todayMinutes = state.todayMinutes,
+                    goalMinutes  = state.dailyGoalMinutes,
+                    todayXp      = state.todayXp,
+                    skillRating  = state.skillRating,
+                    league       = state.currentLeague,
+                    onClick      = { navController.navigate("profile") }
+                )
                 Spacer(Modifier.height(12.dp))
-                // Dots indicator — active dot uses the current course's start color.
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    courseData.forEachIndexed { idx, course ->
-                        val isActive = pagerState.currentPage == idx
-                        Box(
-                            modifier = Modifier
-                                .padding(horizontal = 4.dp)
-                                .size(if (isActive) 10.dp else 7.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (isActive) course.colorStart
-                                    else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-                                )
+            }
+
+            // ── Continue Pager ─────────────────────────────────
+            item {
+                ContinuePager(
+                    lastLesson  = lastLesson,
+                    lastBook    = lastBook,
+                    nextSet     = nextSet,
+                    weakWord    = weakWord,
+                    onLesson    = { l ->
+                        navController.navigate("lesson_intro/${l.unitId}/${l.lessonIndex}")
+                    },
+                    onBook      = { id -> navController.navigate("libro/$id") },
+                    onSet       = { setId ->
+                        navController.navigate(
+                            "flashcards_session?level=A1&category=all&direction=ES_TO_RU&setId=$setId"
                         )
-                    }
+                    },
+                    onWeak      = { navController.navigate("practice") }
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+
+            // ── Word of Day mega-card with quiz pager ─────────
+            wordOfDay?.let { word ->
+                item {
+                    WordOfDayQuizCard(
+                        word        = word,
+                        tts         = tts,
+                        viewModel   = viewModel
+                    )
+                    Spacer(Modifier.height(12.dp))
                 }
             }
+
+            // ── Bento 2×2 ──────────────────────────────────────
+            item {
+                BentoRow(
+                    book          = lastBook,
+                    rating        = state.skillRating,
+                    league        = state.currentLeague,
+                    recent        = recentWords,
+                    goals         = dailyGoals,
+                    onBookClick   = {
+                        lastBook?.let { navController.navigate("libro/${it.libroId}") }
+                            ?: navController.navigate("game_libros")
+                    },
+                    onLeagueClick = { navController.navigate("leaderboard") },
+                    onDictClick   = { navController.navigate("dictionary") },
+                    onWordChip    = { w -> sheetWord = w },
+                    onGoalClick   = { /* informational */ }
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+
+            // ── Streak heatmap ─────────────────────────────────
+            item {
+                WeekHeatmap(weeklyMinutes)
+                Spacer(Modifier.height(12.dp))
+            }
+
+            // ── Quick Actions ──────────────────────────────────
+            item {
+                QuickActionsRow(
+                    onRandom = {
+                        scope.launch { randomWord = viewModel.pickRandomWord() }
+                    },
+                    onPronounce = { navController.navigate("pronunciation") },
+                    onWeak      = { navController.navigate("practice") },
+                    onGame      = {
+                        val games = listOf(
+                            "game_articles", "game_speed", "game_math",
+                            "game_crossword", "game_sopa", "game_palabra"
+                        )
+                        navController.navigate(games.random())
+                    }
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+
+            // ── Course pills ───────────────────────────────────
+            item {
+                CoursePills(
+                    activeLevel = state.spanishLevel,
+                    onClick = { lvl -> navController.navigate("course_detail/$lvl") }
+                )
+                Spacer(Modifier.height(20.dp))
+            }
         }
-    }
 
         // ── AI-Chat FAB ─────────────────────────────────────────
-        // Spanish-themed bull icon (game-icons:taurus, CC-BY 3.0).
-        // Animations:
-        //  1) Entrance — spring overshoot 0 → 1.1 → 1.0 (delay 400ms).
-        //  2) Continuous breathing pulse 1.0 ↔ 1.06 every 2s + synced shadow.
         val entranceScale = remember { Animatable(0f) }
         LaunchedEffect(Unit) {
             kotlinx.coroutines.delay(400)
@@ -324,7 +272,6 @@ fun HomeScreen(
             label = "fab_pulse_scale"
         )
         val combinedScale = entranceScale.value * pulse
-        // Shadow elevation pulses in sync with scale for a soft glow effect.
         val shadowDp = 8.dp + ((pulse - 1f) * 80f).dp
 
         FloatingActionButton(
@@ -354,154 +301,1189 @@ fun HomeScreen(
             )
         }
     }
+
+    // Bottom sheets for random / dictionary chip lookups.
+    randomWord?.let { w ->
+        WordPeekSheet(
+            word = w,
+            tts = tts,
+            onDismiss = { randomWord = null },
+            onOpen = {
+                randomWord = null
+                navController.navigate("dictionary")
+            }
+        )
+    }
+    sheetWord?.let { w ->
+        WordPeekSheet(
+            word = w,
+            tts = tts,
+            onDismiss = { sheetWord = null },
+            onOpen = {
+                sheetWord = null
+                navController.navigate("dictionary")
+            }
+        )
+    }
 }
 
-// ── Data class for course card ────────────────────────────────
-
-data class CourseCardData(
-    val level: String,
-    val title: String,
-    val icon: String,
-    val colorStart: Color,
-    val colorEnd: Color,
-    val subtitle: String,
-    val blocksLabel: String
-)
-
-// ── Course card ────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  PHASE 1 — Header / Stats / Continue Pager
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
-private fun CourseCard(
-    course: CourseCardData,
-    unitsCount: Int,
-    isLocked: Boolean,
-    onClick: () -> Unit,
-    onPremiumClick: () -> Unit = {}
+private fun CompactHeader(
+    greeting: String,
+    motivation: String,
+    photoUrl: String?,
+    onAvatar: () -> Unit,
+    onSettings: () -> Unit
 ) {
-    // Diagonal gradient with a third (lighter) accent stop for depth (3.6).
-    val headerBrush = if (isLocked)
-        Brush.linearGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
-    else
-        Brush.linearGradient(
-            colors = listOf(
-                course.colorStart,
-                course.colorEnd,
-                course.colorStart.copy(alpha = 0.85f)
-            ),
-            start = Offset.Zero,
-            end = Offset(1000f, 1000f)
-        )
-
-    val accentColor = if (isLocked) LockGray else course.colorStart
-
-    PressableCard(
-        onClick = if (isLocked) onPremiumClick else onClick,
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp),
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = if (isLocked) 2.dp else 8.dp
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .heightIn(min = 56.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            // ── Header — diagonal gradient + skyline watermark ──
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(140.dp)
-                    .background(headerBrush)
-            ) {
-                // Subtle white skyline overlay on each card header (3.5).
-                com.spanishapp.ui.components.SpanishCitiesWatermark(
-                    color = Color.White.copy(alpha = 0.10f)
+        val context = LocalContext.current
+        Surface(
+            modifier = Modifier
+                .size(44.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onAvatar
+                ),
+            shape = CircleShape,
+            color = Purple,
+            tonalElevation = 2.dp
+        ) {
+            if (photoUrl != null) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(photoUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Профиль",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize().clip(CircleShape)
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 18.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text(course.icon, fontSize = 36.sp)
-                            CefrBadge(course.level)
-                        }
-                        Spacer(Modifier.height(6.dp))
-                        // Headline-feel title — 28sp ExtraBold tight tracking (3.4).
-                        Text(
-                            course.title,
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = (-0.5).sp,
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    if (isLocked) {
-                        Icon(Icons.Default.Lock, null, tint = Color.White.copy(.8f), modifier = Modifier.size(24.dp))
-                    } else {
-                        // Just the unit count with a packet emoji — no "блоков" label (3.3).
-                        Column(horizontalAlignment = Alignment.End) {
-                            Text(
-                                "📦 $unitsCount",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        }
-                    }
+            } else {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(Icons.Default.Person, null, tint = Color.White, modifier = Modifier.size(22.dp))
                 }
             }
+        }
 
-            // ── Body ────────────────────────────────────────────
-            Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
+        Spacer(Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            // Animated greeting reused — replayKey on greeting so morning →
+            // afternoon transitions re-trigger the staggered reveal.
+            AnimatedScreenTitle(
+                text = greeting,
+                fontSize = 18.sp,
+                bold = true,
+                replayKey = greeting
+            )
+            Text(
+                motivation,
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        IconButton(onClick = onSettings) {
+            Icon(
+                Icons.Default.Settings,
+                contentDescription = "Настройки",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatsBar(
+    streak: Int,
+    todayMinutes: Int,
+    goalMinutes: Int,
+    todayXp: Int,
+    skillRating: Int,
+    league: Int,
+    onClick: () -> Unit
+) {
+    val progress = if (goalMinutes > 0) (todayMinutes.toFloat() / goalMinutes).coerceIn(0f, 1f) else 0f
+    val animatedProgress by animateFloatAsState(progress, tween(500), label = "stats_ring")
+    val leagueName = LEAGUE_NAMES.getOrElse(league - 1) { "Aldea" }
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 14.dp)
+            .heightIn(min = 56.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            ),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shadowElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 14.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            StatCell(emoji = "🔥", text = "$streak", color = OrangeColor, modifier = Modifier.weight(1f))
+
+            // Daily-goal mini ring + minutes label.
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1.2f),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Box(modifier = Modifier.size(24.dp), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(
+                        progress = { 1f },
+                        modifier = Modifier.size(24.dp),
+                        color = OrangeColor.copy(alpha = 0.18f),
+                        strokeWidth = 3.dp,
+                        trackColor = Color.Transparent
+                    )
+                    CircularProgressIndicator(
+                        progress = { animatedProgress },
+                        modifier = Modifier.size(24.dp),
+                        color = OrangeColor,
+                        strokeWidth = 3.dp,
+                        trackColor = Color.Transparent
+                    )
+                }
                 Text(
-                    course.subtitle,
-                    fontSize = 15.sp,
-                    color = if (isLocked) TextGray.copy(.6f) else TextGray,
+                    "$todayMinutes/$goalMinutes мин",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            StatCell(emoji = "⭐", text = "$todayXp XP", color = GoldColor, modifier = Modifier.weight(1f))
+
+            // League cell — emoji + city + rating.
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1.4f),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text("🏅", fontSize = 14.sp)
+                Column {
+                    Text(
+                        leagueName,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        "$skillRating",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatCell(emoji: String, text: String, color: Color, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(emoji, fontSize = 14.sp)
+        Text(text, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = color, maxLines = 1)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ContinuePager(
+    lastLesson: ContinueLesson?,
+    lastBook: com.spanishapp.data.db.entity.LibroProgressEntity?,
+    nextSet: com.spanishapp.ui.flashcards.FlashcardSet?,
+    weakWord: WordEntity?,
+    onLesson: (ContinueLesson) -> Unit,
+    onBook: (Int) -> Unit,
+    onSet: (String) -> Unit,
+    onWeak: () -> Unit
+) {
+    val pagerState = rememberPagerState(pageCount = { 4 })
+
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp)) {
+        Text(
+            "📌 ПРОДОЛЖИ",
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            letterSpacing = 1.sp,
+            modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
+        )
+
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth().height(140.dp),
+            pageSpacing = 8.dp
+        ) { page ->
+            when (page) {
+                0 -> ContinueCard(
+                    title    = "Урок",
+                    subtitle = lastLesson?.let { "${it.unitTitle} · ${it.lessonTitle}" }
+                        ?: "Начни с любого курса",
+                    cta      = "Продолжить →",
+                    accent   = LessonAccent,
+                    enabled  = lastLesson != null,
+                    onClick  = { lastLesson?.let(onLesson) }
+                )
+                1 -> ContinueCard(
+                    title    = "Книга",
+                    subtitle = lastBook?.let { "Libro #${it.libroId} · ${it.bestScore}%" }
+                        ?: "Открой первую книгу",
+                    cta      = "Читать →",
+                    accent   = BookAccent,
+                    enabled  = true,
+                    onClick  = { lastBook?.let { onBook(it.libroId) } ?: onBook(1) }
+                )
+                2 -> ContinueCard(
+                    title    = "Сет карточек",
+                    subtitle = nextSet?.let { "${it.emoji} ${it.title} · ${it.wordsSpanish.size} слов" }
+                        ?: "Все сеты пройдены 🎉",
+                    cta      = "К сету →",
+                    accent   = SetAccent,
+                    enabled  = nextSet != null,
+                    onClick  = { nextSet?.let { onSet(it.id) } }
+                )
+                3 -> ContinueCard(
+                    title    = "Слабое слово",
+                    subtitle = weakWord?.let { "${it.spanish} — ${it.russian}" }
+                        ?: "Пока нет слабых слов",
+                    cta      = "Повторить →",
+                    accent   = WeakAccent,
+                    enabled  = weakWord != null,
+                    onClick  = onWeak
+                )
+            }
+        }
+
+        Spacer(Modifier.height(8.dp))
+        DotsIndicator(count = 4, current = pagerState.currentPage, accent = MaterialTheme.colorScheme.primary)
+    }
+}
+
+@Composable
+private fun ContinueCard(
+    title: String,
+    subtitle: String,
+    cta: String,
+    accent: Color,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
+    PressableCard(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().height(140.dp),
+        shape = RoundedCornerShape(20.dp),
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 4.dp,
+        enabled = enabled
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Soft accent stripe on the left edge.
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(6.dp)
+                    .background(accent)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 18.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    title.uppercase(),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = accent,
+                    letterSpacing = 1.sp
+                )
+                Text(
+                    subtitle,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     lineHeight = 20.sp
                 )
-                Spacer(Modifier.height(12.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(7.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(accentColor.copy(alpha = 0.15f))
-                )
-                Spacer(Modifier.height(8.dp))
                 Text(
-                    if (isLocked) stringResource(R.string.course_locked) else stringResource(R.string.course_start_learning),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = accentColor
+                    cta,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (enabled) accent else TextGray
                 )
             }
         }
     }
 }
 
-// ── Stat pill ──────────────────────────────────────────────────
-
 @Composable
-private fun StatPill(emoji: String, value: String, bgColor: Color, textColor: Color, borderColor: Color) {
-    Surface(shape = RoundedCornerShape(20.dp), color = bgColor,
-        border = androidx.compose.foundation.BorderStroke(1.dp, borderColor)) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(emoji, fontSize = 14.sp)
-            Text(value, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = textColor)
+private fun DotsIndicator(count: Int, current: Int, accent: Color) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(count) { i ->
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 3.dp)
+                    .size(if (current == i) 8.dp else 6.dp)
+                    .clip(CircleShape)
+                    .background(if (current == i) accent else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
+            )
         }
     }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  TOPIC CARD  —  главная карточка блока
+//  PHASE 2 — Word of Day mega-card with quiz pager
+// ═══════════════════════════════════════════════════════════════
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun WordOfDayQuizCard(
+    word: WordOfDay,
+    tts: android.speech.tts.TextToSpeech?,
+    viewModel: HomeViewModel
+) {
+    val pagerState = rememberPagerState(pageCount = { 4 })
+
+    // Distractors loaded once per word — used by all three multi-choice modes.
+    var distractors by remember(word.wordId) { mutableStateOf<List<WordEntity>>(emptyList()) }
+    LaunchedEffect(word.wordId) {
+        if (word.wordId != 0) distractors = viewModel.loadDistractors(word)
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        shadowElevation = 4.dp
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    "✨ СЛОВО ДНЯ",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                LevelPill(word.level)
+                Spacer(Modifier.weight(1f))
+                if (word.wasPracticed) {
+                    Text("✓", fontSize = 18.sp, color = Color(0xFF2E7D32))
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    word.spanish,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.weight(1f),
+                    lineHeight = 36.sp
+                )
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SpeakerButton(
+                        text = word.spanish,
+                        tts = tts,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+
+            Text(
+                word.russian,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
+            )
+
+            Spacer(Modifier.height(10.dp))
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.15f),
+                thickness = 1.dp
+            )
+            Spacer(Modifier.height(10.dp))
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth().height(220.dp),
+                pageSpacing = 8.dp
+            ) { page ->
+                when (page) {
+                    0 -> FillBlankQuiz(word, distractors, tts) {
+                        viewModel.markWordOfDayPractised()
+                    }
+                    1 -> TranslationQuiz(word, distractors) {
+                        viewModel.markWordOfDayPractised()
+                    }
+                    2 -> PronunciationQuiz(word, distractors, tts) {
+                        viewModel.markWordOfDayPractised()
+                    }
+                    3 -> LetterAssemblyQuiz(word) {
+                        viewModel.markWordOfDayPractised()
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+            DotsIndicator(
+                count = 4,
+                current = pagerState.currentPage,
+                accent = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+    }
+}
+
+@Composable
+private fun LevelPill(level: String) {
+    val color = when (level) {
+        "A1" -> A1Color; "A2" -> A2Color; "B1" -> B1Color; "B2" -> B2Color
+        else -> A1Color
+    }
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(color.copy(alpha = 0.85f))
+            .padding(horizontal = 7.dp, vertical = 2.dp)
+    ) {
+        Text(level, fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
+    }
+}
+
+// ── Quiz Mode 1 — Fill-in-blank ────────────────────────────────
+@Composable
+private fun FillBlankQuiz(
+    word: WordOfDay,
+    distractors: List<WordEntity>,
+    tts: android.speech.tts.TextToSpeech?,
+    onSolved: () -> Unit
+) {
+    val sentence = remember(word.wordId) {
+        val ex = word.example.takeIf { it.isNotBlank() }
+            ?: "${word.spanish} es muy útil"
+        // Replace the target word with a blank (simple case-insensitive token swap).
+        ex.replace(Regex("\\b${Regex.escape(word.spanish.substringAfterLast(' '))}\\b", RegexOption.IGNORE_CASE), "____")
+    }
+    val target = remember(word.wordId) { word.spanish.substringAfterLast(' ') }
+    val options = remember(word.wordId, distractors) {
+        (listOf(target) + distractors.map { it.spanish.substringAfterLast(' ') })
+            .distinct().shuffled()
+    }
+    var picked by remember(word.wordId) { mutableStateOf<String?>(null) }
+    var solved by remember(word.wordId) { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            sentence,
+            fontSize = 15.sp,
+            fontStyle = FontStyle.Italic,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            textAlign = TextAlign.Center,
+            lineHeight = 20.sp
+        )
+        Spacer(Modifier.height(12.dp))
+        OptionButtons(
+            options = options,
+            correct = target,
+            picked  = picked,
+            onPick  = { p ->
+                if (picked == null || picked != target) picked = p
+                if (p == target && !solved) { solved = true; onSolved() }
+            }
+        )
+    }
+}
+
+// ── Quiz Mode 2 — Translation choice ───────────────────────────
+@Composable
+private fun TranslationQuiz(
+    word: WordOfDay,
+    distractors: List<WordEntity>,
+    onSolved: () -> Unit
+) {
+    val target = word.russian
+    val options = remember(word.wordId, distractors) {
+        (listOf(target) + distractors.map { it.russian }).distinct().shuffled()
+    }
+    var picked by remember(word.wordId) { mutableStateOf<String?>(null) }
+    var solved by remember(word.wordId) { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Что значит «${word.spanish}»?",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        Spacer(Modifier.height(12.dp))
+        OptionButtons(
+            options = options,
+            correct = target,
+            picked  = picked,
+            onPick  = { p ->
+                if (picked == null || picked != target) picked = p
+                if (p == target && !solved) { solved = true; onSolved() }
+            }
+        )
+    }
+}
+
+// ── Quiz Mode 3 — Pronunciation choice ─────────────────────────
+// Simplified: one big "Послушай" button that speaks the target word,
+// then four Russian translation options to match.
+@Composable
+private fun PronunciationQuiz(
+    word: WordOfDay,
+    distractors: List<WordEntity>,
+    tts: android.speech.tts.TextToSpeech?,
+    onSolved: () -> Unit
+) {
+    val target = word.russian
+    val options = remember(word.wordId, distractors) {
+        (listOf(target) + distractors.map { it.russian }).distinct().shuffled()
+    }
+    var picked by remember(word.wordId) { mutableStateOf<String?>(null) }
+    var solved by remember(word.wordId) { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Surface(
+            onClick = {
+                tts?.stop()
+                tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod_pron")
+            },
+            shape = RoundedCornerShape(28.dp),
+            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.18f),
+            modifier = Modifier.heightIn(min = 56.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    Icons.Default.VolumeUp,
+                    null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    "Послушай",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        OptionButtons(
+            options = options,
+            correct = target,
+            picked  = picked,
+            onPick  = { p ->
+                if (picked == null || picked != target) picked = p
+                if (p == target && !solved) { solved = true; onSolved() }
+            }
+        )
+    }
+}
+
+// ── Quiz Mode 4 — Letter assembly ──────────────────────────────
+@Composable
+private fun LetterAssemblyQuiz(
+    word: WordOfDay,
+    onSolved: () -> Unit
+) {
+    val target = remember(word.wordId) {
+        word.spanish.substringAfterLast(' ').lowercase()
+    }
+    val scrambled = remember(word.wordId) { target.toList().shuffled() }
+    var typed by remember(word.wordId) { mutableStateOf("") }
+    var checked by remember(word.wordId) { mutableStateOf(false) }
+    val correct = checked && typed.equals(target, ignoreCase = true)
+    LaunchedEffect(correct) { if (correct) onSolved() }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            word.russian,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+        Spacer(Modifier.height(8.dp))
+
+        // Buffer panel — primary background + white text so it stays visible
+        // in both light and dark themes (matches PracticeScreen TYPING).
+        val bufferBg = when {
+            !checked -> MaterialTheme.colorScheme.primary
+            correct  -> Color(0xFF1B5E20)
+            else     -> Color(0xFF8B0000)
+        }
+        Surface(
+            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = bufferBg,
+            shadowElevation = 2.dp
+        ) {
+            Box(modifier = Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.Center) {
+                Text(
+                    typed.ifEmpty { "Тапни буквы ↓" },
+                    fontSize = if (typed.isEmpty()) 13.sp else 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    letterSpacing = if (typed.isEmpty()) 0.sp else 2.sp
+                )
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+
+        if (!checked) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
+            ) {
+                scrambled.take(8).forEach { c ->
+                    Surface(
+                        onClick = { if (typed.length < target.length) typed += c },
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(width = 28.dp, height = 36.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                c.toString(),
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
+            if (scrambled.size > 8) {
+                Spacer(Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
+                ) {
+                    scrambled.drop(8).forEach { c ->
+                        Surface(
+                            onClick = { if (typed.length < target.length) typed += c },
+                            shape = RoundedCornerShape(8.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(width = 28.dp, height = 36.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    c.toString(),
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextButton(onClick = { typed = "" }) { Text("Очистить") }
+                Button(onClick = { checked = true }, enabled = typed.isNotEmpty()) {
+                    Text("Проверить")
+                }
+            }
+        } else {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                if (correct) "Верно!" else "Правильно: $target",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Spacer(Modifier.height(8.dp))
+            TextButton(onClick = { typed = ""; checked = false }) { Text("Ещё раз") }
+        }
+    }
+}
+
+@Composable
+private fun OptionButtons(
+    options: List<String>,
+    correct: String,
+    picked: String?,
+    onPick: (String) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
+        options.forEach { opt ->
+            val isPicked = picked == opt
+            val isCorrect = opt == correct
+            val bg = when {
+                picked == null -> MaterialTheme.colorScheme.surface
+                isPicked && isCorrect -> Color(0xFFC8E6C9)
+                isPicked && !isCorrect -> Color(0xFFFFCDD2)
+                isCorrect && picked != correct -> Color(0xFFC8E6C9)
+                else -> MaterialTheme.colorScheme.surface
+            }
+            Surface(
+                onClick = { if (picked != correct) onPick(opt) },
+                shape = RoundedCornerShape(10.dp),
+                color = bg,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        opt,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.weight(1f),
+                        maxLines = 2
+                    )
+                    when {
+                        picked != null && isCorrect ->
+                            Text("✓", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold)
+                        isPicked && !isCorrect ->
+                            Text("✗", color = Color(0xFFC62828), fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PHASE 3 — Bento + Heatmap + Quick Actions + Course pills
+// ═══════════════════════════════════════════════════════════════
+
+@Composable
+private fun BentoRow(
+    book: com.spanishapp.data.db.entity.LibroProgressEntity?,
+    rating: Int,
+    league: Int,
+    recent: List<WordEntity>,
+    goals: DailyGoals,
+    onBookClick: () -> Unit,
+    onLeagueClick: () -> Unit,
+    onDictClick: () -> Unit,
+    onWordChip: (WordEntity) -> Unit,
+    onGoalClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            BentoTile(modifier = Modifier.weight(1f), onClick = onBookClick) {
+                BentoHeader(emoji = "📚", label = "КНИГА", accent = BookAccent)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    book?.let { "Libro #${it.libroId}" } ?: "Открой книгу",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(Modifier.height(6.dp))
+                LinearProgressIndicator(
+                    progress = { (book?.bestScore ?: 0) / 100f },
+                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
+                    color = BookAccent,
+                    trackColor = BookAccent.copy(alpha = 0.18f)
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "${book?.bestScore ?: 0}%",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            BentoTile(modifier = Modifier.weight(1f), onClick = onLeagueClick) {
+                BentoHeader(emoji = "🏅", label = "РЕЙТИНГ", accent = GoldColor)
+                Spacer(Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Text(
+                        "$rating",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                Text(
+                    LEAGUE_NAMES.getOrElse(league - 1) { "Aldea" },
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            BentoTile(modifier = Modifier.weight(1f), onClick = onDictClick) {
+                BentoHeader(emoji = "🔍", label = "СЛОВАРЬ", accent = WeakAccent)
+                Spacer(Modifier.height(6.dp))
+                if (recent.isEmpty()) {
+                    Text(
+                        "Открой слово",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        recent.take(4).forEach { w ->
+                            Surface(
+                                onClick = { onWordChip(w) },
+                                shape = RoundedCornerShape(8.dp),
+                                color = WeakAccent.copy(alpha = 0.12f),
+                                modifier = Modifier.padding(end = 4.dp)
+                            ) {
+                                Text(
+                                    w.spanish,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    maxLines = 1
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            BentoTile(modifier = Modifier.weight(1f), onClick = onGoalClick) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    BentoHeader(emoji = "🎯", label = "ЦЕЛЬ ДНЯ", accent = GoldColor, modifier = Modifier.weight(1f))
+                    Text(
+                        "${goals.completedCount}/3",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (goals.allDone) Color(0xFF2E7D32) else GoldColor
+                    )
+                }
+                Spacer(Modifier.height(4.dp))
+                GoalLine("Сет карточек", goals.flashcardSetCompleted)
+                GoalLine("Страница книги", goals.bookPageRead)
+                GoalLine("Слово дня", goals.wordOfDaySolved)
+                if (goals.allDone) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "🎉 +25 XP бонус",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BentoTile(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    PressableCard(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = 140.dp),
+        shape = RoundedCornerShape(16.dp),
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 2.dp
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(12.dp),
+            content = content
+        )
+    }
+}
+
+@Composable
+private fun BentoHeader(emoji: String, label: String, accent: Color, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(emoji, fontSize = 14.sp)
+        Text(
+            label,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp,
+            color = accent
+        )
+    }
+}
+
+@Composable
+private fun GoalLine(text: String, done: Boolean) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier.padding(vertical = 1.dp)
+    ) {
+        Text(if (done) "✅" else "☐", fontSize = 12.sp)
+        Text(
+            text,
+            fontSize = 11.sp,
+            color = if (done) MaterialTheme.colorScheme.onSurface
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun WeekHeatmap(minutes: List<Int>) {
+    val labels = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+    val totalMin = minutes.sum()
+    val activeDays = minutes.count { it > 0 }
+
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 2.dp
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                "📊 ЭТА НЕДЕЛЯ",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                minutes.forEachIndexed { i, m ->
+                    val color = when {
+                        m == 0      -> MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        m < 5       -> Orange.copy(alpha = 0.3f)
+                        m < 15      -> Orange.copy(alpha = 0.6f)
+                        else        -> Orange
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(color)
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            labels[i],
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "$activeDays дн · $totalMin мин на этой неделе",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuickActionsRow(
+    onRandom: () -> Unit,
+    onPronounce: () -> Unit,
+    onWeak: () -> Unit,
+    onGame: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        QuickAction("🎯", "Случайное", onRandom)
+        QuickAction("🎤", "Произношение", onPronounce)
+        QuickAction("🔄", "5 слабых", onWeak)
+        QuickAction("🎲", "Игра", onGame)
+    }
+}
+
+@Composable
+private fun QuickAction(emoji: String, label: String, onClick: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Surface(
+            onClick = onClick,
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shadowElevation = 4.dp,
+            modifier = Modifier.size(56.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text(emoji, fontSize = 24.sp)
+            }
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            label,
+            fontSize = 11.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1
+        )
+    }
+}
+
+@Composable
+private fun CoursePills(activeLevel: String, onClick: (String) -> Unit) {
+    val levels = listOf("A1", "A2", "B1", "B2")
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        levels.forEach { lvl ->
+            val isActive = lvl == activeLevel
+            val color = when (lvl) {
+                "A1" -> A1Color; "A2" -> A2Color; "B1" -> B1Color; else -> B2Color
+            }
+            Surface(
+                onClick = { onClick(lvl) },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(64.dp),
+                shape = RoundedCornerShape(14.dp),
+                color = if (isActive) color else MaterialTheme.colorScheme.surfaceContainer,
+                shadowElevation = if (isActive) 4.dp else 1.dp,
+                border = if (isActive) null
+                    else androidx.compose.foundation.BorderStroke(
+                        1.dp, color.copy(alpha = 0.4f)
+                    )
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        lvl,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = if (isActive) Color.White else color
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Word peek bottom sheet (random / dictionary chip)
+// ═══════════════════════════════════════════════════════════════
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WordPeekSheet(
+    word: WordEntity,
+    tts: android.speech.tts.TextToSpeech?,
+    onDismiss: () -> Unit,
+    onOpen: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+        Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    word.spanish,
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f)
+                )
+                SpeakerButton(text = word.spanish, tts = tts, tint = Orange)
+            }
+            Text(
+                word.russian,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (word.example.isNotBlank()) {
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    "\"${word.example}\"",
+                    fontSize = 13.sp,
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            Button(
+                onClick = onOpen,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Открыть в словаре")
+            }
+            Spacer(Modifier.height(10.dp))
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TopicCard / SubLessonRow / CefrBadge — kept for CourseDetail reuse
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
@@ -534,8 +1516,6 @@ internal fun TopicCard(
             )
     ) {
         Column {
-
-            // ── Цветная шапка ──────────────────────────────────
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -560,7 +1540,6 @@ internal fun TopicCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Большой эмодзи-иконка блока
                         Box(
                             modifier = Modifier
                                 .size(44.dp)
@@ -572,8 +1551,6 @@ internal fun TopicCard(
                         }
 
                         Column {
-                            // Если title уже начинается с "Блок" — не повторяем
-                            // подпись "Блок N" (3.7: убираем дубликат).
                             val titleStartsWithBlock = unit.title.trimStart().startsWith("Блок", ignoreCase = true)
                             if (!titleStartsWithBlock) {
                                 Text(
@@ -583,7 +1560,6 @@ internal fun TopicCard(
                                     color = Color.White.copy(alpha = 0.80f)
                                 )
                             }
-                            // Название блока
                             Text(
                                 text = unit.title,
                                 fontSize = 18.sp,
@@ -595,7 +1571,6 @@ internal fun TopicCard(
                         }
                     }
 
-                    // Правая часть шапки: CEFR + замок/кол-во
                     Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         CefrBadge(unit.cefrLevel)
                         if (unit.isLocked) {
@@ -612,10 +1587,7 @@ internal fun TopicCard(
                 }
             }
 
-            // ── Тело карточки ──────────────────────────────────
             Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
-
-                // Описание блока
                 Text(
                     text = unit.description,
                     fontSize = 13.sp,
@@ -626,9 +1598,7 @@ internal fun TopicCard(
 
                 Spacer(Modifier.height(10.dp))
 
-                // Прогресс-бар + стрелка
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Прогресс-трек
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -651,7 +1621,6 @@ internal fun TopicCard(
 
                     Spacer(Modifier.width(10.dp))
 
-                    // Процент или "Заблокировано"
                     if (unit.isLocked) {
                         Text(stringResource(R.string.course_locked), fontSize = 11.sp, color = LockGray)
                     } else {
@@ -665,7 +1634,6 @@ internal fun TopicCard(
 
                     Spacer(Modifier.width(10.dp))
 
-                    // Стрелка раскрытия
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = null,
@@ -674,7 +1642,6 @@ internal fun TopicCard(
                     )
                 }
 
-                // ── Развёрнутые уроки ──────────────────────────
                 AnimatedVisibility(
                     visible = isExpanded,
                     enter   = expandVertically(animationSpec = tween(220)) + fadeIn(tween(220)),
@@ -704,8 +1671,6 @@ internal fun TopicCard(
     }
 }
 
-// ── CEFR badge ────────────────────────────────────────────────
-
 @Composable
 internal fun CefrBadge(level: String) {
     val (bg, text) = when (level) {
@@ -724,10 +1689,6 @@ internal fun CefrBadge(level: String) {
         Text(level, fontSize = 11.sp, fontWeight = FontWeight.ExtraBold, color = text)
     }
 }
-
-// ═══════════════════════════════════════════════════════════════
-//  SUB-LESSON ROW  —  строка урока внутри блока
-// ═══════════════════════════════════════════════════════════════
 
 @Composable
 private fun SubLessonRow(
@@ -772,7 +1733,6 @@ private fun SubLessonRow(
             modifier          = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Круг с номером / галочкой
             Box(
                 modifier = Modifier
                     .size(36.dp)
@@ -800,7 +1760,6 @@ private fun SubLessonRow(
 
             Spacer(Modifier.width(12.dp))
 
-            // Название урока
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text       = lesson.title,
@@ -814,7 +1773,6 @@ private fun SubLessonRow(
 
             Spacer(Modifier.width(10.dp))
 
-            // Плашки: Теория + Практика
             if (!effectiveLocked) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Box(
@@ -848,306 +1806,11 @@ private fun SubLessonRow(
 
             Spacer(Modifier.width(6.dp))
 
-            // Правый значок
             when {
                 lesson.isPremium   -> Icon(Icons.Default.Lock, null, tint = Color(0xFFFF9500), modifier = Modifier.size(15.dp))
                 isLocked           -> Icon(Icons.Default.Lock, null, tint = LockGray, modifier = Modifier.size(15.dp))
                 lesson.isCompleted -> {}
                 else               -> Icon(Icons.Default.ChevronRight, null, tint = unitColor, modifier = Modifier.size(18.dp))
-            }
-        }
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  STREAK CARD
-// ═══════════════════════════════════════════════════════════════
-
-@Composable
-private fun StreakCard(
-    streak: Int,
-    studiedToday: Boolean,
-    todayMinutes: Int,
-    goalMinutes: Int,
-    freezes: Int,
-    todayXp: Int
-) {
-    val flameScale by rememberInfiniteTransition(label = "flame").animateFloat(
-        initialValue = 1f,
-        targetValue  = if (streak > 0) 1.12f else 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(700, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "flameScale"
-    )
-
-    val progress = if (goalMinutes > 0) (todayMinutes.toFloat() / goalMinutes).coerceIn(0f, 1f) else 0f
-    val animatedProgress by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = tween(600, easing = FastOutSlowInEasing),
-        label = "ringProgress"
-    )
-    val goalReached = progress >= 1f
-
-    // Flame gradient background: orange → yellow accent for "fire" feel when active.
-    val flameBg = if (streak > 0) {
-        Brush.linearGradient(
-            colors = listOf(
-                Color(0xFFFFF1E6),
-                Color(0xFFFFE0B2),
-                Color(0xFFFFCC80).copy(alpha = 0.55f)
-            )
-        )
-    } else {
-        Brush.linearGradient(listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surface))
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 14.dp)
-    ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 4.dp,
-        tonalElevation = 0.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .background(flameBg)
-                .padding(horizontal = 18.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Flame icon circle with gradient — emoji pulses 1.0 ↔ 1.15 every 1.5s.
-            val emojiPulse by rememberInfiniteTransition(label = "emojiPulse").animateFloat(
-                initialValue = 1f,
-                targetValue = if (streak > 0) 1.15f else 1f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 1500, easing = FastOutSlowInEasing),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = "emojiPulseScale"
-            )
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.horizontalGradient(listOf(Color(0xFFFFD23F), Color(0xFFFF6B00)))
-                    )
-                    .scale(if (streak > 0) flameScale else 1f),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (streak > 0) "🔥" else "💤",
-                    fontSize = 30.sp,
-                    modifier = Modifier.graphicsLayer {
-                        scaleX = emojiPulse
-                        scaleY = emojiPulse
-                    }
-                )
-            }
-
-            Spacer(Modifier.width(14.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(
-                        text = "$streak",
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = if (streak > 0) OrangeColor else TextGray,
-                        lineHeight = 50.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.home_streak_days),
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = TextGray,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                }
-                Spacer(Modifier.height(2.dp))
-                // Freezes row: ❄❄ visualisation
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    repeat(2) { idx ->
-                        Text(
-                            text = if (idx < freezes) "❄" else "·",
-                            fontSize = 14.sp,
-                            color = if (idx < freezes) Color(0xFF42A5F5) else TextGray.copy(.5f)
-                        )
-                    }
-                    Text(
-                        text = stringResource(R.string.home_freezes_label, freezes),
-                        fontSize = 11.sp,
-                        color = TextGray
-                    )
-                }
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = if (goalReached) stringResource(R.string.home_goal_reached)
-                           else if (studiedToday) stringResource(R.string.home_studied_today, todayMinutes, goalMinutes)
-                           else stringResource(R.string.home_not_studied_yet),
-                    fontSize = 12.sp,
-                    color = if (goalReached) Color(0xFF2E7D32) else if (studiedToday) Color(0xFF2E7D32) else TextGray
-                )
-            }
-
-            // ── Daily goal ring (Phase 2) ──
-            Box(
-                modifier = Modifier.size(64.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    progress = { 1f },
-                    modifier = Modifier.size(64.dp),
-                    color = GoldColor.copy(alpha = 0.18f),
-                    strokeWidth = 6.dp,
-                    trackColor = Color.Transparent
-                )
-                CircularProgressIndicator(
-                    progress = { animatedProgress },
-                    modifier = Modifier.size(64.dp),
-                    color = OrangeColor,
-                    strokeWidth = 6.dp,
-                    trackColor = Color.Transparent
-                )
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "$todayMinutes/$goalMinutes",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = if (goalReached) Color(0xFF2E7D32) else OrangeColor
-                    )
-                    Text(stringResource(R.string.home_goal_unit), fontSize = 9.sp, color = TextGray)
-                }
-            }
-        }
-    }
-        // 🏆 неделя! badge for streaks ≥ 7 days.
-        if (streak >= 7) {
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 6.dp, end = 6.dp),
-                shape = RoundedCornerShape(12.dp),
-                color = Color(0xFFFFD700),
-                shadowElevation = 3.dp
-            ) {
-                Text(
-                    text = "🏆 неделя!",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFF5D4037),
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                )
-            }
-        }
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  WORD OF DAY CARD
-// ═══════════════════════════════════════════════════════════════
-
-@Composable
-private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?) {
-    val WordBlue = Purple                 // Orange #FF6B35
-    val WordBg   = Color(0xFFFFF1E6)     // Peach tint
-
-    // Slide-in + fade entrance, 350ms.
-    var visible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { visible = true }
-    val anim = androidx.compose.animation.core.animateFloatAsState(
-        targetValue = if (visible) 1f else 0f,
-        animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
-        label = "wodIn"
-    )
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 14.dp)
-            .graphicsLayer {
-                alpha = anim.value
-                translationY = (1f - anim.value) * 32f
-            },
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 4.dp,
-        tonalElevation = 0.dp
-    ) {
-        Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
-            // Label — meta line "🇪🇸 Слово дня · A1"
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("🇪🇸", fontSize = 14.sp)
-                Text(
-                    stringResource(R.string.home_word_of_day) + " · A1",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = WordBlue
-                )
-            }
-
-            Spacer(Modifier.height(10.dp))
-
-            // Spanish word — big 32sp ExtraBold + 56dp circular speak button.
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = word.spanish,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = WordBlue,
-                    modifier = Modifier.weight(1f),
-                    lineHeight = 36.sp
-                )
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .background(WordBlue),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SpeakerButton(text = word.spanish, tts = tts, tint = Color.White)
-                }
-            }
-
-            // Russian translation — 16sp under big word.
-            Text(
-                text = word.russian,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            if (word.example.isNotBlank()) {
-                Spacer(Modifier.height(10.dp))
-                // Example sentence — clickable, длинный тап = TTS
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(WordBg)
-                        .padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "\"${word.example}\"",
-                        fontSize = 13.sp,
-                        fontStyle = FontStyle.Italic,
-                        color = WordBlue.copy(alpha = 0.85f),
-                        lineHeight = 18.sp,
-                        modifier = Modifier.weight(1f).padding(vertical = 6.dp)
-                    )
-                    SpeakerButton(text = word.example, tts = tts, tint = WordBlue)
-                }
-            }
-
-            if (word.wasPracticed) {
-                Spacer(Modifier.height(8.dp))
-                Text("✓ Уже практиковал", fontSize = 12.sp, color = Color(0xFF2E7D32))
             }
         }
     }

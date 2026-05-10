@@ -39,8 +39,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.spanishapp.data.db.dao.RecentSearchDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.dao.WordListDao
+import com.spanishapp.data.db.entity.RecentSearchEntity
 import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.data.db.entity.WordListEntity
 import com.spanishapp.data.db.entity.WordListEntryEntity
@@ -62,7 +64,8 @@ class DictionaryViewModel @Inject constructor(
     @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context,
     private val wordDao: WordListDao,
     private val wDao: WordDao,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    private val recentSearchDao: RecentSearchDao
 ) : ViewModel() {
 
     // ── Поиск ─────────────────────────────────────────────────
@@ -185,6 +188,10 @@ class DictionaryViewModel @Inject constructor(
 
     fun loadMembership(wordId: Int) = viewModelScope.launch {
         refreshMembership(wordId)
+        // Любое раскрытие карточки слова — это запрос пользователя; пишем в
+        // recent_searches, чтобы плитка "Словарь" на главной показывала
+        // актуальные слова.
+        recentSearchDao.upsert(RecentSearchEntity(wordId, System.currentTimeMillis()))
     }
 
     private suspend fun refreshMembership(wordId: Int) {

@@ -25,9 +25,10 @@ import com.spanishapp.data.db.entity.*
         LibroProgressEntity::class,
         GameLevelProgressEntity::class,
         DailyXpEntity::class,
-        FlashcardSetProgressEntity::class
+        FlashcardSetProgressEntity::class,
+        RecentSearchEntity::class
     ],
-    version = 14,
+    version = 15,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -46,6 +47,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun gameLevelProgressDao(): GameLevelProgressDao
     abstract fun dailyXpDao(): DailyXpDao
     abstract fun flashcardSetProgressDao(): FlashcardSetProgressDao
+    abstract fun recentSearchDao(): RecentSearchDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -269,6 +271,18 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE user_progress ADD COLUMN streak_freezes_available INTEGER NOT NULL DEFAULT 2")
                 db.execSQL("ALTER TABLE user_progress ADD COLUMN last_streak_update_date TEXT NOT NULL DEFAULT ''")
                 db.execSQL("ALTER TABLE user_progress ADD COLUMN weekly_freeze_reset_date TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
+        // ── v15: история открытий слов в словаре (для бенто-плитки на главной) ──
+        val MIGRATION_14_15 = object : Migration(14, 15) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS recent_searches (
+                        wordId INTEGER PRIMARY KEY NOT NULL,
+                        opened_at INTEGER NOT NULL
+                    )
+                """.trimIndent())
             }
         }
 
