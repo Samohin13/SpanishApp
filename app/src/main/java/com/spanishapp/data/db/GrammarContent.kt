@@ -839,6 +839,973 @@ object GrammarContent {
               ]
             }
             """.trimIndent()
+        ),
+
+        // ══════════════════════════════════════════
+        // A1 (расширение, сессия 10)
+        // ══════════════════════════════════════════
+        LessonEntity(
+            id = 36, level = "A1", category = "grammar",
+            title = "Неопределённые артикли: un, una, unos, unas",
+            topic = "Artículos indeterminados",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Неопределённый артикль соответствует русскому 'один/какой-то' или английскому 'a/some'. Используется, когда говорим о предмете впервые или неконкретно.",
+              "rules": [
+                "un — мужской род, единственное число: un libro (книга)",
+                "una — женский род, единственное число: una casa (дом)",
+                "unos — мужской род, множественное число: unos libros (несколько книг)",
+                "unas — женский род, множественное число: unas casas (несколько домов)"
+              ],
+              "tip": "Если предмет уже упомянут или известен — используй определённый артикль (el/la). 'Tengo un perro. El perro se llama Max'.",
+              "examples": [
+                {"es": "Quiero un café, por favor.", "ru": "Я хочу кофе, пожалуйста."},
+                {"es": "Hay una farmacia cerca.", "ru": "Рядом есть аптека."},
+                {"es": "Compré unos zapatos nuevos.", "ru": "Я купил новые туфли."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 37, level = "A1", category = "grammar",
+            title = "Hay — есть, имеется",
+            topic = "Безличный глагол hay",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Hay — особая безличная форма глагола haber. Переводится как 'есть, имеется' и не меняется по лицам и числам. С единственным и множественным числом — всегда hay.",
+              "rules": [
+                "Hay + un/una/unos/unas/числа: hay un libro, hay tres libros",
+                "Не используется с определённым артиклем: говорим 'el libro está aquí', а не 'hay el libro'",
+                "Вопрос: ¿Hay…? — Есть ли…?",
+                "Отрицание: No hay — нет (в смысле отсутствует)"
+              ],
+              "tip": "Запомни разницу: HAY = существование (есть в принципе), ESTÁ = местонахождение (находится конкретно где-то).",
+              "examples": [
+                {"es": "Hay un gato en el jardín.", "ru": "В саду есть кот."},
+                {"es": "¿Hay leche en la nevera?", "ru": "В холодильнике есть молоко?"},
+                {"es": "No hay nadie en casa.", "ru": "Никого нет дома."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 38, level = "A1", category = "grammar",
+            title = "Притяжательные: mi, tu, su, nuestro",
+            topic = "Adjetivos posesivos",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Притяжательные прилагательные показывают, кому принадлежит предмет. Согласуются с существительным в числе, а nuestro/vuestro — ещё и в роде.",
+              "rules": [
+                "mi (мой/моя), mis (мои): mi libro, mis libros",
+                "tu (твой/твоя), tus: tu casa, tus casas",
+                "su (его/её/их/Ваш), sus: su perro, sus perros",
+                "nuestro/nuestra/nuestros/nuestras (наш): nuestra casa, nuestros amigos",
+                "vuestro/vuestra/vuestros/vuestras (ваш — в Испании, мн.ч.)"
+              ],
+              "tip": "Su может означать 'его, её, их, Ваш' — смысл уточняется по контексту или через 'de él / de ella / de ellos'.",
+              "examples": [
+                {"es": "Mi madre se llama Ana.", "ru": "Мою маму зовут Анна."},
+                {"es": "¿Dónde está tu coche?", "ru": "Где твоя машина?"},
+                {"es": "Nuestros amigos viven en Madrid.", "ru": "Наши друзья живут в Мадриде."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 39, level = "A1", category = "grammar",
+            title = "Указательные: este, ese, aquel",
+            topic = "Demostrativos",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Указательные местоимения показывают расстояние до предмета относительно говорящего: близко, чуть дальше, далеко.",
+              "rules": [
+                "este/esta/estos/estas — этот (рядом со мной)",
+                "ese/esa/esos/esas — тот (рядом с собеседником)",
+                "aquel/aquella/aquellos/aquellas — тот (далеко от обоих)",
+                "Согласование с существительным в роде и числе: este libro, esta casa, estos libros, estas casas"
+              ],
+              "tip": "Нейтральные формы esto, eso, aquello (без рода) указывают на ситуацию или нечто абстрактное: '¿Qué es esto?' (что это?).",
+              "examples": [
+                {"es": "Este café está muy bueno.", "ru": "Этот кофе очень вкусный."},
+                {"es": "¿Cuánto cuesta esa camiseta?", "ru": "Сколько стоит та футболка?"},
+                {"es": "Aquellas montañas son los Pirineos.", "ru": "Те (далёкие) горы — Пиренеи."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 40, level = "A1", category = "grammar",
+            title = "Глагол tener и tener que",
+            topic = "Иметь / должен",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Tener — один из самых важных глаголов: 'иметь'. Используется и для возраста, и для ощущений, и для долженствования через 'tener que + инфинитив'.",
+              "rules": [
+                "Спряжение: tengo, tienes, tiene, tenemos, tenéis, tienen",
+                "Возраст: tengo 25 años (мне 25 лет — буквально 'имею 25 лет')",
+                "Ощущения: tener hambre/sed/frío/calor/sueño/miedo",
+                "Долженствование: tener que + инфинитив = 'должен сделать': tengo que estudiar"
+              ],
+              "tip": "В испанском 'я голодный' = tengo hambre (имею голод), а не 'soy hambriento'. Это калька, которой нужно избегать.",
+              "examples": [
+                {"es": "Tengo dos hermanos.", "ru": "У меня два брата."},
+                {"es": "¿Cuántos años tienes?", "ru": "Сколько тебе лет?"},
+                {"es": "Tengo que ir al médico.", "ru": "Мне нужно к врачу."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 41, level = "A1", category = "grammar",
+            title = "Отрицание: no, nada, nunca, nadie",
+            topic = "Negación",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Самое простое отрицание — поставить 'no' перед глаголом. Также есть отрицательные слова nada, nunca, nadie, ninguno — и часто используется двойное отрицание.",
+              "rules": [
+                "No + глагол: no hablo inglés (я не говорю по-английски)",
+                "Nada — ничего, nadie — никто, nunca — никогда, ninguno — никакой",
+                "Двойное отрицание: 'no como nada' (я ничего не ем) — 'no' обязательно, если отрицательное слово стоит после глагола",
+                "Если отрицательное слово стоит перед глаголом — 'no' не нужно: 'Nunca como pizza'"
+              ],
+              "tip": "Двойное отрицание в испанском — это норма, а не ошибка. 'No veo a nadie' буквально 'не вижу никого' = 'никого не вижу'.",
+              "examples": [
+                {"es": "No tengo dinero.", "ru": "У меня нет денег."},
+                {"es": "Nunca bebo café por la noche.", "ru": "Я никогда не пью кофе ночью."},
+                {"es": "No hay nadie en la oficina.", "ru": "В офисе никого нет."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 42, level = "A1", category = "grammar",
+            title = "Вопросительные слова",
+            topic = "Qué, dónde, cómo, cuándo, por qué",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Вопросительные слова в испанском всегда пишутся с акутом (´). Они стоят в начале вопроса, который оформляется перевёрнутым вопросительным знаком ¿ в начале и ? в конце.",
+              "rules": [
+                "qué — что/какой: ¿Qué quieres?",
+                "dónde — где, a dónde — куда, de dónde — откуда",
+                "cómo — как: ¿Cómo estás?",
+                "cuándo — когда, cuánto/cuánta/cuántos/cuántas — сколько",
+                "quién/quiénes — кто, por qué — почему (ответ: porque — потому что)"
+              ],
+              "tip": "Не путай 'por qué' (почему, раздельно с акутом) и 'porque' (потому что, слитно без акута).",
+              "examples": [
+                {"es": "¿Cómo te llamas?", "ru": "Как тебя зовут?"},
+                {"es": "¿Dónde vives?", "ru": "Где ты живёшь?"},
+                {"es": "¿Por qué estudias español?", "ru": "Почему ты учишь испанский?"}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 43, level = "A1", category = "grammar",
+            title = "Множественное число существительных",
+            topic = "Plural de los sustantivos",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Множественное число в испанском образуется добавлением -s или -es в зависимости от того, на что оканчивается слово.",
+              "rules": [
+                "Слово на гласную → +s: libro → libros, casa → casas",
+                "Слово на согласную → +es: profesor → profesores, ciudad → ciudades",
+                "Слово на -z → меняем z на c и +es: lápiz → lápices, vez → veces",
+                "Слово на -s без ударения на последнем слоге не меняется: el lunes → los lunes"
+              ],
+              "tip": "Артикль тоже меняется: el → los, la → las, un → unos, una → unas.",
+              "examples": [
+                {"es": "Tengo dos perros.", "ru": "У меня две собаки."},
+                {"es": "Los profesores son simpáticos.", "ru": "Преподаватели приятные."},
+                {"es": "Necesito tres lápices.", "ru": "Мне нужны три карандаша."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 44, level = "A1", category = "grammar",
+            title = "Прилагательные: согласование",
+            topic = "Concordancia de los adjetivos",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Прилагательные в испанском согласуются с существительным в роде и числе. Обычно ставятся ПОСЛЕ существительного, в отличие от русского.",
+              "rules": [
+                "Прилагательное на -o меняется по родам: alto → alta, alto → altos → altas",
+                "Прилагательное на -e или согласную не меняется по родам: grande → grande, fácil → fácil; во мн.ч. +s или +es",
+                "Национальности на согласную добавляют -a в ж.р.: español → española, francés → francesa",
+                "Порядок: существительное + прилагательное (la casa blanca, не 'la blanca casa')"
+              ],
+              "tip": "Несколько прилагательных, описывающих чувства/оценку, могут стоять перед существительным для эмоциональной окраски: 'una buena idea' (хорошая идея).",
+              "examples": [
+                {"es": "Una chica simpática.", "ru": "Симпатичная девушка."},
+                {"es": "Los coches rojos son bonitos.", "ru": "Красные машины красивые."},
+                {"es": "Mis amigas españolas son divertidas.", "ru": "Мои испанские подруги весёлые."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 45, level = "A1", category = "grammar",
+            title = "Gustar — мне нравится",
+            topic = "Глагол с косвенным дополнением",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Gustar работает не как русское 'нравиться'. Буквально: 'мне нравится X' = 'X нравится мне'. Глагол согласуется с тем, что нравится, а не с тем, кому.",
+              "rules": [
+                "Формула: (a + кому) + me/te/le/nos/os/les + gusta/gustan + что",
+                "gusta — для одного предмета или инфинитива: me gusta el café, me gusta leer",
+                "gustan — для множественного числа: me gustan los libros",
+                "Усиление через 'a mí, a ti, a él': 'A mí me gusta el cine'",
+                "Похожие глаголы: encantar (обожать), interesar (интересовать), doler (болеть)"
+              ],
+              "tip": "Не говори 'yo gusto el café' — это значит 'я нравлюсь кофе'. Правильно: 'me gusta el café'.",
+              "examples": [
+                {"es": "Me gusta la música latina.", "ru": "Мне нравится латинская музыка."},
+                {"es": "A mi hermano le gustan los videojuegos.", "ru": "Моему брату нравятся видеоигры."},
+                {"es": "Nos encanta viajar.", "ru": "Мы обожаем путешествовать."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 46, level = "A1", category = "grammar",
+            title = "Ir + a + infinitivo",
+            topic = "Ближайшее будущее",
+            xpReward = 15,
+            contentJson = """
+            {
+              "theory": "Конструкция 'ir + a + инфинитив' выражает планы и ближайшее будущее. Аналог английского 'to be going to' и русского 'собираться сделать'.",
+              "rules": [
+                "Спряжение ir: voy, vas, va, vamos, vais, van",
+                "Формула: ir (в настоящем) + a + инфинитив",
+                "Используется для запланированных и близких будущих действий",
+                "Маркеры: mañana, esta tarde, el próximo año, dentro de…"
+              ],
+              "tip": "На уровне A1/A2 эта конструкция гораздо популярнее настоящего futuro simple (hablaré). В разговорной речи испанцы говорят 'voy a hablar', а не 'hablaré'.",
+              "examples": [
+                {"es": "Voy a estudiar esta noche.", "ru": "Я буду учиться сегодня вечером."},
+                {"es": "¿Qué vas a hacer mañana?", "ru": "Что ты собираешься делать завтра?"},
+                {"es": "Vamos a comer paella.", "ru": "Мы будем есть паэлью."}
+              ]
+            }
+            """.trimIndent()
+        ),
+
+        // ══════════════════════════════════════════
+        // A2 (расширение, сессия 10)
+        // ══════════════════════════════════════════
+        LessonEntity(
+            id = 47, level = "A2", category = "grammar",
+            title = "Pretérito Indefinido — неправильные глаголы",
+            topic = "Verbos irregulares en indefinido",
+            xpReward = 20,
+            contentJson = """
+            {
+              "theory": "Самые частые глаголы в Pretérito Indefinido — неправильные. Их формы нужно запомнить наизусть, потому что они встречаются в каждом разговоре о прошлом.",
+              "rules": [
+                "ser/ir (одинаковые формы): fui, fuiste, fue, fuimos, fuisteis, fueron",
+                "tener: tuve, tuviste, tuvo, tuvimos, tuvisteis, tuvieron",
+                "estar: estuve, estuviste, estuvo, estuvimos, estuvisteis, estuvieron",
+                "hacer: hice, hiciste, hizo, hicimos, hicisteis, hicieron (зам. c→z в 'hizo')",
+                "decir: dije, dijiste, dijo, dijimos, dijisteis, dijeron (без -i- в 3 л. мн.ч.)"
+              ],
+              "tip": "Неправильные глаголы Indefinido не имеют ударения на окончании в 1 и 3 лице ед.ч.: TÚve, TÚvo, а не 'tuvé' / 'tuvó'.",
+              "examples": [
+                {"es": "Ayer fui al cine con María.", "ru": "Вчера я ходил в кино с Марией."},
+                {"es": "¿Qué hiciste el fin de semana?", "ru": "Что ты делал в выходные?"},
+                {"es": "Tuvimos un problema con el coche.", "ru": "У нас была проблема с машиной."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 48, level = "A2", category = "grammar",
+            title = "Combinación de pronombres: se lo",
+            topic = "Двойные местоимения",
+            xpReward = 20,
+            contentJson = """
+            {
+              "theory": "Когда в предложении два местоимения (косвенное + прямое), они идут в порядке КОСВЕННОЕ + ПРЯМОЕ. Если оба в третьем лице, le/les превращается в se.",
+              "rules": [
+                "Порядок: me/te/le/nos/os/les + me/te/lo/la/nos/os/los/las",
+                "Le/les + lo/la/los/las → se lo / se la / se los / se las (звуковое правило)",
+                "Стоят перед спрягаемым глаголом: 'Te lo digo' (я тебе это говорю)",
+                "С инфинитивом, герундием, императивом — присоединяются: dártelo, dándotelo, dámelo"
+              ],
+              "tip": "Если хочется уточнить, кому именно — добавь 'a él / a ella / a ellos': 'Se lo doy a ella' (даю это именно ей).",
+              "examples": [
+                {"es": "¿El libro? Ya te lo di ayer.", "ru": "Книга? Я тебе её уже отдал вчера."},
+                {"es": "Se lo dije a mi madre.", "ru": "Я сказал это своей маме."},
+                {"es": "Quiero comprártelo para tu cumpleaños.", "ru": "Хочу купить это тебе на день рождения."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 49, level = "A2", category = "grammar",
+            title = "Muy vs Mucho",
+            topic = "Очень / много",
+            xpReward = 20,
+            contentJson = """
+            {
+              "theory": "Muy и mucho — оба переводятся как 'очень/много', но используются по-разному. Это одна из частых ошибок начинающих.",
+              "rules": [
+                "MUY + прилагательное / наречие: muy alto, muy rápido, muy bien",
+                "MUCHO как наречие после глагола: trabajo mucho",
+                "MUCHO/A/OS/AS + существительное (согласуется): mucho dinero, mucha gente, muchos libros, muchas casas",
+                "Не говорим 'muy mucho' и 'mucho bueno' — это ошибки"
+              ],
+              "tip": "Простой тест: muy = very (с прилагательным/наречием), mucho = a lot / many (с существительным или после глагола).",
+              "examples": [
+                {"es": "Esta película es muy interesante.", "ru": "Этот фильм очень интересный."},
+                {"es": "Trabajo mucho los lunes.", "ru": "По понедельникам я много работаю."},
+                {"es": "Hay mucha gente en el parque.", "ru": "В парке много людей."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 50, level = "A2", category = "grammar",
+            title = "Saber vs Conocer",
+            topic = "Два глагола 'знать'",
+            xpReward = 20,
+            contentJson = """
+            {
+              "theory": "В испанском 'знать' выражается двумя разными глаголами в зависимости от типа знания: фактическое (saber) или знакомство/опыт (conocer).",
+              "rules": [
+                "SABER — знать факт, информацию, как что-то делать: sé la respuesta, sé nadar",
+                "CONOCER — быть знакомым с человеком, городом, вещью: conozco a María, conozco Madrid",
+                "Saber + инфинитив = уметь: sé cocinar (умею готовить)",
+                "Conocer + личное 'a' для людей: conozco a tu hermano",
+                "В Indefinido меняется смысл: 'supe' = узнал (получил информацию), 'conocí' = познакомился"
+              ],
+              "tip": "Если можно перевести как 'я в курсе' / 'я умею' — saber. Если 'я знаком с' / 'я был там' — conocer.",
+              "examples": [
+                {"es": "Sé hablar tres idiomas.", "ru": "Я умею говорить на трёх языках."},
+                {"es": "Conozco a su familia desde hace años.", "ru": "Я знаком с его семьёй уже много лет."},
+                {"es": "No sé dónde está el restaurante.", "ru": "Я не знаю, где находится ресторан."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 51, level = "A2", category = "grammar",
+            title = "Preposiciones: a, de, en, con",
+            topic = "Базовые предлоги",
+            xpReward = 20,
+            contentJson = """
+            {
+              "theory": "Базовые предлоги a, de, en, con образуют огромное количество фраз. Их использование часто отличается от русского — нужно запоминать конкретные конструкции.",
+              "rules": [
+                "A — направление, время, личное a перед людьми: voy a Madrid, a las tres, veo a María",
+                "DE — принадлежность, происхождение, материал: el libro de Juan, soy de Rusia, de madera",
+                "EN — местонахождение внутри, время (месяц/год), транспорт: en casa, en julio, en coche",
+                "CON — с (вместе): con mi amigo, café con leche, escribir con bolígrafo",
+                "A + el → al (al cine), de + el → del (del profesor) — обязательное слияние"
+              ],
+              "tip": "Запоминай не отдельные предлоги, а целые конструкции: 'pensar EN', 'soñar CON', 'depender DE'. Это сэкономит силы.",
+              "examples": [
+                {"es": "Voy al supermercado con mi madre.", "ru": "Я иду в супермаркет с мамой."},
+                {"es": "Soy de España y vivo en Francia.", "ru": "Я из Испании и живу во Франции."},
+                {"es": "El regalo es de mi abuela.", "ru": "Подарок от моей бабушки."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 52, level = "A2", category = "grammar",
+            title = "Verbos con cambio vocálico (e→ie, o→ue)",
+            topic = "Глаголы с изменением гласной",
+            xpReward = 20,
+            contentJson = """
+            {
+              "theory": "Многие глаголы в настоящем времени меняют гласную в корне в ударных слогах — это касается всех лиц, кроме nosotros и vosotros.",
+              "rules": [
+                "e → ie: querer → quiero, quieres, quiere, queremos, queréis, quieren",
+                "o → ue: poder → puedo, puedes, puede, podemos, podéis, pueden",
+                "u → ue (только jugar): juego, juegas, juega, jugamos, jugáis, juegan",
+                "e → i (только -ir глаголы): pedir → pido, pides, pide, pedimos, pedís, piden",
+                "Nosotros и vosotros сохраняют корень: queremos, podemos, jugamos"
+              ],
+              "tip": "Это правило ударных слогов: ударение падает на корень → есть изменение, ударение падает на окончание → корень обычный. Поэтому формы 'мы/вы' остаются неизменёнными.",
+              "examples": [
+                {"es": "Quiero un café con leche.", "ru": "Я хочу кофе с молоком."},
+                {"es": "No puedo venir hoy.", "ru": "Я не могу прийти сегодня."},
+                {"es": "Los niños juegan en el parque.", "ru": "Дети играют в парке."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 53, level = "A2", category = "grammar",
+            title = "Acabar de + infinitivo",
+            topic = "Только что сделал",
+            xpReward = 20,
+            contentJson = """
+            {
+              "theory": "Перифраза 'acabar de + инфинитив' означает 'только что сделать что-то'. Описывает действие, которое произошло прямо сейчас или в недавнем прошлом.",
+              "rules": [
+                "Формула: acabar (в настоящем) + de + инфинитив",
+                "Спряжение acabar: acabo, acabas, acaba, acabamos, acabáis, acaban",
+                "В imperfecto означает 'только что сделал' в прошлом: acababa de salir cuando llamaste",
+                "Не путать с 'terminar de + inf' (закончить делать что-то)"
+              ],
+              "tip": "Альтернатива в русском: 'я только что вышел' = acabo de salir. Это очень разговорная и частая конструкция.",
+              "examples": [
+                {"es": "Acabo de llegar a casa.", "ru": "Я только что пришёл домой."},
+                {"es": "Acabamos de ver una película genial.", "ru": "Мы только что посмотрели отличный фильм."},
+                {"es": "Acababa de salir cuando empezó a llover.", "ru": "Я только что вышел, когда пошёл дождь."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 54, level = "A2", category = "grammar",
+            title = "Marcadores temporales del pasado",
+            topic = "Маркеры прошедшего времени",
+            xpReward = 20,
+            contentJson = """
+            {
+              "theory": "Маркеры времени помогают выбрать правильное прошедшее время. Каждое прошедшее время имеет свой набор 'индикаторов', которые сразу подсказывают, что выбрать.",
+              "rules": [
+                "Pretérito Indefinido: ayer, anoche, anteayer, el lunes pasado, en 2020, hace dos años",
+                "Pretérito Perfecto: hoy, esta mañana, esta semana, este mes, ya, todavía no, alguna vez, nunca",
+                "Pretérito Imperfecto: siempre, normalmente, todos los días, mientras, cuando era niño, antes",
+                "Pluscuamperfecto: ya + había hecho, antes de que, cuando llegué, ya había..."
+              ],
+              "tip": "Если видишь в предложении 'hoy' или 'esta semana' — почти всегда Pretérito Perfecto. Если 'ayer' — почти всегда Indefinido.",
+              "examples": [
+                {"es": "Esta mañana he desayunado tostadas.", "ru": "Сегодня утром я ел тосты на завтрак."},
+                {"es": "Ayer fui a la playa.", "ru": "Вчера я ходил на пляж."},
+                {"es": "De pequeño siempre jugaba al fútbol.", "ru": "В детстве я всегда играл в футбол."}
+              ]
+            }
+            """.trimIndent()
+        ),
+
+        // ══════════════════════════════════════════
+        // B1 (расширение, сессия 10)
+        // ══════════════════════════════════════════
+        LessonEntity(
+            id = 55, level = "B1", category = "grammar",
+            title = "Subjuntivo con verbos de deseo",
+            topic = "Желание + subjuntivo",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Глаголы желания, требования и просьбы (querer, desear, esperar, pedir, rogar) требуют Subjuntivo в придаточном предложении, если у главного и придаточного разные подлежащие.",
+              "rules": [
+                "Querer que + subjuntivo: 'Quiero que vengas'",
+                "Esperar que + subjuntivo: 'Espero que estés bien'",
+                "Pedir / rogar / exigir que + subjuntivo: 'Te pido que me escuches'",
+                "ВАЖНО: если подлежащее одно — используется инфинитив без 'que': 'Quiero ir' (я хочу идти), 'Quiero que vayas' (хочу, чтобы ты шёл)"
+              ],
+              "tip": "Главное правило: разные подлежащие в главном и придаточном → 'que' + subjuntivo. Одно подлежащее → просто инфинитив.",
+              "examples": [
+                {"es": "Quiero que me digas la verdad.", "ru": "Я хочу, чтобы ты сказал мне правду."},
+                {"es": "Espero que tengas un buen viaje.", "ru": "Надеюсь, у тебя будет хорошее путешествие."},
+                {"es": "Te pido que tengas paciencia.", "ru": "Прошу тебя иметь терпение."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 56, level = "B1", category = "grammar",
+            title = "Subjuntivo con verbos de emoción",
+            topic = "Эмоции + subjuntivo",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Глаголы и выражения эмоций требуют Subjuntivo: alegrarse, lamentar, sentir, tener miedo, dar pena, и безличные конструкции 'es + adj. + que'.",
+              "rules": [
+                "Alegrarse de que + subj.: 'Me alegro de que vengas'",
+                "Sentir que / lamentar que + subj.: 'Siento que no puedas venir'",
+                "Tener miedo de que + subj.: 'Tengo miedo de que se enfade'",
+                "Безличные: es bueno/malo/triste/raro/curioso que + subj.: 'Es raro que no llame'",
+                "Если подлежащее одно — инфинитив без que: 'Me alegro de venir' vs 'Me alegro de que vengas'"
+              ],
+              "tip": "Эмоции — это субъективная реакция, не факт, поэтому нужен subjuntivo. Сравни: 'Es verdad que viene' (indic., факт) vs 'Es raro que venga' (subj., реакция).",
+              "examples": [
+                {"es": "Me alegro mucho de que estés aquí.", "ru": "Я очень рад, что ты здесь."},
+                {"es": "Es una pena que no podamos vernos.", "ru": "Жаль, что мы не можем увидеться."},
+                {"es": "Tengo miedo de que llueva mañana.", "ru": "Я боюсь, что завтра пойдёт дождь."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 57, level = "B1", category = "grammar",
+            title = "Subjuntivo con duda y negación",
+            topic = "Сомнение и отрицание",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Выражения сомнения, отрицания мнения и отрицание истинности требуют Subjuntivo. Утверждение того же типа — Indicativo. Это одно из ключевых правил выбора наклонения.",
+              "rules": [
+                "No creer que / no pensar que + subj.: 'No creo que sea verdad'",
+                "Dudar que + subj.: 'Dudo que venga'",
+                "Negar que + subj.: 'Niego que sea su culpa'",
+                "Утверждение → indicativo: 'Creo que es verdad', 'Pienso que viene'",
+                "Вопрос с creer/pensar — выбор зависит от ожидания: '¿Crees que viene?' (нейтрально) / '¿Crees que venga?' (сомнение)"
+              ],
+              "tip": "Запомни как переключатель: добавил 'no' к 'creo/pienso' → надо переключить indicativo на subjuntivo.",
+              "examples": [
+                {"es": "No creo que tenga razón.", "ru": "Не думаю, что он прав."},
+                {"es": "Dudo que llegue a tiempo.", "ru": "Сомневаюсь, что он успеет вовремя."},
+                {"es": "No es verdad que esté enfermo.", "ru": "Неправда, что он болен."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 58, level = "B1", category = "grammar",
+            title = "Imperativo negativo",
+            topic = "Отрицательный императив",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Отрицательный императив образуется иначе, чем утвердительный: используются формы Subjuntivo Presente. Ставится 'no' перед глаголом.",
+              "rules": [
+                "Tú: no + 2 л. ед.ч. subj.: no hables, no comas, no vengas",
+                "Usted: no + 3 л. ед.ч. subj.: no hable, no coma, no venga",
+                "Vosotros: no + 2 л. мн.ч. subj.: no habléis, no comáis, no vengáis",
+                "Ustedes: no + 3 л. мн.ч. subj.: no hablen, no coman, no vengan",
+                "Местоимения СТАВЯТСЯ ПЕРЕД глаголом, не присоединяются: 'no me lo digas'"
+              ],
+              "tip": "В утвердительном императиве местоимения присоединяются (dímelo), в отрицательном — отделяются и ставятся перед (no me lo digas). Главная ловушка для русскоговорящих.",
+              "examples": [
+                {"es": "No hables tan rápido.", "ru": "Не говори так быстро."},
+                {"es": "No te preocupes, todo va a estar bien.", "ru": "Не переживай, всё будет хорошо."},
+                {"es": "No me lo cuentes ahora.", "ru": "Не рассказывай мне это сейчас."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 59, level = "B1", category = "grammar",
+            title = "Por vs Para — продвинутые случаи",
+            topic = "Тонкости предлогов",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "На уровне B1 por и para выходят за рамки базовых правил. Появляются устойчивые выражения и тонкие смысловые различия, которые меняют значение фразы.",
+              "rules": [
+                "POR с действующим лицом в пассиве: 'fue escrito POR Cervantes'",
+                "POR в обмен/замена: 'pago 10 euros por el libro', 'gracias por todo'",
+                "POR + время приблизительно: 'por la mañana', 'por una hora'",
+                "PARA + мнение: 'para mí, esto es difícil' (по-моему)",
+                "PARA + сравнение/неожиданность: 'para ser nuevo, lo hace bien' (для новичка он хорош)"
+              ],
+              "tip": "Устойчивые выражения: por favor, por supuesto, por fin, por cierto, para siempre, para nada, no es para tanto. Учить как готовые блоки.",
+              "examples": [
+                {"es": "Para mí, este es el mejor restaurante.", "ru": "По-моему, это лучший ресторан."},
+                {"es": "Te llamo por lo del trabajo.", "ru": "Звоню тебе по поводу работы."},
+                {"es": "Para ser principiante, hablas muy bien.", "ru": "Для начинающего ты говоришь очень хорошо."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 60, level = "B1", category = "grammar",
+            title = "Ojalá + subjuntivo",
+            topic = "Выражение надежды",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Слово ojalá (от арабского 'если на то воля Аллаха') выражает надежду или желание. Всегда используется с Subjuntivo. Время subjuntivo меняет вероятность.",
+              "rules": [
+                "Ojalá + presente subj. = надежда на возможное будущее: 'Ojalá venga' (надеюсь, придёт)",
+                "Ojalá + imperfecto subj. = маловероятное / гипотетическое: 'Ojalá viniera' (хотел бы я, чтобы он пришёл)",
+                "Ojalá + pretérito perfecto subj. = надежда на уже произошедшее: 'Ojalá haya aprobado' (надеюсь, сдал)",
+                "Ojalá + pluscuamperfecto subj. = сожаление о прошлом: 'Ojalá hubiera estudiado más' (если бы я больше учился)",
+                "Опционально с 'que': 'Ojalá (que) venga' — оба варианта правильны"
+              ],
+              "tip": "Ojalá переводится как 'хоть бы', 'если бы', 'дай бог'. Запомни лестницу вероятности: presente = реально, imperfecto = мечта, pluscuamperfecto = сожаление.",
+              "examples": [
+                {"es": "Ojalá haga buen tiempo mañana.", "ru": "Хоть бы завтра была хорошая погода."},
+                {"es": "Ojalá tuviera más tiempo libre.", "ru": "Хотел бы я иметь больше свободного времени."},
+                {"es": "Ojalá hubiera ido a la fiesta.", "ru": "Жаль, что я не пошёл на вечеринку."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 61, level = "B1", category = "grammar",
+            title = "Antes de / después de + infinitivo",
+            topic = "Временные конструкции",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Чтобы выразить 'до того, как' и 'после того, как' с одним подлежащим, используется инфинитив. С разными подлежащими — придаточное с subjuntivo (для будущего) или indicativo (для прошлого/настоящего).",
+              "rules": [
+                "Antes de + инфинитив (одно подлежащее): 'Antes de salir, cierro la puerta'",
+                "Antes de que + subjuntivo (разные подлежащие): 'Antes de que salgas, cierra la puerta'",
+                "Después de + инфинитив (одно подлежащее): 'Después de comer, descansé'",
+                "Después de que + indicativo (прошлое) или subjuntivo (будущее): 'Después de que llegó' / 'Después de que llegue'",
+                "Al + инфинитив = когда: 'Al llegar a casa, vi el mensaje' (когда я пришёл домой)"
+              ],
+              "tip": "Запомни: 'antes de QUE' всегда требует subjuntivo, потому что это ещё не произошло.",
+              "examples": [
+                {"es": "Antes de acostarme, leo un poco.", "ru": "Перед тем как лечь, я немного читаю."},
+                {"es": "Antes de que te vayas, dime una cosa.", "ru": "Прежде чем ты уйдёшь, скажи мне одну вещь."},
+                {"es": "Después de cenar fuimos al parque.", "ru": "После ужина мы пошли в парк."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 62, level = "B1", category = "grammar",
+            title = "Estar + participio",
+            topic = "Состояние и результат",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Конструкция 'estar + причастие' описывает состояние, которое является результатом завершённого действия. Не путать с пассивной конструкцией 'ser + participio'.",
+              "rules": [
+                "Estar + participio = результат, состояние: 'La puerta está cerrada' (дверь закрыта — состояние)",
+                "Ser + participio = действие, пассивный залог: 'La puerta fue cerrada por Juan' (дверь была закрыта Хуаном — действие)",
+                "Причастие согласуется в роде и числе: las puertas están cerradas",
+                "Часто используется с глаголами окончания/состояния: cansado, dormido, casado, roto, abierto"
+              ],
+              "tip": "Тест: можно ли заменить 'estar + part.' на прилагательное? Да → это состояние (estoy cansado = устал). С 'ser' было бы действие.",
+              "examples": [
+                {"es": "La ventana está abierta.", "ru": "Окно открыто."},
+                {"es": "Estoy muy preocupado por ti.", "ru": "Я очень переживаю за тебя."},
+                {"es": "Las cartas ya están escritas.", "ru": "Письма уже написаны."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 63, level = "B1", category = "grammar",
+            title = "Verbos de cambio: ponerse, volverse, hacerse",
+            topic = "Глаголы становления",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "В испанском нет одного глагола 'становиться'. Вместо этого есть несколько глаголов, выбор которых зависит от типа изменения: эмоциональное, постепенное, добровольное.",
+              "rules": [
+                "Ponerse + adj. = временное состояние, эмоция: ponerse triste, ponerse rojo (краснеть)",
+                "Volverse + adj. = радикальное / непроизвольное изменение: se volvió loco, se volvió cínico",
+                "Hacerse + sust./adj. = добровольное / постепенное: se hizo médico, se hizo rico",
+                "Llegar a ser + sust. = достичь чего-то после усилий: llegó a ser presidente",
+                "Convertirse en + sust. = превратиться в: se convirtió en una estrella"
+              ],
+              "tip": "Шпаргалка: ponerse = на минутку (эмоция), volverse = резко (характер), hacerse = по своей воле (профессия), llegar a ser = после долгого пути.",
+              "examples": [
+                {"es": "Cuando lo vio, se puso muy nervioso.", "ru": "Когда он его увидел, очень разнервничался."},
+                {"es": "Mi tío se hizo abogado a los 40 años.", "ru": "Мой дядя стал адвокатом в 40 лет."},
+                {"es": "La situación se volvió insoportable.", "ru": "Ситуация стала невыносимой."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 64, level = "B1", category = "grammar",
+            title = "Llevar + tiempo + gerundio",
+            topic = "Длительность действия",
+            xpReward = 25,
+            contentJson = """
+            {
+              "theory": "Конструкция 'llevar + время + герундий' выражает длительность действия, которое началось в прошлом и продолжается в настоящем. Очень частая разговорная конструкция.",
+              "rules": [
+                "Формула: llevar (в нужном времени) + период времени + gerundio",
+                "Llevo dos años estudiando español = я учу испанский уже два года",
+                "Llevo 10 minutos esperando = я жду 10 минут",
+                "В прошлом: imperfecto de llevar: llevaba dos años viviendo allí (я жил там уже два года)",
+                "Эквивалент: 'hace + tiempo + que + presente' / 'presente + desde hace + tiempo'"
+              ],
+              "tip": "Все три варианта эквивалентны: 'Llevo dos años aquí' = 'Hace dos años que estoy aquí' = 'Estoy aquí desde hace dos años'.",
+              "examples": [
+                {"es": "Llevo media hora esperando el autobús.", "ru": "Я жду автобус уже полчаса."},
+                {"es": "Llevamos cinco años casados.", "ru": "Мы женаты уже пять лет."},
+                {"es": "Llevaba mucho tiempo soñando con este viaje.", "ru": "Я давно мечтал об этом путешествии."}
+              ]
+            }
+            """.trimIndent()
+        ),
+
+        // ══════════════════════════════════════════
+        // B2 (расширение, сессия 10)
+        // ══════════════════════════════════════════
+        LessonEntity(
+            id = 65, level = "B2", category = "grammar",
+            title = "Condicional Compuesto",
+            topic = "Сложное условное",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "Condicional Compuesto (habría hablado) выражает действие, которое могло бы быть завершено в прошлом, но не произошло. Используется в нереальных условиях прошлого и для гипотез.",
+              "rules": [
+                "Формула: condicional simple от haber + participio",
+                "habría, habrías, habría, habríamos, habríais, habrían + hablado/comido/vivido",
+                "Главное использование — в условных 3 типа: 'Si hubiera estudiado, habría aprobado'",
+                "Также для предположений о завершённых действиях прошлого: 'Habría sido las nueve' (наверное, было девять)",
+                "В разговорной речи часто заменяется на pluscuamperfecto subj.: 'hubiera aprobado'"
+              ],
+              "tip": "Парная конструкция: Si + pluscuamperfecto subj., condicional compuesto. Это шаблон сожалений о прошлом.",
+              "examples": [
+                {"es": "Si hubiera salido antes, no habría llegado tarde.", "ru": "Если бы я вышел раньше, не опоздал бы."},
+                {"es": "Te habría llamado, pero perdí tu número.", "ru": "Я бы тебе позвонил, но потерял твой номер."},
+                {"es": "¿Qué habrías hecho en mi lugar?", "ru": "Что бы ты сделал на моём месте?"}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 66, level = "B2", category = "grammar",
+            title = "Pretérito Perfecto de Subjuntivo",
+            topic = "Haya hablado",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "Subjuntivo Perfecto (haya hablado) описывает завершённые действия в контексте, требующем subjuntivo: эмоция, сомнение, отрицание о уже произошедшем событии.",
+              "rules": [
+                "Формула: presente de subj. от haber + participio",
+                "haya, hayas, haya, hayamos, hayáis, hayan + hablado/comido/vivido",
+                "Используется когда главное в настоящем/будущем, а действие придаточного УЖЕ произошло",
+                "Триггеры: no creo que haya..., me alegro de que hayas..., es posible que haya...",
+                "Сравни: 'No creo que venga' (он придёт) vs 'No creo que haya venido' (он уже пришёл)"
+              ],
+              "tip": "Используй когда нужно выразить субъективное отношение (сомнение, радость, страх) к УЖЕ совершённому действию.",
+              "examples": [
+                {"es": "Me alegro de que hayas venido.", "ru": "Я рад, что ты пришёл."},
+                {"es": "No creo que hayan terminado todavía.", "ru": "Не думаю, что они уже закончили."},
+                {"es": "Es posible que haya perdido el tren.", "ru": "Возможно, он опоздал на поезд."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 67, level = "B2", category = "grammar",
+            title = "Perífrasis con infinitivo",
+            topic = "ponerse a / dejar de / volver a",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "Перифразы с инфинитивом передают тонкие смысловые оттенки начала, конца, повтора и неизбежности действия. Они часто заменяют целые предложения и обогащают речь.",
+              "rules": [
+                "Ponerse a + inf = начать (внезапно): se puso a llorar (заплакал)",
+                "Empezar / comenzar a + inf = начать (нейтрально): empezó a llover",
+                "Dejar de + inf = перестать: dejó de fumar (бросил курить)",
+                "Volver a + inf = снова: vuelvo a leerlo (перечитываю)",
+                "Llegar a + inf = (так и) сделать (после усилий): llegó a entenderlo",
+                "Tener que / haber de + inf = должен (обязательство)"
+              ],
+              "tip": "Сравни нюансы: 'empezar a llorar' (нейтрально начал плакать), 'ponerse a llorar' (вдруг разрыдался), 'echarse a llorar' (резко разревелся).",
+              "examples": [
+                {"es": "De repente se puso a gritar.", "ru": "Вдруг он начал кричать."},
+                {"es": "Tienes que dejar de preocuparte tanto.", "ru": "Тебе нужно перестать так переживать."},
+                {"es": "Vuelve a explicármelo, por favor.", "ru": "Объясни мне это ещё раз, пожалуйста."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 68, level = "B2", category = "grammar",
+            title = "Perífrasis con gerundio",
+            topic = "seguir / llevar / andar + gerundio",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "Перифразы с герундием выражают длящиеся, повторяющиеся или продолжающиеся действия. Каждая имеет свой оттенок смысла.",
+              "rules": [
+                "Estar + gerundio = действие в процессе: estoy comiendo",
+                "Seguir / continuar + gerundio = продолжать делать: sigo estudiando",
+                "Llevar + tiempo + gerundio = длительность с момента начала: llevo años estudiando",
+                "Ir + gerundio = постепенное развитие: va mejorando (постепенно улучшается)",
+                "Andar + gerundio = делать туда-сюда / без особого порядка: anda buscando trabajo",
+                "Venir + gerundio = делать с давних пор до настоящего: venimos diciéndolo desde hace meses"
+              ],
+              "tip": "Различай: 'voy aprendiendo' (постепенно учу) vs 'sigo aprendiendo' (продолжаю учить) vs 'llevo años aprendiendo' (учу годами).",
+              "examples": [
+                {"es": "Sigo trabajando en el mismo proyecto.", "ru": "Я продолжаю работать над тем же проектом."},
+                {"es": "Anda diciendo tonterías últimamente.", "ru": "Он в последнее время несёт глупости."},
+                {"es": "El paciente va recuperándose poco a poco.", "ru": "Пациент потихоньку восстанавливается."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 69, level = "B2", category = "grammar",
+            title = "Perífrasis con participio",
+            topic = "tener / llevar + participio",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "Перифразы с причастием подчёркивают результат накопленного действия. В отличие от 'haber + part.' (нейтральное прошедшее), эти конструкции акцентируют объём проделанного.",
+              "rules": [
+                "Tener + participio = накопленный результат: tengo escritos tres libros (я уже написал три книги)",
+                "Llevar + participio = аналогично, акцент на количество: llevo leídas 200 páginas",
+                "Dejar + participio = оставить в каком-то состоянии: dejó hecho el trabajo",
+                "Ir + participio (только пассив) = сделанные / готовые: van vendidas 100 entradas",
+                "Причастие согласуется с прямым дополнением в роде и числе"
+              ],
+              "tip": "Различай: 'he escrito tres libros' (нейтрально — написал) vs 'tengo escritos tres libros' (акцент на достижение, процесс).",
+              "examples": [
+                {"es": "Llevo estudiados cinco capítulos.", "ru": "Я выучил уже пять глав."},
+                {"es": "Tengo preparada la cena.", "ru": "Ужин у меня уже готов."},
+                {"es": "Dejé acabados todos los informes.", "ru": "Я оставил все отчёты завершёнными."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 70, level = "B2", category = "grammar",
+            title = "Construcciones impersonales",
+            topic = "Безличные конструкции",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "Безличные конструкции в испанском передают действия без указания субъекта. Используются для обобщений, новостей, объявлений и формальных текстов.",
+              "rules": [
+                "Se + 3 л. ед.ч. (без подлежащего): 'Se vive bien aquí' (здесь хорошо живётся)",
+                "Se + 3 л. ед.ч./мн.ч. (пассив с агентом-объектом): 'Se vende un coche' / 'Se venden coches'",
+                "3 л. мн.ч. без подлежащего: 'Dicen que va a llover' (говорят, что пойдёт дождь)",
+                "Uno / una + 3 л. ед.ч.: 'Uno nunca sabe' (никогда не знаешь)",
+                "Hay que + inf = надо: hay que estudiar"
+              ],
+              "tip": "Когда не знаешь или не важен 'кто', выбирай безличность: 'se dice que' звучит более естественно, чем 'la gente dice que'.",
+              "examples": [
+                {"es": "Se come muy bien en este restaurante.", "ru": "В этом ресторане очень хорошо кормят."},
+                {"es": "Dicen que va a subir el precio.", "ru": "Говорят, что цена вырастет."},
+                {"es": "Hay que tener paciencia.", "ru": "Надо иметь терпение."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 71, level = "B2", category = "grammar",
+            title = "A pesar de / pese a",
+            topic = "Уступительные обороты",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "Конструкции a pesar de и pese a означают 'несмотря на'. Они могут вводить как существительное / инфинитив, так и придаточное предложение с выбором между indicativo и subjuntivo.",
+              "rules": [
+                "A pesar de / pese a + sust.: 'A pesar de la lluvia, salimos'",
+                "A pesar de / pese a + inf.: 'A pesar de estar cansado, fui'",
+                "A pesar de que / pese a que + indic. (реальный факт): 'A pesar de que llueve, salgo'",
+                "A pesar de que / pese a que + subj. (предположение/уступка): 'A pesar de que llueva, saldré'",
+                "Синонимы: aun cuando, si bien (более книжные)"
+              ],
+              "tip": "В формальной речи a pesar de звучит лучше, чем aunque. В газетных статьях и эссе они почти всегда заменяют простое 'aunque'.",
+              "examples": [
+                {"es": "A pesar de la crisis, la empresa creció.", "ru": "Несмотря на кризис, компания выросла."},
+                {"es": "Pese a que sabía la verdad, no dijo nada.", "ru": "Хотя он знал правду, ничего не сказал."},
+                {"es": "Iré a pesar de que no me apetezca.", "ru": "Я пойду, даже если мне не захочется."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 72, level = "B2", category = "grammar",
+            title = "Ser vs Estar — продвинутые случаи",
+            topic = "Идиомы и тонкости",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "С одним и тем же прилагательным ser и estar дают разный смысл. На уровне B2 это уже не правило 'постоянное/временное', а разные значения слова.",
+              "rules": [
+                "Ser bueno = быть хорошим (по характеру) / Estar bueno = быть вкусным или (разг.) привлекательным",
+                "Ser listo = быть умным / Estar listo = быть готовым",
+                "Ser aburrido = быть скучным / Estar aburrido = скучать",
+                "Ser rico = быть богатым / Estar rico = быть вкусным",
+                "Идиомы: ser un cero a la izquierda (быть никем), estar como una cabra (быть с приветом)",
+                "Estar de + профессия = временно работать кем-то: estoy de camarero este verano"
+              ],
+              "tip": "Если сомневаешься — спрашивай себя 'это качество (ser) или состояние (estar)?'. 'Pedro es callado' — он молчун по натуре. 'Pedro está callado' — он сейчас молчит.",
+              "examples": [
+                {"es": "Esta sopa está riquísima.", "ru": "Этот суп невероятно вкусный."},
+                {"es": "Mi hermano es muy listo, siempre saca buenas notas.", "ru": "Мой брат очень умный, всегда получает хорошие оценки."},
+                {"es": "Tu primo está como una cabra.", "ru": "Твой двоюродный брат не в себе."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 73, level = "B2", category = "grammar",
+            title = "Estilo indirecto avanzado",
+            topic = "Косвенная речь — нюансы",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "На B2 косвенная речь требует точного согласования всех времён, изменения местоимений, временных и пространственных маркеров, а также понимания, какие времена не сдвигаются.",
+              "rules": [
+                "Imperfecto и Pluscuamperfecto в косвенной речи НЕ меняются (они уже самые прошлые)",
+                "Subjuntivo тоже сдвигается: presente subj. → imperfecto subj.",
+                "Условные предложения сохраняют структуру: 'si tuviera, iría' → 'dijo que si tuviera, iría'",
+                "Маркеры: hoy → aquel día, ayer → el día anterior, mañana → al día siguiente, aquí → allí, esto → eso",
+                "Изменения глагола: traer/llevar, venir/ir в зависимости от позиции говорящего"
+              ],
+              "tip": "Полезный приём: представь, что передаёшь сообщение кому-то ещё. Тогда автоматически меняешь 'я' на 'он/она' и сдвигаешь всё во времени.",
+              "examples": [
+                {"es": "Me dijo: 'Te llamaré mañana' → Me dijo que me llamaría al día siguiente.", "ru": "Он сказал, что позвонит мне на следующий день."},
+                {"es": "Preguntó si yo había leído ese libro.", "ru": "Он спросил, читал ли я ту книгу."},
+                {"es": "Comentó que si tuviera tiempo, vendría a vernos.", "ru": "Он заметил, что если бы у него было время, он бы пришёл к нам."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 74, level = "B2", category = "grammar",
+            title = "Pronombres relativos avanzados",
+            topic = "el cual, lo cual, cuyo",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "На B2 относительные местоимения используются точнее: el cual для уточнения, lo cual для отсылки к фразе, cuyo для принадлежности. Особенно важны после предлогов и в письменной речи.",
+              "rules": [
+                "El/la/los/las + cual + ставится после длинных предлогов: 'la persona detrás de la cual está sentado'",
+                "Lo cual = отсылка к целой ситуации (не к отдельному слову): 'Llegó tarde, lo cual me molestó'",
+                "Lo que = 'то, что' без конкретного антецедента: 'No sé lo que quiero'",
+                "Cuyo/a/os/as согласуется с тем, чем владеют: 'el escritor cuyas novelas leo' (книги, не писатель)",
+                "В разговорной речи 'el cual' редко — заменяется на 'que' или 'el que'"
+              ],
+              "tip": "Lo cual нельзя начинать предложение — оно всегда после запятой. Lo que может начинать: 'Lo que más me gusta es viajar'.",
+              "examples": [
+                {"es": "Vivimos en una casa cuyas ventanas dan al mar.", "ru": "Мы живём в доме, окна которого выходят на море."},
+                {"es": "No vino, lo cual me sorprendió mucho.", "ru": "Он не пришёл, что меня очень удивило."},
+                {"es": "Es el motivo por el cual tomé esta decisión.", "ru": "Это причина, по которой я принял это решение."}
+              ]
+            }
+            """.trimIndent()
+        ),
+        LessonEntity(
+            id = 75, level = "B2", category = "grammar",
+            title = "Expresiones idiomáticas comunes",
+            topic = "Частые идиомы",
+            xpReward = 30,
+            contentJson = """
+            {
+              "theory": "Идиомы — это устойчивые выражения, смысл которых не выводится из значений отдельных слов. Их знание принципиально отличает уровень B2 от B1: речь становится живой и естественной.",
+              "rules": [
+                "Tomar el pelo a alguien = подшучивать, разыгрывать (буквально: 'тянуть за волосы')",
+                "Estar en las nubes = витать в облаках, быть невнимательным",
+                "Echar una mano = помочь (буквально: 'протянуть руку')",
+                "No tener pelos en la lengua = говорить прямо, без обиняков",
+                "Ser pan comido = проще простого (буквально: 'это съеденный хлеб')",
+                "Costar un ojo de la cara = стоить очень дорого",
+                "Dar en el clavo = попасть в точку"
+              ],
+              "tip": "Учи идиомы блоками по 3-5 штук в неделю. Слушай испанские сериалы и подкасты — там идиомы встречаются в естественном контексте.",
+              "examples": [
+                {"es": "¿Me estás tomando el pelo?", "ru": "Ты надо мной издеваешься?"},
+                {"es": "Ese examen fue pan comido.", "ru": "Тот экзамен был проще простого."},
+                {"es": "¿Me echas una mano con esto?", "ru": "Поможешь мне с этим?"}
+              ]
+            }
+            """.trimIndent()
         )
     )
 }
