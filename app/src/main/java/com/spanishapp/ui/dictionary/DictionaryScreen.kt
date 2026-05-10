@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import com.spanishapp.ui.components.StaggeredEntrance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -565,31 +564,21 @@ private fun AllWordsContent(
                                     onSpeak     = { onSpeak(word) }
                                 )
                             }
-                            if (idx < 10) {
-                                StaggeredEntrance(index = idx) { rowContent() }
-                            } else {
-                                rowContent()
-                            }
+                            // Stagger entrance disabled per user feedback.
+                            rowContent()
                         }
                     }
                 } else {
                     // Поиск активен или мало слов — без группировки
-                    itemsIndexed(words, key = { _, it -> it.id }) { idx, word ->
-                        val rowContent: @Composable () -> Unit = {
-                            WordRow(
-                                word        = word,
-                                query       = query,
-                                isInAnyList = !membership[word.id].isNullOrEmpty(),
-                                onWordClick = { onWordClick(word) },
-                                onAddToList = { onAddToList(word) },
-                                onSpeak     = { onSpeak(word) }
-                            )
-                        }
-                        if (idx < 10) {
-                            StaggeredEntrance(index = idx) { rowContent() }
-                        } else {
-                            rowContent()
-                        }
+                    items(words, key = { it.id }) { word ->
+                        WordRow(
+                            word        = word,
+                            query       = query,
+                            isInAnyList = !membership[word.id].isNullOrEmpty(),
+                            onWordClick = { onWordClick(word) },
+                            onAddToList = { onAddToList(word) },
+                            onSpeak     = { onSpeak(word) }
+                        )
                     }
                 }
             }
@@ -768,20 +757,13 @@ private fun MyListsContent(
                 contentPadding     = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(lists, key = { _, it -> it.id }) { idx, list ->
-                    val cardContent: @Composable () -> Unit = {
-                        ListCard(
-                            list       = list,
-                            onClick    = { onSelectList(list) },
-                            onRename   = { renaming = list },
-                            onDelete   = { onDeleteList(list) }
-                        )
-                    }
-                    if (idx < 10) {
-                        StaggeredEntrance(index = idx) { cardContent() }
-                    } else {
-                        cardContent()
-                    }
+                items(lists, key = { it.id }) { list ->
+                    ListCard(
+                        list       = list,
+                        onClick    = { onSelectList(list) },
+                        onRename   = { renaming = list },
+                        onDelete   = { onDeleteList(list) }
+                    )
                 }
             }
         }
@@ -913,11 +895,7 @@ private fun ListWordsContent(
                             onSpeak     = { onSpeak(word) }
                         )
                     }
-                    if (idx < 10) {
-                        StaggeredEntrance(index = idx) { rowContent() }
-                    } else {
-                        rowContent()
-                    }
+                    rowContent()
                 }
             }
         }
