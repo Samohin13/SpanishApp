@@ -1,4 +1,4 @@
-package com.spanishapp.ui.games
+﻿package com.spanishapp.ui.games
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -123,7 +123,7 @@ private fun SpeedGameContent(
                     }
                 }
                 Text(stringResource(R.string.speed_round_of, state.currentRound, state.totalRounds),
-                    fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(stringResource(R.string.speed_xp, state.score), fontWeight = FontWeight.Bold, color = ACCENT)
             }
 

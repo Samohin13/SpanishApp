@@ -1,4 +1,4 @@
-package com.spanishapp.ui.games
+﻿package com.spanishapp.ui.games
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -154,7 +154,7 @@ private fun ArticlesGameContent(
                 Spacer(Modifier.width(10.dp))
                 Text(
                     "${state.currentRound}/${state.totalRounds}",
-                    fontSize = 13.sp, color = SecondaryText, fontWeight = FontWeight.SemiBold
+                    fontSize = 15.sp, color = SecondaryText, fontWeight = FontWeight.SemiBold
                 )
             }
 
@@ -375,7 +375,7 @@ private fun AnswerSheet(
                         "💡 ${word.ruleHint}",
                         modifier = Modifier.padding(12.dp),
                         color    = Color.White.copy(alpha = 0.92f),
-                        fontSize = 13.sp, lineHeight = 18.sp
+                        fontSize = 15.sp, lineHeight = 18.sp
                     )
                 }
             }

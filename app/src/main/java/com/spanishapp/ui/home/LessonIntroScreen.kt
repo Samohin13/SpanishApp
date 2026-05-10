@@ -1,4 +1,4 @@
-package com.spanishapp.ui.home
+﻿package com.spanishapp.ui.home
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -79,7 +79,7 @@ fun LessonIntroScreen(
                 Text(
                     text = cefrBadge,
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 4.dp),
-                    fontSize = 13.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     color = accentColor
                 )

@@ -1,7 +1,12 @@
-package com.spanishapp.ui.auth
+﻿package com.spanishapp.ui.auth
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -42,6 +47,12 @@ fun WelcomeScreen(
         }
     }
 
+    val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = fadeIn(animationSpec = tween(400)) +
+                slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -122,7 +133,7 @@ fun WelcomeScreen(
                     stringResource(R.string.welcome_login_with),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 14.sp
+                    fontSize = 15.sp
                 )
                 HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
             }
@@ -152,9 +163,10 @@ fun WelcomeScreen(
                 .clickable { openLink(privacyUrl) },
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 11.sp,
-            lineHeight = 16.sp
+            fontSize = 15.sp,
+            lineHeight = 18.sp
         )
+    }
     }
 }
 

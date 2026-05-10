@@ -1,5 +1,10 @@
-package com.spanishapp.ui.auth
+﻿package com.spanishapp.ui.auth
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -88,6 +93,12 @@ fun LevelSelectionScreen(
             )
         }
     ) { padding ->
+        val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(400)) +
+                    slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -107,7 +118,7 @@ fun LevelSelectionScreen(
             Spacer(Modifier.height(8.dp))
             Text(
                 androidx.compose.ui.res.stringResource(com.spanishapp.R.string.level_select_change_later),
-                fontSize = 13.sp,
+                fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(32.dp))
@@ -199,6 +210,7 @@ fun LevelSelectionScreen(
                 Text("Подтвердить", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
+        }
     }
 
     infoLevel?.let { level ->
@@ -242,7 +254,7 @@ private fun UpcomingLevelDialog(
         text = {
             Text(
                 "Программа обучения для ${level.code} ещё дополняется. Если ты хочешь начать сразу, можешь выбрать ${level.code} — но материала пока меньше, чем на A1.\n\nРекомендуем начать с A1 и переключиться позже в настройках.",
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 lineHeight = 20.sp,
                 color = AppColors.TextSecondary
             )

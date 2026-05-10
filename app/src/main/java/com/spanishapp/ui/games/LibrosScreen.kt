@@ -1,4 +1,4 @@
-package com.spanishapp.ui.games
+﻿package com.spanishapp.ui.games
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -154,7 +154,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                 Text(
                     "#${libro.id}",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp,
+                    fontSize = 15.sp,
                     color = levelColor
                 )
             }

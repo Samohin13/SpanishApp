@@ -1,4 +1,4 @@
-package com.spanishapp.ui.games
+﻿package com.spanishapp.ui.games
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -291,7 +291,7 @@ private fun PalabraActiveGame(
                         Text(
                             it,
                             modifier = Modifier.padding(12.dp),
-                            fontSize = 13.sp,
+                            fontSize = 15.sp,
                             color = TextMain,
                             textAlign = TextAlign.Center
                         )

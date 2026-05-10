@@ -1,4 +1,4 @@
-package com.spanishapp.ui.games
+﻿package com.spanishapp.ui.games
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -95,7 +95,7 @@ fun CrosswordGameScreen(
                         ) {
                             Icon(Icons.Default.Stars, null, tint = Gold, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(4.dp))
-                            Text("${state.coins}", color = Gold, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            Text("${state.coins}", color = Gold, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                         }
                     }
                 },
@@ -159,8 +159,8 @@ private fun RuleItem(icon: ImageVector, title: String, body: String) {
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
         Icon(icon, null, tint = Purple, modifier = Modifier.size(20.dp).padding(top = 2.dp))
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(title, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = TextMain)
-            Text(body, fontSize = 13.sp, color = TextGray, lineHeight = 18.sp)
+            Text(title, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = TextMain)
+            Text(body, fontSize = 15.sp, color = TextGray, lineHeight = 18.sp)
         }
     }
 }

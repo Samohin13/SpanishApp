@@ -1,5 +1,10 @@
-package com.spanishapp.ui.auth
+﻿package com.spanishapp.ui.auth
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -53,6 +58,12 @@ fun NameEntryScreen(
             )
         }
     ) { padding ->
+        val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(400)) +
+                    slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -66,7 +77,7 @@ fun NameEntryScreen(
             Spacer(Modifier.height(8.dp))
             Text(
                 stringResource(R.string.onboarding_name_subtitle),
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 color = AppColors.TextSecondary,
                 textAlign = TextAlign.Center
             )
@@ -116,6 +127,7 @@ fun NameEntryScreen(
                 Text("Далее")
             }
         }
+        }
     }
 }
 
@@ -142,6 +154,12 @@ fun AgeSelectionScreen(
             )
         }
     ) { padding ->
+        val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(400)) +
+                    slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -183,7 +201,7 @@ fun AgeSelectionScreen(
                 ) {
                     Text(
                         stringResource(R.string.onboarding_under13_hint),
-                        fontSize = 13.sp,
+                        fontSize = 15.sp,
                         color = Color(0xFF6A4F00),
                         textAlign = TextAlign.Center,
                         lineHeight = 18.sp,
@@ -203,6 +221,7 @@ fun AgeSelectionScreen(
             ) {
                 Text("Далее")
             }
+        }
         }
     }
 }
@@ -238,6 +257,12 @@ fun ReasonSelectionScreen(
             )
         }
     ) { padding ->
+        val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(400)) +
+                    slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -309,6 +334,7 @@ fun ReasonSelectionScreen(
 
             Spacer(Modifier.height(16.dp))
         }
+        }
     }
 }
 
@@ -335,6 +361,12 @@ fun KnowledgeCheckScreen(
             )
         }
     ) { padding ->
+        val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(400)) +
+                    slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -355,7 +387,7 @@ fun KnowledgeCheckScreen(
             Spacer(Modifier.height(8.dp))
             Text(
                 stringResource(R.string.onboarding_knowledge_subtitle),
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
@@ -392,7 +424,7 @@ fun KnowledgeCheckScreen(
                         )
                         Text(
                             stringResource(R.string.onboarding_kc_zero_sub),
-                            fontSize = 13.sp,
+                            fontSize = 15.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -424,12 +456,13 @@ fun KnowledgeCheckScreen(
                         )
                         Text(
                             stringResource(R.string.onboarding_kc_some_sub, PLACEMENT_TEST_QUESTIONS),
-                            fontSize = 13.sp,
+                            fontSize = 15.sp,
                             color = Color.White.copy(alpha = 0.75f)
                         )
                     }
                 }
             }
+        }
         }
     }
 }

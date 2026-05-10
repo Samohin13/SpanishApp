@@ -1,4 +1,4 @@
-package com.spanishapp.ui.home
+﻿package com.spanishapp.ui.home
 
 import android.speech.tts.TextToSpeech
 import androidx.activity.compose.BackHandler
@@ -282,7 +282,7 @@ private fun SessionTopBar(
                         Text(
                             text     = "🔥 $combo",
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            fontSize = 13.sp,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.ExtraBold,
                             color    = Orange
                         )
@@ -364,7 +364,7 @@ private fun TheoryCard(
                         if (item.note.isNotEmpty()) {
                             Text(
                                 text     = item.note,
-                                fontSize = 13.sp,
+                                fontSize = 15.sp,
                                 color    = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -483,7 +483,7 @@ private fun ExerciseCard(
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text     = "💡 ${exercise.hint}",
-                    fontSize = 13.sp,
+                    fontSize = 15.sp,
                     color    = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -636,7 +636,7 @@ private fun ExerciseCard(
                             )
                             Text(
                                 text     = exercise.explanation,
-                                fontSize = 14.sp,
+                                fontSize = 15.sp,
                                 color    = MaterialTheme.colorScheme.onSurface
                             )
                         }
@@ -784,7 +784,7 @@ private fun SpeakingInput(
                         Text(
                             if (failCount == 0) stringResource(R.string.ls_distracted)
                             else stringResource(R.string.ls_louder),
-                            fontWeight = FontWeight.SemiBold, fontSize = 14.sp
+                            fontWeight = FontWeight.SemiBold, fontSize = 15.sp
                         )
                         Text(stringResource(R.string.ls_not_counted),
                             fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -795,7 +795,7 @@ private fun SpeakingInput(
 
         // Техническая ошибка
         AnimatedVisibility(visible = errorMsg.isNotEmpty() && !isSilence) {
-            Text("⚠️ $errorMsg", color = Red, fontSize = 13.sp,
+            Text("⚠️ $errorMsg", color = Red, fontSize = 15.sp,
                 modifier = Modifier.padding(top = 4.dp))
         }
 
@@ -811,9 +811,9 @@ private fun SpeakingInput(
                     }
                     Text("❌  $msg", fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = Red)
                     Spacer(Modifier.height(4.dp))
-                    Text(stringResource(R.string.ls_recognized, recognized), fontSize = 13.sp,
+                    Text(stringResource(R.string.ls_recognized, recognized), fontSize = 15.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(stringResource(R.string.ls_needed, wordToSay), fontSize = 13.sp,
+                    Text(stringResource(R.string.ls_needed, wordToSay), fontSize = 15.sp,
                         color = accentColor, fontWeight = FontWeight.SemiBold)
                 }
             }
@@ -846,7 +846,7 @@ private fun SpeakingInput(
                 failCount > 0 -> stringResource(R.string.ls_try_again_count, failCount, MAX_FAILS)
                 else         -> stringResource(R.string.ls_tap_to_say)
             },
-            fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
+            fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         // Кнопка «Пропустить» — только после MAX_FAILS провалов
@@ -862,7 +862,7 @@ private fun SpeakingInput(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(R.string.ls_skip_as_wrong),
-                        fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -937,7 +937,7 @@ private fun FillBlankInput(
             text = stringResource(R.string.ls_correct_is, correctAnswer),
             color = Green,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             modifier = Modifier.padding(top = 6.dp, start = 4.dp)
         )
     }
@@ -985,7 +985,7 @@ private fun BuildSentenceInput(
     ) {
         Box(Modifier.padding(12.dp)) {
             if (chosen.isEmpty()) {
-                Text(stringResource(R.string.ls_tap_words_below), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+                Text(stringResource(R.string.ls_tap_words_below), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 15.sp)
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(chosen) { word ->
@@ -1042,7 +1042,7 @@ private fun BuildSentenceInput(
             text = stringResource(R.string.ls_correct_is, correctAnswer),
             color = Green,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             modifier = Modifier.padding(top = 8.dp, start = 4.dp)
         )
     }
@@ -1186,7 +1186,7 @@ private fun VictoryScreen(
         TextButton(onClick = onFinish) {
             Text(
                 text     = if (hasNextLesson) stringResource(R.string.ls_exit_to_menu) else stringResource(R.string.ls_done_caps),
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 color    = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

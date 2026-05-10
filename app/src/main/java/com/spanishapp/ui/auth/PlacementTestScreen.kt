@@ -1,6 +1,8 @@
-package com.spanishapp.ui.auth
+﻿package com.spanishapp.ui.auth
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -131,7 +133,7 @@ fun PlacementTestScreen(
                     ) {
                         Text(
                             "✓ $correctCount",
-                            fontSize = 13.sp,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF2E7D32),
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
@@ -141,6 +143,12 @@ fun PlacementTestScreen(
             )
         }
     ) { padding ->
+    val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = fadeIn(animationSpec = tween(400)) +
+                slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -252,6 +260,7 @@ fun PlacementTestScreen(
         }
     }
     }
+    }
 }
 
 @Composable
@@ -270,6 +279,12 @@ fun PlacementResultScreen(
 
     val isUpcomingLevel = level in listOf("A2", "B1", "B2")
 
+    val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = fadeIn(animationSpec = tween(400)) +
+                slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -320,7 +335,7 @@ fun PlacementResultScreen(
             ) {
                 Text(
                     "⏳ Контент $level скоро появится.\nПока начнём с повторения основ на A1 — это всегда полезно!",
-                    fontSize = 13.sp,
+                    fontSize = 15.sp,
                     color = Color(0xFF795548),
                     textAlign = TextAlign.Center,
                     lineHeight = 20.sp
@@ -355,5 +370,6 @@ fun PlacementResultScreen(
         }) {
             Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.placement_change_level), color = AppColors.TextSecondary)
         }
+    }
     }
 }

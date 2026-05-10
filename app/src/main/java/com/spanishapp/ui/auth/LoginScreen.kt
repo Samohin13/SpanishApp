@@ -1,5 +1,10 @@
-package com.spanishapp.ui.auth
+﻿package com.spanishapp.ui.auth
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -46,6 +51,12 @@ fun LoginScreen(
             )
         }
     ) { padding ->
+        val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(400)) +
+                    slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -104,12 +115,12 @@ fun LoginScreen(
 
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
                 TextButton(onClick = { navController.navigate("forgot_password") }) {
-                    Text(stringResource(R.string.auth_forgot_password), fontSize = 14.sp)
+                    Text(stringResource(R.string.auth_forgot_password), fontSize = 15.sp)
                 }
             }
 
             if (state.generalError != null) {
-                Text(state.generalError!!, color = MaterialTheme.colorScheme.error, fontSize = 14.sp)
+                Text(state.generalError!!, color = MaterialTheme.colorScheme.error, fontSize = 15.sp)
             }
 
             Button(
@@ -140,6 +151,7 @@ fun LoginScreen(
             Spacer(Modifier.height(16.dp))
 
             GoogleSignInButton(viewModel = viewModel, iconSize = 20, enabled = !state.isLoading)
+        }
         }
     }
 }

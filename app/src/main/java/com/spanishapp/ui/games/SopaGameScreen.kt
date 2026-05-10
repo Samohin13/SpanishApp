@@ -1,4 +1,4 @@
-package com.spanishapp.ui.games
+﻿package com.spanishapp.ui.games
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -266,7 +266,7 @@ private fun SopaGameContent(
                     Column(modifier = Modifier
                         .padding(12.dp)
                         .verticalScroll(scroll)) {
-                        Text(stringResource(R.string.sopa_find_words), color = ACCENT, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text(stringResource(R.string.sopa_find_words), color = ACCENT, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                         Spacer(Modifier.height(8.dp))
 
                         val words = state.words
@@ -283,7 +283,7 @@ private fun SopaGameContent(
                                             .padding(vertical = 4.dp, horizontal = 4.dp)) {
                                             Text(
                                                 w.word,
-                                                fontSize = 13.sp,
+                                                fontSize = 15.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 color = if (w.isFound) w.color else TextMain,
                                                 textDecoration = if (w.isFound)

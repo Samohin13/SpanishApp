@@ -1,7 +1,12 @@
-package com.spanishapp.ui.auth
+﻿package com.spanishapp.ui.auth
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -64,6 +69,12 @@ fun RegisterScreen(
             )
         }
     ) { padding ->
+        val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(400)) +
+                    slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -169,7 +180,7 @@ fun RegisterScreen(
                 }
                 Text(
                     text = annotated,
-                    fontSize = 13.sp,
+                    fontSize = 15.sp,
                     color = Color.DarkGray,
                     modifier = Modifier.weight(1f).padding(start = 4.dp),
                     lineHeight = 18.sp
@@ -184,7 +195,7 @@ fun RegisterScreen(
             }
 
             if (state.generalError != null) {
-                Text(state.generalError!!, color = MaterialTheme.colorScheme.error, fontSize = 14.sp)
+                Text(state.generalError!!, color = MaterialTheme.colorScheme.error, fontSize = 15.sp)
             }
 
             Spacer(Modifier.height(4.dp))
@@ -227,6 +238,7 @@ fun RegisterScreen(
             Spacer(Modifier.height(8.dp))
 
             GoogleSignInButton(viewModel = viewModel, iconSize = 20, enabled = !state.isLoading)
+        }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.spanishapp.ui.games
+﻿package com.spanishapp.ui.games
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -238,7 +238,7 @@ private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
 @Composable
 private fun SectionCard(title: String, content: @Composable () -> Unit) {
     Column {
-        Text(title, fontSize = 13.sp, color = TextGray, fontWeight = FontWeight.SemiBold,
+        Text(title, fontSize = 15.sp, color = TextGray, fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(start = 4.dp, bottom = 6.dp))
         Surface(
             modifier = Modifier.fillMaxWidth(),
@@ -258,7 +258,7 @@ private fun ToggleRow(label: String, checked: Boolean, onChange: (Boolean) -> Un
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, fontSize = 14.sp, color = TextMain)
+        Text(label, fontSize = 15.sp, color = TextMain)
         Switch(
             checked = checked,
             onCheckedChange = onChange,
@@ -295,7 +295,7 @@ private fun TrainingContent(state: VerbTrainingState, vm: VerbViewModel) {
         Row(modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween) {
             Text(stringResource(R.string.verb_question_of, state.currentIndex + 1, state.total),
-                color = ACCENT, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                color = ACCENT, fontWeight = FontWeight.Bold, fontSize = 15.sp)
             Text(stringResource(R.string.verb_score, state.score), color = ACCENT, fontWeight = FontWeight.Bold)
         }
         LinearProgressIndicator(
@@ -368,7 +368,7 @@ private fun AuditivoCard(q: VerbQuestion, vm: VerbViewModel) {
             }
             Spacer(Modifier.height(8.dp))
             Text(stringResource(R.string.verb_listen_and_write),
-                fontSize = 13.sp, color = TextGray, textAlign = TextAlign.Center)
+                fontSize = 15.sp, color = TextGray, textAlign = TextAlign.Center)
         }
     }
     AnswerArea(q, vm)
@@ -394,7 +394,7 @@ private fun InversoCard(q: VerbQuestion, vm: VerbViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(stringResource(R.string.verb_inverso_question),
-                fontSize = 13.sp, color = TextGray, textAlign = TextAlign.Center)
+                fontSize = 15.sp, color = TextGray, textAlign = TextAlign.Center)
             Spacer(Modifier.height(8.dp))
             Text(q.correctAnswer,
                 fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = ACCENT_DARK)
@@ -464,7 +464,7 @@ private fun QuestionCard(title: String, bigLine: String, hint: String?) {
                 textAlign = TextAlign.Center)
             if (hint != null) {
                 Spacer(Modifier.height(8.dp))
-                Text(hint, fontSize = 13.sp, color = TextGray, textAlign = TextAlign.Center)
+                Text(hint, fontSize = 15.sp, color = TextGray, textAlign = TextAlign.Center)
             }
         }
     }
@@ -645,7 +645,7 @@ private fun ResultsContent(state: VerbTrainingState, vm: VerbViewModel, onExit: 
         Spacer(Modifier.height(28.dp))
 
         if (weak.isNotEmpty()) {
-            Text(stringResource(R.string.verb_weak_forms), fontSize = 14.sp, color = TextGray,
+            Text(stringResource(R.string.verb_weak_forms), fontSize = 15.sp, color = TextGray,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
                     .align(Alignment.Start)
@@ -664,11 +664,11 @@ private fun ResultsContent(state: VerbTrainingState, vm: VerbViewModel, onExit: 
                             horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(
                                 "${vm.getPronoun(q.pronounIndex)} · ${q.conjugation.verb}",
-                                fontSize = 13.sp, color = TextMain
+                                fontSize = 15.sp, color = TextMain
                             )
                             Text(
                                 q.correctAnswer,
-                                fontSize = 13.sp, color = ACCENT,
+                                fontSize = 15.sp, color = ACCENT,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }

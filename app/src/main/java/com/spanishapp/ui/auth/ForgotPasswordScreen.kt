@@ -1,5 +1,10 @@
-package com.spanishapp.ui.auth
+﻿package com.spanishapp.ui.auth
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -54,6 +59,12 @@ fun ForgotPasswordScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
+        val visibleState = remember { MutableTransitionState(false).apply { targetState = true } }
+        AnimatedVisibility(
+            visibleState = visibleState,
+            enter = fadeIn(animationSpec = tween(400)) +
+                    slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,7 +82,7 @@ fun ForgotPasswordScreen(
 
             Text(
                 "Введите email, на который зарегистрирован аккаунт. Мы отправим ссылку для сброса пароля.",
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 20.sp
             )
@@ -96,7 +107,7 @@ fun ForgotPasswordScreen(
                 Text(
                     state.generalError!!,
                     color = MaterialTheme.colorScheme.error,
-                    fontSize = 14.sp
+                    fontSize = 15.sp
                 )
             }
 
@@ -115,6 +126,7 @@ fun ForgotPasswordScreen(
             TextButton(onClick = { navController.popBackStack() }) {
                 Text("Назад ко входу")
             }
+        }
         }
     }
 }

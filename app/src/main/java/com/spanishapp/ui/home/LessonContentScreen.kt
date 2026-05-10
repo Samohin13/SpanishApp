@@ -1,4 +1,4 @@
-package com.spanishapp.ui.home
+﻿package com.spanishapp.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -180,7 +180,7 @@ private fun ContentSection(section: LessonSection, accentColor: Color) {
         // Заголовок секции
         Text(
             text = section.heading,
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
             color = accentColor,
             modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
