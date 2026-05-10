@@ -300,11 +300,48 @@ fun HomeScreen(
 
         // ── AI-Chat FAB ─────────────────────────────────────────
         // Spanish-themed bull icon (game-icons:taurus, CC-BY 3.0).
+        // Animations:
+        //  1) Entrance — spring overshoot 0 → 1.1 → 1.0 (delay 400ms).
+        //  2) Continuous breathing pulse 1.0 ↔ 1.06 every 2s + synced shadow.
+        val entranceScale = remember { Animatable(0f) }
+        LaunchedEffect(Unit) {
+            kotlinx.coroutines.delay(400)
+            entranceScale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+        }
+        val pulse by rememberInfiniteTransition(label = "fab_pulse").animateFloat(
+            initialValue = 1f,
+            targetValue = 1.06f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 2000, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "fab_pulse_scale"
+        )
+        val combinedScale = entranceScale.value * pulse
+        // Shadow elevation pulses in sync with scale for a soft glow effect.
+        val shadowDp = 8.dp + ((pulse - 1f) * 80f).dp
+
         FloatingActionButton(
             onClick = { navController.navigate("ai_chat_sessions") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 20.dp, bottom = 20.dp)
+                .graphicsLayer {
+                    scaleX = combinedScale
+                    scaleY = combinedScale
+                }
+                .shadow(
+                    elevation = shadowDp,
+                    shape = CircleShape,
+                    spotColor = Orange,
+                    ambientColor = Orange
+                )
                 .size(60.dp),
             containerColor = Orange,
             contentColor = Color.White,
@@ -421,10 +458,10 @@ private fun CourseCard(
             Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
                 Text(
                     course.subtitle,
-                    fontSize = 13.sp,
+                    fontSize = 15.sp,
                     color = if (isLocked) TextGray.copy(.6f) else TextGray,
                     maxLines = 2,
-                    lineHeight = 18.sp
+                    lineHeight = 20.sp
                 )
                 Spacer(Modifier.height(12.dp))
                 Box(
@@ -853,20 +890,47 @@ private fun StreakCard(
     )
     val goalReached = progress >= 1f
 
-    Surface(
+    // Flame gradient background: orange → yellow accent for "fire" feel when active.
+    val flameBg = if (streak > 0) {
+        Brush.linearGradient(
+            colors = listOf(
+                Color(0xFFFFF1E6),
+                Color(0xFFFFE0B2),
+                Color(0xFFFFCC80).copy(alpha = 0.55f)
+            )
+        )
+    } else {
+        Brush.linearGradient(listOf(MaterialTheme.colorScheme.surface, MaterialTheme.colorScheme.surface))
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp),
+            .padding(horizontal = 14.dp)
+    ) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 4.dp,
         tonalElevation = 0.dp
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
+            modifier = Modifier
+                .background(flameBg)
+                .padding(horizontal = 18.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Flame icon circle with gradient
+            // Flame icon circle with gradient — emoji pulses 1.0 ↔ 1.15 every 1.5s.
+            val emojiPulse by rememberInfiniteTransition(label = "emojiPulse").animateFloat(
+                initialValue = 1f,
+                targetValue = if (streak > 0) 1.15f else 1f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 1500, easing = FastOutSlowInEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "emojiPulseScale"
+            )
             Box(
                 modifier = Modifier
                     .size(56.dp)
@@ -879,25 +943,31 @@ private fun StreakCard(
             ) {
                 Text(
                     text = if (streak > 0) "🔥" else "💤",
-                    fontSize = 26.sp
+                    fontSize = 30.sp,
+                    modifier = Modifier.graphicsLayer {
+                        scaleX = emojiPulse
+                        scaleY = emojiPulse
+                    }
                 )
             }
 
             Spacer(Modifier.width(14.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         text = "$streak",
-                        fontSize = 28.sp,
+                        fontSize = 48.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = if (streak > 0) OrangeColor else TextGray
+                        color = if (streak > 0) OrangeColor else TextGray,
+                        lineHeight = 50.sp
                     )
                     Text(
                         text = stringResource(R.string.home_streak_days),
-                        fontSize = 13.sp,
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Medium,
-                        color = TextGray
+                        color = TextGray,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
                 }
                 Spacer(Modifier.height(2.dp))
@@ -957,6 +1027,26 @@ private fun StreakCard(
             }
         }
     }
+        // 🏆 неделя! badge for streaks ≥ 7 days.
+        if (streak >= 7) {
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 6.dp, end = 6.dp),
+                shape = RoundedCornerShape(12.dp),
+                color = Color(0xFFFFD700),
+                shadowElevation = 3.dp
+            ) {
+                Text(
+                    text = "🏆 неделя!",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color(0xFF5D4037),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                )
+            }
+        }
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -968,37 +1058,63 @@ private fun WordOfDayCard(word: WordOfDay, tts: android.speech.tts.TextToSpeech?
     val WordBlue = Purple                 // Orange #FF6B35
     val WordBg   = Color(0xFFFFF1E6)     // Peach tint
 
+    // Slide-in + fade entrance, 350ms.
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { visible = true }
+    val anim = androidx.compose.animation.core.animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing),
+        label = "wodIn"
+    )
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp),
+            .padding(horizontal = 14.dp)
+            .graphicsLayer {
+                alpha = anim.value
+                translationY = (1f - anim.value) * 32f
+            },
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 4.dp,
         tonalElevation = 0.dp
     ) {
         Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
-            // Label
+            // Label — meta line "🇪🇸 Слово дня · A1"
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("📖", fontSize = 14.sp)
-                Text(stringResource(R.string.home_word_of_day), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = WordBlue)
+                Text("🇪🇸", fontSize = 14.sp)
+                Text(
+                    stringResource(R.string.home_word_of_day) + " · A1",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = WordBlue
+                )
             }
 
             Spacer(Modifier.height(10.dp))
 
-            // Spanish word + speaker
+            // Spanish word — big 32sp ExtraBold + 56dp circular speak button.
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = word.spanish,
-                    fontSize = 26.sp,
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = WordBlue,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    lineHeight = 36.sp
                 )
-                SpeakerButton(text = word.spanish, tts = tts, tint = WordBlue)
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(WordBlue),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SpeakerButton(text = word.spanish, tts = tts, tint = Color.White)
+                }
             }
 
-            // Russian translation
+            // Russian translation — 16sp under big word.
             Text(
                 text = word.russian,
                 fontSize = 16.sp,

@@ -1,5 +1,8 @@
 package com.spanishapp.ui.games
 
+import androidx.compose.animation.core.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,14 +10,22 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,12 +90,27 @@ fun GamesScreen(
             }
         }
 
-        items(GAMES, key = { it.route }) { g ->
-            GameCard(
-                game = g,
-                progress = progress[g.route],
-                onClick = { navController.navigate(g.route) }
-            )
+        itemsIndexed(GAMES, key = { _, g -> g.route }) { idx, g ->
+            // Staggered entrance: each card slides in 60ms after the previous.
+            var visible by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(60L * idx)
+                visible = true
+            }
+            AnimatedVisibility(
+                visible = visible,
+                enter = slideInVertically(
+                    animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+                    initialOffsetY = { it / 3 }
+                ) + fadeIn(animationSpec = tween(300))
+            ) {
+                GameCard(
+                    game = g,
+                    progress = progress[g.route],
+                    onClick = { navController.navigate(g.route) },
+                    wobblePhase = (idx * 0.37f) % 1f
+                )
+            }
         }
     }
 }
@@ -93,8 +119,23 @@ fun GamesScreen(
 private fun GameCard(
     game: Game,
     progress: GameProgressInfo?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    wobblePhase: Float = 0f
 ) {
+    // Continuous micro-wobble: -3° ↔ +3° over 2.5s, phase-shifted per card so
+    // they don't sway in lock-step.
+    val infinite = rememberInfiniteTransition(label = "wobble_${game.route}")
+    val wobble by infinite.animateFloat(
+        initialValue = -3f,
+        targetValue = 3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse,
+            initialStartOffset = StartOffset((wobblePhase * 2500).toInt())
+        ),
+        label = "wobble_angle_${game.route}"
+    )
+
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
         modifier = Modifier
@@ -113,7 +154,8 @@ private fun GameCard(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(CircleShape)
-                    .background(game.color.copy(alpha = 0.12f)),
+                    .background(game.color.copy(alpha = 0.12f))
+                    .graphicsLayer { rotationZ = wobble },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(game.icon, null, tint = game.color, modifier = Modifier.size(24.dp))

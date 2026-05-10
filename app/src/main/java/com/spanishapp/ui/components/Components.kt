@@ -134,15 +134,39 @@ fun SpanishBottomBar(
                         animationSpec = tween(200),
                         label         = "color_${item.route}"
                     )
-                    // Spring scale: selected → 1.08, normal → 1.0
-                    val scale by animateFloatAsState(
-                        targetValue   = if (selected) 1.08f else 1f,
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness    = Spring.StiffnessMediumLow
-                        ),
-                        label = "scale_${item.route}"
-                    )
+                    // Bouncy "title" scale: 1.0 → 1.20 → 1.0 burst on selection.
+                    val burstAnim = remember { Animatable(1f) }
+                    LaunchedEffect(selected) {
+                        if (selected) {
+                            burstAnim.animateTo(
+                                targetValue = 1.20f,
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioHighBouncy,
+                                    stiffness = Spring.StiffnessMedium
+                                )
+                            )
+                            burstAnim.animateTo(
+                                targetValue = 1f,
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessMediumLow
+                                )
+                            )
+                        } else {
+                            burstAnim.snapTo(1f)
+                        }
+                    }
+                    // Ripple ring: expands + fades when this tab becomes selected.
+                    val ripple = remember { Animatable(0f) }
+                    LaunchedEffect(selected) {
+                        if (selected) {
+                            ripple.snapTo(0f)
+                            ripple.animateTo(
+                                targetValue = 1f,
+                                animationSpec = tween(durationMillis = 450, easing = FastOutSlowInEasing)
+                            )
+                        }
+                    }
 
                     Box(
                         modifier = Modifier
@@ -155,10 +179,24 @@ fun SpanishBottomBar(
                             ),
                         contentAlignment = Alignment.Center
                     ) {
+                        // Expanding ripple ring behind the active icon.
+                        if (selected && ripple.value < 1f) {
+                            val ringAlpha = (1f - ripple.value).coerceIn(0f, 1f) * 0.6f
+                            val ringSize = 20.dp + (32.dp * ripple.value)
+                            Box(
+                                modifier = Modifier
+                                    .size(ringSize)
+                                    .clip(CircleShape)
+                                    .background(activeColor.copy(alpha = ringAlpha * 0.25f))
+                            )
+                        }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(2.dp),
-                            modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }
+                            modifier = Modifier.graphicsLayer {
+                                scaleX = burstAnim.value
+                                scaleY = burstAnim.value
+                            }
                         ) {
                             val itemLabel = androidx.compose.ui.res.stringResource(item.labelRes)
                             Icon(
