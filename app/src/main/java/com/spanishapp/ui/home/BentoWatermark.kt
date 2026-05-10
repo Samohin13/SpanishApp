@@ -125,19 +125,27 @@ private fun DrawScope.drawBookStack(origin: Offset, area: Size, accent: Color) {
 private fun DrawScope.drawTrophy(origin: Offset, area: Size, accent: Color) {
     val color   = accent.copy(alpha = 0.13f)
     val accent1 = accent.copy(alpha = 0.18f)
-    val cx = origin.x + area.width / 2f
 
-    val cupTopY  = origin.y + area.height * 0.06f
-    val cupBotY  = origin.y + area.height * 0.55f
-    val stemBotY = origin.y + area.height * 0.72f
-    val baseMidY = origin.y + area.height * 0.82f
-    val baseBotY = origin.y + area.height * 0.92f
+    // Constrain to a SQUARE sub-area sized to the smaller dimension —
+    // otherwise on wide tiles (e.g. SkillRatingTile, ~340×160dp) the
+    // trophy stretched horizontally into a giant chalice. Anchor to the
+    // right edge inside the watermark area.
+    val side = area.width.coerceAtMost(area.height) * 0.85f
+    val originX = origin.x + (area.width - side) - side * 0.05f
+    val originY = origin.y + (area.height - side) / 2f
+    val cx = originX + side / 2f
 
-    val cupTopW = area.width * 0.62f
-    val cupBotW = area.width * 0.30f
-    val stemW   = area.width * 0.16f
-    val baseW1  = area.width * 0.54f
-    val baseW2  = area.width * 0.72f
+    val cupTopY  = originY + side * 0.06f
+    val cupBotY  = originY + side * 0.55f
+    val stemBotY = originY + side * 0.72f
+    val baseMidY = originY + side * 0.82f
+    val baseBotY = originY + side * 0.92f
+
+    val cupTopW = side * 0.62f
+    val cupBotW = side * 0.30f
+    val stemW   = side * 0.16f
+    val baseW1  = side * 0.54f
+    val baseW2  = side * 0.72f
 
     // Cup — chalice trapezoid (wider at top, taper to stem)
     val cupPath = Path().apply {
@@ -153,12 +161,12 @@ private fun DrawScope.drawTrophy(origin: Offset, area: Size, accent: Color) {
     drawRect(
         color = accent1,
         topLeft = Offset(cx - cupTopW / 2f, cupTopY),
-        size = Size(cupTopW, area.height * 0.05f)
+        size = Size(cupTopW, side * 0.05f)
     )
 
     // Two C-shaped handles flanking the upper cup
-    val handleR  = area.width * 0.16f
-    val handleCY = origin.y + area.height * 0.22f
+    val handleR  = side * 0.16f
+    val handleCY = originY + side * 0.22f
     val handleW  = handleR * 0.40f
     drawArc(
         color = color,
@@ -177,9 +185,9 @@ private fun DrawScope.drawTrophy(origin: Offset, area: Size, accent: Color) {
 
     // Star on the cup face — final clincher that "this is a trophy"
     drawStar(
-        center = Offset(cx, origin.y + area.height * 0.30f),
-        outerR = area.width * 0.08f,
-        innerR = area.width * 0.034f,
+        center = Offset(cx, originY + side * 0.30f),
+        outerR = side * 0.08f,
+        innerR = side * 0.034f,
         color = accent.copy(alpha = 0.22f)
     )
 
