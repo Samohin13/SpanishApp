@@ -517,18 +517,13 @@ private fun FinishedView(
     onRestart: () -> Unit,
     onExit: () -> Unit
 ) {
-    val composition by com.airbnb.lottie.compose.rememberLottieComposition(
-        com.airbnb.lottie.compose.LottieCompositionSpec.RawRes(com.spanishapp.R.raw.lottie_victory)
-    )
-    val lottieProgress by com.airbnb.lottie.compose.animateLottieCompositionAsState(composition)
-
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         if (error != null) {
-            // Empty state — no trophy. Plain Material icon for the leaf.
+            // Empty state — no badge. Plain Material icon for the leaf.
             Icon(
                 Icons.Default.Refresh,
                 null,
@@ -548,24 +543,19 @@ private fun FinishedView(
                 Text("Назад", fontWeight = FontWeight.Bold)
             }
         } else {
-            // Lottie trophy — same animation used at the end of flashcard sessions
-            // for visual consistency across the app's reward screens.
-            Box(modifier = Modifier.size(160.dp), contentAlignment = Alignment.Center) {
-                com.airbnb.lottie.compose.LottieAnimation(
-                    composition = composition,
-                    progress = { lottieProgress },
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-            Spacer(Modifier.height(8.dp))
-            Text(
-                "$correct / $total",
-                fontSize = 36.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
+            val accuracy = if (total > 0) (correct * 100 / total) else 0
+            com.spanishapp.ui.components.AnimatedScreenTitle(
+                text = "🎉 Сессия завершена!",
+                fontSize = 24.sp
             )
+            Spacer(Modifier.height(20.dp))
+            com.spanishapp.ui.components.CompletionBadge(
+                accuracyPercent = accuracy,
+                size = 180.dp
+            )
+            Spacer(Modifier.height(20.dp))
             Text(
-                "правильных ответов",
+                "$correct правильных из $total",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -579,7 +569,7 @@ private fun FinishedView(
             }
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = onExit) {
-                Text("Назад", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Назад", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

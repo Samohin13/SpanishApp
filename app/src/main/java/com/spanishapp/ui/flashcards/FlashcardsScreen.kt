@@ -154,12 +154,6 @@ private fun SessionCompleteBody(
     onRestart: () -> Unit,
     onExit: () -> Unit
 ) {
-    // Bundled raw asset (no network round-trip, works offline).
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(com.spanishapp.R.raw.lottie_victory)
-    )
-    val progress by animateLottieCompositionAsState(composition)
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -170,36 +164,31 @@ private fun SessionCompleteBody(
         if (error != null) {
             Text(error, style = MaterialTheme.typography.bodyLarge)
         } else {
-            // Анимированная иконка триумфа
-            Box(
-                modifier = Modifier
-                    .size(160.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                LottieAnimation(
-                    composition = composition,
-                    progress = { progress },
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-            
-            Spacer(Modifier.height(16.dp))
-            
-            Text(
-                "Отличная работа!",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+            val accuracy = if (total > 0) (correct * 100 / total) else 0
+            com.spanishapp.ui.components.AnimatedScreenTitle(
+                text = "🎉 Сессия завершена!",
+                fontSize = 24.sp
             )
-            
-            Spacer(Modifier.height(32.dp))
-
-            ResultRow("Всего карточек", total.toString(), Icons.Default.Style)
-            ResultRow("Правильно", correct.toString(), Icons.Default.CheckCircle, MaterialTheme.colorScheme.primary)
-            ResultRow("Нужно повторить", wrong.toString(), Icons.Default.Error, MaterialTheme.colorScheme.error)
-            ResultRow("Получено опыта", "+$xp XP", Icons.Default.Stars, MaterialTheme.colorScheme.tertiary)
+            Spacer(Modifier.height(20.dp))
+            com.spanishapp.ui.components.CompletionBadge(
+                accuracyPercent = accuracy,
+                size = 180.dp
+            )
+            Spacer(Modifier.height(20.dp))
+            Text(
+                "$correct правильных из $total  ·  +$xp XP",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Нужно повторить: $wrong",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
 
-        Spacer(Modifier.height(48.dp))
+        Spacer(Modifier.height(32.dp))
 
         Button(
             onClick = onRestart,
@@ -210,9 +199,9 @@ private fun SessionCompleteBody(
         ) {
             Text("Ещё раз", fontWeight = FontWeight.Bold)
         }
-        
+
         TextButton(onClick = onExit) {
-            Text("Вернуться на главную", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Назад", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

@@ -1094,14 +1094,6 @@ private fun VictoryScreen(
     val accuracy = if (totalExercises > 0)
         (correctCount * 100 / totalExercises) else 100
 
-    // Иконка и сообщение зависят от точности
-    val (trophy, verdict) = when {
-        accuracy == 100 -> "🏆" to stringResource(R.string.ls_verdict_perfect)
-        accuracy >= 75  -> "⭐" to stringResource(R.string.ls_verdict_great)
-        accuracy >= 50  -> "👍" to stringResource(R.string.ls_verdict_good)
-        else            -> "💪" to stringResource(R.string.ls_verdict_keep_going)
-    }
-
     Column(
         Modifier
             .fillMaxSize()
@@ -1112,29 +1104,23 @@ private fun VictoryScreen(
     ) {
         Spacer(Modifier.height(24.dp))
 
-        Box(
-            Modifier
-                .size(120.dp)
-                .background(accentColor.copy(alpha = 0.12f), CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(trophy, fontSize = 56.sp)
-        }
+        com.spanishapp.ui.components.AnimatedScreenTitle(
+            text = "🎉 Сессия завершена!",
+            fontSize = 24.sp
+        )
 
         Spacer(Modifier.height(20.dp))
 
-        Text(
-            text       = verdict,
-            fontSize   = 28.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color      = accentColor
+        com.spanishapp.ui.components.CompletionBadge(
+            accuracyPercent = accuracy,
+            size = 180.dp
         )
 
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(16.dp))
 
         Text(
             text      = lessonTitle,
-            fontSize  = 15.sp,
+            fontSize  = 14.sp,
             color     = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
@@ -1188,29 +1174,20 @@ private fun VictoryScreen(
                 onClick  = onNextLesson,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
-                shape  = RoundedCornerShape(18.dp),
+                    .height(56.dp),
+                shape  = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = accentColor)
             ) {
-                Text(stringResource(R.string.ls_next_lesson), fontSize = 17.sp, fontWeight = FontWeight.ExtraBold)
+                Text(stringResource(R.string.ls_next_lesson), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(8.dp))
         }
 
-        OutlinedButton(
-            onClick  = onFinish,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape  = RoundedCornerShape(18.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        ) {
+        TextButton(onClick = onFinish) {
             Text(
-                text       = if (hasNextLesson) stringResource(R.string.ls_exit_to_menu) else stringResource(R.string.ls_done_caps),
-                fontSize   = 16.sp,
-                fontWeight = FontWeight.SemiBold
+                text     = if (hasNextLesson) stringResource(R.string.ls_exit_to_menu) else stringResource(R.string.ls_done_caps),
+                fontSize = 14.sp,
+                color    = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
