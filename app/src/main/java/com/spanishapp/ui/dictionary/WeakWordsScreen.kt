@@ -60,7 +60,12 @@ fun WeakWordsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.weak_title)) },
+                title = {
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "💪 " + stringResource(R.string.weak_title),
+                        fontSize = 18.sp
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)

@@ -61,7 +61,12 @@ fun LevelSelectionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Выбор уровня") },
+                title = {
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "🌟 Выбор уровня",
+                        fontSize = 18.sp
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")

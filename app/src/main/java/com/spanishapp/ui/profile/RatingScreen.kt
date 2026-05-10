@@ -57,7 +57,12 @@ fun RatingScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = { Text(androidx.compose.ui.res.stringResource(R.string.rating_topic_progress), fontWeight = FontWeight.Bold) },
+                title = {
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "📊 " + androidx.compose.ui.res.stringResource(R.string.rating_topic_progress),
+                        fontSize = 18.sp
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)

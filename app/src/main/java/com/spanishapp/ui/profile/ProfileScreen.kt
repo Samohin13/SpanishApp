@@ -186,7 +186,12 @@ fun ProfileScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = { Text("Mi Perfil", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
+                title = {
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "👤 Mi Perfil",
+                        fontSize = 18.sp
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)

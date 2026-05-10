@@ -110,7 +110,10 @@ fun PlacementTestScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("${currentIndex + 1} / ${QUESTIONS.size}", fontWeight = FontWeight.SemiBold)
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "🎯 ${currentIndex + 1} / ${QUESTIONS.size}",
+                        fontSize = 18.sp
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = {

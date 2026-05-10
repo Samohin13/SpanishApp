@@ -74,7 +74,12 @@ fun GrammarScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_grammar)) },
+                title = {
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "📚 " + androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_grammar),
+                        fontSize = 18.sp
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)

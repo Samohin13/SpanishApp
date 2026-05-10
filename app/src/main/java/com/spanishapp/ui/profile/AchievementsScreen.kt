@@ -72,7 +72,12 @@ fun AchievementsScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_achievements)) },
+                title = {
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "🏆 " + androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_achievements),
+                        fontSize = 18.sp
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {

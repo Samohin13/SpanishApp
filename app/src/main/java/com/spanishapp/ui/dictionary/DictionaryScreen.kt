@@ -231,7 +231,12 @@ fun DictionaryScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { Text(if (selectedId == null) stringResource(R.string.dict_title) else myLists.firstOrNull { it.id == selectedId }?.name ?: stringResource(R.string.dict_list)) },
+                title = {
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "📖 " + (if (selectedId == null) stringResource(R.string.dict_title) else myLists.firstOrNull { it.id == selectedId }?.name ?: stringResource(R.string.dict_list)),
+                        fontSize = 18.sp
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = {

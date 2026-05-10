@@ -266,7 +266,10 @@ fun PracticeScreen(
                 TopAppBar(
                     title = {
                         Column {
-                            Text("Практика", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            com.spanishapp.ui.components.AnimatedScreenTitle(
+                                text = "🎯 Практика",
+                                fontSize = 18.sp
+                            )
                             if (!state.isLoading && !state.isFinished && state.rounds.isNotEmpty()) {
                                 Text(
                                     "${state.currentIndex + 1} / ${state.rounds.size}  ·  ✅ ${state.correctCount}  ❌ ${state.wrongCount}",

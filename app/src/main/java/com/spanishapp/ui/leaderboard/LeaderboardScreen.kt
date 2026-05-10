@@ -44,7 +44,12 @@ fun LeaderboardScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = { Text(stringResource(R.string.lb_leaders), fontWeight = FontWeight.Bold) },
+                title = {
+                    com.spanishapp.ui.components.AnimatedScreenTitle(
+                        text = "🏅 " + stringResource(R.string.lb_leaders),
+                        fontSize = 18.sp
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
