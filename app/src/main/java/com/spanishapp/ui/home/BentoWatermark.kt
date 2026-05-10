@@ -115,25 +115,112 @@ private fun DrawScope.drawBookStack(origin: Offset, area: Size, accent: Color) {
     }
 }
 
-/** Trophy silhouette — cup body, handles, base. */
+/**
+ * Trophy silhouette — classic chalice. Was a pill-shaped mug with stroked
+ * outline circles for handles which the user said "не очень понятно".
+ * New version: tapered chalice cup + filled C-shaped handles + narrow
+ * stem + 2-tier base + a small star on the cup face. Reads instantly
+ * as "trophy".
+ */
 private fun DrawScope.drawTrophy(origin: Offset, area: Size, accent: Color) {
-    val color = accent.copy(alpha = 0.13f)
+    val color   = accent.copy(alpha = 0.13f)
+    val accent1 = accent.copy(alpha = 0.18f)
     val cx = origin.x + area.width / 2f
-    val cupTop = origin.y + area.height * 0.10f
-    val cupH   = area.height * 0.55f
-    val cupW   = area.width * 0.55f
-    val baseY  = origin.y + area.height * 0.85f
-    val baseW  = cupW * 0.85f
-    val cupRect = Rect(cx - cupW / 2f, cupTop, cx + cupW / 2f, cupTop + cupH)
+
+    val cupTopY  = origin.y + area.height * 0.06f
+    val cupBotY  = origin.y + area.height * 0.55f
+    val stemBotY = origin.y + area.height * 0.72f
+    val baseMidY = origin.y + area.height * 0.82f
+    val baseBotY = origin.y + area.height * 0.92f
+
+    val cupTopW = area.width * 0.62f
+    val cupBotW = area.width * 0.30f
+    val stemW   = area.width * 0.16f
+    val baseW1  = area.width * 0.54f
+    val baseW2  = area.width * 0.72f
+
+    // Cup — chalice trapezoid (wider at top, taper to stem)
     val cupPath = Path().apply {
-        addRoundRect(RoundRect(cupRect, CornerRadius(cupW * 0.45f, cupH * 0.4f)))
+        moveTo(cx - cupTopW / 2f, cupTopY)
+        lineTo(cx + cupTopW / 2f, cupTopY)
+        lineTo(cx + cupBotW / 2f, cupBotY)
+        lineTo(cx - cupBotW / 2f, cupBotY)
+        close()
     }
     drawPath(cupPath, color)
-    val handleR = cupW * 0.18f
-    drawCircle(color, handleR, Offset(cupRect.left - handleR * 0.4f, cupTop + cupH * 0.35f), style = Stroke(handleR * 0.45f))
-    drawCircle(color, handleR, Offset(cupRect.right + handleR * 0.4f, cupTop + cupH * 0.35f), style = Stroke(handleR * 0.45f))
-    drawRect(color, Offset(cx - cupW * 0.10f, cupTop + cupH), Size(cupW * 0.20f, area.height * 0.10f))
-    drawRect(color, Offset(cx - baseW / 2f, baseY), Size(baseW, area.height * 0.06f))
+
+    // Top rim band — slightly stronger so the opening reads
+    drawRect(
+        color = accent1,
+        topLeft = Offset(cx - cupTopW / 2f, cupTopY),
+        size = Size(cupTopW, area.height * 0.05f)
+    )
+
+    // Two C-shaped handles flanking the upper cup
+    val handleR  = area.width * 0.16f
+    val handleCY = origin.y + area.height * 0.22f
+    val handleW  = handleR * 0.40f
+    drawArc(
+        color = color,
+        startAngle = 60f, sweepAngle = 240f, useCenter = false,
+        topLeft = Offset(cx - cupTopW / 2f - handleR, handleCY - handleR),
+        size = Size(handleR * 2f, handleR * 2f),
+        style = Stroke(width = handleW, cap = StrokeCap.Round)
+    )
+    drawArc(
+        color = color,
+        startAngle = -120f, sweepAngle = 240f, useCenter = false,
+        topLeft = Offset(cx + cupTopW / 2f - handleR, handleCY - handleR),
+        size = Size(handleR * 2f, handleR * 2f),
+        style = Stroke(width = handleW, cap = StrokeCap.Round)
+    )
+
+    // Star on the cup face — final clincher that "this is a trophy"
+    drawStar(
+        center = Offset(cx, origin.y + area.height * 0.30f),
+        outerR = area.width * 0.08f,
+        innerR = area.width * 0.034f,
+        color = accent.copy(alpha = 0.22f)
+    )
+
+    // Stem
+    drawRect(
+        color = color,
+        topLeft = Offset(cx - stemW / 2f, cupBotY),
+        size = Size(stemW, stemBotY - cupBotY)
+    )
+
+    // Two-tier base — premium pedestal feel
+    drawRect(
+        color = color,
+        topLeft = Offset(cx - baseW1 / 2f, stemBotY),
+        size = Size(baseW1, baseMidY - stemBotY)
+    )
+    drawRect(
+        color = accent1,
+        topLeft = Offset(cx - baseW2 / 2f, baseMidY),
+        size = Size(baseW2, baseBotY - baseMidY)
+    )
+}
+
+/** 5-point star polygon. */
+private fun DrawScope.drawStar(
+    center: Offset,
+    outerR: Float,
+    innerR: Float,
+    color: Color
+) {
+    val path = Path()
+    val steps = 10
+    for (i in 0 until steps) {
+        val r = if (i % 2 == 0) outerR else innerR
+        val angle = Math.PI / 2.0 - i * (Math.PI / 5.0)
+        val x = center.x + (r * Math.cos(angle)).toFloat()
+        val y = center.y - (r * Math.sin(angle)).toFloat()
+        if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
+    }
+    path.close()
+    drawPath(path, color)
 }
 
 /** Magnifying glass — circle frame with diagonal handle. */
