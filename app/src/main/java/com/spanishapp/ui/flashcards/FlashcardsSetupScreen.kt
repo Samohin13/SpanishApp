@@ -159,62 +159,59 @@ fun FlashcardsSetupScreen(
                 .statusBarsPadding(),
             contentPadding = PaddingValues(bottom = 32.dp)
         ) {
+            // Stagger entrance was disabled per user feedback — flashcard set
+            // rows are tall and the slide-up cascade looked off. All items
+            // now appear instantly. .animateItem() is preserved on rows for
+            // smooth re-ordering when a set's progress changes.
+
             // ── Header ─────────────────────────────────────────
             item {
-                StaggeredEntrance(index = 0) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 16.dp)
-                    ) {
-                        Text(
-                            "Tarjetas",
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(Modifier.height(2.dp))
-                        Text(
-                            "Маленькие наборы слов на каждый день",
-                            fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-
-            // ── Practice tile (Tobo-style) ─────────────────────
-            // Goes to a multiple-choice quiz over weak words. Always visible —
-            // shows "0" when fresh, encourages user to come back after sessions.
-            item {
-                StaggeredEntrance(index = 1) {
-                    PracticeTile(
-                        weakCount = weakCount,
-                        onClick = { navController.navigate("practice") },
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 16.dp)
+                ) {
+                    Text(
+                        "Tarjetas",
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        "Маленькие наборы слов на каждый день",
+                        fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
+            // ── Practice tile ─────────────────────────────────
+            item {
+                PracticeTile(
+                    weakCount = weakCount,
+                    onClick = { navController.navigate("practice") },
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
+
             // ── Level tabs ─────────────────────────────────────
             item {
-                StaggeredEntrance(index = 2) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        LEVELS.forEach { lvl ->
-                            LevelChip(
-                                label = lvl,
-                                selected = selectedLevel == lvl,
-                                modifier = Modifier.weight(1f),
-                                onClick = { viewModel.selectLevel(lvl) }
-                            )
-                        }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    LEVELS.forEach { lvl ->
+                        LevelChip(
+                            label = lvl,
+                            selected = selectedLevel == lvl,
+                            modifier = Modifier.weight(1f),
+                            onClick = { viewModel.selectLevel(lvl) }
+                        )
                     }
                 }
             }
@@ -238,33 +235,21 @@ fun FlashcardsSetupScreen(
             }
 
             // ── Sets list ─────────────────────────────────────
-            // First 10 cards stagger in; longer lists pass through to keep scroll smooth.
-            itemsIndexed(sets, key = { _, it -> it.set.id }) { idx, row ->
-                // SetRow itself; .animateItem() must NOT be applied when
-                // wrapped inside StaggeredEntrance — it only works on direct
-                // LazyListScope children and inside the AnimatedVisibility
-                // wrapper it caused the row to jitter.
-                val rowContent: @Composable (Modifier) -> Unit = { mod ->
-                    SetRow(
-                        row = row,
-                        onClick = {
-                            if (row.unlocked) {
-                                navController.navigate(
-                                    "flashcards_session?level=${row.set.level}" +
-                                        "&category=set&direction=ES_TO_RU&setId=${row.set.id}"
-                                )
-                            }
-                        },
-                        modifier = mod.padding(horizontal = 16.dp, vertical = 4.dp)
-                    )
-                }
-                if (idx < 10) {
-                    StaggeredEntrance(index = idx + 3) {
-                        rowContent(Modifier)
-                    }
-                } else {
-                    rowContent(Modifier.animateItem())
-                }
+            itemsIndexed(sets, key = { _, it -> it.set.id }) { _, row ->
+                SetRow(
+                    row = row,
+                    onClick = {
+                        if (row.unlocked) {
+                            navController.navigate(
+                                "flashcards_session?level=${row.set.level}" +
+                                    "&category=set&direction=ES_TO_RU&setId=${row.set.id}"
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .animateItem()
+                )
             }
         }
     }
