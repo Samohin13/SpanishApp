@@ -51,6 +51,15 @@ import com.spanishapp.domain.algorithm.MasteryRating
 import com.spanishapp.domain.algorithm.XpSystem
 import com.spanishapp.ui.components.PressableCard
 import com.spanishapp.ui.flashcards.CategoryMeta
+import com.spanishapp.ui.home.PathTileTrophyBackdrop
+import com.spanishapp.ui.home.drawCityAnchor
+import com.spanishapp.ui.home.drawCityBridge
+import com.spanishapp.ui.home.drawCityCathedral
+import com.spanishapp.ui.home.drawCityCrown
+import com.spanishapp.ui.home.drawCityGiralda
+import com.spanishapp.ui.home.drawCityHouse
+import com.spanishapp.ui.home.drawCityOrange
+import com.spanishapp.ui.home.drawCitySagrada
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -467,6 +476,7 @@ private fun ProfileTile(
     modifier: Modifier = Modifier,
     height: Dp? = null,
     onClick: (() -> Unit)? = null,
+    watermark: (@Composable BoxScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val baseColor = MaterialTheme.colorScheme.surfaceContainerHigh
@@ -486,6 +496,11 @@ private fun ProfileTile(
                         )
                     )
             )
+            // Optional thematic watermark (drawn ABOVE the radial glow but
+            // BELOW the foreground content + left accent stripe).
+            if (watermark != null) {
+                watermark()
+            }
             // Левая полоска 6dp.
             Box(
                 modifier = Modifier
@@ -635,9 +650,16 @@ private fun PathToMadridTile(
     val next = LeagueResolver.next(league)
     val cities = LeagueResolver.LEAGUES
     val shortNames = listOf("Aldea", "Sant.", "Bilbao", "Zar.", "Val.", "Sev.", "Barc.", "Mad.")
+    val outlineFaint = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
 
-    ProfileTile(accent = accent, modifier = modifier.fillMaxWidth()) {
-        // Точки + соединительные линии
+    ProfileTile(
+        accent = accent,
+        modifier = modifier.fillMaxWidth(),
+        watermark = {
+            PathTileTrophyBackdrop(accent = accent)
+        }
+    ) {
+        // City glyphs + connector lines
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -646,18 +668,29 @@ private fun PathToMadridTile(
                 val isCurrent = city.tier == league.tier
                 val isPassed = city.tier < league.tier ||
                         (peakLeague.tier >= city.tier && city.tier <= league.tier)
-                val dotSize = if (isCurrent) 14.dp else 10.dp
-                val dotColor = when {
+                val glyphColor = when {
                     isCurrent -> accent
                     isPassed  -> accent.copy(alpha = 0.7f)
-                    else      -> MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                    else      -> outlineFaint
                 }
-                Box(
-                    modifier = Modifier
-                        .size(dotSize)
-                        .clip(CircleShape)
-                        .background(dotColor)
-                )
+                val filled = isCurrent || isPassed
+                val glyphSizeDp = if (isCurrent) 26.dp else 22.dp
+                androidx.compose.foundation.Canvas(
+                    modifier = Modifier.size(glyphSizeDp)
+                ) {
+                    val s = size.minDimension
+                    val c = androidx.compose.ui.geometry.Offset(size.width / 2f, size.height / 2f)
+                    when (index) {
+                        0 -> drawCityHouse(c, s, glyphColor, filled)
+                        1 -> drawCityCathedral(c, s, glyphColor, filled)
+                        2 -> drawCityAnchor(c, s, glyphColor, filled)
+                        3 -> drawCityBridge(c, s, glyphColor, filled)
+                        4 -> drawCityOrange(c, s, glyphColor, filled)
+                        5 -> drawCityGiralda(c, s, glyphColor, filled)
+                        6 -> drawCitySagrada(c, s, glyphColor, filled)
+                        else -> drawCityCrown(c, s, glyphColor, filled)
+                    }
+                }
                 if (index < cities.lastIndex) {
                     val lineColor =
                         if (city.tier < league.tier) accent.copy(alpha = 0.55f)

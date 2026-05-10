@@ -693,3 +693,249 @@ private fun DrawScope.drawMountain(origin: Offset, area: Size, accent: Color) {
     }
     drawPath(frontRidge, accent.copy(alpha = 0.12f))
 }
+
+// ─── Path-to-Madrid city glyphs ────────────────────────────────
+// Mini icons (~24dp Canvas) drawn on the Path tile in profile.
+// Each helper draws inside a square of `size` centred on `center`.
+// `filled = true` paints solid for current/passed cities; outline otherwise.
+
+private fun DrawScope.cityStrokeWidth(s: Float) = s * 0.10f
+
+/** 1. Aldea perdida — small house: triangular roof + square wall. */
+fun DrawScope.drawCityHouse(center: Offset, size: Float, color: Color, filled: Boolean) {
+    val s = size
+    val sw = cityStrokeWidth(s)
+    val style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw)
+    val roof = Path().apply {
+        moveTo(center.x - s * 0.45f, center.y - s * 0.05f)
+        lineTo(center.x,              center.y - s * 0.45f)
+        lineTo(center.x + s * 0.45f, center.y - s * 0.05f)
+        close()
+    }
+    drawPath(roof, color, style = style)
+    drawRect(
+        color = color,
+        topLeft = Offset(center.x - s * 0.32f, center.y - s * 0.05f),
+        size = Size(s * 0.64f, s * 0.45f),
+        style = style
+    )
+}
+
+/** 2. Santiago de Compostela — cathedral: 2 towers + dome between. */
+fun DrawScope.drawCityCathedral(center: Offset, size: Float, color: Color, filled: Boolean) {
+    val s = size
+    val sw = cityStrokeWidth(s)
+    val style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw)
+    val towerW = s * 0.18f
+    val towerH = s * 0.55f
+    val baseY = center.y + s * 0.40f
+    // Left tower
+    drawRect(color, Offset(center.x - s * 0.42f, baseY - towerH), Size(towerW, towerH), style = style)
+    // Right tower
+    drawRect(color, Offset(center.x + s * 0.42f - towerW, baseY - towerH), Size(towerW, towerH), style = style)
+    // Dome (semicircle) in the middle
+    val domeR = s * 0.22f
+    drawArc(
+        color = color,
+        startAngle = 180f, sweepAngle = 180f, useCenter = true,
+        topLeft = Offset(center.x - domeR, center.y - s * 0.05f - domeR),
+        size = Size(domeR * 2f, domeR * 2f),
+        style = style
+    )
+    // Connecting base
+    drawRect(color, Offset(center.x - s * 0.42f, baseY - sw * 0.6f), Size(s * 0.84f, sw * 0.6f), style = androidx.compose.ui.graphics.drawscope.Fill)
+}
+
+/** 3. Bilbao — anchor: vertical shaft + crossbar + bottom arc. */
+fun DrawScope.drawCityAnchor(center: Offset, size: Float, color: Color, filled: Boolean) {
+    val s = size
+    val sw = cityStrokeWidth(s) * (if (filled) 1.4f else 1f)
+    // Vertical shaft
+    drawLine(color, Offset(center.x, center.y - s * 0.40f), Offset(center.x, center.y + s * 0.30f),
+        strokeWidth = sw, cap = StrokeCap.Round)
+    // Crossbar near top
+    drawLine(color, Offset(center.x - s * 0.25f, center.y - s * 0.25f),
+        Offset(center.x + s * 0.25f, center.y - s * 0.25f),
+        strokeWidth = sw, cap = StrokeCap.Round)
+    // Top ring
+    drawCircle(color, s * 0.08f, Offset(center.x, center.y - s * 0.42f),
+        style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw * 0.7f))
+    // Bottom arc (U-shape)
+    val arcR = s * 0.30f
+    drawArc(
+        color = color,
+        startAngle = 20f, sweepAngle = 140f, useCenter = false,
+        topLeft = Offset(center.x - arcR, center.y - arcR + s * 0.20f),
+        size = Size(arcR * 2f, arcR * 2f),
+        style = Stroke(sw, cap = StrokeCap.Round)
+    )
+}
+
+/** 4. Zaragoza — bridge: 3 arches in a row. */
+fun DrawScope.drawCityBridge(center: Offset, size: Float, color: Color, filled: Boolean) {
+    val s = size
+    val sw = cityStrokeWidth(s) * (if (filled) 1.3f else 1f)
+    val baseY = center.y + s * 0.30f
+    // Deck (top line)
+    drawLine(color, Offset(center.x - s * 0.45f, center.y - s * 0.20f),
+        Offset(center.x + s * 0.45f, center.y - s * 0.20f),
+        strokeWidth = sw, cap = StrokeCap.Round)
+    // Three arches
+    val archW = s * 0.30f
+    val archH = s * 0.45f
+    repeat(3) { i ->
+        val ax = center.x - s * 0.45f + i * archW
+        drawArc(
+            color = color,
+            startAngle = 180f, sweepAngle = 180f, useCenter = false,
+            topLeft = Offset(ax, baseY - archH),
+            size = Size(archW, archH),
+            style = Stroke(sw * 0.8f, cap = StrokeCap.Round)
+        )
+    }
+    // Base line
+    drawLine(color, Offset(center.x - s * 0.48f, baseY),
+        Offset(center.x + s * 0.48f, baseY),
+        strokeWidth = sw * 0.6f, cap = StrokeCap.Round)
+}
+
+/** 5. Valencia — orange: circle + small leaf-triangle on top. */
+fun DrawScope.drawCityOrange(center: Offset, size: Float, color: Color, filled: Boolean) {
+    val s = size
+    val sw = cityStrokeWidth(s)
+    val r = s * 0.36f
+    val cy = center.y + s * 0.05f
+    drawCircle(color, r, Offset(center.x, cy),
+        style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw))
+    // Leaf
+    val leaf = Path().apply {
+        moveTo(center.x - s * 0.05f, cy - r)
+        lineTo(center.x + s * 0.18f, cy - r - s * 0.18f)
+        lineTo(center.x + s * 0.05f, cy - r + s * 0.02f)
+        close()
+    }
+    drawPath(leaf, color, style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw * 0.8f))
+}
+
+/** 6. Sevilla — Giralda tower: tall narrow rectangle + flag/finial on top. */
+fun DrawScope.drawCityGiralda(center: Offset, size: Float, color: Color, filled: Boolean) {
+    val s = size
+    val sw = cityStrokeWidth(s)
+    val style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw)
+    val towerW = s * 0.28f
+    val towerH = s * 0.70f
+    val baseY = center.y + s * 0.40f
+    drawRect(color, Offset(center.x - towerW / 2f, baseY - towerH),
+        Size(towerW, towerH), style = style)
+    // Flag pole
+    drawLine(color, Offset(center.x, baseY - towerH),
+        Offset(center.x, baseY - towerH - s * 0.20f),
+        strokeWidth = sw * 0.7f, cap = StrokeCap.Round)
+    // Flag (small triangle)
+    val flag = Path().apply {
+        moveTo(center.x, baseY - towerH - s * 0.20f)
+        lineTo(center.x + s * 0.22f, baseY - towerH - s * 0.13f)
+        lineTo(center.x, baseY - towerH - s * 0.06f)
+        close()
+    }
+    drawPath(flag, color, style = androidx.compose.ui.graphics.drawscope.Fill)
+}
+
+/** 7. Barcelona — Sagrada Familia: 4 sharp narrow spires. */
+fun DrawScope.drawCitySagrada(center: Offset, size: Float, color: Color, filled: Boolean) {
+    val s = size
+    val sw = cityStrokeWidth(s)
+    val style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw * 0.8f)
+    val baseY = center.y + s * 0.40f
+    val spireWidth = s * 0.12f
+    val heights = listOf(0.55f, 0.80f, 0.70f, 0.45f)
+    val xs = listOf(-0.36f, -0.12f, 0.12f, 0.36f)
+    heights.forEachIndexed { i, hf ->
+        val cx = center.x + s * xs[i]
+        val h = s * hf
+        val spire = Path().apply {
+            moveTo(cx - spireWidth / 2f, baseY)
+            lineTo(cx + spireWidth / 2f, baseY)
+            lineTo(cx, baseY - h)
+            close()
+        }
+        drawPath(spire, color, style = style)
+    }
+}
+
+/** 8. Madrid — crown: 3 peaks of varying height + base bar. */
+fun DrawScope.drawCityCrown(center: Offset, size: Float, color: Color, filled: Boolean) {
+    val s = size
+    val sw = cityStrokeWidth(s)
+    val style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw * 0.8f)
+    val baseY = center.y + s * 0.30f
+    val baseH = s * 0.18f
+    // Crown body (peaks)
+    val crown = Path().apply {
+        moveTo(center.x - s * 0.45f, baseY)
+        lineTo(center.x - s * 0.45f, center.y - s * 0.10f)
+        lineTo(center.x - s * 0.25f, center.y + s * 0.05f)
+        lineTo(center.x - s * 0.05f, center.y - s * 0.30f)
+        lineTo(center.x + s * 0.15f, center.y + s * 0.05f)
+        lineTo(center.x + s * 0.35f, center.y - s * 0.20f)
+        lineTo(center.x + s * 0.45f, center.y + s * 0.05f)
+        lineTo(center.x + s * 0.45f, baseY)
+        close()
+    }
+    drawPath(crown, color, style = style)
+    // Base bar
+    drawRect(color, Offset(center.x - s * 0.48f, baseY),
+        Size(s * 0.96f, baseH),
+        style = if (filled) androidx.compose.ui.graphics.drawscope.Fill else Stroke(sw * 0.8f))
+    // Three jewels at peak tips (only if filled)
+    if (filled) {
+        drawCircle(color, s * 0.05f, Offset(center.x - s * 0.05f, center.y - s * 0.30f))
+        drawCircle(color, s * 0.05f, Offset(center.x + s * 0.35f, center.y - s * 0.20f))
+        drawCircle(color, s * 0.05f, Offset(center.x - s * 0.45f, center.y - s * 0.10f))
+    }
+}
+
+// ─── Trophy backdrop variant for Path tile ─────────────────────
+
+/**
+ * Large, very-low-alpha trophy occupying the upper-left quadrant of the
+ * canvas. Used as a backdrop for the Path-to-Madrid tile so it doesn't
+ * collide with the city glyphs lined up across the bottom.
+ */
+@Composable
+fun PathTileTrophyBackdrop(accent: Color, modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier.fillMaxSize()) {
+        val w = size.width
+        val h = size.height
+        // Position: upper-left, sized big enough to feel ambient.
+        val areaW = w * 0.55f
+        val areaH = h * 0.85f
+        val origin = Offset(-areaW * 0.10f, -areaH * 0.05f)
+        val area = Size(areaW, areaH)
+        drawTrophyFaint(origin, area, accent)
+    }
+}
+
+private fun DrawScope.drawTrophyFaint(origin: Offset, area: Size, accent: Color) {
+    val color = accent.copy(alpha = 0.06f)
+    val cx = origin.x + area.width / 2f
+    val cupTop = origin.y + area.height * 0.10f
+    val cupH   = area.height * 0.55f
+    val cupW   = area.width * 0.55f
+    val baseY  = origin.y + area.height * 0.85f
+    val baseW  = cupW * 0.85f
+    val cupRect = Rect(cx - cupW / 2f, cupTop, cx + cupW / 2f, cupTop + cupH)
+    val cupPath = Path().apply {
+        addRoundRect(RoundRect(cupRect, CornerRadius(cupW * 0.45f, cupH * 0.4f)))
+    }
+    drawPath(cupPath, color)
+    val handleR = cupW * 0.18f
+    drawCircle(color, handleR, Offset(cupRect.left - handleR * 0.4f, cupTop + cupH * 0.35f),
+        style = Stroke(handleR * 0.45f))
+    drawCircle(color, handleR, Offset(cupRect.right + handleR * 0.4f, cupTop + cupH * 0.35f),
+        style = Stroke(handleR * 0.45f))
+    drawRect(color, Offset(cx - cupW * 0.10f, cupTop + cupH),
+        Size(cupW * 0.20f, area.height * 0.10f))
+    drawRect(color, Offset(cx - baseW / 2f, baseY),
+        Size(baseW, area.height * 0.06f))
+}
