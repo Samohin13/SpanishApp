@@ -3,6 +3,7 @@ package com.spanishapp.ui.home
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -353,17 +354,24 @@ private fun CompactHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         val context = LocalContext.current
+        // Matches Profile + Settings: surfaceContainerHighest base + primary
+        // accent ring. Was solid Purple — clashed with the rest of the
+        // home palette and made the avatar look like a CTA button.
         Surface(
             modifier = Modifier
                 .size(44.dp)
+                .border(
+                    BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
+                    CircleShape
+                )
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = onAvatar
                 ),
             shape = CircleShape,
-            color = Purple,
-            tonalElevation = 2.dp
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            shadowElevation = 2.dp
         ) {
             if (photoUrl != null) {
                 AsyncImage(
@@ -377,7 +385,12 @@ private fun CompactHeader(
                 )
             } else {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(Icons.Default.Person, null, tint = Color.White, modifier = Modifier.size(22.dp))
+                    Icon(
+                        Icons.Default.Person,
+                        null,
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+                        modifier = Modifier.size(22.dp)
+                    )
                 }
             }
         }

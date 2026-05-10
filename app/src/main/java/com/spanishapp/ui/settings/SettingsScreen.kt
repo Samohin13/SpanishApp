@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -344,26 +346,50 @@ fun SettingsScreen(
             // ── Шапка профиля ──
             Box(modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp), contentAlignment = Alignment.Center) {
                 Box(contentAlignment = Alignment.BottomEnd) {
+                    // Same neutral palette as Profile screen avatar — was a
+                    // milky-grey gravatar fallback on surfaceVariant. Now:
+                    // dark surfaceContainerHighest base + 2dp primary ring +
+                    // a Person glyph on the foreground when no photo set.
                     Surface(
-                        modifier = Modifier.size(120.dp),
+                        modifier = Modifier
+                            .size(120.dp)
+                            .border(
+                                BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                CircleShape
+                            ),
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        tonalElevation = 4.dp
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        shadowElevation = 4.dp
                     ) {
-                        if (isPhotoLoading) {
-                            Box(contentAlignment = Alignment.Center) { CircularProgressIndicator(modifier = Modifier.size(40.dp)) }
+                        when {
+                            isPhotoLoading -> Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) { CircularProgressIndicator(modifier = Modifier.size(40.dp)) }
+
+                            userPhotoUrl != null -> AsyncImage(
+                                model = ImageRequest.Builder(context)
+                                    .data(userPhotoUrl)
+                                    .crossfade(true)
+                                    .diskCachePolicy(CachePolicy.DISABLED)
+                                    .build(),
+                                contentDescription = stringResource(R.string.set_avatar_cd),
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize().clip(CircleShape)
+                            )
+
+                            else -> Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Icon(
+                                    Icons.Default.Person,
+                                    contentDescription = stringResource(R.string.set_avatar_cd),
+                                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                    modifier = Modifier.size(64.dp)
+                                )
+                            }
                         }
-                        
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data(userPhotoUrl ?: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y")
-                                .crossfade(true)
-                                .diskCachePolicy(CachePolicy.DISABLED) // Чтобы сразу видеть новое фото
-                                .build(),
-                            contentDescription = stringResource(R.string.set_avatar_cd),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize().clip(CircleShape)
-                        )
                     }
                     SmallFloatingActionButton(
                         onClick = {
