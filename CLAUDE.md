@@ -13,8 +13,15 @@
 - ✅ **Privacy Policy URL**: `https://samohin13.github.io/SpanishApp/PRIVACY_POLICY` уже прописан в `strings.xml` (`privacy_policy_url`, `terms_url`), кнопки в `SettingsScreen` работают через `Intent.ACTION_VIEW`.
 
 ### Что **ещё** осталось руками:
-- 🟡 Заменить заглушку `samohin13@example.com` на реальный email в `PRIVACY_POLICY.md` (4 места).
-- 🟡 Проверить что GitHub Pages включён (Settings → Pages → master / root) и URL открывается. Инструкция: `docs/PUBLISH_PRIVACY_POLICY.md`.
+- ✅ ~~Заменить email~~ — заменено на `es.espeak13@gmail.com` (коммит `c1c76d7`).
+- ✅ ~~GitHub Pages~~ — live на https://samohin13.github.io/SpanishApp/PRIVACY_POLICY.html. Pages обслуживается с **orphan-ветки `gh-pages`** (на master 228 МБ истории — Pages-runner падал на checkout). На master также лежат `PRIVACY_POLICY.html`, `index.html`, `.nojekyll`.
+
+### Расширение контента грамматики (коммит `2ef5a00`):
+- A1: 4 → **15** уроков (+11): un/una/hay, mi/tu/su, este/ese/aquel, tener + tener que, no/nada/nunca, qué/dónde/cómo, plural, согласование, gustar, ir + a + inf.
+- A2: 12 → **20** (+8): Indefinido неправильных, se lo, muy/mucho, saber/conocer, предлоги, e→ie/o→ue, acabar de.
+- B1: 10 → **20** (+10): Subjuntivo (желание/эмоция/сомнение), отрицательный императив, por/para тонкости, ojalá, ponerse/volverse/hacerse, llevar+gerundio.
+- B2: 9 → **20** (+11): Condicional Compuesto, Subjuntivo Perf/Pluscuamperfecto, перифразы (acabar/llevar/tener+part), безличные se, идиомы, el cual/cuyo.
+- **Итого 35 → 75 уроков**. Сидятся через `INSERT OR IGNORE` (id 36-75), миграций не нужно.
 
 ## 9. Сессия 9 — pre-release аудит и чистка (2026-05-07)
 
