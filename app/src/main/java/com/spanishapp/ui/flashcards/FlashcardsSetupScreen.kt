@@ -76,13 +76,13 @@ class FlashcardsSetupViewModel @Inject constructor(
     val weakCount: StateFlow<Int> = _weakCount.asStateFlow()
 
     init {
-        viewModelScope.launch { _weakCount.value = wordDao.countWeakAll() }
+        viewModelScope.launch { _weakCount.value = wordDao.countPracticePool() }
         // Re-emit set list whenever ANY set's progress changes — so completing
         // a session and navigating back instantly refreshes stars/unlocks.
         viewModelScope.launch {
             setDao.observeAll().collect {
                 loadSetsFor(_selectedLevel.value)
-                _weakCount.value = wordDao.countWeakAll()
+                _weakCount.value = wordDao.countPracticePool()
             }
         }
     }
@@ -451,9 +451,9 @@ private fun PracticeTile(
                 )
                 Text(
                     if (weakCount == 0)
-                        "Слабых слов нет — занимайся карточками"
+                        "Пройди хотя бы один сет — слова появятся здесь"
                     else
-                        "$weakCount ${pluralWords(weakCount)} требуют повторения",
+                        "$weakCount ${pluralWords(weakCount)} готовы к повторению",
                     fontSize = 13.sp,
                     color = Color.White.copy(alpha = 0.85f)
                 )

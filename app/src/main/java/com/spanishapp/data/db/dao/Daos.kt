@@ -141,6 +141,34 @@ interface WordDao {
     """)
     suspend fun countWeakAll(): Int
 
+    /**
+     * Count of words eligible for the broader Practice pool — same buckets as
+     * getPracticePool() but just the count. Used by the Practice tile so it
+     * never says "0 weak words" while the screen actually has cards.
+     */
+    @Query("""
+        SELECT COUNT(*) FROM words WHERE total_reviews > 0
+    """)
+    suspend fun countPracticePool(): Int
+
+    /**
+     * Smarter distractor query: prefer words from the SAME category at the
+     * same level (so "De nada" / category=expressions doesn't get distractors
+     * like "сердце" / "Средиземное море"). Falls back to any same-level word
+     * if the category has too few entries.
+     */
+    @Query("""
+        SELECT * FROM words
+        WHERE level = :level AND id != :excludeId AND category = :category
+        ORDER BY RANDOM() LIMIT :limit
+    """)
+    suspend fun randomDistractorsSameCategory(
+        level: String,
+        category: String,
+        excludeId: Int,
+        limit: Int
+    ): List<WordEntity>
+
     /** Count of "due" words (need review per SM-2: nextReview ≤ now). */
     @Query("""
         SELECT COUNT(*) FROM words

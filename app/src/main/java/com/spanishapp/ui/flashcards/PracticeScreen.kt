@@ -111,11 +111,26 @@ class PracticeViewModel @Inject constructor(
             )
             val rounds = weak.mapIndexed { idx, word ->
                 val mode = modes[idx % modes.size]
-                val distractors = wordDao.randomDistractors(
+                // Prefer same-category distractors so wrong options stay
+                // semantically related (greetings vs greetings, food vs food).
+                // Fall back to any same-level word if the category is too
+                // small to fill 3 slots — keeps the question answerable
+                // without absurd contrast (was: "сердце" / "Средиземное море"
+                // as wrong options for "De nada").
+                val sameCat = wordDao.randomDistractorsSameCategory(
                     level = word.level,
+                    category = word.category,
                     excludeId = word.id,
                     limit = 3
                 )
+                val distractors = if (sameCat.size >= 3) sameCat else {
+                    val pad = wordDao.randomDistractors(
+                        level = word.level,
+                        excludeId = word.id,
+                        limit = 3 - sameCat.size
+                    ).filter { d -> sameCat.none { it.id == d.id } }
+                    sameCat + pad
+                }
                 val ruOptions = (listOf(word) + distractors).map { it.russian }.shuffled()
                 // Strip articles for typing mode so user types just "casa" not "la casa".
                 // TTS still reads the full form for LISTENING.
