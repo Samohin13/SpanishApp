@@ -1747,28 +1747,46 @@ internal fun TopicCard(
             )
     ) {
         Column {
+            // Position of this block within its course (1..4).
+            // Handles all id schemes:
+            //   • A1 → "1".."4"
+            //   • A2 → "a2_1".."a2_4"
+            //   • B1 → "9".."12"
+            //   • B2 → "13".."16"
+            // Strategy: take the trailing number (after last underscore if any),
+            // then collapse to ((n-1) % 4) + 1 so 9→1, 10→2, 13→1, 16→4 etc.
+            val rawTail = unit.id.substringAfterLast('_')
+            val tailNum = rawTail.toIntOrNull() ?: 1
+            val blockPos = ((tailNum - 1).coerceAtLeast(0) % 4) + 1
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(72.dp)
                     .background(
                         if (unit.isLocked)
-                            Brush.horizontalGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
+                            Brush.verticalGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
                         else
-                            Brush.horizontalGradient(
-                                listOf(accentColor, accentColor.copy(alpha = 0.72f))
+                            Brush.verticalGradient(
+                                listOf(accentColor, accentColor.copy(alpha = 0.75f))
                             )
                     )
             ) {
-                // Block-index-based thematic watermark (rocket / house /
+                // Subtle dark overlay tames the brightness for a more premium tone.
+                if (!unit.isLocked) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.10f))
+                    )
+                }
+                // Block-position-based thematic watermark (rocket / house /
                 // lightning / mountain) painted over the gradient. White
                 // accent so it reads against the coloured header.
                 if (!unit.isLocked) {
-                    val blockIdx = unit.id.toIntOrNull() ?: 0
-                    val blockTheme = when (((blockIdx - 1) % 4 + 4) % 4) {
-                        0 -> WatermarkTheme.BLOCK_ROCKET
-                        1 -> WatermarkTheme.BLOCK_HOME
-                        2 -> WatermarkTheme.BLOCK_LIGHTNING
+                    val blockTheme = when (blockPos) {
+                        1 -> WatermarkTheme.BLOCK_ROCKET
+                        2 -> WatermarkTheme.BLOCK_HOME
+                        3 -> WatermarkTheme.BLOCK_LIGHTNING
                         else -> WatermarkTheme.BLOCK_MOUNTAIN
                     }
                     ThematicWatermark(theme = blockTheme, accent = Color.White)
@@ -1793,10 +1811,10 @@ internal fun TopicCard(
                         ) {
                             // Was `unit.icon` (emoji like 🚀 / 🏠). Per design
                             // feedback we replaced the emoji with the block
-                            // number ("01", "02"...) for a cleaner look.
-                            val blockNum = unit.id.toIntOrNull()
-                            val label = if (blockNum != null) blockNum.toString().padStart(2, '0')
-                                        else unit.id
+                            // number ("01"..."04") for a cleaner look. Always
+                            // show the position WITHIN the course, never the
+                            // raw id (would leak "a2_1" for A2 blocks).
+                            val label = blockPos.toString().padStart(2, '0')
                             Text(
                                 label,
                                 fontSize = 15.sp,
@@ -1809,7 +1827,7 @@ internal fun TopicCard(
                             val titleStartsWithBlock = unit.title.trimStart().startsWith("Блок", ignoreCase = true)
                             if (!titleStartsWithBlock) {
                                 Text(
-                                    text = stringResource(R.string.home_block_n, unit.id),
+                                    text = stringResource(R.string.home_block_n, blockPos.toString()),
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = Color.White.copy(alpha = 0.80f)

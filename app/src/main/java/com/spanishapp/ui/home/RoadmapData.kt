@@ -24,7 +24,7 @@ object RoadmapData {
             icon = "🚀",
             description = "Произношение, SER, числа, первые слова",
             cefrLevel = "A1",
-            color = Color(0xFF7C4DFF),
+            color = Color(0xFF5B21B6),
             lessons = listOf(
                 // 1
                 RoadmapLesson("🔤 Гласные: A, E, I, O, U",                  "content", "general"),
@@ -69,7 +69,7 @@ object RoadmapData {
             icon = "🏠",
             description = "Семья, дом, цвета, TENER и ESTAR",
             cefrLevel = "A1",
-            color = Color(0xFF00BCD4),
+            color = Color(0xFF7C3AED),
             lessons = listOf(
                 // 16
                 RoadmapLesson("🔢 Числа 11–20: once, doce… veinte",           "content", "general"),
@@ -114,7 +114,7 @@ object RoadmapData {
             icon = "⚡",
             description = "Глаголы -AR/-ER/-IR, еда, QUERER, время",
             cefrLevel = "A1",
-            color = Color(0xFF4CAF50),
+            color = Color(0xFF9333EA),
             lessons = listOf(
                 // 31
                 RoadmapLesson("🔵 Глаголы -AR: hablar, trabajar — yo/tú/él",  "content", "general"),
@@ -159,7 +159,7 @@ object RoadmapData {
             icon = "🗺️",
             description = "Транспорт, IR, шопинг, GUSTAR, тело, финальный босс",
             cefrLevel = "A1",
-            color = Color(0xFFFF6F00),
+            color = Color(0xFFA855F7),
             lessons = listOf(
                 // 46
                 RoadmapLesson("🚇 Транспорт: metro, autobús, taxi, tren",      "content", "viajes"),
@@ -204,7 +204,7 @@ object RoadmapData {
             icon = "📅",
             description = "Pretérito Indefinido — рассказываем о прошлом",
             cefrLevel = "A2",
-            color = Color(0xFF0277BD),
+            color = Color(0xFF0E7490),
             lessons = listOf(
                 RoadmapLesson("📅 Pretérito Indefinido: что это и когда",          "content", "general"),
                 RoadmapLesson("📅 Regulares -AR: hablar → hablé, hablaste, habló", "content", "general"),
@@ -234,7 +234,7 @@ object RoadmapData {
             icon = "🕰️",
             description = "Imperfecto, сравнения, местоимения, hace...que",
             cefrLevel = "A2",
-            color = Color(0xFF0277BD),
+            color = Color(0xFF0891B2),
             lessons = listOf(
                 RoadmapLesson("⏳ Imperfecto -AR: hablaba, trabajaba, estudiaba",   "content", "general"),
                 RoadmapLesson("⏳ Imperfecto -ER/-IR: comía, vivía + ser/ir/ver",   "content", "general"),
@@ -264,7 +264,7 @@ object RoadmapData {
             icon = "⚡",
             description = "Pretérito Perfecto, герундий, императив, работа",
             cefrLevel = "A2",
-            color = Color(0xFF0277BD),
+            color = Color(0xFF06B6D4),
             lessons = listOf(
                 RoadmapLesson("✅ Pretérito Perfecto: he comido, has vivido",       "content", "general"),
                 RoadmapLesson("✅ Participios irregulares: hecho, dicho, visto",    "content", "general"),
@@ -294,7 +294,7 @@ object RoadmapData {
             icon = "🚀",
             description = "Futuro, Condicional, si-clauses, мечты",
             cefrLevel = "A2",
-            color = Color(0xFF0277BD),
+            color = Color(0xFF22D3EE),
             lessons = listOf(
                 RoadmapLesson("🔮 Futuro Simple -AR: hablaré, hablarás, hablará",  "content", "general"),
                 RoadmapLesson("🔮 Futuro irregular: tendré, haré, vendré, iré",    "content", "general"),
@@ -324,7 +324,7 @@ object RoadmapData {
             icon = "🔮",
             description = "Presente de Subjuntivo — желания, мнения, эмоции, сомнения",
             cefrLevel = "B1",
-            color = Color(0xFFE65100),
+            color = Color(0xFF047857),
             lessons = listOf(
                 // 1
                 RoadmapLesson("🔮 Subjuntivo: что это и зачем",                     "content", "general"),
@@ -369,7 +369,7 @@ object RoadmapData {
             icon = "💫",
             description = "Condicional Simple, Si-клаузы, Imperfecto de Subjuntivo",
             cefrLevel = "B1",
-            color = Color(0xFFE65100),
+            color = Color(0xFF059669),
             lessons = listOf(
                 // 16
                 RoadmapLesson("💫 Condicional Simple: hablaría, comería",            "content", "general"),
@@ -414,7 +414,7 @@ object RoadmapData {
             icon = "🗣️",
             description = "Косвенная речь, относительные придаточные, пассив, perífrasis",
             cefrLevel = "B1",
-            color = Color(0xFFE65100),
+            color = Color(0xFF10B981),
             lessons = listOf(
                 // 31
                 RoadmapLesson("💬 Estilo indirecto: введение",                        "content", "general"),
@@ -459,7 +459,7 @@ object RoadmapData {
             icon = "📖",
             description = "Деловой язык, идиомы, СМИ, здоровье, финальный чекпоинт B1",
             cefrLevel = "B1",
-            color = Color(0xFF1565C0),
+            color = Color(0xFF34D399),
             lessons = listOf(
                 // 46
                 RoadmapLesson("💼 Trabajo: entrevista, empresa, contrato",             "content", "trabajo"),
@@ -501,7 +501,7 @@ object RoadmapData {
             icon = "🔮",
             description = "Imperfecto y Pluscuamperfecto de Subjuntivo — гипотезы, желания в прошлом, нереальные условия",
             cefrLevel = "B2",
-            color = Color(0xFF6A1B9A),
+            color = Color(0xFF9F1239),
             lessons = listOf(
                 RoadmapLesson("🔮 Subjuntivo Imperfecto: -ra и -se формы",              "content", "general"),
                 RoadmapLesson("🔮 Образование: tablara/hablase, irregulares",           "content", "general"),
@@ -527,7 +527,7 @@ object RoadmapData {
             icon = "⚙️",
             description = "Пассивный залог, перифразы, сложные глагольные конструкции",
             cefrLevel = "B2",
-            color = Color(0xFF00695C),
+            color = Color(0xFFBE185D),
             lessons = listOf(
                 RoadmapLesson("⚙️ Voz pasiva con SER: fue construido",                 "content", "general"),
                 RoadmapLesson("⚙️ Estar + participio: está hecho / están cerrados",    "content", "general"),
@@ -553,7 +553,7 @@ object RoadmapData {
             icon = "✍️",
             description = "Академический стиль, официальные письма, продвинутые коннекторы",
             cefrLevel = "B2",
-            color = Color(0xFF1565C0),
+            color = Color(0xFFDB2777),
             lessons = listOf(
                 RoadmapLesson("✍️ Регистры: formal, neutro, coloquial",                "content", "general"),
                 RoadmapLesson("✍️ Carta formal: solicitud, queja, agradecimiento",     "content", "general"),
@@ -579,7 +579,7 @@ object RoadmapData {
             icon = "🌟",
             description = "Идиомы, пословицы, ложные друзья, латиноамериканский испанский, финальный чекпоинт B2",
             cefrLevel = "B2",
-            color = Color(0xFFB71C1C),
+            color = Color(0xFFE11D48),
             lessons = listOf(
                 RoadmapLesson("🌟 Modismos B2: a rajatabla, en boca de todos",         "content", "general"),
                 RoadmapLesson("🌟 Modismos B2: no hay mal que... / a lo mejor",        "content", "general"),

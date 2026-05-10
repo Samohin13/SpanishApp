@@ -537,230 +537,159 @@ private fun DrawScope.drawOpenBook(origin: Offset, area: Size, accent: Color) {
 // a tiny clip-art glyph. All primitives stay clipped inside `area`.
 
 /**
- * BLOCK_ROCKET — abstract upward motion.
- * • One large soft "sun" disc tucked into the upper-right corner.
- * • A swept arc trajectory rising bottom-left → upper-right (cubic Bezier).
- * • Three thin parallel diagonals (~75°) acting as motion lines.
- * • Six scattered dot-stars across the upper half at varying alpha.
+ * BLOCK_ROCKET — restrained ascent.
+ * Off-centre soft sun, single elegant cubic-Bezier trajectory rising into it,
+ * and three small fading sparks. Less is more.
  */
 private fun DrawScope.drawRocket(origin: Offset, area: Size, accent: Color) {
     val ox = origin.x; val oy = origin.y
     val w = area.width; val h = area.height
+    val cx = ox + w * 0.75f
+    val cy = oy + h * 0.40f
+    val r = w.coerceAtMost(h) * 0.40f
 
-    // Soft sun in upper-right
-    drawCircle(accent.copy(alpha = 0.07f), w * 0.34f, Offset(ox + w * 0.88f, oy + h * 0.18f))
-    drawCircle(accent.copy(alpha = 0.10f), w * 0.18f, Offset(ox + w * 0.88f, oy + h * 0.18f))
+    // Single subtle disc — no double layer
+    drawCircle(accent.copy(alpha = 0.08f), r * 0.95f, Offset(cx, cy))
 
-    // Trajectory arc — cubic Bezier swept upward
-    val arc = Path().apply {
-        moveTo(ox + w * 0.06f, oy + h * 0.92f)
+    // One elegant Bezier arc sweeping up into the disc
+    val path = Path().apply {
+        moveTo(ox + w * 0.04f, oy + h * 0.96f)
         cubicTo(
-            ox + w * 0.30f, oy + h * 0.90f,
-            ox + w * 0.45f, oy + h * 0.20f,
-            ox + w * 0.92f, oy + h * 0.10f
+            ox + w * 0.30f, oy + h * 0.55f,
+            ox + w * 0.55f, oy + h * 0.30f,
+            ox + w * 0.92f, oy + h * 0.18f
         )
     }
-    drawPath(arc, accent.copy(alpha = 0.22f), style = Stroke(width = h * 0.025f, cap = StrokeCap.Round))
+    drawPath(path, accent.copy(alpha = 0.10f),
+        style = Stroke(width = w * 0.014f, cap = StrokeCap.Round))
 
-    // Three parallel diagonal motion lines (~75° from horizontal)
-    val angle = Math.toRadians(-75.0)
-    val dx = Math.cos(angle).toFloat()
-    val dy = Math.sin(angle).toFloat()
-    val len = h * 0.30f
-    val baseAlphas = listOf(0.18f, 0.13f, 0.09f)
-    listOf(0f, w * 0.10f, w * 0.20f).forEachIndexed { i, off ->
-        val sx = ox + w * 0.18f + off
-        val sy = oy + h * 0.78f
-        drawLine(
-            color = accent.copy(alpha = baseAlphas[i]),
-            start = Offset(sx, sy),
-            end = Offset(sx + dx * len, sy + dy * len),
-            strokeWidth = h * 0.018f,
-            cap = StrokeCap.Round
-        )
-    }
-
-    // Star dots scattered across upper half
-    val stars = listOf(
-        Triple(0.22f, 0.18f, 0.20f),
-        Triple(0.40f, 0.08f, 0.14f),
-        Triple(0.62f, 0.32f, 0.18f),
-        Triple(0.74f, 0.06f, 0.10f),
-        Triple(0.30f, 0.40f, 0.12f),
-        Triple(0.55f, 0.50f, 0.16f)
-    )
-    stars.forEach { (px, py, a) ->
-        drawCircle(accent.copy(alpha = a), h * 0.018f, Offset(ox + w * px, oy + h * py))
+    // Three sparse stars — descending alpha
+    listOf(
+        Offset(ox + w * 0.18f, oy + h * 0.22f) to 0.12f,
+        Offset(ox + w * 0.42f, oy + h * 0.14f) to 0.10f,
+        Offset(ox + w * 0.55f, oy + h * 0.42f) to 0.08f
+    ).forEachIndexed { i, (pt, a) ->
+        drawCircle(accent.copy(alpha = a), w * (0.013f - i * 0.002f), pt)
     }
 }
 
 /**
- * BLOCK_HOME — concentric / orbital composition.
- * • 3 concentric stroke circles (orbits) at decreasing alpha.
- * • Filled core dot (the "planet/home").
- * • 3 small dots placed on the different orbits (objects).
- * • 2 thin diagonal "meridian" lines crossing the centre at low alpha.
+ * BLOCK_HOME — quiet orbits.
+ * Off-centre composition: two concentric rings plus a single small satellite.
+ * No meridians, no extra dots — restrained.
  */
 private fun DrawScope.drawHouse(origin: Offset, area: Size, accent: Color) {
-    val cx = origin.x + area.width * 0.50f
-    val cy = origin.y + area.height * 0.55f
-    val maxR = area.width.coerceAtMost(area.height) * 0.45f
-    val sw = maxR * 0.04f
+    val cx = origin.x + area.width * 0.72f
+    val cy = origin.y + area.height * 0.58f
+    val maxR = area.width.coerceAtMost(area.height) * 0.42f
+    val sw = maxR * 0.035f
 
-    // Three orbital rings
-    drawCircle(accent.copy(alpha = 0.06f), maxR,         Offset(cx, cy), style = Stroke(sw))
-    drawCircle(accent.copy(alpha = 0.10f), maxR * 0.74f, Offset(cx, cy), style = Stroke(sw))
-    drawCircle(accent.copy(alpha = 0.14f), maxR * 0.48f, Offset(cx, cy), style = Stroke(sw))
+    // Two soft orbital rings
+    drawCircle(accent.copy(alpha = 0.07f), maxR,         Offset(cx, cy), style = Stroke(sw))
+    drawCircle(accent.copy(alpha = 0.10f), maxR * 0.62f, Offset(cx, cy), style = Stroke(sw))
 
-    // Two crossing meridians
-    val merCol = accent.copy(alpha = 0.05f)
-    val mw = sw * 0.8f
-    drawLine(merCol, Offset(cx - maxR * 0.95f, cy - maxR * 0.35f),
-        Offset(cx + maxR * 0.95f, cy + maxR * 0.35f), strokeWidth = mw)
-    drawLine(merCol, Offset(cx - maxR * 0.95f, cy + maxR * 0.35f),
-        Offset(cx + maxR * 0.95f, cy - maxR * 0.35f), strokeWidth = mw)
+    // Single soft core
+    drawCircle(accent.copy(alpha = 0.12f), maxR * 0.18f, Offset(cx, cy))
 
-    // Filled core
-    drawCircle(accent.copy(alpha = 0.28f), maxR * 0.13f, Offset(cx, cy))
-    drawCircle(accent.copy(alpha = 0.10f), maxR * 0.22f, Offset(cx, cy))
-
-    // Objects on orbits
-    drawCircle(accent.copy(alpha = 0.24f), maxR * 0.07f,
-        Offset(cx + maxR * 0.74f * Math.cos(Math.toRadians(-30.0)).toFloat(),
-               cy + maxR * 0.74f * Math.sin(Math.toRadians(-30.0)).toFloat()))
-    drawCircle(accent.copy(alpha = 0.20f), maxR * 0.06f,
-        Offset(cx + maxR * Math.cos(Math.toRadians(140.0)).toFloat(),
-               cy + maxR * Math.sin(Math.toRadians(140.0)).toFloat()))
-    drawCircle(accent.copy(alpha = 0.18f), maxR * 0.05f,
-        Offset(cx + maxR * 0.48f * Math.cos(Math.toRadians(70.0)).toFloat(),
-               cy + maxR * 0.48f * Math.sin(Math.toRadians(70.0)).toFloat()))
+    // One small satellite drifting on the outer orbit
+    val ang = Math.toRadians(-35.0)
+    drawCircle(
+        accent.copy(alpha = 0.11f),
+        maxR * 0.07f,
+        Offset(
+            cx + maxR * Math.cos(ang).toFloat(),
+            cy + maxR * Math.sin(ang).toFloat()
+        )
+    )
 }
 
 /**
- * BLOCK_LIGHTNING — dynamic / speed-line composition.
- * • 6 horizontal speed-lines at the centre, varying length and alpha.
- * • 1 long diagonal sweep crossing the whole area (cubic Bezier curve).
- * • One large filled chevron ">" stamped at the right anchored to the rightmost line.
- * • 3 small triangular "splash" sparks on the left side.
+ * BLOCK_LIGHTNING — quiet speed.
+ * One long Bezier sweep, three short curved echoes beneath, one off-centre
+ * chevron. Hard angles softened into curves.
  */
 private fun DrawScope.drawLightning(origin: Offset, area: Size, accent: Color) {
     val ox = origin.x; val oy = origin.y
     val w = area.width; val h = area.height
 
-    // Six speed-lines, lengths shorter at top/bottom
-    val speedY = listOf(0.18f, 0.30f, 0.42f, 0.54f, 0.66f, 0.78f)
-    val speedLen = listOf(0.55f, 0.78f, 0.92f, 0.92f, 0.78f, 0.55f)
-    val speedAlpha = listOf(0.08f, 0.13f, 0.20f, 0.20f, 0.13f, 0.08f)
-    speedY.forEachIndexed { i, yPct ->
-        val y = oy + h * yPct
-        val len = w * speedLen[i]
-        drawLine(
-            accent.copy(alpha = speedAlpha[i]),
-            Offset(ox + w - len, y),
-            Offset(ox + w * 0.95f, y),
-            strokeWidth = h * 0.022f,
-            cap = StrokeCap.Round
-        )
-    }
-
-    // Diagonal cubic-Bezier sweep across the whole tile
+    // Main sweep — single cubic Bezier
     val sweep = Path().apply {
-        moveTo(ox + w * 0.05f, oy + h * 0.95f)
+        moveTo(ox + w * 0.05f, oy + h * 0.85f)
         cubicTo(
-            ox + w * 0.30f, oy + h * 0.55f,
+            ox + w * 0.35f, oy + h * 0.55f,
             ox + w * 0.55f, oy + h * 0.40f,
-            ox + w * 0.95f, oy + h * 0.05f
+            ox + w * 0.95f, oy + h * 0.18f
         )
     }
-    drawPath(sweep, accent.copy(alpha = 0.16f),
-        style = Stroke(width = h * 0.03f, cap = StrokeCap.Round))
+    drawPath(sweep, accent.copy(alpha = 0.12f),
+        style = Stroke(width = h * 0.022f, cap = StrokeCap.Round))
 
-    // Large chevron ">" stamped at the right, mid-height
-    val chvX = ox + w * 0.78f
-    val chvY = oy + h * 0.48f
-    val chvSize = h * 0.22f
-    val chevron = Path().apply {
-        moveTo(chvX - chvSize * 0.6f, chvY - chvSize)
-        lineTo(chvX + chvSize * 0.4f, chvY)
-        lineTo(chvX - chvSize * 0.6f, chvY + chvSize)
-    }
-    drawPath(chevron, accent.copy(alpha = 0.22f),
-        style = Stroke(width = h * 0.028f, cap = StrokeCap.Round))
-
-    // Three little triangular splash sparks on the left
-    val sparkAlpha = accent.copy(alpha = 0.18f)
+    // Three shorter curved echoes — varying alpha, all Bezier
     listOf(
-        Triple(0.04f, 0.20f, 0.05f),
-        Triple(0.02f, 0.50f, 0.04f),
-        Triple(0.08f, 0.82f, 0.05f)
-    ).forEach { (px, py, sz) ->
-        val x = ox + w * px; val y = oy + h * py; val s = h * sz
-        val tri = Path().apply {
-            moveTo(x, y - s)
-            lineTo(x + s * 1.4f, y)
-            lineTo(x, y + s)
-            close()
+        Triple(0.10f, 0.18f, 0.08f),
+        Triple(0.08f, 0.12f, 0.06f),
+        Triple(0.06f, 0.10f, 0.05f)
+    ).forEachIndexed { i, (alpha, _, _) ->
+        val yShift = h * (0.12f + i * 0.10f)
+        val echo = Path().apply {
+            moveTo(ox + w * (0.20f + i * 0.04f), oy + h * 0.92f - yShift * 0.2f)
+            cubicTo(
+                ox + w * 0.45f, oy + h * 0.78f - yShift * 0.3f,
+                ox + w * 0.65f, oy + h * 0.65f - yShift * 0.3f,
+                ox + w * 0.92f, oy + h * 0.42f - yShift * 0.2f
+            )
         }
-        drawPath(tri, sparkAlpha)
+        drawPath(echo, accent.copy(alpha = alpha),
+            style = Stroke(width = h * 0.014f, cap = StrokeCap.Round))
     }
+
+    // One off-centre chevron — quiet stamp
+    val chvX = ox + w * 0.78f
+    val chvY = oy + h * 0.55f
+    val chvSize = h * 0.16f
+    val chevron = Path().apply {
+        moveTo(chvX - chvSize * 0.5f, chvY - chvSize)
+        lineTo(chvX + chvSize * 0.35f, chvY)
+        lineTo(chvX - chvSize * 0.5f, chvY + chvSize)
+    }
+    drawPath(chevron, accent.copy(alpha = 0.10f),
+        style = Stroke(width = h * 0.020f, cap = StrokeCap.Round))
 }
 
 /**
- * BLOCK_MOUNTAIN — layered geological composition.
- * • Big half-disc "moon/sun" near the top at very low alpha.
- * • 4 overlapping triangular ridges, each a different alpha tier (back to
- *   front: 0.07 → 0.10 → 0.14 → 0.20) so they read as receding ranges.
- * • Two thin cubic-Bezier "contour" curves drawn beneath the ridges.
- * • 3 tiny filled circles high in the sky (stars / birds).
+ * BLOCK_MOUNTAIN — gentle horizon.
+ * One off-centre soft moon, two flowing Bezier ridges (back + foreground)
+ * instead of four sharp triangles. Restrained.
  */
 private fun DrawScope.drawMountain(origin: Offset, area: Size, accent: Color) {
     val ox = origin.x; val oy = origin.y
     val w = area.width; val h = area.height
-    val baseY = oy + h * 0.88f
+    val baseY = oy + h * 0.92f
 
-    // Soft half-disc "moon" in the sky
-    drawCircle(accent.copy(alpha = 0.05f), h * 0.35f, Offset(ox + w * 0.72f, oy + h * 0.05f))
-    drawCircle(accent.copy(alpha = 0.08f), h * 0.18f, Offset(ox + w * 0.72f, oy + h * 0.05f))
+    // Single soft moon, off-centre
+    drawCircle(accent.copy(alpha = 0.07f), h * 0.22f, Offset(ox + w * 0.78f, oy + h * 0.20f))
 
-    // Stars / birds
-    listOf(
-        Triple(0.18f, 0.12f, 0.18f),
-        Triple(0.32f, 0.22f, 0.14f),
-        Triple(0.48f, 0.08f, 0.16f)
-    ).forEach { (px, py, a) ->
-        drawCircle(accent.copy(alpha = a), h * 0.014f, Offset(ox + w * px, oy + h * py))
+    // Background ridge — wide gentle Bezier curve
+    val backRidge = Path().apply {
+        moveTo(ox - w * 0.05f, baseY)
+        cubicTo(
+            ox + w * 0.20f, oy + h * 0.45f,
+            ox + w * 0.55f, oy + h * 0.30f,
+            ox + w * 1.05f, baseY
+        )
+        close()
     }
+    drawPath(backRidge, accent.copy(alpha = 0.08f))
 
-    // Contour curves under the ridges (rolling hills feel)
-    val contour1 = Path().apply {
-        moveTo(ox, oy + h * 0.78f)
-        cubicTo(ox + w * 0.25f, oy + h * 0.72f,
-                ox + w * 0.55f, oy + h * 0.84f,
-                ox + w, oy + h * 0.74f)
+    // Foreground ridge — closer, lower, slightly off-centre right
+    val frontRidge = Path().apply {
+        moveTo(ox - w * 0.05f, baseY)
+        cubicTo(
+            ox + w * 0.30f, oy + h * 0.62f,
+            ox + w * 0.70f, oy + h * 0.55f,
+            ox + w * 1.05f, baseY
+        )
+        close()
     }
-    val contour2 = Path().apply {
-        moveTo(ox, oy + h * 0.92f)
-        cubicTo(ox + w * 0.30f, oy + h * 0.86f,
-                ox + w * 0.65f, oy + h * 0.94f,
-                ox + w, oy + h * 0.88f)
-    }
-    drawPath(contour1, accent.copy(alpha = 0.06f),
-        style = Stroke(width = h * 0.012f, cap = StrokeCap.Round))
-    drawPath(contour2, accent.copy(alpha = 0.06f),
-        style = Stroke(width = h * 0.012f, cap = StrokeCap.Round))
-
-    // 4 layered ridges, back-to-front
-    fun ridge(leftXPct: Float, peakXPct: Float, rightXPct: Float, peakYPct: Float, alpha: Float) {
-        val p = Path().apply {
-            moveTo(ox + w * leftXPct, baseY)
-            lineTo(ox + w * peakXPct, oy + h * peakYPct)
-            lineTo(ox + w * rightXPct, baseY)
-            close()
-        }
-        drawPath(p, accent.copy(alpha = alpha))
-    }
-    ridge(0.50f, 0.78f, 1.05f, 0.20f, 0.07f)   // farthest, tallest right
-    ridge(0.20f, 0.50f, 0.85f, 0.32f, 0.10f)   // mid-back
-    ridge(-0.05f, 0.28f, 0.62f, 0.42f, 0.14f)  // mid-front
-    ridge(0.10f, 0.40f, 0.78f, 0.56f, 0.20f)   // foreground
+    drawPath(frontRidge, accent.copy(alpha = 0.12f))
 }
