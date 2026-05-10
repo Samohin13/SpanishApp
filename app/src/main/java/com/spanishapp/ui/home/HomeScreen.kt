@@ -1269,7 +1269,7 @@ private fun BentoRow(
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // ── BOOK tile (green) ─────────────────────────────────
-            BentoTile(modifier = Modifier.weight(1f), accent = BookAccent, onClick = onBookClick) {
+            BentoTile(modifier = Modifier.weight(1f), accent = BookAccent, theme = BentoTheme.BOOK, onClick = onBookClick) {
                 BentoHeader(emoji = "📚", label = "КНИГА", accent = BookAccent)
                 Spacer(Modifier.height(10.dp))
                 Text(
@@ -1298,7 +1298,7 @@ private fun BentoRow(
             }
 
             // ── RATING tile (amber-gold, hero number) ──────────────
-            BentoTile(modifier = Modifier.weight(1f), accent = RatingAccent, onClick = onLeagueClick) {
+            BentoTile(modifier = Modifier.weight(1f), accent = RatingAccent, theme = BentoTheme.RATING, onClick = onLeagueClick) {
                 BentoHeader(emoji = "🏅", label = "РЕЙТИНГ", accent = RatingAccent)
                 Spacer(Modifier.height(10.dp))
                 Text(
@@ -1324,7 +1324,7 @@ private fun BentoRow(
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // ── DICTIONARY tile (cyan-blue) ────────────────────────
-            BentoTile(modifier = Modifier.weight(1f), accent = WeakAccent, onClick = onDictClick) {
+            BentoTile(modifier = Modifier.weight(1f), accent = WeakAccent, theme = BentoTheme.DICTIONARY, onClick = onDictClick) {
                 BentoHeader(emoji = "🔍", label = "СЛОВАРЬ", accent = WeakAccent)
                 Spacer(Modifier.height(10.dp))
                 if (recent.isEmpty()) {
@@ -1374,7 +1374,7 @@ private fun BentoRow(
             }
 
             // ── GOAL tile (coral red — distinct from gold rating) ──
-            BentoTile(modifier = Modifier.weight(1f), accent = GoalAccent, onClick = onGoalClick) {
+            BentoTile(modifier = Modifier.weight(1f), accent = GoalAccent, theme = BentoTheme.GOAL, onClick = onGoalClick) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     BentoHeader(emoji = "🎯", label = "ЦЕЛЬ ДНЯ", accent = GoalAccent, modifier = Modifier.weight(1f))
                     Text(
@@ -1428,6 +1428,7 @@ private fun pluralRu(n: Int, one: String, few: String, many: String): String {
 private fun BentoTile(
     modifier: Modifier = Modifier,
     accent: Color,
+    theme: BentoTheme? = null,
     onClick: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -1452,6 +1453,11 @@ private fun BentoTile(
                         )
                     )
             )
+            // Per-theme thematic watermark in the bottom-right area —
+            // book stack, trophy, magnifier, bullseye etc.
+            if (theme != null) {
+                BentoWatermark(theme = theme, accent = accent)
+            }
             // Left accent stripe — 6dp (was 3dp before, user wanted thicker).
             Box(
                 modifier = Modifier
