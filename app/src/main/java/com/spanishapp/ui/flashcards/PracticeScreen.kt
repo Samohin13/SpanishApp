@@ -636,30 +636,38 @@ private fun TypingRoundView(
         Spacer(Modifier.weight(0.5f))
 
         // Typed buffer with feedback color after check.
+        // Uses surfaceContainerHighest (instead of surface) so the panel is
+        // visibly distinct from the background in both light AND dark themes
+        // — earlier versions blended into the background and looked invisible.
         val bufferColor = when {
-            !checked  -> MaterialTheme.colorScheme.surface
+            !checked  -> MaterialTheme.colorScheme.surfaceContainerHighest
             isCorrect -> Color(0xFF1B5E20)
             else      -> Color(0xFF8B0000)
         }
         Surface(
-            modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 72.dp),
             shape = RoundedCornerShape(14.dp),
             color = bufferColor,
             border = androidx.compose.foundation.BorderStroke(
-                1.5.dp,
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-            )
+                2.dp,
+                if (checked) Color.White.copy(alpha = 0.3f)
+                else MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+            ),
+            shadowElevation = 4.dp
         ) {
             Box(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    typed.ifEmpty { "—" },
-                    fontSize = 24.sp,
+                    typed.ifEmpty { "Тапни буквы ↓" },
+                    fontSize = if (typed.isEmpty()) 16.sp else 26.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (checked || typed.isNotEmpty()) Color.White
-                            else MaterialTheme.colorScheme.onSurfaceVariant
+                    letterSpacing = if (typed.isEmpty()) 0.sp else 2.sp,
+                    color = when {
+                        checked || typed.isNotEmpty() -> Color.White
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    }
                 )
             }
         }
@@ -750,23 +758,23 @@ private fun TypingRoundView(
 
 @Composable
 private fun LetterKey(c: Char, onClick: () -> Unit) {
+    // Filled primary tile + white text — guaranteed visible on both light AND
+    // dark backgrounds. Earlier the keys used colorScheme.surface which is
+    // dark grey in dark theme and blended into the background, making the
+    // entire keypad invisible (user reported "как я должен собрать слово").
     Surface(
         onClick = onClick,
-        modifier = Modifier.size(width = 52.dp, height = 56.dp),
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = androidx.compose.foundation.BorderStroke(
-            1.dp,
-            MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-        ),
-        shadowElevation = 1.dp
+        modifier = Modifier.size(width = 56.dp, height = 60.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.primary,
+        shadowElevation = 4.dp
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Text(
                 c.toString(),
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                fontSize = 24.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.White
             )
         }
     }
