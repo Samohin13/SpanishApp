@@ -1636,25 +1636,30 @@ private fun CoursePills(activeLevel: String, onClick: (String) -> Unit) {
             val color = when (lvl) {
                 "A1" -> A1Color; "A2" -> A2Color; "B1" -> B1Color; else -> B2Color
             }
+            // Uniform outlined style for ALL pills, regardless of selection.
+            // Active pill is differentiated only by a slightly thicker border
+            // and a stronger shadow — never by a filled-in background, so the
+            // row reads as a consistent set of options (was: A1 looked like a
+            // CTA button while the others looked passive).
             Surface(
                 onClick = { onClick(lvl) },
                 modifier = Modifier
                     .weight(1f)
                     .height(64.dp),
                 shape = RoundedCornerShape(14.dp),
-                color = if (isActive) color else MaterialTheme.colorScheme.surfaceContainer,
+                color = MaterialTheme.colorScheme.surfaceContainer,
                 shadowElevation = if (isActive) 4.dp else 1.dp,
-                border = if (isActive) null
-                    else androidx.compose.foundation.BorderStroke(
-                        1.dp, color.copy(alpha = 0.4f)
-                    )
+                border = androidx.compose.foundation.BorderStroke(
+                    width = if (isActive) 2.dp else 1.dp,
+                    color = if (isActive) color else color.copy(alpha = 0.4f)
+                )
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(
                         lvl,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = if (isActive) Color.White else color
+                        color = color
                     )
                 }
             }
