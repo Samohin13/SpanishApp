@@ -79,7 +79,8 @@ data class PracticeState(
 @HiltViewModel
 class PracticeViewModel @Inject constructor(
     private val wordDao: WordDao,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    private val ratingUpdater: com.spanishapp.domain.algorithm.RatingUpdater
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PracticeState())
@@ -174,6 +175,8 @@ class PracticeViewModel @Inject constructor(
             val quality = if (correct) 4 else 1
             val updated = SM2.review(round.word, quality)
             wordDao.update(updated)
+            // Feed the rating system too — Practice was missing this hookup.
+            ratingUpdater.applyAnswer(easeFactor = round.word.easeFactor, quality = quality)
         }
 
         _state.value = s.copy(
@@ -217,6 +220,7 @@ class PracticeViewModel @Inject constructor(
         viewModelScope.launch {
             val quality = if (correct) 4 else 1
             wordDao.update(SM2.review(round.word, quality))
+            ratingUpdater.applyAnswer(easeFactor = round.word.easeFactor, quality = quality)
         }
         _state.value = s.copy(
             typingChecked = true,

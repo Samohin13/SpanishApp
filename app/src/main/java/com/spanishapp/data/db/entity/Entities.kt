@@ -122,7 +122,12 @@ data class UserProgressEntity(
     // ── Streak freezes (added in v14) ────────────────────────
     @ColumnInfo(name = "streak_freezes_available") val streakFreezesAvailable: Int = 2,
     @ColumnInfo(name = "last_streak_update_date") val lastStreakUpdateDate: String = "",
-    @ColumnInfo(name = "weekly_freeze_reset_date") val weeklyFreezeResetDate: String = ""
+    @ColumnInfo(name = "weekly_freeze_reset_date") val weeklyFreezeResetDate: String = "",
+    // ── Daily rating cap (added in v16) ──────────────────────
+    // Tracks how much rating the user has gained today so we can cap it
+    // (prevents marathon-grinding Madrid in a single weekend).
+    @ColumnInfo(name = "daily_rating_gain") val dailyRatingGain: Int = 0,
+    @ColumnInfo(name = "daily_rating_gain_date") val dailyRatingGainDate: String = ""
 )
 
 @Entity(tableName = "chat_messages")

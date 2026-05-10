@@ -200,7 +200,10 @@ object SkillRatingSystem {
     const val START_RATING = 1000
     const val FLOOR_RATING = 800
     const val CEILING_RATING = 3000
-    const val K_FACTOR = 8
+
+    // Daily cap — сколько максимум рейтинга можно поднять за один день.
+    // Защита от марафон-гринда («сел на сутки и до Мадрида»).
+    const val DAILY_GAIN_CAP = 40
 
     // Затухание
     const val DECAY_GRACE_DAYS = 3
@@ -210,19 +213,47 @@ object SkillRatingSystem {
     private const val DAY_MS = 86_400_000L
 
     /**
+     * Tier-aware K-factor: чем выше лига — тем меньше прирост за ответ.
+     * Топ-лиги защищены от быстрого роста (как ELO в шахматах).
+     */
+    private fun kFactorForRating(rating: Int): Float = when {
+        rating < 1100 -> 12f   // Aldea — старт лёгкий, чтобы зацепить
+        rating < 1300 -> 8f    // Santiago
+        rating < 1500 -> 6f    // Bilbao
+        rating < 1700 -> 5f    // Zaragoza
+        rating < 1900 -> 4f    // Valencia
+        rating < 2100 -> 3f    // Sevilla
+        rating < 2300 -> 2.5f  // Barcelona
+        else          -> 2f    // Madrid — каждый пункт на вес золота
+    }
+
+    /**
+     * Промо-резистенция: за 30 пунктов до новой лиги прирост × 0.5.
+     * Делает переход в высшую лигу осмысленным событием, не очередным +9.
+     */
+    private fun promoResistance(rating: Int): Float {
+        val tiers = intArrayOf(1100, 1300, 1500, 1700, 1900, 2100, 2300)
+        val nearTier = tiers.firstOrNull { it - rating in 1..30 } ?: return 1f
+        return 0.5f
+    }
+
+    /**
      * Изменяет рейтинг по результату одного ответа.
      * @param easeFactor SM-2 ease factor (1.3..3+). Чем ниже — тем сложнее слово.
      * @param quality SM-2 quality 0..5. <3 = ошибка.
      */
     fun applyAnswer(currentRating: Int, easeFactor: Float, quality: Int): Int {
+        val k = kFactorForRating(currentRating)
         val difficulty = (2.5f - easeFactor).coerceIn(-1.2f, 1.2f)
-        val deltaF = when {
-            quality >= 5 -> K_FACTOR * (1.0f + difficulty * 0.5f)
-            quality == 4 -> K_FACTOR * (0.6f + difficulty * 0.4f)
-            quality == 3 -> K_FACTOR * 0.3f
-            quality == 2 -> K_FACTOR * 0.2f
-            else         -> -K_FACTOR * (1.0f - difficulty * 0.4f)
+        val baseDelta = when {
+            quality >= 5 -> k * (1.0f + difficulty * 0.5f)
+            quality == 4 -> k * (0.6f + difficulty * 0.4f)
+            quality == 3 -> k * 0.3f
+            quality == 2 -> k * 0.2f
+            else         -> -k * (1.0f - difficulty * 0.4f)
         }
+        // Promotion-resistance multiplier only on positive gains.
+        val deltaF = if (baseDelta > 0f) baseDelta * promoResistance(currentRating) else baseDelta
         val delta = deltaF.roundToInt()
         return (currentRating + delta).coerceIn(FLOOR_RATING, CEILING_RATING)
     }

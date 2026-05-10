@@ -386,6 +386,14 @@ interface UserProgressDao {
     """)
     suspend fun updateSkillRating(rating: Int, league: Int, ts: Long)
 
+    /** Обновляет дневной счётчик прироста рейтинга (для daily cap). */
+    @Query("""
+        UPDATE user_progress SET
+            daily_rating_gain      = :addedToday,
+            daily_rating_gain_date = :date
+    """)
+    suspend fun bumpDailyRatingGain(date: String, addedToday: Int)
+
     @Query("UPDATE user_progress SET leaderboard_opt_in = :enabled")
     suspend fun setLeaderboardOptIn(enabled: Boolean)
 

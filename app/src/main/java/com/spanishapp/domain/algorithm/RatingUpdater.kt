@@ -44,7 +44,33 @@ class RatingUpdater @Inject constructor(
         val oldRating = progress.skillRating
         val oldLeague = LeagueResolver.fromTier(progress.currentLeague)
 
-        val newRating = SkillRatingSystem.applyAnswer(oldRating, easeFactor, quality)
+        var newRating = SkillRatingSystem.applyAnswer(oldRating, easeFactor, quality)
+        var rawDelta = newRating - oldRating
+
+        // Daily cap on POSITIVE gains only — losses are never capped (so
+        // mistakes still hurt). Resets at midnight (date change in
+        // LocalDate.now()).
+        if (rawDelta > 0) {
+            val today = java.time.LocalDate.now().toString()
+            val gainedToday =
+                if (progress.dailyRatingGainDate == today) progress.dailyRatingGain else 0
+            val remainingCap =
+                (SkillRatingSystem.DAILY_GAIN_CAP - gainedToday).coerceAtLeast(0)
+            if (remainingCap == 0) {
+                // Cap exhausted — drop the gain entirely but still update
+                // last-rating-update so decay doesn't fire.
+                rawDelta = 0
+                newRating = oldRating
+            } else if (rawDelta > remainingCap) {
+                rawDelta = remainingCap
+                newRating = oldRating + rawDelta
+            }
+            userProgressDao.bumpDailyRatingGain(
+                date = today,
+                addedToday = gainedToday + rawDelta
+            )
+        }
+
         val newLeague = LeagueResolver.fromRating(newRating)
 
         if (newRating == oldRating && newLeague.tier == oldLeague.tier) return null
@@ -59,9 +85,11 @@ class RatingUpdater @Inject constructor(
     }
 
     /**
-     * Упрощённая обёртка для игр без контекста SM2:
-     * easeFactor=2.5 (нейтральный), quality 4 на правильный ответ и 2 на ошибку.
+     * Wrapper для игр. Игры — это тренировка реакции/памяти, не настоящее
+     * SRS-изучение слов, поэтому quality занижен:
+     *  • правильный ответ → quality 3 (вместо 4) — даёт ~30% от полного гейна
+     *  • ошибка             → quality 2           — мелкая потеря
      */
     suspend fun applyGameAnswer(correct: Boolean): LeaguePromotion? =
-        applyAnswer(easeFactor = 2.5f, quality = if (correct) 4 else 2)
+        applyAnswer(easeFactor = 2.5f, quality = if (correct) 3 else 2)
 }

@@ -28,7 +28,7 @@ import com.spanishapp.data.db.entity.*
         FlashcardSetProgressEntity::class,
         RecentSearchEntity::class
     ],
-    version = 15,
+    version = 16,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -283,6 +283,14 @@ abstract class AppDatabase : RoomDatabase() {
                         opened_at INTEGER NOT NULL
                     )
                 """.trimIndent())
+            }
+        }
+
+        // ── v16: daily rating cap fields on user_progress ──
+        val MIGRATION_15_16 = object : Migration(15, 16) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN daily_rating_gain INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN daily_rating_gain_date TEXT NOT NULL DEFAULT ''")
             }
         }
 
