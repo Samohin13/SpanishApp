@@ -176,7 +176,11 @@ class PracticeViewModel @Inject constructor(
             val updated = SM2.review(round.word, quality)
             wordDao.update(updated)
             // Feed the rating system too — Practice was missing this hookup.
-            ratingUpdater.applyAnswer(easeFactor = round.word.easeFactor, quality = quality)
+            ratingUpdater.applyAnswer(
+                easeFactor = round.word.easeFactor,
+                quality = quality,
+                wordId = round.word.id
+            )
         }
 
         _state.value = s.copy(
@@ -220,7 +224,11 @@ class PracticeViewModel @Inject constructor(
         viewModelScope.launch {
             val quality = if (correct) 4 else 1
             wordDao.update(SM2.review(round.word, quality))
-            ratingUpdater.applyAnswer(easeFactor = round.word.easeFactor, quality = quality)
+            ratingUpdater.applyAnswer(
+                easeFactor = round.word.easeFactor,
+                quality = quality,
+                wordId = round.word.id
+            )
         }
         _state.value = s.copy(
             typingChecked = true,

@@ -602,6 +602,7 @@ private fun SectionHeader(
 // ═══════════════════════════════════════════════════════════
 //  ⭐ SKILL RATING tile
 // ═══════════════════════════════════════════════════════════
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SkillRatingTile(
     rating: Int,
@@ -609,6 +610,8 @@ private fun SkillRatingTile(
     appLevelProgress: Float,
     modifier: Modifier = Modifier
 ) {
+    var showInfo by remember { mutableStateOf(false) }
+
     ProfileTile(
         accent = AccentPurple,
         modifier = modifier.fillMaxWidth(),
@@ -629,7 +632,8 @@ private fun SkillRatingTile(
             fontWeight = FontWeight.ExtraBold,
             letterSpacing = (-2).sp,
             color = MaterialTheme.colorScheme.onSurface,
-            lineHeight = 64.sp
+            lineHeight = 64.sp,
+            modifier = Modifier.clickable { showInfo = true }
         )
         Spacer(Modifier.height(4.dp))
         Text(
@@ -650,6 +654,115 @@ private fun SkillRatingTile(
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
             color = AccentPurple
+        )
+    }
+
+    if (showInfo) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+        ModalBottomSheet(
+            onDismissRequest = { showInfo = false },
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surface
+        ) {
+            RatingInfoSheetContent(accent = AccentPurple)
+        }
+    }
+}
+
+@Composable
+private fun RatingInfoSheetContent(accent: Color) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+            .padding(bottom = 32.dp)
+    ) {
+        Text(
+            "КАК РАБОТАЕТ РЕЙТИНГ?",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.ExtraBold,
+            letterSpacing = 1.sp,
+            color = accent
+        )
+        Spacer(Modifier.height(12.dp))
+        Text(
+            "Рейтинг растёт за правильные ответы и падает за ошибки. " +
+                "Чем выше лига — тем меньше прирост за каждый ответ.",
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            lineHeight = 20.sp
+        )
+        Spacer(Modifier.height(20.dp))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
+        Spacer(Modifier.height(16.dp))
+        Text(
+            "K-фактор по лигам",
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(8.dp))
+        val tiers = listOf(
+            "Aldea" to "±12",
+            "Santiago" to "±8",
+            "Bilbao" to "±6",
+            "Zaragoza" to "±5",
+            "Valencia" to "±4",
+            "Sevilla" to "±3",
+            "Barcelona" to "±2.5",
+            "Madrid" to "±2"
+        )
+        tiers.forEach { (city, k) ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    city,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    k,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = accent
+                )
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
+        Spacer(Modifier.height(16.dp))
+        RatingInfoLine("⏱", "Дневной лимит: +40 рейтинга в день")
+        RatingInfoLine("🎯", "Близко к новой лиге: гейн × 0.5")
+        RatingInfoLine("⏰", "За одно слово — раз в 24ч")
+        RatingInfoLine("🎮", "Игры: половинный гейн (это тренажёр)")
+        Spacer(Modifier.height(16.dp))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
+        Spacer(Modifier.height(16.dp))
+        RatingInfoLine("📉", "Если не заниматься > 3 дней — −2/день")
+    }
+}
+
+@Composable
+private fun RatingInfoLine(emoji: String, text: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(emoji, fontSize = 18.sp)
+        Spacer(Modifier.width(12.dp))
+        Text(
+            text,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            lineHeight = 20.sp
         )
     }
 }

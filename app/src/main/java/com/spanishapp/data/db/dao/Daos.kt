@@ -77,6 +77,13 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE id = :id")
     suspend fun getById(id: Int): WordEntity?
 
+    @Query("SELECT * FROM words WHERE id = :id LIMIT 1")
+    suspend fun findById(id: Int): WordEntity?
+
+    /** Per-word rating cooldown: stamps last time this word granted skill_rating. */
+    @Query("UPDATE words SET last_rating_at = :ts WHERE id = :wordId")
+    suspend fun updateLastRatingAt(wordId: Int, ts: Long)
+
     @Query("SELECT COUNT(*) FROM words WHERE is_learned = 1")
     fun learnedCount(): Flow<Int>
 

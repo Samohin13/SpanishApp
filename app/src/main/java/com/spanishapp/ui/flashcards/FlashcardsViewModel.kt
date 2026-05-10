@@ -195,7 +195,11 @@ class FlashcardsViewModel @Inject constructor(
             wordDao.update(updated)
             // Skill rating: применяем до обновления ease factor — используем easeFactor,
             // который БЫЛ у слова на момент ответа (отражает реальную сложность).
-            val promotion = ratingUpdater.applyAnswer(easeFactor = current.easeFactor, quality = quality)
+            val promotion = ratingUpdater.applyAnswer(
+                easeFactor = current.easeFactor,
+                quality = quality,
+                wordId = current.id
+            )
             if (promotion != null) _leaguePromotions.tryEmit(promotion)
         }
 

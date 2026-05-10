@@ -148,6 +148,8 @@ fun SpanishAppRoot() {
             )
             // Глобальный оверлей для разблокировки достижений
             com.spanishapp.ui.components.AchievementUnlockHost()
+            // Глобальный "+N ⭐" попап при изменении рейтинга
+            com.spanishapp.ui.components.RatingPopupHost()
         }
     }
 }

@@ -24,7 +24,11 @@ data class WordEntity(
     @ColumnInfo(name = "total_reviews") val totalReviews: Int = 0,
     @ColumnInfo(name = "correct_reviews") val correctReviews: Int = 0,
     // "" = обычный, "irregular" = неправильный, "stem" = с изменением корня
-    @ColumnInfo(name = "verb_subtype") val verbSubtype: String = ""
+    @ColumnInfo(name = "verb_subtype") val verbSubtype: String = "",
+    // ── Per-word rating cooldown (added in v17) ─────────────
+    // Timestamp последнего применения skill_rating от этого слова.
+    // Защита от гринда: одно слово даёт рейтинг максимум раз в 24ч.
+    @ColumnInfo(name = "last_rating_at") val lastRatingAt: Long = 0L
 )
 
 @Entity(tableName = "conjugations")
