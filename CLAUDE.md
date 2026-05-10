@@ -2,7 +2,19 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-07, сессия 9 (полный аудит + чистка к релизу)**
+> Последнее обновление: **2026-05-10, сессия 10 (release-blocker верификация)**
+
+## 10. Сессия 10 — release-blocker верификация (2026-05-10)
+
+Проверены 3 «🔴» из PLAN.md — оказалось, фактически уже сделано в прошлых сессиях:
+
+- ✅ **APK размер**: release-сборка `app-release.apk` = **16 МБ** (R8 + shrinkResources). Лимит Google Play 150 МБ — с огромным запасом. Заметка в §9 про «207 МБ из-за word_images» **устарела** — сейчас вся папка `assets/word_images/` = 1.6 МБ (150 PNG, ~10 КБ средний).
+- ✅ **release.keystore**: существует (`/release.keystore`, 2584 B, alias `ESPEAK`). `keystore.properties` заполнен реальными значениями, в `.gitignore`. Подпись APK V2 проверена через `apksigner verify`: `CN=mr.Samokhin, OU=ESPEAK, C=RU`.
+- ✅ **Privacy Policy URL**: `https://samohin13.github.io/SpanishApp/PRIVACY_POLICY` уже прописан в `strings.xml` (`privacy_policy_url`, `terms_url`), кнопки в `SettingsScreen` работают через `Intent.ACTION_VIEW`.
+
+### Что **ещё** осталось руками:
+- 🟡 Заменить заглушку `samohin13@example.com` на реальный email в `PRIVACY_POLICY.md` (4 места).
+- 🟡 Проверить что GitHub Pages включён (Settings → Pages → master / root) и URL открывается. Инструкция: `docs/PUBLISH_PRIVACY_POLICY.md`.
 
 ## 9. Сессия 9 — pre-release аудит и чистка (2026-05-07)
 
