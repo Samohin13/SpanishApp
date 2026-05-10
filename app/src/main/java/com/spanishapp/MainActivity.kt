@@ -9,6 +9,7 @@ import com.spanishapp.util.LocaleHelper
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -140,9 +141,13 @@ fun SpanishAppRoot() {
             }
         }
     ) { paddingValues ->
-        Navigation.SpanishNavHost(
-            navController = navController,
-            modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            Navigation.SpanishNavHost(
+                navController = navController,
+                modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
+            )
+            // Глобальный оверлей для разблокировки достижений
+            com.spanishapp.ui.components.AchievementUnlockHost()
+        }
     }
 }

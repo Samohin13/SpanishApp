@@ -2,6 +2,7 @@ package com.spanishapp.domain.algorithm
 
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
+import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.StreakService
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,12 +21,14 @@ data class LeaguePromotion(val from: League, val to: League)
 @Singleton
 class RatingUpdater @Inject constructor(
     private val userProgressDao: UserProgressDao,
-    private val streakService: StreakService
+    private val streakService: StreakService,
+    private val achievementManager: AchievementManager
 ) {
 
     suspend fun applyAnswer(easeFactor: Float, quality: Int): LeaguePromotion? {
-        // Любой ответ — это учебная активность, обновляем стрик.
+        // Любой ответ — это учебная активность, обновляем стрик и проверяем ачивки.
         runCatching { streakService.touchStreak() }
+        runCatching { achievementManager.checkAndUnlock() }
 
         val progress: UserProgressEntity = userProgressDao.getProgressOnce() ?: return null
 
