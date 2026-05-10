@@ -1,15 +1,761 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Ukrainian locale (uk).
-    Currently a placeholder — Android will fall back to values/ (Russian) for
-    every key not defined here. Add translations gradually as the app stabilises.
-    To pick which strings get translated first, prioritise: nav_*, common buttons,
-    onboarding, errors, and the home greeting.
--->
 <resources>
+    <string name="app_name">ESPEAK</string>
+    <string name="widget_description">Слово дня іспанською</string>
+
+    <!-- Google Sign-In Web Client ID -->
+    <string name="default_web_client_id" translatable="false">664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com</string>
+
+    <!-- URL опублікованої політики конфіденційності -->
+    <string name="privacy_policy_url" translatable="false">https://samohin13.github.io/SpanishApp/PRIVACY_POLICY.html</string>
+    <string name="terms_url" translatable="false">https://samohin13.github.io/SpanishApp/PRIVACY_POLICY.html</string>
+
+    <!-- ── Нижня навігація ── -->
     <string name="nav_home">Головна</string>
     <string name="nav_games">Ігри</string>
     <string name="nav_dictionary">Словник</string>
     <string name="nav_profile">Профіль</string>
     <string name="nav_grammar">Граматика</string>
+
+    <!-- ── Загальні кнопки ── -->
+    <string name="btn_continue">Далі</string>
+    <string name="btn_back">Назад</string>
+    <string name="btn_cancel">Скасувати</string>
+    <string name="btn_confirm">Підтвердити</string>
+    <string name="btn_save">Зберегти</string>
+    <string name="btn_close">Закрити</string>
+    <string name="btn_start_learning">Почати навчання</string>
+
+    <!-- ── Заголовки екранів ── -->
+    <string name="title_settings">Налаштування</string>
+    <string name="title_profile">Профіль</string>
+    <string name="title_achievements">Досягнення</string>
+    <string name="title_dictionary">Словник</string>
+    <string name="title_weak_words">Слабкі слова</string>
+    <string name="title_quiz">Тест</string>
+    <string name="title_dialogues">Діалоги</string>
+    <string name="title_grammar">Граматика</string>
+    <string name="title_conjugation">Відмінювання</string>
+    <string name="title_pronunciation">Вимова</string>
+    <string name="title_ai_chat">AI-репетитор</string>
+    <string name="title_leaderboard">Лідерборд</string>
+    <string name="title_libros">Оповідання</string>
+    <string name="title_flashcards">Картки</string>
+
+    <!-- ── Розділи налаштувань ── -->
+    <string name="settings_section_profile">Профіль</string>
+    <string name="settings_section_notifications">Сповіщення</string>
+    <string name="settings_section_sound">Звук і вібрація</string>
+    <string name="settings_section_appearance">Зовнішній вигляд</string>
+    <string name="settings_section_languages">Мови</string>
+    <string name="settings_section_security">Безпека</string>
+    <string name="settings_section_privacy">Конфіденційність і дані</string>
+    <string name="settings_section_account">Керування акаунтом</string>
+    <string name="settings_section_subscription">Підписка</string>
+    <string name="settings_section_help">Допомога й підтримка</string>
+    <string name="settings_section_other">Додатково</string>
+
+    <string name="settings_change_name">Змінити імʼя</string>
+    <string name="settings_daily_goal">Денна ціль</string>
+    <string name="settings_minutes_short">хв</string>
+    <string name="settings_sound_effects">Звукові ефекти</string>
+    <string name="settings_voice_announcer">Голос диктора</string>
+    <string name="settings_voice_setup">Налаштування голосу</string>
+    <string name="settings_subscription_manage">Керувати підпискою</string>
+    <string name="settings_subscription_restore">Відновити покупки</string>
+    <string name="settings_help_center">Центр допомоги</string>
+    <string name="settings_contact">Звʼязатися з нами</string>
+    <string name="settings_export">Експорт даних</string>
+    <string name="settings_leaderboards">Лідерборди</string>
+    <string name="settings_reset_progress">Скинути прогрес</string>
+    <string name="settings_protection_biometric">Захист застосунку біометрією</string>
+    <string name="settings_biometric_hint">Наступного разу, коли ви відкриєте застосунок, ми попросимо відбиток або обличчя.</string>
+    <string name="settings_reminder_time">Час нагадування</string>
+    <string name="settings_reminders_label">Нагадування про заняття</string>
+    <string name="settings_share_text">Вчу іспанську в ESPEAK 🇪🇸 — спробуй: %1$s</string>
+
+    <string name="settings_language_ui">Мова інтерфейсу</string>
+    <string name="settings_language_target">Мова, що вивчається</string>
+    <string name="settings_target_spanish">Іспанська</string>
+    <string name="settings_logout">Вийти з акаунта</string>
+    <string name="settings_share">Поділитися застосунком</string>
+    <string name="settings_privacy_policy">Політика конфіденційності</string>
+    <string name="settings_terms">Умови використання</string>
+
+    <!-- ── Welcome / Auth ── -->
+    <string name="welcome_subtitle">Розпочни свій шлях до вільної іспанської просто зараз</string>
+    <string name="welcome_already_have_account">У мене вже є акаунт</string>
+    <string name="welcome_login_with">або увійти через</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Пароль</string>
+    <string name="auth_password_confirm">Повторіть пароль</string>
+    <string name="auth_register">Зареєструватися</string>
+    <string name="auth_login">Увійти</string>
+    <string name="auth_forgot_password">Забули пароль?</string>
+
+    <!-- ── HomeScreen ── -->
+    <string name="home_greeting">Привіт! 👋</string>
+    <string name="home_subtitle">Продовжуй вивчати іспанську</string>
+    <string name="home_word_of_day">Слово дня</string>
+    <string name="home_streak_studied_today">Сьогодні займався</string>
+
+    <!-- ── Achievements ── -->
+    <string name="achievements_section_unlocked">🏆 Отримані (%1$d)</string>
+    <string name="achievements_section_locked">🔒 Ще не отримані (%1$d)</string>
+    <string name="achievements_summary_count">досягнень</string>
+    <string name="achievements_summary_xp_label">XP отримано</string>
+    <string name="achievements_summary_progress">прогрес</string>
+    <string name="achievements_new_badge">NEW</string>
+
+    <!-- ── Games hub ── -->
+    <string name="games_title">Juegos</string>
+    <string name="game_articles_desc">Артиклі el / la</string>
+    <string name="game_speed_desc">Переклад на час</string>
+    <string name="game_verbos_desc">Відмінювання дієслів</string>
+    <string name="game_sopa_desc">Філворд</string>
+    <string name="game_palabra_desc">Орфографія</string>
+    <string name="game_math_desc">Математика на слух</string>
+    <string name="game_crossword_desc">100 рівнів</string>
+    <string name="game_libros_desc">Оповідання + тести</string>
+
+    <!-- ── Profile stats ── -->
+    <string name="profile_stat_words">Слів</string>
+    <string name="profile_stat_days">Дні</string>
+    <string name="profile_stat_minutes">Хв</string>
+    <string name="profile_default_name">Estudiante</string>
+
+    <!-- ── HomeScreen course cards ── -->
+    <string name="course_a1_subtitle">Початковий</string>
+    <string name="course_a2_subtitle">Елементарний</string>
+    <string name="course_b1_subtitle">Середній</string>
+    <string name="course_b2_subtitle">Вище середнього</string>
+    <string name="course_lessons_60_micro">60 мікро-уроків</string>
+    <string name="course_lessons_60">60 уроків</string>
+    <string name="course_lessons_soon">скоро</string>
+    <string name="course_blocks_4">4 блоки</string>
+    <string name="course_locked">Заблоковано</string>
+    <string name="course_start_learning">Почати навчання →</string>
+
+    <!-- ── AI Chat ── -->
+    <string name="chat_assistant_name">AI-помічник</string>
+    <string name="chat_status_online">онлайн</string>
+    <string name="chat_message_placeholder">Повідомлення…</string>
+    <string name="chat_correction_label">Виправлення</string>
+    <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
+    <string name="chat_welcome_subtitle">Я допоможу тобі практикувати іспанську. Про що хочеш поговорити?</string>
+    <string name="chat_error_network">Немає інтернету</string>
+    <string name="chat_error_rate_limit">Перевищено ліміт запитів, зачекай</string>
+    <string name="chat_error_generic">Помилка: %1$s</string>
+
+    <!-- ── Pronunciation ── -->
+    <string name="pron_listen">Слухати</string>
+    <string name="pron_speak">Сказати</string>
+    <string name="pron_listening">Слухаю…</string>
+    <string name="pron_score_excellent">Чудово! Майже ідеально!</string>
+    <string name="pron_score_good">Добре! Продовжуй!</string>
+    <string name="pron_score_ok">Непогано, спробуй ще</string>
+    <string name="pron_score_try_again">Послухай ще раз і повтори</string>
+    <string name="pron_next">Наступне →</string>
+    <string name="pron_title">Вимова 🎤</string>
+    <string name="pron_word_count">Слів: %1$d</string>
+    <string name="pron_idle_hint">Натисни 🔊 щоб почути, потім 🎤 щоб повторити</string>
+    <string name="pron_now_speak">Говори зараз…</string>
+    <string name="pron_phase_result">Результат</string>
+    <string name="pron_listen_btn">Послухати</string>
+    <string name="pron_listen_slow">Повільно 🐢</string>
+    <string name="pron_again">Ще раз</string>
+    <string name="pron_press_speak">Натисни і говори</string>
+    <string name="pron_you_said">Ти сказав(ла): \"%1$s\"</string>
+    <string name="pron_target">Еталон: \"%1$s\"</string>
+
+    <!-- ── Lesson Session ── -->
+    <string name="ls_close_cd">Закрити</string>
+    <string name="ls_got_it">ЗРОЗУМІЛО!</string>
+    <string name="ls_continue">ДАЛІ →</string>
+    <string name="ls_got_continue">ЗРОЗУМІВ, ДАЛІ →</string>
+    <string name="ls_speak_cd">Вимовити</string>
+    <string name="ls_no_mic_permission">Немає дозволу на мікрофон</string>
+    <string name="ls_listen_then_repeat">← послухай, потім повтори</string>
+    <string name="ls_distracted">Здається, ти відволікся — натисни знову!</string>
+    <string name="ls_louder">Не чую тебе. Говори голосніше і чіткіше.</string>
+    <string name="ls_not_counted">Це не вважається помилкою</string>
+    <string name="ls_try_msg_1">Не зовсім точно — спробуй ще раз</string>
+    <string name="ls_try_msg_2">Послухай ще раз і повтори повільно</string>
+    <string name="ls_try_msg_3">Складно — ще раз, ти впораєшся!</string>
+    <string name="ls_recognized">Розпізнано: «%1$s»</string>
+    <string name="ls_needed">Потрібно: «%1$s»</string>
+    <string name="ls_listening_dots">🎙 Слухаю...</string>
+    <string name="ls_tap_again">Натисни знову</string>
+    <string name="ls_try_again_count">Спробуй ще раз (%1$d/%2$d)</string>
+    <string name="ls_tap_to_say">Натисни і вимов</string>
+    <string name="ls_hard_word_hint">Складне слово? Пропусти і повернись пізніше</string>
+    <string name="ls_skip_as_wrong">Пропустити (зарахується як помилка)</string>
+    <string name="ls_input_answer">Введи відповідь...</string>
+    <string name="ls_correct_is">Правильно: %1$s</string>
+    <string name="ls_check">ПЕРЕВІРИТИ</string>
+    <string name="ls_tap_words_below">Натискай на слова нижче →</string>
+    <string name="ls_verdict_perfect">Ідеально!</string>
+    <string name="ls_verdict_great">Чудовий результат!</string>
+    <string name="ls_verdict_good">Гарна робота!</string>
+    <string name="ls_verdict_keep_going">Не здавайся!</string>
+    <string name="ls_stat_accuracy">Точність</string>
+    <string name="ls_stat_combo">Комбо</string>
+    <string name="ls_stat_correct">Вірно</string>
+    <string name="ls_next_lesson">НАСТУПНИЙ УРОК →</string>
+    <string name="ls_exit_to_menu">Вийти в меню</string>
+    <string name="ls_done_caps">ГОТОВО</string>
+    <string name="ls_quit_title">Вийти з уроку?</string>
+    <string name="ls_quit_text">Прогрес цього уроку не збережеться.</string>
+    <string name="ls_quit_confirm">Вийти</string>
+    <string name="ls_quit_resume">Продовжити</string>
+
+    <!-- ── LessonIntro / Content ── -->
+    <string name="lesson_intro_vocab">Вивчи нові слова та фрази для спілкування. Ми підібрали найважливіші вирази для цієї теми.</string>
+    <string name="lesson_intro_grammar">Розберись, як будуються речення. Граматика — це скелет мови.</string>
+    <string name="lesson_intro_phrase">Потренуй готові розмовні фрази — справжню мову живих людей.</string>
+    <string name="lesson_intro_quiz">Перевір свої знання! Пройди тест, щоб відкрити наступний розділ.</string>
+    <string name="lesson_reward_xp">Досвід</string>
+    <string name="lesson_reward_next">Наступний\nурок</string>
+    <string name="lesson_reward_progress">Прогрес\nблоку</string>
+    <string name="lesson_start_button">ПОЇХАЛИ!</string>
+    <string name="lesson_later">Не зараз</string>
+    <string name="lesson_in_development_title">Урок у розробці</string>
+    <string name="lesson_in_development_subtitle">Скоро тут зʼявиться теорія!</string>
+    <string name="lesson_mark_as_done">Позначити як пройдений</string>
+    <string name="lesson_done">Готово!</string>
+    <string name="lesson_understood">Зрозуміло! (+15 XP)</string>
+    <string name="lesson_block_label">Блок %1$s · %2$s</string>
+
+    <!-- ── PlacementTest ── -->
+    <string name="placement_abort_title">Перервати тест?</string>
+    <string name="placement_abort_message">Прогрес відповіді на це питання не збережеться.</string>
+    <string name="placement_abort_confirm">Перервати</string>
+    <string name="placement_abort_continue">Продовжити тест</string>
+    <string name="placement_next_question">Наступне питання</string>
+    <string name="placement_show_result">Дізнатися результат</string>
+    <string name="placement_change_level">Змінити рівень</string>
+
+    <!-- ── LevelSelection ── -->
+    <string name="level_select_title">Вибери свій рівень</string>
+    <string name="level_select_change_later">Можна змінити пізніше в налаштуваннях</string>
+    <string name="level_upcoming_badge">скоро</string>
+    <string name="level_upcoming_dialog_title">Рівень %1$s у розробці</string>
+    <string name="level_upcoming_continue_a1">Почати з A1</string>
+    <string name="level_upcoming_anyway">Все одно %1$s</string>
+
+    <!-- ── Conjugation ── -->
+    <string name="conj_search_placeholder">Пошук дієслова…</string>
+    <string name="conj_filter_all">Усі</string>
+    <string name="conj_filter_regular">Правильні</string>
+    <string name="conj_filter_irregular">⚡ Неправильні</string>
+    <string name="conj_count_all">%1$d дієслів</string>
+    <string name="conj_count_regular">%1$d правильних</string>
+    <string name="conj_count_irregular">%1$d неправильних</string>
+    <string name="conj_hint_tap">натисни щоб розкрити таблицю</string>
+    <string name="conj_irregular_label">Неправильне дієслово</string>
+    <string name="conj_quiz_action">Вікторина</string>
+
+    <!-- ── Onboarding ── -->
+    <string name="onboarding_name_question">Як тебе звати?</string>
+    <string name="onboarding_name_subtitle">Так ми будемо звертатися до тебе у застосунку</string>
+    <string name="onboarding_name_label">Імʼя або нікнейм</string>
+    <string name="onboarding_name_placeholder">Наприклад: Сергій</string>
+    <string name="onboarding_age_question">Скільки тобі років?</string>
+    <string name="onboarding_age_subtitle">Це допоможе налаштувати програму під твій темп</string>
+    <string name="onboarding_age_years">років</string>
+    <string name="onboarding_reason_question">Навіщо ти вчиш іспанську?</string>
+    <string name="onboarding_knowledge_question">Ти знаєш іспанську?</string>
+    <string name="onboarding_knowledge_subtitle">Це допоможе налаштувати програму під тебе</string>
+
+    <!-- ════ Game: Articles ════ -->
+    <string name="art_levels_title">Artículos · рівні</string>
+    <string name="art_correct_count">✅ %1$d вірних</string>
+
+    <!-- ════ Game: Speed ════ -->
+    <string name="speed_levels_title">Rápido · рівні</string>
+    <string name="speed_level_of">Рівень %1$d / 100</string>
+    <string name="speed_round_of">Раунд %1$d/%2$d</string>
+    <string name="speed_xp">XP: %1$d</string>
+    <string name="speed_no_timer">без таймера</string>
+
+    <!-- ════ Game: Math ════ -->
+    <string name="math_levels_title">Cálculo · рівні</string>
+    <string name="math_level_of">Рівень %1$d / 100</string>
+    <string name="math_round_of">Раунд %1$d/%2$d</string>
+    <string name="math_score">Очки: %1$d</string>
+    <string name="math_audio_off">Вимкнути звук</string>
+    <string name="math_audio_on">Увімкнути звук</string>
+    <string name="math_repeat">Повторити</string>
+    <string name="math_submit">ВІДПОВІСТИ</string>
+
+    <!-- ════ Game: Crossword ════ -->
+    <string name="crw_title">Crucigrama</string>
+    <string name="crw_rules">Правила</string>
+    <string name="crw_how_to_play">Як грати</string>
+    <string name="crw_rule_select_title">Вибір слова</string>
+    <string name="crw_rule_select_body">Натисніть на будь-яку клітинку кросворду — вона виділиться фіолетовим, а внизу зʼявиться переклад слова, яке потрібно вгадати.</string>
+    <string name="crw_rule_swap_title">Зміна слова та напрямку</string>
+    <string name="crw_rule_swap_body">Цифра в куті клітинки — початок слова. Натисніть на неї, щоб перейти до цього слова. Якщо через клітинку проходять два слова (горизонтальне і вертикальне), кожне натискання перемикає напрямок.</string>
+    <string name="crw_rule_keyboard_title">Введення літер з наголосом</string>
+    <string name="crw_rule_keyboard_body">Щоб ввести Á, É, Í, Ó, Ú, Ü або Ñ, утримайте відповідну клавішу — зʼявиться меню з потрібним варіантом. Якщо знизу горить жовта підказка, у поточному слові є такі літери.</string>
+    <string name="crw_rule_hints_title">Підказки</string>
+    <string name="crw_rule_hints_body">За правильні відповіді нараховуються монети:\n• «Літера» — відкриває одну літеру (10 монет)\n• «Слово» — відкриває слово цілком (50 монет)</string>
+    <string name="crw_rule_zoom_title">Масштаб і прокрутка</string>
+    <string name="crw_rule_zoom_body">Зведіть або розведіть два пальці, щоб зменшити або збільшити кросворд. Перетягніть одним пальцем для прокручування поля у потрібному напрямку.</string>
+    <string name="crw_understood">Зрозуміло</string>
+    <string name="crw_select_level">Selecciona Nivel</string>
+    <string name="crw_choose_cell">Виберіть клітинку</string>
+    <string name="crw_hold_for_input">Утримай клавішу для вводу: %1$s</string>
+    <string name="crw_hint_letter">Літера (10)</string>
+    <string name="crw_hint_word">Слово (50)</string>
+    <string name="crw_completed">Кросворд пройдено</string>
+    <string name="crw_coins_reward">+%1$d монет</string>
+    <string name="crw_menu">МЕНЮ</string>
+    <string name="crw_next">ДАЛІ</string>
+
+    <!-- ════ Game: Sopa de Letras ════ -->
+    <string name="sopa_levels_title">Sopa de Letras · рівні</string>
+    <string name="sopa_level_of">Рівень %1$d / 100</string>
+    <string name="sopa_subtitle">%1$s · %2$d×%2$d · %3$d слів</string>
+    <string name="sopa_score">Очки: %1$d</string>
+    <string name="sopa_combo">Combo ×%1$d!</string>
+    <string name="sopa_found">Знайдено %1$d / %2$d</string>
+    <string name="sopa_find_words">Знайдіть слова:</string>
+    <string name="sopa_ghost">👻 Ghost: список приховано</string>
+    <string name="sopa_clear_selection">Скинути виділення</string>
+
+    <!-- ════ Game: Palabra Maestra ════ -->
+    <string name="palabra_levels_title">Palabra Maestra · рівні</string>
+    <string name="palabra_level_of">Рівень %1$d / 100</string>
+    <string name="palabra_word_of">Слово %1$d/%2$d</string>
+    <string name="palabra_score">Очки: %1$d</string>
+    <string name="palabra_next">ДАЛІ</string>
+    <string name="palabra_check">ПЕРЕВІРИТИ</string>
+    <string name="palabra_hint_translation">Переклад</string>
+    <string name="palabra_hint_audio">Аудіо</string>
+    <string name="palabra_hint_first_letter">1-а літера</string>
+    <string name="palabra_hint_rule">Правило</string>
+    <string name="palabra_translation_label">Переклад: %1$s</string>
+
+    <!-- ════ Game: Verb Training ════ -->
+    <string name="verb_title">Verbos · тренажер</string>
+    <string name="verb_settings">Налаштування</string>
+    <string name="verb_section_mode">Режим тренування</string>
+    <string name="verb_section_tenses">Часи</string>
+    <string name="verb_section_groups">Групи дієслів</string>
+    <string name="verb_section_extra">Додатково</string>
+    <string name="verb_section_count">Скільки питань</string>
+    <string name="verb_group_regular">Регулярні</string>
+    <string name="verb_group_irregular">Неправильні (ser, estar, ir...)</string>
+    <string name="verb_include_reflexive">Включати рефлексивні (lavarse)</string>
+    <string name="verb_voseo">Voseo (vos замість tú)</string>
+    <string name="verb_accept_no_accent">Зараховувати ввід без наголосів</string>
+    <string name="verb_question_of">Питання %1$d/%2$d</string>
+    <string name="verb_score">Очки: %1$d</string>
+    <string name="verb_listen">Слухати</string>
+    <string name="verb_listen_and_write">Послухайте і запишіть почуту форму</string>
+    <string name="verb_inverso_question">Ця форма від якого дієслова, часу й особи?</string>
+    <string name="verb_dropdown_infinitive">Інфінітив</string>
+    <string name="verb_dropdown_tense">Час</string>
+    <string name="verb_dropdown_person">Особа</string>
+    <string name="verb_next">Далі</string>
+    <string name="verb_check">Перевірити</string>
+    <string name="verb_input_placeholder">Введіть форму…</string>
+    <string name="verb_dont_know">Не знаю</string>
+    <string name="verb_feedback_near_miss">Майже! Не вистачає наголосів: %1$s</string>
+    <string name="verb_feedback_correct">¡Correcto!  %1$s</string>
+    <string name="verb_feedback_wrong">Правильно: %1$s</string>
+    <string name="verb_results_title">Тренування завершено</string>
+    <string name="verb_stat_accuracy">Точність</string>
+    <string name="verb_stat_correct">Правильно</string>
+    <string name="verb_stat_no_accent">Без наголосів</string>
+    <string name="verb_weak_forms">Складні форми:</string>
+    <string name="verb_to_menu">У меню</string>
+    <string name="verb_again">Ще раз</string>
+    <string name="verb_mode_conjugar_title">Conjugar</string>
+    <string name="verb_mode_conjugar_desc">Час + особа + інфінітив → форма</string>
+    <string name="verb_mode_inverso_title">Inverso</string>
+    <string name="verb_mode_inverso_desc">Форма → інфінітив + особа + час</string>
+    <string name="verb_mode_hueco_title">Hueco</string>
+    <string name="verb_mode_hueco_desc">Заповни пропуск у фразі</string>
+    <string name="verb_mode_auditivo_title">Auditivo</string>
+    <string name="verb_mode_auditivo_desc">Почуй форму та запиши</string>
+
+    <!-- Dictionary -->
+    <string name="dict_title">Словник</string>
+    <string name="dict_list">Список</string>
+    <string name="dict_tab_all">Усі слова</string>
+    <string name="dict_tab_phrases">Фрази</string>
+    <string name="dict_tab_my_lists">Мої списки</string>
+    <string name="dict_search_placeholder">Пошук…</string>
+    <string name="dict_recent_search">Нещодавній пошук</string>
+    <string name="dict_clear">Очистити</string>
+    <string name="dict_lists_count">%1$d/20 списків</string>
+    <string name="dict_new_list">Новий список</string>
+    <string name="dict_no_lists">Немає списків</string>
+    <string name="dict_no_lists_hint">Створіть список, щоб збирати слова</string>
+    <string name="dict_rename_list">Перейменувати список</string>
+    <string name="dict_name">Назва</string>
+    <string name="dict_save">Зберегти</string>
+    <string name="dict_cancel">Скасувати</string>
+    <string name="dict_words_count">%1$d/150 слів</string>
+    <string name="dict_export_cd">Експорт</string>
+    <string name="dict_export_txt">Текст (TXT)</string>
+    <string name="dict_export_csv">Таблиця (CSV)</string>
+    <string name="dict_export_pdf">Друк / PDF</string>
+    <string name="dict_list_empty">Список порожній</string>
+    <string name="dict_list_empty_hint">Натисніть «+» біля слова в розділі «Усі слова»</string>
+    <string name="dict_badge_irregular">неправ.</string>
+    <string name="dict_badge_stem">відхил.</string>
+    <string name="dict_progress_learned">вивчено</string>
+    <string name="dict_progress_weak">слабке</string>
+    <string name="dict_progress_in_progress">вчу</string>
+    <string name="dict_progress_new">нове</string>
+    <string name="dict_rename">Перейменувати</string>
+    <string name="dict_delete">Видалити</string>
+    <string name="dict_translation">Переклад</string>
+    <string name="dict_example">Приклад</string>
+    <string name="dict_add_to_list">Додати до списку</string>
+    <string name="dict_stat_reviews">Повторень</string>
+    <string name="dict_stat_accuracy">Точність</string>
+    <string name="dict_stat_status">Статус</string>
+    <string name="dict_stat_status_learned">✓ Вивчено</string>
+    <string name="dict_add_word_to_list">Додати «%1$s» до списку</string>
+    <string name="dict_no_lists_yet">У вас ще немає списків</string>
+    <string name="dict_list_full">Список заповнено (150/150)</string>
+    <string name="dict_create_new_list">Створити новий список</string>
+    <string name="dict_max_lists_error">Максимум 20 списків. Видаліть один, щоб створити новий.</string>
+    <string name="dict_name_label">Назва (до 30 символів)</string>
+    <string name="dict_create">Створити</string>
+    <string name="dict_share_list">Поділитися списком</string>
+
+    <!-- Weak Words -->
+    <string name="weak_title">Слабкі слова</string>
+    <string name="weak_train_all">Тренувати всі слабкі слова (%1$d)</string>
+    <string name="weak_hint">Слова з точністю менш як 60%%. Повторюй їх частіше — і вони стануть легкими.</string>
+    <string name="weak_reviews_count">%1$d повторень</string>
+    <string name="weak_empty_title">Слабких слів немає!</string>
+    <string name="weak_empty_subtitle">Усі слова добре засвоєні.\nПродовжуй займатися в такому темпі.</string>
+
+    <!-- Libros (list) -->
+    <string name="libros_read_progress">Прочитано: %1$d / %2$d</string>
+    <string name="libros_back">Назад</string>
+    <string name="libros_filter_all">Усі</string>
+    <string name="libros_empty_for_level">Оповідання рівня %1$s\nзʼявляться у наступному оновленні</string>
+    <string name="libros_best_score">Найкращий результат: %1$d%%</string>
+    <string name="libros_repeat">Повторити</string>
+    <string name="libros_read">Читати</string>
+
+    <!-- Libro Read -->
+    <string name="lread_back">Назад</string>
+    <string name="lread_asking_ai">Запитую AI…</string>
+    <string name="lread_not_in_dict">не знайдено в словнику</string>
+    <string name="lread_words_in_sentence">Слова в реченні:</string>
+    <string name="lread_stt_silence">Не почув — спробуй ще раз</string>
+    <string name="lread_stt_error">Помилка розпізнавання</string>
+    <string name="lread_no_mic_perm">Немає дозволу на мікрофон</string>
+    <string name="lread_sentence_of">Речення %1$d з %2$d</string>
+    <string name="lread_exit">← Вийти</string>
+    <string name="lread_listen">Послухати</string>
+    <string name="lread_excellent">✓ Чудово!</string>
+    <string name="lread_words_correct">%1$d / %2$d слів вірно</string>
+    <string name="lread_you_said">Ти сказав: «%1$s»</string>
+    <string name="lread_listening">Слухаю…</string>
+    <string name="lread_press_mic_hint">Натисни мікрофон і прочитай речення вголос</string>
+    <string name="lread_microphone">Мікрофон</string>
+    <string name="lread_see_result">Переглянути підсумок →</string>
+    <string name="lread_next_sentence">Наступне речення →</string>
+    <string name="lread_repeat_sentence">🔄 Повторити речення</string>
+    <string name="lread_pron_excellent">Чудова вимова!</string>
+    <string name="lread_pron_good">Гарна робота!</string>
+    <string name="lread_pron_ok">Непогано, продовжуй!</string>
+    <string name="lread_pron_practice">Потренуйся ще трохи</string>
+    <string name="lread_reading_result">Результат читання</string>
+    <string name="lread_words_summary">%1$d з %2$d слів вимовлено вірно</string>
+    <string name="lread_words_short">%1$d / %2$d слів</string>
+    <string name="lread_start_quiz">Почати тест →</string>
+    <string name="lread_reread">← Перечитати оповідання</string>
+    <string name="lread_long_press_hint">Затисни слово для перекладу</string>
+    <string name="lread_topic_label">🏷️ Тема: </string>
+    <string name="lread_intro_hint">Прочитайте оповідання, потім дайте відповідь на %1$d запитань. Для заліку потрібно %2$d з %1$d.</string>
+    <string name="lread_stop">Стоп</string>
+    <string name="lread_audiobook">Аудіокнига</string>
+    <string name="lread_read_aloud">Читати вголос</string>
+    <string name="lread_question_of">Питання %1$d з %2$d</string>
+    <string name="lread_quiz_back">← Назад</string>
+    <string name="lread_finish">Завершити</string>
+    <string name="lread_next">Далі →</string>
+    <string name="lread_passed_title">Чудово! Оповідання прочитано!</string>
+    <string name="lread_failed_title">Майже! Спробуй ще раз</string>
+    <string name="lread_correct_answers">Правильних відповідей: %1$d з %2$d (%3$d%%)</string>
+    <string name="lread_passed_note">✓ Оповідання позначено як прочитане у вашій бібліотеці</string>
+    <string name="lread_failed_note">Потрібно %1$d з %2$d. Перечитайте текст і спробуйте знову!</string>
+    <string name="lread_back_to_list">← До списку оповідань</string>
+    <string name="lread_reread_short">Перечитати оповідання</string>
+
+    <!-- ── Settings — extra labels ── -->
+    <string name="set_avatar_cd">Аватар</string>
+    <string name="set_camera_perm_hint">Дозвольте доступ до камери в налаштуваннях</string>
+    <string name="set_upload_error">Помилка збереження у хмару: %1$s</string>
+    <string name="set_spanish_level">Рівень іспанської</string>
+    <string name="set_level_a1">A1 — Початковий</string>
+    <string name="set_level_a2">A2 — Елементарний</string>
+    <string name="set_level_b1">B1 — Середній</string>
+    <string name="set_level_b2">B2 — Вище середнього</string>
+    <string name="set_level_a1_short">Початковий</string>
+    <string name="set_level_a2_short">Елементарний</string>
+    <string name="set_level_b1_short">Середній</string>
+    <string name="set_level_b2_short">Вище середнього</string>
+    <string name="set_progress_stats">Статистика прогресу</string>
+    <string name="set_reminders">Нагадування про заняття</string>
+    <string name="set_reminder_time">Час нагадування</string>
+    <string name="set_vibration">Вібрація і тактильний відгук</string>
+    <string name="set_voice_setup">Налаштування голосу</string>
+    <string name="set_theme_title">Тема оформлення</string>
+    <string name="set_theme_system">Системна</string>
+    <string name="set_theme_light">Світла</string>
+    <string name="set_theme_dark">Темна</string>
+    <string name="set_theme_setting">Темна / світла тема</string>
+    <string name="set_font_title">Розмір шрифту</string>
+    <string name="set_font_small">Малий</string>
+    <string name="set_font_medium">Середній</string>
+    <string name="set_font_large">Великий</string>
+    <string name="set_lang_system">Системний</string>
+    <string name="set_lang_ru">Русский</string>
+    <string name="set_lang_en">English</string>
+    <string name="set_protect_biometric">Захист застосунку біометрією</string>
+    <string name="set_biometric_hint">Наступного разу, коли ви відкриєте застосунок, ми попросимо відбиток або обличчя.</string>
+    <string name="set_email_subject">Підтримка ESPEAK</string>
+    <string name="set_email_chooser">Надіслати листа</string>
+    <string name="set_share_text">Вчу іспанську в ESPEAK 🇪🇸 — спробуй: %1$s</string>
+    <string name="set_share_chooser">Поділитися застосунком</string>
+    <string name="set_delete_account_full">Видалити акаунт (з підтвердженням)</string>
+    <string name="set_about_text">ESPEAK Версія 1.4\nЗроблено з ❤️ для вивчення іспанської</string>
+    <string name="set_about_section">Про застосунок</string>
+    <string name="set_about_version">Версія</string>
+    <string name="set_about_source">Вихідний код на GitHub</string>
+    <string name="set_about_licenses">Ліцензії відкритого ПЗ</string>
+    <string name="set_about_made_with_love">Зроблено з ❤️ для вивчення іспанської</string>
+    <string name="set_dlg_logout_title">Вихід</string>
+    <string name="set_dlg_logout_text">Вийти з акаунта?</string>
+    <string name="set_dlg_logout_confirm">Вийти</string>
+    <string name="set_dlg_delete_title">Видалення акаунта</string>
+    <string name="set_dlg_delete_text">Ви впевнені? Весь прогрес буде видалено безповоротно.</string>
+    <string name="set_dlg_delete_confirm">Видалити</string>
+    <string name="set_dlg_reset_title">Скидання прогресу</string>
+    <string name="set_dlg_reset_text">Весь ваш ігровий прогрес буде обнулено. Ви впевнені?</string>
+    <string name="set_dlg_reset_confirm">Скинути</string>
+    <string name="set_dlg_goal_title">Денна ціль</string>
+    <string name="set_dlg_goal_minutes">%1$d хвилин на день</string>
+    <string name="set_dlg_name_title">Змінити імʼя</string>
+    <string name="set_dlg_name_label">Імʼя</string>
+    <string name="set_dlg_name_save">Зберегти</string>
+    <string name="set_notif_perm_denied">Без дозволу на сповіщення нагадування не приходитимуть. Увімкни в системних налаштуваннях.</string>
+
+    <!-- Quiz -->
+    <string name="quiz_translate_prompt">ЯК ПЕРЕКЛАДАЄТЬСЯ?</string>
+    <string name="quiz_results">РЕЗУЛЬТАТИ</string>
+    <string name="quiz_next_question">НАСТУПНЕ ПИТАННЯ</string>
+    <string name="quiz_finished">Тест завершено</string>
+    <string name="quiz_try_again">СПРОБУВАТИ ЗНОВУ</string>
+    <string name="quiz_exit_to_menu">ВИЙТИ В МЕНЮ</string>
+
+    <!-- Dialogues -->
+    <string name="dial_level_in_development">Рівень %1$s у розробці</string>
+    <string name="dial_coming_soon">Скоро тут зʼявляться живі діалоги для практики мови.</string>
+    <string name="dial_finish_practice">ЗАВЕРШИТИ ПРАКТИКУ</string>
+
+    <!-- Grammar -->
+    <string name="gram_coming_soon">Уроки для %1$s скоро зʼявляться</string>
+
+    <!-- Rating screen -->
+    <string name="rating_sort_weak">Слабкі зверху</string>
+    <string name="rating_sort_strong">Сильні зверху</string>
+    <string name="rating_sort_alpha">За алфавітом</string>
+    <string name="rating_topic_progress">Прогрес за темами</string>
+    <string name="rating_now">Зараз:</string>
+    <string name="rating_empty">Почни тренування, щоб побачити свій прогрес.</string>
+
+    <!-- Leaderboard -->
+    <string name="lb_leaders">Лідери</string>
+    <string name="lb_no_data">Немає даних</string>
+    <string name="lb_refresh">Оновити</string>
+    <string name="lb_world">світі</string>
+    <string name="lb_world_tab">🌍 Світ</string>
+    <string name="lb_my_rank">Ти #%1$d з %2$d у %3$s</string>
+    <string name="lb_empty">Поки нікого немає — стань першим!</string>
+    <string name="lb_opt_out">Вийти з лідерборду</string>
+    <string name="lb_join_title">Увійти в загальний рейтинг?</string>
+    <string name="lb_join_explain">Ми збережемо лише нік, країну та рейтинг. Ти зможеш порівнювати себе з гравцями своєї країни і всього світу.</string>
+    <string name="lb_nickname">Нік</string>
+    <string name="lb_join_button">Увійти в рейтинг</string>
+
+    <!-- Voice settings -->
+    <string name="voice_announcer">Голос диктора</string>
+    <string name="voice_not_found">Голоси не знайдено</string>
+    <string name="voice_available">Доступні голоси (%1$d)</string>
+    <string name="voice_rate">Швидкість мовлення</string>
+    <string name="voice_rate_hint">Чим менше — тим повільніше</string>
+    <string name="voice_pitch">Тон голосу</string>
+    <string name="voice_pitch_hint">Нижче — глибше</string>
+    <string name="voice_hd_installed">HD-голоси встановлено</string>
+    <string name="voice_pack">Голосовий пакет</string>
+    <string name="voice_found_count">Знайдено: %1$d голосів</string>
+    <string name="voice_pack_promo">Встанови HD-пакет — голос стане природним, як у носія.</string>
+    <string name="voice_pack_size">📦 ~15 МБ · безкоштовно від Google</string>
+    <string name="voice_install_pack">ВСТАНОВИТИ ПАКЕТ</string>
+    <string name="voice_manage_in_android">Керувати в налаштуваннях Android</string>
+    <string name="voice_female">Жіночий голос</string>
+    <string name="voice_male">Чоловічий голос</string>
+    <string name="voice_neutral">Голос</string>
+    <string name="voice_preview">Прослухати</string>
+    <string name="voice_selected">Вибрано</string>
+
+    <!-- App lock -->
+    <string name="lock_error_biometric_failed">Помилка: не вдалося показати біометрію</string>
+    <string name="lock_error_lockout">Забагато спроб. Зачекай або увійди заново.</string>
+    <string name="lock_error_not_recognized">Не розпізнано. Спробуй ще раз.</string>
+    <string name="lock_title_unlock">Розблокувати ESPEAK</string>
+    <string name="lock_subtitle_unlock">Використай відбиток або обличчя</string>
+    <string name="lock_sign_in_again">Увійти заново</string>
+    <string name="lock_app_locked">Застосунок заблоковано</string>
+    <string name="lock_unlock_hint">Розблокуй біометрією, щоб продовжити</string>
+    <string name="lock_unlock">Розблокувати</string>
+    <string name="lock_sign_out">Вийти з акаунта</string>
+
+    <!-- Categories -->
+    <string name="cat_all">Усі</string>
+    <string name="cat_all_words">Усі слова</string>
+    <string name="cat_unknown">Категорія</string>
+    <string name="cat_acciones">Дії</string>
+    <string name="cat_animales">Тварини</string>
+    <string name="cat_arte">Мистецтво</string>
+    <string name="cat_auxiliares">Допоміжні</string>
+    <string name="cat_calidad">Якість</string>
+    <string name="cat_cantidad">Кількість</string>
+    <string name="cat_casa">Дім</string>
+    <string name="cat_ciudad">Місто</string>
+    <string name="cat_colores">Кольори</string>
+    <string name="cat_comercio">Комерція</string>
+    <string name="cat_comida">Їжа</string>
+    <string name="cat_compras">Покупки</string>
+    <string name="cat_comunicacion">Спілкування</string>
+    <string name="cat_conocimiento">Знання</string>
+    <string name="cat_cortesia">Ввічливість</string>
+    <string name="cat_cotidiano">Повсякденне</string>
+    <string name="cat_creatividad">Творчість</string>
+    <string name="cat_cuerpo">Тіло</string>
+    <string name="cat_cultura">Культура</string>
+    <string name="cat_deporte">Спорт</string>
+    <string name="cat_despedidas">Прощання</string>
+    <string name="cat_educacion">Освіта</string>
+    <string name="cat_emociones">Емоції</string>
+    <string name="cat_entretenimiento">Розваги</string>
+    <string name="cat_estados">Стани</string>
+    <string name="cat_expresiones">Вирази</string>
+    <string name="cat_familia_personas">Сімʼя</string>
+    <string name="cat_finanzas">Фінанси</string>
+    <string name="cat_fisico">Фіз. стан</string>
+    <string name="cat_general">Загальне</string>
+    <string name="cat_hotel">Готель</string>
+    <string name="cat_lugares">Місця</string>
+    <string name="cat_materiales">Матеріали</string>
+    <string name="cat_media">Медіа</string>
+    <string name="cat_modal">Модальні</string>
+    <string name="cat_movimiento">Рух</string>
+    <string name="cat_naturaleza">Природа</string>
+    <string name="cat_numeros">Числа</string>
+    <string name="cat_orden">Порядок</string>
+    <string name="cat_pensamiento">Мислення</string>
+    <string name="cat_percepcion">Сприйняття</string>
+    <string name="cat_personal">Особисте</string>
+    <string name="cat_personas">Люди</string>
+    <string name="cat_precio">Ціна</string>
+    <string name="cat_preguntas">Питання</string>
+    <string name="cat_profesiones">Професії</string>
+    <string name="cat_redes_sociales">Соцмережі</string>
+    <string name="cat_reglas">Правила</string>
+    <string name="cat_restaurante">Ресторан</string>
+    <string name="cat_ropa">Одяг</string>
+    <string name="cat_salud">Здоровʼя</string>
+    <string name="cat_saludos">Привітання</string>
+    <string name="cat_social">Соціальне</string>
+    <string name="cat_sociedad">Суспільство</string>
+    <string name="cat_tamano">Розмір</string>
+    <string name="cat_tecnologia">Технології</string>
+    <string name="cat_tiempo">Час</string>
+    <string name="cat_trabajo">Робота</string>
+    <string name="cat_transporte">Транспорт</string>
+    <string name="cat_valor">Цінність</string>
+    <string name="cat_velocidad">Швидкість</string>
+    <string name="cat_viaje">Подорож</string>
+    <string name="cat_vida">Життя</string>
+
+    <!-- Final i18n cleanup -->
+    <string name="course_title_a1">Курс A1: Початковий</string>
+    <string name="course_title_a2">Курс A2: Елементарний</string>
+    <string name="course_title_b1">Курс B1: Середній</string>
+    <string name="course_title_b2">Курс B2: Вище середнього</string>
+    <string name="course_title_default">Курс %1$s</string>
+    <string name="course_desc_a1">Основи іспанської мови. Навчись представлятися, говорити про сімʼю та будувати прості речення.</string>
+    <string name="course_desc_a2">Розвивай навички спілкування. Подорожі, покупки, опис минулого.</string>
+    <string name="course_desc_b1">Вільне спілкування. Складні часові конструкції та умовний спосіб.</string>
+    <string name="course_desc_b2">Просунутий рівень. Ідіоми, спеціальна лексика та складні граматичні структури.</string>
+    <string name="course_desc_default">Курс іспанської мови рівня %1$s</string>
+    <string name="course_about_tab">Про курс</string>
+    <string name="home_block_n">Блок %1$s</string>
+    <string name="home_streak_days">днів поспіль</string>
+    <string name="home_studied_today">✓ Сьогодні займався  %1$d / %2$d хв</string>
+    <string name="home_not_studied_yet">Ще не займався сьогодні</string>
+    <string name="home_freezes_label">· %1$d заморозки</string>
+    <string name="home_goal_reached">🎉 Ціль дня виконано!</string>
+    <string name="home_goal_unit">хв</string>
+    <string name="achievement_unlocked_title">Досягнення розблоковано!</string>
+    <string name="achievement_unlocked_xp">+%1$d XP</string>
+    <string name="settings_sync_now">🔄 Синхронізувати зараз</string>
+    <string name="settings_sync_success">Прогрес збережено в хмару</string>
+    <string name="settings_sync_error">Не вдалося синхронізувати</string>
+    <string name="settings_sync_signin_required">Увійдіть через Google для синхронізації</string>
+    <string name="onboarding_kc_zero">Починаю з нуля</string>
+    <string name="onboarding_kc_zero_sub">Іспанська для мене нова мова</string>
+    <string name="onboarding_kc_some">Уже знаю іспанську</string>
+    <string name="onboarding_kc_some_sub">Пройду короткий тест — %1$d питань</string>
+    <string name="onboarding_under13_hint">Якщо тобі менше 13 років, попроси батьків допомогти з реєстрацією та згодою на використання застосунку.</string>
+    <string name="voice_install_title">Хочеш голос як у носія?</string>
+    <string name="voice_install_body">Зараз використовується стандартний голос, який може звучати роботизовано.</string>
+    <string name="voice_install_pack_title">✨ HD-пакет від Google</string>
+    <string name="voice_install_pack_line1">• Природна вимова</string>
+    <string name="voice_install_pack_line2">• Чоловічі та жіночі голоси</string>
+    <string name="voice_install_pack_line3">• Кастильський, мексиканський, аргентинський</string>
+    <string name="voice_install_pack_line4">• Безкоштовно, ~15 МБ</string>
+    <string name="voice_install_footer">Відкриється системний інсталятор Google. Натисни «Español» — і все.</string>
+    <string name="voice_install_confirm">ВСТАНОВИТИ</string>
+    <string name="voice_install_later">Пізніше</string>
+    <string name="speaker_button_cd">Вимовити</string>
+    <string name="league_region">Регіон: %1$s</string>
+    <string name="chat_error_invalid_key">Невірний API ключ Anthropic</string>
+    <string name="chat_close_cd">Закрити</string>
+
+    <!-- Chat welcome screen — capability cards -->
+    <string name="chat_cap_answer_title">Відповідає іспанською</string>
+    <string name="chat_cap_answer_desc">Складні слова перекладає в [дужках]. Якщо пишеш українською — пояснює двома мовами.</string>
+    <string name="chat_cap_correct_title">Виправляє помилки</string>
+    <string name="chat_cap_correct_desc">Покаже правильний варіант з позначкою ✏️ і пояснить помилку.</string>
+    <string name="chat_cap_speak_title">Озвучує відповіді</string>
+    <string name="chat_cap_speak_desc">Натисни 🔊 під повідомленням — почуєш як звучить фраза.</string>
+    <string name="chat_cap_adapt_title">Адаптується до рівня</string>
+    <string name="chat_cap_adapt_desc">A1/A2 — прості фрази. B1+ — ідіоми та складні часи.</string>
+    <string name="chat_cap_stream_title">Друкує в реальному часі</string>
+    <string name="chat_cap_stream_desc">Текст зʼявляється по словах, не потрібно чекати всю відповідь.</string>
+    <string name="chat_try_label">Спробуй запитати:</string>
+
+    <!-- Chat: clear / quick replies / voice input -->
+    <string name="chat_clear_title">Очистити чат?</string>
+    <string name="chat_clear_text">Історію повідомлень буде видалено. Цю дію не можна скасувати.</string>
+    <string name="chat_clear_confirm">Очистити</string>
+    <string name="chat_quick_simpler">Поясни простіше</string>
+    <string name="chat_quick_example">Дай приклад</string>
+    <string name="chat_quick_check">Перевір граматику</string>
+    <string name="chat_quick_practice">Давай попрактикуємо</string>
+    <string name="chat_voice_input_cd">Голосове введення</string>
 </resources>

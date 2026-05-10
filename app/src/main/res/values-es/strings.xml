@@ -1,14 +1,761 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Spanish locale (es).
-    Placeholder — Android will fall back to values/ (Russian) for every key not
-    defined here. Spanish UI may feel weird since the app teaches Spanish, but
-    some Spanish-speaking learners may prefer it for cultural context.
--->
 <resources>
+    <string name="app_name">ESPEAK</string>
+    <string name="widget_description">Palabra del día en español</string>
+
+    <!-- Google Sign-In Web Client ID -->
+    <string name="default_web_client_id" translatable="false">664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com</string>
+
+    <!-- URL de la política de privacidad publicada -->
+    <string name="privacy_policy_url" translatable="false">https://samohin13.github.io/SpanishApp/PRIVACY_POLICY.html</string>
+    <string name="terms_url" translatable="false">https://samohin13.github.io/SpanishApp/PRIVACY_POLICY.html</string>
+
+    <!-- ── Navegación inferior ── -->
     <string name="nav_home">Inicio</string>
     <string name="nav_games">Juegos</string>
     <string name="nav_dictionary">Diccionario</string>
     <string name="nav_profile">Perfil</string>
     <string name="nav_grammar">Gramática</string>
+
+    <!-- ── Botones comunes ── -->
+    <string name="btn_continue">Siguiente</string>
+    <string name="btn_back">Atrás</string>
+    <string name="btn_cancel">Cancelar</string>
+    <string name="btn_confirm">Confirmar</string>
+    <string name="btn_save">Guardar</string>
+    <string name="btn_close">Cerrar</string>
+    <string name="btn_start_learning">Empezar a aprender</string>
+
+    <!-- ── Títulos de pantalla ── -->
+    <string name="title_settings">Ajustes</string>
+    <string name="title_profile">Perfil</string>
+    <string name="title_achievements">Logros</string>
+    <string name="title_dictionary">Diccionario</string>
+    <string name="title_weak_words">Palabras débiles</string>
+    <string name="title_quiz">Test</string>
+    <string name="title_dialogues">Diálogos</string>
+    <string name="title_grammar">Gramática</string>
+    <string name="title_conjugation">Conjugaciones</string>
+    <string name="title_pronunciation">Pronunciación</string>
+    <string name="title_ai_chat">Tutor de IA</string>
+    <string name="title_leaderboard">Clasificación</string>
+    <string name="title_libros">Relatos</string>
+    <string name="title_flashcards">Tarjetas</string>
+
+    <!-- ── Secciones de Ajustes ── -->
+    <string name="settings_section_profile">Perfil</string>
+    <string name="settings_section_notifications">Notificaciones</string>
+    <string name="settings_section_sound">Sonido y vibración</string>
+    <string name="settings_section_appearance">Apariencia</string>
+    <string name="settings_section_languages">Idiomas</string>
+    <string name="settings_section_security">Seguridad</string>
+    <string name="settings_section_privacy">Privacidad y datos</string>
+    <string name="settings_section_account">Gestión de la cuenta</string>
+    <string name="settings_section_subscription">Suscripción</string>
+    <string name="settings_section_help">Ayuda y soporte</string>
+    <string name="settings_section_other">Más</string>
+
+    <string name="settings_change_name">Cambiar nombre</string>
+    <string name="settings_daily_goal">Meta diaria</string>
+    <string name="settings_minutes_short">min</string>
+    <string name="settings_sound_effects">Efectos de sonido</string>
+    <string name="settings_voice_announcer">Voz del narrador</string>
+    <string name="settings_voice_setup">Configuración de voz</string>
+    <string name="settings_subscription_manage">Gestionar suscripción</string>
+    <string name="settings_subscription_restore">Restaurar compras</string>
+    <string name="settings_help_center">Centro de ayuda</string>
+    <string name="settings_contact">Contáctanos</string>
+    <string name="settings_export">Exportar datos</string>
+    <string name="settings_leaderboards">Clasificaciones</string>
+    <string name="settings_reset_progress">Restablecer progreso</string>
+    <string name="settings_protection_biometric">Bloqueo de la app con biometría</string>
+    <string name="settings_biometric_hint">La próxima vez que abras la app, te pediremos huella o rostro.</string>
+    <string name="settings_reminder_time">Hora del recordatorio</string>
+    <string name="settings_reminders_label">Recordatorios de estudio</string>
+    <string name="settings_share_text">Estoy aprendiendo español con ESPEAK 🇪🇸 — pruébalo: %1$s</string>
+
+    <string name="settings_language_ui">Idioma de la interfaz</string>
+    <string name="settings_language_target">Idioma a aprender</string>
+    <string name="settings_target_spanish">Español</string>
+    <string name="settings_logout">Cerrar sesión</string>
+    <string name="settings_share">Compartir la app</string>
+    <string name="settings_privacy_policy">Política de privacidad</string>
+    <string name="settings_terms">Términos de uso</string>
+
+    <!-- ── Welcome / Auth ── -->
+    <string name="welcome_subtitle">Empieza tu camino al español fluido ahora mismo</string>
+    <string name="welcome_already_have_account">Ya tengo una cuenta</string>
+    <string name="welcome_login_with">o inicia sesión con</string>
+    <string name="auth_email">Correo</string>
+    <string name="auth_password">Contraseña</string>
+    <string name="auth_password_confirm">Repite la contraseña</string>
+    <string name="auth_register">Registrarse</string>
+    <string name="auth_login">Iniciar sesión</string>
+    <string name="auth_forgot_password">¿Olvidaste la contraseña?</string>
+
+    <!-- ── HomeScreen ── -->
+    <string name="home_greeting">¡Hola! 👋</string>
+    <string name="home_subtitle">Sigue aprendiendo español</string>
+    <string name="home_word_of_day">Palabra del día</string>
+    <string name="home_streak_studied_today">Estudiado hoy</string>
+
+    <!-- ── Achievements ── -->
+    <string name="achievements_section_unlocked">🏆 Desbloqueados (%1$d)</string>
+    <string name="achievements_section_locked">🔒 Aún no desbloqueados (%1$d)</string>
+    <string name="achievements_summary_count">logros</string>
+    <string name="achievements_summary_xp_label">XP ganados</string>
+    <string name="achievements_summary_progress">progreso</string>
+    <string name="achievements_new_badge">NUEVO</string>
+
+    <!-- ── Games hub ── -->
+    <string name="games_title">Juegos</string>
+    <string name="game_articles_desc">Artículos el / la</string>
+    <string name="game_speed_desc">Traducción contrarreloj</string>
+    <string name="game_verbos_desc">Conjugaciones de verbos</string>
+    <string name="game_sopa_desc">Sopa de letras</string>
+    <string name="game_palabra_desc">Ortografía</string>
+    <string name="game_math_desc">Matemáticas de oído</string>
+    <string name="game_crossword_desc">100 niveles</string>
+    <string name="game_libros_desc">Relatos + tests</string>
+
+    <!-- ── Profile stats ── -->
+    <string name="profile_stat_words">Palabras</string>
+    <string name="profile_stat_days">Días</string>
+    <string name="profile_stat_minutes">Min</string>
+    <string name="profile_default_name">Estudiante</string>
+
+    <!-- ── HomeScreen course cards ── -->
+    <string name="course_a1_subtitle">Principiante</string>
+    <string name="course_a2_subtitle">Elemental</string>
+    <string name="course_b1_subtitle">Intermedio</string>
+    <string name="course_b2_subtitle">Intermedio alto</string>
+    <string name="course_lessons_60_micro">60 microlecciones</string>
+    <string name="course_lessons_60">60 lecciones</string>
+    <string name="course_lessons_soon">próximamente</string>
+    <string name="course_blocks_4">4 bloques</string>
+    <string name="course_locked">Bloqueado</string>
+    <string name="course_start_learning">Empezar a aprender →</string>
+
+    <!-- ── AI Chat ── -->
+    <string name="chat_assistant_name">Asistente de IA</string>
+    <string name="chat_status_online">en línea</string>
+    <string name="chat_message_placeholder">Mensaje…</string>
+    <string name="chat_correction_label">Corrección</string>
+    <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
+    <string name="chat_welcome_subtitle">Te ayudaré a practicar español. ¿De qué quieres hablar?</string>
+    <string name="chat_error_network">Sin conexión a Internet</string>
+    <string name="chat_error_rate_limit">Límite de peticiones superado, espera un momento</string>
+    <string name="chat_error_generic">Error: %1$s</string>
+
+    <!-- ── Pronunciation ── -->
+    <string name="pron_listen">Escuchar</string>
+    <string name="pron_speak">Hablar</string>
+    <string name="pron_listening">Escuchando…</string>
+    <string name="pron_score_excellent">¡Excelente! ¡Casi perfecto!</string>
+    <string name="pron_score_good">¡Bien! ¡Sigue así!</string>
+    <string name="pron_score_ok">No está mal, inténtalo otra vez</string>
+    <string name="pron_score_try_again">Escucha de nuevo y repite</string>
+    <string name="pron_next">Siguiente →</string>
+    <string name="pron_title">Pronunciación 🎤</string>
+    <string name="pron_word_count">Palabras: %1$d</string>
+    <string name="pron_idle_hint">Toca 🔊 para escuchar, luego 🎤 para repetir</string>
+    <string name="pron_now_speak">Habla ahora…</string>
+    <string name="pron_phase_result">Resultado</string>
+    <string name="pron_listen_btn">Escuchar</string>
+    <string name="pron_listen_slow">Despacio 🐢</string>
+    <string name="pron_again">Otra vez</string>
+    <string name="pron_press_speak">Toca y habla</string>
+    <string name="pron_you_said">Has dicho: \"%1$s\"</string>
+    <string name="pron_target">Modelo: \"%1$s\"</string>
+
+    <!-- ── Lesson Session ── -->
+    <string name="ls_close_cd">Cerrar</string>
+    <string name="ls_got_it">¡ENTENDIDO!</string>
+    <string name="ls_continue">SIGUIENTE →</string>
+    <string name="ls_got_continue">ENTENDIDO, SIGUIENTE →</string>
+    <string name="ls_speak_cd">Pronunciar</string>
+    <string name="ls_no_mic_permission">Sin permiso de micrófono</string>
+    <string name="ls_listen_then_repeat">← escucha y repite</string>
+    <string name="ls_distracted">Parece que te distrajiste — ¡pulsa de nuevo!</string>
+    <string name="ls_louder">No te oigo. Habla más alto y claro.</string>
+    <string name="ls_not_counted">Esto no cuenta como error</string>
+    <string name="ls_try_msg_1">No del todo — inténtalo otra vez</string>
+    <string name="ls_try_msg_2">Escucha de nuevo y repite despacio</string>
+    <string name="ls_try_msg_3">Difícil — una vez más, ¡tú puedes!</string>
+    <string name="ls_recognized">Reconocido: «%1$s»</string>
+    <string name="ls_needed">Necesario: «%1$s»</string>
+    <string name="ls_listening_dots">🎙 Escuchando...</string>
+    <string name="ls_tap_again">Pulsa de nuevo</string>
+    <string name="ls_try_again_count">Inténtalo otra vez (%1$d/%2$d)</string>
+    <string name="ls_tap_to_say">Pulsa y pronuncia</string>
+    <string name="ls_hard_word_hint">¿Palabra difícil? Sáltala y vuelve después</string>
+    <string name="ls_skip_as_wrong">Saltar (cuenta como error)</string>
+    <string name="ls_input_answer">Escribe tu respuesta...</string>
+    <string name="ls_correct_is">Correcto: %1$s</string>
+    <string name="ls_check">COMPROBAR</string>
+    <string name="ls_tap_words_below">Toca las palabras de abajo →</string>
+    <string name="ls_verdict_perfect">¡Perfecto!</string>
+    <string name="ls_verdict_great">¡Excelente resultado!</string>
+    <string name="ls_verdict_good">¡Buen trabajo!</string>
+    <string name="ls_verdict_keep_going">¡No te rindas!</string>
+    <string name="ls_stat_accuracy">Precisión</string>
+    <string name="ls_stat_combo">Combo</string>
+    <string name="ls_stat_correct">Correctas</string>
+    <string name="ls_next_lesson">SIGUIENTE LECCIÓN →</string>
+    <string name="ls_exit_to_menu">Salir al menú</string>
+    <string name="ls_done_caps">LISTO</string>
+    <string name="ls_quit_title">¿Salir de la lección?</string>
+    <string name="ls_quit_text">El progreso de esta lección no se guardará.</string>
+    <string name="ls_quit_confirm">Salir</string>
+    <string name="ls_quit_resume">Continuar</string>
+
+    <!-- ── LessonIntro / Content ── -->
+    <string name="lesson_intro_vocab">Aprende palabras y frases nuevas para conversar. Hemos elegido las expresiones más importantes para este tema.</string>
+    <string name="lesson_intro_grammar">Entiende cómo se construyen las oraciones. La gramática es el esqueleto del idioma.</string>
+    <string name="lesson_intro_phrase">Practica frases listas para usar — el idioma de la gente real.</string>
+    <string name="lesson_intro_quiz">¡Pon a prueba lo que sabes! Aprueba el test para desbloquear la siguiente sección.</string>
+    <string name="lesson_reward_xp">Experiencia</string>
+    <string name="lesson_reward_next">Siguiente\nlección</string>
+    <string name="lesson_reward_progress">Progreso\ndel bloque</string>
+    <string name="lesson_start_button">¡VAMOS!</string>
+    <string name="lesson_later">Ahora no</string>
+    <string name="lesson_in_development_title">Lección en desarrollo</string>
+    <string name="lesson_in_development_subtitle">¡La teoría aparecerá aquí pronto!</string>
+    <string name="lesson_mark_as_done">Marcar como completada</string>
+    <string name="lesson_done">¡Listo!</string>
+    <string name="lesson_understood">¡Entendido! (+15 XP)</string>
+    <string name="lesson_block_label">Bloque %1$s · %2$s</string>
+
+    <!-- ── PlacementTest ── -->
+    <string name="placement_abort_title">¿Interrumpir el test?</string>
+    <string name="placement_abort_message">El progreso de la respuesta a esta pregunta no se guardará.</string>
+    <string name="placement_abort_confirm">Interrumpir</string>
+    <string name="placement_abort_continue">Continuar el test</string>
+    <string name="placement_next_question">Siguiente pregunta</string>
+    <string name="placement_show_result">Ver resultado</string>
+    <string name="placement_change_level">Cambiar nivel</string>
+
+    <!-- ── LevelSelection ── -->
+    <string name="level_select_title">Elige tu nivel</string>
+    <string name="level_select_change_later">Puedes cambiarlo después en Ajustes</string>
+    <string name="level_upcoming_badge">próximamente</string>
+    <string name="level_upcoming_dialog_title">Nivel %1$s en desarrollo</string>
+    <string name="level_upcoming_continue_a1">Empezar con A1</string>
+    <string name="level_upcoming_anyway">%1$s de todos modos</string>
+
+    <!-- ── Conjugation ── -->
+    <string name="conj_search_placeholder">Buscar verbo…</string>
+    <string name="conj_filter_all">Todos</string>
+    <string name="conj_filter_regular">Regulares</string>
+    <string name="conj_filter_irregular">⚡ Irregulares</string>
+    <string name="conj_count_all">%1$d verbos</string>
+    <string name="conj_count_regular">%1$d regulares</string>
+    <string name="conj_count_irregular">%1$d irregulares</string>
+    <string name="conj_hint_tap">toca para abrir la tabla</string>
+    <string name="conj_irregular_label">Verbo irregular</string>
+    <string name="conj_quiz_action">Test</string>
+
+    <!-- ── Onboarding ── -->
+    <string name="onboarding_name_question">¿Cómo te llamas?</string>
+    <string name="onboarding_name_subtitle">Así nos dirigiremos a ti en la app</string>
+    <string name="onboarding_name_label">Nombre o apodo</string>
+    <string name="onboarding_name_placeholder">Por ejemplo: Sergio</string>
+    <string name="onboarding_age_question">¿Cuántos años tienes?</string>
+    <string name="onboarding_age_subtitle">Esto nos ayuda a adaptar el ritmo a ti</string>
+    <string name="onboarding_age_years">años</string>
+    <string name="onboarding_reason_question">¿Por qué aprendes español?</string>
+    <string name="onboarding_knowledge_question">¿Sabes algo de español?</string>
+    <string name="onboarding_knowledge_subtitle">Esto nos ayudará a adaptar el programa a ti</string>
+
+    <!-- ════ Game: Articles ════ -->
+    <string name="art_levels_title">Artículos · niveles</string>
+    <string name="art_correct_count">✅ %1$d correctas</string>
+
+    <!-- ════ Game: Speed ════ -->
+    <string name="speed_levels_title">Rápido · niveles</string>
+    <string name="speed_level_of">Nivel %1$d / 100</string>
+    <string name="speed_round_of">Ronda %1$d/%2$d</string>
+    <string name="speed_xp">XP: %1$d</string>
+    <string name="speed_no_timer">sin temporizador</string>
+
+    <!-- ════ Game: Math ════ -->
+    <string name="math_levels_title">Cálculo · niveles</string>
+    <string name="math_level_of">Nivel %1$d / 100</string>
+    <string name="math_round_of">Ronda %1$d/%2$d</string>
+    <string name="math_score">Puntos: %1$d</string>
+    <string name="math_audio_off">Silenciar audio</string>
+    <string name="math_audio_on">Activar audio</string>
+    <string name="math_repeat">Repetir</string>
+    <string name="math_submit">RESPONDER</string>
+
+    <!-- ════ Game: Crossword ════ -->
+    <string name="crw_title">Crucigrama</string>
+    <string name="crw_rules">Reglas</string>
+    <string name="crw_how_to_play">Cómo jugar</string>
+    <string name="crw_rule_select_title">Seleccionar palabra</string>
+    <string name="crw_rule_select_body">Toca cualquier casilla del crucigrama — se pondrá violeta y abajo aparecerá la traducción de la palabra a adivinar.</string>
+    <string name="crw_rule_swap_title">Cambiar palabra y dirección</string>
+    <string name="crw_rule_swap_body">El número en la esquina de la casilla marca el inicio de una palabra. Tócalo para ir a esa palabra. Si dos palabras se cruzan en una casilla (horizontal y vertical), cada toque alterna la dirección.</string>
+    <string name="crw_rule_keyboard_title">Letras con tilde</string>
+    <string name="crw_rule_keyboard_body">Para escribir Á, É, Í, Ó, Ú, Ü o Ñ, mantén pulsada la tecla correspondiente — aparecerá un menú con la variante. Si abajo se ve un aviso amarillo, la palabra actual contiene esas letras.</string>
+    <string name="crw_rule_hints_title">Pistas</string>
+    <string name="crw_rule_hints_body">Por las respuestas correctas se obtienen monedas:\n• «Letra» — revela una letra (10 monedas)\n• «Palabra» — revela la palabra entera (50 monedas)</string>
+    <string name="crw_rule_zoom_title">Zoom y desplazamiento</string>
+    <string name="crw_rule_zoom_body">Pellizca con dos dedos para acercar o alejar el crucigrama. Arrastra con un dedo para mover el tablero en la dirección que quieras.</string>
+    <string name="crw_understood">Entendido</string>
+    <string name="crw_select_level">Selecciona Nivel</string>
+    <string name="crw_choose_cell">Elige una casilla</string>
+    <string name="crw_hold_for_input">Mantén la tecla para escribir: %1$s</string>
+    <string name="crw_hint_letter">Letra (10)</string>
+    <string name="crw_hint_word">Palabra (50)</string>
+    <string name="crw_completed">Crucigrama completado</string>
+    <string name="crw_coins_reward">+%1$d monedas</string>
+    <string name="crw_menu">MENÚ</string>
+    <string name="crw_next">SIGUIENTE</string>
+
+    <!-- ════ Game: Sopa de Letras ════ -->
+    <string name="sopa_levels_title">Sopa de Letras · niveles</string>
+    <string name="sopa_level_of">Nivel %1$d / 100</string>
+    <string name="sopa_subtitle">%1$s · %2$d×%2$d · %3$d palabras</string>
+    <string name="sopa_score">Puntos: %1$d</string>
+    <string name="sopa_combo">¡Combo ×%1$d!</string>
+    <string name="sopa_found">Encontradas %1$d / %2$d</string>
+    <string name="sopa_find_words">Encuentra las palabras:</string>
+    <string name="sopa_ghost">👻 Ghost: lista oculta</string>
+    <string name="sopa_clear_selection">Borrar selección</string>
+
+    <!-- ════ Game: Palabra Maestra ════ -->
+    <string name="palabra_levels_title">Palabra Maestra · niveles</string>
+    <string name="palabra_level_of">Nivel %1$d / 100</string>
+    <string name="palabra_word_of">Palabra %1$d/%2$d</string>
+    <string name="palabra_score">Puntos: %1$d</string>
+    <string name="palabra_next">SIGUIENTE</string>
+    <string name="palabra_check">COMPROBAR</string>
+    <string name="palabra_hint_translation">Traducción</string>
+    <string name="palabra_hint_audio">Audio</string>
+    <string name="palabra_hint_first_letter">1.ª letra</string>
+    <string name="palabra_hint_rule">Regla</string>
+    <string name="palabra_translation_label">Traducción: %1$s</string>
+
+    <!-- ════ Game: Verb Training ════ -->
+    <string name="verb_title">Verbos · entrenador</string>
+    <string name="verb_settings">Ajustes</string>
+    <string name="verb_section_mode">Modo de entrenamiento</string>
+    <string name="verb_section_tenses">Tiempos</string>
+    <string name="verb_section_groups">Grupos de verbos</string>
+    <string name="verb_section_extra">Más opciones</string>
+    <string name="verb_section_count">Cuántas preguntas</string>
+    <string name="verb_group_regular">Regulares</string>
+    <string name="verb_group_irregular">Irregulares (ser, estar, ir...)</string>
+    <string name="verb_include_reflexive">Incluir verbos reflexivos (lavarse)</string>
+    <string name="verb_voseo">Voseo (vos en lugar de tú)</string>
+    <string name="verb_accept_no_accent">Aceptar respuestas sin tildes</string>
+    <string name="verb_question_of">Pregunta %1$d/%2$d</string>
+    <string name="verb_score">Puntos: %1$d</string>
+    <string name="verb_listen">Escuchar</string>
+    <string name="verb_listen_and_write">Escucha y escribe la forma que oigas</string>
+    <string name="verb_inverso_question">¿De qué verbo, tiempo y persona es esta forma?</string>
+    <string name="verb_dropdown_infinitive">Infinitivo</string>
+    <string name="verb_dropdown_tense">Tiempo</string>
+    <string name="verb_dropdown_person">Persona</string>
+    <string name="verb_next">Siguiente</string>
+    <string name="verb_check">Comprobar</string>
+    <string name="verb_input_placeholder">Escribe la forma…</string>
+    <string name="verb_dont_know">No lo sé</string>
+    <string name="verb_feedback_near_miss">¡Casi! Faltan tildes: %1$s</string>
+    <string name="verb_feedback_correct">¡Correcto!  %1$s</string>
+    <string name="verb_feedback_wrong">Correcto: %1$s</string>
+    <string name="verb_results_title">Entrenamiento completado</string>
+    <string name="verb_stat_accuracy">Precisión</string>
+    <string name="verb_stat_correct">Correctas</string>
+    <string name="verb_stat_no_accent">Sin tildes</string>
+    <string name="verb_weak_forms">Formas difíciles:</string>
+    <string name="verb_to_menu">Al menú</string>
+    <string name="verb_again">Otra vez</string>
+    <string name="verb_mode_conjugar_title">Conjugar</string>
+    <string name="verb_mode_conjugar_desc">Tiempo + persona + infinitivo → forma</string>
+    <string name="verb_mode_inverso_title">Inverso</string>
+    <string name="verb_mode_inverso_desc">Forma → infinitivo + persona + tiempo</string>
+    <string name="verb_mode_hueco_title">Hueco</string>
+    <string name="verb_mode_hueco_desc">Rellena el hueco en la frase</string>
+    <string name="verb_mode_auditivo_title">Auditivo</string>
+    <string name="verb_mode_auditivo_desc">Oye la forma y escríbela</string>
+
+    <!-- Dictionary -->
+    <string name="dict_title">Diccionario</string>
+    <string name="dict_list">Lista</string>
+    <string name="dict_tab_all">Todas las palabras</string>
+    <string name="dict_tab_phrases">Frases</string>
+    <string name="dict_tab_my_lists">Mis listas</string>
+    <string name="dict_search_placeholder">Buscar…</string>
+    <string name="dict_recent_search">Búsqueda reciente</string>
+    <string name="dict_clear">Borrar</string>
+    <string name="dict_lists_count">%1$d/20 listas</string>
+    <string name="dict_new_list">Lista nueva</string>
+    <string name="dict_no_lists">Sin listas</string>
+    <string name="dict_no_lists_hint">Crea una lista para guardar palabras</string>
+    <string name="dict_rename_list">Renombrar lista</string>
+    <string name="dict_name">Nombre</string>
+    <string name="dict_save">Guardar</string>
+    <string name="dict_cancel">Cancelar</string>
+    <string name="dict_words_count">%1$d/150 palabras</string>
+    <string name="dict_export_cd">Exportar</string>
+    <string name="dict_export_txt">Texto (TXT)</string>
+    <string name="dict_export_csv">Tabla (CSV)</string>
+    <string name="dict_export_pdf">Imprimir / PDF</string>
+    <string name="dict_list_empty">La lista está vacía</string>
+    <string name="dict_list_empty_hint">Toca «+» junto a una palabra en «Todas las palabras»</string>
+    <string name="dict_badge_irregular">irreg.</string>
+    <string name="dict_badge_stem">raíz</string>
+    <string name="dict_progress_learned">aprendida</string>
+    <string name="dict_progress_weak">débil</string>
+    <string name="dict_progress_in_progress">aprendiendo</string>
+    <string name="dict_progress_new">nueva</string>
+    <string name="dict_rename">Renombrar</string>
+    <string name="dict_delete">Eliminar</string>
+    <string name="dict_translation">Traducción</string>
+    <string name="dict_example">Ejemplo</string>
+    <string name="dict_add_to_list">Añadir a lista</string>
+    <string name="dict_stat_reviews">Repasos</string>
+    <string name="dict_stat_accuracy">Precisión</string>
+    <string name="dict_stat_status">Estado</string>
+    <string name="dict_stat_status_learned">✓ Aprendida</string>
+    <string name="dict_add_word_to_list">Añadir «%1$s» a la lista</string>
+    <string name="dict_no_lists_yet">Aún no tienes listas</string>
+    <string name="dict_list_full">La lista está llena (150/150)</string>
+    <string name="dict_create_new_list">Crear lista nueva</string>
+    <string name="dict_max_lists_error">Máximo 20 listas. Elimina una para crear otra.</string>
+    <string name="dict_name_label">Nombre (hasta 30 caracteres)</string>
+    <string name="dict_create">Crear</string>
+    <string name="dict_share_list">Compartir lista</string>
+
+    <!-- Weak Words -->
+    <string name="weak_title">Palabras débiles</string>
+    <string name="weak_train_all">Practicar todas las palabras débiles (%1$d)</string>
+    <string name="weak_hint">Palabras con precisión inferior al 60%%. Repítelas más a menudo y se volverán fáciles.</string>
+    <string name="weak_reviews_count">%1$d repasos</string>
+    <string name="weak_empty_title">¡No hay palabras débiles!</string>
+    <string name="weak_empty_subtitle">Todas las palabras están bien aprendidas.\nSigue a este ritmo.</string>
+
+    <!-- Libros (list) -->
+    <string name="libros_read_progress">Leídos: %1$d / %2$d</string>
+    <string name="libros_back">Atrás</string>
+    <string name="libros_filter_all">Todos</string>
+    <string name="libros_empty_for_level">Los relatos del nivel %1$s\nllegarán en la próxima actualización</string>
+    <string name="libros_best_score">Mejor resultado: %1$d%%</string>
+    <string name="libros_repeat">Repetir</string>
+    <string name="libros_read">Leer</string>
+
+    <!-- Libro Read -->
+    <string name="lread_back">Atrás</string>
+    <string name="lread_asking_ai">Consultando a la IA…</string>
+    <string name="lread_not_in_dict">no se encuentra en el diccionario</string>
+    <string name="lread_words_in_sentence">Palabras en la oración:</string>
+    <string name="lread_stt_silence">No te he oído — inténtalo otra vez</string>
+    <string name="lread_stt_error">Error de reconocimiento</string>
+    <string name="lread_no_mic_perm">Sin permiso de micrófono</string>
+    <string name="lread_sentence_of">Oración %1$d de %2$d</string>
+    <string name="lread_exit">← Salir</string>
+    <string name="lread_listen">Escuchar</string>
+    <string name="lread_excellent">✓ ¡Excelente!</string>
+    <string name="lread_words_correct">%1$d / %2$d palabras correctas</string>
+    <string name="lread_you_said">Has dicho: «%1$s»</string>
+    <string name="lread_listening">Escuchando…</string>
+    <string name="lread_press_mic_hint">Pulsa el micrófono y lee la oración en voz alta</string>
+    <string name="lread_microphone">Micrófono</string>
+    <string name="lread_see_result">Ver resultado →</string>
+    <string name="lread_next_sentence">Siguiente oración →</string>
+    <string name="lread_repeat_sentence">🔄 Repetir oración</string>
+    <string name="lread_pron_excellent">¡Pronunciación excelente!</string>
+    <string name="lread_pron_good">¡Buen trabajo!</string>
+    <string name="lread_pron_ok">No está mal, ¡sigue así!</string>
+    <string name="lread_pron_practice">Practica un poco más</string>
+    <string name="lread_reading_result">Resultado de la lectura</string>
+    <string name="lread_words_summary">%1$d de %2$d palabras pronunciadas correctamente</string>
+    <string name="lread_words_short">%1$d / %2$d palabras</string>
+    <string name="lread_start_quiz">Empezar test →</string>
+    <string name="lread_reread">← Releer el relato</string>
+    <string name="lread_long_press_hint">Mantén pulsada una palabra para traducirla</string>
+    <string name="lread_topic_label">🏷️ Tema: </string>
+    <string name="lread_intro_hint">Lee el relato y responde a %1$d preguntas. Necesitas %2$d de %1$d para aprobar.</string>
+    <string name="lread_stop">Stop</string>
+    <string name="lread_audiobook">Audiolibro</string>
+    <string name="lread_read_aloud">Leer en voz alta</string>
+    <string name="lread_question_of">Pregunta %1$d de %2$d</string>
+    <string name="lread_quiz_back">← Atrás</string>
+    <string name="lread_finish">Finalizar</string>
+    <string name="lread_next">Siguiente →</string>
+    <string name="lread_passed_title">¡Genial! ¡Relato leído!</string>
+    <string name="lread_failed_title">¡Casi! Inténtalo otra vez</string>
+    <string name="lread_correct_answers">Respuestas correctas: %1$d de %2$d (%3$d%%)</string>
+    <string name="lread_passed_note">✓ El relato se ha marcado como leído en tu biblioteca</string>
+    <string name="lread_failed_note">Necesitas %1$d de %2$d. ¡Relee el texto e inténtalo de nuevo!</string>
+    <string name="lread_back_to_list">← A la lista de relatos</string>
+    <string name="lread_reread_short">Releer el relato</string>
+
+    <!-- ── Settings — extra labels ── -->
+    <string name="set_avatar_cd">Avatar</string>
+    <string name="set_camera_perm_hint">Permite el acceso a la cámara en Ajustes</string>
+    <string name="set_upload_error">Error al guardar en la nube: %1$s</string>
+    <string name="set_spanish_level">Nivel de español</string>
+    <string name="set_level_a1">A1 — Principiante</string>
+    <string name="set_level_a2">A2 — Elemental</string>
+    <string name="set_level_b1">B1 — Intermedio</string>
+    <string name="set_level_b2">B2 — Intermedio alto</string>
+    <string name="set_level_a1_short">Principiante</string>
+    <string name="set_level_a2_short">Elemental</string>
+    <string name="set_level_b1_short">Intermedio</string>
+    <string name="set_level_b2_short">Intermedio alto</string>
+    <string name="set_progress_stats">Estadísticas de progreso</string>
+    <string name="set_reminders">Recordatorios de estudio</string>
+    <string name="set_reminder_time">Hora del recordatorio</string>
+    <string name="set_vibration">Vibración y respuesta táctil</string>
+    <string name="set_voice_setup">Configuración de voz</string>
+    <string name="set_theme_title">Tema</string>
+    <string name="set_theme_system">Sistema</string>
+    <string name="set_theme_light">Claro</string>
+    <string name="set_theme_dark">Oscuro</string>
+    <string name="set_theme_setting">Tema oscuro / claro</string>
+    <string name="set_font_title">Tamaño de fuente</string>
+    <string name="set_font_small">Pequeño</string>
+    <string name="set_font_medium">Mediano</string>
+    <string name="set_font_large">Grande</string>
+    <string name="set_lang_system">Sistema</string>
+    <string name="set_lang_ru">Русский</string>
+    <string name="set_lang_en">English</string>
+    <string name="set_protect_biometric">Bloqueo de la app con biometría</string>
+    <string name="set_biometric_hint">La próxima vez que abras la app, te pediremos huella o rostro.</string>
+    <string name="set_email_subject">Soporte de ESPEAK</string>
+    <string name="set_email_chooser">Enviar correo</string>
+    <string name="set_share_text">Estoy aprendiendo español con ESPEAK 🇪🇸 — pruébalo: %1$s</string>
+    <string name="set_share_chooser">Compartir la app</string>
+    <string name="set_delete_account_full">Eliminar cuenta (con confirmación)</string>
+    <string name="set_about_text">ESPEAK Versión 1.4\nHecho con ❤️ para aprender español</string>
+    <string name="set_about_section">Acerca de</string>
+    <string name="set_about_version">Versión</string>
+    <string name="set_about_source">Código fuente en GitHub</string>
+    <string name="set_about_licenses">Licencias de código abierto</string>
+    <string name="set_about_made_with_love">Hecho con ❤️ para aprender español</string>
+    <string name="set_dlg_logout_title">Cerrar sesión</string>
+    <string name="set_dlg_logout_text">¿Cerrar sesión?</string>
+    <string name="set_dlg_logout_confirm">Cerrar sesión</string>
+    <string name="set_dlg_delete_title">Eliminar cuenta</string>
+    <string name="set_dlg_delete_text">¿Estás seguro? Todo el progreso se eliminará de forma permanente.</string>
+    <string name="set_dlg_delete_confirm">Eliminar</string>
+    <string name="set_dlg_reset_title">Restablecer progreso</string>
+    <string name="set_dlg_reset_text">Todo tu progreso de juego se borrará. ¿Estás seguro?</string>
+    <string name="set_dlg_reset_confirm">Restablecer</string>
+    <string name="set_dlg_goal_title">Meta diaria</string>
+    <string name="set_dlg_goal_minutes">%1$d minutos al día</string>
+    <string name="set_dlg_name_title">Cambiar nombre</string>
+    <string name="set_dlg_name_label">Nombre</string>
+    <string name="set_dlg_name_save">Guardar</string>
+    <string name="set_notif_perm_denied">Sin el permiso de notificaciones no llegarán los recordatorios. Actívalo en los ajustes del sistema.</string>
+
+    <!-- Quiz -->
+    <string name="quiz_translate_prompt">¿CÓMO SE TRADUCE?</string>
+    <string name="quiz_results">RESULTADOS</string>
+    <string name="quiz_next_question">SIGUIENTE PREGUNTA</string>
+    <string name="quiz_finished">Test completado</string>
+    <string name="quiz_try_again">REINTENTAR</string>
+    <string name="quiz_exit_to_menu">SALIR AL MENÚ</string>
+
+    <!-- Dialogues -->
+    <string name="dial_level_in_development">Nivel %1$s en desarrollo</string>
+    <string name="dial_coming_soon">Pronto habrá diálogos en vivo para practicar el idioma.</string>
+    <string name="dial_finish_practice">FINALIZAR PRÁCTICA</string>
+
+    <!-- Grammar -->
+    <string name="gram_coming_soon">Las lecciones de %1$s llegarán pronto</string>
+
+    <!-- Rating screen -->
+    <string name="rating_sort_weak">Débiles primero</string>
+    <string name="rating_sort_strong">Fuertes primero</string>
+    <string name="rating_sort_alpha">Alfabético</string>
+    <string name="rating_topic_progress">Progreso por temas</string>
+    <string name="rating_now">Ahora:</string>
+    <string name="rating_empty">Empieza a entrenar para ver tu progreso.</string>
+
+    <!-- Leaderboard -->
+    <string name="lb_leaders">Líderes</string>
+    <string name="lb_no_data">Sin datos</string>
+    <string name="lb_refresh">Actualizar</string>
+    <string name="lb_world">el mundo</string>
+    <string name="lb_world_tab">🌍 Mundo</string>
+    <string name="lb_my_rank">Estás en el #%1$d de %2$d en %3$s</string>
+    <string name="lb_empty">Aún no hay nadie — ¡sé el primero!</string>
+    <string name="lb_opt_out">Salir de la clasificación</string>
+    <string name="lb_join_title">¿Unirte a la clasificación global?</string>
+    <string name="lb_join_explain">Solo guardaremos tu apodo, país y puntuación. Podrás compararte con jugadores de tu país y de todo el mundo.</string>
+    <string name="lb_nickname">Apodo</string>
+    <string name="lb_join_button">Unirme a la clasificación</string>
+
+    <!-- Voice settings -->
+    <string name="voice_announcer">Voz del narrador</string>
+    <string name="voice_not_found">No se encontraron voces</string>
+    <string name="voice_available">Voces disponibles (%1$d)</string>
+    <string name="voice_rate">Velocidad del habla</string>
+    <string name="voice_rate_hint">Cuanto menor, más lento</string>
+    <string name="voice_pitch">Tono de voz</string>
+    <string name="voice_pitch_hint">Más bajo = más grave</string>
+    <string name="voice_hd_installed">Voces HD instaladas</string>
+    <string name="voice_pack">Paquete de voz</string>
+    <string name="voice_found_count">Encontradas: %1$d voces</string>
+    <string name="voice_pack_promo">Instala el paquete HD — la voz sonará natural, como un nativo.</string>
+    <string name="voice_pack_size">📦 ~15 MB · gratis de Google</string>
+    <string name="voice_install_pack">INSTALAR PAQUETE</string>
+    <string name="voice_manage_in_android">Gestionar en los ajustes de Android</string>
+    <string name="voice_female">Voz femenina</string>
+    <string name="voice_male">Voz masculina</string>
+    <string name="voice_neutral">Voz</string>
+    <string name="voice_preview">Probar</string>
+    <string name="voice_selected">Seleccionada</string>
+
+    <!-- App lock -->
+    <string name="lock_error_biometric_failed">Error: no se pudo mostrar la biometría</string>
+    <string name="lock_error_lockout">Demasiados intentos. Espera o vuelve a iniciar sesión.</string>
+    <string name="lock_error_not_recognized">No reconocido. Inténtalo otra vez.</string>
+    <string name="lock_title_unlock">Desbloquear ESPEAK</string>
+    <string name="lock_subtitle_unlock">Usa huella o rostro</string>
+    <string name="lock_sign_in_again">Volver a iniciar sesión</string>
+    <string name="lock_app_locked">App bloqueada</string>
+    <string name="lock_unlock_hint">Desbloquea con biometría para continuar</string>
+    <string name="lock_unlock">Desbloquear</string>
+    <string name="lock_sign_out">Cerrar sesión</string>
+
+    <!-- Categories -->
+    <string name="cat_all">Todas</string>
+    <string name="cat_all_words">Todas las palabras</string>
+    <string name="cat_unknown">Categoría</string>
+    <string name="cat_acciones">Acciones</string>
+    <string name="cat_animales">Animales</string>
+    <string name="cat_arte">Arte</string>
+    <string name="cat_auxiliares">Auxiliares</string>
+    <string name="cat_calidad">Calidad</string>
+    <string name="cat_cantidad">Cantidad</string>
+    <string name="cat_casa">Casa</string>
+    <string name="cat_ciudad">Ciudad</string>
+    <string name="cat_colores">Colores</string>
+    <string name="cat_comercio">Comercio</string>
+    <string name="cat_comida">Comida</string>
+    <string name="cat_compras">Compras</string>
+    <string name="cat_comunicacion">Comunicación</string>
+    <string name="cat_conocimiento">Conocimiento</string>
+    <string name="cat_cortesia">Cortesía</string>
+    <string name="cat_cotidiano">Cotidiano</string>
+    <string name="cat_creatividad">Creatividad</string>
+    <string name="cat_cuerpo">Cuerpo</string>
+    <string name="cat_cultura">Cultura</string>
+    <string name="cat_deporte">Deporte</string>
+    <string name="cat_despedidas">Despedidas</string>
+    <string name="cat_educacion">Educación</string>
+    <string name="cat_emociones">Emociones</string>
+    <string name="cat_entretenimiento">Entretenimiento</string>
+    <string name="cat_estados">Estados</string>
+    <string name="cat_expresiones">Expresiones</string>
+    <string name="cat_familia_personas">Familia</string>
+    <string name="cat_finanzas">Finanzas</string>
+    <string name="cat_fisico">Estado físico</string>
+    <string name="cat_general">General</string>
+    <string name="cat_hotel">Hotel</string>
+    <string name="cat_lugares">Lugares</string>
+    <string name="cat_materiales">Materiales</string>
+    <string name="cat_media">Medios</string>
+    <string name="cat_modal">Modales</string>
+    <string name="cat_movimiento">Movimiento</string>
+    <string name="cat_naturaleza">Naturaleza</string>
+    <string name="cat_numeros">Números</string>
+    <string name="cat_orden">Orden</string>
+    <string name="cat_pensamiento">Pensamiento</string>
+    <string name="cat_percepcion">Percepción</string>
+    <string name="cat_personal">Personal</string>
+    <string name="cat_personas">Personas</string>
+    <string name="cat_precio">Precio</string>
+    <string name="cat_preguntas">Preguntas</string>
+    <string name="cat_profesiones">Profesiones</string>
+    <string name="cat_redes_sociales">Redes sociales</string>
+    <string name="cat_reglas">Reglas</string>
+    <string name="cat_restaurante">Restaurante</string>
+    <string name="cat_ropa">Ropa</string>
+    <string name="cat_salud">Salud</string>
+    <string name="cat_saludos">Saludos</string>
+    <string name="cat_social">Social</string>
+    <string name="cat_sociedad">Sociedad</string>
+    <string name="cat_tamano">Tamaño</string>
+    <string name="cat_tecnologia">Tecnología</string>
+    <string name="cat_tiempo">Tiempo</string>
+    <string name="cat_trabajo">Trabajo</string>
+    <string name="cat_transporte">Transporte</string>
+    <string name="cat_valor">Valor</string>
+    <string name="cat_velocidad">Velocidad</string>
+    <string name="cat_viaje">Viaje</string>
+    <string name="cat_vida">Vida</string>
+
+    <!-- Final i18n cleanup -->
+    <string name="course_title_a1">Curso A1: Principiante</string>
+    <string name="course_title_a2">Curso A2: Elemental</string>
+    <string name="course_title_b1">Curso B1: Intermedio</string>
+    <string name="course_title_b2">Curso B2: Intermedio alto</string>
+    <string name="course_title_default">Curso %1$s</string>
+    <string name="course_desc_a1">Fundamentos del español. Aprende a presentarte, hablar de la familia y construir oraciones simples.</string>
+    <string name="course_desc_a2">Desarrolla tus habilidades de comunicación. Viajes, compras, descripción del pasado.</string>
+    <string name="course_desc_b1">Comunicación fluida. Tiempos complejos y modo subjuntivo.</string>
+    <string name="course_desc_b2">Nivel avanzado. Modismos, vocabulario especializado y estructuras gramaticales complejas.</string>
+    <string name="course_desc_default">Curso de español de nivel %1$s</string>
+    <string name="course_about_tab">Sobre el curso</string>
+    <string name="home_block_n">Bloque %1$s</string>
+    <string name="home_streak_days">días seguidos</string>
+    <string name="home_studied_today">✓ Hoy estudiaste  %1$d / %2$d min</string>
+    <string name="home_not_studied_yet">Aún no has estudiado hoy</string>
+    <string name="home_freezes_label">· %1$d congelaciones</string>
+    <string name="home_goal_reached">🎉 ¡Meta del día completada!</string>
+    <string name="home_goal_unit">min</string>
+    <string name="achievement_unlocked_title">¡Logro desbloqueado!</string>
+    <string name="achievement_unlocked_xp">+%1$d XP</string>
+    <string name="settings_sync_now">🔄 Sincronizar ahora</string>
+    <string name="settings_sync_success">Progreso guardado en la nube</string>
+    <string name="settings_sync_error">No se pudo sincronizar</string>
+    <string name="settings_sync_signin_required">Inicia sesión con Google para sincronizar</string>
+    <string name="onboarding_kc_zero">Empiezo desde cero</string>
+    <string name="onboarding_kc_zero_sub">El español es nuevo para mí</string>
+    <string name="onboarding_kc_some">Ya sé algo de español</string>
+    <string name="onboarding_kc_some_sub">Haré un test corto — %1$d preguntas</string>
+    <string name="onboarding_under13_hint">Si tienes menos de 13 años, pide a tus padres que te ayuden con el registro y el consentimiento para usar la app.</string>
+    <string name="voice_install_title">¿Quieres una voz como la de un nativo?</string>
+    <string name="voice_install_body">Ahora se usa la voz por defecto, que puede sonar robótica.</string>
+    <string name="voice_install_pack_title">✨ Paquete HD de Google</string>
+    <string name="voice_install_pack_line1">• Pronunciación natural</string>
+    <string name="voice_install_pack_line2">• Voces masculinas y femeninas</string>
+    <string name="voice_install_pack_line3">• Castellano, mexicano, argentino</string>
+    <string name="voice_install_pack_line4">• Gratis, ~15 MB</string>
+    <string name="voice_install_footer">Se abrirá el instalador del sistema de Google. Toca «Español» — y listo.</string>
+    <string name="voice_install_confirm">INSTALAR</string>
+    <string name="voice_install_later">Más tarde</string>
+    <string name="speaker_button_cd">Pronunciar</string>
+    <string name="league_region">Región: %1$s</string>
+    <string name="chat_error_invalid_key">Clave de API de Anthropic no válida</string>
+    <string name="chat_close_cd">Cerrar</string>
+
+    <!-- Chat welcome screen — capability cards -->
+    <string name="chat_cap_answer_title">Responde en español</string>
+    <string name="chat_cap_answer_desc">Las palabras difíciles las traduce entre [corchetes]. Si escribes en otro idioma, lo explica en ambos.</string>
+    <string name="chat_cap_correct_title">Corrige errores</string>
+    <string name="chat_cap_correct_desc">Muestra la versión correcta con la marca ✏️ y explica el error.</string>
+    <string name="chat_cap_speak_title">Lee las respuestas</string>
+    <string name="chat_cap_speak_desc">Toca 🔊 bajo el mensaje — oirás cómo suena la frase.</string>
+    <string name="chat_cap_adapt_title">Se adapta a tu nivel</string>
+    <string name="chat_cap_adapt_desc">A1/A2 — frases simples. B1+ — modismos y tiempos complejos.</string>
+    <string name="chat_cap_stream_title">Escribe en tiempo real</string>
+    <string name="chat_cap_stream_desc">El texto aparece palabra por palabra; no esperas la respuesta entera.</string>
+    <string name="chat_try_label">Prueba a preguntar:</string>
+
+    <!-- Chat: clear / quick replies / voice input -->
+    <string name="chat_clear_title">¿Borrar el chat?</string>
+    <string name="chat_clear_text">Se eliminará el historial de mensajes. Esta acción no se puede deshacer.</string>
+    <string name="chat_clear_confirm">Borrar</string>
+    <string name="chat_quick_simpler">Explícamelo más simple</string>
+    <string name="chat_quick_example">Dame un ejemplo</string>
+    <string name="chat_quick_check">Revisa la gramática</string>
+    <string name="chat_quick_practice">Vamos a practicar</string>
+    <string name="chat_voice_input_cd">Entrada de voz</string>
 </resources>
