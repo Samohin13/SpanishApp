@@ -585,7 +585,20 @@ private fun SkillRatingTile(
     appLevelProgress: Float,
     modifier: Modifier = Modifier
 ) {
-    ProfileTile(accent = AccentPurple, modifier = modifier.fillMaxWidth(), height = 160.dp) {
+    ProfileTile(
+        accent = AccentPurple,
+        modifier = modifier.fillMaxWidth(),
+        height = 160.dp,
+        watermark = {
+            // Trophy silhouette in the upper-right area — same vector used
+            // by the bento RATING tile, painted faintly so it doesn't
+            // collide with the 64sp hero number on the left.
+            com.spanishapp.ui.home.ThematicWatermark(
+                theme = com.spanishapp.ui.home.WatermarkTheme.RATING,
+                accent = AccentPurple
+            )
+        }
+    ) {
         Text(
             rating.toString(),
             fontSize = 64.sp,
