@@ -6,6 +6,7 @@ import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.data.repository.SyncRepository
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.StreakService
+import com.spanishapp.service.WeeklyLeagueService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,7 +34,8 @@ class RatingUpdater @Inject constructor(
     private val wordDao: WordDao,
     private val streakService: StreakService,
     private val achievementManager: AchievementManager,
-    private val syncRepository: SyncRepository
+    private val syncRepository: SyncRepository,
+    private val weeklyLeagueService: WeeklyLeagueService
 ) {
     private val bgScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -56,6 +58,13 @@ class RatingUpdater @Inject constructor(
         // Любой ответ — это учебная активность, обновляем стрик и проверяем ачивки.
         runCatching { streakService.touchStreak() }
         runCatching { achievementManager.checkAndUnlock() }
+        // Weekly leagues — параллельная ветка, считает weeklyXP. quality=4+ → +5, ниже → 0.
+        runCatching {
+            val xp = if (quality >= 4) XpSystem.WORD_CORRECT
+                     else if (quality == 3) XpSystem.WORD_CORRECT
+                     else 0
+            weeklyLeagueService.onXpEarned(xp)
+        }
         // Fire-and-forget sync с дебаунсом 1/мин внутри SyncRepository.
         bgScope.launch { runCatching { syncRepository.uploadAll() } }
 

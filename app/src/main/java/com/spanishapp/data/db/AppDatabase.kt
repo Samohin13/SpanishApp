@@ -26,9 +26,10 @@ import com.spanishapp.data.db.entity.*
         GameLevelProgressEntity::class,
         DailyXpEntity::class,
         FlashcardSetProgressEntity::class,
-        RecentSearchEntity::class
+        RecentSearchEntity::class,
+        WeeklyLeagueStateEntity::class
     ],
-    version = 17,
+    version = 18,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -48,6 +49,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun dailyXpDao(): DailyXpDao
     abstract fun flashcardSetProgressDao(): FlashcardSetProgressDao
     abstract fun recentSearchDao(): RecentSearchDao
+    abstract fun weeklyLeagueDao(): WeeklyLeagueDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -298,6 +300,23 @@ abstract class AppDatabase : RoomDatabase() {
         val MIGRATION_16_17 = object : Migration(16, 17) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE words ADD COLUMN last_rating_at INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        // ── v18: Weekly Leagues (Duolingo-style 30-person cohorts) ──
+        val MIGRATION_17_18 = object : Migration(17, 18) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS weekly_league_state (
+                        userId INTEGER PRIMARY KEY NOT NULL,
+                        current_tier INTEGER NOT NULL DEFAULT 1,
+                        current_week_start TEXT NOT NULL DEFAULT '',
+                        current_week_xp INTEGER NOT NULL DEFAULT 0,
+                        cohort_id TEXT NOT NULL DEFAULT '',
+                        last_finalized_week TEXT NOT NULL DEFAULT '',
+                        opted_in INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent())
             }
         }
 

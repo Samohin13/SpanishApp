@@ -40,7 +40,8 @@ object AppModule {
                 AppDatabase.MIGRATION_13_14,
                 AppDatabase.MIGRATION_14_15,
                 AppDatabase.MIGRATION_15_16,
-                AppDatabase.MIGRATION_16_17
+                AppDatabase.MIGRATION_16_17,
+                AppDatabase.MIGRATION_17_18
             )
         // Destructive migration only for debug builds — protects production user data.
         if (BuildConfig.DEBUG) {
@@ -65,6 +66,13 @@ object AppModule {
     @Provides fun provideDailyXpDao(db: AppDatabase): DailyXpDao = db.dailyXpDao()
     @Provides fun provideFlashcardSetProgressDao(db: AppDatabase): FlashcardSetProgressDao = db.flashcardSetProgressDao()
     @Provides fun provideRecentSearchDao(db: AppDatabase): RecentSearchDao = db.recentSearchDao()
+    @Provides fun provideWeeklyLeagueDao(db: AppDatabase): WeeklyLeagueDao = db.weeklyLeagueDao()
+
+    // ── Firebase Firestore ─────────────────────────────────────
+    @Provides
+    @Singleton
+    fun provideFirestore(): com.google.firebase.firestore.FirebaseFirestore =
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
     // ── OkHttp  (Anthropic API) ────────────────────────────────
     @Provides

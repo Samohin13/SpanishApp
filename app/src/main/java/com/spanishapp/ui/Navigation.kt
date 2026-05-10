@@ -362,6 +362,7 @@ object Navigation {
             // ── Рейтинг / Лиги / Лидерборд ───────────────────
             composable("rating_full")  { RatingScreen(navController) }
             composable("leaderboard")  { LeaderboardScreen(navController) }
+            composable("weekly_league") { com.spanishapp.ui.leaderboard.WeeklyLeagueScreen(navController) }
 
             // ── Словарь ───────────────────────────────────────
             composable("dictionary")  { DictionaryScreen(navController) }

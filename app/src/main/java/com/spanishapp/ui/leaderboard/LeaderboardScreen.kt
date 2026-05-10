@@ -28,7 +28,7 @@ import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.domain.rating.CountryNames
 import com.spanishapp.ui.components.LeagueBadge
 
-private enum class Tab { LOCAL, WORLD }
+private enum class Tab { WEEK, LOCAL, WORLD }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +71,16 @@ fun LeaderboardScreen(
             }
 
             // Табы
-            TabRow(selectedTabIndex = if (tab == Tab.LOCAL) 0 else 1, containerColor = Color.Transparent) {
+            val selectedIndex = when (tab) { Tab.WEEK -> 0; Tab.LOCAL -> 1; Tab.WORLD -> 2 }
+            TabRow(selectedTabIndex = selectedIndex, containerColor = Color.Transparent) {
+                Tab(
+                    selected = tab == Tab.WEEK,
+                    onClick = {
+                        tab = Tab.WEEK
+                        navController.navigate("weekly_league")
+                    },
+                    text = { Text("Неделя 🏆", fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
+                )
                 Tab(
                     selected = tab == Tab.LOCAL,
                     onClick = { tab = Tab.LOCAL },
@@ -110,10 +119,12 @@ fun LeaderboardScreen(
                 return@Column
             }
 
-            val rows = if (tab == Tab.LOCAL) data.countryRows else data.worldRows
-            val myRank = if (tab == Tab.LOCAL) data.myCountryRank else data.myWorldRank
-            val total = if (tab == Tab.LOCAL) data.countryTotal else data.worldTotal
-            val tabName = if (tab == Tab.LOCAL) CountryNames.nameOf(state.deviceCountry) else stringResource(R.string.lb_world)
+            // WEEK tab is just a navigation jump — fall through to LOCAL view if user lands here
+            val effectiveTab = if (tab == Tab.WEEK) Tab.LOCAL else tab
+            val rows = if (effectiveTab == Tab.LOCAL) data.countryRows else data.worldRows
+            val myRank = if (effectiveTab == Tab.LOCAL) data.myCountryRank else data.myWorldRank
+            val total = if (effectiveTab == Tab.LOCAL) data.countryTotal else data.worldTotal
+            val tabName = if (effectiveTab == Tab.LOCAL) CountryNames.nameOf(state.deviceCountry) else stringResource(R.string.lb_world)
 
             // Шапка с моим рангом
             if (myRank != null) {
