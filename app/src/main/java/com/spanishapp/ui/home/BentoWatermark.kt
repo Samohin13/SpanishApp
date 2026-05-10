@@ -166,121 +166,192 @@ private fun DrawScope.drawBullseye(origin: Offset, area: Size, accent: Color) {
 }
 
 // ─── Continue Pager themes ─────────────────────────────────────
-// Designed as ABSTRACT compositions (not literal "cap / flame") because the
-// previous literal icons looked primitive. Each is a layered geometric motif
-// using rounded shapes + multiple opacity tiers for depth.
+// Each watermark uses a DELIBERATELY different visual structure so the four
+// pages don't blur together: LESSON = horizontal layered composition,
+// BOOK ↦ drawBookStack (existing, vertical), FLASHCARD_SET = single bold
+// rotated focal element, WEAK_WORD = vertical bar rhythm. Keeps the eye
+// from reading them as "the same illustrator drew all four".
 
 /**
- * LESSON — abstract notebook: 4 stacked rounded rectangles fanning slightly
- * outward, with thin horizontal "ruling" lines on the front-most one.
- * Reads as "open lesson material" without being a literal book.
+ * LESSON — open-book composition: two page panels meeting at a centre spine,
+ * left page has a few horizontal text rules, right page has two short angled
+ * "diagram" strokes. Calligraphic, academic.
  */
 private fun DrawScope.drawGradCap(origin: Offset, area: Size, accent: Color) {
     val side = area.width.coerceAtMost(area.height)
-    val w = side * 0.78f
-    val h = side * 0.62f
+    val pageW = side * 0.32f
+    val pageH = side * 0.65f
     val cx = origin.x + area.width * 0.55f
     val cy = origin.y + area.height * 0.55f
-    val r = w * 0.10f
+    val r  = pageW * 0.10f
 
-    // Stack of 4 page-like rounded rects, offset diagonally.
-    val tiers = listOf(
-        Triple(-w * 0.18f,  h * 0.18f, 0.06f),
-        Triple(-w * 0.06f,  h * 0.06f, 0.09f),
-        Triple( w * 0.06f, -h * 0.06f, 0.13f),
-        Triple( w * 0.18f, -h * 0.18f, 0.18f)
+    // Two pages — leaning slightly outward to suggest an open spread.
+    val gap = pageW * 0.04f
+    drawRoundRect(
+        color = accent.copy(alpha = 0.13f),
+        topLeft = Offset(cx - pageW - gap, cy - pageH / 2f),
+        size = Size(pageW, pageH),
+        cornerRadius = CornerRadius(r, r)
     )
-    tiers.forEach { (dx, dy, a) ->
-        drawRoundRect(
-            color = accent.copy(alpha = a),
-            topLeft = Offset(cx - w / 2f + dx, cy - h / 2f + dy),
-            size = Size(w, h),
-            cornerRadius = CornerRadius(r, r)
-        )
-    }
-    // Ruling lines on the front page — gives "text content" feel.
-    val front = tiers.last()
-    val frontLeft = cx - w / 2f + front.first
-    val frontTop  = cy - h / 2f + front.second
-    val lineCol = accent.copy(alpha = 0.10f)
+    drawRoundRect(
+        color = accent.copy(alpha = 0.10f),
+        topLeft = Offset(cx + gap, cy - pageH / 2f),
+        size = Size(pageW, pageH),
+        cornerRadius = CornerRadius(r, r)
+    )
+    // Spine — thin vertical strip in the middle.
+    drawRect(
+        color = accent.copy(alpha = 0.20f),
+        topLeft = Offset(cx - gap, cy - pageH / 2f),
+        size = Size(gap * 2f, pageH)
+    )
+    // Text rulings on the LEFT page (3 lines).
+    val lineCol = accent.copy(alpha = 0.16f)
     repeat(3) { i ->
-        val ly = frontTop + h * (0.30f + i * 0.18f)
+        val ly = cy - pageH * 0.25f + i * pageH * 0.18f
         drawLine(
             color = lineCol,
-            start = Offset(frontLeft + w * 0.18f, ly),
-            end   = Offset(frontLeft + w * 0.78f - i * w * 0.10f, ly),
-            strokeWidth = h * 0.04f,
+            start = Offset(cx - pageW - gap + pageW * 0.15f, ly),
+            end   = Offset(cx - gap - pageW * 0.10f, ly),
+            strokeWidth = pageH * 0.025f,
             cap = StrokeCap.Round
         )
     }
+    // Two short angled marks on RIGHT page — like a sketched diagram.
+    val sketchCol = accent.copy(alpha = 0.18f)
+    drawLine(
+        color = sketchCol,
+        start = Offset(cx + pageW * 0.35f, cy + pageH * 0.05f),
+        end   = Offset(cx + pageW * 0.75f, cy - pageH * 0.20f),
+        strokeWidth = pageH * 0.03f,
+        cap = StrokeCap.Round
+    )
+    drawLine(
+        color = sketchCol,
+        start = Offset(cx + pageW * 0.40f, cy + pageH * 0.20f),
+        end   = Offset(cx + pageW * 0.85f, cy + pageH * 0.10f),
+        strokeWidth = pageH * 0.03f,
+        cap = StrokeCap.Round
+    )
 }
 
 /**
- * FLASHCARD_SET — five rounded cards fanned in an arc like a hand of cards,
- * each rotated incrementally and with progressively higher opacity so the
- * front card stands out. More dramatic than the old 3-card stack.
+ * FLASHCARD_SET — single bold tilted card with a corner-fold + ghost cards
+ * peeking from behind. Strong central focal point (was: 5 fanned cards which
+ * read as a brown blob).
  */
 private fun DrawScope.drawCardStack(origin: Offset, area: Size, accent: Color) {
+    val side = area.width.coerceAtMost(area.height)
+    val w = side * 0.62f
+    val h = side * 0.78f
     val cx = origin.x + area.width * 0.55f
-    val cy = origin.y + area.height * 0.70f      // anchor near bottom — fan rises up
-    val w = area.width * 0.42f
-    val h = area.height * 0.55f
-    val angles = listOf(-28f, -14f, 0f, 14f, 28f)
-    val alphas = listOf(0.07f, 0.10f, 0.15f, 0.10f, 0.07f)
-
-    angles.forEachIndexed { i, deg ->
+    val cy = origin.y + area.height * 0.55f
+    // Two ghost cards behind, tilted opposite ways, very faint.
+    fun rotatedCard(deg: Float, alpha: Float, scale: Float = 1f) {
         val rad = Math.toRadians(deg.toDouble())
         val cos = Math.cos(rad).toFloat()
         val sin = Math.sin(rad).toFloat()
-        // pivot near bottom-centre so cards fan outward at the top
-        val pivotY = h * 0.45f
-        fun pt(dx: Float, dy: Float): Offset {
-            val ny = dy - pivotY            // shift so rotation pivots near bottom
-            return Offset(
-                cx + dx * cos - ny * sin,
-                cy + dx * sin + ny * cos + pivotY
-            )
-        }
-        val hw = w / 2f
+        val hw = w * scale / 2f; val hh = h * scale / 2f
+        fun pt(dx: Float, dy: Float) = Offset(
+            cx + dx * cos - dy * sin,
+            cy + dx * sin + dy * cos
+        )
         val card = Path().apply {
-            val p1 = pt(-hw, -h); val p2 = pt(hw, -h)
-            val p3 = pt(hw, 0f);  val p4 = pt(-hw, 0f)
-            moveTo(p1.x, p1.y); lineTo(p2.x, p2.y); lineTo(p3.x, p3.y); lineTo(p4.x, p4.y); close()
+            moveTo(pt(-hw, -hh).x, pt(-hw, -hh).y)
+            lineTo(pt(hw, -hh).x, pt(hw, -hh).y)
+            lineTo(pt(hw, hh).x, pt(hw, hh).y)
+            lineTo(pt(-hw, hh).x, pt(-hw, hh).y)
+            close()
         }
-        drawPath(card, accent.copy(alpha = alphas[i]))
+        drawPath(card, accent.copy(alpha = alpha))
     }
+    rotatedCard(-22f, 0.06f, scale = 0.92f)
+    rotatedCard(14f,  0.09f, scale = 0.96f)
+
+    // Foreground card — bold, slight tilt for energy.
+    val fgRad = Math.toRadians(-7.0)
+    val fgCos = Math.cos(fgRad).toFloat()
+    val fgSin = Math.sin(fgRad).toFloat()
+    fun pt(dx: Float, dy: Float) = Offset(
+        cx + dx * fgCos - dy * fgSin,
+        cy + dx * fgSin + dy * fgCos
+    )
+    val hw = w / 2f; val hh = h / 2f
+    val foldSize = w * 0.24f
+
+    // Card body MINUS top-right corner (so the fold flap shows clearly).
+    val card = Path().apply {
+        moveTo(pt(-hw, -hh).x, pt(-hw, -hh).y)
+        lineTo(pt(hw - foldSize, -hh).x, pt(hw - foldSize, -hh).y)
+        lineTo(pt(hw, -hh + foldSize).x, pt(hw, -hh + foldSize).y)
+        lineTo(pt(hw, hh).x, pt(hw, hh).y)
+        lineTo(pt(-hw, hh).x, pt(-hw, hh).y)
+        close()
+    }
+    drawPath(card, accent.copy(alpha = 0.16f))
+
+    // The corner-fold triangle itself, slightly darker — adds depth.
+    val fold = Path().apply {
+        moveTo(pt(hw - foldSize, -hh).x, pt(hw - foldSize, -hh).y)
+        lineTo(pt(hw, -hh + foldSize).x, pt(hw, -hh + foldSize).y)
+        lineTo(pt(hw - foldSize * 0.4f, -hh + foldSize * 0.4f).x,
+               pt(hw - foldSize * 0.4f, -hh + foldSize * 0.4f).y)
+        close()
+    }
+    drawPath(fold, accent.copy(alpha = 0.22f))
+
+    // Two thin lines on the card face — "Q / A" hint.
+    val lineCol = accent.copy(alpha = 0.20f)
+    drawLine(
+        color = lineCol,
+        start = pt(-hw * 0.45f, -hh * 0.20f),
+        end   = pt( hw * 0.30f, -hh * 0.20f),
+        strokeWidth = h * 0.025f, cap = StrokeCap.Round
+    )
+    drawLine(
+        color = lineCol,
+        start = pt(-hw * 0.45f,  hh * 0.10f),
+        end   = pt( hw * 0.10f,  hh * 0.10f),
+        strokeWidth = h * 0.025f, cap = StrokeCap.Round
+    )
 }
 
 /**
- * WEAK_WORD — abstract pulse / radar ripple. Replaces the previous literal
- * flame droplet (which read as a strange water drop). 5 concentric arcs
- * radiating from bottom-right, alternating opacity, with a small filled
- * core. Suggests "echo / repetition / resurfacing".
+ * WEAK_WORD — equalizer / sound-bar composition: 7 vertical bars of varying
+ * heights, taller in the middle, with rounded tops. Reads as "pronouncing /
+ * speaking aloud". Replaces the previous radar-ripple which was too
+ * symmetrical and similar to the bullseye motif used elsewhere.
  */
 private fun DrawScope.drawFlame(origin: Offset, area: Size, accent: Color) {
-    val cx = origin.x + area.width * 0.55f
-    val cy = origin.y + area.height * 0.55f
-    val maxR = area.width.coerceAtMost(area.height) * 0.55f
+    val barCount = 7
+    val totalW = area.width * 0.78f
+    val gap = totalW * 0.05f
+    val barW = (totalW - gap * (barCount - 1)) / barCount
+    val baseY = origin.y + area.height * 0.92f
+    val maxBarH = area.height * 0.78f
 
-    // Five rings, opacity fading outward, alternating ring widths.
-    val rings = listOf(
-        maxR        to 0.05f,
-        maxR * 0.82f to 0.08f,
-        maxR * 0.64f to 0.11f,
-        maxR * 0.46f to 0.14f,
-        maxR * 0.28f to 0.18f
-    )
-    rings.forEach { (r, a) ->
-        drawCircle(accent.copy(alpha = a), r, Offset(cx, cy), style = Stroke(width = maxR * 0.04f))
+    // Heights follow a smooth bell curve — peak in the middle.
+    val heightFactors = listOf(0.30f, 0.55f, 0.85f, 1.00f, 0.78f, 0.48f, 0.22f)
+    val alphas         = listOf(0.10f, 0.13f, 0.17f, 0.22f, 0.18f, 0.14f, 0.10f)
+
+    val startX = origin.x + area.width * 0.55f - totalW / 2f
+    repeat(barCount) { i ->
+        val barH = maxBarH * heightFactors[i]
+        val left = startX + i * (barW + gap)
+        drawRoundRect(
+            color = accent.copy(alpha = alphas[i]),
+            topLeft = Offset(left, baseY - barH),
+            size = Size(barW, barH),
+            cornerRadius = CornerRadius(barW * 0.45f, barW * 0.45f)
+        )
     }
-    // Filled core dot.
-    drawCircle(accent.copy(alpha = 0.22f), maxR * 0.10f, Offset(cx, cy))
-
-    // Three tiny "sparks" floating up-left to add detail / asymmetry.
-    val sparkCol = accent.copy(alpha = 0.18f)
-    drawCircle(sparkCol, maxR * 0.05f, Offset(cx - maxR * 0.55f, cy - maxR * 0.55f))
-    drawCircle(sparkCol, maxR * 0.04f, Offset(cx - maxR * 0.75f, cy - maxR * 0.30f))
-    drawCircle(sparkCol, maxR * 0.03f, Offset(cx - maxR * 0.30f, cy - maxR * 0.80f))
+    // Subtle "ground" line under the bars.
+    drawLine(
+        color = accent.copy(alpha = 0.10f),
+        start = Offset(startX, baseY + area.height * 0.02f),
+        end   = Offset(startX + totalW, baseY + area.height * 0.02f),
+        strokeWidth = area.height * 0.012f
+    )
 }
 
 // ─── Game themes ───────────────────────────────────────────────
