@@ -1747,16 +1747,19 @@ internal fun TopicCard(
     val completedCount = unit.lessons.count { it.isCompleted }
     val totalCount     = unit.lessons.size
 
+    // Slightly tighter outer margin (8dp instead of 14dp) so the card uses
+    // more screen real-estate without overflowing edge. Bigger header height
+    // and font follow below.
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp)
+            .padding(horizontal = 8.dp)
             .shadow(
                 elevation = if (unit.isLocked) 2.dp else 6.dp,
-                shape = RoundedCornerShape(20.dp),
+                shape = RoundedCornerShape(22.dp),
                 spotColor = accentColor.copy(alpha = 0.35f)
             )
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(22.dp))
             .background(MaterialTheme.colorScheme.surface)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -1779,7 +1782,7 @@ internal fun TopicCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(72.dp)
+                    .height(86.dp)
                     .background(
                         if (unit.isLocked)
                             Brush.verticalGradient(listOf(Color(0xFFDDDDDD), Color(0xFFCCCCCC)))
@@ -1812,52 +1815,49 @@ internal fun TopicCard(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 18.dp),
+                        .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row(
+                        modifier = Modifier.weight(1f),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(44.dp)
+                                .size(52.dp)
                                 .clip(CircleShape)
                                 .background(Color.White.copy(alpha = 0.25f)),
                             contentAlignment = Alignment.Center
                         ) {
-                            // Was `unit.icon` (emoji like 🚀 / 🏠). Per design
-                            // feedback we replaced the emoji with the block
-                            // number ("01"..."04") for a cleaner look. Always
-                            // show the position WITHIN the course, never the
-                            // raw id (would leak "a2_1" for A2 blocks).
                             val label = blockPos.toString().padStart(2, '0')
                             Text(
                                 label,
-                                fontSize = 15.sp,
+                                fontSize = 17.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = Color.White
                             )
                         }
 
-                        Column {
+                        Column(modifier = Modifier.weight(1f)) {
                             val titleStartsWithBlock = unit.title.trimStart().startsWith("Блок", ignoreCase = true)
                             if (!titleStartsWithBlock) {
                                 Text(
                                     text = stringResource(R.string.home_block_n, blockPos.toString()),
-                                    fontSize = 11.sp,
+                                    fontSize = 12.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = Color.White.copy(alpha = 0.80f)
                                 )
                             }
                             Text(
                                 text = unit.title,
-                                fontSize = 18.sp,
+                                fontSize = 21.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = Color.White,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
+                                letterSpacing = (-0.3).sp
                             )
                         }
                     }
@@ -1878,13 +1878,13 @@ internal fun TopicCard(
                 }
             }
 
-            Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                 Text(
                     text = unit.description,
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
                     color = if (unit.isLocked) TextGray.copy(.6f) else TextGray,
                     maxLines = 2,
-                    lineHeight = 18.sp
+                    lineHeight = 19.sp
                 )
 
                 Spacer(Modifier.height(10.dp))
