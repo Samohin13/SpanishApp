@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Ukrainian locale (uk).
+    Currently a placeholder — Android will fall back to values/ (Russian) for
+    every key not defined here. Add translations gradually as the app stabilises.
+    To pick which strings get translated first, prioritise: nav_*, common buttons,
+    onboarding, errors, and the home greeting.
+-->
+<resources>
+    <string name="nav_home">Головна</string>
+    <string name="nav_games">Ігри</string>
+    <string name="nav_dictionary">Словник</string>
+    <string name="nav_profile">Профіль</string>
+    <string name="nav_grammar">Граматика</string>
+</resources>

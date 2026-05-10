@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Spanish locale (es).
+    Placeholder — Android will fall back to values/ (Russian) for every key not
+    defined here. Spanish UI may feel weird since the app teaches Spanish, but
+    some Spanish-speaking learners may prefer it for cultural context.
+-->
+<resources>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_games">Juegos</string>
+    <string name="nav_dictionary">Diccionario</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="nav_grammar">Gramática</string>
+</resources>
