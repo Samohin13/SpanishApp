@@ -4,15 +4,21 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.spanishapp.R
@@ -162,6 +168,31 @@ fun sanitizeForTts(text: String): String =
     text.replace("___", " ")
         .replace(Regex("\\s+"), " ")
         .trim()
+
+/**
+ * Wraps a card/row that contains a Spanish word + speaker icon so tapping
+ * ANYWHERE on the row triggers TTS — not just the speaker icon. The speaker
+ * icon stays visible as a visual cue. Adds light haptic on tap.
+ *
+ * Usage:
+ *     Card(modifier = Modifier.tappableForSpeak { vm.speak(word) }) {
+ *         Row { Text(word.spanish); SpeakerIcon() }
+ *     }
+ *
+ * If the row already contains an inner IconButton, both still work — the
+ * inner clickable consumes the event when tapped directly.
+ */
+fun Modifier.tappableForSpeak(onSpeak: () -> Unit): Modifier = composed {
+    val haptic = LocalHapticFeedback.current
+    val interaction = remember { MutableInteractionSource() }
+    this.clickable(
+        interactionSource = interaction,
+        indication = ripple(bounded = true)
+    ) {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        onSpeak()
+    }
+}
 
 @Composable
 fun SpeakerButton(

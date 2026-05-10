@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.R
+import com.spanishapp.ui.components.tappableForSpeak
 
 @Composable
 private fun verbModeTitle(mode: VerbTrainingMode): String = when (mode) {
@@ -344,7 +345,8 @@ private fun AuditivoCard(q: VerbQuestion, vm: VerbViewModel) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
+            .padding(vertical = 12.dp)
+            .tappableForSpeak { vm.replayAudio() },
         shape = RoundedCornerShape(20.dp),
         color = CardSurface,
         shadowElevation = 2.dp

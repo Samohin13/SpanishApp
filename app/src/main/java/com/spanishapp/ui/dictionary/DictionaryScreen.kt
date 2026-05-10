@@ -45,6 +45,7 @@ import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.data.db.entity.WordListEntity
 import com.spanishapp.data.db.entity.WordListEntryEntity
 import com.spanishapp.service.SpanishTts
+import com.spanishapp.ui.components.tappableForSpeak
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -1205,7 +1206,12 @@ private fun WordDetailSheet(
         ) {
             // Слово + уровень + озвучка
             Row(verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .tappableForSpeak(onSpeak)
+                    .padding(8.dp)) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(word.spanish,
                         style = MaterialTheme.typography.headlineMedium,

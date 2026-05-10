@@ -28,6 +28,7 @@ import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpanishTts
 import com.spanishapp.service.SpeechResult
+import com.spanishapp.ui.components.tappableForSpeak
 import com.spanishapp.ui.theme.AppColors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -243,11 +244,13 @@ private fun PronunciationContent(
             textAlign = TextAlign.Center
         )
 
-        // Карточка слова
+        // Карточка слова — тап в любую точку = озвучить
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = AppColors.Terracotta.copy(alpha = 0.08f),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .tappableForSpeak { vm.playWord() }
         ) {
             Column(
                 modifier = Modifier.padding(32.dp),

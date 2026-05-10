@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.service.SpanishTts
+import com.spanishapp.ui.components.tappableForSpeak
 import com.spanishapp.ui.theme.AppColors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -153,7 +154,9 @@ private fun WeakWordCard(word: WordEntity, onSpeak: () -> Unit) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         tonalElevation = 1.dp,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .tappableForSpeak(onSpeak)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),

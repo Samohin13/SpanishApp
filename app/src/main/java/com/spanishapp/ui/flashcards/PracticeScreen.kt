@@ -35,6 +35,7 @@ import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.domain.algorithm.SM2
 import com.spanishapp.service.SpanishTts
+import com.spanishapp.ui.components.tappableForSpeak
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -404,7 +405,14 @@ private fun ChoiceRoundView(
             }
         } else {
             // MULTIPLE_CHOICE — show the Spanish word + speaker for optional play.
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // tap-anywhere on the header row triggers TTS (icon stays as cue).
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .tappableForSpeak(onSpeak)
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+            ) {
                 Text(
                     round.word.spanish,
                     fontSize = 32.sp,
@@ -644,7 +652,13 @@ private fun TypingRoundView(
         // After check: show correct answer if wrong + speaker.
         if (checked && !isCorrect) {
             Spacer(Modifier.height(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .tappableForSpeak(onSpeak)
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+            ) {
                 Text(
                     "Правильно: ${round.word.spanish}",
                     fontSize = 15.sp,
