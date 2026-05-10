@@ -36,7 +36,8 @@ data class AuthUiState(
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val syncRepository: com.spanishapp.data.repository.SyncRepository
 ) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -276,6 +277,10 @@ class AuthViewModel @Inject constructor(
                 if (result.user != null) {
                     authRepository.setLoggedIn(true)
                     syncUserDataFromFirestore(result.user!!.uid)
+                    // Если локальная БД пуста — стянуть прогресс из облака
+                    runCatching {
+                        if (syncRepository.isLocalEmpty()) syncRepository.downloadAll()
+                    }
                     _uiState.update { it.copy(isLoading = false) }
                 }
             } catch (e: Exception) {

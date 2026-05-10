@@ -71,8 +71,18 @@ class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val appLockPreferences: AppLockPreferences,
     private val appLockManager: AppLockManager,
-    private val vibrationHelper: com.spanishapp.service.VibrationHelper
+    private val vibrationHelper: com.spanishapp.service.VibrationHelper,
+    private val syncRepository: com.spanishapp.data.repository.SyncRepository
 ) : ViewModel() {
+
+    /** Returns: true=success, false=failure (incl. not signed in). */
+    suspend fun syncNow(): Boolean {
+        val signedIn = FirebaseAuth.getInstance().currentUser != null
+        if (!signedIn) return false
+        val up = syncRepository.uploadAll(force = true).isSuccess
+        val down = syncRepository.downloadAll().isSuccess
+        return up && down
+    }
 
     val appLockEnabled = appLockPreferences.isEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
@@ -281,6 +291,7 @@ fun SettingsScreen(
     val fontSize by vm.fontSize.collectAsStateWithLifecycle()
     
     val context = LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
     val uploadErrorPrefix = stringResource(R.string.set_upload_error, "")
     val uploadErrorTpl = stringResource(R.string.set_upload_error, "::ERR::")
 
@@ -393,6 +404,24 @@ fun SettingsScreen(
                 }) { showLevelDialog = true }
                 SettingsItem(Icons.Default.Timer, stringResource(R.string.settings_daily_goal), "${progress.dailyGoalMinutes} ${stringResource(R.string.settings_minutes_short)}") { showGoalDialog = true }
                 SettingsItem(Icons.Default.BarChart, stringResource(R.string.set_progress_stats)) { navController.navigate("achievements") }
+                // ── Sync Now (Phase 4) ──
+                val syncSuccess = stringResource(R.string.settings_sync_success)
+                val syncError = stringResource(R.string.settings_sync_error)
+                val syncSigninRequired = stringResource(R.string.settings_sync_signin_required)
+                SettingsItem(Icons.Default.Sync, stringResource(R.string.settings_sync_now)) {
+                    scope.launch {
+                        val ok = vm.syncNow()
+                        Toast.makeText(
+                            context,
+                            when {
+                                ok -> syncSuccess
+                                FirebaseAuth.getInstance().currentUser == null -> syncSigninRequired
+                                else -> syncError
+                            },
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
 
             val reminderHour by vm.reminderHour.collectAsStateWithLifecycle()

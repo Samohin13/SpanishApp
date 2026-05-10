@@ -2,8 +2,13 @@ package com.spanishapp.domain.algorithm
 
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
+import com.spanishapp.data.repository.SyncRepository
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.StreakService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,13 +27,17 @@ data class LeaguePromotion(val from: League, val to: League)
 class RatingUpdater @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val streakService: StreakService,
-    private val achievementManager: AchievementManager
+    private val achievementManager: AchievementManager,
+    private val syncRepository: SyncRepository
 ) {
+    private val bgScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     suspend fun applyAnswer(easeFactor: Float, quality: Int): LeaguePromotion? {
         // Любой ответ — это учебная активность, обновляем стрик и проверяем ачивки.
         runCatching { streakService.touchStreak() }
         runCatching { achievementManager.checkAndUnlock() }
+        // Fire-and-forget sync с дебаунсом 1/мин внутри SyncRepository.
+        bgScope.launch { runCatching { syncRepository.uploadAll() } }
 
         val progress: UserProgressEntity = userProgressDao.getProgressOnce() ?: return null
 
