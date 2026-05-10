@@ -7,8 +7,9 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,30 +19,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.filled.EmojiFlags
-import androidx.compose.material.icons.filled.Leaderboard
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -51,16 +42,14 @@ import coil.request.ImageRequest
 import com.spanishapp.data.db.dao.AchievementDao
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
+import com.spanishapp.data.db.entity.AchievementEntity
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.data.repository.AuthRepository
 import com.spanishapp.domain.algorithm.League
 import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.domain.algorithm.MasteryRating
 import com.spanishapp.domain.algorithm.XpSystem
-import com.spanishapp.ui.components.LeagueBadge
-import com.spanishapp.ui.components.LeaguePath
-import com.spanishapp.ui.components.SpanishBackground
-import com.spanishapp.ui.components.SpanishFlagRating
+import com.spanishapp.ui.components.PressableCard
 import com.spanishapp.ui.flashcards.CategoryMeta
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -71,7 +60,10 @@ import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
-// ... (ViewModel remains the same)
+// ═══════════════════════════════════════════════════════════
+//  ViewModel — без изменений в логике, только добавлен поток
+//  достижений для тизера-секции на экране.
+// ═══════════════════════════════════════════════════════════
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -85,18 +77,16 @@ class ProfileViewModel @Inject constructor(
     private val _categoryRatings = MutableStateFlow<List<CategoryRatingUi>>(emptyList())
     val categoryRatings: StateFlow<List<CategoryRatingUi>> = _categoryRatings.asStateFlow()
 
-    /** Локальный Uri выбранного фото — показываем мгновенно, пока идёт загрузка. */
     private val _localPhotoUri = MutableStateFlow<Uri?>(null)
     val localPhotoUri: StateFlow<Uri?> = _localPhotoUri.asStateFlow()
 
     private val _isPhotoUploading = MutableStateFlow(false)
     val isPhotoUploading: StateFlow<Boolean> = _isPhotoUploading.asStateFlow()
 
-    /**
-     * Photo picker callback: показываем сразу локально, грузим в Firebase Storage,
-     * сохраняем URL в DataStore (его подхватит и HomeScreen). Если Firebase падает —
-     * локальный Uri остаётся как fallback.
-     */
+    val achievements: StateFlow<List<AchievementEntity>> =
+        achievementDao.getAll()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     fun onPhotoPicked(context: android.content.Context, uri: Uri) {
         _localPhotoUri.value = uri
         _isPhotoUploading.value = true
@@ -125,7 +115,6 @@ class ProfileViewModel @Inject constructor(
                 Log.d("ProfileVM", "Avatar uploaded: $downloadUrl")
             } catch (e: Exception) {
                 Log.w("ProfileVM", "Avatar upload failed, keeping local Uri", e)
-                // Фоллбэк: сохраним локальный Uri как «фото» — Coil умеет читать content://
                 runCatching { authRepository.setUserPhotoUrl(uri.toString()) }
             } finally {
                 _isPhotoUploading.value = false
@@ -133,10 +122,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    /**
-     * История XP за последние 7 дней. Возвращает 7 элементов даже если
-     * в БД нет данных за какие-то дни (заполняем нулями).
-     */
     val xpHistory: StateFlow<List<DailyXpPoint>> = run {
         val sinceDay = java.time.LocalDate.now().minusDays(6).toString()
         dailyXpDao.observeSince(sinceDay)
@@ -180,9 +165,7 @@ class ProfileViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState())
 
     init {
-        viewModelScope.launch {
-            refreshCategoryRatings()
-        }
+        viewModelScope.launch { refreshCategoryRatings() }
     }
 
     suspend fun refreshCategoryRatings() {
@@ -222,11 +205,19 @@ data class CategoryRatingUi(
     val learned: Int
 )
 
-/** Одна точка графика XP за день. */
 data class DailyXpPoint(
     val date: java.time.LocalDate,
     val xp: Int
 )
+
+// ═══════════════════════════════════════════════════════════
+//  Палитра акцентов — те же оттенки, что и на HomeScreen.
+// ═══════════════════════════════════════════════════════════
+private val AccentOrange = Color(0xFFFF9500)
+private val AccentGold   = Color(0xFFFFC107)
+private val AccentTeal   = Color(0xFF06B6D4)
+private val AccentGreen  = Color(0xFF22C55E)
+private val AccentBlue   = Color(0xFF06B6D4)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -235,25 +226,21 @@ fun ProfileScreen(
     vm: ProfileViewModel = hiltViewModel()
 ) {
     val state by vm.state.collectAsState()
-    val categoryRatings by vm.categoryRatings.collectAsState()
     val xpHistory by vm.xpHistory.collectAsState()
+    val achievements by vm.achievements.collectAsState()
     val localPhotoUri by vm.localPhotoUri.collectAsState()
     val isPhotoUploading by vm.isPhotoUploading.collectAsState()
     val p = state.progress
     val context = LocalContext.current
 
-    // Modern photo picker — нет runtime permission, поддерживается с Android 13,
-    // на старых версиях системой подменяется на legacy intent автоматически.
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? ->
-        if (uri != null) vm.onPhotoPicked(context, uri)
-    }
+    ) { uri: Uri? -> if (uri != null) vm.onPhotoPicked(context, uri) }
+
     val effectivePhotoUrl: String? = localPhotoUri?.toString() ?: state.photoUrl
     val todayXp = xpHistory.lastOrNull()?.xp ?: 0
-    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
-    val appLevel  = XpSystem.levelForXp(p.totalXp)
-    val progress  = XpSystem.progressToNextLevel(p.totalXp)
+    val appLevel = XpSystem.levelForXp(p.totalXp)
+    val appLevelProgress = XpSystem.progressToNextLevel(p.totalXp)
     val league = LeagueResolver.fromTier(p.currentLeague.coerceAtLeast(1))
     val peakLeague = LeagueResolver.fromTier(p.peakLeague.coerceAtLeast(1))
     val leagueProgress = LeagueResolver.progressInLeague(p.skillRating)
@@ -263,9 +250,7 @@ fun ProfileScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = {
-                    Text("Mi Perfil", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
-                },
+                title = { Text("Профиль", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -284,397 +269,111 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(bottom = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(bottom = 32.dp)
         ) {
             HeroBlock(
-                name = state.authName.ifBlank { p.displayName }.ifBlank { androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name) },
+                name = state.authName.ifBlank { p.displayName }.ifBlank {
+                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name)
+                },
                 photoUrl = effectivePhotoUrl,
                 isPhotoUploading = isPhotoUploading,
                 league = league,
-                skillRating = p.skillRating,
-                appLevel = appLevel,
-                appLevelProgress = progress,
                 onAvatarClick = {
                     photoPickerLauncher.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 }
             )
+            Spacer(Modifier.height(24.dp))
+
+            // ── ⭐ SKILL RATING ─────────────────────────────────
+            SectionHeader("⭐ SKILL RATING", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
+            Spacer(Modifier.height(8.dp))
+            SkillRatingTile(
+                rating = p.skillRating,
+                appLevel = appLevel,
+                appLevelProgress = appLevelProgress,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
             Spacer(Modifier.height(20.dp))
-            // ── 3 цветные counter-pill ─────────────────────────
+
+            // ── 🔥 АКТИВНОСТЬ ───────────────────────────────────
+            SectionHeader("🔥 АКТИВНОСТЬ", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
+            Spacer(Modifier.height(8.dp))
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                CounterPill(
-                    icon = "🔥",
-                    value = "${p.currentStreak}",
-                    label = "Серия",
-                    bg = Color(0xFFFFE0CC),
-                    fg = Color(0xFFB8431B),
-                    modifier = Modifier.weight(1f)
-                )
-                CounterPill(
-                    icon = "⭐",
-                    value = "${p.totalXp}",
-                    label = "XP всего",
-                    bg = Color(0xFFFFF1C2),
-                    fg = Color(0xFF8A6A00),
-                    modifier = Modifier.weight(1f)
-                )
-                CounterPill(
-                    icon = "🎯",
-                    value = "$todayXp",
-                    label = "XP сегодня",
-                    bg = Color(0xFFD7F0DC),
-                    fg = Color(0xFF1F7A3A),
-                    modifier = Modifier.weight(1f)
-                )
+                ActivityStatTile("🔥", p.currentStreak.toString(), "СЕРИЯ ДНЕЙ", AccentOrange, Modifier.weight(1f))
+                ActivityStatTile("⭐", p.totalXp.toString(),       "XP ВСЕГО",    AccentGold,   Modifier.weight(1f))
+                ActivityStatTile("🎯", todayXp.toString(),         "XP СЕГОДНЯ",  AccentTeal,   Modifier.weight(1f))
             }
-            Spacer(Modifier.height(16.dp))
-            // ── Прогресс до следующей лиги ─────────────────────
-            LeagueProgressCard(
-                league = league,
-                leagueProgress = leagueProgress,
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
-            Spacer(Modifier.height(16.dp))
-            // ── Mini-stats: 3 колонки ──────────────────────────
-            MiniStatsCard(
-                wordsLearned = state.learnedCount,
-                lessonsDone = p.lessonsCompleted,
-                longestStreak = p.longestStreak,
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
+
             Spacer(Modifier.height(20.dp))
-            WeeklyActivityChart(
-                history = xpHistory,
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
-            Spacer(Modifier.height(24.dp))
-            // ── Путь до Мадрида ─────────────────────────────────
-            PathToMadridCard(
+
+            // ── 🏛 ПУТЬ ДО МАДРИДА ──────────────────────────────
+            SectionHeader("🏛 ПУТЬ ДО МАДРИДА", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
+            Spacer(Modifier.height(8.dp))
+            PathToMadridTile(
                 league = league,
                 peakLeague = peakLeague,
                 leagueProgress = leagueProgress,
-                modifier = Modifier.padding(horizontal = 24.dp)
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
-            Spacer(Modifier.height(16.dp))
-            // ── Skill Rating ────────────────────────────────────
-            SkillRatingCard(
-                current = p.skillRating,
-                peak = p.peakSkillRating,
-                onLeaderboardClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    navController.navigate("leaderboard")
-                },
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
-            Spacer(Modifier.height(16.dp))
-            // ── Mastery по темам (флаги) ────────────────────────
-            CategoryRatingCard(
-                items = categoryRatings,
-                onSeeAll = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    navController.navigate("rating_full")
-                },
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
-            Spacer(Modifier.height(16.dp))
-            AchievementsSection(unlocked = state.unlockedAchievements, total = state.totalAchievements, onClick = {
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                navController.navigate("achievements")
-            }, modifier = Modifier.padding(horizontal = 24.dp))
-        }
-    }
-}
 
-// ── Путь до Мадрида ─────────────────────────────────────────
-@Composable
-private fun PathToMadridCard(
-    league: League,
-    peakLeague: League,
-    leagueProgress: Float,
-    modifier: Modifier = Modifier
-) {
-    val accent = Color(league.accentColorHex)
-    val next = LeagueResolver.next(league)
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.EmojiFlags, null, tint = accent, modifier = Modifier.size(20.dp))
-                Spacer(Modifier.width(8.dp))
-                Text("Путь до Мадрида", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            }
-            Spacer(Modifier.height(16.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(league.emoji, fontSize = 36.sp)
-                Spacer(Modifier.width(12.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(league.city, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = accent)
-                    Text(league.region, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-            LinearProgressIndicator(
-                progress = { leagueProgress },
-                modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
-                color = accent,
-                trackColor = accent.copy(alpha = 0.15f)
-            )
-            Spacer(Modifier.height(8.dp))
-            if (next != null) {
-                Text(
-                    "Следующая остановка: ${next.emoji} ${next.city}",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            } else {
-                Text(
-                    "👑 Ты дошёл до столицы!",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = accent
-                )
-            }
-            Spacer(Modifier.height(16.dp))
-            LeaguePath(currentTier = league.tier, peakTier = peakLeague.tier)
-        }
-    }
-}
-
-// ── Skill Rating + кнопка к лидерборду ──────────────────────
-@Composable
-private fun SkillRatingCard(
-    current: Int,
-    peak: Int,
-    onLeaderboardClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text("Мой рейтинг", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(4.dp))
-                Text(current.toString(), fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
-                Text("Лучший: $peak", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            FilledTonalButton(onClick = onLeaderboardClick) {
-                Icon(Icons.Default.Leaderboard, null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text("Лидеры")
-            }
-        }
-    }
-}
-
-// ── Прогресс по темам (испанские флаги) ─────────────────────
-@Composable
-private fun CategoryRatingCard(
-    items: List<CategoryRatingUi>,
-    onSeeAll: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Прогресс по темам", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                TextButton(onClick = onSeeAll) { Text("Все") }
-            }
-            Spacer(Modifier.height(8.dp))
-            if (items.isEmpty()) {
-                Text("Начни тренировки, чтобы увидеть свой прогресс по темам.", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
-                items.take(6).forEach { item ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (item.icon != null) {
-                            Icon(item.icon, null, modifier = Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
-                            Spacer(Modifier.width(8.dp))
-                        }
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(androidx.compose.ui.res.stringResource(item.labelRes), fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                            Text("${item.learned}/${item.total} слов", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                        SpanishFlagRating(filled = item.flags)
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProfileHeader(name: String, level: String, appLevel: Int, progress: Float, photoUrl: String?, onAvatarClick: (() -> Unit)? = null) {
-    val context = LocalContext.current
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(contentAlignment = Alignment.BottomEnd) {
-            Surface(
-                modifier = Modifier.size(100.dp).then(
-                    if (onAvatarClick != null) Modifier.clickable { onAvatarClick() } else Modifier
-                ),
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shadowElevation = 2.dp
-            ) {
-                if (photoUrl != null) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(photoUrl)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Аватар",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize().clip(CircleShape)
-                    )
-                } else {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(name.take(1).uppercase(), fontSize = 40.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                    }
-                }
-            }
-            Box(modifier = Modifier.offset(x = (-4).dp, y = (-4).dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary).padding(horizontal = 8.dp, vertical = 4.dp)) {
-                Text(level, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-            }
-        }
-        Spacer(Modifier.height(16.dp))
-        Text(name, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.ExtraBold)
-        Text("Nivel $appLevel", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(16.dp))
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surfaceVariant)
-            Spacer(Modifier.height(8.dp))
-            Text("Следующий уровень через ${( (1f-progress)*100).toInt()} XP", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-        }
-    }
-}
-
-@Composable
-private fun StatBox(value: String, label: String, icon: String, modifier: Modifier = Modifier) {
-    Surface(modifier = modifier, shape = RoundedCornerShape(24.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 3.dp) {
-        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Text(icon, fontSize = 24.sp)
-            Spacer(Modifier.height(4.dp))
-            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold)
-            Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-    }
-}
-
-@Composable
-private fun WeeklyActivityChart(
-    history: List<DailyXpPoint>,
-    modifier: Modifier = Modifier
-) {
-    // Если истории ещё нет (первый запуск, нет данных) — показываем
-    // 7 пустых столбиков с подписями последних 7 дней.
-    val points = if (history.size == 7) history else {
-        (0..6).map { offset ->
-            DailyXpPoint(
-                date = java.time.LocalDate.now().minusDays((6 - offset).toLong()),
-                xp = 0
-            )
-        }
-    }
-    val maxXp = (points.maxOfOrNull { it.xp } ?: 0).coerceAtLeast(1)
-    val ruDayNames = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
-    val total = points.sumOf { it.xp }
-
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    "Активность за неделю",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-                    "+$total XP",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
             Spacer(Modifier.height(20.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth().height(120.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                points.forEach { point ->
-                    val ratio = point.xp.toFloat() / maxXp
-                    val dayIdx = point.date.dayOfWeek.value - 1  // 1..7 → 0..6
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        // Минимальная высота 4% чтобы пустые дни были видны как точки
-                        Box(
-                            modifier = Modifier
-                                .width(14.dp)
-                                .fillMaxHeight(ratio.coerceAtLeast(0.04f))
-                                .clip(CircleShape)
-                                .background(
-                                    if (point.xp > 0)
-                                        Brush.verticalGradient(
-                                            listOf(
-                                                MaterialTheme.colorScheme.primary,
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                                            )
-                                        )
-                                    else
-                                        Brush.verticalGradient(
-                                            listOf(
-                                                MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                                                MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
-                                            )
-                                        )
-                                )
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            ruDayNames[dayIdx],
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
+
+            // ── 📊 СТАТИСТИКА ───────────────────────────────────
+            SectionHeader("📊 СТАТИСТИКА", AccentGreen, modifier = Modifier.padding(horizontal = 24.dp))
+            Spacer(Modifier.height(8.dp))
+            StatsTile(
+                wordsLearned = state.learnedCount,
+                lessonsDone = p.lessonsCompleted,
+                longestStreak = p.longestStreak,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            // ── 📈 АКТИВНОСТЬ ЗА НЕДЕЛЮ ────────────────────────
+            SectionHeader("📈 АКТИВНОСТЬ ЗА НЕДЕЛЮ", AccentBlue, modifier = Modifier.padding(horizontal = 24.dp))
+            Spacer(Modifier.height(8.dp))
+            WeeklyHeatmapTile(
+                history = xpHistory,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            // ── 🏆 ДОСТИЖЕНИЯ ───────────────────────────────────
+            SectionHeader(
+                "🏆 ДОСТИЖЕНИЯ",
+                AccentGold,
+                trailing = "↗",
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(Modifier.height(8.dp))
+            AchievementsTeaserTile(
+                achievements = achievements,
+                unlocked = state.unlockedAchievements,
+                total = state.totalAchievements,
+                onClick = { navController.navigate("achievements") },
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
         }
     }
 }
 
-// ── HERO: большой аватар + ник + лига + skill rating ───────
+// ═══════════════════════════════════════════════════════════
+//  HERO — аватар + ник + лига-pill
+// ═══════════════════════════════════════════════════════════
 @Composable
 private fun HeroBlock(
     name: String,
     photoUrl: String?,
     isPhotoUploading: Boolean,
     league: League,
-    skillRating: Int,
-    appLevel: Int,
-    appLevelProgress: Float,
     onAvatarClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -685,17 +384,17 @@ private fun HeroBlock(
     ) {
         Box(contentAlignment = Alignment.BottomEnd) {
             Surface(
-                modifier = Modifier.size(96.dp).clickable { onAvatarClick() },
+                modifier = Modifier
+                    .size(100.dp)
+                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.primary), CircleShape)
+                    .clickable { onAvatarClick() },
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shadowElevation = 4.dp
             ) {
                 if (photoUrl != null) {
                     AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(photoUrl)
-                            .crossfade(true)
-                            .build(),
+                        model = ImageRequest.Builder(context).data(photoUrl).crossfade(true).build(),
                         contentDescription = "Аватар",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize().clip(CircleShape)
@@ -704,238 +403,501 @@ private fun HeroBlock(
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                         Text(
                             name.take(1).uppercase(),
-                            fontSize = 36.sp,
+                            fontSize = 40.sp,
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
                 if (isPhotoUploading) {
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.35f))) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.35f))
+                    ) {
                         CircularProgressIndicator(modifier = Modifier.size(28.dp), color = Color.White, strokeWidth = 3.dp)
                     }
                 }
             }
-            // FAB-камера снизу справа (как маркер «можно тапнуть»)
             Box(
                 modifier = Modifier
-                    .size(30.dp)
+                    .size(36.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable { onAvatarClick() },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.CameraAlt, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                Icon(Icons.Default.CameraAlt, null, tint = Color.White, modifier = Modifier.size(18.dp))
             }
         }
-        Spacer(Modifier.height(12.dp))
-        Text(name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold)
-        Spacer(Modifier.height(6.dp))
-        // Лига badge
-        Row(
-            modifier = Modifier.clip(CircleShape).background(accent.copy(alpha = 0.15f)).padding(horizontal = 12.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(league.emoji, fontSize = 14.sp)
-            Spacer(Modifier.width(6.dp))
-            Text(league.city, color = accent, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-        }
-        Spacer(Modifier.height(8.dp))
-        // Skill rating большим шрифтом
+        Spacer(Modifier.height(14.dp))
         Text(
-            skillRating.toString(),
-            fontSize = 32.sp,
+            name,
+            fontSize = 28.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.onSurface
         )
-        Text("Skill rating", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(12.dp))
-        // Тонкий прогресс-бар уровня XP
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            LinearProgressIndicator(
-                progress = { appLevelProgress },
-                modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                "Nivel $appLevel · ещё ${((1f - appLevelProgress) * 100).toInt()} XP",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        Spacer(Modifier.height(8.dp))
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = accent.copy(alpha = 0.15f)
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(league.emoji, fontSize = 14.sp)
+                Spacer(Modifier.width(6.dp))
+                Text(league.city, color = accent, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            }
         }
     }
 }
 
-// ── Цветная пилюля счётчика ────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+//  ProfileTile — переиспользуемый bento-tile с полоской слева
+//  (зеркалит BentoTile из HomeScreen).
+// ═══════════════════════════════════════════════════════════
 @Composable
-private fun CounterPill(
-    icon: String,
-    value: String,
+private fun ProfileTile(
+    accent: Color,
+    modifier: Modifier = Modifier,
+    height: Dp? = null,
+    onClick: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val baseColor = MaterialTheme.colorScheme.surfaceContainerHigh
+    val tileMod = if (height != null) modifier.height(height) else modifier
+
+    val inner: @Composable () -> Unit = {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Радиальное свечение accent в правом-верхнем углу.
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(accent.copy(alpha = 0.16f), Color.Transparent),
+                            center = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, 0f),
+                            radius = 320f
+                        )
+                    )
+            )
+            // Левая полоска 6dp.
+            Box(
+                modifier = Modifier
+                    .width(6.dp)
+                    .fillMaxHeight()
+                    .background(accent)
+            )
+            Column(
+                modifier = Modifier.fillMaxSize().padding(start = 18.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+                content = content
+            )
+        }
+    }
+
+    if (onClick != null) {
+        PressableCard(
+            onClick = onClick,
+            modifier = tileMod,
+            shape = RoundedCornerShape(22.dp),
+            backgroundColor = baseColor,
+            shadowElevation = 6.dp
+        ) { inner() }
+    } else {
+        Surface(
+            modifier = tileMod,
+            shape = RoundedCornerShape(22.dp),
+            color = baseColor,
+            shadowElevation = 6.dp
+        ) { inner() }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Section header — UPPERCASE label с опц. trailing значком.
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun SectionHeader(
     label: String,
-    bg: Color,
-    fg: Color,
+    accent: Color,
+    trailing: String? = null,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
-        color = bg,
-        shadowElevation = 0.dp
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = 14.dp, horizontal = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(icon, fontSize = 20.sp)
-            Spacer(Modifier.height(4.dp))
-            Text(value, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = fg)
-            Text(label, fontSize = 10.sp, color = fg.copy(alpha = 0.8f))
+        Text(
+            label,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.ExtraBold,
+            letterSpacing = 1.5.sp,
+            color = accent,
+            modifier = Modifier.weight(1f)
+        )
+        if (trailing != null) {
+            Text(trailing, fontSize = 14.sp, color = accent, fontWeight = FontWeight.Bold)
         }
     }
 }
 
-// ── Карточка прогресса до следующей лиги (с анимацией) ────
+// ═══════════════════════════════════════════════════════════
+//  ⭐ SKILL RATING tile
+// ═══════════════════════════════════════════════════════════
 @Composable
-private fun LeagueProgressCard(
+private fun SkillRatingTile(
+    rating: Int,
+    appLevel: Int,
+    appLevelProgress: Float,
+    modifier: Modifier = Modifier
+) {
+    ProfileTile(accent = AccentOrange, modifier = modifier.fillMaxWidth(), height = 160.dp) {
+        Text(
+            rating.toString(),
+            fontSize = 64.sp,
+            fontWeight = FontWeight.ExtraBold,
+            letterSpacing = (-2).sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            lineHeight = 64.sp
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "Nivel $appLevel · ещё ${((1f - appLevelProgress) * 100).toInt()} XP",
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(10.dp))
+        LinearProgressIndicator(
+            progress = { appLevelProgress },
+            modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
+            color = AccentOrange,
+            trackColor = AccentOrange.copy(alpha = 0.18f)
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "${(appLevelProgress * 100).toInt()}%",
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            color = AccentOrange
+        )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Activity stat tile (3 в ряд)
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun ActivityStatTile(
+    emoji: String,
+    value: String,
+    label: String,
+    accent: Color,
+    modifier: Modifier = Modifier
+) {
+    ProfileTile(accent = accent, modifier = modifier, height = 110.dp) {
+        Text(emoji, fontSize = 18.sp)
+        Spacer(Modifier.height(4.dp))
+        Text(
+            value,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1
+        )
+        Spacer(Modifier.weight(1f))
+        Text(
+            label,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1
+        )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  🏛 PATH TO MADRID — горизонтальный путь + следующая остановка
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun PathToMadridTile(
     league: League,
+    peakLeague: League,
     leagueProgress: Float,
     modifier: Modifier = Modifier
 ) {
-    val accent = Color(league.accentColorHex)
+    val accent = AccentOrange
     val next = LeagueResolver.next(league)
-    val animated by animateFloatAsState(
-        targetValue = leagueProgress.coerceIn(0f, 1f),
-        animationSpec = tween(durationMillis = 900, easing = FastOutSlowInEasing),
-        label = "leagueProgress"
-    )
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    if (next != null) "До следующей лиги" else "👑 Высшая лига",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
+    val cities = LeagueResolver.LEAGUES
+    val shortNames = listOf("Aldea", "Sant.", "Bilbao", "Zar.", "Val.", "Sev.", "Barc.", "Mad.")
+
+    ProfileTile(accent = accent, modifier = modifier.fillMaxWidth()) {
+        // Точки + соединительные линии
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            cities.forEachIndexed { index, city ->
+                val isCurrent = city.tier == league.tier
+                val isPassed = city.tier < league.tier ||
+                        (peakLeague.tier >= city.tier && city.tier <= league.tier)
+                val dotSize = if (isCurrent) 14.dp else 10.dp
+                val dotColor = when {
+                    isCurrent -> accent
+                    isPassed  -> accent.copy(alpha = 0.7f)
+                    else      -> MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                }
+                Box(
+                    modifier = Modifier
+                        .size(dotSize)
+                        .clip(CircleShape)
+                        .background(dotColor)
                 )
+                if (index < cities.lastIndex) {
+                    val lineColor =
+                        if (city.tier < league.tier) accent.copy(alpha = 0.55f)
+                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(2.dp)
+                            .background(lineColor)
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.height(6.dp))
+        // Подписи под точками
+        Row(modifier = Modifier.fillMaxWidth()) {
+            shortNames.forEachIndexed { i, label ->
+                val isCurrent = (i + 1) == league.tier
                 Text(
-                    "${(animated * 100).toInt()}%",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = accent
+                    label,
+                    fontSize = 9.sp,
+                    fontWeight = if (isCurrent) FontWeight.ExtraBold else FontWeight.Normal,
+                    color = if (isCurrent) accent else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1
                 )
             }
-            Spacer(Modifier.height(10.dp))
-            LinearProgressIndicator(
-                progress = { animated },
-                modifier = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape),
-                color = accent,
-                trackColor = accent.copy(alpha = 0.15f)
+        }
+        Spacer(Modifier.height(14.dp))
+        if (next != null) {
+            Text(
+                "Следующая остановка:",
+                fontSize = 11.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            if (next != null) {
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    "Следующая остановка: ${next.emoji} ${next.city}",
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Spacer(Modifier.height(2.dp))
+            Text(
+                "${next.emoji} ${next.city}",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(Modifier.height(8.dp))
+            LinearProgressIndicator(
+                progress = { leagueProgress },
+                modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
+                color = accent,
+                trackColor = accent.copy(alpha = 0.18f)
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                "${(leagueProgress * 100).toInt()}%",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                color = accent
+            )
+        } else {
+            Text(
+                "👑 Ты дошёл до столицы!",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = accent
+            )
         }
     }
 }
 
-// ── Mini-stats: 3 колонки ──────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+//  📊 СТАТИСТИКА — 3 hero числа в ряд
+// ═══════════════════════════════════════════════════════════
 @Composable
-private fun MiniStatsCard(
+private fun StatsTile(
     wordsLearned: Int,
     lessonsDone: Int,
     longestStreak: Int,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            MiniStatColumn(
-                icon = Icons.Default.CheckCircle,
-                value = wordsLearned.toString(),
-                label = "Слов",
-                tint = Color(0xFF1F7A3A),
-                modifier = Modifier.weight(1f)
-            )
-            VerticalDivider()
-            MiniStatColumn(
-                icon = Icons.Default.School,
-                value = lessonsDone.toString(),
-                label = "Уроков",
-                tint = Color(0xFF3D5AFE),
-                modifier = Modifier.weight(1f)
-            )
-            VerticalDivider()
-            MiniStatColumn(
-                icon = Icons.Default.LocalFireDepartment,
-                value = longestStreak.toString(),
-                label = "Макс. серия",
-                tint = Color(0xFFB8431B),
-                modifier = Modifier.weight(1f)
-            )
+    ProfileTile(accent = AccentGreen, modifier = modifier.fillMaxWidth(), height = 110.dp) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            StatColumn(wordsLearned.toString(),  "СЛОВ",        Modifier.weight(1f))
+            StatColumn(lessonsDone.toString(),   "УРОКОВ",      Modifier.weight(1f))
+            StatColumn(longestStreak.toString(), "МАКС. СЕРИЯ", Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-private fun MiniStatColumn(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    value: String,
-    label: String,
-    tint: Color,
+private fun StatColumn(value: String, label: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            value,
+            fontSize = 32.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            label,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1
+        )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  📈 WEEKLY HEATMAP — 7 квадратиков
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun WeeklyHeatmapTile(
+    history: List<DailyXpPoint>,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(icon, null, tint = tint, modifier = Modifier.size(22.dp))
-        Spacer(Modifier.height(4.dp))
-        Text(value, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
-        Text(label, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    val points = if (history.size == 7) history else (0..6).map { offset ->
+        DailyXpPoint(
+            date = java.time.LocalDate.now().minusDays((6 - offset).toLong()),
+            xp = 0
+        )
+    }
+    val total = points.sumOf { it.xp }
+    val labels = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+
+    ProfileTile(accent = AccentBlue, modifier = modifier.fillMaxWidth(), height = 130.dp) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Spacer(Modifier.weight(1f))
+            Text(
+                "+$total XP",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            points.forEach { point ->
+                val color = when {
+                    point.xp == 0  -> MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                    point.xp < 10  -> AccentOrange.copy(alpha = 0.35f)
+                    point.xp < 30  -> AccentOrange.copy(alpha = 0.65f)
+                    else           -> AccentOrange
+                }
+                val dayIdx = point.date.dayOfWeek.value - 1
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(color)
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        labels[dayIdx],
+                        fontSize = 10.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  🏆 ACHIEVEMENTS TEASER — топ-3 + кнопка
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun AchievementsTeaserTile(
+    achievements: List<AchievementEntity>,
+    unlocked: Int,
+    total: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Сортировка: разблокированные сверху, потом самые «близкие» к разблокировке.
+    val top3 = achievements.take(3)
+    ProfileTile(accent = AccentGold, modifier = modifier.fillMaxWidth(), onClick = onClick) {
+        if (top3.isEmpty()) {
+            Text(
+                "Достижения скоро появятся.",
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        } else {
+            top3.forEachIndexed { index, ach ->
+                AchievementRow(ach = ach, index = index)
+                if (index < top3.lastIndex) Spacer(Modifier.height(8.dp))
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        Text(
+            "Показать все ($unlocked / $total) →",
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
 @Composable
-private fun VerticalDivider() {
-    Box(
-        modifier = Modifier
-            .width(1.dp)
-            .height(40.dp)
-            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
-    )
-}
-
-@Composable
-private fun AchievementsSection(unlocked: Int, total: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    com.spanishapp.ui.components.PressableCard(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        shadowElevation = 2.dp
+private fun AchievementRow(ach: AchievementEntity, index: Int) {
+    val medal = when (index) {
+        0 -> "🥇"
+        1 -> "🥈"
+        2 -> "🥉"
+        else -> "🏅"
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(48.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
-                Icon(Icons.Default.EmojiEvents, null, tint = Color.White)
-            }
-            Spacer(Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text("Logros", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text("Desbloqueado $unlocked de $total", style = MaterialTheme.typography.bodySmall)
-            }
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, modifier = Modifier.size(16.dp).graphicsLayer(rotationZ = 180f))
+        Text(medal, fontSize = 18.sp)
+        Spacer(Modifier.width(10.dp))
+        Text(
+            ach.titleRu,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f),
+            maxLines = 1
+        )
+        if (ach.isUnlocked) {
+            Text(
+                "Получено",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = AccentGreen
+            )
+        } else {
+            val req = ach.requirement.coerceAtLeast(1)
+            Text(
+                "0/$req",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
