@@ -43,22 +43,23 @@ private data class Game(
     @androidx.annotation.StringRes val descriptionRes: Int,
     val icon: ImageVector,
     val color: Color,
-    val route: String
+    val route: String,
+    val watermark: com.spanishapp.ui.home.WatermarkTheme
 )
 
 // Описания через @StringRes — переключаются по языку. Названия игр
 // (Artículos, Rápido, etc.) — испанский бренд, не локализуем.
 private val GAMES: List<Game> = listOf(
-    Game("Artículos",      com.spanishapp.R.string.game_articles_desc,  Icons.Default.Category,   Color(0xFF7B2FBE), "game_articles"),
-    Game("Rápido",         com.spanishapp.R.string.game_speed_desc,     Icons.Default.Timer,      Color(0xFFE040FB), "game_speed"),
-    Game("Verbos",         com.spanishapp.R.string.game_verbos_desc,    Icons.Default.Translate,  Color(0xFF2196F3), "conjugation_quiz"),
-    Game("Sopa de Letras", com.spanishapp.R.string.game_sopa_desc,      Icons.Default.GridOn,     Color(0xFF4CAF50), "game_sopa"),
-    Game("Palabra Maestra",com.spanishapp.R.string.game_palabra_desc,   Icons.Default.TextFields, Color(0xFFFF9500), "game_palabra"),
-    Game("Cálculo",        com.spanishapp.R.string.game_math_desc,      Icons.Default.Calculate,  Color(0xFFF44336), "game_math"),
-    Game("Crucigrama",     com.spanishapp.R.string.game_crossword_desc, Icons.Default.BorderAll,  Color(0xFF26A69A), "game_crossword"),
+    Game("Artículos",      com.spanishapp.R.string.game_articles_desc,  Icons.Default.Category,   Color(0xFF7B2FBE), "game_articles",   com.spanishapp.ui.home.WatermarkTheme.GAME_ARTICLES),
+    Game("Rápido",         com.spanishapp.R.string.game_speed_desc,     Icons.Default.Timer,      Color(0xFFE040FB), "game_speed",      com.spanishapp.ui.home.WatermarkTheme.GAME_SPEED),
+    Game("Verbos",         com.spanishapp.R.string.game_verbos_desc,    Icons.Default.Translate,  Color(0xFF2196F3), "conjugation_quiz",com.spanishapp.ui.home.WatermarkTheme.GAME_VERBS),
+    Game("Sopa de Letras", com.spanishapp.R.string.game_sopa_desc,      Icons.Default.GridOn,     Color(0xFF4CAF50), "game_sopa",       com.spanishapp.ui.home.WatermarkTheme.GAME_SOPA),
+    Game("Palabra Maestra",com.spanishapp.R.string.game_palabra_desc,   Icons.Default.TextFields, Color(0xFFFF9500), "game_palabra",    com.spanishapp.ui.home.WatermarkTheme.GAME_PALABRA),
+    Game("Cálculo",        com.spanishapp.R.string.game_math_desc,      Icons.Default.Calculate,  Color(0xFFF44336), "game_math",       com.spanishapp.ui.home.WatermarkTheme.GAME_MATH),
+    Game("Crucigrama",     com.spanishapp.R.string.game_crossword_desc, Icons.Default.BorderAll,  Color(0xFF26A69A), "game_crossword",  com.spanishapp.ui.home.WatermarkTheme.GAME_CROSSWORD),
     Game("Libros",         com.spanishapp.R.string.game_libros_desc,    Icons.Default.MenuBook,   Color(
         0xFFBEA62F
-    ), "game_libros")
+    ), "game_libros", com.spanishapp.ui.home.WatermarkTheme.GAME_LIBROS)
 )
 
 @Composable
@@ -144,6 +145,11 @@ private fun GameCard(
         shape = RoundedCornerShape(20.dp),
         shadowElevation = 4.dp
     ) {
+      Box(modifier = Modifier.fillMaxSize()) {
+        // Per-game thematic watermark (stopwatch / book / arrows / …)
+        // sits behind the icon + title, anchored bottom-right, alpha
+        // ~0.13. Same system used by Bento and Continue cards.
+        com.spanishapp.ui.home.ThematicWatermark(theme = game.watermark, accent = game.color)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -197,6 +203,7 @@ private fun GameCard(
                 Spacer(Modifier.height(0.dp))
             }
         }
+      } // Box
     }
 }
 

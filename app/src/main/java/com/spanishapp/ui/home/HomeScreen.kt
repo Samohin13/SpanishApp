@@ -555,6 +555,7 @@ private fun ContinuePager(
                         ?: "Начни с любого курса",
                     cta      = "Продолжить →",
                     accent   = LessonAccent,
+                    theme    = WatermarkTheme.LESSON,
                     enabled  = lastLesson != null,
                     onClick  = { lastLesson?.let(onLesson) }
                 )
@@ -564,6 +565,7 @@ private fun ContinuePager(
                         ?: "Открой первую книгу",
                     cta      = "Читать →",
                     accent   = BookAccent,
+                    theme    = WatermarkTheme.BOOK,
                     enabled  = true,
                     onClick  = { lastBook?.let { onBook(it.libroId) } ?: onBook(1) }
                 )
@@ -573,6 +575,7 @@ private fun ContinuePager(
                         ?: "Все сеты пройдены 🎉",
                     cta      = "К сету →",
                     accent   = SetAccent,
+                    theme    = WatermarkTheme.FLASHCARD_SET,
                     enabled  = nextSet != null,
                     onClick  = { nextSet?.let { onSet(it.id) } }
                 )
@@ -582,6 +585,7 @@ private fun ContinuePager(
                         ?: "Пока нет слабых слов",
                     cta      = "Повторить →",
                     accent   = WeakAccent,
+                    theme    = WatermarkTheme.WEAK_WORD,
                     enabled  = weakWord != null,
                     onClick  = onWeak
                 )
@@ -600,7 +604,8 @@ private fun ContinueCard(
     cta: String,
     accent: Color,
     enabled: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    theme: WatermarkTheme? = null
 ) {
     PressableCard(
         onClick = onClick,
@@ -625,6 +630,12 @@ private fun ContinueCard(
                         )
                     )
             )
+            // Per-theme thematic watermark in the bottom-right area —
+            // same system used by BentoTile so Continue cards visually
+            // match the rest of the home surface.
+            if (theme != null) {
+                ThematicWatermark(theme = theme, accent = accent)
+            }
             // Soft accent stripe on the left edge.
             Box(
                 modifier = Modifier
@@ -1749,6 +1760,19 @@ internal fun TopicCard(
                             )
                     )
             ) {
+                // Block-index-based thematic watermark (rocket / house /
+                // lightning / mountain) painted over the gradient. White
+                // accent so it reads against the coloured header.
+                if (!unit.isLocked) {
+                    val blockIdx = unit.id.toIntOrNull() ?: 0
+                    val blockTheme = when (((blockIdx - 1) % 4 + 4) % 4) {
+                        0 -> WatermarkTheme.BLOCK_ROCKET
+                        1 -> WatermarkTheme.BLOCK_HOME
+                        2 -> WatermarkTheme.BLOCK_LIGHTNING
+                        else -> WatermarkTheme.BLOCK_MOUNTAIN
+                    }
+                    ThematicWatermark(theme = blockTheme, accent = Color.White)
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
