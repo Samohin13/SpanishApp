@@ -91,6 +91,11 @@ private val BookAccent   = Color(0xFF22C55E)
 private val SetAccent    = Color(0xFFF97316)
 private val WeakAccent   = Color(0xFF06B6D4)
 
+// Bento per-tile accents — must all differ visually so the 2×2 doesn't look
+// like two pairs. GoalAccent is coral-red to be distinct from RatingAccent.
+private val RatingAccent = Color(0xFFFFC107)   // amber-gold
+private val GoalAccent   = Color(0xFFEF4444)   // coral red
+
 // League names per current_league index (1..8).
 private val LEAGUE_NAMES = listOf(
     "Aldea", "Santiago", "Bilbao", "Zaragoza",
@@ -195,26 +200,7 @@ fun HomeScreen(
                 }
             }
 
-            // ── Quick Actions ──────────────────────────────────
-            item {
-                QuickActionsRow(
-                    onRandom = {
-                        scope.launch { randomWord = viewModel.pickRandomWord() }
-                    },
-                    onPronounce = { navController.navigate("pronunciation") },
-                    onWeak      = { navController.navigate("practice") },
-                    onGame      = {
-                        val games = listOf(
-                            "game_articles", "game_speed", "game_math",
-                            "game_crossword", "game_sopa", "game_palabra"
-                        )
-                        navController.navigate(games.random())
-                    }
-                )
-                Spacer(Modifier.height(12.dp))
-            }
-
-            // ── Course pills (moved ABOVE Bento per user feedback) ────
+            // ── Course pills (above Bento per user feedback) ──────────
             item {
                 CoursePills(
                     activeLevel = state.spanishLevel,
@@ -246,6 +232,25 @@ fun HomeScreen(
             // ── Streak heatmap ─────────────────────────────────
             item {
                 WeekHeatmap(weeklyMinutes)
+                Spacer(Modifier.height(12.dp))
+            }
+
+            // ── Quick Actions (very bottom per user feedback) ─────────
+            item {
+                QuickActionsRow(
+                    onRandom = {
+                        scope.launch { randomWord = viewModel.pickRandomWord() }
+                    },
+                    onPronounce = { navController.navigate("pronunciation") },
+                    onWeak      = { navController.navigate("practice") },
+                    onGame      = {
+                        val games = listOf(
+                            "game_articles", "game_speed", "game_math",
+                            "game_crossword", "game_sopa", "game_palabra"
+                        )
+                        navController.navigate(games.random())
+                    }
+                )
                 Spacer(Modifier.height(20.dp))
             }
         }
@@ -1249,17 +1254,13 @@ private fun BentoRow(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            // ── BOOK tile ─────────────────────────────────────────
-            BentoTile(
-                modifier = Modifier.weight(1f),
-                accent = BookAccent,
-                onClick = onBookClick
-            ) {
+            // ── BOOK tile (green) ─────────────────────────────────
+            BentoTile(modifier = Modifier.weight(1f), accent = BookAccent, onClick = onBookClick) {
                 BentoHeader(emoji = "📚", label = "КНИГА", accent = BookAccent)
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.height(10.dp))
                 Text(
                     book?.let { "Libro #${it.libroId}" } ?: "Открой книгу",
-                    fontSize = 17.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
@@ -1269,7 +1270,7 @@ private fun BentoRow(
                 Spacer(Modifier.height(8.dp))
                 LinearProgressIndicator(
                     progress = { (book?.bestScore ?: 0) / 100f },
-                    modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)),
+                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
                     color = BookAccent,
                     trackColor = BookAccent.copy(alpha = 0.18f)
                 )
@@ -1282,30 +1283,21 @@ private fun BentoRow(
                 )
             }
 
-            // ── RATING tile (hero number) ─────────────────────────
-            BentoTile(
-                modifier = Modifier.weight(1f),
-                accent = GoldColor,
-                onClick = onLeagueClick
-            ) {
-                BentoHeader(emoji = "🏅", label = "РЕЙТИНГ", accent = GoldColor)
-                Spacer(Modifier.weight(1f))
+            // ── RATING tile (amber-gold, hero number) ──────────────
+            BentoTile(modifier = Modifier.weight(1f), accent = RatingAccent, onClick = onLeagueClick) {
+                BentoHeader(emoji = "🏅", label = "РЕЙТИНГ", accent = RatingAccent)
+                Spacer(Modifier.height(10.dp))
                 Text(
                     "$rating",
-                    fontSize = 44.sp,                  // ← hero display number
+                    fontSize = 40.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onSurface,
                     letterSpacing = (-1.5).sp,
-                    lineHeight = 44.sp
+                    lineHeight = 42.sp
                 )
-                Spacer(Modifier.height(2.dp))
+                Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(GoldColor)
-                    )
+                    Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(RatingAccent))
                     Text(
                         LEAGUE_NAMES.getOrElse(league - 1) { "Aldea" },
                         fontSize = 13.sp,
@@ -1317,29 +1309,31 @@ private fun BentoRow(
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            // ── DICTIONARY tile ───────────────────────────────────
-            BentoTile(
-                modifier = Modifier.weight(1f),
-                accent = WeakAccent,
-                onClick = onDictClick
-            ) {
+            // ── DICTIONARY tile (cyan-blue) ────────────────────────
+            BentoTile(modifier = Modifier.weight(1f), accent = WeakAccent, onClick = onDictClick) {
                 BentoHeader(emoji = "🔍", label = "СЛОВАРЬ", accent = WeakAccent)
                 Spacer(Modifier.height(10.dp))
                 if (recent.isEmpty()) {
-                    Spacer(Modifier.weight(1f))
                     Text(
                         "Найди\nпервое слово",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        lineHeight = 18.sp
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        lineHeight = 20.sp,
+                        letterSpacing = (-0.3).sp
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        "Открой словарь",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 } else {
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                         recent.take(3).forEach { w ->
                             Surface(
                                 onClick = { onWordChip(w) },
-                                shape = RoundedCornerShape(10.dp),
+                                shape = RoundedCornerShape(8.dp),
                                 color = WeakAccent.copy(alpha = 0.14f),
                                 border = androidx.compose.foundation.BorderStroke(1.dp, WeakAccent.copy(alpha = 0.35f)),
                                 modifier = Modifier.fillMaxWidth()
@@ -1349,13 +1343,14 @@ private fun BentoRow(
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
                     }
+                    Spacer(Modifier.height(6.dp))
                     Text(
                         "${recent.size} ${pluralRu(recent.size, "слово", "слова", "слов")} в истории",
                         fontSize = 11.sp,
@@ -1364,27 +1359,23 @@ private fun BentoRow(
                 }
             }
 
-            // ── GOAL tile ─────────────────────────────────────────
-            BentoTile(
-                modifier = Modifier.weight(1f),
-                accent = GoldColor,
-                onClick = onGoalClick
-            ) {
+            // ── GOAL tile (coral red — distinct from gold rating) ──
+            BentoTile(modifier = Modifier.weight(1f), accent = GoalAccent, onClick = onGoalClick) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    BentoHeader(emoji = "🎯", label = "ЦЕЛЬ ДНЯ", accent = GoldColor, modifier = Modifier.weight(1f))
+                    BentoHeader(emoji = "🎯", label = "ЦЕЛЬ ДНЯ", accent = GoalAccent, modifier = Modifier.weight(1f))
                     Text(
                         "${goals.completedCount}/3",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = if (goals.allDone) Color(0xFF2E7D32) else GoldColor
+                        color = if (goals.allDone) Color(0xFF2E7D32) else GoalAccent
                     )
                 }
                 Spacer(Modifier.height(10.dp))
                 GoalLine("Сет карточек", goals.flashcardSetCompleted)
                 GoalLine("Страница книги", goals.bookPageRead)
                 GoalLine("Слово дня", goals.wordOfDaySolved)
-                Spacer(Modifier.weight(1f))
                 if (goals.allDone) {
+                    Spacer(Modifier.height(8.dp))
                     Surface(
                         shape = RoundedCornerShape(8.dp),
                         color = Color(0xFF2E7D32).copy(alpha = 0.18f),
@@ -1434,29 +1425,22 @@ private fun BentoTile(
         backgroundColor = baseColor,
         shadowElevation = 6.dp
     ) {
-        // Two-layer background: subtle radial accent glow at top-right corner
-        // of the tile gives the "premium" depth look without overpowering text.
+        // Subtle radial accent glow in the top-right corner — identity comes
+        // from the colored UPPERCASE label inside the tile, not a stripe.
         Box(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
                         Brush.radialGradient(
-                            colors = listOf(accent.copy(alpha = 0.18f), Color.Transparent),
+                            colors = listOf(accent.copy(alpha = 0.16f), Color.Transparent),
                             center = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, 0f),
                             radius = 320f
                         )
                     )
             )
-            // Left accent stripe — identity hint.
-            Box(
-                modifier = Modifier
-                    .width(3.dp)
-                    .fillMaxHeight()
-                    .background(accent.copy(alpha = 0.65f))
-            )
             Column(
-                modifier = Modifier.fillMaxSize().padding(start = 18.dp, end = 16.dp, top = 16.dp, bottom = 14.dp),
+                modifier = Modifier.fillMaxSize().padding(16.dp),
                 content = content
             )
         }
