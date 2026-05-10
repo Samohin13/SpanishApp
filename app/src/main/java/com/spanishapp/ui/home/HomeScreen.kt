@@ -1425,9 +1425,8 @@ private fun BentoTile(
         backgroundColor = baseColor,
         shadowElevation = 6.dp
     ) {
-        // Subtle radial accent glow in the top-right corner — identity comes
-        // from the colored UPPERCASE label inside the tile, not a stripe.
         Box(modifier = Modifier.fillMaxSize()) {
+            // Radial accent glow in the top-right corner — depth.
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -1439,8 +1438,15 @@ private fun BentoTile(
                         )
                     )
             )
+            // Left accent stripe — 6dp (was 3dp before, user wanted thicker).
+            Box(
+                modifier = Modifier
+                    .width(6.dp)
+                    .fillMaxHeight()
+                    .background(accent)
+            )
             Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
+                modifier = Modifier.fillMaxSize().padding(start = 18.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
                 content = content
             )
         }
