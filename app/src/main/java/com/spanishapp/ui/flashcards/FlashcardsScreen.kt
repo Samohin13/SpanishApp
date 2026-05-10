@@ -165,10 +165,7 @@ private fun SessionCompleteBody(
             Text(error, style = MaterialTheme.typography.bodyLarge)
         } else {
             val accuracy = if (total > 0) (correct * 100 / total) else 0
-            com.spanishapp.ui.components.AnimatedScreenTitle(
-                text = "🎉 Сессия завершена!",
-                fontSize = 24.sp
-            )
+            Text("Сессия завершена!", fontWeight = FontWeight.SemiBold, fontSize = 24.sp)
             Spacer(Modifier.height(20.dp))
             com.spanishapp.ui.components.CompletionBadge(
                 accuracyPercent = accuracy,

@@ -62,8 +62,9 @@ fun WeakWordsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    com.spanishapp.ui.components.AnimatedScreenTitle(
-                        text = "💪 " + stringResource(R.string.weak_title),
+                    Text(
+                        stringResource(R.string.weak_title),
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp
                     )
                 },

@@ -382,11 +382,10 @@ private fun CompactHeader(
         Column(modifier = Modifier.weight(1f)) {
             // Animated greeting reused — replayKey on greeting so morning →
             // afternoon transitions re-trigger the staggered reveal.
-            AnimatedScreenTitle(
-                text = greeting,
-                fontSize = 18.sp,
-                bold = true,
-                replayKey = greeting
+            Text(
+                greeting,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 18.sp
             )
             Text(
                 motivation,
@@ -799,12 +798,15 @@ private fun WordOfDayQuizSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        // Edge-to-edge: kill default 16dp horizontal "windowInsets" padding
+        // so the sheet stretches to phone edges and matches the screen width.
+        contentWindowInsets = { androidx.compose.foundation.layout.WindowInsets(0) }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 18.dp)
+                .padding(horizontal = 14.dp)
                 .padding(bottom = 24.dp)
         ) {
             // Header — same word + speak inside the sheet for context.
@@ -1042,113 +1044,126 @@ private fun LetterAssemblyQuiz(
     val target = remember(word.wordId) {
         word.spanish.substringAfterLast(' ').lowercase()
     }
+    // Track which positions in the scrambled bank have been used so each
+    // letter can only be tapped once per round (was: a→b→r→i→g→o; tapping
+    // the same "a" twice produced "aa..." and broke the check).
     val scrambled = remember(word.wordId) { target.toList().shuffled() }
+    val used = remember(word.wordId) { mutableStateListOf<Int>() }
     var typed by remember(word.wordId) { mutableStateOf("") }
     var checked by remember(word.wordId) { mutableStateOf(false) }
     val correct = checked && typed.equals(target, ignoreCase = true)
     LaunchedEffect(correct) { if (correct) onSolved() }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         Text(
-            word.russian,
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            "Собери: «${word.russian}»",
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(10.dp))
 
-        // Buffer panel — primary background + white text so it stays visible
-        // in both light and dark themes (matches PracticeScreen TYPING).
+        // Buffer panel — fixed height so it can't blow up to fill the column.
+        // Was using fillMaxSize() inside which expanded the Surface to absorb
+        // the whole pager page — letter buttons disappeared off-screen.
         val bufferBg = when {
-            !checked -> MaterialTheme.colorScheme.primary
+            !checked -> MaterialTheme.colorScheme.surfaceContainerHighest
             correct  -> Color(0xFF1B5E20)
             else     -> Color(0xFF8B0000)
         }
+        val bufferTextColor = if (!checked && typed.isEmpty())
+            MaterialTheme.colorScheme.onSurfaceVariant else Color.White
         Surface(
-            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
-            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            shape = RoundedCornerShape(10.dp),
             color = bufferBg,
-            shadowElevation = 2.dp
+            border = androidx.compose.foundation.BorderStroke(
+                1.5.dp,
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+            )
         ) {
-            Box(modifier = Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.Center) {
+            Box(contentAlignment = Alignment.Center) {
                 Text(
                     typed.ifEmpty { "Тапни буквы ↓" },
                     fontSize = if (typed.isEmpty()) 13.sp else 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    letterSpacing = if (typed.isEmpty()) 0.sp else 2.sp
+                    color = bufferTextColor,
+                    letterSpacing = if (typed.isEmpty()) 0.sp else 3.sp
                 )
             }
         }
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(12.dp))
 
         if (!checked) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
-            ) {
-                scrambled.take(8).forEach { c ->
-                    Surface(
-                        onClick = { if (typed.length < target.length) typed += c },
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(width = 28.dp, height = 36.dp)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                c.toString(),
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-            }
-            if (scrambled.size > 8) {
-                Spacer(Modifier.height(4.dp))
+            // Letter bank — flow style, max 8 per row. Tapping a letter
+            // adds it to the buffer and marks that index as used so it
+            // greys out and can't be pressed again.
+            val rows = scrambled.withIndex().toList().chunked(8)
+            rows.forEach { rowItems ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
                 ) {
-                    scrambled.drop(8).forEach { c ->
+                    rowItems.forEach { (idx, c) ->
+                        val isUsed = used.contains(idx)
                         Surface(
-                            onClick = { if (typed.length < target.length) typed += c },
+                            onClick = {
+                                if (!isUsed && typed.length < target.length) {
+                                    used.add(idx)
+                                    typed += c
+                                }
+                            },
+                            enabled = !isUsed,
                             shape = RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(width = 28.dp, height = 36.dp)
+                            color = if (isUsed) MaterialTheme.colorScheme.surfaceContainerHigh
+                                    else MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(width = 36.dp, height = 42.dp),
+                            shadowElevation = if (isUsed) 0.dp else 2.dp
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Text(
                                     c.toString(),
-                                    color = Color.White,
-                                    fontSize = 16.sp,
+                                    color = if (isUsed) MaterialTheme.colorScheme.outline else Color.White,
+                                    fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                         }
                     }
                 }
+                if (rows.size > 1) Spacer(Modifier.height(6.dp))
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(10.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                TextButton(onClick = { typed = "" }) { Text("Очистить") }
-                Button(onClick = { checked = true }, enabled = typed.isNotEmpty()) {
-                    Text("Проверить")
+                TextButton(onClick = {
+                    typed = ""
+                    used.clear()
+                }) { Text("Очистить", fontSize = 13.sp) }
+                Button(
+                    onClick = { checked = true },
+                    enabled = typed.length == target.length,
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 6.dp)
+                ) {
+                    Text("Проверить", fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
             }
         } else {
             Spacer(Modifier.height(8.dp))
             Text(
-                if (correct) "Верно!" else "Правильно: $target",
+                if (correct) "✓ Верно!" else "Правильно: $target",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = if (correct) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error
             )
             Spacer(Modifier.height(8.dp))
-            TextButton(onClick = { typed = ""; checked = false }) { Text("Ещё раз") }
+            TextButton(onClick = {
+                typed = ""
+                checked = false
+                used.clear()
+            }) { Text("Ещё раз") }
         }
     }
 }

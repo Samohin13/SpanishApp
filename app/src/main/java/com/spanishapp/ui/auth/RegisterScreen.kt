@@ -60,7 +60,7 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "📝 Регистрация", fontSize = 18.sp) },
+                title = { Text("Регистрация", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")

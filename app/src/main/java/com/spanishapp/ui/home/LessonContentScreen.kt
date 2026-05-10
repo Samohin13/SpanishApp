@@ -42,7 +42,7 @@ fun LessonContentScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "📖 " + lesson.title, fontSize = 16.sp) },
+                    title = { Text(lesson.title, fontWeight = FontWeight.SemiBold, fontSize = 16.sp) },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
                             Icon(Icons.Default.ArrowBack, contentDescription = "Назад")

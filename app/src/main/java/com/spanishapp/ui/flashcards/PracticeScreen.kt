@@ -282,10 +282,7 @@ fun PracticeScreen(
                 TopAppBar(
                     title = {
                         Column {
-                            com.spanishapp.ui.components.AnimatedScreenTitle(
-                                text = "🎯 Практика",
-                                fontSize = 18.sp
-                            )
+                            Text("Практика", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
                             if (!state.isLoading && !state.isFinished && state.rounds.isNotEmpty()) {
                                 Text(
                                     "${state.currentIndex + 1} / ${state.rounds.size}  ·  ✅ ${state.correctCount}  ❌ ${state.wrongCount}",
@@ -567,10 +564,7 @@ private fun FinishedView(
             }
         } else {
             val accuracy = if (total > 0) (correct * 100 / total) else 0
-            com.spanishapp.ui.components.AnimatedScreenTitle(
-                text = "🎉 Сессия завершена!",
-                fontSize = 24.sp
-            )
+            Text("Сессия завершена!", fontWeight = FontWeight.SemiBold, fontSize = 24.sp)
             Spacer(Modifier.height(20.dp))
             com.spanishapp.ui.components.CompletionBadge(
                 accuracyPercent = accuracy,

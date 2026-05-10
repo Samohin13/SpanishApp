@@ -125,7 +125,7 @@ fun QuizScreen(
         containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "❓ " + androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_quiz), fontSize = 18.sp) },
+                title = { Text(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_quiz), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {

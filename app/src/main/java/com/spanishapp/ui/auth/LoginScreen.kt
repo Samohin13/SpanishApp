@@ -42,7 +42,7 @@ fun LoginScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🔑 Вход", fontSize = 18.sp) },
+                title = { Text("Вход", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")

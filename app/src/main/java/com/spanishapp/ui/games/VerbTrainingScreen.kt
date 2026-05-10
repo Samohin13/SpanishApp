@@ -80,7 +80,7 @@ fun VerbTrainingScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🔤 " + stringResource(R.string.verb_title), fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.verb_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (state.showSetup || state.isGameOver) navController.popBackStack()

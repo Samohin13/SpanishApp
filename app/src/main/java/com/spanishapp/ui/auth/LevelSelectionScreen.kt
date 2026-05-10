@@ -80,10 +80,7 @@ fun LevelSelectionScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    com.spanishapp.ui.components.AnimatedScreenTitle(
-                        text = "🌟 Выбор уровня",
-                        fontSize = 18.sp
-                    )
+                    Text("Выбор уровня", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {

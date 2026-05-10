@@ -1104,10 +1104,7 @@ private fun VictoryScreen(
     ) {
         Spacer(Modifier.height(24.dp))
 
-        com.spanishapp.ui.components.AnimatedScreenTitle(
-            text = "🎉 Сессия завершена!",
-            fontSize = 24.sp
-        )
+        Text("Сессия завершена!", fontWeight = FontWeight.SemiBold, fontSize = 24.sp)
 
         Spacer(Modifier.height(20.dp))
 

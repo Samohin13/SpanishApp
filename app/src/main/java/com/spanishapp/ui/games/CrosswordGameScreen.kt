@@ -71,7 +71,7 @@ fun CrosswordGameScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🧩 " + stringResource(R.string.crw_title), fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.crw_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (state.showSetup) navController.popBackStack()

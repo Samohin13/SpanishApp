@@ -65,7 +65,7 @@ fun SettingsVoiceScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "🔊 " + stringResource(R.string.voice_announcer), fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.voice_announcer), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.btn_back))

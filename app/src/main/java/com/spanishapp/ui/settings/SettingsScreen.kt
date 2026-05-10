@@ -329,7 +329,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { com.spanishapp.ui.components.AnimatedScreenTitle(text = "⚙️ " + stringResource(R.string.title_settings), fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.title_settings), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -766,12 +766,18 @@ fun SettingsScreen(
             title = { Text(stringResource(R.string.settings_language_ui)) },
             text = {
                 Column {
+                    // 4 explicit languages with flag emojis. "System" option
+                    // dropped — explicit choice is clearer and lets users with
+                    // Spanish system locale still pick Russian for the UI.
+                    // Note: ua/es resource folders fall back to en/ru if not
+                    // translated yet (full translation is a separate task).
                     val options = listOf(
-                        "system" to stringResource(R.string.set_lang_system),
-                        "ru" to stringResource(R.string.set_lang_ru),
-                        "en" to stringResource(R.string.set_lang_en)
+                        Triple("ru", "🇷🇺", "Русский"),
+                        Triple("en", "🇬🇧", "English"),
+                        Triple("uk", "🇺🇦", "Українська"),
+                        Triple("es", "🇪🇸", "Español")
                     )
-                    options.forEach { (code, label) ->
+                    options.forEach { (code, flag, label) ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -790,7 +796,9 @@ fun SettingsScreen(
                         ) {
                             RadioButton(selected = code == uiLang, onClick = null)
                             Spacer(Modifier.width(12.dp))
-                            Text(label)
+                            Text(flag, fontSize = 22.sp)
+                            Spacer(Modifier.width(10.dp))
+                            Text(label, fontSize = 16.sp)
                         }
                     }
                 }

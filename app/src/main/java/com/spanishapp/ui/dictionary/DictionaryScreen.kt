@@ -240,8 +240,9 @@ fun DictionaryScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    com.spanishapp.ui.components.AnimatedScreenTitle(
-                        text = "📖 " + (if (selectedId == null) stringResource(R.string.dict_title) else myLists.firstOrNull { it.id == selectedId }?.name ?: stringResource(R.string.dict_list)),
+                    Text(
+                        if (selectedId == null) stringResource(R.string.dict_title) else myLists.firstOrNull { it.id == selectedId }?.name ?: stringResource(R.string.dict_list),
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp
                     )
                 },

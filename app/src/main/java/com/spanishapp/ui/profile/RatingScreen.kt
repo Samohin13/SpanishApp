@@ -58,8 +58,9 @@ fun RatingScreen(
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
                 title = {
-                    com.spanishapp.ui.components.AnimatedScreenTitle(
-                        text = "📊 " + androidx.compose.ui.res.stringResource(R.string.rating_topic_progress),
+                    Text(
+                        androidx.compose.ui.res.stringResource(R.string.rating_topic_progress),
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp
                     )
                 },

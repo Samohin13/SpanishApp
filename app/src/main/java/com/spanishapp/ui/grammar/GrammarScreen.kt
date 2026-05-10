@@ -75,8 +75,9 @@ fun GrammarScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    com.spanishapp.ui.components.AnimatedScreenTitle(
-                        text = "📚 " + androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_grammar),
+                    Text(
+                        androidx.compose.ui.res.stringResource(com.spanishapp.R.string.title_grammar),
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 18.sp
                     )
                 },
