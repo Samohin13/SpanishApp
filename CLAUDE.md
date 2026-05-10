@@ -2,6 +2,37 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
+> Последнее обновление: **2026-05-10, сессия 11 (UX-фидбэк sweep, 7 фаз)**
+
+## 11. Сессия 11 — UX-фидбэк sweep (2026-05-10)
+
+Пользователь прислал документ с 17 пунктами фидбэка после теста на телефоне. Разбито на 7 фаз, каждая отдельным коммитом в master:
+
+| Фаза | Коммит | Что |
+|---|---|---|
+| 1 | `67c869c` | **Practice fix**: новый `getPracticePool` (3-bucket fallback weak→shaky→reviewed) — фикс пустого экрана у новых юзеров. Добавлен `LinearProgressIndicator` (раньше его НЕ БЫЛО, был только текст «1/20»). Тайтл-строка получила «✅ N ❌ N» tally. |
+| 2 | `3c2a159` | **AnimatedScreenTitle** — переиспользуемый Composable (`ui/components/AnimatedScreenTitle.kt`): slide-in + letter-stagger + emoji bounce. Раскат на 10 экранов: PlacementTest, LevelSelection, Profile, Achievements, Rating, Dictionary, WeakWords, Grammar, Leaderboard, Practice. |
+| 3 | `f1f115c` | **HomeScreen redesign**: `HorizontalPager` для курсов с peek + scale, time-of-day greeting + 8 ротируемых мотиваций, цвета A1/A2/B1/B2 ярче, diagonal gradient, новый `SpanishCitiesWatermark` (Madrid/Barcelona/Sevilla skylines) на фон, убраны «(N блоков)», title 28sp ExtraBold, фикс дубля «Блок 1». |
+| 4 | `e6676a7` | **Color audit**: PlacementTest selected-state переписан, LevelSelection — hero-карточки с brand-градиентами, Crucigrama icon↔levels color sync, GameLevelCell получил `accent: Color`, LessonIntro теперь использует `unit.color` а не Material primary. |
+| 6 | `3b4dde1` | **Profile**: фото-пикер (`PickVisualMedia`, без runtime permission) → Firebase Storage `users/{uid}/avatar.jpg` → автообновление в HomeScreen header. Hero-блок (96dp avatar + nick + лига + skill rating 32sp), 3 counter-pills, LeagueProgressCard с анимированной заливкой, MiniStatsCard (слов/уроков/макс. серия). |
+| 7 | `bf57990` | **CompletionBadge** (`ui/components/CompletionBadge.kt`): круглая медаль через Canvas, gradient-кольцо, цветной фон по точности (Gold≥90 / Silver≥70 / Bronze≥50 / Steel<50), 4 звезды, лента «¡COMPLETADO!». Подключено на 3 финальных экранах: Practice, Flashcards, LessonSession. Кубковая система TrophyTier в SetRow карточках НЕ тронута — это разные вещи. |
+| 5 | `e690702` | **TTS tap-anywhere**: новый `Modifier.tappableForSpeak()` — тап по всей карточке озвучивает, иконка динамика остаётся как visual cue. Применён в WeakWords, Dictionary detail, Practice header, VerbTraining audio card, Pronunciation. AiChat (уже tap-word) и LibroRead (уже long-press) не тронуты. |
+
+**Новые компоненты в `ui/components/`**:
+- `AnimatedScreenTitle.kt` — анимация заголовков
+- `CompletionBadge.kt` — медаль завершения
+- `SpanishCitiesWatermark.kt` (под `ui/home/`) — фоновый паттерн
+
+**Новый DAO**: `WordDao.getPracticePool(limit)` — UNION ALL по 3 bucket'ам.
+
+**Build**: `./gradlew :app:assembleDebug` BUILD SUCCESSFUL после всех 7 фаз. APK работоспособен.
+
+**Что осталось из фидбэка** (отложено как полировка):
+- 🟡 Pre-existing deprecation warnings (AutoMirrored icons) — не из новых правок
+- 🟡 Финальный sweep размеров элементов — частично сделан в Phase 7 (типографика финальных экранов унифицирована)
+
+---
+
 > Последнее обновление: **2026-05-10, сессия 10 (release-blocker верификация)**
 
 ## 10. Сессия 10 — release-blocker верификация (2026-05-10)
