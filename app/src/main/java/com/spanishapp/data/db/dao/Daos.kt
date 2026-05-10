@@ -166,6 +166,35 @@ interface WordDao {
     """)
     suspend fun getAllWeak(limit: Int): List<WordEntity>
 
+    /**
+     * Practice pool: broader than getAllWeak() so the screen never sits empty
+     * for fresh users. Picks from three buckets in priority order:
+     *   1. Truly weak (≥3 reviews, accuracy <60%) — highest priority.
+     *   2. "Shaky" (any number of reviews, accuracy <80% OR last answer wrong).
+     *   3. Recently studied (any reviewed word) as a fallback warm-up.
+     * UNION ALL preserves bucket order; the outer SELECT trims to :limit
+     * deduping by id (a word that's both weak and shaky shouldn't appear twice).
+     */
+    @Query("""
+        SELECT * FROM words WHERE id IN (
+            SELECT id FROM (
+                SELECT id, 1 AS bucket FROM words
+                  WHERE total_reviews > 2
+                    AND (correct_reviews * 1.0 / total_reviews) < 0.6
+                UNION
+                SELECT id, 2 AS bucket FROM words
+                  WHERE total_reviews > 0
+                    AND (correct_reviews * 1.0 / total_reviews) < 0.8
+                UNION
+                SELECT id, 3 AS bucket FROM words
+                  WHERE total_reviews > 0
+                ORDER BY bucket ASC
+                LIMIT :limit
+            )
+        )
+    """)
+    suspend fun getPracticePool(limit: Int): List<WordEntity>
+
     // ── Level mastery (for unlock progression) ────────────────
     @Query("SELECT COUNT(*) FROM words WHERE level = :level")
     suspend fun countByLevel(level: String): Int

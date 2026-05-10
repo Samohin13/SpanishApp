@@ -88,12 +88,15 @@ class PracticeViewModel @Inject constructor(
 
     private fun loadSession() {
         viewModelScope.launch {
-            val weak = wordDao.getAllWeak(limit = 20)
+            // Broadened pool: weak first, then shaky, then any reviewed word.
+            // Old behavior required ≥3 reviews + <60% accuracy — fresh users hit
+            // an empty screen and assumed the screen was broken. Pool fills now.
+            val weak = wordDao.getPracticePool(limit = 20)
             if (weak.isEmpty()) {
                 _state.value = PracticeState(
                     isLoading = false,
                     isFinished = true,
-                    error = "Слабых слов пока нет — занимайся карточками, и они появятся здесь автоматически."
+                    error = "Сначала пройди хотя бы один сет в Карточках — после этого здесь появятся слова, которые стоит подтянуть."
                 )
                 return@launch
             }
@@ -244,28 +247,50 @@ fun PracticeScreen(
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     com.spanishapp.ui.components.TrackStudyMinutes()
 
+    // Smooth progress bar fill: animates the % towards (currentIndex+1)/total.
+    // Always visible during a session so the user sees forward motion after each
+    // answer — fixes "шкала не заполняется" feedback (there literally was no bar).
+    val progressTarget = if (state.rounds.isEmpty()) 0f
+                         else (state.currentIndex + (if (state.pickedIndex != null || state.typingChecked) 1 else 0))
+                              .coerceAtMost(state.rounds.size).toFloat() / state.rounds.size
+    val animatedProgress by androidx.compose.animation.core.animateFloatAsState(
+        targetValue = progressTarget,
+        animationSpec = androidx.compose.animation.core.tween(durationMillis = 450),
+        label = "practiceProgress"
+    )
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text("Практика", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        if (!state.isLoading && !state.isFinished && state.rounds.isNotEmpty()) {
-                            Text(
-                                "${state.currentIndex + 1} / ${state.rounds.size}",
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+            Column {
+                TopAppBar(
+                    title = {
+                        Column {
+                            Text("Практика", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            if (!state.isLoading && !state.isFinished && state.rounds.isNotEmpty()) {
+                                Text(
+                                    "${state.currentIndex + 1} / ${state.rounds.size}  ·  ✅ ${state.correctCount}  ❌ ${state.wrongCount}",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                         }
                     }
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
-                    }
+                )
+                if (!state.isLoading && !state.isFinished && state.rounds.isNotEmpty()) {
+                    LinearProgressIndicator(
+                        progress = { animatedProgress },
+                        modifier = Modifier.fillMaxWidth().height(6.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
                 }
-            )
+            }
         }
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
