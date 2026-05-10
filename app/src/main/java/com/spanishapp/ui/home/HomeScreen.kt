@@ -611,6 +611,20 @@ private fun ContinueCard(
         enabled = enabled
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
+            // Radial accent glow in the top-right corner — same "premium
+            // light spot" effect used by BentoTile, applied here so the
+            // Continue cards visually match the bento section below.
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(accent.copy(alpha = 0.18f), Color.Transparent),
+                            center = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, 0f),
+                            radius = 320f
+                        )
+                    )
+            )
             // Soft accent stripe on the left edge.
             Box(
                 modifier = Modifier
