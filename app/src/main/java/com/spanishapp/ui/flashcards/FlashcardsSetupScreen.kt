@@ -240,7 +240,11 @@ fun FlashcardsSetupScreen(
             // ── Sets list ─────────────────────────────────────
             // First 10 cards stagger in; longer lists pass through to keep scroll smooth.
             itemsIndexed(sets, key = { _, it -> it.set.id }) { idx, row ->
-                val rowContent: @Composable () -> Unit = {
+                // SetRow itself; .animateItem() must NOT be applied when
+                // wrapped inside StaggeredEntrance — it only works on direct
+                // LazyListScope children and inside the AnimatedVisibility
+                // wrapper it caused the row to jitter.
+                val rowContent: @Composable (Modifier) -> Unit = { mod ->
                     SetRow(
                         row = row,
                         onClick = {
@@ -251,15 +255,15 @@ fun FlashcardsSetupScreen(
                                 )
                             }
                         },
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 4.dp)
-                            .animateItem()
+                        modifier = mod.padding(horizontal = 16.dp, vertical = 4.dp)
                     )
                 }
                 if (idx < 10) {
-                    StaggeredEntrance(index = idx + 3) { rowContent() }
+                    StaggeredEntrance(index = idx + 3) {
+                        rowContent(Modifier)
+                    }
                 } else {
-                    rowContent()
+                    rowContent(Modifier.animateItem())
                 }
             }
         }
