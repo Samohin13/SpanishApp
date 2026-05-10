@@ -396,13 +396,17 @@ private fun HeroBlock(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(contentAlignment = Alignment.BottomEnd) {
+            // Neutral dark grey base + radial gradient with the league's
+            // accent for personality. Was `primaryContainer` which renders
+            // as a muddy brown in dark theme — exactly what the user
+            // disliked.
             Surface(
                 modifier = Modifier
                     .size(100.dp)
-                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.primary), CircleShape)
+                    .border(BorderStroke(2.dp, accent), CircleShape)
                     .clickable { onAvatarClick() },
                 shape = CircleShape,
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 shadowElevation = 4.dp
             ) {
                 if (photoUrl != null) {
@@ -413,12 +417,22 @@ private fun HeroBlock(
                         modifier = Modifier.fillMaxSize().clip(CircleShape)
                     )
                 } else {
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                androidx.compose.ui.graphics.Brush.radialGradient(
+                                    colors = listOf(accent.copy(alpha = 0.35f), Color.Transparent),
+                                    radius = 140f
+                                )
+                            )
+                    ) {
                         Text(
                             name.take(1).uppercase(),
                             fontSize = 40.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
