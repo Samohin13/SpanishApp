@@ -1,56 +1,84 @@
 package com.spanishapp.ui.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 /**
  * Stylised watermark of three Spanish-city skylines (Madrid / Barcelona / Sevilla)
- * drawn in the lower half of the parent. Uses very low alpha so it blends into
- * the background without competing with content.
+ * docked to the BOTTOM of the parent in a fixed-height strip and softened with
+ * a vertical gradient that fades the skyline tops into the background colour —
+ * gives the illusion of a city horizon emerging from haze just above the
+ * bottom nav bar.
  *
- * Pass an explicit [color] when overlaying onto a coloured surface (e.g. white
- * over a course-card gradient). Default uses the theme's onBackground at 5% alpha.
+ * @param bgColor the colour of the screen behind this watermark — used to
+ *   blend the top of the skyline into the surrounding canvas. Pass
+ *   `MaterialTheme.colorScheme.background` from the calling composable.
+ * @param stripHeight how tall the silhouette band is. Defaults to 130.dp.
+ * @param color paint colour for the buildings themselves.
  */
 @Composable
 fun SpanishCitiesWatermark(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f)
+    color: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10f),
+    bgColor: Color = MaterialTheme.colorScheme.background,
+    stripHeight: Dp = 130.dp
 ) {
-    Canvas(modifier = modifier.fillMaxSize()) {
-        val w = size.width
-        val h = size.height
-        // Three skylines spaced across the lower half.
-        // Each skyline occupies ~30% width and sits along the bottom edge.
-        val skylineHeight = (h * 0.18f).coerceAtMost(160f)
-        val baseline = h * 0.92f
+    Box(modifier = modifier) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(stripHeight)
+        ) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val w = size.width
+                val h = size.height
+                val baseline = h * 0.98f
+                val skylineHeight = h * 0.85f
 
-        drawSkylineMadrid(
-            origin = Offset(w * 0.02f, baseline - skylineHeight),
-            width = w * 0.32f,
-            height = skylineHeight,
-            color = color
-        )
-        drawSkylineBarcelona(
-            origin = Offset(w * 0.36f, baseline - skylineHeight),
-            width = w * 0.30f,
-            height = skylineHeight,
-            color = color
-        )
-        drawSkylineSevilla(
-            origin = Offset(w * 0.68f, baseline - skylineHeight),
-            width = w * 0.30f,
-            height = skylineHeight,
-            color = color
-        )
+                drawSkylineMadrid(
+                    origin = Offset(w * 0.02f, baseline - skylineHeight),
+                    width = w * 0.32f, height = skylineHeight, color = color
+                )
+                drawSkylineBarcelona(
+                    origin = Offset(w * 0.36f, baseline - skylineHeight),
+                    width = w * 0.30f, height = skylineHeight, color = color
+                )
+                drawSkylineSevilla(
+                    origin = Offset(w * 0.68f, baseline - skylineHeight),
+                    width = w * 0.30f, height = skylineHeight, color = color
+                )
+
+                // Vertical haze gradient on top of the skylines: bgColor at
+                // the very top of the strip (full opacity) → transparent at
+                // ~60% down. The skyline silhouettes fade in softly from
+                // above instead of having a hard horizon line.
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(bgColor, Color.Transparent),
+                        startY = 0f,
+                        endY   = h * 0.60f
+                    ),
+                    size = Size(w, h)
+                )
+            }
+        }
     }
 }
 
