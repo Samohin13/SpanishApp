@@ -3,6 +3,8 @@ package com.spanishapp.ui
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
@@ -11,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -128,17 +131,60 @@ object Navigation {
 
         if (initialStartDest == null) return
 
+        // Bottom-bar destinations get the Material "Fade Through" pattern
+        // (fade + slight scale) because they're peer-level — slide-horizontal
+        // would imply a forward/back relationship which doesn't apply.
+        // Everything else keeps the original Shared Axis X slide+fade.
+        val bottomBarRoutes = setOf("home", "games", "flashcards", "dictionary", "profile")
+        fun NavBackStackEntry.baseRoute(): String? =
+            destination.route?.substringBefore('?')?.substringBefore('/')
+        fun isPeerNav(from: NavBackStackEntry, to: NavBackStackEntry): Boolean =
+            from.baseRoute() in bottomBarRoutes && to.baseRoute() in bottomBarRoutes
+
         NavHost(
             navController = navController,
             startDestination = initialStartDest,
             modifier = modifier,
-            // Forward navigation: incoming screen slides in from the right ~30%,
-            // outgoing one fades + drifts left ~15% (parallax depth feel).
-            enterTransition = { slideInHorizontally(tween(300)) { it / 3 } + fadeIn(tween(300)) },
-            exitTransition = { slideOutHorizontally(tween(300)) { -it / 6 } + fadeOut(tween(220)) },
-            // Back navigation: mirror.
-            popEnterTransition = { slideInHorizontally(tween(300)) { -it / 6 } + fadeIn(tween(300)) },
-            popExitTransition = { slideOutHorizontally(tween(300)) { it / 3 } + fadeOut(tween(220)) }
+            enterTransition = {
+                if (isPeerNav(initialState, targetState)) {
+                    // Material "Fade Through" — incoming half: 210ms after a 90ms gap
+                    fadeIn(tween(durationMillis = 210, delayMillis = 90)) +
+                    scaleIn(
+                        initialScale = 0.92f,
+                        animationSpec = tween(durationMillis = 210, delayMillis = 90)
+                    )
+                } else {
+                    slideInHorizontally(tween(300)) { it / 3 } + fadeIn(tween(300))
+                }
+            },
+            exitTransition = {
+                if (isPeerNav(initialState, targetState)) {
+                    // Material "Fade Through" — outgoing half: quick 90ms fade+shrink
+                    fadeOut(tween(durationMillis = 90)) +
+                    scaleOut(targetScale = 0.92f, animationSpec = tween(durationMillis = 90))
+                } else {
+                    slideOutHorizontally(tween(300)) { -it / 6 } + fadeOut(tween(220))
+                }
+            },
+            popEnterTransition = {
+                if (isPeerNav(initialState, targetState)) {
+                    fadeIn(tween(durationMillis = 210, delayMillis = 90)) +
+                    scaleIn(
+                        initialScale = 0.92f,
+                        animationSpec = tween(durationMillis = 210, delayMillis = 90)
+                    )
+                } else {
+                    slideInHorizontally(tween(300)) { -it / 6 } + fadeIn(tween(300))
+                }
+            },
+            popExitTransition = {
+                if (isPeerNav(initialState, targetState)) {
+                    fadeOut(tween(durationMillis = 90)) +
+                    scaleOut(targetScale = 0.92f, animationSpec = tween(durationMillis = 90))
+                } else {
+                    slideOutHorizontally(tween(300)) { it / 3 } + fadeOut(tween(220))
+                }
+            }
         ) {
             // ── Авторизация ──────────────────────────────────
             composable("welcome") { WelcomeScreen(navController) }
