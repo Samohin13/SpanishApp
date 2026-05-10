@@ -984,6 +984,7 @@ private fun FillBlankQuiz(
     }
     var picked by remember(word.wordId) { mutableStateOf<String?>(null) }
     var solved by remember(word.wordId) { mutableStateOf(false) }
+    val sound = rememberAnswerSound()
 
     Column(
         modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
@@ -1003,6 +1004,7 @@ private fun FillBlankQuiz(
             correct = target,
             picked  = picked,
             onPick  = { p ->
+                if (p == target) sound.correct() else sound.wrong()
                 if (picked == null || picked != target) picked = p
                 if (p == target && !solved) { solved = true; onSolved() }
             }
@@ -1023,6 +1025,7 @@ private fun TranslationQuiz(
     }
     var picked by remember(word.wordId) { mutableStateOf<String?>(null) }
     var solved by remember(word.wordId) { mutableStateOf(false) }
+    val sound = rememberAnswerSound()
 
     Column(
         modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
@@ -1040,6 +1043,7 @@ private fun TranslationQuiz(
             correct = target,
             picked  = picked,
             onPick  = { p ->
+                if (p == target) sound.correct() else sound.wrong()
                 if (picked == null || picked != target) picked = p
                 if (p == target && !solved) { solved = true; onSolved() }
             }
@@ -1063,6 +1067,7 @@ private fun PronunciationQuiz(
     }
     var picked by remember(word.wordId) { mutableStateOf<String?>(null) }
     var solved by remember(word.wordId) { mutableStateOf(false) }
+    val sound = rememberAnswerSound()
 
     Column(
         modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
@@ -1101,6 +1106,7 @@ private fun PronunciationQuiz(
             correct = target,
             picked  = picked,
             onPick  = { p ->
+                if (p == target) sound.correct() else sound.wrong()
                 if (picked == null || picked != target) picked = p
                 if (p == target && !solved) { solved = true; onSolved() }
             }
@@ -1125,7 +1131,12 @@ private fun LetterAssemblyQuiz(
     var typed by remember(word.wordId) { mutableStateOf("") }
     var checked by remember(word.wordId) { mutableStateOf(false) }
     val correct = checked && typed.equals(target, ignoreCase = true)
-    LaunchedEffect(correct) { if (correct) onSolved() }
+    val sound = rememberAnswerSound()
+    LaunchedEffect(checked) {
+        if (checked) {
+            if (correct) { sound.correct(); onSolved() } else sound.wrong()
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),

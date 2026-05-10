@@ -273,6 +273,7 @@ fun PracticeScreen(
 ) {
     val state by vm.state.collectAsState()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    val sound = com.spanishapp.ui.components.rememberAnswerSound()
     com.spanishapp.ui.components.TrackStudyMinutes()
 
     // Smooth progress bar fill: animates the % towards (currentIndex+1)/total.
@@ -342,18 +343,26 @@ fun PracticeScreen(
                                 round = round,
                                 picked = state.pickedIndex,
                                 onPick = { idx ->
+                                    val correct = idx == round.correctIndex
                                     haptic.performHapticFeedback(
-                                        if (idx == round.correctIndex)
+                                        if (correct)
                                             androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress
                                         else
                                             androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove
                                     )
+                                    if (correct) sound.correct() else sound.wrong()
                                     vm.pick(idx)
                                 },
                                 onSpeak = { vm.speakCurrent() },
                                 onNext = { vm.next() }
                             )
-                            PracticeMode.TYPING -> TypingRoundView(
+                            PracticeMode.TYPING -> {
+                                LaunchedEffect(state.typingChecked, state.currentIndex) {
+                                    if (state.typingChecked) {
+                                        if (state.typingCorrect) sound.correct() else sound.wrong()
+                                    }
+                                }
+                                TypingRoundView(
                                 round = round,
                                 typed = state.typedAnswer,
                                 checked = state.typingChecked,
@@ -368,6 +377,7 @@ fun PracticeScreen(
                                 onNext = { vm.next() },
                                 onSpeak = { vm.speakCurrent() }
                             )
+                            }
                         }
                     }
                 }

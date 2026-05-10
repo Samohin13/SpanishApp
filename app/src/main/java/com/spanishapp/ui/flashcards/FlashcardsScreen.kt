@@ -52,6 +52,7 @@ fun FlashcardsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    val sound = com.spanishapp.ui.components.rememberAnswerSound()
     com.spanishapp.ui.components.TrackStudyMinutes()
 
     var leaguePromotion by remember { mutableStateOf<LeaguePromotion?>(null) }
@@ -129,6 +130,10 @@ fun FlashcardsScreen(
                     onSpeakExample = viewModel::speakExample,
                     onAnswer = { button ->
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        when (button) {
+                            ReviewButton.GOOD, ReviewButton.EASY -> sound.correct()
+                            ReviewButton.HARD -> sound.wrong()
+                        }
                         viewModel.answer(button)
                     }
                 )

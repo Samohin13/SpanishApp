@@ -1,6 +1,7 @@
 package com.spanishapp.ui.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -116,8 +118,11 @@ fun CompletionBadge(
 
     val ribbonColor = MaterialTheme.colorScheme.primary
 
+    Box(modifier = modifier, contentAlignment = Alignment.TopCenter) {
+        if (acc == 100) {
+            Confetti100Burst(modifier = Modifier.fillMaxSize())
+        }
     Column(
-        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // ── Medal itself ───────────────────────────────────────────
@@ -214,6 +219,7 @@ fun CompletionBadge(
             }
         }
     }
+    }
 }
 
 /**
@@ -257,3 +263,58 @@ private fun RibbonShape(
         content()
     }
 }
+
+@Composable
+private fun Confetti100Burst(modifier: Modifier = Modifier) {
+    val pieces = remember {
+        List(60) {
+            ConfettiPiece(
+                startX = (Math.random() * 2 - 1).toFloat(),
+                startY = -1f,
+                color = listOf(
+                    Color(0xFFFFD700), Color(0xFFFF6B6B), Color(0xFF4ECDC4),
+                    Color(0xFF95E1D3), Color(0xFFC56CF0), Color(0xFFFFA45B)
+                ).random(),
+                horizDrift = (Math.random() * 0.6 - 0.3).toFloat(),
+                fallSpeed = (0.6 + Math.random() * 0.4).toFloat(),
+                rotationSpeed = (Math.random() * 720 - 360).toFloat(),
+                shape = if (Math.random() > 0.5) ConfettiShape.RECT else ConfettiShape.CIRCLE
+            )
+        }
+    }
+    val progress = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        progress.animateTo(1f, animationSpec = tween(2400, easing = LinearOutSlowInEasing))
+    }
+    Canvas(modifier = modifier) {
+        val w = size.width; val h = size.height
+        pieces.forEach { p ->
+            val t = progress.value
+            val x = w / 2f + (p.startX * w / 2f) + (p.horizDrift * w * t)
+            val y = -h * 0.3f + (h * 1.4f * t * p.fallSpeed)
+            val rot = p.rotationSpeed * t
+            rotate(rot, pivot = Offset(x, y)) {
+                when (p.shape) {
+                    ConfettiShape.RECT -> drawRect(
+                        color = p.color.copy(alpha = (1f - t * 0.4f).coerceAtLeast(0.3f)),
+                        topLeft = Offset(x - 6f, y - 3f),
+                        size = Size(12f, 6f)
+                    )
+                    ConfettiShape.CIRCLE -> drawCircle(
+                        color = p.color.copy(alpha = (1f - t * 0.4f).coerceAtLeast(0.3f)),
+                        radius = 5f,
+                        center = Offset(x, y)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private enum class ConfettiShape { RECT, CIRCLE }
+private data class ConfettiPiece(
+    val startX: Float, val startY: Float,
+    val color: Color,
+    val horizDrift: Float, val fallSpeed: Float, val rotationSpeed: Float,
+    val shape: ConfettiShape
+)
