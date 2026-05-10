@@ -166,77 +166,121 @@ private fun DrawScope.drawBullseye(origin: Offset, area: Size, accent: Color) {
 }
 
 // ─── Continue Pager themes ─────────────────────────────────────
+// Designed as ABSTRACT compositions (not literal "cap / flame") because the
+// previous literal icons looked primitive. Each is a layered geometric motif
+// using rounded shapes + multiple opacity tiers for depth.
 
-/** Graduation cap — flat square mortarboard + base + tassel. */
+/**
+ * LESSON — abstract notebook: 4 stacked rounded rectangles fanning slightly
+ * outward, with thin horizontal "ruling" lines on the front-most one.
+ * Reads as "open lesson material" without being a literal book.
+ */
 private fun DrawScope.drawGradCap(origin: Offset, area: Size, accent: Color) {
-    val color = accent.copy(alpha = 0.13f)
-    val cx = origin.x + area.width * 0.5f
-    val cy = origin.y + area.height * 0.5f
-    val w = area.width * 0.65f
-    val h = area.height * 0.18f
-    // Mortarboard — diamond
-    val board = Path().apply {
-        moveTo(cx, cy - h)
-        lineTo(cx + w / 2f, cy)
-        lineTo(cx, cy + h)
-        lineTo(cx - w / 2f, cy)
-        close()
+    val side = area.width.coerceAtMost(area.height)
+    val w = side * 0.78f
+    val h = side * 0.62f
+    val cx = origin.x + area.width * 0.55f
+    val cy = origin.y + area.height * 0.55f
+    val r = w * 0.10f
+
+    // Stack of 4 page-like rounded rects, offset diagonally.
+    val tiers = listOf(
+        Triple(-w * 0.18f,  h * 0.18f, 0.06f),
+        Triple(-w * 0.06f,  h * 0.06f, 0.09f),
+        Triple( w * 0.06f, -h * 0.06f, 0.13f),
+        Triple( w * 0.18f, -h * 0.18f, 0.18f)
+    )
+    tiers.forEach { (dx, dy, a) ->
+        drawRoundRect(
+            color = accent.copy(alpha = a),
+            topLeft = Offset(cx - w / 2f + dx, cy - h / 2f + dy),
+            size = Size(w, h),
+            cornerRadius = CornerRadius(r, r)
+        )
     }
-    drawPath(board, color)
-    // Cap base — trapezoid below
-    val baseTop = cy + h * 0.6f
-    val base = Path().apply {
-        moveTo(cx - w * 0.32f, baseTop)
-        lineTo(cx + w * 0.32f, baseTop)
-        lineTo(cx + w * 0.22f, baseTop + h * 1.6f)
-        lineTo(cx - w * 0.22f, baseTop + h * 1.6f)
-        close()
+    // Ruling lines on the front page — gives "text content" feel.
+    val front = tiers.last()
+    val frontLeft = cx - w / 2f + front.first
+    val frontTop  = cy - h / 2f + front.second
+    val lineCol = accent.copy(alpha = 0.10f)
+    repeat(3) { i ->
+        val ly = frontTop + h * (0.30f + i * 0.18f)
+        drawLine(
+            color = lineCol,
+            start = Offset(frontLeft + w * 0.18f, ly),
+            end   = Offset(frontLeft + w * 0.78f - i * w * 0.10f, ly),
+            strokeWidth = h * 0.04f,
+            cap = StrokeCap.Round
+        )
     }
-    drawPath(base, color)
-    // Tassel
-    drawLine(accent.copy(alpha = 0.20f), Offset(cx, cy),
-        Offset(cx + w * 0.45f, cy + h * 1.6f), strokeWidth = h * 0.18f, cap = StrokeCap.Round)
-    drawCircle(accent.copy(alpha = 0.22f), h * 0.22f, Offset(cx + w * 0.45f, cy + h * 1.7f))
 }
 
-/** Stack of three tilted cards. */
+/**
+ * FLASHCARD_SET — five rounded cards fanned in an arc like a hand of cards,
+ * each rotated incrementally and with progressively higher opacity so the
+ * front card stands out. More dramatic than the old 3-card stack.
+ */
 private fun DrawScope.drawCardStack(origin: Offset, area: Size, accent: Color) {
-    val color = accent.copy(alpha = 0.13f)
-    val cx = origin.x + area.width * 0.5f
-    val cy = origin.y + area.height * 0.55f
-    val w = area.width * 0.55f
-    val h = area.height * 0.50f
-    val angles = listOf(-12f, 0f, 10f)
+    val cx = origin.x + area.width * 0.55f
+    val cy = origin.y + area.height * 0.70f      // anchor near bottom — fan rises up
+    val w = area.width * 0.42f
+    val h = area.height * 0.55f
+    val angles = listOf(-28f, -14f, 0f, 14f, 28f)
+    val alphas = listOf(0.07f, 0.10f, 0.15f, 0.10f, 0.07f)
+
     angles.forEachIndexed { i, deg ->
         val rad = Math.toRadians(deg.toDouble())
         val cos = Math.cos(rad).toFloat()
         val sin = Math.sin(rad).toFloat()
-        // Approximate rotated rect using a Path
-        val hw = w / 2f; val hh = h / 2f
-        fun pt(dx: Float, dy: Float) = Offset(cx + dx * cos - dy * sin, cy + dx * sin + dy * cos)
+        // pivot near bottom-centre so cards fan outward at the top
+        val pivotY = h * 0.45f
+        fun pt(dx: Float, dy: Float): Offset {
+            val ny = dy - pivotY            // shift so rotation pivots near bottom
+            return Offset(
+                cx + dx * cos - ny * sin,
+                cy + dx * sin + ny * cos + pivotY
+            )
+        }
+        val hw = w / 2f
         val card = Path().apply {
-            val p1 = pt(-hw, -hh); val p2 = pt(hw, -hh)
-            val p3 = pt(hw, hh);   val p4 = pt(-hw, hh)
+            val p1 = pt(-hw, -h); val p2 = pt(hw, -h)
+            val p3 = pt(hw, 0f);  val p4 = pt(-hw, 0f)
             moveTo(p1.x, p1.y); lineTo(p2.x, p2.y); lineTo(p3.x, p3.y); lineTo(p4.x, p4.y); close()
         }
-        drawPath(card, if (i == 1) accent.copy(alpha = 0.18f) else color)
+        drawPath(card, accent.copy(alpha = alphas[i]))
     }
 }
 
-/** Flame / pulsing droplet shape for "weak word". */
+/**
+ * WEAK_WORD — abstract pulse / radar ripple. Replaces the previous literal
+ * flame droplet (which read as a strange water drop). 5 concentric arcs
+ * radiating from bottom-right, alternating opacity, with a small filled
+ * core. Suggests "echo / repetition / resurfacing".
+ */
 private fun DrawScope.drawFlame(origin: Offset, area: Size, accent: Color) {
-    val color = accent.copy(alpha = 0.13f)
-    val cx = origin.x + area.width * 0.5f
+    val cx = origin.x + area.width * 0.55f
     val cy = origin.y + area.height * 0.55f
-    val r = area.width.coerceAtMost(area.height) * 0.40f
-    val flame = Path().apply {
-        moveTo(cx, cy - r)
-        cubicTo(cx + r * 0.9f, cy - r * 0.2f, cx + r * 0.7f, cy + r, cx, cy + r)
-        cubicTo(cx - r * 0.7f, cy + r, cx - r * 0.9f, cy - r * 0.2f, cx, cy - r)
-        close()
+    val maxR = area.width.coerceAtMost(area.height) * 0.55f
+
+    // Five rings, opacity fading outward, alternating ring widths.
+    val rings = listOf(
+        maxR        to 0.05f,
+        maxR * 0.82f to 0.08f,
+        maxR * 0.64f to 0.11f,
+        maxR * 0.46f to 0.14f,
+        maxR * 0.28f to 0.18f
+    )
+    rings.forEach { (r, a) ->
+        drawCircle(accent.copy(alpha = a), r, Offset(cx, cy), style = Stroke(width = maxR * 0.04f))
     }
-    drawPath(flame, color)
-    drawCircle(accent.copy(alpha = 0.20f), r * 0.30f, Offset(cx, cy + r * 0.35f))
+    // Filled core dot.
+    drawCircle(accent.copy(alpha = 0.22f), maxR * 0.10f, Offset(cx, cy))
+
+    // Three tiny "sparks" floating up-left to add detail / asymmetry.
+    val sparkCol = accent.copy(alpha = 0.18f)
+    drawCircle(sparkCol, maxR * 0.05f, Offset(cx - maxR * 0.55f, cy - maxR * 0.55f))
+    drawCircle(sparkCol, maxR * 0.04f, Offset(cx - maxR * 0.75f, cy - maxR * 0.30f))
+    drawCircle(sparkCol, maxR * 0.03f, Offset(cx - maxR * 0.30f, cy - maxR * 0.80f))
 }
 
 // ─── Game themes ───────────────────────────────────────────────
