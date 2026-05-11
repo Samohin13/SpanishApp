@@ -34,44 +34,37 @@ bull.putdata(new_data)
 BULL_SIZE = int(W * 0.78)
 bull = bull.resize((BULL_SIZE, BULL_SIZE), Image.LANCZOS)
 
-# ── 1. Diagonal gradient background ────────────────────────
+# ── 1. Diagonal gradient background — MATCHES feature graphic ──
+# Same direction (bright top-RIGHT, deep bottom-LEFT) and same colour
+# stops as feature_1024x500 so icon + banner read as one brand.
 img = Image.new('RGB', (W, H), (255, 107, 53))
 draw = ImageDraw.Draw(img)
-top_color    = (255, 145, 80)    # bright top-left
-bot_color    = (190, 70, 25)     # deep bottom-right
+top_color = (255, 130, 70)         # bright top-right
+bot_color = (180, 60, 20)          # deep bottom-left
 for y in range(H):
     for x in range(0, W, 4):
-        # Distance from top-left corner (normalized)
-        t = ((x / W) * 0.55 + (y / H) * 0.45)
-        t = max(0.0, min(1.0, t))
+        # Distance from top-right corner — bright there, dark opposite.
+        dx = (W - x) / W
+        dy = y / H
+        t = max(0.0, min(1.0, dx * 0.55 + dy * 0.45))
         r = int(top_color[0] + (bot_color[0] - top_color[0]) * t)
         g = int(top_color[1] + (bot_color[1] - top_color[1]) * t)
         b = int(top_color[2] + (bot_color[2] - top_color[2]) * t)
         draw.rectangle([x, y, x + 4, y + 1], fill=(r, g, b))
 
-# ── 2. Soft radial highlight from top-left (sun glow) ──────
+# ── 2. Sun-glow at top-RIGHT (matches feature graphic position) ─
 glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
 gdraw = ImageDraw.Draw(glow)
-sun_x, sun_y = 80, 60
-for r in range(450, 60, -8):
-    alpha = max(0, int(35 - r * 0.06))
+sun_x, sun_y = W - 100, -25       # top-right corner, partially off-canvas
+for r in range(380, 60, -6):
+    alpha = max(0, int(28 - r * 0.05))
     if alpha <= 0: continue
     gdraw.ellipse([sun_x - r, sun_y - r, sun_x + r, sun_y + r],
-                  fill=(255, 245, 220, alpha))
+                  fill=(255, 240, 200, alpha))
 glow = glow.filter(ImageFilter.GaussianBlur(8))
 img = Image.alpha_composite(img.convert('RGBA'), glow)
-
-# ── 3. Bottom-right vignette for depth ─────────────────────
-vig = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-vdr = ImageDraw.Draw(vig)
-vig_x, vig_y = W + 30, H + 30
-for r in range(380, 100, -8):
-    alpha = max(0, int(28 - r * 0.045))
-    if alpha <= 0: continue
-    vdr.ellipse([vig_x - r, vig_y - r, vig_x + r, vig_y + r],
-                fill=(0, 0, 0, alpha))
-vig = vig.filter(ImageFilter.GaussianBlur(20))
-img = Image.alpha_composite(img, vig)
+# (Vignette removed — feature graphic doesn't have a strong vignette,
+#  so dropping it keeps both backgrounds visually identical.)
 
 # ── 4. Drop shadow under bull ──────────────────────────────
 SHADOW_OFFSET_X = 6
