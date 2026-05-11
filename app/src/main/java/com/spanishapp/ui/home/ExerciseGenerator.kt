@@ -1,5 +1,6 @@
 package com.spanishapp.ui.home
 
+import com.spanishapp.data.repository.ConjugationData
 import kotlin.random.Random
 
 /**
@@ -176,6 +177,46 @@ object ExerciseGenerator {
                     audioText = dictation.es,
                     explanation = if (dictation.ru.isNotBlank()) "${dictation.es} — ${dictation.ru}" else dictation.es,
                 )
+            }
+        }
+
+        // ── CONJUGATION_GRID: if the lesson is about a known verb, drop in
+        //    one full-table exercise (yo, tú, él, nosotros, vosotros, ellos). ──
+        run {
+            val text = buildString {
+                append(content.intro).append(" ")
+                content.sections.forEach { s ->
+                    append(s.heading).append(" ")
+                    s.items.forEach { append(it.left).append(" ") }
+                }
+            }.lowercase()
+
+            // Match infinitive in lesson text. Prefer longer matches first.
+            val knownVerbs = ConjugationData.getAll()
+                .map { it.verb.lowercase() }
+                .toSet()
+                .sortedByDescending { it.length }
+            val verbMatch = knownVerbs.firstOrNull { v ->
+                Regex("\\b${Regex.escape(v)}\\b").containsMatchIn(text)
+            }
+            if (verbMatch != null) {
+                // Pick a tense — presente by default, otherwise any available
+                val available = ConjugationData.getAll().filter { it.verb.lowercase() == verbMatch }
+                val pres = available.firstOrNull { it.tense == "presente" } ?: available.firstOrNull()
+                if (pres != null) {
+                    out += Exercise(
+                        type = ExerciseType.CONJUGATION_GRID,
+                        instruction = "Заполни таблицу спряжений",
+                        question = "",
+                        hint = "${pres.verb} | ${pres.tense}",
+                        correctAnswer = pres.verb,   // sentinel for checkCorrect
+                        conjugationForms = listOf(
+                            pres.yo, pres.tu, pres.el,
+                            pres.nosotros, pres.vosotros, pres.ellos,
+                        ),
+                        explanation = pres.note,
+                    )
+                }
             }
         }
 

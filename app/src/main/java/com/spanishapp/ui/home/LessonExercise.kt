@@ -16,7 +16,10 @@ enum class ExerciseType {
     TAP_MISSING_WORD,  // Предложение с пропуском → тапнуть из 3 чипов
 
     // ── Phase 3 additions ──
-    LISTEN_TYPE        // Диктант: TTS играет → напечатать что слышишь
+    LISTEN_TYPE,       // Диктант: TTS играет → напечатать что слышишь
+
+    // ── Phase 4 additions ──
+    CONJUGATION_GRID   // Полная таблица спряжений: yo/tú/él/nosotros/vosotros/ellos
 }
 
 data class Exercise(
@@ -29,7 +32,8 @@ data class Exercise(
     val correctAnswer: String,
     val explanation: String = "",
     val audioText: String = "",                // для LISTEN_PICK — что произносить TTS
-    val pairs: List<Pair<String, String>> = emptyList()  // для MATCH_PAIRS — es↔ru
+    val pairs: List<Pair<String, String>> = emptyList(),  // для MATCH_PAIRS — es↔ru
+    val conjugationForms: List<String> = emptyList()      // для CONJUGATION_GRID: 6 форм yo/tu/el/nosotros/vosotros/ellos
 )
 
 data class ExercisePlan(

@@ -720,6 +720,24 @@ private fun ExerciseCard(
                         }
                     )
                 }
+
+                ExerciseType.CONJUGATION_GRID -> {
+                    // hint encodes "infinitive | tense" via Exercise.hint
+                    val parts = exercise.hint.split("|").map { it.trim() }
+                    val infinitive = parts.getOrNull(0) ?: exercise.correctAnswer
+                    val tense = parts.getOrNull(1) ?: ""
+                    ConjugationGridInput(
+                        infinitive = infinitive,
+                        tense = tense,
+                        correctForms = exercise.conjugationForms,
+                        accentColor = accentColor,
+                        answered = answered,
+                        onAnswer = { allCorrect ->
+                            selectedOption = if (allCorrect) exercise.correctAnswer else "__partial__"
+                            answered = true
+                        }
+                    )
+                }
             }
 
             // Объяснение
@@ -1691,6 +1709,108 @@ private fun ListenAndTypeInput(
         answered = answered,
         onAnswer = onAnswer,
     )
+}
+
+// ─── ConjugationGridInput: заполни все 6 форм глагола ──────────────────────
+@Composable
+private fun ConjugationGridInput(
+    infinitive: String,
+    tense: String,
+    correctForms: List<String>,        // size 6: yo, tu, el, nosotros, vosotros, ellos
+    accentColor: Color,
+    answered: Boolean,
+    onAnswer: (allCorrect: Boolean) -> Unit,
+) {
+    if (correctForms.size != 6) return
+
+    val pronouns = listOf("yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas")
+    val typed = remember(correctForms) { mutableStateListOf("", "", "", "", "", "") }
+    val keyboard = LocalSoftwareKeyboardController.current
+
+    fun isCellCorrect(i: Int): Boolean =
+        typed[i].trim().equals(correctForms[i].trim(), ignoreCase = true)
+
+    val allFilled = typed.all { it.isNotBlank() }
+
+    // Header card with infinitive + tense
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = accentColor.copy(alpha = 0.08f),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(infinitive, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = accentColor)
+            Text(tense, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+
+    Spacer(Modifier.height(14.dp))
+
+    // 6 rows
+    pronouns.forEachIndexed { i, pronoun ->
+        val cellCorrect = isCellCorrect(i)
+        val borderColor = when {
+            !answered -> accentColor.copy(alpha = 0.4f)
+            cellCorrect -> Green
+            else -> Red
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = pronoun,
+                modifier = Modifier.width(108.dp),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedTextField(
+                value = typed[i],
+                onValueChange = { if (!answered) typed[i] = it },
+                enabled = !answered,
+                singleLine = true,
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(10.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = borderColor,
+                    unfocusedBorderColor = borderColor.copy(alpha = 0.6f),
+                    disabledBorderColor = borderColor,
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                trailingIcon = {
+                    if (answered) {
+                        Text(
+                            if (cellCorrect) "✓" else correctForms[i],
+                            color = if (cellCorrect) Green else Red,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            modifier = Modifier.padding(end = 12.dp),
+                        )
+                    }
+                },
+            )
+        }
+    }
+
+    if (!answered) {
+        Spacer(Modifier.height(14.dp))
+        Button(
+            onClick = {
+                keyboard?.hide()
+                val all = (0 until 6).all { isCellCorrect(it) }
+                onAnswer(all)
+            },
+            enabled = allFilled,
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+        ) {
+            Text(stringResource(R.string.ls_check), fontWeight = FontWeight.ExtraBold)
+        }
+    }
 }
 
 // ─── Экран победы ──────────────────────────────────────────────────────────
