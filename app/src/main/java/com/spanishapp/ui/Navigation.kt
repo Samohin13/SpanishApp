@@ -358,6 +358,11 @@ object Navigation {
             composable("achievements") { AchievementsScreen(navController) }
             composable("settings")     { SettingsScreen(navController) }
             composable("settings_voice") { com.spanishapp.ui.settings.SettingsVoiceScreen(navController) }
+            composable("download") {
+                com.spanishapp.ui.onboarding.DownloadScreen(
+                    onFinished = { navController.popBackStack() }
+                )
+            }
 
             // ── Рейтинг / Лиги / Лидерборд ───────────────────
             composable("rating_full")  { RatingScreen(navController) }

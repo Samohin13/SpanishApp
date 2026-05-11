@@ -599,6 +599,9 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.Leaderboard, stringResource(R.string.settings_leaderboards)) {
                     navController.navigate("leaderboard")
                 }
+                SettingsItem(Icons.Default.CloudDownload, "Загрузить обновления контента") {
+                    navController.navigate("download")
+                }
                 SettingsItem(Icons.Default.Refresh, stringResource(R.string.settings_reset_progress)) { showResetDialog = true }
                 val shareTextTpl = stringResource(R.string.set_share_text, "https://github.com/Samohin13/SpanishApp")
                 val shareChooser = stringResource(R.string.set_share_chooser)

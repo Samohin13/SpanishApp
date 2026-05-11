@@ -74,6 +74,14 @@ object AppModule {
     fun provideFirestore(): com.google.firebase.firestore.FirebaseFirestore =
         com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
+    // ── Content downloader (gh-pages CDN) ─────────────────────
+    @Provides
+    @Singleton
+    fun provideContentCacheRoot(@ApplicationContext context: Context): java.io.File =
+        java.io.File(context.filesDir, "content_packs").apply { mkdirs() }
+
+    // ContentDownloader uses @Inject constructor and is auto-provided.
+
     // ── OkHttp  (Anthropic API) ────────────────────────────────
     @Provides
     @Singleton
