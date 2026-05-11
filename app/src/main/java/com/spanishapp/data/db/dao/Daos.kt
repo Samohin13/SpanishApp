@@ -541,6 +541,9 @@ interface LessonProgressDao {
 
     @Query("SELECT COUNT(*) FROM lesson_progress WHERE unit_id = :unitId")
     suspend fun completedCountForUnit(unitId: Int): Int
+
+    @Query("SELECT COUNT(*) > 0 FROM lesson_progress WHERE completed_at >= :since")
+    suspend fun anyCompletedSince(since: Long): Boolean
 }
 
 @Dao

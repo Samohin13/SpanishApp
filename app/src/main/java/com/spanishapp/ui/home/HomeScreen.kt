@@ -245,7 +245,16 @@ fun HomeScreen(
                             onLeagueClick = { navController.navigate("leaderboard") },
                             onDictClick   = { navController.navigate("dictionary") },
                             onWordChip    = { w -> sheetWord = w },
-                            onGoalClick   = { /* informational */ }
+                            onGoalClick   = {
+                                // Smart routing: jump to the next undone task.
+                                when {
+                                    !dailyGoals.lessonCompleted        -> navController.navigate("course/a1_1")
+                                    !dailyGoals.flashcardSetCompleted  -> navController.navigate("flashcards")
+                                    !dailyGoals.bookPageRead           -> navController.navigate("game_libros")
+                                    !dailyGoals.wordOfDaySolved        -> { /* word-of-day is on Home itself */ }
+                                    else -> { /* all done — informational only */ }
+                                }
+                            }
                         )
                         Spacer(Modifier.height(12.dp))
                     }
@@ -1443,13 +1452,14 @@ private fun BentoRow(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     BentoHeader(emoji = "🎯", label = "ЦЕЛЬ ДНЯ", accent = GoalAccent, modifier = Modifier.weight(1f))
                     Text(
-                        "${goals.completedCount}/3",
+                        "${goals.completedCount}/${goals.total}",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = if (goals.allDone) Color(0xFF2E7D32) else GoalAccent
                     )
                 }
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(8.dp))
+                GoalLine("Урок дня", goals.lessonCompleted)
                 GoalLine("Сет карточек", goals.flashcardSetCompleted)
                 GoalLine("Страница книги", goals.bookPageRead)
                 GoalLine("Слово дня", goals.wordOfDaySolved)
