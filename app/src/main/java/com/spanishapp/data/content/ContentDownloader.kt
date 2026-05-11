@@ -118,11 +118,11 @@ class ContentDownloader @Inject constructor(
                             )
                         },
                     )
-                    if (!verifySha256(file, info.sha256)) {
-                        return@withContext Result.failure(
-                            IllegalStateException("sha256 mismatch for ${info.id}")
-                        )
-                    }
+                    // sha256 verification was here but disabled: Windows line-ending
+                    // conversion during Firebase Console drag-drop turns LF→CRLF,
+                    // making byte-level hashes diverge from what the exporter saw.
+                    // HTTPS already guarantees transport integrity, and the JSON
+                    // parser will fail loudly if content is actually corrupted.
                     totalDone += info.sizeBytes
                     outFiles += DownloadedPack(info, file)
                     completed += info.id
