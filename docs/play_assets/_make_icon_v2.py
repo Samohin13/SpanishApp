@@ -39,8 +39,8 @@ bull = bull.resize((BULL_SIZE, BULL_SIZE), Image.LANCZOS)
 # stops as feature_1024x500 so icon + banner read as one brand.
 img = Image.new('RGB', (W, H), (255, 107, 53))
 draw = ImageDraw.Draw(img)
-top_color = (255, 130, 70)         # bright top-right
-bot_color = (180, 60, 20)          # deep bottom-left
+top_color = (255, 120, 50)         # juicier saturated orange
+bot_color = (165, 50, 10)          # deeper terracotta
 for y in range(H):
     for x in range(0, W, 4):
         # Distance from top-right corner — bright there, dark opposite.

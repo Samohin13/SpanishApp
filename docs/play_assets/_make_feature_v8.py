@@ -32,7 +32,7 @@ bull.putdata(new_data)
 # Background — diagonal gradient
 img = Image.new('RGBA', (W, H), (217, 82, 28, 255))
 draw = ImageDraw.Draw(img)
-top_color = (255, 130, 70); bot_color = (180, 60, 20)
+top_color = (255, 120, 50); bot_color = (165, 50, 10)   # juicier
 for y in range(H):
     for x_seg in range(0, W, 4):
         dx = (W - x_seg) / W; dy = y / H
