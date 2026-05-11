@@ -468,13 +468,18 @@ private fun ExerciseCard(
         ) {
             Spacer(Modifier.height(20.dp))
 
-            // Инструкция
-            Text(
-                text       = exercise.instruction,
-                fontSize   = 14.sp,
-                color      = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.Medium
-            )
+            // Инструкция + бейдж типа (визуальная идентичность каждому типу)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                ExerciseTypeBadge(exercise.type, accentColor)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text       = exercise.instruction,
+                    fontSize   = 14.sp,
+                    color      = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Medium,
+                    modifier   = Modifier.weight(1f),
+                )
+            }
             Spacer(Modifier.height(12.dp))
 
             // Вопрос + кнопка озвучки
@@ -1192,6 +1197,44 @@ private fun BuildSentenceInput(
                 shape    = RoundedCornerShape(14.dp),
                 colors   = ButtonDefaults.buttonColors(containerColor = accentColor)
             ) { Text(stringResource(R.string.ls_check), fontWeight = FontWeight.ExtraBold) }
+        }
+    }
+}
+
+// ─── ExerciseTypeBadge: маленький эмодзи-чип в шапке упражнения ────────────
+@Composable
+private fun ExerciseTypeBadge(type: ExerciseType, accent: Color) {
+    val (emoji, label) = when (type) {
+        ExerciseType.MULTIPLE_CHOICE   -> "✏️" to "Выбор"
+        ExerciseType.FILL_BLANK        -> "📝" to "Пропуск"
+        ExerciseType.TRANSLATE         -> "🌐" to "Перевод"
+        ExerciseType.BUILD_SENTENCE    -> "🧱" to "Сборка"
+        ExerciseType.SPEAKING          -> "🎤" to "Произношение"
+        ExerciseType.LISTEN_PICK       -> "🔊" to "Аудио"
+        ExerciseType.ORDER_LETTERS     -> "🔤" to "Анаграмма"
+        ExerciseType.MATCH_PAIRS       -> "🔗" to "Пары"
+        ExerciseType.TAP_MISSING_WORD  -> "📌" to "Артикль"
+        ExerciseType.LISTEN_TYPE       -> "🎧" to "Диктант"
+        ExerciseType.CONJUGATION_GRID  -> "📊" to "Спряжение"
+    }
+    Surface(
+        shape = RoundedCornerShape(50),
+        color = accent.copy(alpha = 0.14f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = 0.3f)),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(emoji, fontSize = 13.sp)
+            Spacer(Modifier.width(4.dp))
+            Text(
+                text = label,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                color = accent,
+                letterSpacing = 0.4.sp,
+            )
         }
     }
 }
