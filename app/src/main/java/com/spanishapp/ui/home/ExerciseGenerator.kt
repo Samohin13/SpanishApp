@@ -75,6 +75,39 @@ object ExerciseGenerator {
             )
         }
 
+        // ── TAP_MISSING_WORD: article gap-fill for "el/la/los/las + noun" items ──
+        val articles = setOf("el", "la", "los", "las", "un", "una", "unos", "unas")
+        val articleCandidate = vocab
+            .map { it to it.es.split(" ", limit = 2) }
+            .firstOrNull { (_, parts) ->
+                parts.size == 2 && parts[0].lowercase() in articles
+            }
+        if (articleCandidate != null) {
+            val (pair, parts) = articleCandidate
+            val correctArticle = parts[0].lowercase()
+            // Sensible distractor set: opposite-gender / number article.
+            val distractors = when (correctArticle) {
+                "el" -> listOf("la", "los")
+                "la" -> listOf("el", "las")
+                "los" -> listOf("las", "el")
+                "las" -> listOf("los", "la")
+                "un" -> listOf("una", "unos")
+                "una" -> listOf("un", "unas")
+                "unos" -> listOf("unas", "un")
+                "unas" -> listOf("unos", "una")
+                else -> listOf("el", "la")
+            }
+            val opts = (distractors + correctArticle).shuffled(random)
+            out += Exercise(
+                type = ExerciseType.TAP_MISSING_WORD,
+                instruction = "Выбери правильный артикль",
+                question = "___ ${parts[1]}",
+                options = opts,
+                correctAnswer = correctArticle,
+                explanation = if (pair.ru.isNotBlank()) "${pair.es} — ${pair.ru}" else pair.es,
+            )
+        }
+
         // ── MATCH_PAIRS ──
         // Need ≥4 pairs with distinct short Spanish words and clear RU translations
         if (vocab.size >= 4) {

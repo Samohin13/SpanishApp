@@ -19,6 +19,7 @@ class ExerciseGeneratorTest {
         var listenCount = 0
         var anagramCount = 0
         var matchCount = 0
+        var articleCount = 0
         var totalLessons = 0
         var lessonsTouched = 0
 
@@ -53,13 +54,22 @@ class ExerciseGeneratorTest {
                         assertEquals("match_pairs unique RU labels for $id",
                             ex.pairs.size, ex.pairs.map { it.second.lowercase() }.toSet().size)
                     }
+                    ExerciseType.TAP_MISSING_WORD -> {
+                        articleCount++
+                        assertTrue("tap_missing options for $id",
+                            ex.options.size == 3)
+                        assertTrue("tap_missing correct in options for $id",
+                            ex.correctAnswer in ex.options)
+                        assertTrue("tap_missing sentence has blank for $id",
+                            ex.question.contains("___"))
+                    }
                     else -> fail("unexpected generated type: ${ex.type} in $id")
                 }
             }
         }
 
         println("Generator results: $totalLessons total lessons, $lessonsTouched got " +
-                "extras (${listenCount} listen + ${anagramCount} anagram + ${matchCount} match)")
+                "extras (${listenCount} listen + ${anagramCount} anagram + ${matchCount} match + ${articleCount} article)")
 
         // Must touch a meaningful share of lessons or the generator is broken.
         assertTrue("Generator touched too few lessons: $lessonsTouched/$totalLessons",
