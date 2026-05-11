@@ -2,6 +2,35 @@
 
 > Цель: убрать монотонность multiple-choice, сделать каждый урок похожим на Duolingo/Babbel — разные типы упражнений, проверяющие именно тот материал, который дан.
 
+## 🎉 Статус: Phase 1–5 ВЫПОЛНЕНЫ (автономная сессия 13)
+
+**ДО**: 240 уроков × 99% multiple choice. Скучно, retention падает.
+**ПОСЛЕ**: 218/240 уроков (91%) получают авто-сгенерированные упражнения. **844 новых упражнения** через 8 типов с CEFR-гейтингом:
+
+| Тип | Шт | Уровни |
+|---|---|---|
+| LISTEN_PICK | 288 | A1+ |
+| BUILD_SENTENCE | 198 | A1+ |
+| MATCH_PAIRS | 114 | A1+ |
+| CONJUGATION_GRID | 96 | A2+ |
+| ORDER_LETTERS | 69 | A1+ |
+| TAP_MISSING_WORD | 38 | A1+ |
+| TRANSLATE | 25 | A2+ |
+| LISTEN_TYPE | 16 | A2+ |
+
+**Файлы**:
+- `ui/home/LessonExercise.kt` — типы + поля `audioText`, `pairs`, `conjugationForms`
+- `ui/home/ExerciseGenerator.kt` — 8 веток + CEFR-гейтинг + детерминизм по lessonId
+- `ui/home/LessonSessionScreen.kt` — 6 новых рендереров (ListenPick, OrderLetters, MatchPairs, TapMissingWord, ListenAndType, ConjugationGrid)
+- `test/.../ExerciseGeneratorTest.kt` — валидация 844 упражнений
+
+**Что осталось из Phase 4-5** (требует ручной работы):
+- SpotTheError — нужны 300 авторских ошибочных вариантов (вы выбрали B = вручную)
+- BuildSentenceWithDistractors, ReorderWords, DragToFillBlanks (B1/B2)
+- CategorySort (drag/drop UI)
+- Финал Phase 0: реальный Firebase downloader с UI прогресса (нужны пакеты на сервере)
+---
+
 ---
 
 ## ✅ Все решения утверждены
