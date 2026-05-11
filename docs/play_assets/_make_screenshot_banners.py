@@ -92,13 +92,13 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     img = img.convert('RGB')
     W, H = img.size
 
-    # ── Geometry: centered card, ~88% width, height grows to fit text ──
-    margin   = int(W * 0.06)
+    # ── Geometry: wider card, taller, less padding → big bold text ──
+    margin   = int(W * 0.04)             # 6% → 4%, wider
     banner_w = W - margin * 2
-    banner_h = int(H * 0.26)             # taller so it feels premium
+    banner_h = int(H * 0.30)             # 26% → 30%, taller
     banner_x = margin
-    banner_y = (H - banner_h) // 2       # vertical center
-    radius   = int(banner_h * 0.10)
+    banner_y = (H - banner_h) // 2
+    radius   = int(banner_h * 0.09)
 
     # Rounded mask
     mask = Image.new('L', (banner_w, banner_h), 0)
@@ -143,7 +143,7 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     out = Image.alpha_composite(out, panel_canvas)
 
     # ── Typography ──
-    pad_x  = int(banner_w * 0.07)
+    pad_x  = int(banner_w * 0.045)       # tighter padding → more text width
     inner_w = banner_w - pad_x * 2
 
     # Uniform sizes across all banners (set by caller)
@@ -205,15 +205,15 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
 # ── Determine UNIFORM font sizes once, using the first screenshot's width ──
 _probe = Image.open(os.path.join(SRC, CAPTIONS[0][0]))
 _W, _H = _probe.size
-_margin   = int(_W * 0.06)
+_margin   = int(_W * 0.04)
 _banner_w = _W - _margin * 2
-_pad_x    = int(_banner_w * 0.07)
+_pad_x    = int(_banner_w * 0.045)
 _inner_w  = _banner_w - _pad_x * 2
-_banner_h = int(_H * 0.26)
+_banner_h = int(_H * 0.30)
 
 HEAD_SIZE, SUB_SIZE = pick_uniform_sizes(
     CAPTIONS, _inner_w,
-    head_start=int(_banner_h * 0.21),
+    head_start=int(_banner_h * 0.22),
     sub_start=int(_banner_h * 0.085),
 )
 print(f'Uniform sizes: headline={HEAD_SIZE}px  subtitle={SUB_SIZE}px')
