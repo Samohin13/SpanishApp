@@ -68,12 +68,18 @@ class FlashcardsViewModel @Inject constructor(
         level: String,
         category: String,
         direction: FlashcardDirection,
-        sessionSize: Int = 20
+        sessionSize: Int = 20,
+        weakOnly: Boolean = false,
     ) {
         mode = direction
         activeSetId = null
         viewModelScope.launch {
-            val cards = buildSessionDeck(level, category, sessionSize)
+            val cards = if (weakOnly) {
+                // Pulls accuracy < 60% words from any level/category.
+                wordDao.getAllWeak(sessionSize)
+            } else {
+                buildSessionDeck(level, category, sessionSize)
+            }
             if (cards.isEmpty()) {
                 _state.value = FlashcardsUiState(
                     isLoading = false,

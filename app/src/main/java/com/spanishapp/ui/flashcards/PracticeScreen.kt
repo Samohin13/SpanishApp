@@ -132,7 +132,16 @@ class PracticeViewModel @Inject constructor(
                     ).filter { d -> sameCat.none { it.id == d.id } }
                     sameCat + pad
                 }
-                val ruOptions = (listOf(word) + distractors).map { it.russian }.shuffled()
+                // Dedupe distractors by Russian translation so synonyms can't
+                // appear alongside the target — if "casa" and "vivienda" both
+                // map to "дом", the user would see two correct-looking options.
+                val dedupedDistractors = distractors
+                    .filter { it.russian.lowercase() != word.russian.lowercase() }
+                    .distinctBy { it.russian.lowercase() }
+                val ruOptions = (listOf(word) + dedupedDistractors)
+                    .distinctBy { it.russian.lowercase() }
+                    .map { it.russian }
+                    .shuffled()
                 // Strip articles for typing mode so user types just "casa" not "la casa".
                 // TTS still reads the full form for LISTENING.
                 val target = stripArticle(word.spanish).lowercase()

@@ -215,7 +215,14 @@ fun RegisterScreen(
                 }
             }
 
-            TextButton(onClick = { navController.navigate("login") }) {
+            TextButton(onClick = {
+                // Pop back to welcome — otherwise register↔login bounce
+                // would grow the back stack unboundedly.
+                navController.navigate("login") {
+                    popUpTo("welcome")
+                    launchSingleTop = true
+                }
+            }) {
                 Text("Уже есть аккаунт? Войти")
             }
 

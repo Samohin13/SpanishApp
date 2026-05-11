@@ -48,6 +48,7 @@ fun FlashcardsScreen(
     category: String,
     direction: FlashcardDirection,
     setId: String? = null,
+    weakOnly: Boolean = false,
     viewModel: FlashcardsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -63,11 +64,11 @@ fun FlashcardsScreen(
         LeaguePromotionDialog(from = promo.from, to = promo.to, onDismiss = { leaguePromotion = null })
     }
 
-    LaunchedEffect(level, category, direction, setId) {
-        if (setId != null) {
-            viewModel.startSetSession(setId, direction)
-        } else {
-            viewModel.startSession(level, category, direction)
+    LaunchedEffect(level, category, direction, setId, weakOnly) {
+        when {
+            setId != null -> viewModel.startSetSession(setId, direction)
+            weakOnly      -> viewModel.startSession(level, category, direction, weakOnly = true)
+            else          -> viewModel.startSession(level, category, direction)
         }
     }
 

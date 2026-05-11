@@ -323,18 +323,20 @@ object Navigation {
             composable("practice") { PracticeScreen(navController) }
 
             composable(
-                "flashcards_session?level={level}&category={category}&direction={direction}&setId={setId}",
+                "flashcards_session?level={level}&category={category}&direction={direction}&setId={setId}&weak={weak}",
                 arguments = listOf(
                     navArgument("level") { defaultValue = "A1" },
                     navArgument("category") { defaultValue = "all" },
                     navArgument("direction") { defaultValue = FlashcardDirection.ES_TO_RU.name },
-                    navArgument("setId") { defaultValue = "" }
+                    navArgument("setId") { defaultValue = "" },
+                    navArgument("weak") { defaultValue = "false" },
                 )
             ) { backStackEntry ->
                 val args = backStackEntry.arguments
                 val level = args?.getString("level") ?: "A1"
                 val category = args?.getString("category") ?: "all"
                 val setId = args?.getString("setId").orEmpty()
+                val weak = args?.getString("weak") == "true"
                 val direction = runCatching {
                     FlashcardDirection.valueOf(args?.getString("direction") ?: "ES_TO_RU")
                 }.getOrDefault(FlashcardDirection.ES_TO_RU)
@@ -343,7 +345,8 @@ object Navigation {
                     level = level,
                     category = category,
                     direction = direction,
-                    setId = setId.ifBlank { null }
+                    setId = setId.ifBlank { null },
+                    weakOnly = weak,
                 )
             }
 

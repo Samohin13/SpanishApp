@@ -63,8 +63,6 @@ fun DownloadScreen(
     onFinished: () -> Unit,
     viewModel: DownloadViewModel = hiltViewModel(),
 ) {
-    BackHandler(enabled = true) { /* Block back — content download is mandatory. */ }
-
     rememberDownloadMusic()
 
     // ── Wi-Fi gate ──
@@ -86,6 +84,11 @@ fun DownloadScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val finished by viewModel.finished.collectAsStateWithLifecycle()
+
+    // Block back during active downloads, but ALLOW it once we hit Failed so
+    // the user is never trapped on this screen if the CDN is unreachable.
+    val canExit = state is DownloadState.Failed
+    BackHandler(enabled = !canExit) { /* Block back while download is in-flight. */ }
 
     LaunchedEffect(finished, state) {
         if (finished && state is DownloadState.Done) onFinished()
