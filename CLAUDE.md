@@ -2,7 +2,81 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-11, сессия 12 (премиум-редизайн + рейтинг + контент-аудит)**
+> Последнее обновление: **2026-05-11, сессия 13 (Play assets + контент-движок упражнений)**
+
+## 13. Сессия 13 — Play assets + движок вариативности упражнений (2026-05-11)
+
+Очень длинная сессия. Финальные Play Store ассеты + крупный апгрейд контентной части.
+
+### A. Play Store assets (готовы к загрузке)
+- Иконка 512×512 (`docs/play_assets/icon_512.png`) — кремовый бык на оранжевом градиенте, мягкая тень, sat-балансированный
+- Feature graphic 1024×500 — тот же бренд + телефон + 9 ландмарок Испании
+- 8 промо-скринов в `docs/play_assets/screenshots_promo/` — glassmorphism-баннер по центру, Montserrat Black + Medium, авто-word-wrap, выровненные размеры шрифтов на всех баннерах
+- Скрипты: `_make_icon_v2.py`, `_make_feature_v8.py`, `_make_screenshot_banners.py`
+- Шрифты: `docs/play_assets/_fonts/Montserrat-{Black,Medium}.ttf`
+
+### B. Content Delivery System — Phase 0 (схема готова, downloader пока без Firebase)
+- `data/content/ContentSchema.kt` — @Serializable wire-format для manifest + words/lessons/libros пакетов
+- `data/content/ContentDownloader.kt` — скелет с DownloadState flow для UI (TODO бодики до Firebase-upload)
+- `data/content/ContentVersionStore.kt` — DataStore для версий пакетов
+- **JSON-экспортёр** работает (`ContentPackExporter` JUnit test): из in-app данных создаёт 10 файлов в `docs/content_packs/` (1.9 МБ total, sha256 + размеры в manifest)
+
+### C. ⭐ Phase 1+2+3: ExerciseGenerator — массовый апгрейд уроков
+
+**До**: 240 уроков × 99% multiple choice. Скучно, retention падает.
+**После**: 212 уроков (88%) получают авто-генерированные упражнения, **800 новых** через 7 типов:
+
+| Тип | Шт | Описание |
+|---|---|---|
+| LISTEN_PICK | 288 | TTS играет → тапнуть нужное из 4 написанных |
+| BUILD_SENTENCE | 198 | Дано на ru → собрать es из тайлов |
+| MATCH_PAIRS | 114 | 4-6 пар (es↔ru) соединить |
+| ORDER_LETTERS | 69 | Анаграмма из букв |
+| LISTEN_TYPE | 42 | Диктант: TTS → напечатай |
+| TAP_MISSING_WORD | 38 | Артикль ___ noun + 3 чипа |
+| TRANSLATE | 51 | Переведи на испанский (печатанием) |
+
+**Архитектура**:
+- `ui/home/LessonExercise.kt` — добавлены типы LISTEN_PICK, ORDER_LETTERS, MATCH_PAIRS, TAP_MISSING_WORD, LISTEN_TYPE + поля audioText, pairs
+- `ui/home/ExerciseGenerator.kt` — 7 веток генерации из `LessonContent`, seed = hash(lessonId) → детерминизм в рамках сессии, свежие в следующей
+- `ui/home/LessonSessionScreen.kt` — 5 новых рендереров: ListenPickInput, OrderLettersInput, MatchPairsInput (+ PairChip), TapMissingWordInput, ListenAndTypeInput
+- Подключение: `val exercises = content.exercises + ExerciseGenerator.generate(lessonKey, content)` в LessonSession
+- Локализация: новые строки `ls_tap_letters_below`, `ls_tap_to_replay`, `ls_listen_and_type` во всех 4 языках
+
+**Тесты**: `ExerciseGeneratorTest` — все 800 упражнений валидны (correct в options, audioText не пустой, pairs уникальные, лимиты длины), детерминизм проверен.
+
+### D. Решения (зафиксированы в `docs/LESSON_EXERCISES_PLAN.md`)
+1. Авто-Translate — только одиночные слова, фразы только авторские ✓
+2. SpotTheError — вручную (300 авторских вариантов) — TODO в Phase 4
+3. ConjugationGrid — полная таблица 6 ячеек — TODO в Phase 4
+4. Sealed-class — compat-shim, perf не страдает (не делал — пока хватило data class extension)
+5. Первый запуск — real downloader с MB/s progress (TODO когда пакеты на Firebase)
+6. Хостинг — Firebase Storage `spanishapp-35092.firebasestorage.app`
+
+### Что осталось (Phase 4-5)
+- ConjugationGrid renderer + генерация из `conjugations` таблицы DB
+- SpotTheError — авторить 300 ошибочных вариантов (потенциально через LLM)
+- BuildSentenceWithDistractors + ReorderWords + DragToFillBlanks (B1/B2)
+- CategorySort (drag/drop)
+- Sealed-class рефакторинг (опционально)
+- Подключение Firebase Storage + реальная загрузка пакетов
+
+### Коммиты сессии 13
+| Коммит | Что |
+|---|---|
+| `a614652`-`77dd2e4` | Play assets iter (icon + feature graphic полировка) |
+| `052bfa3`-`fc1b6a0` | Промо-скрины: glassmorphism, copywriting iter |
+| `a27dfd7`-`671726b` | Промо-скрины: финальные размеры + word-wrap |
+| `b3a8ec9`, `6f32f69` | docs/LESSON_EXERCISES_PLAN.md (план) |
+| `7271786`, `eed00c6` | Content schema + exporter + 10 JSON packs |
+| `573494d`, `024aa70` | Phase 1: ListenPick + Anagram + generator (+357) |
+| `b2f6792`, `7f2f1ce` | Phase 2: MatchPairs + Article (+152) |
+| `0f47fc2` | Phase 2: BuildSentence (+198) |
+| `836e508` | Phase 3: ListenType + Translate (+93) |
+
+---
+
+> Предыдущее: **2026-05-11, сессия 12 (премиум-редизайн + рейтинг + контент-аудит)**
 
 ## 12. Сессия 12 — премиум-редизайн + рейтинг + контент-аудит (2026-05-11)
 
