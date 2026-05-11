@@ -166,10 +166,12 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     sub_bbox = draw.textbbox((0, 0), subtitle, font=f_sub)
     sub_h    = sub_bbox[3] - sub_bbox[1]
 
-    gap_eb_head   = int(banner_h * 0.04)
+    gap_eb_head   = int(banner_h * 0.06)
     gap_head_sub  = int(banner_h * 0.05)
     block_h = eb_h + gap_eb_head + head_total_h + gap_head_sub + sub_h
-    block_y = banner_y + (banner_h - block_h) // 2
+    # Anchor block toward the TOP of the banner so the eyebrow sits high
+    top_inset = int(banner_h * 0.11)
+    block_y   = banner_y + top_inset
 
     text_x = banner_x + pad_x
 
