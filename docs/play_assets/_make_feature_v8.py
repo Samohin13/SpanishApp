@@ -349,7 +349,7 @@ bull_with_shadow = with_shadow(bull, ox=10, oy=20, blur=20, alpha=150)
 # So with bull_x=20, visible bull right edge was at 20+70+300=390 — text
 # starts at 350 → 40px overlap. Pull bull 60px left so visible right
 # edge clears text with a 20px gap (was bull_x=20 → -40).
-bull_x = -40
+bull_x = -20      # closer to text — touches ~5px gap (was -40 → 30px gap)
 # Vertical alignment: bull bottom with text bottom.
 # Text bottom (last "Карточки…" line) ≈ y_text + 184 + 22 ≈ 396.
 # Visible bull bottom = bull_y + 70 + 300 → set bull_y so bottom = 400.
