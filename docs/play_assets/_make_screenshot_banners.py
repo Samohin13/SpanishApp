@@ -83,14 +83,14 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     # 1. Backdrop blur (the glass)
     region  = img.crop((banner_x, banner_y,
                         banner_x + banner_w, banner_y + banner_h)).convert('RGBA')
-    blurred = region.filter(ImageFilter.GaussianBlur(26))
+    blurred = region.filter(ImageFilter.GaussianBlur(14))   # softer blur, more shape recognizable
 
     # 2. Dark vertical gradient tint — denser glass per user feedback
     tint = Image.new('RGBA', (banner_w, banner_h), (0, 0, 0, 0))
     tdraw = ImageDraw.Draw(tint)
     for y in range(banner_h):
         t = y / banner_h
-        a = int(190 + 25 * t)            # 190 → 215 (was 140 → 175)
+        a = int(105 + 35 * t)            # 105 → 140 — see-through glass
         tdraw.line([(0, y), (banner_w, y)], fill=(8, 10, 16, a))
     panel = Image.alpha_composite(blurred, tint)
 
@@ -180,12 +180,20 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     draw.text((text_x, block_y - eb_bbox[1]), eyebrow_spaced,
               font=f_eyebrow, fill=(255, 140, 70))
 
-    # 2) headline (white) — drop shadow + main
+    # 2) headline (white) — heavy glow shadow so it pops on see-through glass
+    y_cursor = block_y + eb_h + gap_eb_head
+    glow_layer = Image.new('RGBA', out.size, (0, 0, 0, 0))
+    glow_draw  = ImageDraw.Draw(glow_layer)
+    for ln, bbx in zip(head_lines, head_metrics):
+        glow_draw.text((text_x, y_cursor - bbx[1]), ln,
+                       font=f_head, fill=(0, 0, 0, 220))
+        y_cursor += head_line_h + int(head_line_h * 0.18)
+    glow_layer = glow_layer.filter(ImageFilter.GaussianBlur(6))
+    out = Image.alpha_composite(out, glow_layer)
+    draw = ImageDraw.Draw(out)
     y_cursor = block_y + eb_h + gap_eb_head
     for ln, bbx in zip(head_lines, head_metrics):
-        draw.text((text_x + 2, y_cursor - bbx[1] + 3), ln,
-                  font=f_head, fill=(0, 0, 0, 180))
-        draw.text((text_x,     y_cursor - bbx[1]),     ln,
+        draw.text((text_x, y_cursor - bbx[1]), ln,
                   font=f_head, fill=(255, 255, 255))
         y_cursor += head_line_h + int(head_line_h * 0.18)
 
