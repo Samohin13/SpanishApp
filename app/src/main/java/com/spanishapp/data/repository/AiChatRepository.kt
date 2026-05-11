@@ -311,9 +311,13 @@ class AiChatRepository @Inject constructor(
             if (withSystem) {
                 val fullPrompt = if (extraSystemPrompt.isBlank()) SYSTEM_PROMPT
                                  else "$SYSTEM_PROMPT\n\n$extraSystemPrompt"
+                // Gemini's REST schema requires `parts` to be an ARRAY of objects,
+                // not a single object. Flash is lenient and accepts both, but Pro
+                // and future stricter validators silently drop scenario prompts
+                // (waiter / hotel / doctor) when sent as object form.
                 putJsonObject("system_instruction") {
-                    putJsonObject("parts") {
-                        put("text", fullPrompt)
+                    putJsonArray("parts") {
+                        addJsonObject { put("text", fullPrompt) }
                     }
                 }
             }

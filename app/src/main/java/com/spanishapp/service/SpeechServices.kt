@@ -9,6 +9,8 @@ import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import com.spanishapp.data.prefs.AppPreferences
+import com.spanishapp.data.prefs.VoicePreferences
+import com.spanishapp.data.prefs.VoiceSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +30,8 @@ import kotlin.coroutines.resume
 @Singleton
 class SpanishTts @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val voicePreferences: VoicePreferences
 ) {
     private var tts: TextToSpeech? = null
     private val _isReady = MutableStateFlow(false)
@@ -37,6 +40,11 @@ class SpanishTts @Inject constructor(
     // Кэшируем состояние тоггла «Голос диктора» — обновляется при каждом
     // изменении настройки. Если выключено — speak() становится no-op.
     @Volatile private var enabled: Boolean = true
+
+    // Latest user-picked voice config from SettingsVoice. Applied on every
+    // speak() so the singleton actually respects the persona/rate/pitch
+    // chosen in Settings — previously this class hard-coded rate=0.9.
+    @Volatile private var voiceCfg: VoiceSettings = VoiceSettings()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -53,6 +61,32 @@ class SpanishTts @Inject constructor(
         scope.launch {
             appPreferences.ttsEnabled.collect { enabled = it }
         }
+        scope.launch {
+            voicePreferences.settings.collect { cfg ->
+                voiceCfg = cfg
+                applyVoiceConfig()
+            }
+        }
+    }
+
+    /**
+     * Applies the user-selected voice name onto the underlying TextToSpeech.
+     * Rate and pitch are also pushed live so SettingsVoice sliders take
+     * effect immediately on every screen that uses this singleton.
+     */
+    private fun applyVoiceConfig() {
+        val t = tts ?: return
+        if (!_isReady.value) return
+        val cfg = voiceCfg
+        val targetName = cfg.selectedVoiceName
+        if (!targetName.isNullOrBlank()) {
+            val v = t.voices?.firstOrNull { it.name == targetName }
+            if (v != null) {
+                runCatching { t.voice = v }
+            }
+        }
+        t.setSpeechRate(cfg.rate.coerceIn(0.3f, 2.0f))
+        t.setPitch(cfg.pitch.coerceIn(0.5f, 2.0f))
     }
 
     private fun initialize() {
@@ -66,6 +100,8 @@ class SpanishTts @Inject constructor(
                 tts?.setSpeechRate(0.9f)
                 tts?.setPitch(1.0f)
                 _isReady.value = true
+                // Apply any voice config that arrived before init finished.
+                applyVoiceConfig()
             }
         }
     }
@@ -96,7 +132,7 @@ class SpanishTts @Inject constructor(
         val t = tts ?: return
         if (!_isReady.value) return
         val speakText = inferSpeakText(text) ?: return
-        t.setSpeechRate(if (slow) 0.6f else 0.9f)
+        t.setSpeechRate(if (slow) (voiceCfg.rate * 0.7f).coerceIn(0.3f, 2.0f) else voiceCfg.rate.coerceIn(0.3f, 2.0f))
         t.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, "utterance_${System.currentTimeMillis()}")
     }
 
@@ -121,7 +157,7 @@ class SpanishTts @Inject constructor(
                     if (utteranceId == id && cont.isActive) cont.resume(Unit)
                 }
             })
-            tts?.setSpeechRate(if (slow) 0.6f else 0.9f)
+            tts?.setSpeechRate(if (slow) (voiceCfg.rate * 0.7f).coerceIn(0.3f, 2.0f) else voiceCfg.rate.coerceIn(0.3f, 2.0f))
             tts?.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, id)
             cont.invokeOnCancellation { tts?.stop() }
         }

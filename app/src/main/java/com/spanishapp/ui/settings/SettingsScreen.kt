@@ -75,8 +75,42 @@ class SettingsViewModel @Inject constructor(
     private val appLockPreferences: AppLockPreferences,
     private val appLockManager: AppLockManager,
     private val vibrationHelper: com.spanishapp.service.VibrationHelper,
-    private val syncRepository: com.spanishapp.data.repository.SyncRepository
+    private val syncRepository: com.spanishapp.data.repository.SyncRepository,
+    private val wordDao: com.spanishapp.data.db.dao.WordDao,
+    private val achievementDao: com.spanishapp.data.db.dao.AchievementDao,
+    private val libroProgressDao: com.spanishapp.data.db.dao.LibroProgressDao,
+    private val flashcardSetProgressDao: com.spanishapp.data.db.dao.FlashcardSetProgressDao,
+    private val lessonProgressDao: com.spanishapp.data.db.dao.LessonProgressDao,
+    private val chatMessageDao: com.spanishapp.data.db.dao.ChatMessageDao,
+    private val dailyXpDao: com.spanishapp.data.db.dao.DailyXpDao,
+    private val gameLevelProgressDao: com.spanishapp.data.db.dao.GameLevelProgressDao,
+    private val articleGameDao: com.spanishapp.data.db.dao.ArticleGameDao,
+    private val wordListDao: com.spanishapp.data.db.dao.WordListDao,
+    private val recentSearchDao: com.spanishapp.data.db.dao.RecentSearchDao,
+    private val weeklyLeagueDao: com.spanishapp.data.db.dao.WeeklyLeagueDao
 ) : ViewModel() {
+
+    /**
+     * Wipes every piece of user-generated state in Room. Seed tables (words,
+     * conjugations, lessons, dialogues) keep their rows but their per-row
+     * study stats are cleared. Called from Reset Progress and Delete Account.
+     */
+    private suspend fun wipeAllUserData() {
+        wordDao.resetAllStats()
+        achievementDao.resetAll()
+        libroProgressDao.deleteAll()
+        flashcardSetProgressDao.deleteAll()
+        lessonProgressDao.deleteAll()
+        chatMessageDao.deleteAll()
+        dailyXpDao.deleteAll()
+        gameLevelProgressDao.deleteAll()
+        articleGameDao.deleteAllProgress()
+        wordListDao.deleteAllEntries()
+        wordListDao.deleteAllLists()
+        recentSearchDao.deleteAll()
+        weeklyLeagueDao.deleteAll()
+        userProgressDao.update(UserProgressEntity())
+    }
 
     /** Returns: true=success, false=failure (incl. not signed in). */
     suspend fun syncNow(): Boolean {
@@ -221,7 +255,16 @@ class SettingsViewModel @Inject constructor(
 
     fun setThemeMode(m: ThemeMode) = viewModelScope.launch { appPreferences.setThemeMode(m) }
     fun setFontSize(s: String) = viewModelScope.launch { appPreferences.setFontSize(s) }
-    fun logout() = viewModelScope.launch { authRepository.setLoggedIn(false) }
+    fun logout() = viewModelScope.launch {
+        // Sign out from Firebase first; the leaderboard/sync code keys off the
+        // current uid, so we must drop it before flipping the local flag.
+        runCatching { FirebaseAuth.getInstance().signOut() }
+        runCatching {
+            authRepository.clearUserPhoto()
+            authRepository.setUserName("")
+        }
+        authRepository.setLoggedIn(false)
+    }
 
     /**
      * Permanently deletes the user's account: Firestore document, Firebase Storage avatar,
@@ -250,8 +293,8 @@ class SettingsViewModel @Inject constructor(
         runCatching { user?.delete()?.await() }
             .onFailure { Log.w("SettingsVM", "Auth.delete failed (recent login may be required)", it) }
 
-        // 4. Local Room: reset progress to defaults
-        runCatching { userProgressDao.update(UserProgressEntity()) }
+        // 4. Local Room: wipe everything user-generated, not just user_progress.
+        runCatching { wipeAllUserData() }
 
         // 5. DataStore: clear name, photo, level, login flag
         runCatching {
@@ -262,7 +305,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun resetProgress() = viewModelScope.launch { userProgressDao.update(UserProgressEntity()) }
+    fun resetProgress() = viewModelScope.launch { wipeAllUserData() }
 
     fun updateLevel(level: String) = viewModelScope.launch {
         val p = progress.value

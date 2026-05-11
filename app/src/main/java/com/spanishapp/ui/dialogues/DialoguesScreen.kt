@@ -46,7 +46,9 @@ import javax.inject.Inject
 @HiltViewModel
 class DialoguesViewModel @Inject constructor(
     private val dialogueDao: DialogueDao,
-    private val tts: SpanishTts
+    private val tts: SpanishTts,
+    private val userProgressDao: com.spanishapp.data.db.dao.UserProgressDao,
+    private val achievementManager: com.spanishapp.service.AchievementManager
 ) : ViewModel() {
 
     private val _level = MutableStateFlow("A1")
@@ -60,7 +62,16 @@ class DialoguesViewModel @Inject constructor(
     fun setLevel(l: String) { _level.value = l }
 
     fun markCompleted(dialogue: DialogueEntity) = viewModelScope.launch {
+        // Only bump the counter on the FIRST completion — re-running a finished
+        // dialogue must not inflate achievements progress.
+        val wasAlreadyDone = dialogue.isCompleted
         dialogueDao.update(dialogue.copy(isCompleted = true))
+        if (!wasAlreadyDone) {
+            userProgressDao.getProgressOnce()?.let { p ->
+                userProgressDao.update(p.copy(dialoguesCompleted = p.dialoguesCompleted + 1))
+            }
+            achievementManager.checkAndUnlock()
+        }
     }
 
     fun speak(text: String) = tts.speak(text)

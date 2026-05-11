@@ -16,7 +16,8 @@ class LessonIntroViewModel @Inject constructor(
     private val lessonProgressDao: LessonProgressDao,
     private val userProgressDao: UserProgressDao,
     private val ratingUpdater: RatingUpdater,
-    private val xpTracker: XpTracker
+    private val xpTracker: XpTracker,
+    private val achievementManager: com.spanishapp.service.AchievementManager
 ) : ViewModel() {
 
     /**
@@ -33,10 +34,17 @@ class LessonIntroViewModel @Inject constructor(
                     lessonIndex = lessonIndex
                 )
             )
+            // Bump lessonsCompleted on user_progress so achievements
+            // lesson_first / lesson_10 etc. (gated on this counter) actually fire.
+            userProgressDao.getProgressOnce()?.let { p ->
+                userProgressDao.update(p.copy(lessonsCompleted = p.lessonsCompleted + 1))
+            }
             // +15 XP за прохождение урока (с дневным трекингом)
             xpTracker.add(xp = 15, words = 0)
             // Skill rating: 5 правильных ответов в среднем за урок.
             repeat(5) { ratingUpdater.applyGameAnswer(correct = true) }
+            // Re-evaluate achievements (lesson_first, lesson_10, lessons_25 etc.)
+            achievementManager.checkAndUnlock()
         }
     }
 

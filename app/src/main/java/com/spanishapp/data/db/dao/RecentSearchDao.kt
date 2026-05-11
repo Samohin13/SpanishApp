@@ -24,4 +24,7 @@ interface RecentSearchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: RecentSearchEntity)
+
+    @Query("DELETE FROM recent_searches")
+    suspend fun deleteAll()
 }

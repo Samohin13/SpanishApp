@@ -97,7 +97,8 @@ function buildChatBody(messages, withSystem) {
     generationConfig: { temperature: 0.7, topK: 40, topP: 0.95, maxOutputTokens: 1024 },
   };
   if (withSystem) {
-    obj.system_instruction = { parts: { text: SYSTEM_PROMPT } };
+    // Gemini REST: parts must be an array. Object form silently drops on stricter validation.
+    obj.system_instruction = { parts: [{ text: SYSTEM_PROMPT }] };
   }
   return obj;
 }

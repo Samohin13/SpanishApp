@@ -15,6 +15,24 @@ interface WordDao {
     @Query("SELECT COUNT(*) FROM words")
     suspend fun getCount(): Int
 
+    /**
+     * Wipes user-generated study state on every word but keeps the dictionary
+     * rows themselves. Used by Settings → Reset progress so the user sees a
+     * clean slate (no gold cups, no isLearned flags, no SM-2 history).
+     */
+    @Query("""
+        UPDATE words SET
+            correct_reviews = 0,
+            total_reviews   = 0,
+            is_learned      = 0,
+            ease_factor     = 2.5,
+            repetitions     = 0,
+            interval        = 1,
+            next_review     = 0,
+            last_rating_at  = 0
+    """)
+    suspend fun resetAllStats()
+
     @Query("SELECT * FROM words WHERE next_review <= :now ORDER BY next_review ASC LIMIT :limit")
     fun getDueWords(now: Long = System.currentTimeMillis(), limit: Int = 30): Flow<List<WordEntity>>
 
@@ -68,7 +86,16 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE category = :category ORDER BY RANDOM() LIMIT :limit")
     fun getByCategory(category: String, limit: Int = 50): Flow<List<WordEntity>>
 
-    @Query("SELECT * FROM words WHERE spanish LIKE '%' || :q || '%' OR russian LIKE '%' || :q || '%' ORDER BY CASE WHEN spanish LIKE :q || '%' THEN 0 ELSE 1 END LIMIT 80")
+    // SQLite's LIKE is ASCII-only case-insensitive by default — Cyrillic
+     // queries miss capitalized matches ("Дом" vs "дом"). Folding both sides
+     // with lower() fixes Russian search at the cost of one extra pass per row.
+    @Query("""
+        SELECT * FROM words
+        WHERE lower(spanish) LIKE '%' || lower(:q) || '%'
+           OR lower(russian) LIKE '%' || lower(:q) || '%'
+        ORDER BY CASE WHEN lower(spanish) LIKE lower(:q) || '%' THEN 0 ELSE 1 END
+        LIMIT 80
+    """)
     fun search(q: String): Flow<List<WordEntity>>
 
     @Query("SELECT * FROM words WHERE lower(trim(spanish)) = :q LIMIT 1")
@@ -449,6 +476,9 @@ interface ChatMessageDao {
 
     @Query("SELECT DISTINCT session_id FROM chat_messages")
     suspend fun getAllSessions(): List<String>
+
+    @Query("DELETE FROM chat_messages")
+    suspend fun deleteAll()
 }
 
 @Dao
@@ -470,6 +500,10 @@ interface AchievementDao {
 
     @Query("SELECT COUNT(*) FROM achievements")
     suspend fun getCount(): Int
+
+    /** Locks every achievement again. Used by Settings → Reset progress. */
+    @Query("UPDATE achievements SET is_unlocked = 0, unlocked_at = 0")
+    suspend fun resetAll()
 }
 
 @Dao
@@ -533,6 +567,12 @@ interface WordListDao {
 
     @Query("SELECT COUNT(*) FROM word_list_entries WHERE list_id = :listId")
     suspend fun countWordsInList(listId: Int): Int
+
+    @Query("DELETE FROM word_list_entries")
+    suspend fun deleteAllEntries()
+
+    @Query("DELETE FROM word_lists")
+    suspend fun deleteAllLists()
 }
 
 @Dao
@@ -548,6 +588,9 @@ interface LessonProgressDao {
 
     @Query("SELECT COUNT(*) > 0 FROM lesson_progress WHERE completed_at >= :since")
     suspend fun anyCompletedSince(since: Long): Boolean
+
+    @Query("DELETE FROM lesson_progress")
+    suspend fun deleteAll()
 }
 
 @Dao
@@ -563,6 +606,9 @@ interface ArticleGameDao {
 
     @Query("UPDATE article_level_progress SET isUnlocked = 1 WHERE levelId = :levelId")
     suspend fun unlockLevel(levelId: String)
+
+    @Query("DELETE FROM article_level_progress")
+    suspend fun deleteAllProgress()
 
     // ── Детерминированный набор слов для уровня (1..100), без RANDOM ──
     @Query("SELECT * FROM article_words WHERE level_num = :levelNum ORDER BY position ASC")
@@ -601,6 +647,9 @@ interface LibroProgressDao {
 
     @Query("SELECT * FROM libro_progress WHERE libro_id = :id")
     suspend fun getById(id: Int): LibroProgressEntity?
+
+    @Query("DELETE FROM libro_progress")
+    suspend fun deleteAll()
 }
 
 @Dao
@@ -626,6 +675,9 @@ interface DailyXpDao {
     /** Последние N дней (включая сегодня). */
     @Query("SELECT * FROM daily_xp WHERE day >= :sinceDay ORDER BY day ASC")
     fun observeSince(sinceDay: String): Flow<List<DailyXpEntity>>
+
+    @Query("DELETE FROM daily_xp")
+    suspend fun deleteAll()
 }
 
 @Dao
@@ -650,6 +702,9 @@ interface GameLevelProgressDao {
 
     @Query("SELECT COALESCE(SUM(stars), 0) FROM game_level_progress WHERE game_id = :gameId")
     suspend fun totalStars(gameId: String): Int
+
+    @Query("DELETE FROM game_level_progress")
+    suspend fun deleteAll()
 }
 
 @Dao
@@ -665,4 +720,7 @@ interface FlashcardSetProgressDao {
 
     @Query("SELECT * FROM flashcard_set_progress WHERE set_id = :setId LIMIT 1")
     suspend fun getOne(setId: String): FlashcardSetProgressEntity?
+
+    @Query("DELETE FROM flashcard_set_progress")
+    suspend fun deleteAll()
 }

@@ -27,7 +27,9 @@
       "Bash(py)",
       "Bash(git pull *)",
       "Bash(python .tmp_validate.py)",
-      "Bash(awk ' *)"
+      "Bash(awk ' *)",
+      "Bash(python -c ' *)",
+      "Bash(git -C \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\" diff app/src/main/java/com/spanishapp/ui/chat/AiChatScreen.kt)"
     ]
   },
   "sandbox": {

@@ -23,4 +23,7 @@ interface WeeklyLeagueDao {
 
     @Query("UPDATE weekly_league_state SET opted_in = :enabled WHERE userId = 1")
     suspend fun setOptedIn(enabled: Boolean)
+
+    @Query("DELETE FROM weekly_league_state")
+    suspend fun deleteAll()
 }

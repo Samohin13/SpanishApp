@@ -211,16 +211,15 @@ fun AiChatScreen(
 
     val listState = rememberLazyListState()
 
-    LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) {
-            listState.animateScrollToItem(messages.size - 1)
-        }
-    }
-    // Keep the streaming bubble in view as text grows.
-    LaunchedEffect(streamingText) {
-        if (streamingText.isNotEmpty()) {
-            // Scroll to last index (streaming bubble is appended after messages).
-            listState.animateScrollToItem(messages.size)
+    // Single coalesced auto-scroll. Two separate LaunchedEffects (one on
+    // messages.size, one on streamingText) were racing each other on every
+    // streamed chunk, producing visible jitter. One effect keyed on both
+    // signals lets the scheduler dedupe properly.
+    LaunchedEffect(messages.size, streamingText.length) {
+        val target = if (streamingText.isNotEmpty()) messages.size
+                     else (messages.size - 1).coerceAtLeast(0)
+        if (messages.isNotEmpty() || streamingText.isNotEmpty()) {
+            listState.animateScrollToItem(target)
         }
     }
 

@@ -96,10 +96,25 @@ class PronunciationViewModel @Inject constructor(
     init { loadPool() }
 
     private fun loadPool() = viewModelScope.launch {
-        val words = wordDao.getRandomWords(200)
-            .filter { it.spanish.isNotBlank() }
-            .shuffled()
-        wordPool = words
+        // First-launch race: the database seeder is async, so the words table
+        // can still be empty when this VM is constructed. Retry briefly so
+        // the screen doesn't sit on a permanent spinner.
+        var attempt = 0
+        var words: List<WordEntity> = emptyList()
+        while (attempt < 8 && words.isEmpty()) {
+            words = wordDao.getRandomWords(200).filter { it.spanish.isNotBlank() }
+            if (words.isNotEmpty()) break
+            kotlinx.coroutines.delay(500L)
+            attempt++
+        }
+        if (words.isEmpty()) {
+            _state.value = _state.value.copy(
+                isLoading = false,
+                errorMessage = "Словарь ещё загружается. Попробуйте через минуту."
+            )
+            return@launch
+        }
+        wordPool = words.shuffled()
         poolIndex = 0
         nextWord()
     }
@@ -181,6 +196,23 @@ fun PronunciationScreen(
     vm: PronunciationViewModel = hiltViewModel()
 ) {
     val state by vm.state.collectAsState()
+    val context = androidx.compose.ui.platform.LocalContext.current
+
+    // RECORD_AUDIO permission flow. Without this the recognizer fails with
+    // ERROR_INSUFFICIENT_PERMISSIONS and the screen shows a dead-end error
+    // banner instead of prompting the user.
+    val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) vm.startListening()
+    }
+    fun launchMic() {
+        val granted = androidx.core.content.ContextCompat.checkSelfPermission(
+            context, android.Manifest.permission.RECORD_AUDIO
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (granted) vm.startListening()
+        else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+    }
 
     Scaffold(
         topBar = {
@@ -208,7 +240,7 @@ fun PronunciationScreen(
         ) {
             when {
                 state.isLoading -> CircularProgressIndicator(color = AppColors.Terracotta)
-                state.word != null -> PronunciationContent(state, vm)
+                state.word != null -> PronunciationContent(state, vm, ::launchMic)
             }
         }
     }
@@ -219,7 +251,8 @@ fun PronunciationScreen(
 @Composable
 private fun PronunciationContent(
     state: PronunciationState,
-    vm: PronunciationViewModel
+    vm: PronunciationViewModel,
+    onStartListening: () -> Unit
 ) {
     val word = state.word ?: return
 
@@ -357,7 +390,7 @@ private fun PronunciationContent(
             else -> {
                 MicButton(
                     isListening = state.phase == PronunciationPhase.LISTENING,
-                    onClick     = { vm.startListening() }
+                    onClick     = onStartListening
                 )
             }
         }
