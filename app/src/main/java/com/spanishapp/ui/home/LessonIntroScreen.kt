@@ -34,7 +34,9 @@ fun LessonIntroScreen(
     val lesson = remember(unit, lessonIndex) { unit?.lessons?.getOrNull(lessonIndex) }
 
     if (unit == null || lesson == null) {
-        navController.popBackStack()
+        // popBackStack must run outside the composition phase, otherwise
+        // NavController complains "Cannot popBackStack during composition".
+        LaunchedEffect(Unit) { navController.popBackStack() }
         return
     }
 
@@ -161,7 +163,9 @@ fun LessonIntroScreen(
                     }
 
                     navController.navigate(route) {
-                        popUpTo("lesson_intro/{unitId}/{lessonIndex}") { inclusive = true }
+                        // Use substituted route — Nav Compose's popUpTo
+                        // matches concrete routes, not pattern templates.
+                        popUpTo("lesson_intro/$unitId/$lessonIndex") { inclusive = true }
                     }
                 },
                 modifier = Modifier

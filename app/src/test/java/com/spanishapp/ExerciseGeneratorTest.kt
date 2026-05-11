@@ -43,11 +43,15 @@ class ExerciseGeneratorTest {
                             ex.correctAnswer in ex.options)
                         assertTrue("listen_pick audioText for $id",
                             ex.audioText.isNotBlank())
+                        // Options must be unique — duplicates make the test
+                        // ambiguous and visually broken.
+                        assertEquals("listen_pick options must be unique for $id",
+                            ex.options.size, ex.options.toSet().size)
                     }
                     ExerciseType.ORDER_LETTERS -> {
                         anagramCount++
-                        assertFalse("anagram has space for $id",
-                            ex.correctAnswer.contains(' '))
+                        assertTrue("anagram all letters for $id (was '${ex.correctAnswer}')",
+                            ex.correctAnswer.all { it.isLetter() })
                         assertTrue("anagram length 3..10 for $id",
                             ex.correctAnswer.length in 3..10)
                     }
@@ -90,6 +94,11 @@ class ExerciseGeneratorTest {
                         translateCount++
                         assertTrue("translate question non-empty for $id",
                             ex.question.isNotBlank())
+                        // Translate exercises should never carry a hyphenated
+                        // pronunciation guide as the target — those would be
+                        // un-typeable.
+                        assertFalse("translate hyphen-free target for $id (was '${ex.correctAnswer}')",
+                            ex.correctAnswer.contains('-'))
                     }
                     ExerciseType.CONJUGATION_GRID -> {
                         conjugationCount++

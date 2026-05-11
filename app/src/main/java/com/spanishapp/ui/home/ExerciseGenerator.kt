@@ -47,7 +47,7 @@ object ExerciseGenerator {
         ExerciseType.ORDER_LETTERS,
         ExerciseType.MATCH_PAIRS,
         ExerciseType.TAP_MISSING_WORD -> true                          // any level
-        ExerciseType.BUILD_SENTENCE   -> cefr != "A1" || true          // ok at A1 with short phrases too
+        ExerciseType.BUILD_SENTENCE   -> true                          // ok at every level
         ExerciseType.TRANSLATE,
         ExerciseType.LISTEN_TYPE,
         ExerciseType.CONJUGATION_GRID -> cefr != "A1"                  // skip in early A1
@@ -134,7 +134,10 @@ object ExerciseGenerator {
                 "unas" -> listOf("unos", "una")
                 else -> listOf("el", "la")
             }
-            val opts = (distractors + correctArticle).shuffled(random)
+            // Dedupe options — opposite-gender pairs (e.g. correctArticle="el"
+            // with distractors ["la","los"]) can technically collide if data
+            // is malformed. .distinct() keeps the order stable.
+            val opts = (listOf(correctArticle) + distractors).distinct().shuffled(random)
             out += Exercise(
                 type = ExerciseType.TAP_MISSING_WORD,
                 instruction = "Выбери правильный артикль",
@@ -216,13 +219,15 @@ object ExerciseGenerator {
         }
 
         // ── CONJUGATION_GRID: if the lesson is about a known verb, drop in
-        //    one full-table exercise (yo, tú, él, nosotros, vosotros, ellos). ──
+        //    one full-table exercise (yo, tú, él, nosotros, vosotros, ellos).
+        //    Match in INTRO + SECTION HEADINGS only (not in items.note) — a
+        //    grammar tip casually mentioning "от глагола ser" shouldn't cause
+        //    a vowels lesson to gain a verb conjugation drill. ──
         run {
             val text = buildString {
                 append(content.intro).append(" ")
                 content.sections.forEach { s ->
                     append(s.heading).append(" ")
-                    s.items.forEach { append(it.left).append(" ") }
                 }
             }.lowercase()
 

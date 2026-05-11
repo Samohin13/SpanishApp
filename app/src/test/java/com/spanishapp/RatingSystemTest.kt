@@ -61,9 +61,10 @@ class SkillRatingSystemTest {
 
     @Test
     fun decayDoesNotGoBelowPeakBuffer() {
-        val now = 1000L * 86_400_000L
-        val long_ago = now - 1000 * 86_400_000L
+        val now = 2000L * 86_400_000L
+        val long_ago = now - 1000L * 86_400_000L   // 1000 days ago, NOT zero
         // peak 1500 → floor max(800, 1300) = 1300. Currently 1310.
+        // 1000 days × 2/day - 3 grace = -1994 penalty, clamped to floor 1300.
         val r = SkillRatingSystem.applyDecay(currentRating = 1310, peakRating = 1500, lastUpdateMs = long_ago, nowMs = now)
         assertEquals(1300, r)
     }

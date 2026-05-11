@@ -71,6 +71,12 @@ private interface SpeechRecognizerEntryPoint {
     fun spanishSpeechRecognizer(): SpanishSpeechRecognizer
 }
 
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+private interface RatingEntryPoint {
+    fun ratingUpdater(): com.spanishapp.domain.algorithm.RatingUpdater
+}
+
 // ─── Шаги сессии ───────────────────────────────────────────────────────────
 private sealed class SessionStep {
     data class Theory(val sectionIndex: Int, val total: Int) : SessionStep()
@@ -118,6 +124,9 @@ fun LessonSessionScreen(
     var comboCount     by remember { mutableStateOf(0) }
     var bestCombo      by remember { mutableStateOf(0) }
     var showQuitDialog by remember { mutableStateOf(false) }
+
+    val ctxForRating = LocalContext.current.applicationContext
+    val scope        = rememberCoroutineScope()
 
     // TTS — инициализируется один раз для всего экрана
     val tts = rememberSpanishTts()
@@ -188,6 +197,17 @@ fun LessonSessionScreen(
                         )
                     }
                     is SessionStep.ExerciseStep -> {
+                        // Lesson exercises now feed the rating system the same
+                        // way Practice / Flashcards / Games do — without this
+                        // hook, completing a lesson granted XP but zero skill
+                        // rating, leaving the in-app rating tied only to
+                        // standalone activities.
+                        val ratingUpdater = remember {
+                            EntryPointAccessors.fromApplication(
+                                ctxForRating,
+                                RatingEntryPoint::class.java
+                            ).ratingUpdater()
+                        }
                         ExerciseCard(
                             exercise    = exercises[step.index],
                             accentColor = accentColor,
@@ -198,10 +218,16 @@ fun LessonSessionScreen(
                                 xpEarned += 10
                                 comboCount++
                                 if (comboCount > bestCombo) bestCombo = comboCount
+                                scope.launch {
+                                    runCatching { ratingUpdater.applyGameAnswer(true) }
+                                }
                                 stepIndex++
                             },
                             onWrong     = {
                                 comboCount = 0
+                                scope.launch {
+                                    runCatching { ratingUpdater.applyGameAnswer(false) }
+                                }
                                 stepIndex++
                             }
                         )

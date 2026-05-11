@@ -401,7 +401,7 @@ data class DailyGoals(
 
     /** First unfinished goal — drives the smart "tap to do next" navigation. */
     fun nextRoute(): String? = when {
-        !lessonCompleted        -> "course/a1_1"           // current course (overridden by caller if known)
+        !lessonCompleted        -> "course_detail/A1"      // current course (overridden by caller if known)
         !flashcardSetCompleted  -> "flashcards"
         !bookPageRead           -> "game_libros"
         !wordOfDaySolved        -> "home"                  // word-of-day lives on Home itself
