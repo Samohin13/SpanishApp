@@ -724,10 +724,13 @@ private fun ExerciseCard(
                         pairs = exercise.pairs,
                         accentColor = accentColor,
                         answered = answered,
-                        onAnswer = { allCorrect ->
-                            // MatchPairs reports correctness via callback;
-                            // we mark answered with the matching sentinel.
-                            selectedOption = if (allCorrect) exercise.correctAnswer else "__partial__"
+                        onAnswer = { _ ->
+                            // The user successfully paired everything (only
+                            // way the input emits onAnswer). Partial mistakes
+                            // along the way are tolerated — pairing is by
+                            // nature trial-and-error and we'd punish the
+                            // normal exploration pattern.
+                            selectedOption = exercise.correctAnswer
                             answered = true
                         },
                     )
@@ -1060,7 +1063,9 @@ private fun FillBlankInput(
     answered: Boolean,
     onAnswer: (String) -> Unit
 ) {
-    var typed by remember { mutableStateOf("") }
+    // Re-key on `correctAnswer` so consecutive exercises sharing this
+    // composable in the same slot don't leak previous typed text.
+    var typed by remember(correctAnswer) { mutableStateOf("") }
     val keyboard = LocalSoftwareKeyboardController.current
     val isCorrect = typed.trim().equals(correctAnswer.trim(), ignoreCase = true)
 
@@ -1144,7 +1149,9 @@ private fun BuildSentenceInput(
     onAnswer: (String) -> Unit
 ) {
     val shuffled = remember(words) { words.shuffled() }
-    val chosen   = remember { mutableStateListOf<String>() }
+    // Re-key chosen on `words` too — previously chosen was un-keyed,
+    // so tokens from the prior BUILD_SENTENCE exercise leaked into the next.
+    val chosen   = remember(words) { mutableStateListOf<String>() }
     val pool     = remember(words) { mutableStateListOf(*shuffled.toTypedArray()) }
 
     val built     = chosen.joinToString(" ")
@@ -1902,8 +1909,11 @@ private fun ConjugationGridInput(
         Button(
             onClick = {
                 keyboard?.hide()
-                val all = (0 until 6).all { isCellCorrect(it) }
-                onAnswer(all)
+                // Pass with ≥4/6 correct — single typo or vosotros confusion
+                // shouldn't void the whole grid. UI still flags wrong cells
+                // in red so the user knows which ones missed.
+                val correctCount = (0 until 6).count { isCellCorrect(it) }
+                onAnswer(correctCount >= 4)
             },
             enabled = allFilled,
             modifier = Modifier.fillMaxWidth().height(52.dp),
