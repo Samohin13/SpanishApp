@@ -20,6 +20,7 @@ class ExerciseGeneratorTest {
         var anagramCount = 0
         var matchCount = 0
         var articleCount = 0
+        var buildSentenceCount = 0
         var totalLessons = 0
         var lessonsTouched = 0
 
@@ -63,13 +64,21 @@ class ExerciseGeneratorTest {
                         assertTrue("tap_missing sentence has blank for $id",
                             ex.question.contains("___"))
                     }
+                    ExerciseType.BUILD_SENTENCE -> {
+                        buildSentenceCount++
+                        assertTrue("build_sentence words 3-6 for $id",
+                            ex.words.size in 3..6)
+                        assertEquals("build_sentence answer matches words for $id",
+                            ex.words.joinToString(" "), ex.correctAnswer)
+                    }
                     else -> fail("unexpected generated type: ${ex.type} in $id")
                 }
             }
         }
 
         println("Generator results: $totalLessons total lessons, $lessonsTouched got " +
-                "extras (${listenCount} listen + ${anagramCount} anagram + ${matchCount} match + ${articleCount} article)")
+                "extras (${listenCount} listen + ${anagramCount} anagram + ${matchCount} match + " +
+                "${articleCount} article + ${buildSentenceCount} build)")
 
         // Must touch a meaningful share of lessons or the generator is broken.
         assertTrue("Generator touched too few lessons: $lessonsTouched/$totalLessons",

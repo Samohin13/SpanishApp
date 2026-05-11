@@ -108,6 +108,36 @@ object ExerciseGenerator {
             )
         }
 
+        // ── BUILD_SENTENCE: short Spanish phrase from lesson items ──
+        // Look at ALL items (not just the 3-word vocab heuristic) for 3-6 word
+        // phrases with a Russian translation — those are usable as build-sentence.
+        val phraseCandidate = content.sections
+            .flatMap { it.items }
+            .map { Triple(it.left.trim(), it.right.trim(), it.note) }
+            .filter { (es, ru, _) ->
+                val words = es.split(Regex("\\s+"))
+                val isSpanishPhrase = words.size in 3..6 &&
+                    es.any { it.isLetter() } &&
+                    es.none { it in 'Ѐ'..'ӿ' }
+                val hasRu = ru.any { it in 'Ѐ'..'ӿ' }
+                isSpanishPhrase && hasRu
+            }
+            .shuffled(random)
+            .firstOrNull()
+        if (phraseCandidate != null) {
+            val (es, ru, _) = phraseCandidate
+            val clean = es.trim().trimEnd('.', '!', '?', ',', ';', ':')
+            val tokens = clean.split(Regex("\\s+"))
+            out += Exercise(
+                type = ExerciseType.BUILD_SENTENCE,
+                instruction = "Собери предложение",
+                question = ru,
+                words = tokens,
+                correctAnswer = tokens.joinToString(" "),
+                explanation = "$clean — $ru",
+            )
+        }
+
         // ── MATCH_PAIRS ──
         // Need ≥4 pairs with distinct short Spanish words and clear RU translations
         if (vocab.size >= 4) {
