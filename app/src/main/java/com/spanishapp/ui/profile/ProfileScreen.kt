@@ -282,7 +282,9 @@ fun ProfileScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { navController.navigate("settings") }) {
+                    IconButton(onClick = {
+                        navController.navigate("settings") { launchSingleTop = true }
+                    }) {
                         Icon(Icons.Default.Settings, null)
                     }
                 }
@@ -404,7 +406,7 @@ fun ProfileScreen(
                         achievements = achievements,
                         unlocked = state.unlockedAchievements,
                         total = state.totalAchievements,
-                        onClick = { navController.navigate("achievements") },
+                        onClick = { navController.navigate("achievements") { launchSingleTop = true } },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }

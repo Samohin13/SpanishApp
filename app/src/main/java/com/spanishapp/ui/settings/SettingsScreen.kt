@@ -512,7 +512,9 @@ fun SettingsScreen(
                 SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.settings_sound_effects), soundEffects) { vm.toggleSoundEffects(it) }
                 SettingsSwitchItem(Icons.Default.RecordVoiceOver, stringResource(R.string.settings_voice_announcer), ttsEnabled) { vm.toggleTts(it) }
                 SettingsSwitchItem(Icons.Default.Vibration, stringResource(R.string.set_vibration), vibration) { vm.toggleVibration(it) }
-                SettingsItem(Icons.Default.InterpreterMode, stringResource(R.string.set_voice_setup)) { navController.navigate("settings_voice") }
+                SettingsItem(Icons.Default.InterpreterMode, stringResource(R.string.set_voice_setup)) {
+                    navController.navigate("settings_voice") { launchSingleTop = true }
+                }
             }
 
             SettingsSection(stringResource(R.string.settings_section_appearance)) {
@@ -597,10 +599,10 @@ fun SettingsScreen(
 
             SettingsSection(stringResource(R.string.settings_section_other)) {
                 SettingsItem(Icons.Default.Leaderboard, stringResource(R.string.settings_leaderboards)) {
-                    navController.navigate("leaderboard")
+                    navController.navigate("leaderboard") { launchSingleTop = true }
                 }
                 SettingsItem(Icons.Default.CloudDownload, "Загрузить обновления контента") {
-                    navController.navigate("download")
+                    navController.navigate("download") { launchSingleTop = true }
                 }
                 SettingsItem(Icons.Default.Refresh, stringResource(R.string.settings_reset_progress)) { showResetDialog = true }
                 val shareTextTpl = stringResource(R.string.set_share_text, "https://github.com/Samohin13/SpanishApp")

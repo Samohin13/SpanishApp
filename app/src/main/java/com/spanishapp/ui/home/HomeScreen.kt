@@ -149,8 +149,8 @@ fun HomeScreen(
                         greeting       = greeting,
                         motivation     = motivation,
                         photoUrl       = state.userPhotoUrl,
-                        onAvatar       = { navController.navigate("profile") },
-                        onSettings     = { navController.navigate("settings") }
+                        onAvatar       = { navController.navigate("profile") { launchSingleTop = true } },
+                        onSettings     = { navController.navigate("settings") { launchSingleTop = true } }
                     )
                 }
             }
@@ -167,7 +167,7 @@ fun HomeScreen(
                             todayXp      = state.todayXp,
                             skillRating  = state.skillRating,
                             league       = state.currentLeague,
-                            onClick      = { navController.navigate("profile") }
+                            onClick      = { navController.navigate("profile") { launchSingleTop = true } }
                         )
                         Spacer(Modifier.height(12.dp))
                     }
@@ -239,18 +239,20 @@ fun HomeScreen(
                             recent        = recentWords,
                             goals         = dailyGoals,
                             onBookClick   = {
-                                lastBook?.let { navController.navigate("libro/${it.libroId}") }
-                                    ?: navController.navigate("game_libros")
+                                lastBook?.let {
+                                    navController.navigate("libro/${it.libroId}") { launchSingleTop = true }
+                                } ?: navController.navigate("game_libros") { launchSingleTop = true }
                             },
-                            onLeagueClick = { navController.navigate("leaderboard") },
-                            onDictClick   = { navController.navigate("dictionary") },
+                            onLeagueClick = { navController.navigate("leaderboard") { launchSingleTop = true } },
+                            onDictClick   = { navController.navigate("dictionary") { launchSingleTop = true } },
                             onWordChip    = { w -> sheetWord = w },
                             onGoalClick   = {
                                 // Smart routing: jump to the next undone task.
+                                fun nav(r: String) = navController.navigate(r) { launchSingleTop = true }
                                 when {
-                                    !dailyGoals.lessonCompleted        -> navController.navigate("course_detail/A1")
-                                    !dailyGoals.flashcardSetCompleted  -> navController.navigate("flashcards")
-                                    !dailyGoals.bookPageRead           -> navController.navigate("game_libros")
+                                    !dailyGoals.lessonCompleted        -> nav("course_detail/A1")
+                                    !dailyGoals.flashcardSetCompleted  -> nav("flashcards")
+                                    !dailyGoals.bookPageRead           -> nav("game_libros")
                                     !dailyGoals.wordOfDaySolved        -> { /* word-of-day is on Home itself */ }
                                     else -> { /* all done — informational only */ }
                                 }
@@ -279,7 +281,7 @@ fun HomeScreen(
                             onRandom = {
                                 scope.launch { randomWord = viewModel.pickRandomWord() }
                             },
-                            onPronounce = { navController.navigate("pronunciation") },
+                            onPronounce = { navController.navigate("pronunciation") { launchSingleTop = true } },
                             onWeak      = { navController.navigate("practice") },
                             onGame      = {
                                 val games = listOf(
@@ -355,7 +357,7 @@ fun HomeScreen(
             onDismiss = { randomWord = null },
             onOpen = {
                 randomWord = null
-                navController.navigate("dictionary")
+                navController.navigate("dictionary") { launchSingleTop = true }
             }
         )
     }
@@ -366,7 +368,7 @@ fun HomeScreen(
             onDismiss = { sheetWord = null },
             onOpen = {
                 sheetWord = null
-                navController.navigate("dictionary")
+                navController.navigate("dictionary") { launchSingleTop = true }
             }
         )
     }
