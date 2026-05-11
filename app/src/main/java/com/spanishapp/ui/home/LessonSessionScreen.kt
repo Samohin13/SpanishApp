@@ -668,6 +668,39 @@ private fun ExerciseCard(
                         }
                     )
                 }
+
+                ExerciseType.MATCH_PAIRS -> {
+                    MatchPairsInput(
+                        pairs = exercise.pairs,
+                        accentColor = accentColor,
+                        answered = answered,
+                        onAnswer = { allCorrect ->
+                            // MatchPairs reports correctness via callback;
+                            // we mark answered with the matching sentinel.
+                            selectedOption = if (allCorrect) exercise.correctAnswer else "__partial__"
+                            answered = true
+                        },
+                    )
+                }
+
+                ExerciseType.TAP_MISSING_WORD -> {
+                    TapMissingWordInput(
+                        sentence = exercise.question,
+                        options = exercise.options,
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor = accentColor,
+                        answered = answered,
+                        selectedOption = selectedOption,
+                        onAnswer = { picked ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedOption = picked
+                            answered = true
+                            inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                            }
+                        }
+                    )
+                }
             }
 
             // Объяснение
@@ -1345,6 +1378,238 @@ private fun OrderLettersInput(
                 colors = ButtonDefaults.buttonColors(containerColor = accentColor),
             ) {
                 Text(stringResource(R.string.ls_check), fontWeight = FontWeight.ExtraBold)
+            }
+        }
+    }
+}
+
+// ─── MatchPairsInput: соедини es ↔ ru ──────────────────────────────────────
+@Composable
+private fun MatchPairsInput(
+    pairs: List<Pair<String, String>>,
+    accentColor: Color,
+    answered: Boolean,
+    onAnswer: (allCorrect: Boolean) -> Unit,
+) {
+    if (pairs.isEmpty()) return
+
+    val leftItems  = remember(pairs) { pairs.map { it.first } }
+    val rightItems = remember(pairs) { pairs.map { it.second }.shuffled() }
+
+    var selectedLeft  by remember { mutableStateOf<String?>(null) }
+    var selectedRight by remember { mutableStateOf<String?>(null) }
+    val matched       = remember { mutableStateListOf<Pair<String, String>>() }
+    var wrongTick     by remember { mutableStateOf(0) }     // for brief red flash
+    var mistakes      by remember { mutableStateOf(0) }
+    val scope         = rememberCoroutineScope()
+
+    // Reset state when the exercise content changes (next session)
+    LaunchedEffect(pairs) {
+        selectedLeft = null
+        selectedRight = null
+        matched.clear()
+        wrongTick = 0
+        mistakes = 0
+    }
+
+    // Try-match whenever both sides selected.
+    LaunchedEffect(selectedLeft, selectedRight) {
+        val l = selectedLeft
+        val r = selectedRight
+        if (l != null && r != null) {
+            val correct = pairs.any { it.first == l && it.second == r }
+            if (correct) {
+                matched += (l to r)
+                selectedLeft = null
+                selectedRight = null
+                if (matched.size == pairs.size) {
+                    delay(200)
+                    onAnswer(mistakes == 0)
+                }
+            } else {
+                wrongTick++
+                mistakes++
+                delay(450)
+                selectedLeft = null
+                selectedRight = null
+            }
+        }
+    }
+
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        // Left column (Spanish)
+        Column(
+            Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            leftItems.forEach { item ->
+                val isMatched  = matched.any { it.first == item }
+                val isSelected = selectedLeft == item
+                val isWrong    = isSelected && wrongTick > 0 && selectedRight != null
+                PairChip(
+                    text = item,
+                    matched = isMatched,
+                    selected = isSelected,
+                    wrong = isWrong,
+                    accentColor = accentColor,
+                    onClick = {
+                        if (!isMatched && !answered) selectedLeft = item
+                    },
+                )
+            }
+        }
+        // Right column (Russian)
+        Column(
+            Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            rightItems.forEach { item ->
+                val isMatched  = matched.any { it.second == item }
+                val isSelected = selectedRight == item
+                val isWrong    = isSelected && wrongTick > 0 && selectedLeft != null
+                PairChip(
+                    text = item,
+                    matched = isMatched,
+                    selected = isSelected,
+                    wrong = isWrong,
+                    accentColor = accentColor,
+                    onClick = {
+                        if (!isMatched && !answered) selectedRight = item
+                    },
+                )
+            }
+        }
+    }
+
+    if (mistakes > 0) {
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "Ошибок: $mistakes",
+            color = Red.copy(alpha = 0.75f),
+            fontSize = 13.sp,
+            modifier = Modifier.padding(start = 4.dp),
+        )
+    }
+}
+
+@Composable
+private fun PairChip(
+    text: String,
+    matched: Boolean,
+    selected: Boolean,
+    wrong: Boolean,
+    accentColor: Color,
+    onClick: () -> Unit,
+) {
+    val bg = when {
+        matched  -> Green.copy(alpha = 0.18f)
+        wrong    -> Red.copy(alpha = 0.18f)
+        selected -> accentColor.copy(alpha = 0.18f)
+        else     -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    }
+    val border = when {
+        matched  -> Green
+        wrong    -> Red
+        selected -> accentColor
+        else     -> Color.Transparent
+    }
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = bg,
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = if (selected || matched || wrong) 2.dp else 0.dp,
+                color = border,
+                shape = RoundedCornerShape(12.dp),
+            )
+            .clickable(enabled = !matched, onClick = onClick),
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            fontSize = 15.sp,
+            fontWeight = if (selected || matched) FontWeight.SemiBold else FontWeight.Normal,
+            color = if (matched) Green
+                    else if (wrong) Red
+                    else MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+// ─── TapMissingWordInput: предложение с пропуском, тап нужное слово ────────
+@Composable
+private fun TapMissingWordInput(
+    sentence: String,           // содержит "___" в месте пропуска
+    options: List<String>,
+    correctAnswer: String,
+    accentColor: Color,
+    answered: Boolean,
+    selectedOption: String?,
+    onAnswer: (String) -> Unit,
+) {
+    // Render sentence with inline blank/answer.
+    val displayed = remember(sentence, selectedOption, answered) {
+        when {
+            answered && selectedOption != null ->
+                sentence.replace("___", selectedOption)
+            else -> sentence
+        }
+    }
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(
+            text = displayed,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 18.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+        )
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        options.forEach { option ->
+            val isSelected = selectedOption == option
+            val isCorrect  = option == correctAnswer
+            val bgColor = when {
+                !answered && isSelected              -> accentColor.copy(alpha = 0.12f)
+                answered && isCorrect                -> Green.copy(alpha = 0.14f)
+                answered && isSelected && !isCorrect -> Red.copy(alpha = 0.14f)
+                else                                 -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+            }
+            val borderColor = when {
+                answered && isCorrect                -> Green
+                answered && isSelected && !isCorrect -> Red
+                isSelected                           -> accentColor
+                else                                 -> Color.Transparent
+            }
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = bgColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = if (isSelected || (answered && isCorrect)) 2.dp else 0.dp,
+                        color = borderColor,
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                    .clickable(enabled = !answered) { onAnswer(option) }
+            ) {
+                Text(
+                    text = option,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                    fontSize = 17.sp,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }

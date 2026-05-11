@@ -75,6 +75,25 @@ object ExerciseGenerator {
             )
         }
 
+        // ── MATCH_PAIRS ──
+        // Need ≥4 pairs with distinct short Spanish words and clear RU translations
+        if (vocab.size >= 4) {
+            val matchPool = vocab
+                .filter { it.es.length in 2..18 && it.ru.length in 1..24 }
+                .distinctBy { it.ru.lowercase() }  // avoid duplicate RU labels
+            if (matchPool.size >= 4) {
+                val picked = matchPool.shuffled(random).take(if (matchPool.size >= 5) 5 else 4)
+                out += Exercise(
+                    type = ExerciseType.MATCH_PAIRS,
+                    instruction = "Соедини пары",
+                    question = "",
+                    pairs = picked.map { it.es to it.ru },
+                    correctAnswer = "match_pairs_ok",
+                    explanation = "",
+                )
+            }
+        }
+
         return out
     }
 
