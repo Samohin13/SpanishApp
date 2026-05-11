@@ -143,6 +143,14 @@ class NotificationService @Inject constructor(
 
     init { createChannels() }
 
+    /** True iff Android 13+ POST_NOTIFICATIONS is granted (or pre-13). */
+    private fun canPostNotifications(): Boolean {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) return true
+        return androidx.core.content.ContextCompat.checkSelfPermission(
+            context, android.Manifest.permission.POST_NOTIFICATIONS
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    }
+
     private fun createChannels() {
         val manager = context.getSystemService(NotificationManager::class.java)
         listOf(
@@ -153,6 +161,7 @@ class NotificationService @Inject constructor(
     }
 
     fun showDailyReminder(streak: Int) {
+        if (!canPostNotifications()) return
         val messages = listOf(
             "¡Hola! Пора учить испанский",
             "Твой стрик: $streak дней. Не прерывай серию!",
@@ -171,6 +180,7 @@ class NotificationService @Inject constructor(
     }
 
     fun showStreakWarning(streak: Int) {
+        if (!canPostNotifications()) return
         val n = NotificationCompat.Builder(context, CHANNEL_STREAK)
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
             .setContentTitle("Стрик под угрозой!")
@@ -182,6 +192,10 @@ class NotificationService @Inject constructor(
     }
 
     fun showAchievement(title: String, description: String) {
+        // Android 13+ requires POST_NOTIFICATIONS; the achievement itself is
+        // still unlocked in Room. Silent skip avoids SecurityException on
+        // stricter OEM builds.
+        if (!canPostNotifications()) return
         val n = NotificationCompat.Builder(context, CHANNEL_ACHIEVEMENT)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle("Достижение разблокировано!")

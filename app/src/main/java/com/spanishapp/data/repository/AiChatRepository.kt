@@ -107,6 +107,13 @@ class AiChatRepository @Inject constructor(
         sessionId: String = "default"
     ): Result<String> = withContext(Dispatchers.IO) {
         try {
+            // Pre-flight: if neither the proxy nor the direct key is configured,
+            // Gemini returns HTTP 400 with a vague body that the UI maps to a
+            // generic error. Fail fast with a tagged exception the UI can
+            // localize as `chat_error_invalid_key`.
+            if (BuildConfig.AI_PROXY_URL.isBlank() && BuildConfig.GEMINI_API_KEY.isBlank()) {
+                return@withContext Result.failure(Exception("401: missing API key"))
+            }
             // Save user message
             chatMessageDao.insert(
                 ChatMessageEntity(role = "user", content = userText, sessionId = sessionId)
