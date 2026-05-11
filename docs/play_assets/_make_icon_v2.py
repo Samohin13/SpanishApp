@@ -10,6 +10,7 @@ Adds depth/shadows/gloss to the flat v1 orange square:
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
 from PIL import Image, ImageDraw, ImageFilter
+import numpy as np
 import io, os
 
 W = H = 512
@@ -30,6 +31,15 @@ for r, g, b, a in data:
         new_data.append((r, g, b, a))
 bull.putdata(new_data)
 
+# Tint bull from pure white to warm cream — softer contrast on orange bg
+tinted = []
+for r, g, b, a in bull.getdata():
+    if a > 0:
+        tinted.append((255, 240, 220, a))   # warm off-white
+    else:
+        tinted.append((0, 0, 0, 0))
+bull.putdata(tinted)
+
 # Scale bull to ~70% of canvas (leave room around edges)
 BULL_SIZE = int(W * 0.78)
 bull = bull.resize((BULL_SIZE, BULL_SIZE), Image.LANCZOS)
@@ -37,20 +47,17 @@ bull = bull.resize((BULL_SIZE, BULL_SIZE), Image.LANCZOS)
 # ── 1. Diagonal gradient background — MATCHES feature graphic ──
 # Same direction (bright top-RIGHT, deep bottom-LEFT) and same colour
 # stops as feature_1024x500 so icon + banner read as one brand.
-img = Image.new('RGB', (W, H), (255, 107, 53))
-draw = ImageDraw.Draw(img)
 top_color = (255, 120, 50)         # juicier saturated orange
 bot_color = (165, 50, 10)          # deeper terracotta
-for y in range(H):
-    for x in range(0, W, 4):
-        # Distance from top-right corner — bright there, dark opposite.
-        dx = (W - x) / W
-        dy = y / H
-        t = max(0.0, min(1.0, dx * 0.55 + dy * 0.45))
-        r = int(top_color[0] + (bot_color[0] - top_color[0]) * t)
-        g = int(top_color[1] + (bot_color[1] - top_color[1]) * t)
-        b = int(top_color[2] + (bot_color[2] - top_color[2]) * t)
-        draw.rectangle([x, y, x + 4, y + 1], fill=(r, g, b))
+yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+dx = (W - xx) / W
+dy = yy / H
+t = np.clip(dx * 0.55 + dy * 0.45, 0.0, 1.0)
+r = (top_color[0] + (bot_color[0] - top_color[0]) * t).astype(np.uint8)
+g = (top_color[1] + (bot_color[1] - top_color[1]) * t).astype(np.uint8)
+b = (top_color[2] + (bot_color[2] - top_color[2]) * t).astype(np.uint8)
+img = Image.fromarray(np.dstack([r, g, b]), 'RGB')
+draw = ImageDraw.Draw(img)
 
 # ── 2. Sun-glow at top-RIGHT (matches feature graphic position) ─
 glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
@@ -67,15 +74,15 @@ img = Image.alpha_composite(img.convert('RGBA'), glow)
 #  so dropping it keeps both backgrounds visually identical.)
 
 # ── 4. Drop shadow under bull ──────────────────────────────
-SHADOW_OFFSET_X = 6
-SHADOW_OFFSET_Y = 14
-SHADOW_BLUR = 18
+SHADOW_OFFSET_X = 3
+SHADOW_OFFSET_Y = 7
+SHADOW_BLUR = 24
 
-# Build a black version of the bull as a shadow
+# Build a soft, low-opacity shadow (was harsh black at alpha=140)
 shadow = Image.new('RGBA', bull.size, (0, 0, 0, 0))
 shadow_data = []
 for r, g, b, a in bull.getdata():
-    shadow_data.append((0, 0, 0, min(int(a * 0.55), 140)))
+    shadow_data.append((40, 15, 5, min(int(a * 0.22), 60)))
 shadow.putdata(shadow_data)
 shadow = shadow.filter(ImageFilter.GaussianBlur(SHADOW_BLUR))
 

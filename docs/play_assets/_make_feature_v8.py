@@ -10,6 +10,7 @@ Adjustments per user:
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
+import numpy as np
 import io, os
 
 W, H = 1024, 500
@@ -29,18 +30,17 @@ for r, g, b, a in data:
         new_data.append((r, g, b, a))
 bull.putdata(new_data)
 
-# Background — diagonal gradient
-img = Image.new('RGBA', (W, H), (217, 82, 28, 255))
-draw = ImageDraw.Draw(img)
+# Background — smooth per-pixel diagonal gradient (no banding)
 top_color = (255, 120, 50); bot_color = (165, 50, 10)   # juicier
-for y in range(H):
-    for x_seg in range(0, W, 4):
-        dx = (W - x_seg) / W; dy = y / H
-        t = max(0.0, min(1.0, dx * 0.55 + dy * 0.45))
-        r = int(top_color[0] + (bot_color[0] - top_color[0]) * t)
-        g = int(top_color[1] + (bot_color[1] - top_color[1]) * t)
-        b = int(top_color[2] + (bot_color[2] - top_color[2]) * t)
-        draw.rectangle([x_seg, y, x_seg + 4, y + 1], fill=(r, g, b))
+yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+dx = (W - xx) / W; dy = yy / H
+t = np.clip(dx * 0.55 + dy * 0.45, 0.0, 1.0)
+r = (top_color[0] + (bot_color[0] - top_color[0]) * t).astype(np.uint8)
+g = (top_color[1] + (bot_color[1] - top_color[1]) * t).astype(np.uint8)
+b = (top_color[2] + (bot_color[2] - top_color[2]) * t).astype(np.uint8)
+a = np.full_like(r, 255)
+img = Image.fromarray(np.dstack([r, g, b, a]), 'RGBA')
+draw = ImageDraw.Draw(img)
 
 # Sun-glow
 glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
