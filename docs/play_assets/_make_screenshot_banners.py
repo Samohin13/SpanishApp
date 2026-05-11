@@ -92,13 +92,13 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     img = img.convert('RGB')
     W, H = img.size
 
-    # ── Geometry: wider card, taller, less padding → big bold text ──
-    margin   = int(W * 0.04)             # 6% → 4%, wider
+    # ── Geometry: compact card — wide for big text, short so text fills it
+    margin   = int(W * 0.04)             # wide card → wide inner_w → big text
     banner_w = W - margin * 2
-    banner_h = int(H * 0.30)             # 26% → 30%, taller
+    banner_h = int(H * 0.22)             # back to compact
     banner_x = margin
     banner_y = (H - banner_h) // 2
-    radius   = int(banner_h * 0.09)
+    radius   = int(banner_h * 0.11)
 
     # Rounded mask
     mask = Image.new('L', (banner_w, banner_h), 0)
@@ -166,8 +166,8 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     sub_bbox = draw.textbbox((0, 0), subtitle, font=f_sub)
     sub_h    = sub_bbox[3] - sub_bbox[1]
 
-    gap_eb_head   = int(banner_h * 0.06)
-    gap_head_sub  = int(banner_h * 0.08)
+    gap_eb_head   = int(banner_h * 0.04)
+    gap_head_sub  = int(banner_h * 0.05)
     block_h = eb_h + gap_eb_head + head_total_h + gap_head_sub + sub_h
     block_y = banner_y + (banner_h - block_h) // 2
 
@@ -209,7 +209,7 @@ _margin   = int(_W * 0.04)
 _banner_w = _W - _margin * 2
 _pad_x    = int(_banner_w * 0.045)
 _inner_w  = _banner_w - _pad_x * 2
-_banner_h = int(_H * 0.30)
+_banner_h = int(_H * 0.22)
 
 HEAD_SIZE, SUB_SIZE = pick_uniform_sizes(
     CAPTIONS, _inner_w,
