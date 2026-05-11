@@ -22,6 +22,44 @@ object SpanishConjugator {
         "condicional", "subjuntivo",
     )
 
+    /**
+     * Compound-verb parents: prefix → (parent infinitive, parent's kind).
+     * Used so that compound forms (mantener, componer, prever, etc.)
+     * are conjugated by stripping the prefix, conjugating the parent,
+     * then re-attaching the prefix to each form.
+     *
+     * The parent verb itself MUST be authored in ConjugationData so the
+     * caller has correct base forms — these mappings only kick in when
+     * the conjugator is asked for the compound directly (rules engine).
+     */
+    private val COMPOUND_PARENTS: Map<String, String> = mapOf(
+        "tener"  to "tener",
+        "poner"  to "poner",
+        "venir"  to "venir",
+        "decir"  to "decir",
+        "hacer"  to "hacer",
+        "traer"  to "traer",
+        "ver"    to "ver",
+        "caer"   to "caer",
+        "salir"  to "salir",
+    )
+
+    /**
+     * Detects if [verb] is a known compound of an authored irregular.
+     * Returns the prefix (e.g. "man" for "mantener") and the parent name,
+     * or null if [verb] isn't a recognised compound.
+     */
+    fun detectCompound(verb: String): Pair<String, String>? {
+        val raw = verb.trim().lowercase()
+        for ((suffix, parent) in COMPOUND_PARENTS) {
+            if (raw.length > suffix.length && raw.endsWith(suffix)) {
+                val prefix = raw.dropLast(suffix.length)
+                if (prefix.length >= 2) return prefix to parent
+            }
+        }
+        return null
+    }
+
     /** Returns ConjugationEntity for [verb] in [tense], or null if the
      *  verb isn't in our bank OR is marked AUTHORED (use DB instead). */
     fun conjugate(verb: String, tense: String): ConjugationEntity? {

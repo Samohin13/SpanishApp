@@ -161,6 +161,25 @@ class SpanishConjugatorTest {
         assertNull(SpanishConjugator.conjugate("tener", "presente"))
     }
 
+    @Test fun `detectCompound finds tener compounds`() {
+        assertEquals("man" to "tener", SpanishConjugator.detectCompound("mantener"))
+        assertEquals("ob" to "tener", SpanishConjugator.detectCompound("obtener"))
+        assertEquals("sos" to "tener", SpanishConjugator.detectCompound("sostener"))
+        assertEquals("de" to "tener", SpanishConjugator.detectCompound("detener"))
+    }
+
+    @Test fun `detectCompound finds poner compounds`() {
+        assertEquals("com" to "poner", SpanishConjugator.detectCompound("componer"))
+        assertEquals("su" to "poner", SpanishConjugator.detectCompound("suponer"))
+        assertEquals("pro" to "poner", SpanishConjugator.detectCompound("proponer"))
+    }
+
+    @Test fun `detectCompound ignores non-compounds`() {
+        assertNull(SpanishConjugator.detectCompound("hablar"))
+        assertNull(SpanishConjugator.detectCompound("comer"))
+        assertNull(SpanishConjugator.detectCompound("ver"))   // ver itself, prefix too short
+    }
+
     @Test fun `unknown verb returns null`() {
         // "raporrear" — made-up, must NOT be silently conjugated
         assertNull(SpanishConjugator.conjugate("raporrear", "presente"))

@@ -112,17 +112,46 @@ class VerbViewModel @Inject constructor(
                 .verbsUpToTier(cfg.maxTier)
             val bankInfinitives = bankVerbs.map { it.infinitive.lowercase() }.toSet()
 
-            // 1) Authored rows for verbs in scope
-            val authored = conjugationDao.getAll()
-                .filter { it.verb.lowercase() in bankInfinitives }
+            val allAuthored = conjugationDao.getAll()
+            val authoredByName = allAuthored.groupBy { it.verb.lowercase() }
 
-            // 2) Generated rows for everything else in scope
-            val authoredKeys = authored.map { it.verb.lowercase() to it.tense }.toSet()
+            // 1) Authored rows for verbs directly in scope
+            val direct = allAuthored.filter { it.verb.lowercase() in bankInfinitives }
+
+            // 2) Compound rows — verbs like "mantener" derive from "tener" by
+            //    prepending the prefix to every form of the parent's row.
+            val compound = buildList {
+                for (info in bankVerbs) {
+                    if (info.kind != com.spanishapp.domain.algorithm.VerbKind.AUTHORED) continue
+                    if (info.infinitive.lowercase() in authoredByName) continue  // already direct
+                    val (prefix, parent) =
+                        com.spanishapp.domain.algorithm.SpanishConjugator
+                            .detectCompound(info.infinitive) ?: continue
+                    val parentRows = authoredByName[parent] ?: continue
+                    parentRows
+                        .filter { it.tense in cfg.selectedTenses }
+                        .forEach { p ->
+                            add(p.copy(
+                                id = 0,
+                                verb = info.infinitive,
+                                yo = prefix + p.yo,
+                                tu = prefix + p.tu,
+                                el = prefix + p.el,
+                                nosotros = prefix + p.nosotros,
+                                vosotros = prefix + p.vosotros,
+                                ellos = prefix + p.ellos,
+                            ))
+                        }
+                }
+            }
+
+            // 3) Generated rows for everything else in scope (rules engine)
+            val knownKeys = (direct + compound).map { it.verb.lowercase() to it.tense }.toSet()
             val generated = buildList {
                 for (info in bankVerbs) {
                     if (info.kind == com.spanishapp.domain.algorithm.VerbKind.AUTHORED) continue
                     for (tense in cfg.selectedTenses) {
-                        if (info.infinitive.lowercase() to tense in authoredKeys) continue
+                        if (info.infinitive.lowercase() to tense in knownKeys) continue
                         com.spanishapp.domain.algorithm.SpanishConjugator
                             .conjugate(info.infinitive, tense)
                             ?.let { add(it) }
@@ -130,7 +159,7 @@ class VerbViewModel @Inject constructor(
                 }
             }
 
-            val all = authored + generated
+            val all = direct + compound + generated
 
             // Фильтрация
             var pool = all.filter { it.tense in cfg.selectedTenses }
