@@ -174,6 +174,44 @@ private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
             }
         }
 
+        SectionCard(title = "Уровень глаголов") {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                val tierOptions = listOf(
+                    1 to "Топ-50 — самые употребляемые",
+                    2 to "До 100 — часто встречающиеся",
+                    3 to "До 200 — стандарт",
+                    4 to "До 350 — продвинутый",
+                    5 to "Все ~850 — полный список",
+                )
+                tierOptions.forEach { (tier, label) ->
+                    val selected = cfg.maxTier == tier
+                    androidx.compose.material3.Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (selected) ACCENT.copy(alpha = 0.18f)
+                                else androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { vm.updateConfig(cfg.copy(maxTier = tier)) },
+                        border = if (selected) androidx.compose.foundation.BorderStroke(2.dp, ACCENT) else null,
+                    ) {
+                        Row(
+                            Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            RadioButton(
+                                selected = selected,
+                                onClick = { vm.updateConfig(cfg.copy(maxTier = tier)) },
+                                colors = RadioButtonDefaults.colors(selectedColor = ACCENT),
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(label, fontSize = 14.sp,
+                                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal)
+                        }
+                    }
+                }
+            }
+        }
+
         SectionCard(title = stringResource(R.string.verb_section_groups)) {
             Column {
                 ToggleRow(stringResource(R.string.verb_group_regular), VerbGroup.REGULAR in cfg.groups) { on ->

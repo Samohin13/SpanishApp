@@ -133,6 +133,34 @@ class SpanishConjugatorTest {
         )
     }
 
+    @Test fun `huir presente — y-insert`() {
+        assertEquals(
+            listOf("huyo","huyes","huye","huimos","huís","huyen"),
+            forms("huir", "presente")
+        )
+    }
+
+    @Test fun `huir preterito — y in 3rd person`() {
+        assertEquals(
+            listOf("huí","huiste","huyó","huimos","huisteis","huyeron"),
+            forms("huir", "preterito")
+        )
+    }
+
+    @Test fun `construir subjuntivo — y throughout`() {
+        assertEquals(
+            listOf("construya","construyas","construya",
+                   "construyamos","construyáis","construyan"),
+            forms("construir", "subjuntivo")
+        )
+    }
+
+    @Test fun `authored verbs return null (caller uses DB)`() {
+        // ser, tener, etc. live in ConjugationData — engine should defer.
+        assertNull(SpanishConjugator.conjugate("ser", "presente"))
+        assertNull(SpanishConjugator.conjugate("tener", "presente"))
+    }
+
     @Test fun `unknown verb returns null`() {
         // "raporrear" — made-up, must NOT be silently conjugated
         assertNull(SpanishConjugator.conjugate("raporrear", "presente"))

@@ -33,7 +33,9 @@ data class VerbWorkoutConfig(
     val includeReflexive: Boolean = true,
     val isVoseo: Boolean = false,
     val acceptNoAccent: Boolean = true,
-    val questionCount: Int = 20
+    val questionCount: Int = 20,
+    /** Highest frequency-tier to include. 1 = top-50, 5 = full list (~850). */
+    val maxTier: Int = 2,
 )
 
 /** Один вопрос в сессии. Поля используются по-разному в зависимости от режима. */
@@ -103,26 +105,31 @@ class VerbViewModel @Inject constructor(
         viewModelScope.launch {
             val cfg = _state.value.config
 
-            // 1) Authored irregulars from the conjugations table
-            val authored = conjugationDao.getAll()
-            val authoredVerbs = authored.map { it.verb.lowercase() }.toSet()
+            // Eligible verbs from the frequency bank, capped by maxTier.
+            // Every verb here is guaranteed conjugable: either AUTHORED
+            // (served from conjugations DB) or covered by the rules engine.
+            val bankVerbs = com.spanishapp.domain.algorithm.SpanishVerbBank
+                .verbsUpToTier(cfg.maxTier)
+            val bankInfinitives = bankVerbs.map { it.infinitive.lowercase() }.toSet()
 
-            // 2) All other verbs from the dictionary — generated on-the-fly
-            //    by SpanishConjugator for regular -ar/-er/-ir forms.
-            val dictVerbs = wordDao.getAllDictionaryVerbs()   // list of infinitives
+            // 1) Authored rows for verbs in scope
+            val authored = conjugationDao.getAll()
+                .filter { it.verb.lowercase() in bankInfinitives }
+
+            // 2) Generated rows for everything else in scope
+            val authoredKeys = authored.map { it.verb.lowercase() to it.tense }.toSet()
             val generated = buildList {
-                for (verb in dictVerbs) {
-                    if (verb.lowercase() in authoredVerbs) continue
+                for (info in bankVerbs) {
+                    if (info.kind == com.spanishapp.domain.algorithm.VerbKind.AUTHORED) continue
                     for (tense in cfg.selectedTenses) {
+                        if (info.infinitive.lowercase() to tense in authoredKeys) continue
                         com.spanishapp.domain.algorithm.SpanishConjugator
-                            .conjugate(verb, tense)
+                            .conjugate(info.infinitive, tense)
                             ?.let { add(it) }
                     }
                 }
             }
 
-            // Union — authored entries take precedence so irregular forms stay
-            // accurate; generator only adds verbs the table doesn't cover.
             val all = authored + generated
 
             // Фильтрация
