@@ -1,6 +1,11 @@
 package com.spanishapp.ui.onboarding
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,6 +64,19 @@ fun DownloadScreen(
 ) {
     LaunchedEffect(Unit) { viewModel.start() }
     BackHandler(enabled = true) { /* Block back — content download is mandatory. */ }
+
+    // Spanish guitar loop (no-op if mp3 isn't bundled in res/raw/)
+    rememberDownloadMusic()
+
+    // Rotating Spain facts (auto-advance every 5s)
+    val factPool = remember { SpainFacts.rotation() }
+    var factIndex by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            kotlinx.coroutines.delay(5000)
+            factIndex = (factIndex + 1) % factPool.size
+        }
+    }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val finished by viewModel.finished.collectAsStateWithLifecycle()
@@ -220,7 +238,54 @@ fun DownloadScreen(
                     )
                 }
 
+                else -> {}
+            }
+
+            // ── Rotating Spain facts card at the bottom ──
+            // Shown for all non-failed states so users see culture while waiting.
+            if (state !is DownloadState.Failed) {
+                Spacer(Modifier.height(28.dp))
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.White.copy(alpha = 0.12f),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("🇪🇸", fontSize = 16.sp)
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                "ЗНАЕШЬ ЛИ ТЫ?",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.White.copy(alpha = 0.7f),
+                                letterSpacing = 1.5.sp,
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        AnimatedContent(
+                            targetState = factPool[factIndex],
+                            transitionSpec = {
+                                (fadeIn(tween(450)) togetherWith fadeOut(tween(300)))
+                            },
+                            label = "fact",
+                        ) { fact ->
+                            Text(
+                                fact,
+                                fontSize = 14.sp,
+                                color = Color.White,
+                                lineHeight = 19.sp,
+                            )
+                        }
+                    }
+                }
+            }
+
+            when (val s2 = state) {
                 is DownloadState.Failed -> {
+                    Spacer(Modifier.height(28.dp))
                     Text("⚠", fontSize = 48.sp, color = Color.White)
                     Spacer(Modifier.height(12.dp))
                     Text(
@@ -232,7 +297,7 @@ fun DownloadScreen(
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        s.cause,
+                        s2.cause,
                         fontSize = 12.sp,
                         color = Color.White.copy(alpha = 0.75f),
                         textAlign = TextAlign.Center,
@@ -253,6 +318,7 @@ fun DownloadScreen(
                         textAlign = TextAlign.Center,
                     )
                 }
+                else -> {}
             }
         }
     }
