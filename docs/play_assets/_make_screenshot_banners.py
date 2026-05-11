@@ -21,23 +21,23 @@ CAPTIONS = [
      '6 авторских игр · тренажёр глаголов · 100 рассказов'),
     ('Screenshot_20260511_094848_ESPEAK.jpg',
      'СЛОВАРЬ',
-     '5000+ слов\nв твоём кармане',
+     '5000+ слов в твоём кармане',
      'Учи · слушай · собирай списки · делись'),
     ('Screenshot_20260511_095005_ESPEAK.jpg',
      'ГЛАВНАЯ',
-     'Один экран —\nвесь твой испанский',
+     'Один экран — весь твой испанский',
      'Урок · слово дня · рейтинг · цель'),
     ('Screenshot_20260511_095017_ESPEAK.jpg',
      'LIBROS',
-     'Читай. Слушай.\nГовори как носитель.',
+     'Читай. Слушай. Говори как носитель.',
      '100 рассказов · озвучка · проверка произношения'),
     ('Screenshot_20260511_095026_ESPEAK.jpg',
      'CRUCIGRAMA',
-     'Кроссворды,\nкоторые качают рейтинг',
+     'Кроссворды, которые качают рейтинг',
      '100 уровней растущей сложности'),
     ('Screenshot_20260511_095034_ESPEAK.jpg',
      'CÁLCULO',
-     'Числа на слух —\nкак носитель',
+     'Числа на слух — как носитель',
      'Тренируй устный счёт · 100 уровней'),
     ('Screenshot_20260511_095044_ESPEAK.jpg',
      'VERBOS',
@@ -45,40 +45,47 @@ CAPTIONS = [
      '6 времён · 1000+ форм · 4 режима тренировки'),
     ('Screenshot_20260511_095051_ESPEAK.jpg',
      'КАРТОЧКИ',
-     'Запомнить навсегда —\nреально',
+     'Запомнить навсегда — реально',
      'Алгоритм SM-2 · повторяй умно, а не часто'),
 ]
 
 
-def fit_font(text, font_path, max_width, start_size, min_size=18):
-    """Largest size where every line fits max_width."""
-    size = start_size
-    while size > min_size:
-        f = ImageFont.truetype(font_path, size)
-        if all(f.getbbox(line)[2] - f.getbbox(line)[0] <= max_width
-               for line in text.split('\n')):
-            return f
-        size -= 2
-    return ImageFont.truetype(font_path, min_size)
+def wrap_text(text, font, max_width):
+    """Word-wrap text into a list of lines fitting max_width pixels.
+    Honors explicit \\n as forced breaks, then word-wraps each paragraph."""
+    lines = []
+    for paragraph in text.split('\n'):
+        words = paragraph.split(' ')
+        current = ''
+        for w in words:
+            trial = (current + ' ' + w).strip()
+            if font.getbbox(trial)[2] <= max_width:
+                current = trial
+            else:
+                if current:
+                    lines.append(current)
+                current = w
+        if current:
+            lines.append(current)
+    return lines or ['']
 
 
-def pick_uniform_sizes(captions, inner_w, head_start, sub_start):
-    """Find one headline size + one subtitle size that fit ALL captions.
-    Returns (head_size, sub_size). Uniform sizes = consistent visual weight
-    across the whole screenshot set."""
+def pick_uniform_sizes(captions, inner_w, head_start, sub_start,
+                       head_max_lines=2, sub_max_lines=1):
+    """Find one headline + one subtitle size that fit ALL captions, where
+    word-wrap produces no more than the given line counts."""
     head_size = head_start
     while head_size > 20:
         f = ImageFont.truetype(FONT_BLACK, head_size)
-        if all(f.getbbox(ln)[2] - f.getbbox(ln)[0] <= inner_w
-               for _, _, head, _ in captions
-               for ln in head.split('\n')):
+        if all(len(wrap_text(head, f, inner_w)) <= head_max_lines
+               for _, _, head, _ in captions):
             break
         head_size -= 2
 
     sub_size = sub_start
     while sub_size > 14:
         f = ImageFont.truetype(FONT_MEDIUM, sub_size)
-        if all(f.getbbox(sub)[2] - f.getbbox(sub)[0] <= inner_w
+        if all(len(wrap_text(sub, f, inner_w)) <= sub_max_lines
                for _, _, _, sub in captions):
             break
         sub_size -= 2
@@ -158,13 +165,19 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     eb_bbox = draw.textbbox((0, 0), eyebrow_spaced, font=f_eyebrow)
     eb_h    = eb_bbox[3] - eb_bbox[1]
 
-    head_lines = headline.split('\n')
+    # Auto-wrap headline + subtitle to fit inner_w (no overflow ever).
+    inner_w_text = banner_w - int(banner_w * 0.045) * 2
+    head_lines   = wrap_text(headline, f_head, inner_w_text)
+    sub_lines    = wrap_text(subtitle, f_sub,  inner_w_text)
+
     head_metrics = [draw.textbbox((0, 0), ln, font=f_head) for ln in head_lines]
     head_line_h  = max(b[3] - b[1] for b in head_metrics)
     head_total_h = head_line_h * len(head_lines) + int(head_line_h * 0.18) * (len(head_lines) - 1)
 
-    sub_bbox = draw.textbbox((0, 0), subtitle, font=f_sub)
-    sub_h    = sub_bbox[3] - sub_bbox[1]
+    sub_metrics = [draw.textbbox((0, 0), ln, font=f_sub) for ln in sub_lines]
+    sub_line_h  = max(b[3] - b[1] for b in sub_metrics)
+    sub_h       = sub_line_h * len(sub_lines) + int(sub_line_h * 0.20) * (len(sub_lines) - 1)
+    sub_bbox    = sub_metrics[0]
 
     # ── Tight group: eyebrow → headline → subtitle, centered vertically ──
     # Premium ad pattern: text reads as ONE block, not three floating zones.
@@ -201,10 +214,13 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
                   font=f_head, fill=(255, 255, 255))
         y_cursor += head_line_h + line_gap
 
-    # 3) subtitle (warm light)
+    # 3) subtitle (warm light) — wrapped lines
     sub_y_top = head_y_top + head_block_h + gap_head_sub
-    draw.text((text_x, sub_y_top - sub_bbox[1]), subtitle,
-              font=f_sub, fill=(235, 215, 195))
+    sy = sub_y_top
+    for ln, bbx in zip(sub_lines, sub_metrics):
+        draw.text((text_x, sy - bbx[1]), ln,
+                  font=f_sub, fill=(235, 215, 195))
+        sy += sub_line_h + int(sub_line_h * 0.20)
 
     return out.convert('RGB')
 
