@@ -65,15 +65,20 @@ class ContentDownloader @Inject constructor(
     private val versionStore: ContentVersionStore,
     private val firebaseStorage: FirebaseStorage,
 ) {
-    /** Root folder inside the Firebase Storage bucket. */
-    var contentPath: String = "content_packs"
+    /**
+     * Root folder inside the Firebase Storage bucket where content packs live.
+     * Empty string means bucket root. Files are addressed by name from this root.
+     */
+    var contentPath: String = ""
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
     private val _state = MutableStateFlow<DownloadState>(DownloadState.Idle)
     val state: StateFlow<DownloadState> = _state.asStateFlow()
 
-    private val rootRef: StorageReference get() = firebaseStorage.reference.child(contentPath)
+    private val rootRef: StorageReference get() =
+        if (contentPath.isEmpty()) firebaseStorage.reference
+        else firebaseStorage.reference.child(contentPath)
 
     /**
      * Pull manifest, diff versions, download changed packs.

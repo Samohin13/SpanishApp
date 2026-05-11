@@ -8,16 +8,10 @@ service firebase.storage {
       allow write: if request.auth != null && request.auth.uid == uid;
     }
 
-    // Контент-пакеты: публичное чтение, запись запрещена из приложения
-    // (заливаем пакеты только через Firebase Console)
-    match /content_packs/{file=**} {
-      allow read:  if true;
-      allow write: if false;
-    }
-
-    // По умолчанию всё остальное закрыто
-    match /{path=**} {
-      allow read:  if false;
+    // Контент-пакеты лежат в корне бакета как *.json:
+    // публичное чтение, запись запрещена из приложения.
+    match /{filename} {
+      allow read:  if filename.matches('.*\\.json');
       allow write: if false;
     }
   }
