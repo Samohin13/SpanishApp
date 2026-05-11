@@ -94,35 +94,11 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
         tdraw.line([(0, y), (banner_w, y)], fill=(8, 10, 16, a))
     panel = Image.alpha_composite(blurred, tint)
 
-    # 3. Diagonal top-left sheen — premium glass sweep
-    sheen = Image.new('RGBA', (banner_w, banner_h), (0, 0, 0, 0))
-    sdr = ImageDraw.Draw(sheen)
-    sdr.polygon([
-        (0, 0),
-        (int(banner_w * 0.55), 0),
-        (int(banner_w * 0.18), banner_h),
-        (0, banner_h),
-    ], fill=(255, 255, 255, 28))
-    sheen = sheen.filter(ImageFilter.GaussianBlur(35))
-    panel = Image.alpha_composite(panel, sheen)
-
-    # 4. Inner top highlight — bright thin band right under the border
-    hl = Image.new('RGBA', (banner_w, banner_h), (0, 0, 0, 0))
-    ImageDraw.Draw(hl).rounded_rectangle(
-        [4, 2, banner_w - 4, int(banner_h * 0.10)],
-        radius=radius // 2, fill=(255, 255, 255, 35))
-    hl = hl.filter(ImageFilter.GaussianBlur(4))
-    panel = Image.alpha_composite(panel, hl)
-
-    # 5. Double border — outer hairline + inner hairline (luxe stacked feel)
+    # 3. Single hairline border — clean, uniform glass (no inner bands)
     border = Image.new('RGBA', (banner_w, banner_h), (0, 0, 0, 0))
-    bdr = ImageDraw.Draw(border)
-    bdr.rounded_rectangle(
+    ImageDraw.Draw(border).rounded_rectangle(
         [1, 1, banner_w - 2, banner_h - 2],
         radius=radius, outline=(255, 255, 255, 130), width=2)
-    bdr.rounded_rectangle(
-        [6, 6, banner_w - 7, banner_h - 7],
-        radius=max(radius - 5, 6), outline=(255, 255, 255, 30), width=1)
     panel = Image.alpha_composite(panel, border)
 
     # Clip panel to rounded mask
