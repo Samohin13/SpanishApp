@@ -4,8 +4,8 @@
             "id": "core",
             "version": 1,
             "url": "content/core_v1.json",
-            "sizeBytes": 225690,
-            "sha256": "7cae51df1605372865d3a271e3cd234e20f1e1614be3fea0555567452a676b0d",
+            "sizeBytes": 1983613,
+            "sha256": "c995dbc394dde49559a9a1632fcb23bfe716c3d448390ee77d8037a68bdef285",
             "displayName": "Базовый словарь"
         },
         {

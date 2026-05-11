@@ -13,6 +13,19 @@ import com.spanishapp.data.content.StoryRecord
 import com.spanishapp.data.content.WordRecord
 import com.spanishapp.data.content.WordsPack
 import com.spanishapp.data.db.BasicsVocab
+import com.spanishapp.data.db.CleanVocab
+import com.spanishapp.data.db.VocabExtra1
+import com.spanishapp.data.db.VocabExtra2
+import com.spanishapp.data.db.VocabExtra3
+import com.spanishapp.data.db.VocabExtra4
+import com.spanishapp.data.db.VocabExtra5
+import com.spanishapp.data.db.VocabExtra6
+import com.spanishapp.data.db.VocabExtra7
+import com.spanishapp.data.db.VocabExtra8
+import com.spanishapp.data.db.VocabExtra9
+import com.spanishapp.data.db.VocabExtra10
+import com.spanishapp.data.db.VocabExtra11
+import com.spanishapp.data.db.VocabExtra12
 import com.spanishapp.ui.games.LibrosData
 import com.spanishapp.ui.home.Exercise
 import com.spanishapp.ui.home.LessonContentData
@@ -49,17 +62,28 @@ class ContentPackExporter {
     fun exportAll() {
         val infos = mutableListOf<PackInfo>()
 
-        // ── 1. Core vocabulary ──
-        val words = BasicsVocab.entries.map { w ->
-            WordRecord(
-                es = w.spanish,
-                ru = w.russian,
-                example = w.example,
-                level = w.level,
-                category = w.category,
-                type = w.wordType,
-            )
-        }
+        // ── 1. Core vocabulary — full union of every vocab source
+        //    (same logic as DatabaseSeeder.kt). Deduplicate by Spanish lemma
+        //    so the pack matches what the app actually stores. ──
+        val all = CleanVocab.entries +
+            VocabExtra1.entries + VocabExtra2.entries + VocabExtra3.entries +
+            VocabExtra4.entries + VocabExtra5.entries + VocabExtra6.entries +
+            VocabExtra7.entries + VocabExtra8.entries + VocabExtra9.entries +
+            VocabExtra10.entries + VocabExtra11.entries + VocabExtra12.entries +
+            BasicsVocab.entries
+
+        val words = all
+            .distinctBy { it.spanish.trim().lowercase() }
+            .map { w ->
+                WordRecord(
+                    es = w.spanish,
+                    ru = w.russian,
+                    example = w.example,
+                    level = w.level,
+                    category = w.category,
+                    type = w.wordType,
+                )
+            }
         infos += writePack(
             id = "core",
             version = CORE_V,
