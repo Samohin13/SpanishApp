@@ -1,0 +1,679 @@
+{
+    "stories": [
+        {
+            "id": 51,
+            "level": "B1",
+            "title": "El Cambio de Trabajo",
+            "theme": "Работа / Решения",
+            "text": "Tras diez años en la misma empresa, Elena se sentía estancada profesionalmente.\nCada lunes, cuando entraba en la oficina, sentía que no aprendía nada nuevo desde hacía años.\nAunque el sueldo era cómodo y sus compañeros eran agradables, algo dentro de ella le decía que era el momento de cambiar.\nEmpezó a actualizar su currículum por las noches y a hacer entrevistas en otras empresas durante los descansos para almorzar.\nDespués de tres meses de búsqueda, recibió una oferta interesante en una startup tecnológica con menos sueldo pero más posibilidades de crecer.\nSu madre le dijo que estaba loca, pero su pareja la apoyó.\nHoy, dos años después, Elena dirige un equipo de quince personas y no se arrepiente de haber dado el salto.",
+            "questions": [
+                {
+                    "q": "¿Por qué Elena decidió cambiar de trabajo?",
+                    "options": [
+                        "Porque su sueldo era bajo",
+                        "Porque se sentía estancada profesionalmente",
+                        "Porque no se llevaba bien con sus compañeros"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuándo actualizaba su currículum?",
+                    "options": [
+                        "Durante el horario de trabajo",
+                        "Por las noches",
+                        "Los fines de semana"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo reaccionó su madre?",
+                    "options": [
+                        "La apoyó completamente",
+                        "Le dijo que estaba loca",
+                        "No quiso opinar"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál es la situación de Elena ahora?",
+                    "options": [
+                        "Quiere volver al trabajo anterior",
+                        "Dirige un equipo de quince personas",
+                        "Está buscando trabajo otra vez"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 52,
+            "level": "B1",
+            "title": "El Reencuentro",
+            "theme": "Дружба / Воспоминания",
+            "text": "Veinte años después de terminar el colegio, Carlos recibió una invitación al reencuentro de su clase.\nAl principio dudó si ir: había perdido el contacto con casi todos y no sabía si tendría algo en común con ellos.\nFinalmente decidió asistir, más por curiosidad que por entusiasmo.\nCuando llegó al restaurante donde se celebraba la cena, apenas reconoció a algunos compañeros: el tiempo había cambiado mucho a todos.\nHablando con su antiguo mejor amigo Pablo, descubrió que ahora vivía en la misma calle que él, a solo tres edificios de distancia.\n«¿Cómo es posible que llevemos cinco años de vecinos sin saberlo?», se rieron los dos.\nEsa noche Carlos se dio cuenta de que algunas amistades, aunque parezcan perdidas, simplemente esperan el momento adecuado para volver.",
+            "questions": [
+                {
+                    "q": "¿Por qué dudaba Carlos en ir al reencuentro?",
+                    "options": [
+                        "Estaba muy ocupado con el trabajo",
+                        "Había perdido el contacto con casi todos",
+                        "No le caía bien su antigua clase"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué descubrió Carlos al hablar con Pablo?",
+                    "options": [
+                        "Que vivía en la misma calle a tres edificios",
+                        "Que se había mudado a otro país",
+                        "Que se había casado con una compañera de clase"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Cuánto tiempo llevaban siendo vecinos sin saberlo?",
+                    "options": [
+                        "Dos años",
+                        "Cinco años",
+                        "Diez años"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué moraleja saca Carlos al final?",
+                    "options": [
+                        "Que es mejor no asistir a reuniones del pasado",
+                        "Que algunas amistades esperan el momento adecuado para volver",
+                        "Que el tiempo cambia demasiado a las personas"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 53,
+            "level": "B1",
+            "title": "El Viaje en Tren",
+            "theme": "Путешествия / Знакомства",
+            "text": "Aquel viaje en tren de Madrid a Barcelona iba a ser largo, pero Sofía estaba contenta de tener tiempo para leer.\nA los pocos minutos de salir, una mujer mayor se sentó frente a ella y empezó a hablar sin parar.\nSofía intentó concentrarse en su libro, pero la mujer tenía historias fascinantes: había trabajado como traductora en la ONU durante treinta años.\nSin darse cuenta, Sofía cerró su libro y empezó a hacer preguntas.\nLa mujer le contó cómo había aprendido cinco idiomas, los lugares donde había vivido y los líderes mundiales que había conocido.\nCuando el tren llegó a Barcelona, Sofía sintió que había vivido un curso de historia contemporánea en tres horas.\n«Hay viajes que no son por la distancia que recorres, sino por la gente que conoces», escribió esa misma noche en su diario.",
+            "questions": [
+                {
+                    "q": "¿Qué planeaba hacer Sofía durante el viaje?",
+                    "options": [
+                        "Trabajar en su ordenador",
+                        "Leer su libro",
+                        "Dormir todo el camino"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿En qué había trabajado la mujer mayor?",
+                    "options": [
+                        "Como profesora de idiomas",
+                        "Como traductora en la ONU",
+                        "Como diplomática en Europa"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuántos idiomas hablaba la mujer?",
+                    "options": [
+                        "Tres",
+                        "Cinco",
+                        "Siete"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué reflexión escribió Sofía en su diario?",
+                    "options": [
+                        "Que prefiere viajar sola y leer",
+                        "Que algunos viajes son por la gente que conoces, no la distancia",
+                        "Que la próxima vez tomará un avión"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 54,
+            "level": "B1",
+            "title": "La Receta de la Abuela",
+            "theme": "Семья / Кухня",
+            "text": "Después de la muerte de su abuela, Andrés heredó una caja con cartas, fotos y, lo más importante, un cuaderno con recetas escritas a mano.\nLa paella de su abuela era legendaria en la familia y nadie había logrado reproducirla nunca, ni siquiera su madre.\nAndrés decidió intentarlo. Compró todos los ingredientes que indicaba la receta y siguió las instrucciones al pie de la letra.\nEl resultado fue decepcionante: el arroz quedó demasiado seco y faltaba algo del sabor que él recordaba.\nLlamó a su tía Lola para pedirle consejo. Ella se rió por teléfono y le dijo: «Hijo, las recetas de tu abuela siempre tenían un ingrediente secreto que nunca escribía: probaba el plato a media cocción y ajustaba a ojo».\nAndrés volvió a intentarlo varias veces. A la cuarta paella, su madre lo probó y por primera vez en años, lloró de emoción.",
+            "questions": [
+                {
+                    "q": "¿Qué heredó Andrés de su abuela?",
+                    "options": [
+                        "La casa familiar",
+                        "Una caja con cartas, fotos y un cuaderno de recetas",
+                        "Su colección de joyas"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Por qué no salía bien la paella la primera vez?",
+                    "options": [
+                        "Faltaba un ingrediente clave",
+                        "El arroz estaba seco y faltaba sabor",
+                        "Usó el sartén equivocado"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál era el secreto de la abuela según la tía Lola?",
+                    "options": [
+                        "Usar mariscos especiales",
+                        "Probar el plato a media cocción y ajustar a ojo",
+                        "Cocinar siempre en domingo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hizo finalmente la madre de Andrés?",
+                    "options": [
+                        "Lo abrazó y le dio un consejo",
+                        "Lloró de emoción al probar la paella",
+                        "Le pidió que no cocinara más"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 55,
+            "level": "B1",
+            "title": "La Mudanza",
+            "theme": "Жизнь / Перемены",
+            "text": "Cuando le ofrecieron un ascenso que implicaba mudarse de Sevilla a Bilbao, Jorge tuvo dos semanas para decidir.\nSevilla era su ciudad: el sol, los amigos, el bar de toda la vida donde lo conocían por su nombre.\nBilbao significaba lluvia, frío y empezar de cero a los treinta y cinco años.\nHabló con su pareja, que aceptó acompañarle, y eso le dio el empujón final.\nLa primera semana en Bilbao fue difícil: la lluvia constante le deprimía y la comida le parecía demasiado pesada.\nPero un sábado fue al casco viejo, comió pintxos en una taberna llena de gente y, por primera vez, sintió que podría llamar a Bilbao «su nueva casa».\nTres años después, cuando la empresa le ofreció volver a Sevilla, Jorge dijo que no: ya no era el mismo y Bilbao tampoco lo era.",
+            "questions": [
+                {
+                    "q": "¿Cuánto tiempo tuvo Jorge para decidir?",
+                    "options": [
+                        "Dos semanas",
+                        "Un mes",
+                        "Tres días"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Qué le ayudó a tomar la decisión?",
+                    "options": [
+                        "Que su madre lo apoyó",
+                        "Que su pareja aceptó acompañarle",
+                        "Que le ofrecieron mucho dinero"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuándo empezó a sentirse en casa en Bilbao?",
+                    "options": [
+                        "El primer día",
+                        "Un sábado en el casco viejo comiendo pintxos",
+                        "Después de seis meses"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hizo cuando le ofrecieron volver a Sevilla?",
+                    "options": [
+                        "Aceptó inmediatamente",
+                        "Dijo que no",
+                        "Pidió más tiempo para pensar"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 56,
+            "level": "B1",
+            "title": "El Idioma Olvidado",
+            "theme": "Язык / Идентичность",
+            "text": "Marta había nacido en España de padres polacos pero nunca había aprendido polaco bien: solo entendía algunas palabras del cocinar de su madre.\nCuando murió su abuela en Cracovia y Marta viajó al funeral, se sintió completamente extranjera entre su propia familia.\nSus primos hablaban polaco con velocidad y ella solo podía sonreír y asentir.\nA su regreso a Madrid, Marta se inscribió en clases de polaco para principiantes, aunque tenía treinta y dos años.\nEl primer año fue frustrante: la gramática del polaco era brutal y a veces se preguntaba por qué se torturaba.\nDespués de tres años de estudio, Marta volvió a Polonia para Navidad y mantuvo su primera conversación completa en polaco con su tío.\nÉl le dijo, con lágrimas en los ojos: «Tu abuela estaría tan orgullosa».",
+            "questions": [
+                {
+                    "q": "¿De dónde son los padres de Marta?",
+                    "options": [
+                        "De Polonia",
+                        "De Rusia",
+                        "De República Checa"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Cuándo decidió aprender polaco?",
+                    "options": [
+                        "De pequeña, en el colegio",
+                        "Después del funeral de su abuela",
+                        "Cuando se mudó a Cracovia"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo describe ella el primer año de estudio?",
+                    "options": [
+                        "Fácil y divertido",
+                        "Frustrante por la gramática brutal",
+                        "Aburrido pero útil"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué le dijo su tío en Cracovia?",
+                    "options": [
+                        "Que hablaba mejor que sus primos",
+                        "Que su abuela estaría orgullosa",
+                        "Que debería volver a vivir en Polonia"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 57,
+            "level": "B1",
+            "title": "El Pequeño Negocio",
+            "theme": "Предпринимательство",
+            "text": "Después de quedarse sin trabajo durante la pandemia, Roberto abrió una pequeña panadería artesanal en su barrio.\nLas primeras semanas casi no entraba nadie y Roberto comía pan duro a diario, pensando en cerrar.\nUna vecina jubilada empezó a venir cada mañana y a recomendar la panadería a sus amigas del grupo de gimnasia.\nPoco a poco, el boca a boca hizo su trabajo y la cola por las mañanas empezó a salir hasta la calle.\nRoberto contrató a una joven estudiante para los fines de semana y empezó a hacer talleres de pan los sábados por la tarde.\nTres años después, Roberto ya tenía dos panaderías y rechazaba ofertas de cadenas grandes que querían comprar su marca.\n«Mi marca soy yo y mi barrio», explicaba a quien le preguntaba por qué no aceptaba.",
+            "questions": [
+                {
+                    "q": "¿Por qué Roberto abrió la panadería?",
+                    "options": [
+                        "Era su sueño desde niño",
+                        "Se quedó sin trabajo durante la pandemia",
+                        "Heredó el local"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Quién empezó a recomendar el negocio?",
+                    "options": [
+                        "Una vecina jubilada",
+                        "Un crítico gastronómico",
+                        "Su antigua jefa"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Cuántas panaderías tiene tres años después?",
+                    "options": [
+                        "Una",
+                        "Dos",
+                        "Cinco"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Por qué rechaza las ofertas de las cadenas grandes?",
+                    "options": [
+                        "Porque ofrecen poco dinero",
+                        "Porque su marca es él y su barrio",
+                        "Porque quiere jubilarse pronto"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 58,
+            "level": "B1",
+            "title": "La Carta Encontrada",
+            "theme": "Семейная история",
+            "text": "Mientras vaciaba el desván de la casa de su padre, recientemente fallecido, Lucía encontró un sobre amarillento entre las páginas de un libro viejo.\nEra una carta escrita en 1962, dirigida a su madre y firmada con un nombre que ella no reconocía: Tomás.\nLa carta hablaba de un amor imposible y terminaba con la frase: «Si no me esperas, lo entenderé. Pero no te olvidaré jamás».\nLucía siempre había creído que sus padres se habían enamorado en el colegio y nunca habían amado a nadie más.\nDecidió no decir nada a su madre, ya con ochenta y cinco años, para no abrir heridas viejas.\nPero la carta cambió la forma en que veía a su madre: ya no la imaginaba solo como ama de casa, sino como una joven mujer que había tomado una decisión difícil hacía sesenta años.\nGuardó la carta en su propio cajón y a veces la leía, intentando entender mejor a la mujer que la había criado.",
+            "questions": [
+                {
+                    "q": "¿Dónde encontró Lucía la carta?",
+                    "options": [
+                        "En un cajón de la cocina",
+                        "Entre las páginas de un libro viejo",
+                        "En el bolsillo de un abrigo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿De qué año era la carta?",
+                    "options": [
+                        "De 1952",
+                        "De 1962",
+                        "De 1972"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Por qué Lucía no le dijo nada a su madre?",
+                    "options": [
+                        "Estaba enfadada con ella",
+                        "Para no abrir heridas viejas",
+                        "No supo cómo hacerlo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo cambió la carta su forma de ver a su madre?",
+                    "options": [
+                        "Ya no la respetaba igual",
+                        "La imaginaba como una joven que tomó una decisión difícil",
+                        "Decidió alejarse de ella"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 59,
+            "level": "B1",
+            "title": "El Voluntariado",
+            "theme": "Социальная жизнь",
+            "text": "Cuando se jubiló a los sesenta y cinco años, Antonio se sintió perdido: cuarenta años trabajando como profesor habían terminado de un día para otro.\nSus hijos vivían fuera, su esposa todavía trabajaba y él pasaba las mañanas mirando la televisión sin saber qué hacer.\nUna amiga le recomendó que se ofreciera como voluntario en una asociación que enseñaba a leer a adultos sin estudios.\nAl principio se resistió: «Soy demasiado mayor para empezar algo así», decía.\nPero la primera clase con cinco hombres de unos cuarenta años, todos avergonzados de no saber leer, le rompió el corazón y le devolvió un sentido a su tiempo.\nDos años después, Antonio dedica veinte horas semanales al voluntariado y dice que estos son los años más útiles de su vida.\n«Cada vez que un alumno lee una palabra entera por primera vez, vuelvo a sentir lo que me hizo ser profesor», explica.",
+            "questions": [
+                {
+                    "q": "¿Por qué se sintió perdido Antonio al jubilarse?",
+                    "options": [
+                        "No tenía amigos cerca",
+                        "Cuarenta años de trabajo terminaron de golpe",
+                        "Su esposa se había ido"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Quién le sugirió el voluntariado?",
+                    "options": [
+                        "Su esposa",
+                        "Una amiga",
+                        "Su antiguo jefe"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿A quién enseña en la asociación?",
+                    "options": [
+                        "A niños con dificultades",
+                        "A adultos sin estudios",
+                        "A inmigrantes recién llegados"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuántas horas dedica ahora al voluntariado?",
+                    "options": [
+                        "Cinco horas",
+                        "Diez horas",
+                        "Veinte horas"
+                    ],
+                    "correctIndex": 2
+                }
+            ]
+        },
+        {
+            "id": 60,
+            "level": "B1",
+            "title": "El Concierto Inesperado",
+            "theme": "Музыка / Дружба",
+            "text": "Manuel y Diego habían tocado juntos en una banda de rock cuando tenían veinte años, pero la vida los había llevado por caminos diferentes.\nTreinta años después, Diego, ya enfermo de cáncer, le mandó a Manuel un mensaje pidiéndole un favor: tocar juntos una vez más antes de que fuera demasiado tarde.\nManuel hacía dos décadas que no cogía la guitarra, pero aceptó sin dudar.\nPasaron tres semanas ensayando en el salón de la casa de Diego, recordando canciones que creían haber olvidado.\nEl concierto se organizó en un pequeño bar del barrio, con cincuenta personas que conocían su historia: amigos, familiares, antiguos compañeros del colegio.\nDiego apenas podía cantar al final por la enfermedad, pero los ojos le brillaban como cuando tenían veinte años.\nManuel guardó la grabación de aquella noche en una caja especial y, después de la muerte de Diego seis meses después, no pudo escucharla durante mucho tiempo.\nAhora, cuando la pone, sonríe en lugar de llorar.",
+            "questions": [
+                {
+                    "q": "¿Cuántos años llevaba Manuel sin tocar la guitarra?",
+                    "options": [
+                        "Una década",
+                        "Dos décadas",
+                        "Tres décadas"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Dónde tocaron el concierto?",
+                    "options": [
+                        "En un teatro grande",
+                        "En un pequeño bar del barrio",
+                        "En la casa de Diego"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Por qué Diego apenas podía cantar?",
+                    "options": [
+                        "Estaba muy nervioso",
+                        "Estaba enfermo de cáncer",
+                        "Había perdido la voz por el ensayo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hace Manuel ahora cuando escucha la grabación?",
+                    "options": [
+                        "Sonríe en lugar de llorar",
+                        "No puede escucharla todavía",
+                        "La comparte en redes sociales"
+                    ],
+                    "correctIndex": 0
+                }
+            ]
+        },
+        {
+            "id": 66,
+            "level": "B1",
+            "title": "Un Día en la Ciudad",
+            "theme": "Городская жизнь",
+            "text": "Cada vez que Marcos sale a la ciudad para hacer recados, vuelve a casa con la sensación de haber vivido tres días en uno.\nEmpieza la mañana cogiendo el metro a las ocho, junto con cientos de personas con caras de sueño.\nA las nueve está en el banco firmando papeles que no entiende del todo, pero que su gestor le ha asegurado que son rutinarios.\nDespués se acerca al ayuntamiento para renovar el pasaporte: una hora de espera, cinco minutos de trámite, otra media hora para imprimir el justificante.\nAntes de comer pasa por la farmacia, recoge un paquete en correos y consigue, milagrosamente, encontrar zapatos cómodos en rebajas.\nCuando se sienta finalmente en una terraza con una caña, son las cuatro de la tarde y siente que la ciudad le ha consumido toda la energía del día.\nMira a la gente pasar y piensa que vivir aquí es eso: correr todo el día para tachar cosas de una lista que nunca termina.",
+            "questions": [
+                {
+                    "q": "¿Cómo describe Marcos la sensación al volver a casa?",
+                    "options": [
+                        "Como si hubiera vivido un día corto",
+                        "Como si hubiera vivido tres días en uno",
+                        "Como si no hubiera hecho nada importante"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hace en el ayuntamiento?",
+                    "options": [
+                        "Cobra una multa",
+                        "Renueva el pasaporte",
+                        "Pregunta por una vivienda social"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿A qué hora se sienta finalmente en una terraza?",
+                    "options": [
+                        "A las dos del mediodía",
+                        "A las cuatro de la tarde",
+                        "A las seis de la tarde"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál es la reflexión final sobre la vida en la ciudad?",
+                    "options": [
+                        "Que es emocionante y llena de oportunidades",
+                        "Que es correr todo el día por una lista que nunca termina",
+                        "Que es más tranquila de lo que parece"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 67,
+            "level": "B1",
+            "title": "La Primera Cena",
+            "theme": "Любовь / Кухня",
+            "text": "Cuando Pablo invitó a Carmen a cenar a su casa por primera vez, decidió que quería impresionarla cocinando él mismo en lugar de pedir comida.\nEl problema era que Pablo, a sus treinta años, prácticamente no había cocinado nunca: vivía a base de ensaladas frías y comida congelada.\nEligió una receta de risotto en un blog de cocina, compró todos los ingredientes y se puso a las cuatro de la tarde, dándose tres horas con margen.\nA las seis, la cocina parecía un campo de batalla: arroz pegado en la sartén, tomate por toda la encimera, una nube de humo saliendo del horno donde había olvidado un pan.\nCuando Carmen llamó al timbre a las siete y media, Pablo abrió la puerta sudando, con un delantal manchado y cara de derrota.\n«¿Pedimos pizza?», le preguntó, intentando sonreír.\nCarmen se rió, se quitó la chaqueta y le dijo: «Mejor te enseño a hacer un risotto que sí salga».\nCocinaron juntos, salió mejor que la primera vez, y a las once de la noche todavía estaban en la cocina, hablando.",
+            "questions": [
+                {
+                    "q": "¿Por qué quiso Pablo cocinar en lugar de pedir comida?",
+                    "options": [
+                        "Porque la comida pedida le sentaba mal",
+                        "Para impresionar a Carmen",
+                        "Porque no tenía dinero"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál era el problema de Pablo?",
+                    "options": [
+                        "No le gustaba el risotto",
+                        "Prácticamente no había cocinado nunca",
+                        "No tenía utensilios"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hizo Carmen al ver el desastre?",
+                    "options": [
+                        "Se enfadó y se fue",
+                        "Se rió y le enseñó a hacerlo bien",
+                        "Pidió pizza por teléfono"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Hasta qué hora estuvieron en la cocina?",
+                    "options": [
+                        "Hasta las diez",
+                        "Hasta las once",
+                        "Hasta medianoche"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 68,
+            "level": "B1",
+            "title": "El Profesor que No Olvido",
+            "theme": "Образование / Воспоминания",
+            "text": "Cuando le pregunté a mi padre quién había sido la persona más influyente en su vida, no dudó en responder: el señor Méndez, su profesor de literatura del instituto.\n«No nos enseñaba a aprobar exámenes», me dijo. «Nos enseñaba a leer.»\nMéndez, según contaba mi padre, podía pasarse media hora analizando una sola frase de Cervantes y al final de aquella clase nadie quería que sonara el timbre.\nSuspendía a los alumnos que se aprendían los resúmenes de memoria pero les ponía un sobresaliente a los que escribían algo realmente personal, aunque tuviera errores ortográficos.\nCuando mi padre se hizo arquitecto y no escritor, le mandó una carta agradeciéndole no solo lo que le había enseñado, sino también la libertad que le había dado para no seguir sus pasos.\nMéndez murió en 2019, a los noventa años.\nMi padre fue al funeral y se sorprendió al ver que la iglesia estaba llena de personas de tres generaciones que habían sido sus alumnos.\nCada uno tenía una historia diferente, pero todos recordaban una frase suya en común: «Un libro que no te cambia es un libro que no has leído de verdad».",
+            "questions": [
+                {
+                    "q": "¿Qué decía mi padre que les enseñaba el señor Méndez?",
+                    "options": [
+                        "A pasar exámenes",
+                        "A leer",
+                        "A escribir bien"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿A quién suspendía Méndez?",
+                    "options": [
+                        "A los que llegaban tarde",
+                        "A los que se aprendían los resúmenes de memoria",
+                        "A los que tenían errores ortográficos"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué le mandó mi padre al hacerse arquitecto?",
+                    "options": [
+                        "Una invitación a su boda",
+                        "Una carta de agradecimiento",
+                        "Su primer proyecto"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué frase recordaban todos sus alumnos?",
+                    "options": [
+                        "Que un libro que no te cambia es un libro que no has leído",
+                        "Que la literatura salva vidas",
+                        "Que hay que leer todos los días"
+                    ],
+                    "correctIndex": 0
+                }
+            ]
+        },
+        {
+            "id": 69,
+            "level": "B1",
+            "title": "El Mensaje en la Botella",
+            "theme": "Море / Связь",
+            "text": "En agosto, mientras paseaba por la playa de Calella al atardecer, Lucía vio una botella de cristal medio enterrada en la arena.\nDentro había un papel doblado que parecía haber pasado tiempo en el mar.\nEl mensaje, escrito a mano en italiano, estaba firmado por una tal Giulia y tenía fecha de tres años antes.\nDecía algo así: «Si alguien encuentra esta botella, por favor, escribe a esta dirección. Mi abuelo era pescador y hacía esto con sus amigos: lanzaban botellas para que el mar las llevara y un día volvieran a alguien».\nLucía dudó si responder. Tres años eran muchos: a lo mejor Giulia ya no vivía en esa dirección, o ni siquiera era cierta la historia.\nAun así, le escribió un correo desde el mismo bar de la playa donde estaba.\nUna semana después, Giulia le respondió con tres páginas: el abuelo había muerto el invierno anterior, y aquella había sido una de las últimas botellas que habían lanzado juntos antes de que él se pusiera enfermo.\nLucía y Giulia siguieron escribiéndose durante meses. En primavera, Giulia viajó a España y se conocieron por primera vez frente a la misma playa donde había aparecido la botella.",
+            "questions": [
+                {
+                    "q": "¿Qué encontró Lucía en la playa?",
+                    "options": [
+                        "Un cofre con monedas antiguas",
+                        "Una botella de cristal con un mensaje",
+                        "Un cuaderno mojado"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Quién había escrito el mensaje?",
+                    "options": [
+                        "Una pescadora francesa",
+                        "Una italiana llamada Giulia",
+                        "Un amigo de su padre"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué tradición tenía el abuelo de Giulia?",
+                    "options": [
+                        "Lanzar botellas con sus amigos pescadores",
+                        "Escribir cartas en el verano",
+                        "Coleccionar mensajes en botellas"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Qué pasó al final?",
+                    "options": [
+                        "Lucía y Giulia se conocieron en persona en la misma playa",
+                        "Lucía nunca recibió respuesta",
+                        "Giulia ya había muerto cuando Lucía escribió"
+                    ],
+                    "correctIndex": 0
+                }
+            ]
+        },
+        {
+            "id": 70,
+            "level": "B1",
+            "title": "La Reforma de la Cocina",
+            "theme": "Дом / Терпение",
+            "text": "Cuando los Hernández compraron un piso de los años setenta a buen precio, sabían que tendrían que reformarlo, pero no imaginaban hasta qué punto.\nLo que iba a ser una reforma de tres meses se convirtió en una odisea de casi un año.\nEl primer mes el albañil descubrió que las tuberías de la cocina estaban tan oxidadas que era más rápido cambiar todas que parchear.\nEl segundo mes apareció humedad en una pared que hubo que abrir entera.\nDespués vino el lío de los electricistas, los problemas con el ascensor para subir el material y, finalmente, una huelga de transportes que retrasó tres semanas la entrega de los muebles.\nLos Hernández vivieron seis meses en casa de los suegros con dos hijos pequeños, lo que puso a prueba todos los matrimonios involucrados.\nCuando por fin pudieron volver a su piso, lloraron como niños al ver la cocina nueva, no porque fuera espectacular, sino porque significaba que aquella prueba había terminado.\nHoy, dos años después, cuando alguien les pregunta si volverían a comprar un piso para reformar, los dos responden a la vez: «Nunca jamás».",
+            "questions": [
+                {
+                    "q": "¿Cuánto tiempo se suponía que duraría la reforma?",
+                    "options": [
+                        "Un mes",
+                        "Tres meses",
+                        "Seis meses"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué problema apareció el segundo mes?",
+                    "options": [
+                        "Una huelga de albañiles",
+                        "Humedad en una pared que hubo que abrir entera",
+                        "Falta de presupuesto"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Dónde vivieron durante la reforma?",
+                    "options": [
+                        "En un hotel",
+                        "En casa de los suegros con dos hijos pequeños",
+                        "En la casa de la abuela"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Volverían a comprar un piso para reformar?",
+                    "options": [
+                        "Sí, sin duda",
+                        "Solo si el precio es muy bueno",
+                        "Nunca jamás"
+                    ],
+                    "correctIndex": 2
+                }
+            ]
+        }
+    ]
+}
