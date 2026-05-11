@@ -344,16 +344,28 @@ def with_shadow(im, ox=12, oy=18, blur=18, alpha=120):
     return canvas
 
 bull_with_shadow = with_shadow(bull, ox=10, oy=20, blur=20, alpha=150)
-# Bull was visually overlapping the "E" of ESPEAK. Visible bull within
-# its padded canvas is offset by `blur*2 + 30 = 70` from the canvas left.
-# So with bull_x=20, visible bull right edge was at 20+70+300=390 — text
-# starts at 350 → 40px overlap. Pull bull 60px left so visible right
-# edge clears text with a 20px gap (was bull_x=20 → -40).
-bull_x = -20      # closer to text — touches ~5px gap (was -40 → 30px gap)
-# Vertical alignment: bull bottom with text bottom.
-# Text bottom (last "Карточки…" line) ≈ y_text + 184 + 22 ≈ 396.
-# Visible bull bottom = bull_y + 70 + 300 → set bull_y so bottom = 400.
-bull_y = 400 - 70 - 300                      # = 30
+
+# Pixel-perfect alignment: position bull so the rightmost non-transparent
+# pixel (the bull's right horn tip) lands exactly on the left edge of "E".
+# Same for bottom — bull's lowest visible pixel lines up with the text
+# baseline.  We measure the actual visible bbox of the BULL ITSELF (not
+# the padded shadow canvas) and offset accordingly.
+bbox = bull.getbbox()              # (left, top, right, bottom) of opaque pixels
+visible_w = bbox[2] - bbox[0]
+visible_h = bbox[3] - bbox[1]
+
+TEXT_LEFT_EDGE = 350               # left edge of "E" of ESPEAK (= text_x)
+TEXT_BASELINE  = 396               # bottom of last "Карточки · Игры · AI" row
+
+# bull_with_shadow contains the bull at offset (pad, pad) where pad = blur*2+30 = 70.
+# Inside the bull image, opaque pixels start at bbox[0] (offset within 300x300).
+# So the rightmost opaque pixel of bull_with_shadow lands at:
+#   paste_x + 70 + bbox[2]
+# We want that = TEXT_LEFT_EDGE.
+PAD = 70
+bull_x = TEXT_LEFT_EDGE - PAD - bbox[2]
+bull_y = TEXT_BASELINE - PAD - bbox[3]
+
 img.paste(bull_with_shadow, (bull_x, bull_y), bull_with_shadow)
 
 # Bottom vignette
