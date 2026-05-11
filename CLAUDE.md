@@ -54,12 +54,37 @@
 6. Хостинг — Firebase Storage `spanishapp-35092.firebasestorage.app`
 
 ### Что осталось (Phase 4-5)
-- ConjugationGrid renderer + генерация из `conjugations` таблицы DB
+- ConjugationGrid renderer ✅ (сделано)
 - SpotTheError — авторить 300 ошибочных вариантов (потенциально через LLM)
-- BuildSentenceWithDistractors + ReorderWords + DragToFillBlanks (B1/B2)
-- CategorySort (drag/drop)
-- Sealed-class рефакторинг (опционально)
-- Подключение Firebase Storage + реальная загрузка пакетов
+- BuildSentenceWithDistractors — был отменён по запросу владельца
+- ReorderWords + DragToFillBlanks (B1/B2) — TODO
+- CategorySort (drag/drop) — TODO
+- Sealed-class рефакторинг — отложен
+- Подключение Firebase Storage → выбран более простой путь GitHub Pages ✅ (сделано)
+
+### E. ⭐ Финальная авто-сессия (после изначальной)
+
+**A. Daily Mission** — расширил «Цель дня» с 3 до 4 пунктов (добавлен «Урок дня»), тап на тайл теперь умно ведёт к незавершённой задаче (lesson → course/a1_1 → flashcards → libros). LessonProgressDao.anyCompletedSince(since) — новый Query.
+
+**B. Type Badges** — каждое упражнение в LessonSession теперь открывается с маленьким accent-pill: эмодзи + короткий лейбл типа (✏️ Выбор, 🔊 Аудио, 🔗 Пары, 📊 Спряжение, итд.). Визуальная идентичность для всех 11 типов.
+
+**C. Phase 0 finish** — реальная OTA-доставка контента:
+- Контент-пакеты опубликованы на gh-pages → `https://samohin13.github.io/SpanishApp/content_packs/manifest.json` (HTTP 200, 1.9 МБ)
+- ContentDownloader полностью реализован (OkHttp streaming, MB/s callback, sha256 verify, версионный diff через ContentVersionStore)
+- DownloadScreen — Compose UI на оранжевом градиенте, big-percent + per-pack прогресс + retry
+- Hilt-провайдер для cacheRoot, маршрут `download` в Navigation, кнопка в Settings → «Загрузить обновления контента»
+- Auto-trigger на первом запуске пока НЕ включён — opt-in из Settings (безопасный rollout)
+
+### Коммиты финальной авто-сессии
+| Коммит | Что |
+|---|---|
+| `889660f` | Откат обманок в BuildSentence (по запросу владельца) |
+| `eb7d0d9` | Интерливание авторских + генерированных упражнений |
+| `f25ef76` | docs: статус Phase 1-5 + per-CEFR coverage |
+| `37026ea` | A: Daily Mission — 4 цели + smart routing |
+| `40bbf5d` | B: visual badges на 11 типах |
+| `465a1cd` (gh-pages) | Контент-пакеты опубликованы |
+| `afc51ac` | C: Phase 0 finish — реальный downloader + UI |
 
 ### Коммиты сессии 13
 | Коммит | Что |
