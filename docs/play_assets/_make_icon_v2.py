@@ -41,8 +41,15 @@ for r, g, b, a in bull.getdata():
 bull.putdata(tinted)
 
 # Scale bull to ~70% of canvas (leave room around edges)
+# Render at 2x then downsample for super-smooth anti-aliased edges.
 BULL_SIZE = int(W * 0.78)
+bull = bull.resize((BULL_SIZE * 2, BULL_SIZE * 2), Image.LANCZOS)
 bull = bull.resize((BULL_SIZE, BULL_SIZE), Image.LANCZOS)
+
+# Feather the alpha edge a touch so it doesn't look jaggy on orange.
+r_ch, g_ch, b_ch, a_ch = bull.split()
+a_ch = a_ch.filter(ImageFilter.GaussianBlur(0.7))
+bull = Image.merge('RGBA', (r_ch, g_ch, b_ch, a_ch))
 
 # ── 1. Diagonal gradient background — MATCHES feature graphic ──
 # Same direction (bright top-RIGHT, deep bottom-LEFT) and same colour
@@ -74,15 +81,15 @@ img = Image.alpha_composite(img.convert('RGBA'), glow)
 #  so dropping it keeps both backgrounds visually identical.)
 
 # ── 4. Drop shadow under bull ──────────────────────────────
-SHADOW_OFFSET_X = 3
-SHADOW_OFFSET_Y = 7
-SHADOW_BLUR = 24
+SHADOW_OFFSET_X = 4
+SHADOW_OFFSET_Y = 10
+SHADOW_BLUR = 22
 
-# Build a soft, low-opacity shadow (was harsh black at alpha=140)
+# Build a soft, warm shadow — gentle but present
 shadow = Image.new('RGBA', bull.size, (0, 0, 0, 0))
 shadow_data = []
 for r, g, b, a in bull.getdata():
-    shadow_data.append((40, 15, 5, min(int(a * 0.22), 60)))
+    shadow_data.append((50, 20, 5, min(int(a * 0.38), 100)))
 shadow.putdata(shadow_data)
 shadow = shadow.filter(ImageFilter.GaussianBlur(SHADOW_BLUR))
 
