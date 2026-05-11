@@ -193,7 +193,7 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     glow_layer = glow_layer.filter(ImageFilter.GaussianBlur(6))
     out = Image.alpha_composite(out, glow_layer)
     draw = ImageDraw.Draw(out)
-    y_cursor = block_y + eb_h + gap_eb_head
+    y_cursor = head_y_top
     for ln, bbx in zip(head_lines, head_metrics):
         draw.text((text_x, y_cursor - bbx[1]), ln,
                   font=f_head, fill=(255, 255, 255))
@@ -213,7 +213,7 @@ _margin   = int(_W * 0.04)
 _banner_w = _W - _margin * 2
 _pad_x    = int(_banner_w * 0.045)
 _inner_w  = _banner_w - _pad_x * 2
-_banner_h = int(_H * 0.22)
+_banner_h = int(_H * 0.26)
 
 HEAD_SIZE, SUB_SIZE = pick_uniform_sizes(
     CAPTIONS, _inner_w,
