@@ -93,7 +93,7 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     W, H = img.size
 
     # ── Geometry: compact card — wide for big text, short so text fills it
-    margin   = int(W * 0.04)             # wide card → wide inner_w → big text
+    margin   = int(W * 0.07)             # wide card → wide inner_w → big text
     banner_w = W - margin * 2
     banner_h = int(H * 0.19)             # back to compact
     banner_x = margin
