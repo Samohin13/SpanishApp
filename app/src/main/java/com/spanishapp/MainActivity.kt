@@ -58,8 +58,14 @@ class MainActivity : FragmentActivity() {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase, lang))
     }
 
+    /** Keeps the system Splash visible until early prefs finish loading so we
+     *  never show a blank/white frame between the splash and the first Compose
+     *  screen. Flipped to true on first composition. */
+    private var splashHoldOpen = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        val splash = installSplashScreen()
+        splash.setKeepOnScreenCondition { splashHoldOpen }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -89,6 +95,10 @@ class MainActivity : FragmentActivity() {
             ) {
                 SpanishAppTheme(darkTheme = darkTheme) {
                     SpanishBackground {
+                        // First successful composition drops the SplashScreen
+                        // so we avoid the brief blank frame between splash and
+                        // the first real UI.
+                        LaunchedEffect(Unit) { splashHoldOpen = false }
                         SpanishAppRoot()
                     }
                 }

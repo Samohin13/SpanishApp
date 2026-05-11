@@ -25,6 +25,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spanishapp.R
 import com.spanishapp.data.content.ContentDownloader
 import com.spanishapp.data.content.DownloadState
+import com.spanishapp.data.content.NetworkType
+import com.spanishapp.data.content.rememberNetworkType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,10 +63,22 @@ fun DownloadScreen(
     onFinished: () -> Unit,
     viewModel: DownloadViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(Unit) { viewModel.start() }
     BackHandler(enabled = true) { /* Block back — content download is mandatory. */ }
 
     rememberDownloadMusic()
+
+    // ── Wi-Fi gate ──
+    // 1. No network → wait for any connection.
+    // 2. Mobile data → confirm before starting (asks the user once).
+    // 3. Wi-Fi/Ethernet → start automatically.
+    val network = rememberNetworkType()
+    var userAcceptedMobile by remember { mutableStateOf(false) }
+    val canStart = network == NetworkType.WIFI ||
+                   (network == NetworkType.MOBILE && userAcceptedMobile)
+
+    LaunchedEffect(canStart) {
+        if (canStart) viewModel.start()
+    }
 
     // Stable shuffled fact pool — same for the whole session.
     val factPool = remember { SpainFacts.rotation() }
@@ -154,8 +168,17 @@ fun DownloadScreen(
                 )
             }
 
-            // ── Bottom: failure | progress ──────────────────────
+            // ── Bottom: network gate | failure | progress ───────
             Spacer(Modifier.weight(1f))
+
+            if (!canStart && state !is DownloadState.Failed) {
+                NetworkGate(
+                    network = network,
+                    orange = orange,
+                    onAcceptMobile = { userAcceptedMobile = true },
+                )
+                return@Column   // hide progress block until network is OK
+            }
 
             when (val s = state) {
                 is DownloadState.Failed -> {
@@ -274,6 +297,79 @@ fun DownloadScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun NetworkGate(
+    network: NetworkType,
+    orange: Color,
+    onAcceptMobile: () -> Unit,
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        when (network) {
+            NetworkType.NONE -> {
+                Text("📡", fontSize = 48.sp, color = Color.White)
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    "Нет интернета",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Подключитесь к Wi-Fi или мобильной сети, чтобы продолжить",
+                    fontSize = 13.sp,
+                    color = Color.White.copy(alpha = 0.8f),
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(20.dp))
+                CircularProgressIndicator(
+                    color = Color.White,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.size(28.dp),
+                )
+            }
+            NetworkType.MOBILE -> {
+                Text("📶", fontSize = 48.sp, color = Color.White)
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    "Мобильный интернет",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Загрузка займёт ~2 МБ трафика. Можно подождать Wi-Fi или скачать сейчас.",
+                    fontSize = 13.sp,
+                    color = Color.White.copy(alpha = 0.85f),
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(20.dp))
+                Button(
+                    onClick = onAcceptMobile,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = orange,
+                    ),
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                ) {
+                    Text("Скачать сейчас", fontWeight = FontWeight.Bold)
+                }
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Или подключитесь к Wi-Fi — загрузка стартует автоматически",
+                    fontSize = 11.sp,
+                    color = Color.White.copy(alpha = 0.65f),
+                    textAlign = TextAlign.Center,
+                )
+            }
+            NetworkType.WIFI -> { /* canStart=true → этот блок не покажется */ }
         }
     }
 }
