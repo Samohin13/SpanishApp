@@ -166,30 +166,32 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     sub_bbox = draw.textbbox((0, 0), subtitle, font=f_sub)
     sub_h    = sub_bbox[3] - sub_bbox[1]
 
-    # Anchor: eyebrow pinned high, subtitle pinned low, headline centered.
-    text_x      = banner_x + pad_x
-    top_inset    = int(banner_h * 0.11)
-    bottom_inset = int(banner_h * 0.11)
+    # ── Tight group: eyebrow → headline → subtitle, centered vertically ──
+    # Premium ad pattern: text reads as ONE block, not three floating zones.
+    text_x = banner_x + pad_x
 
-    eyebrow_y = banner_y + top_inset
-    sub_y_top = banner_y + banner_h - bottom_inset - sub_h
-    # headline block centered between eyebrow bottom and subtitle top
-    head_zone_top = eyebrow_y + eb_h
-    head_zone_bot = sub_y_top
-    head_y_top    = head_zone_top + ((head_zone_bot - head_zone_top) - head_total_h) // 2
+    gap_eb_head  = int(f_head.size  * 0.40)   # eyebrow → headline
+    gap_head_sub = int(f_head.size  * 0.55)   # headline → subtitle
+    line_gap     = int(head_line_h  * 0.10)   # between headline lines
+
+    head_block_h = head_line_h * len(head_lines) + line_gap * (len(head_lines) - 1)
+    block_h = eb_h + gap_eb_head + head_block_h + gap_head_sub + sub_h
+    block_y = banner_y + (banner_h - block_h) // 2
 
     # 1) eyebrow (warm orange)
+    eyebrow_y = block_y
     draw.text((text_x, eyebrow_y - eb_bbox[1]), eyebrow_spaced,
               font=f_eyebrow, fill=(255, 140, 70))
 
-    # 2) headline (white) — heavy glow shadow so it pops on see-through glass
-    y_cursor = head_y_top
+    # 2) headline — soft dark glow then white type on top
+    head_y_top = eyebrow_y + eb_h + gap_eb_head
     glow_layer = Image.new('RGBA', out.size, (0, 0, 0, 0))
     glow_draw  = ImageDraw.Draw(glow_layer)
+    y_cursor = head_y_top
     for ln, bbx in zip(head_lines, head_metrics):
         glow_draw.text((text_x, y_cursor - bbx[1]), ln,
                        font=f_head, fill=(0, 0, 0, 220))
-        y_cursor += head_line_h + int(head_line_h * 0.18)
+        y_cursor += head_line_h + line_gap
     glow_layer = glow_layer.filter(ImageFilter.GaussianBlur(6))
     out = Image.alpha_composite(out, glow_layer)
     draw = ImageDraw.Draw(out)
@@ -197,9 +199,10 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     for ln, bbx in zip(head_lines, head_metrics):
         draw.text((text_x, y_cursor - bbx[1]), ln,
                   font=f_head, fill=(255, 255, 255))
-        y_cursor += head_line_h + int(head_line_h * 0.18)
+        y_cursor += head_line_h + line_gap
 
-    # 3) subtitle (warm light), pinned near the bottom
+    # 3) subtitle (warm light)
+    sub_y_top = head_y_top + head_block_h + gap_head_sub
     draw.text((text_x, sub_y_top - sub_bbox[1]), subtitle,
               font=f_sub, fill=(235, 215, 195))
 
