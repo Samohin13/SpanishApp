@@ -29,9 +29,35 @@ object ExerciseGenerator {
 
     private data class VocabPair(val es: String, val ru: String)
 
+    /** Levels: A1 = units 1–4, A2 = 5–8, B1 = 9–12, B2 = 13+. */
+    private fun cefrOf(lessonId: String): String {
+        val m = Regex("""^u(\d+)_l\d+$""").find(lessonId) ?: return "A1"
+        val unit = m.groupValues[1].toInt()
+        return when {
+            unit <= 4 -> "A1"
+            unit <= 8 -> "A2"
+            unit <= 12 -> "B1"
+            else -> "B2"
+        }
+    }
+
+    /** Which generated types are permitted at each CEFR level. */
+    private fun allowsType(cefr: String, type: ExerciseType): Boolean = when (type) {
+        ExerciseType.LISTEN_PICK,
+        ExerciseType.ORDER_LETTERS,
+        ExerciseType.MATCH_PAIRS,
+        ExerciseType.TAP_MISSING_WORD -> true                          // any level
+        ExerciseType.BUILD_SENTENCE   -> cefr != "A1" || true          // ok at A1 with short phrases too
+        ExerciseType.TRANSLATE,
+        ExerciseType.LISTEN_TYPE,
+        ExerciseType.CONJUGATION_GRID -> cefr != "A1"                  // skip in early A1
+        else -> true
+    }
+
     fun generate(lessonId: String, content: LessonContent): List<Exercise> {
         val seed = lessonId.hashCode().toLong()
         val random = Random(seed)
+        val cefr = cefrOf(lessonId)
 
         val vocab = content.sections
             .flatMap { it.items }
@@ -239,7 +265,8 @@ object ExerciseGenerator {
             }
         }
 
-        return out
+        // ── CEFR gate: drop types that are too advanced for the level ──
+        return out.filter { allowsType(cefr, it.type) }
     }
 
     // ── Vocab-item heuristic (mirrors LessonContentData.isVocabItem) ────
