@@ -74,6 +74,7 @@ data class VerbTrainingState(
 @HiltViewModel
 class VerbViewModel @Inject constructor(
     private val conjugationDao: ConjugationDao,
+    private val wordDao: com.spanishapp.data.db.dao.WordDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
@@ -101,7 +102,28 @@ class VerbViewModel @Inject constructor(
     fun startTraining() {
         viewModelScope.launch {
             val cfg = _state.value.config
-            val all = conjugationDao.getAll()
+
+            // 1) Authored irregulars from the conjugations table
+            val authored = conjugationDao.getAll()
+            val authoredVerbs = authored.map { it.verb.lowercase() }.toSet()
+
+            // 2) All other verbs from the dictionary — generated on-the-fly
+            //    by SpanishConjugator for regular -ar/-er/-ir forms.
+            val dictVerbs = wordDao.getAllDictionaryVerbs()   // list of infinitives
+            val generated = buildList {
+                for (verb in dictVerbs) {
+                    if (verb.lowercase() in authoredVerbs) continue
+                    for (tense in cfg.selectedTenses) {
+                        com.spanishapp.domain.algorithm.SpanishConjugator
+                            .conjugate(verb, tense)
+                            ?.let { add(it) }
+                    }
+                }
+            }
+
+            // Union — authored entries take precedence so irregular forms stay
+            // accurate; generator only adds verbs the table doesn't cover.
+            val all = authored + generated
 
             // Фильтрация
             var pool = all.filter { it.tense in cfg.selectedTenses }

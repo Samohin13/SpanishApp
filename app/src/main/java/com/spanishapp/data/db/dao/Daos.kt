@@ -25,6 +25,10 @@ interface WordDao {
     @Query("SELECT lower(trim(spanish)) FROM words")
     suspend fun getAllSpanishLower(): List<String>
 
+    // Все verb-слова из словаря — для рулз-движка спряжений в тренажёре
+    @Query("SELECT spanish FROM words WHERE word_type = 'verb' ORDER BY spanish")
+    suspend fun getAllDictionaryVerbs(): List<String>
+
     @Query("SELECT id FROM words WHERE level = 'A1' ORDER BY id")
     suspend fun getA1WordIds(): List<Int>
 
