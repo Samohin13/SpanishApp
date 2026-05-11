@@ -78,6 +78,22 @@ object SpanishConjugator {
     private val SPELL_GAR = setOf("pagar", "llegar", "jugar", "apagar", "entregar", "negar", "obligar", "rogar")
     private val SPELL_ZAR = setOf("almorzar", "comenzar", "empezar", "abrazar", "alcanzar", "cazar", "cruzar", "lanzar", "rezar", "tropezar")
 
+    // ── -cer/-cir verbs after vowel: c → zc in yo presente + all subjuntivo
+    //    (parecer → parezco, parezca; nacer → nazco, nazca; etc.) ────
+    private val ZC_VERBS = setOf(
+        "parecer", "nacer", "crecer", "ofrecer", "agradecer", "aparecer",
+        "desaparecer", "padecer", "merecer", "obedecer", "reconocer",
+        "establecer", "permanecer", "pertenecer", "favorecer", "fortalecer",
+        "lucir", "relucir",
+    )
+
+    // ── -ducir verbs: c → zc in presente/subjuntivo AND wholly irregular
+    //    preterito with -j- stem (conducir → conduje, conduji ste, ...) ─
+    private val DUCIR_VERBS = setOf(
+        "conducir", "traducir", "producir", "reducir", "introducir",
+        "deducir", "reproducir", "seducir",
+    )
+
     fun conjugate(verb: String, tense: String): ConjugationEntity? {
         val raw = verb.trim().lowercase()
         // Strip reflexive -se / -arse / -erse / -irse — conjugate the bare form.
@@ -98,10 +114,13 @@ object SpanishConjugator {
         val isCar           = inf in SPELL_CAR
         val isGar           = inf in SPELL_GAR
         val isZar           = inf in SPELL_ZAR
+        val isZc            = inf in ZC_VERBS
+        val isDucir         = inf in DUCIR_VERBS
 
         // Verb must be in at least one known bucket. Otherwise skip — we
         // refuse to guess.
-        if (!isKnownRegular && !isE_IE && !isO_UE && !isE_I && !isCar && !isGar && !isZar) {
+        if (!isKnownRegular && !isE_IE && !isO_UE && !isE_I &&
+            !isCar && !isGar && !isZar && !isZc && !isDucir) {
             return null
         }
 
@@ -115,18 +134,35 @@ object SpanishConjugator {
 
         val forms: List<String> = when (tense) {
             "presente" -> {
-                // Boot: yo, tú, él, ellos → stem-change. nosotros/vosotros → plain.
-                val s1 = shiftedStem()
-                val s0 = stem
-                when (ending) {
-                    "ar" -> listOf(s1 + "o", s1 + "as", s1 + "a", s0 + "amos", s0 + "áis", s1 + "an")
-                    "er" -> listOf(s1 + "o", s1 + "es", s1 + "e", s0 + "emos", s0 + "éis", s1 + "en")
-                    "ir" -> listOf(s1 + "o", s1 + "es", s1 + "e", s0 + "imos", s0 + "ís", s1 + "en")
-                    else -> return null
+                // -cer/-cir / -ducir: yo = stem + "zco", others regular
+                if (isZc || isDucir) {
+                    val zcStem = stem.dropLast(1) + "zc"     // "parec" → "parezc"
+                    when (ending) {
+                        "er" -> listOf(zcStem + "o", stem + "es", stem + "e",
+                                       stem + "emos", stem + "éis", stem + "en")
+                        "ir" -> listOf(zcStem + "o", stem + "es", stem + "e",
+                                       stem + "imos", stem + "ís", stem + "en")
+                        else -> return null
+                    }
+                } else {
+                    // Boot: yo, tú, él, ellos → stem-change. nosotros/vosotros → plain.
+                    val s1 = shiftedStem()
+                    val s0 = stem
+                    when (ending) {
+                        "ar" -> listOf(s1 + "o", s1 + "as", s1 + "a", s0 + "amos", s0 + "áis", s1 + "an")
+                        "er" -> listOf(s1 + "o", s1 + "es", s1 + "e", s0 + "emos", s0 + "éis", s1 + "en")
+                        "ir" -> listOf(s1 + "o", s1 + "es", s1 + "e", s0 + "imos", s0 + "ís", s1 + "en")
+                        else -> return null
+                    }
                 }
             }
 
-            "preterito" -> when (ending) {
+            "preterito" -> if (isDucir) {
+                // Special: -ducir → conduje, condujiste, condujo, condujimos, condujisteis, condujeron
+                val jStem = stem.dropLast(1) + "j"   // "conduc" → "conduj"
+                listOf(jStem + "e", jStem + "iste", jStem + "o",
+                       jStem + "imos", jStem + "isteis", jStem + "eron")
+            } else when (ending) {
                 "ar" -> {
                     // Spelling shift in yo only: -car → -qué, -gar → -gué, -zar → -cé
                     val yo = when {
@@ -160,6 +196,16 @@ object SpanishConjugator {
             "condicional" -> listOf("ía","ías","ía","íamos","íais","ían").map { inf + it }
 
             "subjuntivo" -> {
+                // -cer/-cir/-ducir: ALL persons use -zc- stem (parezca, parezcas...)
+                if (isZc || isDucir) {
+                    val zcStem = stem.dropLast(1) + "zc"
+                    return ConjugationEntity(
+                        id = 0, verb = verb, tense = tense,
+                        yo = zcStem + "a", tu = zcStem + "as", el = zcStem + "a",
+                        nosotros = zcStem + "amos", vosotros = zcStem + "áis", ellos = zcStem + "an",
+                        isIrregular = true, note = "auto",
+                    )
+                }
                 // Subjuntivo: opposite-vowel endings. Stem-changers shift in all
                 // positions for -ir, in boot for -ar/-er.
                 val s1 = shiftedStem()
@@ -216,6 +262,9 @@ object SpanishConjugator {
         )
     }
 
+    @Suppress("unused")
+    private fun zcMarker() = Unit  // keep imports stable
+
     /** Replace the LAST occurrence of [from] in [stem] with [replacement]. */
     private fun changeLastVowel(stem: String, from: Char, replacement: String): String {
         val idx = stem.lastIndexOf(from)
@@ -225,5 +274,6 @@ object SpanishConjugator {
 
     /** All known infinitives the engine can safely conjugate. */
     fun knownVerbs(): Set<String> =
-        KNOWN_REGULAR + STEM_E_IE + STEM_O_UE + STEM_E_I + SPELL_CAR + SPELL_GAR + SPELL_ZAR
+        KNOWN_REGULAR + STEM_E_IE + STEM_O_UE + STEM_E_I +
+        SPELL_CAR + SPELL_GAR + SPELL_ZAR + ZC_VERBS + DUCIR_VERBS
 }

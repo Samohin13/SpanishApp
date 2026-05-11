@@ -105,6 +105,34 @@ class SpanishConjugatorTest {
         )
     }
 
+    @Test fun `parecer presente — c→zc in yo`() {
+        assertEquals(
+            listOf("parezco","pareces","parece","parecemos","parecéis","parecen"),
+            forms("parecer", "presente")
+        )
+    }
+
+    @Test fun `conducir presente — c→zc in yo`() {
+        assertEquals(
+            listOf("conduzco","conduces","conduce","conducimos","conducís","conducen"),
+            forms("conducir", "presente")
+        )
+    }
+
+    @Test fun `conducir preterito — full -j- stem`() {
+        assertEquals(
+            listOf("conduje","condujiste","condujo","condujimos","condujisteis","condujeron"),
+            forms("conducir", "preterito")
+        )
+    }
+
+    @Test fun `parecer subjuntivo — zc throughout`() {
+        assertEquals(
+            listOf("parezca","parezcas","parezca","parezcamos","parezcáis","parezcan"),
+            forms("parecer", "subjuntivo")
+        )
+    }
+
     @Test fun `unknown verb returns null`() {
         // "raporrear" — made-up, must NOT be silently conjugated
         assertNull(SpanishConjugator.conjugate("raporrear", "presente"))
