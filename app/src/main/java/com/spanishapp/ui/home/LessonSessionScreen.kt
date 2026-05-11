@@ -97,7 +97,12 @@ fun LessonSessionScreen(
 
     val accentColor = unit.color
     val sections    = content.sections
-    val exercises   = content.exercises
+    // Authored exercises + auto-generated (ListenAndPick, OrderLetters from lesson vocab).
+    val exercises   = remember(unitId, lessonIndex) {
+        val lessonKey = "u${unitId}_l${lessonIndex}"
+        val generated = ExerciseGenerator.generate(lessonKey, content)
+        content.exercises + generated
+    }
 
     val totalSteps     = sections.size + exercises.size + 1
     var stepIndex      by remember { mutableStateOf(0) }
