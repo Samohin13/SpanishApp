@@ -146,14 +146,18 @@ object Navigation {
 
         if (initialStartDest == null) return
 
-        // After onboarding, if user lands on home but content packs aren't
-        // ready yet, divert them through the Download Screen.
-        val currentEntry by navController.currentBackStackEntryAsState()
-        LaunchedEffect(currentEntry?.destination?.route, contentReady) {
-            val route = currentEntry?.destination?.route ?: return@LaunchedEffect
-            if (route == "home" && contentReady == false) {
-                navController.navigate("download") {
-                    popUpTo("home") { inclusive = true }
+        // Content-readiness gate. Only fires when contentReady actually
+        // flips to false (e.g. cache cleared mid-session). The first-launch
+        // case is handled by initialStartDest above. Keying the effect on
+        // backstack changes was interfering with legitimate nav transitions
+        // (Home → Profile → tap Home in bottom bar = no return).
+        LaunchedEffect(contentReady) {
+            if (contentReady == false) {
+                val current = navController.currentDestination?.route
+                if (current != null && current != "download") {
+                    navController.navigate("download") {
+                        popUpTo("home") { inclusive = true }
+                    }
                 }
             }
         }
