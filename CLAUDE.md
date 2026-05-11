@@ -2,7 +2,45 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-10, сессия 11 (UX-фидбэк sweep, 7 фаз)**
+> Последнее обновление: **2026-05-11, сессия 12 (премиум-редизайн + рейтинг + контент-аудит)**
+
+## 12. Сессия 12 — премиум-редизайн + рейтинг + контент-аудит (2026-05-11)
+
+Очень длинная сессия. Финальный полировочный/контентный заход перед публикацией в Play.
+
+### Главные блоки
+
+| # | Тема | Коммиты |
+|---|---|---|
+| A | **Premium-редизайн UI**: HomeScreen bento с per-tile тематическими watermark, profile с premium-tile + chalice-кубком, цвета по семействам, course pills outline, edge-to-edge bottom sheet, аватары единый стиль, city watermark в полосу 130dp с soft fade, course block headers увеличены | `cd15745`, `bbc3721`, `d35fd1b`, `c7dc9a9`, `9c1cf02`, `ace8b6b`, `ddbca98`, `cebddb2`, `3d2832a`, `6e674e5`, `7d103e1`, `c946ffa`, `1f2d0ce`, `4e702db`, `e96eac2`, `ea0291f`, `c72c932`, `d828e18`, `44da9b4`, `92875c3`, `120b957`, `680ddcd`, `b8808b4`, `a9a8b00`, `8f67870`, `a41b630`, `3940a8f`, `a661e70`, `5f92355` (~30 правок) |
+| B | **Bottom-bar Fade Through transition** (Material spec) — peer detection через base route, slide+fade для глубокой навигации остался | `1443bf2`, `f2302e0` |
+| C | **Рейтинговая система v2**: tier-aware K (Aldea ±12 → Madrid ±2), promo resistance ×0.5 за 30 пунктов до тира, daily cap +40, per-word 24h cooldown (DB v17), animated «+N ⭐» popup глобально, bottom sheet «Как работает рейтинг», hooked Practice (был баг — рейтинг не считался) | `3fe27ed`, `12679a4` |
+| D | **Weekly Leagues** (Duolingo-style) — DB v18 + WeeklyLeagueService + Firestore cohorts (uid hash bucketing) + RatingUpdater hook + WeeklyLeagueScreen + tab в LeaderboardScreen. Опт-ин. | `7764ea8` |
+| E | **Pre-Play hardening**: Cloudflare Worker harden (X-App-Secret + per-IP daily cap + global daily cap), AAB сборка готова (31 МБ, V2-signed), Play Store guide в docs/PLAY_STORE_LISTING.md | `5353006` |
+| F | **Контент**: +20 verb сетов × 4 verbs (80 verbs), +12 themed sets × 8 words (96 words), +17 supporting words в BasicsVocab | `2cc2a9f` |
+| G | **Локализация**: full UA + ES translation (670 keys каждый), values-uk/ + values-es/ заполнены | `fdb09bc` |
+| H | **UX мелочь**: TTS autoplay в Practice LISTENING (уже было), AnswerSoundPlayer (correct/wrong beeps via ToneGenerator), 100% confetti burst в CompletionBadge через Compose Canvas (60 particles) | `5213a8e` |
+| I | **🚨 Critical content fix + audit**: subagent нашёл что **вся A2-вертикаль (60 уроков!) была недоступна** — id `a2_1..a2_4` в RoadmapData не совпадал с ключами `u5_l*..u8_l*` в LessonContentData (CourseDetailScreen гасил клики). Фикс: переименование a2_1..4 → 5..8. Также: 1105 broken word references в 112 из 131 set'ов → +1122 WordEntity в BasicsVocab.kt с реальными переводами; 0 broken refs после фикса. Полный отчёт: `docs/AUDIT_REPORT.md` | `01aa106` |
+
+### Firestore rules опубликованы
+В Firebase Console добавлены production rules для `leaderboard/{uid}`, `users/{uid}/state/...`, `weekly_cohorts/{cohortId}/members/{uid}`. Старые «test mode» правила (allow read/write до 2 июня 2026) убраны.
+
+### Что осталось на стороне пользователя
+- Заплатить $25 в Play Console
+- Сделать иконку 512×512 (через Studio Image Asset)
+- Сделать feature graphic 1024×500 (Figma/Canva)
+- Снять 6-8 скриншотов с телефона
+- Залить `app/build/outputs/bundle/release/app-release.aab` в Internal Testing → Production
+- Добавить `AI_PROXY_SECRET` в `local.properties` + `APP_SECRET` в Cloudflare Worker env
+
+### Build state
+`./gradlew :app:assembleDebug` → BUILD SUCCESSFUL.
+`./gradlew :app:bundleRelease` → BUILD SUCCESSFUL, AAB 31 МБ V2-signed.
+DB version 18 (с двумя миграциями за сессию: 14→15 recent_searches, 15→16 daily_rating_gain, 16→17 last_rating_at, 17→18 weekly_league_state).
+
+---
+
+> Предыдущее: **2026-05-10, сессия 11 (UX-фидбэк sweep, 7 фаз)**
 
 ## 11. Сессия 11 — UX-фидбэк sweep (2026-05-10)
 
