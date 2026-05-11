@@ -344,8 +344,16 @@ def with_shadow(im, ox=12, oy=18, blur=18, alpha=120):
     return canvas
 
 bull_with_shadow = with_shadow(bull, ox=10, oy=20, blur=20, alpha=150)
-bull_x = 20
-bull_y = (H - bull_with_shadow.height) // 2
+# Bull was visually overlapping the "E" of ESPEAK. Visible bull within
+# its padded canvas is offset by `blur*2 + 30 = 70` from the canvas left.
+# So with bull_x=20, visible bull right edge was at 20+70+300=390 — text
+# starts at 350 → 40px overlap. Pull bull 60px left so visible right
+# edge clears text with a 20px gap (was bull_x=20 → -40).
+bull_x = -40
+# Vertical alignment: bull bottom with text bottom.
+# Text bottom (last "Карточки…" line) ≈ y_text + 184 + 22 ≈ 396.
+# Visible bull bottom = bull_y + 70 + 300 → set bull_y so bottom = 400.
+bull_y = 400 - 70 - 300                      # = 30
 img.paste(bull_with_shadow, (bull_x, bull_y), bull_with_shadow)
 
 # Bottom vignette
