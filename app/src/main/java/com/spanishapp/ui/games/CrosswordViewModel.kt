@@ -354,7 +354,8 @@ class CrosswordViewModel @Inject constructor(
         val newErrors = _state.value.errors.toMutableSet().also { it.remove(cell) }
 
         _state.value = _state.value.copy(grid = newGrid, errors = newErrors, mistakesInCurrentLevel = newMistakes)
-        viewModelScope.launch { ratingUpdater.applyGameAnswer(char.uppercaseChar() == correctChar) }
+        // Rating is awarded per-WORD (in checkWordSolved), not per letter —
+        // 200+ rating events per crossword would spam the daily cap.
         checkWordSolved()
         moveToNextCell()
         checkWin()
@@ -374,6 +375,10 @@ class CrosswordViewModel @Inject constructor(
                     solved.add(cw.id)
                     tts.speak(cw.spanish)
                     newlySolved = true
+                    // One rating event per fully-solved word.
+                    viewModelScope.launch {
+                        runCatching { ratingUpdater.applyGameAnswer(true) }
+                    }
                 }
             }
         }

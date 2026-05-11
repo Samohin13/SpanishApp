@@ -112,7 +112,12 @@ class ArticlesViewModel @Inject constructor(
                 seedFromJson()
                 words = dao.getWordsForGameLevel(s.params.level)
             }
-            if (words.isEmpty()) return@launch
+            if (words.isEmpty()) {
+                // No words at all — finish gracefully instead of hanging
+                // mid-round with a blank screen.
+                finishGame()
+                return@launch
+            }
             // Детерминированный шафл: один и тот же уровень → всегда один и тот же порядок слов
             val shuffled = words.shuffled(java.util.Random(s.params.level.toLong() * 31337L))
             val idx  = s.currentRound.coerceIn(0, shuffled.size - 1)

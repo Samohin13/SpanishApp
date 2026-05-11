@@ -210,6 +210,11 @@ class PalabraMaestraViewModel @Inject constructor(
     fun checkWord() {
         val s = _state.value
         val q = s.questions.getOrNull(s.currentIndex) ?: return
+        // Guard against double-fire: auto-validate path at line 189 already
+        // emits applyGameAnswer when the last tile drops, and the user may
+        // then ALSO press the "Check" button — without this guard the rating
+        // system gets two events per question.
+        if (q.isChecked) return
         if (q.assembledLetters.any { it == null }) return
 
         val assembled = q.assembledLetters.joinToString("") { it?.char ?: "" }

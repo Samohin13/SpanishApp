@@ -89,8 +89,9 @@ class SpeedViewModel @Inject constructor(
                                   .distinctBy { it.id }
                                   .take(20)
             if (candidates.size < 4) {
-                _state.value = s.copy(currentRound = s.currentRound + 1)
-                nextRound()
+                // Avoid CPU-burning tight recursion: if the DB hasn't enough
+                // words to make a 4-option round, finish gracefully.
+                finishGame()
                 return@launch
             }
 
@@ -161,6 +162,12 @@ class SpeedViewModel @Inject constructor(
             lastCorrect  = isCorrect
         )
 
+        // Feed the rating system — Speed game was the only mini-game NOT
+        // calling RatingUpdater, so it granted 0 skill rating per answer.
+        viewModelScope.launch {
+            runCatching { ratingUpdater.applyGameAnswer(isCorrect) }
+        }
+
         viewModelScope.launch {
             delay(if (isCorrect) 600 else 1200)
             nextRound()
@@ -176,7 +183,10 @@ class SpeedViewModel @Inject constructor(
 
             val p = userProgressDao.getProgressOnce()
             if (p != null) {
-                userProgressDao.update(p.copy(totalXp = p.totalXp + s.score / 2))
+                // Floor XP at 5 so completion always feels rewarding even
+                // after a poor run.
+                val xpDelta = (s.score / 2).coerceAtLeast(5)
+                userProgressDao.update(p.copy(totalXp = p.totalXp + xpDelta))
                 achievementManager.checkAndUnlock()
             }
 

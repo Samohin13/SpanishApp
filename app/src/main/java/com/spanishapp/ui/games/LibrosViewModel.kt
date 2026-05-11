@@ -39,7 +39,8 @@ class LibrosViewModel @Inject constructor(
     private val dao: LibroProgressDao,
     private val wordDao: WordDao,
     private val ratingUpdater: RatingUpdater,
-    private val geminiTranslator: GeminiTranslator
+    private val geminiTranslator: GeminiTranslator,
+    private val achievementManager: com.spanishapp.service.AchievementManager,
 ) : ViewModel() {
 
     private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
@@ -93,6 +94,9 @@ class LibrosViewModel @Inject constructor(
                 val promo = ratingUpdater.applyAnswer(easeFactor = 2.5f, quality = 1)
                 if (promo != null) _leaguePromotions.tryEmit(promo)
             }
+            // Trigger reading-related achievement check after every Libro
+            // completion (was silently missing — owner-reported gap).
+            runCatching { achievementManager.checkAndUnlock() }
         }
     }
 
