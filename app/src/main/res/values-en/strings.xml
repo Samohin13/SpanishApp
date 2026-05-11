@@ -185,6 +185,8 @@
     <string name="ls_correct_is">Correct: %1$s</string>
     <string name="ls_check">CHECK</string>
     <string name="ls_tap_words_below">Tap the words below →</string>
+    <string name="ls_tap_letters_below">Tap the letters below →</string>
+    <string name="ls_tap_to_replay">Tap to hear again</string>
     <string name="ls_verdict_perfect">Perfect!</string>
     <string name="ls_verdict_great">Great result!</string>
     <string name="ls_verdict_good">Good job!</string>

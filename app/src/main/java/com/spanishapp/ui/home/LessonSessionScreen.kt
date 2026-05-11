@@ -39,6 +39,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.Mic
@@ -418,8 +419,18 @@ private fun ExerciseCard(
         animationSpec = tween(300),
         label         = "flash"
     )
-    fun checkCorrect(selected: String?) =
-        selected?.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true) == true
+    fun checkCorrect(selected: String?): Boolean {
+        if (selected == null) return false
+        return when (exercise.type) {
+            // For ORDER_LETTERS the user assembles letters (no spaces) while
+            // the stored correctAnswer may contain spaces — strip both sides.
+            ExerciseType.ORDER_LETTERS ->
+                selected.replace(" ", "")
+                    .equals(exercise.correctAnswer.replace(" ", ""), ignoreCase = true)
+            else ->
+                selected.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true)
+        }
+    }
 
     LaunchedEffect(answered) {
         if (answered) {
@@ -612,6 +623,43 @@ private fun ExerciseCard(
                             // После 3 провалов — принудительный пропуск как ошибка
                             selectedOption = "__failed__"
                             answered = true
+                        }
+                    )
+                }
+
+                ExerciseType.LISTEN_PICK -> {
+                    ListenPickInput(
+                        audioText = exercise.audioText.ifBlank { exercise.correctAnswer },
+                        options = exercise.options,
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor = accentColor,
+                        answered = answered,
+                        selectedOption = selectedOption,
+                        tts = tts,
+                        onAnswer = { picked ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedOption = picked
+                            answered = true
+                            inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                            }
+                        }
+                    )
+                }
+
+                ExerciseType.ORDER_LETTERS -> {
+                    OrderLettersInput(
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor = accentColor,
+                        answered = answered,
+                        onAnswer = { built ->
+                            selectedOption = built
+                            answered = true
+                            if (built.equals(exercise.correctAnswer.replace(" ", ""), ignoreCase = true)) {
+                                inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                    tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                }
+                            }
                         }
                     )
                 }
@@ -1062,6 +1110,237 @@ private fun BuildSentenceInput(
                 shape    = RoundedCornerShape(14.dp),
                 colors   = ButtonDefaults.buttonColors(containerColor = accentColor)
             ) { Text(stringResource(R.string.ls_check), fontWeight = FontWeight.ExtraBold) }
+        }
+    }
+}
+
+// ─── ListenPickInput: TTS играет → тапни правильный из 4 написанных ────────
+@Composable
+private fun ListenPickInput(
+    audioText: String,
+    options: List<String>,
+    correctAnswer: String,
+    accentColor: Color,
+    answered: Boolean,
+    selectedOption: String?,
+    tts: TextToSpeech?,
+    onAnswer: (String) -> Unit,
+) {
+    // Auto-play once on first show
+    LaunchedEffect(audioText) {
+        delay(250)
+        tts?.speak(audioText, TextToSpeech.QUEUE_FLUSH, null, "listen_pick")
+    }
+
+    // Large replay button
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = accentColor.copy(alpha = 0.10f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(96.dp)
+            .clickable(enabled = !answered) {
+                tts?.speak(audioText, TextToSpeech.QUEUE_FLUSH, null, "listen_pick_replay")
+            }
+    ) {
+        Row(
+            Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(accentColor),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("🔊", fontSize = 26.sp)
+            }
+            Spacer(Modifier.width(16.dp))
+            Text(
+                text = stringResource(R.string.ls_tap_to_replay),
+                color = accentColor,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 15.sp,
+            )
+        }
+    }
+
+    Spacer(Modifier.height(20.dp))
+
+    // Options grid (vertical list of chips)
+    options.forEach { option ->
+        val isSelected = selectedOption == option
+        val isCorrect  = option == correctAnswer
+        val bgColor = when {
+            !answered && isSelected              -> accentColor.copy(alpha = 0.1f)
+            answered && isCorrect                -> Green.copy(alpha = 0.12f)
+            answered && isSelected && !isCorrect -> Red.copy(alpha = 0.12f)
+            else                                 -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+        }
+        val borderColor = when {
+            answered && isCorrect                -> Green
+            answered && isSelected && !isCorrect -> Red
+            isSelected                           -> accentColor
+            else                                 -> Color.Transparent
+        }
+        Surface(
+            shape = RoundedCornerShape(14.dp),
+            color = bgColor,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.dp)
+                .border(
+                    width = if (isSelected || (answered && isCorrect)) 2.dp else 0.dp,
+                    color = borderColor,
+                    shape = RoundedCornerShape(14.dp)
+                )
+                .clickable(enabled = !answered) { onAnswer(option) }
+        ) {
+            Row(
+                Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text       = option,
+                    fontSize   = 17.sp,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    modifier   = Modifier.weight(1f)
+                )
+                if (answered && isCorrect) {
+                    Text("✓", color = Green, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                } else if (answered && isSelected && !isCorrect) {
+                    Text("✗", color = Red, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                }
+            }
+        }
+    }
+}
+
+// ─── OrderLettersInput: анаграмма — собери слово из тайлов букв ────────────
+@Composable
+private fun OrderLettersInput(
+    correctAnswer: String,
+    accentColor: Color,
+    answered: Boolean,
+    onAnswer: (String) -> Unit,
+) {
+    // Stable shuffled order (re-randomized only if correct answer changes)
+    val letters = remember(correctAnswer) {
+        correctAnswer.toList()
+            .filter { it.isLetter() }
+            .map { it.toString() }
+            .shuffled()
+    }
+    val chosen = remember(correctAnswer) { mutableStateListOf<IndexedValue<String>>() }
+    val poolUsed = remember(correctAnswer) { mutableStateListOf<Int>() }
+
+    val built     = chosen.joinToString("") { it.value }
+    val isCorrect = built.equals(correctAnswer.replace(" ", ""), ignoreCase = true)
+
+    // Built word area
+    Surface(
+        shape    = RoundedCornerShape(14.dp),
+        color    = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 64.dp)
+    ) {
+        Box(Modifier.padding(12.dp), contentAlignment = Alignment.Center) {
+            if (chosen.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.ls_tap_letters_below),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 15.sp,
+                )
+            } else {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    items(chosen.toList()) { iv ->
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = accentColor.copy(alpha = 0.15f),
+                            modifier = Modifier.clickable(enabled = !answered) {
+                                chosen.remove(iv)
+                                poolUsed.remove(iv.index)
+                            }
+                        ) {
+                            Text(
+                                text = iv.value,
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp,
+                                color = accentColor,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Spacer(Modifier.height(12.dp))
+
+    // Letter pool
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        itemsIndexed(letters) { idx, letter ->
+            val used = idx in poolUsed
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = if (used) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
+                        else MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier
+                    .clickable(enabled = !answered && !used) {
+                        poolUsed.add(idx)
+                        chosen.add(IndexedValue(idx, letter))
+                    }
+                    .border(
+                        1.dp,
+                        if (used) Color.Transparent else accentColor.copy(alpha = 0.3f),
+                        RoundedCornerShape(10.dp)
+                    )
+            ) {
+                Text(
+                    text = if (used) " " else letter,
+                    modifier = Modifier
+                        .defaultMinSize(minWidth = 36.dp, minHeight = 44.dp)
+                        .padding(horizontal = 6.dp, vertical = 8.dp),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+    }
+
+    // Wrong answer reveal
+    AnimatedVisibility(visible = answered && !isCorrect) {
+        Text(
+            text = stringResource(R.string.ls_correct_is, correctAnswer),
+            color = Green,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 15.sp,
+            modifier = Modifier.padding(top = 8.dp, start = 4.dp)
+        )
+    }
+
+    if (!answered) {
+        Spacer(Modifier.height(14.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(
+                onClick = { chosen.clear(); poolUsed.clear() },
+                modifier = Modifier.height(52.dp),
+                shape = RoundedCornerShape(14.dp),
+            ) { Text("↺") }
+            Button(
+                onClick = { if (chosen.isNotEmpty()) onAnswer(built) },
+                enabled = chosen.isNotEmpty(),
+                modifier = Modifier.weight(1f).height(52.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = accentColor),
+            ) {
+                Text(stringResource(R.string.ls_check), fontWeight = FontWeight.ExtraBold)
+            }
         }
     }
 }
