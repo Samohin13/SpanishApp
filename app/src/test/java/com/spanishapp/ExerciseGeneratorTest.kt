@@ -69,10 +69,16 @@ class ExerciseGeneratorTest {
                     }
                     ExerciseType.BUILD_SENTENCE -> {
                         buildSentenceCount++
-                        assertTrue("build_sentence words 3-6 for $id",
-                            ex.words.size in 3..6)
-                        assertEquals("build_sentence answer matches words for $id",
-                            ex.words.joinToString(" "), ex.correctAnswer)
+                        // 3-6 correct tokens + up to 3 distractors = up to 9
+                        assertTrue("build_sentence words 3-9 for $id",
+                            ex.words.size in 3..9)
+                        // Every token of correctAnswer must appear in words
+                        val correctTokens = ex.correctAnswer.split(" ")
+                        val wordsLower = ex.words.map { it.lowercase() }
+                        for (t in correctTokens) {
+                            assertTrue("build_sentence missing token '$t' for $id",
+                                t.lowercase() in wordsLower)
+                        }
                     }
                     ExerciseType.LISTEN_TYPE -> {
                         listenTypeCount++

@@ -138,7 +138,7 @@ object ExerciseGenerator {
         // ── BUILD_SENTENCE: short Spanish phrase from lesson items ──
         // Look at ALL items (not just the 3-word vocab heuristic) for 3-6 word
         // phrases with a Russian translation — those are usable as build-sentence.
-        val phraseCandidate = content.sections
+        val phrasePool = content.sections
             .flatMap { it.items }
             .map { Triple(it.left.trim(), it.right.trim(), it.note) }
             .filter { (es, ru, _) ->
@@ -149,17 +149,38 @@ object ExerciseGenerator {
                 val hasRu = ru.any { it in 'Ѐ'..'ӿ' }
                 isSpanishPhrase && hasRu
             }
-            .shuffled(random)
-            .firstOrNull()
+        val phraseCandidate = phrasePool.shuffled(random).firstOrNull()
         if (phraseCandidate != null) {
             val (es, ru, _) = phraseCandidate
             val clean = es.trim().trimEnd('.', '!', '?', ',', ';', ':')
             val tokens = clean.split(Regex("\\s+"))
+
+            // For B1/B2: add 2-3 distractor words from the same lesson to
+            // make it harder. The word pool keeps the correct tokens but
+            // appends extras that must be IGNORED.
+            val isAdvanced = cefr in listOf("B1", "B2")
+            val distractors = if (isAdvanced) {
+                // Pull short tokens from OTHER phrases or vocab items
+                val tokenSet = tokens.map { it.lowercase() }.toSet()
+                val others = phrasePool
+                    .filter { (otherEs, _, _) -> otherEs != es }
+                    .flatMap { it.first.split(Regex("\\s+")) }
+                    .map { it.trim().trimEnd('.', '!', '?', ',', ';', ':') }
+                    .filter { it.length in 2..10 && it.lowercase() !in tokenSet
+                              && it.none { ch -> ch in 'Ѐ'..'ӿ' } }
+                    .distinct()
+                    .shuffled(random)
+                    .take(if (cefr == "B2") 3 else 2)
+                others
+            } else emptyList()
+
+            val finalWords = (tokens + distractors).shuffled(random)
             out += Exercise(
                 type = ExerciseType.BUILD_SENTENCE,
-                instruction = "Собери предложение",
+                instruction = if (distractors.isEmpty()) "Собери предложение"
+                              else "Собери предложение (есть лишние слова!)",
                 question = ru,
-                words = tokens,
+                words = finalWords,
                 correctAnswer = tokens.joinToString(" "),
                 explanation = "$clean — $ru",
             )
