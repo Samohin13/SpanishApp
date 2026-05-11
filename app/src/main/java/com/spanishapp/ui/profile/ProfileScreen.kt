@@ -266,7 +266,18 @@ fun ProfileScreen(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
                 title = { Text("Профиль", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        // Explicit Home fallback: when Profile is opened via the
+                        // bottom-bar tab (not pushed on top of another screen),
+                        // popBackStack() returns false and nothing happens —
+                        // user gets stuck. Fall back to navigating Home.
+                        if (!navController.popBackStack()) {
+                            navController.navigate("home") {
+                                popUpTo("home") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                     }
                 },

@@ -129,9 +129,16 @@ fun SpanishAppRoot() {
                 SpanishBottomBar(
                     currentRoute = currentRoute,
                     onNavigate = { route ->
+                        // Bottom-bar navigation always pops back to "home" (the
+                        // top-level after onboarding/auth). Was using
+                        // graph.startDestinationId which on first app launch
+                        // can be "welcome"/"app_lock", leaving Profile→Home
+                        // unable to find a target — user reported being
+                        // stuck on Profile.
                         navController.navigate(route) {
-                            popUpTo(navController.graph.startDestinationId) {
+                            popUpTo("home") {
                                 saveState = true
+                                inclusive = false
                             }
                             launchSingleTop = true
                             restoreState = true
