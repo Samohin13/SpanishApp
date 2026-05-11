@@ -62,8 +62,33 @@ def fit_font(text, font_path, max_width, start_size, min_size=18):
     return ImageFont.truetype(font_path, min_size)
 
 
+def pick_uniform_sizes(captions, inner_w, head_start, sub_start):
+    """Find one headline size + one subtitle size that fit ALL captions.
+    Returns (head_size, sub_size). Uniform sizes = consistent visual weight
+    across the whole screenshot set."""
+    head_size = head_start
+    while head_size > 20:
+        f = ImageFont.truetype(FONT_BLACK, head_size)
+        if all(f.getbbox(ln)[2] - f.getbbox(ln)[0] <= inner_w
+               for _, _, head, _ in captions
+               for ln in head.split('\n')):
+            break
+        head_size -= 2
+
+    sub_size = sub_start
+    while sub_size > 14:
+        f = ImageFont.truetype(FONT_MEDIUM, sub_size)
+        if all(f.getbbox(sub)[2] - f.getbbox(sub)[0] <= inner_w
+               for _, _, _, sub in captions):
+            break
+        sub_size -= 2
+
+    return head_size, sub_size
+
+
 def add_glass_banner(img: Image.Image, eyebrow: str,
-                     headline: str, subtitle: str) -> Image.Image:
+                     headline: str, subtitle: str,
+                     head_size: int, sub_size: int) -> Image.Image:
     img = img.convert('RGB')
     W, H = img.size
 
@@ -121,14 +146,10 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     pad_x  = int(banner_w * 0.07)
     inner_w = banner_w - pad_x * 2
 
-    # Eyebrow: small, tracked, orange — like a section label
+    # Uniform sizes across all banners (set by caller)
     f_eyebrow = ImageFont.truetype(FONT_BLACK, int(banner_h * 0.075))
-    # Headline: huge, black weight
-    f_head    = fit_font(headline, FONT_BLACK,  inner_w,
-                         int(banner_h * 0.21), min_size=28)
-    # Subtitle: medium weight
-    f_sub     = fit_font(subtitle, FONT_MEDIUM, inner_w,
-                         int(banner_h * 0.085), min_size=18)
+    f_head    = ImageFont.truetype(FONT_BLACK,  head_size)
+    f_sub     = ImageFont.truetype(FONT_MEDIUM, sub_size)
 
     draw = ImageDraw.Draw(out)
 
@@ -181,12 +202,29 @@ def add_glass_banner(img: Image.Image, eyebrow: str,
     return out.convert('RGB')
 
 
+# ── Determine UNIFORM font sizes once, using the first screenshot's width ──
+_probe = Image.open(os.path.join(SRC, CAPTIONS[0][0]))
+_W, _H = _probe.size
+_margin   = int(_W * 0.06)
+_banner_w = _W - _margin * 2
+_pad_x    = int(_banner_w * 0.07)
+_inner_w  = _banner_w - _pad_x * 2
+_banner_h = int(_H * 0.26)
+
+HEAD_SIZE, SUB_SIZE = pick_uniform_sizes(
+    CAPTIONS, _inner_w,
+    head_start=int(_banner_h * 0.21),
+    sub_start=int(_banner_h * 0.085),
+)
+print(f'Uniform sizes: headline={HEAD_SIZE}px  subtitle={SUB_SIZE}px')
+
 # ── Run ──
 for fname, eb, head, sub in CAPTIONS:
     src = os.path.join(SRC, fname)
     if not os.path.exists(src):
         print('SKIP', fname); continue
-    out = add_glass_banner(Image.open(src), eb, head, sub)
+    out = add_glass_banner(Image.open(src), eb, head, sub,
+                           HEAD_SIZE, SUB_SIZE)
     dst = os.path.join(DST, fname.replace('.jpg', '_promo.jpg'))
     out.save(dst, 'JPEG', quality=92, optimize=True)
     print('Wrote', dst)
