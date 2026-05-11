@@ -167,21 +167,30 @@ class ContentDownloader @Inject constructor(
         info: PackInfo,
         onProgress: (packDone: Long, packTotal: Long, bps: Long) -> Unit,
     ): File = suspendCancellableCoroutine { cont ->
-        // info.url is a filename relative to the content folder (e.g. "core_v1.json").
-        // If it ever starts with "content_packs/" or "/" we strip the prefix.
         val name = info.url.substringAfterLast('/')
         val ref = rootRef.child(name)
         val outFile = File(cacheRoot, "${info.id}_v${info.version}.json")
         outFile.parentFile?.mkdirs()
 
-        val startMs = System.currentTimeMillis()
+        // Live speed via 1-second sliding window. avg across the whole download
+        // looks too low after a slow start; a window matches what the phone
+        // status bar shows.
+        var windowStartMs   = System.currentTimeMillis()
+        var windowStartBytes = 0L
+        var liveBps = 0L
+
         val task = ref.getFile(outFile)
         task.addOnProgressListener { snap ->
             val done    = snap.bytesTransferred
             val total   = if (snap.totalByteCount > 0) snap.totalByteCount else info.sizeBytes
-            val elapsed = (System.currentTimeMillis() - startMs).coerceAtLeast(1)
-            val bps     = (done * 1000L) / elapsed
-            onProgress(done, total, bps)
+            val nowMs   = System.currentTimeMillis()
+            val winMs   = nowMs - windowStartMs
+            if (winMs >= 800) {
+                liveBps = ((done - windowStartBytes) * 1000L) / winMs.coerceAtLeast(1L)
+                windowStartMs = nowMs
+                windowStartBytes = done
+            }
+            onProgress(done, total, liveBps)
         }
         task.addOnSuccessListener { cont.resume(outFile) }
         task.addOnFailureListener { cont.resumeWithException(it) }
