@@ -97,25 +97,31 @@ object Navigation {
         navController: NavHostController,
         modifier: Modifier = Modifier,
         authViewModel: AuthViewModel = hiltViewModel(),
-        appLockGate: AppLockGateViewModel = hiltViewModel()
+        appLockGate: AppLockGateViewModel = hiltViewModel(),
+        contentGate: com.spanishapp.ui.onboarding.ContentReadyGate = hiltViewModel(),
     ) {
         val authState by authViewModel.uiState.collectAsStateWithLifecycle()
         val lockState by appLockGate.state.collectAsState()
+        val contentReady by contentGate.ready.collectAsState()
 
-        // Используем remember, чтобы зафиксировать начальный экран только ПРИ ПЕРВОМ определении состояния
-        // Это предотвратит "полеты" экранов при обновлении userName, age и т.д.
+        // ── First-launch gate ──
+        // Content packs MUST be downloaded before the rest of the app is usable.
+        // If the user dismisses Download (back button), we re-route them back
+        // until ready=true. After Done, the regular auth/onboarding logic runs.
         val initialStartDest = remember(
             authState.isLoggedIn,
             authState.onboardingCompleted,
-            lockState.shouldShowLock
+            lockState.shouldShowLock,
+            contentReady,
         ) {
             when {
-                authState.isLoggedIn == null -> null // Еще грузимся
+                contentReady == null -> null  // still reading DataStore — splash
+                contentReady == false -> "download"   // FORCE download first
+                authState.isLoggedIn == null -> null  // still loading auth
                 authState.isLoggedIn == true -> {
                     if (authState.onboardingCompleted) {
                         if (lockState.shouldShowLock) "app_lock" else "home"
                     } else {
-                        // Если залогинен, но онбординг не закончен, проверяем где остановились
                         when {
                             authState.userName == null -> "name_entry"
                             authState.userAge == null -> "age_selection"
@@ -360,7 +366,22 @@ object Navigation {
             composable("settings_voice") { com.spanishapp.ui.settings.SettingsVoiceScreen(navController) }
             composable("download") {
                 com.spanishapp.ui.onboarding.DownloadScreen(
-                    onFinished = { navController.popBackStack() }
+                    onFinished = {
+                        // After successful download, route to the user's
+                        // appropriate next screen instead of just popping back.
+                        val nextRoute = when {
+                            authState.isLoggedIn != true -> "welcome"
+                            authState.onboardingCompleted -> "home"
+                            authState.userName == null   -> "name_entry"
+                            authState.userAge == null    -> "age_selection"
+                            authState.userReason == null -> "reason_selection"
+                            authState.userLevel == null  -> "level_selection"
+                            else -> "home"
+                        }
+                        navController.navigate(nextRoute) {
+                            popUpTo("download") { inclusive = true }
+                        }
+                    }
                 )
             }
 

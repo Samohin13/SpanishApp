@@ -133,6 +133,7 @@ class ContentDownloader @Inject constructor(
                 }
 
                 _state.value = DownloadState.Done
+                versionStore.markContentReady()       // unlocks the rest of the app
                 Result.success(outFiles)
             } catch (t: Throwable) {
                 _state.value = DownloadState.Failed(

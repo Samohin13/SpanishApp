@@ -1,5 +1,6 @@
 package com.spanishapp.ui.onboarding
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,6 +58,7 @@ fun DownloadScreen(
     viewModel: DownloadViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(Unit) { viewModel.start() }
+    BackHandler(enabled = true) { /* Block back — content download is mandatory. */ }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val finished by viewModel.finished.collectAsStateWithLifecycle()
@@ -244,9 +246,12 @@ fun DownloadScreen(
                         ),
                     ) { Text("Повторить", fontWeight = FontWeight.Bold) }
                     Spacer(Modifier.height(10.dp))
-                    TextButton(onClick = onFinished) {
-                        Text("Продолжить без обновлений", color = Color.White.copy(alpha = 0.85f))
-                    }
+                    Text(
+                        "Без загрузки контента приложение не сможет работать.",
+                        fontSize = 11.sp,
+                        color = Color.White.copy(alpha = 0.65f),
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
         }
