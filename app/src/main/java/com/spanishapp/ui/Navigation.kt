@@ -18,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
@@ -104,10 +105,11 @@ object Navigation {
         val lockState by appLockGate.state.collectAsState()
         val contentReady by contentGate.ready.collectAsState()
 
-        // ── First-launch gate ──
-        // Content packs MUST be downloaded before the rest of the app is usable.
-        // If the user dismisses Download (back button), we re-route them back
-        // until ready=true. After Done, the regular auth/onboarding logic runs.
+        // ── Onboarding-first gate ──
+        // Auth + onboarding run BEFORE the content download. Only after the
+        // user finishes onboarding do we force the Download Screen if packs
+        // aren't ready. This lets new users see the brand/registration flow
+        // first, exactly like a typical mobile game.
         val initialStartDest = remember(
             authState.isLoggedIn,
             authState.onboardingCompleted,
@@ -115,18 +117,25 @@ object Navigation {
             contentReady,
         ) {
             when {
-                contentReady == null -> null  // still reading DataStore — splash
-                contentReady == false -> "download"   // FORCE download first
-                authState.isLoggedIn == null -> null  // still loading auth
+                contentReady == null -> null            // still reading DataStore
+                authState.isLoggedIn == null -> null    // still loading auth
                 authState.isLoggedIn == true -> {
                     if (authState.onboardingCompleted) {
-                        if (lockState.shouldShowLock) "app_lock" else "home"
+                        // Onboarding done → if content not ready, gate to download;
+                        // otherwise normal home/lock flow.
+                        when {
+                            contentReady == false -> "download"
+                            lockState.shouldShowLock -> "app_lock"
+                            else -> "home"
+                        }
                     } else {
+                        // Still in onboarding — let them finish first
                         when {
                             authState.userName == null -> "name_entry"
                             authState.userAge == null -> "age_selection"
                             authState.userReason == null -> "reason_selection"
                             authState.userLevel == null -> "level_selection"
+                            contentReady == false -> "download"
                             else -> "home"
                         }
                     }
@@ -136,6 +145,18 @@ object Navigation {
         }
 
         if (initialStartDest == null) return
+
+        // After onboarding, if the user navigates to "home" but content packs
+        // aren't ready yet, divert them through the Download Screen.
+        val currentEntry by navController.currentBackStackEntryAsState()
+        LaunchedEffect(currentEntry, contentReady) {
+            val route = currentEntry?.destination?.route ?: return@LaunchedEffect
+            if (route == "home" && contentReady == false) {
+                navController.navigate("download") {
+                    popUpTo("home") { inclusive = true }
+                }
+            }
+        }
 
         // Bottom-bar destinations get the Material "Fade Through" pattern
         // (fade + slight scale) because they're peer-level — slide-horizontal

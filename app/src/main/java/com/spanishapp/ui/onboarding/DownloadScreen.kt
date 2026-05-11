@@ -91,24 +91,27 @@ fun DownloadScreen(
                 .padding(horizontal = 24.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // ── Top: logo + brand ───────────────────────────────
-            Spacer(Modifier.height(8.dp))
+            // Top empty space — pushes logo down to roughly mid-upper
+            Spacer(Modifier.weight(1.3f))
+
+            // ── Logo + brand (logo bigger than wordmark) ────────
             androidx.compose.foundation.Image(
                 painter = painterResource(R.drawable.ic_bull),
                 contentDescription = null,
-                modifier = Modifier.size(88.dp),
+                modifier = Modifier.size(150.dp),
             )
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(6.dp))
             Text(
                 "ESPEAK",
-                fontSize = 38.sp,
+                fontSize = 32.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White,
                 letterSpacing = 2.sp,
             )
 
-            // ── Middle: swipeable facts with counter ────────────
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.height(24.dp))
+
+            // ── Facts (just below the brand) ───────────────────
             if (state !is DownloadState.Failed) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("🇪🇸", fontSize = 16.sp)
