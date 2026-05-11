@@ -97,11 +97,18 @@ fun LessonSessionScreen(
 
     val accentColor = unit.color
     val sections    = content.sections
-    // Authored exercises + auto-generated (ListenAndPick, OrderLetters from lesson vocab).
+    // Authored + auto-generated, interleaved so generated items don't all
+    // bunch at the end. Pattern: 1 authored, 1 generated, 1 authored, ...
     val exercises   = remember(unitId, lessonIndex) {
         val lessonKey = "u${unitId}_l${lessonIndex}"
-        val generated = ExerciseGenerator.generate(lessonKey, content)
-        content.exercises + generated
+        val generated = ExerciseGenerator.generate(lessonKey, content).toMutableList()
+        val authored  = content.exercises.toMutableList()
+        val mixed = mutableListOf<Exercise>()
+        while (authored.isNotEmpty() || generated.isNotEmpty()) {
+            if (authored.isNotEmpty()) mixed += authored.removeAt(0)
+            if (generated.isNotEmpty()) mixed += generated.removeAt(0)
+        }
+        mixed
     }
 
     val totalSteps     = sections.size + exercises.size + 1
