@@ -63,6 +63,10 @@ object ExerciseGenerator {
             .flatMap { it.items }
             .filter { isVocabItem(it) }
             .map { VocabPair(es = it.left.trim(), ru = it.right.trim()) }
+            // Reject syllabified pronunciation guides (e.g. "mu-si-ca") and
+            // anything with hyphens/punctuation — every generator below
+            // assumes clean lexical entries.
+            .filter { it.es.none { ch -> ch == '-' || ch == '_' || ch == '/' } }
             .distinctBy { it.es.lowercase() }
 
         val out = mutableListOf<Exercise>()
@@ -87,8 +91,14 @@ object ExerciseGenerator {
         }
 
         // ── ORDER_LETTERS ──
+        // Reject syllabified entries (mu-si-ca) and any non-pure-letter
+        // strings — those are pronunciation guides, not real words, and
+        // produce un-solvable tile sets.
         val anagram = vocab
-            .filter { it.es.length in 3..10 && !it.es.contains(' ') }
+            .filter { item ->
+                val w = item.es
+                w.length in 3..10 && w.all { it.isLetter() }
+            }
             .shuffled(random)
             .firstOrNull()
         if (anagram != null) {

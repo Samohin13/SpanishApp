@@ -341,11 +341,17 @@ private fun TheoryCard(
             Spacer(Modifier.height(16.dp))
         }
 
+        // Headings + accent text use a high-contrast amber on dark theme so
+        // unit colours (deep purples for A1) don't get lost against the
+        // black background. On light theme keeps the unit's own colour.
+        val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+        val readableAccent = if (isDark) Color(0xFFFFC107) else accentColor
+
         Text(
             text       = section.heading,
             fontWeight = FontWeight.ExtraBold,
             fontSize   = 22.sp,
-            color      = accentColor
+            color      = readableAccent
         )
         Spacer(Modifier.height(12.dp))
 
@@ -356,16 +362,22 @@ private fun TheoryCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
+                    // Whole row plays TTS — no need to aim at the speaker icon.
+                    .clickable {
+                        com.spanishapp.ui.components.inferSpeakText(item.left)?.let { t ->
+                            tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "item")
+                        }
+                    }
             ) {
                 Row(
                     Modifier.padding(start = 16.dp, end = 4.dp, top = 12.dp, bottom = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Кнопка озвучки испанского слова
+                    // Speaker icon stays as a visual cue; tap is on the whole row
                     SpeakerButton(
                         text = item.left,
                         tts  = tts,
-                        tint = accentColor
+                        tint = readableAccent
                     )
                     Spacer(Modifier.width(8.dp))
                     Column(Modifier.weight(1f)) {
@@ -1204,6 +1216,10 @@ private fun BuildSentenceInput(
 // ─── ExerciseTypeBadge: маленький эмодзи-чип в шапке упражнения ────────────
 @Composable
 private fun ExerciseTypeBadge(type: ExerciseType, accent: Color) {
+    // Use bright amber for the badge on dark theme — purple unit accents
+    // are unreadable on near-black backgrounds.
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val readable = if (isDark) Color(0xFFFFC107) else accent
     val (emoji, label) = when (type) {
         ExerciseType.MULTIPLE_CHOICE   -> "✏️" to "Выбор"
         ExerciseType.FILL_BLANK        -> "📝" to "Пропуск"
@@ -1219,8 +1235,8 @@ private fun ExerciseTypeBadge(type: ExerciseType, accent: Color) {
     }
     Surface(
         shape = RoundedCornerShape(50),
-        color = accent.copy(alpha = 0.14f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = 0.3f)),
+        color = readable.copy(alpha = 0.18f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, readable.copy(alpha = 0.4f)),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
@@ -1232,7 +1248,7 @@ private fun ExerciseTypeBadge(type: ExerciseType, accent: Color) {
                 text = label,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
-                color = accent,
+                color = readable,
                 letterSpacing = 0.4.sp,
             )
         }
@@ -1524,13 +1540,15 @@ private fun MatchPairsInput(
     }
 
     Row(
-        Modifier.fillMaxWidth(),
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 360.dp),    // expand so 4–5 pair chips fill the area
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         // Left column (Spanish)
         Column(
             Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             leftItems.forEach { item ->
                 val isMatched  = matched.any { it.first == item }
@@ -1551,7 +1569,7 @@ private fun MatchPairsInput(
         // Right column (Russian)
         Column(
             Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             rightItems.forEach { item ->
                 val isMatched  = matched.any { it.second == item }
@@ -1615,15 +1633,23 @@ private fun PairChip(
             )
             .clickable(enabled = !matched, onClick = onClick),
     ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-            fontSize = 15.sp,
-            fontWeight = if (selected || matched) FontWeight.SemiBold else FontWeight.Normal,
-            color = if (matched) Green
-                    else if (wrong) Red
-                    else MaterialTheme.colorScheme.onSurface,
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 64.dp),     // bigger touch target — was ~40dp
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = text,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 18.dp),
+                fontSize = 17.sp,
+                fontWeight = if (selected || matched) FontWeight.Bold else FontWeight.Medium,
+                color = if (matched) Green
+                        else if (wrong) Red
+                        else MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 
