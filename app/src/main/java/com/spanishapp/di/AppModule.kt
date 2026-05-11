@@ -74,6 +74,12 @@ object AppModule {
     fun provideFirestore(): com.google.firebase.firestore.FirebaseFirestore =
         com.google.firebase.firestore.FirebaseFirestore.getInstance()
 
+    // ── Firebase Storage (content packs + avatars) ─────────────
+    @Provides
+    @Singleton
+    fun provideFirebaseStorage(): com.google.firebase.storage.FirebaseStorage =
+        com.google.firebase.storage.FirebaseStorage.getInstance()
+
     // ── Content downloader (gh-pages CDN) ─────────────────────
     @Provides
     @Singleton

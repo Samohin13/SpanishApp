@@ -1,30 +1,38 @@
 package com.spanishapp.data.content
 
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.io.File
 import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /**
- * Downloads versioned content packs from a public CDN (currently GitHub Pages
- * at `https://samohin13.github.io/SpanishApp/content_packs/`).
+ * Downloads versioned content packs from Firebase Storage.
+ *
+ * Layout in the bucket:
+ *   content_packs/manifest.json
+ *   content_packs/core_v1.json
+ *   content_packs/lessons_a1_v1.json
+ *   ...
  *
  * Flow:
- *   1. GET manifest.json
- *   2. For each pack: compare version against [ContentVersionStore]; skip if equal
- *   3. Download changed packs with byte-level progress + speed
- *   4. Verify sha256
- *   5. Save to app cache dir; caller applies to Room afterwards
+ *   1. fetchManifest()  — pulls the manifest
+ *   2. diff against ContentVersionStore
+ *   3. download each changed pack with byte-level progress + bytes/sec
+ *   4. verify sha256
+ *   5. record new version in ContentVersionStore
  *
- * Exposes [state] as a StateFlow the UI can collect.
+ * UI subscribes to [state] to render progress.
  */
 
 sealed interface DownloadState {
@@ -46,7 +54,6 @@ sealed interface DownloadState {
     data class Failed(val pack: String?, val cause: String) : DownloadState
 }
 
-/** Per-pack info handed back to the caller after a successful download. */
 data class DownloadedPack(
     val info: PackInfo,
     val file: File,
@@ -56,19 +63,21 @@ data class DownloadedPack(
 class ContentDownloader @Inject constructor(
     private val cacheRoot: File,
     private val versionStore: ContentVersionStore,
+    private val firebaseStorage: FirebaseStorage,
 ) {
-    /** Base URL where packs live. Override via withBase() for tests. */
-    var baseUrl: String = "https://samohin13.github.io/SpanishApp/content_packs/"
+    /** Root folder inside the Firebase Storage bucket. */
+    var contentPath: String = "content_packs"
 
-    private val client = OkHttpClient.Builder().build()
-    private val json   = Json { ignoreUnknownKeys = true; isLenient = true }
+    private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
     private val _state = MutableStateFlow<DownloadState>(DownloadState.Idle)
     val state: StateFlow<DownloadState> = _state.asStateFlow()
 
+    private val rootRef: StorageReference get() = firebaseStorage.reference.child(contentPath)
+
     /**
-     * Pull the manifest, diff against local versions, download every pack
-     * whose version moved. Returns the list of downloaded pack files.
+     * Pull manifest, diff versions, download changed packs.
+     * Returns list of downloaded pack files (only the ones that actually came down).
      */
     suspend fun syncContent(forceAll: Boolean = false): Result<List<DownloadedPack>> =
         withContext(Dispatchers.IO) {
@@ -76,7 +85,6 @@ class ContentDownloader @Inject constructor(
                 _state.value = DownloadState.FetchingManifest()
                 val manifest = fetchManifest()
 
-                // Decide which packs need download
                 val toDownload = manifest.packs.filter { p ->
                     forceAll || versionStore.getVersion(p.id) != p.version
                 }
@@ -85,10 +93,10 @@ class ContentDownloader @Inject constructor(
                     return@withContext Result.success(emptyList())
                 }
 
-                val totalBytes  = toDownload.sumOf { it.sizeBytes }
-                val outFiles    = mutableListOf<DownloadedPack>()
-                val completed   = mutableSetOf<String>()
-                var totalDone   = 0L
+                val totalBytes = toDownload.sumOf { it.sizeBytes }
+                val outFiles   = mutableListOf<DownloadedPack>()
+                val completed  = mutableSetOf<String>()
+                var totalDone  = 0L
 
                 for ((idx, info) in toDownload.withIndex()) {
                     val file = downloadPack(
@@ -132,51 +140,50 @@ class ContentDownloader @Inject constructor(
 
     // ── Internals ─────────────────────────────────────────────────
 
-    private fun fetchManifest(): ContentManifest {
-        val req = Request.Builder().url(baseUrl + "manifest.json").build()
-        client.newCall(req).execute().use { resp ->
-            require(resp.isSuccessful) { "manifest GET ${resp.code}" }
-            val body = resp.body?.string() ?: error("empty manifest body")
-            return json.decodeFromString(ContentManifest.serializer(), body)
+    private suspend fun fetchManifest(): ContentManifest =
+        suspendCancellableCoroutine { cont ->
+            val ref = rootRef.child("manifest.json")
+            // 64 KB cap — manifest is tiny
+            val task = ref.getBytes(64L * 1024L)
+            task.addOnSuccessListener { bytes ->
+                runCatching {
+                    json.decodeFromString(
+                        ContentManifest.serializer(),
+                        String(bytes, Charsets.UTF_8),
+                    )
+                }.onSuccess { cont.resume(it) }
+                    .onFailure { cont.resumeWithException(it) }
+            }
+            task.addOnFailureListener { cont.resumeWithException(it) }
         }
-    }
 
-    private fun downloadPack(
+    private suspend fun downloadPack(
         info: PackInfo,
         onProgress: (packDone: Long, packTotal: Long, bps: Long) -> Unit,
-    ): File {
-        val url = if (info.url.startsWith("http")) info.url else baseUrl + info.url
-        val req = Request.Builder().url(url).build()
+    ): File = suspendCancellableCoroutine { cont ->
+        // info.url is a filename relative to the content folder (e.g. "core_v1.json").
+        // If it ever starts with "content_packs/" or "/" we strip the prefix.
+        val name = info.url.substringAfterLast('/')
+        val ref = rootRef.child(name)
         val outFile = File(cacheRoot, "${info.id}_v${info.version}.json")
         outFile.parentFile?.mkdirs()
 
-        client.newCall(req).execute().use { resp ->
-            require(resp.isSuccessful) { "pack GET ${resp.code} for ${info.id}" }
-            val body = resp.body ?: error("empty body for ${info.id}")
-            val total = if (info.sizeBytes > 0) info.sizeBytes else body.contentLength()
-
-            val start = System.currentTimeMillis()
-            var done  = 0L
-            val buf   = ByteArray(64 * 1024)
-            body.byteStream().use { input ->
-                outFile.outputStream().use { out ->
-                    while (true) {
-                        val n = input.read(buf)
-                        if (n <= 0) break
-                        out.write(buf, 0, n)
-                        done += n
-                        val elapsed = (System.currentTimeMillis() - start).coerceAtLeast(1)
-                        val bps = (done * 1000L) / elapsed
-                        onProgress(done, total, bps)
-                    }
-                }
-            }
+        val startMs = System.currentTimeMillis()
+        val task = ref.getFile(outFile)
+        task.addOnProgressListener { snap ->
+            val done    = snap.bytesTransferred
+            val total   = if (snap.totalByteCount > 0) snap.totalByteCount else info.sizeBytes
+            val elapsed = (System.currentTimeMillis() - startMs).coerceAtLeast(1)
+            val bps     = (done * 1000L) / elapsed
+            onProgress(done, total, bps)
         }
-        return outFile
+        task.addOnSuccessListener { cont.resume(outFile) }
+        task.addOnFailureListener { cont.resumeWithException(it) }
+        cont.invokeOnCancellation { runCatching { task.cancel() } }
     }
 
     private fun verifySha256(file: File, expected: String): Boolean {
-        if (expected.isBlank()) return true   // tolerate dev manifests
+        if (expected.isBlank()) return true
         val digest = MessageDigest.getInstance("SHA-256")
         file.inputStream().use { input ->
             val buf = ByteArray(64 * 1024)
