@@ -146,10 +146,10 @@ object Navigation {
 
         if (initialStartDest == null) return
 
-        // After onboarding, if the user navigates to "home" but content packs
-        // aren't ready yet, divert them through the Download Screen.
+        // After onboarding, if user lands on home but content packs aren't
+        // ready yet, divert them through the Download Screen.
         val currentEntry by navController.currentBackStackEntryAsState()
-        LaunchedEffect(currentEntry, contentReady) {
+        LaunchedEffect(currentEntry?.destination?.route, contentReady) {
             val route = currentEntry?.destination?.route ?: return@LaunchedEffect
             if (route == "home" && contentReady == false) {
                 navController.navigate("download") {
