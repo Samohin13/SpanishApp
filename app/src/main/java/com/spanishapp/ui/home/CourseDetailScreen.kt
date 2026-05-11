@@ -132,7 +132,10 @@ fun CourseDetailScreen(
                     onLessonClick = { lessonIndex ->
                         if (!unit.isLocked && unit.id.toIntOrNull() != null) {
                             navController.navigate("lesson_intro/${unit.id}/$lessonIndex") {
-                                popUpTo("course_detail/{courseLevel}") { inclusive = false }
+                                // Use substituted route — popUpTo matches concrete
+                                // back-stack entries, not template patterns.
+                                popUpTo("course_detail/$courseLevel") { inclusive = false }
+                                launchSingleTop = true
                             }
                         }
                         // Для preview-юнитов A2/B1/B2 (id не int) клик игнорируется —

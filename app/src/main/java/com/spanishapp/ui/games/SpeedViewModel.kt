@@ -47,6 +47,7 @@ class SpeedViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
     private val ratingUpdater: RatingUpdater,
+    private val tts: com.spanishapp.service.SpanishTts,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
@@ -118,6 +119,8 @@ class SpeedViewModel @Inject constructor(
                 timeLeft     = 1f,
                 lastCorrect  = null
             )
+            // Audio reinforcement on every Speed round — was missing.
+            runCatching { tts.speak(correct.spanish) }
             roundStartTime = System.currentTimeMillis()
             startTimer()
         }
