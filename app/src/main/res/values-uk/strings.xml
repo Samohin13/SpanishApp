@@ -108,7 +108,7 @@
     <string name="achievements_new_badge">NEW</string>
 
     <!-- ── Games hub ── -->
-    <string name="games_title">Juegos</string>
+    <string name="games_title">Ігри</string>
     <string name="game_articles_desc">Артиклі el / la</string>
     <string name="game_speed_desc">Переклад на час</string>
     <string name="game_verbos_desc">Відмінювання дієслів</string>

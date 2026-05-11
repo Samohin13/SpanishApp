@@ -113,7 +113,7 @@
     <string name="achievements_new_badge">NEW</string>
 
     <!-- ── Games hub ────────────────────────────────────────── -->
-    <string name="games_title">Juegos</string>
+    <string name="games_title">Игры</string>
     <string name="game_articles_desc">Артикли el / la</string>
     <string name="game_speed_desc">Перевод на время</string>
     <string name="game_verbos_desc">Спряжения глаголов</string>
