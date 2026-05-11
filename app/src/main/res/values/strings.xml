@@ -201,6 +201,7 @@
     <string name="ls_tap_words_below">Нажимай на слова ниже →</string>
     <string name="ls_tap_letters_below">Нажимай на буквы ниже →</string>
     <string name="ls_tap_to_replay">Тапни — услышишь ещё раз</string>
+    <string name="ls_listen_and_type">Послушай и напечатай</string>
     <string name="ls_verdict_perfect">Идеально!</string>
     <string name="ls_verdict_great">Отличный результат!</string>
     <string name="ls_verdict_good">Хорошая работа!</string>

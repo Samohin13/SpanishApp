@@ -701,6 +701,25 @@ private fun ExerciseCard(
                         }
                     )
                 }
+
+                ExerciseType.LISTEN_TYPE -> {
+                    ListenAndTypeInput(
+                        audioText = exercise.audioText.ifBlank { exercise.correctAnswer },
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor = accentColor,
+                        answered = answered,
+                        tts = tts,
+                        onAnswer = { typed ->
+                            selectedOption = typed
+                            answered = true
+                            if (typed.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true)) {
+                                inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                    tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                }
+                            }
+                        }
+                    )
+                }
             }
 
             // Объяснение
@@ -1613,6 +1632,65 @@ private fun TapMissingWordInput(
             }
         }
     }
+}
+
+// ─── ListenAndTypeInput: TTS играет → напечатай услышанное ─────────────────
+@Composable
+private fun ListenAndTypeInput(
+    audioText: String,
+    correctAnswer: String,
+    accentColor: Color,
+    answered: Boolean,
+    tts: TextToSpeech?,
+    onAnswer: (String) -> Unit,
+) {
+    // Auto-play once
+    LaunchedEffect(audioText) {
+        delay(300)
+        tts?.speak(audioText, TextToSpeech.QUEUE_FLUSH, null, "listen_type")
+    }
+
+    // Speaker / replay button
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = accentColor.copy(alpha = 0.10f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(84.dp)
+            .clickable(enabled = !answered) {
+                tts?.speak(audioText, TextToSpeech.QUEUE_FLUSH, null, "listen_type_replay")
+            }
+    ) {
+        Row(
+            Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(CircleShape)
+                    .background(accentColor),
+                contentAlignment = Alignment.Center,
+            ) { Text("🔊", fontSize = 24.sp) }
+            Spacer(Modifier.width(14.dp))
+            Text(
+                text = stringResource(R.string.ls_listen_and_type),
+                color = accentColor,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 15.sp,
+            )
+        }
+    }
+
+    Spacer(Modifier.height(18.dp))
+
+    FillBlankInput(
+        correctAnswer = correctAnswer,
+        accentColor = accentColor,
+        answered = answered,
+        onAnswer = onAnswer,
+    )
 }
 
 // ─── Экран победы ──────────────────────────────────────────────────────────

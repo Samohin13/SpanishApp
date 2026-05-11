@@ -138,6 +138,47 @@ object ExerciseGenerator {
             )
         }
 
+        // ── TRANSLATE (ru→es): single-word translation typing ──
+        // Only for short words; avoid the word already chosen for other typing exercises.
+        if (vocab.size >= 5) {
+            val taken = setOfNotNull(anagram?.es)
+            val translateCandidate = vocab
+                .filter { it.es.length in 3..12 && !it.es.contains(' ')
+                          && it.es !in taken
+                          && it.ru.isNotBlank() }
+                .shuffled(random)
+                .firstOrNull()
+            if (translateCandidate != null) {
+                out += Exercise(
+                    type = ExerciseType.TRANSLATE,
+                    instruction = "Переведи на испанский",
+                    question = translateCandidate.ru,
+                    correctAnswer = translateCandidate.es,
+                    explanation = "${translateCandidate.es} — ${translateCandidate.ru}",
+                )
+            }
+        }
+
+        // ── LISTEN_TYPE: dictation of a short Spanish word (≥6 vocab lessons only) ──
+        if (vocab.size >= 6) {
+            // Pick a word that wasn't used for OrderLetters to avoid same-word reuse
+            val anagramEs = anagram?.es
+            val dictation = vocab
+                .filter { it.es.length in 3..10 && !it.es.contains(' ') && it.es != anagramEs }
+                .shuffled(random)
+                .firstOrNull()
+            if (dictation != null) {
+                out += Exercise(
+                    type = ExerciseType.LISTEN_TYPE,
+                    instruction = "Напечатай что слышишь",
+                    question = "",
+                    correctAnswer = dictation.es,
+                    audioText = dictation.es,
+                    explanation = if (dictation.ru.isNotBlank()) "${dictation.es} — ${dictation.ru}" else dictation.es,
+                )
+            }
+        }
+
         // ── MATCH_PAIRS ──
         // Need ≥4 pairs with distinct short Spanish words and clear RU translations
         if (vocab.size >= 4) {

@@ -13,7 +13,10 @@ enum class ExerciseType {
 
     // ── Phase 2 additions ──
     MATCH_PAIRS,       // 4-6 пар (es↔ru): тап-слева → тап-справа, соединить
-    TAP_MISSING_WORD   // Предложение с пропуском → тапнуть из 3 чипов
+    TAP_MISSING_WORD,  // Предложение с пропуском → тапнуть из 3 чипов
+
+    // ── Phase 3 additions ──
+    LISTEN_TYPE        // Диктант: TTS играет → напечатать что слышишь
 }
 
 data class Exercise(

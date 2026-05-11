@@ -21,6 +21,8 @@ class ExerciseGeneratorTest {
         var matchCount = 0
         var articleCount = 0
         var buildSentenceCount = 0
+        var listenTypeCount = 0
+        var translateCount = 0
         var totalLessons = 0
         var lessonsTouched = 0
 
@@ -71,6 +73,17 @@ class ExerciseGeneratorTest {
                         assertEquals("build_sentence answer matches words for $id",
                             ex.words.joinToString(" "), ex.correctAnswer)
                     }
+                    ExerciseType.LISTEN_TYPE -> {
+                        listenTypeCount++
+                        assertTrue("listen_type audioText for $id", ex.audioText.isNotBlank())
+                        assertFalse("listen_type no space for $id",
+                            ex.correctAnswer.contains(' '))
+                    }
+                    ExerciseType.TRANSLATE -> {
+                        translateCount++
+                        assertTrue("translate question non-empty for $id",
+                            ex.question.isNotBlank())
+                    }
                     else -> fail("unexpected generated type: ${ex.type} in $id")
                 }
             }
@@ -78,7 +91,7 @@ class ExerciseGeneratorTest {
 
         println("Generator results: $totalLessons total lessons, $lessonsTouched got " +
                 "extras (${listenCount} listen + ${anagramCount} anagram + ${matchCount} match + " +
-                "${articleCount} article + ${buildSentenceCount} build)")
+                "${articleCount} article + ${buildSentenceCount} build + ${listenTypeCount} type + ${translateCount} translate)")
 
         // Must touch a meaningful share of lessons or the generator is broken.
         assertTrue("Generator touched too few lessons: $lessonsTouched/$totalLessons",

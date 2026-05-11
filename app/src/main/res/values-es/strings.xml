@@ -196,6 +196,7 @@
     <string name="ls_tap_words_below">Toca las palabras de abajo →</string>
     <string name="ls_tap_letters_below">Toca las letras de abajo →</string>
     <string name="ls_tap_to_replay">Toca para oírlo de nuevo</string>
+    <string name="ls_listen_and_type">Escucha y escribe</string>
     <string name="ls_verdict_perfect">¡Perfecto!</string>
     <string name="ls_verdict_great">¡Excelente resultado!</string>
     <string name="ls_verdict_good">¡Buen trabajo!</string>
