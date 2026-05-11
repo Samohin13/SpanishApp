@@ -1,0 +1,76 @@
+{
+    "packs": [
+        {
+            "id": "core",
+            "version": 1,
+            "url": "content/core_v1.json",
+            "sizeBytes": 225690,
+            "sha256": "7cae51df1605372865d3a271e3cd234e20f1e1614be3fea0555567452a676b0d",
+            "displayName": "Базовый словарь"
+        },
+        {
+            "id": "lessons_a1",
+            "version": 1,
+            "url": "content/lessons_a1_v1.json",
+            "sizeBytes": 350506,
+            "sha256": "4c3425fac1328d416aab0b1830a64c8ed695112dd8abc6615f437a1daf0b9fe1",
+            "displayName": "Уроки A1"
+        },
+        {
+            "id": "lessons_a2",
+            "version": 1,
+            "url": "content/lessons_a2_v1.json",
+            "sizeBytes": 338708,
+            "sha256": "00732e1f152dd5630c26446634107f9a4e4ef9b5513a634d6e569ca4493b045d",
+            "displayName": "Уроки A2"
+        },
+        {
+            "id": "lessons_b1",
+            "version": 1,
+            "url": "content/lessons_b1_v1.json",
+            "sizeBytes": 365893,
+            "sha256": "fc0abe1a301bb802f0f8308b81b2618067b786176bac8ea1e8e3fc90ea2b964c",
+            "displayName": "Уроки B1"
+        },
+        {
+            "id": "lessons_b2",
+            "version": 1,
+            "url": "content/lessons_b2_v1.json",
+            "sizeBytes": 368070,
+            "sha256": "3da786182dd40f2a2f9cceb5146be85097fec9a435b95e846fb9eb3b3f35b1dd",
+            "displayName": "Уроки B2"
+        },
+        {
+            "id": "libros_a1",
+            "version": 1,
+            "url": "content/libros_a1_v1.json",
+            "sizeBytes": 48097,
+            "sha256": "b77dd935f3764b8e7d77db94a4a99558461ad9b754bd3b3d6186704211ff7526",
+            "displayName": "Рассказы A1"
+        },
+        {
+            "id": "libros_a2",
+            "version": 1,
+            "url": "content/libros_a2_v1.json",
+            "sizeBytes": 55365,
+            "sha256": "75166593a3dc91dcadb061a5081db4397060deb086ef906f545b971277f2f732",
+            "displayName": "Рассказы A2"
+        },
+        {
+            "id": "libros_b1",
+            "version": 1,
+            "url": "content/libros_b1_v1.json",
+            "sizeBytes": 39132,
+            "sha256": "6b57f44604bc01036c7f171bbefbc48f25b36be2e2a8d2124b8c1ebf762dc9e3",
+            "displayName": "Рассказы B1"
+        },
+        {
+            "id": "libros_b2",
+            "version": 1,
+            "url": "content/libros_b2_v1.json",
+            "sizeBytes": 105045,
+            "sha256": "fbbd3c387b0537f5bec1e76aadeeb063dfe27861abfafdb85dc8b9b865505eea",
+            "displayName": "Рассказы B2"
+        }
+    ]
+}

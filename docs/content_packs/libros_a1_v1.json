@@ -1,0 +1,1129 @@
+{
+    "stories": [
+        {
+            "id": 1,
+            "level": "A1",
+            "title": "Mi Casa",
+            "theme": "Дом / Быт",
+            "text": "Esta es mi casa. La casa es grande y bonita.\nHay una sala, una cocina y dos dormitorios.\nEn la sala hay un sofá rojo. En la cocina hay una mesa blanca.\nLa cocina es pequeña pero moderna. Me gusta mucho mi casa.",
+            "questions": [
+                {
+                    "q": "¿Cómo es la casa?",
+                    "options": [
+                        "Pequeña y fea",
+                        "Grande y bonita",
+                        "Nueva y cara"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hay en la sala?",
+                    "options": [
+                        "Una cama azul",
+                        "Un sofá rojo",
+                        "Una mesa grande"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo es la cocina?",
+                    "options": [
+                        "Grande y antigua",
+                        "Pequeña pero moderna",
+                        "Bonita y nueva"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo se siente la persona sobre su casa?",
+                    "options": [
+                        "No le gusta",
+                        "Le gusta mucho",
+                        "Quiere una casa nueva"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "level": "A1",
+            "title": "Max, el Perro",
+            "theme": "Животные",
+            "text": "Luis tiene un perro. El perro se llama Max.\nMax es negro y pequeño. Come arroz y carne todos los días.\nMax duerme en el jardín. Por las mañanas corre y juega.\nLuis quiere mucho a su perro.",
+            "questions": [
+                {
+                    "q": "¿Cómo se llama el perro?",
+                    "options": [
+                        "Rex",
+                        "Max",
+                        "Bruno"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿De qué color es Max?",
+                    "options": [
+                        "Blanco",
+                        "Marrón",
+                        "Negro"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Dónde duerme Max?",
+                    "options": [
+                        "En la cocina",
+                        "En el jardín",
+                        "En la cama de Luis"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué come Max?",
+                    "options": [
+                        "Pan y leche",
+                        "Arroz y carne",
+                        "Frutas y verduras"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "level": "A1",
+            "title": "El Desayuno de Ana",
+            "theme": "Еда / Быт",
+            "text": "Son las ocho de la mañana. Ana está en la cocina.\nElla bebe un vaso de leche fría. También come pan con mantequilla.\nEl pan está caliente y delicioso. Ana come una manzana verde.\nEs un buen desayuno para empezar el día.",
+            "questions": [
+                {
+                    "q": "¿Qué hora es?",
+                    "options": [
+                        "Las siete",
+                        "Las ocho",
+                        "Las nueve"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué bebe Ana?",
+                    "options": [
+                        "Café",
+                        "Zumo",
+                        "Leche"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Cómo está el pan?",
+                    "options": [
+                        "Frío",
+                        "Caliente y delicioso",
+                        "Duro"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿De qué color es la manzana?",
+                    "options": [
+                        "Roja",
+                        "Amarilla",
+                        "Verde"
+                    ],
+                    "correctIndex": 2
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "level": "A1",
+            "title": "Mi Familia",
+            "theme": "Семья",
+            "text": "Me llamo Sara. Tengo una familia pequeña.\nMi madre se llama Elena. Mi padre se llama Pablo.\nTengo un hermano mayor. Su nombre es David.\nDavid tiene diecinueve años. Yo tengo quince años.\nVivimos juntos en Madrid.",
+            "questions": [
+                {
+                    "q": "¿Cómo se llama la persona que habla?",
+                    "options": [
+                        "Elena",
+                        "Sara",
+                        "David"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo es la familia?",
+                    "options": [
+                        "Grande",
+                        "Pequeña",
+                        "Famosa"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuántos años tiene David?",
+                    "options": [
+                        "Quince",
+                        "Diecinueve",
+                        "Veinte"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Dónde vive la familia?",
+                    "options": [
+                        "En Barcelona",
+                        "En Valencia",
+                        "En Madrid"
+                    ],
+                    "correctIndex": 2
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "level": "A1",
+            "title": "Buenos Días en la Oficina",
+            "theme": "Работа / Общение",
+            "text": "María llega a la oficina a las nueve.\nDice: \"¡Buenos días!\" a todos sus compañeros.\nSu compañero Juan responde: \"¡Buenos días, María!\"\nMaría pone el café en la mesa. Los dos hablan un poco.\nEl día empieza bien. Hay mucho trabajo hoy.",
+            "questions": [
+                {
+                    "q": "¿A qué hora llega María?",
+                    "options": [
+                        "A las ocho",
+                        "A las nueve",
+                        "A las diez"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué dice María cuando llega?",
+                    "options": [
+                        "Buenas noches",
+                        "Buenos días",
+                        "Buenas tardes"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo se llama el compañero?",
+                    "options": [
+                        "Pedro",
+                        "Carlos",
+                        "Juan"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué pone María en la mesa?",
+                    "options": [
+                        "El café",
+                        "El libro",
+                        "El teléfono"
+                    ],
+                    "correctIndex": 0
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "level": "A1",
+            "title": "En el Mercado",
+            "theme": "Покупки",
+            "text": "Rosa va al mercado todos los sábados por la mañana.\nHoy compra verduras frescas: tomates, cebollas y pimientos.\nTambién compra fruta: manzanas y plátanos maduros.\nEl vendedor es muy simpático y le da una naranja de regalo.\nLos precios son buenos hoy. Rosa paga con tarjeta y vuelve a casa contenta.",
+            "questions": [
+                {
+                    "q": "¿Cuándo va Rosa al mercado?",
+                    "options": [
+                        "Los domingos",
+                        "Los viernes",
+                        "Los sábados"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué fruta compra Rosa?",
+                    "options": [
+                        "Naranjas y uvas",
+                        "Manzanas y plátanos",
+                        "Peras y fresas"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué le da el vendedor de regalo?",
+                    "options": [
+                        "Un tomate",
+                        "Un plátano",
+                        "Una naranja"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Cómo paga Rosa?",
+                    "options": [
+                        "En efectivo",
+                        "Con cheque",
+                        "Con tarjeta"
+                    ],
+                    "correctIndex": 2
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "level": "A1",
+            "title": "El Cumpleaños de Carlos",
+            "theme": "Праздники",
+            "text": "Hoy es el cumpleaños de Carlos. Cumple veinte años.\nSus amigos organizan una fiesta sorpresa en su apartamento.\nHay globos de muchos colores y una torta grande de chocolate.\nTodos cantan \"Cumpleaños feliz\" cuando Carlos entra.\nCarlos recibe muchos regalos: libros, ropa y una bicicleta nueva.\nEstá muy contento y abraza a todos sus amigos.",
+            "questions": [
+                {
+                    "q": "¿Cuántos años cumple Carlos?",
+                    "options": [
+                        "Quince",
+                        "Veinte",
+                        "Veinticinco"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué tipo de fiesta es?",
+                    "options": [
+                        "Una fiesta normal",
+                        "Una fiesta sorpresa",
+                        "Una fiesta de trabajo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿De qué es la torta?",
+                    "options": [
+                        "De vainilla",
+                        "De fresa",
+                        "De chocolate"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué regalo recibe Carlos entre los mencionados?",
+                    "options": [
+                        "Un teléfono",
+                        "Una bicicleta nueva",
+                        "Un televisor"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "level": "A1",
+            "title": "El Zoológico",
+            "theme": "Животные / Досуг",
+            "text": "Pablo visita el zoológico con su familia el domingo.\nHay muchos animales: elefantes, jirafas y leones.\nPablo observa a los pingüinos con mucha atención.\nLe gustan los pingüinos porque son divertidos y nadan muy rápido.\nSu hermana pequeña prefiere los monos. Los monos son muy ruidosos.\nAl final del día, Pablo está cansado pero muy feliz.",
+            "questions": [
+                {
+                    "q": "¿Con quién va Pablo al zoológico?",
+                    "options": [
+                        "Con sus amigos",
+                        "Con su familia",
+                        "Solo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué animal prefiere Pablo?",
+                    "options": [
+                        "El elefante",
+                        "El mono",
+                        "El pingüino"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Por qué le gustan los pingüinos a Pablo?",
+                    "options": [
+                        "Son grandes y bonitos",
+                        "Son divertidos y nadan rápido",
+                        "Son tranquilos"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué animal prefiere la hermana de Pablo?",
+                    "options": [
+                        "Los leones",
+                        "Los monos",
+                        "Las jirafas"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "level": "A1",
+            "title": "El Almuerzo del Domingo",
+            "theme": "Еда / Семья",
+            "text": "Todos los domingos la familia Sánchez come junta en casa.\nLa abuela Concha prepara la paella con mucho cariño.\nLa paella tiene arroz, pollo, verduras de temporada y especias.\nEl olor delicioso llena toda la casa. El abuelo pone la mesa.\nCuando la comida está lista, todos se sientan y hablan de su semana.\nEs el momento favorito de toda la familia.",
+            "questions": [
+                {
+                    "q": "¿Cuándo come junta la familia?",
+                    "options": [
+                        "Los sábados",
+                        "Los domingos",
+                        "Los viernes"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Quién prepara la paella?",
+                    "options": [
+                        "La madre",
+                        "El abuelo",
+                        "La abuela Concha"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué hace el abuelo?",
+                    "options": [
+                        "Cocina la paella",
+                        "Pone la mesa",
+                        "Compra la comida"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿De qué habla la familia durante el almuerzo?",
+                    "options": [
+                        "De política",
+                        "De su semana",
+                        "De deportes"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "level": "A1",
+            "title": "Un Domingo en el Parque",
+            "theme": "Досуг / Природа",
+            "text": "La familia Gómez pasa los domingos en el parque grande de la ciudad.\nLos niños juegan al fútbol en el césped verde. Corren y ríen mucho.\nLos padres se sientan en un banco y leen el periódico.\nEl perro de la familia corre detrás de una pelota amarilla.\nHace buen tiempo y el cielo está azul y despejado.\nAl final, todos toman un helado de chocolate. Es un día perfecto.",
+            "questions": [
+                {
+                    "q": "¿Dónde pasa la familia los domingos?",
+                    "options": [
+                        "En la playa",
+                        "En el parque",
+                        "En el centro comercial"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hacen los niños?",
+                    "options": [
+                        "Juegan al tenis",
+                        "Juegan al fútbol",
+                        "Nadan en la piscina"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hacen los padres?",
+                    "options": [
+                        "Corren con los niños",
+                        "Juegan con el perro",
+                        "Leen el periódico"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué toman todos al final?",
+                    "options": [
+                        "Un café",
+                        "Una limonada",
+                        "Un helado de chocolate"
+                    ],
+                    "correctIndex": 2
+                }
+            ]
+        },
+        {
+            "id": 11,
+            "level": "A1",
+            "title": "El Viaje a Valencia",
+            "theme": "Путешествия",
+            "text": "Miguel y su amiga Laura viajan a Valencia en tren.\nEl viaje desde Madrid dura casi tres horas.\nEn el tren, Miguel lee un libro y Laura escucha música.\nCuando llegan, buscan el hotel con el teléfono.\nPor la tarde, visitan la playa y el mercado central.\nPor la noche, prueban la auténtica paella valenciana en un restaurante.\nLaura dice que es el mejor viaje del año.",
+            "questions": [
+                {
+                    "q": "¿En qué transporte viajan?",
+                    "options": [
+                        "En avión",
+                        "En tren",
+                        "En autobús"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuánto dura el viaje?",
+                    "options": [
+                        "Una hora",
+                        "Dos horas",
+                        "Casi tres horas"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué hace Miguel en el tren?",
+                    "options": [
+                        "Duerme",
+                        "Lee un libro",
+                        "Escucha música"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué comen por la noche?",
+                    "options": [
+                        "Tapas y vino",
+                        "Paella valenciana",
+                        "Bocadillos"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 12,
+            "level": "A1",
+            "title": "La Clase de Arte",
+            "theme": "Школа / Этика",
+            "text": "Hoy es lunes. En la clase de arte, los estudiantes dibujan.\nPedro no tiene lápices. Su amiga Lucía tiene muchos lápices de colores.\nLucía dice: \"¿Quieres un lápiz, Pedro?\"\nElla ayuda a su amigo. Pedro está feliz.\nEs bueno compartir.",
+            "questions": [
+                {
+                    "q": "¿Qué día es hoy?",
+                    "options": [
+                        "Sábado",
+                        "Lunes",
+                        "Viernes"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué le falta a Pedro?",
+                    "options": [
+                        "Libros",
+                        "Lápices",
+                        "Papel"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Quién ayuda a Pedro?",
+                    "options": [
+                        "La profesora",
+                        "Lucía",
+                        "Nadie"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál es el mensaje del texto?",
+                    "options": [
+                        "Es bueno compartir",
+                        "Es malo dibujar",
+                        "El arte es difícil"
+                    ],
+                    "correctIndex": 0
+                }
+            ]
+        },
+        {
+            "id": 13,
+            "level": "A1",
+            "title": "El Chef Maestro",
+            "theme": "Кулинария / ТВ",
+            "text": "Bienvenidos a \"El Chef Maestro\".\nHoy el desafío es difícil: ¡Cocinar una paella en 30 minutos!\nEl concursante Carlos está muy nervioso.\nEl aceite está caliente y el arroz espera en el plato.\nEl jurado mira con mucha atención. Carlos necesita arroz, azafrán y mariscos.\nLos mariscos están frescos. El tiempo pasa muy rápido.\n¿Es suficiente tiempo para una paella perfecta?\n¡El reloj no para!",
+            "questions": [
+                {
+                    "q": "¿Cómo se llama el programa?",
+                    "options": [
+                        "Cocina con Carlos",
+                        "El Chef Maestro",
+                        "Tiempo de Arroz"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuánto tiempo tienen para cocinar?",
+                    "options": [
+                        "Una hora",
+                        "Diez minutos",
+                        "Treinta minutos"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Cómo se siente Carlos?",
+                    "options": [
+                        "Muy tranquilo",
+                        "Nervioso",
+                        "Aburrido"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué ingrediente NO menciona el texto?",
+                    "options": [
+                        "Arroz",
+                        "Pollo",
+                        "Mariscos"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "level": "A1",
+            "title": "En el Médico",
+            "theme": "Здоровье",
+            "text": "Pedro no se siente bien esta mañana. Le duele la cabeza y tiene fiebre.\nSu madre está preocupada y lo lleva al médico.\nEn la consulta, el médico examina a Pedro con cuidado.\nLe pregunta: \"¿Cuánto tiempo llevas mal?\" Pedro responde: \"Desde ayer.\"\nEl médico le dice: \"Tienes una infección leve. Necesitas descansar,\nbeber mucha agua y tomar estas medicinas.\"\nDos días después, Pedro está mucho mejor y vuelve a la escuela.",
+            "questions": [
+                {
+                    "q": "¿Qué síntomas tiene Pedro?",
+                    "options": [
+                        "Dolor de barriga y tos",
+                        "Dolor de cabeza y fiebre",
+                        "Dolor de espalda"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Quién lleva a Pedro al médico?",
+                    "options": [
+                        "Su padre",
+                        "Su madre",
+                        "Su hermano"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué le recomienda el médico?",
+                    "options": [
+                        "Operar y descansar",
+                        "Descansar, beber agua y tomar medicinas",
+                        "Solo tomar medicinas"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuándo vuelve Pedro a la escuela?",
+                    "options": [
+                        "Al día siguiente",
+                        "Dos días después",
+                        "Una semana después"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 15,
+            "level": "A1",
+            "title": "La Tienda de Ropa",
+            "theme": "Покупки / Мода",
+            "text": "Carla entra en una tienda de ropa con su amiga Marta.\nBusca un vestido elegante para la boda de su prima.\nLa vendedora les muestra varios modelos: azul, rojo y blanco.\nA Carla le gusta mucho el vestido azul con flores pequeñas.\nLo prueba en el probador. Le queda perfecto y está muy contenta.\nPero el precio es alto: ciento veinte euros.\nCarla piensa un momento y decide comprarlo. Es para una ocasión especial.",
+            "questions": [
+                {
+                    "q": "¿Para qué ocasión busca Carla el vestido?",
+                    "options": [
+                        "Para una fiesta de cumpleaños",
+                        "Para la boda de su prima",
+                        "Para el trabajo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué vestido elige Carla?",
+                    "options": [
+                        "El rojo con flores",
+                        "El blanco elegante",
+                        "El azul con flores"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Cuánto cuesta el vestido?",
+                    "options": [
+                        "Ochenta euros",
+                        "Cien euros",
+                        "Ciento veinte euros"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué decide hacer Carla al final?",
+                    "options": [
+                        "Comprarlo",
+                        "Volver otro día",
+                        "Comprar otro vestido"
+                    ],
+                    "correctIndex": 0
+                }
+            ]
+        },
+        {
+            "id": 16,
+            "level": "A1",
+            "title": "El Concierto",
+            "theme": "Музыка / Досуг",
+            "text": "Esta noche hay un concierto de rock en el estadio de la ciudad.\nElena y su amiga van juntas. Esperan en la cola durante media hora.\nEl concierto empieza a las nueve. El grupo toca muy bien.\nLa música es fuerte y llena de energía. Elena canta todas las canciones\nporque conoce todas las letras. Su amiga baila sin parar.\nAl final, todos aplauden durante varios minutos.\nElena dice que es el mejor concierto de su vida.",
+            "questions": [
+                {
+                    "q": "¿Qué tipo de concierto es?",
+                    "options": [
+                        "Pop",
+                        "Clásico",
+                        "Rock"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Cuánto tiempo esperan en la cola?",
+                    "options": [
+                        "Una hora",
+                        "Media hora",
+                        "Diez minutos"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hace Elena durante el concierto?",
+                    "options": [
+                        "Solo escucha",
+                        "Canta todas las canciones",
+                        "Saca fotos"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué dice Elena al final?",
+                    "options": [
+                        "Que la música es demasiado fuerte",
+                        "Que es el mejor concierto de su vida",
+                        "Que prefiere el teatro"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 17,
+            "level": "A1",
+            "title": "La Carta de Miguel",
+            "theme": "Общение / Дружба",
+            "text": "Miguel escribe una carta a su amigo Marco, que vive en Argentina.\nEn la carta, habla de su nueva ciudad, sus estudios y sus nuevos amigos.\nTambién le pregunta cómo está la familia de Marco y si sigue tocando la guitarra.\nMiguel no usa el correo electrónico para las cosas importantes.\nPrefiere escribir a mano porque le parece más personal y especial.\nDobla la carta, la pone en un sobre y escribe la dirección con cuidado.\nLa carta tarda dos semanas en llegar a Buenos Aires.\nMiguel espera la respuesta de Marco con mucha ilusión.",
+            "questions": [
+                {
+                    "q": "¿Dónde vive el amigo Marco?",
+                    "options": [
+                        "En España",
+                        "En México",
+                        "En Argentina"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Por qué prefiere Miguel escribir a mano?",
+                    "options": [
+                        "Porque no tiene ordenador",
+                        "Porque es más personal y especial",
+                        "Porque es más rápido"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuánto tarda la carta en llegar?",
+                    "options": [
+                        "Una semana",
+                        "Dos semanas",
+                        "Un mes"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué pregunta Miguel sobre Marco?",
+                    "options": [
+                        "Si tiene trabajo nuevo",
+                        "Cómo está su familia y si toca la guitarra",
+                        "Si quiere visitar España"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 18,
+            "level": "A1",
+            "title": "El Nuevo Vecino",
+            "theme": "Социальная жизнь",
+            "text": "Un hombre joven llega al edificio con dos maletas grandes.\nSe llama Daniel y viene de Sevilla para trabajar en Madrid.\nSus nuevos vecinos son muy simpáticos y lo reciben bien.\nLa señora García, del tercero, le trae un pastel de bienvenida.\nEl señor López le explica cómo funciona el ascensor y dónde está el supermercado.\nLa niña del segundo piso le presenta a su gato naranja.\nDaniel está un poco nervioso pero muy contento con sus nuevos vecinos.\nPiensa que va a estar bien en su nueva ciudad.",
+            "questions": [
+                {
+                    "q": "¿De dónde viene Daniel?",
+                    "options": [
+                        "De Barcelona",
+                        "De Valencia",
+                        "De Sevilla"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué le trae la señora García?",
+                    "options": [
+                        "Una botella de vino",
+                        "Un pastel de bienvenida",
+                        "Una planta"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué le explica el señor López?",
+                    "options": [
+                        "Cómo funciona el ascensor",
+                        "Las normas del edificio",
+                        "Dónde está el hospital"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Cómo se siente Daniel al final?",
+                    "options": [
+                        "Triste y solitario",
+                        "Nervioso pero contento",
+                        "Muy enfadado"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 19,
+            "level": "A1",
+            "title": "La Cena con el Jefe",
+            "theme": "Работа / Еда",
+            "text": "Ana tiene una cena importante con su jefe esta noche.\nVan a un restaurante elegante en el centro de la ciudad.\nEl restaurante está lleno de gente y la música es suave.\nEl camarero les trae la carta y recomienda el menú del día.\nAna pide pescado con verduras porque no come carne roja.\nSu jefe pide el plato especial de la casa. El vino es excelente.\nDurante la cena, hablan del nuevo proyecto de trabajo.\nAl final, el jefe paga la cuenta y le dice a Ana:\n\"Eres muy importante para el equipo.\"",
+            "questions": [
+                {
+                    "q": "¿Dónde cenan Ana y su jefe?",
+                    "options": [
+                        "En casa de Ana",
+                        "En un restaurante del centro",
+                        "En la oficina"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Por qué Ana pide pescado?",
+                    "options": [
+                        "Porque es más barato",
+                        "Porque no come carne roja",
+                        "Porque el camarero lo recomienda"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿De qué hablan durante la cena?",
+                    "options": [
+                        "Del tiempo libre",
+                        "Del nuevo proyecto de trabajo",
+                        "De la familia"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Quién paga la cuenta?",
+                    "options": [
+                        "Ana",
+                        "El jefe",
+                        "Los dos juntos"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 20,
+            "level": "A1",
+            "title": "El Partido de Fútbol",
+            "theme": "Спорт",
+            "text": "El equipo local juega contra el equipo visitante este sábado.\nHay miles de aficionados en el estadio. El ambiente es increíble.\nEl partido empieza a las cuatro de la tarde con mucha emoción.\nEn el primer tiempo, los dos equipos juegan bien pero nadie marca.\nEn el segundo tiempo, el delantero número nueve recibe el balón\ny chuta con fuerza. ¡Gooool! El estadio explota de alegría.\nLos aficionados saltan, cantan y abrazan a los desconocidos.\nEl árbitro pita el final. El equipo local gana uno a cero.",
+            "questions": [
+                {
+                    "q": "¿Cuándo empieza el partido?",
+                    "options": [
+                        "A las dos de la tarde",
+                        "A las cuatro de la tarde",
+                        "A las seis"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué pasa en el primer tiempo?",
+                    "options": [
+                        "El equipo local marca dos goles",
+                        "Nadie marca ningún gol",
+                        "El equipo visitante gana"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué número lleva el delantero que marca el gol?",
+                    "options": [
+                        "El número siete",
+                        "El número diez",
+                        "El número nueve"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Cómo termina el partido?",
+                    "options": [
+                        "Empate cero a cero",
+                        "Equipo local gana uno a cero",
+                        "Equipo visitante gana"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 21,
+            "level": "A1",
+            "title": "La Entrevista de Trabajo",
+            "theme": "Работа / Карьера",
+            "text": "Sofía lleva dos meses buscando trabajo. Por fin, tiene una entrevista\nimportante en una empresa de tecnología en el centro de la ciudad.\nLa noche anterior estudia las preguntas más comunes y prepara su currículum.\nLlega diez minutos antes de la hora. Está nerviosa pero preparada.\nLa entrevistadora se llama Carmen y es muy profesional.\nLe pregunta sobre su experiencia, sus puntos fuertes y sus objetivos.\nSofía responde con calma y confianza. Habla de sus proyectos anteriores.\nAl salir, no sabe si tiene el trabajo, pero está orgullosa de sí misma.\nSabe que lo ha hecho lo mejor posible. Solo tiene que esperar.",
+            "questions": [
+                {
+                    "q": "¿Cuánto tiempo lleva Sofía buscando trabajo?",
+                    "options": [
+                        "Una semana",
+                        "Dos meses",
+                        "Seis meses"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuándo llega Sofía a la entrevista?",
+                    "options": [
+                        "Exactamente a la hora",
+                        "Diez minutos tarde",
+                        "Diez minutos antes"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Cómo responde Sofía a las preguntas?",
+                    "options": [
+                        "Con nerviosismo",
+                        "Con calma y confianza",
+                        "Muy rápido sin pensar"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo se siente Sofía al salir?",
+                    "options": [
+                        "Segura de tener el trabajo",
+                        "Orgullosa de sí misma",
+                        "Muy decepcionada"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 22,
+            "level": "A1",
+            "title": "Un Lunes Complicado",
+            "theme": "Городская жизнь / Транспорт",
+            "text": "El lunes por la mañana, Antonio descubre que el metro está en huelga.\nSin metro, decide ir al trabajo en bicicleta por primera vez.\nPedalea rápido por las calles. Pero en una curva difícil,\nno ve un semáforo en rojo y casi choca con un coche.\nEl conductor del coche frena a tiempo. Por suerte, nadie se hace daño.\nPero Antonio llega veinte minutos tarde a una reunión muy importante.\nSu jefe no está nada contento y le da una mirada seria.\nPor la tarde, Antonio busca en internet un carril bici más seguro.\nDecide que mañana saldrá media hora antes de casa para evitar problemas.",
+            "questions": [
+                {
+                    "q": "¿Por qué no puede usar el metro Antonio?",
+                    "options": [
+                        "Porque está cerrado por obras",
+                        "Porque está en huelga",
+                        "Porque no tiene dinero"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué casi sucede en la curva?",
+                    "options": [
+                        "Antonio se cae de la bicicleta",
+                        "Antonio choca con un coche",
+                        "Antonio pierde su mochila"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuántos minutos llega tarde Antonio?",
+                    "options": [
+                        "Diez minutos",
+                        "Treinta minutos",
+                        "Veinte minutos"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Qué decide hacer Antonio para el día siguiente?",
+                    "options": [
+                        "Ir en taxi",
+                        "Salir media hora antes",
+                        "Pedir el día libre"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 23,
+            "level": "A1",
+            "title": "El Tren de las Seis",
+            "theme": "Путешествия / Семья",
+            "text": "Eva siempre toma el tren de las seis del viernes para visitar a sus padres.\nPero este viernes el tren está cancelado por obras urgentes en la vía.\nLa pantalla del andén dice: \"Servicio interrumpido. Disculpen las molestias.\"\nEva busca alternativas rápidamente: el siguiente autobús sale dos horas después\ny llega muy tarde. El taxi es posible pero cuesta ochenta euros.\nAl final, llama a su hermano Marcos y le explica el problema.\nMarcos viene en coche sin dudar y la recoge en la estación.\nEn el camino, hablan de muchas cosas: del trabajo, de los amigos, de la familia.\nEva piensa que a veces los imprevistos tienen soluciones inesperadas y bonitas.",
+            "questions": [
+                {
+                    "q": "¿Cuándo toma normalmente el tren Eva?",
+                    "options": [
+                        "Los sábados por la mañana",
+                        "Los viernes a las seis",
+                        "Los domingos por la tarde"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Por qué está cancelado el tren?",
+                    "options": [
+                        "Por una huelga",
+                        "Por obras urgentes en la vía",
+                        "Por el mal tiempo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuánto cuesta el taxi?",
+                    "options": [
+                        "Treinta euros",
+                        "Cincuenta euros",
+                        "Ochenta euros"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Quién ayuda a Eva al final?",
+                    "options": [
+                        "Un taxista",
+                        "Su hermano Marcos",
+                        "Sus padres"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 24,
+            "level": "A1",
+            "title": "La Fiesta Sorpresa",
+            "theme": "Праздники / Дружба",
+            "text": "Los amigos de Marcos planean una fiesta sorpresa para su cumpleaños.\nCada persona tiene una tarea específica: Carmen compra la torta de tres pisos,\nRubén decora el salón con globos y luces de colores,\ny Luis invita a más amigos sin que Marcos se entere de nada.\nEl día del cumpleaños, engañan a Marcos diciéndole que van a cenar a un restaurante.\nCuando Marcos abre la puerta del salón, todas las luces se encienden de repente.\n\"¡SORPRESA!\" gritan todos al mismo tiempo. Marcos no puede creerlo.\nTiene los ojos llenos de lágrimas de alegría.\n\"¡Esto es lo mejor que me ha pasado en la vida!\", dice con una gran sonrisa.",
+            "questions": [
+                {
+                    "q": "¿Qué hace Carmen para la fiesta?",
+                    "options": [
+                        "Decora el salón",
+                        "Compra la torta",
+                        "Invita a más amigos"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo engañan a Marcos?",
+                    "options": [
+                        "Diciéndole que hay una reunión de trabajo",
+                        "Diciéndole que van a cenar a un restaurante",
+                        "Diciéndole que es un día normal"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hace Rubén?",
+                    "options": [
+                        "Compra la comida",
+                        "Cocina el pastel",
+                        "Decora el salón con globos y luces"
+                    ],
+                    "correctIndex": 2
+                },
+                {
+                    "q": "¿Cómo reacciona Marcos?",
+                    "options": [
+                        "Se enfada con sus amigos",
+                        "Se va a casa",
+                        "Tiene lágrimas de alegría y dice que es lo mejor de su vida"
+                    ],
+                    "correctIndex": 2
+                }
+            ]
+        },
+        {
+            "id": 25,
+            "level": "A1",
+            "title": "Antes del Examen Final",
+            "theme": "Школа / Учёба",
+            "text": "Mañana Paula tiene el examen final de español. Esta noche estudia con intensidad.\nRepasa los verbos irregulares más importantes: ser, estar, ir, tener, hacer, poder.\nTambién practica los artículos, los pronombres y la conjugación de los tiempos verbales.\nA las doce de la noche, su madre entra en la habitación con una manzanilla caliente.\n\"Duerme un poco, Paula. Un cerebro descansado funciona mucho mejor que uno cansado.\"\nPaula mira sus apuntes una vez más y cierra el libro lentamente.\nSabe que ha estudiado todo lo posible. Confía en sí misma.\nPor la mañana, llega al examen tranquila, con el bolígrafo listo y la mente clara.\nHará lo mejor que pueda. Es todo lo que se puede pedir.",
+            "questions": [
+                {
+                    "q": "¿Qué repasa Paula esta noche?",
+                    "options": [
+                        "Solo vocabulario de animales",
+                        "Verbos irregulares y gramática",
+                        "Las lecturas del libro de texto"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué le trae la madre a Paula?",
+                    "options": [
+                        "Un café con leche",
+                        "Una manzanilla caliente",
+                        "Un vaso de agua"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué consejo le da la madre?",
+                    "options": [
+                        "Que estudie más",
+                        "Que duerma un poco",
+                        "Que no se preocupe por el examen"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo llega Paula al examen por la mañana?",
+                    "options": [
+                        "Nerviosa y sin dormir",
+                        "Tranquila, con bolígrafo listo y mente clara",
+                        "Tarde y sin preparar"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        }
+    ]
+}
