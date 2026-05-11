@@ -139,19 +139,27 @@ fun SpanishAppRoot() {
                 SpanishBottomBar(
                     currentRoute = currentRoute,
                     onNavigate = { route ->
-                        // Bottom-bar navigation always pops back to "home" (the
-                        // top-level after onboarding/auth). Was using
-                        // graph.startDestinationId which on first app launch
-                        // can be "welcome"/"app_lock", leaving Profile→Home
-                        // unable to find a target — user reported being
-                        // stuck on Profile.
-                        navController.navigate(route) {
-                            popUpTo("home") {
-                                saveState = true
-                                inclusive = false
+                        // Bottom-bar tap behaviour:
+                        // 1. If the target route is already in the back stack,
+                        //    pop to it (cheaper, preserves its state, and
+                        //    avoids the previous launchSingleTop + restoreState
+                        //    combo which silently no-op'd Profile/Settings →
+                        //    Home).
+                        // 2. Otherwise navigate normally — pop everything
+                        //    above home so we don't grow the stack across
+                        //    horizontal tab moves.
+                        val popped = navController.popBackStack(
+                            route = route, inclusive = false
+                        )
+                        if (!popped) {
+                            navController.navigate(route) {
+                                popUpTo("home") {
+                                    saveState = true
+                                    inclusive = false
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
                         }
                     }
                 )
