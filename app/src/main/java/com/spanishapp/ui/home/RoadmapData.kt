@@ -199,7 +199,7 @@ object RoadmapData {
         // ══════════════════════════════════════════════
 
         RoadmapUnit(
-            id = "a2_1",
+            id = "5",
             title = "A2 · Блок 1: В прошлом",
             icon = "📅",
             description = "Pretérito Indefinido — рассказываем о прошлом",
@@ -229,7 +229,7 @@ object RoadmapData {
         // ══════════════════════════════════════════════
 
         RoadmapUnit(
-            id = "a2_2",
+            id = "6",
             title = "A2 · Блок 2: Раньше и сейчас",
             icon = "🕰️",
             description = "Imperfecto, сравнения, местоимения, hace...que",
@@ -259,7 +259,7 @@ object RoadmapData {
         // ══════════════════════════════════════════════
 
         RoadmapUnit(
-            id = "a2_3",
+            id = "7",
             title = "A2 · Блок 3: Сейчас и скоро",
             icon = "⚡",
             description = "Pretérito Perfecto, герундий, императив, работа",
@@ -289,7 +289,7 @@ object RoadmapData {
         // ══════════════════════════════════════════════
 
         RoadmapUnit(
-            id = "a2_4",
+            id = "8",
             title = "A2 · Блок 4: Мечты и планы",
             icon = "🚀",
             description = "Futuro, Condicional, si-clauses, мечты",
