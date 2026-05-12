@@ -9,26 +9,22 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
-import java.net.URLEncoder
 import java.security.MessageDigest
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Downloads versioned content packs from Firebase Storage public REST URLs.
+ * Downloads versioned content packs from the GitHub Pages CDN.
  *
- * Why not the Firebase Storage SDK? It tries to fetch an Auth/AppCheck token
- * before every transfer; on a fresh install with no signed-in user this
- * blocks the second+ download indefinitely (first call falls back to
- * placeholder token, but subsequent ones can deadlock waiting for the
- * background thread that's already been consumed).
+ * Industry-standard OTA content delivery (same approach as Duolingo/Babbel):
+ *   1. App ships with full built-in content (DatabaseSeeder) — works offline.
+ *   2. ContentSyncWorker calls syncContent() once per day on Wi-Fi.
+ *   3. Only packs whose version changed since last sync are downloaded.
+ *   4. Downloaded JSON files are applied to Room DB via ContentImporter.
+ *   5. No mandatory download screen — everything happens silently.
  *
- * Direct REST works because the security rules grant public read to .json
- * files. URL pattern:
- *   https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{path}?alt=media
- *
- * Bucket is read from google-services.json at runtime via FirebaseStorage.
+ * CDN base: https://samohin13.github.io/SpanishApp/content_packs/
  */
 
 sealed interface DownloadState {
@@ -59,10 +55,11 @@ data class DownloadedPack(
 class ContentDownloader @Inject constructor(
     private val cacheRoot: File,
     private val versionStore: ContentVersionStore,
-    private val firebaseStorage: com.google.firebase.storage.FirebaseStorage,
 ) {
-    /** Optional sub-folder inside the bucket. "" = root. */
-    var contentPath: String = ""
+    companion object {
+        /** Public GitHub Pages CDN — no auth required, globally cached. */
+        const val BASE_URL = "https://samohin13.github.io/SpanishApp/content_packs"
+    }
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -73,12 +70,7 @@ class ContentDownloader @Inject constructor(
     private val _state = MutableStateFlow<DownloadState>(DownloadState.Idle)
     val state: StateFlow<DownloadState> = _state.asStateFlow()
 
-    private fun urlFor(filename: String): String {
-        val bucket = firebaseStorage.reference.bucket
-        val path   = if (contentPath.isEmpty()) filename else "$contentPath/$filename"
-        val encoded = URLEncoder.encode(path, "UTF-8")
-        return "https://firebasestorage.googleapis.com/v0/b/$bucket/o/$encoded?alt=media"
-    }
+    private fun urlFor(filename: String) = "$BASE_URL/$filename"
 
     suspend fun syncContent(forceAll: Boolean = false): Result<List<DownloadedPack>> =
         withContext(Dispatchers.IO) {
