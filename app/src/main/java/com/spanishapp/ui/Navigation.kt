@@ -178,42 +178,43 @@ object Navigation {
             modifier = modifier,
             enterTransition = {
                 if (isPeerNav(initialState, targetState)) {
-                    // Material "Fade Through" — incoming half: 210ms after a 90ms gap
-                    fadeIn(tween(durationMillis = 210, delayMillis = 90)) +
+                    // Material "Fade Through" — incoming half: 200ms after a 70ms gap
+                    fadeIn(tween(durationMillis = 200, delayMillis = 70)) +
                     scaleIn(
                         initialScale = 0.92f,
-                        animationSpec = tween(durationMillis = 210, delayMillis = 90)
+                        animationSpec = tween(durationMillis = 200, delayMillis = 70)
                     )
                 } else {
-                    slideInHorizontally(tween(300)) { it / 3 } + fadeIn(tween(300))
+                    // Deep navigation: 220ms — snappy but not jarring
+                    slideInHorizontally(tween(220)) { it / 3 } + fadeIn(tween(220))
                 }
             },
             exitTransition = {
                 if (isPeerNav(initialState, targetState)) {
-                    // Material "Fade Through" — outgoing half: quick 90ms fade+shrink
-                    fadeOut(tween(durationMillis = 90)) +
-                    scaleOut(targetScale = 0.92f, animationSpec = tween(durationMillis = 90))
+                    // Material "Fade Through" — outgoing half
+                    fadeOut(tween(durationMillis = 70)) +
+                    scaleOut(targetScale = 0.92f, animationSpec = tween(durationMillis = 70))
                 } else {
-                    slideOutHorizontally(tween(300)) { -it / 6 } + fadeOut(tween(220))
+                    slideOutHorizontally(tween(220)) { -it / 6 } + fadeOut(tween(180))
                 }
             },
             popEnterTransition = {
                 if (isPeerNav(initialState, targetState)) {
-                    fadeIn(tween(durationMillis = 210, delayMillis = 90)) +
+                    fadeIn(tween(durationMillis = 200, delayMillis = 70)) +
                     scaleIn(
                         initialScale = 0.92f,
-                        animationSpec = tween(durationMillis = 210, delayMillis = 90)
+                        animationSpec = tween(durationMillis = 200, delayMillis = 70)
                     )
                 } else {
-                    slideInHorizontally(tween(300)) { -it / 6 } + fadeIn(tween(300))
+                    slideInHorizontally(tween(220)) { -it / 6 } + fadeIn(tween(220))
                 }
             },
             popExitTransition = {
                 if (isPeerNav(initialState, targetState)) {
-                    fadeOut(tween(durationMillis = 90)) +
-                    scaleOut(targetScale = 0.92f, animationSpec = tween(durationMillis = 90))
+                    fadeOut(tween(durationMillis = 70)) +
+                    scaleOut(targetScale = 0.92f, animationSpec = tween(durationMillis = 70))
                 } else {
-                    slideOutHorizontally(tween(300)) { it / 3 } + fadeOut(tween(220))
+                    slideOutHorizontally(tween(220)) { it / 3 } + fadeOut(tween(180))
                 }
             }
         ) {

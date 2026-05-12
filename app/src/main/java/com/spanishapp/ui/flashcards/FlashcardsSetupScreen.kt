@@ -91,6 +91,13 @@ class FlashcardsSetupViewModel @Inject constructor(
     private val _weakCount = MutableStateFlow(0)
     val weakCount: StateFlow<Int> = _weakCount.asStateFlow()
 
+    /**
+     * Tracks the in-flight loadSetsFor coroutine so we can cancel it when the
+     * user switches levels quickly — prevents a stale A1 query from overwriting
+     * an already-displayed A2 result (race condition).
+     */
+    private var loadJob: kotlinx.coroutines.Job? = null
+
     init {
         viewModelScope.launch { _weakCount.value = wordDao.countPracticePool() }
         // Re-emit set list whenever ANY set's progress changes — so completing
@@ -109,7 +116,8 @@ class FlashcardsSetupViewModel @Inject constructor(
     }
 
     fun loadSetsFor(level: String) {
-        viewModelScope.launch {
+        loadJob?.cancel()           // cancel any in-flight query for another level
+        loadJob = viewModelScope.launch {
             val sets = FlashcardSetData.byLevel(level)
             val progressMap = setDao.getAll().associateBy { it.setId }
 
@@ -163,7 +171,11 @@ fun FlashcardsSetupScreen(
     val sets          by viewModel.setsForLevel.collectAsState()
     val weakCount     by viewModel.weakCount.collectAsState()
 
-    LaunchedEffect(selectedLevel) { viewModel.loadSetsFor(selectedLevel) }
+    // loadSetsFor is already called from ViewModel.selectLevel() and from the
+    // observeAll-collect watcher in init — no need to call it again here.
+    // Calling it here causes a double-load and potential stale-data race:
+    // if the user switches A1→A2 quickly, an in-flight A1 query could overwrite
+    // the A2 result after it had already been shown.
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -463,7 +475,7 @@ private fun PracticeTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val gold = Color(0xFFEAB308)   // A1-amber — consistent with level palette
+    val gold = Color(0xFFFF6B35)   // brand orange — same as progress bar / buttons
 
     com.spanishapp.ui.components.PressableCard(
         onClick       = onClick,
