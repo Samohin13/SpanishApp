@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -37,11 +38,14 @@ import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.domain.algorithm.LeaguePromotion
 import com.spanishapp.domain.algorithm.ReviewButton
 import com.spanishapp.ui.components.LeaguePromotionDialog
+import com.spanishapp.ui.home.ThematicWatermark
+import com.spanishapp.ui.home.WatermarkTheme
 import kotlinx.coroutines.launch
 
 // ── Brand colour aliases (local) ───────────────────────────────
-private val BrandOrange  = Color(0xFFFF6B35)   // progress bar, buttons, completion header
-private val BrandOrange2 = Color(0xFFFF9A6C)   // completion header gradient end
+private val BrandOrange   = Color(0xFFFF6B35)   // front face accent + progress bar + buttons
+private val BrandOrange2  = Color(0xFFFF9A6C)   // completion header gradient end
+private val CardBackAccent = Color(0xFF34C759)  // back face accent stripe + glow (iOS green)
 
 // ═══════════════════════════════════════════════════════════════
 //  ENTRY POINT
@@ -580,11 +584,12 @@ private fun FlipCard(
             )
     ) {
         if (rotation <= 90f) {
-            CardSurface {
+            CardSurface(accent = BrandOrange) {
                 CardFront(word, direction, onSpeak)
             }
         } else {
             CardSurface(
+                accent   = CardBackAccent,
                 modifier = Modifier.graphicsLayer { rotationY = 180f }
             ) {
                 CardBack(word, direction, onSpeak, onSpeakExample)
@@ -593,26 +598,53 @@ private fun FlipCard(
     }
 }
 
-// ── Shared surface shell ───────────────────────────────────────
+// ── Shared surface shell — three-layer bento tile formula ─────
+//  Layer 0 (base):  surfaceContainerHigh — exact shade of HomeScreen bento tiles
+//  Layer 1 (glow):  radial gradient from accent, anchored top-right
+//  Layer 2 (stripe): 5dp left accent bar — same as course / game cards
+//  Layer 3 (art):   Canvas card-stack watermark (bottom-right, 0.12 alpha)
 
 @Composable
 private fun CardSurface(
+    accent: Color,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     Surface(
         modifier        = modifier.fillMaxSize(),
-        shape           = RoundedCornerShape(20.dp),
+        shape           = RoundedCornerShape(22.dp),
         shadowElevation = 6.dp,
-        // surfaceContainerHighest = the same dark-card shade used on HomeScreen
-        // bento tiles and course cards — this is what unifies the two screens.
-        color           = MaterialTheme.colorScheme.surfaceContainerHighest,
-        border          = BorderStroke(
-            1.dp,
-            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
-        )
+        color           = MaterialTheme.colorScheme.surfaceContainerHigh
     ) {
-        content()
+        Box(Modifier.fillMaxSize()) {
+            // Layer 1 — soft radial glow, top-right corner
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(accent.copy(alpha = 0.18f), Color.Transparent),
+                            center = Offset(Float.POSITIVE_INFINITY, 0f),
+                            radius = 480f
+                        )
+                    )
+            )
+            // Layer 2 — left accent stripe
+            Box(
+                Modifier
+                    .width(5.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(topStart = 22.dp, bottomStart = 22.dp))
+                    .background(accent)
+            )
+            // Layer 3 — thematic watermark (card-stack illustration)
+            ThematicWatermark(
+                theme  = WatermarkTheme.FLASHCARD_SET,
+                accent = accent
+            )
+            // Content on top of all layers
+            content()
+        }
     }
 }
 
@@ -651,18 +683,19 @@ private fun CardFront(
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // ── Small accent chip (like "УРОК"/"РЕЙТИНГ" on HomeScreen) ──
+        // ── Bento-tile label chip — ExtraBold + letter-spacing ───────
         Row(modifier = Modifier.fillMaxWidth()) {
             Surface(
-                shape = RoundedCornerShape(6.dp),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.75f)
+                shape = RoundedCornerShape(8.dp),
+                color = BrandOrange.copy(alpha = 0.18f)
             ) {
                 Text(
-                    directionLabel,
+                    directionLabel.uppercase(),
                     fontSize      = 11.sp,
-                    fontWeight    = FontWeight.SemiBold,
-                    color         = MaterialTheme.colorScheme.primary,
-                    modifier      = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    fontWeight    = FontWeight.ExtraBold,
+                    letterSpacing = 1.5.sp,
+                    color         = BrandOrange,
+                    modifier      = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                 )
             }
         }
