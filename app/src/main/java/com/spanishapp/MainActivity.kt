@@ -23,7 +23,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.spanishapp.data.prefs.AppPreferences
-import com.spanishapp.data.prefs.ThemeMode
 import com.spanishapp.service.AppLockManager
 import com.spanishapp.ui.Navigation
 import com.spanishapp.ui.components.SpanishBackground
@@ -69,18 +68,11 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val themeMode by appPreferences.themeMode.collectAsStateWithLifecycle(
-                initialValue = ThemeMode.AUTO
-            )
             val fontSize by appPreferences.fontSize.collectAsStateWithLifecycle(
                 initialValue = "MEDIUM"
             )
-            val systemDark = isSystemInDarkTheme()
-            val darkTheme = when (themeMode) {
-                ThemeMode.AUTO  -> systemDark
-                ThemeMode.LIGHT -> false
-                ThemeMode.DARK  -> true
-            }
+            // Theme is always system-controlled — no in-app toggle.
+            val darkTheme = isSystemInDarkTheme()
             val fontScale = when (fontSize) {
                 "SMALL" -> 0.9f
                 "LARGE" -> 1.15f

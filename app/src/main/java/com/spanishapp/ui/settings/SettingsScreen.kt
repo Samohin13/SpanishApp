@@ -56,7 +56,6 @@ import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.entity.UserProgressEntity
 import com.spanishapp.data.prefs.AppLockPreferences
 import com.spanishapp.data.prefs.AppPreferences
-import com.spanishapp.data.prefs.ThemeMode
 import com.spanishapp.data.repository.AuthRepository
 import com.spanishapp.service.AppLockManager
 import com.spanishapp.util.AuthValidator
@@ -333,7 +332,6 @@ fun SettingsScreen(
     val soundEffects by vm.soundEffects.collectAsStateWithLifecycle()
     val ttsEnabled by vm.ttsEnabled.collectAsStateWithLifecycle()
     val vibration by vm.vibration.collectAsStateWithLifecycle()
-    val themeMode by vm.themeMode.collectAsStateWithLifecycle()
     val fontSize by vm.fontSize.collectAsStateWithLifecycle()
     
     val context = LocalContext.current
@@ -365,7 +363,6 @@ fun SettingsScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
-    var showThemeDialog by remember { mutableStateOf(false) }
     var showFontDialog by remember { mutableStateOf(false) }
     var showLevelDialog by remember { mutableStateOf(false) }
     var showGoalDialog by remember { mutableStateOf(false) }
@@ -561,18 +558,12 @@ fun SettingsScreen(
             }
 
             SettingsSection(stringResource(R.string.settings_section_appearance)) {
-                val themeLabel = when(themeMode) {
-                    ThemeMode.AUTO -> stringResource(R.string.set_theme_system)
-                    ThemeMode.LIGHT -> stringResource(R.string.set_theme_light)
-                    ThemeMode.DARK -> stringResource(R.string.set_theme_dark)
-                }
                 val fontLabel = when(fontSize) {
                     "SMALL" -> stringResource(R.string.set_font_small)
                     "MEDIUM" -> stringResource(R.string.set_font_medium)
                     "LARGE" -> stringResource(R.string.set_font_large)
                     else -> fontSize
                 }
-                SettingsItem(Icons.Default.Palette, stringResource(R.string.set_theme_setting), themeLabel) { showThemeDialog = true }
                 SettingsItem(Icons.Default.TextFields, stringResource(R.string.set_font_title), fontLabel) { showFontDialog = true }
             }
 
@@ -725,35 +716,6 @@ fun SettingsScreen(
                 ) { Text(stringResource(R.string.set_dlg_reset_confirm), color = Color.White) }
             },
             dismissButton = { TextButton(onClick = { showResetDialog = false }) { Text(stringResource(R.string.btn_cancel)) } }
-        )
-    }
-
-    if (showThemeDialog) {
-        val themeAuto = stringResource(R.string.set_theme_system)
-        val themeLight = stringResource(R.string.set_theme_light)
-        val themeDark = stringResource(R.string.set_theme_dark)
-        AlertDialog(
-            onDismissRequest = { showThemeDialog = false },
-            title = { Text(stringResource(R.string.set_theme_title)) },
-            text = {
-                Column {
-                    ThemeMode.values().forEach { mode ->
-                        val label = when(mode) {
-                            ThemeMode.AUTO -> themeAuto
-                            ThemeMode.LIGHT -> themeLight
-                            ThemeMode.DARK -> themeDark
-                        }
-                        Row(
-                            Modifier.fillMaxWidth().clickable { vm.setThemeMode(mode); showThemeDialog = false }.padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(selected = themeMode == mode, onClick = { vm.setThemeMode(mode); showThemeDialog = false })
-                            Text(label, modifier = Modifier.padding(start = 8.dp))
-                        }
-                    }
-                }
-            },
-            confirmButton = {}
         )
     }
 
