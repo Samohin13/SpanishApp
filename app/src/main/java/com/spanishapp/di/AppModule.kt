@@ -98,7 +98,9 @@ object AppModule {
             .writeTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BASIC
+                    // Never log in release — URLs may contain API keys as query params.
+                    level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC
+                            else HttpLoggingInterceptor.Level.NONE
                 }
             )
             .build()
