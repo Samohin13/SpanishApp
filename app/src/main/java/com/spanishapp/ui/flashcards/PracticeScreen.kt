@@ -111,7 +111,15 @@ class PracticeViewModel @Inject constructor(
                 PracticeMode.LISTENING
             )
             val rounds = weak.mapIndexed { idx, word ->
-                val mode = modes[idx % modes.size]
+                // TYPING mode only makes sense for single-word entries.
+                // Phrases like "buenas tardes" contain a space after article
+                // stripping — the space becomes an invisible letter tile,
+                // making the exercise uncompletable.
+                val rawMode = modes[idx % modes.size]
+                val target = stripArticle(word.spanish).lowercase().trim()
+                val isPhrase = ' ' in target
+                val mode = if (rawMode == PracticeMode.TYPING && isPhrase)
+                    PracticeMode.MULTIPLE_CHOICE else rawMode
                 // Prefer same-category distractors so wrong options stay
                 // semantically related (greetings vs greetings, food vs food).
                 // Fall back to any same-level word if the category is too
@@ -142,10 +150,8 @@ class PracticeViewModel @Inject constructor(
                     .distinctBy { it.russian.lowercase() }
                     .map { it.russian }
                     .shuffled()
-                // Strip articles for typing mode so user types just "casa" not "la casa".
-                // TTS still reads the full form for LISTENING.
-                val target = stripArticle(word.spanish).lowercase()
-                val scrambled = target.toList().shuffled()
+                // target already computed above; filter spaces just to be safe.
+                val scrambled = target.filter { it != ' ' }.toList().shuffled()
                 PracticeRound(
                     word = word,
                     mode = mode,
@@ -639,11 +645,10 @@ private fun TypingRoundView(
     onSpeak: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(20.dp),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.height(20.dp))
-
+        // ── Top: instruction + word ─────────────────────────────
         Text(
             "✏️ Собери испанское слово из букв",
             fontSize = 13.sp,
@@ -657,20 +662,16 @@ private fun TypingRoundView(
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
+        Spacer(Modifier.height(16.dp))
 
-        Spacer(Modifier.weight(0.5f))
-
-        // Typed buffer with feedback color after check.
-        // Uses surfaceContainerHighest (instead of surface) so the panel is
-        // visibly distinct from the background in both light AND dark themes
-        // — earlier versions blended into the background and looked invisible.
+        // ── Typed buffer (fixed height, never expands) ──────────
         val bufferColor = when {
             !checked  -> MaterialTheme.colorScheme.surfaceContainerHighest
             isCorrect -> Color(0xFF1B5E20)
             else      -> Color(0xFF8B0000)
         }
         Surface(
-            modifier = Modifier.fillMaxWidth().heightIn(min = 72.dp),
+            modifier = Modifier.fillMaxWidth().height(90.dp),
             shape = RoundedCornerShape(14.dp),
             color = bufferColor,
             border = androidx.compose.foundation.BorderStroke(
@@ -681,7 +682,7 @@ private fun TypingRoundView(
             shadowElevation = 4.dp
         ) {
             Box(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -724,7 +725,8 @@ private fun TypingRoundView(
             }
         }
 
-        Spacer(Modifier.weight(0.5f))
+        // Single flexible spacer — pushes the letter grid to the bottom.
+        Spacer(Modifier.weight(1f))
 
         // Letter keys grid — 5 per row.
         if (!checked) {
