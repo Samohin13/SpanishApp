@@ -35,7 +35,11 @@ class ContentSyncWorker(
 
         // Build dependencies manually (no Hilt in workers — same as RatingDecayWorker)
         val versionStore = ContentVersionStore(ctx)
-        val downloader   = ContentDownloader(cacheRoot, versionStore)
+        val downloader   = ContentDownloader(
+            cacheRoot,
+            versionStore,
+            com.google.firebase.storage.FirebaseStorage.getInstance(),
+        )
 
         return try {
             val packs = downloader.syncContent().getOrThrow()
