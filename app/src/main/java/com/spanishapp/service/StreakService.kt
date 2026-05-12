@@ -39,7 +39,10 @@ data class StreakResult(
  */
 @Singleton
 class StreakService @Inject constructor(
-    private val userProgressDao: UserProgressDao
+    private val userProgressDao: UserProgressDao,
+    // dagger.Lazy avoids a construction-time cycle: AchievementManager
+    // depends on userProgressDao too, but we only need it at runtime.
+    private val achievementManager: dagger.Lazy<AchievementManager>
 ) {
     private val _streakEvents = MutableSharedFlow<StreakResult>(extraBufferCapacity = 4)
     val streakEvents: SharedFlow<StreakResult> = _streakEvents.asSharedFlow()
@@ -107,6 +110,12 @@ class StreakService @Inject constructor(
 
         val res = StreakResult(newStreak, usedFreeze, isRecord, freezes)
         _streakEvents.tryEmit(res)
+        // streak_3 / streak_7 / streak_30 / streak_100 used to wait for the
+        // next HomeScreen open to fire — now they unlock the moment the
+        // streak actually advances, regardless of which screen triggered it.
+        if (newStreak != p.currentStreak) {
+            runCatching { achievementManager.get().checkAndUnlock() }
+        }
         return res
     }
 

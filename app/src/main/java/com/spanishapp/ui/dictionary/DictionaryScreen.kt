@@ -107,7 +107,12 @@ class DictionaryViewModel @Inject constructor(
     private val _allWords: StateFlow<List<WordEntity>> = _query
         .debounce(200)
         .flatMapLatest { q ->
-            if (q.length >= 2) wDao.search(q) else wDao.getAllWords()
+            // 0 chars → show the whole dictionary (browse mode).
+            // 1 char → still query as a prefix so single-letter Spanish words
+            //          (a, y, o, e, u) and very short inputs are reachable
+            //          instead of being silently swapped for the full dump.
+            // 2+ chars → normal search.
+            if (q.isBlank()) wDao.getAllWords() else wDao.search(q)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
