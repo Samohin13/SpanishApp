@@ -99,43 +99,37 @@ object Navigation {
         modifier: Modifier = Modifier,
         authViewModel: AuthViewModel = hiltViewModel(),
         appLockGate: AppLockGateViewModel = hiltViewModel(),
-        contentGate: com.spanishapp.ui.onboarding.ContentReadyGate = hiltViewModel(),
     ) {
         val authState by authViewModel.uiState.collectAsStateWithLifecycle()
         val lockState by appLockGate.state.collectAsState()
-        val contentReady by contentGate.ready.collectAsState()
 
-        // ── Onboarding-first gate ──
-        // Auth + onboarding run BEFORE the content download. Only after the
-        // user finishes onboarding do we force the Download Screen if packs
-        // aren't ready. This lets new users see the brand/registration flow
-        // first, exactly like a typical mobile game.
+        // ── Start destination ──
+        // OTA content gate is DISABLED for v1 release — built-in content from
+        // DatabaseSeeder + ModernVocab + LessonContentData + LibrosData covers
+        // every screen. The OTA pipeline (ContentDownloader, ContentImporter,
+        // ContentVersionStore, DownloadScreen) is still in the repo and works
+        // standalone, but it is NOT wired into the startup path so a Firebase
+        // Storage misconfiguration can never block app launch again.
+        // Re-enable after release once the upload pipeline is properly tested.
         val initialStartDest = remember(
             authState.isLoggedIn,
             authState.onboardingCompleted,
             lockState.shouldShowLock,
-            contentReady,
         ) {
             when {
-                contentReady == null -> null            // still reading DataStore
-                authState.isLoggedIn == null -> null    // still loading auth
+                authState.isLoggedIn == null -> null
                 authState.isLoggedIn == true -> {
                     if (authState.onboardingCompleted) {
-                        // Onboarding done → if content not ready, gate to download;
-                        // otherwise normal home/lock flow.
                         when {
-                            contentReady == false -> "download"
                             lockState.shouldShowLock -> "app_lock"
                             else -> "home"
                         }
                     } else {
-                        // Still in onboarding — let them finish first
                         when {
                             authState.userName == null -> "name_entry"
                             authState.userAge == null -> "age_selection"
                             authState.userReason == null -> "reason_selection"
                             authState.userLevel == null -> "level_selection"
-                            contentReady == false -> "download"
                             else -> "home"
                         }
                     }
@@ -145,22 +139,6 @@ object Navigation {
         }
 
         if (initialStartDest == null) return
-
-        // Content-readiness gate. Only fires when contentReady actually
-        // flips to false (e.g. cache cleared mid-session). The first-launch
-        // case is handled by initialStartDest above. Keying the effect on
-        // backstack changes was interfering with legitimate nav transitions
-        // (Home → Profile → tap Home in bottom bar = no return).
-        LaunchedEffect(contentReady) {
-            if (contentReady == false) {
-                val current = navController.currentDestination?.route
-                if (current != null && current != "download") {
-                    navController.navigate("download") {
-                        popUpTo("home") { inclusive = true }
-                    }
-                }
-            }
-        }
 
         // Bottom-bar destinations get the Material "Fade Through" pattern
         // (fade + slight scale) because they're peer-level — slide-horizontal
@@ -393,26 +371,8 @@ object Navigation {
             composable("achievements") { AchievementsScreen(navController) }
             composable("settings")     { SettingsScreen(navController) }
             composable("settings_voice") { com.spanishapp.ui.settings.SettingsVoiceScreen(navController) }
-            composable("download") {
-                com.spanishapp.ui.onboarding.DownloadScreen(
-                    onFinished = {
-                        // After successful download, route to the user's
-                        // appropriate next screen instead of just popping back.
-                        val nextRoute = when {
-                            authState.isLoggedIn != true -> "welcome"
-                            authState.onboardingCompleted -> "home"
-                            authState.userName == null   -> "name_entry"
-                            authState.userAge == null    -> "age_selection"
-                            authState.userReason == null -> "reason_selection"
-                            authState.userLevel == null  -> "level_selection"
-                            else -> "home"
-                        }
-                        navController.navigate(nextRoute) {
-                            popUpTo("download") { inclusive = true }
-                        }
-                    }
-                )
-            }
+            // OTA download route DISABLED for v1 — see comment near initialStartDest.
+            // DownloadScreen + DownloadViewModel kept in source but unreachable.
 
             // ── Рейтинг / Лиги / Лидерборд ───────────────────
             composable("rating_full")  { RatingScreen(navController) }
