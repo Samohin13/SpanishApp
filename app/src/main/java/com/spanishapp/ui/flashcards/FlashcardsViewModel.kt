@@ -56,6 +56,25 @@ class FlashcardsViewModel @Inject constructor(
     /** Set ID being practiced this session (null = legacy category mode). */
     private var activeSetId: String? = null
 
+    /**
+     * ID of the next set in the level chain (order + 1), or null if this is
+     * the last set or session isn't a set-session. Used to show
+     * «Следующий сет» button on completion screen.
+     */
+    val nextSetId: String?
+        get() {
+            val current = activeSetId?.let { FlashcardSetData.byId(it) } ?: return null
+            return FlashcardSetData.byLevel(current.level)
+                .firstOrNull { it.order == current.order + 1 }
+                ?.id
+        }
+
+    /** Switch this VM to the next set in the chain, without reconstructing. */
+    fun startNextSet() {
+        val next = nextSetId ?: return
+        startSetSession(next, mode)
+    }
+
     private val _state = MutableStateFlow(FlashcardsUiState())
     val state: StateFlow<FlashcardsUiState> = _state.asStateFlow()
 
@@ -192,9 +211,11 @@ class FlashcardsViewModel @Inject constructor(
         val updated = SM2.review(current, quality)
 
         val xpDelta = when (button) {
-            ReviewButton.HARD -> 0
-            ReviewButton.GOOD -> XpSystem.WORD_CORRECT
-            ReviewButton.EASY -> XpSystem.WORD_EASY
+            ReviewButton.HARD -> 0                     // «Забыл» — XP не начисляем
+            ReviewButton.GOOD -> XpSystem.WORD_CORRECT // «Знаю»
+            ReviewButton.EASY -> XpSystem.WORD_CORRECT // EASY больше не свайпится,
+                                                       // но enum пока остаётся для совместимости —
+                                                       // даём тот же XP что и GOOD.
         }
 
         viewModelScope.launch {

@@ -53,7 +53,8 @@ fun FlashcardsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
-    val sound = com.spanishapp.ui.components.rememberAnswerSound()
+    // rememberAnswerSound() намеренно НЕ используется — тональные звуки
+    // ToneGenerator на свайпе звучали резко.
     com.spanishapp.ui.components.TrackStudyMinutes()
 
     var leaguePromotion by remember { mutableStateOf<LeaguePromotion?>(null) }
@@ -115,9 +116,14 @@ fun FlashcardsScreen(
                     wrong = state.wrongCount,
                     xp = state.earnedXp,
                     error = state.error,
+                    hasNextSet = viewModel.nextSetId != null,
                     onRestart = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.restart()
+                    },
+                    onNextSet = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.startNextSet()
                     },
                     onExit = { navController.popBackStack() }
                 )
@@ -130,11 +136,10 @@ fun FlashcardsScreen(
                     onSpeak = { viewModel.speakCurrent() },
                     onSpeakExample = viewModel::speakExample,
                     onAnswer = { button ->
+                        // Тактильный отклик оставлен — мягкий, не раздражает.
+                        // Тональные звуки (sound.correct/wrong) убраны: ToneGenerator
+                        // на свайпе звучал резко и портил впечатление.
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        when (button) {
-                            ReviewButton.GOOD, ReviewButton.EASY -> sound.correct()
-                            ReviewButton.HARD -> sound.wrong()
-                        }
                         viewModel.answer(button)
                     }
                 )
@@ -157,7 +162,9 @@ private fun SessionCompleteBody(
     wrong: Int,
     xp: Int,
     error: String?,
+    hasNextSet: Boolean,
     onRestart: () -> Unit,
+    onNextSet: () -> Unit,
     onExit: () -> Unit
 ) {
     Column(
@@ -193,18 +200,42 @@ private fun SessionCompleteBody(
 
         Spacer(Modifier.height(32.dp))
 
-        Button(
-            onClick = onRestart,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text("Ещё раз", fontWeight = FontWeight.Bold)
+        // Главная CTA — если есть следующий сет, ведём в него (продолжение
+        // обучения); иначе — «Ещё раз» как раньше.
+        if (hasNextSet) {
+            Button(
+                onClick = onNextSet,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Следующий сет →", fontWeight = FontWeight.Bold)
+            }
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = onRestart,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(14.dp)
+            ) {
+                Text("Повторить этот сет")
+            }
+        } else {
+            Button(
+                onClick = onRestart,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Ещё раз", fontWeight = FontWeight.Bold)
+            }
         }
 
         TextButton(onClick = onExit) {
-            Text("Назад", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Назад к карточкам", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -259,10 +290,12 @@ private fun SessionBody(
 
         Spacer(Modifier.weight(0.5f))
 
-        // Swipe-жесты на перевернутой карточке:
-        //   →  GOOD ("Помню")
+        // Swipe-жесты на перевёрнутой карточке:
+        //   →  GOOD ("Знаю")
         //   ←  HARD ("Забыл")
-        //   ↑  EASY ("Легко")
+        // EASY-свайп (вверх) убран — обнаружили что юзеры жмут «Лёгко» когда
+        // ответили правильно с подсказкой, что искажает SM-2 (слишком быстро
+        // растут интервалы). Один уровень «знаю» проще и честнее.
         val scope = rememberCoroutineScope()
         val offsetX = remember { Animatable(0f) }
         val offsetY = remember { Animatable(0f) }
@@ -291,17 +324,14 @@ private fun SessionBody(
                             val xPx = offsetX.value
                             val yPx = offsetY.value
                             val ans = when {
-                                yPx < -swipeThreshold              -> ReviewButton.EASY
-                                xPx >  swipeThreshold              -> ReviewButton.GOOD
-                                xPx < -swipeThreshold              -> ReviewButton.HARD
-                                else                               -> null
+                                xPx >  swipeThreshold -> ReviewButton.GOOD   // → знаю
+                                xPx < -swipeThreshold -> ReviewButton.HARD   // ← забыл
+                                else                  -> null
                             }
                             if (ans != null) {
                                 scope.launch {
-                                    val targetX = if (ans == ReviewButton.EASY) xPx else xPx * 4f
-                                    val targetY = if (ans == ReviewButton.EASY) -1500f else yPx
-                                    offsetX.animateTo(targetX, tween(220))
-                                    offsetY.animateTo(targetY, tween(220))
+                                    offsetX.animateTo(xPx * 4f, tween(220))
+                                    offsetY.animateTo(yPx, tween(220))
                                     onAnswer(ans)
                                 }
                             } else {
@@ -347,9 +377,8 @@ private fun SessionBody(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SwipeLegend("←", "Забыл",  MaterialTheme.colorScheme.error)
-            SwipeLegend("↑", "Легко",  MaterialTheme.colorScheme.tertiary)
-            SwipeLegend("→", "Помню", MaterialTheme.colorScheme.primary)
+            SwipeLegend("←", "Забыл", MaterialTheme.colorScheme.error)
+            SwipeLegend("→", "Знаю",  MaterialTheme.colorScheme.primary)
         }
     }
 }

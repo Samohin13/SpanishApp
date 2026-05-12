@@ -180,12 +180,11 @@ interface WordDao {
     suspend fun countWeakAll(): Int
 
     /**
-     * Count of words eligible for the broader Practice pool — same buckets as
-     * getPracticePool() but just the count. Used by the Practice tile so it
-     * never says "0 weak words" while the screen actually has cards.
+     * Count of words eligible for the Practice pool — same filter as
+     * getPracticePool(): только слова со «знаю»-историей (correct_reviews > 0).
      */
     @Query("""
-        SELECT COUNT(*) FROM words WHERE total_reviews > 0
+        SELECT COUNT(*) FROM words WHERE correct_reviews > 0
     """)
     suspend fun countPracticePool(): Int
 
@@ -233,31 +232,22 @@ interface WordDao {
     suspend fun getAllWeak(limit: Int): List<WordEntity>
 
     /**
-     * Practice pool: broader than getAllWeak() so the screen never sits empty
-     * for fresh users. Picks from three buckets in priority order:
-     *   1. Truly weak (≥3 reviews, accuracy <60%) — highest priority.
-     *   2. "Shaky" (any number of reviews, accuracy <80% OR last answer wrong).
-     *   3. Recently studied (any reviewed word) as a fallback warm-up.
-     * UNION ALL preserves bucket order; the outer SELECT trims to :limit
-     * deduping by id (a word that's both weak and shaky shouldn't appear twice).
+     * Practice pool: только слова которые юзер хотя бы раз отметил как "знаю"
+     * (correct_reviews > 0). Это означает что Практика — это закрепление
+     * выученного, а не повторный заход на слова, которые юзер забыл.
+     *
+     * Раньше в пул попадали ВСЕ просмотренные слова — включая те, которые
+     * юзер всегда забывал. Юзер просил это убрать.
+     *
+     * Приоритет: слова с самым низким соотношением правильных к общему
+     * числу повторений (среди тех, у кого хотя бы один правильный) — чтобы
+     * подтянуть «слегка шаткие» в первую очередь.
      */
     @Query("""
-        SELECT * FROM words WHERE id IN (
-            SELECT id FROM (
-                SELECT id, 1 AS bucket FROM words
-                  WHERE total_reviews > 2
-                    AND (correct_reviews * 1.0 / total_reviews) < 0.6
-                UNION
-                SELECT id, 2 AS bucket FROM words
-                  WHERE total_reviews > 0
-                    AND (correct_reviews * 1.0 / total_reviews) < 0.8
-                UNION
-                SELECT id, 3 AS bucket FROM words
-                  WHERE total_reviews > 0
-                ORDER BY bucket ASC
-                LIMIT :limit
-            )
-        )
+        SELECT * FROM words
+        WHERE correct_reviews > 0
+        ORDER BY (correct_reviews * 1.0 / total_reviews) ASC, next_review ASC
+        LIMIT :limit
     """)
     suspend fun getPracticePool(limit: Int): List<WordEntity>
 
