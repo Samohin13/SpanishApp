@@ -115,6 +115,10 @@ interface WordDao {
     @Query("UPDATE words SET last_rating_at = :ts WHERE id = :wordId")
     suspend fun updateLastRatingAt(wordId: Int, ts: Long)
 
+    /** Patch a word's Russian translation by its Spanish surface form. */
+    @Query("UPDATE words SET russian = :russian WHERE lower(trim(spanish)) = lower(trim(:spanish))")
+    suspend fun patchRussian(spanish: String, russian: String)
+
     @Query("SELECT COUNT(*) FROM words WHERE is_learned = 1")
     fun learnedCount(): Flow<Int>
 
@@ -179,12 +183,11 @@ interface WordDao {
     """)
     suspend fun countWeakAll(): Int
 
-    /**
-     * Count of words eligible for the Practice pool — same filter as
-     * getPracticePool(): только слова со «знаю»-историей (correct_reviews > 0).
-     */
+    /** Количество слов в пуле практики (точность < 60%, ≥1 повторение). */
     @Query("""
-        SELECT COUNT(*) FROM words WHERE correct_reviews > 0
+        SELECT COUNT(*) FROM words
+        WHERE total_reviews > 0
+          AND (correct_reviews * 1.0 / total_reviews) < 0.6
     """)
     suspend fun countPracticePool(): Int
 
@@ -232,24 +235,35 @@ interface WordDao {
     suspend fun getAllWeak(limit: Int): List<WordEntity>
 
     /**
-     * Practice pool: только слова которые юзер хотя бы раз отметил как "знаю"
-     * (correct_reviews > 0). Это означает что Практика — это закрепление
-     * выученного, а не повторный заход на слова, которые юзер забыл.
-     *
-     * Раньше в пул попадали ВСЕ просмотренные слова — включая те, которые
-     * юзер всегда забывал. Юзер просил это убрать.
-     *
-     * Приоритет: слова с самым низким соотношением правильных к общему
-     * числу повторений (среди тех, у кого хотя бы один правильный) — чтобы
-     * подтянуть «слегка шаткие» в первую очередь.
+     * Practice pool — слабые слова (точность < 60%).
+     * Практика работает с тем, что плохо знаешь, а не с тем, что уже выучил.
      */
     @Query("""
         SELECT * FROM words
-        WHERE correct_reviews > 0
-        ORDER BY (correct_reviews * 1.0 / total_reviews) ASC, next_review ASC
+        WHERE total_reviews > 0
+          AND (correct_reviews * 1.0 / total_reviews) < 0.6
+        ORDER BY (correct_reviews * 1.0 / total_reviews) ASC, total_reviews DESC
         LIMIT :limit
     """)
     suspend fun getPracticePool(limit: Int): List<WordEntity>
+
+    /** Шаткие слова (60–80%) — фоллбэк, если слабых мало. */
+    @Query("""
+        SELECT * FROM words
+        WHERE total_reviews > 0
+          AND (correct_reviews * 1.0 / total_reviews) >= 0.6
+          AND (correct_reviews * 1.0 / total_reviews) < 0.8
+        ORDER BY (correct_reviews * 1.0 / total_reviews) ASC
+        LIMIT :limit
+    """)
+    suspend fun getShakyPool(limit: Int): List<WordEntity>
+
+    /** Любые просмотренные слова — крайний фоллбэк для новых юзеров. */
+    @Query("""
+        SELECT * FROM words WHERE total_reviews > 0
+        ORDER BY total_reviews ASC LIMIT :limit
+    """)
+    suspend fun getAnyReviewedPool(limit: Int): List<WordEntity>
 
     // ── Level mastery (for unlock progression) ────────────────
     @Query("SELECT COUNT(*) FROM words WHERE level = :level")

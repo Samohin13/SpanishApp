@@ -90,11 +90,23 @@ class PracticeViewModel @Inject constructor(
 
     private fun loadSession() {
         viewModelScope.launch {
-            // Broadened pool: weak first, then shaky, then any reviewed word.
-            // Old behavior required ≥3 reviews + <60% accuracy — fresh users hit
-            // an empty screen and assumed the screen was broken. Pool fills now.
-            val weak = wordDao.getPracticePool(limit = 20)
-            if (weak.isEmpty()) {
+            // 3-bucket fallback:
+            // 1. Weak — accuracy < 60% (the real target of Practice)
+            // 2. Shaky — accuracy 60–80% (supplement when weak pool is thin)
+            // 3. Any reviewed — absolute fallback for brand-new users
+            val weak  = wordDao.getPracticePool(limit = 20)
+            val pool  = if (weak.size >= 10) {
+                weak
+            } else {
+                val shaky = wordDao.getShakyPool(limit = 20 - weak.size)
+                val combined = (weak + shaky).distinctBy { it.id }
+                if (combined.size >= 5) combined
+                else {
+                    val any = wordDao.getAnyReviewedPool(limit = 20)
+                    (combined + any).distinctBy { it.id }.take(20)
+                }
+            }
+            if (pool.isEmpty()) {
                 _state.value = PracticeState(
                     isLoading = false,
                     isFinished = true,
@@ -102,6 +114,7 @@ class PracticeViewModel @Inject constructor(
                 )
                 return@launch
             }
+            val weak = pool
             // Mix the three modes so the session feels varied. Cycle pattern:
             // MC → TYPING → LISTENING → MC → TYPING → ... (deterministic, all
             // weak words seen in every mode they're suitable for).
@@ -118,7 +131,10 @@ class PracticeViewModel @Inject constructor(
                 val rawMode = modes[idx % modes.size]
                 val target = stripArticle(word.spanish).lowercase().trim()
                 val isPhrase = ' ' in target
-                val mode = if (rawMode == PracticeMode.TYPING && isPhrase)
+                // Anagram needs ≥4 letters to be non-trivial (2-3 letter words
+                // like "sí", "no", "hoy" can be guessed by random tapping).
+                val isTooShort = target.filter { it != ' ' }.length < 4
+                val mode = if (rawMode == PracticeMode.TYPING && (isPhrase || isTooShort))
                     PracticeMode.MULTIPLE_CHOICE else rawMode
                 // Prefer same-category distractors so wrong options stay
                 // semantically related (greetings vs greetings, food vs food).

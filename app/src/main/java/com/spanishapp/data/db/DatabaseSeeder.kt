@@ -121,6 +121,16 @@ class DatabaseSeeder @Inject constructor(
         val newOnly = marked.filter { it.spanish.trim().lowercase() !in existingSet }
 
         if (newOnly.isNotEmpty()) db.wordDao().insertAll(newOnly)
+
+        // ── Translation patches (idempotent UPDATE) ───────────────
+        // Applied on every launch to fix incorrect translations that slipped
+        // into the DB via the old IGNORE-strategy inserts. Safe to add more.
+        val patches = listOf(
+            "Adiós"    to "До свидания",   // was "Пока / До свидания" — confused with "Hasta luego"
+            "Perdón"   to "Простите",       // was "Извините" — that's Disculpe
+            "Disculpe" to "Извините"        // was "Простите" — roles were swapped
+        )
+        patches.forEach { (es, ru) -> db.wordDao().patchRussian(es, ru) }
     }
 
     // ── Conjugation tables ────────────────────────────────────

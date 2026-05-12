@@ -67,7 +67,7 @@ fun RatingPopupHost(modifier: Modifier = Modifier) {
         }
     }
 
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier.fillMaxSize().padding(top = 72.dp, end = 16.dp), contentAlignment = Alignment.TopEnd) {
         AnimatedVisibility(
             visible = current != null,
             enter = scaleIn(
@@ -84,14 +84,14 @@ fun RatingPopupHost(modifier: Modifier = Modifier) {
                 }
                 Surface(
                     shape = CircleShape,
-                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    shadowElevation = 8.dp,
-                    border = BorderStroke(2.dp, color)
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.95f),
+                    shadowElevation = 6.dp,
+                    border = BorderStroke(1.5.dp, color)
                 ) {
                     Text(
                         text = label,
-                        modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp),
-                        fontSize = 24.sp,
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = color
                     )
