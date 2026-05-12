@@ -2,7 +2,43 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-11, сессия 13 (Play assets + контент-движок упражнений)**
+> Последнее обновление: **2026-05-12, сессия 14 (безопасность + Play Console регистрация)**
+
+## 14. Сессия 14 — безопасность + Play Console регистрация (2026-05-12)
+
+### Сделано
+
+**A. Аудит безопасности** — найдено и исправлено:
+- ✅ `AI_PROXY_URL` прописан в `local.properties` → ключ Gemini больше не попадает в APK
+- ✅ HTTP-логирование отключено в release (`AppModule.kt`)
+- ✅ `WordOfDayWidgetReceiver` получил `android:permission="android.permission.BIND_APPWIDGET"`
+- ✅ Firestore rules: добавлена защита `weekly_cohorts/{cohortId}/members/{uid}`
+- ✅ Все вхождения `HablaRu` → `ESPEAK` в комментариях
+- ✅ `ContentSyncWorker` — передаёт `FirebaseStorage.getInstance()` в ContentDownloader
+- ✅ Firebase Storage rules: добавлен `match /content/{file} { allow read: if true; }`
+
+**B. Версия приложения**
+- `versionCode = 6`, `versionName = "1.0.0"` — первый публичный релиз
+
+**C. Play Console**
+- Аккаунт разработчика ESPEAK (`es.espeak13@gmail.com`) создан
+- Google проверяет личность (1-3 дня) — ждём письмо
+- После одобрения: создать приложение → Internal Testing → залить AAB
+
+**D. Cloudflare Worker**
+- `espeak-gemini-proxy.bravochief21.workers.dev` — уже задеплоен
+- Все AI-запросы идут через него → ключ скрыт от APK
+
+### Коммиты сессии 14
+| Коммит | Что |
+|---|---|
+| `abd2c4d` | fix: ContentDownloader URL bug (полный путь пакета) |
+| `25cc2d8` | fix: ContentSyncWorker передаёт FirebaseStorage |
+| `25ee073` | security: 3 уязвимости (logging, widget, firestore) |
+| `ec68b94` | chore: HablaRu → ESPEAK во всех комментариях |
+| `5fe9460` | chore: версия 1.0.0 (versionCode 6) |
+
+---
 
 ## 13. Сессия 13 — Play assets + движок вариативности упражнений (2026-05-11)
 
