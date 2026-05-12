@@ -19,7 +19,7 @@ import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -157,11 +157,13 @@ class AiChatViewModel @Inject constructor(
     fun startVoice(onResult: (String) -> Unit) {
         if (isListening.value) return
         viewModelScope.launch {
-            // Chat dictation defaults to Russian — most users compose questions
-            // in Russian. Spanish utterances are still recognized partially via
-            // the recognizer's tolerance; for pure Spanish use the pronunciation
-            // games where the recognizer is locked to es-ES.
-            when (val r = stt.listenOnce(language = "ru-RU")) {
+            // Default chat (general tutor) → user types in Russian, so dictate
+            // in ru-RU. Roleplay scenarios (waiter / hotel / doctor) expect the
+            // user to PRACTICE Spanish, so switch the recognizer to es-ES on
+            // those — otherwise the engine would mis-transcribe Spanish words
+            // via Russian phonetics.
+            val lang = if (theme.id == "default") "ru-RU" else "es-ES"
+            when (val r = stt.listenOnce(language = lang)) {
                 is com.spanishapp.service.SpeechResult.Success -> onResult(r.text)
                 is com.spanishapp.service.SpeechResult.Error -> {
                     if (!r.isSilence) _error.value = r.message
@@ -702,7 +704,7 @@ private fun ChatBubble(
                 onClick = onSpeak,
                 modifier = Modifier.padding(top = 4.dp, start = 46.dp).size(32.dp)
             ) {
-                Icon(Icons.Default.VolumeUp, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                Icon(Icons.AutoMirrored.Filled.VolumeUp, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
             }
         }
 
