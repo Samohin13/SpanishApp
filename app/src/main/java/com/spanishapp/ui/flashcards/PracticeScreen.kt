@@ -617,25 +617,67 @@ private fun FinishedView(
             }
         } else {
             val accuracy = if (total > 0) (correct * 100 / total) else 0
-            Text("Сессия завершена!", fontWeight = FontWeight.SemiBold, fontSize = 24.sp)
-            Spacer(Modifier.height(20.dp))
-            com.spanishapp.ui.components.CompletionBadge(
-                accuracyPercent = accuracy,
-                size = 180.dp
-            )
-            Spacer(Modifier.height(20.dp))
+
+            // Contextual emoji + message — no celebration badge for practice.
+            val (emoji, headline, sub) = when {
+                accuracy >= 90 -> Triple("🎯", "Отлично!", "Слова хорошо закреплены")
+                accuracy >= 70 -> Triple("📈", "Хороший прогресс", "Продолжай в том же духе")
+                accuracy >= 50 -> Triple("💪", "Ещё поработать", "Повтори эти слова ещё раз")
+                else           -> Triple("🔁", "Нужно больше практики", "Не сдавайся — повторение помогает")
+            }
+
+            Text(emoji, fontSize = 56.sp)
+            Spacer(Modifier.height(12.dp))
+            Text(headline, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Spacer(Modifier.height(6.dp))
             Text(
-                "$correct правильных из $total",
+                sub,
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
+            Spacer(Modifier.height(24.dp))
+
+            // Score ring — simple, no medal, no "¡COMPLETADO!".
+            Box(contentAlignment = Alignment.Center) {
+                androidx.compose.foundation.Canvas(modifier = Modifier.size(130.dp)) {
+                    val sweep = 360f * accuracy / 100f
+                    drawArc(
+                        color = androidx.compose.ui.graphics.Color(0xFF2A2A2A),
+                        startAngle = -90f, sweepAngle = 360f, useCenter = false,
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(width = 12.dp.toPx())
+                    )
+                    drawArc(
+                        color = when {
+                            accuracy >= 90 -> androidx.compose.ui.graphics.Color(0xFF4CAF50)
+                            accuracy >= 70 -> androidx.compose.ui.graphics.Color(0xFF2196F3)
+                            accuracy >= 50 -> androidx.compose.ui.graphics.Color(0xFFFFA726)
+                            else           -> androidx.compose.ui.graphics.Color(0xFFEF5350)
+                        },
+                        startAngle = -90f, sweepAngle = sweep, useCenter = false,
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(
+                            width = 12.dp.toPx(),
+                            cap = androidx.compose.ui.graphics.StrokeCap.Round
+                        )
+                    )
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("$accuracy%", fontWeight = FontWeight.ExtraBold, fontSize = 28.sp)
+                    Text(
+                        "$correct / $total",
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
             Spacer(Modifier.height(32.dp))
             Button(
                 onClick = onRestart,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Ещё раз", fontWeight = FontWeight.Bold)
+                Text("Повторить ещё раз", fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = onExit) {
