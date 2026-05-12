@@ -40,12 +40,12 @@ fun LessonIntroScreen(
         return
     }
 
-    // Bundled raw assets — no network dependency, instant playback.
-    val lottieRes = when (lesson.type) {
-        "vocab"   -> com.spanishapp.R.raw.lottie_vocab
-        "grammar" -> com.spanishapp.R.raw.lottie_grammar
-        else      -> com.spanishapp.R.raw.lottie_quiz
-    }
+    // Per-block Lottie. Каждый из 16 блоков (4 × A1 + 4 × A2 + 4 × B1 + 4 × B2)
+    // имеет свою анимацию — все 15 уроков внутри блока её разделяют.
+    // Файлы лежат в res/raw/lottie_block_1..lottie_block_16.
+    // Тип урока (vocab/grammar/quiz) больше не влияет — это давало 3 одинаковых
+    // анимации на все 240 уроков, что и хотели заменить.
+    val lottieRes = lottieForUnit(unit.id)
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(lottieRes))
     val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever)
@@ -211,5 +211,48 @@ private fun RewardItem(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(value, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, fontSize = 18.sp)
         Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+    }
+}
+
+// ─── Per-block Lottie animations ─────────────────────────────────────────────
+//
+// 16 блоков × 1 уникальная тематическая анимация = 16 файлов в res/raw/.
+// Все скачаны с lottiefiles.com (Lottie Simple License, бесплатно).
+//
+//   "1"  → 🚀 rocket+fireworks         (A1 Взлёт)              — старт пути
+//   "2"  → 👫 boy + girl               (A1 Мой мир)            — семья
+//   "3"  → 🛒 groceries / еда          (A1 Действие)           — глаголы + еда
+//   "4"  → 📍 pins + locations         (A1 Выживание)          — транспорт
+//   "5"  → ⏱️ stopwatch                (A2 В прошлом)          — прошлое
+//   "6"  → ⏳ countdown                (A2 Раньше и сейчас)    — время
+//   "7"  → ✅ checkmark + stars        (A2 Сейчас и скоро)     — прогресс
+//   "8"  → 🎉 confetti + frog          (A2 Мечты и планы)      — фан
+//   "9"  → 🌊 waving character         (B1 Subjuntivo)         — желания
+//   "10" → 🖱️ square + mouse          (B1 Condicional)        — выбор
+//   "11" → 💕 heart eyes burst         (B1 Comunicación)       — эмоции
+//   "12" → 🤖 robot                    (B1 Vocabulario)        — обучение
+//   "13" → 🌀 frame layers             (B2 Subjuntivo Avanzado)— абстракция
+//   "14" → 🎨 shape transformation     (B2 Pasiva)             — трансформации
+//   "15" → 💬 abstract communication   (B2 Comunicación Formal)— общение
+//   "16" → 👴 popeye / старик          (B2 Léxico y Cultura)   — литература
+private fun lottieForUnit(unitId: String): Int {
+    return when (unitId) {
+        "1"  -> com.spanishapp.R.raw.lottie_block_1
+        "2"  -> com.spanishapp.R.raw.lottie_block_2
+        "3"  -> com.spanishapp.R.raw.lottie_block_3
+        "4"  -> com.spanishapp.R.raw.lottie_block_4
+        "5"  -> com.spanishapp.R.raw.lottie_block_5
+        "6"  -> com.spanishapp.R.raw.lottie_block_6
+        "7"  -> com.spanishapp.R.raw.lottie_block_7
+        "8"  -> com.spanishapp.R.raw.lottie_block_8
+        "9"  -> com.spanishapp.R.raw.lottie_block_9
+        "10" -> com.spanishapp.R.raw.lottie_block_10
+        "11" -> com.spanishapp.R.raw.lottie_block_11
+        "12" -> com.spanishapp.R.raw.lottie_block_12
+        "13" -> com.spanishapp.R.raw.lottie_block_13
+        "14" -> com.spanishapp.R.raw.lottie_block_14
+        "15" -> com.spanishapp.R.raw.lottie_block_15
+        "16" -> com.spanishapp.R.raw.lottie_block_16
+        else -> com.spanishapp.R.raw.lottie_block_1   // safe fallback
     }
 }
