@@ -1,5 +1,5 @@
 /**
- * HablaRu — Cloudflare Worker proxy для Gemini API.
+ * ESPEAK — Cloudflare Worker proxy для Gemini API.
  *
  * Зачем нужен: API-ключ Gemini не должен попадать в скомпилированный APK
  * (его легко достать декомпиляцией). Worker держит ключ у себя и проксирует

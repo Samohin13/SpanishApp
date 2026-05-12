@@ -1,7 +1,7 @@
 rules_version = '2';
 
 // ────────────────────────────────────────────────────────────────────
-//  HablaRu — Firestore Security Rules
+//  ESPEAK — Firestore Security Rules
 //
 //  Что делать:
 //  1. Открой https://console.firebase.google.com/project/spanishapp-35092/firestore/rules

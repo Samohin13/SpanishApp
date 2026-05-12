@@ -1,5 +1,5 @@
 # ───────────────────────────────────────────────────────────────────
-# SpanishApp / HablaRu — ProGuard / R8 rules for release builds.
+# ESPEAK — ProGuard / R8 rules for release builds.
 # Generated 2026-05-07.
 # ───────────────────────────────────────────────────────────────────
 
