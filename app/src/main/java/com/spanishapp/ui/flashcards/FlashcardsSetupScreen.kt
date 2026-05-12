@@ -478,10 +478,10 @@ private fun PracticeTile(
                 .drawBehind {
                     // Left gold stripe
                     drawRect(color = gold, size = Size(5.dp.toPx(), size.height))
-                    // Radial glow top-right
+                    // Very subtle warm hint top-right (barely visible)
                     drawRect(
                         brush = Brush.radialGradient(
-                            colors = listOf(gold.copy(alpha = 0.22f), Color.Transparent),
+                            colors = listOf(gold.copy(alpha = 0.08f), Color.Transparent),
                             center = Offset(size.width, 0f),
                             radius = size.width * 0.85f
                         ),
