@@ -152,8 +152,10 @@ class ContentDownloader @Inject constructor(
         info: PackInfo,
         onProgress: (packDone: Long, packTotal: Long, bps: Long) -> Unit,
     ): File {
-        val filename = info.url.substringAfterLast('/')
-        val req = Request.Builder().url(urlFor(filename)).build()
+        // info.url is the full storage path, e.g. "content/core_v1.json".
+        // Pass it whole so urlFor() encodes it correctly — do NOT strip to just
+        // the filename or the "content/" subfolder prefix is lost.
+        val req = Request.Builder().url(urlFor(info.url)).build()
         val outFile = File(cacheRoot, "${info.id}_v${info.version}.json")
         outFile.parentFile?.mkdirs()
 
