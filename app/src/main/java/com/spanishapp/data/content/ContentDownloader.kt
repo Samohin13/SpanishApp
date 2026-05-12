@@ -15,16 +15,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Downloads versioned content packs from the GitHub Pages CDN.
+ * Downloads versioned content packs from Firebase Storage public REST URLs.
  *
- * Industry-standard OTA content delivery (same approach as Duolingo/Babbel):
- *   1. App ships with full built-in content (DatabaseSeeder) — works offline.
- *   2. ContentSyncWorker calls syncContent() once per day on Wi-Fi.
- *   3. Only packs whose version changed since last sync are downloaded.
- *   4. Downloaded JSON files are applied to Room DB via ContentImporter.
- *   5. No mandatory download screen — everything happens silently.
+ * Why not the Firebase Storage SDK? It tries to fetch an Auth/AppCheck token
+ * before every transfer; on a fresh install with no signed-in user this
+ * blocks the second+ download indefinitely.
  *
- * CDN base: https://samohin13.github.io/SpanishApp/content_packs/
+ * Direct REST works because the security rules grant public read to .json
+ * files. URL pattern:
+ *   https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{path}?alt=media
+ *
+ * Flow: user registers → Firebase auth token available → DownloadScreen
+ * calls syncContent() → packs downloaded → ContentImporter applies to Room.
  */
 
 sealed interface DownloadState {
@@ -55,11 +57,10 @@ data class DownloadedPack(
 class ContentDownloader @Inject constructor(
     private val cacheRoot: File,
     private val versionStore: ContentVersionStore,
+    private val firebaseStorage: com.google.firebase.storage.FirebaseStorage,
 ) {
-    companion object {
-        /** Public GitHub Pages CDN — no auth required, globally cached. */
-        const val BASE_URL = "https://samohin13.github.io/SpanishApp/content_packs"
-    }
+    /** Optional sub-folder inside the bucket. "" = root. */
+    var contentPath: String = ""
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -70,7 +71,12 @@ class ContentDownloader @Inject constructor(
     private val _state = MutableStateFlow<DownloadState>(DownloadState.Idle)
     val state: StateFlow<DownloadState> = _state.asStateFlow()
 
-    private fun urlFor(filename: String) = "$BASE_URL/$filename"
+    private fun urlFor(filename: String): String {
+        val bucket  = firebaseStorage.reference.bucket
+        val path    = if (contentPath.isEmpty()) filename else "$contentPath/$filename"
+        val encoded = java.net.URLEncoder.encode(path, "UTF-8")
+        return "https://firebasestorage.googleapis.com/v0/b/$bucket/o/$encoded?alt=media"
+    }
 
     suspend fun syncContent(forceAll: Boolean = false): Result<List<DownloadedPack>> =
         withContext(Dispatchers.IO) {

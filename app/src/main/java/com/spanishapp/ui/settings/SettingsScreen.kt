@@ -633,9 +633,8 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.Leaderboard, stringResource(R.string.settings_leaderboards)) {
                     navController.navigate("leaderboard") { launchSingleTop = true }
                 }
-                SettingsItem(Icons.Default.CloudDownload, "Проверить обновления контента") {
-                    com.spanishapp.service.ContentSyncWorker.runNow(context)
-                    Toast.makeText(context, "Проверка обновлений запущена в фоне", Toast.LENGTH_SHORT).show()
+                SettingsItem(Icons.Default.CloudDownload, "Загрузить обновления контента") {
+                    navController.navigate("download") { launchSingleTop = true }
                 }
                 SettingsItem(Icons.Default.Refresh, stringResource(R.string.settings_reset_progress)) { showResetDialog = true }
                 val shareTextTpl = stringResource(R.string.set_share_text, "https://github.com/Samohin13/SpanishApp")

@@ -3,7 +3,6 @@ package com.spanishapp
 import android.app.Application
 import com.spanishapp.data.db.DatabaseSeeder
 import com.spanishapp.data.prefs.AppPreferences
-import com.spanishapp.service.ContentSyncWorker
 import com.spanishapp.service.DailyReminderWorker
 import com.spanishapp.service.RatingDecayWorker
 import dagger.hilt.android.HiltAndroidApp
@@ -34,10 +33,6 @@ class SpanishApp : Application() {
             }
         }
         RatingDecayWorker.schedule(this)
-        // Silent background content sync — Wi-Fi only, once per day.
-        // Downloads new word packs from GitHub Pages CDN and applies them
-        // to Room DB. User never sees a loading screen (industry standard).
-        ContentSyncWorker.schedule(this)
         appScope.launch { databaseSeeder.seedIfNeeded() }
     }
 }

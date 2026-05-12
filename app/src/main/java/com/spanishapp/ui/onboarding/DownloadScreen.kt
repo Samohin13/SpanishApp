@@ -24,9 +24,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spanishapp.R
 import com.spanishapp.data.content.ContentDownloader
+import com.spanishapp.data.content.ContentImporter
 import com.spanishapp.data.content.DownloadState
 import com.spanishapp.data.content.NetworkType
 import com.spanishapp.data.content.rememberNetworkType
+import com.spanishapp.data.db.dao.WordDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +39,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DownloadViewModel @Inject constructor(
     val downloader: ContentDownloader,
+    private val wordDao: WordDao,
 ) : ViewModel() {
 
     val state: StateFlow<DownloadState> = downloader.state
@@ -46,7 +49,14 @@ class DownloadViewModel @Inject constructor(
 
     fun start() {
         viewModelScope.launch {
-            downloader.syncContent()
+            val packs = downloader.syncContent().getOrNull() ?: emptyList()
+            // Apply downloaded packs to Room DB — the missing piece!
+            // ContentImporter uses IGNORE strategy so existing SM-2 progress
+            // is never touched; only new words are inserted.
+            if (packs.isNotEmpty()) {
+                val importer = ContentImporter(wordDao)
+                packs.forEach { importer.apply(it) }
+            }
             _finished.value = true
         }
     }

@@ -43,18 +43,19 @@ class ContentVersionStore @Inject constructor(
     }
 
     /**
-     * Reactive flag: true once initial pack download completed at least once.
+     * Reactive flag: true once the initial content download has completed.
      *
-     * Default = TRUE — all app content ships inside the APK via DatabaseSeeder
-     * (CleanVocab, VocabExtra1-12, GrammarContent, etc.). The download screen
-     * exists for future OTA updates but must NOT gate first-time users:
-     *   • The Firebase Storage URLs may not yet have the packs uploaded.
-     *   • Downloaded JSON files are not yet applied to Room DB anyway.
-     * Re-enable the gate (change ?: true → ?: false) once the import pipeline
-     * is fully implemented and the CDN is loaded.
+     * Default = FALSE — forces the DownloadScreen after registration.
+     * Navigation ensures download only happens AFTER the user is logged in
+     * (Firebase auth token is available → Firebase Storage rules pass).
+     * Flow: welcome → register → onboarding → DownloadScreen → home.
+     *
+     * After a successful syncContent() + ContentImporter.apply(),
+     * markContentReady() sets this to true permanently. Subsequent launches
+     * go straight to home; new packs are synced silently via ContentSyncWorker.
      */
     val contentReady: Flow<Boolean> =
-        context.contentVersionDataStore.data.map { it[readyKey] ?: true }
+        context.contentVersionDataStore.data.map { it[readyKey] ?: false }
 
     suspend fun markContentReady() {
         context.contentVersionDataStore.edit { it[readyKey] = true }
