@@ -39,10 +39,9 @@ import com.spanishapp.domain.algorithm.ReviewButton
 import com.spanishapp.ui.components.LeaguePromotionDialog
 import kotlinx.coroutines.launch
 
-// ── Brand colour aliases (local, no global import needed) ──────
-private val BrandOrange  = Color(0xFFFF6B35)
-private val BrandOrange2 = Color(0xFFFF9A6C)
-private val SuccessGreen = Color(0xFF34C759)
+// ── Brand colour aliases (local) ───────────────────────────────
+private val BrandOrange  = Color(0xFFFF6B35)   // progress bar, buttons, completion header
+private val BrandOrange2 = Color(0xFFFF9A6C)   // completion header gradient end
 
 // ═══════════════════════════════════════════════════════════════
 //  ENTRY POINT
@@ -603,12 +602,14 @@ private fun CardSurface(
 ) {
     Surface(
         modifier        = modifier.fillMaxSize(),
-        shape           = RoundedCornerShape(20.dp),   // was 32dp — now matches app's 20dp language
-        shadowElevation = 8.dp,
-        color           = MaterialTheme.colorScheme.surface,
+        shape           = RoundedCornerShape(20.dp),
+        shadowElevation = 6.dp,
+        // surfaceContainerHighest = the same dark-card shade used on HomeScreen
+        // bento tiles and course cards — this is what unifies the two screens.
+        color           = MaterialTheme.colorScheme.surfaceContainerHighest,
         border          = BorderStroke(
             1.dp,
-            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)
         )
     ) {
         content()
@@ -616,7 +617,9 @@ private fun CardSurface(
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  CARD FRONT  (question side — orange gradient header)
+//  CARD FRONT  (question side)
+//  Pattern: small accent chip  +  emoji  +  large word  +  dim hint.
+//  Same language as HomeScreen "Слово дня" / course tiles.
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
@@ -630,64 +633,78 @@ private fun CardFront(
         FlashcardDirection.RU_TO_ES -> word.russian
         FlashcardDirection.MIXED    -> word.spanish
     }
+    val directionLabel = when (direction) {
+        FlashcardDirection.ES_TO_RU -> "ES → RU"
+        FlashcardDirection.RU_TO_ES -> "RU → ES"
+        FlashcardDirection.MIXED    -> "Смешанный"
+    }
     val emoji = remember(word.spanish) {
         val cleaned = word.spanish
             .replace(Regex("^(el|la|los|las|un|una)\\s+", RegexOption.IGNORE_CASE), "")
             .trim()
         com.spanishapp.ui.games.WordEmoji.get(cleaned)
     }
-    val hasEmoji = emoji != null
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // ── Top: brand-orange gradient + illustrative emoji ───────
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(if (hasEmoji) 0.42f else 0.22f)
-                .background(
-                    Brush.verticalGradient(listOf(BrandOrange, BrandOrange2))
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            if (hasEmoji) {
-                Text(emoji!!, fontSize = 68.sp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // ── Small accent chip (like "УРОК"/"РЕЙТИНГ" on HomeScreen) ──
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Surface(
+                shape = RoundedCornerShape(6.dp),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.75f)
+            ) {
+                Text(
+                    directionLabel,
+                    fontSize      = 11.sp,
+                    fontWeight    = FontWeight.SemiBold,
+                    color         = MaterialTheme.colorScheme.primary,
+                    modifier      = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
             }
         }
 
-        // ── Bottom: white surface + word ──────────────────────────
+        // ── Main content — centered in remaining space ─────────────
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(if (hasEmoji) 0.58f else 0.78f)
-                .padding(horizontal = 28.dp, vertical = 16.dp),
+            modifier         = Modifier.weight(1f).fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                // Emoji as a decorative visual hook — no coloured background
+                if (emoji != null) {
+                    Text(emoji, fontSize = 56.sp)
+                    Spacer(Modifier.height(12.dp))
+                }
                 Text(
                     frontText,
-                    // Adaptive size: very long words shrink one step
-                    style = if (frontText.length > 14)
+                    style      = if (frontText.length > 14)
                         MaterialTheme.typography.headlineLarge
                     else
                         MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.ExtraBold,
-                    textAlign  = TextAlign.Center,
-                    color      = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.height(14.dp))
-                Text(
-                    "НАЖМИ, ЧТОБЫ ПРОВЕРИТЬ",
-                    style        = MaterialTheme.typography.labelSmall,
-                    color        = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.40f),
-                    letterSpacing = 1.sp
+                    fontWeight    = FontWeight.ExtraBold,
+                    textAlign     = TextAlign.Center,
+                    color         = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
+
+        // ── Dim bottom hint ────────────────────────────────────────
+        Text(
+            "НАЖМИ, ЧТОБЫ ПРОВЕРИТЬ",
+            style         = MaterialTheme.typography.labelSmall,
+            color         = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f),
+            letterSpacing = 1.sp
+        )
     }
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  CARD BACK  (answer side — soft-green header signals the flip)
+//  CARD BACK  (answer side)
+//  Header row: Spanish + speaker.  Divider.  Answer centered.
+//  Example in a subtle surface pill — no coloured blocks.
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
@@ -704,54 +721,45 @@ private fun CardBack(
     }
     val primary = MaterialTheme.colorScheme.primary
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // ── Top: soft-green wash — instant visual cue that card flipped ──
-        // Uses Success green (= system green, not brand orange) so there's
-        // zero ambiguity between question face and answer face.
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.26f)
-                .background(
-                    Brush.verticalGradient(
-                        listOf(SuccessGreen.copy(alpha = 0.13f), Color.Transparent)
-                    )
-                )
-                .padding(horizontal = 20.dp),
-            contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp)
+    ) {
+        // ── Header: Spanish word + speaker button ─────────────────
+        Row(
+            modifier          = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment    = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+            Text(
+                word.spanish,
+                style      = MaterialTheme.typography.titleMedium,
+                color      = primary,
+                fontWeight = FontWeight.Bold,
+                modifier   = Modifier.weight(1f)
+            )
+            IconButton(
+                onClick  = onSpeak,
+                modifier = Modifier.size(36.dp)
             ) {
-                Text(
-                    word.spanish,
-                    style      = MaterialTheme.typography.titleMedium,
-                    color      = primary,
-                    fontWeight = FontWeight.Bold
+                Icon(
+                    Icons.Default.VolumeUp, null,
+                    tint     = primary,
+                    modifier = Modifier.size(20.dp)
                 )
-                Spacer(Modifier.width(6.dp))
-                IconButton(
-                    onClick  = onSpeak,
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Icon(
-                        Icons.Default.VolumeUp, null,
-                        tint     = primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
             }
         }
 
-        // ── Bottom: answer + example pill with brand-orange border ───
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.74f)
-                .padding(horizontal = 22.dp, vertical = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        Spacer(Modifier.height(4.dp))
+        HorizontalDivider(
+            color     = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+            thickness = 1.dp
+        )
+
+        // ── Answer — centered in the remaining space ───────────────
+        Box(
+            modifier         = Modifier.weight(1f).fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
             Text(
                 answerText,
@@ -760,38 +768,35 @@ private fun CardBack(
                 textAlign  = TextAlign.Center,
                 color      = MaterialTheme.colorScheme.onSurface
             )
+        }
 
-            if (word.example.isNotBlank()) {
-                Spacer(Modifier.height(18.dp))
-                // Pill with brand-orange tint — ties the example block to the
-                // app's primary colour, consistent with course cards + chips.
-                Surface(
-                    shape    = RoundedCornerShape(12.dp),
-                    color    = primary.copy(alpha = 0.06f),
-                    border   = BorderStroke(1.dp, primary.copy(alpha = 0.22f)),
-                    modifier = Modifier.fillMaxWidth()
+        // ── Example pill — subtle, no heavy border ─────────────────
+        if (word.example.isNotBlank()) {
+            Surface(
+                shape    = RoundedCornerShape(10.dp),
+                color    = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier          = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Text(
+                        "\"${word.example}\"",
+                        style     = MaterialTheme.typography.bodyMedium,
+                        fontStyle = FontStyle.Italic,
+                        modifier  = Modifier.weight(1f),
+                        color     = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    IconButton(
+                        onClick  = onSpeakExample,
+                        modifier = Modifier.size(30.dp)
                     ) {
-                        Text(
-                            "\"${word.example}\"",
-                            style    = MaterialTheme.typography.bodyMedium,
-                            fontStyle = FontStyle.Italic,
-                            modifier = Modifier.weight(1f),
-                            color    = MaterialTheme.colorScheme.onSurfaceVariant
+                        Icon(
+                            Icons.Default.VolumeUp, null,
+                            tint     = primary,
+                            modifier = Modifier.size(17.dp)
                         )
-                        IconButton(
-                            onClick  = onSpeakExample,
-                            modifier = Modifier.size(32.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.VolumeUp, null,
-                                tint     = primary,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
                     }
                 }
             }
