@@ -1,0 +1,357 @@
+"""1920x500 Boosty cover — same brand as Play Store feature graphic but wider."""
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+import numpy as np
+import io, os, math
+
+W, H = 1920, 500
+SCALE = W / 1024  # ~1.875 — scale all x positions proportionally
+
+BULL_SVG = '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 512 512"><rect width="512" height="512" fill="#FF00FF"/><path fill="#FFFFFF" d="M30.882,30.14s33.525,-10.81 92.088,19.64c60.996,31.72 85.628,116.77 132.906,117.86c47.283,-1.09 71.92,-86.14 132.912,-117.858c58.558,-30.45 92.088,-19.643 92.088,-19.643v85.483s-38.062,-2.453 -58.934,13.507c-15.165,11.593 -45.23,54.296 -71.375,80.08c38.867,27.833 63.966,71.877 63.966,121.45c0,84.162 -72.343,152.39 -161.587,152.39S91.353,414.821 91.353,330.659c0,-51.03 26.6,-96.205 67.432,-123.865c-25.558,-25.957 -54.263,-66.43 -68.965,-77.67c-20.877,-15.96 -58.938,-13.506 -58.938,-13.506zM179.45,330.49c0,40.01 32.98,72.44 73.664,72.44s73.67,-32.435 73.67,-72.44s-32.98,-72.44 -73.67,-72.44c-40.688,0 -73.664,32.436 -73.664,72.44"/></svg>'
+
+drawing = svg2rlg(io.BytesIO(BULL_SVG.encode('utf-8')))
+bull_marker_path = 'docs/play_assets/_bull_marker_tmp.png'
+renderPM.drawToFile(drawing, bull_marker_path, fmt='PNG', dpi=72)
+bull = Image.open(bull_marker_path).convert('RGBA')
+data = list(bull.getdata())
+new_data = []
+for r, g, b, a in data:
+    if r > b * 0.9 and g < 200 and abs(r - b) < 80 and r > 150 and b > 150 and g < r * 0.7:
+        new_data.append((0, 0, 0, 0))
+    else:
+        new_data.append((r, g, b, a))
+bull.putdata(new_data)
+
+# Background gradient
+top_color = (255, 120, 50); bot_color = (165, 50, 10)
+yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+dx = (W - xx) / W; dy = yy / H
+t = np.clip(dx * 0.55 + dy * 0.45, 0.0, 1.0)
+r = (top_color[0] + (bot_color[0] - top_color[0]) * t).astype(np.uint8)
+g = (top_color[1] + (bot_color[1] - top_color[1]) * t).astype(np.uint8)
+b = (top_color[2] + (bot_color[2] - top_color[2]) * t).astype(np.uint8)
+a = np.full_like(r, 255)
+img = Image.fromarray(np.dstack([r, g, b, a]), 'RGBA')
+
+# Sun-glow
+glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+gdraw = ImageDraw.Draw(glow)
+for rad in range(700, 80, -8):
+    alpha = max(0, int(28 - rad * 0.038))
+    if alpha <= 0: continue
+    gdraw.ellipse([W - 380 - rad, -50 - rad, W - 380 + rad, -50 + rad],
+                  fill=(255, 240, 200, alpha))
+glow = glow.filter(ImageFilter.GaussianBlur(8))
+img = Image.alpha_composite(img, glow)
+
+# Architecture
+arch = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+adraw = ImageDraw.Draw(arch)
+A = (0, 0, 0, 70)
+A_LIGHT = (0, 0, 0, 45)
+base_y = H - 8
+
+def sx(x): return int(x * SCALE)  # scale x coordinate
+
+def sagrada_familia(x, scale=1.0):
+    s = scale
+    spires = [(0, 130), (22, 165), (44, 195), (66, 215),
+              (88, 215), (110, 190), (132, 160), (154, 125)]
+    sw = int(20 * s)
+    for dx2, h in spires:
+        h = int(h * s)
+        bx = x + int(dx2 * s)
+        adraw.polygon([(bx, base_y), (bx + sw, base_y),
+                       (bx + int(sw * 0.85), base_y - h + 12),
+                       (bx + int(sw * 0.15), base_y - h + 12)], fill=A)
+        adraw.polygon([(bx + int(sw * 0.15), base_y - h + 12),
+                       (bx + sw // 2, base_y - h - 6),
+                       (bx + int(sw * 0.85), base_y - h + 12)], fill=A)
+        cy2 = base_y - h - 6
+        adraw.rectangle([bx + sw // 2 - 1, cy2 - 12, bx + sw // 2 + 1, cy2], fill=A)
+        adraw.rectangle([bx + sw // 2 - 5, cy2 - 8, bx + sw // 2 + 5, cy2 - 6], fill=A)
+        for j in range(3):
+            wy = base_y - 25 - j * int(h * 0.20)
+            adraw.ellipse([bx + 4, wy - 3, bx + sw - 4, wy + 1], fill=A_LIGHT)
+    adraw.rectangle([x - 8, base_y - int(40 * s), x + int(174 * s) + 8, base_y], fill=A)
+
+def casa_batllo(x, scale=1.0):
+    s = scale
+    body_w = int(130 * s); body_h = int(110 * s)
+    bx = x; by = base_y - body_h
+    facade = [(bx, base_y), (bx, by + 18)]
+    arches = 6
+    for i in range(arches + 1):
+        wx = bx + int(i * body_w / arches)
+        wy = by + (10 if i % 2 == 0 else -2)
+        facade.append((wx, wy))
+    facade += [(bx + body_w, by + 18), (bx + body_w, base_y)]
+    adraw.polygon(facade, fill=A)
+    tcx = bx + body_w // 2
+    tw2 = int(20 * s); th2 = int(48 * s)
+    adraw.rectangle([tcx - tw2 // 2, by - th2, tcx + tw2 // 2, by + 5], fill=A)
+    bulb_r = int(16 * s)
+    adraw.ellipse([tcx - bulb_r, by - th2 - bulb_r, tcx + bulb_r, by - th2 + bulb_r // 2], fill=A)
+    adraw.rectangle([tcx - 1, by - th2 - bulb_r - 14, tcx + 1, by - th2 - bulb_r], fill=A)
+
+def casa_mila(x, scale=1.0):
+    s = scale
+    body_w = int(115 * s); body_h = int(95 * s)
+    bx = x; by = base_y - body_h
+    bands = 4
+    for band in range(bands):
+        band_y = by + int(band * body_h / bands)
+        pts = [(bx, band_y + 12)]
+        steps = 10
+        for i in range(steps + 1):
+            px = bx + int(i * body_w / steps)
+            offset = 6 if i % 2 == 0 else -2
+            pts.append((px, band_y + 6 + offset))
+        pts += [(bx + body_w, band_y + 12),
+                (bx + body_w, band_y + int(body_h / bands) + 4),
+                (bx, band_y + int(body_h / bands) + 4)]
+        adraw.polygon(pts, fill=A if band % 2 == 0 else A_LIGHT)
+    adraw.rectangle([bx, by + int(body_h * 0.7), bx + body_w, base_y], fill=A)
+    for i in range(3):
+        cx2 = bx + int((i + 0.5) * body_w / 3)
+        cy2 = by - int(22 * s)
+        adraw.polygon([(cx2 - 5, by + 5), (cx2 + 5, by + 5),
+                       (cx2 + 4, cy2 + 5), (cx2 - 4, cy2 + 5)], fill=A)
+        adraw.ellipse([cx2 - 7, cy2 - 5, cx2 + 7, cy2 + 7], fill=A)
+
+def giralda(x, scale=1.0):
+    s = scale
+    tw2 = int(34 * s); th2 = int(180 * s)
+    adraw.rectangle([x, base_y - th2, x + tw2, base_y], fill=A)
+    bs_w = int(26 * s); bs_h = int(28 * s)
+    bx2 = x + (tw2 - bs_w) // 2
+    adraw.rectangle([bx2, base_y - th2 - bs_h, bx2 + bs_w, base_y - th2 + 2], fill=A)
+    sp_w = int(18 * s); sp_h = int(28 * s)
+    sx2 = x + (tw2 - sp_w) // 2
+    adraw.polygon([(sx2, base_y - th2 - bs_h),
+                   (sx2 + sp_w // 2, base_y - th2 - bs_h - sp_h),
+                   (sx2 + sp_w, base_y - th2 - bs_h)], fill=A)
+    cy2 = base_y - th2 - bs_h - sp_h
+    adraw.rectangle([sx2 + sp_w // 2 - 1, cy2 - 14, sx2 + sp_w // 2 + 1, cy2], fill=A)
+    for j in range(4):
+        wy = base_y - 30 - j * int(35 * s)
+        adraw.ellipse([x + 6, wy - 3, x + tw2 - 6, wy + 2], fill=A_LIGHT)
+
+def windmill(x, scale=1.0):
+    s = scale
+    tw2 = int(28 * s); th2 = int(70 * s)
+    adraw.polygon([(x, base_y), (x + tw2, base_y),
+                   (x + tw2 - 4, base_y - th2), (x + 4, base_y - th2)], fill=A)
+    adraw.polygon([(x - 4, base_y - th2), (x + tw2 + 4, base_y - th2),
+                   (x + tw2 // 2, base_y - th2 - 22)], fill=A)
+    cx2 = x + tw2 // 2; cy2 = base_y - th2 + 8
+    sail_l = int(38 * s)
+    for ang in (0, 1.5708, 0.7854, 2.3562):
+        ex = cx2 + int(sail_l * math.cos(ang))
+        ey = cy2 - int(sail_l * math.sin(ang))
+        adraw.line([(cx2, cy2), (ex, ey)], fill=A, width=int(3 * s))
+
+def aqueduct(x, scale=1.0):
+    s = scale
+    arch_w = int(28 * s); arch_h = int(38 * s)
+    for i in range(5):
+        bx2 = x + i * arch_w
+        adraw.rectangle([bx2, base_y - arch_h, bx2 + 6, base_y], fill=A)
+    adraw.rectangle([x, base_y - arch_h - 8, x + 5 * arch_w + 6, base_y - arch_h], fill=A)
+    arch_h2 = int(60 * s)
+    for i in range(4):
+        bx2 = x + 4 + i * arch_w
+        adraw.rectangle([bx2, base_y - arch_h - 8 - arch_h2, bx2 + 6, base_y - arch_h - 8], fill=A)
+    adraw.rectangle([x, base_y - arch_h - 8 - arch_h2 - 6,
+                     x + 4 * arch_w + 10, base_y - arch_h - 8 - arch_h2], fill=A)
+
+def plaza_de_espana(x, scale=1.0):
+    s = scale
+    body_w = int(170 * s); body_h = int(40 * s)
+    bx2 = x; by2 = base_y - body_h
+    adraw.rounded_rectangle([bx2, by2, bx2 + body_w, base_y], radius=int(20 * s), fill=A)
+    tw2 = int(24 * s); th2 = int(95 * s)
+    adraw.rectangle([bx2, base_y - th2, bx2 + tw2, base_y], fill=A)
+    adraw.rectangle([bx2 + body_w - tw2, base_y - th2, bx2 + body_w, base_y], fill=A)
+    for tower_x in (bx2, bx2 + body_w - tw2):
+        adraw.polygon([(tower_x - 2, base_y - th2),
+                       (tower_x + tw2 // 2, base_y - th2 - 14),
+                       (tower_x + tw2 + 2, base_y - th2)], fill=A)
+
+def alhambra_fortress(x, scale=1.0):
+    s = scale
+    adraw.rectangle([x, base_y - int(45 * s), x + int(140 * s), base_y], fill=A)
+    bw2 = int(8 * s)
+    for i in range(0, int(140 * s), bw2 * 2):
+        adraw.rectangle([x + i, base_y - int(45 * s) - 6,
+                         x + i + bw2, base_y - int(45 * s)], fill=A)
+    tw2 = int(30 * s); th2 = int(100 * s)
+    tx2 = x + int(70 * s) - tw2 // 2
+    adraw.rectangle([tx2, base_y - th2, tx2 + tw2, base_y], fill=A)
+    for i in range(0, tw2, 6):
+        adraw.rectangle([tx2 + i, base_y - th2 - 5, tx2 + i + 4, base_y - th2], fill=A)
+
+def bullring(x, scale=1.0):
+    s = scale
+    rw2 = int(120 * s); rh2 = int(50 * s)
+    adraw.ellipse([x, base_y - rh2 * 2, x + rw2, base_y], fill=A)
+    adraw.rectangle([x, base_y - rh2, x + rw2, base_y], fill=A)
+    cw2 = int(8 * s)
+    for i in range(int(rw2 * 0.2), int(rw2 * 0.8), cw2 * 2):
+        adraw.rectangle([x + i, base_y - rh2 - 8, x + i + cw2, base_y - rh2 - 2], fill=A_LIGHT)
+
+# Place landmarks scaled to 1920 width
+windmill(sx(20), scale=0.85)
+casa_batllo(sx(75), scale=0.75)
+sagrada_familia(sx(190), scale=0.95)
+casa_mila(sx(395), scale=0.75)
+plaza_de_espana(sx(495), scale=0.75)
+giralda(sx(660), scale=0.85)
+aqueduct(sx(720), scale=0.65)
+bullring(sx(870), scale=0.55)
+alhambra_fortress(sx(960), scale=0.5)
+# Extra landmarks for the wider right side
+windmill(sx(1100), scale=0.7)
+casa_batllo(sx(1200), scale=0.6)
+giralda(sx(1340), scale=0.7)
+aqueduct(sx(1500), scale=0.6)
+windmill(sx(1650), scale=0.65)
+sagrada_familia(sx(1750), scale=0.6)
+
+# Soft top fade
+fade = Image.new('L', (W, H), 0)
+fdraw = ImageDraw.Draw(fade)
+for y in range(H):
+    if y < 280:
+        fdraw.line([(0, y), (W, y)], fill=0)
+    else:
+        v = int(min(255, (y - 280) / (H - 280) * 320))
+        fdraw.line([(0, y), (W, y)], fill=v)
+arch_masked = Image.composite(arch, Image.new('RGBA', (W, H), (0, 0, 0, 0)), fade)
+img = Image.alpha_composite(img, arch_masked)
+
+# Phone mockup
+SHOT = 'docs/play_assets/screenshots/Screenshot_20260511_095005_ESPEAK.jpg'
+shot = Image.open(SHOT).convert('RGBA')
+ph_h = 410
+ph_w = int(ph_h * (shot.width / shot.height))
+shot_resized = shot.resize((ph_w, ph_h), Image.LANCZOS)
+PHONE_W = ph_w + 18; PHONE_H = ph_h + 18
+
+def build_phone():
+    pad = 60
+    canvas = Image.new('RGBA', (PHONE_W + pad * 2, PHONE_H + pad * 2), (0, 0, 0, 0))
+    s1 = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+    s1d = ImageDraw.Draw(s1)
+    s1d.rounded_rectangle([pad + 6, pad + 14, pad + PHONE_W + 6, pad + PHONE_H + 14],
+                           radius=44, fill=(0, 0, 0, 90))
+    s1 = s1.filter(ImageFilter.GaussianBlur(28))
+    s2 = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+    s2d = ImageDraw.Draw(s2)
+    s2d.rounded_rectangle([pad + 3, pad + 5, pad + PHONE_W + 3, pad + PHONE_H + 5],
+                           radius=44, fill=(0, 0, 0, 65))
+    s2 = s2.filter(ImageFilter.GaussianBlur(10))
+    canvas = Image.alpha_composite(canvas, s1)
+    canvas = Image.alpha_composite(canvas, s2)
+    body = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+    bdraw = ImageDraw.Draw(body)
+    bdraw.rounded_rectangle([pad, pad, pad + PHONE_W, pad + PHONE_H],
+                            radius=46, fill=(40, 40, 46, 255))
+    bdraw.rounded_rectangle([pad + 1, pad + 1, pad + PHONE_W - 1, pad + PHONE_H - 1],
+                            radius=45, outline=(255, 255, 255, 25), width=2)
+    canvas = Image.alpha_composite(canvas, body)
+    mask = Image.new('L', (ph_w, ph_h), 0)
+    mdraw = ImageDraw.Draw(mask)
+    mdraw.rounded_rectangle([0, 0, ph_w - 1, ph_h - 1], radius=36, fill=255)
+    canvas.paste(shot_resized, (pad + 9, pad + 9), mask)
+    glass = Image.new('RGBA', (ph_w, ph_h), (0, 0, 0, 0))
+    gdr = ImageDraw.Draw(glass)
+    gdr.polygon([(0, 0), (ph_w * 0.6, 0), (ph_w * 0.25, ph_h), (0, ph_h * 0.7)],
+                fill=(255, 255, 255, 24))
+    glass = glass.filter(ImageFilter.GaussianBlur(20))
+    glass_masked = Image.composite(glass, Image.new('RGBA', glass.size, (0, 0, 0, 0)), mask)
+    canvas.paste(glass_masked, (pad + 9, pad + 9), glass_masked)
+    return canvas
+
+phone_full = build_phone()
+phone_full = phone_full.rotate(6, resample=Image.BICUBIC, expand=True)
+
+# Load fonts early — need to measure ESPEAK width before positioning anything
+def find_font(candidates):
+    for path in candidates:
+        if os.path.exists(path): return path
+    return None
+
+font_bold = find_font(['C:/Windows/Fonts/arialbd.ttf', 'C:/Windows/Fonts/seguibl.ttf'])
+font_reg  = find_font(['C:/Windows/Fonts/arial.ttf', 'C:/Windows/Fonts/segoeui.ttf'])
+font_brand   = ImageFont.truetype(font_bold, 110)
+font_tagline = ImageFont.truetype(font_bold, 40)
+font_feats   = ImageFont.truetype(font_reg, 22)
+
+# Measure widths of every composition element so we can center as one unit
+brand_bbox = font_brand.getbbox("ESPEAK")
+brand_w = brand_bbox[2] - brand_bbox[0]
+
+bbox = bull.getbbox()           # content bbox inside the bull marker image
+bull_content_w = bbox[2] - bbox[0]
+
+# Composition: bull | PAD gap | ESPEAK | (-overlap) | phone — centered on W
+PAD = 70
+overlap = 40                    # K of ESPEAK slightly overlaps phone
+
+composition_w = bull_content_w + PAD + brand_w - overlap + phone_full.width
+left_edge = (W - composition_w) // 2
+
+TEXT_LEFT_EDGE = left_edge + bull_content_w + PAD
+TEXT_BASELINE  = 396
+text_x = TEXT_LEFT_EDGE
+phone_x = text_x + brand_w - overlap
+phone_y = (H - phone_full.height) // 2
+img.paste(phone_full, (phone_x, phone_y), phone_full)
+
+# Bull
+def with_shadow(im, ox=12, oy=18, blur=18, alpha=120):
+    pad = blur * 2 + 30
+    canvas = Image.new('RGBA', (im.width + pad * 2, im.height + pad * 2), (0, 0, 0, 0))
+    shadow = Image.new('RGBA', im.size, (0, 0, 0, 0))
+    shadow_data = [(0, 0, 0, min(a2, alpha)) for r2, g2, b2, a2 in im.getdata()]
+    shadow.putdata(shadow_data)
+    blurred = shadow.filter(ImageFilter.GaussianBlur(blur))
+    canvas.paste(blurred, (pad + ox, pad + oy), blurred)
+    canvas.paste(im, (pad, pad), im)
+    return canvas
+
+bull_with_shadow = with_shadow(bull, ox=10, oy=20, blur=20, alpha=150)
+bull_x = TEXT_LEFT_EDGE - PAD - bbox[2]
+bull_y = TEXT_BASELINE - PAD - bbox[3]
+img.paste(bull_with_shadow, (bull_x, bull_y), bull_with_shadow)
+
+# Bottom vignette
+vig = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+vdr = ImageDraw.Draw(vig)
+for y in range(int(H * 0.65), H):
+    t2 = (y - H * 0.65) / (H - H * 0.65)
+    vdr.line([(0, y), (W, y)], fill=(0, 0, 0, int(70 * t2)))
+img = Image.alpha_composite(img, vig)
+
+# Text — fonts + text_x already computed above
+y = H // 2 - 60
+
+shadow_layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+sd = ImageDraw.Draw(shadow_layer)
+sd.text((text_x + 4, y + 5), "ESPEAK", fill=(0, 0, 0, 130), font=font_brand)
+sd.text((text_x + 3, y + 130 + 4), "Испанский с нуля", fill=(0, 0, 0, 100), font=font_tagline)
+shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(4))
+img = Image.alpha_composite(img, shadow_layer)
+
+draw = ImageDraw.Draw(img)
+draw.text((text_x, y), "ESPEAK", fill=(255, 255, 255), font=font_brand)
+draw.text((text_x, y + 130), "Испанский с нуля", fill=(255, 255, 255), font=font_tagline)
+draw.text((text_x, y + 184), "Карточки  ·  Игры  ·  AI",
+          fill=(255, 240, 230), font=font_feats)
+
+out = 'docs/play_assets/feature_1920x500_boosty.png'
+img.convert('RGB').save(out, 'PNG', optimize=True)
+os.remove(bull_marker_path)
+print('Wrote', out, os.path.getsize(out), 'bytes')

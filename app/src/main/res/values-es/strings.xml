@@ -54,6 +54,9 @@
     <string name="settings_section_subscription">Suscripción</string>
     <string name="settings_section_help">Ayuda y soporte</string>
     <string name="settings_section_other">Más</string>
+    <string name="settings_section_support">Apoyo</string>
+    <string name="settings_support_title">Apoyar el proyecto</string>
+    <string name="settings_support_summary">Boosty · Ayuda a ESPEAK a crecer</string>
 
     <string name="settings_change_name">Cambiar nombre</string>
     <string name="settings_daily_goal">Meta diaria</string>

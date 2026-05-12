@@ -458,6 +458,24 @@ fun SettingsScreen(
             }
 
             // ── Секции настроек ──
+
+            // Поддержка автора — первая строка настроек, обычным пунктом,
+            // без выделения цветом. Открывает Boosty в браузере.
+            SettingsSection(stringResource(R.string.settings_section_support)) {
+                val boostyUrl = "https://boosty.to/espeak"
+                SettingsItem(
+                    icon = Icons.Default.Favorite,
+                    title = stringResource(R.string.settings_support_title),
+                    summary = stringResource(R.string.settings_support_summary),
+                ) {
+                    runCatching {
+                        context.startActivity(
+                            Intent(Intent.ACTION_VIEW, Uri.parse(boostyUrl))
+                        )
+                    }
+                }
+            }
+
             SettingsSection(stringResource(R.string.settings_section_profile)) {
                 SettingsItem(Icons.Default.Edit, stringResource(R.string.settings_change_name), userName?.takeIf { it.isNotBlank() } ?: progress.displayName) { showNameDialog = true }
                 SettingsItem(Icons.Default.Translate, stringResource(R.string.set_spanish_level), when(progress.currentLevel) {
@@ -581,53 +599,6 @@ fun SettingsScreen(
 
             // Subscription / Help-center sections removed — no implementation yet.
             // Re-add when monetization or FAQ flow is built.
-
-            // ── Поддержать проект ─────────────────────────────────
-            val boostyUrl = "https://boosty.to/espeak"
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(20.dp),
-                color = Color(0xFFFF6B35).copy(alpha = 0.12f),
-                border = BorderStroke(1.dp, Color(0xFFFF6B35).copy(alpha = 0.4f))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            runCatching {
-                                context.startActivity(
-                                    Intent(Intent.ACTION_VIEW, Uri.parse(boostyUrl))
-                                )
-                            }
-                        }
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("❤️", fontSize = 28.sp)
-                    Spacer(Modifier.width(14.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            "Поддержать проект",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = Color(0xFFFF6B35)
-                        )
-                        Text(
-                            "Помоги развитию ESPEAK на Boosty",
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Icon(
-                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        null,
-                        tint = Color(0xFFFF6B35),
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
 
             SettingsSection(stringResource(R.string.settings_section_help)) {
                 val emailSubject = stringResource(R.string.set_email_subject)

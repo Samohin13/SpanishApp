@@ -54,6 +54,9 @@
     <string name="settings_section_subscription">Підписка</string>
     <string name="settings_section_help">Допомога й підтримка</string>
     <string name="settings_section_other">Додатково</string>
+    <string name="settings_section_support">Підтримка</string>
+    <string name="settings_support_title">Підтримати проєкт</string>
+    <string name="settings_support_summary">Boosty · Допоможи розвитку ESPEAK</string>
 
     <string name="settings_change_name">Змінити імʼя</string>
     <string name="settings_daily_goal">Денна ціль</string>
