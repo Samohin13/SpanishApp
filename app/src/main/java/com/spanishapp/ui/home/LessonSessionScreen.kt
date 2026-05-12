@@ -368,11 +368,12 @@ private fun TheoryCard(
             Spacer(Modifier.height(16.dp))
         }
 
-        // Headings + accent text use a high-contrast amber on dark theme so
-        // unit colours (deep purples for A1) don't get lost against the
-        // black background. On light theme keeps the unit's own colour.
-        val isDark = androidx.compose.foundation.isSystemInDarkTheme()
-        val readableAccent = if (isDark) Color(0xFFFFC107) else accentColor
+        // Section headings use the unit's own colour. We previously forced
+        // amber on dark theme everywhere because A1 deep purples got lost
+        // against the black background — but A1 is now yellow (already
+        // high-contrast), and amber on A2/B1/B2 lessons broke the per-level
+        // identity (cyan/green/pink units showed yellow headings).
+        val readableAccent = accentColor
 
         Text(
             text       = section.heading,
@@ -1250,10 +1251,10 @@ private fun BuildSentenceInput(
 // ─── ExerciseTypeBadge: маленький эмодзи-чип в шапке упражнения ────────────
 @Composable
 private fun ExerciseTypeBadge(type: ExerciseType, accent: Color) {
-    // Use bright amber for the badge on dark theme — purple unit accents
-    // are unreadable on near-black backgrounds.
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
-    val readable = if (isDark) Color(0xFFFFC107) else accent
+    // Badge keeps the unit's own colour. Previously forced to amber on dark
+    // theme because A1 deep-purple was unreadable; A1 is now yellow itself
+    // and the others (cyan/green/orange/pink) have enough contrast already.
+    val readable = accent
     val (emoji, label) = when (type) {
         ExerciseType.MULTIPLE_CHOICE   -> "✏️" to "Выбор"
         ExerciseType.FILL_BLANK        -> "📝" to "Пропуск"

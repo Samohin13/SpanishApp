@@ -24,7 +24,7 @@ object RoadmapData {
             icon = "🚀",
             description = "Произношение, SER, числа, первые слова",
             cefrLevel = "A1",
-            color = Color(0xFF5B21B6),
+            color = Color(0xFFA16207),
             lessons = listOf(
                 // 1
                 RoadmapLesson("🔤 Гласные: A, E, I, O, U",                  "content", "general"),
@@ -69,7 +69,7 @@ object RoadmapData {
             icon = "🏠",
             description = "Семья, дом, цвета, TENER и ESTAR",
             cefrLevel = "A1",
-            color = Color(0xFF7C3AED),
+            color = Color(0xFFCA8A04),
             lessons = listOf(
                 // 16
                 RoadmapLesson("🔢 Числа 11–20: once, doce… veinte",           "content", "general"),
@@ -114,7 +114,7 @@ object RoadmapData {
             icon = "⚡",
             description = "Глаголы -AR/-ER/-IR, еда, QUERER, время",
             cefrLevel = "A1",
-            color = Color(0xFF9333EA),
+            color = Color(0xFFEAB308),
             lessons = listOf(
                 // 31
                 RoadmapLesson("🔵 Глаголы -AR: hablar, trabajar — yo/tú/él",  "content", "general"),
@@ -159,7 +159,7 @@ object RoadmapData {
             icon = "🗺️",
             description = "Транспорт, IR, шопинг, GUSTAR, тело, финальный босс",
             cefrLevel = "A1",
-            color = Color(0xFFA855F7),
+            color = Color(0xFFFACC15),
             lessons = listOf(
                 // 46
                 RoadmapLesson("🚇 Транспорт: metro, autobús, taxi, tren",      "content", "viajes"),

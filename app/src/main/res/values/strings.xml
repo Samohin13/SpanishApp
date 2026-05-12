@@ -120,7 +120,7 @@
     <string name="game_sopa_desc">Филворд</string>
     <string name="game_palabra_desc">Орфография</string>
     <string name="game_math_desc">Математика на слух</string>
-    <string name="game_crossword_desc">100 уровней</string>
+    <string name="game_crossword_desc">Кроссворды</string>
     <string name="game_libros_desc">Рассказы + тесты</string>
 
     <!-- ── Profile stats ────────────────────────────────────── -->

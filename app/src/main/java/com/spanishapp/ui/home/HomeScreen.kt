@@ -81,13 +81,16 @@ private val TextGray    = Color(0xFF8E8E93)
 private val LockGray    = Color(0xFFC7C7CC)
 
 // CEFR pill colours.
-private val A1Color = Color(0xFF7C3AED)
+// A1 = yellow, A2 = cyan, B1 = green, B2 = magenta/rose.
+// B2 was previously orange — but every B2 unit inside RoadmapData uses
+// a pink/rose shade (#9F1239..#E11D48). Pill now matches content.
+private val A1Color = Color(0xFFEAB308)
 private val A2Color = Color(0xFF06B6D4)
 private val B1Color = Color(0xFF22C55E)
-private val B2Color = Color(0xFFF97316)
+private val B2Color = Color(0xFFDB2777)
 
 // Continue-pager per-page accents.
-private val LessonAccent = Color(0xFF7C3AED)
+private val LessonAccent = Color(0xFFEAB308)
 private val BookAccent   = Color(0xFF22C55E)
 private val SetAccent    = Color(0xFFF97316)
 private val WeakAccent   = Color(0xFF06B6D4)
@@ -1702,11 +1705,11 @@ private fun CoursePills(activeLevel: String, onClick: (String) -> Unit) {
             val color = when (lvl) {
                 "A1" -> A1Color; "A2" -> A2Color; "B1" -> B1Color; else -> B2Color
             }
-            // Uniform outlined style for ALL pills, regardless of selection.
-            // Active pill is differentiated only by a slightly thicker border
-            // and a stronger shadow — never by a filled-in background, so the
-            // row reads as a consistent set of options (was: A1 looked like a
-            // CTA button while the others looked passive).
+            // Fully uniform outlined style across ALL pills — same border
+            // width and alpha regardless of selection. Active state is
+            // signalled only by a stronger shadow + brighter text. Owner's
+            // request: "make A1 border the same as the others" (yellow felt
+            // too aggressive when its border was thicker).
             Surface(
                 onClick = { onClick(lvl) },
                 modifier = Modifier
@@ -1716,8 +1719,8 @@ private fun CoursePills(activeLevel: String, onClick: (String) -> Unit) {
                 color = MaterialTheme.colorScheme.surfaceContainer,
                 shadowElevation = if (isActive) 4.dp else 1.dp,
                 border = androidx.compose.foundation.BorderStroke(
-                    width = if (isActive) 2.dp else 1.dp,
-                    color = if (isActive) color else color.copy(alpha = 0.4f)
+                    width = 1.dp,
+                    color = color.copy(alpha = if (isActive) 0.7f else 0.4f)
                 )
             ) {
                 Box(contentAlignment = Alignment.Center) {

@@ -115,7 +115,7 @@
     <string name="game_sopa_desc">Sopa de letras</string>
     <string name="game_palabra_desc">Ortografía</string>
     <string name="game_math_desc">Matemáticas de oído</string>
-    <string name="game_crossword_desc">100 niveles</string>
+    <string name="game_crossword_desc">Crucigramas</string>
     <string name="game_libros_desc">Relatos + tests</string>
 
     <!-- ── Profile stats ── -->

@@ -106,7 +106,7 @@
     <string name="game_sopa_desc">Word search</string>
     <string name="game_palabra_desc">Spelling</string>
     <string name="game_math_desc">Math by ear</string>
-    <string name="game_crossword_desc">100 levels</string>
+    <string name="game_crossword_desc">Crosswords</string>
     <string name="game_libros_desc">Stories + quizzes</string>
 
     <!-- ── Profile stats ── -->

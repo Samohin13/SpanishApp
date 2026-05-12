@@ -41,7 +41,7 @@ private data class LevelOption(
 private val LEVELS = listOf(
     LevelOption("A1", "🌱", "A1 — Новичок",
         "Первые слова и фразы",
-        Color(0xFF7C3AED), Color(0xFFA855F7)),
+        Color(0xFFEAB308), Color(0xFFFACC15)),
     LevelOption("A2", "⭐", "A2 — Основы",
         "Простые разговоры и покупки",
         Color(0xFF06B6D4), Color(0xFF0EA5E9)),
@@ -50,7 +50,7 @@ private val LEVELS = listOf(
         Color(0xFF22C55E), Color(0xFF16A34A)),
     LevelOption("B2", "🏆", "B2 — Выше среднего",
         "Сложные тексты и дискуссии",
-        Color(0xFFF97316), Color(0xFFEA580C)),
+        Color(0xFFDB2777), Color(0xFFE11D48)),
 )
 
 // Уровни, контент для которых ещё в активной разработке.
