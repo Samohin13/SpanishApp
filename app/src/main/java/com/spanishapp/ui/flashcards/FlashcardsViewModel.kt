@@ -239,6 +239,11 @@ class FlashcardsViewModel @Inject constructor(
             if (promotion != null) _leaguePromotions.tryEmit(promotion)
         }
 
+        // Capture deck size BEFORE requeue — used below for set-completion %.
+        // Using _state.value.cards.size after the update is wrong because requeued
+        // HARD cards inflate the total, making accuracy look artificially low.
+        val deckSizeBeforeRequeue = s.cards.size
+
         // Re-queue HARD words 3 positions ahead (each word re-inserted at most once).
         val updatedCards = if (quality < 3 && current.id !in requeuedIds) {
             requeuedIds.add(current.id)
@@ -265,7 +270,7 @@ class FlashcardsViewModel @Inject constructor(
             wrongCount = s.wrongCount + if (quality < 3) 1 else 0,
             earnedXp = s.earnedXp + xpDelta,
             wrongWords = newWrongWords,
-            canUndo = true,
+            canUndo = !finished,   // no undo on the completion screen
             isFinished = finished
         )
 
@@ -275,7 +280,7 @@ class FlashcardsViewModel @Inject constructor(
                 xpTracker.add(_state.value.earnedXp, learnedDelta)
                 // If this was a Daily Set session, persist stars + best %.
                 activeSetId?.let { setId ->
-                    val total = _state.value.cards.size
+                    val total = deckSizeBeforeRequeue   // original deck, not inflated by requeues
                     val correct = _state.value.correctCount
                     val percent = if (total > 0) (correct * 100 / total) else 0
                     val stars = when {

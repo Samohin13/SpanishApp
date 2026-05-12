@@ -114,7 +114,6 @@ class PracticeViewModel @Inject constructor(
                 )
                 return@launch
             }
-            val weak = pool
             // Mix the three modes so the session feels varied. Cycle pattern:
             // MC → TYPING → LISTENING → MC → TYPING → ... (deterministic, all
             // weak words seen in every mode they're suitable for).
@@ -123,7 +122,7 @@ class PracticeViewModel @Inject constructor(
                 PracticeMode.TYPING,
                 PracticeMode.LISTENING
             )
-            val rounds = weak.mapIndexed { idx, word ->
+            val rounds = pool.mapIndexed { idx, word ->
                 // TYPING mode only makes sense for single-word entries.
                 // Phrases like "buenas tardes" contain a space after article
                 // stripping — the space becomes an invisible letter tile,
