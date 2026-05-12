@@ -12,8 +12,8 @@ object BasicsVocab {
     private fun w(es: String, ru: String, ex: String, level: String, cat: String, type: String = "noun") =
         WordEntity(spanish = es, russian = ru, example = ex, level = level, category = cat, wordType = type)
 
-    val entries: List<WordEntity> = listOf(
-        // ── Личные местоимения ──
+
+    private fun chunk1(): List<WordEntity> = listOf(
         w("yo", "я", "Yo soy estudiante.", "A1", "personal", "pronoun"),
         w("tú", "ты", "¿Cómo te llamas tú?", "A1", "personal", "pronoun"),
         w("él", "он", "Él vive en Madrid.", "A1", "personal", "pronoun"),
@@ -26,14 +26,10 @@ object BasicsVocab {
         w("ellas", "они (ж.р.)", "Ellas cantan bien.", "A1", "personal", "pronoun"),
         w("usted", "вы (вежливо)", "¿Cómo está usted?", "A1", "personal", "pronoun"),
         w("ustedes", "вы (мн.ч.)", "Ustedes son bienvenidos.", "A1", "personal", "pronoun"),
-
-        // ── Притяжательные ──
         w("mi", "мой/моя", "Mi casa es grande.", "A1", "personal", "pronoun"),
         w("tu", "твой/твоя", "Tu libro está aquí.", "A1", "personal", "pronoun"),
         w("su", "его/её/их/ваш", "Su coche es nuevo.", "A1", "personal", "pronoun"),
         w("nuestro", "наш", "Nuestro perro es fiel.", "A1", "personal", "pronoun"),
-
-        // ── Числа 1–20 ──
         w("uno", "один", "Tengo uno solo.", "A1", "numeros", "number"),
         w("dos", "два", "Dos cafés, por favor.", "A1", "numeros", "number"),
         w("tres", "три", "Tres amigos vienen.", "A1", "numeros", "number"),
@@ -54,8 +50,6 @@ object BasicsVocab {
         w("dieciocho", "восемнадцать", "Dieciocho velas en la torta.", "A1", "numeros", "number"),
         w("diecinueve", "девятнадцать", "Diecinueve días de viaje.", "A1", "numeros", "number"),
         w("veinte", "двадцать", "Veinte estudiantes en clase.", "A1", "numeros", "number"),
-
-        // ── Вопросительные слова ──
         w("qué", "что/какой", "¿Qué quieres?", "A1", "preguntas", "interrogative"),
         w("quién", "кто", "¿Quién es?", "A1", "preguntas", "interrogative"),
         w("dónde", "где", "¿Dónde vives?", "A1", "preguntas", "interrogative"),
@@ -65,21 +59,15 @@ object BasicsVocab {
         w("cuál", "какой/который", "¿Cuál prefieres?", "A1", "preguntas", "interrogative"),
         w("cuánto", "сколько", "¿Cuánto cuesta?", "A1", "preguntas", "interrogative"),
         w("cuántos", "сколько (мн.ч.)", "¿Cuántos años tienes?", "A1", "preguntas", "interrogative"),
-
-        // ── Базовые ответы / приветствия (отсутствовавшие) ──
         w("hola", "привет", "¡Hola! ¿Cómo estás?", "A1", "saludos", "phrase"),
         w("sí", "да", "Sí, claro.", "A1", "respuestas", "adverb"),
         w("no", "нет", "No, gracias.", "A1", "respuestas", "adverb"),
-
-        // ── Дополнительные глаголы для flashcard-сетов ──
         w("aburrirse", "скучать", "Me aburro en clase.", "B1", "emociones", "verb"),
         w("desear", "желать", "Deseo viajar a España.", "B1", "general", "verb"),
         w("sugerir", "предлагать", "Te sugiero esta opción.", "B1", "comunicacion", "verb"),
         w("concluir", "заключать/завершать", "Concluyó su discurso con un ejemplo.", "B2", "academico", "verb"),
         w("dominar", "владеть/доминировать", "Domina tres idiomas.", "B2", "general", "verb"),
         w("gestionar", "управлять/решать", "Gestiona el proyecto con eficacia.", "B2", "trabajo", "verb"),
-
-        // ── Дополнительные слова для тематических сетов ──
         w("la negociación", "переговоры", "La negociación duró horas.", "B1", "trabajo"),
         w("la pérdida", "потеря/убыток", "Una gran pérdida para la empresa.", "B1", "economia"),
         w("la aventura", "приключение", "Una aventura inolvidable.", "B1", "viajes"),
@@ -91,9 +79,6 @@ object BasicsVocab {
         w("el itinerante", "путешественник-кочевник", "Un itinerante recorre el mundo.", "B2", "viajes"),
         w("el periplo", "странствие", "Un largo periplo por Asia.", "B2", "viajes"),
         w("la inmersión", "погружение", "Una inmersión cultural total.", "B2", "viajes"),
-
-        // ── A1 пробелы из flashcard-сетов (sesión auditoría) ──
-        // Дни недели
         w("lunes", "понедельник", "El lunes voy al gimnasio.", "A1", "tiempo"),
         w("martes", "вторник", "El martes tengo clase.", "A1", "tiempo"),
         w("miércoles", "среда", "El miércoles es día de mercado.", "A1", "tiempo"),
@@ -110,19 +95,13 @@ object BasicsVocab {
         w("después", "потом / после", "Después comemos juntos.", "A1", "tiempo", "adverb"),
         w("la media noche", "полночь", "Llegué a casa a la media noche.", "A1", "tiempo"),
         w("el reloj de pared", "настенные часы", "El reloj de pared marca las tres.", "A1", "tiempo"),
-
-        // Приветствия
         w("claro", "конечно / ясно", "¡Claro! Vamos.", "A1", "respuestas", "adverb"),
         w("¡Claro que no!", "Конечно нет!", "—¿Vienes? —¡Claro que no!", "A1", "respuestas", "phrase"),
         w("¿Qué tal?", "Как дела?", "¡Hola! ¿Qué tal?", "A1", "saludos", "phrase"),
-
-        // Семья / еда / цвета
         w("la familia", "семья", "Mi familia es grande.", "A1", "familia"),
         w("la comida", "еда / обед", "La comida está rica.", "A1", "comida_bebida"),
         w("el color", "цвет", "¿Cuál es tu color favorito?", "A1", "general"),
         w("el rojo", "красный (цвет)", "El rojo me gusta mucho.", "A1", "general"),
-
-        // Напитки
         w("el zumo", "сок (Испания)", "Un zumo de naranja, por favor.", "A1", "comida_bebida"),
         w("el refresco", "прохладительный напиток", "Quiero un refresco frío.", "A1", "comida_bebida"),
         w("el agua con gas", "газированная вода", "Una botella de agua con gas.", "A1", "comida_bebida"),
@@ -135,14 +114,10 @@ object BasicsVocab {
         w("el té negro", "чёрный чай", "Un té negro con limón.", "A1", "comida_bebida"),
         w("el té verde", "зелёный чай", "El té verde es saludable.", "A1", "comida_bebida"),
         w("el zumo natural", "натуральный сок", "Un zumo natural de naranja.", "A1", "comida_bebida"),
-
-        // Дом / тело / одежда
         w("la sala", "гостиная / зал", "Vemos la tele en la sala.", "A1", "casa_hogar"),
         w("la cara", "лицо", "Tiene una cara amable.", "A1", "cuerpo"),
         w("el gorro", "шапка", "En invierno llevo gorro.", "A1", "ropa"),
         w("la sudadera", "толстовка", "Mi sudadera es muy cómoda.", "A1", "ropa"),
-
-        // Погода
         w("el frío", "холод", "Hace mucho frío hoy.", "A1", "general"),
         w("el calor", "жара", "El calor del verano es intenso.", "A1", "general"),
         w("la temperatura", "температура", "La temperatura sube.", "A1", "general"),
@@ -153,17 +128,11 @@ object BasicsVocab {
         w("el verano", "лето", "Voy a la playa en verano.", "A1", "tiempo"),
         w("la primavera", "весна", "En primavera florecen las flores.", "A1", "tiempo"),
         w("el otoño", "осень", "Las hojas caen en otoño.", "A1", "tiempo"),
-
-        // Транспорт
         w("el mapa", "карта", "Necesito un mapa de la ciudad.", "A1", "viajes"),
         w("la postal", "открытка", "Te mando una postal desde Madrid.", "A1", "viajes"),
         w("el boleto", "билет (Лат.Ам.)", "Compro el boleto de autobús.", "A1", "viajes"),
-
-        // Школа
         w("la profesora", "учительница", "La profesora explica bien.", "A1", "trabajo"),
         w("el colegio", "школа", "Los niños van al colegio.", "A1", "general"),
-
-        // Глаголы
         w("pasear", "гулять", "Me gusta pasear por el parque.", "A1", "general", "verb"),
         w("caer", "падать", "El niño se cae a menudo.", "A1", "general", "verb"),
         w("sonreír", "улыбаться", "Ella sonríe mucho.", "A1", "comunicacion", "verb"),
@@ -173,15 +142,10 @@ object BasicsVocab {
         w("mezclar", "смешивать", "Mezcla los ingredientes.", "A1", "casa_hogar", "verb"),
         w("levantar", "поднимать", "Levanta la mano para hablar.", "A1", "general", "verb"),
         w("recordar (memoria)", "помнить / вспоминать", "Recuerdo nuestra primera cita.", "A1", "general", "verb"),
-
-        // Темы — искусство и работа
         w("el pintor", "художник", "Picasso es un pintor famoso.", "A1", "arte"),
         w("el cuadro", "картина", "El cuadro está en la pared.", "A1", "arte"),
         w("el cantante", "певец", "Mi cantante favorito es español.", "A1", "arte"),
         w("el horario", "расписание / график", "Mi horario es flexible.", "A1", "trabajo"),
-
-        // ── AUTO-STUBS: missing flashcard refs (TODO: replace placeholder Russian with real translation) ──
-        // A2 stubs (264 words)
         w("a propósito", "кстати", "A propósito, ¿viste a Juan?", "A2", "general"),
         w("agradecido", "благодарный", "Estoy muy agradecido por tu ayuda.", "A2", "emociones"),
         w("alegre", "весёлый, радостный", "Es una persona muy alegre.", "A2", "emociones"),
@@ -249,7 +213,10 @@ object BasicsVocab {
         w("el boxeo", "бокс", "Practica boxeo los martes.", "A2", "deportes"),
         w("el bug", "баг, ошибка ПО", "El programa tiene un bug.", "A2", "tecnologia"),
         w("el béisbol", "бейсбол", "El béisbol es popular en Cuba.", "A2", "deportes"),
-        w("el calendario escolar", "школьный календарь", "El calendario escolar empieza en septiembre.", "A2", "general"),
+        w("el calendario escolar", "школьный календарь", "El calendario escolar empieza en septiembre.", "A2", "general")
+    )
+
+    private fun chunk2(): List<WordEntity> = listOf(
         w("el cambio de moneda", "обмен валюты", "Hay una oficina de cambio de moneda.", "A2", "viajes"),
         w("el camping", "кемпинг", "Pasamos la noche en el camping.", "A2", "viajes"),
         w("el cariño", "нежность, любовь", "Le tengo mucho cariño.", "A2", "emociones"),
@@ -446,11 +413,13 @@ object BasicsVocab {
         w("tragar", "глотать", "No puedo tragar la pastilla.", "A2", "general", "verb"),
         w("tía", "тётя; девчонка (разг.)", "Mi tía vive en Madrid.", "A2", "general"),
         w("tío", "дядя; парень (разг.)", "¡Qué tal, tío!", "A2", "general"),
-        // B1 stubs (351 words)
         w("aburrir", "наскучивать", "Aburrir.", "B1", "emociones", "verb"),
         w("actuar", "действовать; играть роль", "Actuar.", "B1", "trabajo", "verb"),
         w("acusar", "обвинять", "Acusar.", "B1", "general", "verb"),
-        w("adaptar", "приспосабливать", "Adaptar.", "B1", "general", "verb"),
+        w("adaptar", "приспосабливать", "Adaptar.", "B1", "general", "verb")
+    )
+
+    private fun chunk3(): List<WordEntity> = listOf(
         w("aflojar", "ослаблять", "Aflojar.", "B1", "general", "verb"),
         w("alucinante", "потрясающий", "Alucinante.", "B1", "general"),
         w("animar", "ободрять", "Animar.", "B1", "emociones", "verb"),
@@ -650,7 +619,10 @@ object BasicsVocab {
         w("estar harto", "быть сытым по горло", "Estar harto.", "B1", "general"),
         w("Estoy hecho polvo", "я измотан", "Estoy hecho polvo.", "B1", "general"),
         w("evolucionar", "развиваться, эволюционировать", "Evolucionar.", "B1", "general", "verb"),
-        w("exportar", "экспортировать", "Exportar.", "B1", "general", "verb"),
+        w("exportar", "экспортировать", "Exportar.", "B1", "general", "verb")
+    )
+
+    private fun chunk4(): List<WordEntity> = listOf(
         w("expresar", "выражать", "Expresar.", "B1", "general", "verb"),
         w("flipar", "офигевать (разг.)", "Flipar.", "B1", "general", "verb"),
         w("fracasar", "терпеть неудачу", "Fracasar.", "B1", "general", "verb"),
@@ -798,7 +770,6 @@ object BasicsVocab {
         w("votar", "голосовать", "Votar.", "B1", "general", "verb"),
         w("¡Qué fuerte!", "Ничего себе!", "¡Qué fuerte!.", "B1", "general"),
         w("¡Qué pasada!", "Класс! Круто!", "¡Qué pasada!.", "B1", "general"),
-        // B2 stubs (441 words)
         w("abogar", "выступать (в защиту), отстаивать", "Abogar.", "B2", "general", "verb"),
         w("absolver", "оправдывать (юр.)", "Absolver.", "B2", "general", "verb"),
         w("abstenerse", "воздерживаться", "Abstenerse.", "B2", "general"),
@@ -851,7 +822,10 @@ object BasicsVocab {
         w("el ancho de banda", "пропускная способность", "El ancho de banda.", "B2", "general"),
         w("el andamio", "строительные леса", "El andamio.", "B2", "general"),
         w("el aneurisma", "аневризма", "El aneurisma.", "B2", "general"),
-        w("el ansiolítico", "успокоительное", "El ansiolítico.", "B2", "general"),
+        w("el ansiolítico", "успокоительное", "El ansiolítico.", "B2", "general")
+    )
+
+    private fun chunk5(): List<WordEntity> = listOf(
         w("el antagonista", "антагонист", "El antagonista.", "B2", "general"),
         w("el antipirético", "жаропонижающее", "El antipirético.", "B2", "general"),
         w("el aprendizaje automático", "машинное обучение", "El aprendizaje automático.", "B2", "arte"),
@@ -1051,7 +1025,10 @@ object BasicsVocab {
         w("esclarecer", "прояснять", "Esclarecer.", "B2", "general", "verb"),
         w("esquematizar", "схематизировать", "Esquematizar.", "B2", "general", "verb"),
         w("estandarizar", "стандартизировать", "Estandarizar.", "B2", "general", "verb"),
-        w("Estar al loro", "быть в курсе (разг.)", "Estar al loro.", "B2", "general"),
+        w("Estar al loro", "быть в курсе (разг.)", "Estar al loro.", "B2", "general")
+    )
+
+    private fun chunk6(): List<WordEntity> = listOf(
         w("Estar en las últimas", "быть на последнем издыхании", "Estar en las últimas.", "B2", "general"),
         w("Estoy en las nubes", "я витаю в облаках", "Estoy en las nubes.", "B2", "general"),
         w("Estoy hasta las narices", "я сыт по горло", "Estoy hasta las narices.", "B2", "general"),
@@ -1241,4 +1218,12 @@ object BasicsVocab {
         w("vedar", "запрещать", "Vedar.", "B2", "general", "verb"),
         w("vislumbrar", "смутно видеть, различать", "Vislumbrar.", "B2", "general", "verb")
     )
+
+    val entries: List<WordEntity> =
+        chunk1() +
+        chunk2() +
+        chunk3() +
+        chunk4() +
+        chunk5() +
+        chunk6()
 }
