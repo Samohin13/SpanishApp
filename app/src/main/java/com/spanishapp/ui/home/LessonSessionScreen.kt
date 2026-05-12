@@ -53,6 +53,7 @@ import com.spanishapp.ui.components.SpeakerButton
 import com.spanishapp.ui.components.VoiceInstallPromptHost
 import com.spanishapp.ui.components.inferSpeakText
 import com.spanishapp.ui.components.rememberSpanishTts
+import com.spanishapp.ui.components.speakSpanish
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -391,7 +392,7 @@ private fun TheoryCard(
                     // Whole row plays TTS — no need to aim at the speaker icon.
                     .clickable {
                         com.spanishapp.ui.components.inferSpeakText(item.left)?.let { t ->
-                            tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "item")
+                            tts?.speakSpanish(t, "item")
                         }
                     }
             ) {
@@ -590,7 +591,7 @@ private fun ExerciseCard(
                                     selectedOption = option
                                     answered = true
                                     inferSpeakText(option)?.let { t ->
-                                        tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                        tts?.speakSpanish(t, "ans")
                                     }
                                 }
                         ) {
@@ -624,7 +625,7 @@ private fun ExerciseCard(
                             answered = true
                             if (typed.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true)) {
                                 inferSpeakText(exercise.correctAnswer)?.let { t ->
-                                    tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                    tts?.speakSpanish(t, "ans")
                                 }
                             }
                         }
@@ -642,7 +643,7 @@ private fun ExerciseCard(
                             answered = true
                             if (built.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true)) {
                                 inferSpeakText(exercise.correctAnswer)?.let { t ->
-                                    tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                    tts?.speakSpanish(t, "ans")
                                 }
                             }
                         }
@@ -658,7 +659,7 @@ private fun ExerciseCard(
                             selectedOption = typed
                             answered = true
                             inferSpeakText(exercise.correctAnswer)?.let { t ->
-                                tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                tts?.speakSpanish(t, "ans")
                             }
                         }
                     )
@@ -696,7 +697,7 @@ private fun ExerciseCard(
                             selectedOption = picked
                             answered = true
                             inferSpeakText(exercise.correctAnswer)?.let { t ->
-                                tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                tts?.speakSpanish(t, "ans")
                             }
                         }
                     )
@@ -712,7 +713,7 @@ private fun ExerciseCard(
                             answered = true
                             if (built.equals(exercise.correctAnswer.replace(" ", ""), ignoreCase = true)) {
                                 inferSpeakText(exercise.correctAnswer)?.let { t ->
-                                    tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                    tts?.speakSpanish(t, "ans")
                                 }
                             }
                         }
@@ -749,7 +750,7 @@ private fun ExerciseCard(
                             selectedOption = picked
                             answered = true
                             inferSpeakText(exercise.correctAnswer)?.let { t ->
-                                tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                tts?.speakSpanish(t, "ans")
                             }
                         }
                     )
@@ -767,7 +768,7 @@ private fun ExerciseCard(
                             answered = true
                             if (typed.trim().equals(exercise.correctAnswer.trim(), ignoreCase = true)) {
                                 inferSpeakText(exercise.correctAnswer)?.let { t ->
-                                    tts?.speak(t, TextToSpeech.QUEUE_FLUSH, null, "ans")
+                                    tts?.speakSpanish(t, "ans")
                                 }
                             }
                         }
@@ -1303,7 +1304,7 @@ private fun ListenPickInput(
     // Auto-play once on first show
     LaunchedEffect(audioText) {
         delay(250)
-        tts?.speak(audioText, TextToSpeech.QUEUE_FLUSH, null, "listen_pick")
+        tts?.speakSpanish(audioText, "listen_pick")
     }
 
     // Large replay button
@@ -1314,7 +1315,7 @@ private fun ListenPickInput(
             .fillMaxWidth()
             .height(96.dp)
             .clickable(enabled = !answered) {
-                tts?.speak(audioText, TextToSpeech.QUEUE_FLUSH, null, "listen_pick_replay")
+                tts?.speakSpanish(audioText, "listen_pick_replay")
             }
     ) {
         Row(
@@ -1774,7 +1775,7 @@ private fun ListenAndTypeInput(
     // Auto-play once
     LaunchedEffect(audioText) {
         delay(300)
-        tts?.speak(audioText, TextToSpeech.QUEUE_FLUSH, null, "listen_type")
+        tts?.speakSpanish(audioText, "listen_type")
     }
 
     // Speaker / replay button
@@ -1785,7 +1786,7 @@ private fun ListenAndTypeInput(
             .fillMaxWidth()
             .height(84.dp)
             .clickable(enabled = !answered) {
-                tts?.speak(audioText, TextToSpeech.QUEUE_FLUSH, null, "listen_type_replay")
+                tts?.speakSpanish(audioText, "listen_type_replay")
             }
     ) {
         Row(

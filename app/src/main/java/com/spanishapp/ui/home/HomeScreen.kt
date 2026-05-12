@@ -1087,7 +1087,7 @@ private fun PronunciationQuiz(
         Surface(
             onClick = {
                 tts?.stop()
-                tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod_pron")
+                tts?.speakSpanish(word.spanish, "wod_pron")
             },
             shape = RoundedCornerShape(28.dp),
             color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.18f),

@@ -49,6 +49,7 @@ import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpeechResult
 import com.spanishapp.ui.components.LeaguePromotionDialog
 import com.spanishapp.ui.components.rememberSpanishTts
+import com.spanishapp.ui.components.speakSpanish
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -384,7 +385,7 @@ private fun ReadingAloudPanel(
         OutlinedButton(
             onClick = {
                 tts?.stop()
-                tts?.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, "ra_sentence")
+                tts?.speakSpanish(sentence, "ra_sentence")
             },
             modifier = Modifier.height(38.dp),
             shape = RoundedCornerShape(20.dp),
@@ -804,10 +805,7 @@ fun LibroReadScreen(
                                     if (isSpeaking) {
                                         tts?.stop(); isSpeaking = false
                                     } else {
-                                        tts?.speak(
-                                            libro.text.trim(),
-                                            TextToSpeech.QUEUE_FLUSH, null, "libro_full"
-                                        )
+                                        tts?.speakSpanish(libro.text.trim(), "libro_full")
                                         isSpeaking = true
                                     }
                                 },

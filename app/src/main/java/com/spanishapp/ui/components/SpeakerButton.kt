@@ -163,6 +163,23 @@ fun inferSpeakText(text: String?): String? {
 /** Проверяет, стоит ли показывать кнопку озвучки для данной строки. */
 fun isSpanishSpeakable(text: String?): Boolean = inferSpeakText(text) != null
 
+/**
+ * Safe wrapper for raw `TextToSpeech.speak()` callsites.
+ *
+ * Filters through `inferSpeakText()` first so Russian text, blank strings,
+ * empty placeholders ("___"), or pronunciation guides ("mu-si-ca") never
+ * reach the Spanish engine — those would otherwise be mispronounced or
+ * spoken with the wrong language.
+ *
+ * Returns true if the engine accepted the utterance, false if the text was
+ * filtered out (caller can show a fallback / no-op silently).
+ */
+fun TextToSpeech.speakSpanish(text: String?, utteranceId: String = "spk"): Boolean {
+    val cleaned = inferSpeakText(text) ?: return false
+    speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+    return true
+}
+
 /** Очищает текст перед озвучкой: убирает плейсхолдеры. */
 fun sanitizeForTts(text: String): String =
     text.replace("___", " ")
