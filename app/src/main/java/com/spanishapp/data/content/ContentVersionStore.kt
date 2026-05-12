@@ -43,19 +43,21 @@ class ContentVersionStore @Inject constructor(
     }
 
     /**
-     * Reactive flag: true once the initial content download has completed.
+     * Reactive flag: true if the app can proceed to home with the content
+     * it has on hand (either built-in seeded data, or downloaded OTA packs).
      *
-     * Default = FALSE — forces the DownloadScreen after registration.
-     * Navigation ensures download only happens AFTER the user is logged in
-     * (Firebase auth token is available → Firebase Storage rules pass).
-     * Flow: welcome → register → onboarding → DownloadScreen → home.
+     * Default = TRUE — the app always ships with a complete built-in dataset
+     * (DatabaseSeeder + ModernVocab + LessonContentData + LibrosData), so a
+     * fresh install can fully function without ever talking to the network.
+     * OTA content packs are an optional enhancement, triggered manually from
+     * Settings or silently in the background via ContentSyncWorker.
      *
-     * After a successful syncContent() + ContentImporter.apply(),
-     * markContentReady() sets this to true permanently. Subsequent launches
-     * go straight to home; new packs are synced silently via ContentSyncWorker.
+     * markContentReady() is still called by the downloader on success — and
+     * markContentSkipped() lets the user escape if the download screen ever
+     * gets shown and Firebase is unreachable.
      */
     val contentReady: Flow<Boolean> =
-        context.contentVersionDataStore.data.map { it[readyKey] ?: false }
+        context.contentVersionDataStore.data.map { it[readyKey] ?: true }
 
     suspend fun markContentReady() {
         context.contentVersionDataStore.edit { it[readyKey] = true }

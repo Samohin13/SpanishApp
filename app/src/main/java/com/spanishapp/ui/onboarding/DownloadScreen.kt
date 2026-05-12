@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spanishapp.R
 import com.spanishapp.data.content.ContentDownloader
 import com.spanishapp.data.content.ContentImporter
+import com.spanishapp.data.content.ContentVersionStore
 import com.spanishapp.data.content.DownloadState
 import com.spanishapp.data.content.NetworkType
 import com.spanishapp.data.content.rememberNetworkType
@@ -40,6 +41,7 @@ import javax.inject.Inject
 class DownloadViewModel @Inject constructor(
     val downloader: ContentDownloader,
     private val wordDao: WordDao,
+    private val versionStore: ContentVersionStore,
 ) : ViewModel() {
 
     val state: StateFlow<DownloadState> = downloader.state
@@ -64,6 +66,14 @@ class DownloadViewModel @Inject constructor(
     fun retry() {
         _finished.value = false
         start()
+    }
+
+    /** Escape hatch: continue with the built-in content if OTA fails. */
+    fun skip() {
+        viewModelScope.launch {
+            versionStore.markContentReady()
+            _finished.value = true
+        }
     }
 }
 
@@ -101,7 +111,10 @@ fun DownloadScreen(
     BackHandler(enabled = !canExit) { /* Block back while download is in-flight. */ }
 
     LaunchedEffect(finished, state) {
-        if (finished && state is DownloadState.Done) onFinished()
+        // Finish on success (Done) OR on user-initiated skip from Failed state.
+        // The skip() path bumps `finished` to true but leaves `state` as Failed,
+        // so checking `finished` alone is enough — no need to inspect state here.
+        if (finished) onFinished()
     }
 
     val orange = Color(0xFFFF7A2E)
@@ -218,10 +231,24 @@ fun DownloadScreen(
                             containerColor = Color.White,
                             contentColor = orange,
                         ),
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                        shape = RoundedCornerShape(14.dp),
                     ) { Text("Повторить", fontWeight = FontWeight.Bold) }
                     Spacer(Modifier.height(10.dp))
+                    OutlinedButton(
+                        onClick = { viewModel.skip() },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.White,
+                        ),
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp, Color.White.copy(alpha = 0.6f)
+                        ),
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                        shape = RoundedCornerShape(14.dp),
+                    ) { Text("Продолжить без загрузки", fontWeight = FontWeight.SemiBold) }
+                    Spacer(Modifier.height(10.dp))
                     Text(
-                        "Без загрузки контента приложение не сможет работать.",
+                        "Приложение работает и без обновлений — встроенного контента достаточно для всех уроков.",
                         fontSize = 11.sp,
                         color = Color.White.copy(alpha = 0.6f),
                         textAlign = TextAlign.Center,
