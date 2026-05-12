@@ -2,6 +2,7 @@ package com.spanishapp.ui.flashcards
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -11,11 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.input.pointer.pointerInput
-import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,10 +22,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,11 +33,20 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.*
 import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.domain.algorithm.LeaguePromotion
 import com.spanishapp.domain.algorithm.ReviewButton
 import com.spanishapp.ui.components.LeaguePromotionDialog
+import kotlinx.coroutines.launch
+
+// ── Brand colour aliases (local, no global import needed) ──────
+private val BrandOrange  = Color(0xFFFF6B35)
+private val BrandOrange2 = Color(0xFFFF9A6C)
+private val SuccessGreen = Color(0xFF34C759)
+
+// ═══════════════════════════════════════════════════════════════
+//  ENTRY POINT
+// ═══════════════════════════════════════════════════════════════
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,8 +61,6 @@ fun FlashcardsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
-    // rememberAnswerSound() намеренно НЕ используется — тональные звуки
-    // ToneGenerator на свайпе звучали резко.
     com.spanishapp.ui.components.TrackStudyMinutes()
 
     var leaguePromotion by remember { mutableStateOf<LeaguePromotion?>(null) }
@@ -64,7 +68,10 @@ fun FlashcardsScreen(
         viewModel.leaguePromotions.collect { leaguePromotion = it }
     }
     leaguePromotion?.let { promo ->
-        LeaguePromotionDialog(from = promo.from, to = promo.to, onDismiss = { leaguePromotion = null })
+        LeaguePromotionDialog(
+            from = promo.from, to = promo.to,
+            onDismiss = { leaguePromotion = null }
+        )
     }
 
     LaunchedEffect(level, category, direction, setId, weakOnly) {
@@ -76,11 +83,11 @@ fun FlashcardsScreen(
     }
 
     Scaffold(
-        containerColor = Color.Transparent,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -89,9 +96,8 @@ fun FlashcardsScreen(
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        val pos = (state.currentIndex).coerceAtMost(state.sessionSize)
                         Text(
-                            "$pos из ${state.sessionSize}",
+                            "${(state.currentIndex).coerceAtMost(state.sessionSize)} из ${state.sessionSize}",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold
                         )
@@ -99,7 +105,7 @@ fun FlashcardsScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.Close, null)
+                        Icon(Icons.Default.Close, contentDescription = null)
                     }
                 }
             )
@@ -111,38 +117,38 @@ fun FlashcardsScreen(
                 .padding(padding)
         ) {
             when {
-                state.isLoading -> LoadingBody()
+                state.isLoading  -> LoadingBody()
                 state.isFinished -> SessionCompleteBody(
-                    total = state.sessionSize,
-                    correct = state.correctCount,
-                    wrong = state.wrongCount,
-                    xp = state.earnedXp,
-                    error = state.error,
+                    total      = state.sessionSize,
+                    correct    = state.correctCount,
+                    wrong      = state.wrongCount,
+                    xp         = state.earnedXp,
+                    error      = state.error,
                     wrongWords = state.wrongWords,
                     hasNextSet = viewModel.nextSetId != null,
-                    onRestart = {
+                    onRestart  = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.restart()
                     },
-                    onNextSet = {
+                    onNextSet  = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.startNextSet()
                     },
-                    onExit = { navController.popBackStack() }
+                    onExit     = { navController.popBackStack() }
                 )
-                else -> SessionBody(
-                    state = state,
-                    onFlip = {
+                else             -> SessionBody(
+                    state          = state,
+                    onFlip         = {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         viewModel.flip()
                     },
-                    onSpeak = { viewModel.speakCurrent() },
+                    onSpeak        = { viewModel.speakCurrent() },
                     onSpeakExample = viewModel::speakExample,
-                    onAnswer = { button ->
+                    onAnswer       = { button ->
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.answer(button)
                     },
-                    onUndo = {
+                    onUndo         = {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         viewModel.undo()
                     }
@@ -152,12 +158,20 @@ fun FlashcardsScreen(
     }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  LOADING
+// ═══════════════════════════════════════════════════════════════
+
 @Composable
 private fun LoadingBody() {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(strokeWidth = 3.dp)
+        CircularProgressIndicator(strokeWidth = 3.dp, color = BrandOrange)
     }
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  COMPLETION SCREEN
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
 private fun SessionCompleteBody(
@@ -173,58 +187,112 @@ private fun SessionCompleteBody(
     onExit: () -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(vertical = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(0.dp)
+        contentPadding = PaddingValues(bottom = 32.dp)
     ) {
+        // ── Orange header strip — matches HomeScreen / SetRow style ──
         item {
-            if (error != null) {
-                Text(error, style = MaterialTheme.typography.bodyLarge)
-            } else {
-                val accuracy = if (total > 0) (correct * 100 / total) else 0
-                Text("Сессия завершена!", fontWeight = FontWeight.SemiBold, fontSize = 24.sp)
-                Spacer(Modifier.height(20.dp))
-                com.spanishapp.ui.components.CompletionBadge(accuracyPercent = accuracy, size = 160.dp)
-                Spacer(Modifier.height(20.dp))
-                Text(
-                    "$correct правильных из $total  ·  +$xp XP",
-                    fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                if (wrong > 0) {
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        "Нужно повторить: $wrong",
-                        fontSize = 14.sp, color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.horizontalGradient(listOf(BrandOrange, BrandOrange2))
                     )
-                }
-            }
-            Spacer(Modifier.height(28.dp))
-            if (hasNextSet) {
-                Button(onClick = onNextSet, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) {
-                    Text("Следующий сет →", fontWeight = FontWeight.Bold)
-                }
-                Spacer(Modifier.height(8.dp))
-                OutlinedButton(onClick = onRestart, modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(14.dp)) {
-                    Text("Повторить этот сет")
-                }
-            } else {
-                Button(onClick = onRestart, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) {
-                    Text("Ещё раз", fontWeight = FontWeight.Bold)
-                }
-            }
-            TextButton(onClick = onExit) {
-                Text("Назад к карточкам", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    .padding(vertical = 22.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    if (error != null) "Сессия завершена" else "Сессия завершена! 🎉",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = Color.White
+                )
             }
         }
 
-        // ── Разбор ошибок ─────────────────────────────────────────────
+        // ── Results + buttons ────────────────────────────────────────
+        item {
+            Column(
+                modifier = Modifier.padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (error != null) {
+                    Spacer(Modifier.height(32.dp))
+                    Text(
+                        error,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
+                } else {
+                    val accuracy = if (total > 0) (correct * 100 / total) else 0
+                    Spacer(Modifier.height(24.dp))
+                    com.spanishapp.ui.components.CompletionBadge(
+                        accuracyPercent = accuracy,
+                        size = 160.dp
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        "$correct правильных из $total  ·  +$xp XP",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (wrong > 0) {
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            "Нужно повторить: $wrong",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+                Spacer(Modifier.height(28.dp))
+                if (hasNextSet) {
+                    Button(
+                        onClick = onNextSet,
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+                    ) {
+                        Text("Следующий сет →", fontWeight = FontWeight.Bold)
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = onRestart,
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
+                        shape = RoundedCornerShape(14.dp)
+                    ) {
+                        Text("Повторить этот сет")
+                    }
+                } else {
+                    Button(
+                        onClick = onRestart,
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+                    ) {
+                        Text("Ещё раз", fontWeight = FontWeight.Bold)
+                    }
+                }
+                TextButton(onClick = onExit) {
+                    Text(
+                        "Назад к карточкам",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+
+        // ── Mistake review list ──────────────────────────────────────
         if (wrongWords.isNotEmpty()) {
             item {
                 Spacer(Modifier.height(24.dp))
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("🔁", fontSize = 18.sp)
                     Spacer(Modifier.width(8.dp))
@@ -238,7 +306,9 @@ private fun SessionCompleteBody(
             }
             items(wrongWords) { word ->
                 Surface(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 4.dp),
                     shape = RoundedCornerShape(14.dp),
                     color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.35f)
                 ) {
@@ -251,11 +321,7 @@ private fun SessionCompleteBody(
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.weight(1f)
                             )
-                            Text(
-                                word.russian,
-                                fontSize = 15.sp,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                            Text(word.russian, fontSize = 15.sp)
                         }
                         if (word.example.isNotBlank()) {
                             Spacer(Modifier.height(4.dp))
@@ -273,21 +339,9 @@ private fun SessionCompleteBody(
     }
 }
 
-@Composable
-private fun ResultRow(label: String, value: String, icon: ImageVector, color: Color = MaterialTheme.colorScheme.onSurface) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(icon, null, tint = color.copy(alpha = 0.7f), modifier = Modifier.size(20.dp))
-        Spacer(Modifier.width(12.dp))
-        Text(label, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.weight(1f))
-        Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = color)
-    }
-}
+// ═══════════════════════════════════════════════════════════════
+//  SESSION BODY  (card + progress + action buttons)
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
 private fun SessionBody(
@@ -300,71 +354,73 @@ private fun SessionBody(
 ) {
     val word = state.cards.getOrNull(state.currentIndex) ?: return
 
-    // Auto-play Spanish pronunciation when the card is flipped to the back.
+    // Auto-play Spanish pronunciation when card flips to back.
     LaunchedEffect(state.showBack, state.currentIndex) {
         if (state.showBack) onSpeak()
+    }
+
+    val scope = rememberCoroutineScope()
+    val offsetX = remember { Animatable(0f) }
+    val offsetY = remember { Animatable(0f) }
+    val swipeThreshold = with(LocalDensity.current) { 80.dp.toPx() }
+
+    LaunchedEffect(state.currentIndex) {
+        offsetX.snapTo(0f)
+        offsetY.snapTo(0f)
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // ── Orange progress bar with inline counter ───────────────
+        Spacer(Modifier.height(8.dp))
         val progress by animateFloatAsState(
-            targetValue = if (state.sessionSize > 0) state.currentIndex.toFloat() / state.sessionSize else 0f,
+            targetValue = if (state.sessionSize > 0)
+                state.currentIndex.toFloat() / state.sessionSize else 0f,
             animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
             label = "progress"
         )
-        
-        LinearProgressIndicator(
-            progress = { progress },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp)
-                .clip(CircleShape),
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-            strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
-        )
-
-        Spacer(Modifier.weight(0.5f))
-
-        // Swipe-жесты на перевёрнутой карточке:
-        //   →  GOOD ("Знаю")
-        //   ←  HARD ("Забыл")
-        // EASY-свайп (вверх) убран — обнаружили что юзеры жмут «Лёгко» когда
-        // ответили правильно с подсказкой, что искажает SM-2 (слишком быстро
-        // растут интервалы). Один уровень «знаю» проще и честнее.
-        val scope = rememberCoroutineScope()
-        val offsetX = remember { Animatable(0f) }
-        val offsetY = remember { Animatable(0f) }
-        // Lower threshold (was 120dp) so even small drags from the edge trigger
-        // an answer — important for one-handed thumb reach.
-        val swipeThreshold = with(LocalDensity.current) { 80.dp.toPx() }
-
-        // При смене карточки — мгновенно сбрасываем offset, новая карточка
-        // начинает с центра.
-        LaunchedEffect(state.currentIndex) {
-            offsetX.snapTo(0f)
-            offsetY.snapTo(0f)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(8.dp)
+                    .clip(CircleShape),
+                color = BrandOrange,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+            Spacer(Modifier.width(10.dp))
+            Text(
+                "${state.currentIndex} / ${state.sessionSize}",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
+        Spacer(Modifier.height(12.dp))
 
-        // OUTER wrapper captures swipes across the FULL width/height of the
-        // session area — not just the card surface. Lets one-handed users start
-        // a drag from anywhere on the screen edges and still trigger the action,
-        // mirror-comfortable for both right- and left-handed grips.
+        // ── Swipeable card area ───────────────────────────────────
+        // Gesture is detected on the OUTER box (full width/height) so users
+        // can start a drag from anywhere on screen, not just the card surface.
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(2.5f)
+                .weight(1f)
                 .pointerInput(state.currentIndex) {
                     detectDragGestures(
                         onDragEnd = {
                             val xPx = offsetX.value
                             val yPx = offsetY.value
                             val ans = when {
-                                xPx >  swipeThreshold -> ReviewButton.GOOD   // → знаю
-                                xPx < -swipeThreshold -> ReviewButton.HARD   // ← забыл
+                                xPx >  swipeThreshold -> ReviewButton.GOOD
+                                xPx < -swipeThreshold -> ReviewButton.HARD
                                 else                  -> null
                             }
                             if (ans != null) {
@@ -386,109 +442,111 @@ private fun SessionBody(
                 },
             contentAlignment = Alignment.Center
         ) {
-            // INNER box only carries the visual transform — keeps card visually
-            // attached to the finger while the gesture is read from the OUTER area.
             Box(
                 modifier = Modifier.graphicsLayer {
                     translationX = offsetX.value
                     translationY = offsetY.value
-                    rotationZ = (offsetX.value / 30f).coerceIn(-15f, 15f)
-                    alpha = (1f - (kotlin.math.abs(offsetX.value) / 800f)).coerceIn(0.4f, 1f)
+                    rotationZ    = (offsetX.value / 30f).coerceIn(-15f, 15f)
+                    alpha        = (1f - (kotlin.math.abs(offsetX.value) / 800f)).coerceIn(0.4f, 1f)
                 }
             ) {
                 FlipCard(
-                    word = word,
-                    direction = state.currentDirection,
-                    showBack = state.showBack,
-                    onFlip = onFlip,
-                    onSpeak = onSpeak,
+                    word           = word,
+                    direction      = state.currentDirection,
+                    showBack       = state.showBack,
+                    onFlip         = onFlip,
+                    onSpeak        = onSpeak,
                     onSpeakExample = onSpeakExample
                 )
             }
         }
 
-        // Bottom row: swipe legend + undo chip.
+        Spacer(Modifier.height(12.dp))
+
+        // ── Action buttons (swipe still works in parallel) ────────
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 24.dp, top = 12.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SwipeLegend("←", "Забыл", MaterialTheme.colorScheme.error)
+            // HARD — outlined, error-red
+            OutlinedButton(
+                onClick = { onAnswer(ReviewButton.HARD) },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(52.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                ),
+                border = BorderStroke(
+                    1.5.dp,
+                    MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                )
+            ) {
+                Icon(
+                    Icons.Default.Close, null,
+                    modifier = Modifier.size(15.dp)
+                )
+                Spacer(Modifier.width(4.dp))
+                Text("Забыл", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+            }
 
-            // Undo chip — visible only after the previous card was answered.
-            androidx.compose.animation.AnimatedVisibility(visible = state.canUndo) {
+            // Undo chip — visible only after previous card was answered
+            AnimatedVisibility(visible = state.canUndo) {
                 Surface(
                     onClick = onUndo,
                     shape = RoundedCornerShape(20.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     )
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
                         Text(
                             "↩",
-                            fontSize = 14.sp,
+                            fontSize = 13.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
                             "Отменить",
-                            fontSize = 12.sp,
+                            fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
             }
 
-            SwipeLegend("→", "Знаю",  MaterialTheme.colorScheme.primary)
+            // GOOD — filled brand-orange
+            Button(
+                onClick = { onAnswer(ReviewButton.GOOD) },
+                modifier = Modifier
+                    .weight(1.3f)
+                    .height(52.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+            ) {
+                Text("Знаю", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Spacer(Modifier.width(4.dp))
+                Icon(
+                    Icons.Default.Check, null,
+                    modifier = Modifier.size(15.dp)
+                )
+            }
         }
     }
 }
 
-@Composable
-private fun SwipeLegend(arrow: String, label: String, color: Color) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(arrow, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = color)
-        Text(
-            label,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-private fun RatingAction(
-    text: String,
-    icon: ImageVector,
-    containerColor: Color,
-    contentColor: Color,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        modifier = modifier.height(80.dp),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(icon, null, tint = contentColor)
-            Spacer(Modifier.height(4.dp))
-            Text(text, color = contentColor, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)
-        }
-    }
-}
+// ═══════════════════════════════════════════════════════════════
+//  CARD  (flip animation wrapper)
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
 private fun FlipCard(
@@ -503,7 +561,7 @@ private fun FlipCard(
         targetValue = if (showBack) 180f else 0f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
-            stiffness = Spring.StiffnessLow
+            stiffness    = Spring.StiffnessLow
         ),
         label = "flip"
     )
@@ -511,9 +569,9 @@ private fun FlipCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(380.dp)
+            .height(400.dp)
             .graphicsLayer {
-                rotationY = rotation
+                rotationY    = rotation
                 cameraDistance = 12f * density
             }
             .clickable(
@@ -536,70 +594,101 @@ private fun FlipCard(
     }
 }
 
+// ── Shared surface shell ───────────────────────────────────────
+
 @Composable
-private fun CardSurface(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+private fun CardSurface(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
     Surface(
-        modifier = modifier.fillMaxSize(),
-        shape = RoundedCornerShape(32.dp),
-        // tonalElevation overlays primary tint = brown in M3 dark. Use shadow only.
-        shadowElevation = 6.dp,
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        border = androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+        modifier        = modifier.fillMaxSize(),
+        shape           = RoundedCornerShape(20.dp),   // was 32dp — now matches app's 20dp language
+        shadowElevation = 8.dp,
+        color           = MaterialTheme.colorScheme.surface,
+        border          = BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+        )
     ) {
         content()
     }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  CARD FRONT  (question side — orange gradient header)
+// ═══════════════════════════════════════════════════════════════
+
 @Composable
 private fun CardFront(
     word: WordEntity,
     direction: FlashcardDirection,
-    onSpeak: () -> Unit
+    @Suppress("UNUSED_PARAMETER") onSpeak: () -> Unit
 ) {
     val frontText = when (direction) {
         FlashcardDirection.ES_TO_RU -> word.spanish
         FlashcardDirection.RU_TO_ES -> word.russian
-        FlashcardDirection.MIXED -> word.spanish
+        FlashcardDirection.MIXED    -> word.spanish
     }
-    // Strip article so emoji lookup matches ("el gato" → "gato").
     val emoji = remember(word.spanish) {
         val cleaned = word.spanish
             .replace(Regex("^(el|la|los|las|un|una)\\s+", RegexOption.IGNORE_CASE), "")
             .trim()
         com.spanishapp.ui.games.WordEmoji.get(cleaned)
     }
+    val hasEmoji = emoji != null
 
-    Box(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+    Column(modifier = Modifier.fillMaxSize()) {
+        // ── Top: brand-orange gradient + illustrative emoji ───────
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(if (hasEmoji) 0.42f else 0.22f)
+                .background(
+                    Brush.verticalGradient(listOf(BrandOrange, BrandOrange2))
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            // Big illustrative emoji (when known) — same approach Tobo uses,
-            // gives the word a visual hook without requiring per-word PNGs.
-            if (emoji != null) {
-                Text(emoji, fontSize = 96.sp)
+            if (hasEmoji) {
+                Text(emoji!!, fontSize = 68.sp)
             }
-            Text(
-                frontText,
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.ExtraBold,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface
-            )
         }
 
-        Text(
-            "НАЖМИ, ЧТОБЫ ПРОВЕРИТЬ",
-            modifier = Modifier.align(Alignment.BottomCenter),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-            letterSpacing = 1.sp
-        )
+        // ── Bottom: white surface + word ──────────────────────────
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(if (hasEmoji) 0.58f else 0.78f)
+                .padding(horizontal = 28.dp, vertical = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    frontText,
+                    // Adaptive size: very long words shrink one step
+                    style = if (frontText.length > 14)
+                        MaterialTheme.typography.headlineLarge
+                    else
+                        MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    textAlign  = TextAlign.Center,
+                    color      = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    "НАЖМИ, ЧТОБЫ ПРОВЕРИТЬ",
+                    style        = MaterialTheme.typography.labelSmall,
+                    color        = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.40f),
+                    letterSpacing = 1.sp
+                )
+            }
+        }
     }
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  CARD BACK  (answer side — soft-green header signals the flip)
+// ═══════════════════════════════════════════════════════════════
 
 @Composable
 private fun CardBack(
@@ -611,64 +700,101 @@ private fun CardBack(
     val answerText = when (direction) {
         FlashcardDirection.ES_TO_RU -> word.russian
         FlashcardDirection.RU_TO_ES -> word.spanish
-        FlashcardDirection.MIXED -> word.russian
+        FlashcardDirection.MIXED    -> word.russian
     }
+    val primary = MaterialTheme.colorScheme.primary
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            word.spanish,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
-        )
-        
-        Spacer(Modifier.height(16.dp))
-        
-        Text(
-            answerText,
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.ExtraBold,
-            textAlign = TextAlign.Center
-        )
-
-        if (word.example.isNotBlank()) {
-            Spacer(Modifier.height(24.dp))
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "“${word.example}”",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontStyle = FontStyle.Italic,
-                        modifier = Modifier.weight(1f)
+    Column(modifier = Modifier.fillMaxSize()) {
+        // ── Top: soft-green wash — instant visual cue that card flipped ──
+        // Uses Success green (= system green, not brand orange) so there's
+        // zero ambiguity between question face and answer face.
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.26f)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(SuccessGreen.copy(alpha = 0.13f), Color.Transparent)
                     )
-                    IconButton(onClick = onSpeakExample) {
-                        Icon(Icons.Default.VolumeUp, null, tint = MaterialTheme.colorScheme.primary)
-                    }
+                )
+                .padding(horizontal = 20.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                verticalAlignment    = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    word.spanish,
+                    style      = MaterialTheme.typography.titleMedium,
+                    color      = primary,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.width(6.dp))
+                IconButton(
+                    onClick  = onSpeak,
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        Icons.Default.VolumeUp, null,
+                        tint     = primary,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
         }
 
-        Spacer(Modifier.height(24.dp))
-        
-        FilledIconButton(
-            onClick = onSpeak,
-            modifier = Modifier.size(56.dp),
-            colors = IconButtonDefaults.filledIconButtonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+        // ── Bottom: answer + example pill with brand-orange border ───
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.74f)
+                .padding(horizontal = 22.dp, vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Icon(Icons.Default.VolumeUp, null)
+            Text(
+                answerText,
+                style      = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.ExtraBold,
+                textAlign  = TextAlign.Center,
+                color      = MaterialTheme.colorScheme.onSurface
+            )
+
+            if (word.example.isNotBlank()) {
+                Spacer(Modifier.height(18.dp))
+                // Pill with brand-orange tint — ties the example block to the
+                // app's primary colour, consistent with course cards + chips.
+                Surface(
+                    shape    = RoundedCornerShape(12.dp),
+                    color    = primary.copy(alpha = 0.06f),
+                    border   = BorderStroke(1.dp, primary.copy(alpha = 0.22f)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "\"${word.example}\"",
+                            style    = MaterialTheme.typography.bodyMedium,
+                            fontStyle = FontStyle.Italic,
+                            modifier = Modifier.weight(1f),
+                            color    = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        IconButton(
+                            onClick  = onSpeakExample,
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.VolumeUp, null,
+                                tint     = primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
