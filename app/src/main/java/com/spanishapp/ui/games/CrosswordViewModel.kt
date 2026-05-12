@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.domain.algorithm.RatingUpdater
+import com.spanishapp.domain.games.GameId
+import com.spanishapp.domain.games.GameLevelManager
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,7 +65,8 @@ class CrosswordViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
-    private val ratingUpdater: RatingUpdater
+    private val ratingUpdater: RatingUpdater,
+    private val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CrosswordGameState())
@@ -74,9 +77,13 @@ class CrosswordViewModel @Inject constructor(
     private fun loadProgress() {
         viewModelScope.launch {
             val p = userProgressDao.getProgressOnce() ?: return@launch
+            // РЕАЛЬНЫЕ звёзды из game_level_progress (раньше синтезировались из
+            // totalXp/50 — отсюда баг «при перезаходе разное число звёзд»).
+            val savedMap = levelManager.getProgressMap(GameId.CROSSWORD)
+            val stars: Map<Int, Int> = savedMap.mapValues { it.value.stars }
             _state.value = _state.value.copy(
                 coins = p.totalXp,
-                levelStars = (1..(p.totalXp / 50).coerceAtMost(100)).associateWith { 3 }
+                levelStars = stars
             )
         }
     }
@@ -512,7 +519,13 @@ class CrosswordViewModel @Inject constructor(
         updatedStars[s.level] = maxOf(updatedStars[s.level] ?: 0, stars)
         _state.value = s.copy(isGameOver = true, levelStars = updatedStars)
         saveCoinsToDb(bonusCoins)
-        viewModelScope.launch { achievementManager.checkAndUnlock() }
+        viewModelScope.launch {
+            // РЕАЛЬНАЯ персистенция уровня в game_level_progress — раньше звёзды
+            // жили только в State и не сохранялись, отсюда: «прошёл уровень
+            // несколько раз, каждый раз разное число звёзд».
+            levelManager.completeLevelByStars(GameId.CROSSWORD, s.level, stars)
+            achievementManager.checkAndUnlock()
+        }
     }
 
     private fun calculateStars(mistakes: Int, hints: Int): Int {

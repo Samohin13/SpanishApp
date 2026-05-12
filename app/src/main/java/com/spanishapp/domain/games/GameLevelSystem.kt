@@ -9,14 +9,14 @@ import javax.inject.Singleton
  * Идентификаторы игр (используются как `game_id` в game_level_progress).
  */
 object GameId {
-    const val ARTICLES = "articles"
-    const val SPEED    = "speed"
-    const val VERBOS   = "verbos"
-    const val SOPA     = "sopa"
-    const val PALABRA  = "palabra"
-    const val MATH     = "math"
-    // crossword использует свою собственную систему 100 уровней
-    // libros — не трогаем
+    const val ARTICLES  = "articles"
+    const val SPEED     = "speed"
+    const val VERBOS    = "verbos"
+    const val SOPA      = "sopa"
+    const val PALABRA   = "palabra"
+    const val MATH      = "math"
+    const val CROSSWORD = "crossword"
+    // libros — не трогаем (там свой libro_progress)
 }
 
 /**
@@ -107,5 +107,34 @@ class GameLevelManager @Inject constructor(
             )
         )
         return stars
+    }
+
+    /**
+     * Сохранить уровень по прямому числу звёзд (1..3). Используется играми,
+     * которые считают звёзды не из процента точности, а из штрафов (Crucigrama).
+     * Звезды никогда не понижаются — берётся MAX от существующего.
+     */
+    suspend fun completeLevelByStars(gameId: String, level: Int, stars: Int): Int {
+        val clampedStars = stars.coerceIn(0, 3)
+        val existing = dao.getOne(gameId, level)
+        val newStars = maxOf(existing?.stars ?: 0, clampedStars)
+        // bestScore хранит «эквивалентный процент» для UI-показа.
+        val equivalentPercent = when (newStars) {
+            3 -> 100
+            2 -> 80
+            1 -> 60
+            else -> 0
+        }
+        val newBest = maxOf(existing?.bestScore ?: 0, equivalentPercent)
+        dao.upsert(
+            GameLevelProgressEntity(
+                gameId      = gameId,
+                levelNum    = level,
+                stars       = newStars,
+                bestScore   = newBest,
+                completedAt = System.currentTimeMillis()
+            )
+        )
+        return newStars
     }
 }
