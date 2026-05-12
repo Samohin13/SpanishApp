@@ -86,8 +86,17 @@ class SettingsViewModel @Inject constructor(
     private val articleGameDao: com.spanishapp.data.db.dao.ArticleGameDao,
     private val wordListDao: com.spanishapp.data.db.dao.WordListDao,
     private val recentSearchDao: com.spanishapp.data.db.dao.RecentSearchDao,
-    private val weeklyLeagueDao: com.spanishapp.data.db.dao.WeeklyLeagueDao
+    private val weeklyLeagueDao: com.spanishapp.data.db.dao.WeeklyLeagueDao,
+    private val contentDiagnostics: com.spanishapp.data.content.ContentDiagnostics,
 ) : ViewModel() {
+
+    /** Snapshot of locally cached content packs (refreshed when Settings opens). */
+    val cachedPacks: kotlinx.coroutines.flow.StateFlow<com.spanishapp.data.content.ContentDiagnostics.Snapshot> =
+        kotlinx.coroutines.flow.MutableStateFlow(contentDiagnostics.snapshot())
+
+    fun refreshCachedPacks() {
+        (cachedPacks as kotlinx.coroutines.flow.MutableStateFlow).value = contentDiagnostics.snapshot()
+    }
 
     /**
      * Wipes every piece of user-generated state in Room. Seed tables (words,
@@ -651,7 +660,24 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.Leaderboard, stringResource(R.string.settings_leaderboards)) {
                     navController.navigate("leaderboard") { launchSingleTop = true }
                 }
-                SettingsItem(Icons.Default.CloudDownload, "Загрузить обновления контента") {
+                val packsSnapshot by vm.cachedPacks.collectAsStateWithLifecycle()
+                LaunchedEffect(Unit) { vm.refreshCachedPacks() }
+                val packsSummary = if (packsSnapshot.isEmpty) {
+                    "Используется встроенный контент"
+                } else {
+                    "${packsSnapshot.packs.size} ${
+                        when (packsSnapshot.packs.size % 10) {
+                            1 -> if (packsSnapshot.packs.size % 100 == 11) "пакетов" else "пакет"
+                            2, 3, 4 -> if (packsSnapshot.packs.size % 100 in 12..14) "пакетов" else "пакета"
+                            else -> "пакетов"
+                        }
+                    } · ${com.spanishapp.data.content.ContentDiagnostics.formatBytes(packsSnapshot.totalBytes)}"
+                }
+                SettingsItem(
+                    Icons.Default.CloudDownload,
+                    "Загрузить обновления контента",
+                    summary = packsSummary,
+                ) {
                     navController.navigate("download") { launchSingleTop = true }
                 }
                 SettingsItem(Icons.Default.Refresh, stringResource(R.string.settings_reset_progress)) { showResetDialog = true }
