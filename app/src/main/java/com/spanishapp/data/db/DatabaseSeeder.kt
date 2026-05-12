@@ -92,8 +92,14 @@ class DatabaseSeeder @Inject constructor(
     // ── Vocabulary: единый источник CleanVocab (дедуплицированный) ─────
     // Использует IGNORE-стратегию вставки — безопасно вызывать повторно.
     private suspend fun seedWords() {
-        val current = db.wordDao().getCount()
-        if (current >= VOCAB_TARGET) return
+        // Гард VOCAB_TARGET убран: insert ниже идемпотентный (existingSet +
+        // OnConflictStrategy.IGNORE), безопасно запускать на каждом старте.
+        // Это нужно потому что:
+        //  1) BasicsVocab/Extras могут расширяться между билдами
+        //  2) Android Auto-Backup мог восстановить устаревшую БД из облака —
+        //     даже после uninstall+reinstall (исправлено через exclude в
+        //     backup_rules.xml + data_extraction_rules.xml для новых юзеров,
+        //     но старые юзеры всё ещё с устаревшим бэкапом).
 
         // Дедуплицированный набор: CleanVocab + расширения
         val all = CleanVocab.entries + VocabExtra1.entries + VocabExtra2.entries + VocabExtra3.entries + VocabExtra4.entries + VocabExtra5.entries + VocabExtra6.entries + VocabExtra7.entries + VocabExtra8.entries + VocabExtra9.entries + VocabExtra10.entries + VocabExtra11.entries + VocabExtra12.entries + BasicsVocab.entries

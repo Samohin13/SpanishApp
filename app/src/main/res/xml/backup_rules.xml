@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Бэкап включает только нужное: prefs приложения и БД с прогрессом.
-  Аутентификационные токены Firebase хранятся в собственном хранилище
-  Google Play Services и в сихронизацию Auto-Backup не попадают.
+  Бэкап включает только пользовательские preferences (голос, тема, язык).
+  БД spanish_app.db ИСКЛЮЧЕНА из Auto-Backup: при переустановке Google
+  восстанавливал старую копию словаря, и обновлённый BasicsVocab/Extras
+  никогда не попадал в БД — пользователь видел пустые/неполные карточки.
+  Прогресс (XP, серия, ачивки) синхронизируется через Firestore.
 -->
 <full-backup-content>
     <include domain="sharedpref" path="voice_prefs.xml"/>
     <include domain="sharedpref" path="theme_prefs.xml"/>
     <include domain="sharedpref" path="user_settings.xml"/>
-    <include domain="database" path="spanish_app.db"/>
+    <exclude domain="database" path="spanish_app.db"/>
 </full-backup-content>
