@@ -1,5 +1,6 @@
 package com.spanishapp.ui.flashcards
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,15 +10,18 @@ import com.spanishapp.ui.components.StaggeredEntrance
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +41,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private val LEVELS = listOf("A1", "A2", "B1", "B2")
+
+// CEFR accent colours — match HomeScreen pills exactly
+private fun levelAccent(level: String): Color = when (level) {
+    "A1" -> Color(0xFFEAB308)   // amber-yellow
+    "A2" -> Color(0xFF06B6D4)   // cyan
+    "B1" -> Color(0xFF22C55E)   // green
+    "B2" -> Color(0xFFDB2777)   // rose
+    else -> Color(0xFFFF6B35)
+}
 
 // ── UI state types ─────────────────────────────────────────────
 
@@ -267,25 +280,22 @@ private fun LevelChip(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val accent = MaterialTheme.colorScheme.primary
+    val accent = levelAccent(label)
     Surface(
         onClick = onClick,
         modifier = modifier.height(44.dp),
         shape = RoundedCornerShape(12.dp),
-        color = if (selected) accent else MaterialTheme.colorScheme.surfaceContainerHighest,
+        color = if (selected) accent
+                else MaterialTheme.colorScheme.surfaceContainerHighest,
         border = if (selected) null
-            else androidx.compose.foundation.BorderStroke(
-                1.dp,
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-            )
+                 else BorderStroke(1.5.dp, accent.copy(alpha = 0.45f))
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Text(
                 label,
                 fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (selected) Color.White
-                else MaterialTheme.colorScheme.onSurfaceVariant
+                fontWeight = FontWeight.ExtraBold,
+                color = if (selected) Color.White else accent
             )
         }
     }
@@ -297,6 +307,8 @@ private fun SetRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val accent = levelAccent(row.set.level)
+
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
@@ -305,92 +317,115 @@ private fun SetRow(
         shadowElevation = if (row.unlocked) 3.dp else 0.dp,
         enabled = row.unlocked
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Big emoji circle
-            val accent = MaterialTheme.colorScheme.primary
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (!row.unlocked) MaterialTheme.colorScheme.surfaceVariant
-                        else if (row.isNext) accent
-                        else accent.copy(alpha = 0.15f)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                if (!row.unlocked) {
-                    Icon(
-                        Icons.Default.Lock,
-                        null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                        modifier = Modifier.size(22.dp)
-                    )
-                } else {
-                    Text(row.set.emoji, fontSize = 28.sp)
-                }
-            }
-
-            Spacer(Modifier.width(14.dp))
-
-            // Title + progress
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    "Сет ${row.set.order} · ${row.set.title}",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (row.unlocked) MaterialTheme.colorScheme.onSurface
-                    else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(4.dp))
-                if (row.unlocked) {
-                    // "X/N знаю" — word-level mastery progress visible at a glance.
-                    val statusText = when {
-                        row.seenCount == 0 -> "${row.total} слов · ещё не начат"
-                        row.seenCount < row.total -> "${row.seenCount}/${row.total} слов знаю"
-                        else -> "✓ Все ${row.total} слов знаю"
-                    }
-                    Text(
-                        statusText,
-                        fontSize = 12.sp,
-                        color = if (row.seenCount >= row.total && row.total > 0)
-                            androidx.compose.ui.graphics.Color(0xFF4CAF50)
-                        else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(Modifier.height(6.dp))
-                    // Progress bar shows word mastery (seen/total), not just best %.
-                    val progressFraction = if (row.total > 0) row.seenCount.toFloat() / row.total else 0f
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(6.dp)
-                            .clip(RoundedCornerShape(3.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(progressFraction.coerceIn(0f, 1f))
-                                .clip(RoundedCornerShape(3.dp))
-                                .background(accent)
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .drawBehind {
+                    if (row.unlocked) {
+                        // Left accent stripe (level colour)
+                        drawRect(
+                            color = accent,
+                            size  = Size(5.dp.toPx(), size.height)
+                        )
+                        // Subtle radial glow from top-right
+                        drawRect(
+                            brush = Brush.radialGradient(
+                                colors = listOf(accent.copy(alpha = 0.11f), Color.Transparent),
+                                center = Offset(size.width, 0f),
+                                radius = size.width * 0.75f
+                            ),
+                            size = size
                         )
                     }
-                } else {
-                    Text(
-                        "Откроется после прохождения предыдущего сета",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
-            }
+        ) {
+            Row(
+                modifier = Modifier.padding(
+                    start = 20.dp, end = 16.dp, top = 16.dp, bottom = 16.dp
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Emoji circle — tinted in level accent colour
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(
+                            when {
+                                !row.unlocked -> MaterialTheme.colorScheme.surfaceVariant
+                                row.isNext   -> accent
+                                else         -> accent.copy(alpha = 0.15f)
+                            }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (!row.unlocked) {
+                        Icon(
+                            Icons.Default.Lock, null,
+                            tint     = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            modifier = Modifier.size(22.dp)
+                        )
+                    } else {
+                        Text(row.set.emoji, fontSize = 28.sp)
+                    }
+                }
 
-            // Trophy tier (Bronze / Silver / Gold) — replaces the previous 3-star row.
-            if (row.unlocked && row.tier != TrophyTier.NONE) {
-                Spacer(Modifier.width(10.dp))
-                TrophyBadge(row.tier)
+                Spacer(Modifier.width(14.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Сет ${row.set.order} · ${row.set.title}",
+                        fontSize   = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color      = if (row.unlocked) MaterialTheme.colorScheme.onSurface
+                                     else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    if (row.unlocked) {
+                        val statusText = when {
+                            row.seenCount == 0            -> "${row.total} слов · ещё не начат"
+                            row.seenCount < row.total     -> "${row.seenCount}/${row.total} слов знаю"
+                            else                          -> "✓ Все ${row.total} слов знаю"
+                        }
+                        Text(
+                            statusText,
+                            fontSize = 12.sp,
+                            color    = if (row.seenCount >= row.total && row.total > 0)
+                                           Color(0xFF4CAF50)
+                                       else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        // Progress bar in level accent colour
+                        val progressFraction =
+                            if (row.total > 0) row.seenCount.toFloat() / row.total else 0f
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth(progressFraction.coerceIn(0f, 1f))
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .background(accent)
+                            )
+                        }
+                    } else {
+                        Text(
+                            "Откроется после прохождения предыдущего сета",
+                            fontSize = 12.sp,
+                            color    = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                if (row.unlocked && row.tier != TrophyTier.NONE) {
+                    Spacer(Modifier.width(10.dp))
+                    TrophyBadge(row.tier)
+                }
             }
         }
     }
@@ -428,47 +463,78 @@ private fun PracticeTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val accent = Color(0xFFE8A317)  // gold — matches Tobo's reference
+    val gold = Color(0xFFEAB308)   // A1-amber — consistent with level palette
+
     com.spanishapp.ui.components.PressableCard(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        backgroundColor = accent,
+        onClick       = onClick,
+        modifier      = modifier.fillMaxWidth(),
+        shape         = RoundedCornerShape(18.dp),
+        backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         shadowElevation = 4.dp
     ) {
-        Row(
-            modifier = Modifier.padding(18.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .drawBehind {
+                    // Left gold stripe
+                    drawRect(color = gold, size = Size(5.dp.toPx(), size.height))
+                    // Radial glow top-right
+                    drawRect(
+                        brush = Brush.radialGradient(
+                            colors = listOf(gold.copy(alpha = 0.22f), Color.Transparent),
+                            center = Offset(size.width, 0f),
+                            radius = size.width * 0.85f
+                        ),
+                        size = size
+                    )
+                }
         ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier          = Modifier.padding(
+                    start = 20.dp, end = 16.dp, top = 16.dp, bottom = 16.dp
+                ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    Icons.Default.Refresh, null,
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-            Spacer(Modifier.width(14.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    "Практика",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Text(
-                    if (weakCount == 0)
-                        "Пройди хотя бы один сет — слова появятся здесь"
-                    else
-                        "$weakCount ${pluralWords(weakCount)} готовы к повторению",
-                    fontSize = 13.sp,
-                    color = Color.White.copy(alpha = 0.85f)
-                )
+                // Pencil icon circle — "рука с ручкой"
+                Box(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .clip(CircleShape)
+                        .background(gold),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Edit, null,
+                        tint     = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Spacer(Modifier.width(14.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    // Bento-style label chip
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = gold.copy(alpha = 0.18f)
+                    ) {
+                        Text(
+                            "ПРАКТИКА",
+                            fontSize      = 10.sp,
+                            fontWeight    = FontWeight.ExtraBold,
+                            letterSpacing = 1.5.sp,
+                            color         = gold,
+                            modifier      = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                        )
+                    }
+                    Spacer(Modifier.height(5.dp))
+                    Text(
+                        if (weakCount == 0)
+                            "Пройди хотя бы один сет — слова появятся здесь"
+                        else
+                            "$weakCount ${pluralWords(weakCount)} готовы к повторению",
+                        fontSize = 13.sp,
+                        color    = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }
