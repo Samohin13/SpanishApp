@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -123,7 +124,7 @@ fun PlacementTestScreen(
                         if (currentIndex == 0 && !answered) navController.popBackStack()
                         else showAbortDialog = true
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(com.spanishapp.R.string.auth_back))
                     }
                 },
                 actions = {
@@ -271,12 +272,22 @@ fun PlacementResultScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
 
-    val (emoji, title, description) = when (level) {
-        "B2" -> Triple("🏆", "Впечатляет!", "Ты на продвинутом уровне.\nПрограмма настроена на B2.")
-        "B1" -> Triple("🚀", "Ты уже многое знаешь!", "Хороший средний уровень.\nПрограмма настроена на B1.")
-        "A2" -> Triple("⭐", "Хорошая база!", "Ты знаешь основы испанского.\nПрограмма настроена на A2.")
-        else -> Triple("🌱", "Отличное начало!", "Всё начинается с первого шага.\nПрограмма настроена на A1.")
+    val (emoji, titleRes, descRes) = when (level) {
+        "B2" -> Triple("🏆",
+            com.spanishapp.R.string.auth_placement_result_b2_title,
+            com.spanishapp.R.string.auth_placement_result_b2_text)
+        "B1" -> Triple("🚀",
+            com.spanishapp.R.string.auth_placement_result_b1_title,
+            com.spanishapp.R.string.auth_placement_result_b1_text)
+        "A2" -> Triple("⭐",
+            com.spanishapp.R.string.auth_placement_result_a2_title,
+            com.spanishapp.R.string.auth_placement_result_a2_text)
+        else -> Triple("🌱",
+            com.spanishapp.R.string.auth_placement_result_a1_title,
+            com.spanishapp.R.string.auth_placement_result_a1_text)
     }
+    val title = stringResource(titleRes)
+    val description = stringResource(descRes)
 
     val isUpcomingLevel = level in listOf("A2", "B1", "B2")
 
@@ -311,7 +322,7 @@ fun PlacementResultScreen(
                 .padding(horizontal = 24.dp, vertical = 8.dp)
         ) {
             Text(
-                "Уровень $level",
+                stringResource(com.spanishapp.R.string.auth_placement_level_label, level),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = AppColors.Purple
@@ -335,7 +346,7 @@ fun PlacementResultScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    "⏳ Контент $level скоро появится.\nПока начнём с повторения основ на A1 — это всегда полезно!",
+                    stringResource(com.spanishapp.R.string.auth_placement_upcoming_note, level),
                     fontSize = 15.sp,
                     color = Color(0xFF795548),
                     textAlign = TextAlign.Center,
@@ -359,7 +370,7 @@ fun PlacementResultScreen(
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = AppColors.Purple)
         ) {
-            Text("Начать обучение", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(stringResource(com.spanishapp.R.string.auth_placement_start), fontWeight = FontWeight.Bold, fontSize = 16.sp)
         }
 
         Spacer(Modifier.height(16.dp))

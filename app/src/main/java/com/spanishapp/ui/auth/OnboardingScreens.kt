@@ -49,7 +49,7 @@ fun NameEntryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Знакомство", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.auth_onboarding_name_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -124,7 +124,7 @@ fun NameEntryScreen(
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 enabled = name.isNotBlank() && nameError == null
             ) {
-                Text("Далее")
+                Text(stringResource(R.string.auth_onboarding_next))
             }
         }
         }
@@ -145,7 +145,7 @@ fun AgeSelectionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Возраст", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.auth_onboarding_age_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -219,7 +219,7 @@ fun AgeSelectionScreen(
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp)
             ) {
-                Text("Далее")
+                Text(stringResource(R.string.auth_onboarding_next))
             }
         }
         }
@@ -248,7 +248,7 @@ fun ReasonSelectionScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("Цель обучения", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.auth_onboarding_reason_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -329,7 +329,7 @@ fun ReasonSelectionScreen(
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 enabled = selectedReason != null
             ) {
-                Text("Далее")
+                Text(stringResource(R.string.auth_onboarding_next))
             }
 
             Spacer(Modifier.height(16.dp))
@@ -352,7 +352,7 @@ fun KnowledgeCheckScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text("Знание языка", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.auth_onboarding_level_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))

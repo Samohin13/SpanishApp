@@ -756,4 +756,70 @@
     <string name="chat_quick_check">Check grammar</string>
     <string name="chat_quick_practice">Let\'s practice</string>
     <string name="chat_voice_input_cd">Voice input</string>
+
+    <!-- Auth / Onboarding (Wave 1) -->
+    <string name="auth_back">Back</string>
+
+    <string name="auth_welcome_terms_prefix">By using the app, you agree to the </string>
+    <string name="auth_welcome_terms_and"> and </string>
+    <string name="auth_welcome_terms_suffix">.</string>
+    <string name="auth_privacy_policy">Privacy Policy</string>
+    <string name="auth_terms_of_use">Terms of Use</string>
+
+    <string name="auth_login_title">Sign in</string>
+    <string name="auth_login_no_account">No account? Sign up</string>
+    <string name="auth_login_or_with">or with</string>
+
+    <string name="auth_register_title">Sign up</string>
+    <string name="auth_register_subtitle">Create an account to save your progress</string>
+    <string name="auth_register_passwords_mismatch">Passwords don\'t match</string>
+    <string name="auth_register_passwords_match">Passwords match</string>
+    <string name="auth_register_have_account">Already have an account? Sign in</string>
+    <string name="auth_register_open_policy_cd">Open policy</string>
+    <string name="auth_register_strength_length">At least 8 characters</string>
+    <string name="auth_register_strength_digit">At least one digit</string>
+    <string name="auth_register_strength_letter">At least one letter</string>
+    <string name="auth_register_terms_agree_prefix">I have read and agree to the </string>
+
+    <string name="auth_forgot_title">Recovery</string>
+    <string name="auth_forgot_heading">Reset your access</string>
+    <string name="auth_forgot_subtitle">Enter the email registered with your account. We\'ll send a password reset link.</string>
+    <string name="auth_forgot_send">Send link</string>
+    <string name="auth_forgot_back_to_login">Back to sign in</string>
+
+    <string name="auth_onboarding_name_title">Introduction</string>
+    <string name="auth_onboarding_age_title">Age</string>
+    <string name="auth_onboarding_reason_title">Learning goal</string>
+    <string name="auth_onboarding_level_title">Language level</string>
+    <string name="auth_onboarding_next">Next</string>
+
+    <string name="auth_level_select_title">Choose a level</string>
+    <string name="auth_level_select_confirm">Confirm</string>
+    <string name="auth_level_a1_title">A1 — Beginner</string>
+    <string name="auth_level_a2_title">A2 — Basics</string>
+    <string name="auth_level_b1_title">B1 — Intermediate</string>
+    <string name="auth_level_b2_title">B2 — Upper-Intermediate</string>
+    <string name="auth_level_a1_subtitle">First words and phrases</string>
+    <string name="auth_level_a2_subtitle">Simple conversations and shopping</string>
+    <string name="auth_level_b1_subtitle">Free conversation on most topics</string>
+    <string name="auth_level_b2_subtitle">Complex texts and discussions</string>
+    <string name="auth_level_advanced_warning">The %1$s curriculum is still being expanded. You can choose %1$s if you want to start right away, but there\'s less material than A1.\n\nWe recommend starting with A1 and switching later in Settings.</string>
+
+    <string name="auth_placement_start">Start learning</string>
+    <string name="auth_placement_level_label">Level %1$s</string>
+    <string name="auth_placement_result_b2_title">Impressive!</string>
+    <string name="auth_placement_result_b2_text">You\'re at an advanced level.\nProgram set to B2.</string>
+    <string name="auth_placement_result_b1_title">You already know a lot!</string>
+    <string name="auth_placement_result_b1_text">Solid intermediate level.\nProgram set to B1.</string>
+    <string name="auth_placement_result_a2_title">Good foundation!</string>
+    <string name="auth_placement_result_a2_text">You know the basics of Spanish.\nProgram set to A2.</string>
+    <string name="auth_placement_result_a1_title">Great start!</string>
+    <string name="auth_placement_result_a1_text">Every journey begins with a first step.\nProgram set to A1.</string>
+    <string name="auth_placement_upcoming_note">⏳ %1$s content is coming soon.\nWe\'ll start with A1 fundamentals — always useful to review!</string>
+
+    <string name="auth_error_repeat_password">Repeat the password</string>
+    <string name="auth_error_policy_required">You must agree to the privacy policy to register</string>
+    <string name="auth_error_fill_all_fields">Fill in all fields</string>
+    <string name="auth_error_invalid_email">Invalid email format</string>
+    <string name="auth_forgot_success_template">Instructions sent to %1$s</string>
 </resources>

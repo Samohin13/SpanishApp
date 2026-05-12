@@ -60,10 +60,10 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Регистрация", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(com.spanishapp.R.string.auth_register_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(com.spanishapp.R.string.auth_back))
                     }
                 }
             )
@@ -86,7 +86,7 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                "Создайте аккаунт, чтобы сохранять прогресс",
+                stringResource(com.spanishapp.R.string.auth_register_subtitle),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -149,9 +149,9 @@ fun RegisterScreen(
                     when {
                         state.confirmPasswordError != null -> Text(state.confirmPasswordError!!)
                         confirmPassword.isNotEmpty() && confirmPassword != password ->
-                            Text("Пароли не совпадают")
+                            Text(stringResource(com.spanishapp.R.string.auth_register_passwords_mismatch))
                         confirmPassword.isNotEmpty() && confirmPassword == password ->
-                            Text("Пароли совпадают", color = Color(0xFF2E7D32))
+                            Text(stringResource(com.spanishapp.R.string.auth_register_passwords_match), color = Color(0xFF2E7D32))
                     }
                 },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -172,10 +172,12 @@ fun RegisterScreen(
                     checked = state.acceptedTerms,
                     onCheckedChange = { viewModel.setAcceptedTerms(it) }
                 )
+                val agreePrefix = stringResource(com.spanishapp.R.string.auth_register_terms_agree_prefix)
+                val policyLabel = stringResource(com.spanishapp.R.string.auth_privacy_policy)
                 val annotated = buildAnnotatedString {
-                    append("Я прочитал и согласен с ")
+                    append(agreePrefix)
                     withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
-                        append("Политикой конфиденциальности")
+                        append(policyLabel)
                     }
                 }
                 Text(
@@ -190,7 +192,7 @@ fun RegisterScreen(
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl)))
                     }
                 }) {
-                    Icon(Icons.Default.OpenInNew, contentDescription = "Открыть политику", modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.OpenInNew, contentDescription = stringResource(com.spanishapp.R.string.auth_register_open_policy_cd), modifier = Modifier.size(18.dp))
                 }
             }
 
@@ -223,7 +225,7 @@ fun RegisterScreen(
                     launchSingleTop = true
                 }
             }) {
-                Text("Уже есть аккаунт? Войти")
+                Text(stringResource(com.spanishapp.R.string.auth_register_have_account))
             }
 
             Spacer(Modifier.height(8.dp))
@@ -234,7 +236,7 @@ fun RegisterScreen(
             ) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 Text(
-                    "или через",
+                    stringResource(com.spanishapp.R.string.auth_login_or_with),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
@@ -263,9 +265,9 @@ private fun PasswordStrengthIndicator(password: String) {
         modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        StrengthCheck(passed = hasLength, label = "Минимум 8 символов")
-        StrengthCheck(passed = hasDigit, label = "Хотя бы одна цифра")
-        StrengthCheck(passed = hasLetter, label = "Хотя бы одна буква")
+        StrengthCheck(passed = hasLength, label = stringResource(com.spanishapp.R.string.auth_register_strength_length))
+        StrengthCheck(passed = hasDigit, label = stringResource(com.spanishapp.R.string.auth_register_strength_digit))
+        StrengthCheck(passed = hasLetter, label = stringResource(com.spanishapp.R.string.auth_register_strength_letter))
     }
 }
 

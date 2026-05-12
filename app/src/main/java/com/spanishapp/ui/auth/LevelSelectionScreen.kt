@@ -18,20 +18,23 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
 import com.spanishapp.ui.theme.AppColors
 
 private data class LevelOption(
     val code: String,
     val emoji: String,
-    val title: String,
-    val subtitle: String,
+    @StringRes val titleRes: Int,
+    @StringRes val subtitleRes: Int,
     val gradientStart: Color,
     val gradientEnd:   Color
 )
@@ -39,17 +42,17 @@ private data class LevelOption(
 // Brand colours mirror the CourseCard gradients on HomeScreen so the user
 // sees the same level palette they'll see throughout the app.
 private val LEVELS = listOf(
-    LevelOption("A1", "🌱", "A1 — Новичок",
-        "Первые слова и фразы",
+    LevelOption("A1", "🌱",
+        R.string.auth_level_a1_title, R.string.auth_level_a1_subtitle,
         Color(0xFFEAB308), Color(0xFFFACC15)),
-    LevelOption("A2", "⭐", "A2 — Основы",
-        "Простые разговоры и покупки",
+    LevelOption("A2", "⭐",
+        R.string.auth_level_a2_title, R.string.auth_level_a2_subtitle,
         Color(0xFF06B6D4), Color(0xFF0EA5E9)),
-    LevelOption("B1", "🚀", "B1 — Средний",
-        "Свободное общение на большинство тем",
+    LevelOption("B1", "🚀",
+        R.string.auth_level_b1_title, R.string.auth_level_b1_subtitle,
         Color(0xFF22C55E), Color(0xFF16A34A)),
-    LevelOption("B2", "🏆", "B2 — Выше среднего",
-        "Сложные тексты и дискуссии",
+    LevelOption("B2", "🏆",
+        R.string.auth_level_b2_title, R.string.auth_level_b2_subtitle,
         Color(0xFFDB2777), Color(0xFFE11D48)),
 )
 
@@ -80,11 +83,11 @@ fun LevelSelectionScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Выбор уровня", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                    Text(stringResource(R.string.auth_level_select_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.auth_back))
                     }
                 }
             )
@@ -155,14 +158,14 @@ fun LevelSelectionScreen(
                             Spacer(Modifier.width(18.dp))
                             Column(Modifier.weight(1f)) {
                                 Text(
-                                    level.title,
+                                    stringResource(level.titleRes),
                                     fontWeight = FontWeight.ExtraBold,
                                     fontSize = 28.sp,
                                     color = Color.White
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
-                                    level.subtitle,
+                                    stringResource(level.subtitleRes),
                                     fontSize = 15.sp,
                                     color = Color.White.copy(alpha = 0.85f),
                                     fontWeight = FontWeight.Medium
@@ -204,7 +207,7 @@ fun LevelSelectionScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.Purple),
                 enabled = selected != null
             ) {
-                Text("Подтвердить", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(stringResource(R.string.auth_level_select_confirm), fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
         }
@@ -250,7 +253,7 @@ private fun UpcomingLevelDialog(
         },
         text = {
             Text(
-                "Программа обучения для ${level.code} ещё дополняется. Если ты хочешь начать сразу, можешь выбрать ${level.code} — но материала пока меньше, чем на A1.\n\nРекомендуем начать с A1 и переключиться позже в настройках.",
+                stringResource(R.string.auth_level_advanced_warning, level.code),
                 fontSize = 15.sp,
                 lineHeight = 20.sp,
                 color = AppColors.TextSecondary

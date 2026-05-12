@@ -764,4 +764,70 @@
     <string name="chat_quick_check">Перевір граматику</string>
     <string name="chat_quick_practice">Давай попрактикуємо</string>
     <string name="chat_voice_input_cd">Голосове введення</string>
+
+    <!-- Auth / Onboarding (Wave 1) -->
+    <string name="auth_back">Назад</string>
+
+    <string name="auth_welcome_terms_prefix">Використовуючи застосунок, ви погоджуєтеся з </string>
+    <string name="auth_welcome_terms_and"> і </string>
+    <string name="auth_welcome_terms_suffix">.</string>
+    <string name="auth_privacy_policy">Політикою конфіденційності</string>
+    <string name="auth_terms_of_use">Умовами використання</string>
+
+    <string name="auth_login_title">Вхід</string>
+    <string name="auth_login_no_account">Немає акаунта? Зареєструватися</string>
+    <string name="auth_login_or_with">або через</string>
+
+    <string name="auth_register_title">Реєстрація</string>
+    <string name="auth_register_subtitle">Створіть акаунт, щоб зберігати прогрес</string>
+    <string name="auth_register_passwords_mismatch">Паролі не збігаються</string>
+    <string name="auth_register_passwords_match">Паролі збігаються</string>
+    <string name="auth_register_have_account">Вже маєш акаунт? Увійти</string>
+    <string name="auth_register_open_policy_cd">Відкрити політику</string>
+    <string name="auth_register_strength_length">Мінімум 8 символів</string>
+    <string name="auth_register_strength_digit">Хоча б одна цифра</string>
+    <string name="auth_register_strength_letter">Хоча б одна літера</string>
+    <string name="auth_register_terms_agree_prefix">Я прочитав і погоджуюся з </string>
+
+    <string name="auth_forgot_title">Відновлення</string>
+    <string name="auth_forgot_heading">Відновимо доступ</string>
+    <string name="auth_forgot_subtitle">Введи email, на який зареєстровано акаунт. Ми надішлемо посилання для скидання пароля.</string>
+    <string name="auth_forgot_send">Надіслати посилання</string>
+    <string name="auth_forgot_back_to_login">Назад до входу</string>
+
+    <string name="auth_onboarding_name_title">Знайомство</string>
+    <string name="auth_onboarding_age_title">Вік</string>
+    <string name="auth_onboarding_reason_title">Мета навчання</string>
+    <string name="auth_onboarding_level_title">Знання мови</string>
+    <string name="auth_onboarding_next">Далі</string>
+
+    <string name="auth_level_select_title">Вибір рівня</string>
+    <string name="auth_level_select_confirm">Підтвердити</string>
+    <string name="auth_level_a1_title">A1 — Початковий</string>
+    <string name="auth_level_a2_title">A2 — Базовий</string>
+    <string name="auth_level_b1_title">B1 — Середній</string>
+    <string name="auth_level_b2_title">B2 — Вище середнього</string>
+    <string name="auth_level_a1_subtitle">Перші слова та фрази</string>
+    <string name="auth_level_a2_subtitle">Прості розмови та покупки</string>
+    <string name="auth_level_b1_subtitle">Вільне спілкування на більшість тем</string>
+    <string name="auth_level_b2_subtitle">Складні тексти й дискусії</string>
+    <string name="auth_level_advanced_warning">Програма для %1$s ще доповнюється. Ти можеш вибрати %1$s, якщо хочеш почати одразу — але матеріалу поки менше, ніж на A1.\n\nРекомендуємо почати з A1 і перемкнутися пізніше в налаштуваннях.</string>
+
+    <string name="auth_placement_start">Почати навчання</string>
+    <string name="auth_placement_level_label">Рівень %1$s</string>
+    <string name="auth_placement_result_b2_title">Вражає!</string>
+    <string name="auth_placement_result_b2_text">Ти на просунутому рівні.\nПрограма налаштована на B2.</string>
+    <string name="auth_placement_result_b1_title">Ти вже багато знаєш!</string>
+    <string name="auth_placement_result_b1_text">Гарний середній рівень.\nПрограма налаштована на B1.</string>
+    <string name="auth_placement_result_a2_title">Гарна база!</string>
+    <string name="auth_placement_result_a2_text">Ти знаєш основи іспанської.\nПрограма налаштована на A2.</string>
+    <string name="auth_placement_result_a1_title">Чудовий початок!</string>
+    <string name="auth_placement_result_a1_text">Усе починається з першого кроку.\nПрограма налаштована на A1.</string>
+    <string name="auth_placement_upcoming_note">⏳ Контент %1$s скоро зʼявиться.\nПоки почнемо з повторення основ на A1 — це завжди корисно!</string>
+
+    <string name="auth_error_repeat_password">Повтори пароль</string>
+    <string name="auth_error_policy_required">Для реєстрації потрібно погодитися з політикою конфіденційності</string>
+    <string name="auth_error_fill_all_fields">Заповни всі поля</string>
+    <string name="auth_error_invalid_email">Невірний формат email</string>
+    <string name="auth_forgot_success_template">Інструкції надіслано на %1$s</string>
 </resources>

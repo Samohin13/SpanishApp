@@ -791,4 +791,84 @@
     <string name="chat_quick_check">Проверь грамматику</string>
     <string name="chat_quick_practice">Давай попрактикуем</string>
     <string name="chat_voice_input_cd">Голосовой ввод</string>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Auth / Onboarding screens — вынесены из хардкода в Kotlin.
+         Wave 1 localization sweep, 2026-05-12.
+         ═══════════════════════════════════════════════════════ -->
+
+    <!-- Common -->
+    <string name="auth_back">Назад</string>
+
+    <!-- Welcome -->
+    <string name="auth_welcome_terms_prefix">Используя приложение, вы соглашаетесь с </string>
+    <string name="auth_welcome_terms_and"> и </string>
+    <string name="auth_welcome_terms_suffix">.</string>
+    <string name="auth_privacy_policy">Политикой конфиденциальности</string>
+    <string name="auth_terms_of_use">Условиями использования</string>
+
+    <!-- Login -->
+    <string name="auth_login_title">Вход</string>
+    <string name="auth_login_no_account">Нет аккаунта? Зарегистрироваться</string>
+    <string name="auth_login_or_with">или через</string>
+
+    <!-- Register -->
+    <string name="auth_register_title">Регистрация</string>
+    <string name="auth_register_subtitle">Создайте аккаунт, чтобы сохранять прогресс</string>
+    <string name="auth_register_passwords_mismatch">Пароли не совпадают</string>
+    <string name="auth_register_passwords_match">Пароли совпадают</string>
+    <string name="auth_register_have_account">Уже есть аккаунт? Войти</string>
+    <string name="auth_register_open_policy_cd">Открыть политику</string>
+    <string name="auth_register_strength_length">Минимум 8 символов</string>
+    <string name="auth_register_strength_digit">Хотя бы одна цифра</string>
+    <string name="auth_register_strength_letter">Хотя бы одна буква</string>
+    <string name="auth_register_terms_agree_prefix">Я прочитал и согласен с </string>
+
+    <!-- Forgot password -->
+    <string name="auth_forgot_title">Восстановление</string>
+    <string name="auth_forgot_heading">Восстановим доступ</string>
+    <string name="auth_forgot_subtitle">Введите email, на который зарегистрирован аккаунт. Мы отправим ссылку для сброса пароля.</string>
+    <string name="auth_forgot_send">Отправить ссылку</string>
+    <string name="auth_forgot_back_to_login">Назад ко входу</string>
+
+    <!-- Onboarding flow -->
+    <string name="auth_onboarding_name_title">Знакомство</string>
+    <string name="auth_onboarding_age_title">Возраст</string>
+    <string name="auth_onboarding_reason_title">Цель обучения</string>
+    <string name="auth_onboarding_level_title">Знание языка</string>
+    <string name="auth_onboarding_next">Далее</string>
+
+    <!-- Level selection -->
+    <string name="auth_level_select_title">Выбор уровня</string>
+    <string name="auth_level_select_confirm">Подтвердить</string>
+    <string name="auth_level_a1_title">A1 — Новичок</string>
+    <string name="auth_level_a2_title">A2 — Основы</string>
+    <string name="auth_level_b1_title">B1 — Средний</string>
+    <string name="auth_level_b2_title">B2 — Выше среднего</string>
+    <string name="auth_level_a1_subtitle">Первые слова и фразы</string>
+    <string name="auth_level_a2_subtitle">Простые разговоры и покупки</string>
+    <string name="auth_level_b1_subtitle">Свободное общение на большинство тем</string>
+    <string name="auth_level_b2_subtitle">Сложные тексты и дискуссии</string>
+    <string name="auth_level_advanced_warning">Программа обучения для %1$s ещё дополняется. Если ты хочешь начать сразу, можешь выбрать %1$s — но материала пока меньше, чем на A1.\n\nРекомендуем начать с A1 и переключиться позже в настройках.</string>
+
+    <!-- Placement test (chrome only — questions stay in Russian, they are
+         designed for Russian learners of Spanish) -->
+    <string name="auth_placement_start">Начать обучение</string>
+    <string name="auth_placement_level_label">Уровень %1$s</string>
+    <string name="auth_placement_result_b2_title">Впечатляет!</string>
+    <string name="auth_placement_result_b2_text">Ты на продвинутом уровне.\nПрограмма настроена на B2.</string>
+    <string name="auth_placement_result_b1_title">Ты уже многое знаешь!</string>
+    <string name="auth_placement_result_b1_text">Хороший средний уровень.\nПрограмма настроена на B1.</string>
+    <string name="auth_placement_result_a2_title">Хорошая база!</string>
+    <string name="auth_placement_result_a2_text">Ты знаешь основы испанского.\nПрограмма настроена на A2.</string>
+    <string name="auth_placement_result_a1_title">Отличное начало!</string>
+    <string name="auth_placement_result_a1_text">Всё начинается с первого шага.\nПрограмма настроена на A1.</string>
+    <string name="auth_placement_upcoming_note">⏳ Контент %1$s скоро появится.\nПока начнём с повторения основ на A1 — это всегда полезно!</string>
+
+    <!-- AuthViewModel error messages -->
+    <string name="auth_error_repeat_password">Повторите пароль</string>
+    <string name="auth_error_policy_required">Для регистрации нужно согласиться с политикой конфиденциальности</string>
+    <string name="auth_error_fill_all_fields">Заполните все поля</string>
+    <string name="auth_error_invalid_email">Неверный формат email</string>
+    <string name="auth_forgot_success_template">Инструкции отправлены на %1$s</string>
 </resources>

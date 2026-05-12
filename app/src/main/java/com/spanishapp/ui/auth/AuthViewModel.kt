@@ -1,14 +1,17 @@
 package com.spanishapp.ui.auth
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.spanishapp.R
 import com.spanishapp.data.repository.AuthRepository
 import com.spanishapp.util.AuthValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,7 +40,8 @@ data class AuthUiState(
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val syncRepository: com.spanishapp.data.repository.SyncRepository
+    private val syncRepository: com.spanishapp.data.repository.SyncRepository,
+    @ApplicationContext private val appContext: Context,
 ) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -133,12 +137,12 @@ class AuthViewModel @Inject constructor(
         val emailErr = AuthValidator.getEmailError(email)
         val passErr = AuthValidator.getPasswordError(pass)
         val confirmErr = when {
-            confirmPass.isBlank() -> "Повторите пароль"
-            confirmPass != pass -> "Пароли не совпадают"
+            confirmPass.isBlank() -> appContext.getString(R.string.auth_error_repeat_password)
+            confirmPass != pass -> appContext.getString(R.string.auth_register_passwords_mismatch)
             else -> null
         }
         val termsErr = if (!_uiState.value.acceptedTerms)
-            "Для регистрации нужно согласиться с политикой конфиденциальности"
+            appContext.getString(R.string.auth_error_policy_required)
         else null
 
         if (emailErr != null || passErr != null || confirmErr != null || termsErr != null) {
@@ -180,7 +184,7 @@ class AuthViewModel @Inject constructor(
 
     fun login(email: String, pass: String) {
         if (email.isBlank() || pass.isBlank()) {
-            _uiState.update { it.copy(generalError = "Заполните все поля") }
+            _uiState.update { it.copy(generalError = appContext.getString(R.string.auth_error_fill_all_fields)) }
             return
         }
 
@@ -199,7 +203,7 @@ class AuthViewModel @Inject constructor(
 
     fun resetPassword(email: String) {
         if (!AuthValidator.isValidEmail(email)) {
-            _uiState.update { it.copy(emailError = "Неверный формат email") }
+            _uiState.update { it.copy(emailError = appContext.getString(R.string.auth_error_invalid_email)) }
             return
         }
         viewModelScope.launch {
@@ -209,7 +213,7 @@ class AuthViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        successMessage = "Инструкции отправлены на $email"
+                        successMessage = appContext.getString(R.string.auth_forgot_success_template, email)
                     )
                 }
             } catch (e: Exception) {

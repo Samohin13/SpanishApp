@@ -764,4 +764,70 @@
     <string name="chat_quick_check">Revisa la gramática</string>
     <string name="chat_quick_practice">Vamos a practicar</string>
     <string name="chat_voice_input_cd">Entrada de voz</string>
+
+    <!-- Auth / Onboarding (Wave 1) -->
+    <string name="auth_back">Atrás</string>
+
+    <string name="auth_welcome_terms_prefix">Al usar la aplicación, aceptas la </string>
+    <string name="auth_welcome_terms_and"> y los </string>
+    <string name="auth_welcome_terms_suffix">.</string>
+    <string name="auth_privacy_policy">Política de privacidad</string>
+    <string name="auth_terms_of_use">Términos de uso</string>
+
+    <string name="auth_login_title">Iniciar sesión</string>
+    <string name="auth_login_no_account">¿No tienes cuenta? Regístrate</string>
+    <string name="auth_login_or_with">o con</string>
+
+    <string name="auth_register_title">Registro</string>
+    <string name="auth_register_subtitle">Crea una cuenta para guardar tu progreso</string>
+    <string name="auth_register_passwords_mismatch">Las contraseñas no coinciden</string>
+    <string name="auth_register_passwords_match">Las contraseñas coinciden</string>
+    <string name="auth_register_have_account">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="auth_register_open_policy_cd">Abrir política</string>
+    <string name="auth_register_strength_length">Mínimo 8 caracteres</string>
+    <string name="auth_register_strength_digit">Al menos un dígito</string>
+    <string name="auth_register_strength_letter">Al menos una letra</string>
+    <string name="auth_register_terms_agree_prefix">He leído y acepto la </string>
+
+    <string name="auth_forgot_title">Recuperación</string>
+    <string name="auth_forgot_heading">Recuperemos el acceso</string>
+    <string name="auth_forgot_subtitle">Introduce el email con el que está registrada tu cuenta. Te enviaremos un enlace para restablecer la contraseña.</string>
+    <string name="auth_forgot_send">Enviar enlace</string>
+    <string name="auth_forgot_back_to_login">Volver al inicio de sesión</string>
+
+    <string name="auth_onboarding_name_title">Presentación</string>
+    <string name="auth_onboarding_age_title">Edad</string>
+    <string name="auth_onboarding_reason_title">Objetivo de aprendizaje</string>
+    <string name="auth_onboarding_level_title">Nivel de idioma</string>
+    <string name="auth_onboarding_next">Siguiente</string>
+
+    <string name="auth_level_select_title">Elige tu nivel</string>
+    <string name="auth_level_select_confirm">Confirmar</string>
+    <string name="auth_level_a1_title">A1 — Principiante</string>
+    <string name="auth_level_a2_title">A2 — Básico</string>
+    <string name="auth_level_b1_title">B1 — Intermedio</string>
+    <string name="auth_level_b2_title">B2 — Intermedio alto</string>
+    <string name="auth_level_a1_subtitle">Primeras palabras y frases</string>
+    <string name="auth_level_a2_subtitle">Conversaciones sencillas y compras</string>
+    <string name="auth_level_b1_subtitle">Conversación libre sobre la mayoría de temas</string>
+    <string name="auth_level_b2_subtitle">Textos complejos y debates</string>
+    <string name="auth_level_advanced_warning">El programa para %1$s aún se está ampliando. Puedes elegir %1$s si quieres empezar ya, pero hay menos material que en A1.\n\nRecomendamos empezar con A1 y cambiar más tarde en Ajustes.</string>
+
+    <string name="auth_placement_start">Empezar a aprender</string>
+    <string name="auth_placement_level_label">Nivel %1$s</string>
+    <string name="auth_placement_result_b2_title">¡Impresionante!</string>
+    <string name="auth_placement_result_b2_text">Estás en un nivel avanzado.\nEl programa se ha ajustado a B2.</string>
+    <string name="auth_placement_result_b1_title">¡Ya sabes mucho!</string>
+    <string name="auth_placement_result_b1_text">Buen nivel intermedio.\nEl programa se ha ajustado a B1.</string>
+    <string name="auth_placement_result_a2_title">¡Buena base!</string>
+    <string name="auth_placement_result_a2_text">Conoces los fundamentos del español.\nEl programa se ha ajustado a A2.</string>
+    <string name="auth_placement_result_a1_title">¡Excelente comienzo!</string>
+    <string name="auth_placement_result_a1_text">Todo empieza con un primer paso.\nEl programa se ha ajustado a A1.</string>
+    <string name="auth_placement_upcoming_note">⏳ El contenido de %1$s llegará pronto.\nMientras tanto, empezamos repasando lo básico de A1 — siempre viene bien.</string>
+
+    <string name="auth_error_repeat_password">Repite la contraseña</string>
+    <string name="auth_error_policy_required">Debes aceptar la política de privacidad para registrarte</string>
+    <string name="auth_error_fill_all_fields">Rellena todos los campos</string>
+    <string name="auth_error_invalid_email">Formato de email inválido</string>
+    <string name="auth_forgot_success_template">Instrucciones enviadas a %1$s</string>
 </resources>

@@ -144,16 +144,21 @@ fun WelcomeScreen(
         }
 
         // ── Footer: ссылки на политику ────────────────────────────
+        val termsPrefix = stringResource(com.spanishapp.R.string.auth_welcome_terms_prefix)
+        val privacyLabel = stringResource(com.spanishapp.R.string.auth_privacy_policy)
+        val termsAnd = stringResource(com.spanishapp.R.string.auth_welcome_terms_and)
+        val termsLabel = stringResource(com.spanishapp.R.string.auth_terms_of_use)
+        val termsSuffix = stringResource(com.spanishapp.R.string.auth_welcome_terms_suffix)
         val footer = buildAnnotatedString {
-            append("Используя приложение, вы соглашаетесь с ")
+            append(termsPrefix)
             withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
-                append("Политикой конфиденциальности")
+                append(privacyLabel)
             }
-            append(" и ")
+            append(termsAnd)
             withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
-                append("Условиями использования")
+                append(termsLabel)
             }
-            append(".")
+            append(termsSuffix)
         }
         Text(
             text = footer,

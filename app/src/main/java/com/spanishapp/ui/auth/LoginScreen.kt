@@ -42,10 +42,10 @@ fun LoginScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Вход", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(com.spanishapp.R.string.auth_login_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(com.spanishapp.R.string.auth_back))
                     }
                 }
             )
@@ -144,14 +144,14 @@ fun LoginScreen(
                     launchSingleTop = true
                 }
             }) {
-                Text("Нет аккаунта? Зарегистрироваться")
+                Text(stringResource(com.spanishapp.R.string.auth_login_no_account))
             }
 
             Spacer(Modifier.height(16.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 HorizontalDivider(Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(0.5f))
-                Text("или через", Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+                Text(stringResource(com.spanishapp.R.string.auth_login_or_with), Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                 HorizontalDivider(Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(0.5f))
             }
 

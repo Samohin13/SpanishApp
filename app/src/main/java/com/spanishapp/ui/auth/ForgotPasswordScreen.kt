@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,10 +50,10 @@ fun ForgotPasswordScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Восстановление", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(com.spanishapp.R.string.auth_forgot_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(com.spanishapp.R.string.auth_back))
                     }
                 }
             )
@@ -75,13 +76,13 @@ fun ForgotPasswordScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                "Восстановим доступ",
+                stringResource(com.spanishapp.R.string.auth_forgot_heading),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                "Введите email, на который зарегистрирован аккаунт. Мы отправим ссылку для сброса пароля.",
+                stringResource(com.spanishapp.R.string.auth_forgot_subtitle),
                 fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 20.sp
@@ -119,12 +120,12 @@ fun ForgotPasswordScreen(
                 if (state.isLoading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("Отправить ссылку", fontSize = 16.sp)
+                    Text(stringResource(com.spanishapp.R.string.auth_forgot_send), fontSize = 16.sp)
                 }
             }
 
             TextButton(onClick = { navController.popBackStack() }) {
-                Text("Назад ко входу")
+                Text(stringResource(com.spanishapp.R.string.auth_forgot_back_to_login))
             }
         }
         }

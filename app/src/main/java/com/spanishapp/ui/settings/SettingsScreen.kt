@@ -588,6 +588,8 @@ fun SettingsScreen(
                 val uiLangLabel = when (uiLang) {
                     "ru" -> stringResource(R.string.set_lang_ru)
                     "en" -> stringResource(R.string.set_lang_en)
+                    "uk" -> "Українська"
+                    "es" -> "Español"
                     else -> stringResource(R.string.set_lang_system)
                 }
                 SettingsItem(Icons.Default.Language, stringResource(R.string.settings_language_ui), uiLangLabel) {
