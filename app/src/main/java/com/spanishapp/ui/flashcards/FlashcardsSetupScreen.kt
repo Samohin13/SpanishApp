@@ -52,6 +52,7 @@ enum class TrophyTier {
 data class SetRowUi(
     val set: FlashcardSet,
     val total: Int,            // size of the set (= words actually present in DB)
+    val seenCount: Int,        // words with ≥1 correct review (progress within the set)
     val bestPercent: Int,      // 0..100, best session result so far
     val tier: TrophyTier,
     val isCompleted: Boolean,  // true if user finished at least one session
@@ -108,6 +109,7 @@ class FlashcardsSetupViewModel @Inject constructor(
                     set.wordsSpanish.map { it.lowercase().trim() }
                 )
                 val total = words.size
+                val seenCount = words.count { it.correctReviews > 0 }
                 val progress = progressMap[set.id]
                 val bestPercent = progress?.bestPercent ?: 0
                 val isCompleted = (progress?.completedAt ?: 0L) > 0L
@@ -122,6 +124,7 @@ class FlashcardsSetupViewModel @Inject constructor(
                 val row = SetRowUi(
                     set = set,
                     total = total,
+                    seenCount = seenCount,
                     bestPercent = bestPercent,
                     tier = tier,
                     isCompleted = isCompleted,
@@ -344,18 +347,22 @@ private fun SetRow(
                 )
                 Spacer(Modifier.height(4.dp))
                 if (row.unlocked) {
-                    // Show: not started / best result so far
+                    // "X/N знаю" — word-level mastery progress visible at a glance.
                     val statusText = when {
-                        !row.isCompleted -> "${row.total} слов · ещё не пройден"
-                        else             -> "Лучший результат: ${row.bestPercent}%"
+                        row.seenCount == 0 -> "${row.total} слов · ещё не начат"
+                        row.seenCount < row.total -> "${row.seenCount}/${row.total} слов знаю"
+                        else -> "✓ Все ${row.total} слов знаю"
                     }
                     Text(
                         statusText,
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = if (row.seenCount >= row.total && row.total > 0)
+                            androidx.compose.ui.graphics.Color(0xFF4CAF50)
+                        else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(6.dp))
-                    val progressFraction = row.bestPercent / 100f
+                    // Progress bar shows word mastery (seen/total), not just best %.
+                    val progressFraction = if (row.total > 0) row.seenCount.toFloat() / row.total else 0f
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()

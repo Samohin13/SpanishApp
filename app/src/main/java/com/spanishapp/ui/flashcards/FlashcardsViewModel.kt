@@ -40,7 +40,11 @@ data class FlashcardsUiState(
     val correctCount: Int = 0,
     val wrongCount: Int = 0,
     val earnedXp: Int = 0,
-    val error: String? = null
+    val error: String? = null,
+    /** Words answered HARD — shown in post-session review. */
+    val wrongWords: List<WordEntity> = emptyList(),
+    /** True immediately after an answer — shows the undo chip. */
+    val canUndo: Boolean = false,
 )
 
 @HiltViewModel
@@ -77,6 +81,12 @@ class FlashcardsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(FlashcardsUiState())
     val state: StateFlow<FlashcardsUiState> = _state.asStateFlow()
+
+    /** Snapshot saved before each answer — allows one-level undo. */
+    private var undoSnapshot: Pair<FlashcardsUiState, WordEntity>? = null
+
+    /** Words already re-queued this session — each word returns at most once. */
+    private val requeuedIds = mutableSetOf<Int>()
 
     private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
     val leaguePromotions: SharedFlow<LeaguePromotion> = _leaguePromotions.asSharedFlow()
@@ -207,21 +217,20 @@ class FlashcardsViewModel @Inject constructor(
         val s = _state.value
         val current = s.cards.getOrNull(s.currentIndex) ?: return
 
+        // Save snapshot for undo BEFORE any state change.
+        undoSnapshot = Pair(s, current)
+
         val quality = SM2.qualityFromButton(button)
         val updated = SM2.review(current, quality)
 
         val xpDelta = when (button) {
-            ReviewButton.HARD -> 0                     // «Забыл» — XP не начисляем
-            ReviewButton.GOOD -> XpSystem.WORD_CORRECT // «Знаю»
-            ReviewButton.EASY -> XpSystem.WORD_CORRECT // EASY больше не свайпится,
-                                                       // но enum пока остаётся для совместимости —
-                                                       // даём тот же XP что и GOOD.
+            ReviewButton.HARD -> 0
+            ReviewButton.GOOD -> XpSystem.WORD_CORRECT
+            ReviewButton.EASY -> XpSystem.WORD_CORRECT
         }
 
         viewModelScope.launch {
             wordDao.update(updated)
-            // Skill rating: применяем до обновления ease factor — используем easeFactor,
-            // который БЫЛ у слова на момент ответа (отражает реальную сложность).
             val promotion = ratingUpdater.applyAnswer(
                 easeFactor = current.easeFactor,
                 quality = quality,
@@ -230,16 +239,33 @@ class FlashcardsViewModel @Inject constructor(
             if (promotion != null) _leaguePromotions.tryEmit(promotion)
         }
 
+        // Re-queue HARD words 3 positions ahead (each word re-inserted at most once).
+        val updatedCards = if (quality < 3 && current.id !in requeuedIds) {
+            requeuedIds.add(current.id)
+            val mutable = s.cards.toMutableList()
+            val insertAt = (s.currentIndex + 3).coerceAtMost(mutable.size)
+            mutable.add(insertAt, current)
+            mutable
+        } else s.cards
+
         val nextIdx = s.currentIndex + 1
-        val finished = nextIdx >= s.cards.size
+        val finished = nextIdx >= updatedCards.size
+
+        // Track wrong words for post-session review (deduplicated).
+        val newWrongWords = if (quality < 3 && s.wrongWords.none { it.id == current.id })
+            s.wrongWords + current else s.wrongWords
 
         _state.value = s.copy(
+            cards = updatedCards,
             currentIndex = nextIdx,
             showBack = false,
+            sessionSize = updatedCards.size,
             currentDirection = if (!finished) resolveDirection(mode) else s.currentDirection,
             correctCount = s.correctCount + if (quality >= 3) 1 else 0,
             wrongCount = s.wrongCount + if (quality < 3) 1 else 0,
             earnedXp = s.earnedXp + xpDelta,
+            wrongWords = newWrongWords,
+            canUndo = true,
             isFinished = finished
         )
 
@@ -270,6 +296,18 @@ class FlashcardsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    /** Revert the last answered card — restores DB word and previous state. */
+    fun undo() {
+        val (prevState, originalWord) = undoSnapshot ?: return
+        undoSnapshot = null
+        requeuedIds.remove(originalWord.id)
+        viewModelScope.launch {
+            wordDao.update(originalWord)           // revert SM-2 changes
+        }
+        // Restore to the moment the card was flipped, ready to re-answer.
+        _state.value = prevState.copy(showBack = true, canUndo = false)
     }
 
     fun restart() {

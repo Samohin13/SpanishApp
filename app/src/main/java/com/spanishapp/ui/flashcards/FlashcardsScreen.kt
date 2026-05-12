@@ -7,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.input.pointer.pointerInput
@@ -116,6 +118,7 @@ fun FlashcardsScreen(
                     wrong = state.wrongCount,
                     xp = state.earnedXp,
                     error = state.error,
+                    wrongWords = state.wrongWords,
                     hasNextSet = viewModel.nextSetId != null,
                     onRestart = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -136,11 +139,12 @@ fun FlashcardsScreen(
                     onSpeak = { viewModel.speakCurrent() },
                     onSpeakExample = viewModel::speakExample,
                     onAnswer = { button ->
-                        // Тактильный отклик оставлен — мягкий, не раздражает.
-                        // Тональные звуки (sound.correct/wrong) убраны: ToneGenerator
-                        // на свайпе звучал резко и портил впечатление.
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.answer(button)
+                    },
+                    onUndo = {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        viewModel.undo()
                     }
                 )
             }
@@ -162,80 +166,109 @@ private fun SessionCompleteBody(
     wrong: Int,
     xp: Int,
     error: String?,
+    wrongWords: List<WordEntity>,
     hasNextSet: Boolean,
     onRestart: () -> Unit,
     onNextSet: () -> Unit,
     onExit: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        contentPadding = PaddingValues(vertical = 32.dp),
+        verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        if (error != null) {
-            Text(error, style = MaterialTheme.typography.bodyLarge)
-        } else {
-            val accuracy = if (total > 0) (correct * 100 / total) else 0
-            Text("Сессия завершена!", fontWeight = FontWeight.SemiBold, fontSize = 24.sp)
-            Spacer(Modifier.height(20.dp))
-            com.spanishapp.ui.components.CompletionBadge(
-                accuracyPercent = accuracy,
-                size = 180.dp
-            )
-            Spacer(Modifier.height(20.dp))
-            Text(
-                "$correct правильных из $total  ·  +$xp XP",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                "Нужно повторить: $wrong",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
-        Spacer(Modifier.height(32.dp))
-
-        // Главная CTA — если есть следующий сет, ведём в него (продолжение
-        // обучения); иначе — «Ещё раз» как раньше.
-        if (hasNextSet) {
-            Button(
-                onClick = onNextSet,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Text("Следующий сет →", fontWeight = FontWeight.Bold)
+        item {
+            if (error != null) {
+                Text(error, style = MaterialTheme.typography.bodyLarge)
+            } else {
+                val accuracy = if (total > 0) (correct * 100 / total) else 0
+                Text("Сессия завершена!", fontWeight = FontWeight.SemiBold, fontSize = 24.sp)
+                Spacer(Modifier.height(20.dp))
+                com.spanishapp.ui.components.CompletionBadge(accuracyPercent = accuracy, size = 160.dp)
+                Spacer(Modifier.height(20.dp))
+                Text(
+                    "$correct правильных из $total  ·  +$xp XP",
+                    fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (wrong > 0) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "Нужно повторить: $wrong",
+                        fontSize = 14.sp, color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
+                    )
+                }
             }
-            Spacer(Modifier.height(8.dp))
-            OutlinedButton(
-                onClick = onRestart,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Text("Повторить этот сет")
+            Spacer(Modifier.height(28.dp))
+            if (hasNextSet) {
+                Button(onClick = onNextSet, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) {
+                    Text("Следующий сет →", fontWeight = FontWeight.Bold)
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(onClick = onRestart, modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(14.dp)) {
+                    Text("Повторить этот сет")
+                }
+            } else {
+                Button(onClick = onRestart, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(16.dp)) {
+                    Text("Ещё раз", fontWeight = FontWeight.Bold)
+                }
             }
-        } else {
-            Button(
-                onClick = onRestart,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Text("Ещё раз", fontWeight = FontWeight.Bold)
+            TextButton(onClick = onExit) {
+                Text("Назад к карточкам", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
-        TextButton(onClick = onExit) {
-            Text("Назад к карточкам", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        // ── Разбор ошибок ─────────────────────────────────────────────
+        if (wrongWords.isNotEmpty()) {
+            item {
+                Spacer(Modifier.height(24.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("🔁", fontSize = 18.sp)
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        "Нужно повторить (${wrongWords.size})",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+            items(wrongWords) { word ->
+                Surface(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.35f)
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                word.spanish,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                word.russian,
+                                fontSize = 15.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        if (word.example.isNotBlank()) {
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                word.example,
+                                fontSize = 12.sp,
+                                fontStyle = FontStyle.Italic,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -262,9 +295,15 @@ private fun SessionBody(
     onFlip: () -> Unit,
     onSpeak: () -> Unit,
     onSpeakExample: () -> Unit,
-    onAnswer: (ReviewButton) -> Unit
+    onAnswer: (ReviewButton) -> Unit,
+    onUndo: () -> Unit
 ) {
     val word = state.cards.getOrNull(state.currentIndex) ?: return
+
+    // Auto-play Spanish pronunciation when the card is flipped to the back.
+    LaunchedEffect(state.showBack, state.currentIndex) {
+        if (state.showBack) onSpeak()
+    }
 
     Column(
         modifier = Modifier
@@ -368,8 +407,7 @@ private fun SessionBody(
             }
         }
 
-        // Permanent swipe legend — works on both front and back of the card.
-        // User can tap to flip & peek, but the primary interaction is the swipe.
+        // Bottom row: swipe legend + undo chip.
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -378,6 +416,36 @@ private fun SessionBody(
             verticalAlignment = Alignment.CenterVertically
         ) {
             SwipeLegend("←", "Забыл", MaterialTheme.colorScheme.error)
+
+            // Undo chip — visible only after the previous card was answered.
+            androidx.compose.animation.AnimatedVisibility(visible = state.canUndo) {
+                Surface(
+                    onClick = onUndo,
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    border = androidx.compose.foundation.BorderStroke(
+                        1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Undo, null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            "Отменить",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+
             SwipeLegend("→", "Знаю",  MaterialTheme.colorScheme.primary)
         }
     }
