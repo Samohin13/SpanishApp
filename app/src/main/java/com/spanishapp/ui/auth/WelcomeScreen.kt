@@ -53,11 +53,22 @@ fun WelcomeScreen(
         enter = fadeIn(animationSpec = tween(400)) +
                 slideInVertically(animationSpec = tween(400), initialOffsetY = { it / 8 })
     ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
+    ) {
+        // Language picker — top-right. Critical for non-Russian users
+        // who land on Welcome and need to switch UI before signing up.
+        com.spanishapp.ui.components.LanguagePickerButton(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 12.dp, end = 16.dp)
+        )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
@@ -172,6 +183,7 @@ fun WelcomeScreen(
             lineHeight = 18.sp
         )
     }
+    }   // Box (Welcome wrapper with language picker)
     }
 }
 
