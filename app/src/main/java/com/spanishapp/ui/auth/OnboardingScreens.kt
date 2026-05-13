@@ -235,12 +235,12 @@ fun ReasonSelectionScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val reasons = listOf(
-        "✈️ Путешествия",
-        "💼 Работа / Карьера",
-        "🧠 Саморазвитие",
-        "🎓 Учёба",
-        "❤️ Общение / Семья",
-        "🎸 Хобби / Культура"
+        stringResource(R.string.onboarding_reason_travel),
+        stringResource(R.string.onboarding_reason_work),
+        stringResource(R.string.onboarding_reason_growth),
+        stringResource(R.string.onboarding_reason_study),
+        stringResource(R.string.onboarding_reason_family),
+        stringResource(R.string.onboarding_reason_hobby),
     )
     var selectedReason by remember { mutableStateOf<String?>(null) }
 

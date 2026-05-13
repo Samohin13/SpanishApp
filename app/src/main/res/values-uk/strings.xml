@@ -969,4 +969,11 @@
     <string name="exercise_type_missing_word">Артикль</string>
     <string name="exercise_type_listen_type">Диктант</string>
     <string name="exercise_type_conjugation">Відмінювання</string>
+
+    <string name="onboarding_reason_travel">✈️ Подорожі</string>
+    <string name="onboarding_reason_work">💼 Робота / Карʼєра</string>
+    <string name="onboarding_reason_growth">🧠 Саморозвиток</string>
+    <string name="onboarding_reason_study">🎓 Навчання</string>
+    <string name="onboarding_reason_family">❤️ Спілкування / Сімʼя</string>
+    <string name="onboarding_reason_hobby">🎸 Хобі / Культура</string>
 </resources>

@@ -1027,4 +1027,12 @@
     <string name="exercise_type_missing_word">Артикль</string>
     <string name="exercise_type_listen_type">Диктант</string>
     <string name="exercise_type_conjugation">Спряжение</string>
+
+    <!-- Onboarding reason cards -->
+    <string name="onboarding_reason_travel">✈️ Путешествия</string>
+    <string name="onboarding_reason_work">💼 Работа / Карьера</string>
+    <string name="onboarding_reason_growth">🧠 Саморазвитие</string>
+    <string name="onboarding_reason_study">🎓 Учёба</string>
+    <string name="onboarding_reason_family">❤️ Общение / Семья</string>
+    <string name="onboarding_reason_hobby">🎸 Хобби / Культура</string>
 </resources>

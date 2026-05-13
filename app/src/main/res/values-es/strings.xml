@@ -969,4 +969,11 @@
     <string name="exercise_type_missing_word">Artículo</string>
     <string name="exercise_type_listen_type">Dictado</string>
     <string name="exercise_type_conjugation">Conjugación</string>
+
+    <string name="onboarding_reason_travel">✈️ Viajes</string>
+    <string name="onboarding_reason_work">💼 Trabajo / Carrera</string>
+    <string name="onboarding_reason_growth">🧠 Desarrollo personal</string>
+    <string name="onboarding_reason_study">🎓 Estudios</string>
+    <string name="onboarding_reason_family">❤️ Familia / Amigos</string>
+    <string name="onboarding_reason_hobby">🎸 Aficiones / Cultura</string>
 </resources>
