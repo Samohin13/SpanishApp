@@ -822,4 +822,110 @@
     <string name="auth_error_fill_all_fields">Fill in all fields</string>
     <string name="auth_error_invalid_email">Invalid email format</string>
     <string name="auth_forgot_success_template">Instructions sent to %1$s</string>
+
+    <!-- Home / Practice / Flashcards / WeeklyLeague / LevelComplete (Wave 2) -->
+    <string name="home_profile_cd">Profile</string>
+    <string name="home_settings_cd">Settings</string>
+    <string name="home_continue_label">CONTINUE</string>
+    <string name="home_tile_lesson_title">Lesson</string>
+    <string name="home_tile_lesson_empty">Pick any course to start</string>
+    <string name="home_tile_continue">Continue →</string>
+    <string name="home_tile_book_title">Book</string>
+    <string name="home_tile_book_empty">Open your first book</string>
+    <string name="home_tile_book_cta">Read →</string>
+    <string name="home_tile_flashcard_title">Card set</string>
+    <string name="home_tile_flashcard_empty">All sets done 🎉</string>
+    <string name="home_tile_flashcard_cta">To set →</string>
+    <string name="home_tile_weak_title">Weak word</string>
+    <string name="home_tile_weak_empty">No weak words yet</string>
+    <string name="home_tile_weak_cta">Practice →</string>
+
+    <string name="bento_label_book">BOOK</string>
+    <string name="bento_label_rating">RATING</string>
+    <string name="bento_label_dictionary">DICTIONARY</string>
+    <string name="bento_label_goal">DAILY GOAL</string>
+    <string name="bento_libro_template">Libro #%1$d</string>
+    <string name="bento_open_book">Open a book</string>
+    <string name="bento_dictionary_find">Find\nyour first word</string>
+    <string name="bento_dictionary_open">Open the dictionary</string>
+    <string name="bento_goal_lesson">Lesson of the day</string>
+    <string name="bento_goal_flashcard">Card set</string>
+    <string name="bento_goal_book_page">Book page</string>
+    <string name="bento_goal_wod">Word of the day</string>
+
+    <string name="quick_action_random">Random</string>
+    <string name="quick_action_pronounce">Pronunciation</string>
+    <string name="quick_action_weak5">5 weak</string>
+    <string name="quick_action_game">Game</string>
+
+    <string name="home_open_in_dictionary">Open in dictionary</string>
+
+    <string name="practice_title">Practice</string>
+    <string name="practice_no_words_yet">Finish at least one set in Flashcards first — words to review will appear here after that.</string>
+    <string name="practice_correct_next">Correct — next →</string>
+    <string name="practice_remember_next">Got it — next →</string>
+    <string name="practice_back">Back</string>
+    <string name="practice_result_excellent_title">Excellent!</string>
+    <string name="practice_result_excellent_subtitle">Words are well learned</string>
+    <string name="practice_result_good_title">Good progress</string>
+    <string name="practice_result_good_subtitle">Keep going</string>
+    <string name="practice_result_keep_title">More work needed</string>
+    <string name="practice_result_keep_subtitle">Repeat these words again</string>
+    <string name="practice_result_more_title">Need more practice</string>
+    <string name="practice_result_more_subtitle">Don\'t give up — repetition helps</string>
+    <string name="practice_repeat">Practice again</string>
+    <string name="practice_tap_letters">Tap letters ↓</string>
+    <string name="practice_correct_answer_was">Correct: %1$s</string>
+    <string name="practice_clear">Clear</string>
+    <string name="practice_check">Check</string>
+
+    <string name="flashcards_title">Word study</string>
+    <string name="flashcards_session_complete_no_emoji">Session complete</string>
+    <string name="flashcards_session_complete">Session complete! 🎉</string>
+    <string name="flashcards_need_to_repeat_template">To review: %1$s</string>
+    <string name="flashcards_next_set">Next set →</string>
+    <string name="flashcards_repeat_set">Repeat this set</string>
+    <string name="flashcards_again">Again</string>
+    <string name="flashcards_back_to_cards">Back to flashcards</string>
+    <string name="flashcards_need_to_repeat_count_template">To review (%1$d)</string>
+    <string name="flashcards_action_forgot">Forgot</string>
+    <string name="flashcards_action_undo">Undo</string>
+    <string name="flashcards_action_know">Know</string>
+    <string name="flashcards_direction_mixed">Mixed</string>
+    <string name="flashcards_tap_to_check">TAP TO CHECK</string>
+
+    <string name="weekly_league_title">League of the week</string>
+    <string name="weekly_league_heading">Weekly leagues</string>
+    <string name="weekly_league_subtitle">Each week you compete with 30 learners around your level. Top 7 move up, bottom 7 move down.</string>
+    <string name="weekly_league_join">Join the weekly league</string>
+    <string name="weekly_league_ends_in_template">Ends in %1$s</string>
+    <string name="weekly_league_waiting_cohort">Waiting for other cohort members...</string>
+    <string name="weekly_league_zone_promote_template">Top %1$d — promotion</string>
+    <string name="weekly_league_zone_hold">Stay</string>
+    <string name="weekly_league_zone_demote">Demotion</string>
+    <string name="weekly_league_leave">Leave the weekly league</string>
+    <string name="weekly_league_how_works">How weekly leagues work</string>
+    <string name="weekly_league_understood">Got it</string>
+    <string name="weekly_league_rule_1">• Every Monday 30 learners at your level join one cohort.</string>
+    <string name="weekly_league_rule_2">• Earn XP for correct answers all week.</string>
+    <string name="weekly_league_rule_3">• Sunday 23:59: top 7 promote to a higher league, bottom 7 demote.</string>
+    <string name="weekly_league_rule_4">• 8 leagues: from Aldea perdida to Madrid.</string>
+    <string name="weekly_league_rule_5">• You can leave and return any time.</string>
+    <string name="weekly_league_day_one">day</string>
+    <string name="weekly_league_day_few">days</string>
+    <string name="weekly_league_day_many">days</string>
+
+    <string name="level_complete_passed_template">Level %1$d complete!</string>
+    <string name="level_complete_try_again">Try again</string>
+    <string name="level_complete_perfect">Perfect! 🏆</string>
+    <string name="level_complete_excellent">Excellent! 🔥</string>
+    <string name="level_complete_good">Good! 👍</string>
+    <string name="level_complete_keep_going">Not bad, keep going!</string>
+    <string name="level_complete_more_practice">More practice needed</string>
+    <string name="level_complete_accuracy_template">Accuracy: %1$d%%</string>
+    <string name="level_complete_next">Next →</string>
+    <string name="level_complete_menu">Menu</string>
+    <string name="level_complete_again">Again</string>
+    <string name="level_complete_try_again_button">Try again</string>
+    <string name="level_complete_back_to_menu">Back to menu</string>
 </resources>

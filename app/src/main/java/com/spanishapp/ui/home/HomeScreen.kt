@@ -423,7 +423,7 @@ private fun CompactHeader(
                         .data(photoUrl)
                         .crossfade(true)
                         .build(),
-                    contentDescription = "Профиль",
+                    contentDescription = stringResource(R.string.home_profile_cd),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize().clip(CircleShape)
                 )
@@ -461,7 +461,7 @@ private fun CompactHeader(
         IconButton(onClick = onSettings) {
             Icon(
                 Icons.Default.Settings,
-                contentDescription = "Настройки",
+                contentDescription = stringResource(R.string.home_settings_cd),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -592,7 +592,7 @@ private fun ContinuePager(
 
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp)) {
         Text(
-            "ПРОДОЛЖИ",
+            stringResource(R.string.home_continue_label),
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -607,40 +607,40 @@ private fun ContinuePager(
         ) { page ->
             when (page) {
                 0 -> ContinueCard(
-                    title    = "Урок",
+                    title    = stringResource(R.string.home_tile_lesson_title),
                     subtitle = lastLesson?.let { "${it.unitTitle} · ${it.lessonTitle}" }
-                        ?: "Начни с любого курса",
-                    cta      = "Продолжить →",
+                        ?: stringResource(R.string.home_tile_lesson_empty),
+                    cta      = stringResource(R.string.home_tile_continue),
                     accent   = LessonAccent,
                     theme    = WatermarkTheme.LESSON,
                     enabled  = lastLesson != null,
                     onClick  = { lastLesson?.let(onLesson) }
                 )
                 1 -> ContinueCard(
-                    title    = "Книга",
+                    title    = stringResource(R.string.home_tile_book_title),
                     subtitle = lastBook?.let { "Libro #${it.libroId} · ${it.bestScore}%" }
-                        ?: "Открой первую книгу",
-                    cta      = "Читать →",
+                        ?: stringResource(R.string.home_tile_book_empty),
+                    cta      = stringResource(R.string.home_tile_book_cta),
                     accent   = BookAccent,
                     theme    = WatermarkTheme.BOOK,
                     enabled  = true,
                     onClick  = { lastBook?.let { onBook(it.libroId) } ?: onBook(1) }
                 )
                 2 -> ContinueCard(
-                    title    = "Сет карточек",
+                    title    = stringResource(R.string.home_tile_flashcard_title),
                     subtitle = nextSet?.let { "${it.emoji} ${it.title} · ${it.wordsSpanish.size} слов" }
-                        ?: "Все сеты пройдены 🎉",
-                    cta      = "К сету →",
+                        ?: stringResource(R.string.home_tile_flashcard_empty),
+                    cta      = stringResource(R.string.home_tile_flashcard_cta),
                     accent   = SetAccent,
                     theme    = WatermarkTheme.FLASHCARD_SET,
                     enabled  = nextSet != null,
                     onClick  = { nextSet?.let { onSet(it.id) } }
                 )
                 3 -> ContinueCard(
-                    title    = "Слабое слово",
+                    title    = stringResource(R.string.home_tile_weak_title),
                     subtitle = weakWord?.let { "${it.spanish} — ${it.russian}" }
-                        ?: "Пока нет слабых слов",
-                    cta      = "Повторить →",
+                        ?: stringResource(R.string.home_tile_weak_empty),
+                    cta      = stringResource(R.string.home_tile_weak_cta),
                     accent   = WeakAccent,
                     theme    = WatermarkTheme.WEAK_WORD,
                     enabled  = weakWord != null,
@@ -1349,10 +1349,11 @@ private fun BentoRow(
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // ── BOOK tile (green) ─────────────────────────────────
             BentoTile(modifier = Modifier.weight(1f), accent = BookAccent, theme = BentoTheme.BOOK, onClick = onBookClick) {
-                BentoHeader(emoji = "📚", label = "КНИГА", accent = BookAccent)
+                BentoHeader(emoji = "📚", label = stringResource(R.string.bento_label_book), accent = BookAccent)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    book?.let { "Libro #${it.libroId}" } ?: "Открой книгу",
+                    book?.let { stringResource(R.string.bento_libro_template, it.libroId) }
+                        ?: stringResource(R.string.bento_open_book),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -1378,7 +1379,7 @@ private fun BentoRow(
 
             // ── RATING tile (amber-gold, hero number) ──────────────
             BentoTile(modifier = Modifier.weight(1f), accent = RatingAccent, theme = BentoTheme.RATING, onClick = onLeagueClick) {
-                BentoHeader(emoji = "🏅", label = "РЕЙТИНГ", accent = RatingAccent)
+                BentoHeader(emoji = "🏅", label = stringResource(R.string.bento_label_rating), accent = RatingAccent)
                 Spacer(Modifier.height(10.dp))
                 Text(
                     "$rating",
@@ -1404,11 +1405,11 @@ private fun BentoRow(
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             // ── DICTIONARY tile (cyan-blue) ────────────────────────
             BentoTile(modifier = Modifier.weight(1f), accent = WeakAccent, theme = BentoTheme.DICTIONARY, onClick = onDictClick) {
-                BentoHeader(emoji = "🔍", label = "СЛОВАРЬ", accent = WeakAccent)
+                BentoHeader(emoji = "🔍", label = stringResource(R.string.bento_label_dictionary), accent = WeakAccent)
                 Spacer(Modifier.height(10.dp))
                 if (recent.isEmpty()) {
                     Text(
-                        "Найди\nпервое слово",
+                        stringResource(R.string.bento_dictionary_find),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -1417,7 +1418,7 @@ private fun BentoRow(
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        "Открой словарь",
+                        stringResource(R.string.bento_dictionary_open),
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -1455,7 +1456,7 @@ private fun BentoRow(
             // ── GOAL tile (coral red — distinct from gold rating) ──
             BentoTile(modifier = Modifier.weight(1f), accent = GoalAccent, theme = BentoTheme.GOAL, onClick = onGoalClick) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    BentoHeader(emoji = "🎯", label = "ЦЕЛЬ ДНЯ", accent = GoalAccent, modifier = Modifier.weight(1f))
+                    BentoHeader(emoji = "🎯", label = stringResource(R.string.bento_label_goal), accent = GoalAccent, modifier = Modifier.weight(1f))
                     Text(
                         "${goals.completedCount}/${goals.total}",
                         fontSize = 16.sp,
@@ -1464,10 +1465,10 @@ private fun BentoRow(
                     )
                 }
                 Spacer(Modifier.height(8.dp))
-                GoalLine("Урок дня", goals.lessonCompleted)
-                GoalLine("Сет карточек", goals.flashcardSetCompleted)
-                GoalLine("Страница книги", goals.bookPageRead)
-                GoalLine("Слово дня", goals.wordOfDaySolved)
+                GoalLine(stringResource(R.string.bento_goal_lesson), goals.lessonCompleted)
+                GoalLine(stringResource(R.string.bento_goal_flashcard), goals.flashcardSetCompleted)
+                GoalLine(stringResource(R.string.bento_goal_book_page), goals.bookPageRead)
+                GoalLine(stringResource(R.string.bento_goal_wod), goals.wordOfDaySolved)
                 if (goals.allDone) {
                     Spacer(Modifier.height(8.dp))
                     Surface(
@@ -1662,10 +1663,10 @@ private fun QuickActionsRow(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        QuickAction("🎯", "Случайное", onRandom)
-        QuickAction("🎤", "Произношение", onPronounce)
-        QuickAction("🔄", "5 слабых", onWeak)
-        QuickAction("🎲", "Игра", onGame)
+        QuickAction("🎯", stringResource(R.string.quick_action_random), onRandom)
+        QuickAction("🎤", stringResource(R.string.quick_action_pronounce), onPronounce)
+        QuickAction("🔄", stringResource(R.string.quick_action_weak5), onWeak)
+        QuickAction("🎲", stringResource(R.string.quick_action_game), onGame)
     }
 }
 
@@ -1780,7 +1781,7 @@ private fun WordPeekSheet(
                 onClick = onOpen,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Открыть в словаре")
+                Text(stringResource(R.string.home_open_in_dictionary))
             }
             Spacer(Modifier.height(10.dp))
         }

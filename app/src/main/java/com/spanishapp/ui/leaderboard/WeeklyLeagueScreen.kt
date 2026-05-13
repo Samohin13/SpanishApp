@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -42,7 +43,7 @@ fun WeeklyLeagueScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = { Text("Лига недели", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(com.spanishapp.R.string.weekly_league_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
@@ -78,14 +79,13 @@ private fun OptInBlock(onJoin: () -> Unit) {
         Text("🏆", fontSize = 64.sp)
         Spacer(Modifier.height(12.dp))
         Text(
-            "Недельные лиги",
+            stringResource(com.spanishapp.R.string.weekly_league_heading),
             fontSize = 22.sp,
             fontWeight = FontWeight.ExtraBold
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            "Каждую неделю ты соревнуешься с 30 учениками примерно твоего уровня. " +
-            "Топ-7 поднимаются в лигу выше, низ-7 опускаются.",
+            stringResource(com.spanishapp.R.string.weekly_league_subtitle),
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -95,7 +95,7 @@ private fun OptInBlock(onJoin: () -> Unit) {
             modifier = Modifier.fillMaxWidth().height(54.dp),
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text("Присоединиться к недельной лиге", fontWeight = FontWeight.Bold)
+            Text(stringResource(com.spanishapp.R.string.weekly_league_join), fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -131,7 +131,10 @@ private fun CohortList(ui: WeeklyLeagueUiState, onLeave: () -> Unit) {
                         color = Color(league.accentColorHex)
                     )
                     Text(
-                        "Заканчивается через ${ui.daysRemaining} ${pluralDays(ui.daysRemaining)}",
+                        stringResource(
+                            com.spanishapp.R.string.weekly_league_ends_in_template,
+                            "${ui.daysRemaining} ${pluralDays(ui.daysRemaining)}"
+                        ),
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -144,27 +147,27 @@ private fun CohortList(ui: WeeklyLeagueUiState, onLeave: () -> Unit) {
                 Spacer(Modifier.height(40.dp))
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Text(
-                        "Ждём других участников когорты...",
+                        stringResource(com.spanishapp.R.string.weekly_league_waiting_cohort),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
         } else {
             // Sticky-ish header for promo zone
-            item { ZoneHeader("Топ-${WeeklyLeagueService.PROMOTE_COUNT} — повышение", Color(0xFF2E7D32), Icons.AutoMirrored.Filled.TrendingUp) }
+            item { ZoneHeader(stringResource(com.spanishapp.R.string.weekly_league_zone_promote_template, WeeklyLeagueService.PROMOTE_COUNT), Color(0xFF2E7D32), Icons.AutoMirrored.Filled.TrendingUp) }
             items(members.take(promoCutoff), key = { it.uid }) { m ->
                 MemberRow(rank = members.indexOf(m) + 1, member = m, zone = Zone.PROMO)
             }
             val mid = members.drop(promoCutoff).take((demoCutoff - promoCutoff).coerceAtLeast(0))
             if (mid.isNotEmpty()) {
-                item { ZoneHeader("Удержание", MaterialTheme.colorScheme.onSurfaceVariant, null) }
+                item { ZoneHeader(stringResource(com.spanishapp.R.string.weekly_league_zone_hold), MaterialTheme.colorScheme.onSurfaceVariant, null) }
                 items(mid, key = { it.uid }) { m ->
                     MemberRow(rank = members.indexOf(m) + 1, member = m, zone = Zone.HOLD)
                 }
             }
             val bottom = members.drop(demoCutoff.coerceAtLeast(0))
             if (bottom.isNotEmpty()) {
-                item { ZoneHeader("Понижение", Color(0xFFC62828), Icons.AutoMirrored.Filled.TrendingDown) }
+                item { ZoneHeader(stringResource(com.spanishapp.R.string.weekly_league_zone_demote), Color(0xFFC62828), Icons.AutoMirrored.Filled.TrendingDown) }
                 items(bottom, key = { it.uid }) { m ->
                     MemberRow(rank = members.indexOf(m) + 1, member = m, zone = Zone.DEMO)
                 }
@@ -174,7 +177,7 @@ private fun CohortList(ui: WeeklyLeagueUiState, onLeave: () -> Unit) {
         item { Spacer(Modifier.height(24.dp)) }
         item {
             TextButton(onClick = onLeave, modifier = Modifier.fillMaxWidth()) {
-                Text("Выйти из недельной лиги", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(com.spanishapp.R.string.weekly_league_leave), color = MaterialTheme.colorScheme.error)
             }
         }
     }
@@ -244,14 +247,14 @@ private fun MemberRow(rank: Int, member: WeeklyMember, zone: Zone) {
 private fun RulesSheet(onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("Как работают недельные лиги", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text("• Каждый понедельник 30 учеников вашего уровня попадают в одну когорту.", fontSize = 14.sp)
-            Text("• Всю неделю набирайте XP за правильные ответы.", fontSize = 14.sp)
-            Text("• В воскресенье в 23:59: топ-7 поднимаются в лигу выше, нижние 7 опускаются.", fontSize = 14.sp)
-            Text("• Лиг 8: от Aldea perdida до Madrid.", fontSize = 14.sp)
-            Text("• Можно выйти и вернуться в любой момент.", fontSize = 14.sp)
+            Text(stringResource(com.spanishapp.R.string.weekly_league_how_works), fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_1), fontSize = 14.sp)
+            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_2), fontSize = 14.sp)
+            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_3), fontSize = 14.sp)
+            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_4), fontSize = 14.sp)
+            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_5), fontSize = 14.sp)
             Spacer(Modifier.height(8.dp))
-            Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text("Понятно") }
+            Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text(stringResource(com.spanishapp.R.string.weekly_league_understood)) }
         }
     }
 }

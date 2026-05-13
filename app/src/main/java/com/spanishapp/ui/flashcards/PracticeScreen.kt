@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -80,7 +81,8 @@ data class PracticeState(
 class PracticeViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val tts: SpanishTts,
-    private val ratingUpdater: com.spanishapp.domain.algorithm.RatingUpdater
+    private val ratingUpdater: com.spanishapp.domain.algorithm.RatingUpdater,
+    @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PracticeState())
@@ -110,7 +112,7 @@ class PracticeViewModel @Inject constructor(
                 _state.value = PracticeState(
                     isLoading = false,
                     isFinished = true,
-                    error = "Сначала пройди хотя бы один сет в Карточках — после этого здесь появятся слова, которые стоит подтянуть."
+                    error = appContext.getString(com.spanishapp.R.string.practice_no_words_yet)
                 )
                 return@launch
             }
@@ -325,7 +327,7 @@ fun PracticeScreen(
                 TopAppBar(
                     title = {
                         Column {
-                            Text("Практика", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                            Text(stringResource(com.spanishapp.R.string.practice_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
                             if (!state.isLoading && !state.isFinished && state.rounds.isNotEmpty()) {
                                 Text(
                                     "${state.currentIndex + 1} / ${state.rounds.size}  ·  ✅ ${state.correctCount}  ❌ ${state.wrongCount}",
@@ -529,7 +531,7 @@ private fun ChoiceRoundView(
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Text(
-                    if (picked == round.correctIndex) "Верно — далее →" else "Запомню — далее →",
+                    if (picked == round.correctIndex) stringResource(com.spanishapp.R.string.practice_correct_next) else stringResource(com.spanishapp.R.string.practice_remember_next),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -612,17 +614,25 @@ private fun FinishedView(
             )
             Spacer(Modifier.height(32.dp))
             Button(onClick = onExit, modifier = Modifier.fillMaxWidth().height(56.dp)) {
-                Text("Назад", fontWeight = FontWeight.Bold)
+                Text(stringResource(com.spanishapp.R.string.practice_back), fontWeight = FontWeight.Bold)
             }
         } else {
             val accuracy = if (total > 0) (correct * 100 / total) else 0
 
             // Contextual emoji + message — no celebration badge for practice.
             val (emoji, headline, sub) = when {
-                accuracy >= 90 -> Triple("🎯", "Отлично!", "Слова хорошо закреплены")
-                accuracy >= 70 -> Triple("📈", "Хороший прогресс", "Продолжай в том же духе")
-                accuracy >= 50 -> Triple("💪", "Ещё поработать", "Повтори эти слова ещё раз")
-                else           -> Triple("🔁", "Нужно больше практики", "Не сдавайся — повторение помогает")
+                accuracy >= 90 -> Triple("🎯",
+                    stringResource(com.spanishapp.R.string.practice_result_excellent_title),
+                    stringResource(com.spanishapp.R.string.practice_result_excellent_subtitle))
+                accuracy >= 70 -> Triple("📈",
+                    stringResource(com.spanishapp.R.string.practice_result_good_title),
+                    stringResource(com.spanishapp.R.string.practice_result_good_subtitle))
+                accuracy >= 50 -> Triple("💪",
+                    stringResource(com.spanishapp.R.string.practice_result_keep_title),
+                    stringResource(com.spanishapp.R.string.practice_result_keep_subtitle))
+                else           -> Triple("🔁",
+                    stringResource(com.spanishapp.R.string.practice_result_more_title),
+                    stringResource(com.spanishapp.R.string.practice_result_more_subtitle))
             }
 
             Text(emoji, fontSize = 56.sp)
@@ -676,11 +686,11 @@ private fun FinishedView(
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Повторить ещё раз", fontWeight = FontWeight.Bold)
+                Text(stringResource(com.spanishapp.R.string.practice_repeat), fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = onExit) {
-                Text("Назад", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(com.spanishapp.R.string.practice_back), fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -743,7 +753,7 @@ private fun TypingRoundView(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    typed.ifEmpty { "Тапни буквы ↓" },
+                    typed.ifEmpty { stringResource(com.spanishapp.R.string.practice_tap_letters) },
                     fontSize = if (typed.isEmpty()) 16.sp else 26.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = if (typed.isEmpty()) 0.sp else 2.sp,
@@ -766,7 +776,7 @@ private fun TypingRoundView(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    "Правильно: ${round.word.spanish}",
+                    stringResource(com.spanishapp.R.string.practice_correct_answer_was, round.word.spanish),
                     fontSize = 15.sp,
                     color = Color(0xFF4CAF50),
                     fontWeight = FontWeight.SemiBold
@@ -809,7 +819,7 @@ private fun TypingRoundView(
                     onClick = onClear,
                     modifier = Modifier.weight(1f).height(52.dp),
                     shape = RoundedCornerShape(14.dp)
-                ) { Text("Очистить") }
+                ) { Text(stringResource(com.spanishapp.R.string.practice_clear)) }
                 OutlinedButton(
                     onClick = onBackspace,
                     modifier = Modifier.weight(1f).height(52.dp),
@@ -821,7 +831,7 @@ private fun TypingRoundView(
                     modifier = Modifier.weight(1.4f).height(52.dp),
                     shape = RoundedCornerShape(14.dp)
                 ) {
-                    Text("Проверить", fontWeight = FontWeight.Bold)
+                    Text(stringResource(com.spanishapp.R.string.practice_check), fontWeight = FontWeight.Bold)
                 }
             }
         } else {
@@ -831,7 +841,7 @@ private fun TypingRoundView(
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Text(
-                    if (isCorrect) "Верно — далее →" else "Запомню — далее →",
+                    if (isCorrect) stringResource(com.spanishapp.R.string.practice_correct_next) else stringResource(com.spanishapp.R.string.practice_remember_next),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )

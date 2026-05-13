@@ -871,4 +871,122 @@
     <string name="auth_error_fill_all_fields">Заполните все поля</string>
     <string name="auth_error_invalid_email">Неверный формат email</string>
     <string name="auth_forgot_success_template">Инструкции отправлены на %1$s</string>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Home / Practice / Flashcards / WeeklyLeague / LevelComplete
+         Wave 2 localization sweep, 2026-05-12.
+         ═══════════════════════════════════════════════════════ -->
+
+    <!-- Home — header & continue strip -->
+    <string name="home_profile_cd">Профиль</string>
+    <string name="home_settings_cd">Настройки</string>
+    <string name="home_continue_label">ПРОДОЛЖИ</string>
+    <string name="home_tile_lesson_title">Урок</string>
+    <string name="home_tile_lesson_empty">Начни с любого курса</string>
+    <string name="home_tile_continue">Продолжить →</string>
+    <string name="home_tile_book_title">Книга</string>
+    <string name="home_tile_book_empty">Открой первую книгу</string>
+    <string name="home_tile_book_cta">Читать →</string>
+    <string name="home_tile_flashcard_title">Сет карточек</string>
+    <string name="home_tile_flashcard_empty">Все сеты пройдены 🎉</string>
+    <string name="home_tile_flashcard_cta">К сету →</string>
+    <string name="home_tile_weak_title">Слабое слово</string>
+    <string name="home_tile_weak_empty">Пока нет слабых слов</string>
+    <string name="home_tile_weak_cta">Повторить →</string>
+
+    <!-- Home — bento headers -->
+    <string name="bento_label_book">КНИГА</string>
+    <string name="bento_label_rating">РЕЙТИНГ</string>
+    <string name="bento_label_dictionary">СЛОВАРЬ</string>
+    <string name="bento_label_goal">ЦЕЛЬ ДНЯ</string>
+    <string name="bento_libro_template">Libro #%1$d</string>
+    <string name="bento_open_book">Открой книгу</string>
+    <string name="bento_dictionary_find">Найди\nпервое слово</string>
+    <string name="bento_dictionary_open">Открой словарь</string>
+    <string name="bento_goal_lesson">Урок дня</string>
+    <string name="bento_goal_flashcard">Сет карточек</string>
+    <string name="bento_goal_book_page">Страница книги</string>
+    <string name="bento_goal_wod">Слово дня</string>
+
+    <!-- Home — quick actions -->
+    <string name="quick_action_random">Случайное</string>
+    <string name="quick_action_pronounce">Произношение</string>
+    <string name="quick_action_weak5">5 слабых</string>
+    <string name="quick_action_game">Игра</string>
+
+    <!-- Home — misc -->
+    <string name="home_open_in_dictionary">Открыть в словаре</string>
+
+    <!-- Practice screen -->
+    <string name="practice_title">Практика</string>
+    <string name="practice_no_words_yet">Сначала пройди хотя бы один сет в Карточках — после этого здесь появятся слова, которые стоит подтянуть.</string>
+    <string name="practice_correct_next">Верно — далее →</string>
+    <string name="practice_remember_next">Запомню — далее →</string>
+    <string name="practice_back">Назад</string>
+    <string name="practice_result_excellent_title">Отлично!</string>
+    <string name="practice_result_excellent_subtitle">Слова хорошо закреплены</string>
+    <string name="practice_result_good_title">Хороший прогресс</string>
+    <string name="practice_result_good_subtitle">Продолжай в том же духе</string>
+    <string name="practice_result_keep_title">Ещё поработать</string>
+    <string name="practice_result_keep_subtitle">Повтори эти слова ещё раз</string>
+    <string name="practice_result_more_title">Нужно больше практики</string>
+    <string name="practice_result_more_subtitle">Не сдавайся — повторение помогает</string>
+    <string name="practice_repeat">Повторить ещё раз</string>
+    <string name="practice_tap_letters">Тапни буквы ↓</string>
+    <string name="practice_correct_answer_was">Правильно: %1$s</string>
+    <string name="practice_clear">Очистить</string>
+    <string name="practice_check">Проверить</string>
+
+    <!-- Flashcards session -->
+    <string name="flashcards_title">Изучение слов</string>
+    <string name="flashcards_session_complete_no_emoji">Сессия завершена</string>
+    <string name="flashcards_session_complete">Сессия завершена! 🎉</string>
+    <string name="flashcards_need_to_repeat_template">Нужно повторить: %1$s</string>
+    <string name="flashcards_next_set">Следующий сет →</string>
+    <string name="flashcards_repeat_set">Повторить этот сет</string>
+    <string name="flashcards_again">Ещё раз</string>
+    <string name="flashcards_back_to_cards">Назад к карточкам</string>
+    <string name="flashcards_need_to_repeat_count_template">Нужно повторить (%1$d)</string>
+    <string name="flashcards_action_forgot">Забыл</string>
+    <string name="flashcards_action_undo">Отменить</string>
+    <string name="flashcards_action_know">Знаю</string>
+    <string name="flashcards_direction_mixed">Смешанный</string>
+    <string name="flashcards_tap_to_check">НАЖМИ, ЧТОБЫ ПРОВЕРИТЬ</string>
+
+    <!-- Weekly League -->
+    <string name="weekly_league_title">Лига недели</string>
+    <string name="weekly_league_heading">Недельные лиги</string>
+    <string name="weekly_league_subtitle">Каждую неделю ты соревнуешься с 30 учениками примерно твоего уровня. Топ-7 поднимаются в лигу выше, низ-7 опускаются.</string>
+    <string name="weekly_league_join">Присоединиться к недельной лиге</string>
+    <string name="weekly_league_ends_in_template">Заканчивается через %1$s</string>
+    <string name="weekly_league_waiting_cohort">Ждём других участников когорты...</string>
+    <string name="weekly_league_zone_promote_template">Топ-%1$d — повышение</string>
+    <string name="weekly_league_zone_hold">Удержание</string>
+    <string name="weekly_league_zone_demote">Понижение</string>
+    <string name="weekly_league_leave">Выйти из недельной лиги</string>
+    <string name="weekly_league_how_works">Как работают недельные лиги</string>
+    <string name="weekly_league_understood">Понятно</string>
+    <string name="weekly_league_rule_1">• Каждый понедельник 30 учеников вашего уровня попадают в одну когорту.</string>
+    <string name="weekly_league_rule_2">• Всю неделю набирайте XP за правильные ответы.</string>
+    <string name="weekly_league_rule_3">• В воскресенье в 23:59: топ-7 поднимаются в лигу выше, нижние 7 опускаются.</string>
+    <string name="weekly_league_rule_4">• Лиг 8: от Aldea perdida до Madrid.</string>
+    <string name="weekly_league_rule_5">• Можно выйти и вернуться в любой момент.</string>
+    <string name="weekly_league_day_one">день</string>
+    <string name="weekly_league_day_few">дня</string>
+    <string name="weekly_league_day_many">дней</string>
+
+    <!-- Level Complete sheet (games) -->
+    <string name="level_complete_passed_template">Уровень %1$d пройден!</string>
+    <string name="level_complete_try_again">Попробуй ещё раз</string>
+    <string name="level_complete_perfect">Идеально! 🏆</string>
+    <string name="level_complete_excellent">Отлично! 🔥</string>
+    <string name="level_complete_good">Хорошо! 👍</string>
+    <string name="level_complete_keep_going">Неплохо, продолжай!</string>
+    <string name="level_complete_more_practice">Нужно больше практики</string>
+    <string name="level_complete_accuracy_template">Точность: %1$d%%</string>
+    <string name="level_complete_next">Дальше →</string>
+    <string name="level_complete_menu">Меню</string>
+    <string name="level_complete_again">Снова</string>
+    <string name="level_complete_try_again_button">Попробовать снова</string>
+    <string name="level_complete_back_to_menu">Вернуться в меню</string>
 </resources>

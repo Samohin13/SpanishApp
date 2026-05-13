@@ -830,4 +830,110 @@
     <string name="auth_error_fill_all_fields">Заповни всі поля</string>
     <string name="auth_error_invalid_email">Невірний формат email</string>
     <string name="auth_forgot_success_template">Інструкції надіслано на %1$s</string>
+
+    <!-- Home / Practice / Flashcards / WeeklyLeague / LevelComplete (Wave 2) -->
+    <string name="home_profile_cd">Профіль</string>
+    <string name="home_settings_cd">Налаштування</string>
+    <string name="home_continue_label">ПРОДОВЖУЙ</string>
+    <string name="home_tile_lesson_title">Урок</string>
+    <string name="home_tile_lesson_empty">Почни з будь-якого курсу</string>
+    <string name="home_tile_continue">Продовжити →</string>
+    <string name="home_tile_book_title">Книга</string>
+    <string name="home_tile_book_empty">Відкрий першу книгу</string>
+    <string name="home_tile_book_cta">Читати →</string>
+    <string name="home_tile_flashcard_title">Сет карток</string>
+    <string name="home_tile_flashcard_empty">Усі сети пройдено 🎉</string>
+    <string name="home_tile_flashcard_cta">До сету →</string>
+    <string name="home_tile_weak_title">Слабке слово</string>
+    <string name="home_tile_weak_empty">Поки немає слабких слів</string>
+    <string name="home_tile_weak_cta">Повторити →</string>
+
+    <string name="bento_label_book">КНИГА</string>
+    <string name="bento_label_rating">РЕЙТИНГ</string>
+    <string name="bento_label_dictionary">СЛОВНИК</string>
+    <string name="bento_label_goal">ЦІЛЬ ДНЯ</string>
+    <string name="bento_libro_template">Libro #%1$d</string>
+    <string name="bento_open_book">Відкрий книгу</string>
+    <string name="bento_dictionary_find">Знайди\nперше слово</string>
+    <string name="bento_dictionary_open">Відкрий словник</string>
+    <string name="bento_goal_lesson">Урок дня</string>
+    <string name="bento_goal_flashcard">Сет карток</string>
+    <string name="bento_goal_book_page">Сторінка книги</string>
+    <string name="bento_goal_wod">Слово дня</string>
+
+    <string name="quick_action_random">Випадкове</string>
+    <string name="quick_action_pronounce">Вимова</string>
+    <string name="quick_action_weak5">5 слабких</string>
+    <string name="quick_action_game">Гра</string>
+
+    <string name="home_open_in_dictionary">Відкрити у словнику</string>
+
+    <string name="practice_title">Практика</string>
+    <string name="practice_no_words_yet">Спочатку пройди хоча б один сет у Картках — після цього тут зʼявляться слова, які варто підтягнути.</string>
+    <string name="practice_correct_next">Правильно — далі →</string>
+    <string name="practice_remember_next">Запамʼятаю — далі →</string>
+    <string name="practice_back">Назад</string>
+    <string name="practice_result_excellent_title">Чудово!</string>
+    <string name="practice_result_excellent_subtitle">Слова добре закріплено</string>
+    <string name="practice_result_good_title">Гарний прогрес</string>
+    <string name="practice_result_good_subtitle">Продовжуй у тому ж дусі</string>
+    <string name="practice_result_keep_title">Ще попрацюй</string>
+    <string name="practice_result_keep_subtitle">Повтори ці слова ще раз</string>
+    <string name="practice_result_more_title">Потрібно більше практики</string>
+    <string name="practice_result_more_subtitle">Не здавайся — повторення допомагає</string>
+    <string name="practice_repeat">Повторити ще раз</string>
+    <string name="practice_tap_letters">Тапни літери ↓</string>
+    <string name="practice_correct_answer_was">Правильно: %1$s</string>
+    <string name="practice_clear">Очистити</string>
+    <string name="practice_check">Перевірити</string>
+
+    <string name="flashcards_title">Вивчення слів</string>
+    <string name="flashcards_session_complete_no_emoji">Сесію завершено</string>
+    <string name="flashcards_session_complete">Сесію завершено! 🎉</string>
+    <string name="flashcards_need_to_repeat_template">Треба повторити: %1$s</string>
+    <string name="flashcards_next_set">Наступний сет →</string>
+    <string name="flashcards_repeat_set">Повторити цей сет</string>
+    <string name="flashcards_again">Ще раз</string>
+    <string name="flashcards_back_to_cards">Назад до карток</string>
+    <string name="flashcards_need_to_repeat_count_template">Треба повторити (%1$d)</string>
+    <string name="flashcards_action_forgot">Забув</string>
+    <string name="flashcards_action_undo">Скасувати</string>
+    <string name="flashcards_action_know">Знаю</string>
+    <string name="flashcards_direction_mixed">Змішаний</string>
+    <string name="flashcards_tap_to_check">НАТИСНИ, ЩОБ ПЕРЕВІРИТИ</string>
+
+    <string name="weekly_league_title">Ліга тижня</string>
+    <string name="weekly_league_heading">Тижневі ліги</string>
+    <string name="weekly_league_subtitle">Кожного тижня ти змагаєшся з 30 учнями приблизно твого рівня. Топ-7 піднімаються в лігу вище, низ-7 опускаються.</string>
+    <string name="weekly_league_join">Приєднатися до тижневої ліги</string>
+    <string name="weekly_league_ends_in_template">Закінчується через %1$s</string>
+    <string name="weekly_league_waiting_cohort">Чекаємо інших учасників когорти...</string>
+    <string name="weekly_league_zone_promote_template">Топ-%1$d — підвищення</string>
+    <string name="weekly_league_zone_hold">Утримання</string>
+    <string name="weekly_league_zone_demote">Пониження</string>
+    <string name="weekly_league_leave">Вийти з тижневої ліги</string>
+    <string name="weekly_league_how_works">Як працюють тижневі ліги</string>
+    <string name="weekly_league_understood">Зрозуміло</string>
+    <string name="weekly_league_rule_1">• Щопонеділка 30 учнів вашого рівня потрапляють в одну когорту.</string>
+    <string name="weekly_league_rule_2">• Увесь тиждень набирайте XP за правильні відповіді.</string>
+    <string name="weekly_league_rule_3">• У неділю о 23:59: топ-7 піднімаються в лігу вище, нижні 7 опускаються.</string>
+    <string name="weekly_league_rule_4">• Ліг 8: від Aldea perdida до Madrid.</string>
+    <string name="weekly_league_rule_5">• Можна вийти й повернутися будь-якої миті.</string>
+    <string name="weekly_league_day_one">день</string>
+    <string name="weekly_league_day_few">дні</string>
+    <string name="weekly_league_day_many">днів</string>
+
+    <string name="level_complete_passed_template">Рівень %1$d пройдено!</string>
+    <string name="level_complete_try_again">Спробуй ще раз</string>
+    <string name="level_complete_perfect">Ідеально! 🏆</string>
+    <string name="level_complete_excellent">Чудово! 🔥</string>
+    <string name="level_complete_good">Добре! 👍</string>
+    <string name="level_complete_keep_going">Непогано, продовжуй!</string>
+    <string name="level_complete_more_practice">Потрібно більше практики</string>
+    <string name="level_complete_accuracy_template">Точність: %1$d%%</string>
+    <string name="level_complete_next">Далі →</string>
+    <string name="level_complete_menu">Меню</string>
+    <string name="level_complete_again">Знову</string>
+    <string name="level_complete_try_again_button">Спробувати знову</string>
+    <string name="level_complete_back_to_menu">Повернутися до меню</string>
 </resources>

@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -95,7 +96,7 @@ fun FlashcardsScreen(
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            "Изучение слов",
+                            stringResource(com.spanishapp.R.string.flashcards_title),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -206,7 +207,8 @@ private fun SessionCompleteBody(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    if (error != null) "Сессия завершена" else "Сессия завершена! 🎉",
+                    if (error != null) stringResource(com.spanishapp.R.string.flashcards_session_complete_no_emoji)
+                    else stringResource(com.spanishapp.R.string.flashcards_session_complete),
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     color = Color.White
@@ -243,7 +245,7 @@ private fun SessionCompleteBody(
                     if (wrong > 0) {
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "Нужно повторить: $wrong",
+                            stringResource(com.spanishapp.R.string.flashcards_need_to_repeat_template, wrong.toString()),
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
                         )
@@ -257,7 +259,7 @@ private fun SessionCompleteBody(
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
                     ) {
-                        Text("Следующий сет →", fontWeight = FontWeight.Bold)
+                        Text(stringResource(com.spanishapp.R.string.flashcards_next_set), fontWeight = FontWeight.Bold)
                     }
                     Spacer(Modifier.height(8.dp))
                     OutlinedButton(
@@ -265,7 +267,7 @@ private fun SessionCompleteBody(
                         modifier = Modifier.fillMaxWidth().height(48.dp),
                         shape = RoundedCornerShape(14.dp)
                     ) {
-                        Text("Повторить этот сет")
+                        Text(stringResource(com.spanishapp.R.string.flashcards_repeat_set))
                     }
                 } else {
                     Button(
@@ -274,12 +276,12 @@ private fun SessionCompleteBody(
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
                     ) {
-                        Text("Ещё раз", fontWeight = FontWeight.Bold)
+                        Text(stringResource(com.spanishapp.R.string.flashcards_again), fontWeight = FontWeight.Bold)
                     }
                 }
                 TextButton(onClick = onExit) {
                     Text(
-                        "Назад к карточкам",
+                        stringResource(com.spanishapp.R.string.flashcards_back_to_cards),
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -300,7 +302,7 @@ private fun SessionCompleteBody(
                     Text("🔁", fontSize = 18.sp)
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        "Нужно повторить (${wrongWords.size})",
+                        stringResource(com.spanishapp.R.string.flashcards_need_to_repeat_count_template, wrongWords.size),
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp
                     )
@@ -494,7 +496,7 @@ private fun SessionBody(
                     modifier = Modifier.size(15.dp)
                 )
                 Spacer(Modifier.width(4.dp))
-                Text("Забыл", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(stringResource(com.spanishapp.R.string.flashcards_action_forgot), fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             }
 
             // Undo chip — visible only after previous card was answered
@@ -519,7 +521,7 @@ private fun SessionBody(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            "Отменить",
+                            stringResource(com.spanishapp.R.string.flashcards_action_undo),
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -536,7 +538,7 @@ private fun SessionBody(
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
             ) {
-                Text("Знаю", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text(stringResource(com.spanishapp.R.string.flashcards_action_know), fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 Spacer(Modifier.width(4.dp))
                 Icon(
                     Icons.Default.Check, null,
@@ -665,10 +667,11 @@ private fun CardFront(
         FlashcardDirection.RU_TO_ES -> word.russian
         FlashcardDirection.MIXED    -> word.spanish
     }
+    val mixedLabel = stringResource(com.spanishapp.R.string.flashcards_direction_mixed)
     val directionLabel = when (direction) {
         FlashcardDirection.ES_TO_RU -> "ES → RU"
         FlashcardDirection.RU_TO_ES -> "RU → ES"
-        FlashcardDirection.MIXED    -> "Смешанный"
+        FlashcardDirection.MIXED    -> mixedLabel
     }
     val emoji = remember(word.spanish) {
         val cleaned = word.spanish
@@ -726,7 +729,7 @@ private fun CardFront(
 
         // ── Dim bottom hint ────────────────────────────────────────
         Text(
-            "НАЖМИ, ЧТОБЫ ПРОВЕРИТЬ",
+            stringResource(com.spanishapp.R.string.flashcards_tap_to_check),
             style         = MaterialTheme.typography.labelSmall,
             color         = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f),
             letterSpacing = 1.sp

@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -88,7 +89,8 @@ fun LevelCompleteSheet(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text  = if (passed) "Уровень $level пройден!" else "Попробуй ещё раз",
+                                text  = if (passed) stringResource(com.spanishapp.R.string.level_complete_passed_template, level)
+                                        else stringResource(com.spanishapp.R.string.level_complete_try_again),
                                 fontSize   = 20.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color      = Color.White,
@@ -96,7 +98,7 @@ fun LevelCompleteSheet(
                             )
                             if (passed) {
                                 Text(
-                                    "+${(percent / 10) * 5} XP бонус",
+                                    "+${(percent / 10) * 5} XP",
                                     fontSize = 13.sp,
                                     color    = Color.White.copy(alpha = 0.9f)
                                 )
@@ -124,11 +126,11 @@ fun LevelCompleteSheet(
 
                     // ── Мотивационный текст + точность ────────
                     val motivText = when {
-                        percent == 100 -> "Идеально! 🏆"
-                        percent >= 90  -> "Отлично! 🔥"
-                        percent >= 70  -> "Хорошо! 👍"
-                        percent >= 50  -> "Неплохо, продолжай!"
-                        else           -> "Нужно больше практики"
+                        percent == 100 -> stringResource(com.spanishapp.R.string.level_complete_perfect)
+                        percent >= 90  -> stringResource(com.spanishapp.R.string.level_complete_excellent)
+                        percent >= 70  -> stringResource(com.spanishapp.R.string.level_complete_good)
+                        percent >= 50  -> stringResource(com.spanishapp.R.string.level_complete_keep_going)
+                        else           -> stringResource(com.spanishapp.R.string.level_complete_more_practice)
                     }
                     Text(
                         motivText,
@@ -138,7 +140,7 @@ fun LevelCompleteSheet(
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "Точность: $percent%",
+                        stringResource(com.spanishapp.R.string.level_complete_accuracy_template, percent),
                         fontSize = 15.sp,
                         color    = Color(0xFF8E8E93)
                     )
@@ -153,7 +155,7 @@ fun LevelCompleteSheet(
                             shape    = RoundedCornerShape(16.dp),
                             colors   = ButtonDefaults.buttonColors(containerColor = accent)
                         ) {
-                            Text("Дальше →", fontWeight = FontWeight.ExtraBold,
+                            Text(stringResource(com.spanishapp.R.string.level_complete_next), fontWeight = FontWeight.ExtraBold,
                                 fontSize = 17.sp, letterSpacing = 0.5.sp)
                         }
                         Spacer(Modifier.height(10.dp))
@@ -166,14 +168,14 @@ fun LevelCompleteSheet(
                                 modifier = Modifier.weight(1f).height(46.dp),
                                 shape    = RoundedCornerShape(14.dp),
                                 colors   = ButtonDefaults.outlinedButtonColors(contentColor = accent)
-                            ) { Text("Меню", fontWeight = FontWeight.SemiBold) }
+                            ) { Text(stringResource(com.spanishapp.R.string.level_complete_menu), fontWeight = FontWeight.SemiBold) }
 
                             OutlinedButton(
                                 onClick  = onRetry,
                                 modifier = Modifier.weight(1f).height(46.dp),
                                 shape    = RoundedCornerShape(14.dp),
                                 colors   = ButtonDefaults.outlinedButtonColors(contentColor = accent)
-                            ) { Text("Снова", fontWeight = FontWeight.SemiBold) }
+                            ) { Text(stringResource(com.spanishapp.R.string.level_complete_again), fontWeight = FontWeight.SemiBold) }
                         }
                     } else {
                         Button(
@@ -182,12 +184,12 @@ fun LevelCompleteSheet(
                             shape    = RoundedCornerShape(16.dp),
                             colors   = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF4B4B))
                         ) {
-                            Text("Попробовать снова",
+                            Text(stringResource(com.spanishapp.R.string.level_complete_try_again_button),
                                 fontWeight = FontWeight.ExtraBold, fontSize = 17.sp)
                         }
                         Spacer(Modifier.height(10.dp))
                         TextButton(onClick = onExit, modifier = Modifier.fillMaxWidth()) {
-                            Text("Вернуться в меню", fontSize = 15.sp, color = Color(0xFF8E8E93))
+                            Text(stringResource(com.spanishapp.R.string.level_complete_back_to_menu), fontSize = 15.sp, color = Color(0xFF8E8E93))
                         }
                     }
                 }
