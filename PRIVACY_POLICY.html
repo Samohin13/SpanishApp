@@ -8,7 +8,7 @@
   :root { color-scheme: light dark; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    max-width: 760px;
+    max-width: 780px;
     margin: 0 auto;
     padding: 32px 20px 80px;
     line-height: 1.55;
@@ -20,133 +20,260 @@
     a { color: #8ab4f8; }
     table, th, td { border-color: #333 !important; }
     code { background: #2a2a2a; }
+    th { background: #1e1e1e !important; }
+    blockquote { background: #1a1a1a; }
   }
-  h1, h2 { line-height: 1.25; }
+  h1, h2, h3 { line-height: 1.25; }
   h1 { font-size: 28px; margin-bottom: 4px; }
-  h2 { font-size: 20px; margin-top: 32px; }
+  h2 { font-size: 21px; margin-top: 32px; }
+  h3 { font-size: 17px; margin-top: 20px; }
   hr { border: 0; border-top: 1px solid #ccc; margin: 24px 0; }
   table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-  code { background: #efefef; padding: 1px 5px; border-radius: 3px; font-size: 95%; }
-  blockquote { border-left: 4px solid #888; margin: 16px 0; padding: 4px 14px; color: inherit; opacity: .85; }
+  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; }
+  code { background: #efefef; padding: 1px 5px; border-radius: 3px; font-size: 95%; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  blockquote { border-left: 4px solid #888; margin: 16px 0; padding: 4px 14px; color: inherit; opacity: .85; background: #f0f0f0; }
   .meta { color: #666; font-size: 14px; }
-  ul { padding-left: 22px; }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  .badge { display: inline-block; background: #e0f2e9; color: #1f7a3a; padding: 2px 10px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-left: 6px; }
+  @media (prefers-color-scheme: dark) { .badge { background: #1f3a2a; color: #7fdca0; } }
 </style>
 </head>
 <body>
 
 <h1>Политика конфиденциальности — ESPEAK</h1>
 <p class="meta">
-  <strong>Дата вступления в силу:</strong> 2026-05-07<br>
-  <strong>Разработчик:</strong> Sergei Samohin<br>
-  <strong>Контакт:</strong> <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a>
+  <strong>Дата вступления в силу:</strong> 2026-05-13<br>
+  <strong>Последнее обновление:</strong> 2026-05-13<br>
+  <strong>Разработчик приложения:</strong> Sergei Samohin (индивидуальный разработчик)<br>
+  <strong>Контактный email:</strong> <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a><br>
+  <strong>Identifier приложения:</strong> <code>com.espeak.app</code>
 </p>
+
+<blockquote>
+  <strong>TL;DR.</strong> ESPEAK — образовательное приложение для изучения испанского.
+  Мы не продаём данные, не показываем рекламу, не отслеживаем местоположение.
+  Аудио с микрофона никогда не сохраняется и не покидает устройство в виде записи.
+  Все сетевые запросы идут по HTTPS. Удаление аккаунта — по запросу через email или из настроек.
+</blockquote>
 
 <hr>
 
 <h2>1. Какие данные мы собираем</h2>
 
 <h3>1.1. Данные, которые вы предоставляете сами</h3>
-<ul>
-  <li><strong>Имя пользователя</strong> (для отображения в приложении и лидерборде).</li>
-  <li><strong>Возраст</strong> (для адаптации сложности контента).</li>
-  <li><strong>Уровень владения испанским</strong> (A1/A2/B1/B2 — для подбора уроков).</li>
-  <li><strong>Email</strong> (только если вы регистрируетесь через email/пароль).</li>
-</ul>
+<table>
+  <thead><tr><th>Тип данных</th><th>Когда собираем</th><th>Где хранится</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Имя пользователя</strong></td><td>На экране онбординга</td><td>Локальная БД + Firestore (если есть аккаунт)</td></tr>
+    <tr><td><strong>Возраст</strong></td><td>На экране онбординга</td><td>Локальная БД</td></tr>
+    <tr><td><strong>Уровень владения испанским</strong> (A1/A2/B1/B2)</td><td>На экране выбора уровня</td><td>Локальная БД</td></tr>
+    <tr><td><strong>Цель изучения</strong> (путешествия, работа, ...)</td><td>На экране онбординга</td><td>Локальная БД</td></tr>
+    <tr><td><strong>Email и пароль</strong></td><td>Только при регистрации через email/пароль (опционально, можно работать как гость)</td><td>Firebase Authentication</td></tr>
+    <tr><td><strong>Фото аватара</strong></td><td>Если вы загрузили аватар через системный Photo Picker</td><td>Firebase Storage (<code>users/{uid}/avatar.jpg</code>)</td></tr>
+  </tbody>
+</table>
 
 <h3>1.2. Данные, которые собираются автоматически</h3>
 <ul>
-  <li><strong>Прогресс обучения</strong> — выученные слова, пройденные уроки, скоринг рейтинга, серия дней (хранится локально на устройстве в Room).</li>
-  <li><strong>Записи голоса</strong> — RECORD_AUDIO используется ТОЛЬКО для распознавания речи (упражнения произношения). Аудио НЕ сохраняется и НЕ передаётся на серверы; обработка идёт через системный Android SpeechRecognizer.</li>
-  <li><strong>Crashlytics</strong> (Firebase) — анонимизированные стек-трейсы при крашах для исправления багов.</li>
-  <li><strong>Analytics</strong> (Firebase) — обезличенная статистика использования экранов.</li>
+  <li><strong>Прогресс обучения</strong> — выученные слова, пройденные уроки, ответы в играх, серия дней, опыт (XP), Skill Rating. Хранятся локально в БД Room и (если вы вошли в аккаунт) синхронизируются в Firestore.</li>
+  <li><strong>Записи голоса</strong> <span class="badge">не сохраняются</span> — микрофон используется ТОЛЬКО для распознавания речи в упражнениях произношения через системный Android <code>SpeechRecognizer</code>. Аудио-буфер обрабатывается в реальном времени, никогда не записывается в файл и никогда не передаётся на наши серверы или серверы Google как файл.</li>
+  <li><strong>Сообщения ИИ-чата</strong> — текст ваших сообщений к ИИ-репетитору отправляется через наш прокси (Cloudflare Worker) на серверы Google Gemini. Сами серверы Google <strong>НЕ сохраняют</strong> ваши сообщения для обучения моделей (см. <a href="https://ai.google.dev/gemini-api/terms">условия Gemini API</a>). Локально история чатов хранится в БД Room на вашем устройстве — можно очистить в любой момент.</li>
+  <li><strong>Crashlytics</strong> (Firebase) — анонимные стек-трейсы при крашах для исправления багов. Никаких персональных данных в крашах нет.</li>
+  <li><strong>Analytics</strong> (Firebase) — обезличенная статистика использования экранов и событий (например, «прошёл урок A1-3», «зашёл в Libros»). Помогает решать, какие функции улучшать.</li>
 </ul>
 
-<h3>1.3. Данные на серверах</h3>
+<h3>1.3. Данные на серверах (в облаке)</h3>
+<table>
+  <thead><tr><th>Сервис</th><th>Что хранится</th><th>Когда</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Firebase Authentication</strong></td><td>email/пароль (хешированный) или Google-аккаунт ID</td><td>Только если вы зарегистрировались</td></tr>
+    <tr><td><strong>Firestore — collection <code>leaderboard/{uid}</code></strong></td><td>никнейм, страна (по локали устройства), skillRating, peakRating, текущая лига</td><td>Только при опт-ине в лидерборд</td></tr>
+    <tr><td><strong>Firestore — collection <code>weekly_cohorts/{cohortId}/members/{uid}</code></strong></td><td>никнейм, weekXp, лига</td><td>Только при участии в недельной лиге (опт-ин)</td></tr>
+    <tr><td><strong>Firestore — collection <code>users/{uid}/state/...</code></strong></td><td>прогресс обучения (опционально для синхронизации между устройствами)</td><td>Только при включённой облачной синхронизации</td></tr>
+    <tr><td><strong>Firebase Storage</strong></td><td>фото аватара (если загружено)</td><td>Только если вы загрузили аватар</td></tr>
+  </tbody>
+</table>
+
+<h3>1.4. Чего мы НЕ собираем</h3>
 <ul>
-  <li><strong>Firebase Authentication</strong> — email/пароль или Google Sign-In, если вы зарегистрировались.</li>
-  <li><strong>Firestore (лидерборд)</strong> — никнейм, страна (по локали устройства), skillRating и текущая лига. Только если вы явно согласились на участие в лидерборде (опт-ин). Можно отключить в любой момент.</li>
+  <li>❌ Местоположение (GPS, Wi-Fi, IP-геолокация)</li>
+  <li>❌ Контакты адресной книги</li>
+  <li>❌ SMS, звонки, журналы вызовов</li>
+  <li>❌ Файлы вне песочницы приложения</li>
+  <li>❌ Биометрию (отпечатки/лицо) — биометрический Prompt используется только для разблокировки приложения, сами данные обрабатывает Android, мы их не видим и не храним</li>
+  <li>❌ Уникальные идентификаторы устройства (IMEI, MAC, advertising ID)</li>
+  <li>❌ История браузера, других приложений</li>
+  <li>❌ Записи микрофона как файлы</li>
 </ul>
 
 <hr>
 
 <h2>2. Как мы используем данные</h2>
 <ul>
-  <li>Персонализация обучения (подбор слов, уровня, частоты повторений).</li>
-  <li>Расчёт рейтинга и прогресса.</li>
-  <li>Отображение в лидерборде (только при опт-ине).</li>
-  <li>Исправление крашей и улучшение приложения.</li>
+  <li><strong>Функциональность приложения</strong> — отображение прогресса, подбор слов для повторения, расчёт рейтинга и серии дней.</li>
+  <li><strong>Персонализация</strong> — выбор уроков по вашему уровню, адаптивный подбор слов для тренировки слабых мест.</li>
+  <li><strong>Социальные функции</strong> — отображение в лидерборде и недельных лигах (только при вашем опт-ине, можно отключить).</li>
+  <li><strong>Облачная синхронизация</strong> — если вы зарегистрированы, прогресс сохраняется в облаке и доступен с другого устройства.</li>
+  <li><strong>Аналитика</strong> — обезличенное понимание, какие функции популярны, какие нет — для приоритизации улучшений.</li>
+  <li><strong>Отчёты о крашах</strong> — стабилизация приложения, исправление багов.</li>
+  <li><strong>Связь с разработчиком</strong> — ответ на ваши обращения по email.</li>
 </ul>
-<p>Мы <strong>НЕ продаём</strong> ваши данные третьим лицам. Мы <strong>НЕ показываем рекламу</strong>.</p>
+
+<p><strong>Мы НЕ продаём ваши данные третьим лицам. Мы НЕ показываем рекламу. Мы НЕ передаём данные брокерам данных.</strong></p>
 
 <hr>
 
 <h2>3. Передача данных третьим лицам</h2>
+
+<h3>3.1. Сервисы Google / Firebase</h3>
 <ul>
-  <li><strong>Google / Firebase</strong> (Auth, Firestore, Crashlytics, Analytics) — обработка и хранение в соответствии с <a href="https://policies.google.com/privacy">политикой Google</a>.</li>
-  <li><strong>Google AI / Gemini API</strong> — при использовании AI-чата ваши сообщения отправляются на серверы Google для генерации ответов. Тексты <strong>НЕ сохраняются</strong> Google для обучения моделей (см. <a href="https://ai.google.dev/gemini-api/terms">Gemini API privacy</a>).</li>
+  <li><strong>Firebase Authentication</strong> — авторизация (email/пароль и Google Sign-In).</li>
+  <li><strong>Firebase Firestore</strong> — лидерборд, лиги, облачный прогресс.</li>
+  <li><strong>Firebase Storage</strong> — аватары.</li>
+  <li><strong>Firebase Cloud Messaging</strong> — не используется в текущей версии; зарезервировано на будущее (push-уведомления).</li>
+  <li><strong>Firebase Crashlytics</strong> — отчёты о крашах.</li>
+  <li><strong>Firebase Analytics</strong> — обезличенная аналитика.</li>
+  <li><strong>Google Play Services</strong> — Google Sign-In, in-app billing (для будущих подписок).</li>
+</ul>
+<p>Обработка данных Google регулируется <a href="https://policies.google.com/privacy">Политикой конфиденциальности Google</a> и <a href="https://firebase.google.com/support/privacy">политикой Firebase</a>.</p>
+
+<h3>3.2. Google AI (Gemini)</h3>
+<p>При использовании ИИ-репетитора (чата в приложении):</p>
+<ul>
+  <li>Ваше текстовое сообщение → отправляется через наш Cloudflare Worker (прокси, не сохраняет содержимое) → серверы Google Gemini → ответ возвращается в приложение.</li>
+  <li>Согласно <a href="https://ai.google.dev/gemini-api/terms">условиям Gemini API</a>, Google <strong>НЕ использует</strong> ваши запросы для обучения моделей (PAYG-режим).</li>
+  <li>Локально в БД Room сохраняется история ваших чатов — для отображения предыдущих сообщений. Можно удалить вручную.</li>
 </ul>
 
-<hr>
-
-<h2>4. Хранение и удаление данных</h2>
-<ul>
-  <li><strong>Локальные данные</strong> (прогресс, словарь) хранятся в БД Room на устройстве. Удаляются при удалении приложения.</li>
-  <li><strong>Firebase Auth и Firestore</strong> — для удаления аккаунта и всех связанных данных:
-    <ul>
-      <li>В приложении: <code>Настройки → Удалить аккаунт</code>, <em>или</em></li>
-      <li>Письмо на <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a> с просьбой удалить аккаунт. Удаление в течение 30 дней.</li>
-    </ul>
-  </li>
-</ul>
+<h3>3.3. Cloudflare</h3>
+<p>Мы используем Cloudflare Workers (<code>espeak-gemini-proxy.bravochief21.workers.dev</code>) как прокси к Gemini API. Это нужно, чтобы наш API-ключ Gemini не попадал в декомпиляцию APK. Cloudflare видит зашифрованный HTTPS-трафик, но не его содержимое; логи запросов не хранятся.</p>
 
 <hr>
 
-<h2>5. Безопасность</h2>
-<ul>
-  <li>Все сетевые запросы используют HTTPS.</li>
-  <li>Пароли хранятся только на серверах Firebase (мы их не видим).</li>
-  <li>Локальная БД защищается стандартными механизмами Android (sandbox).</li>
-</ul>
+<h2>4. Разрешения приложения</h2>
+<p>ESPEAK запрашивает следующие Android-разрешения:</p>
 
-<hr>
-
-<h2>6. Дети младше 13 лет</h2>
-<p>Приложение предназначено для пользователей всех возрастов. Для детей младше 13 рекомендуется использование под присмотром родителей. Мы не собираем намеренно персональные данные детей младше 13 лет без согласия родителей.</p>
-
-<hr>
-
-<h2>7. Ваши права (GDPR / 152-ФЗ)</h2>
-<p>Вы имеете право:</p>
-<ul>
-  <li>Запросить копию ваших данных.</li>
-  <li>Запросить исправление неточностей.</li>
-  <li>Запросить удаление данных.</li>
-  <li>Отозвать согласие на обработку.</li>
-</ul>
-<p>Запросы направляйте на <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a>.</p>
-
-<hr>
-
-<h2>8. Разрешения приложения</h2>
 <table>
-  <thead><tr><th>Permission</th><th>Зачем</th></tr></thead>
+  <thead><tr><th>Permission</th><th>Тип</th><th>Зачем</th></tr></thead>
   <tbody>
-    <tr><td>INTERNET</td><td>Запросы к Firebase, Gemini API</td></tr>
-    <tr><td>RECORD_AUDIO</td><td>Распознавание речи в упражнениях произношения (НЕ записывается)</td></tr>
-    <tr><td>POST_NOTIFICATIONS</td><td>Напоминание заниматься (1 раз в день, можно отключить)</td></tr>
+    <tr>
+      <td><code>INTERNET</code></td>
+      <td>Normal</td>
+      <td>Сетевые запросы к Firebase, Cloudflare Worker и Gemini API. Без интернета приложение работает оффлайн, кроме ИИ-чата и лидерборда.</td>
+    </tr>
+    <tr>
+      <td><code>ACCESS_NETWORK_STATE</code></td>
+      <td>Normal</td>
+      <td>Проверка типа подключения (Wi-Fi/мобильный), чтобы аккуратно использовать трафик при синхронизации.</td>
+    </tr>
+    <tr>
+      <td><code>RECORD_AUDIO</code></td>
+      <td><strong>Dangerous</strong> (запрашивается во время использования)</td>
+      <td>Распознавание речи в упражнениях произношения через системный Android <code>SpeechRecognizer</code>. <strong>Аудио НЕ записывается в файл и НЕ передаётся на серверы</strong>. Микрофон активируется только в момент нажатия кнопки «Говорить» и автоматически отключается после произнесения фразы.</td>
+    </tr>
+    <tr>
+      <td><code>POST_NOTIFICATIONS</code></td>
+      <td><strong>Dangerous</strong> (Android 13+)</td>
+      <td>Локальные уведомления-напоминания заниматься (раз в день, время задаёте вы). Можно отключить в настройках приложения или в системных настройках.</td>
+    </tr>
+    <tr>
+      <td><code>VIBRATE</code></td>
+      <td>Normal</td>
+      <td>Тактильная отдача при ответах в карточках и играх (можно отключить).</td>
+    </tr>
   </tbody>
 </table>
 
-<hr>
-
-<h2>9. Изменения политики</h2>
-<p>Мы можем обновлять эту политику. Уведомление о существенных изменениях — через приложение и/или email (если есть).</p>
+<p><strong>Биометрия</strong> (отпечаток/Face Unlock) используется только если вы включили блокировку приложения биометрией в настройках. Биометрические данные обрабатывает сама Android-система, нам они никогда не передаются.</p>
 
 <hr>
 
-<h2>10. Контакты</h2>
-<p>По любым вопросам — <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a>.</p>
+<h2>5. Фоновая работа (WorkManager)</h2>
+<p>Приложение использует Android WorkManager для нескольких периодических задач — все они работают <strong>локально на устройстве</strong>:</p>
+<ul>
+  <li><strong>DailyReminderWorker</strong> — раз в день в выбранное вами время отправляет локальное уведомление с напоминанием позаниматься.</li>
+  <li><strong>RatingDecayWorker</strong> — раз в день пересчитывает skillRating с учётом затухания за неактивность.</li>
+  <li><strong>WeeklyLeagueService</strong> — раз в неделю обновляет состояние недельной лиги (только если вы её включили).</li>
+</ul>
+<p>Никакая фоновая задача не отправляет ваши данные третьим лицам без вашего опт-ина в соответствующую функцию.</p>
+
+<hr>
+
+<h2>6. Хранение и удаление данных</h2>
+
+<h3>6.1. Локальные данные</h3>
+<p>Хранятся в БД Room на устройстве, в песочнице приложения. <strong>Удаляются автоматически при удалении приложения.</strong> Также можно сбросить локально через <code>Настройки → Дополнительно → Сбросить прогресс</code>.</p>
+
+<h3>6.2. Облачные данные</h3>
+<p>Хранятся в Firebase. Чтобы удалить:</p>
+<ul>
+  <li><strong>Через приложение:</strong> <code>Настройки → Управление аккаунтом → Удалить аккаунт</code>. Удаляет ваш Firebase Auth-аккаунт и все связанные данные в Firestore/Storage.</li>
+  <li><strong>По email:</strong> напишите на <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a> с темой «Удалить мой аккаунт ESPEAK». Удаление в течение 30 дней.</li>
+</ul>
+
+<h3>6.3. Сроки хранения</h3>
+<ul>
+  <li>Активные аккаунты — пока вы пользуетесь приложением.</li>
+  <li>Неактивные аккаунты (не входили 2+ года) — удаляются автоматически при ближайшей чистке.</li>
+  <li>Логи Crashlytics — 90 дней.</li>
+  <li>Данные Analytics — 14 месяцев (стандарт Firebase).</li>
+</ul>
+
+<hr>
+
+<h2>7. Безопасность</h2>
+<ul>
+  <li>Все сетевые запросы используют <strong>HTTPS/TLS</strong>.</li>
+  <li>Пароли никогда не хранятся в открытом виде — Firebase хеширует их с использованием bcrypt.</li>
+  <li>API-ключ Gemini не находится в APK — все запросы к Gemini идут через наш Cloudflare-прокси, защищённый Firebase ID Token и shared secret.</li>
+  <li>Локальная БД защищается стандартными механизмами Android (sandbox, internal storage).</li>
+  <li>Виджет «Слово дня» защищён permission <code>BIND_APPWIDGET</code> — другие приложения не могут взаимодействовать с ним.</li>
+  <li>Firestore Security Rules ограничивают доступ к данным: пользователь может читать/писать только свои документы; только аутентифицированные пользователи имеют доступ к лидерборду.</li>
+</ul>
+
+<hr>
+
+<h2>8. Дети младше 13 лет</h2>
+<p>Приложение предназначено для пользователей <strong>13+</strong>. Дети младше 13 лет могут пользоваться приложением только под присмотром родителей. Мы не собираем намеренно персональные данные детей младше 13 лет без согласия родителей. Если вы являетесь родителем/законным представителем и считаете, что ваш ребёнок предоставил нам персональные данные, напишите на <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a> — мы удалим их в течение 30 дней.</p>
+
+<hr>
+
+<h2>9. Ваши права (GDPR, CCPA, 152-ФЗ)</h2>
+<p>Независимо от страны проживания, вы имеете право:</p>
+<ul>
+  <li><strong>Доступ</strong> — запросить копию всех ваших данных.</li>
+  <li><strong>Исправление</strong> — запросить исправление неточностей.</li>
+  <li><strong>Удаление</strong> («право на забвение») — запросить удаление аккаунта и всех связанных данных.</li>
+  <li><strong>Ограничение обработки</strong> — приостановить определённые виды обработки.</li>
+  <li><strong>Переносимость</strong> — получить ваши данные в машиночитаемом формате (JSON).</li>
+  <li><strong>Отзыв согласия</strong> — отозвать ранее данное согласие (например, на участие в лидерборде).</li>
+  <li><strong>Жалоба</strong> — пожаловаться в компетентный орган по защите данных вашей страны.</li>
+</ul>
+<p>Запросы по любым из этих прав направляйте на <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a>. Ответ — в течение 30 дней.</p>
+
+<hr>
+
+<h2>10. Международные передачи данных</h2>
+<p>Серверы Firebase, Google Gemini и Cloudflare расположены в разных регионах мира (США, ЕС, Азия). Используя ESPEAK, вы соглашаетесь, что ваши данные могут передаваться и обрабатываться в этих юрисдикциях. Все передачи защищены стандартными договорными положениями (Standard Contractual Clauses) согласно требованиям GDPR.</p>
+
+<hr>
+
+<h2>11. Изменения политики</h2>
+<p>Мы можем обновлять эту политику. Уведомление о существенных изменениях — через приложение и/или email (если у вас есть аккаунт). Дата последнего обновления указана в самом начале документа. Продолжение использования приложения после уведомления означает согласие с новой версией.</p>
+
+<hr>
+
+<h2>12. Контакты</h2>
+<p>По любым вопросам, связанным с конфиденциальностью данных:</p>
+<ul>
+  <li><strong>Email:</strong> <a href="mailto:es.espeak13@gmail.com">es.espeak13@gmail.com</a></li>
+  <li><strong>Разработчик:</strong> Sergei Samohin</li>
+  <li><strong>Адрес для писем:</strong> Казахстан, Алматы (по запросу)</li>
+</ul>
+
+<p class="meta" style="margin-top: 48px;">Эта политика применяется к приложению ESPEAK (package <code>com.espeak.app</code>) на платформе Android, распространяемому через Google Play Store.</p>
 
 </body>
 </html>
