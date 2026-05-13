@@ -968,4 +968,46 @@
     <string name="onboarding_reason_study">🎓 Studies</string>
     <string name="onboarding_reason_family">❤️ Family / Friends</string>
     <string name="onboarding_reason_hobby">🎸 Hobby / Culture</string>
+
+    <!-- Wave 4 -->
+    <string name="home_greeting_morning">Good morning, ready to learn?</string>
+    <string name="home_greeting_afternoon">Good afternoon — Spanish time</string>
+    <string name="home_greeting_evening">Good evening, shall we continue?</string>
+    <string name="home_greeting_night">Late-night session — ¡vamos!</string>
+
+    <string name="home_motivation_1">Mañana = tomorrow. Now = today. Do it today.</string>
+    <string name="home_motivation_2">Every word is a step closer to Spain 🇪🇸</string>
+    <string name="home_motivation_3">Tiny progress beats none</string>
+    <string name="home_motivation_4">«Hablar» = to speak. ¡Hablamos!</string>
+    <string name="home_motivation_5">5 minutes a day &gt; one hour a week</string>
+    <string name="home_motivation_6">Polyglots aren\'t born — they\'re trained</string>
+    <string name="home_motivation_7">¡Vamos! Small steps, big results</string>
+
+    <string name="home_daily_minutes_template">%1$d/%2$d min</string>
+    <string name="home_weekly_heatmap_title">📊 THIS WEEK</string>
+    <string name="home_weekly_summary_template">%1$d days · %2$d min this week</string>
+    <string name="home_book_progress_template">%1$d%% read</string>
+    <string name="home_dictionary_history_template">%1$d %2$s in history</string>
+
+    <string name="wod_label">✨ WORD OF THE DAY</string>
+    <string name="wod_tap_first">Tap — lock in the word</string>
+    <string name="wod_tap_again">Practice again</string>
+    <string name="wod_listen">Listen</string>
+    <string name="wod_build_template">Build: «%1$s»</string>
+    <string name="wod_tap_letters">Tap letters ↓</string>
+
+    <string name="flashcards_setup_subtitle">Small word sets for every day</string>
+    <string name="flashcards_coming_soon_template">Sets for %1$s coming soon 🚧</string>
+    <string name="flashcards_set_row_title_template">Set %1$d · %2$s</string>
+    <string name="flashcards_set_unstarted_template">%1$d %2$s · not started</string>
+    <string name="flashcards_set_locked">Unlocks after the previous set</string>
+    <string name="flashcards_set_progress_template">%1$d/%2$d %3$s known</string>
+    <string name="flashcards_set_completed_template">✓ All %1$d %2$s known</string>
+    <string name="flashcards_practice_badge">PRACTICE</string>
+    <string name="flashcards_practice_empty">Finish at least one set — review words appear here</string>
+    <string name="flashcards_practice_ready_template">%1$d %2$s ready to review</string>
+
+    <string name="word_count_one">word</string>
+    <string name="word_count_few">words</string>
+    <string name="word_count_many">words</string>
 </resources>

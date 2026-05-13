@@ -28,31 +28,36 @@ import javax.inject.Inject
 // Time-of-day driven greeting + a deterministic daily motivation.
 // Both update once per real day so the home screen feels alive without
 // being random-on-every-recomposition.
+//
+// Return @StringRes Ints so the Composable resolves them through
+// the current locale — otherwise non-Russian users would see Russian
+// greetings even after switching language.
 
-private val MOTIVATIONS = listOf(
-    "Каждое слово — шаг ближе к Испании 🇪🇸",
-    "Маленький прогресс лучше нулевого",
-    "Mañana = завтра. Hoy = сегодня. Делай сегодня.",
-    "5 минут в день меняют всё",
-    "Tu español está mejorando 💪",
-    "Practica hoy, brilla mañana",
-    "Полиглоты не рождаются — они тренируются",
-    "Ещё один день — ещё одно слово"
-)
-
-internal fun greetingFor(time: LocalTime): String {
+@androidx.annotation.StringRes
+internal fun greetingResFor(time: LocalTime): Int {
     val h = time.hour
     return when {
-        h in 5..10  -> "Доброе утро, готов учиться?"
-        h in 11..16 -> "Добрый день! Время для испанского"
-        h in 17..21 -> "Добрый вечер, продолжаем?"
-        else        -> "Ночные занятия — ¡vamos!"
+        h in 5..10  -> com.spanishapp.R.string.home_greeting_morning
+        h in 11..16 -> com.spanishapp.R.string.home_greeting_afternoon
+        h in 17..21 -> com.spanishapp.R.string.home_greeting_evening
+        else        -> com.spanishapp.R.string.home_greeting_night
     }
 }
 
-internal fun motivationFor(date: LocalDate): String {
-    val idx = (date.toEpochDay().mod(MOTIVATIONS.size.toLong())).toInt()
-    return MOTIVATIONS[idx]
+private val MOTIVATION_RES = listOf(
+    com.spanishapp.R.string.home_motivation_1,
+    com.spanishapp.R.string.home_motivation_2,
+    com.spanishapp.R.string.home_motivation_3,
+    com.spanishapp.R.string.home_motivation_4,
+    com.spanishapp.R.string.home_motivation_5,
+    com.spanishapp.R.string.home_motivation_6,
+    com.spanishapp.R.string.home_motivation_7,
+)
+
+@androidx.annotation.StringRes
+internal fun motivationResFor(date: LocalDate): Int {
+    val idx = (date.toEpochDay().mod(MOTIVATION_RES.size.toLong())).toInt()
+    return MOTIVATION_RES[idx]
 }
 
 @HiltViewModel

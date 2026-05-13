@@ -129,8 +129,10 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
 
     val today = remember { LocalDate.now() }
-    val greeting = remember(today) { greetingFor(LocalTime.now()) }
-    val motivation = remember(today) { motivationFor(today) }
+    val greetingRes = remember(today) { greetingResFor(LocalTime.now()) }
+    val motivationRes = remember(today) { motivationResFor(today) }
+    val greeting = stringResource(greetingRes)
+    val motivation = stringResource(motivationRes)
 
     // For random-word and word-detail bottom sheets.
     var randomWord by remember { mutableStateOf<WordEntity?>(null) }
@@ -528,7 +530,7 @@ private fun StatsBar(
                     )
                 }
                 Text(
-                    "$todayMinutes/$goalMinutes мин",
+                    stringResource(R.string.home_daily_minutes_template, todayMinutes, goalMinutes),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -790,7 +792,7 @@ private fun WordOfDayQuizCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        "✨ СЛОВО ДНЯ",
+                        stringResource(R.string.wod_label),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp,
@@ -841,7 +843,7 @@ private fun WordOfDayQuizCard(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                        if (word.wasPracticed) "Закрепить ещё раз" else "Тапни — закрепи слово",
+                        if (word.wasPracticed) stringResource(R.string.wod_tap_again) else stringResource(R.string.wod_tap_first),
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
@@ -1107,7 +1109,7 @@ private fun PronunciationQuiz(
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
-                    "Послушай",
+                    stringResource(R.string.wod_listen),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -1158,7 +1160,7 @@ private fun LetterAssemblyQuiz(
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            "Собери: «${word.russian}»",
+            stringResource(R.string.wod_build_template, word.russian),
             fontSize = 13.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -1185,7 +1187,7 @@ private fun LetterAssemblyQuiz(
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Text(
-                    typed.ifEmpty { "Тапни буквы ↓" },
+                    typed.ifEmpty { stringResource(R.string.wod_tap_letters) },
                     fontSize = if (typed.isEmpty()) 13.sp else 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = bufferTextColor,
@@ -1370,7 +1372,7 @@ private fun BentoRow(
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    "${book?.bestScore ?: 0}% прочитано",
+                    stringResource(R.string.home_book_progress_template, book?.bestScore ?: 0),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -1445,8 +1447,15 @@ private fun BentoRow(
                         }
                     }
                     Spacer(Modifier.height(6.dp))
+                    val wordOne = stringResource(R.string.word_count_one)
+                    val wordFew = stringResource(R.string.word_count_few)
+                    val wordMany = stringResource(R.string.word_count_many)
                     Text(
-                        "${recent.size} ${pluralRu(recent.size, "слово", "слова", "слов")} в истории",
+                        stringResource(
+                            R.string.home_dictionary_history_template,
+                            recent.size,
+                            pluralRu(recent.size, wordOne, wordFew, wordMany)
+                        ),
                         fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -1625,7 +1634,7 @@ private fun WeekHeatmap(minutes: List<Int>) {
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Text(
-                "📊 ЭТА НЕДЕЛЯ",
+                stringResource(R.string.home_weekly_heatmap_title),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp,
@@ -1661,7 +1670,7 @@ private fun WeekHeatmap(minutes: List<Int>) {
             }
             Spacer(Modifier.height(6.dp))
             Text(
-                "$activeDays дн · $totalMin мин на этой неделе",
+                stringResource(R.string.home_weekly_summary_template, activeDays, totalMin),
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

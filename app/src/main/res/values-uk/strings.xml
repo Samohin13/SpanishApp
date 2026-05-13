@@ -976,4 +976,46 @@
     <string name="onboarding_reason_study">🎓 Навчання</string>
     <string name="onboarding_reason_family">❤️ Спілкування / Сімʼя</string>
     <string name="onboarding_reason_hobby">🎸 Хобі / Культура</string>
+
+    <!-- Wave 4 -->
+    <string name="home_greeting_morning">Доброго ранку, готовий вчитися?</string>
+    <string name="home_greeting_afternoon">Добрий день! Час для іспанської</string>
+    <string name="home_greeting_evening">Добрий вечір, продовжуємо?</string>
+    <string name="home_greeting_night">Нічні заняття — ¡vamos!</string>
+
+    <string name="home_motivation_1">Mañana = завтра. Now = сьогодні. Роби сьогодні.</string>
+    <string name="home_motivation_2">Кожне слово — крок ближче до Іспанії 🇪🇸</string>
+    <string name="home_motivation_3">Маленький прогрес кращий за нульовий</string>
+    <string name="home_motivation_4">«Hablar» = говорити. ¡Hablamos!</string>
+    <string name="home_motivation_5">5 хвилин на день &gt; година раз на тиждень</string>
+    <string name="home_motivation_6">Поліглоти не народжуються — вони тренуються</string>
+    <string name="home_motivation_7">¡Vamos! Маленькими кроками до великого результату</string>
+
+    <string name="home_daily_minutes_template">%1$d/%2$d хв</string>
+    <string name="home_weekly_heatmap_title">📊 ЦЕЙ ТИЖДЕНЬ</string>
+    <string name="home_weekly_summary_template">%1$d дн · %2$d хв цього тижня</string>
+    <string name="home_book_progress_template">%1$d%% прочитано</string>
+    <string name="home_dictionary_history_template">%1$d %2$s в історії</string>
+
+    <string name="wod_label">✨ СЛОВО ДНЯ</string>
+    <string name="wod_tap_first">Тапни — закріпи слово</string>
+    <string name="wod_tap_again">Закріпити ще раз</string>
+    <string name="wod_listen">Послухай</string>
+    <string name="wod_build_template">Збери: «%1$s»</string>
+    <string name="wod_tap_letters">Тапни літери ↓</string>
+
+    <string name="flashcards_setup_subtitle">Маленькі набори слів на кожен день</string>
+    <string name="flashcards_coming_soon_template">Сети для рівня %1$s скоро зʼявляться 🚧</string>
+    <string name="flashcards_set_row_title_template">Сет %1$d · %2$s</string>
+    <string name="flashcards_set_unstarted_template">%1$d %2$s · ще не розпочато</string>
+    <string name="flashcards_set_locked">Відкриється після проходження попереднього сета</string>
+    <string name="flashcards_set_progress_template">%1$d/%2$d %3$s знаю</string>
+    <string name="flashcards_set_completed_template">✓ Усі %1$d %2$s знаю</string>
+    <string name="flashcards_practice_badge">ПРАКТИКА</string>
+    <string name="flashcards_practice_empty">Пройди хоча б один сет — слова зʼявляться тут</string>
+    <string name="flashcards_practice_ready_template">%1$d %2$s готові для повторення</string>
+
+    <string name="word_count_one">слово</string>
+    <string name="word_count_few">слова</string>
+    <string name="word_count_many">слів</string>
 </resources>

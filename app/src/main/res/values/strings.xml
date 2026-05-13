@@ -1035,4 +1035,53 @@
     <string name="onboarding_reason_study">🎓 Учёба</string>
     <string name="onboarding_reason_family">❤️ Общение / Семья</string>
     <string name="onboarding_reason_hobby">🎸 Хобби / Культура</string>
+
+    <!-- Wave 4 — оставшиеся хардкоды Home / Flashcards -->
+
+    <!-- HomeScreen greetings (time-of-day) -->
+    <string name="home_greeting_morning">Доброе утро, готов учиться?</string>
+    <string name="home_greeting_afternoon">Добрый день! Время для испанского</string>
+    <string name="home_greeting_evening">Добрый вечер, продолжаем?</string>
+    <string name="home_greeting_night">Ночные занятия — ¡vamos!</string>
+
+    <!-- HomeScreen rotating motivations -->
+    <string name="home_motivation_1">Mañana = завтра. Ноу = сегодня. Делай сегодня.</string>
+    <string name="home_motivation_2">Каждое слово — шаг ближе к Испании 🇪🇸</string>
+    <string name="home_motivation_3">Маленький прогресс лучше нулевого</string>
+    <string name="home_motivation_4">«Hablar» = говорить. Hablamos!</string>
+    <string name="home_motivation_5">5 минут в день &gt; час раз в неделю</string>
+    <string name="home_motivation_6">Полиглоты не рождаются — они тренируются</string>
+    <string name="home_motivation_7">¡Vamos! Маленькими шагами к большому результату</string>
+
+    <!-- HomeScreen daily / weekly stats -->
+    <string name="home_daily_minutes_template">%1$d/%2$d мин</string>
+    <string name="home_weekly_heatmap_title">📊 ЭТА НЕДЕЛЯ</string>
+    <string name="home_weekly_summary_template">%1$d дн · %2$d мин на этой неделе</string>
+    <string name="home_book_progress_template">%1$d%% прочитано</string>
+    <string name="home_dictionary_history_template">%1$d %2$s в истории</string>
+
+    <!-- Word-of-Day micro-game -->
+    <string name="wod_label">✨ СЛОВО ДНЯ</string>
+    <string name="wod_tap_first">Тапни — закрепи слово</string>
+    <string name="wod_tap_again">Закрепить ещё раз</string>
+    <string name="wod_listen">Послушай</string>
+    <string name="wod_build_template">Собери: «%1$s»</string>
+    <string name="wod_tap_letters">Тапни буквы ↓</string>
+
+    <!-- Flashcards setup screen -->
+    <string name="flashcards_setup_subtitle">Маленькие наборы слов на каждый день</string>
+    <string name="flashcards_coming_soon_template">Сеты для уровня %1$s скоро появятся 🚧</string>
+    <string name="flashcards_set_row_title_template">Сет %1$d · %2$s</string>
+    <string name="flashcards_set_unstarted_template">%1$d %2$s · ещё не начат</string>
+    <string name="flashcards_set_locked">Откроется после прохождения предыдущего сета</string>
+    <string name="flashcards_set_progress_template">%1$d/%2$d %3$s знаю</string>
+    <string name="flashcards_set_completed_template">✓ Все %1$d %2$s знаю</string>
+    <string name="flashcards_practice_badge">ПРАКТИКА</string>
+    <string name="flashcards_practice_empty">Пройди хотя бы один сет — слова появятся здесь</string>
+    <string name="flashcards_practice_ready_template">%1$d %2$s готовы к повторению</string>
+
+    <!-- Russian word forms used in templates ("3 слова", "5 слов" etc.) -->
+    <string name="word_count_one">слово</string>
+    <string name="word_count_few">слова</string>
+    <string name="word_count_many">слов</string>
 </resources>

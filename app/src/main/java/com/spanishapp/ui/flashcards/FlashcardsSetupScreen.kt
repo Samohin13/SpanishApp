@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -208,7 +209,7 @@ fun FlashcardsSetupScreen(
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        "Маленькие наборы слов на каждый день",
+                        stringResource(com.spanishapp.R.string.flashcards_setup_subtitle),
                         fontSize = 15.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -254,7 +255,7 @@ fun FlashcardsSetupScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "Сеты для уровня $selectedLevel скоро появятся 🚧",
+                            stringResource(com.spanishapp.R.string.flashcards_coming_soon_template, selectedLevel),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 14.sp
                         )
@@ -386,7 +387,7 @@ private fun SetRow(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        "Сет ${row.set.order} · ${row.set.title}",
+                        stringResource(com.spanishapp.R.string.flashcards_set_row_title_template, row.set.order, row.set.title),
                         fontSize   = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color      = if (row.unlocked) MaterialTheme.colorScheme.onSurface
@@ -394,10 +395,20 @@ private fun SetRow(
                     )
                     Spacer(Modifier.height(4.dp))
                     if (row.unlocked) {
+                        val wordOne = stringResource(com.spanishapp.R.string.word_count_one)
+                        val wordFew = stringResource(com.spanishapp.R.string.word_count_few)
+                        val wordMany = stringResource(com.spanishapp.R.string.word_count_many)
                         val statusText = when {
-                            row.seenCount == 0            -> "${row.total} слов · ещё не начат"
-                            row.seenCount < row.total     -> "${row.seenCount}/${row.total} слов знаю"
-                            else                          -> "✓ Все ${row.total} слов знаю"
+                            row.seenCount == 0        -> stringResource(
+                                com.spanishapp.R.string.flashcards_set_unstarted_template,
+                                row.total, pluralRu(row.total, wordOne, wordFew, wordMany))
+                            row.seenCount < row.total -> stringResource(
+                                com.spanishapp.R.string.flashcards_set_progress_template,
+                                row.seenCount, row.total,
+                                pluralRu(row.total, wordOne, wordFew, wordMany))
+                            else                      -> stringResource(
+                                com.spanishapp.R.string.flashcards_set_completed_template,
+                                row.total, pluralRu(row.total, wordOne, wordFew, wordMany))
                         }
                         Text(
                             statusText,
@@ -427,7 +438,7 @@ private fun SetRow(
                         }
                     } else {
                         Text(
-                            "Откроется после прохождения предыдущего сета",
+                            stringResource(com.spanishapp.R.string.flashcards_set_locked),
                             fontSize = 12.sp,
                             color    = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -529,7 +540,7 @@ private fun PracticeTile(
                         color = gold.copy(alpha = 0.18f)
                     ) {
                         Text(
-                            "ПРАКТИКА",
+                            stringResource(com.spanishapp.R.string.flashcards_practice_badge),
                             fontSize      = 10.sp,
                             fontWeight    = FontWeight.ExtraBold,
                             letterSpacing = 1.5.sp,
@@ -538,11 +549,15 @@ private fun PracticeTile(
                         )
                     }
                     Spacer(Modifier.height(5.dp))
+                    val wOne = stringResource(com.spanishapp.R.string.word_count_one)
+                    val wFew = stringResource(com.spanishapp.R.string.word_count_few)
+                    val wMany = stringResource(com.spanishapp.R.string.word_count_many)
                     Text(
                         if (weakCount == 0)
-                            "Пройди хотя бы один сет — слова появятся здесь"
+                            stringResource(com.spanishapp.R.string.flashcards_practice_empty)
                         else
-                            "$weakCount ${pluralWords(weakCount)} готовы к повторению",
+                            stringResource(com.spanishapp.R.string.flashcards_practice_ready_template,
+                                weakCount, pluralRu(weakCount, wOne, wFew, wMany)),
                         fontSize = 13.sp,
                         color    = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -552,14 +567,19 @@ private fun PracticeTile(
     }
 }
 
-/** Russian pluralization for "слово" — 1 слово / 2-4 слова / 5+ слов. */
-private fun pluralWords(n: Int): String {
+/**
+ * Slavic-style pluralization: pick one of three forms based on count.
+ * Caller passes locale-resolved forms (stringResource(...)) so the
+ * function works for ru/uk/en/es alike — for languages without a
+ * distinct "few" form (en/es), one/few/many resolve to the same word.
+ */
+private fun pluralRu(n: Int, one: String, few: String, many: String): String {
     val mod10 = n % 10
     val mod100 = n % 100
     return when {
-        mod100 in 11..14 -> "слов"
-        mod10 == 1       -> "слово"
-        mod10 in 2..4    -> "слова"
-        else             -> "слов"
+        mod100 in 11..14 -> many
+        mod10 == 1       -> one
+        mod10 in 2..4    -> few
+        else             -> many
     }
 }
