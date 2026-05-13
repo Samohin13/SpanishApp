@@ -1596,7 +1596,24 @@ private fun GoalLine(text: String, done: Boolean) {
 
 @Composable
 private fun WeekHeatmap(minutes: List<Int>) {
-    val labels = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
+    // Locale-aware short weekday labels (Mon=Пн, Tue=Вт, ... resolves
+    // automatically based on the active resources locale).
+    val context = LocalContext.current
+    val locale = context.resources.configuration.locales[0]
+    val labels = remember(locale) {
+        listOf(
+            java.time.DayOfWeek.MONDAY,
+            java.time.DayOfWeek.TUESDAY,
+            java.time.DayOfWeek.WEDNESDAY,
+            java.time.DayOfWeek.THURSDAY,
+            java.time.DayOfWeek.FRIDAY,
+            java.time.DayOfWeek.SATURDAY,
+            java.time.DayOfWeek.SUNDAY,
+        ).map {
+            it.getDisplayName(java.time.format.TextStyle.SHORT, locale)
+                .replaceFirstChar { c -> c.uppercase(locale) }
+        }
+    }
     val totalMin = minutes.sum()
     val activeDays = minutes.count { it > 0 }
 

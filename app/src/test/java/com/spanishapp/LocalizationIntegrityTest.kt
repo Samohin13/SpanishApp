@@ -356,8 +356,37 @@ class LocalizationIntegrityTest {
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // 11. Print summary on success. Useful to see at-a-glance how many
-    //     keys exist in each locale.
+    // 11. Duplicate keys within a single strings.xml — the AAPT2 compiler
+    //     fails the build with "Found item String/X more than one time",
+    //     but only after gradle assembly. This test catches it at the
+    //     unit-test level (faster feedback) before bundleRelease.
+    // ─────────────────────────────────────────────────────────────────
+    @Test
+    fun no_duplicate_keys_within_any_locale() {
+        val locales = mapOf(
+            "ru" to stringsPath("values"),
+            "en" to stringsPath("values-en"),
+            "uk" to stringsPath("values-uk"),
+            "es" to stringsPath("values-es"),
+        )
+        val regex = Regex("""<string\s+name="([^"]+)"""")
+        val problems = mutableListOf<String>()
+        for ((locale, path) in locales) {
+            val text = File(path).readText()
+            val keys = regex.findAll(text).map { it.groupValues[1] }.toList()
+            val duplicates = keys.groupingBy { it }.eachCount().filter { it.value > 1 }
+            if (duplicates.isNotEmpty()) {
+                problems += "[$locale] duplicate keys: ${duplicates.entries.joinToString { "${it.key}×${it.value}" }}"
+            }
+        }
+        if (problems.isNotEmpty()) {
+            fail("Duplicate string definitions break the AAPT2 build:\n" +
+                problems.joinToString("\n"))
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // 12. Print summary on success.
     // ─────────────────────────────────────────────────────────────────
     @Test
     fun summary() {

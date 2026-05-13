@@ -48,7 +48,10 @@ class LibrosViewModel @Inject constructor(
 
     // ── Список рассказов + прогресс ───────────────────────────
 
-    private val _filterLevel = MutableStateFlow("Все")
+    // "all" = stable sentinel meaning «show every level». Locale-independent
+    // so the filter survives a UI language switch. UI resolves it to a
+    // localized label via stringResource at display time.
+    private val _filterLevel = MutableStateFlow("all")
     val filterLevel: StateFlow<String> = _filterLevel
 
     val items: StateFlow<List<LibroUiItem>> = dao.getAll()
@@ -63,7 +66,7 @@ class LibrosViewModel @Inject constructor(
 
     val filteredItems: StateFlow<List<LibroUiItem>> =
         combine(items, filterLevel) { list, level ->
-            if (level == "Все") list else list.filter { it.libro.level == level }
+            if (level == "all") list else list.filter { it.libro.level == level }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun setFilter(level: String) { _filterLevel.value = level }

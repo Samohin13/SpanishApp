@@ -81,12 +81,12 @@ fun LibrosScreen(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    val filters = listOf("Все", "A1", "A2", "B1", "B2")
+                    val filters = listOf("all", "A1", "A2", "B1", "B2")
                     items(filters) { level ->
                         val selected = filter == level
-                        val color = if (level == "Все") LibrosPurple
+                        val color = if (level == "all") LibrosPurple
                                     else LevelColors[level] ?: LibrosPurple
-                        val display = if (level == "Все") allLabel else level
+                        val display = if (level == "all") allLabel else level
                         FilterChip(
                             selected = selected,
                             onClick = { vm.setFilter(level) },
