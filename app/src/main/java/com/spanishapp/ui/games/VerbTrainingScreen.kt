@@ -174,14 +174,14 @@ private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
             }
         }
 
-        SectionCard(title = "Уровень глаголов") {
+        SectionCard(title = stringResource(R.string.verb_section_level)) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 val tierOptions = listOf(
-                    1 to "Топ-50 — самые употребляемые",
-                    2 to "До 100 — часто встречающиеся",
-                    3 to "До 200 — стандарт",
-                    4 to "До 350 — продвинутый",
-                    5 to "Все ~850 — полный список",
+                    1 to stringResource(R.string.verb_level_1),
+                    2 to stringResource(R.string.verb_level_2),
+                    3 to stringResource(R.string.verb_level_3),
+                    4 to stringResource(R.string.verb_level_4),
+                    5 to stringResource(R.string.verb_level_5),
                 )
                 tierOptions.forEach { (tier, label) ->
                     val selected = cfg.maxTier == tier
@@ -441,13 +441,14 @@ private fun InversoCard(q: VerbQuestion, vm: VerbViewModel) {
 
     Spacer(Modifier.height(8.dp))
     DropdownPicker(stringResource(R.string.verb_dropdown_infinitive), q.conjugation.verb,
-        listOf(q.conjugation.verb), pickedInf) { pickedInf = it }
+        listOf(q.conjugation.verb), pickedInf, isTense = false) { pickedInf = it }
     DropdownPicker(stringResource(R.string.verb_dropdown_tense), q.conjugation.tense,
         listOf("presente","preterito","imperfecto","futuro","condicional","subjuntivo"),
-        pickedTense) { pickedTense = it }
+        pickedTense, isTense = true) { pickedTense = it }
     DropdownPicker(stringResource(R.string.verb_dropdown_person), "yo/tú/...",
         (0..5).map { vm.getPronoun(it) },
-        if (pickedPron < 0) "" else vm.getPronoun(pickedPron)
+        if (pickedPron < 0) "" else vm.getPronoun(pickedPron),
+        isTense = false
     ) { selected ->
         pickedPron = (0..5).firstOrNull { vm.getPronoun(it) == selected } ?: -1
     }
@@ -615,8 +616,16 @@ private fun FeedbackBanner(q: VerbQuestion) {
 }
 
 @Composable
-private fun DropdownPicker(label: String, hint: String, options: List<String>, selected: String, onSelect: (String) -> Unit) {
+private fun DropdownPicker(
+    label: String,
+    hint: String,
+    options: List<String>,
+    selected: String,
+    isTense: Boolean = false,
+    onSelect: (String) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
+    fun pretty(raw: String): String = if (isTense) prettyTense(raw) else raw
     Box(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 4.dp)) {
@@ -630,7 +639,7 @@ private fun DropdownPicker(label: String, hint: String, options: List<String>, s
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(label, fontSize = 11.sp, color = TextGray)
-                Text(if (selected.isBlank()) "—  $hint" else prettyOption(label, selected),
+                Text(if (selected.isBlank()) "—  $hint" else pretty(selected),
                     fontSize = 16.sp,
                     color = if (selected.isBlank()) TextGray else TextMain,
                     fontWeight = FontWeight.SemiBold)
@@ -639,16 +648,13 @@ private fun DropdownPicker(label: String, hint: String, options: List<String>, s
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             options.forEach { o ->
                 DropdownMenuItem(
-                    text = { Text(prettyOption(label, o)) },
+                    text = { Text(pretty(o)) },
                     onClick = { onSelect(o); expanded = false }
                 )
             }
         }
     }
 }
-
-private fun prettyOption(label: String, raw: String): String =
-    if (label == "Время" || label == "Tense") prettyTense(raw) else raw
 
 // ══════════════════════════════════════════════════════════════
 //  РЕЗУЛЬТАТЫ

@@ -25,6 +25,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -264,7 +265,7 @@ fun ProfileScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = { Text("Профиль", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(com.spanishapp.R.string.profile_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
                 navigationIcon = {
                     IconButton(onClick = {
                         // Explicit Home fallback: when Profile is opened via the
@@ -335,13 +336,13 @@ fun ProfileScreen(
             // ── АКТИВНОСТЬ ──────────────────────────────────────
             StaggeredEntrance(index = 2) {
                 Column {
-                    SectionHeader("АКТИВНОСТЬ", AccentViolet, modifier = Modifier.padding(horizontal = 24.dp))
+                    SectionHeader(stringResource(com.spanishapp.R.string.profile_section_activity), AccentViolet, modifier = Modifier.padding(horizontal = 24.dp))
                     Spacer(Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        ActivityStatTile("🔥", p.currentStreak.toString(), "СЕРИЯ ДНЕЙ", AccentViolet,  Modifier.weight(1f))
+                        ActivityStatTile("🔥", p.currentStreak.toString(), stringResource(com.spanishapp.R.string.profile_label_streak_days), AccentViolet,  Modifier.weight(1f))
                         ActivityStatTile("⭐", p.totalXp.toString(),       "XP ВСЕГО",    AccentEmerald, Modifier.weight(1f))
                         ActivityStatTile("🎯", todayXp.toString(),         "XP СЕГОДНЯ",  AccentTeal,    Modifier.weight(1f))
                     }
@@ -352,7 +353,7 @@ fun ProfileScreen(
             // ── ПУТЬ ДО МАДРИДА (единственная тёплая секция) ────
             StaggeredEntrance(index = 3) {
                 Column {
-                    SectionHeader("ПУТЬ ДО МАДРИДА", AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
+                    SectionHeader(stringResource(com.spanishapp.R.string.profile_section_path_madrid), AccentOrange, modifier = Modifier.padding(horizontal = 24.dp))
                     Spacer(Modifier.height(8.dp))
                     PathToMadridTile(
                         league = league,
@@ -367,7 +368,7 @@ fun ProfileScreen(
             // ── СТАТИСТИКА ──────────────────────────────────────
             StaggeredEntrance(index = 4) {
                 Column {
-                    SectionHeader("СТАТИСТИКА", AccentGreen, modifier = Modifier.padding(horizontal = 24.dp))
+                    SectionHeader(stringResource(com.spanishapp.R.string.profile_section_stats), AccentGreen, modifier = Modifier.padding(horizontal = 24.dp))
                     Spacer(Modifier.height(8.dp))
                     StatsTile(
                         wordsLearned = state.learnedCount,
@@ -382,7 +383,7 @@ fun ProfileScreen(
             // ── АКТИВНОСТЬ ЗА НЕДЕЛЮ ────────────────────────────
             StaggeredEntrance(index = 5) {
                 Column {
-                    SectionHeader("АКТИВНОСТЬ ЗА НЕДЕЛЮ", AccentBlue, modifier = Modifier.padding(horizontal = 24.dp))
+                    SectionHeader(stringResource(com.spanishapp.R.string.profile_section_week_activity), AccentBlue, modifier = Modifier.padding(horizontal = 24.dp))
                     Spacer(Modifier.height(8.dp))
                     WeeklyHeatmapTile(
                         history = xpHistory,
@@ -396,7 +397,7 @@ fun ProfileScreen(
             StaggeredEntrance(index = 6) {
                 Column {
                     SectionHeader(
-                        "ДОСТИЖЕНИЯ",
+                        stringResource(com.spanishapp.R.string.profile_section_achievements),
                         AccentRose,
                         trailing = "↗",
                         modifier = Modifier.padding(horizontal = 24.dp)
@@ -449,7 +450,7 @@ private fun HeroBlock(
                 if (photoUrl != null) {
                     AsyncImage(
                         model = ImageRequest.Builder(context).data(photoUrl).crossfade(true).build(),
-                        contentDescription = "Аватар",
+                        contentDescription = stringResource(com.spanishapp.R.string.profile_avatar_cd),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize().clip(CircleShape)
                     )
@@ -691,7 +692,7 @@ private fun RatingInfoSheetContent(accent: Color) {
             .padding(bottom = 32.dp)
     ) {
         Text(
-            "КАК РАБОТАЕТ РЕЙТИНГ?",
+            stringResource(com.spanishapp.R.string.rating_dialog_title),
             fontSize = 18.sp,
             fontWeight = FontWeight.ExtraBold,
             letterSpacing = 1.sp,

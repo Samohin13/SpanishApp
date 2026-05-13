@@ -1256,17 +1256,17 @@ private fun ExerciseTypeBadge(type: ExerciseType, accent: Color) {
     // and the others (cyan/green/orange/pink) have enough contrast already.
     val readable = accent
     val (emoji, label) = when (type) {
-        ExerciseType.MULTIPLE_CHOICE   -> "✏️" to "Выбор"
-        ExerciseType.FILL_BLANK        -> "📝" to "Пропуск"
-        ExerciseType.TRANSLATE         -> "🌐" to "Перевод"
-        ExerciseType.BUILD_SENTENCE    -> "🧱" to "Сборка"
-        ExerciseType.SPEAKING          -> "🎤" to "Произношение"
-        ExerciseType.LISTEN_PICK       -> "🔊" to "Аудио"
-        ExerciseType.ORDER_LETTERS     -> "🔤" to "Анаграмма"
-        ExerciseType.MATCH_PAIRS       -> "🔗" to "Пары"
-        ExerciseType.TAP_MISSING_WORD  -> "📌" to "Артикль"
-        ExerciseType.LISTEN_TYPE       -> "🎧" to "Диктант"
-        ExerciseType.CONJUGATION_GRID  -> "📊" to "Спряжение"
+        ExerciseType.MULTIPLE_CHOICE   -> "✏️" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_choice)
+        ExerciseType.FILL_BLANK        -> "📝" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_fill_blank)
+        ExerciseType.TRANSLATE         -> "🌐" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_translate)
+        ExerciseType.BUILD_SENTENCE    -> "🧱" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_build)
+        ExerciseType.SPEAKING          -> "🎤" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_speaking)
+        ExerciseType.LISTEN_PICK       -> "🔊" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_listen_pick)
+        ExerciseType.ORDER_LETTERS     -> "🔤" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_order_letters)
+        ExerciseType.MATCH_PAIRS       -> "🔗" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_match_pairs)
+        ExerciseType.TAP_MISSING_WORD  -> "📌" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_missing_word)
+        ExerciseType.LISTEN_TYPE       -> "🎧" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_listen_type)
+        ExerciseType.CONJUGATION_GRID  -> "📊" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_conjugation)
     }
     Surface(
         shape = RoundedCornerShape(50),

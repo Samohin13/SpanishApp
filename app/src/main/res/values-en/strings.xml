@@ -928,4 +928,37 @@
     <string name="level_complete_again">Again</string>
     <string name="level_complete_try_again_button">Try again</string>
     <string name="level_complete_back_to_menu">Back to menu</string>
+
+    <!-- Wave 3 -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_section_activity">ACTIVITY</string>
+    <string name="profile_label_streak_days">DAY STREAK</string>
+    <string name="profile_section_path_madrid">ROAD TO MADRID</string>
+    <string name="profile_section_stats">STATISTICS</string>
+    <string name="profile_section_week_activity">THIS WEEK</string>
+    <string name="profile_section_achievements">ACHIEVEMENTS</string>
+    <string name="profile_avatar_cd">Avatar</string>
+    <string name="rating_dialog_title">HOW THE RATING WORKS</string>
+
+    <string name="leaderboard_tab_week">Week 🏆</string>
+
+    <string name="verb_section_level">Verb level</string>
+    <string name="verb_level_1">Top 50 — most common</string>
+    <string name="verb_level_2">Up to 100 — frequent</string>
+    <string name="verb_level_3">Up to 200 — standard</string>
+    <string name="verb_level_4">Up to 350 — advanced</string>
+    <string name="verb_level_5">All ~850 — full list</string>
+    <string name="verb_label_time">Tense</string>
+
+    <string name="exercise_type_choice">Choice</string>
+    <string name="exercise_type_fill_blank">Fill blank</string>
+    <string name="exercise_type_translate">Translate</string>
+    <string name="exercise_type_build">Build</string>
+    <string name="exercise_type_speaking">Speak</string>
+    <string name="exercise_type_listen_pick">Listen</string>
+    <string name="exercise_type_order_letters">Anagram</string>
+    <string name="exercise_type_match_pairs">Match</string>
+    <string name="exercise_type_missing_word">Article</string>
+    <string name="exercise_type_listen_type">Dictation</string>
+    <string name="exercise_type_conjugation">Conjugation</string>
 </resources>

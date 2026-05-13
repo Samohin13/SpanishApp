@@ -79,7 +79,7 @@ fun LeaderboardScreen(
                         tab = Tab.WEEK
                         navController.navigate("weekly_league")
                     },
-                    text = { Text("Неделя 🏆", fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
+                    text = { Text(stringResource(com.spanishapp.R.string.leaderboard_tab_week), fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
                 )
                 Tab(
                     selected = tab == Tab.LOCAL,

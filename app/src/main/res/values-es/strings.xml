@@ -936,4 +936,37 @@
     <string name="level_complete_again">Otra vez</string>
     <string name="level_complete_try_again_button">Intentar otra vez</string>
     <string name="level_complete_back_to_menu">Volver al menú</string>
+
+    <!-- Wave 3 -->
+    <string name="profile_title">Perfil</string>
+    <string name="profile_section_activity">ACTIVIDAD</string>
+    <string name="profile_label_streak_days">RACHA DE DÍAS</string>
+    <string name="profile_section_path_madrid">CAMINO A MADRID</string>
+    <string name="profile_section_stats">ESTADÍSTICAS</string>
+    <string name="profile_section_week_activity">ESTA SEMANA</string>
+    <string name="profile_section_achievements">LOGROS</string>
+    <string name="profile_avatar_cd">Avatar</string>
+    <string name="rating_dialog_title">¿CÓMO FUNCIONA EL RANKING?</string>
+
+    <string name="leaderboard_tab_week">Semana 🏆</string>
+
+    <string name="verb_section_level">Nivel de verbos</string>
+    <string name="verb_level_1">Top 50 — más comunes</string>
+    <string name="verb_level_2">Hasta 100 — frecuentes</string>
+    <string name="verb_level_3">Hasta 200 — estándar</string>
+    <string name="verb_level_4">Hasta 350 — avanzado</string>
+    <string name="verb_level_5">Todos los ~850 — lista completa</string>
+    <string name="verb_label_time">Tiempo</string>
+
+    <string name="exercise_type_choice">Elegir</string>
+    <string name="exercise_type_fill_blank">Hueco</string>
+    <string name="exercise_type_translate">Traducir</string>
+    <string name="exercise_type_build">Construir</string>
+    <string name="exercise_type_speaking">Hablar</string>
+    <string name="exercise_type_listen_pick">Audio</string>
+    <string name="exercise_type_order_letters">Anagrama</string>
+    <string name="exercise_type_match_pairs">Parejas</string>
+    <string name="exercise_type_missing_word">Artículo</string>
+    <string name="exercise_type_listen_type">Dictado</string>
+    <string name="exercise_type_conjugation">Conjugación</string>
 </resources>

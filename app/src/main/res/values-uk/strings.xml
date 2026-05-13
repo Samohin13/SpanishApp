@@ -936,4 +936,37 @@
     <string name="level_complete_again">Знову</string>
     <string name="level_complete_try_again_button">Спробувати знову</string>
     <string name="level_complete_back_to_menu">Повернутися до меню</string>
+
+    <!-- Wave 3 -->
+    <string name="profile_title">Профіль</string>
+    <string name="profile_section_activity">АКТИВНІСТЬ</string>
+    <string name="profile_label_streak_days">ДНІВ ПОСПІЛЬ</string>
+    <string name="profile_section_path_madrid">ШЛЯХ ДО МАДРИДА</string>
+    <string name="profile_section_stats">СТАТИСТИКА</string>
+    <string name="profile_section_week_activity">АКТИВНІСТЬ ЗА ТИЖДЕНЬ</string>
+    <string name="profile_section_achievements">ДОСЯГНЕННЯ</string>
+    <string name="profile_avatar_cd">Аватар</string>
+    <string name="rating_dialog_title">ЯК ПРАЦЮЄ РЕЙТИНГ?</string>
+
+    <string name="leaderboard_tab_week">Тиждень 🏆</string>
+
+    <string name="verb_section_level">Рівень дієслів</string>
+    <string name="verb_level_1">Топ-50 — найуживаніші</string>
+    <string name="verb_level_2">До 100 — часто вживані</string>
+    <string name="verb_level_3">До 200 — стандарт</string>
+    <string name="verb_level_4">До 350 — просунутий</string>
+    <string name="verb_level_5">Усі ~850 — повний список</string>
+    <string name="verb_label_time">Час</string>
+
+    <string name="exercise_type_choice">Вибір</string>
+    <string name="exercise_type_fill_blank">Пропуск</string>
+    <string name="exercise_type_translate">Переклад</string>
+    <string name="exercise_type_build">Збірка</string>
+    <string name="exercise_type_speaking">Вимова</string>
+    <string name="exercise_type_listen_pick">Аудіо</string>
+    <string name="exercise_type_order_letters">Анаграма</string>
+    <string name="exercise_type_match_pairs">Пари</string>
+    <string name="exercise_type_missing_word">Артикль</string>
+    <string name="exercise_type_listen_type">Диктант</string>
+    <string name="exercise_type_conjugation">Відмінювання</string>
 </resources>

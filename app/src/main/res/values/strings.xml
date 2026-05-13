@@ -989,4 +989,42 @@
     <string name="level_complete_again">Снова</string>
     <string name="level_complete_try_again_button">Попробовать снова</string>
     <string name="level_complete_back_to_menu">Вернуться в меню</string>
+
+    <!-- Wave 3 — оставшиеся хардкоды по экранам -->
+
+    <!-- Profile screen -->
+    <string name="profile_title">Профиль</string>
+    <string name="profile_section_activity">АКТИВНОСТЬ</string>
+    <string name="profile_label_streak_days">СЕРИЯ ДНЕЙ</string>
+    <string name="profile_section_path_madrid">ПУТЬ ДО МАДРИДА</string>
+    <string name="profile_section_stats">СТАТИСТИКА</string>
+    <string name="profile_section_week_activity">АКТИВНОСТЬ ЗА НЕДЕЛЮ</string>
+    <string name="profile_section_achievements">ДОСТИЖЕНИЯ</string>
+    <string name="profile_avatar_cd">Аватар</string>
+    <string name="rating_dialog_title">КАК РАБОТАЕТ РЕЙТИНГ?</string>
+
+    <!-- Leaderboard tab -->
+    <string name="leaderboard_tab_week">Неделя 🏆</string>
+
+    <!-- Verb training -->
+    <string name="verb_section_level">Уровень глаголов</string>
+    <string name="verb_level_1">Топ-50 — самые употребляемые</string>
+    <string name="verb_level_2">До 100 — часто встречающиеся</string>
+    <string name="verb_level_3">До 200 — стандарт</string>
+    <string name="verb_level_4">До 350 — продвинутый</string>
+    <string name="verb_level_5">Все ~850 — полный список</string>
+    <string name="verb_label_time">Время</string>
+
+    <!-- LessonSession exercise type badges -->
+    <string name="exercise_type_choice">Выбор</string>
+    <string name="exercise_type_fill_blank">Пропуск</string>
+    <string name="exercise_type_translate">Перевод</string>
+    <string name="exercise_type_build">Сборка</string>
+    <string name="exercise_type_speaking">Произношение</string>
+    <string name="exercise_type_listen_pick">Аудио</string>
+    <string name="exercise_type_order_letters">Анаграмма</string>
+    <string name="exercise_type_match_pairs">Пары</string>
+    <string name="exercise_type_missing_word">Артикль</string>
+    <string name="exercise_type_listen_type">Диктант</string>
+    <string name="exercise_type_conjugation">Спряжение</string>
 </resources>
