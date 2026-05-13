@@ -7,9 +7,15 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- CAMERA used only for the optional "Take photo" path of the avatar picker. -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <!--
+      CAMERA убрана: на текущий момент аватар-пикер использует
+      ActivityResultContracts.PickVisualMedia (Photo Picker, без
+      запроса разрешения). «Сделать фото» через камеру не реализовано.
+      Объявленная-но-неиспользуемая CAMERA вынуждала Play Console
+      требовать обязательное обоснование политикой конфиденциальности
+      именно для CAMERA и пугала первых пользователей. Если в будущем
+      добавим «снять фото для аватара» — вернём <uses-permission> сюда.
+    -->
 
     <application
         android:name=".SpanishApp"
