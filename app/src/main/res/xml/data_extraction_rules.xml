@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Cloud + device-transfer бэкап включает только нужное.
+  Cloud + device-transfer бэкап включает только указанные preferences.
+  БД (spanish_app.db) не попадает — Android резервирует только то, что
+  явно перечислено в <include>. Прогресс синхронизируется через Firestore.
   Аутентификационные токены Firebase хранятся в Google Play Services
   и в Auto-Backup не попадают.
 -->
@@ -9,12 +11,10 @@
         <include domain="sharedpref" path="voice_prefs.xml"/>
         <include domain="sharedpref" path="theme_prefs.xml"/>
         <include domain="sharedpref" path="user_settings.xml"/>
-        <exclude domain="database" path="spanish_app.db"/>
     </cloud-backup>
     <device-transfer>
         <include domain="sharedpref" path="voice_prefs.xml"/>
         <include domain="sharedpref" path="theme_prefs.xml"/>
         <include domain="sharedpref" path="user_settings.xml"/>
-        <exclude domain="database" path="spanish_app.db"/>
     </device-transfer>
 </data-extraction-rules>

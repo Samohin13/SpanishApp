@@ -18,11 +18,16 @@ val localProps = Properties().apply {
 }
 
 android {
+    // namespace остаётся "com.spanishapp" — это namespace Kotlin/Java
+    // пакетов в коде. Менять его означало бы переименовать сотни импортов.
+    // applicationId же — это идентификатор приложения в Play Store, он
+    // может отличаться. Сменён на "com.espeak.app" т.к. "com.spanishapp"
+    // уже зарегистрирован другим разработчиком в Google Play.
     namespace = "com.spanishapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.spanishapp"
+        applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
         versionCode = 6

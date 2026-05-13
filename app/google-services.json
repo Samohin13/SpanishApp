@@ -7,6 +7,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:664028454974:android:021f6c2c82094201d1316f",
+        "android_client_info": {
+          "package_name": "com.espeak.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDps_kmb1_lDW2R2mfzday7Fl45rtfHmCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:664028454974:android:8eb1deb48a59a37ad1316f",
         "android_client_info": {
           "package_name": "com.spanishapp"

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Бэкап включает только пользовательские preferences (голос, тема, язык).
-  БД spanish_app.db ИСКЛЮЧЕНА из Auto-Backup: при переустановке Google
-  восстанавливал старую копию словаря, и обновлённый BasicsVocab/Extras
-  никогда не попадал в БД — пользователь видел пустые/неполные карточки.
-  Прогресс (XP, серия, ачивки) синхронизируется через Firestore.
+  БД spanish_app.db в Auto-Backup НЕ ПОПАДАЕТ автоматически — Android
+  по умолчанию резервирует только то, что явно указано в <include>.
+  Прогресс пользователя (XP, серия, ачивки) синхронизируется через
+  Firestore — БД восстановления при переустановке не нужно.
 -->
 <full-backup-content>
     <include domain="sharedpref" path="voice_prefs.xml"/>
     <include domain="sharedpref" path="theme_prefs.xml"/>
     <include domain="sharedpref" path="user_settings.xml"/>
-    <exclude domain="database" path="spanish_app.db"/>
 </full-backup-content>
