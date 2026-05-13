@@ -75,8 +75,20 @@ class AppPreferences @Inject constructor(
     val fontSize: Flow<String> = context.dataStore.data.map { it[FONT_SIZE] ?: "MEDIUM" }
     suspend fun setFontSize(size: String) = context.dataStore.edit { it[FONT_SIZE] = size }
 
-    /** Язык UI: "ru", "en" или "system" (по умолчанию). */
-    val uiLanguage: Flow<String> = context.dataStore.data.map { it[UI_LANGUAGE] ?: "system" }
+    /**
+     * Язык UI: "ru" / "en" / "uk" / "es" / "system".
+     *
+     * Default — "ru". В v1 приложение архитектурно RU→ES: всё содержимое
+     * (словарь, уроки, рассказы, упражнения) на русском. Локализация
+     * UI-chrome на en/uk/es есть в repo и работает, но без перевода
+     * контента не-русскоязычный пользователь получит «половина-на-
+     * половину» опыт. Поэтому defaults в "ru" даже на испанском телефоне.
+     *
+     * Переключатель остаётся в Settings (для продвинутых пользователей
+     * и для будущего, когда будем переводить контент). На Welcome убран,
+     * чтобы новый юзер не пробовал en/uk/es и не получил «битый» UX.
+     */
+    val uiLanguage: Flow<String> = context.dataStore.data.map { it[UI_LANGUAGE] ?: "ru" }
     suspend fun setUiLanguage(lang: String) = context.dataStore.edit { it[UI_LANGUAGE] = lang }
 
     /** Глобальный тумблер звука (TTS). По умолчанию — включён. */
