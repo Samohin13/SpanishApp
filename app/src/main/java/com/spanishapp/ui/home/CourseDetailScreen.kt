@@ -65,15 +65,7 @@ fun CourseDetailScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Column {
-                        Text(courseTitle, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
-                        // Просто число с иконкой — без слова «блоков» (3.3).
-                        Text(
-                            "📦 ${unitsForCourse.size}",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    Text(courseTitle, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {

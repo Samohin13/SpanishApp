@@ -172,6 +172,7 @@ fun HomeScreen(
                             todayXp      = state.todayXp,
                             skillRating  = state.skillRating,
                             league       = state.currentLeague,
+                            hasPracticed = state.totalXp > 0,
                             onClick      = { navController.navigate("profile") { launchSingleTop = true } }
                         )
                         Spacer(Modifier.height(12.dp))
@@ -241,6 +242,7 @@ fun HomeScreen(
                             book          = lastBook,
                             rating        = state.skillRating,
                             league        = state.currentLeague,
+                            hasPracticed  = state.totalXp > 0,
                             recent        = recentWords,
                             goals         = dailyGoals,
                             onBookClick   = {
@@ -478,11 +480,14 @@ private fun StatsBar(
     todayXp: Int,
     skillRating: Int,
     league: Int,
+    hasPracticed: Boolean,
     onClick: () -> Unit
 ) {
     val progress = if (goalMinutes > 0) (todayMinutes.toFloat() / goalMinutes).coerceIn(0f, 1f) else 0f
     val animatedProgress by animateFloatAsState(progress, tween(500), label = "stats_ring")
-    val leagueName = LEAGUE_NAMES.getOrElse(league - 1) { "Aldea" }
+    // Until the user does the first review, hide the seed-1000 rating —
+    // it confused users into thinking they had already played.
+    val leagueName = if (hasPracticed) LEAGUE_NAMES.getOrElse(league - 1) { "Aldea" } else "—"
 
     Surface(
         modifier = Modifier
@@ -556,7 +561,7 @@ private fun StatsBar(
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
-                        "$skillRating",
+                        if (hasPracticed) "$skillRating" else "—",
                         fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -1336,6 +1341,7 @@ private fun BentoRow(
     book: com.spanishapp.data.db.entity.LibroProgressEntity?,
     rating: Int,
     league: Int,
+    hasPracticed: Boolean,
     recent: List<WordEntity>,
     goals: DailyGoals,
     onBookClick: () -> Unit,
@@ -1383,8 +1389,11 @@ private fun BentoRow(
             BentoTile(modifier = Modifier.weight(1f), accent = RatingAccent, theme = BentoTheme.RATING, onClick = onLeagueClick) {
                 BentoHeader(emoji = "🏅", label = stringResource(R.string.bento_label_rating), accent = RatingAccent)
                 Spacer(Modifier.height(10.dp))
+                // Pre-first-review: show «—» instead of the seed-1000 rating.
+                // The default 1000 confused new users — "откуда у меня рейтинг
+                // если я ничего не делал?" — same applies to the league chip.
                 Text(
-                    "$rating",
+                    if (hasPracticed) "$rating" else "—",
                     fontSize = 40.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -1395,7 +1404,7 @@ private fun BentoRow(
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(RatingAccent))
                     Text(
-                        LEAGUE_NAMES.getOrElse(league - 1) { "Aldea" },
+                        if (hasPracticed) LEAGUE_NAMES.getOrElse(league - 1) { "Aldea" } else "—",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
