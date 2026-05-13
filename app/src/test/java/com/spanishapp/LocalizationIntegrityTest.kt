@@ -312,7 +312,51 @@ class LocalizationIntegrityTest {
     }
 
     // ─────────────────────────────────────────────────────────────────
-    // 10. Print summary on success. Useful to see at-a-glance how many
+    // 10. LocaleHelper coverage — every values-XX folder must have a
+    //     matching branch in LocaleHelper.applyLocale().
+    //
+    //     This was a real-world bug: we shipped values-uk and values-es
+    //     with full translations, but LocaleHelper only handled ru/en.
+    //     Users would pick Ukrainian/Spanish, prefs would save, recreate
+    //     would fire — and the locale would silently fall through to
+    //     `return base`, keeping system locale. UI stayed in Russian.
+    //
+    //     This test parses LocaleHelper.kt and checks that every locale
+    //     directory present on disk has a `"XX" ->` branch.
+    // ─────────────────────────────────────────────────────────────────
+    @Test
+    fun locale_helper_covers_every_values_directory() {
+        // Find every values-XX folder that has a strings.xml
+        val resRoot = listOf(File("app/src/main/res"), File("src/main/res"))
+            .first { it.exists() }
+        val localeDirs = resRoot.listFiles { f ->
+            f.isDirectory && f.name.startsWith("values-") && f.name.length in 8..10
+        }?.map { it.name.removePrefix("values-") } ?: emptyList()
+
+        val helperPath = listOf(
+            "app/src/main/java/com/spanishapp/util/LocaleHelper.kt",
+            "src/main/java/com/spanishapp/util/LocaleHelper.kt",
+        ).first { File(it).exists() }
+        val helperSrc = File(helperPath).readText()
+
+        val problems = mutableListOf<String>()
+        for (locale in localeDirs) {
+            // Looking for a pattern like:  "uk" -> Locale("uk")
+            val branchRegex = Regex(""""$locale"\s*->\s*Locale\("$locale"\)""")
+            if (!branchRegex.containsMatchIn(helperSrc)) {
+                problems += "[$locale] resource dir values-$locale exists but " +
+                    "LocaleHelper has no `\"$locale\" -> Locale(\"$locale\")` branch"
+            }
+        }
+        if (problems.isNotEmpty()) {
+            fail("LocaleHelper missing branches for shipped locales " +
+                "(language picker won't actually change UI):\n" +
+                problems.joinToString("\n"))
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // 11. Print summary on success. Useful to see at-a-glance how many
     //     keys exist in each locale.
     // ─────────────────────────────────────────────────────────────────
     @Test

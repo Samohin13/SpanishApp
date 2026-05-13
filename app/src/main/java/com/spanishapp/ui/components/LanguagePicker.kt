@@ -46,8 +46,20 @@ class LanguagePickerViewModel @Inject constructor(
     private val prefs: AppPreferences,
 ) : ViewModel() {
     val current = prefs.uiLanguage.stateIn(viewModelScope, SharingStarted.Eagerly, "system")
-    fun set(code: String) {
-        viewModelScope.launch { prefs.setUiLanguage(code) }
+
+    /**
+     * Persist the new language and call [onWritten] only after the write
+     * actually completes. The caller will then trigger Activity.recreate(),
+     * which re-runs attachBaseContext() and reads the FRESH value from
+     * DataStore. If we recreated immediately after a fire-and-forget
+     * launch, the recreate would race the write and read the OLD value —
+     * which is exactly what was happening on Welcome.
+     */
+    fun set(code: String, onWritten: () -> Unit) {
+        viewModelScope.launch {
+            prefs.setUiLanguage(code)
+            onWritten()
+        }
     }
 }
 
@@ -106,9 +118,14 @@ fun LanguagePickerButton(
                                 .fillMaxWidth()
                                 .clickable {
                                     if (code != current) {
-                                        vm.set(code)
+                                        // Hide dialog first so the user doesn't
+                                        // see it during the brief recreate frame.
                                         showDialog = false
-                                        activity?.recreate()
+                                        vm.set(code) {
+                                            // Runs after DataStore write commits —
+                                            // recreate() now reads the fresh value.
+                                            activity?.recreate()
+                                        }
                                     } else {
                                         showDialog = false
                                     }

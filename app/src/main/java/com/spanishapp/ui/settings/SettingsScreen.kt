@@ -222,7 +222,18 @@ class SettingsViewModel @Inject constructor(
     val reminderMinute = appPreferences.reminderMinute.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
     val fontSize = appPreferences.fontSize.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "MEDIUM")
     val uiLanguage = appPreferences.uiLanguage.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "system")
-    fun setUiLanguage(lang: String) = viewModelScope.launch { appPreferences.setUiLanguage(lang) }
+    /**
+     * Persist the new UI language and call [onWritten] AFTER the DataStore
+     * write completes. The caller will then trigger Activity.recreate() —
+     * if we fire-and-forget, recreate races the write and the new locale
+     * never applies (this was the bug on Welcome's flag picker too).
+     */
+    fun setUiLanguage(lang: String, onWritten: () -> Unit = {}) {
+        viewModelScope.launch {
+            appPreferences.setUiLanguage(lang)
+            onWritten()
+        }
+    }
     fun toggleTts(e: Boolean) = viewModelScope.launch { appPreferences.setTtsEnabled(e) }
     fun toggleSoundEffects(e: Boolean) = viewModelScope.launch { appPreferences.setSoundEffectsEnabled(e) }
     fun toggleVibration(e: Boolean) = viewModelScope.launch {
@@ -835,10 +846,12 @@ fun SettingsScreen(
                                 .fillMaxWidth()
                                 .clickable {
                                     if (code != uiLang) {
-                                        vm.setUiLanguage(code)
                                         showLanguageDialog = false
-                                        // Перезапускаем активность чтобы перечитать локаль.
-                                        activity?.recreate()
+                                        vm.setUiLanguage(code) {
+                                            // Runs only after DataStore commit
+                                            // → attachBaseContext reads fresh value.
+                                            activity?.recreate()
+                                        }
                                     } else {
                                         showLanguageDialog = false
                                     }

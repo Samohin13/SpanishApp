@@ -9,8 +9,11 @@ import java.util.Locale
  * Используется через `attachBaseContext()` в MainActivity.
  *
  * Поддерживаемые значения:
- * - "ru" / "en" — принудительно установить локаль
+ * - "ru" / "en" / "uk" / "es" — принудительно установить локаль
  * - "system" / null / любое другое — оставить системную локаль
+ *
+ * Важно: при добавлении новой локали — НЕ забыть прописать её здесь,
+ * иначе ресурсы strings.xml будут, а сама смена языка не сработает.
  */
 object LocaleHelper {
 
@@ -19,6 +22,8 @@ object LocaleHelper {
         val locale = when (lang) {
             "ru" -> Locale("ru")
             "en" -> Locale("en")
+            "uk" -> Locale("uk")
+            "es" -> Locale("es")
             else -> return base
         }
         Locale.setDefault(locale)
