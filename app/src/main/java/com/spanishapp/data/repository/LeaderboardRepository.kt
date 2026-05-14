@@ -88,6 +88,20 @@ class LeaderboardRepository @Inject constructor(
         val progress = userProgressDao.getProgressOnce() ?: return false
         if (!progress.leaderboardOptIn) return false
 
+        // Не пишем в лидерборд пользователей, которые ничего не делали
+        // (totalXp == 0). Иначе новый юзер сразу появляется на доске
+        // со стартовым skillRating=1000, хотя ни одного ответа не дал.
+        // Запись создастся при первом ответе через RatingUpdater.
+        if (progress.totalXp <= 0) {
+            // На случай если запись уже есть от прошлой логики — удалим её,
+            // чтобы существующие тестовые пустые записи тоже исчезли.
+            try {
+                val cur = auth.currentUser
+                if (cur != null) collection.document(cur.uid).delete().await()
+            } catch (_: Exception) { /* ignore */ }
+            return false
+        }
+
         val uid = ensureAuth()
         val data = mapOf(
             "nickname" to progress.displayName.ifBlank { "Estudiante" },
