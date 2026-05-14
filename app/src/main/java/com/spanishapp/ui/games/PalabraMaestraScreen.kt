@@ -147,20 +147,29 @@ private fun PalabraActiveGame(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 q.assembledLetters.forEachIndexed { idx, letter ->
-                    val isWrongAuto = state.isAutoValidate && letter != null &&
-                        letter.char.lowercase() != q.targetWord.getOrNull(idx)?.toString()?.lowercase()
+                    // Раньше тут был isWrongAuto — мгновенно подсвечивал каждую
+                    // неправильную букву красным. Это превращало игру в exploit:
+                    // юзер тыкал все буквы по очереди и собирал слово по цветам,
+                    // вместо того чтобы реально думать. Цвет показываем только
+                    // ПОСЛЕ полной проверки (когда слово собрано целиком и
+                    // ViewModel выставил isChecked).
+                    // Разрешаем тап для удаления буквы или сброса всего слова
+                    // (когда auto-validate пометил всё как неправильное).
+                    val tapEnabled = letter != null && (
+                        !q.isChecked ||
+                        (q.isChecked && q.isCorrect == false && state.isAutoValidate)
+                    )
                     Surface(
                         modifier = Modifier
                             .padding(4.dp)
                             .size(45.dp)
-                            .clickable(enabled = !q.isChecked && letter != null) {
+                            .clickable(enabled = tapEnabled) {
                                 viewModel.removeLetter(idx)
                             },
                         shape = RoundedCornerShape(8.dp),
                         color = when {
                             q.isChecked && q.isCorrect == true  -> Green
                             q.isChecked && q.isCorrect == false -> Red
-                            isWrongAuto -> Red.copy(alpha = 0.4f)
                             letter != null -> ACCENT.copy(alpha = 0.07f)
                             else -> CardSurface
                         },

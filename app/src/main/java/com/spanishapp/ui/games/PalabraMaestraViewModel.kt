@@ -172,10 +172,15 @@ class PalabraMaestraViewModel @Inject constructor(
             if (letter.char.lowercase() != expected) {
                 updated = updated.copy(mistakesCount = updated.mistakesCount + 1)
             }
-            // Авто-завершение, если слово целиком собрано верно
+            // Авто-завершение, как только слово собрано целиком — успех или ошибка.
+            // Раньше при ошибке ничего не происходило (юзер видел красную
+            // подсветку букв и догадывался). Теперь подсветки нет → нужно
+            // явно показать isChecked=false вердикт, чтобы вся плашка стала
+            // красной. Юзер сбрасывает буквы и пробует снова.
             if (newAssembled.all { it != null }) {
                 val assembled = newAssembled.joinToString("") { it?.char ?: "" }.lowercase()
-                if (assembled == q.targetWord.lowercase()) {
+                val isCorrect = assembled == q.targetWord.lowercase()
+                if (isCorrect) {
                     updated = updated.copy(
                         isChecked = true,
                         isCorrect = true,
@@ -188,6 +193,17 @@ class PalabraMaestraViewModel @Inject constructor(
                     )
                     viewModelScope.launch { ratingUpdater.applyGameAnswer(true) }
                     tts.speak(q.word.spanish)
+                } else {
+                    // Слово собрано полностью, но неправильно. Показываем красным,
+                    // даём юзеру возможность сбросить буквы и попробовать снова.
+                    // НЕ переходим к следующему слову, НЕ начисляем очки и
+                    // НЕ применяем negative-rating — это просто визуальный
+                    // фидбэк «попробуй ещё раз». Юзер тапает по буквам чтобы
+                    // их вернуть в палитру и пробует другое сочетание.
+                    updated = updated.copy(
+                        isChecked = true,
+                        isCorrect = false,
+                    )
                 }
             }
         }
@@ -197,6 +213,22 @@ class PalabraMaestraViewModel @Inject constructor(
     fun removeLetter(index: Int) {
         val s = _state.value
         val q = s.questions.getOrNull(s.currentIndex) ?: return
+
+        // Особый случай: в auto-validate режиме слово было помечено как
+        // неправильное (целиком собрано но не совпало). Тап по любой букве
+        // сбрасывает все слоты обратно в палитру → юзер пробует заново.
+        if (q.isChecked && q.isCorrect == false && s.isAutoValidate) {
+            val resetAssembled = MutableList<LetterItem?>(q.targetWord.length) { null }
+            val resetShuffled = q.shuffledLetters.map { it.copy(isUsed = false) }
+            updateCurrentQuestion(q.copy(
+                assembledLetters = resetAssembled,
+                shuffledLetters  = resetShuffled,
+                isChecked        = false,
+                isCorrect        = null,
+            ))
+            return
+        }
+
         if (q.isChecked) return
         val letter = q.assembledLetters[index] ?: return
 
