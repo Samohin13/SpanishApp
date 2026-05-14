@@ -211,9 +211,10 @@ fun HomeScreen(
                     StaggeredEntrance(index = 3) {
                         Column {
                             WordOfDayQuizCard(
-                                word        = word,
-                                tts         = tts,
-                                viewModel   = viewModel
+                                word          = word,
+                                tts           = tts,
+                                viewModel     = viewModel,
+                                navController = navController,
                             )
                             Spacer(Modifier.height(12.dp))
                         }
@@ -772,7 +773,8 @@ private fun DotsIndicator(count: Int, current: Int, accent: Color) {
 private fun WordOfDayQuizCard(
     word: WordOfDay,
     tts: android.speech.tts.TextToSpeech?,
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    navController: NavHostController,
 ) {
     var showQuiz by remember { mutableStateOf(false) }
 
@@ -864,14 +866,26 @@ private fun WordOfDayQuizCard(
             word = word,
             tts = tts,
             viewModel = viewModel,
+            navController = navController,
             onDismiss = { showQuiz = false }
         )
     }
 }
 
 /**
- * Bottom sheet hosting the 4-mode quiz pager. Opens when the user taps the
- * compact Word of Day card. ~75% screen height, dismissible by drag-down.
+ * Bottom sheet for Word-of-Day learning. 6-stage flow designed for
+ * actual MEMORIZATION, not just "tap and forget":
+ *
+ *   0. REVEAL    — большая карточка слова + auto-TTS + перевод + пример
+ *   1. LISTEN    — слышишь, выбираешь правильное написание
+ *   2. TRANSLATE — выбираешь перевод (distractors из той же категории)
+ *   3. SENTENCE  — вставить слово в реальное предложение
+ *   4. TYPE      — печатаешь слово на слух (с прощением акцентов)
+ *   5. COMPLETE  — 🎉 «Запомнил!» + XP + куда идти дальше
+ *
+ * Все стадии автоматически прогружаются вперёд по правильному ответу
+ * (без ручного свайпа). Свайп назад — разрешён, на случай если хочется
+ * послушать ещё раз.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -879,22 +893,33 @@ private fun WordOfDayQuizSheet(
     word: WordOfDay,
     tts: android.speech.tts.TextToSpeech?,
     viewModel: HomeViewModel,
+    navController: NavHostController,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val pagerState = rememberPagerState(pageCount = { 4 })
+    val pagerState = rememberPagerState(pageCount = { 6 })
+    val scope = rememberCoroutineScope()
 
     var distractors by remember(word.wordId) { mutableStateOf<List<WordEntity>>(emptyList()) }
     LaunchedEffect(word.wordId) {
         if (word.wordId != 0) distractors = viewModel.loadDistractors(word)
     }
 
+    // Авто-переход к следующей стадии через 600мс после правильного
+    // ответа — даёт юзеру моргнуть глазом и осознать «правильно», не
+    // дёргаясь сразу. Reveal-стадия (page 0) переходит сама по таймеру.
+    val autoAdvance: () -> Unit = {
+        scope.launch {
+            kotlinx.coroutines.delay(600)
+            val next = pagerState.currentPage + 1
+            if (next < 6) pagerState.animateScrollToPage(next)
+        }
+    }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        // Edge-to-edge: kill default 16dp horizontal "windowInsets" padding
-        // so the sheet stretches to phone edges and matches the screen width.
         contentWindowInsets = { androidx.compose.foundation.layout.WindowInsets(0) }
     ) {
         Column(
@@ -903,68 +928,263 @@ private fun WordOfDayQuizSheet(
                 .padding(horizontal = 14.dp)
                 .padding(bottom = 24.dp)
         ) {
-            // Header — same word + speak inside the sheet for context.
+            // Compact header — название стадии + LevelPill + dots
+            val stageLabel = when (pagerState.currentPage) {
+                0 -> "✨ Знакомство"
+                1 -> "🔊 На слух"
+                2 -> "🌐 Перевод"
+                3 -> "📝 В предложении"
+                4 -> "⌨️ Напечатай"
+                else -> "🎉 Готово"
+            }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            word.spanish,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        LevelPill(word.level)
-                    }
-                    Text(
-                        word.russian,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SpeakerButton(text = word.spanish, tts = tts, tint = Color.White)
-                }
-            }
-
-            Spacer(Modifier.height(14.dp))
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                thickness = 1.dp
-            )
-            Spacer(Modifier.height(14.dp))
-
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth().height(280.dp),
-                pageSpacing = 12.dp
-            ) { page ->
-                when (page) {
-                    0 -> FillBlankQuiz(word, distractors, tts) { viewModel.markWordOfDayPractised() }
-                    1 -> TranslationQuiz(word, distractors)    { viewModel.markWordOfDayPractised() }
-                    2 -> PronunciationQuiz(word, distractors, tts) { viewModel.markWordOfDayPractised() }
-                    3 -> LetterAssemblyQuiz(word)              { viewModel.markWordOfDayPractised() }
-                }
+                Text(
+                    stageLabel,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.weight(1f)
+                )
+                LevelPill(word.level)
+                Text(
+                    "${pagerState.currentPage + 1}/6",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
             Spacer(Modifier.height(10.dp))
-            DotsIndicator(
-                count = 4,
-                current = pagerState.currentPage,
-                accent = MaterialTheme.colorScheme.primary
+            // Линейный прогресс-бар вместо точек — лучше видно «куда дошёл»
+            LinearProgressIndicator(
+                progress = { (pagerState.currentPage + 1) / 6f },
+                modifier = Modifier.fillMaxWidth().height(4.dp).clip(CircleShape),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+            )
+            Spacer(Modifier.height(16.dp))
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth().height(360.dp),
+                pageSpacing = 12.dp
+            ) { page ->
+                when (page) {
+                    0 -> WodRevealStage(word, tts, onContinue = {
+                        scope.launch { pagerState.animateScrollToPage(1) }
+                    })
+                    1 -> PronunciationQuiz(word, distractors, tts) {
+                        viewModel.markWordOfDayPractised(); autoAdvance()
+                    }
+                    2 -> TranslationQuiz(word, distractors) {
+                        viewModel.markWordOfDayPractised(); autoAdvance()
+                    }
+                    3 -> FillBlankQuiz(word, distractors, tts) {
+                        viewModel.markWordOfDayPractised(); autoAdvance()
+                    }
+                    4 -> LetterAssemblyQuiz(word) {
+                        viewModel.markWordOfDayPractised(); autoAdvance()
+                    }
+                    5 -> WodCompletionStage(
+                        word = word,
+                        onLessonClick = {
+                            onDismiss()
+                            navController.navigate("course_a1") { launchSingleTop = true }
+                        },
+                        onCardsClick = {
+                            onDismiss()
+                            navController.navigate("flashcards") { launchSingleTop = true }
+                        },
+                        onClose = onDismiss
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Stage 0 — REVEAL. Тихий «знакомительный» экран: огромное слово, авто-аудио,
+ * перевод появляется с задержкой, под ним пример употребления. Цель —
+ * включить визуальную, аудиальную и контекстную память одновременно.
+ */
+@Composable
+private fun WodRevealStage(
+    word: WordOfDay,
+    tts: android.speech.tts.TextToSpeech?,
+    onContinue: () -> Unit
+) {
+    var showRussian by remember(word.wordId) { mutableStateOf(false) }
+
+    // Авто-проигрывание озвучки при появлении (двукратно: сразу + через 1.5с)
+    LaunchedEffect(word.wordId) {
+        kotlinx.coroutines.delay(300)
+        tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod-reveal-1")
+        kotlinx.coroutines.delay(1500)
+        showRussian = true
+        kotlinx.coroutines.delay(800)
+        tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod-reveal-2")
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // Огромное слово с тенью
+        Text(
+            word.spanish,
+            fontSize = 38.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+            lineHeight = 42.sp
+        )
+
+        // Кнопка "повторить аудио"
+        Surface(
+            onClick = {
+                tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod-replay")
+            },
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            modifier = Modifier.size(56.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.Default.VolumeUp,
+                    contentDescription = "Прослушать",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
+
+        // Перевод появляется с задержкой
+        AnimatedVisibility(visible = showRussian) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    word.russian,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+                if (word.example.isNotBlank()) {
+                    Spacer(Modifier.height(8.dp))
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        modifier = Modifier.padding(horizontal = 12.dp)
+                    ) {
+                        Text(
+                            "«${word.example}»",
+                            fontSize = 14.sp,
+                            fontStyle = FontStyle.Italic,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                            lineHeight = 18.sp
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        // Кнопка перехода к первой проверке
+        Button(
+            onClick = onContinue,
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text("Готов проверить →", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+        }
+    }
+}
+
+/**
+ * Stage 5 — COMPLETION. 🎉-экран после прохождения всех стадий.
+ * Главное — даёт чёткое «что дальше», иначе юзер выпадает в пустоту.
+ */
+@Composable
+private fun WodCompletionStage(
+    word: WordOfDay,
+    onLessonClick: () -> Unit,
+    onCardsClick: () -> Unit,
+    onClose: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("🎉", fontSize = 64.sp)
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Запомнил!",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "«${word.spanish}» — ${word.russian}",
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(12.dp))
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+        ) {
+            Text(
+                "+15 XP",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 4.dp)
             )
         }
+
+        Spacer(Modifier.weight(1f))
+
+        Text(
+            "Что дальше?",
+            fontSize = 13.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = onLessonClick,
+                modifier = Modifier.weight(1f).height(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) { Text("📖 Урок", fontWeight = FontWeight.Bold, fontSize = 13.sp) }
+            Button(
+                onClick = onCardsClick,
+                modifier = Modifier.weight(1f).height(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+            ) { Text("🃏 Карточки", fontWeight = FontWeight.Bold, fontSize = 13.sp) }
+        }
+        Spacer(Modifier.height(8.dp))
+        OutlinedButton(
+            onClick = onClose,
+            modifier = Modifier.fillMaxWidth().height(40.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) { Text("Закрыть", fontSize = 13.sp) }
     }
 }
 
