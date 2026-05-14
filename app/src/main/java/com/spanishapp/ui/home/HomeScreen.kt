@@ -1021,6 +1021,10 @@ private fun WodRevealStage(
     onContinue: () -> Unit
 ) {
     var showRussian by remember(word.wordId) { mutableStateOf(false) }
+    // Spaced exposure — 5-секундный countdown перед тем как разрешить
+    // переход к проверке. Принуждает мозг подержать слово в фокусе,
+    // не нажимая «дальше» механически.
+    var secondsLeft by remember(word.wordId) { mutableStateOf(5) }
 
     // Авто-проигрывание озвучки при появлении (двукратно: сразу + через 1.5с)
     LaunchedEffect(word.wordId) {
@@ -1030,6 +1034,14 @@ private fun WodRevealStage(
         showRussian = true
         kotlinx.coroutines.delay(800)
         tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod-reveal-2")
+    }
+
+    // Countdown 5 → 0
+    LaunchedEffect(word.wordId) {
+        while (secondsLeft > 0) {
+            kotlinx.coroutines.delay(1000)
+            secondsLeft -= 1
+        }
     }
 
     Column(
@@ -1099,14 +1111,35 @@ private fun WodRevealStage(
 
         Spacer(Modifier.weight(1f))
 
-        // Кнопка перехода к первой проверке
+        // Подсказка-таймер пока countdown идёт
+        if (secondsLeft > 0) {
+            Text(
+                "Запоминай... $secondsLeft",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(8.dp))
+        }
+
+        // Кнопка перехода к первой проверке (активна только после countdown)
+        val ready = secondsLeft <= 0
         Button(
             onClick = onContinue,
+            enabled = ready,
             modifier = Modifier.fillMaxWidth().height(48.dp),
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                disabledContentColor = Color.White.copy(alpha = 0.7f),
+            )
         ) {
-            Text("Готов проверить →", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            Text(
+                if (ready) "Готов проверить →" else "Готов проверить ($secondsLeft)",
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp
+            )
         }
     }
 }
