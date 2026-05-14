@@ -1,6 +1,7 @@
 {
   "indexes": [
     {
+      "_comment": "топ страны: where(country==X).orderBy(skillRating DESC)",
       "collectionGroup": "leaderboard",
       "queryScope": "COLLECTION",
       "fields": [
@@ -9,6 +10,16 @@
       ]
     },
     {
+      "_comment": "ранг пользователя в стране: where(country==X) + whereGreaterThan(skillRating)",
+      "collectionGroup": "leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "country", "order": "ASCENDING" },
+        { "fieldPath": "skillRating", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "_comment": "недельная лига — ранжирование внутри когорты",
       "collectionGroup": "members",
       "queryScope": "COLLECTION",
       "fields": [
