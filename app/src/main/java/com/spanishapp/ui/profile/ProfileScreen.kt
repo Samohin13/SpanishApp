@@ -327,6 +327,7 @@ fun ProfileScreen(
                         rating = p.skillRating,
                         appLevel = appLevel,
                         appLevelProgress = appLevelProgress,
+                        hasPracticed = p.totalXp > 0,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Spacer(Modifier.height(20.dp))
@@ -622,6 +623,7 @@ private fun SkillRatingTile(
     rating: Int,
     appLevel: Int,
     appLevelProgress: Float,
+    hasPracticed: Boolean,
     modifier: Modifier = Modifier
 ) {
     var showInfo by remember { mutableStateOf(false) }
@@ -640,8 +642,11 @@ private fun SkillRatingTile(
             )
         }
     ) {
+        // Pre-first-review: показываем «—» вместо seed-1000 рейтинга.
+        // Та же логика что и в Bento RATING tile на главной — иначе
+        // новый юзер видит огромное «1000» и не понимает откуда оно.
         Text(
-            rating.toString(),
+            if (hasPracticed) rating.toString() else "—",
             fontSize = 64.sp,
             fontWeight = FontWeight.ExtraBold,
             letterSpacing = (-2).sp,
@@ -651,20 +656,23 @@ private fun SkillRatingTile(
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            "Nivel $appLevel · ещё ${((1f - appLevelProgress) * 100).toInt()} XP",
+            if (hasPracticed)
+                "Nivel $appLevel · ещё ${((1f - appLevelProgress) * 100).toInt()} XP"
+            else
+                "Сделай первое упражнение",
             fontSize = 13.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(10.dp))
         LinearProgressIndicator(
-            progress = { appLevelProgress },
+            progress = { if (hasPracticed) appLevelProgress else 0f },
             modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
             color = AccentPurple,
             trackColor = AccentPurple.copy(alpha = 0.18f)
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            "${(appLevelProgress * 100).toInt()}%",
+            if (hasPracticed) "${(appLevelProgress * 100).toInt()}%" else "0%",
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
             color = AccentPurple
