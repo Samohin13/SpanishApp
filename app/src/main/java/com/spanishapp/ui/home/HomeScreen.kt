@@ -919,7 +919,10 @@ private fun WordOfDayQuizSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surface,
+        // Тёмная сцена за модальным окном — иначе главный экран
+        // просвечивал и юзер жаловался «не читабельно».
+        scrimColor = Color.Black.copy(alpha = 0.72f),
         contentWindowInsets = { androidx.compose.foundation.layout.WindowInsets(0) }
     ) {
         Column(
@@ -1521,6 +1524,13 @@ private fun OptionButtons(
                 isPicked       -> Color(0xFFE53935)
                 else           -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
             }
+            // Когда фон зелёный/красный (светлая пастель) — белый текст
+            // дефолтной dark-темы становится нечитаемым. Принудительно
+            // тёмный цвет в этом случае. Для нейтрального состояния и
+            // в светлой теме оставляем системный onSurface.
+            val isHighlighted = bg == Color(0xFFC8E6C9) || bg == Color(0xFFFFCDD2)
+            val textColor = if (isHighlighted) Color(0xFF1B1B1B)
+                            else MaterialTheme.colorScheme.onSurface
             Surface(
                 onClick = { if (picked != correct) onPick(opt) },
                 shape = RoundedCornerShape(10.dp),
@@ -1536,7 +1546,7 @@ private fun OptionButtons(
                         opt,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = textColor,
                         modifier = Modifier.weight(1f),
                         maxLines = 2
                     )
