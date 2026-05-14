@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "664028454974-g7av7dao8oiqn95h37a89v8pfrkbav7b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.espeak.app",
+            "certificate_hash": "4cded38adc9761706ef9dc6531123d3c6475c266"
+          }
+        },
+        {
+          "client_id": "664028454974-gjk58og6k9eja6k8jms8csdsi1d0m7io.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.espeak.app",
+            "certificate_hash": "8eaf73ca06abaf73d5ca43b850cecbaf5490f155"
+          }
+        },
+        {
           "client_id": "664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -48,6 +64,14 @@
           "android_info": {
             "package_name": "com.spanishapp",
             "certificate_hash": "7280d90ac521664688379e3398660701df3418eb"
+          }
+        },
+        {
+          "client_id": "664028454974-fbrqro1o212pbjggrlropb83bmdrs0vo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spanishapp",
+            "certificate_hash": "abcdef0123456789abcdef0123456789abcdef01"
           }
         },
         {
