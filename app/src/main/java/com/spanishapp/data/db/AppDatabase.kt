@@ -27,9 +27,10 @@ import com.spanishapp.data.db.entity.*
         DailyXpEntity::class,
         FlashcardSetProgressEntity::class,
         RecentSearchEntity::class,
-        WeeklyLeagueStateEntity::class
+        WeeklyLeagueStateEntity::class,
+        WodHistoryEntity::class,
     ],
-    version = 18,
+    version = 19,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -50,6 +51,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun flashcardSetProgressDao(): FlashcardSetProgressDao
     abstract fun recentSearchDao(): RecentSearchDao
     abstract fun weeklyLeagueDao(): WeeklyLeagueDao
+    abstract fun wodHistoryDao(): WodHistoryDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -317,6 +319,28 @@ abstract class AppDatabase : RoomDatabase() {
                         opted_in INTEGER NOT NULL DEFAULT 0
                     )
                 """.trimIndent())
+            }
+        }
+
+        // ── v19: WoD streak + история закреплений «Слова дня» ──
+        val MIGRATION_18_19 = object : Migration(18, 19) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Поля WoD-стрика в user_progress
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN wod_streak INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN wod_longest_streak INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE user_progress ADD COLUMN wod_last_date INTEGER NOT NULL DEFAULT 0")
+                // Таблица истории
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS wod_history (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        word_id INTEGER NOT NULL,
+                        spanish TEXT NOT NULL,
+                        russian TEXT NOT NULL,
+                        level TEXT NOT NULL,
+                        practiced_at INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_wod_history_practiced_at ON wod_history(practiced_at DESC)")
             }
         }
 

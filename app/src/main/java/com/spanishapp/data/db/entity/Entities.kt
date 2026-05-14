@@ -131,7 +131,14 @@ data class UserProgressEntity(
     // Tracks how much rating the user has gained today so we can cap it
     // (prevents marathon-grinding Madrid in a single weekend).
     @ColumnInfo(name = "daily_rating_gain") val dailyRatingGain: Int = 0,
-    @ColumnInfo(name = "daily_rating_gain_date") val dailyRatingGainDate: String = ""
+    @ColumnInfo(name = "daily_rating_gain_date") val dailyRatingGainDate: String = "",
+    // ── Word-of-Day streak (added in v19) ────────────────────
+    // Отдельный счётчик «дней подряд закрепления Слова дня».
+    // Не путать с currentStreak (любая активность). wodLastDate —
+    // эпохальный день (UTC), 0 = ни разу не закрепляли.
+    @ColumnInfo(name = "wod_streak") val wodStreak: Int = 0,
+    @ColumnInfo(name = "wod_longest_streak") val wodLongestStreak: Int = 0,
+    @ColumnInfo(name = "wod_last_date") val wodLastDate: Long = 0L,
 )
 
 @Entity(tableName = "chat_messages")
@@ -239,4 +246,22 @@ data class FlashcardSetProgressEntity(
     @ColumnInfo(name = "stars") val stars: Int = 0,                 // 0..3
     @ColumnInfo(name = "best_percent") val bestPercent: Int = 0,    // 0..100
     @ColumnInfo(name = "completed_at") val completedAt: Long = 0L
+)
+
+/**
+ * История закрепления «Слова дня» (added in v19).
+ * Одна запись = одно завершённое прохождение WoD-флоу пользователем.
+ * Используется для:
+ *   • Расчёта wod_streak (сколько дней подряд)
+ *   • Коллекции «Слова, выученные через WoD» в Профиле
+ *   • Возможных будущих фич (повторные карточки выученного, статистика)
+ */
+@Entity(tableName = "wod_history")
+data class WodHistoryEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    @ColumnInfo(name = "word_id")       val wordId: Int,
+    @ColumnInfo(name = "spanish")       val spanish: String,
+    @ColumnInfo(name = "russian")       val russian: String,
+    @ColumnInfo(name = "level")         val level: String,
+    @ColumnInfo(name = "practiced_at")  val practicedAt: Long = System.currentTimeMillis(),
 )
