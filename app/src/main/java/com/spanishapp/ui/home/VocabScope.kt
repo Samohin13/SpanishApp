@@ -351,6 +351,174 @@ object VocabScope {
             ScopeWord("grande", "большой", "u2_l14", "adjective"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // Блок 1.3 «Действие» — глаголы AR/ER/IR + еда + querer/poder + e→i + время
+        // ═══════════════════════════════════════════════════════════════
+        put("u3_l0", listOf(
+            ScopeWord("hablo", "говорю", "u3_l0", "verb"),
+            ScopeWord("hablas", "говоришь", "u3_l0", "verb"),
+            ScopeWord("habla", "говорит", "u3_l0", "verb"),
+            ScopeWord("trabajo", "работаю", "u3_l0", "verb"),
+            ScopeWord("trabajas", "работаешь", "u3_l0", "verb"),
+            ScopeWord("trabaja", "работает", "u3_l0", "verb"),
+        ))
+        put("u3_l1", listOf(
+            ScopeWord("hablamos", "говорим", "u3_l1", "verb"),
+            ScopeWord("habláis", "говорите (Исп)", "u3_l1", "verb"),
+            ScopeWord("hablan", "говорят", "u3_l1", "verb"),
+            ScopeWord("trabajamos", "работаем", "u3_l1", "verb"),
+            ScopeWord("trabajan", "работают", "u3_l1", "verb"),
+        ))
+        put("u3_l2", listOf(
+            ScopeWord("comer", "есть", "u3_l2", "verb"),
+            ScopeWord("como", "ем", "u3_l2", "verb"),
+            ScopeWord("comes", "ешь", "u3_l2", "verb"),
+            ScopeWord("come", "ест", "u3_l2", "verb"),
+            ScopeWord("comemos", "едим", "u3_l2", "verb"),
+            ScopeWord("comen", "едят", "u3_l2", "verb"),
+            ScopeWord("beber", "пить", "u3_l2", "verb"),
+            ScopeWord("bebo", "пью", "u3_l2", "verb"),
+            ScopeWord("bebemos", "пьём", "u3_l2", "verb"),
+            ScopeWord("leer", "читать", "u3_l2", "verb"),
+            ScopeWord("leo", "читаю", "u3_l2", "verb"),
+            ScopeWord("lees", "читаешь", "u3_l2", "verb"),
+        ))
+        put("u3_l3", listOf(
+            ScopeWord("vivir", "жить", "u3_l3", "verb"),
+            ScopeWord("vivo", "живу", "u3_l3", "verb"),
+            ScopeWord("vives", "живёшь", "u3_l3", "verb"),
+            ScopeWord("vive", "живёт", "u3_l3", "verb"),
+            ScopeWord("vivimos", "живём", "u3_l3", "verb"),
+            ScopeWord("escribir", "писать", "u3_l3", "verb"),
+            ScopeWord("escriben", "пишут", "u3_l3", "verb"),
+            ScopeWord("carta", "письмо", "u3_l3", "noun"),
+            ScopeWord("Moscú", "Москва", "u3_l3", "city"),
+        ))
+        put("u3_l4", listOf(
+            ScopeWord("pan", "хлеб", "u3_l4", "food"),
+            ScopeWord("leche", "молоко", "u3_l4", "food"),
+            ScopeWord("agua", "вода", "u3_l4", "food"),
+            ScopeWord("fruta", "фрукты", "u3_l4", "food"),
+            ScopeWord("carne", "мясо", "u3_l4", "food"),
+            ScopeWord("queso", "сыр", "u3_l4", "food"),
+            ScopeWord("pescado", "рыба", "u3_l4", "food"),
+            ScopeWord("huevo", "яйцо", "u3_l4", "food"),
+            ScopeWord("sopa", "суп", "u3_l4", "food"),
+        ))
+        put("u3_l5", listOf(
+            ScopeWord("menú", "меню", "u3_l5", "noun"),
+            ScopeWord("plato", "блюдо", "u3_l5", "noun"),
+            ScopeWord("cuenta", "счёт", "u3_l5", "noun"),
+            ScopeWord("propina", "чаевые", "u3_l5", "noun"),
+            ScopeWord("camarero", "официант", "u3_l5", "noun"),
+            ScopeWord("camarera", "официантка", "u3_l5", "noun"),
+            ScopeWord("bebida", "напиток", "u3_l5", "noun"),
+            ScopeWord("postre", "десерт", "u3_l5", "noun"),
+            ScopeWord("cliente", "клиент", "u3_l5", "noun"),
+            ScopeWord("claro", "конечно", "u3_l5", "adverb"),
+        ))
+        put("u3_l5_5", listOf(
+            ScopeWord("hay", "есть/имеется", "u3_l5_5", "verb"),
+            ScopeWord("nada", "ничего", "u3_l5_5", "pronoun"),
+            ScopeWord("cerca", "близко", "u3_l5_5", "adverb"),
+            ScopeWord("allí", "там", "u3_l5_5", "adverb"),
+            ScopeWord("libre", "свободный", "u3_l5_5", "adjective"),
+        ))
+        put("u3_l6", listOf(
+            ScopeWord("querer", "хотеть", "u3_l6", "verb"),
+            ScopeWord("quiero", "хочу", "u3_l6", "verb"),
+            ScopeWord("quieres", "хочешь", "u3_l6", "verb"),
+            ScopeWord("quiere", "хочет", "u3_l6", "verb"),
+            ScopeWord("queremos", "хотим", "u3_l6", "verb"),
+            ScopeWord("quieren", "хотят", "u3_l6", "verb"),
+        ))
+        put("u3_l7", listOf(
+            ScopeWord("poder", "мочь", "u3_l7", "verb"),
+            ScopeWord("puedo", "могу", "u3_l7", "verb"),
+            ScopeWord("puedes", "можешь", "u3_l7", "verb"),
+            ScopeWord("puede", "может", "u3_l7", "verb"),
+            ScopeWord("podemos", "можем", "u3_l7", "verb"),
+            ScopeWord("pueden", "могут", "u3_l7", "verb"),
+            ScopeWord("ayudar", "помогать", "u3_l7", "verb"),
+            ScopeWord("pedir", "просить", "u3_l7", "verb"),
+        ))
+        put("u3_l7_5", listOf(
+            ScopeWord("pido", "прошу", "u3_l7_5", "verb"),
+            ScopeWord("pides", "просишь", "u3_l7_5", "verb"),
+            ScopeWord("pide", "просит", "u3_l7_5", "verb"),
+            ScopeWord("pedimos", "просим", "u3_l7_5", "verb"),
+            ScopeWord("piden", "просят", "u3_l7_5", "verb"),
+            ScopeWord("servir", "обслуживать", "u3_l7_5", "verb"),
+            ScopeWord("repetir", "повторять", "u3_l7_5", "verb"),
+            ScopeWord("decir", "говорить", "u3_l7_5", "verb"),
+            ScopeWord("digo", "говорю", "u3_l7_5", "verb"),
+        ))
+        put("u3_l8", listOf(
+            ScopeWord("hora", "час", "u3_l8", "time"),
+            ScopeWord("media", "половина", "u3_l8", "time"),
+            ScopeWord("cuarto", "четверть", "u3_l8", "time"),
+            ScopeWord("menos", "минус (в часах: «без»)", "u3_l8", "preposition"),
+        ))
+        put("u3_l9", listOf(
+            ScopeWord("lunes", "понедельник", "u3_l9", "day"),
+            ScopeWord("martes", "вторник", "u3_l9", "day"),
+            ScopeWord("miércoles", "среда", "u3_l9", "day"),
+            ScopeWord("jueves", "четверг", "u3_l9", "day"),
+            ScopeWord("viernes", "пятница", "u3_l9", "day"),
+            ScopeWord("sábado", "суббота", "u3_l9", "day"),
+            ScopeWord("domingo", "воскресенье", "u3_l9", "day"),
+        ))
+        put("u3_l10", listOf(
+            ScopeWord("enero", "январь", "u3_l10", "month"),
+            ScopeWord("febrero", "февраль", "u3_l10", "month"),
+            ScopeWord("marzo", "март", "u3_l10", "month"),
+            ScopeWord("abril", "апрель", "u3_l10", "month"),
+            ScopeWord("mayo", "май", "u3_l10", "month"),
+            ScopeWord("junio", "июнь", "u3_l10", "month"),
+            ScopeWord("julio", "июль", "u3_l10", "month"),
+            ScopeWord("agosto", "август", "u3_l10", "month"),
+            ScopeWord("septiembre", "сентябрь", "u3_l10", "month"),
+            ScopeWord("octubre", "октябрь", "u3_l10", "month"),
+            ScopeWord("noviembre", "ноябрь", "u3_l10", "month"),
+            ScopeWord("diciembre", "декабрь", "u3_l10", "month"),
+            ScopeWord("cumpleaños", "день рождения", "u3_l10", "noun"),
+            ScopeWord("nací", "я родился", "u3_l10", "verb"),
+            ScopeWord("viajas", "ты путешествуешь", "u3_l10", "verb"),
+        ))
+        put("u3_l11", listOf(
+            ScopeWord("hoy", "сегодня", "u3_l11", "adverb"),
+            ScopeWord("ayer", "вчера", "u3_l11", "adverb"),
+            ScopeWord("ahora", "сейчас", "u3_l11", "adverb"),
+            ScopeWord("siempre", "всегда", "u3_l11", "adverb"),
+            ScopeWord("nunca", "никогда", "u3_l11", "adverb"),
+            ScopeWord("a veces", "иногда", "u3_l11", "adverb"),
+            ScopeWord("pronto", "скоро", "u3_l11", "adverb"),
+        ))
+        put("u3_l12", listOf(
+            ScopeWord("qué", "что?", "u3_l12", "interrogative"),
+            ScopeWord("quién", "кто?", "u3_l12", "interrogative"),
+            ScopeWord("dónde", "где?", "u3_l12", "interrogative"),
+            ScopeWord("cuándo", "когда?", "u3_l12", "interrogative"),
+            ScopeWord("cuánto", "сколько?", "u3_l12", "interrogative"),
+            ScopeWord("cómo", "как?", "u3_l12", "interrogative"),
+            ScopeWord("por qué", "почему?", "u3_l12", "interrogative"),
+            ScopeWord("cuesta", "стоит", "u3_l12", "verb"),
+        ))
+        put("u3_l13", listOf(
+            ScopeWord("no", "нет / не", "u3_l13", "particle"),
+            ScopeWord("nadie", "никто", "u3_l13", "pronoun"),
+            ScopeWord("jamás", "никогда (усил.)", "u3_l13", "adverb"),
+            ScopeWord("dinero", "деньги", "u3_l13", "noun"),
+            ScopeWord("sé", "знаю", "u3_l13", "verb"),
+            ScopeWord("vino (verb)", "пришёл", "u3_l13", "verb"),
+        ))
+        put("u3_l14", listOf(
+            ScopeWord("restaurante", "ресторан", "u3_l14", "noun"),
+            ScopeWord("abre", "открывает(ся)", "u3_l14", "verb"),
+            ScopeWord("cerrado", "закрытый", "u3_l14", "adjective"),
+            ScopeWord("desea", "желает", "u3_l14", "verb"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -397,6 +565,12 @@ object VocabScope {
         addAll(listOf("u2_l7", "u2_l8"))                                     // цвета + согласование
         addAll(listOf("u2_l9", "u2_l10"))                                    // ESTAR + предлоги места
         addAll(listOf("u2_l11", "u2_l12", "u2_l13", "u2_l14"))              // дом + мебель + мн.ч. + checkpoint
+        // A1 · Блок 3 «Действие»
+        addAll(listOf("u3_l0", "u3_l1", "u3_l2", "u3_l3"))                  // глаголы AR/ER/IR
+        addAll(listOf("u3_l4", "u3_l5", "u3_l5_5"))                          // еда + ресторан + hay
+        addAll(listOf("u3_l6", "u3_l7", "u3_l7_5"))                          // querer + poder + e→i
+        addAll(listOf("u3_l8", "u3_l9", "u3_l10", "u3_l11"))                // время + дни + месяцы + наречия
+        addAll(listOf("u3_l12", "u3_l13", "u3_l14"))                        // вопросы + отрицание + checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 

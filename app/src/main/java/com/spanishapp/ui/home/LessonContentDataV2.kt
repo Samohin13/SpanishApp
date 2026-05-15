@@ -30,7 +30,8 @@ package com.spanishapp.ui.home
  */
 object LessonContentDataV2 {
 
-    fun allLessons(): Map<String, LessonContent> = blockA1_1() + blockA1_2()
+    fun allLessons(): Map<String, LessonContent> =
+        blockA1_1() + blockA1_2() + blockA1_3()
 
     // ═══════════════════════════════════════════════════════════════
     //  БЛОК 1.1 «ВЗЛЁТ» — фонетика + первое общение + SER + местоимения
@@ -1733,6 +1734,624 @@ object LessonContentDataV2 {
                 Exercise(ExerciseType.TRANSLATE, "Переведи: «У меня две спальни»",
                     correctAnswer = "Tengo dos dormitorios",
                     explanation = "dormitorio → dormitorios."),
+            ),
+        ),
+
+    )
+
+    // ═══════════════════════════════════════════════════════════════
+    //  БЛОК 1.3 «ДЕЙСТВИЕ» — глаголы AR/ER/IR + еда + время + вопросы
+    //  17 уроков: u3_l0..u3_l14 + u3_l5_5 + u3_l7_5 (2 новых)
+    // ═══════════════════════════════════════════════════════════════
+
+    private fun blockA1_3(): Map<String, LessonContent> = mapOf(
+
+        // u3_l0 — Глаголы -AR ед.ч.
+        "u3_l0" to LessonContent(
+            intro = "Глаголы на -AR (hablar, trabajar) ед.ч.: -o, -as, -a. Это самая большая группа — 80% глаголов.",
+            sections = listOf(
+                LessonSection("Окончания -AR ед.ч.", listOf(
+                    LessonItem("yo hablo", "я говорю", "yo трудно опускать в начале урока"),
+                    LessonItem("tú hablas", "ты говоришь", ""),
+                    LessonItem("él/ella habla", "он/она говорит", ""),
+                    LessonItem("trabajar → trabajo/trabajas/trabaja", "работать", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь форму hablar", question = "Yo ___ español.",
+                    options = listOf("hablo", "hablas", "habla"), correctAnswer = "hablo",
+                    explanation = "yo → -o: hablo."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Ты работаешь в Мадриде»",
+                    words = listOf("Tú", "trabajas", "en", "Madrid"), correctAnswer = "Tú trabajas en Madrid",
+                    explanation = "tú → -as: trabajas."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какая форма для él?", question = "Él ___ inglés.",
+                    options = listOf("habla", "hablo", "hablas", "hablan"), correctAnswer = "habla",
+                    explanation = "él → -a: habla."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Yo hablo", "Tú hablas", "Él hablo", "Ella habla"),
+                    correctAnswer = "Él hablo",
+                    explanation = "Él требует habla, не hablo."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я говорю по-русски»",
+                    correctAnswer = "Hablo ruso",
+                    explanation = "yo можно опустить. ruso = по-русски (без артикля)."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "trabajas",
+                    correctAnswer = "trabajas", explanation = "tú trabajas."),
+            ),
+        ),
+
+        // u3_l1 — Глаголы -AR полное спряжение
+        "u3_l1" to LessonContent(
+            intro = "Полная парадигма -AR: -o, -as, -a, -amos, -áis, -an. Учим за один присест — будет работать со всеми -AR глаголами.",
+            sections = listOf(
+                LessonSection("Все 6 форм hablar", listOf(
+                    LessonItem("yo hablo", "я говорю", ""),
+                    LessonItem("tú hablas", "ты говоришь", ""),
+                    LessonItem("él/ella habla", "он/она говорит", ""),
+                    LessonItem("nosotros hablamos", "мы говорим", ""),
+                    LessonItem("vosotros habláis", "вы говорите (Исп.)", ""),
+                    LessonItem("ellos hablan", "они говорят", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "Nosotros ___ español.",
+                    options = listOf("hablamos", "habláis", "hablan"), correctAnswer = "hablamos",
+                    explanation = "nosotros → -amos."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Они работают в кафе»",
+                    words = listOf("Ellos", "trabajan", "en", "el", "café"),
+                    correctAnswer = "Ellos trabajan en el café",
+                    explanation = "ellos → -an."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "vosotros + hablar?", question = "Vosotros ___.",
+                    options = listOf("habláis", "hablan", "hablamos", "hablas"), correctAnswer = "habláis",
+                    explanation = "vosotros → -áis (с тильдой)."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Hablamos español", "Trabajan en Madrid", "Habláis francés", "Vosotros hablan"),
+                    correctAnswer = "Vosotros hablan",
+                    explanation = "vosotros → habláis, не hablan."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Мы работаем»",
+                    correctAnswer = "Trabajamos", explanation = "nosotros trabajamos — местоимение опускаем."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "hablamos",
+                    correctAnswer = "hablamos", explanation = "nosotros hablamos."),
+            ),
+        ),
+
+        // u3_l2 — Глаголы -ER
+        "u3_l2" to LessonContent(
+            intro = "Глаголы на -ER (comer, beber, leer): -o, -es, -e, -emos, -éis, -en.",
+            sections = listOf(
+                LessonSection("Спряжение comer", listOf(
+                    LessonItem("yo como", "я ем", ""),
+                    LessonItem("tú comes", "ты ешь", ""),
+                    LessonItem("él/ella come", "он/она ест", ""),
+                    LessonItem("nosotros comemos", "мы едим", ""),
+                    LessonItem("vosotros coméis", "вы едите (Исп.)", ""),
+                    LessonItem("ellos comen", "они едят", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "Yo ___ pan.",
+                    options = listOf("como", "comes", "come"), correctAnswer = "como",
+                    explanation = "yo → -o: como."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Мы пьём вино»",
+                    words = listOf("Bebemos", "vino"), correctAnswer = "Bebemos vino",
+                    explanation = "beber + nosotros → bebemos."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какая форма для tú?", question = "Tú ___ libros.",
+                    options = listOf("lees", "lee", "leo", "leen"), correctAnswer = "lees",
+                    explanation = "leer + tú → lees."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Yo como", "Tú comes", "Él come", "Nosotros comamos"),
+                    correctAnswer = "Nosotros comamos",
+                    explanation = "nosotros → comemos. comamos — это subjuntivo (повелительное)."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я пью воду»",
+                    correctAnswer = "Bebo agua", explanation = "yo bebo + agua."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "comemos",
+                    correctAnswer = "comemos", explanation = "nosotros comemos."),
+            ),
+        ),
+
+        // u3_l3 — Глаголы -IR
+        "u3_l3" to LessonContent(
+            intro = "Глаголы на -IR (vivir, escribir): -o, -es, -e, -imos, -ís, -en. Только nosotros/vosotros отличаются от -ER.",
+            sections = listOf(
+                LessonSection("vivir", listOf(
+                    LessonItem("yo vivo", "я живу", ""),
+                    LessonItem("tú vives", "ты живёшь", ""),
+                    LessonItem("él/ella vive", "он/она живёт", ""),
+                    LessonItem("nosotros vivimos", "мы живём", ""),
+                    LessonItem("vosotros vivís", "вы живёте", ""),
+                    LessonItem("ellos viven", "они живут", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "Yo ___ en Madrid.",
+                    options = listOf("vivo", "vives", "vive"), correctAnswer = "vivo",
+                    explanation = "yo vivo."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Они пишут письмо»",
+                    words = listOf("Ellos", "escriben", "una", "carta"),
+                    correctAnswer = "Ellos escriben una carta",
+                    explanation = "escribir + ellos → escriben."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "vivir + nosotros?", question = "Nosotros ___ aquí.",
+                    options = listOf("vivimos", "vivemos", "viven", "vivís"), correctAnswer = "vivimos",
+                    explanation = "-IR в nosotros → -imos (НЕ -emos)."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Vivo aquí", "Vives en casa", "Vivemos juntos", "Viven en Madrid"),
+                    correctAnswer = "Vivemos juntos",
+                    explanation = "vivir → vivimos (с -i-), не vivemos."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я живу в Москве»",
+                    correctAnswer = "Vivo en Moscú", explanation = "yo vivo + en + город."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "vivimos",
+                    correctAnswer = "vivimos", explanation = "nosotros vivimos."),
+            ),
+        ),
+
+        // u3_l4 — Еда
+        "u3_l4" to LessonContent(
+            intro = "Базовая еда: pan, leche, agua, café, fruta, carne. agua — ж, но артикль EL (для звучности).",
+            sections = listOf(
+                LessonSection("Еда", listOf(
+                    LessonItem("el pan", "хлеб", ""), LessonItem("la leche", "молоко", ""),
+                    LessonItem("el agua", "вода", "ж, но el!"), LessonItem("el café", "кофе", ""),
+                    LessonItem("la fruta", "фрукты", ""), LessonItem("la carne", "мясо", ""),
+                    LessonItem("el queso", "сыр", ""), LessonItem("el pescado", "рыба", ""),
+                    LessonItem("el huevo", "яйцо", ""), LessonItem("la sopa", "суп", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Еда ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("pan" to "хлеб", "leche" to "молоко", "agua" to "вода", "queso" to "сыр", "pescado" to "рыба")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "leche",
+                    options = listOf("leche", "carne", "pan", "agua"), correctAnswer = "leche",
+                    explanation = "leche = молоко."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я пью кофе»",
+                    words = listOf("Bebo", "café"), correctAnswer = "Bebo café",
+                    explanation = "Без артикля если общее («какой-то кофе»)."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Quiero ___ (вода), por favor.",
+                    options = listOf("agua", "leche", "pan"), correctAnswer = "agua",
+                    explanation = "agua = вода."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "В баре",
+                    dialogueLines = listOf("👩 Camarera" to "¿Qué tomas?", "👨 Tú" to "Un ___, por favor."),
+                    options = listOf("café", "carne", "fruta"), correctAnswer = "café",
+                    explanation = "Стандартный заказ — café."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «хлеб»",
+                    correctAnswer = "el pan", explanation = "pan — м → el pan."),
+            ),
+        ),
+
+        // u3_l5 — В ресторане
+        "u3_l5" to LessonContent(
+            intro = "В ресторане: el menú, el plato, la cuenta, la propina.",
+            sections = listOf(
+                LessonSection("Ресторан", listOf(
+                    LessonItem("el menú", "меню", ""), LessonItem("el plato", "блюдо/тарелка", ""),
+                    LessonItem("la cuenta", "счёт", ""), LessonItem("la propina", "чаевые", ""),
+                    LessonItem("el camarero", "официант", ""), LessonItem("la mesa", "стол", ""),
+                    LessonItem("la bebida", "напиток", ""), LessonItem("el postre", "десерт", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини", correctAnswer = "ok",
+                    pairs = listOf("menú" to "меню", "cuenta" to "счёт", "camarero" to "официант", "postre" to "десерт", "propina" to "чаевые")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "cuenta",
+                    options = listOf("cuenta", "carta", "cinco", "carne"), correctAnswer = "cuenta",
+                    explanation = "cuenta = счёт."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Счёт, пожалуйста»",
+                    words = listOf("La", "cuenta,", "por", "favor"), correctAnswer = "La cuenta por favor",
+                    explanation = "Стандартная фраза."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "El ___ trae el menú.",
+                    options = listOf("camarero", "postre", "menú"), correctAnswer = "camarero",
+                    explanation = "camarero = официант."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "В ресторане",
+                    dialogueLines = listOf("👩 Camarera" to "¿Algo más?", "👨 Tú" to "La ___, por favor."),
+                    options = listOf("cuenta", "menú", "mesa"), correctAnswer = "cuenta",
+                    explanation = "Конец трапезы — просим счёт."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «десерт»",
+                    correctAnswer = "el postre", explanation = "postre — м."),
+            ),
+        ),
+
+        // u3_l5_5 — НОВЫЙ: hay
+        "u3_l5_5" to LessonContent(
+            intro = "hay = «есть/имеется». Безличная форма HABER. Не меняется по числу: hay un libro / hay libros.",
+            sections = listOf(
+                LessonSection("Глагол hay", listOf(
+                    LessonItem("hay un libro", "есть книга", "ед."),
+                    LessonItem("hay libros", "есть книги", "мн. — то же hay!"),
+                    LessonItem("¿Hay agua?", "Есть вода?", "вопрос"),
+                    LessonItem("No hay nada", "ничего нет", "отрицание"),
+                )),
+                LessonSection("hay vs estar", listOf(
+                    LessonItem("hay", "СУЩЕСТВУЕТ ли", "Hay un café cerca"),
+                    LessonItem("está", "находится конкретный", "El café está allí"),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "___ una mesa libre.",
+                    options = listOf("Hay", "Está", "Es"), correctAnswer = "Hay",
+                    explanation = "hay — есть/имеется (новая информация)."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Здесь нет воды»",
+                    words = listOf("No", "hay", "agua", "aquí"), correctAnswer = "No hay agua aquí",
+                    explanation = "no hay = «нет» (не существует)."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "В чём разница?", question = "«Hay un libro» vs «El libro está aquí»",
+                    options = listOf("hay = существует, está = конкретный находится", "одно и то же", "hay для людей, está для вещей", "hay только для еды"),
+                    correctAnswer = "hay = существует, está = конкретный находится",
+                    explanation = "hay вводит новый объект. está говорит о конкретном."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Hay un café", "Hay tres mesas", "Hay el libro", "Hay agua"),
+                    correctAnswer = "Hay el libro",
+                    explanation = "После hay — НЕопределённый артикль (un libro), не el."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Здесь есть кафе»",
+                    correctAnswer = "Hay un café aquí",
+                    explanation = "hay + un café (новая информация)."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "hay",
+                    correctAnswer = "hay", explanation = "hay — короткое слово, читается «ай»."),
+            ),
+        ),
+
+        // u3_l6 — QUERER
+        "u3_l6" to LessonContent(
+            intro = "QUERER = «хотеть» (e→ie меняется). quiero, quieres, quiere — ед.ч. Правильное nosotros: queremos.",
+            sections = listOf(
+                LessonSection("QUERER", listOf(
+                    LessonItem("quiero", "хочу", "yo"),
+                    LessonItem("quieres", "хочешь", "tú"),
+                    LessonItem("quiere", "хочет", "él/ella"),
+                    LessonItem("queremos", "хотим", "nosotros — БЕЗ ie!"),
+                    LessonItem("quieren", "хотят", "ellos"),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "Yo ___ café.",
+                    options = listOf("quiero", "quieres", "quiere"), correctAnswer = "quiero",
+                    explanation = "yo quiero."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я хочу есть»",
+                    words = listOf("Quiero", "comer"), correctAnswer = "Quiero comer",
+                    explanation = "querer + инфинитив — стандартная конструкция."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "nosotros + querer?", question = "Nosotros ___ vino.",
+                    options = listOf("queremos", "quiermos", "quieren", "quiere"), correctAnswer = "queremos",
+                    explanation = "В nosotros e→ie НЕ работает: queremos."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Yo quiero", "Tú quieres", "Nosotros quieremos", "Ellos quieren"),
+                    correctAnswer = "Nosotros quieremos",
+                    explanation = "Правильно: queremos (без ie в nosotros/vosotros)."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Хочу пить»",
+                    correctAnswer = "Quiero beber",
+                    explanation = "querer + beber. yo опускаем."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "quiero",
+                    correctAnswer = "quiero", explanation = "yo quiero."),
+            ),
+        ),
+
+        // u3_l7 — PODER
+        "u3_l7" to LessonContent(
+            intro = "PODER = «мочь» (o→ue). puedo, puedes, puede. nosotros podemos (БЕЗ ue).",
+            sections = listOf(
+                LessonSection("PODER", listOf(
+                    LessonItem("puedo", "могу", ""),
+                    LessonItem("puedes", "можешь", ""),
+                    LessonItem("puede", "может", ""),
+                    LessonItem("podemos", "можем", "БЕЗ ue!"),
+                    LessonItem("pueden", "могут", ""),
+                    LessonItem("¿Puedo?", "Можно?", "вежливый вопрос"),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Форма ↔ местоим.", correctAnswer = "ok",
+                    pairs = listOf("puedo" to "yo", "puedes" to "tú", "puede" to "él/ella", "podemos" to "nosotros", "pueden" to "ellos")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "puedo",
+                    options = listOf("puedo", "puede", "podemos", "pueden"), correctAnswer = "puedo",
+                    explanation = "yo puedo = я могу."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Можешь помочь?»",
+                    words = listOf("¿Puedes", "ayudar?"), correctAnswer = "¿Puedes ayudar?",
+                    explanation = "tú puedes + инфинитив."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Nosotros ___ trabajar mañana.",
+                    options = listOf("podemos", "pueden", "puedo"), correctAnswer = "podemos",
+                    explanation = "nosotros podemos (без ue)."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "В кафе",
+                    dialogueLines = listOf("👨 Cliente" to "¿___ pedir la cuenta?", "👩 Camarera" to "Sí, claro."),
+                    options = listOf("Puedo", "Quiero", "Hay"), correctAnswer = "Puedo",
+                    explanation = "¿Puedo? — вежливое «можно?»."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я могу читать»",
+                    correctAnswer = "Puedo leer", explanation = "yo puedo + leer."),
+            ),
+        ),
+
+        // u3_l7_5 — НОВЫЙ: e→i (pedir/servir)
+        "u3_l7_5" to LessonContent(
+            intro = "Третий тип отклонения: e→i (только -IR). pedir → pido, pides, pide. servir, repetir.",
+            sections = listOf(
+                LessonSection("e→i (только -IR)", listOf(
+                    LessonItem("pido", "прошу", "pedir"),
+                    LessonItem("pides", "просишь", ""),
+                    LessonItem("pide", "просит", ""),
+                    LessonItem("pedimos", "просим", "БЕЗ изменения!"),
+                    LessonItem("piden", "просят", ""),
+                )),
+                LessonSection("Другие e→i", listOf(
+                    LessonItem("servir → sirvo", "обслуживать", ""),
+                    LessonItem("repetir → repito", "повторять", ""),
+                    LessonItem("decir → digo", "говорить", "+1ое лицо нерегулярное!"),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "Yo ___ un café.",
+                    options = listOf("pido", "pedo", "pide"), correctAnswer = "pido",
+                    explanation = "pedir → e→i: yo pido."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Они заказывают вино»",
+                    words = listOf("Piden", "vino"), correctAnswer = "Piden vino",
+                    explanation = "ellos piden (e→i)."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какой тип отклонения у pedir?", question = "",
+                    options = listOf("e→i", "e→ie", "o→ue", "не отклоняется"),
+                    correctAnswer = "e→i",
+                    explanation = "pedir, servir, repetir — все e→i. Только -IR глаголы."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Yo pido", "Tú pides", "Nosotros pidemos", "Ellos piden"),
+                    correctAnswer = "Nosotros pidemos",
+                    explanation = "В nosotros отклонение НЕ работает: pedimos."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я заказываю воду»",
+                    correctAnswer = "Pido agua", explanation = "pedir = «просить/заказывать»."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "pido",
+                    correctAnswer = "pido", explanation = "yo pido."),
+            ),
+        ),
+
+        // u3_l8 — Время
+        "u3_l8" to LessonContent(
+            intro = "¿Qué hora es? — Сколько времени? Es la una (1 час). Son las dos (2+).",
+            sections = listOf(
+                LessonSection("Время", listOf(
+                    LessonItem("¿Qué hora es?", "Сколько времени?", ""),
+                    LessonItem("Es la una", "1 час", "Es — для 1"),
+                    LessonItem("Son las dos", "2 часа", "Son — для 2+"),
+                    LessonItem("Son las tres y media", "3:30", "media = половина"),
+                    LessonItem("Son las cinco menos cuarto", "4:45", "menos cuarto = «без четверти»"),
+                    LessonItem("Son las seis y cuarto", "6:15", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Время ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("Es la una" to "1:00", "Son las dos" to "2:00", "Son las tres y media" to "3:30",
+                        "Son las cinco" to "5:00", "Son las seis y cuarto" to "6:15")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай и выбери", audioText = "Son las cinco",
+                    options = listOf("Son las cinco", "Es la cinco", "Son cinco", "Es las cinco"),
+                    correctAnswer = "Son las cinco", explanation = "Для 2+ → «Son las»."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Сейчас 7 часов»",
+                    words = listOf("Son", "las", "siete"), correctAnswer = "Son las siete",
+                    explanation = "Стандартная форма."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "___ la una.",
+                    options = listOf("Es", "Son", "Está"), correctAnswer = "Es",
+                    explanation = "Только для 1 часа — Es."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Назначаем встречу",
+                    dialogueLines = listOf("👩 María" to "¿Qué hora es?", "👨 Tú" to "Son ___ tres."),
+                    options = listOf("las", "los", "la"), correctAnswer = "las",
+                    explanation = "Перед числом часов — артикль las (или la для 1)."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Сейчас 4 часа»",
+                    correctAnswer = "Son las cuatro", explanation = "Son las + cuatro."),
+            ),
+        ),
+
+        // u3_l9 — Дни недели
+        "u3_l9" to LessonContent(
+            intro = "Дни недели: lunes, martes, miércoles, jueves, viernes, sábado, domingo. С маленькой буквы.",
+            sections = listOf(
+                LessonSection("Дни недели", listOf(
+                    LessonItem("lunes", "понедельник", ""),
+                    LessonItem("martes", "вторник", ""),
+                    LessonItem("miércoles", "среда", ""),
+                    LessonItem("jueves", "четверг", ""),
+                    LessonItem("viernes", "пятница", ""),
+                    LessonItem("sábado", "суббота", ""),
+                    LessonItem("domingo", "воскресенье", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "День ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("lunes" to "понедельник", "miércoles" to "среда", "viernes" to "пятница", "sábado" to "суббота", "domingo" to "воскресенье")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "viernes",
+                    options = listOf("viernes", "jueves", "lunes", "martes"), correctAnswer = "viernes",
+                    explanation = "viernes = пятница."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «В понедельник я работаю»",
+                    words = listOf("El", "lunes", "trabajo"), correctAnswer = "El lunes trabajo",
+                    explanation = "el lunes = в понедельник (с артиклем!)."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Hoy es ___ (среда).",
+                    options = listOf("miércoles", "martes", "jueves"), correctAnswer = "miércoles",
+                    explanation = "miércoles — с тильдой, ударение на É."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Договариваемся",
+                    dialogueLines = listOf("👩 María" to "¿Cuándo nos vemos?", "👨 Tú" to "El ___ a las cinco."),
+                    options = listOf("viernes", "viernos", "vier"), correctAnswer = "viernes",
+                    explanation = "viernes = пятница."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «суббота»",
+                    correctAnswer = "sábado", explanation = "С тильдой над А."),
+            ),
+        ),
+
+        // u3_l10 — Месяцы
+        "u3_l10" to LessonContent(
+            intro = "Месяцы: enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre. С маленькой!",
+            sections = listOf(
+                LessonSection("Месяцы 1-6", listOf(
+                    LessonItem("enero", "январь", ""), LessonItem("febrero", "февраль", ""),
+                    LessonItem("marzo", "март", ""), LessonItem("abril", "апрель", ""),
+                    LessonItem("mayo", "май", ""), LessonItem("junio", "июнь", ""),
+                )),
+                LessonSection("Месяцы 7-12", listOf(
+                    LessonItem("julio", "июль", ""), LessonItem("agosto", "август", ""),
+                    LessonItem("septiembre", "сентябрь", ""), LessonItem("octubre", "октябрь", ""),
+                    LessonItem("noviembre", "ноябрь", ""), LessonItem("diciembre", "декабрь", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Месяц ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("enero" to "январь", "abril" to "апрель", "julio" to "июль", "octubre" to "октябрь", "diciembre" to "декабрь")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "agosto",
+                    options = listOf("agosto", "abril", "octubre", "enero"), correctAnswer = "agosto",
+                    explanation = "agosto = август."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я родился в мае»",
+                    words = listOf("Nací", "en", "mayo"), correctAnswer = "Nací en mayo",
+                    explanation = "en + месяц."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Mi cumpleaños es en ___ (декабре).",
+                    options = listOf("diciembre", "deciembre", "december"), correctAnswer = "diciembre",
+                    explanation = "diciembre — с -ie- внутри."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Планы",
+                    dialogueLines = listOf("👩 María" to "¿Cuándo viajas?", "👨 Tú" to "En ___ (июле)."),
+                    options = listOf("julio", "junio", "enero"), correctAnswer = "julio",
+                    explanation = "julio — для июля."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «март»",
+                    correctAnswer = "marzo", explanation = "marzo — с -z-."),
+            ),
+        ),
+
+        // u3_l11 — Наречия времени
+        "u3_l11" to LessonContent(
+            intro = "Время: hoy (сегодня), mañana (завтра), ayer (вчера), ahora (сейчас), siempre (всегда).",
+            sections = listOf(
+                LessonSection("Когда?", listOf(
+                    LessonItem("hoy", "сегодня", ""),
+                    LessonItem("mañana", "завтра", "(тж. «утро»)"),
+                    LessonItem("ayer", "вчера", ""),
+                    LessonItem("ahora", "сейчас", ""),
+                    LessonItem("siempre", "всегда", ""),
+                    LessonItem("nunca", "никогда", ""),
+                    LessonItem("a veces", "иногда", ""),
+                    LessonItem("pronto", "скоро", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини", correctAnswer = "ok",
+                    pairs = listOf("hoy" to "сегодня", "mañana" to "завтра", "ayer" to "вчера", "ahora" to "сейчас", "siempre" to "всегда")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "ahora",
+                    options = listOf("ahora", "ayer", "hoy", "mañana"), correctAnswer = "ahora",
+                    explanation = "ahora = сейчас."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Сегодня работаю»",
+                    words = listOf("Hoy", "trabajo"), correctAnswer = "Hoy trabajo",
+                    explanation = "Наречие времени → впереди или после глагола."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "___ no trabajo (никогда).",
+                    options = listOf("Nunca", "Siempre", "Ahora"), correctAnswer = "Nunca",
+                    explanation = "Nunca = никогда."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "План",
+                    dialogueLines = listOf("👩 María" to "¿Cuándo vamos?", "👨 Tú" to "___ (завтра)."),
+                    options = listOf("Mañana", "Ayer", "Ahora"), correctAnswer = "Mañana",
+                    explanation = "mañana = завтра (или утро)."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «иногда»",
+                    correctAnswer = "a veces", explanation = "a veces (буквально «по разам»)."),
+            ),
+        ),
+
+        // u3_l12 — Вопросы
+        "u3_l12" to LessonContent(
+            intro = "Вопросительные слова: ¿Qué? (что), ¿Quién? (кто), ¿Dónde? (где), ¿Cuándo? (когда), ¿Cuánto? (сколько), ¿Por qué? (почему).",
+            sections = listOf(
+                LessonSection("Вопросительные слова", listOf(
+                    LessonItem("¿Qué?", "Что?", ""),
+                    LessonItem("¿Quién?", "Кто?", ""),
+                    LessonItem("¿Dónde?", "Где?", ""),
+                    LessonItem("¿Cuándo?", "Когда?", ""),
+                    LessonItem("¿Cuánto?", "Сколько?", ""),
+                    LessonItem("¿Cómo?", "Как?", ""),
+                    LessonItem("¿Por qué?", "Почему?", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь вопросит.", question = "¿___ vives? (где)",
+                    options = listOf("Dónde", "Cuándo", "Qué"), correctAnswer = "Dónde",
+                    explanation = "¿Dónde vives? = Где живёшь?"),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Кто это?»",
+                    words = listOf("¿Quién", "es?"), correctAnswer = "¿Quién es?",
+                    explanation = "Quién — для людей."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какое слово для «когда»?", question = "",
+                    options = listOf("Cuándo", "Cuánto", "Cómo", "Qué"), correctAnswer = "Cuándo",
+                    explanation = "Cuándo — для времени. Cuánto — для количества."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("¿Qué es?", "¿Quién viene?", "¿Donde estás?", "¿Por qué no?"),
+                    correctAnswer = "¿Donde estás?",
+                    explanation = "Без тильды — «donde» это союз. С тильдой ¿Dónde? — вопрос."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Сколько стоит?»",
+                    correctAnswer = "¿Cuánto cuesta?", explanation = "Cuánto + cuesta (от costar)."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "dónde",
+                    correctAnswer = "dónde", explanation = "С тильдой над É — вопрос."),
+            ),
+        ),
+
+        // u3_l13 — Отрицание
+        "u3_l13" to LessonContent(
+            intro = "Главный отрицатель: NO + глагол. Двойное отрицание ОБЯЗАТЕЛЬНО: No tengo nada (= ничего нет).",
+            sections = listOf(
+                LessonSection("Отрицание", listOf(
+                    LessonItem("No hablo", "Не говорю", "no перед глаголом"),
+                    LessonItem("No tengo nada", "У меня нет ничего", "двойное отриц.!"),
+                    LessonItem("Nunca trabajo", "Никогда не работаю", "nunca уже отрицание — no не нужно"),
+                    LessonItem("No trabajo nunca", "Тоже верно", "если nunca после — нужно no"),
+                    LessonItem("nadie", "никто", ""),
+                    LessonItem("nada", "ничто", ""),
+                    LessonItem("jamás", "никогда (усил.)", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "___ tengo dinero. (нет)",
+                    options = listOf("No", "Nada", "Nunca"), correctAnswer = "No",
+                    explanation = "no + глагол = простое отрицание."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Не знаю ничего»",
+                    words = listOf("No", "sé", "nada"), correctAnswer = "No sé nada",
+                    explanation = "Двойное отрицание ОБЯЗАТЕЛЬНО (no...nada)."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Как сказать «Никогда не работаю»?", question = "",
+                    options = listOf("Nunca trabajo", "No trabajo", "Trabajo nunca", "Nunca no trabajo"),
+                    correctAnswer = "Nunca trabajo",
+                    explanation = "Nunca впереди → no не нужно. Можно «No trabajo nunca»."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("No tengo nada", "Nunca trabajo", "Nunca no como", "No viene nadie"),
+                    correctAnswer = "Nunca no como",
+                    explanation = "Если nunca впереди — no НЕ ставится. Правильно: Nunca como."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Никто не пришёл»",
+                    correctAnswer = "No vino nadie", explanation = "no...nadie — двойное отрицание."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "nunca",
+                    correctAnswer = "nunca", explanation = "nunca = никогда."),
+            ),
+        ),
+
+        // u3_l14 — CHECKPOINT «Обед в ресторане»
+        "u3_l14" to LessonContent(
+            intro = "🏁 Чекпоинт блока 1.3: «Обед в ресторане» — заказ еды, время, дни, вопросы.",
+            sections = listOf(
+                LessonSection("Что повторяем", listOf(
+                    LessonItem("Глаголы AR/ER/IR", "comer, beber, trabajar", ""),
+                    LessonItem("querer / poder", "Quiero, ¿Puedes?", ""),
+                    LessonItem("Еда + ресторан", "menú, cuenta, plato", ""),
+                    LessonItem("Время и дни", "Son las 8, viernes", ""),
+                    LessonItem("Вопросы и отрицание", "¿Qué? No tengo nada", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.DIALOGUE_FILL, "В ресторане",
+                    dialogueLines = listOf(
+                        "👩 Camarera" to "Buenas tardes, ¿qué desea?",
+                        "👨 Tú" to "___ una sopa, por favor.",
+                        "👩 Camarera" to "Muy bien.",
+                    ),
+                    options = listOf("Quiero", "Tengo", "Hay"), correctAnswer = "Quiero",
+                    explanation = "Quiero — стандартный заказ."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я хочу одну воду и хлеб»",
+                    words = listOf("Quiero", "un", "agua", "y", "pan"),
+                    correctAnswer = "Quiero un agua y pan",
+                    explanation = "agua — ж, но «un» (звучность). Хлеб без артикля — общее количество."),
+                Exercise(ExerciseType.LISTEN_COMPREHEND, "Послушай и ответь",
+                    audioText = "El restaurante abre a las ocho, pero los lunes está cerrado.",
+                    comprehensionContext = "El restaurante abre a las ocho, pero los lunes está cerrado.",
+                    question = "В какой день закрыто?",
+                    options = listOf("понедельник", "вторник", "пятница", "суббота"),
+                    correctAnswer = "понедельник",
+                    explanation = "los lunes = по понедельникам."),
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини всё блока", correctAnswer = "ok",
+                    pairs = listOf("comer" to "есть", "cuenta" to "счёт", "viernes" to "пятница", "siempre" to "всегда", "puedo" to "могу")),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf(
+                        "Quiero un café",
+                        "Hay una mesa libre",
+                        "Nosotros quieremos pan",
+                        "Pido la cuenta",
+                    ),
+                    correctAnswer = "Nosotros quieremos pan",
+                    explanation = "querer в nosotros: queremos (без ie)."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Счёт, пожалуйста»",
+                    correctAnswer = "La cuenta por favor",
+                    explanation = "Стандартная просьба в ресторане."),
             ),
         ),
 
