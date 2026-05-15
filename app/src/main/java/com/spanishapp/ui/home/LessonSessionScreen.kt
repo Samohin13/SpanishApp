@@ -102,6 +102,14 @@ fun LessonSessionScreen(
         return
     }
 
+    // Analytics — урок открыт. Срабатывает один раз на вход.
+    LaunchedEffect(unitId, lessonIndex) {
+        com.spanishapp.service.Analytics.lessonStarted(
+            lessonId = "u${unitId}_l${lessonIndex}",
+            level = unit.cefrLevel,
+        )
+    }
+
     val accentColor = unit.color
     val sections    = content.sections
     // Authored + auto-generated, interleaved so generated items don't all
@@ -793,6 +801,116 @@ private fun ExerciseCard(
                         }
                     )
                 }
+
+                // ── Phase 0 курса v1.2.0: новые типы из xlsx ────────────
+
+                ExerciseType.LISTEN_NUMBER_TAP -> {
+                    NumberTapInput(
+                        targetNumber = exercise.number ?: exercise.correctAnswer.toIntOrNull() ?: 0,
+                        audioText = exercise.audioText.ifBlank { exercise.correctAnswer },
+                        accentColor = accentColor,
+                        answered = answered,
+                        tts = tts,
+                        onAnswer = { picked ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedOption = picked.toString()
+                            answered = true
+                        }
+                    )
+                }
+
+                ExerciseType.READ_NUMBER -> {
+                    // Показываем большую цифру в question, варианты — испанские слова
+                    ChoiceListInput(
+                        options = exercise.options,
+                        correctAnswer = exercise.correctAnswer,
+                        selectedOption = selectedOption,
+                        answered = answered,
+                        accentColor = accentColor,
+                        onPick = { picked ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedOption = picked
+                            answered = true
+                            inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                tts?.speakSpanish(t, "ans")
+                            }
+                        }
+                    )
+                }
+
+                ExerciseType.LISTEN_COMPREHEND -> {
+                    // Длинная фраза → comprehension. Reuse ListenPickInput pattern.
+                    ListenPickInput(
+                        audioText = exercise.audioText.ifBlank { exercise.comprehensionContext },
+                        options = exercise.options,
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor = accentColor,
+                        answered = answered,
+                        selectedOption = selectedOption,
+                        tts = tts,
+                        onAnswer = { picked ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedOption = picked
+                            answered = true
+                        }
+                    )
+                }
+
+                ExerciseType.DIALOGUE_FILL -> {
+                    DialogueFillInput(
+                        dialogueLines = exercise.dialogueLines,
+                        options = exercise.options,
+                        correctAnswer = exercise.correctAnswer,
+                        accentColor = accentColor,
+                        answered = answered,
+                        selectedOption = selectedOption,
+                        onAnswer = { picked ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedOption = picked
+                            answered = true
+                            inferSpeakText(exercise.correctAnswer)?.let { t ->
+                                tts?.speakSpanish(t, "ans")
+                            }
+                        }
+                    )
+                }
+
+                ExerciseType.SPEAK_REPEAT -> {
+                    // Сначала проигрываем эталон, потом юзер повторяет.
+                    SpeakRepeatInput(
+                        wordToSay = exercise.correctAnswer,
+                        audioText = exercise.audioText.ifBlank { exercise.correctAnswer },
+                        accentColor = accentColor,
+                        tts = tts,
+                        onPassed = {
+                            selectedOption = exercise.correctAnswer
+                            answered = true
+                        },
+                        onSkipped = {
+                            selectedOption = "__failed__"
+                            answered = true
+                        }
+                    )
+                }
+
+                ExerciseType.SPOT_THE_ERROR -> {
+                    // Варианты — фразы; correctAnswer = тот вариант ГДЕ ошибка.
+                    val variants = if (exercise.errorVariants.isNotEmpty())
+                        exercise.errorVariants
+                    else exercise.options
+                    ChoiceListInput(
+                        options = variants,
+                        correctAnswer = exercise.correctAnswer,
+                        selectedOption = selectedOption,
+                        answered = answered,
+                        accentColor = accentColor,
+                        onPick = { picked ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            selectedOption = picked
+                            answered = true
+                        }
+                    )
+                }
             }
 
             // Объяснение
@@ -1267,6 +1385,13 @@ private fun ExerciseTypeBadge(type: ExerciseType, accent: Color) {
         ExerciseType.TAP_MISSING_WORD  -> "📌" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_missing_word)
         ExerciseType.LISTEN_TYPE       -> "🎧" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_listen_type)
         ExerciseType.CONJUGATION_GRID  -> "📊" to androidx.compose.ui.res.stringResource(com.spanishapp.R.string.exercise_type_conjugation)
+        // ── Phase 0 курса v1.2.0 ────────────────────────────────────
+        ExerciseType.LISTEN_NUMBER_TAP -> "🔢" to "Цифра"
+        ExerciseType.READ_NUMBER       -> "🔢" to "Число"
+        ExerciseType.LISTEN_COMPREHEND -> "👂" to "Понимание"
+        ExerciseType.DIALOGUE_FILL     -> "💬" to "Диалог"
+        ExerciseType.SPEAK_REPEAT      -> "🎙" to "Повтори"
+        ExerciseType.SPOT_THE_ERROR    -> "🔍" to "Найди ошибку"
     }
     Surface(
         shape = RoundedCornerShape(50),
@@ -2103,4 +2228,312 @@ private fun QuitDialog(onQuit: () -> Unit, onResume: () -> Unit) {
             Button(onClick = onResume) { Text(stringResource(R.string.ls_quit_resume)) }
         }
     )
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  Phase 0 курса v1.2.0 — рендереры новых типов упражнений
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Универсальный список вариантов (для READ_NUMBER и SPOT_THE_ERROR).
+ * Извлечён из ветки MULTIPLE_CHOICE как переиспользуемый Composable.
+ */
+@Composable
+private fun ChoiceListInput(
+    options: List<String>,
+    correctAnswer: String,
+    selectedOption: String?,
+    answered: Boolean,
+    accentColor: Color,
+    onPick: (String) -> Unit,
+) {
+    Column {
+        options.forEach { option ->
+            val isSelected = selectedOption == option
+            val isCorrect = option == correctAnswer
+            val bgColor = when {
+                !answered && isSelected -> accentColor.copy(alpha = 0.10f)
+                answered && isCorrect -> Green.copy(alpha = 0.12f)
+                answered && isSelected && !isCorrect -> Red.copy(alpha = 0.12f)
+                else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+            }
+            val borderColor = when {
+                answered && isCorrect -> Green
+                answered && isSelected && !isCorrect -> Red
+                isSelected -> accentColor
+                else -> Color.Transparent
+            }
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = bgColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp)
+                    .border(
+                        width = if (isSelected || (answered && isCorrect)) 2.dp else 0.dp,
+                        color = borderColor,
+                        shape = RoundedCornerShape(14.dp)
+                    )
+                    .clickable(enabled = !answered) { onPick(option) }
+            ) {
+                Row(
+                    Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = option,
+                        fontSize = 16.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (answered && isCorrect) {
+                        Text("✓", color = Green, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    } else if (answered && isSelected && !isCorrect) {
+                        Text("✗", color = Red, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * LISTEN_NUMBER_TAP — TTS играет испанское число (cinco), юзер тапает 5
+ * на грид-панели цифр. Если targetNumber 0-10 — 11 кнопок 4×3,
+ * если 0-100 — добавляются кнопки 20/30/.../90.
+ */
+@Composable
+private fun NumberTapInput(
+    targetNumber: Int,
+    audioText: String,
+    accentColor: Color,
+    answered: Boolean,
+    tts: TextToSpeech?,
+    onAnswer: (Int) -> Unit,
+) {
+    var picked by remember(targetNumber) { mutableStateOf<Int?>(null) }
+
+    // Авто-проиграть при появлении
+    LaunchedEffect(targetNumber) {
+        delay(300)
+        tts?.speakSpanish(audioText, "num")
+    }
+
+    val maxN = if (targetNumber <= 10) 10 else if (targetNumber <= 20) 20 else 100
+    val numbers: List<Int> = if (maxN == 100) {
+        // 0-9 + 10/20/.../90 + сам targetNumber если он не круглый
+        val base = (0..9) + listOf(10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+        if (targetNumber !in base) (base + targetNumber).sorted() else base
+    } else (0..maxN).toList()
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Кнопка переиграть
+        Surface(
+            shape = CircleShape,
+            color = accentColor.copy(alpha = 0.12f),
+            modifier = Modifier
+                .size(64.dp)
+                .clickable(enabled = !answered) {
+                    tts?.speakSpanish(audioText, "num_replay")
+                }
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text("🔊", fontSize = 28.sp)
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+
+        // Грид цифр 4 в ряд
+        val rows = numbers.chunked(4)
+        rows.forEach { row ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(vertical = 4.dp),
+            ) {
+                row.forEach { n ->
+                    val isPicked = picked == n
+                    val isCorrect = n == targetNumber
+                    val bg = when {
+                        !answered && isPicked -> accentColor.copy(alpha = 0.20f)
+                        answered && isCorrect -> Green.copy(alpha = 0.20f)
+                        answered && isPicked && !isCorrect -> Red.copy(alpha = 0.20f)
+                        else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = bg,
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clickable(enabled = !answered) {
+                                picked = n
+                                onAnswer(n)
+                            }
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                n.toString(),
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * DIALOGUE_FILL — мини-диалог из 2-4 реплик с одним пропуском.
+ * Показывает кто говорит (👨/👩) + текст реплики. Реплика с маркером «___»
+ * получает чипы выбора снизу.
+ */
+@Composable
+private fun DialogueFillInput(
+    dialogueLines: List<Pair<String, String>>,
+    options: List<String>,
+    correctAnswer: String,
+    accentColor: Color,
+    answered: Boolean,
+    selectedOption: String?,
+    onAnswer: (String) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        dialogueLines.forEachIndexed { idx, (speaker, text) ->
+            val isLeft = idx % 2 == 0
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = if (isLeft) Arrangement.Start else Arrangement.End,
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(
+                        topStart = 16.dp, topEnd = 16.dp,
+                        bottomEnd = if (isLeft) 16.dp else 4.dp,
+                        bottomStart = if (isLeft) 4.dp else 16.dp,
+                    ),
+                    color = if (isLeft)
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    else accentColor.copy(alpha = 0.10f),
+                    modifier = Modifier.fillMaxWidth(0.85f),
+                ) {
+                    Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
+                        Text(
+                            speaker,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        // Подставляем выбор если уже ответили
+                        val displayText = if (text.contains("___") && answered)
+                            text.replace("___", "**${selectedOption ?: "___"}**")
+                        else text
+                        Text(displayText, fontSize = 15.sp)
+                    }
+                }
+            }
+        }
+
+        // Чипы выбора
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Вставь подходящее:",
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        FlowRowSimple(
+            items = options,
+        ) { option ->
+            val isPicked = selectedOption == option
+            val isCorrect = option == correctAnswer
+            val bg = when {
+                !answered && isPicked -> accentColor.copy(alpha = 0.20f)
+                answered && isCorrect -> Green.copy(alpha = 0.20f)
+                answered && isPicked && !isCorrect -> Red.copy(alpha = 0.20f)
+                else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            }
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = bg,
+                modifier = Modifier
+                    .padding(end = 6.dp, bottom = 6.dp)
+                    .clickable(enabled = !answered) { onAnswer(option) },
+            ) {
+                Text(
+                    option,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Мини-FlowRow без material3 ExperimentalLayoutApi (не везде доступен).
+ * Простая wrap-логика: разбиваем items на строки по N штук (фиксировано 3).
+ */
+@Composable
+private fun FlowRowSimple(
+    items: List<String>,
+    itemContent: @Composable (String) -> Unit,
+) {
+    val rows = items.chunked(3)
+    Column {
+        rows.forEach { row ->
+            Row {
+                row.forEach { itemContent(it) }
+            }
+        }
+    }
+}
+
+/**
+ * SPEAK_REPEAT — TTS играет эталон, потом юзер должен повторить в микрофон.
+ * Идентично SpeakingInput, но с авто-проигрыванием эталона при старте.
+ */
+@Composable
+private fun SpeakRepeatInput(
+    wordToSay: String,
+    audioText: String,
+    accentColor: Color,
+    tts: TextToSpeech?,
+    onPassed: () -> Unit,
+    onSkipped: () -> Unit,
+) {
+    // Авто-проиграть эталон при появлении упражнения
+    LaunchedEffect(wordToSay) {
+        delay(400)
+        tts?.speakSpanish(audioText, "ref")
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Кнопка прослушать заново
+        Surface(
+            shape = CircleShape,
+            color = accentColor.copy(alpha = 0.12f),
+            modifier = Modifier
+                .size(56.dp)
+                .clickable { tts?.speakSpanish(audioText, "ref_replay") }
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text("🔊", fontSize = 24.sp)
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Послушай и повтори",
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(16.dp))
+        // Делегируем существующему SpeakingInput для STT-части
+        SpeakingInput(
+            wordToSay = wordToSay,
+            accentColor = accentColor,
+            tts = tts,
+            onPassed = onPassed,
+            onSkipped = onSkipped,
+        )
+    }
 }

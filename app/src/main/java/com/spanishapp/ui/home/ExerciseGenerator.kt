@@ -51,6 +51,16 @@ object ExerciseGenerator {
         ExerciseType.TRANSLATE,
         ExerciseType.LISTEN_TYPE,
         ExerciseType.CONJUGATION_GRID -> cefr != "A1"                  // skip in early A1
+
+        // Phase 0 курса v1.2.0 — типы создаются ТОЛЬКО вручную в LessonContentData.
+        // Генератор не пытается их фолбэчить — недостаточно контекстных данных
+        // (числа, диалоги, фразы с ошибками требуют ручного авторинга).
+        ExerciseType.LISTEN_NUMBER_TAP,
+        ExerciseType.READ_NUMBER,
+        ExerciseType.LISTEN_COMPREHEND,
+        ExerciseType.DIALOGUE_FILL,
+        ExerciseType.SPEAK_REPEAT,
+        ExerciseType.SPOT_THE_ERROR -> false
         else -> true
     }
 
