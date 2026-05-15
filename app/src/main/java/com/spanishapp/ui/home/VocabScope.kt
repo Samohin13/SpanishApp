@@ -1247,6 +1247,121 @@ object VocabScope {
             ScopeWord("familia", "семья", "u8_l14", "noun"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // B1 · Блок 3.1 «Subjuntivo» — сослагательное наклонение
+        // ═══════════════════════════════════════════════════════════════
+        put("u9_l0", listOf(
+            ScopeWord("subjuntivo", "сослагательное", "u9_l0", "concept"),
+        ))
+        put("u9_l1", listOf(
+            ScopeWord("hable", "(чтобы) говорил", "u9_l1", "verb"),
+            ScopeWord("hables", "(чтобы) ты говорил", "u9_l1", "verb"),
+            ScopeWord("hablen", "(чтобы) они говорили", "u9_l1", "verb"),
+            ScopeWord("trabajes", "(чтобы) ты работал", "u9_l1", "verb"),
+            ScopeWord("trabajéis", "(чтобы) вы работали", "u9_l1", "verb"),
+            ScopeWord("hablemos", "(чтобы) мы говорили", "u9_l1", "verb"),
+        ))
+        put("u9_l2", listOf(
+            ScopeWord("coma", "(чтобы) ел", "u9_l2", "verb"),
+            ScopeWord("comas", "(чтобы) ты ел", "u9_l2", "verb"),
+            ScopeWord("vivan", "(чтобы) жили", "u9_l2", "verb"),
+            ScopeWord("escriba", "(чтобы) писал", "u9_l2", "verb"),
+            ScopeWord("felices", "счастливые", "u9_l2", "adjective"),
+        ))
+        put("u9_l3", listOf(
+            ScopeWord("sea", "(чтобы) был", "u9_l3", "verb"),
+            ScopeWord("vaya", "(чтобы) шёл", "u9_l3", "verb"),
+            ScopeWord("vayas", "(чтобы) ты шёл", "u9_l3", "verb"),
+            ScopeWord("vayamos", "(чтобы) мы шли", "u9_l3", "verb"),
+            ScopeWord("esté", "(чтобы) был", "u9_l3", "verb"),
+            ScopeWord("estés", "(чтобы) ты был", "u9_l3", "verb"),
+            ScopeWord("dé", "(чтобы) дал", "u9_l3", "verb"),
+            ScopeWord("des", "(чтобы) ты дал", "u9_l3", "verb"),
+            ScopeWord("sepa", "(чтобы) знал", "u9_l3", "verb"),
+            ScopeWord("haya", "(чтобы) было/имел", "u9_l3", "verb"),
+            ScopeWord("vea", "(чтобы) видел", "u9_l3", "verb"),
+        ))
+        put("u9_l4", listOf(
+            ScopeWord("quiera", "(чтобы) хотел", "u9_l4", "verb"),
+            ScopeWord("quieras", "(чтобы) ты хотел", "u9_l4", "verb"),
+            ScopeWord("quieran", "(чтобы) хотели", "u9_l4", "verb"),
+            ScopeWord("pueda", "(чтобы) мог", "u9_l4", "verb"),
+            ScopeWord("puedas", "(чтобы) ты мог", "u9_l4", "verb"),
+            ScopeWord("venga", "(чтобы) пришёл", "u9_l4", "verb"),
+            ScopeWord("vengas", "(чтобы) ты пришёл", "u9_l4", "verb"),
+            ScopeWord("vengan", "(чтобы) пришли", "u9_l4", "verb"),
+        ))
+        put("u9_l5", listOf(
+            ScopeWord("Quiero que", "Хочу чтобы", "u9_l5", "phrase"),
+            ScopeWord("fiesta", "вечеринка", "u9_l5", "noun"),
+            ScopeWord("te quedes", "(чтобы) ты остался", "u9_l5", "verb"),
+            ScopeWord("quedarse", "оставаться", "u9_l5", "verb"),
+        ))
+        put("u9_l6", listOf(
+            ScopeWord("necesitar", "нуждаться", "u9_l6", "verb"),
+            ScopeWord("necesito", "мне нужно", "u9_l6", "verb"),
+            ScopeWord("ayudes", "(чтобы) ты помог", "u9_l6", "verb"),
+            ScopeWord("escuches", "(чтобы) ты слушал", "u9_l6", "verb"),
+            ScopeWord("ayuda", "помощь", "u9_l6", "noun"),
+        ))
+        put("u9_l7", listOf(
+            ScopeWord("Es importante que", "важно чтобы", "u9_l7", "phrase"),
+            ScopeWord("Es necesario que", "необходимо чтобы", "u9_l7", "phrase"),
+            ScopeWord("Es bueno que", "хорошо что", "u9_l7", "phrase"),
+            ScopeWord("Es mejor que", "лучше чтобы", "u9_l7", "phrase"),
+            ScopeWord("Es posible que", "возможно что", "u9_l7", "phrase"),
+            ScopeWord("llueva", "(чтобы) был дождь", "u9_l7", "verb"),
+            ScopeWord("esperes", "(чтобы) ты ждал", "u9_l7", "verb"),
+        ))
+        put("u9_l8", listOf(
+            ScopeWord("Me alegra que", "рад что", "u9_l8", "phrase"),
+            ScopeWord("Temo que", "боюсь что", "u9_l8", "phrase"),
+            ScopeWord("Siento que", "сожалею что", "u9_l8", "phrase"),
+            ScopeWord("vinieras", "(чтобы) ты пришёл (Imp)", "u9_l8", "verb"),
+            ScopeWord("nervioso", "нервный", "u9_l8", "adjective"),
+        ))
+        put("u9_l9", listOf(
+            ScopeWord("dudo", "сомневаюсь", "u9_l9", "verb"),
+            ScopeWord("dudar", "сомневаться", "u9_l9", "verb"),
+            ScopeWord("No creo que", "не думаю что", "u9_l9", "phrase"),
+            ScopeWord("niego", "отрицаю", "u9_l9", "verb"),
+            ScopeWord("cierto", "верный/истинный", "u9_l9", "adjective"),
+        ))
+        put("u9_l10", listOf(
+            ScopeWord("ojalá", "вот бы / дай Бог", "u9_l10", "particle"),
+            ScopeWord("tengas", "(чтобы) ты имел", "u9_l10", "verb"),
+            ScopeWord("suerte", "удача", "u9_l10", "noun"),
+        ))
+        put("u9_l11", listOf(
+            ScopeWord("para que", "чтобы (цель)", "u9_l11", "phrase"),
+            ScopeWord("sepas", "(чтобы) ты знал", "u9_l11", "verb"),
+            ScopeWord("entiendas", "(чтобы) ты понял", "u9_l11", "verb"),
+            ScopeWord("entender", "понимать", "u9_l11", "verb"),
+            ScopeWord("aprenda", "(чтобы) учил", "u9_l11", "verb"),
+        ))
+        put("u9_l11_5", listOf(
+            ScopeWord("antes de que", "прежде чем (2 субъекта)", "u9_l11_5", "phrase"),
+            ScopeWord("antes de", "перед (1 субъект+inf)", "u9_l11_5", "phrase"),
+            ScopeWord("salgas", "(чтобы) ты вышел", "u9_l11_5", "verb"),
+        ))
+        put("u9_l12", listOf(
+            ScopeWord("cuando", "когда", "u9_l12", "conjunction"),
+            ScopeWord("veremos", "увидим (Fut)", "u9_l12", "verb"),
+        ))
+        put("u9_l13", listOf(
+            ScopeWord("aunque", "хотя / даже если", "u9_l13", "conjunction"),
+            ScopeWord("difícil", "трудный", "u9_l13", "adjective"),
+            ScopeWord("intentaré", "попробую", "u9_l13", "verb"),
+        ))
+        put("u9_l14", listOf(
+            ScopeWord("aconsejo", "советую", "u9_l14", "verb"),
+            ScopeWord("aconsejar", "советовать", "u9_l14", "verb"),
+            ScopeWord("éxito", "успех", "u9_l14", "noun"),
+            ScopeWord("consigas", "(чтобы) ты добился", "u9_l14", "verb"),
+            ScopeWord("conseguir", "добиваться", "u9_l14", "verb"),
+            ScopeWord("tranquila", "спокойная", "u9_l14", "adjective"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -1334,6 +1449,11 @@ object VocabScope {
         addAll(listOf("u8_l10", "u8_l11"))                                  // природа + cuantific.
         addAll(listOf("u8_l12", "u8_l13"))                                  // tech + спорт
         addAll(listOf("u8_l14"))                                             // ФИНАЛ A2 checkpoint
+        // B1 · Блок 3.1 «Subjuntivo»
+        addAll(listOf("u9_l0", "u9_l1", "u9_l2", "u9_l3", "u9_l4"))         // intro + спряжения Subj
+        addAll(listOf("u9_l5", "u9_l6", "u9_l7", "u9_l8", "u9_l9"))         // триггеры
+        addAll(listOf("u9_l10", "u9_l11", "u9_l11_5"))                      // ojalá + para que + antes de que
+        addAll(listOf("u9_l12", "u9_l13", "u9_l14"))                        // cuando + aunque + checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 
