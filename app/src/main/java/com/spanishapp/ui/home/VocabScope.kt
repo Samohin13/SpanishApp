@@ -1572,6 +1572,149 @@ object VocabScope {
             ScopeWord("terminar", "заканчивать", "u11_l14", "verb"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // B1 · Блок 3.4 «Словарь и стиль» — лексика B1 + идиомы + регистр
+        // ═══════════════════════════════════════════════════════════════
+        put("u12_l0", listOf(
+            ScopeWord("contrato indefinido", "бессрочный контракт", "u12_l0", "work"),
+            ScopeWord("plantilla", "штат", "u12_l0", "work"),
+            ScopeWord("baja", "больничный", "u12_l0", "work"),
+            ScopeWord("finiquito", "выплата при увольнении", "u12_l0", "work"),
+            ScopeWord("jubilarse", "уйти на пенсию", "u12_l0", "verb"),
+            ScopeWord("sindicato", "профсоюз", "u12_l0", "work"),
+        ))
+        put("u12_l1", listOf(
+            ScopeWord("Estimado", "уважаемый", "u12_l1", "formal"),
+            ScopeWord("Adjunto", "прилагаю", "u12_l1", "formal"),
+            ScopeWord("agradezco", "благодарю", "u12_l1", "verb"),
+            ScopeWord("Atentamente", "с уважением", "u12_l1", "formal"),
+            ScopeWord("Saludos cordiales", "с наилучшими", "u12_l1", "formal"),
+            ScopeWord("Quedo a su disposición", "остаюсь в Вашем распоряжении", "u12_l1", "formal"),
+            ScopeWord("CV", "резюме", "u12_l1", "noun"),
+            ScopeWord("envío", "отправляю", "u12_l1", "verb"),
+        ))
+        put("u12_l2", listOf(
+            ScopeWord("noticia", "новость", "u12_l2", "media"),
+            ScopeWord("reportaje", "репортаж", "u12_l2", "media"),
+            ScopeWord("editorial", "редакционная", "u12_l2", "media"),
+            ScopeWord("periódico", "газета", "u12_l2", "media"),
+            ScopeWord("prensa", "пресса", "u12_l2", "media"),
+            ScopeWord("telediario", "теленовости", "u12_l2", "media"),
+            ScopeWord("titular", "заголовок", "u12_l2", "media"),
+            ScopeWord("impactante", "впечатляющий", "u12_l2", "adjective"),
+        ))
+        put("u12_l3", listOf(
+            ScopeWord("publicar", "публиковать", "u12_l3", "verb"),
+            ScopeWord("comentar", "комментир.", "u12_l3", "verb"),
+            ScopeWord("compartir", "делиться", "u12_l3", "verb"),
+            ScopeWord("seguidor", "подписчик", "u12_l3", "noun"),
+            ScopeWord("seguidores", "подписчики", "u12_l3", "noun"),
+            ScopeWord("hashtag", "хэштег", "u12_l3", "tech"),
+            ScopeWord("viral", "вирусный", "u12_l3", "adjective"),
+            ScopeWord("dar like", "лайкнуть", "u12_l3", "phrase"),
+            ScopeWord("foto", "фото", "u12_l3", "noun"),
+        ))
+        put("u12_l4", listOf(
+            ScopeWord("síntoma", "симптом", "u12_l4", "health"),
+            ScopeWord("síntomas", "симптомы", "u12_l4", "health"),
+            ScopeWord("diagnóstico", "диагноз", "u12_l4", "health"),
+            ScopeWord("urgencias", "скорая", "u12_l4", "health"),
+            ScopeWord("consulta", "приём", "u12_l4", "health"),
+            ScopeWord("ingreso", "госпитализ.", "u12_l4", "health"),
+            ScopeWord("operar", "оперировать", "u12_l4", "verb"),
+            ScopeWord("cirugía", "операция", "u12_l4", "health"),
+        ))
+        put("u12_l5", listOf(
+            ScopeWord("mareado", "головокружение", "u12_l5", "adjective"),
+            ScopeWord("toser", "кашлять", "u12_l5", "verb"),
+            ScopeWord("toso", "я кашляю", "u12_l5", "verb"),
+            ScopeWord("sentirse", "чувствовать себя", "u12_l5", "verb"),
+            ScopeWord("siento", "чувствую", "u12_l5", "verb"),
+            ScopeWord("siente", "чувствует", "u12_l5", "verb"),
+            ScopeWord("reposo", "отдых", "u12_l5", "noun"),
+            ScopeWord("alta", "высокая", "u12_l5", "adjective"),
+        ))
+        put("u12_l6", listOf(
+            ScopeWord("dar igual", "всё равно", "u12_l6", "idiom"),
+            ScopeWord("dar miedo", "пугать", "u12_l6", "idiom"),
+            ScopeWord("darse cuenta", "понимать", "u12_l6", "idiom"),
+            ScopeWord("dar la vuelta", "развернуться", "u12_l6", "idiom"),
+            ScopeWord("darse prisa", "спешить", "u12_l6", "idiom"),
+            ScopeWord("arañas", "пауки", "u12_l6", "animal"),
+        ))
+        put("u12_l7", listOf(
+            ScopeWord("tener ganas", "хотеть", "u12_l7", "idiom"),
+            ScopeWord("tener razón", "быть правым", "u12_l7", "idiom"),
+            ScopeWord("tener en cuenta", "учитывать", "u12_l7", "idiom"),
+            ScopeWord("tener prisa", "спешить", "u12_l7", "idiom"),
+            ScopeWord("tener suerte", "везти", "u12_l7", "idiom"),
+            ScopeWord("tener miedo", "бояться", "u12_l7", "idiom"),
+        ))
+        put("u12_l8", listOf(
+            ScopeWord("hacer falta", "быть нужным", "u12_l8", "idiom"),
+            ScopeWord("hacer caso", "слушаться", "u12_l8", "idiom"),
+            ScopeWord("hacer ilusión", "приятно", "u12_l8", "idiom"),
+            ScopeWord("hacerse rico", "стать богат", "u12_l8", "idiom"),
+        ))
+        put("u12_l9", listOf(
+            ScopeWord("llevar a cabo", "осуществить", "u12_l9", "idiom"),
+            ScopeWord("llevar la contraria", "спорить", "u12_l9", "idiom"),
+            ScopeWord("llevarse bien", "ладить", "u12_l9", "idiom"),
+            ScopeWord("llevarse mal", "не ладить", "u12_l9", "idiom"),
+            ScopeWord("plan", "план", "u12_l9", "noun"),
+        ))
+        put("u12_l9_5", listOf(
+            ScopeWord("ponerse rojo", "покраснеть", "u12_l9_5", "idiom"),
+            ScopeWord("ponerse triste", "загрустить", "u12_l9_5", "idiom"),
+            ScopeWord("ponerse de pie", "встать", "u12_l9_5", "idiom"),
+            ScopeWord("poner verde", "ругать (разг)", "u12_l9_5", "idiom"),
+            ScopeWord("poner de manifiesto", "показать (книжн)", "u12_l9_5", "idiom"),
+            ScopeWord("ponerse al día", "наверстать", "u12_l9_5", "idiom"),
+            ScopeWord("vergüenza", "стыд", "u12_l9_5", "noun"),
+            ScopeWord("me pongo", "становлюсь", "u12_l9_5", "verb"),
+            ScopeWord("me puse", "стал я (Indef)", "u12_l9_5", "verb"),
+        ))
+        put("u12_l10", listOf(
+            ScopeWord("vale", "ок (разг)", "u12_l10", "phrase"),
+            ScopeWord("automóvil", "автомобиль (форм)", "u12_l10", "vehicle"),
+            ScopeWord("vehículo", "тс", "u12_l10", "vehicle"),
+            ScopeWord("actualmente", "сейчас (форм)", "u12_l10", "adverb"),
+            ScopeWord("no obstante", "тем не менее (форм)", "u12_l10", "connector"),
+            ScopeWord("vos", "ты (Аргентина)", "u12_l10", "pronoun"),
+        ))
+        put("u12_l11", listOf(
+            ScopeWord("Por la presente", "настоящим", "u12_l11", "formal"),
+            ScopeWord("Solicito", "прошу", "u12_l11", "formal"),
+            ScopeWord("Adjunto encontrará", "во вложении найдёте", "u12_l11", "formal"),
+            ScopeWord("A la atención de", "вниманию", "u12_l11", "formal"),
+            ScopeWord("solicitar", "подавать заявление", "u12_l11", "verb"),
+            ScopeWord("puesto", "должность", "u12_l11", "noun"),
+        ))
+        put("u12_l12", listOf(
+            ScopeWord("Estoy de acuerdo", "согласен", "u12_l12", "phrase"),
+            ScopeWord("No estoy de acuerdo", "не согласен", "u12_l12", "phrase"),
+            ScopeWord("Depende", "зависит", "u12_l12", "phrase"),
+            ScopeWord("En parte", "отчасти", "u12_l12", "phrase"),
+            ScopeWord("totalmente", "полностью", "u12_l12", "adverb"),
+            ScopeWord("urgente", "срочный", "u12_l12", "adjective"),
+            ScopeWord("cambio climático", "изменение климата", "u12_l12", "phrase"),
+        ))
+        put("u12_l13", listOf(
+            ScopeWord("Por un lado", "с одной стороны", "u12_l13", "connector"),
+            ScopeWord("Por otro lado", "с другой стороны", "u12_l13", "connector"),
+            ScopeWord("En primer lugar", "во-первых", "u12_l13", "connector"),
+            ScopeWord("En segundo lugar", "во-вторых", "u12_l13", "connector"),
+            ScopeWord("En conclusión", "в заключение", "u12_l13", "connector"),
+            ScopeWord("Hay que tener en cuenta", "надо учитывать", "u12_l13", "phrase"),
+        ))
+        put("u12_l14", listOf(
+            ScopeWord("entrevistador", "интервьюер", "u12_l14", "profession"),
+            ScopeWord("formar parte", "быть частью", "u12_l14", "phrase"),
+            ScopeWord("candidatura", "кандидатура", "u12_l14", "noun"),
+            ScopeWord("compañeros", "коллеги", "u12_l14", "noun"),
+            ScopeWord("marketing", "маркетинг", "u12_l14", "noun"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -1675,6 +1818,12 @@ object VocabScope {
         addAll(listOf("u11_l6", "u11_l7"))                                   // pasiva
         addAll(listOf("u11_l8", "u11_l9", "u11_l10"))                        // perífrasis
         addAll(listOf("u11_l11", "u11_l12", "u11_l13", "u11_l14"))          // конекторы + checkpoint
+        // B1 · Блок 3.4 «Словарь и стиль»
+        addAll(listOf("u12_l0", "u12_l1", "u12_l2", "u12_l3"))              // лексика B1 (работа, письма, медиа, соцсети)
+        addAll(listOf("u12_l4", "u12_l5"))                                   // здоровье
+        addAll(listOf("u12_l6", "u12_l7", "u12_l8", "u12_l9", "u12_l9_5")) // идиомы dar/tener/hacer/llevar/poner
+        addAll(listOf("u12_l10", "u12_l11"))                                // регистр + заявление
+        addAll(listOf("u12_l12", "u12_l13", "u12_l14"))                     // дебаты + аргументация + ФИНАЛ B1
         // (остальные блоки добавляются по мере прохождения)
     }
 
