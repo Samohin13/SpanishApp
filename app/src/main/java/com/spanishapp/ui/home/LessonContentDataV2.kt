@@ -31,7 +31,7 @@ package com.spanishapp.ui.home
 object LessonContentDataV2 {
 
     fun allLessons(): Map<String, LessonContent> =
-        blockA1_1() + blockA1_2() + blockA1_3()
+        blockA1_1() + blockA1_2() + blockA1_3() + blockA1_4()
 
     // ═══════════════════════════════════════════════════════════════
     //  БЛОК 1.1 «ВЗЛЁТ» — фонетика + первое общение + SER + местоимения
@@ -2352,6 +2352,602 @@ object LessonContentDataV2 {
                 Exercise(ExerciseType.TRANSLATE, "Переведи: «Счёт, пожалуйста»",
                     correctAnswer = "La cuenta por favor",
                     explanation = "Стандартная просьба в ресторане."),
+            ),
+        ),
+
+    )
+
+    // ═══════════════════════════════════════════════════════════════
+    //  БЛОК 1.4 «ВЫЖИВАНИЕ» — IR/GUSTAR + транспорт + магазин + здоровье
+    //  16 уроков: u4_l0..u4_l14 + u4_l13_5 (новый)
+    //  u4_l14 = ФИНАЛЬНЫЙ ЧЕКПОИНТ A1 «Один день в Мадриде»
+    // ═══════════════════════════════════════════════════════════════
+
+    private fun blockA1_4(): Map<String, LessonContent> = mapOf(
+
+        // u4_l0 — Транспорт
+        "u4_l0" to LessonContent(
+            intro = "Городской транспорт: metro, autobús, taxi, tren, coche, bici.",
+            sections = listOf(
+                LessonSection("Транспорт", listOf(
+                    LessonItem("el metro", "метро", ""),
+                    LessonItem("el autobús", "автобус", ""),
+                    LessonItem("el taxi", "такси", ""),
+                    LessonItem("el tren", "поезд", ""),
+                    LessonItem("el coche", "машина", ""),
+                    LessonItem("la bici", "велик", ""),
+                    LessonItem("el avión", "самолёт", ""),
+                    LessonItem("el barco", "корабль", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Транспорт ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("metro" to "метро", "autobús" to "автобус", "tren" to "поезд", "coche" to "машина", "avión" to "самолёт")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "autobús",
+                    options = listOf("autobús", "metro", "taxi", "tren"), correctAnswer = "autobús",
+                    explanation = "autobús — с тильдой над U."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я еду на метро»",
+                    words = listOf("Voy", "en", "metro"), correctAnswer = "Voy en metro",
+                    explanation = "en + транспорт. ir = идти/ехать."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Tomo el ___ al trabajo (автобус).",
+                    options = listOf("autobús", "metro", "tren"), correctAnswer = "autobús",
+                    explanation = "autobús = автобус."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Маршрут",
+                    dialogueLines = listOf("👩 María" to "¿Cómo vienes?", "👨 Tú" to "En ___ (поезде)."),
+                    options = listOf("tren", "trenes", "metro"), correctAnswer = "tren",
+                    explanation = "en tren = на поезде."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «такси»",
+                    correctAnswer = "el taxi", explanation = "taxi — м → el taxi."),
+            ),
+        ),
+
+        // u4_l1 — IR полное
+        "u4_l1" to LessonContent(
+            intro = "IR = «идти/ехать». voy / vas / va / vamos / vais / van. Полностью неправильный.",
+            sections = listOf(
+                LessonSection("IR — все формы", listOf(
+                    LessonItem("yo voy", "я иду", ""),
+                    LessonItem("tú vas", "ты идёшь", ""),
+                    LessonItem("él/ella va", "он/она идёт", ""),
+                    LessonItem("nosotros vamos", "мы идём", ""),
+                    LessonItem("vosotros vais", "вы идёте (Исп)", ""),
+                    LessonItem("ellos van", "они идут", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь IR", question = "Yo ___ a casa.",
+                    options = listOf("voy", "vas", "va"), correctAnswer = "voy",
+                    explanation = "yo voy."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Мы идём в кафе»",
+                    words = listOf("Vamos", "al", "café"), correctAnswer = "Vamos al café",
+                    explanation = "ir + a + место. a + el → al."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какая форма для él?", question = "Él ___ al trabajo.",
+                    options = listOf("va", "vas", "voy", "vamos"), correctAnswer = "va",
+                    explanation = "él va."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Yo voy", "Tú vas", "Nosotros vamos", "Ellos vamos"),
+                    correctAnswer = "Ellos vamos",
+                    explanation = "ellos требует van. Правильно: Ellos van."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я иду в школу»",
+                    correctAnswer = "Voy al colegio", explanation = "ir + a + el colegio = al colegio."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "vamos",
+                    correctAnswer = "vamos", explanation = "nosotros vamos."),
+            ),
+        ),
+
+        // u4_l2 — IR + a + lugar
+        "u4_l2" to LessonContent(
+            intro = "Конструкция «IR + A + место». a + el → AL (слитно). a + la = a la.",
+            sections = listOf(
+                LessonSection("IR + A + место", listOf(
+                    LessonItem("Voy a Madrid", "Еду в Мадрид", "к городам — без артикля"),
+                    LessonItem("Voy al cine", "Иду в кино", "a + el = al"),
+                    LessonItem("Voy a la oficina", "Иду в офис", "a + la"),
+                    LessonItem("Voy a casa", "Иду домой", "к casa без артикля!"),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "Voy ___ cine. (a + el)",
+                    options = listOf("al", "a la", "a el"), correctAnswer = "al",
+                    explanation = "a + el = al (слитно)."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Идём в офис»",
+                    words = listOf("Vamos", "a", "la", "oficina"), correctAnswer = "Vamos a la oficina",
+                    explanation = "oficina — ж → a la oficina."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Как «иду домой»?", question = "",
+                    options = listOf("Voy a casa", "Voy al casa", "Voy a la casa", "Voy en casa"),
+                    correctAnswer = "Voy a casa",
+                    explanation = "casa без артикля — устойчивая форма."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Voy al cine", "Voy a la oficina", "Voy a el café", "Voy a casa"),
+                    correctAnswer = "Voy a el café",
+                    explanation = "a + el ОБЯЗАТЕЛЬНО склеивается в al. Правильно: al café."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Иду в банк»",
+                    correctAnswer = "Voy al banco", explanation = "banco — м → al banco."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "al",
+                    correctAnswer = "al", explanation = "Слитная форма a + el."),
+            ),
+        ),
+
+        // u4_l3 — Дорога/направления
+        "u4_l3" to LessonContent(
+            intro = "Спросить дорогу: ¿Cómo llego? Указания: gira (поверни), sigue recto (иди прямо), a la derecha/izquierda.",
+            sections = listOf(
+                LessonSection("Указания", listOf(
+                    LessonItem("¿Cómo llego?", "Как добраться?", ""),
+                    LessonItem("a la derecha", "направо", ""),
+                    LessonItem("a la izquierda", "налево", ""),
+                    LessonItem("recto", "прямо", ""),
+                    LessonItem("gira", "поверни", "повелит."),
+                    LessonItem("sigue", "продолжай", ""),
+                    LessonItem("cerca", "близко", ""),
+                    LessonItem("lejos", "далеко", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини", correctAnswer = "ok",
+                    pairs = listOf("recto" to "прямо", "derecha" to "направо", "izquierda" to "налево", "cerca" to "близко", "lejos" to "далеко")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "izquierda",
+                    options = listOf("izquierda", "derecha", "recto", "cerca"), correctAnswer = "izquierda",
+                    explanation = "izquierda = налево."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Поверни направо»",
+                    words = listOf("Gira", "a", "la", "derecha"), correctAnswer = "Gira a la derecha",
+                    explanation = "gira + a la + сторона."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Sigue ___ (прямо).",
+                    options = listOf("recto", "derecha", "lejos"), correctAnswer = "recto",
+                    explanation = "recto = прямо."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Спрашиваем дорогу",
+                    dialogueLines = listOf("👨 Tú" to "Disculpe, ¿el metro?", "👩 Local" to "Sigue ___, está cerca."),
+                    options = listOf("recto", "lejos", "izquierda"), correctAnswer = "recto",
+                    explanation = "recto = прямо."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «налево»",
+                    correctAnswer = "a la izquierda", explanation = "Конструкция «a la + сторона»."),
+            ),
+        ),
+
+        // u4_l4 — Магазин
+        "u4_l4" to LessonContent(
+            intro = "Магазин: ¿Cuánto cuesta? — Сколько стоит? caro (дорого), barato (дёшево).",
+            sections = listOf(
+                LessonSection("В магазине", listOf(
+                    LessonItem("¿Cuánto cuesta?", "Сколько стоит?", ""),
+                    LessonItem("caro / cara", "дорогой/ая", ""),
+                    LessonItem("barato / barata", "дешёвый/ая", ""),
+                    LessonItem("comprar", "покупать", ""),
+                    LessonItem("vender", "продавать", ""),
+                    LessonItem("la tienda", "магазин", ""),
+                    LessonItem("el supermercado", "супермаркет", ""),
+                    LessonItem("la talla", "размер", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини", correctAnswer = "ok",
+                    pairs = listOf("caro" to "дорого", "barato" to "дёшево", "comprar" to "покупать", "tienda" to "магазин", "talla" to "размер")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "barato",
+                    options = listOf("barato", "caro", "comprar", "tienda"), correctAnswer = "barato",
+                    explanation = "barato = дешёвый."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Сколько стоит это?»",
+                    words = listOf("¿Cuánto", "cuesta", "esto?"), correctAnswer = "¿Cuánto cuesta esto?",
+                    explanation = "esto = это (среднее)."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Es muy ___ (дорого).",
+                    options = listOf("caro", "barato", "lejos"), correctAnswer = "caro",
+                    explanation = "caro = дорогой."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "В магазине",
+                    dialogueLines = listOf("👨 Tú" to "¿___ cuesta?", "👩 Vendedora" to "Treinta euros."),
+                    options = listOf("Cuánto", "Cuándo", "Cómo"), correctAnswer = "Cuánto",
+                    explanation = "Cuánto = сколько (для цены)."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «дешёвый»",
+                    correctAnswer = "barato", explanation = "barato — м.форма."),
+            ),
+        ),
+
+        // u4_l5 — Деньги
+        "u4_l5" to LessonContent(
+            intro = "Деньги: el euro, el precio, en efectivo (наличными), con tarjeta (картой), ¿Tiene cambio?",
+            sections = listOf(
+                LessonSection("Оплата", listOf(
+                    LessonItem("el euro / euros", "евро", ""),
+                    LessonItem("el precio", "цена", ""),
+                    LessonItem("en efectivo", "наличными", ""),
+                    LessonItem("con tarjeta", "картой", ""),
+                    LessonItem("¿Tiene cambio?", "Есть сдача?", ""),
+                    LessonItem("la moneda", "монета/валюта", ""),
+                    LessonItem("el billete", "купюра/билет", ""),
+                    LessonItem("la factura", "квитанция/чек", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини", correctAnswer = "ok",
+                    pairs = listOf("euro" to "евро", "precio" to "цена", "efectivo" to "наличные", "tarjeta" to "карта", "cambio" to "сдача")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "tarjeta",
+                    options = listOf("tarjeta", "factura", "cambio", "billete"), correctAnswer = "tarjeta",
+                    explanation = "tarjeta = карта (банковская)."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Плачу картой»",
+                    words = listOf("Pago", "con", "tarjeta"), correctAnswer = "Pago con tarjeta",
+                    explanation = "pagar + con + способ оплаты."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "¿Tiene ___? (сдача)",
+                    options = listOf("cambio", "factura", "precio"), correctAnswer = "cambio",
+                    explanation = "cambio = сдача (или мелочь)."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "На кассе",
+                    dialogueLines = listOf("👩 Cajera" to "¿En efectivo o ___?", "👨 Tú" to "Con tarjeta, gracias."),
+                    options = listOf("con tarjeta", "con cambio", "con precio"), correctAnswer = "con tarjeta",
+                    explanation = "Стандартный вопрос на кассе."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «наличными»",
+                    correctAnswer = "en efectivo", explanation = "Устойчивое словосочетание."),
+            ),
+        ),
+
+        // u4_l6 — GUSTAR (1)
+        "u4_l6" to LessonContent(
+            intro = "GUSTAR — ОБРАТНАЯ конструкция: «мне нравится» = me gusta. Глагол согласуется с тем что нравится, не с подлежащим!",
+            sections = listOf(
+                LessonSection("Главное правило GUSTAR", listOf(
+                    LessonItem("Me gusta + ед.ч.", "Me gusta el café", "мне нравится кофе"),
+                    LessonItem("Me gustan + мн.ч.", "Me gustan los gatos", "мне нравятся коты"),
+                    LessonItem("Me gusta + инфинитив", "Me gusta leer", "мне нравится читать"),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "Me ___ los libros.",
+                    options = listOf("gustan", "gusta", "gusto"), correctAnswer = "gustan",
+                    explanation = "Множественное (libros) → gustan."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Мне нравится музыка»",
+                    words = listOf("Me", "gusta", "la", "música"), correctAnswer = "Me gusta la música",
+                    explanation = "música — ед.ч. → gusta."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "«Мне нравятся коты» — gusta или gustan?", question = "",
+                    options = listOf("gustan", "gusta", "gusto", "gustamos"), correctAnswer = "gustan",
+                    explanation = "коты (мн.) → gustan."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Me gusta el café", "Me gustan los libros", "Me gusto leer", "Me gusta leer"),
+                    correctAnswer = "Me gusto leer",
+                    explanation = "С инфинитивом — gusta (не gusto). Правильно: Me gusta leer."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Мне нравится кофе»",
+                    correctAnswer = "Me gusta el café", explanation = "Me gusta + el café."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "gustan",
+                    correctAnswer = "gustan", explanation = "Форма для мн.ч."),
+            ),
+        ),
+
+        // u4_l7 — GUSTAR (2)
+        "u4_l7" to LessonContent(
+            intro = "Все местоимения с GUSTAR: me / te / le / nos / os / les. le gusta = ему/ей/Вам нравится.",
+            sections = listOf(
+                LessonSection("Все формы", listOf(
+                    LessonItem("me gusta", "мне нравится", ""),
+                    LessonItem("te gusta", "тебе нравится", ""),
+                    LessonItem("le gusta", "ему/ей/Вам нравится", ""),
+                    LessonItem("nos gusta", "нам нравится", ""),
+                    LessonItem("os gusta", "вам (Исп) нравится", ""),
+                    LessonItem("les gusta", "им/Вам (мн) нравится", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь", question = "___ gusta el cine. (нам)",
+                    options = listOf("Nos", "Me", "Te"), correctAnswer = "Nos",
+                    explanation = "nos = нам."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Им нравится футбол»",
+                    words = listOf("Les", "gusta", "el", "fútbol"), correctAnswer = "Les gusta el fútbol",
+                    explanation = "les = им. fútbol — ед. → gusta."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Как «ему нравится»?", question = "",
+                    options = listOf("le gusta", "lo gusta", "él gusta", "se gusta"), correctAnswer = "le gusta",
+                    explanation = "le для él/ella/usted."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Me gusta", "Te gustan", "Le gustamos", "Nos gusta"),
+                    correctAnswer = "Le gustamos",
+                    explanation = "Глагол gustar согласуется с тем ЧТО нравится, а не с местоимением. С инфинитивом / ед. — le gusta."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Тебе нравится танцевать»",
+                    correctAnswer = "Te gusta bailar",
+                    explanation = "te + gusta + bailar (инфинитив)."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "les",
+                    correctAnswer = "les", explanation = "les = им (или Вам мн)."),
+            ),
+        ),
+
+        // u4_l8 — Тело
+        "u4_l8" to LessonContent(
+            intro = "Тело: cabeza (голова), brazo (рука), pierna (нога), mano (кисть), ojo (глаз), boca (рот).",
+            sections = listOf(
+                LessonSection("Части тела", listOf(
+                    LessonItem("la cabeza", "голова", ""), LessonItem("el brazo", "рука", ""),
+                    LessonItem("la pierna", "нога", ""), LessonItem("la mano", "кисть", "ИСКЛ! ж"),
+                    LessonItem("el ojo", "глаз", ""), LessonItem("la boca", "рот", ""),
+                    LessonItem("la nariz", "нос", ""), LessonItem("el pelo", "волосы", ""),
+                    LessonItem("el pie", "ступня", ""), LessonItem("la espalda", "спина", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Часть тела ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("cabeza" to "голова", "brazo" to "рука", "pierna" to "нога", "ojo" to "глаз", "boca" to "рот")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "pierna",
+                    options = listOf("pierna", "brazo", "boca", "pelo"), correctAnswer = "pierna",
+                    explanation = "pierna = нога."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «У меня болит голова»",
+                    words = listOf("Me", "duele", "la", "cabeza"), correctAnswer = "Me duele la cabeza",
+                    explanation = "doler работает как gustar: me duele + что болит."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Tengo dos ___ (рук).",
+                    options = listOf("brazos", "piernas", "manos"), correctAnswer = "brazos",
+                    explanation = "brazo → brazos (мн.)."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "У врача",
+                    dialogueLines = listOf("👨 Doctor" to "¿Qué le duele?", "👩 Tú" to "Me duele la ___ (голова)."),
+                    options = listOf("cabeza", "boca", "pierna"), correctAnswer = "cabeza",
+                    explanation = "cabeza = голова."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «глаз»",
+                    correctAnswer = "el ojo", explanation = "ojo — м → el ojo."),
+            ),
+        ),
+
+        // u4_l9 — Здоровье
+        "u4_l9" to LessonContent(
+            intro = "Me duele... — у меня болит... Tengo fiebre — у меня температура. Estoy enfermo — я болен.",
+            sections = listOf(
+                LessonSection("Здоровье", listOf(
+                    LessonItem("Me duele", "у меня болит", "конструкция как gustar"),
+                    LessonItem("Tengo fiebre", "у меня температура", ""),
+                    LessonItem("Estoy enfermo/a", "я болен/больна", "estar (временно!)"),
+                    LessonItem("la medicina", "лекарство", ""),
+                    LessonItem("el médico / la médica", "врач", ""),
+                    LessonItem("el hospital", "больница", ""),
+                    LessonItem("la farmacia", "аптека", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини", correctAnswer = "ok",
+                    pairs = listOf("fiebre" to "температура", "medicina" to "лекарство", "hospital" to "больница", "farmacia" to "аптека", "enfermo" to "больной")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "farmacia",
+                    options = listOf("farmacia", "fiebre", "fiesta", "familia"), correctAnswer = "farmacia",
+                    explanation = "farmacia = аптека."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «У меня температура»",
+                    words = listOf("Tengo", "fiebre"), correctAnswer = "Tengo fiebre",
+                    explanation = "tener + fiebre (без артикля)."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Estoy ___ (болен).",
+                    options = listOf("enfermo", "cansado", "contento"), correctAnswer = "enfermo",
+                    explanation = "enfermo = больной."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Звонишь врачу",
+                    dialogueLines = listOf("👨 Doctor" to "¿Qué tiene?", "👩 Tú" to "Me ___ la cabeza."),
+                    options = listOf("duele", "duelen", "dolor"), correctAnswer = "duele",
+                    explanation = "cabeza — ед. → duele."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «У меня болят ноги»",
+                    correctAnswer = "Me duelen las piernas",
+                    explanation = "piernas (мн.) → duelen."),
+            ),
+        ),
+
+        // u4_l10 — Одежда
+        "u4_l10" to LessonContent(
+            intro = "Одежда: camisa (рубашка), pantalón (штаны), vestido (платье), zapatos (обувь), chaqueta (куртка).",
+            sections = listOf(
+                LessonSection("Одежда", listOf(
+                    LessonItem("la camisa", "рубашка", ""),
+                    LessonItem("el pantalón", "штаны", ""),
+                    LessonItem("el vestido", "платье", ""),
+                    LessonItem("los zapatos", "обувь", "обычно мн."),
+                    LessonItem("la chaqueta", "куртка", ""),
+                    LessonItem("la camiseta", "футболка", ""),
+                    LessonItem("la falda", "юбка", ""),
+                    LessonItem("el sombrero", "шляпа", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Одежда ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("camisa" to "рубашка", "pantalón" to "штаны", "vestido" to "платье", "zapatos" to "обувь", "chaqueta" to "куртка")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "vestido",
+                    options = listOf("vestido", "pantalón", "camiseta", "falda"), correctAnswer = "vestido",
+                    explanation = "vestido = платье."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Хочу новые туфли»",
+                    words = listOf("Quiero", "zapatos", "nuevos"), correctAnswer = "Quiero zapatos nuevos",
+                    explanation = "Прилагательное после сущ.: zapatos nuevos."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Llevo una ___ azul (рубашка).",
+                    options = listOf("camisa", "vestido", "pantalón"), correctAnswer = "camisa",
+                    explanation = "camisa — ж → una camisa."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "В магазине одежды",
+                    dialogueLines = listOf("👩 Vendedora" to "¿Qué busca?", "👨 Tú" to "Una ___ azul (куртка)."),
+                    options = listOf("chaqueta", "vestido", "sombrero"), correctAnswer = "chaqueta",
+                    explanation = "chaqueta = куртка."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «обувь»",
+                    correctAnswer = "los zapatos", explanation = "Обычно во мн.: los zapatos."),
+            ),
+        ),
+
+        // u4_l11 — Погода
+        "u4_l11" to LessonContent(
+            intro = "Погода: hace + сущ. (calor, frío). Llueve (дождь), Nieva (снег) — безличные глаголы.",
+            sections = listOf(
+                LessonSection("Погода", listOf(
+                    LessonItem("Hace calor", "жарко", "буквально «делает жар»"),
+                    LessonItem("Hace frío", "холодно", ""),
+                    LessonItem("Hace sol", "солнечно", ""),
+                    LessonItem("Hace viento", "ветрено", ""),
+                    LessonItem("Llueve", "идёт дождь", "от llover"),
+                    LessonItem("Nieva", "идёт снег", "от nevar"),
+                    LessonItem("Está nublado", "облачно", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Погода ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("Hace calor" to "жарко", "Hace frío" to "холодно", "Llueve" to "дождь", "Nieva" to "снег", "Hace sol" to "солнечно")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "Llueve",
+                    options = listOf("Llueve", "Nieva", "Hace calor", "Hace frío"), correctAnswer = "Llueve",
+                    explanation = "Llueve = идёт дождь."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Сегодня жарко»",
+                    words = listOf("Hoy", "hace", "calor"), correctAnswer = "Hoy hace calor",
+                    explanation = "hace + calor."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "En invierno ___ frío (делает).",
+                    options = listOf("hace", "es", "está"), correctAnswer = "hace",
+                    explanation = "Погода через hace + сущ."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Перед прогулкой",
+                    dialogueLines = listOf("👨 Tú" to "¿Qué tiempo hace?", "👩 María" to "___ sol."),
+                    options = listOf("Hace", "Está", "Llueve"), correctAnswer = "Hace",
+                    explanation = "hace sol = солнечно."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «идёт снег»",
+                    correctAnswer = "Nieva", explanation = "Nieva — безличное."),
+            ),
+        ),
+
+        // u4_l12 — Мой день
+        "u4_l12" to LessonContent(
+            intro = "Распорядок дня: me levanto (встаю), desayuno (завтракаю), trabajo, como, ceno (ужинаю), me acuesto.",
+            sections = listOf(
+                LessonSection("Мой день", listOf(
+                    LessonItem("me levanto", "встаю", "от levantarse"),
+                    LessonItem("desayuno", "завтракаю", ""),
+                    LessonItem("trabajo", "работаю", ""),
+                    LessonItem("como", "обедаю", "лит. ем"),
+                    LessonItem("ceno", "ужинаю", ""),
+                    LessonItem("me ducho", "принимаю душ", ""),
+                    LessonItem("me acuesto", "ложусь спать", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Действие ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("desayuno" to "завтракаю", "trabajo" to "работаю", "como" to "обедаю", "ceno" to "ужинаю", "me acuesto" to "ложусь спать")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "desayuno",
+                    options = listOf("desayuno", "ceno", "como", "ducho"), correctAnswer = "desayuno",
+                    explanation = "desayuno = завтракаю."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я завтракаю в восемь»",
+                    words = listOf("Desayuno", "a", "las", "ocho"), correctAnswer = "Desayuno a las ocho",
+                    explanation = "a las + час."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Por la noche ___ (ужинаю).",
+                    options = listOf("ceno", "desayuno", "como"), correctAnswer = "ceno",
+                    explanation = "ceno = ужинаю (от cenar)."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "О распорядке",
+                    dialogueLines = listOf("👩 María" to "¿A qué hora te levantas?", "👨 Tú" to "Me ___ a las siete."),
+                    options = listOf("levanto", "duermo", "como"), correctAnswer = "levanto",
+                    explanation = "levantarse — возвратный: me levanto."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «обедаю»",
+                    correctAnswer = "como", explanation = "Тоже значит «ем»."),
+            ),
+        ),
+
+        // u4_l13 — Возвратные глаголы
+        "u4_l13" to LessonContent(
+            intro = "Возвратные глаголы: levantarse (вставать), ducharse, acostarse. Местоимение -se меняется: me/te/se/nos/os/se.",
+            sections = listOf(
+                LessonSection("Возвратные местоимения", listOf(
+                    LessonItem("yo me levanto", "я встаю", ""),
+                    LessonItem("tú te levantas", "ты встаёшь", ""),
+                    LessonItem("él/ella se levanta", "он встаёт", ""),
+                    LessonItem("nosotros nos levantamos", "мы встаём", ""),
+                    LessonItem("vosotros os levantáis", "вы встаёте", ""),
+                    LessonItem("ellos se levantan", "они встают", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь местоимение", question = "Yo ___ ducho.",
+                    options = listOf("me", "te", "se"), correctAnswer = "me",
+                    explanation = "yo me ducho."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Мы ложимся в 11»",
+                    words = listOf("Nos", "acostamos", "a", "las", "once"),
+                    correctAnswer = "Nos acostamos a las once",
+                    explanation = "nos acostamos."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "ducharse + tú?", question = "Tú ___ por la mañana.",
+                    options = listOf("te duchas", "se duchas", "me ducho", "duchas"), correctAnswer = "te duchas",
+                    explanation = "tú te duchas."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Me levanto", "Te duchas", "Se acuestan", "Yo te lavo"),
+                    correctAnswer = "Yo te lavo",
+                    explanation = "yo требует me, не te. Правильно: Yo me lavo."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я ложусь спать»",
+                    correctAnswer = "Me acuesto",
+                    explanation = "acostarse — возвратный, me acuesto."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "se",
+                    correctAnswer = "se", explanation = "se — для él/ella/ellos/ellas."),
+            ),
+        ),
+
+        // u4_l13_5 — НОВЫЙ: 4 правила YO формы
+        "u4_l13_5" to LessonContent(
+            intro = "4 группы нерегулярных yo-форм: -go (tengo, salgo), -zco (conozco), -y (estoy, voy), полностью неправильные (sé, sé от saber).",
+            sections = listOf(
+                LessonSection("Группа 1: -go", listOf(
+                    LessonItem("tener → tengo", "иметь → у меня есть", ""),
+                    LessonItem("salir → salgo", "выходить → выхожу", ""),
+                    LessonItem("hacer → hago", "делать → делаю", ""),
+                    LessonItem("poner → pongo", "класть → кладу", ""),
+                    LessonItem("decir → digo", "говорить → говорю", ""),
+                )),
+                LessonSection("Группа 2: -zco (на -CER/-CIR)", listOf(
+                    LessonItem("conocer → conozco", "знать (быть знакомым)", ""),
+                    LessonItem("conducir → conduzco", "водить", ""),
+                )),
+                LessonSection("Группа 3: -y", listOf(
+                    LessonItem("estar → estoy", "находиться", ""),
+                    LessonItem("ser → soy", "быть", ""),
+                    LessonItem("ir → voy", "идти", ""),
+                    LessonItem("dar → doy", "давать", ""),
+                )),
+                LessonSection("Группа 4: полностью неправильные", listOf(
+                    LessonItem("saber → sé", "знать (факт)", ""),
+                    LessonItem("ver → veo", "видеть", ""),
+                    LessonItem("caber → quepo", "помещаться", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь yo-форму", question = "Yo ___ a las ocho. (выходить)",
+                    options = listOf("salgo", "salo", "salio"), correctAnswer = "salgo",
+                    explanation = "salir → salgo (-go группа)."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я знаю Мадрид»",
+                    words = listOf("Conozco", "Madrid"), correctAnswer = "Conozco Madrid",
+                    explanation = "conocer → conozco (-zco группа)."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "yo + saber?", question = "Yo ___ la respuesta.",
+                    options = listOf("sé", "sabo", "sabe", "sabes"), correctAnswer = "sé",
+                    explanation = "saber → sé (полностью неправильная)."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Yo tengo", "Yo conozco", "Yo sabo", "Yo veo"),
+                    correctAnswer = "Yo sabo",
+                    explanation = "saber → sé. Правильно: Yo sé."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я делаю кофе»",
+                    correctAnswer = "Hago café", explanation = "hacer → hago."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "tengo",
+                    correctAnswer = "tengo", explanation = "tener → tengo."),
+            ),
+        ),
+
+        // u4_l14 — ФИНАЛЬНЫЙ ЧЕКПОИНТ A1 «Один день в Мадриде»
+        "u4_l14" to LessonContent(
+            intro = "🏆 ФИНАЛЬНЫЙ БОСС A1: «Один день в Мадриде». Утро (метро+кафе), день (магазин+ресторан), вечер (отель+врач).",
+            sections = listOf(
+                LessonSection("Что повторяем — ВЕСЬ A1", listOf(
+                    LessonItem("Приветствия + представление", "Hola, soy ruso", ""),
+                    LessonItem("SER vs ESTAR vs HAY", "три способа «быть»", ""),
+                    LessonItem("Глаголы AR/ER/IR + IR + GUSTAR", "", ""),
+                    LessonItem("Числа, время, дни", "Son las 8, lunes", ""),
+                    LessonItem("Магазин + ресторан + транспорт", "", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.DIALOGUE_FILL, "Утро: в кафе",
+                    dialogueLines = listOf(
+                        "👩 Camarera" to "Buenos días, ¿qué desea?",
+                        "👨 Tú" to "Un café y un croissant, por ___.",
+                        "👩 Camarera" to "Son cinco euros.",
+                    ),
+                    options = listOf("favor", "gracias", "agua"), correctAnswer = "favor",
+                    explanation = "por favor — стандартная вежливость."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я хочу пойти в музей»",
+                    words = listOf("Quiero", "ir", "al", "museo"),
+                    correctAnswer = "Quiero ir al museo",
+                    explanation = "querer + ir + a + el → al."),
+                Exercise(ExerciseType.LISTEN_COMPREHEND, "Гид рассказывает",
+                    audioText = "El museo del Prado abre a las diez y cierra a las ocho. Está cerrado los lunes.",
+                    comprehensionContext = "El museo del Prado abre a las diez y cierra a las ocho. Está cerrado los lunes.",
+                    question = "Когда закрывается музей?",
+                    options = listOf("в 8 вечера", "в 10 утра", "в полдень", "никогда"),
+                    correctAnswer = "в 8 вечера",
+                    explanation = "cierra a las ocho — закрывается в восемь."),
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини всё A1", correctAnswer = "ok",
+                    pairs = listOf("voy" to "иду", "tengo" to "у меня есть", "me gusta" to "мне нравится",
+                        "hace calor" to "жарко", "la cuenta" to "счёт")),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf(
+                        "Voy al museo",
+                        "Me gusta el café",
+                        "Tengo treinta años",
+                        "Yo soy en Madrid",
+                    ),
+                    correctAnswer = "Yo soy en Madrid",
+                    explanation = "Местоположение — ESTAR. Правильно: Estoy en Madrid."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Сколько стоит билет?»",
+                    correctAnswer = "¿Cuánto cuesta el billete?",
+                    explanation = "¿Cuánto cuesta + el + что-то?"),
             ),
         ),
 

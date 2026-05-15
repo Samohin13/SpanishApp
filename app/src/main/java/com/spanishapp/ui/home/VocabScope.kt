@@ -519,6 +519,167 @@ object VocabScope {
             ScopeWord("desea", "желает", "u3_l14", "verb"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // Блок 1.4 «Выживание» — IR + GUSTAR + транспорт + магазин + здоровье
+        // ═══════════════════════════════════════════════════════════════
+        put("u4_l0", listOf(
+            ScopeWord("metro", "метро", "u4_l0", "transport"),
+            ScopeWord("autobús", "автобус", "u4_l0", "transport"),
+            ScopeWord("taxi", "такси", "u4_l0", "transport"),
+            ScopeWord("tren", "поезд", "u4_l0", "transport"),
+            ScopeWord("bici", "велик", "u4_l0", "transport"),
+            ScopeWord("avión", "самолёт", "u4_l0", "transport"),
+            ScopeWord("barco", "корабль", "u4_l0", "transport"),
+            ScopeWord("tomo", "беру (использую)", "u4_l0", "verb"),
+        ))
+        put("u4_l1", listOf(
+            ScopeWord("voy", "иду", "u4_l1", "verb"),
+            ScopeWord("vas", "идёшь", "u4_l1", "verb"),
+            ScopeWord("va", "идёт", "u4_l1", "verb"),
+            ScopeWord("vamos", "идём", "u4_l1", "verb"),
+            ScopeWord("vais", "идёте (Исп)", "u4_l1", "verb"),
+            ScopeWord("van", "идут", "u4_l1", "verb"),
+            ScopeWord("ir", "идти", "u4_l1", "verb"),
+        ))
+        put("u4_l2", listOf(
+            ScopeWord("al", "к (a+el)", "u4_l2", "preposition"),
+            ScopeWord("cine", "кино", "u4_l2", "noun"),
+            ScopeWord("colegio", "школа", "u4_l2", "noun"),
+            ScopeWord("banco", "банк", "u4_l2", "noun"),
+        ))
+        put("u4_l3", listOf(
+            ScopeWord("derecha", "правая", "u4_l3", "noun"),
+            ScopeWord("izquierda", "левая", "u4_l3", "noun"),
+            ScopeWord("recto", "прямо", "u4_l3", "adverb"),
+            ScopeWord("gira", "поверни", "u4_l3", "verb"),
+            ScopeWord("sigue", "продолжай", "u4_l3", "verb"),
+            ScopeWord("lejos", "далеко", "u4_l3", "adverb"),
+            ScopeWord("llego", "добираюсь", "u4_l3", "verb"),
+        ))
+        put("u4_l4", listOf(
+            ScopeWord("caro", "дорогой", "u4_l4", "adjective"),
+            ScopeWord("barato", "дешёвый", "u4_l4", "adjective"),
+            ScopeWord("comprar", "покупать", "u4_l4", "verb"),
+            ScopeWord("vender", "продавать", "u4_l4", "verb"),
+            ScopeWord("tienda", "магазин", "u4_l4", "noun"),
+            ScopeWord("supermercado", "супермаркет", "u4_l4", "noun"),
+            ScopeWord("talla", "размер", "u4_l4", "noun"),
+            ScopeWord("esto", "это", "u4_l4", "pronoun"),
+            ScopeWord("muy", "очень", "u4_l4", "adverb"),
+        ))
+        put("u4_l5", listOf(
+            ScopeWord("euro", "евро", "u4_l5", "money"),
+            ScopeWord("precio", "цена", "u4_l5", "noun"),
+            ScopeWord("efectivo", "наличные", "u4_l5", "money"),
+            ScopeWord("tarjeta", "карта", "u4_l5", "money"),
+            ScopeWord("cambio", "сдача", "u4_l5", "noun"),
+            ScopeWord("moneda", "монета", "u4_l5", "money"),
+            ScopeWord("billete", "купюра/билет", "u4_l5", "money"),
+            ScopeWord("factura", "квитанция", "u4_l5", "noun"),
+            ScopeWord("pago", "плачу", "u4_l5", "verb"),
+        ))
+        put("u4_l6", listOf(
+            ScopeWord("me gusta", "мне нравится", "u4_l6", "verb"),
+            ScopeWord("me gustan", "мне нравятся (мн)", "u4_l6", "verb"),
+            ScopeWord("gustar", "нравиться", "u4_l6", "verb"),
+            ScopeWord("gatos", "коты", "u4_l6", "animal"),
+        ))
+        put("u4_l7", listOf(
+            ScopeWord("te gusta", "тебе нравится", "u4_l7", "verb"),
+            ScopeWord("le gusta", "ему/ей нравится", "u4_l7", "verb"),
+            ScopeWord("nos gusta", "нам нравится", "u4_l7", "verb"),
+            ScopeWord("os gusta", "вам (Исп) нравится", "u4_l7", "verb"),
+            ScopeWord("les gusta", "им нравится", "u4_l7", "verb"),
+            ScopeWord("fútbol", "футбол", "u4_l7", "noun"),
+            ScopeWord("bailar", "танцевать", "u4_l7", "verb"),
+        ))
+        put("u4_l8", listOf(
+            ScopeWord("cabeza", "голова", "u4_l8", "body"),
+            ScopeWord("brazo", "рука", "u4_l8", "body"),
+            ScopeWord("pierna", "нога", "u4_l8", "body"),
+            ScopeWord("boca", "рот", "u4_l8", "body"),
+            ScopeWord("nariz", "нос", "u4_l8", "body"),
+            ScopeWord("pelo", "волосы", "u4_l8", "body"),
+            ScopeWord("pie", "ступня", "u4_l8", "body"),
+            ScopeWord("espalda", "спина", "u4_l8", "body"),
+            ScopeWord("brazos", "руки", "u4_l8", "body"),
+            ScopeWord("piernas", "ноги", "u4_l8", "body"),
+            ScopeWord("duele", "болит", "u4_l8", "verb"),
+            ScopeWord("duelen", "болят", "u4_l8", "verb"),
+            ScopeWord("doctor", "доктор", "u4_l8", "noun"),
+        ))
+        put("u4_l9", listOf(
+            ScopeWord("fiebre", "температура", "u4_l9", "health"),
+            ScopeWord("enfermo", "больной", "u4_l9", "adjective"),
+            ScopeWord("medicina", "лекарство", "u4_l9", "health"),
+            ScopeWord("hospital", "больница", "u4_l9", "place"),
+            ScopeWord("farmacia", "аптека", "u4_l9", "place"),
+        ))
+        put("u4_l10", listOf(
+            ScopeWord("camisa", "рубашка", "u4_l10", "clothes"),
+            ScopeWord("pantalón", "штаны", "u4_l10", "clothes"),
+            ScopeWord("vestido", "платье", "u4_l10", "clothes"),
+            ScopeWord("zapatos", "обувь", "u4_l10", "clothes"),
+            ScopeWord("chaqueta", "куртка", "u4_l10", "clothes"),
+            ScopeWord("camiseta", "футболка", "u4_l10", "clothes"),
+            ScopeWord("falda", "юбка", "u4_l10", "clothes"),
+            ScopeWord("sombrero", "шляпа", "u4_l10", "clothes"),
+            ScopeWord("nuevos", "новые", "u4_l10", "adjective"),
+            ScopeWord("llevo", "ношу", "u4_l10", "verb"),
+            ScopeWord("busca", "ищет", "u4_l10", "verb"),
+        ))
+        put("u4_l11", listOf(
+            ScopeWord("hace calor", "жарко", "u4_l11", "weather"),
+            ScopeWord("hace frío", "холодно", "u4_l11", "weather"),
+            ScopeWord("hace sol", "солнечно", "u4_l11", "weather"),
+            ScopeWord("hace viento", "ветрено", "u4_l11", "weather"),
+            ScopeWord("llueve", "идёт дождь", "u4_l11", "weather"),
+            ScopeWord("nieva", "идёт снег", "u4_l11", "weather"),
+            ScopeWord("nublado", "облачно", "u4_l11", "weather"),
+            ScopeWord("invierno", "зима", "u4_l11", "season"),
+            ScopeWord("tiempo", "погода/время", "u4_l11", "noun"),
+        ))
+        put("u4_l12", listOf(
+            ScopeWord("desayuno", "завтракаю", "u4_l12", "verb"),
+            ScopeWord("ceno", "ужинаю", "u4_l12", "verb"),
+            ScopeWord("ducho", "принимаю душ", "u4_l12", "verb"),
+            ScopeWord("noche", "ночь", "u4_l12", "noun"),
+        ))
+        put("u4_l13", listOf(
+            ScopeWord("me", "меня", "u4_l13", "pronoun"),
+            ScopeWord("te", "тебя", "u4_l13", "pronoun"),
+            ScopeWord("se", "себя", "u4_l13", "pronoun"),
+            ScopeWord("nos", "нас", "u4_l13", "pronoun"),
+            ScopeWord("os", "вас (Исп)", "u4_l13", "pronoun"),
+            ScopeWord("levantarse", "вставать", "u4_l13", "verb"),
+            ScopeWord("ducharse", "принимать душ", "u4_l13", "verb"),
+            ScopeWord("acostarse", "ложиться спать", "u4_l13", "verb"),
+            ScopeWord("levanto", "встаю", "u4_l13", "verb"),
+            ScopeWord("acuesto", "ложусь спать", "u4_l13", "verb"),
+            ScopeWord("acostamos", "ложимся", "u4_l13", "verb"),
+            ScopeWord("duchas", "принимаешь душ", "u4_l13", "verb"),
+            ScopeWord("acuestan", "ложатся", "u4_l13", "verb"),
+            ScopeWord("lavo", "мою", "u4_l13", "verb"),
+            ScopeWord("once", "11 (час)", "u4_l13", "number"),
+        ))
+        put("u4_l13_5", listOf(
+            ScopeWord("salgo", "выхожу", "u4_l13_5", "verb"),
+            ScopeWord("hago", "делаю", "u4_l13_5", "verb"),
+            ScopeWord("pongo", "кладу", "u4_l13_5", "verb"),
+            ScopeWord("conozco", "знаю (зн)", "u4_l13_5", "verb"),
+            ScopeWord("conduzco", "вожу", "u4_l13_5", "verb"),
+            ScopeWord("doy", "даю", "u4_l13_5", "verb"),
+            ScopeWord("veo", "вижу", "u4_l13_5", "verb"),
+            ScopeWord("quepo", "помещаюсь", "u4_l13_5", "verb"),
+            ScopeWord("respuesta", "ответ", "u4_l13_5", "noun"),
+        ))
+        put("u4_l14", listOf(
+            ScopeWord("museo", "музей", "u4_l14", "place"),
+            ScopeWord("Prado", "Прадо", "u4_l14", "name"),
+            ScopeWord("croissant", "круассан", "u4_l14", "food"),
+            ScopeWord("billete", "билет/купюра", "u4_l14", "noun"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -571,6 +732,14 @@ object VocabScope {
         addAll(listOf("u3_l6", "u3_l7", "u3_l7_5"))                          // querer + poder + e→i
         addAll(listOf("u3_l8", "u3_l9", "u3_l10", "u3_l11"))                // время + дни + месяцы + наречия
         addAll(listOf("u3_l12", "u3_l13", "u3_l14"))                        // вопросы + отрицание + checkpoint
+        // A1 · Блок 4 «Выживание»
+        addAll(listOf("u4_l0", "u4_l1", "u4_l2", "u4_l3"))                  // транспорт + IR + дорога
+        addAll(listOf("u4_l4", "u4_l5"))                                     // магазин + деньги
+        addAll(listOf("u4_l6", "u4_l7"))                                     // GUSTAR
+        addAll(listOf("u4_l8", "u4_l9"))                                     // тело + здоровье
+        addAll(listOf("u4_l10", "u4_l11"))                                  // одежда + погода
+        addAll(listOf("u4_l12", "u4_l13", "u4_l13_5"))                      // мой день + возвратные + yo формы
+        addAll(listOf("u4_l14"))                                             // ФИНАЛЬНЫЙ A1 checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 
