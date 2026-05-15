@@ -701,5 +701,330 @@ object TheoryContentData {
             ),
             relatedTheory = listOf("u1_l7", "u1_l8"),
         ),
+
+        // ─────────────────────────────────────────────────────────────────
+        // u1_l10 — Род существительных el/la
+        // ─────────────────────────────────────────────────────────────────
+        "u1_l10" to TheoryContent(
+            lessonId = "u1_l10",
+            title = "Род существительных — el или la",
+            subtitle = "Окончание -o → м, -a → ж. Но есть исключения.",
+            emoji = "⚤",
+            cefr = "A1",
+            readMinutes = 4,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Главное правило",
+                    body = "Каждое существительное в испанском — **мужского** или **женского** рода. Среднего нет. По окончанию обычно понятно:\n• -o → мужской (el libro)\n• -a → женский (la casa)",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "Базовая таблица",
+                    table = TheoryTable(
+                        headers = listOf("Слово", "Род", "Артикль"),
+                        rows = listOf(
+                            listOf("libro", "м (-o)", "el libro"),
+                            listOf("casa", "ж (-a)", "la casa"),
+                            listOf("médico", "м", "el médico"),
+                            listOf("médica", "ж", "la médica"),
+                            listOf("amigo", "м", "el amigo"),
+                            listOf("amiga", "ж", "la amiga"),
+                        ),
+                        highlightedColumns = listOf(2),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.WARNING,
+                    heading = "Важные исключения",
+                    body = "**el día** (день) — мужской, хотя оканчивается на -a!\n**la mano** (рука) — женский, хотя на -o!\n**el problema, el sistema, el tema** — мужские (греческого происхождения).",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Лайфхак",
+                    body = "Если не знаешь род — почти всегда работает «-o = м, -a = ж». Запомни 5-10 исключений, и в 95% случаев будешь прав.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    examples = listOf(
+                        TheoryExample("el libro", "книга", "м: -o → el"),
+                        TheoryExample("la casa", "дом", "ж: -a → la"),
+                        TheoryExample("el día", "день", "ИСКЛ! м"),
+                        TheoryExample("la mano", "рука", "ИСКЛ! ж"),
+                    ),
+                ),
+            ),
+            keyTakeaways = listOf(
+                "В испанском только 2 рода: м и ж",
+                "-o → мужской → el; -a → женский → la",
+                "Запомни 5 исключений: el día, la mano, el problema, el sistema, el tema",
+                "Артикль показывает род — учи слово сразу с артиклем",
+            ),
+            relatedTheory = listOf("u1_l11"),
+        ),
+
+        // ─────────────────────────────────────────────────────────────────
+        // u1_l11 — Артикли el/la/un/una/los/las
+        // ─────────────────────────────────────────────────────────────────
+        "u1_l11" to TheoryContent(
+            lessonId = "u1_l11",
+            title = "Все 8 артиклей одной таблицей",
+            subtitle = "Определённые el/la/los/las и неопределённые un/una/unos/unas.",
+            emoji = "📰",
+            cefr = "A1",
+            readMinutes = 4,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Два типа артиклей",
+                    body = "**Определённый** (el/la) — известный объект: **el libro** = эта конкретная книга.\n**Неопределённый** (un/una) — какой-то: **un libro** = какая-то книга, любая.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "Все 8 форм",
+                    table = TheoryTable(
+                        headers = listOf("", "Опр.", "Неопр."),
+                        rows = listOf(
+                            listOf("м.ед.", "el", "un"),
+                            listOf("ж.ед.", "la", "una"),
+                            listOf("м.мн.", "los", "unos"),
+                            listOf("ж.мн.", "las", "unas"),
+                        ),
+                        highlightedColumns = listOf(1, 2),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.COMPARISON,
+                    heading = "el libro vs un libro",
+                    body = "Когда какой использовать:",
+                    comparison = TheoryComparison(
+                        leftHeader = "el libro",
+                        rightHeader = "un libro",
+                        pairs = listOf(
+                            "конкретный, известный" to "какой-то, любой",
+                            "Dame el libro" to "Dame un libro",
+                            "(который договорились)" to "(любой подойдёт)",
+                            "второе упоминание" to "первое упоминание",
+                        ),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "В контексте",
+                    examples = listOf(
+                        TheoryExample("Quiero un café.", "Хочу (один) кофе.", "любой"),
+                        TheoryExample("El café está frío.", "Кофе остыл.", "тот, что заказал"),
+                        TheoryExample("Tengo unos amigos en Madrid.", "У меня есть друзья в Мадриде.", "несколько"),
+                        TheoryExample("Las casas son grandes.", "Эти дома большие.", "конкретные"),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Правило для жизни",
+                    body = "**Первый раз** упоминаешь объект — un/una. **Дальше** — el/la (мы уже знаем о чём речь).",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Артикли согласуются по роду И числу",
+                "el/la — конкретный; un/una — любой",
+                "Множественное: los/las (опр.), unos/unas (неопр.)",
+                "Первое упоминание → un, дальше → el",
+            ),
+            relatedTheory = listOf("u1_l10", "u1_l12"),
+        ),
+
+        // ─────────────────────────────────────────────────────────────────
+        // u1_l12 — Страны и национальности
+        // ─────────────────────────────────────────────────────────────────
+        "u1_l12" to TheoryContent(
+            lessonId = "u1_l12",
+            title = "Страны и национальности",
+            subtitle = "Soy ruso (м) / Soy rusa (ж). Soy de Rusia.",
+            emoji = "🌍",
+            cefr = "A1",
+            readMinutes = 4,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Два способа сказать откуда ты",
+                    body = "1. **Soy + национальность**: Soy ruso. Soy española.\n2. **Soy de + страна**: Soy de Rusia. Soy de España.\n\nОба правильные. Первый чаще в разговоре.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "Страна → национальность",
+                    table = TheoryTable(
+                        headers = listOf("Страна", "Мужчина", "Женщина"),
+                        rows = listOf(
+                            listOf("Rusia", "ruso", "rusa"),
+                            listOf("España", "español", "española"),
+                            listOf("México", "mexicano", "mexicana"),
+                            listOf("Francia", "francés", "francesa"),
+                            listOf("Inglaterra", "inglés", "inglesa"),
+                            listOf("Alemania", "alemán", "alemana"),
+                            listOf("Italia", "italiano", "italiana"),
+                            listOf("China", "chino", "china"),
+                        ),
+                        highlightedColumns = listOf(1, 2),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.WARNING,
+                    heading = "Без заглавной!",
+                    body = "Страны пишутся с **большой буквы**: Rusia, España.\nНациональности — с **маленькой**: ruso, español. Это в отличие от русского.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    examples = listOf(
+                        TheoryExample("Soy ruso.", "Я русский.", "мужчина"),
+                        TheoryExample("Soy rusa.", "Я русская.", "женщина"),
+                        TheoryExample("Soy de Rusia.", "Я из России.", "альтернатива"),
+                        TheoryExample("¿De dónde eres?", "Откуда ты?", "вопрос"),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Если страна неочевидна",
+                    body = "Можно сочетать: **Soy ruso, de Moscú.** (Я русский, из Москвы.) Это точнее и звучит по-разговорному.",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Soy + национальность ИЛИ Soy de + страна",
+                "Национальность согласуется по роду: -o/-a",
+                "Страны с большой, национальности с маленькой буквы",
+                "¿De dónde eres? — стандартный вопрос",
+            ),
+            relatedTheory = listOf("u1_l7", "u1_l13"),
+        ),
+
+        // ─────────────────────────────────────────────────────────────────
+        // u1_l13 — Числа 0-10
+        // ─────────────────────────────────────────────────────────────────
+        "u1_l13" to TheoryContent(
+            lessonId = "u1_l13",
+            title = "Числа от 0 до 10",
+            subtitle = "uno → un перед мужским сущ. (un café), una перед женским.",
+            emoji = "🔢",
+            cefr = "A1",
+            readMinutes = 4,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "Все 11 чисел",
+                    table = TheoryTable(
+                        headers = listOf("Цифра", "Слово", "Произношение"),
+                        rows = listOf(
+                            listOf("0", "cero", "[сэ-ро]"),
+                            listOf("1", "uno", "[у-но]"),
+                            listOf("2", "dos", "[дос]"),
+                            listOf("3", "tres", "[трэс]"),
+                            listOf("4", "cuatro", "[куа-тро]"),
+                            listOf("5", "cinco", "[синь-ко]"),
+                            listOf("6", "seis", "[сэйс]"),
+                            listOf("7", "siete", "[сьэ-тэ]"),
+                            listOf("8", "ocho", "[о-чо]"),
+                            listOf("9", "nueve", "[нуэ-вэ]"),
+                            listOf("10", "diez", "[дьэс]"),
+                        ),
+                        highlightedColumns = listOf(1),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Главная подстава: uno → un",
+                    body = "Перед существительным **uno** теряет -o:\n• **un** café (один кофе) — мужской\n• **una** casa (один дом / одна) — женский\n\nСамо «uno» используется только при счёте: uno, dos, tres…",
+                ),
+                TheorySection(
+                    type = TheorySectionType.MNEMONIC,
+                    heading = "Запомни ритм",
+                    body = "uno-dos-tres-cuatro-cinco — повторяй пятёрками. Через неделю будет автоматически как «раз-два-три» по-русски.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    examples = listOf(
+                        TheoryExample("Quiero un café.", "Хочу один кофе.", "uno → un"),
+                        TheoryExample("Hay una casa.", "Есть один дом.", "una для ж"),
+                        TheoryExample("Tengo dos hermanos.", "У меня два брата.", "от 2 — без изменений"),
+                        TheoryExample("Cinco euros.", "Пять евро.", ""),
+                    ),
+                ),
+            ),
+            keyTakeaways = listOf(
+                "0-10 учить наизусть как стих",
+                "uno → un перед мужским сущ., una перед женским",
+                "От 2 числа не меняются: dos libros, dos casas",
+                "При счёте говорят uno (полная форма)",
+            ),
+            relatedTheory = listOf("u1_l13_5"),
+        ),
+
+        // ─────────────────────────────────────────────────────────────────
+        // u1_l13_5 — Порядковые числительные (НОВЫЙ урок)
+        // ─────────────────────────────────────────────────────────────────
+        "u1_l13_5" to TheoryContent(
+            lessonId = "u1_l13_5",
+            title = "Порядковые числительные 1°–10°",
+            subtitle = "primero / segundo / tercero. primero и tercero теряют -o перед сущ.",
+            emoji = "🆕",
+            cefr = "A1",
+            readMinutes = 4,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Что такое порядковые",
+                    body = "Это «первый, второй, третий…» — указывают **порядок**. В отличие от количественных (один, два, три), они **согласуются по роду и числу** как обычные прилагательные.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "1°–10°",
+                    table = TheoryTable(
+                        headers = listOf("№", "М. форма", "Ж. форма"),
+                        rows = listOf(
+                            listOf("1°", "primero", "primera"),
+                            listOf("2°", "segundo", "segunda"),
+                            listOf("3°", "tercero", "tercera"),
+                            listOf("4°", "cuarto", "cuarta"),
+                            listOf("5°", "quinto", "quinta"),
+                            listOf("6°", "sexto", "sexta"),
+                            listOf("7°", "séptimo", "séptima"),
+                            listOf("8°", "octavo", "octava"),
+                            listOf("9°", "noveno", "novena"),
+                            listOf("10°", "décimo", "décima"),
+                        ),
+                        highlightedColumns = listOf(1, 2),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.WARNING,
+                    heading = "Главное правило: primero/tercero → primer/tercer",
+                    body = "Перед мужским существительным **primero** и **tercero** теряют -o:\n• el **primer** día (первый день)\n• el **tercer** piso (третий этаж)\n\nЖенский род НЕ меняется: la **primera** vez (первый раз).",
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    examples = listOf(
+                        TheoryExample("el primer día", "первый день", "primero → primer"),
+                        TheoryExample("el tercer piso", "третий этаж", "tercero → tercer"),
+                        TheoryExample("la primera vez", "первый раз", "ж: без изменений"),
+                        TheoryExample("mi segundo café", "мой второй кофе", "segundo НЕ теряет -o"),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Только primero и tercero",
+                    body = "Только два слова теряют -o: primero и tercero. Все остальные (segundo, cuarto, quinto…) — без изменений.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.MNEMONIC,
+                    heading = "Запомни обозначение",
+                    body = "Маленький кружок ° используется как «1°, 2°…» — это типографский символ для мужского рода (ordinal indicator). Для женского пишут «1ª, 2ª».",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Порядковые согласуются по роду как прилагательные",
+                "primero и tercero → primer / tercer перед мужским сущ.",
+                "Женские формы не меняются: primera, tercera",
+                "После 10° используют редко — обычно говорят el día 11 («день 11»)",
+            ),
+            relatedTheory = listOf("u1_l13"),
+        ),
     )
 }

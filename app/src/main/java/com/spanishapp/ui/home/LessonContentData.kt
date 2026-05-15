@@ -32,7 +32,14 @@ object LessonContentData {
                   block13() + block14() + block15() + block16() +
                   block17() + block18() + block19() + block20() +
                   block21() + block22()
-        enrichWithSpeaking(raw)
+
+        // Курс v2.0 (Phase 1+) — переписка по ESPEAK_Curriculum.xlsx.
+        // Записи из V2 ПЕРЕТИРАЮТ старые благодаря Map.plus() семантике.
+        // Старый контент остаётся как fallback для уроков, ещё не переписанных.
+        val v2 = LessonContentDataV2.allLessons()
+        val merged = raw + v2
+
+        enrichWithSpeaking(merged)
     }
 
     // ──────────────────────────────────────────────────────────────
