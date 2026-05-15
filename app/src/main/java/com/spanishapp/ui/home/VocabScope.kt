@@ -1462,6 +1462,116 @@ object VocabScope {
             ScopeWord("te ayudaría", "я бы тебе помог", "u10_l14", "verb"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // B1 · Блок 3.3 «Коммуникация» — косв.речь + relativos + perífrasis
+        // ═══════════════════════════════════════════════════════════════
+        put("u11_l0", listOf(
+            ScopeWord("estilo indirecto", "косвенная речь", "u11_l0", "concept"),
+            ScopeWord("iba", "шёл (Imp)", "u11_l0", "verb"),
+            ScopeWord("quería", "хотел (Imp)", "u11_l0", "verb"),
+            ScopeWord("hablaba", "говорил (Imp)", "u11_l0", "verb"),
+        ))
+        put("u11_l1", listOf(
+            ScopeWord("dijo", "сказал", "u11_l1", "verb"),
+            ScopeWord("preguntó", "спросил", "u11_l1", "verb"),
+            ScopeWord("estaba", "находился (Imp)", "u11_l1", "verb"),
+        ))
+        put("u11_l2", listOf(
+            ScopeWord("había ido", "уже сходил", "u11_l2", "verb"),
+            ScopeWord("habría", "имел бы (Cond)", "u11_l2", "verb"),
+        ))
+        put("u11_l3", listOf(
+            ScopeWord("pidió", "попросил", "u11_l3", "verb"),
+            ScopeWord("mandó", "велел", "u11_l3", "verb"),
+            ScopeWord("sugerió", "предложил", "u11_l3", "verb"),
+            ScopeWord("ayudara", "(чтобы) помог (Imp Subj)", "u11_l3", "verb"),
+            ScopeWord("estudiaran", "(чтобы) учились", "u11_l3", "verb"),
+            ScopeWord("callaran", "(чтобы) замолчали", "u11_l3", "verb"),
+            ScopeWord("esperáramos", "(чтобы) мы подождали", "u11_l3", "verb"),
+        ))
+        put("u11_l4", listOf(
+            ScopeWord("quien", "кто/который", "u11_l4", "relative"),
+            ScopeWord("donde", "где", "u11_l4", "relative"),
+            ScopeWord("cuando (rel)", "когда (отн)", "u11_l4", "relative"),
+            ScopeWord("interesante", "интересный", "u11_l4", "adjective"),
+        ))
+        put("u11_l5", listOf(
+            ScopeWord("cuyo", "чей (м)", "u11_l5", "relative"),
+            ScopeWord("cuya", "чья", "u11_l5", "relative"),
+            ScopeWord("el cual", "который (форм)", "u11_l5", "relative"),
+            ScopeWord("la cual", "которая (форм)", "u11_l5", "relative"),
+            ScopeWord("lo cual", "что (всё пред)", "u11_l5", "relative"),
+        ))
+        put("u11_l5_5", listOf(
+            ScopeWord("lo bueno", "хорошее", "u11_l5_5", "phrase"),
+            ScopeWord("lo importante", "важное", "u11_l5_5", "phrase"),
+            ScopeWord("lo difícil", "трудное", "u11_l5_5", "phrase"),
+            ScopeWord("lo mejor", "лучшее", "u11_l5_5", "phrase"),
+            ScopeWord("lo peor", "худшее", "u11_l5_5", "phrase"),
+            ScopeWord("lo mío", "моё (дело)", "u11_l5_5", "phrase"),
+        ))
+        put("u11_l6", listOf(
+            ScopeWord("escrito", "написанный", "u11_l6", "participle"),
+            ScopeWord("enviada", "отправленная", "u11_l6", "participle"),
+            ScopeWord("construidas", "построенные", "u11_l6", "participle"),
+            ScopeWord("director", "директор", "u11_l6", "noun"),
+            ScopeWord("autor", "автор", "u11_l6", "noun"),
+        ))
+        put("u11_l7", listOf(
+            ScopeWord("hecho (part)", "сделанный", "u11_l7", "participle"),
+            ScopeWord("hecha", "сделанная", "u11_l7", "participle"),
+            ScopeWord("abierta", "открытая", "u11_l7", "participle"),
+            ScopeWord("cerrada", "закрытая", "u11_l7", "participle"),
+            ScopeWord("cerrado", "закрытый", "u11_l7", "participle"),
+        ))
+        put("u11_l8", listOf(
+            ScopeWord("esperándote", "жду тебя (ger+pron)", "u11_l8", "verb"),
+        ))
+        put("u11_l9", listOf(
+            ScopeWord("continuar", "продолжать", "u11_l9", "verb"),
+            ScopeWord("continúa", "продолжает", "u11_l9", "verb"),
+            ScopeWord("aprendiendo", "учащийся", "u11_l9", "gerund"),
+            ScopeWord("lloviendo", "идущий дождь", "u11_l9", "gerund"),
+        ))
+        put("u11_l10", listOf(
+            ScopeWord("acabar de", "только что", "u11_l10", "phrase"),
+            ScopeWord("acabo de", "только что я", "u11_l10", "phrase"),
+            ScopeWord("acaba de", "только что он", "u11_l10", "phrase"),
+            ScopeWord("volver a", "снова", "u11_l10", "phrase"),
+            ScopeWord("vuelvo a", "снова я", "u11_l10", "phrase"),
+            ScopeWord("vuelve a", "снова он", "u11_l10", "phrase"),
+        ))
+        put("u11_l11", listOf(
+            ScopeWord("sin embargo", "однако", "u11_l11", "connector"),
+            ScopeWord("por lo tanto", "поэтому", "u11_l11", "connector"),
+            ScopeWord("además", "кроме того", "u11_l11", "connector"),
+            ScopeWord("por otro lado", "с другой стороны", "u11_l11", "connector"),
+            ScopeWord("en cambio", "напротив", "u11_l11", "connector"),
+            ScopeWord("aprueba", "сдаёт", "u11_l11", "verb"),
+        ))
+        put("u11_l12", listOf(
+            ScopeWord("a pesar de", "несмотря на", "u11_l12", "phrase"),
+            ScopeWord("a pesar de que", "несмотря на то что", "u11_l12", "phrase"),
+            ScopeWord("lluvia", "дождь", "u11_l12", "weather"),
+        ))
+        put("u11_l13", listOf(
+            ScopeWord("en definitiva", "в итоге", "u11_l13", "connector"),
+            ScopeWord("en resumen", "короче", "u11_l13", "connector"),
+            ScopeWord("es decir", "то есть", "u11_l13", "connector"),
+            ScopeWord("por ejemplo", "например", "u11_l13", "connector"),
+            ScopeWord("en otras palabras", "другими словами", "u11_l13", "connector"),
+            ScopeWord("dentro de", "через (время)", "u11_l13", "phrase"),
+            ScopeWord("salimos", "выходим/выйдем", "u11_l13", "verb"),
+        ))
+        put("u11_l14", listOf(
+            ScopeWord("periodista", "журналист", "u11_l14", "profession"),
+            ScopeWord("contratar", "нанимать", "u11_l14", "verb"),
+            ScopeWord("contrataría", "наняли бы", "u11_l14", "verb"),
+            ScopeWord("crecido", "выросший", "u11_l14", "participle"),
+            ScopeWord("personal", "персонал", "u11_l14", "noun"),
+            ScopeWord("terminar", "заканчивать", "u11_l14", "verb"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -1559,6 +1669,12 @@ object VocabScope {
         addAll(listOf("u10_l5"))                                             // Si тип 1
         addAll(listOf("u10_l6", "u10_l7", "u10_l8", "u10_l9"))              // Imp.Subj + Si тип 2
         addAll(listOf("u10_l10", "u10_l11", "u10_l12", "u10_l13", "u10_l14")) // советы + вежл + quizás + me gustaría que + checkpoint
+        // B1 · Блок 3.3 «Коммуникация»
+        addAll(listOf("u11_l0", "u11_l1", "u11_l2", "u11_l3"))              // косв.речь
+        addAll(listOf("u11_l4", "u11_l5", "u11_l5_5"))                       // относ. + cuyo + lo+adj
+        addAll(listOf("u11_l6", "u11_l7"))                                   // pasiva
+        addAll(listOf("u11_l8", "u11_l9", "u11_l10"))                        // perífrasis
+        addAll(listOf("u11_l11", "u11_l12", "u11_l13", "u11_l14"))          // конекторы + checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 
