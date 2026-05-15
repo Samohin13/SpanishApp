@@ -2,6 +2,7 @@
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -130,7 +131,60 @@ fun LessonIntroScreen(
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(24.dp))
+
+            // ── Теория-карточка к уроку (если есть) ──────────────
+            // Открывается до старта упражнений: юзер сам решает, читать или сразу прыгать в практику.
+            // null если для этого lessonId теории ещё не написано — карточка просто не рисуется.
+            val lessonId = "u${unitId}_l${lessonIndex}"
+            val theoryCard = remember(lessonId) {
+                com.spanishapp.data.theory.TheoryContentData.byLessonId(lessonId)
+            }
+            if (theoryCard != null) {
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = accentColor.copy(alpha = 0.10f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            navController.navigate("theory/$lessonId")
+                        }
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(theoryCard.emoji, fontSize = 26.sp, modifier = Modifier.padding(end = 12.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                "📖 Теория к уроку",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = accentColor,
+                            )
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                theoryCard.title,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 2,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                            )
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                "⏱ ${theoryCard.readMinutes} мин чтения",
+                                fontSize = 11.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Text("→", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = accentColor)
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+            } else {
+                Spacer(Modifier.height(8.dp))
+            }
 
             Surface(
                 shape = RoundedCornerShape(24.dp),

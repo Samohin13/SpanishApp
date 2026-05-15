@@ -2,7 +2,210 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-12, сессия 14 (безопасность + Play Console регистрация)**
+> Последнее обновление: **2026-05-15, сессия 18 (Theory cards Phase 1 + v1.2.0)**
+
+## 📖 Theory cards Phase 1 (v1.2.0, сессия 18, 2026-05-15)
+
+Запущена новая система **теория-карточки 1-к-1 с практическими уроками**.
+Под каждым уроком — отдельный справочник: правила, таблицы, примеры с TTS,
+мнемоники, сравнения. Юзер сам решает: читать перед практикой или прыгать сразу
+в упражнения.
+
+### Что добавлено
+| Файл | Назначение |
+|---|---|
+| `data/theory/TheoryContent.kt` | data classes: TheoryContent, TheorySection (8 типов), TheoryTable, TheoryExample, TheoryComparison |
+| `data/theory/TheoryContentData.kt` | Singleton-реестр + 10 теорий блока 1.1 (u1_l0..u1_l9) |
+| `data/db/entity/TheoryProgressEntity` | Room-таблица `theory_progress` (lessonId PK, first/lastReadAt, readCount) |
+| `data/db/dao/TheoryProgressDao.kt` | observeAll/getOne/observeReadCount/markRead (idempotent INSERT OR REPLACE) |
+| `data/db/AppDatabase.kt` | version=21, MIGRATION_20_21 (создаёт theory_progress + index) |
+| `ui/theory/TheoryReaderViewModel.kt` | загрузка контента + markRead |
+| `ui/theory/TheoryReaderScreen.kt` | 8 рендереров секций + TTS на примерах + кнопка «Прочитал» |
+| `ui/theory/TheoryLibraryScreen.kt` + VM | библиотека всех теорий, группировка по CEFR |
+
+### Интеграция
+- **LessonIntroScreen**: над rewards-блоком появляется карточка «📖 Теория к уроку»
+  с эмодзи + заголовок + «⏱ N мин чтения», тап → `theory/{lessonId}`. Если
+  теории для этого урока ещё не написано — карточка просто не рисуется.
+- **ProfileScreen**: новая секция «Справочник» → `theory_library` (библиотека
+  всех 10+ карточек, сгруппированы по CEFR, с пометкой ✅ для прочитанных).
+- **Navigation.kt**: 2 новых маршрута — `theory/{lessonId}` и `theory_library`.
+- **MIGRATION_20_21** прописана везде где напрямую открывается БД:
+  AppModule, RatingDecayWorker, ContentSyncWorker, WordOfDayWidget.
+
+### Контент 10 теорий (блок 1.1)
+u1_l0 «5 гласных» · u1_l1 «B/V/D/G — три коварных согласных» ·
+u1_l2 «H/J/Ñ/RR» · u1_l3 «Ударение и тильда» · u1_l4 «Приветствия» ·
+u1_l5 «Прощания» · u1_l6 «Por favor / gracias / perdón» ·
+u1_l7 «SER — soy/eres/es» · u1_l8 «SER — somos/sois/son» ·
+u1_l9 «Личные местоимения».
+
+Каждая карточка: 3-7 секций (RULE/TABLE/EXAMPLES/MNEMONIC/TIP/WARNING/COMPARISON)
++ 4-5 keyTakeaways в финале. Среднее время чтения 3-5 мин.
+
+### Версия: 1.1.1 → **1.2.0** (versionCode 18→19)
+Сборка: `./gradlew :app:compileDebugKotlin` BUILD SUCCESSFUL.
+Дальше — Phase 2: 60 теорий для всего A1 (u2..u4 блоки) + интеграция
+в LessonSession (показ «уже прочитано / освежить» рядом с упражнениями).
+
+## 🧪 QA Infrastructure (сессия 17, 2026-05-15)
+
+Полная QA-инфраструктура установлена:
+
+**GitHub:**
+- 10 labels (P0/P1/P2/P3 + bug/enhancement/tech-debt/qa + needs-repro/blocked)
+- 3 milestones (v1.1.0, v1.1.1, v2.0.0)
+- 3 issue templates (.github/ISSUE_TEMPLATE/)
+- 16 known bugs импортированы как Issues #4-#19, все закрыты
+
+**Документация в `docs/qa/`:**
+- `TEST_STRATEGY.md` — общая стратегия (test pyramid, coverage goals, severity)
+- `TEST_CASES.md` — 110 формальных тест-кейсов по 13 категориям
+- `MANUAL_QA_GUIDE.md` — алгоритм по ISTQB (для тебя как QA)
+- `SMOKE_TEST.md` — 15 P0-кейсов на 10 минут
+- `RELEASE_CHECKLIST.md` — что проверить перед каждым AAB
+- `BUG_REPORT_TEMPLATE.md` — формат записи багов (formal + Telegram)
+- `BETA_TESTER_GUIDE.md` — для новых тестеров с Boosty
+- `GITHUB_WORKFLOW.md` — как пользоваться Issues
+
+**Авто-тесты:** 65 unit-тестов в 8 файлах (все проходят):
+- `SkillRatingSystemV2Test` (16) — новые формулы 1.1.0
+- `LeagueResolverTest` (14) — лиги с 0
+- `Migration18To19Test` (5) — миграции v1→v20
+- `AchievementCatalogTest` (8) — tier-mapping
+- `StreakManagerTest` (8) — daily streak логика
+- `WordOfDayStreakLogicTest` (5) — WoD streak
+- `XpSystemTest` (5)
+- `AiChatLimiterTest` (4)
+
+**Gradle инфраструктура:**
+- Kover plugin → `./gradlew :app:koverHtmlReportDebug` → coverage HTML
+- `./gradlew preRelease` — lint + test + bundleRelease + coverage в одной команде
+
+## 📊 Контент-инвентарь (актуально на 2026-05-14)
+
+**Словарь:**
+- `BasicsVocab.kt` — 1188 слов (A1-фундамент)
+- `CleanVocab.kt` — 4712 слов (основной дедуплицированный)
+- `VocabExtra1-12.kt` — 5288 слов (12 файлов расширений)
+- **Всего записей: 11 188** → после dedup: **10 086 уникальных слов** ✅
+- ⚠ `assets/spanish_vocab.json` (1415 слов) **НЕ подключён в DatabaseSeeder.seedWords()** — мёртвый ассет 1.4 МБ. TODO: подключить.
+
+**Глаголы:** 1300+ в верб-тренажёре (`ConjugationData.kt + 2 + 3`), 159 с полными таблицами спряжения 6 времён.
+
+**Уроки:** 240 (16 unit'ов × 15 уроков), A1-B2 покрытие.
+
+**Игры:** 6 мини-игр (Articulos, Speed, Sopa, Palabra, Math, Crucigrama) + Verbos (тренажёр) + Libros (библиотека на 100 рассказов).
+
+**Достижения:** 23 шт (бронза/серебро/золото — НО семантика медалей-vs-кубков сейчас сломана, см. backlog).
+
+**База данных:** version=19, миграции 1→19 все прописаны в AppModule + Worker'ах + Widget'е.
+
+## 🐛 BACKLOG найденных проблем (тестер 2026-05-14)
+
+### Критичные баги (нужно чинить)
+1. ❌ **Lesson count 1→3** — прошёл 1 урок, статистика показывает 3
+2. ❌ **Photo upload** — фото из галереи не сохраняется в облако (Firebase Storage)
+3. ❌ **Libros в Daily Mission** — прочитал главу, не отмечается ✅ на главной
+4. ❌ **POST_NOTIFICATIONS** — на Android 13+ не запрашиваем разрешение → ВСЕ push молчат
+5. ❌ **`spanish_vocab.json` не используется** — 1415 слов лежит мёртвым грузом
+
+### UX/логика
+6. ⚠ **Уровень в Settings** — можно вручную менять с A1 на C2 (не должно)
+7. ⚠ **Дневная цель** — пропала из onboarding (была после "Зачем испанский?")
+8. ⚠ **«Путь до Мадрида»** — юзер не понимает как считается
+9. ⚠ **Стартовый рейтинг 1000** — ✅ ОДОБРЕНО переделать на старт с 0 + новые лиги + активная decay
+10. ⚠ **Лидерборд по странам пустой** — если в стране < 5 юзеров
+11. ⚠ **Streak freezes** — есть в БД, не показано юзеру
+12. ⚠ **AI Chat лимит** — нет индикации сколько осталось сообщений
+13. ⚠ **Время напоминания** — не проверено что WorkManager-задача правильно перепланируется
+14. ⚠ **Локализация контента** — UI можно сменить на en/uk/es, но уроки только русские → бардак
+15. ⚠ **Cold start медленный** — seed 10К+ слов занимает время, нет splash с прогрессом
+
+### Редизайн
+16. 🎨 **Достижения: медали vs кубки** — каша в семантике, нужна единая система + переписать 23 шт
+
+## 💎 ПЛАН МОНЕТИЗАЦИИ v2.0 (утверждено 2026-05-14)
+
+### Бесплатно (для всех):
+- Уроки A1 (60 шт), грамматика A1, диалоги A1, книги A1
+- Спряжение A1 (базовые глаголы)
+- Игры — **первые 10 уровней каждой** (60 уровней из 600)
+- Карточки SM-2 для слов A1
+- **Словарь полностью** — все 10 086 слов
+- **Pronunciation полностью** — все уровни (motor skill, не зависит от уровня)
+- AI Chat — **50 запросов/день**
+- Слово дня + WoD-стрик + push
+- Достижения, лидерборд, лиги
+- Виджет, темы, био-замок
+
+### 💎 PRO (платная подписка):
+- Уроки A2 + B1 + B2 (180 шт)
+- Грамматика A2 + B1 + B2
+- Диалоги A2 + B1 + B2
+- Книги A2 + B1 + B2 (75 рассказов из 100)
+- **Полное спряжение** (1300+ глаголов, 159 с таблицами 6 времён)
+- **Все 100 уровней каждой игры** (540 уровней разблокируется)
+- Карточки SM-2 для слов A2/B1/B2
+- AI Chat — **безлимит запросов**
+
+### 💰 Цены (через Google Play Billing с auto-pricing по странам):
+- **Месяц: $4.99** (~450₽ / ~2200₸ / 4.99€)
+- **Год: $34.99** (~3150₽ / ~17000₸ / 34.99€) — экономия 42% vs месячной
+- **Trial: 7 дней бесплатно PRO** для новых юзеров (auto-cancel если не понравилось)
+
+### Listening (холд):
+- Игра удалена в сессии 9, **не возрождаем сейчас**
+- Возвращаемся когда будет ресурс на профессиональную озвучку (живые голоса носителей)
+- Если делаем — встроим в PRO как премиум-фичу
+
+## 📦 Версии релизов
+
+| Версия | versionCode | Что |
+|---|---|---|
+| 1.0.0 | 6 | Первый релиз в Play (закрытый альфа) |
+| 1.0.5 | 11 | Краш на старте (FeatureTourGate race) — отозван |
+| 1.0.6 | 12 | Фикс краша + fallbackToDestructiveMigration в release |
+| 1.0.7 | 13 | Фикс иконки (убран FeatureTour автопоказ) |
+| 1.0.8 | 14 | A+B+C: ProGuard для Glance, async виджет, 8 Analytics events |
+| 1.0.9 | 15 | Обновлён логотип (premium iOS-style) — был на review |
+| 1.0.10 | 16 | 5 критичных багов: lesson count, photo, libros mission, push perm, +1415 слов JSON |
+| 1.1.0 | 17 | **Текущая** — большой батч из 11 фиксов «Качество и баланс» |
+
+## 🚀 Что в 1.1.0 (сессия 16, автономная)
+
+Большой батч 11 фиксов одной выкладкой по запросу владельца:
+
+| # | Что | Файл |
+|---|---|---|
+| 6 | Уровень в Settings → read-only + кнопка «Пересдать тест» | `SettingsScreen.kt` |
+| 7 | Дневная цель — новый экран в onboarding (между reason и knowledge_check) | `DailyGoalSelectionScreen.kt` |
+| 8 | «Путь до Мадрида» — конкретное «осталось +N очков» + объяснение откуда очки | `ProfileScreen.kt` |
+| 9 | **Рейтинг с 0** — `SkillRatingSystem` v2 (старт 0, активная decay, новые лиги). Миграция v19→v20 обнуляет всем тестерам | `LearningAlgorithms.kt`, `AppDatabase.kt` MIGRATION_19_20 |
+| 10 | Лидерборд — auto-fallback на «Мир» если в стране < 5 юзеров | `LeaderboardScreen.kt` |
+| 11 | Streak freezes — иконка ❄N рядом со 🔥 на главной | `HomeScreen.kt` StatsBar |
+| 12 | AI Chat лимит — клиентский счётчик 50/день + индикатор «осталось 47/50» | `AiChatLimiter.kt`, `AiChatScreen.kt` |
+| 13 | Время напоминания — кнопка «Проверить сейчас» в Settings | `SettingsScreen.kt`, `DailyReminderWorker.fireOnce` |
+| 14 | Локализация контента — warning «контент только русский» в language picker | `SettingsScreen.kt` |
+| 15 | Cold start splash — overlay «Готовим словарь...» пока seedIfNeeded | `MainActivity.kt`, `SpanishApp.kt` |
+| 16 | Достижения 23 шт — пересмотрены: bronze/silver/gold через xpReward, единая иконка 🏆, новые названия + UPDATE meta при апгрейде сохраняет unlock-флаги | `AchievementNotificationService.kt`, `AchievementsScreen.kt`, `AchievementDao.updateMetaById` |
+
+Новые лиги после рейтинг-сброса:
+```
+1. Aldea perdida          0   – 99
+2. Santiago de Compostela  100 – 299
+3. Bilbao                  300 – 599
+4. Zaragoza                600 – 999
+5. Valencia               1000 – 1499
+6. Sevilla                1500 – 2099
+7. Barcelona              2100 – 2799
+8. Madrid                 2800+
+```
+
+Decay v2: progressive — 1-5 дней по -5/день, 6-12 по -8/день, 13+ по -12/день.
+Floor убран — можно вылететь обратно в Aldea (peakRating сохраняется как «личный рекорд»).
+
+---
 
 ## 14. Сессия 14 — безопасность + Play Console регистрация (2026-05-12)
 

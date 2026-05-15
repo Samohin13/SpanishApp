@@ -29,8 +29,9 @@ import com.spanishapp.data.db.entity.*
         RecentSearchEntity::class,
         WeeklyLeagueStateEntity::class,
         WodHistoryEntity::class,
+        TheoryProgressEntity::class,
     ],
-    version = 19,
+    version = 21,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -52,6 +53,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun recentSearchDao(): RecentSearchDao
     abstract fun weeklyLeagueDao(): WeeklyLeagueDao
     abstract fun wodHistoryDao(): WodHistoryDao
+    abstract fun theoryProgressDao(): TheoryProgressDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -319,6 +321,40 @@ abstract class AppDatabase : RoomDatabase() {
                         opted_in INTEGER NOT NULL DEFAULT 0
                     )
                 """.trimIndent())
+            }
+        }
+
+        // ── v21: theory_progress — справочник под каждый практический урок ──
+        // Phase 1 нового дизайна курса (1.2.0): теория-карточки.
+        // Каждый практический урок получает справочную карточку, прогресс
+        // прочтения трекается отдельно от прохождения практики.
+        val MIGRATION_20_21 = object : Migration(20, 21) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS theory_progress (
+                        lesson_id TEXT NOT NULL PRIMARY KEY,
+                        first_read_at INTEGER NOT NULL DEFAULT 0,
+                        last_read_at INTEGER NOT NULL DEFAULT 0,
+                        read_count INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_theory_progress_last_read ON theory_progress(last_read_at DESC)")
+            }
+        }
+
+        // ── v20: рейтинг с 0 — обнуление skillRating всем юзерам ──
+        // Старая система стартовала с 1000 → юзеры получали бесплатно
+        // половину пути до Мадрида. Новая стартует с 0. Мигрируем
+        // существующих юзеров через сброс: skillRating = 0, peak = 0,
+        // currentLeague = 1 (Aldea). Потеряют прогресс, но получат
+        // честный старт по новой системе.
+        val MIGRATION_19_20 = object : Migration(19, 20) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("UPDATE user_progress SET skill_rating = 0")
+                db.execSQL("UPDATE user_progress SET peak_skill_rating = 0")
+                db.execSQL("UPDATE user_progress SET current_league = 1")
+                db.execSQL("UPDATE user_progress SET peak_league = 1")
+                db.execSQL("UPDATE user_progress SET daily_rating_gain = 0")
             }
         }
 

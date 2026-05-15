@@ -9,6 +9,64 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
+    alias(libs.plugins.kover)
+}
+
+// ── Kover coverage configuration ─────────────────────────────────────
+// Исключаем generated-код (Hilt, KSP, Compose) и UI-сгенерённые классы
+// чтобы метрика отражала покрытие НАШЕГО кода.
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "*Hilt_*",
+                    "*_HiltModules*",
+                    "*_Factory",
+                    "*_MembersInjector",
+                    "*ComposableSingletons*",
+                    "*\$\$serializer",
+                    "*BuildConfig",
+                    "com.spanishapp.di.*",
+                    // UI / Compose — для них своя система тестирования
+                    "com.spanishapp.ui.theme.*",
+                )
+                annotatedBy("androidx.compose.runtime.Composable")
+            }
+        }
+    }
+}
+
+// ── Convenience-task: всё что нужно перед заливкой релиза в Play ──
+//
+// Запуск: ./gradlew preRelease
+// Проверяет:
+//   1. Lint (без ошибок)
+//   2. Unit tests (все проходят)
+//   3. Сборка release AAB (компилируется + R8/ProGuard)
+//   4. Coverage report (для информации)
+//
+// Если упало — НЕ заливать в Play Console.
+tasks.register("preRelease") {
+    group = "verification"
+    description = "Полный набор проверок перед релизом — lint, тесты, AAB. См. docs/qa/RELEASE_CHECKLIST.md"
+    dependsOn(
+        "lintRelease",
+        "testDebugUnitTest",
+        "bundleRelease",
+        "koverHtmlReportDebug",
+    )
+    doLast {
+        println("\n  ╔═══════════════════════════════════════════════════════════╗")
+        println("  ║  preRelease ✓                                             ║")
+        println("  ║                                                           ║")
+        println("  ║  AAB:        app/build/outputs/bundle/release/            ║")
+        println("  ║  Coverage:   app/build/reports/kover/html/index.html      ║")
+        println("  ║  Lint:       app/build/reports/lint-results-release.html  ║")
+        println("  ║                                                           ║")
+        println("  ║  Дальше:     открой docs/qa/RELEASE_CHECKLIST.md          ║")
+        println("  ╚═══════════════════════════════════════════════════════════╝\n")
+    }
 }
 
 // Load local.properties explicitly (project.findProperty doesn't read it reliably)
@@ -30,8 +88,8 @@ android {
         applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 10
-        versionName = "1.0.4"
+        versionCode = 19
+        versionName = "1.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val anthropicKey = localProps.getProperty("ANTHROPIC_KEY") ?: ""
         buildConfigField("String", "ANTHROPIC_API_KEY", "\"$anthropicKey\"")

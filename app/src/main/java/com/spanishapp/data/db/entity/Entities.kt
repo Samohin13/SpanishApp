@@ -116,9 +116,9 @@ data class UserProgressEntity(
     @ColumnInfo(name = "current_level") val currentLevel: String = "A1",
     @ColumnInfo(name = "avatar_index") val avatarIndex: Int = 0,
     @ColumnInfo(name = "sync_token") val syncToken: String = "",
-    // ── Rating system (added in v9) ──────────────────────────
-    @ColumnInfo(name = "skill_rating") val skillRating: Int = 1000,
-    @ColumnInfo(name = "peak_skill_rating") val peakSkillRating: Int = 1000,
+    // ── Rating system (v9 added, v20: старт с 0 вместо 1000) ─────
+    @ColumnInfo(name = "skill_rating") val skillRating: Int = 0,
+    @ColumnInfo(name = "peak_skill_rating") val peakSkillRating: Int = 0,
     @ColumnInfo(name = "last_rating_update") val lastRatingUpdate: Long = 0L,
     @ColumnInfo(name = "current_league") val currentLeague: Int = 1,
     @ColumnInfo(name = "peak_league") val peakLeague: Int = 1,
@@ -264,4 +264,25 @@ data class WodHistoryEntity(
     @ColumnInfo(name = "russian")       val russian: String,
     @ColumnInfo(name = "level")         val level: String,
     @ColumnInfo(name = "practiced_at")  val practicedAt: Long = System.currentTimeMillis(),
+)
+
+/**
+ * Прогресс прочтения теории-карточки (added in v21).
+ * Одна запись = один открытый и прочитанный TheoryContent.
+ *
+ * Используется для:
+ *   • Карточки в LessonSession показывает «Прочитано / Открыть»
+ *   • Spaced repetition: через 1/3/7/30 дней показать «Освежить?»
+ *   • Подсчёт «прочитано N/200» в разделе «Теория» в Профиле
+ */
+@Entity(tableName = "theory_progress")
+data class TheoryProgressEntity(
+    /** ID урока — ровно как в LessonContentData. Одна запись на одну теорию. */
+    @PrimaryKey @ColumnInfo(name = "lesson_id") val lessonId: String,
+    /** Когда впервые прочитана (мс эпоха). 0 = ещё не открывал. */
+    @ColumnInfo(name = "first_read_at") val firstReadAt: Long = 0L,
+    /** Когда последний раз перечитывалась. */
+    @ColumnInfo(name = "last_read_at")  val lastReadAt: Long = 0L,
+    /** Сколько раз открывал (для статистики). */
+    @ColumnInfo(name = "read_count")    val readCount: Int = 0,
 )

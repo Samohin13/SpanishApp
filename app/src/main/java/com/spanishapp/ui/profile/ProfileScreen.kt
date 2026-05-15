@@ -82,8 +82,20 @@ class ProfileViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val achievementDao: AchievementDao,
     private val authRepository: AuthRepository,
-    private val dailyXpDao: com.spanishapp.data.db.dao.DailyXpDao
+    private val dailyXpDao: com.spanishapp.data.db.dao.DailyXpDao,
+    private val wodHistoryDao: com.spanishapp.data.db.dao.WodHistoryDao
 ) : ViewModel() {
+
+    /** Последние 5 закреплённых слов дня — для виджета-коллекции в Профиле. */
+    val recentWodWords: StateFlow<List<com.spanishapp.data.db.entity.WodHistoryEntity>> =
+        wodHistoryDao.observeAll()
+            .map { it.take(5) }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /** Общее число закреплённых слов через WoD-флоу. */
+    val wodTotalCount: StateFlow<Int> =
+        wodHistoryDao.observeCount()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     private val _categoryRatings = MutableStateFlow<List<CategoryRatingUi>>(emptyList())
     val categoryRatings: StateFlow<List<CategoryRatingUi>> = _categoryRatings.asStateFlow()
@@ -102,6 +114,36 @@ class ProfileViewModel @Inject constructor(
         _localPhotoUri.value = uri
         _isPhotoUploading.value = true
         viewModelScope.launch {
+            // ── Шаг 1: декодим bitmap ─────────────────────────────────
+            val bitmap = runCatching {
+                context.contentResolver.openInputStream(uri).use { BitmapFactory.decodeStream(it) }
+            }.getOrNull()
+
+            if (bitmap == null) {
+                Log.w("ProfileVM", "Cannot decode picked image: $uri")
+                runCatching { com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                    .log("Avatar decode failed for $uri") }
+                _isPhotoUploading.value = false
+                return@launch
+            }
+
+            // ── Шаг 2: ВСЕГДА сохраняем локальную копию ───────────────
+            // Раньше fallback хранил content:// URI, который через несколько
+            // часов протухал → юзер видел пустое место. Теперь копия в
+            // filesDir/avatar.jpg переживает любые перезапуски.
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, baos)
+            val data = baos.toByteArray()
+
+            val localFile = java.io.File(context.filesDir, "avatar.jpg")
+            runCatching { localFile.writeBytes(data) }
+            val localUrl = "file://${localFile.absolutePath}"
+
+            // Сразу записываем локальный путь — даже если облако упадёт,
+            // юзер увидит свою фотку прямо сейчас и после перезапуска.
+            authRepository.setUserPhotoUrl(localUrl)
+
+            // ── Шаг 3: пытаемся залить в облако (поверх локального) ──
             try {
                 val auth = FirebaseAuth.getInstance()
                 var user = auth.currentUser
@@ -110,23 +152,20 @@ class ProfileViewModel @Inject constructor(
                 }
                 val uid = user?.uid ?: throw IllegalStateException("No user uid")
 
-                val bitmap = context.contentResolver.openInputStream(uri).use { stream ->
-                    BitmapFactory.decodeStream(stream)
-                } ?: throw IllegalStateException("Can't decode bitmap")
-
-                val baos = ByteArrayOutputStream()
-                bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, baos)
-                val data = baos.toByteArray()
-
                 val storage = FirebaseStorage.getInstance()
                 val ref = storage.reference.child("users/$uid/avatar.jpg")
                 ref.putBytes(data).await()
                 val downloadUrl = ref.downloadUrl.await().toString()
+
+                // Облако ОК — обновляем URL на cloud-ссылку (синхрон с другими устройствами).
                 authRepository.setUserPhotoUrl(downloadUrl)
                 Log.d("ProfileVM", "Avatar uploaded: $downloadUrl")
             } catch (e: Exception) {
-                Log.w("ProfileVM", "Avatar upload failed, keeping local Uri", e)
-                runCatching { authRepository.setUserPhotoUrl(uri.toString()) }
+                // Облако упало — юзер уже видит локальную копию, ничего не теряем.
+                Log.w("ProfileVM", "Avatar cloud upload failed, local copy retained", e)
+                runCatching {
+                    com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance().recordException(e)
+                }
             } finally {
                 _isPhotoUploading.value = false
             }
@@ -240,17 +279,48 @@ fun ProfileScreen(
     navController: NavHostController,
     vm: ProfileViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(Unit) { com.spanishapp.service.Analytics.profileOpened() }
     val state by vm.state.collectAsState()
     val xpHistory by vm.xpHistory.collectAsState()
     val achievements by vm.achievements.collectAsState()
     val localPhotoUri by vm.localPhotoUri.collectAsState()
     val isPhotoUploading by vm.isPhotoUploading.collectAsState()
+    val recentWodWords by vm.recentWodWords.collectAsState()
+    val wodTotalCount by vm.wodTotalCount.collectAsState()
     val p = state.progress
     val context = LocalContext.current
 
+    // 1.1.1: вместо просто PickVisualMedia → запускаем сначала picker
+    // потом сразу image-cropper для квадратного crop (как в Instagram).
+    // Раньше фото бралось целиком → много пустого пространства, лицо
+    // оказывалось обрезанным круглой маской.
+    val cropImageLauncher = rememberLauncherForActivityResult(
+        contract = com.canhub.cropper.CropImageContract()
+    ) { result ->
+        if (result.isSuccessful) {
+            result.uriContent?.let { croppedUri -> vm.onPhotoPicked(context, croppedUri) }
+        }
+    }
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? -> if (uri != null) vm.onPhotoPicked(context, uri) }
+    ) { uri: Uri? ->
+        if (uri != null) {
+            cropImageLauncher.launch(
+                com.canhub.cropper.CropImageContractOptions(
+                    uri = uri,
+                    cropImageOptions = com.canhub.cropper.CropImageOptions(
+                        aspectRatioX = 1,
+                        aspectRatioY = 1,
+                        fixAspectRatio = true,
+                        cropShape = com.canhub.cropper.CropImageView.CropShape.OVAL,
+                        guidelines = com.canhub.cropper.CropImageView.Guidelines.ON,
+                        outputCompressFormat = android.graphics.Bitmap.CompressFormat.JPEG,
+                        outputCompressQuality = 90,
+                    )
+                )
+            )
+        }
+    }
 
     val effectivePhotoUrl: String? = localPhotoUri?.toString() ?: state.photoUrl
     val todayXp = xpHistory.lastOrNull()?.xp ?: 0
@@ -351,6 +421,26 @@ fun ProfileScreen(
                 }
             }
 
+            // ── СЛОВО ДНЯ (стрик + коллекция) ───────────────────
+            // Показываем только если у пользователя уже есть хотя бы 1 закрепление —
+            // иначе тайл выглядит «пустым» и сбивает с толку первый запуск.
+            if (wodTotalCount > 0) {
+                StaggeredEntrance(index = 25) {
+                    Column {
+                        SectionHeader("СЛОВО ДНЯ", AccentTeal, modifier = Modifier.padding(horizontal = 24.dp))
+                        Spacer(Modifier.height(8.dp))
+                        WordOfDayTile(
+                            streak = p.wodStreak,
+                            longestStreak = p.wodLongestStreak,
+                            totalCount = wodTotalCount,
+                            recent = recentWodWords,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        Spacer(Modifier.height(20.dp))
+                    }
+                }
+            }
+
             // ── ПУТЬ ДО МАДРИДА (единственная тёплая секция) ────
             StaggeredEntrance(index = 3) {
                 Column {
@@ -360,7 +450,8 @@ fun ProfileScreen(
                         league = league,
                         peakLeague = peakLeague,
                         leagueProgress = leagueProgress,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        skillRating = p.skillRating,
                     )
                     Spacer(Modifier.height(20.dp))
                 }
@@ -413,6 +504,61 @@ fun ProfileScreen(
                     )
                 }
             }
+
+            // ── ТЕОРИЯ-БИБЛИОТЕКА ───────────────────────────────
+            // Открывает все написанные грамматические/лексические справки.
+            // Не привязан к текущему уроку — общая библиотека.
+            StaggeredEntrance(index = 7) {
+                Column {
+                    SectionHeader(
+                        "Справочник",
+                        AccentRose,
+                        trailing = "↗",
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    TheoryLibraryTeaserTile(
+                        onClick = { navController.navigate("theory_library") { launchSingleTop = true } },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TheoryLibraryTeaserTile(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val total = remember { com.spanishapp.data.theory.TheoryContentData.count() }
+    Surface(
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.30f),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("📖", fontSize = 28.sp, modifier = Modifier.padding(end = 12.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Теория и грамматика",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "$total справочных карточек по урокам",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Text("→", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
     }
 }
@@ -830,7 +976,8 @@ private fun PathToMadridTile(
     league: League,
     peakLeague: League,
     leagueProgress: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    skillRating: Int = 0,
 ) {
     val accent = AccentOrange
     val next = LeagueResolver.next(league)
@@ -907,6 +1054,10 @@ private fun PathToMadridTile(
         }
         Spacer(Modifier.height(14.dp))
         if (next != null) {
+            // Конкретное число «До Bilbao осталось 47 очков» — даёт юзеру
+            // ощутимую цель. Раньше показывали только % — было непонятно
+            // «47% от чего» и сколько реально работы осталось.
+            val pointsToNext = (next.ratingFrom - skillRating).coerceAtLeast(0)
             Text(
                 "Следующая остановка:",
                 fontSize = 11.sp,
@@ -926,12 +1077,32 @@ private fun PathToMadridTile(
                 color = accent,
                 trackColor = accent.copy(alpha = 0.18f)
             )
-            Spacer(Modifier.height(2.dp))
+            Spacer(Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    "Осталось +$pointsToNext очков",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = accent
+                )
+                Text(
+                    "${(leagueProgress * 100).toInt()}%",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            // Объяснение откуда берутся очки — раньше было загадкой
             Text(
-                "${(leagueProgress * 100).toInt()}%",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                color = accent
+                "💡 Каждый правильный ответ даёт +5...+15 очков. " +
+                "Ошибка — забирает несколько. Чем сложнее задание, тем выше награда.",
+                fontSize = 10.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
+                lineHeight = 13.sp,
             )
         } else {
             Text(
@@ -940,6 +1111,116 @@ private fun PathToMadridTile(
                 fontWeight = FontWeight.Bold,
                 color = accent
             )
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  📅 СЛОВО ДНЯ — стрик + коллекция последних 5 слов
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun WordOfDayTile(
+    streak: Int,
+    longestStreak: Int,
+    totalCount: Int,
+    recent: List<com.spanishapp.data.db.entity.WodHistoryEntity>,
+    modifier: Modifier = Modifier
+) {
+    ProfileTile(accent = AccentTeal, modifier = modifier.fillMaxWidth()) {
+        // Верхняя строка: 🔥 серия + всего слов
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("📅", fontSize = 22.sp)
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        streak.toString(),
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                Text(
+                    "ДНЕЙ ПОДРЯД",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    totalCount.toString(),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = AccentTeal
+                )
+                Text(
+                    "ВСЕГО СЛОВ",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        if (longestStreak > 0 && longestStreak != streak) {
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "🏆 Личный рекорд: $longestStreak",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        // Коллекция последних слов — горизонтальный ряд маленьких пиллов.
+        if (recent.isNotEmpty()) {
+            Spacer(Modifier.height(14.dp))
+            Text(
+                "ПОСЛЕДНИЕ",
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(6.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                recent.take(5).forEach { w ->
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = AccentTeal.copy(alpha = 0.14f),
+                        modifier = Modifier.weight(1f, fill = false)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                w.spanish,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1
+                            )
+                            Text(
+                                w.russian,
+                                fontSize = 10.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

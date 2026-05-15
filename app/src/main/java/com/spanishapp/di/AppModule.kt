@@ -43,11 +43,14 @@ object AppModule {
                 AppDatabase.MIGRATION_16_17,
                 AppDatabase.MIGRATION_17_18,
                 AppDatabase.MIGRATION_18_19,
+                AppDatabase.MIGRATION_19_20,
+                AppDatabase.MIGRATION_20_21,
             )
-        // Destructive migration only for debug builds — protects production user data.
-        if (BuildConfig.DEBUG) {
-            builder.fallbackToDestructiveMigration()
-        }
+        // На время раннего тестирования (Alpha track) включаем fallback и для
+        // release — лучше один раз потерять прогресс тестера чем получить
+        // hard-crash при апгрейде с потерей юзера навсегда. Снимем это после
+        // публичного релиза, когда количество DB-схем стабилизируется.
+        builder.fallbackToDestructiveMigration()
         return builder.build()
     }
 
@@ -68,6 +71,8 @@ object AppModule {
     @Provides fun provideFlashcardSetProgressDao(db: AppDatabase): FlashcardSetProgressDao = db.flashcardSetProgressDao()
     @Provides fun provideRecentSearchDao(db: AppDatabase): RecentSearchDao = db.recentSearchDao()
     @Provides fun provideWeeklyLeagueDao(db: AppDatabase): WeeklyLeagueDao = db.weeklyLeagueDao()
+    @Provides fun provideWodHistoryDao(db: AppDatabase): WodHistoryDao = db.wodHistoryDao()
+    @Provides fun provideTheoryProgressDao(db: AppDatabase): com.spanishapp.data.db.dao.TheoryProgressDao = db.theoryProgressDao()
 
     // ── Firebase Firestore ─────────────────────────────────────
     @Provides

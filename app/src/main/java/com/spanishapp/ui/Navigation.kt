@@ -57,6 +57,8 @@ import com.spanishapp.ui.auth.PlacementTestScreen
 import com.spanishapp.ui.auth.PlacementResultScreen
 import com.spanishapp.ui.auth.AuthViewModel
 import com.spanishapp.ui.auth.AppLockScreen
+import com.spanishapp.ui.auth.FeatureTourScreen
+import com.spanishapp.ui.auth.DailyGoalSelectionScreen
 import com.spanishapp.data.prefs.AppLockPreferences
 import com.spanishapp.service.AppLockManager
 import androidx.compose.runtime.LaunchedEffect
@@ -206,6 +208,7 @@ object Navigation {
             composable("name_entry") { NameEntryScreen(navController) }
             composable("age_selection") { AgeSelectionScreen(navController) }
             composable("reason_selection") { ReasonSelectionScreen(navController) }
+            composable("daily_goal_selection") { DailyGoalSelectionScreen(navController) }
             composable("knowledge_check") { KnowledgeCheckScreen(navController) }
             composable("placement_test") { PlacementTestScreen(navController) }
             composable(
@@ -216,6 +219,12 @@ object Navigation {
                 PlacementResultScreen(navController, level)
             }
             composable("level_selection") { LevelSelectionScreen(navController) }
+
+            // ── Feature-tour: 3-экранная карусель, показывается ровно
+            //    один раз после прохождения auth-онбординга. После
+            //    закрытия флаг featureTourSeen остаётся в DataStore и
+            //    защищает от повторного показа.
+            composable("feature_tour") { FeatureTourScreen(navController) }
 
             // ── Биометрический замок ───────────────────────────
             composable("app_lock") { AppLockScreen(navController) }
@@ -233,13 +242,48 @@ object Navigation {
 
             // ── Игры ─────────────────────────────────────────
             composable("games") { GamesScreen(navController) }
-            composable("game_articles") { ArticlesGameScreen(navController) }
-            composable("game_speed") { SpeedGameScreen(navController) }
-            composable("game_math") { MathGameScreen(navController) }
-            composable("game_crossword") { CrosswordGameScreen(navController) }
-            composable("game_sopa") { SopaGameScreen(navController) }
-            composable("game_palabra") { PalabraMaestraScreen(navController) }
-            composable("game_libros") { LibrosScreen(navController) }
+            composable("game_articles") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("articles")
+                }
+                ArticlesGameScreen(navController)
+            }
+            composable("game_speed") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("speed")
+                }
+                SpeedGameScreen(navController)
+            }
+            composable("game_math") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("math")
+                }
+                MathGameScreen(navController)
+            }
+            composable("game_crossword") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("crossword")
+                }
+                CrosswordGameScreen(navController)
+            }
+            composable("game_sopa") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("sopa")
+                }
+                SopaGameScreen(navController)
+            }
+            composable("game_palabra") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("palabra_maestra")
+                }
+                PalabraMaestraScreen(navController)
+            }
+            composable("game_libros") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("libros")
+                }
+                LibrosScreen(navController)
+            }
             composable(
                 "libro/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
@@ -382,6 +426,17 @@ object Navigation {
             // ── Словарь ───────────────────────────────────────
             composable("dictionary")  { DictionaryScreen(navController) }
             composable("weak_words")  { WeakWordsScreen(navController) }
+
+            // ── Теория-карточки (грамматический справочник) ──
+            composable(
+                "theory/{lessonId}",
+                arguments = listOf(navArgument("lessonId") { type = NavType.StringType })
+            ) {
+                com.spanishapp.ui.theory.TheoryReaderScreen(navController)
+            }
+            composable("theory_library") {
+                com.spanishapp.ui.theory.TheoryLibraryScreen(navController)
+            }
         }
     }
 }
