@@ -1101,6 +1101,152 @@ object VocabScope {
             ScopeWord("ocupado", "занятой", "u7_l14", "adjective"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // A2 · Блок 2.4 «Мечты и планы» — Futuro + Condicional + ФИНАЛ A2
+        // ═══════════════════════════════════════════════════════════════
+        put("u8_l0", listOf(
+            ScopeWord("hablaré", "буду говорить", "u8_l0", "verb"),
+            ScopeWord("hablarás", "будешь говорить", "u8_l0", "verb"),
+            ScopeWord("hablará", "будет говорить", "u8_l0", "verb"),
+            ScopeWord("hablaremos", "будем говорить", "u8_l0", "verb"),
+            ScopeWord("hablarán", "будут говорить", "u8_l0", "verb"),
+            ScopeWord("comerás", "будешь есть", "u8_l0", "verb"),
+            ScopeWord("trabajaré", "буду работать", "u8_l0", "verb"),
+            ScopeWord("iremos", "поедем", "u8_l0", "verb"),
+        ))
+        put("u8_l1", listOf(
+            ScopeWord("tendré", "буду иметь", "u8_l1", "verb"),
+            ScopeWord("haré", "сделаю", "u8_l1", "verb"),
+            ScopeWord("vendré", "приду", "u8_l1", "verb"),
+            ScopeWord("diré", "скажу", "u8_l1", "verb"),
+            ScopeWord("saldré", "выйду", "u8_l1", "verb"),
+            ScopeWord("podré", "смогу", "u8_l1", "verb"),
+            ScopeWord("podrán", "смогут", "u8_l1", "verb"),
+            ScopeWord("sabré", "буду знать", "u8_l1", "verb"),
+            ScopeWord("querré", "захочу", "u8_l1", "verb"),
+        ))
+        put("u8_l2", listOf(
+            ScopeWord("hablaría", "говорил бы", "u8_l2", "verb"),
+            ScopeWord("hablarías", "говорил бы (ты)", "u8_l2", "verb"),
+            ScopeWord("hablaríamos", "говорили бы", "u8_l2", "verb"),
+            ScopeWord("comerías", "ел бы (ты)", "u8_l2", "verb"),
+            ScopeWord("iría", "пошёл бы", "u8_l2", "verb"),
+            ScopeWord("invitaría", "пригласил бы", "u8_l2", "verb"),
+            ScopeWord("querría", "хотел бы", "u8_l2", "verb"),
+        ))
+        put("u8_l3", listOf(
+            ScopeWord("tendría", "имел бы", "u8_l3", "verb"),
+            ScopeWord("haría", "сделал бы", "u8_l3", "verb"),
+            ScopeWord("vendría", "пришёл бы", "u8_l3", "verb"),
+            ScopeWord("diría", "сказал бы", "u8_l3", "verb"),
+            ScopeWord("podría", "мог бы", "u8_l3", "verb"),
+            ScopeWord("ayudarme", "помочь мне", "u8_l3", "verb"),
+        ))
+        put("u8_l4", listOf(
+            ScopeWord("si", "если", "u8_l4", "conjunction"),
+            ScopeWord("vengo", "приду я", "u8_l4", "verb"),
+            ScopeWord("invito", "приглашаю", "u8_l4", "verb"),
+            ScopeWord("saldré", "выйду", "u8_l4", "verb"),
+            ScopeWord("llámame", "позвони мне", "u8_l4", "imperative"),
+        ))
+        put("u8_l5", listOf(
+            ScopeWord("quisiera", "хотел бы", "u8_l5", "verb"),
+            ScopeWord("me gustaría", "мне бы хотелось", "u8_l5", "phrase"),
+            ScopeWord("espero", "надеюсь", "u8_l5", "verb"),
+            ScopeWord("voy a", "собираюсь", "u8_l5", "phrase"),
+            ScopeWord("aprender", "учиться", "u8_l5", "verb"),
+            ScopeWord("chino", "китайский", "u8_l5", "language"),
+        ))
+        put("u8_l6", listOf(
+            ScopeWord("algo", "что-то", "u8_l6", "pronoun"),
+            ScopeWord("alguien", "кто-то", "u8_l6", "pronoun"),
+            ScopeWord("ningún", "ни один (м.перед)", "u8_l6", "pronoun"),
+            ScopeWord("ninguno", "ни один", "u8_l6", "pronoun"),
+            ScopeWord("alguno", "какой-то", "u8_l6", "pronoun"),
+            ScopeWord("todo", "всё / весь", "u8_l6", "pronoun"),
+            ScopeWord("todos", "все", "u8_l6", "pronoun"),
+            ScopeWord("varios", "несколько", "u8_l6", "pronoun"),
+            ScopeWord("bueno", "хороший", "u8_l6", "adjective"),
+        ))
+        put("u8_l7", listOf(
+            ScopeWord("probablemente", "вероятно", "u8_l7", "adverb"),
+            ScopeWord("quizás", "может быть", "u8_l7", "adverb"),
+            ScopeWord("a lo mejor", "может быть (разг)", "u8_l7", "phrase"),
+            ScopeWord("tal vez", "возможно", "u8_l7", "phrase"),
+            ScopeWord("seguro que", "точно (что)", "u8_l7", "phrase"),
+            ScopeWord("venga", "придёт (Subj)", "u8_l7", "verb"),
+        ))
+        put("u8_l8", listOf(
+            ScopeWord("alquilar", "арендовать", "u8_l8", "verb"),
+            ScopeWord("conducir", "водить", "u8_l8", "verb"),
+            ScopeWord("aparcar", "парковать", "u8_l8", "verb"),
+            ScopeWord("gasolina", "бензин", "u8_l8", "noun"),
+            ScopeWord("autopista", "автомагистраль", "u8_l8", "noun"),
+            ScopeWord("tráfico", "движение", "u8_l8", "noun"),
+            ScopeWord("atasco", "пробка", "u8_l8", "noun"),
+            ScopeWord("carnet", "права", "u8_l8", "noun"),
+        ))
+        put("u8_l9", listOf(
+            ScopeWord("pensar en", "думать о", "u8_l9", "phrase"),
+            ScopeWord("soñar con", "мечтать о", "u8_l9", "phrase"),
+            ScopeWord("enamorarse de", "влюбиться в", "u8_l9", "phrase"),
+            ScopeWord("casarse con", "жениться на", "u8_l9", "phrase"),
+            ScopeWord("depender de", "зависеть от", "u8_l9", "phrase"),
+            ScopeWord("preocuparse por", "волноваться о", "u8_l9", "phrase"),
+            ScopeWord("sueño", "я мечтаю", "u8_l9", "verb"),
+            ScopeWord("depende", "зависит", "u8_l9", "verb"),
+        ))
+        put("u8_l10", listOf(
+            ScopeWord("campo", "поле / деревня", "u8_l10", "place"),
+            ScopeWord("mar", "море", "u8_l10", "place"),
+            ScopeWord("montaña", "гора", "u8_l10", "place"),
+            ScopeWord("bosque", "лес", "u8_l10", "place"),
+            ScopeWord("lago", "озеро", "u8_l10", "place"),
+            ScopeWord("río", "река", "u8_l10", "place"),
+            ScopeWord("playa", "пляж", "u8_l10", "place"),
+            ScopeWord("verano", "лето", "u8_l10", "season"),
+            ScopeWord("sobre todo", "особенно", "u8_l10", "phrase"),
+        ))
+        put("u8_l11", listOf(
+            ScopeWord("mucho", "много (м)", "u8_l11", "quantifier"),
+            ScopeWord("mucha", "много (ж)", "u8_l11", "quantifier"),
+            ScopeWord("poco", "мало (м)", "u8_l11", "quantifier"),
+            ScopeWord("bastante", "достаточно", "u8_l11", "quantifier"),
+            ScopeWord("demasiado", "слишком", "u8_l11", "quantifier"),
+            ScopeWord("hambre", "голод", "u8_l11", "noun"),
+        ))
+        put("u8_l12", listOf(
+            ScopeWord("app", "приложение", "u8_l12", "tech"),
+            ScopeWord("aplicación", "приложение", "u8_l12", "tech"),
+            ScopeWord("wifi", "вайфай", "u8_l12", "tech"),
+            ScopeWord("contraseña", "пароль", "u8_l12", "tech"),
+            ScopeWord("descargar", "загружать", "u8_l12", "verb"),
+            ScopeWord("subir", "выгружать", "u8_l12", "verb"),
+            ScopeWord("correo electrónico", "э-почта", "u8_l12", "tech"),
+            ScopeWord("ordenador", "компьютер", "u8_l12", "tech"),
+            ScopeWord("móvil", "мобильник", "u8_l12", "tech"),
+            ScopeWord("computador", "комп (Латам)", "u8_l12", "tech"),
+        ))
+        put("u8_l13", listOf(
+            ScopeWord("hacer ejercicio", "заниматься", "u8_l13", "phrase"),
+            ScopeWord("correr", "бегать", "u8_l13", "verb"),
+            ScopeWord("corro", "я бегаю", "u8_l13", "verb"),
+            ScopeWord("gimnasio", "тренажёрный зал", "u8_l13", "place"),
+            ScopeWord("dieta", "диета", "u8_l13", "noun"),
+            ScopeWord("forma", "форма", "u8_l13", "noun"),
+            ScopeWord("yoga", "йога", "u8_l13", "noun"),
+            ScopeWord("natación", "плавание", "u8_l13", "noun"),
+            ScopeWord("perder peso", "худеть", "u8_l13", "phrase"),
+            ScopeWord("deporte", "спорт", "u8_l13", "noun"),
+            ScopeWord("ejercicio", "упражнение", "u8_l13", "noun"),
+        ))
+        put("u8_l14", listOf(
+            ScopeWord("Barcelona", "Барселона", "u8_l14", "city"),
+            ScopeWord("visitaremos", "посетим", "u8_l14", "verb"),
+            ScopeWord("año próximo", "следующий год", "u8_l14", "phrase"),
+            ScopeWord("familia", "семья", "u8_l14", "noun"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -1180,6 +1326,14 @@ object VocabScope {
         addAll(listOf("u7_l6", "u7_l7", "u7_l8"))                           // работа + Imperativo +/-
         addAll(listOf("u7_l9", "u7_l10", "u7_l11"))                         // врач + OD/OI + путешествие
         addAll(listOf("u7_l12", "u7_l13", "u7_l14"))                        // creo que + кухня + checkpoint
+        // A2 · Блок 2.4 «Мечты и планы» — Futuro + Condicional
+        addAll(listOf("u8_l0", "u8_l1", "u8_l2", "u8_l3"))                  // Futuro reg+irreg, Cond reg+irreg
+        addAll(listOf("u8_l4", "u8_l5"))                                     // si + planes
+        addAll(listOf("u8_l6", "u8_l7"))                                     // indefinidos + вероятность
+        addAll(listOf("u8_l8", "u8_l9"))                                     // авто + предлоги
+        addAll(listOf("u8_l10", "u8_l11"))                                  // природа + cuantific.
+        addAll(listOf("u8_l12", "u8_l13"))                                  // tech + спорт
+        addAll(listOf("u8_l14"))                                             // ФИНАЛ A2 checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 
