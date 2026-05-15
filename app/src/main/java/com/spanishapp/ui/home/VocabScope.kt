@@ -823,6 +823,140 @@ object VocabScope {
             ScopeWord("comimos", "ели (мы)", "u5_l14", "verb"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // A2 · Блок 2.2 «Раньше и сейчас» — Imperfecto + сравнения + OD/OI
+        // ═══════════════════════════════════════════════════════════════
+        put("u6_l0", listOf(
+            ScopeWord("hablaba", "говорил (Imp)", "u6_l0", "verb"),
+            ScopeWord("hablabas", "говорил ты", "u6_l0", "verb"),
+            ScopeWord("hablábamos", "говорили мы", "u6_l0", "verb"),
+            ScopeWord("hablaban", "говорили они", "u6_l0", "verb"),
+            ScopeWord("trabajaba", "работал (Imp)", "u6_l0", "verb"),
+            ScopeWord("estudiaba", "учился", "u6_l0", "verb"),
+            ScopeWord("estudiabas", "учился ты", "u6_l0", "verb"),
+            ScopeWord("antes", "раньше", "u6_l0", "adverb"),
+            ScopeWord("a menudo", "часто", "u6_l0", "phrase"),
+            ScopeWord("iba", "ходил (Imp)", "u6_l0", "verb"),
+        ))
+        put("u6_l1", listOf(
+            ScopeWord("comía", "ел (Imp)", "u6_l1", "verb"),
+            ScopeWord("comíamos", "ели (Imp)", "u6_l1", "verb"),
+            ScopeWord("vivía", "жил (Imp)", "u6_l1", "verb"),
+            ScopeWord("era", "был (Imp)", "u6_l1", "verb"),
+            ScopeWord("eras", "был ты", "u6_l1", "verb"),
+            ScopeWord("ibas", "ходил ты", "u6_l1", "verb"),
+            ScopeWord("veía", "видел", "u6_l1", "verb"),
+            ScopeWord("cada día", "каждый день", "u6_l1", "phrase"),
+            ScopeWord("jugaba", "играл", "u6_l1", "verb"),
+        ))
+        put("u6_l2", listOf(
+            ScopeWord("todos los días", "все дни", "u6_l2", "phrase"),
+            ScopeWord("dormí", "спал (Indef)", "u6_l2", "verb"),
+            ScopeWord("dormir", "спать", "u6_l2", "verb"),
+            ScopeWord("mal", "плохо", "u6_l2", "adverb"),
+        ))
+        put("u6_l3", listOf(
+            ScopeWord("teníamos", "имели мы (Imp)", "u6_l3", "verb"),
+            ScopeWord("íbamos", "ходили мы (Imp)", "u6_l3", "verb"),
+            ScopeWord("delgado", "худой", "u6_l3", "adjective"),
+            ScopeWord("pueblo", "посёлок", "u6_l3", "noun"),
+            ScopeWord("conocía", "знал (Imp)", "u6_l3", "verb"),
+        ))
+        put("u6_l4", listOf(
+            ScopeWord("más", "больше", "u6_l4", "comparative"),
+            ScopeWord("menos", "меньше", "u6_l4", "comparative"),
+            ScopeWord("que", "чем (сравн.)", "u6_l4", "comparative"),
+        ))
+        put("u6_l5", listOf(
+            ScopeWord("tan", "так / такой же", "u6_l5", "comparative"),
+            ScopeWord("tanto", "столько (м)", "u6_l5", "comparative"),
+            ScopeWord("tanta", "столько (ж)", "u6_l5", "comparative"),
+            ScopeWord("tantas", "столько (ж.мн)", "u6_l5", "comparative"),
+            ScopeWord("como", "как (сравн.)", "u6_l5", "comparative"),
+            ScopeWord("bonita", "красивая", "u6_l5", "adjective"),
+        ))
+        put("u6_l6", listOf(
+            ScopeWord("el más", "самый", "u6_l6", "superlative"),
+            ScopeWord("el mejor", "лучший", "u6_l6", "superlative"),
+            ScopeWord("la mejor", "лучшая", "u6_l6", "superlative"),
+            ScopeWord("el peor", "худший", "u6_l6", "superlative"),
+            ScopeWord("la peor", "худшая", "u6_l6", "superlative"),
+            ScopeWord("mundo", "мир", "u6_l6", "noun"),
+            ScopeWord("grupo", "группа", "u6_l6", "noun"),
+        ))
+        put("u6_l7", listOf(
+            ScopeWord("simpático", "симпатичный", "u6_l7", "adjective"),
+            ScopeWord("simpática", "симпатичная", "u6_l7", "adjective"),
+            ScopeWord("listo", "умный", "u6_l7", "adjective"),
+            ScopeWord("lista", "умная", "u6_l7", "adjective"),
+            ScopeWord("guapo", "красивый", "u6_l7", "adjective"),
+            ScopeWord("feo", "уродливый", "u6_l7", "adjective"),
+            ScopeWord("joven", "молодой", "u6_l7", "adjective"),
+            ScopeWord("viejo", "старый", "u6_l7", "adjective"),
+        ))
+        put("u6_l8", listOf(
+            ScopeWord("lo", "его / это", "u6_l8", "pronoun"),
+            ScopeWord("la", "её", "u6_l8", "pronoun"),
+            ScopeWord("los", "их (м)", "u6_l8", "pronoun"),
+            ScopeWord("las", "их (ж)", "u6_l8", "pronoun"),
+            ScopeWord("verlo", "видеть его", "u6_l8", "verb"),
+        ))
+        put("u6_l9", listOf(
+            ScopeWord("le", "ему/ей", "u6_l9", "pronoun"),
+            ScopeWord("les", "им", "u6_l9", "pronoun"),
+            ScopeWord("dieron", "дали", "u6_l9", "verb"),
+        ))
+        put("u6_l9_5", listOf(
+            ScopeWord("se lo", "ему это", "u6_l9_5", "pronoun"),
+            ScopeWord("se la", "ему её", "u6_l9_5", "pronoun"),
+            ScopeWord("te lo", "тебе это", "u6_l9_5", "pronoun"),
+            ScopeWord("doy", "даю", "u6_l9_5", "verb"),
+            ScopeWord("mandar", "посылать", "u6_l9_5", "verb"),
+            ScopeWord("mandé", "послал я", "u6_l9_5", "verb"),
+            ScopeWord("mandó", "послал он", "u6_l9_5", "verb"),
+        ))
+        put("u6_l10", listOf(
+            ScopeWord("hace tiempo que", "уже как", "u6_l10", "phrase"),
+            ScopeWord("espero", "жду", "u6_l10", "verb"),
+            ScopeWord("llamo", "звоню", "u6_l10", "verb"),
+            ScopeWord("minutos", "минуты", "u6_l10", "noun"),
+            ScopeWord("años", "годы", "u6_l10", "noun"),
+        ))
+        put("u6_l11", listOf(
+            ScopeWord("probarse", "примерить", "u6_l11", "verb"),
+            ScopeWord("probarme", "примерить мне", "u6_l11", "verb"),
+            ScopeWord("queda", "сидит / остаётся", "u6_l11", "verb"),
+            ScopeWord("queda bien", "хорошо сидит", "u6_l11", "phrase"),
+            ScopeWord("queda mal", "плохо сидит", "u6_l11", "phrase"),
+            ScopeWord("ajustado", "облегающий", "u6_l11", "adjective"),
+            ScopeWord("ancho", "широкий", "u6_l11", "adjective"),
+            ScopeWord("usa", "использует", "u6_l11", "verb"),
+        ))
+        put("u6_l12", listOf(
+            ScopeWord("por la mañana", "утром", "u6_l12", "phrase"),
+            ScopeWord("por teléfono", "по телефону", "u6_l12", "phrase"),
+            ScopeWord("para siempre", "навсегда", "u6_l12", "phrase"),
+            ScopeWord("para mí", "для меня", "u6_l12", "phrase"),
+            ScopeWord("para ti", "для тебя", "u6_l12", "phrase"),
+            ScopeWord("hablamos", "мы говорим", "u6_l12", "verb"),
+            ScopeWord("email", "почта", "u6_l12", "noun"),
+        ))
+        put("u6_l13", listOf(
+            ScopeWord("alegría", "радость", "u6_l13", "emotion"),
+            ScopeWord("tristeza", "грусть", "u6_l13", "emotion"),
+            ScopeWord("miedo", "страх", "u6_l13", "emotion"),
+            ScopeWord("sorpresa", "удивление", "u6_l13", "emotion"),
+            ScopeWord("enfado", "злость", "u6_l13", "emotion"),
+            ScopeWord("triste", "грустный", "u6_l13", "adjective"),
+            ScopeWord("asustado", "испуганный", "u6_l13", "adjective"),
+            ScopeWord("sorprendido", "удивлённый", "u6_l13", "adjective"),
+            ScopeWord("enfadado", "злой", "u6_l13", "adjective"),
+            ScopeWord("asustada", "испуганная", "u6_l13", "adjective"),
+        ))
+        put("u6_l14", listOf(
+            ScopeWord("abuelos", "дедушка и бабушка", "u6_l14", "family"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -889,6 +1023,13 @@ object VocabScope {
         addAll(listOf("u5_l6", "u5_l7", "u5_l8", "u5_l8_5"))                // ir/ser, tener/estar, hacer/querer + Pluscuamp
         addAll(listOf("u5_l9", "u5_l10"))                                    // por/para + диалог
         addAll(listOf("u5_l11", "u5_l12", "u5_l13", "u5_l14"))              // poder/saber, dar/ver/decir, связки, big test
+        // A2 · Блок 2.2 «Раньше и сейчас» — Imperfecto + сравнения + OD/OI
+        addAll(listOf("u6_l0", "u6_l1", "u6_l2", "u6_l3"))                  // Imperfecto AR/ER/IR + ser/ir + vs Indef + описания
+        addAll(listOf("u6_l4", "u6_l5", "u6_l6"))                            // сравнения и превосх.
+        addAll(listOf("u6_l7"))                                              // прилагательные
+        addAll(listOf("u6_l8", "u6_l9", "u6_l9_5"))                          // OD + OI + двойные
+        addAll(listOf("u6_l10", "u6_l11", "u6_l12"))                         // hace+que, мода, por/para
+        addAll(listOf("u6_l13", "u6_l14"))                                   // эмоции + checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 
