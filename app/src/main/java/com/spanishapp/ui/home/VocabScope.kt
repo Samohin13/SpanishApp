@@ -957,6 +957,150 @@ object VocabScope {
             ScopeWord("abuelos", "дедушка и бабушка", "u6_l14", "family"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // A2 · Блок 2.3 «Сейчас и скоро» — Perfecto + Imperativo + герундий
+        // ═══════════════════════════════════════════════════════════════
+        put("u7_l0", listOf(
+            ScopeWord("he", "я (Perfecto)", "u7_l0", "verb"),
+            ScopeWord("has", "ты (Perfecto)", "u7_l0", "verb"),
+            ScopeWord("ha", "он (Perfecto)", "u7_l0", "verb"),
+            ScopeWord("hemos", "мы (Perfecto)", "u7_l0", "verb"),
+            ScopeWord("han", "они (Perfecto)", "u7_l0", "verb"),
+            ScopeWord("comido", "съеденный", "u7_l0", "participle"),
+            ScopeWord("hablado", "сказанный", "u7_l0", "participle"),
+            ScopeWord("trabajado", "проработанный", "u7_l0", "participle"),
+            ScopeWord("vivido", "прожитый", "u7_l0", "participle"),
+            ScopeWord("terminado", "законченный", "u7_l0", "participle"),
+        ))
+        put("u7_l1", listOf(
+            ScopeWord("dicho", "сказанный", "u7_l1", "participle"),
+            ScopeWord("escrito", "написанный", "u7_l1", "participle"),
+            ScopeWord("abierto", "открытый", "u7_l1", "participle"),
+            ScopeWord("puesto", "положенный", "u7_l1", "participle"),
+            ScopeWord("vuelto", "возвращённый", "u7_l1", "participle"),
+            ScopeWord("muerto", "умерший", "u7_l1", "participle"),
+            ScopeWord("puerta", "дверь", "u7_l1", "noun"),
+        ))
+        put("u7_l2", listOf(
+            ScopeWord("esta semana", "на этой неделе", "u7_l2", "phrase"),
+            ScopeWord("este año", "в этом году", "u7_l2", "phrase"),
+            ScopeWord("la semana pasada", "на прошлой неделе", "u7_l2", "phrase"),
+        ))
+        put("u7_l3", listOf(
+            ScopeWord("todavía", "ещё", "u7_l3", "adverb"),
+            ScopeWord("aún", "ещё / до сих пор", "u7_l3", "adverb"),
+            ScopeWord("alguna vez", "когда-нибудь", "u7_l3", "phrase"),
+            ScopeWord("dos veces", "два раза", "u7_l3", "phrase"),
+            ScopeWord("estado", "побывал (часть)", "u7_l3", "participle"),
+            ScopeWord("París", "Париж", "u7_l3", "city"),
+        ))
+        put("u7_l4", listOf(
+            ScopeWord("comiendo", "едящий", "u7_l4", "gerund"),
+            ScopeWord("hablando", "говорящий", "u7_l4", "gerund"),
+            ScopeWord("trabajando", "работающий", "u7_l4", "gerund"),
+            ScopeWord("viviendo", "живущий", "u7_l4", "gerund"),
+            ScopeWord("escribiendo", "пишущий", "u7_l4", "gerund"),
+            ScopeWord("viendo", "видящий", "u7_l4", "gerund"),
+        ))
+        put("u7_l5", listOf(
+            ScopeWord("sigo", "продолжаю", "u7_l5", "verb"),
+            ScopeWord("seguir", "продолжать", "u7_l5", "verb"),
+            ScopeWord("llevo", "у меня уже", "u7_l5", "verb"),
+            ScopeWord("llevar", "нести / иметь время", "u7_l5", "verb"),
+            ScopeWord("estudiando", "учащийся", "u7_l5", "gerund"),
+            ScopeWord("horas", "часы", "u7_l5", "noun"),
+        ))
+        put("u7_l5_5", listOf(
+            ScopeWord("haz", "сделай!", "u7_l5_5", "imperative"),
+            ScopeWord("di", "скажи!", "u7_l5_5", "imperative"),
+            ScopeWord("ven", "приди!", "u7_l5_5", "imperative"),
+            ScopeWord("pon", "положи!", "u7_l5_5", "imperative"),
+            ScopeWord("sal", "выйди!", "u7_l5_5", "imperative"),
+            ScopeWord("ten", "имей!", "u7_l5_5", "imperative"),
+            ScopeWord("ve", "иди!", "u7_l5_5", "imperative"),
+            ScopeWord("sé", "будь!", "u7_l5_5", "imperative"),
+        ))
+        put("u7_l6", listOf(
+            ScopeWord("buscar", "искать", "u7_l6", "verb"),
+            ScopeWord("busco", "ищу", "u7_l6", "verb"),
+            ScopeWord("buscas", "ищешь", "u7_l6", "verb"),
+            ScopeWord("empleo", "работа", "u7_l6", "noun"),
+            ScopeWord("currículum", "резюме", "u7_l6", "noun"),
+            ScopeWord("entrevista", "собеседование", "u7_l6", "noun"),
+            ScopeWord("contrato", "контракт", "u7_l6", "noun"),
+            ScopeWord("sueldo", "зарплата", "u7_l6", "noun"),
+            ScopeWord("jefe", "начальник", "u7_l6", "noun"),
+            ScopeWord("empresa", "компания", "u7_l6", "noun"),
+            ScopeWord("a tiempo completo", "полный день", "u7_l6", "phrase"),
+            ScopeWord("buen", "хороший (м перед сущ)", "u7_l6", "adjective"),
+        ))
+        put("u7_l7", listOf(
+            ScopeWord("habla", "говори!", "u7_l7", "imperative"),
+            ScopeWord("come", "ешь!", "u7_l7", "imperative"),
+            ScopeWord("escribe", "пиши!", "u7_l7", "imperative"),
+            ScopeWord("trabaja", "работай!", "u7_l7", "imperative"),
+            ScopeWord("abre", "открой!", "u7_l7", "imperative"),
+            ScopeWord("verduras", "овощи", "u7_l7", "food"),
+            ScopeWord("despacio", "медленно", "u7_l7", "adverb"),
+            ScopeWord("así", "так", "u7_l7", "adverb"),
+        ))
+        put("u7_l8", listOf(
+            ScopeWord("hables", "говори (Subj)", "u7_l8", "verb"),
+            ScopeWord("comas", "ешь (Subj)", "u7_l8", "verb"),
+            ScopeWord("escribas", "пиши (Subj)", "u7_l8", "verb"),
+            ScopeWord("hagas", "делай (Subj)", "u7_l8", "verb"),
+        ))
+        put("u7_l9", listOf(
+            ScopeWord("síntomas", "симптомы", "u7_l9", "health"),
+            ScopeWord("tos", "кашель", "u7_l9", "health"),
+            ScopeWord("dolor", "боль", "u7_l9", "health"),
+            ScopeWord("receta", "рецепт", "u7_l9", "health"),
+            ScopeWord("resfriado", "простужен", "u7_l9", "adjective"),
+            ScopeWord("garganta", "горло", "u7_l9", "body"),
+            ScopeWord("salud", "здоровье", "u7_l9", "health"),
+        ))
+        put("u7_l10", listOf(
+            ScopeWord("enseño", "показываю / преподаю", "u7_l10", "verb"),
+            ScopeWord("expliqué", "объяснил я", "u7_l10", "verb"),
+            ScopeWord("explicar", "объяснять", "u7_l10", "verb"),
+            ScopeWord("se las", "им их", "u7_l10", "pronoun"),
+        ))
+        put("u7_l11", listOf(
+            ScopeWord("habitación", "номер / комната", "u7_l11", "noun"),
+            ScopeWord("reserva", "бронь", "u7_l11", "noun"),
+            ScopeWord("vuelo", "рейс", "u7_l11", "noun"),
+            ScopeWord("equipaje", "багаж", "u7_l11", "noun"),
+            ScopeWord("pasaporte", "паспорт", "u7_l11", "noun"),
+            ScopeWord("aeropuerto", "аэропорт", "u7_l11", "place"),
+            ScopeWord("hotel", "отель", "u7_l11", "place"),
+            ScopeWord("reservar", "бронировать", "u7_l11", "verb"),
+            ScopeWord("recepcionista", "администратор", "u7_l11", "noun"),
+            ScopeWord("nombre", "имя", "u7_l11", "noun"),
+        ))
+        put("u7_l12", listOf(
+            ScopeWord("creo", "думаю", "u7_l12", "verb"),
+            ScopeWord("pienso", "считаю", "u7_l12", "verb"),
+            ScopeWord("veo", "вижу", "u7_l12", "verb"),
+            ScopeWord("es verdad", "это правда", "u7_l12", "phrase"),
+        ))
+        put("u7_l13", listOf(
+            ScopeWord("tapas", "тапас", "u7_l13", "food"),
+            ScopeWord("paella", "паэлья", "u7_l13", "food"),
+            ScopeWord("tortilla española", "испанский омлет", "u7_l13", "food"),
+            ScopeWord("gazpacho", "холодный суп", "u7_l13", "food"),
+            ScopeWord("jamón", "хамон", "u7_l13", "food"),
+            ScopeWord("sangría", "сангрия", "u7_l13", "food"),
+            ScopeWord("churros", "чуррос", "u7_l13", "food"),
+            ScopeWord("probar", "пробовать", "u7_l13", "verb"),
+            ScopeWord("patatas", "картошка", "u7_l13", "food"),
+        ))
+        put("u7_l14", listOf(
+            ScopeWord("ido", "ходил (part)", "u7_l14", "participle"),
+            ScopeWord("vuelto", "вернулся", "u7_l14", "participle"),
+            ScopeWord("tarde", "поздно", "u7_l14", "adverb"),
+            ScopeWord("ocupado", "занятой", "u7_l14", "adjective"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -1030,6 +1174,12 @@ object VocabScope {
         addAll(listOf("u6_l8", "u6_l9", "u6_l9_5"))                          // OD + OI + двойные
         addAll(listOf("u6_l10", "u6_l11", "u6_l12"))                         // hace+que, мода, por/para
         addAll(listOf("u6_l13", "u6_l14"))                                   // эмоции + checkpoint
+        // A2 · Блок 2.3 «Сейчас и скоро» — Perfecto + Imperativo + герундий
+        addAll(listOf("u7_l0", "u7_l1", "u7_l2", "u7_l3"))                  // Perfecto + irreg part + vs Indef + ya/todavía
+        addAll(listOf("u7_l4", "u7_l5", "u7_l5_5"))                          // estar+ger + seguir/llevar + Imperativo irreg
+        addAll(listOf("u7_l6", "u7_l7", "u7_l8"))                           // работа + Imperativo +/-
+        addAll(listOf("u7_l9", "u7_l10", "u7_l11"))                         // врач + OD/OI + путешествие
+        addAll(listOf("u7_l12", "u7_l13", "u7_l14"))                        // creo que + кухня + checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 
