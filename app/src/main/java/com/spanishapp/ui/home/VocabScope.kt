@@ -680,6 +680,149 @@ object VocabScope {
             ScopeWord("billete", "билет/купюра", "u4_l14", "noun"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // A2 · Блок 2.1 «В прошлом» — Pretérito Indefinido
+        // ═══════════════════════════════════════════════════════════════
+        put("u5_l0", listOf(
+            ScopeWord("anoche", "прошлой ночью", "u5_l0", "adverb"),
+            ScopeWord("hace dos días", "2 дня назад", "u5_l0", "phrase"),
+            ScopeWord("pizza", "пицца", "u5_l0", "food"),
+        ))
+        put("u5_l1", listOf(
+            ScopeWord("hablé", "говорил (я)", "u5_l1", "verb"),
+            ScopeWord("hablaste", "говорил (ты)", "u5_l1", "verb"),
+            ScopeWord("habló", "говорил (он)", "u5_l1", "verb"),
+            ScopeWord("hablaron", "говорили (они)", "u5_l1", "verb"),
+            ScopeWord("trabajé", "работал (я)", "u5_l1", "verb"),
+            ScopeWord("trabajaron", "работали (они)", "u5_l1", "verb"),
+            ScopeWord("cantar", "петь", "u5_l1", "verb"),
+            ScopeWord("cantaste", "пел (ты)", "u5_l1", "verb"),
+        ))
+        put("u5_l2", listOf(
+            ScopeWord("comí", "ел (я)", "u5_l2", "verb"),
+            ScopeWord("comiste", "ел (ты)", "u5_l2", "verb"),
+            ScopeWord("comió", "ел (он)", "u5_l2", "verb"),
+            ScopeWord("vivió", "жил (он)", "u5_l2", "verb"),
+            ScopeWord("escribió", "писал (он)", "u5_l2", "verb"),
+            ScopeWord("bebí", "пил (я)", "u5_l2", "verb"),
+        ))
+        put("u5_l3", listOf(
+            ScopeWord("fui", "был / пошёл (я)", "u5_l3", "verb"),
+            ScopeWord("estuve", "находился (я)", "u5_l3", "verb"),
+        ))
+        put("u5_l4", listOf(
+            ScopeWord("primero", "сначала", "u5_l4", "adverb"),
+            ScopeWord("después", "потом", "u5_l4", "adverb"),
+            ScopeWord("luego", "затем", "u5_l4", "adverb"),
+            ScopeWord("al final", "в конце", "u5_l4", "phrase"),
+            ScopeWord("por la mañana", "утром", "u5_l4", "phrase"),
+            ScopeWord("desayuné", "завтракал (я)", "u5_l4", "verb"),
+            ScopeWord("hiciste", "ты сделал", "u5_l4", "verb"),
+            ScopeWord("cené", "ужинал (я)", "u5_l4", "verb"),
+        ))
+        put("u5_l5", listOf(
+            ScopeWord("compré", "купил (я)", "u5_l5", "verb"),
+            ScopeWord("compraste", "купил (ты)", "u5_l5", "verb"),
+            ScopeWord("compró", "купил (он)", "u5_l5", "verb"),
+            ScopeWord("compramos", "купили (мы)", "u5_l5", "verb"),
+            ScopeWord("vivieron", "жили (они)", "u5_l5", "verb"),
+            ScopeWord("comieron", "ели (они)", "u5_l5", "verb"),
+            ScopeWord("escribiste", "писал (ты)", "u5_l5", "verb"),
+        ))
+        put("u5_l6", listOf(
+            ScopeWord("fuiste", "был / пошёл (ты)", "u5_l6", "verb"),
+            ScopeWord("fue", "был / пошёл (он)", "u5_l6", "verb"),
+            ScopeWord("fuimos", "были / пошли (мы)", "u5_l6", "verb"),
+            ScopeWord("fueron", "были / пошли (они)", "u5_l6", "verb"),
+        ))
+        put("u5_l7", listOf(
+            ScopeWord("tuve", "у меня было", "u5_l7", "verb"),
+            ScopeWord("tuviste", "у тебя было", "u5_l7", "verb"),
+            ScopeWord("tuvo", "у него было", "u5_l7", "verb"),
+            ScopeWord("tuvimos", "у нас было", "u5_l7", "verb"),
+            ScopeWord("tuvieron", "у них было", "u5_l7", "verb"),
+            ScopeWord("estuviste", "ты находился", "u5_l7", "verb"),
+            ScopeWord("estuvo", "он находился", "u5_l7", "verb"),
+            ScopeWord("estuvieron", "они находились", "u5_l7", "verb"),
+            ScopeWord("idea", "идея", "u5_l7", "noun"),
+            ScopeWord("reunión", "встреча", "u5_l7", "noun"),
+        ))
+        put("u5_l8", listOf(
+            ScopeWord("hice", "сделал (я)", "u5_l8", "verb"),
+            ScopeWord("hiciste", "сделал (ты)", "u5_l8", "verb"),
+            ScopeWord("hizo", "сделал (он)", "u5_l8", "verb"),
+            ScopeWord("hicieron", "сделали (они)", "u5_l8", "verb"),
+            ScopeWord("quise", "захотел (я)", "u5_l8", "verb"),
+            ScopeWord("quisiste", "захотел (ты)", "u5_l8", "verb"),
+            ScopeWord("tarea", "задание", "u5_l8", "noun"),
+            ScopeWord("error", "ошибка", "u5_l8", "noun"),
+        ))
+        put("u5_l8_5", listOf(
+            ScopeWord("había", "уже было (я)", "u5_l8_5", "verb"),
+            ScopeWord("habías", "уже было (ты)", "u5_l8_5", "verb"),
+            ScopeWord("habíamos", "уже было (мы)", "u5_l8_5", "verb"),
+            ScopeWord("habían", "уже было (они)", "u5_l8_5", "verb"),
+            ScopeWord("ya", "уже", "u5_l8_5", "adverb"),
+            ScopeWord("ido", "ушедший", "u5_l8_5", "participle"),
+            ScopeWord("visto", "виденный", "u5_l8_5", "participle"),
+            ScopeWord("hecho", "сделанный", "u5_l8_5", "participle"),
+            ScopeWord("película", "фильм", "u5_l8_5", "noun"),
+        ))
+        put("u5_l9", listOf(
+            ScopeWord("para", "для / к (цель)", "u5_l9", "preposition"),
+            ScopeWord("por", "за / по / через", "u5_l9", "preposition"),
+            ScopeWord("aprobar", "сдать / одобрить", "u5_l9", "verb"),
+            ScopeWord("regalo", "подарок", "u5_l9", "noun"),
+            ScopeWord("vivir", "жить", "u5_l9", "verb"),
+            ScopeWord("calle", "улица", "u5_l9", "noun"),
+            ScopeWord("parque", "парк", "u5_l9", "noun"),
+        ))
+        put("u5_l10", listOf(
+            ScopeWord("fin de semana", "выходные", "u5_l10", "phrase"),
+            ScopeWord("pasé", "провёл", "u5_l10", "verb"),
+            ScopeWord("paso", "провожу", "u5_l10", "verb"),
+        ))
+        put("u5_l11", listOf(
+            ScopeWord("pude", "смог (я)", "u5_l11", "verb"),
+            ScopeWord("pudiste", "смог (ты)", "u5_l11", "verb"),
+            ScopeWord("pudo", "смог (он)", "u5_l11", "verb"),
+            ScopeWord("pudieron", "смогли (они)", "u5_l11", "verb"),
+            ScopeWord("supe", "узнал (я)", "u5_l11", "verb"),
+            ScopeWord("supiste", "узнал (ты)", "u5_l11", "verb"),
+            ScopeWord("supo", "узнал (он)", "u5_l11", "verb"),
+            ScopeWord("verdad", "правда", "u5_l11", "noun"),
+            ScopeWord("saber", "знать (факт)", "u5_l11", "verb"),
+        ))
+        put("u5_l12", listOf(
+            ScopeWord("di", "дал (я)", "u5_l12", "verb"),
+            ScopeWord("diste", "дал (ты)", "u5_l12", "verb"),
+            ScopeWord("dio", "дал (он)", "u5_l12", "verb"),
+            ScopeWord("dieron", "дали (они)", "u5_l12", "verb"),
+            ScopeWord("vi", "видел (я)", "u5_l12", "verb"),
+            ScopeWord("viste", "видел (ты)", "u5_l12", "verb"),
+            ScopeWord("vio", "видел (он)", "u5_l12", "verb"),
+            ScopeWord("vimos", "видели (мы)", "u5_l12", "verb"),
+            ScopeWord("dije", "сказал (я)", "u5_l12", "verb"),
+            ScopeWord("dijiste", "сказал (ты)", "u5_l12", "verb"),
+            ScopeWord("dijo", "сказал (он)", "u5_l12", "verb"),
+            ScopeWord("dijeron", "сказали (они)", "u5_l12", "verb"),
+        ))
+        put("u5_l13", listOf(
+            ScopeWord("porque", "потому что", "u5_l13", "conjunction"),
+            ScopeWord("entonces", "тогда", "u5_l13", "adverb"),
+            ScopeWord("por eso", "поэтому", "u5_l13", "phrase"),
+            ScopeWord("después de", "после того как", "u5_l13", "phrase"),
+            ScopeWord("ocupado", "занятой", "u5_l13", "adjective"),
+            ScopeWord("vine", "пришёл (я)", "u5_l13", "verb"),
+            ScopeWord("viniste", "пришёл (ты)", "u5_l13", "verb"),
+            ScopeWord("vino (verb)", "пришёл (он)", "u5_l13", "verb"),
+        ))
+        put("u5_l14", listOf(
+            ScopeWord("estaban", "они находились (Imperfect)", "u5_l14", "verb"),
+            ScopeWord("muy buena", "очень хорошая", "u5_l14", "phrase"),
+            ScopeWord("comimos", "ели (мы)", "u5_l14", "verb"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -740,6 +883,12 @@ object VocabScope {
         addAll(listOf("u4_l10", "u4_l11"))                                  // одежда + погода
         addAll(listOf("u4_l12", "u4_l13", "u4_l13_5"))                      // мой день + возвратные + yo формы
         addAll(listOf("u4_l14"))                                             // ФИНАЛЬНЫЙ A1 checkpoint
+        // A2 · Блок 2.1 «В прошлом» — Pretérito Indefinido
+        addAll(listOf("u5_l0", "u5_l1", "u5_l2", "u5_l3"))                  // intro + AR + ER/IR + ser/estar
+        addAll(listOf("u5_l4", "u5_l5"))                                     // истории + mini-checkpoint
+        addAll(listOf("u5_l6", "u5_l7", "u5_l8", "u5_l8_5"))                // ir/ser, tener/estar, hacer/querer + Pluscuamp
+        addAll(listOf("u5_l9", "u5_l10"))                                    // por/para + диалог
+        addAll(listOf("u5_l11", "u5_l12", "u5_l13", "u5_l14"))              // poder/saber, dar/ver/decir, связки, big test
         // (остальные блоки добавляются по мере прохождения)
     }
 
