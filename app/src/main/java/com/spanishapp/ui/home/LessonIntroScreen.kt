@@ -248,7 +248,15 @@ private fun buildActivityRoute(
     lessonIndex: Int
 ): String {
     val cat = lesson.category
-    val hasSession = LessonContentData.lessons["u${unitId}_l${lessonIndex}"] != null
+    val lessonId = "u${unitId}_l${lessonIndex}"
+
+    // Если для этого урока есть checkpoint-сценарий — отправляем туда вместо обычной сессии.
+    // Используется для всех 21 финалов блоков из xlsx (u1_l14, u4_l14, u8_l14 и т.д.).
+    if (com.spanishapp.data.checkpoint.CheckpointContentData.byId(lessonId) != null) {
+        return "checkpoint/$lessonId"
+    }
+
+    val hasSession = LessonContentData.lessons[lessonId] != null
     return when (lesson.type) {
         "content" -> if (hasSession) "lesson_session/$unitId/$lessonIndex"
                      else "lesson_content/$unitId/$lessonIndex"

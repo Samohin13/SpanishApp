@@ -437,6 +437,14 @@ object Navigation {
             composable("theory_library") {
                 com.spanishapp.ui.theory.TheoryLibraryScreen(navController)
             }
+
+            // ── Checkpoint-сценарии (18-актные мини-истории) ──
+            composable(
+                "checkpoint/{checkpointId}",
+                arguments = listOf(navArgument("checkpointId") { type = NavType.StringType })
+            ) {
+                com.spanishapp.ui.checkpoint.CheckpointSessionScreen(navController)
+            }
         }
     }
 }
