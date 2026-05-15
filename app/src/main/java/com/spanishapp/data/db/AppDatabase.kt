@@ -330,6 +330,10 @@ abstract class AppDatabase : RoomDatabase() {
         // прочтения трекается отдельно от прохождения практики.
         val MIGRATION_20_21 = object : Migration(20, 21) {
             override fun migrate(db: SupportSQLiteDatabase) {
+                // ВАЖНО: НЕ создавать индекс — @Entity не объявляет его через
+                // indices = [], а Room при старте валидирует схему. Лишний индекс
+                // вызвал бы IllegalStateException «expected: ... found: ...».
+                // Таблица маленькая (≤ 200 записей теорий) — ORDER BY работает быстро без индекса.
                 db.execSQL("""
                     CREATE TABLE IF NOT EXISTS theory_progress (
                         lesson_id TEXT NOT NULL PRIMARY KEY,
@@ -338,7 +342,6 @@ abstract class AppDatabase : RoomDatabase() {
                         read_count INTEGER NOT NULL DEFAULT 0
                     )
                 """.trimIndent())
-                db.execSQL("CREATE INDEX IF NOT EXISTS index_theory_progress_last_read ON theory_progress(last_read_at DESC)")
             }
         }
 

@@ -72,9 +72,22 @@
 -dontwarn androidx.compose.**
 
 # ── Glance / Widgets ───────────────────────────────────────────────
+# Glance использует рефлексию для composition + RemoteViews. Без keep всех
+# androidx.glance.* классов R8 их вырезает → виджет крашится при загрузке
+# с надписью «Не удалось загрузить виджет» на главном экране.
+-keep class androidx.glance.** { *; }
+-keepclassmembers class androidx.glance.** { *; }
+-dontwarn androidx.glance.**
 -keep class * extends androidx.glance.appwidget.GlanceAppWidget { *; }
 -keep class * extends androidx.glance.appwidget.GlanceAppWidgetReceiver { *; }
 -keep class com.spanishapp.widget.** { *; }
+# Glance Composable-функции: имена и сигнатуры нужны в рантайме.
+-keepclassmembers class com.spanishapp.widget.** {
+    @androidx.compose.runtime.Composable <methods>;
+}
+# DataStore Preferences (Glance state persistence)
+-keep class androidx.datastore.*.** { *; }
+-dontwarn androidx.datastore.**
 
 # ── WorkManager ────────────────────────────────────────────────────
 -keep class androidx.work.** { *; }
@@ -100,6 +113,30 @@
 # ── Игры: Compose-композиции иногда теряются при R8 ────────────────
 -keep class com.spanishapp.ui.games.** { *; }
 -keep class com.spanishapp.ui.flashcards.** { *; }
+
+# ── Курс v2.0 (1.3.0): theory + checkpoint + V2 контент ────────────
+# R8 без этих rules ломает релизную сборку — статичные singleton-объекты
+# с data classes теряют поля/companion, NavController.savedStateHandle
+# не может прочитать args, Compose-композиции в Reader/Session экранах
+# теряются при минификации.
+-keep class com.spanishapp.data.theory.** { *; }
+-keep class com.spanishapp.data.checkpoint.** { *; }
+-keep class com.spanishapp.ui.theory.** { *; }
+-keep class com.spanishapp.ui.checkpoint.** { *; }
+-keep class com.spanishapp.ui.home.LessonContentDataV2 { *; }
+-keep class com.spanishapp.ui.home.VocabScope { *; }
+-keep class com.spanishapp.ui.home.VocabScope$ScopeWord { *; }
+-keep class com.spanishapp.ui.home.LessonContent { *; }
+-keep class com.spanishapp.ui.home.LessonSection { *; }
+-keep class com.spanishapp.ui.home.LessonItem { *; }
+-keep class com.spanishapp.ui.home.Exercise { *; }
+-keep class com.spanishapp.ui.home.ExerciseType { *; }
+-keep class com.spanishapp.ui.home.ExercisePlan { *; }
+# Enum с values()/valueOf() через рефлексию — must be kept
+-keepclassmembers enum com.spanishapp.** {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 
 # Снятие предупреждений по платформам
 -dontwarn java.lang.management.**
