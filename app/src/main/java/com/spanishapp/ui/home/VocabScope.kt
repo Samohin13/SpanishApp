@@ -1362,6 +1362,106 @@ object VocabScope {
             ScopeWord("tranquila", "спокойная", "u9_l14", "adjective"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // B1 · Блок 3.2 «Condicional» — гипотезы, советы, вежливость
+        // ═══════════════════════════════════════════════════════════════
+        put("u10_l0", listOf(
+            ScopeWord("comería", "ел бы", "u10_l0", "verb"),
+            ScopeWord("hablaría", "говорил бы", "u10_l0", "verb"),
+        ))
+        put("u10_l1", listOf(
+            ScopeWord("hablarías", "говорил бы (ты)", "u10_l1", "verb"),
+            ScopeWord("hablaríamos", "говорили бы", "u10_l1", "verb"),
+            ScopeWord("hablarían", "говорили бы (они)", "u10_l1", "verb"),
+            ScopeWord("trabajaría", "работал бы", "u10_l1", "verb"),
+            ScopeWord("trabajarían", "работали бы", "u10_l1", "verb"),
+            ScopeWord("estudiarías", "учился бы", "u10_l1", "verb"),
+        ))
+        put("u10_l2", listOf(
+            ScopeWord("comerías", "ел бы (ты)", "u10_l2", "verb"),
+            ScopeWord("comeríamos", "ели бы", "u10_l2", "verb"),
+            ScopeWord("viviría", "жил бы", "u10_l2", "verb"),
+            ScopeWord("vivirían", "жили бы", "u10_l2", "verb"),
+            ScopeWord("beberían", "пили бы", "u10_l2", "verb"),
+        ))
+        put("u10_l3", listOf(
+            ScopeWord("habría", "имел бы (вспом)", "u10_l3", "verb"),
+            ScopeWord("pondría", "положил бы", "u10_l3", "verb"),
+            ScopeWord("podrías", "мог бы (ты)", "u10_l3", "verb"),
+            ScopeWord("sabría", "знал бы", "u10_l3", "verb"),
+        ))
+        put("u10_l4", listOf(
+            ScopeWord("haría", "сделал бы", "u10_l4", "verb"),
+            ScopeWord("querría", "хотел бы (Cond)", "u10_l4", "verb"),
+            ScopeWord("vendría", "пришёл бы", "u10_l4", "verb"),
+            ScopeWord("saldría", "вышел бы", "u10_l4", "verb"),
+            ScopeWord("diría", "сказал бы", "u10_l4", "verb"),
+            ScopeWord("posible", "возможный", "u10_l4", "adjective"),
+        ))
+        put("u10_l5", listOf(
+            ScopeWord("Si", "если", "u10_l5", "conjunction"),
+            ScopeWord("vienes", "приходишь", "u10_l5", "verb"),
+            ScopeWord("comeré", "поем", "u10_l5", "verb"),
+        ))
+        put("u10_l6", listOf(
+            ScopeWord("hablara", "(чтобы) говорил (Imp Subj)", "u10_l6", "verb"),
+            ScopeWord("hablase", "(чтобы) говорил (Imp Subj 2)", "u10_l6", "verb"),
+            ScopeWord("tuviera", "(чтобы) имел", "u10_l6", "verb"),
+            ScopeWord("quisiera", "хотел бы (вежл)", "u10_l6", "verb"),
+        ))
+        put("u10_l7", listOf(
+            ScopeWord("hablaras", "(чтобы) ты говорил", "u10_l7", "verb"),
+            ScopeWord("habláramos", "(чтобы) мы говорили", "u10_l7", "verb"),
+            ScopeWord("hablaran", "(чтобы) говорили", "u10_l7", "verb"),
+            ScopeWord("comiera", "(чтобы) ел", "u10_l7", "verb"),
+            ScopeWord("vivieran", "(чтобы) жили", "u10_l7", "verb"),
+            ScopeWord("vivieras", "(чтобы) ты жил", "u10_l7", "verb"),
+            ScopeWord("trabajara", "(чтобы) работал", "u10_l7", "verb"),
+        ))
+        put("u10_l8", listOf(
+            ScopeWord("fuera", "(чтобы) был / шёл (Imp Subj)", "u10_l8", "verb"),
+            ScopeWord("fueras", "(чтобы) ты был", "u10_l8", "verb"),
+            ScopeWord("hiciera", "(чтобы) сделал", "u10_l8", "verb"),
+            ScopeWord("dijera", "(чтобы) сказал", "u10_l8", "verb"),
+            ScopeWord("estuviera", "(чтобы) находился", "u10_l8", "verb"),
+            ScopeWord("pudiera", "(чтобы) мог", "u10_l8", "verb"),
+            ScopeWord("supiera", "(чтобы) знал", "u10_l8", "verb"),
+        ))
+        put("u10_l9", listOf(
+            ScopeWord("viajaría", "путешествовал бы", "u10_l9", "verb"),
+            ScopeWord("rico", "богатый", "u10_l9", "adjective"),
+            ScopeWord("millón", "миллион", "u10_l9", "noun"),
+        ))
+        put("u10_l10", listOf(
+            ScopeWord("en tu lugar", "на твоём месте", "u10_l10", "phrase"),
+            ScopeWord("Yo que tú", "я бы на твоём месте", "u10_l10", "phrase"),
+            ScopeWord("recomiendo", "советую", "u10_l10", "verb"),
+            ScopeWord("recomendar", "советовать", "u10_l10", "verb"),
+            ScopeWord("debería", "следовало бы", "u10_l10", "verb"),
+            ScopeWord("deberías", "тебе следовало бы", "u10_l10", "verb"),
+            ScopeWord("me quedaría", "я бы остался", "u10_l10", "verb"),
+        ))
+        put("u10_l11", listOf(
+            ScopeWord("¿Te importaría?", "не возражаешь?", "u10_l11", "phrase"),
+            ScopeWord("¿Podrías?", "не мог бы?", "u10_l11", "phrase"),
+            ScopeWord("¿Sería posible?", "возможно ли?", "u10_l11", "phrase"),
+            ScopeWord("Me gustaría", "мне бы хотелось", "u10_l11", "phrase"),
+            ScopeWord("cerrar", "закрывать", "u10_l11", "verb"),
+            ScopeWord("esperar", "ждать", "u10_l11", "verb"),
+        ))
+        put("u10_l12", listOf(
+            ScopeWord("vinieras", "(чтобы) ты пришёл", "u10_l12", "verb"),
+            ScopeWord("estudiaras", "(чтобы) ты учился", "u10_l12", "verb"),
+            ScopeWord("te quedaras", "(чтобы) ты остался", "u10_l12", "verb"),
+        ))
+        put("u10_l13", listOf(
+            ScopeWord("futuro", "будущее", "u10_l13", "noun"),
+        ))
+        put("u10_l14", listOf(
+            ScopeWord("ayudaría", "помог бы", "u10_l14", "verb"),
+            ScopeWord("te ayudaría", "я бы тебе помог", "u10_l14", "verb"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -1454,6 +1554,11 @@ object VocabScope {
         addAll(listOf("u9_l5", "u9_l6", "u9_l7", "u9_l8", "u9_l9"))         // триггеры
         addAll(listOf("u9_l10", "u9_l11", "u9_l11_5"))                      // ojalá + para que + antes de que
         addAll(listOf("u9_l12", "u9_l13", "u9_l14"))                        // cuando + aunque + checkpoint
+        // B1 · Блок 3.2 «Condicional»
+        addAll(listOf("u10_l0", "u10_l1", "u10_l2", "u10_l3", "u10_l4"))    // Cond intro + reg + irreg
+        addAll(listOf("u10_l5"))                                             // Si тип 1
+        addAll(listOf("u10_l6", "u10_l7", "u10_l8", "u10_l9"))              // Imp.Subj + Si тип 2
+        addAll(listOf("u10_l10", "u10_l11", "u10_l12", "u10_l13", "u10_l14")) // советы + вежл + quizás + me gustaría que + checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 
