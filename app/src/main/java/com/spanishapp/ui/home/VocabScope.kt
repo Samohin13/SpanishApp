@@ -1715,6 +1715,98 @@ object VocabScope {
             ScopeWord("marketing", "маркетинг", "u12_l14", "noun"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // B2 · Блок 4.1 «Subjuntivo Avanzado» — Imp+Pluscuamp Subj, Cond.Comp.
+        // ═══════════════════════════════════════════════════════════════
+        put("u13_l0", listOf(
+            ScopeWord("hablase", "(чтобы) говорил (-se)", "u13_l0", "verb"),
+            ScopeWord("comiese", "(чтобы) ел (-se)", "u13_l0", "verb"),
+            ScopeWord("viviese", "(чтобы) жил (-se)", "u13_l0", "verb"),
+            ScopeWord("tuviese", "(чтобы) имел (-se)", "u13_l0", "verb"),
+            ScopeWord("fuese", "(чтобы) был (-se)", "u13_l0", "verb"),
+        ))
+        put("u13_l1", listOf(
+            ScopeWord("hubiera", "(чтобы) имел (вспом)", "u13_l1", "verb"),
+        ))
+        put("u13_l2", listOf(
+            ScopeWord("genial", "круто", "u13_l2", "adjective"),
+        ))
+        put("u13_l3", listOf(
+            ScopeWord("respuesta", "ответ", "u13_l3", "noun"),
+            ScopeWord("estuviera", "(чтобы) находился", "u13_l3", "verb"),
+        ))
+        put("u13_l4", listOf(
+            ScopeWord("como si", "как будто", "u13_l4", "phrase"),
+            ScopeWord("conociera", "(чтобы) знал (Imp Subj)", "u13_l4", "verb"),
+        ))
+        put("u13_l5", listOf(
+            ScopeWord("vinieran", "(чтобы) пришли", "u13_l5", "verb"),
+        ))
+        put("u13_l5_5", listOf(
+            ScopeWord("acaso", "разве (книжн)", "u13_l5_5", "adverb"),
+        ))
+        put("u13_l6", listOf(
+            ScopeWord("hubieras", "ты бы имел", "u13_l6", "verb"),
+            ScopeWord("hubiéramos", "мы бы имели", "u13_l6", "verb"),
+            ScopeWord("hubieran", "они бы имели", "u13_l6", "verb"),
+            ScopeWord("hubiese", "(чтобы) имел (-se)", "u13_l6", "verb"),
+            ScopeWord("estudiado", "выученный", "u13_l6", "participle"),
+            ScopeWord("sabido", "знаемый", "u13_l6", "participle"),
+            ScopeWord("fantasma", "привидение", "u13_l6", "noun"),
+        ))
+        put("u13_l7", listOf(
+            ScopeWord("habría sabido", "знал бы (тогда)", "u13_l7", "verb"),
+            ScopeWord("habría hecho", "сделал бы", "u13_l7", "verb"),
+            ScopeWord("habría ido", "пошёл бы", "u13_l7", "verb"),
+            ScopeWord("habría ayudado", "помог бы", "u13_l7", "verb"),
+            ScopeWord("habríamos ido", "мы бы пошли", "u13_l7", "verb"),
+        ))
+        put("u13_l8", listOf(
+            ScopeWord("habría", "я бы (вспом)", "u13_l8", "verb"),
+            ScopeWord("habrías", "ты бы", "u13_l8", "verb"),
+            ScopeWord("habría (él)", "он бы", "u13_l8", "verb"),
+            ScopeWord("habríamos", "мы бы", "u13_l8", "verb"),
+            ScopeWord("habrían", "они бы", "u13_l8", "verb"),
+            ScopeWord("habría visto", "видел бы", "u13_l8", "verb"),
+        ))
+        put("u13_l9", listOf(
+            ScopeWord("Que yo sepa", "насколько знаю", "u13_l9", "phrase"),
+            ScopeWord("Que yo recuerde", "насколько помню", "u13_l9", "phrase"),
+            ScopeWord("Cueste lo que cueste", "чего бы ни стоило", "u13_l9", "phrase"),
+            ScopeWord("Pase lo que pase", "что бы ни случилось", "u13_l9", "phrase"),
+            ScopeWord("Sea como sea", "как бы ни было", "u13_l9", "phrase"),
+        ))
+        put("u13_l10", listOf(
+            ScopeWord("me canse", "(чтобы) устал", "u13_l10", "verb"),
+        ))
+        put("u13_l11", listOf(
+            ScopeWord("a fin de que", "с тем чтобы", "u13_l11", "phrase"),
+            ScopeWord("con el objeto de que", "с целью чтобы", "u13_l11", "phrase"),
+            ScopeWord("estudien", "(чтобы) учились", "u13_l11", "verb"),
+            ScopeWord("entiendan", "(чтобы) поняли", "u13_l11", "verb"),
+        ))
+        put("u13_l12", listOf(
+            ScopeWord("en cuanto", "как только", "u13_l12", "phrase"),
+            ScopeWord("hasta que", "пока не", "u13_l12", "phrase"),
+            ScopeWord("mientras", "пока", "u13_l12", "phrase"),
+            ScopeWord("llegues", "(когда) придёшь", "u13_l12", "verb"),
+            ScopeWord("vuelvas", "(когда) вернёшься", "u13_l12", "verb"),
+            ScopeWord("aviso", "сообщаю", "u13_l12", "verb"),
+        ))
+        put("u13_l13", listOf(
+            ScopeWord("cualquier", "любой", "u13_l13", "adjective"),
+            ScopeWord("cualquier cosa", "что угодно", "u13_l13", "phrase"),
+            ScopeWord("jardín", "сад", "u13_l13", "noun"),
+            ScopeWord("ayude", "(чтобы) помог", "u13_l13", "verb"),
+            ScopeWord("digas", "(чтобы) сказал", "u13_l13", "verb"),
+        ))
+        put("u13_l14", listOf(
+            ScopeWord("arrepentirse", "сожалеть", "u13_l14", "verb"),
+            ScopeWord("me arrepiento", "сожалею", "u13_l14", "verb"),
+            ScopeWord("examen", "экзамен", "u13_l14", "noun"),
+            ScopeWord("aprobado", "сдан", "u13_l14", "participle"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -1824,6 +1916,11 @@ object VocabScope {
         addAll(listOf("u12_l6", "u12_l7", "u12_l8", "u12_l9", "u12_l9_5")) // идиомы dar/tener/hacer/llevar/poner
         addAll(listOf("u12_l10", "u12_l11"))                                // регистр + заявление
         addAll(listOf("u12_l12", "u12_l13", "u12_l14"))                     // дебаты + аргументация + ФИНАЛ B1
+        // B2 · Блок 4.1 «Subjuntivo Avanzado»
+        addAll(listOf("u13_l0", "u13_l1", "u13_l2", "u13_l3", "u13_l4", "u13_l5", "u13_l5_5"))
+        addAll(listOf("u13_l6", "u13_l7", "u13_l8"))                        // Pluscuamp Subj + Cond.Comp.
+        addAll(listOf("u13_l9", "u13_l10"))                                 // устойчивые + aunque
+        addAll(listOf("u13_l11", "u13_l12", "u13_l13", "u13_l14"))         // придаточные + checkpoint
         // (остальные блоки добавляются по мере прохождения)
     }
 
