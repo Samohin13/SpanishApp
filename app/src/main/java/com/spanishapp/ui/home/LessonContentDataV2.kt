@@ -30,7 +30,7 @@ package com.spanishapp.ui.home
  */
 object LessonContentDataV2 {
 
-    fun allLessons(): Map<String, LessonContent> = blockA1_1()
+    fun allLessons(): Map<String, LessonContent> = blockA1_1() + blockA1_2()
 
     // ═══════════════════════════════════════════════════════════════
     //  БЛОК 1.1 «ВЗЛЁТ» — фонетика + первое общение + SER + местоимения
@@ -1116,6 +1116,8 @@ object LessonContentDataV2 {
         // ─────────────────────────────────────────────────────────────
         // u1_l13_5 — НОВЫЙ урок: Порядковые числительные 1°–10°
         // ─────────────────────────────────────────────────────────────
+        // Заглушка-маркер: блок 1.1 заканчивается на u1_l13_5.
+        // ──────────────────────────────────────────────────────
         "u1_l13_5" to LessonContent(
             intro = "Порядковые числительные: primero, segundo, tercero. Согласуются по роду (primer/primera) и могут терять -o перед существительным.",
             sections = listOf(
@@ -1197,6 +1199,540 @@ object LessonContentDataV2 {
                     correctAnswer = "el tercer piso",
                     explanation = "tercero → tercer перед мужским. piso (этаж) — мужской.",
                 ),
+            ),
+        ),
+
+    )
+
+    // ═══════════════════════════════════════════════════════════════
+    //  БЛОК 1.2 «МОЙ МИР» — числа, TENER, семья, цвета, ESTAR, дом
+    //  15 уроков: u2_l0..u2_l14 (u2_l14 = checkpoint «Аренда жилья»)
+    // ═══════════════════════════════════════════════════════════════
+
+    private fun blockA1_2(): Map<String, LessonContent> = mapOf(
+
+        // u2_l0 — Числа 11-20
+        "u2_l0" to LessonContent(
+            intro = "Числа 11-15 нерегулярные (once-quince), 16-19 — diez+y+ед.: dieciséis, veinte = 20.",
+            sections = listOf(
+                LessonSection("Числа 11-20", listOf(
+                    LessonItem("11", "once", ""), LessonItem("12", "doce", ""),
+                    LessonItem("13", "trece", ""), LessonItem("14", "catorce", ""),
+                    LessonItem("15", "quince", ""), LessonItem("16", "dieciséis", ""),
+                    LessonItem("17", "diecisiete", ""), LessonItem("18", "dieciocho", ""),
+                    LessonItem("19", "diecinueve", ""), LessonItem("20", "veinte", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Цифра ↔ слово", correctAnswer = "ok",
+                    pairs = listOf("11" to "once", "13" to "trece", "15" to "quince", "17" to "diecisiete", "20" to "veinte")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай и выбери", audioText = "doce",
+                    options = listOf("doce", "once", "trece", "catorce"), correctAnswer = "doce",
+                    explanation = "doce = 12."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «У меня 15 евро»",
+                    words = listOf("Tengo", "quince", "euros"), correctAnswer = "Tengo quince euros",
+                    explanation = "quince = 15."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Tengo ___ años. (мне 18)",
+                    options = listOf("dieciocho", "ocho", "diez"), correctAnswer = "dieciocho",
+                    explanation = "dieciocho = 18 = «10+8»."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Возраст",
+                    dialogueLines = listOf("👩 María" to "¿Cuántos años tienes?", "👨 Tú" to "Tengo ___ años."),
+                    options = listOf("veinte", "venti", "diez"), correctAnswer = "veinte",
+                    explanation = "veinte = 20."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «семнадцать»",
+                    correctAnswer = "diecisiete", explanation = "diecisiete = 17 = «10+7»."),
+            ),
+        ),
+
+        // u2_l1 — Числа 21-100
+        "u2_l1" to LessonContent(
+            intro = "21-29 пишутся слитно (veintiuno-veintinueve). 30/40/.../90 — десятки. 31-99 через «y»: treinta y uno.",
+            sections = listOf(
+                LessonSection("Десятки и составные", listOf(
+                    LessonItem("21", "veintiuno", ""), LessonItem("22", "veintidós", ""),
+                    LessonItem("30", "treinta", ""), LessonItem("31", "treinta y uno", ""),
+                    LessonItem("40", "cuarenta", ""), LessonItem("50", "cincuenta", ""),
+                    LessonItem("60", "sesenta", ""), LessonItem("70", "setenta", ""),
+                    LessonItem("80", "ochenta", ""), LessonItem("90", "noventa", ""),
+                    LessonItem("100", "cien", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.LISTEN_NUMBER_TAP, "Нажми цифру",
+                    audioText = "cincuenta y tres", number = 53, correctAnswer = "53",
+                    explanation = "cincuenta y tres = 50 + 3 = 53."),
+                Exercise(ExerciseType.LISTEN_NUMBER_TAP, "Нажми цифру",
+                    audioText = "noventa y nueve", number = 99, correctAnswer = "99",
+                    explanation = "noventa y nueve = 90 + 9 = 99."),
+                Exercise(ExerciseType.READ_NUMBER, "Какое слово для 47?", question = "47",
+                    options = listOf("cuarenta y siete", "catorce", "cincuenta y siete", "cuarenta"),
+                    correctAnswer = "cuarenta y siete", explanation = "cuarenta y siete = 40 + 7."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Cuesta ___ euros. (35)",
+                    options = listOf("treinta y cinco", "trece", "tres y cinco"), correctAnswer = "treinta y cinco",
+                    explanation = "35 = treinta y cinco."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "В магазине",
+                    dialogueLines = listOf("👩 Vendedora" to "Son ___ euros.", "👨 Tú" to "Aquí tiene."),
+                    options = listOf("veinticinco", "veintiuno", "venticinco"), correctAnswer = "veinticinco",
+                    explanation = "25 = veinticinco (слитно!)."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("treinta y uno", "veintiuno", "treintaiuno", "cuarenta y dos"),
+                    correctAnswer = "treintaiuno",
+                    explanation = "31 пишется РАЗДЕЛЬНО: treinta y uno. Слитно — только 21-29 (veintiuno)."),
+            ),
+        ),
+
+        // u2_l2 — TENER ед.ч.
+        "u2_l2" to LessonContent(
+            intro = "TENER = «иметь»: tengo / tienes / tiene. Используется для возраста, родства, владения.",
+            sections = listOf(
+                LessonSection("TENER ед.ч.", listOf(
+                    LessonItem("yo tengo", "у меня есть", "Tengo un perro"),
+                    LessonItem("tú tienes", "у тебя есть", "Tienes razón"),
+                    LessonItem("él/ella tiene", "у него/неё есть", "Tiene 20 años"),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь TENER", question = "Yo ___ un hermano.",
+                    options = listOf("tengo", "tienes", "tiene"), correctAnswer = "tengo",
+                    explanation = "yo tengo = у меня есть."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «У тебя есть кот?»",
+                    words = listOf("¿Tienes", "un", "gato?"), correctAnswer = "¿Tienes un gato?",
+                    explanation = "Tienes — для tú."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какая форма для él?", question = "Él ___ 30 años.",
+                    options = listOf("tiene", "tengo", "tienes", "tienen"), correctAnswer = "tiene",
+                    explanation = "él tiene = у него есть. Возраст: tener X años."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Yo tengo razón", "Tú tienes 20 años", "Yo tiene un perro", "Ella tiene casa"),
+                    correctAnswer = "Yo tiene un perro",
+                    explanation = "Yo требует tengo. Правильно: Yo tengo un perro."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «У меня есть друг»",
+                    correctAnswer = "Tengo un amigo",
+                    explanation = "yo можно опустить."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "tengo",
+                    correctAnswer = "tengo", explanation = "yo tengo."),
+            ),
+        ),
+
+        // u2_l3 — TENER мн.ч.
+        "u2_l3" to LessonContent(
+            intro = "Множественное TENER: tenemos / tenéis / tienen. Похоже на SER по структуре окончаний.",
+            sections = listOf(
+                LessonSection("TENER мн.ч.", listOf(
+                    LessonItem("nosotros tenemos", "у нас есть", ""),
+                    LessonItem("vosotros tenéis", "у вас есть (Исп.)", ""),
+                    LessonItem("ellos tienen", "у них есть", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь форму", question = "Nosotros ___ una casa.",
+                    options = listOf("tenemos", "tenéis", "tienen"), correctAnswer = "tenemos",
+                    explanation = "nosotros tenemos."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «У них две дочери»",
+                    words = listOf("Tienen", "dos", "hijas"), correctAnswer = "Tienen dos hijas",
+                    explanation = "ellos tienen — местоимение опускаем."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какая форма для vosotros?", question = "Vosotros ___ razón.",
+                    options = listOf("tenéis", "tienen", "tenemos", "tienes"), correctAnswer = "tenéis",
+                    explanation = "vosotros tenéis — только в Испании."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Tenemos razón", "Tenéis casa", "Tienen 20 años", "Vosotros tienen libros"),
+                    correctAnswer = "Vosotros tienen libros",
+                    explanation = "vosotros требует tenéis. Правильно: Vosotros tenéis libros."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «У нас три кота»",
+                    correctAnswer = "Tenemos tres gatos", explanation = "nosotros опускаем."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "tenemos",
+                    correctAnswer = "tenemos", explanation = "nosotros tenemos."),
+            ),
+        ),
+
+        // u2_l4 — Семья 1
+        "u2_l4" to LessonContent(
+            intro = "Базовая семья: padre/madre, hermano/hermana, hijo/hija. Заметь окончания -o/-a.",
+            sections = listOf(
+                LessonSection("Семья — основа", listOf(
+                    LessonItem("padre", "отец", ""), LessonItem("madre", "мать", ""),
+                    LessonItem("hermano", "брат", ""), LessonItem("hermana", "сестра", ""),
+                    LessonItem("hijo", "сын", ""), LessonItem("hija", "дочь", ""),
+                    LessonItem("padres", "родители", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Член семьи ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("padre" to "отец", "madre" to "мать", "hermano" to "брат", "hija" to "дочь", "padres" to "родители")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "hermana",
+                    options = listOf("hermana", "hermano", "hija", "madre"), correctAnswer = "hermana",
+                    explanation = "hermana = сестра."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Мой отец — врач»",
+                    words = listOf("Mi", "padre", "es", "médico"), correctAnswer = "Mi padre es médico",
+                    explanation = "mi = мой / моя."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Tengo dos ___ (брата).",
+                    options = listOf("hermanos", "hermanas", "hijos"), correctAnswer = "hermanos",
+                    explanation = "hermanos = братья (или смешанная группа)."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Знакомство",
+                    dialogueLines = listOf("👩 María" to "¿Tienes hermanos?", "👨 Tú" to "Sí, tengo una ___ y un hermano."),
+                    options = listOf("hermana", "madre", "hija"), correctAnswer = "hermana",
+                    explanation = "una hermana = одна сестра."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «У меня есть мать»",
+                    correctAnswer = "Tengo madre", explanation = "Артикль не нужен — родство."),
+            ),
+        ),
+
+        // u2_l5 — Семья 2
+        "u2_l5" to LessonContent(
+            intro = "Расширенная семья: abuelo (дед), tío (дядя), primo (двоюродный), sobrino (племянник).",
+            sections = listOf(
+                LessonSection("Расширенная семья", listOf(
+                    LessonItem("abuelo / abuela", "дед / бабушка", ""),
+                    LessonItem("tío / tía", "дядя / тётя", ""),
+                    LessonItem("primo / prima", "двоюродный брат/сестра", ""),
+                    LessonItem("sobrino / sobrina", "племянник / племянница", ""),
+                    LessonItem("nieto / nieta", "внук / внучка", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини", correctAnswer = "ok",
+                    pairs = listOf("abuelo" to "дед", "tío" to "дядя", "prima" to "двоюр.сестра", "sobrino" to "племянник", "nieta" to "внучка")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "abuela",
+                    options = listOf("abuela", "abuelo", "tía", "madre"), correctAnswer = "abuela",
+                    explanation = "abuela = бабушка."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Моя бабушка из Мадрида»",
+                    words = listOf("Mi", "abuela", "es", "de", "Madrid"), correctAnswer = "Mi abuela es de Madrid",
+                    explanation = "mi abuela — род подсказывает -a."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Mi ___ tiene un perro. (тётя)",
+                    options = listOf("tía", "tío", "abuela"), correctAnswer = "tía",
+                    explanation = "tía = тётя (ж)."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Семейное фото",
+                    dialogueLines = listOf("👩 María" to "¿Quién es ella?", "👨 Tú" to "Es mi ___ Carmen."),
+                    options = listOf("prima", "primo", "tío"), correctAnswer = "prima",
+                    explanation = "Carmen — женское имя → prima."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «У меня два дяди»",
+                    correctAnswer = "Tengo dos tíos", explanation = "tíos = дяди."),
+            ),
+        ),
+
+        // u2_l6 — Притяжательные mi/tu/su/nuestro
+        "u2_l6" to LessonContent(
+            intro = "mi / tu / su — единственная форма для м и ж. nuestro/a меняется по роду. Согласуются по числу.",
+            sections = listOf(
+                LessonSection("Притяжательные", listOf(
+                    LessonItem("mi", "мой/моя", "mi padre, mi madre"),
+                    LessonItem("mis", "мои", "mis padres"),
+                    LessonItem("tu", "твой/твоя", "tu hermano"),
+                    LessonItem("su", "его/её/Ваш", "su casa"),
+                    LessonItem("nuestro/a", "наш/наша", "nuestra casa"),
+                    LessonItem("vuestro/a", "ваш (Исп.)", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь притяжательное", question = "___ padre es médico. (мой)",
+                    options = listOf("Mi", "Tu", "Su"), correctAnswer = "Mi",
+                    explanation = "mi — мой/моя. Не меняется по роду."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Это наш дом»",
+                    words = listOf("Es", "nuestra", "casa"), correctAnswer = "Es nuestra casa",
+                    explanation = "casa — ж → nuestra."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какая форма для «мои родители»?", question = "",
+                    options = listOf("mis padres", "mi padres", "mio padres", "míos padres"),
+                    correctAnswer = "mis padres",
+                    explanation = "mn → mis. mi padre / mis padres."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("mi madre", "tu hermano", "nuestro casa", "su libro"),
+                    correctAnswer = "nuestro casa",
+                    explanation = "casa — ж → nuestra casa, не nuestro."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «твой брат»",
+                    correctAnswer = "tu hermano", explanation = "tu (без тильды) = «твой»."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "nuestra",
+                    correctAnswer = "nuestra", explanation = "nuestra — ж форма от nuestro."),
+            ),
+        ),
+
+        // u2_l7 — Цвета
+        "u2_l7" to LessonContent(
+            intro = "Базовые цвета: rojo, azul, verde, amarillo, negro, blanco, gris.",
+            sections = listOf(
+                LessonSection("Цвета", listOf(
+                    LessonItem("rojo", "красный", ""), LessonItem("azul", "синий", ""),
+                    LessonItem("verde", "зелёный", ""), LessonItem("amarillo", "жёлтый", ""),
+                    LessonItem("negro", "чёрный", ""), LessonItem("blanco", "белый", ""),
+                    LessonItem("gris", "серый", ""), LessonItem("naranja", "оранжевый", ""),
+                    LessonItem("rosa", "розовый", ""), LessonItem("marrón", "коричневый", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Цвет ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("rojo" to "красный", "azul" to "синий", "verde" to "зелёный", "amarillo" to "жёлтый", "negro" to "чёрный")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "blanco",
+                    options = listOf("blanco", "negro", "azul", "rojo"), correctAnswer = "blanco",
+                    explanation = "blanco = белый."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Мой кот чёрный»",
+                    words = listOf("Mi", "gato", "es", "negro"), correctAnswer = "Mi gato es negro",
+                    explanation = "negro — мужская форма."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "El cielo es ___ (синее).",
+                    options = listOf("azul", "verde", "rojo"), correctAnswer = "azul",
+                    explanation = "azul — не меняется по роду (заканчивается на -l)."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "В магазине одежды",
+                    dialogueLines = listOf("👩 Vendedora" to "¿De qué color?", "👨 Tú" to "Lo quiero en ___ (красном)."),
+                    options = listOf("rojo", "azul", "verde"), correctAnswer = "rojo",
+                    explanation = "rojo = красный."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «зелёный»",
+                    correctAnswer = "verde", explanation = "verde — не меняется по роду."),
+            ),
+        ),
+
+        // u2_l8 — Согласование цветов
+        "u2_l8" to LessonContent(
+            intro = "Цвета на -o согласуются: rojo/roja, blanco/blanca. На -e и согласные не меняются: verde, azul.",
+            sections = listOf(
+                LessonSection("Согласование", listOf(
+                    LessonItem("rojo / roja", "красный / красная", "el coche rojo / la casa roja"),
+                    LessonItem("blanco / blanca", "белый / белая", ""),
+                    LessonItem("negro / negra", "чёрный / чёрная", ""),
+                    LessonItem("verde", "не меняется", "el coche verde / la casa verde"),
+                    LessonItem("azul", "не меняется", ""),
+                    LessonItem("gris", "не меняется", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини м/ж формы", correctAnswer = "ok",
+                    pairs = listOf("rojo" to "roja", "blanco" to "blanca", "negro" to "negra", "amarillo" to "amarilla", "verde" to "verde")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "blanca",
+                    options = listOf("blanca", "blanco", "negra", "negra"), correctAnswer = "blanca",
+                    explanation = "blanca — ж форма."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «У меня белая машина»",
+                    words = listOf("Tengo", "un", "coche", "blanco"), correctAnswer = "Tengo un coche blanco",
+                    explanation = "coche — м → blanco."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "La casa es ___ (красная).",
+                    options = listOf("roja", "rojo", "rojas"), correctAnswer = "roja",
+                    explanation = "casa — ж → roja."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("la casa roja", "el coche rojo", "la casa rojo", "el libro negro"),
+                    correctAnswer = "la casa rojo",
+                    explanation = "casa — ж → roja, не rojo."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «зелёная книга»",
+                    correctAnswer = "el libro verde",
+                    explanation = "verde не меняется по роду. libro — м, поэтому el libro verde."),
+            ),
+        ),
+
+        // u2_l9 — ESTAR ед.ч.
+        "u2_l9" to LessonContent(
+            intro = "ESTAR = «быть» о ВРЕМЕННОМ: где находишься, как себя чувствуешь. estoy / estás / está.",
+            sections = listOf(
+                LessonSection("ESTAR ед.ч.", listOf(
+                    LessonItem("yo estoy", "я нахожусь / чувствую", "Estoy en casa"),
+                    LessonItem("tú estás", "ты ...", "¿Cómo estás?"),
+                    LessonItem("él/ella está", "он/она ...", "Está cansado"),
+                )),
+                LessonSection("Когда ESTAR", listOf(
+                    LessonItem("Местоположение", "Estoy en Madrid", ""),
+                    LessonItem("Состояние", "Estoy cansado / contento", ""),
+                    LessonItem("НЕ для постоянных", "национальность → SER", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь ESTAR", question = "Yo ___ en casa.",
+                    options = listOf("estoy", "estás", "está"), correctAnswer = "estoy",
+                    explanation = "yo estoy = я нахожусь."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Где ты?»",
+                    words = listOf("¿Dónde", "estás?"), correctAnswer = "¿Dónde estás?",
+                    explanation = "estar для местоположения."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какая форма для él?", question = "Él ___ cansado.",
+                    options = listOf("está", "es", "estoy", "están"), correctAnswer = "está",
+                    explanation = "Состояние (усталость) → ESTAR. él está."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("Estoy en Madrid", "Estás cansado", "Soy en casa", "Está bien"),
+                    correctAnswer = "Soy en casa",
+                    explanation = "Местоположение требует ESTAR. Правильно: Estoy en casa."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я в кафе»",
+                    correctAnswer = "Estoy en el café",
+                    explanation = "Местоположение → ESTAR. café — м → el."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "estoy",
+                    correctAnswer = "estoy", explanation = "yo estoy."),
+            ),
+        ),
+
+        // u2_l10 — Предлоги места
+        "u2_l10" to LessonContent(
+            intro = "Где находится: en (в/на), sobre (на), debajo de (под), al lado de (рядом с), entre (между).",
+            sections = listOf(
+                LessonSection("Предлоги места", listOf(
+                    LessonItem("en", "в / на", "en la mesa"),
+                    LessonItem("sobre", "на (поверх)", "sobre la mesa"),
+                    LessonItem("debajo de", "под", "debajo de la mesa"),
+                    LessonItem("al lado de", "рядом с", "al lado de la casa"),
+                    LessonItem("entre", "между", "entre tú y yo"),
+                    LessonItem("delante de", "перед", ""),
+                    LessonItem("detrás de", "за / позади", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Где кот?", question = "El gato está ___ la mesa.",
+                    options = listOf("sobre", "en", "entre"), correctAnswer = "sobre",
+                    explanation = "sobre = на поверхности."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Книга рядом с лампой»",
+                    words = listOf("El", "libro", "está", "al lado de", "la lámpara"),
+                    correctAnswer = "El libro está al lado de la lámpara",
+                    explanation = "al lado de = рядом с."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Что значит «debajo de»?", question = "",
+                    options = listOf("под", "над", "перед", "рядом"), correctAnswer = "под",
+                    explanation = "debajo de = под."),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
+                    errorVariants = listOf("sobre la mesa", "en casa", "debajo de la silla", "al lado mesa"),
+                    correctAnswer = "al lado mesa",
+                    explanation = "Нужно «al lado DE la mesa» — предлог de обязателен."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я в офисе»",
+                    correctAnswer = "Estoy en la oficina", explanation = "en + место."),
+                Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "entre",
+                    correctAnswer = "entre", explanation = "entre = между."),
+            ),
+        ),
+
+        // u2_l11 — Дом: комнаты
+        "u2_l11" to LessonContent(
+            intro = "Главные комнаты: sala (гостиная), cocina (кухня), dormitorio (спальня), baño (ванная).",
+            sections = listOf(
+                LessonSection("Комнаты дома", listOf(
+                    LessonItem("la sala", "гостиная", ""),
+                    LessonItem("la cocina", "кухня", ""),
+                    LessonItem("el dormitorio", "спальня", ""),
+                    LessonItem("el baño", "ванная / туалет", ""),
+                    LessonItem("el comedor", "столовая", ""),
+                    LessonItem("el balcón", "балкон", ""),
+                    LessonItem("el pasillo", "коридор", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Комната ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("sala" to "гостиная", "cocina" to "кухня", "dormitorio" to "спальня", "baño" to "ванная", "comedor" to "столовая")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "cocina",
+                    options = listOf("cocina", "comedor", "balcón", "baño"), correctAnswer = "cocina",
+                    explanation = "cocina = кухня."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я в кухне»",
+                    words = listOf("Estoy", "en", "la", "cocina"), correctAnswer = "Estoy en la cocina",
+                    explanation = "estar для местоположения."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Voy al ___ (ванная).",
+                    options = listOf("baño", "balcón", "dormitorio"), correctAnswer = "baño",
+                    explanation = "baño = ванная."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Дома",
+                    dialogueLines = listOf("👩 María" to "¿Dónde estás?", "👨 Tú" to "Estoy en la ___."),
+                    options = listOf("sala", "balcón", "pasillo"), correctAnswer = "sala",
+                    explanation = "sala = гостиная — основное место."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «спальня»",
+                    correctAnswer = "el dormitorio", explanation = "dormitorio — м."),
+            ),
+        ),
+
+        // u2_l12 — Мебель
+        "u2_l12" to LessonContent(
+            intro = "Мебель: sofá, mesa, silla, cama, armario, lámpara.",
+            sections = listOf(
+                LessonSection("Мебель", listOf(
+                    LessonItem("el sofá", "диван", ""),
+                    LessonItem("la mesa", "стол", ""),
+                    LessonItem("la silla", "стул", ""),
+                    LessonItem("la cama", "кровать", ""),
+                    LessonItem("el armario", "шкаф", ""),
+                    LessonItem("la lámpara", "лампа", ""),
+                    LessonItem("la nevera", "холодильник", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Мебель ↔ перевод", correctAnswer = "ok",
+                    pairs = listOf("sofá" to "диван", "mesa" to "стол", "silla" to "стул", "cama" to "кровать", "armario" to "шкаф")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "lámpara",
+                    options = listOf("lámpara", "cama", "mesa", "silla"), correctAnswer = "lámpara",
+                    explanation = "lámpara = лампа."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Книга на столе»",
+                    words = listOf("El", "libro", "está", "sobre", "la", "mesa"),
+                    correctAnswer = "El libro está sobre la mesa",
+                    explanation = "sobre = на поверхности."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Mi ___ es grande (кровать).",
+                    options = listOf("cama", "silla", "mesa"), correctAnswer = "cama",
+                    explanation = "cama = кровать (ж)."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "Описание квартиры",
+                    dialogueLines = listOf("👩 María" to "¿Tienes sofá?", "👨 Tú" to "Sí, en la ___."),
+                    options = listOf("sala", "cocina", "baño"), correctAnswer = "sala",
+                    explanation = "Диван обычно в гостиной."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «стул»",
+                    correctAnswer = "la silla", explanation = "silla — ж → la."),
+            ),
+        ),
+
+        // u2_l13 — Множественное число
+        "u2_l13" to LessonContent(
+            intro = "Множественное: на гласную → +s (libro→libros), на согласную → +es (papel→papeles).",
+            sections = listOf(
+                LessonSection("Правила множественного", listOf(
+                    LessonItem("Гласная в конце", "+s", "libro → libros"),
+                    LessonItem("Согласная в конце", "+es", "papel → papeles"),
+                    LessonItem("На -z", "z→c +es", "luz → luces"),
+                    LessonItem("Тильда исчезает", "examen → exámenes", "(перенос ударения)"),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.MATCH_PAIRS, "Ед. ↔ Мн.", correctAnswer = "ok",
+                    pairs = listOf("libro" to "libros", "casa" to "casas", "papel" to "papeles", "luz" to "luces", "café" to "cafés")),
+                Exercise(ExerciseType.LISTEN_PICK, "Послушай", audioText = "papeles",
+                    options = listOf("papeles", "papel", "padres", "padres"), correctAnswer = "papeles",
+                    explanation = "papeles — мн от papel (бумаги)."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «У меня две сестры»",
+                    words = listOf("Tengo", "dos", "hermanas"), correctAnswer = "Tengo dos hermanas",
+                    explanation = "hermana → hermanas (на -a → +s)."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Заполни", question = "Hay tres ___ (свет/огни).",
+                    options = listOf("luces", "luzes", "luzs"), correctAnswer = "luces",
+                    explanation = "luz → luces. Z меняется на C перед -es."),
+                Exercise(ExerciseType.DIALOGUE_FILL, "В магазине",
+                    dialogueLines = listOf("👩 Vendedora" to "¿Cuántos quiere?", "👨 Tú" to "Dos ___, por favor (книги)."),
+                    options = listOf("libros", "libroes", "libres"), correctAnswer = "libros",
+                    explanation = "libro → libros (гласная +s)."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «дома (мн.)»",
+                    correctAnswer = "casas", explanation = "casa → casas."),
+            ),
+        ),
+
+        // u2_l14 — CHECKPOINT «Аренда жилья»
+        "u2_l14" to LessonContent(
+            intro = "🏁 Чекпоинт блока 1.2: ситуация «Аренда квартиры» — диалог с владельцем, описание комнат, числа цен.",
+            sections = listOf(
+                LessonSection("Что повторяем", listOf(
+                    LessonItem("Числа", "цены, размер, этаж", ""),
+                    LessonItem("Комнаты + мебель", "что есть в квартире", ""),
+                    LessonItem("Предлоги места", "где что находится", ""),
+                    LessonItem("ESTAR", "местоположение комнат", ""),
+                    LessonItem("Притяжательные", "mi piso, su precio", ""),
+                )),
+            ),
+            exercises = listOf(
+                Exercise(ExerciseType.DIALOGUE_FILL, "Звонишь хозяину",
+                    dialogueLines = listOf(
+                        "👨 Hola, ¿es el piso del anuncio?" to "—",
+                        "👩 Dueña" to "Sí, ___ trescientos euros al mes.",
+                        "👨 Tú" to "Perfecto. ¿Cuántas habitaciones tiene?",
+                    ),
+                    options = listOf("son", "es", "está"), correctAnswer = "son",
+                    explanation = "Цена во множ.: «300 евро» — son trescientos euros."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Квартира на третьем этаже»",
+                    words = listOf("El", "piso", "está", "en", "el", "tercer", "piso"),
+                    correctAnswer = "El piso está en el tercer piso",
+                    explanation = "tercer (с потерей -o перед мужским)."),
+                Exercise(ExerciseType.LISTEN_COMPREHEND, "Послушай и ответь",
+                    audioText = "Mi piso tiene dos dormitorios, una cocina y un baño. Está en el quinto piso.",
+                    comprehensionContext = "Mi piso tiene dos dormitorios, una cocina y un baño. Está en el quinto piso.",
+                    question = "Сколько спален?",
+                    options = listOf("две", "одна", "три", "четыре"), correctAnswer = "две",
+                    explanation = "dos dormitorios = две спальни."),
+                Exercise(ExerciseType.MATCH_PAIRS, "Соедини всё блока", correctAnswer = "ok",
+                    pairs = listOf("treinta" to "30", "sofá" to "диван", "cocina" to "кухня", "rojo" to "красный", "tengo" to "у меня есть")),
+                Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку в объявлении", question = "",
+                    errorVariants = listOf(
+                        "Piso en tercer planta",
+                        "Tres dormitorios",
+                        "Cocina grande",
+                        "Está en el centro",
+                    ),
+                    correctAnswer = "Piso en tercer planta",
+                    explanation = "planta — ж → tercera planta. tercer только перед мужским."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «У меня две спальни»",
+                    correctAnswer = "Tengo dos dormitorios",
+                    explanation = "dormitorio → dormitorios."),
             ),
         ),
 
