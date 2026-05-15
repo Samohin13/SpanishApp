@@ -1807,6 +1807,327 @@ object VocabScope {
             ScopeWord("aprobado", "сдан", "u13_l14", "participle"),
         ))
 
+        // ═══════════════════════════════════════════════════════════════
+        // B2 · Блок 4.2 «Pasiva y Perífrasis» — 16 уроков
+        // ═══════════════════════════════════════════════════════════════
+        put("u14_l0", listOf(
+            ScopeWord("construido", "построенный", "u14_l0", "participle"),
+            ScopeWord("ley", "закон", "u14_l0", "noun"),
+            ScopeWord("aprobada", "одобренная", "u14_l0", "participle"),
+        ))
+        put("u14_l1", listOf(
+            ScopeWord("cerrada (estado)", "закрыта (состояние)", "u14_l1", "participle"),
+            ScopeWord("ventana", "окно", "u14_l1", "noun"),
+        ))
+        put("u14_l2", listOf(
+            ScopeWord("se vende", "продаётся", "u14_l2", "verb"),
+            ScopeWord("se venden", "продаются", "u14_l2", "verb"),
+            ScopeWord("se dice", "говорят", "u14_l2", "verb"),
+            ScopeWord("se fuma", "курят", "u14_l2", "verb"),
+            ScopeWord("fumar", "курить", "u14_l2", "verb"),
+        ))
+        put("u14_l3", listOf(
+            ScopeWord("vuelvo a llamar", "снова звоню", "u14_l3", "phrase"),
+        ))
+        put("u14_l4", listOf(
+            ScopeWord("llevo trabajando", "работаю уже", "u14_l4", "phrase"),
+        ))
+        put("u14_l5", listOf(
+            ScopeWord("se vendieron", "продались", "u14_l5", "verb"),
+        ))
+        put("u14_l6", listOf(
+            ScopeWord("dejar de", "перестать", "u14_l6", "phrase"),
+            ScopeWord("dejé", "оставил", "u14_l6", "verb"),
+            ScopeWord("ponerse a", "приниматься", "u14_l6", "phrase"),
+            ScopeWord("me puse a", "принялся", "u14_l6", "verb"),
+            ScopeWord("llorar", "плакать", "u14_l6", "verb"),
+        ))
+        put("u14_l7", listOf(
+            ScopeWord("abiertas", "открытые", "u14_l7", "participle"),
+            ScopeWord("cerradas", "закрытые", "u14_l7", "participle"),
+        ))
+        put("u14_l8", listOf(
+            ScopeWord("habiendo", "имеючи (ger)", "u14_l8", "gerund"),
+            ScopeWord("habiendo llegado", "прибыв", "u14_l8", "phrase"),
+            ScopeWord("habiendo dicho", "сказав", "u14_l8", "phrase"),
+            ScopeWord("estando", "будучи", "u14_l8", "gerund"),
+            ScopeWord("me fui", "я ушёл", "u14_l8", "verb"),
+        ))
+        put("u14_l9", listOf(
+            ScopeWord("daña", "вредит", "u14_l9", "verb"),
+            ScopeWord("dañar", "вредить", "u14_l9", "verb"),
+            ScopeWord("salud", "здоровье", "u14_l9", "noun"),
+        ))
+        put("u14_l9_5", listOf(
+            ScopeWord("a través de", "через", "u14_l9_5", "preposition"),
+            ScopeWord("en torno a", "около", "u14_l9_5", "preposition"),
+            ScopeWord("con respecto a", "относительно", "u14_l9_5", "preposition"),
+            ScopeWord("en lugar de", "вместо", "u14_l9_5", "preposition"),
+            ScopeWord("aprendí", "выучил я", "u14_l9_5", "verb"),
+        ))
+        put("u14_l10", listOf(
+            ScopeWord("lugar", "место", "u14_l10", "noun"),
+        ))
+        put("u14_l11", listOf(
+            ScopeWord("ese día", "тот день", "u14_l11", "phrase"),
+            ScopeWord("al día siguiente", "на следующий день", "u14_l11", "phrase"),
+            ScopeWord("el día anterior", "за день до", "u14_l11", "phrase"),
+            ScopeWord("siguiente", "следующий", "u14_l11", "adjective"),
+            ScopeWord("anterior", "предыдущий", "u14_l11", "adjective"),
+        ))
+        put("u14_l12", listOf(
+            ScopeWord("ser bueno", "хороший человек", "u14_l12", "phrase"),
+            ScopeWord("estar bueno", "вкусный/здоровый", "u14_l12", "phrase"),
+            ScopeWord("ser listo", "умный", "u14_l12", "phrase"),
+            ScopeWord("estar listo", "готов", "u14_l12", "phrase"),
+            ScopeWord("está bueno", "вкусный", "u14_l12", "phrase"),
+        ))
+        put("u14_l13", listOf(
+            ScopeWord("decisión", "решение", "u14_l13", "noun"),
+            ScopeWord("estudio", "учёба", "u14_l13", "noun"),
+            ScopeWord("construcción", "стройка", "u14_l13", "noun"),
+            ScopeWord("venta", "продажа", "u14_l13", "noun"),
+            ScopeWord("creencia", "вера/убеждение", "u14_l13", "noun"),
+            ScopeWord("tomada", "принятая", "u14_l13", "participle"),
+            ScopeWord("tomé", "я взял/принял", "u14_l13", "verb"),
+        ))
+        put("u14_l14", listOf(
+            ScopeWord("estamos abiertos", "мы открыты", "u14_l14", "phrase"),
+            ScopeWord("museo", "музей", "u14_l14", "noun"),
+        ))
+
+        // ═══════════════════════════════════════════════════════════════
+        // B2 · Блок 4.3 «Comunicación Formal» — 16 уроков
+        // ═══════════════════════════════════════════════════════════════
+        put("u15_l0", listOf(
+            ScopeWord("formal", "формальный", "u15_l0", "register"),
+            ScopeWord("neutro", "нейтральный", "u15_l0", "register"),
+            ScopeWord("coloquial", "разговорный", "u15_l0", "register"),
+        ))
+        put("u15_l1", listOf(
+            ScopeWord("queja", "жалоба", "u15_l1", "noun"),
+            ScopeWord("agradecimiento", "благодарность", "u15_l1", "noun"),
+            ScopeWord("Le ruego", "прошу Вас (формал)", "u15_l1", "phrase"),
+            ScopeWord("solucionar", "решать (проблему)", "u15_l1", "verb"),
+            ScopeWord("problema", "проблема", "u15_l1", "noun"),
+            ScopeWord("ruego", "прошу", "u15_l1", "verb"),
+        ))
+        put("u15_l2", listOf(
+            ScopeWord("informe", "отчёт", "u15_l2", "noun"),
+            ScopeWord("Introducción", "введение", "u15_l2", "noun"),
+            ScopeWord("Desarrollo", "основная часть", "u15_l2", "noun"),
+            ScopeWord("Conclusión", "заключение", "u15_l2", "noun"),
+            ScopeWord("Bibliografía", "источники", "u15_l2", "noun"),
+            ScopeWord("Resumen", "резюме", "u15_l2", "noun"),
+            ScopeWord("se presenta", "представляется", "u15_l2", "verb"),
+            ScopeWord("de este modo", "таким образом", "u15_l2", "phrase"),
+        ))
+        put("u15_l3", listOf(
+            ScopeWord("tesis", "тезис", "u15_l3", "noun"),
+            ScopeWord("argumentos", "аргументы", "u15_l3", "noun"),
+            ScopeWord("ejemplos", "примеры", "u15_l3", "noun"),
+            ScopeWord("Considero que", "считаю что", "u15_l3", "phrase"),
+            ScopeWord("En mi opinión", "по моему мнению", "u15_l3", "phrase"),
+            ScopeWord("Pienso que", "думаю что", "u15_l3", "phrase"),
+        ))
+        put("u15_l4", listOf(
+            ScopeWord("no obstante", "тем не менее", "u15_l4", "connector"),
+            ScopeWord("ahora bien", "однако (книжн)", "u15_l4", "connector"),
+            ScopeWord("por el contrario", "напротив", "u15_l4", "connector"),
+        ))
+        put("u15_l5", listOf(
+            ScopeWord("intentaré", "попробую", "u15_l5", "verb"),
+        ))
+        put("u15_l6", listOf(
+            ScopeWord("dado que", "учитывая что", "u15_l6", "connector"),
+            ScopeWord("puesto que", "поскольку", "u15_l6", "connector"),
+            ScopeWord("ya que", "так как", "u15_l6", "connector"),
+            ScopeWord("debido a", "из-за", "u15_l6", "connector"),
+            ScopeWord("debido a que", "из-за того что", "u15_l6", "connector"),
+        ))
+        put("u15_l7", listOf(
+            ScopeWord("de ahí que", "отсюда (+Subj)", "u15_l7", "connector"),
+            ScopeWord("de modo que", "так что", "u15_l7", "connector"),
+            ScopeWord("así que", "так что (разг)", "u15_l7", "connector"),
+            ScopeWord("por consiguiente", "следовательно", "u15_l7", "connector"),
+        ))
+        put("u15_l8", listOf(
+            ScopeWord("si bien", "хотя (формал)", "u15_l8", "connector"),
+            ScopeWord("aun cuando", "даже когда", "u15_l8", "connector"),
+            ScopeWord("pese a", "вопреки", "u15_l8", "connector"),
+        ))
+        put("u15_l9", listOf(
+            ScopeWord("demuestra", "доказывает", "u15_l9", "verb"),
+            ScopeWord("demostrar", "доказывать", "u15_l9", "verb"),
+            ScopeWord("confirma", "подтверждает", "u15_l9", "verb"),
+            ScopeWord("confirmar", "подтверждать", "u15_l9", "verb"),
+            ScopeWord("punto", "точка/пункт", "u15_l9", "noun"),
+            ScopeWord("estudios", "исследования", "u15_l9", "noun"),
+        ))
+        put("u15_l10", listOf(
+            ScopeWord("según", "согласно", "u15_l10", "preposition"),
+            ScopeWord("de acuerdo con", "в соответствии", "u15_l10", "phrase"),
+            ScopeWord("a juicio de", "по мнению", "u15_l10", "phrase"),
+            ScopeWord("afirma", "утверждает", "u15_l10", "verb"),
+            ScopeWord("sostiene", "поддерживает", "u15_l10", "verb"),
+            ScopeWord("expertos", "эксперты", "u15_l10", "noun"),
+        ))
+        put("u15_l11", listOf(
+            ScopeWord("per se", "сам по себе", "u15_l11", "latin"),
+            ScopeWord("a posteriori", "после факта", "u15_l11", "latin"),
+            ScopeWord("in situ", "на месте", "u15_l11", "latin"),
+            ScopeWord("ipso facto", "тут же", "u15_l11", "latin"),
+            ScopeWord("ad hoc", "специально", "u15_l11", "latin"),
+        ))
+        put("u15_l11_5", listOf(
+            ScopeWord("mientras (Indic)", "пока (одноврем)", "u15_l11_5", "phrase"),
+            ScopeWord("mientras (Subj)", "до тех пор пока", "u15_l11_5", "phrase"),
+        ))
+        put("u15_l12", listOf(
+            ScopeWord("implementación", "внедрение", "u15_l12", "noun"),
+            ScopeWord("aprobación", "одобрение", "u15_l12", "noun"),
+            ScopeWord("valoración", "оценка", "u15_l12", "noun"),
+            ScopeWord("negociación", "переговоры", "u15_l12", "noun"),
+            ScopeWord("aprobar", "одобрять", "u15_l12", "verb"),
+        ))
+        put("u15_l13", listOf(
+            ScopeWord("evidenciar", "указывать", "u15_l13", "verb"),
+            ScopeWord("sostener", "поддерживать", "u15_l13", "verb"),
+            ScopeWord("plantear", "ставить (вопрос)", "u15_l13", "verb"),
+            ScopeWord("indagar", "исследовать", "u15_l13", "verb"),
+        ))
+        put("u15_l14", listOf(
+            ScopeWord("proyecto", "проект", "u15_l14", "noun"),
+            ScopeWord("éxito", "успех", "u15_l14", "noun"),
+            ScopeWord("dificultades", "трудности", "u15_l14", "noun"),
+            ScopeWord("últimos", "последние", "u15_l14", "adjective"),
+        ))
+
+        // ═══════════════════════════════════════════════════════════════
+        // B2 · Блок 4.4 «Léxico y Cultura» — финал курса
+        // ═══════════════════════════════════════════════════════════════
+        put("u16_l0", listOf(
+            ScopeWord("a rajatabla", "строго", "u16_l0", "modism"),
+            ScopeWord("en boca de todos", "на устах", "u16_l0", "modism"),
+            ScopeWord("de pies a cabeza", "с ног до головы", "u16_l0", "modism"),
+            ScopeWord("a manos llenas", "щедро", "u16_l0", "modism"),
+            ScopeWord("al pie de la letra", "буквально", "u16_l0", "modism"),
+        ))
+        put("u16_l1", listOf(
+            ScopeWord("no hay mal que por bien no venga", "нет худа без добра", "u16_l1", "saying"),
+            ScopeWord("más vale prevenir", "лучше предотвратить", "u16_l1", "saying"),
+            ScopeWord("a buen entendedor", "умному намёк", "u16_l1", "saying"),
+            ScopeWord("prevenir", "предотвращать", "u16_l1", "verb"),
+        ))
+        put("u16_l2", listOf(
+            ScopeWord("El que mucho abarca, poco aprieta", "много хочешь — мало получишь", "u16_l2", "saying"),
+            ScopeWord("Más vale tarde que nunca", "лучше поздно", "u16_l2", "saying"),
+            ScopeWord("Dime con quién andas", "скажи кто твой друг", "u16_l2", "saying"),
+            ScopeWord("Quien siembra vientos", "кто сеет ветер", "u16_l2", "saying"),
+            ScopeWord("Donde fueres", "куда поедешь", "u16_l2", "saying"),
+            ScopeWord("refrán", "поговорка", "u16_l2", "noun"),
+        ))
+        put("u16_l3", listOf(
+            ScopeWord("pasar a mejor vida", "уйти из жизни", "u16_l3", "euphemism"),
+            ScopeWord("tercera edad", "пожилой возраст", "u16_l3", "euphemism"),
+            ScopeWord("persona con discapacidad", "человек с инвалидностью", "u16_l3", "euphemism"),
+            ScopeWord("ajuste salarial", "корректировка зп", "u16_l3", "euphemism"),
+            ScopeWord("reestructuración", "реструктуризация", "u16_l3", "euphemism"),
+            ScopeWord("fallecer", "скончаться", "u16_l3", "verb"),
+        ))
+        put("u16_l4", listOf(
+            ScopeWord("corazón roto", "разбитое сердце", "u16_l4", "metaphor"),
+            ScopeWord("mar de problemas", "море проблем", "u16_l4", "metaphor"),
+            ScopeWord("luz al final del túnel", "свет в конце тоннеля", "u16_l4", "metaphor"),
+            ScopeWord("cabeza en las nubes", "витать в облаках", "u16_l4", "metaphor"),
+            ScopeWord("ser uña y carne", "не разлей вода", "u16_l4", "metaphor"),
+            ScopeWord("túnel", "тоннель", "u16_l4", "noun"),
+        ))
+        put("u16_l4_5", listOf(
+            ScopeWord("embarazada", "беременная", "u16_l4_5", "false_friend"),
+            ScopeWord("avergonzada", "смущённая", "u16_l4_5", "adjective"),
+            ScopeWord("sensible", "чувствительный", "u16_l4_5", "false_friend"),
+            ScopeWord("sensato", "разумный", "u16_l4_5", "adjective"),
+            ScopeWord("actual", "нынешний", "u16_l4_5", "false_friend"),
+            ScopeWord("constipado", "простуженный", "u16_l4_5", "false_friend"),
+            ScopeWord("éxito", "успех (НЕ выход)", "u16_l4_5", "false_friend"),
+            ScopeWord("negocio", "бизнес", "u16_l4_5", "noun"),
+        ))
+        put("u16_l5", listOf(
+            ScopeWord("modismo", "идиома", "u16_l5", "noun"),
+        ))
+        put("u16_l6", listOf(
+            ScopeWord("vos sos", "ты есть (Аргентина)", "u16_l6", "regional"),
+            ScopeWord("jugo", "сок (Латам)", "u16_l6", "regional"),
+            ScopeWord("celular", "мобильник (Латам)", "u16_l6", "regional"),
+            ScopeWord("computador", "комп (Латам)", "u16_l6", "regional"),
+            ScopeWord("carro", "машина (Латам)", "u16_l6", "regional"),
+            ScopeWord("papa", "картофель (Латам)", "u16_l6", "regional"),
+        ))
+        put("u16_l7", listOf(
+            ScopeWord("realizar", "осуществить", "u16_l7", "false_friend"),
+            ScopeWord("molestar", "мешать", "u16_l7", "false_friend"),
+            ScopeWord("asistir", "присутствовать", "u16_l7", "false_friend"),
+            ScopeWord("asistí", "присутствовал я", "u16_l7", "verb"),
+            ScopeWord("ropa", "одежда (НЕ rope)", "u16_l7", "false_friend"),
+            ScopeWord("pretender", "пытаться", "u16_l7", "false_friend"),
+            ScopeWord("no me molestes", "не мешай мне", "u16_l7", "phrase"),
+        ))
+        put("u16_l8", listOf(
+            ScopeWord("casita", "домик", "u16_l8", "diminutive"),
+            ScopeWord("perrito", "собачка", "u16_l8", "diminutive"),
+            ScopeWord("hombrón", "большой мужик", "u16_l8", "augmentative"),
+            ScopeWord("golazo", "крутой гол", "u16_l8", "augmentative"),
+            ScopeWord("amiguito", "дружок", "u16_l8", "diminutive"),
+            ScopeWord("abuelito", "дедуля", "u16_l8", "diminutive"),
+        ))
+        put("u16_l9", listOf(
+            ScopeWord("startup", "стартап", "u16_l9", "modern"),
+            ScopeWord("sostenibilidad", "устойчивость", "u16_l9", "modern"),
+            ScopeWord("branding", "брендинг", "u16_l9", "modern"),
+            ScopeWord("networking", "связи (бизнес)", "u16_l9", "modern"),
+            ScopeWord("feedback", "обратная связь", "u16_l9", "modern"),
+            ScopeWord("conferencia", "конференция", "u16_l9", "noun"),
+        ))
+        put("u16_l10", listOf(
+            ScopeWord("negocios", "бизнес", "u16_l10", "professional"),
+            ScopeWord("derecho", "право", "u16_l10", "professional"),
+            ScopeWord("ingeniería", "инженерия", "u16_l10", "professional"),
+            ScopeWord("educación", "образование", "u16_l10", "professional"),
+            ScopeWord("universidad", "университет", "u16_l10", "noun"),
+        ))
+        put("u16_l11", listOf(
+            ScopeWord("Cervantes", "Сервантес", "u16_l11", "culture"),
+            ScopeWord("Picasso", "Пикассо", "u16_l11", "culture"),
+            ScopeWord("García Márquez", "Гарсиа Маркес", "u16_l11", "culture"),
+            ScopeWord("flamenco", "фламенко", "u16_l11", "culture"),
+            ScopeWord("Día de los Muertos", "День мёртвых", "u16_l11", "culture"),
+            ScopeWord("Don Quijote", "Дон Кихот", "u16_l11", "culture"),
+        ))
+        put("u16_l12", listOf(
+            ScopeWord("sino", "а / но (после отриц)", "u16_l12", "conjunction"),
+            ScopeWord("también", "тоже", "u16_l12", "adverb"),
+            ScopeWord("tampoco", "тоже не", "u16_l12", "adverb"),
+            ScopeWord("líquido", "жидкость", "u16_l12", "noun"),
+            ScopeWord("gas", "газ", "u16_l12", "noun"),
+        ))
+        put("u16_l13", listOf(
+            ScopeWord("qué (тильда)", "что (вопр)", "u16_l13", "interrogative"),
+            ScopeWord("cuándo (тильда)", "когда (вопр)", "u16_l13", "interrogative"),
+            ScopeWord("dónde (тильда)", "где (вопр)", "u16_l13", "interrogative"),
+            ScopeWord("cómo (тильда)", "как (вопр)", "u16_l13", "interrogative"),
+            ScopeWord("pasó", "произошло", "u16_l13", "verb"),
+        ))
+        put("u16_l14", listOf(
+            ScopeWord("perseverante", "настойчивый", "u16_l14", "adjective"),
+            ScopeWord("Diría", "сказал бы", "u16_l14", "verb"),
+            ScopeWord("describirse", "описать себя", "u16_l14", "verb"),
+            ScopeWord("conseguido", "достигнутый", "u16_l14", "participle"),
+            ScopeWord("conseguir", "достигать", "u16_l14", "verb"),
+            ScopeWord("agradecer", "благодарить", "u16_l14", "verb"),
+            ScopeWord("Felicidades", "поздравления", "u16_l14", "phrase"),
+        ))
+
         // u1_l13_5 — Порядковые числительные
         put("u1_l13_5", listOf(
             ScopeWord("primero", "первый", "u1_l13_5", "ordinal"),
@@ -1921,7 +2242,22 @@ object VocabScope {
         addAll(listOf("u13_l6", "u13_l7", "u13_l8"))                        // Pluscuamp Subj + Cond.Comp.
         addAll(listOf("u13_l9", "u13_l10"))                                 // устойчивые + aunque
         addAll(listOf("u13_l11", "u13_l12", "u13_l13", "u13_l14"))         // придаточные + checkpoint
-        // (остальные блоки добавляются по мере прохождения)
+        // B2 · Блок 4.2 «Pasiva y Perífrasis»
+        addAll(listOf("u14_l0", "u14_l1", "u14_l2"))                        // pasiva ser/estar/se
+        addAll(listOf("u14_l3", "u14_l4", "u14_l5"))                        // perífrasis базовые + mini-test
+        addAll(listOf("u14_l6", "u14_l7", "u14_l8", "u14_l9", "u14_l9_5"))  // ещё perífrasis + сложные предлоги
+        addAll(listOf("u14_l10", "u14_l11", "u14_l12", "u14_l13", "u14_l14")) // повторение + checkpoint
+        // B2 · Блок 4.3 «Comunicación Formal»
+        addAll(listOf("u15_l0", "u15_l1", "u15_l2", "u15_l3"))              // регистры + типы текстов
+        addAll(listOf("u15_l4", "u15_l5", "u15_l6", "u15_l7", "u15_l8"))    // конекторы все
+        addAll(listOf("u15_l9", "u15_l10", "u15_l11", "u15_l11_5"))         // аргументация + латинизмы
+        addAll(listOf("u15_l12", "u15_l13", "u15_l14"))                     // nominalización + академ + checkpoint
+        // B2 · Блок 4.4 «Léxico y Cultura» — финал курса
+        addAll(listOf("u16_l0", "u16_l1", "u16_l2", "u16_l3", "u16_l4", "u16_l4_5", "u16_l5"))
+        addAll(listOf("u16_l6", "u16_l7", "u16_l8"))                        // регионал + falsos amigos + diminut
+        addAll(listOf("u16_l9", "u16_l10", "u16_l11"))                      // современная + проф + культура
+        addAll(listOf("u16_l12", "u16_l13"))                                // tricky cases + орфография
+        addAll(listOf("u16_l14"))                                            // 🏆 ФИНАЛЬНЫЙ ЧЕКПОИНТ B2
     }
 
     /**
