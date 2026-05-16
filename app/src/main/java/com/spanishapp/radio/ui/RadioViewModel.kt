@@ -86,14 +86,25 @@ class RadioViewModel @Inject constructor(
 
     init {
         // Запускаем первую станцию ТОЛЬКО если ничего не играет.
-        // Если юзер вернулся на экран радио — текущая станция уже задана
-        // в Singleton-плеере, и второй раз её перезапускать не надо.
         if (player.currentStation.value == null) {
             playFirstStation()
         } else {
-            // Восстанавливаем state из singleton-плеера
             _frequency.value = player.currentStation.value!!.frequency
             _signal.value = SignalStatus.ON_STATION
+        }
+
+        // Авто-skip при ошибке потока: ExoPlayer кидает onPlayerError →
+        // player.hasError = true. Подождём 2 секунды (вдруг сам восстановится),
+        // если ошибка осталась — переключаемся на следующую станцию.
+        viewModelScope.launch {
+            player.hasError.collect { isError ->
+                if (isError) {
+                    delay(2000)
+                    if (player.hasError.value) {
+                        nextStation()
+                    }
+                }
+            }
         }
     }
 
@@ -135,6 +146,11 @@ class RadioViewModel @Inject constructor(
         _frequency.value = station.frequency
         _signal.value = SignalStatus.ON_STATION
         player.play(station)
+    }
+
+    /** Public: переключиться на конкретную станцию (тап по карусели). */
+    fun tuneToStationDirect(station: Station) {
+        tuneToStation(station)
     }
 
     /**
