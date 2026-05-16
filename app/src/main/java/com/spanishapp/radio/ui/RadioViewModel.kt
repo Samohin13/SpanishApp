@@ -1,12 +1,13 @@
 package com.spanishapp.radio.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.radio.data.Country
 import com.spanishapp.radio.data.Station
 import com.spanishapp.radio.data.StationRepository
 import com.spanishapp.radio.player.RadioPlayerController
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,14 +16,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+// Hilt + ViewModel + StateFlow imports выше
+
 /**
  * Состояние сигнала в зависимости от близости частоты к ближайшей станции.
  */
 enum class SignalStatus { ON_STATION, WEAK, NO_SIGNAL }
 
-class RadioViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val player = RadioPlayerController(app)
+@HiltViewModel
+class RadioViewModel @Inject constructor(
+    private val player: RadioPlayerController,
+) : ViewModel() {
 
     // ────────────────────────── State ──────────────────────────
 
@@ -36,9 +40,8 @@ class RadioViewModel(app: Application) : AndroidViewModel(app) {
     private val _frequency = MutableStateFlow(_stations.value.first().frequency)
     val frequency: StateFlow<Float> = _frequency.asStateFlow()
 
-    /** Найдена ли активная станция на текущей частоте. */
-    private val _currentStation = MutableStateFlow<Station?>(_stations.value.first())
-    val currentStation: StateFlow<Station?> = _currentStation.asStateFlow()
+    /** Активная станция — берётся из Singleton-плеера, чтобы пережить смену экранов. */
+    val currentStation: StateFlow<Station?> = player.currentStation
 
     private val _signal = MutableStateFlow(SignalStatus.ON_STATION)
     val signal: StateFlow<SignalStatus> = _signal.asStateFlow()
@@ -64,14 +67,21 @@ class RadioViewModel(app: Application) : AndroidViewModel(app) {
     private var snapJob: Job? = null
 
     init {
-        // Первая станция при запуске
-        playFirstStation()
+        // Запускаем первую станцию ТОЛЬКО если ничего не играет.
+        // Если юзер вернулся на экран радио — текущая станция уже задана
+        // в Singleton-плеере, и второй раз её перезапускать не надо.
+        if (player.currentStation.value == null) {
+            playFirstStation()
+        } else {
+            // Восстанавливаем state из singleton-плеера
+            _frequency.value = player.currentStation.value!!.frequency
+            _signal.value = SignalStatus.ON_STATION
+        }
     }
 
     private fun playFirstStation() {
         val first = _stations.value.first()
         _frequency.value = first.frequency
-        _currentStation.value = first
         _signal.value = SignalStatus.ON_STATION
         player.play(first)
     }
@@ -88,7 +98,7 @@ class RadioViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun nextStation() {
         val list = _stations.value
-        val current = _currentStation.value ?: return
+        val current = currentStation.value ?: return
         val idx = list.indexOf(current)
         val next = list.getOrNull(idx + 1) ?: list.first()
         tuneToStation(next)
@@ -96,7 +106,7 @@ class RadioViewModel(app: Application) : AndroidViewModel(app) {
 
     fun previousStation() {
         val list = _stations.value
-        val current = _currentStation.value ?: return
+        val current = currentStation.value ?: return
         val idx = list.indexOf(current)
         val prev = list.getOrNull(idx - 1) ?: list.last()
         tuneToStation(prev)
@@ -105,15 +115,18 @@ class RadioViewModel(app: Application) : AndroidViewModel(app) {
     private fun tuneToStation(station: Station) {
         snapJob?.cancel()
         _frequency.value = station.frequency
-        _currentStation.value = station
         _signal.value = SignalStatus.ON_STATION
         player.play(station)
     }
 
     /**
-     * Юзер крутит колесо. Изменяем частоту, обновляем сигнал.
-     * delta — положительное вправо (выше частота), отрицательное влево.
-     * При остановке прокрутки → авто-snap к ближайшей станции (вызывается в onScrollStop).
+     * Юзер крутит колесо. Изменяем ТОЛЬКО частоту и индикатор сигнала.
+     * НЕ переключаем играющую станцию пока юзер крутит — это создавало
+     * заикания и хаотичный звук при прокрутке через несколько станций
+     * подряд. Поток меняем ТОЛЬКО на onScrollStop().
+     *
+     * Во время скролла плеер ставится на pause (визуально юзер видит
+     * частоту/сигнал — это и есть «сканирование без аудио»).
      */
     fun onScrollFrequency(delta: Float) {
         snapJob?.cancel()
@@ -121,33 +134,27 @@ class RadioViewModel(app: Application) : AndroidViewModel(app) {
             .coerceIn(fmMin, fmMax)
         _frequency.value = newFreq
 
-        // Определяем какая станция ближайшая и какой сигнал
+        // Обновляем индикатор сигнала (для UI)
         val nearest = StationRepository.nearestStation(newFreq, _country.value)
         val dist = nearest?.let { abs(it.frequency - newFreq) } ?: Float.MAX_VALUE
-        val newSignal = when {
+        _signal.value = when {
             dist <= onStationTolerance -> SignalStatus.ON_STATION
             dist <= weakTolerance -> SignalStatus.WEAK
             else -> SignalStatus.NO_SIGNAL
         }
 
-        _signal.value = newSignal
-        // Меняем играющую станцию ТОЛЬКО когда сигнал стал ON_STATION
-        // (иначе постоянное переключение потока создало бы заикания)
-        if (newSignal == SignalStatus.ON_STATION && nearest != null && nearest != _currentStation.value) {
-            _currentStation.value = nearest
-            player.play(nearest)
-        } else if (newSignal != SignalStatus.ON_STATION) {
-            player.pause()
-        }
+        // Пауза играющей станции пока юзер крутит
+        if (player.isPlaying.value) player.pause()
     }
 
     /**
-     * Юзер отпустил колесо. Авто-snap к ближайшей станции с короткой задержкой.
+     * Юзер отпустил колесо. Сразу snap к ближайшей станции (без задержки).
      */
     fun onScrollStop() {
         snapJob?.cancel()
         snapJob = viewModelScope.launch {
-            delay(400) // даём 0.4с показать «между станциями», потом snap
+            // Минимальная задержка — даём анимации стрелки доехать
+            delay(100)
             val nearest = StationRepository.nearestStation(_frequency.value, _country.value)
                 ?: return@launch
             tuneToStation(nearest)
@@ -158,8 +165,6 @@ class RadioViewModel(app: Application) : AndroidViewModel(app) {
         if (player.isPlaying.value) player.pause() else player.resume()
     }
 
-    override fun onCleared() {
-        player.release()
-        super.onCleared()
-    }
+    // Не вызываем player.release() — он Singleton и должен жить дольше ViewModel,
+    // чтобы радио продолжало играть когда юзер ушёл с экрана.
 }

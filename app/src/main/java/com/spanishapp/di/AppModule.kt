@@ -74,6 +74,14 @@ object AppModule {
     @Provides fun provideWodHistoryDao(db: AppDatabase): WodHistoryDao = db.wodHistoryDao()
     @Provides fun provideTheoryProgressDao(db: AppDatabase): com.spanishapp.data.db.dao.TheoryProgressDao = db.theoryProgressDao()
 
+    // ── Radio player (Singleton — выживает между экранами) ───
+    @Provides
+    @Singleton
+    fun provideRadioPlayerController(
+        @ApplicationContext context: Context
+    ): com.spanishapp.radio.player.RadioPlayerController =
+        com.spanishapp.radio.player.RadioPlayerController(context)
+
     // ── Firebase Firestore ─────────────────────────────────────
     @Provides
     @Singleton

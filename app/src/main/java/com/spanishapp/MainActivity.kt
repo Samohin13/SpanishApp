@@ -1,17 +1,27 @@
 package com.spanishapp
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.spanishapp.util.LocaleHelper
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
@@ -57,16 +67,40 @@ class MainActivity : FragmentActivity() {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase, lang))
     }
 
-    /** Keeps the system Splash visible until early prefs finish loading so we
-     *  never show a blank/white frame between the splash and the first Compose
-     *  screen. Flipped to true on first composition. */
+    /** Keeps the system Splash visible until early prefs finish loading AND
+     *  database seeding is done. На первом запуске seed может занять 2-5 сек
+     *  на старых устройствах (10К+ слов) — без splash юзер видит белый экран
+     *  и может закрыть приложение. */
     private var splashHoldOpen = true
+
+    /**
+     * Android 13+ требует runtime-разрешение POST_NOTIFICATIONS — без него
+     * ВСЕ наши push молча игнорируются (daily reminder, WoD-напоминание,
+     * achievements). Регистрируем launcher до setContent чтобы не нарушать
+     * lifecycle, запрашиваем один раз при первом старте.
+     */
+    private val notificationPermLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+        // Результат не блокирует UX — даже если юзер отказал, приложение
+        // работает. Просто пуши не приходят (юзер сам потом включит в Settings).
+    }
+
+    private fun maybeRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return  // < Android 13 — ничего не нужно
+        val perm = "android.permission.POST_NOTIFICATIONS"
+        val granted = ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED
+        if (!granted) {
+            notificationPermLauncher.launch(perm)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splash = installSplashScreen()
         splash.setKeepOnScreenCondition { splashHoldOpen }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        maybeRequestNotificationPermission()
         setContent {
             val fontSize by appPreferences.fontSize.collectAsStateWithLifecycle(
                 initialValue = "MEDIUM"
@@ -87,11 +121,19 @@ class MainActivity : FragmentActivity() {
             ) {
                 SpanishAppTheme(darkTheme = darkTheme) {
                     SpanishBackground {
-                        // First successful composition drops the SplashScreen
-                        // so we avoid the brief blank frame between splash and
-                        // the first real UI.
-                        LaunchedEffect(Unit) { splashHoldOpen = false }
-                        SpanishAppRoot()
+                        // Ждём завершения seedIfNeeded() — на первом запуске
+                        // показываем splash-overlay с прогрессом. Splash
+                        // системы тоже держим до тех пор.
+                        val app = applicationContext as SpanishApp
+                        val seedReady by app.seedReady.collectAsStateWithLifecycle()
+                        LaunchedEffect(seedReady) {
+                            if (seedReady) splashHoldOpen = false
+                        }
+                        if (seedReady) {
+                            SpanishAppRoot()
+                        } else {
+                            FirstLaunchLoadingOverlay()
+                        }
                     }
                 }
             }
@@ -111,6 +153,43 @@ class MainActivity : FragmentActivity() {
     }
 }
 
+/**
+ * Splash-overlay для первого запуска — показывается пока seedIfNeeded()
+ * заполняет БД (10К слов + глаголы + рассказы, 2-5 сек на старых устройствах).
+ *
+ * Без overlay юзер видит белый экран, думает «зависло» и закрывает.
+ */
+@Composable
+private fun FirstLaunchLoadingOverlay() {
+    androidx.compose.foundation.layout.Box(
+        modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+        contentAlignment = androidx.compose.ui.Alignment.Center,
+    ) {
+        androidx.compose.foundation.layout.Column(
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        ) {
+            androidx.compose.material3.CircularProgressIndicator(
+                modifier = androidx.compose.ui.Modifier.size(48.dp),
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 4.dp,
+            )
+            androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(20.dp))
+            androidx.compose.material3.Text(
+                "ESPEAK",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(8.dp))
+            androidx.compose.material3.Text(
+                "Готовим словарь...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
 @Composable
 fun SpanishAppRoot() {
     val navController = rememberNavController()
@@ -118,7 +197,7 @@ fun SpanishAppRoot() {
     val currentRoute = navBackStackEntry?.destination?.route ?: "home"
 
     val showBottomBar = currentRoute in listOf(
-        "home", "games", "dictionary", "profile",
+        "home", "games", "dictionary", "profile", "radio",
         "grammar", "achievements", "weak_words",
         "conjugation", "quiz", "dialogues", "settings", "pronunciation"
     ) || currentRoute.startsWith("flashcards")
@@ -128,7 +207,19 @@ fun SpanishAppRoot() {
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             if (showBottomBar) {
-                SpanishBottomBar(
+                androidx.compose.foundation.layout.Column {
+                    // Mini-player над BottomBar — показывается когда играет радио
+                    // и юзер НЕ на экране радио (где уже есть полный плеер).
+                    com.spanishapp.radio.ui.RadioMiniPlayer(
+                        isOnRadioScreen = currentRoute == "radio",
+                        onClick = {
+                            // Открыть полный экран радио
+                            navController.navigate("radio") {
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                    SpanishBottomBar(
                     currentRoute = currentRoute,
                     onNavigate = { route ->
                         // Bottom-bar tap behaviour:
@@ -155,6 +246,7 @@ fun SpanishAppRoot() {
                         }
                     }
                 )
+                }
             }
         }
     ) { paddingValues ->

@@ -40,7 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.radio.data.CefrLevel
 import com.spanishapp.radio.data.Country
@@ -54,7 +54,7 @@ private val Yellow = Color(0xFFFFC107)
 
 @Composable
 fun RadioScreen(navController: NavHostController) {
-    val vm: RadioViewModel = viewModel()
+    val vm: RadioViewModel = hiltViewModel()
     val context = LocalContext.current
     val haptic = remember { HapticManager(context) }
 
@@ -456,6 +456,8 @@ private fun TunerWheel(
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
+    // Накопленное смещение тиков (для визуальной анимации прокрутки колеса)
+    var tickOffsetPx by remember { mutableStateOf(0f) }
 
     Surface(
         shape = RoundedCornerShape(18.dp),
@@ -476,6 +478,8 @@ private fun TunerWheel(
                             onDragEnd = { onScrollStop() },
                             onDragCancel = { onScrollStop() },
                         ) { _, dragAmount ->
+                            // Накопить визуальное смещение
+                            tickOffsetPx += dragAmount.x
                             // delta положителен вправо → инвертируем для частоты
                             val delta = -dragAmount.x / with(density) { 30.dp.toPx() }
                             onScroll(delta)
@@ -500,16 +504,20 @@ private fun TunerWheel(
                             )
                         ),
                 ) {
-                    // Knurled ticks — uniform
+                    // Knurled ticks — uniform, с накопленным offset для иллюзии прокрутки.
+                    // tickOffsetPx читается через лямбду чтобы Canvas пере-рисовался.
                     Canvas(modifier = Modifier.fillMaxSize().padding(vertical = 8.dp)) {
                         val tickColor = Color.Black.copy(alpha = 0.85f)
                         val highlight = Color.White.copy(alpha = 0.12f)
                         val tickWidth = 1.5.dp.toPx()
                         val tickGap = 5.dp.toPx()
+                        val tickStep = tickWidth + tickGap
                         val tickHeight = size.height
-                        val numTicks = (size.width / (tickWidth + tickGap)).toInt()
-                        for (i in 0..numTicks) {
-                            val x = i * (tickWidth + tickGap)
+                        // Берём modulo чтобы offset циклически зацикливался — иллюзия бесконечного колеса
+                        val baseOffset = tickOffsetPx.mod(tickStep)
+                        val numTicks = (size.width / tickStep).toInt() + 2
+                        for (i in -1..numTicks) {
+                            val x = baseOffset + i * tickStep
                             drawLine(
                                 color = tickColor,
                                 start = Offset(x, 0f),
