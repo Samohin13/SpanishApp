@@ -54,36 +54,47 @@ object VocabScope {
         // Блок 1.1 «Взлёт» — заполнен по xlsx
         // ═══════════════════════════════════════════════════════════════
 
-        // u1_l0..u1_l3 — фонетика. Из примеров в теории слова попадают в scope:
+        // v1.3.4: u1_l0..u1_l2 — алфавит по 9 букв за урок. Слова-примеры
+        // подобраны так, чтобы все буквы были из этого урока.
+        // u1_l0 — алфавит A-I
         put("u1_l0", listOf(
-            // v1.3.3: расширено до 12 слов (по 2-3 на гласную)
+            ScopeWord("agua", "вода", "u1_l0", "noun"),
+            ScopeWord("bueno", "хороший", "u1_l0", "adjective"),
             ScopeWord("casa", "дом", "u1_l0", "noun"),
-            ScopeWord("mamá", "мама", "u1_l0", "family"),
-            ScopeWord("mes", "месяц", "u1_l0", "noun"),
-            ScopeWord("té", "чай", "u1_l0", "food"),
-            ScopeWord("leche", "молоко", "u1_l0", "food"),
+            ScopeWord("cinco", "пять", "u1_l0", "number"),
+            ScopeWord("día", "день", "u1_l0", "noun"),
+            ScopeWord("elefante", "слон", "u1_l0", "noun"),
+            ScopeWord("foto", "фото", "u1_l0", "noun"),
+            ScopeWord("gato", "кот", "u1_l0", "noun"),
+            ScopeWord("gente", "люди", "u1_l0", "noun"),
+            ScopeWord("hola", "привет", "u1_l0", "greeting"),
             ScopeWord("isla", "остров", "u1_l0", "noun"),
-            ScopeWord("sí", "да", "u1_l0", "particle"),
-            ScopeWord("mi", "мой", "u1_l0", "possessive"),
-            ScopeWord("ojo", "глаз", "u1_l0", "noun"),
-            ScopeWord("sol", "солнце", "u1_l0", "noun"),
-            ScopeWord("no", "нет", "u1_l0", "particle"),
-            ScopeWord("uva", "виноград", "u1_l0", "noun"),
-            ScopeWord("tú", "ты", "u1_l0", "pronoun"),
-            ScopeWord("luz", "свет", "u1_l0", "noun"),
         ))
+        // u1_l1 — алфавит J-Q
         put("u1_l1", listOf(
-            ScopeWord("vino", "вино", "u1_l1", "noun"),
-            ScopeWord("gato", "кот", "u1_l1", "noun"),
-            ScopeWord("gente", "люди", "u1_l1", "noun"),
-            ScopeWord("cada", "каждый", "u1_l1", "adjective"),
+            ScopeWord("Japón", "Япония", "u1_l1", "country"),
+            ScopeWord("kilo", "кило", "u1_l1", "noun"),
+            ScopeWord("luna", "луна", "u1_l1", "noun"),
+            ScopeWord("madre", "мать", "u1_l1", "family"),
+            ScopeWord("noche", "ночь", "u1_l1", "noun"),
+            ScopeWord("año", "год", "u1_l1", "noun"),
+            ScopeWord("oro", "золото", "u1_l1", "noun"),
+            ScopeWord("padre", "отец", "u1_l1", "family"),
+            ScopeWord("queso", "сыр", "u1_l1", "food"),
         ))
+        // u1_l2 — алфавит R-Z
         put("u1_l2", listOf(
-            ScopeWord("hola", "привет", "u1_l2", "greeting"),
-            ScopeWord("año", "год", "u1_l2", "noun"),
-            ScopeWord("perro", "собака", "u1_l2", "noun"),
+            ScopeWord("rojo", "красный", "u1_l2", "color"),
+            ScopeWord("perro", "собака", "u1_l2", "animal"),
             ScopeWord("pero", "но", "u1_l2", "conjunction"),
-            ScopeWord("Japón", "Япония", "u1_l2", "country"),
+            ScopeWord("sol", "солнце", "u1_l2", "noun"),
+            ScopeWord("tomate", "помидор", "u1_l2", "food"),
+            ScopeWord("uno", "один", "u1_l2", "number"),
+            ScopeWord("vino", "вино", "u1_l2", "food"),
+            ScopeWord("wifi", "вай-фай", "u1_l2", "noun"),
+            ScopeWord("taxi", "такси", "u1_l2", "noun"),
+            ScopeWord("yo", "я", "u1_l2", "pronoun"),
+            ScopeWord("zapato", "ботинок", "u1_l2", "noun"),
         ))
         put("u1_l3", listOf(
             ScopeWord("café", "кофе", "u1_l3", "noun"),

@@ -44,251 +44,313 @@ object LessonContentDataV2 {
     private fun blockA1_1(): Map<String, LessonContent> = mapOf(
 
         // ─────────────────────────────────────────────────────────────
-        // u1_l0 — Гласные A E I O U
-        // v1.3.3: расширено до 12 слов через гласные.
-        //         LISTEN_PICK букв → LISTEN_PICK слов (полезнее).
-        //         MATCH_PAIRS = Memory-game 2×5 пар «слово↔перевод».
+        // u1_l0 — «Алфавит 1/3: A B C D E F G H I» (9 букв)
+        // v1.3.4: 30% теория (1 таблица), 70% практика (6 упражнений).
         // ─────────────────────────────────────────────────────────────
         "u1_l0" to LessonContent(
-            intro = "5 чистых гласных + 12 базовых слов. Каждая гласная всегда читается одинаково — никакой редукции как в русском «карова».",
+            intro = "Знакомимся с первой третью алфавита: A B C D E F G H I. Запомнишь их звучание и научишься узнавать в простых словах.",
             sections = listOf(
                 LessonSection(
-                    heading = "Алфавит — гласные",
+                    heading = "Буквы A–I: звук и пример",
                     items = listOf(
-                        LessonItem("A", "[а]", "casa — дом, mamá — мама"),
-                        LessonItem("E", "[э]", "mes — месяц, té — чай"),
-                        LessonItem("I", "[и]", "isla — остров, sí — да"),
-                        LessonItem("O", "[о]", "ojo — глаз, sol — солнце"),
-                        LessonItem("U", "[у]", "uva — виноград, luz — свет"),
+                        LessonItem("A — «а»", "[а] всегда чистое", "agua — вода"),
+                        LessonItem("B — «бэ»", "[б] / [в] между гласных", "bueno — хороший"),
+                        LessonItem("C — «сэ»", "перед e/i = [с], иначе [к]", "casa — дом, cinco — пять"),
+                        LessonItem("D — «дэ»", "[д] / мягкое [ð] между гласных", "día — день"),
+                        LessonItem("E — «э»", "[э] всегда чистое", "elefante — слон"),
+                        LessonItem("F — «эфэ»", "[ф]", "foto — фото"),
+                        LessonItem("G — «хэ»", "перед e/i = [х], иначе [г]", "gato — кот, gente — люди"),
+                        LessonItem("H — «аче»", "ВСЕГДА МОЛЧИТ", "hola — «о-ла» (привет)"),
+                        LessonItem("I — «и»", "[и] всегда чистое", "isla — остров"),
                     ),
                 ),
             ),
             exercises = listOf(
-                // Упр.1 LISTEN_PICK — услышь СЛОВО → выбери из 4 похожих
+                // 1. Узнай букву на слух
                 Exercise(
                     type = ExerciseType.LISTEN_PICK,
-                    instruction = "Послушай и выбери слово",
-                    audioText = "casa",
-                    options = listOf("casa", "mesa", "cara", "cosa"),
-                    correctAnswer = "casa",
-                    explanation = "casa — дом. Слышишь «ка-са» с чистой A.",
+                    instruction = "Послушай букву и выбери её",
+                    audioText = "ce",
+                    options = listOf("C", "B", "D", "G"),
+                    correctAnswer = "C",
+                    explanation = "Буква C по-испански называется «сэ». Звук — [с] или [к] в зависимости от следующей буквы.",
                 ),
-                // Упр.2 LISTEN_TYPE — диктант
+                // 2. С какой буквы начинается слово
                 Exercise(
-                    type = ExerciseType.LISTEN_TYPE,
-                    instruction = "Послушай и напечатай слово",
-                    audioText = "uva",
-                    correctAnswer = "uva",
-                    explanation = "uva — виноград. U+V+A: «у-ба».",
+                    type = ExerciseType.LISTEN_PICK,
+                    instruction = "С какой буквы начинается слово «hola»?",
+                    audioText = "hola",
+                    options = listOf("H", "O", "A", "L"),
+                    correctAnswer = "H",
+                    explanation = "hola пишется с H, хотя слышится «о-ла» — H в испанском НЕ читается.",
                 ),
-                // Упр.3 ORDER_LETTERS — собери слово
+                // 3. Пары: буква ↔ её испанское название
+                Exercise(
+                    type = ExerciseType.MATCH_PAIRS,
+                    instruction = "Запомни как буквы НАЗЫВАЮТСЯ → найди пары",
+                    correctAnswer = "ok",
+                    pairs = listOf(
+                        // Раунд 1 — основные
+                        "A" to "а",
+                        "B" to "бэ",
+                        "C" to "сэ",
+                        "D" to "дэ",
+                        "E" to "э",
+                        // Раунд 2
+                        "F" to "эфэ",
+                        "G" to "хэ",
+                        "H" to "аче",
+                        "I" to "и",
+                        "CH" to "че",
+                    ),
+                ),
+                // 4. Собери простое слово
                 Exercise(
                     type = ExerciseType.ORDER_LETTERS,
                     instruction = "Собери слово из букв",
                     correctAnswer = "casa",
-                    explanation = "casa — дом. Все 4 буквы — гласные A и согласные C, S.",
+                    explanation = "casa — дом. C перед «a» звучит как [к]: «ка-са».",
                 ),
-                // Упр.4 SPOT_THE_ERROR — найди некорректное произношение
-                Exercise(
-                    type = ExerciseType.SPOT_THE_ERROR,
-                    instruction = "Какое произношение НЕ верное?",
-                    question = "Найди ошибку:",
-                    errorVariants = listOf(
-                        "casa = [ка-са]",
-                        "ojo = [о-хо]",
-                        "uva = [ю-ва]",
-                        "isla = [ис-ла]",
-                    ),
-                    correctAnswer = "uva = [ю-ва]",
-                    explanation = "U в испанском всегда [у], не [ю]. uva = «у-ба».",
-                ),
-                // Упр.5 MATCH_PAIRS Memory-game — 10 пар (2 раунда × 5)
-                // Слово ↔ перевод. Раунд 1: основные. Раунд 2: бонусные.
-                Exercise(
-                    type = ExerciseType.MATCH_PAIRS,
-                    instruction = "Запомни пары → найди их после перемешивания",
-                    correctAnswer = "ok",
-                    pairs = listOf(
-                        // Раунд 1 — основные 5
-                        "casa" to "дом",
-                        "mes" to "месяц",
-                        "isla" to "остров",
-                        "ojo" to "глаз",
-                        "uva" to "виноград",
-                        // Раунд 2 — бонусные 5 (короткие частотные слова)
-                        "sí" to "да",
-                        "no" to "нет",
-                        "sol" to "солнце",
-                        "mamá" to "мама",
-                        "luz" to "свет",
-                    ),
-                ),
-                // Упр.6 MULTIPLE_CHOICE — правило произношения
+                // 5. Правило про H
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Главное правило испанских гласных:",
-                    question = "Сколько гласных и как они читаются?",
+                    instruction = "Как читается буква H?",
+                    question = "",
                     options = listOf(
-                        "5 — каждая всегда одинаково",
-                        "6 — зависят от ударения",
-                        "12 — как в английском",
-                        "3 — только A, O, U",
+                        "Не читается, всегда молчит",
+                        "Как русское [х]",
+                        "Как [г]",
+                        "Зависит от слова",
                     ),
-                    correctAnswer = "5 — каждая всегда одинаково",
-                    explanation = "5 гласных, каждая звучит одинаково всегда. Никакой редукции — выучи раз и навсегда.",
+                    correctAnswer = "Не читается, всегда молчит",
+                    explanation = "H — единственная буква которая НЕ читается никогда. hola = «о-ла», hospital = «оспиталь».",
+                ),
+                // 6. Диктант — короткое слово на A
+                Exercise(
+                    type = ExerciseType.LISTEN_TYPE,
+                    instruction = "Послушай и напечатай слово",
+                    audioText = "agua",
+                    correctAnswer = "agua",
+                    explanation = "agua — вода. Буквы A-G-U-A, все знакомые из этого урока.",
                 ),
             ),
         ),
 
         // ─────────────────────────────────────────────────────────────
-        // u1_l1 — Согласные B/V, D, G
+        // u1_l1 — «Алфавит 2/3: J K L M N Ñ O P Q» (9 букв)
+        // v1.3.4: 30% теория, 70% практика. Здесь главная героиня — Ñ.
         // ─────────────────────────────────────────────────────────────
         "u1_l1" to LessonContent(
-            intro = "Большинство согласных как в русском, но 3 буквы коварны: B и V звучат одинаково, D смягчается, G меняется перед e/i.",
+            intro = "Вторая треть алфавита: J K L M N Ñ O P Q. Главные сюрпризы — J читается как [х], а Ñ — это отдельная буква со звуком [нь].",
             sections = listOf(
                 LessonSection(
-                    heading = "Особые согласные",
+                    heading = "Буквы J–Q: звук и пример",
                     items = listOf(
-                        LessonItem("B = V", "оба [б/в]", "vino — «би-но»"),
-                        LessonItem("D между гласных", "мягкое [ð]", "cada — «ка-ða»"),
-                        LessonItem("G + a/o/u", "[г]", "gato — «га-то»"),
-                        LessonItem("G + e/i", "[х]", "gente — «хэн-тэ»"),
+                        LessonItem("J — «хота»", "[х] — как русское «х»", "Japón — Япония: «ха-пон»"),
+                        LessonItem("K — «ка»", "[к] — редкая, только в заимствованиях", "kilo — кило"),
+                        LessonItem("L — «эле»", "[л]", "luna — луна"),
+                        LessonItem("M — «эме»", "[м]", "madre — мать"),
+                        LessonItem("N — «эне»", "[н]", "noche — ночь"),
+                        LessonItem("Ñ — «энье»", "[нь] — отдельная буква!", "año — год: «а-ньо»"),
+                        LessonItem("O — «о»", "[о] всегда чистое", "oro — золото"),
+                        LessonItem("P — «пэ»", "[п]", "padre — отец"),
+                        LessonItem("Q — «ку»", "всегда QUE/QUI = [кэ/ки]", "queso — сыр: «кэ-со»"),
                     ),
                 ),
             ),
             exercises = listOf(
+                // 1. Узнай букву Ñ на слух
                 Exercise(
                     type = ExerciseType.LISTEN_PICK,
-                    instruction = "Послушай и выбери слово",
-                    audioText = "vino",
-                    options = listOf("vino", "fino", "pino", "bino"),
-                    correctAnswer = "vino",
-                    explanation = "vino — вино. V и B читаются одинаково: [би-но].",
+                    instruction = "Послушай букву и выбери её",
+                    audioText = "eñe",
+                    options = listOf("Ñ", "N", "M", "L"),
+                    correctAnswer = "Ñ",
+                    explanation = "Буква Ñ называется «энье». Это отдельная буква алфавита со звуком [нь].",
                 ),
+                // 2. Звук буквы J
                 Exercise(
-                    type = ExerciseType.LISTEN_TYPE,
-                    instruction = "Послушай и напечатай",
-                    audioText = "gato",
-                    correctAnswer = "gato",
-                    explanation = "gato — кот. G перед «a» = [г].",
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как читается буква J?",
+                    question = "",
+                    options = listOf(
+                        "[х] — как русское «х»",
+                        "[ж] — как в «жук»",
+                        "[й]",
+                        "[дж]",
+                    ),
+                    correctAnswer = "[х] — как русское «х»",
+                    explanation = "J = [х]. Japón = «ха-пон», jefe = «хэ-фэ».",
                 ),
+                // 3. С какой буквы начинается слово
+                Exercise(
+                    type = ExerciseType.LISTEN_PICK,
+                    instruction = "С какой буквы начинается «noche»?",
+                    audioText = "noche",
+                    options = listOf("N", "Ñ", "M", "O"),
+                    correctAnswer = "N",
+                    explanation = "noche — ночь. Начинается с обычной N, не с Ñ.",
+                ),
+                // 4. Пары: буква ↔ название
+                Exercise(
+                    type = ExerciseType.MATCH_PAIRS,
+                    instruction = "Запомни как буквы НАЗЫВАЮТСЯ → найди пары",
+                    correctAnswer = "ok",
+                    pairs = listOf(
+                        // Раунд 1
+                        "J" to "хота",
+                        "K" to "ка",
+                        "L" to "эле",
+                        "M" to "эме",
+                        "N" to "эне",
+                        // Раунд 2
+                        "Ñ" to "энье",
+                        "O" to "о",
+                        "P" to "пэ",
+                        "Q" to "ку",
+                        "LL" to "эйе",
+                    ),
+                ),
+                // 5. Собери слово с Ñ
                 Exercise(
                     type = ExerciseType.ORDER_LETTERS,
                     instruction = "Собери слово",
-                    correctAnswer = "gente",
-                    explanation = "gente — люди. G+e = [х]: «хэн-тэ».",
+                    correctAnswer = "año",
+                    explanation = "año — год. Тильда над n превращает её в Ñ → звук [нь].",
                 ),
-                Exercise(
-                    type = ExerciseType.SPOT_THE_ERROR,
-                    instruction = "Найди НЕправильное произношение",
-                    question = "",
-                    errorVariants = listOf(
-                        "gato = [га-то]",
-                        "vino = [би-но]",
-                        "gente = [гэн-тэ]",
-                        "cada = [ка-ða]",
-                    ),
-                    correctAnswer = "gente = [гэн-тэ]",
-                    explanation = "G перед «e» читается как [х], не [г]. gente = «хэн-тэ».",
-                ),
-                Exercise(
-                    type = ExerciseType.MATCH_PAIRS,
-                    instruction = "Соедини сочетание и звук",
-                    correctAnswer = "ok",
-                    pairs = listOf(
-                        "B / V" to "[б/в]",
-                        "G + a/o/u" to "[г]",
-                        "G + e/i" to "[х]",
-                        "GUE / GUI" to "[гэ/ги]",
-                        "D между гласных" to "[ð] мягкое",
-                    ),
-                ),
+                // 6. Различи N и Ñ
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "Какие буквы звучат ОДИНАКОВО?",
+                    instruction = "В чём разница между «ano» и «año»?",
                     question = "",
-                    options = listOf("B и V", "C и K", "D и T", "G и J"),
-                    correctAnswer = "B и V",
-                    explanation = "B и V в испанском — один звук [б/в]. Различай только на письме.",
+                    options = listOf(
+                        "año — год, ano — анус. ВАЖНО не путать!",
+                        "Это одно и то же слово",
+                        "ano — год, año — анус",
+                        "Разные времена глагола",
+                    ),
+                    correctAnswer = "año — год, ano — анус. ВАЖНО не путать!",
+                    explanation = "Знаменитый испанский урок: тильда (~) над n меняет звук И смысл. Всегда пиши Ñ когда нужно.",
+                ),
+                // 7. Диктант
+                Exercise(
+                    type = ExerciseType.LISTEN_TYPE,
+                    instruction = "Послушай и напечатай слово",
+                    audioText = "queso",
+                    correctAnswer = "queso",
+                    explanation = "queso — сыр. После Q всегда идёт U, и QU читается как [к]: «кэ-со».",
                 ),
             ),
         ),
 
         // ─────────────────────────────────────────────────────────────
-        // u1_l2 — H молчит · J=[х] · Ñ=[нь] · RR=[р-р]
+        // u1_l2 — «Алфавит 3/3: R S T U V W X Y Z» (9 букв)
+        // v1.3.4: финальная треть. R/RR + V (=B) — главные подвохи.
         // ─────────────────────────────────────────────────────────────
         "u1_l2" to LessonContent(
-            intro = "Четыре буквы — четыре сюрприза. H молчит. J=[х]. Ñ=[нь]. RR — длинное вибрирующее.",
+            intro = "Третья треть алфавита: R S T U V W X Y Z. Два важных правила — R в начале слова звучит как RR (длинно), и V звучит точно так же как B.",
             sections = listOf(
                 LessonSection(
-                    heading = "Особые буквы",
+                    heading = "Буквы R–Z: звук и пример",
                     items = listOf(
-                        LessonItem("H", "молчит", "hola — «о-ла»"),
-                        LessonItem("J", "[х]", "jefe — «хэ-фэ» (босс)"),
-                        LessonItem("Ñ", "[нь]", "año — «а-ньо» (год)"),
-                        LessonItem("RR", "[р-р]", "perro — «пэр-ро»"),
+                        LessonItem("R — «эре»", "[р] короткое; в начале слова = [рр]", "rojo — красный: «ррохо»"),
+                        LessonItem("S — «эсе»", "[с]", "sol — солнце"),
+                        LessonItem("T — «тэ»", "[т]", "tomate — помидор"),
+                        LessonItem("U — «у»", "[у] всегда чистое", "uno — один"),
+                        LessonItem("V — «увэ»", "[б/в] — ЗВУЧИТ КАК B", "vino — вино: «би-но»"),
+                        LessonItem("W — «увэ добле»", "[в] / [у] — редкая", "wifi — вай-фай"),
+                        LessonItem("X — «экис»", "[кс]", "taxi — такси"),
+                        LessonItem("Y — «и гриега»", "[й] / [и]", "yo — я: «йо»"),
+                        LessonItem("Z — «сэта»", "[с] (как наша «с»!)", "zapato — ботинок: «са-па-то»"),
                     ),
                 ),
             ),
             exercises = listOf(
+                // 1. Узнай букву Z
                 Exercise(
                     type = ExerciseType.LISTEN_PICK,
-                    instruction = "Послушай и выбери",
-                    audioText = "hola",
-                    options = listOf("hola", "ola", "jola", "ñola"),
-                    correctAnswer = "hola",
-                    explanation = "hola — привет. H молчит, читается «о-ла».",
+                    instruction = "Послушай букву и выбери её",
+                    audioText = "ceta",
+                    options = listOf("Z", "S", "C", "X"),
+                    correctAnswer = "Z",
+                    explanation = "Z называется «сэта». Звук — [с], не [з] и не [ц].",
                 ),
+                // 2. Правило о V
                 Exercise(
-                    type = ExerciseType.LISTEN_TYPE,
-                    instruction = "Послушай и напечатай",
-                    audioText = "año",
-                    correctAnswer = "año",
-                    explanation = "año — год. Ñ — отдельная буква, звук [нь].",
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как читается буква V?",
+                    question = "",
+                    options = listOf(
+                        "Точно как B — оба звука [б/в]",
+                        "Как русское [в], отдельный звук",
+                        "Как [ф]",
+                        "Как [у]",
+                    ),
+                    correctAnswer = "Точно как B — оба звука [б/в]",
+                    explanation = "B и V в испанском — ОДИН звук. vino = «би-но», beso = «бэ-со». Различай только на письме!",
                 ),
+                // 3. Правило про R
+                Exercise(
+                    type = ExerciseType.MULTIPLE_CHOICE,
+                    instruction = "Как читается R в слове «rojo»?",
+                    question = "",
+                    options = listOf(
+                        "Длинно, как RR: «рро-хо»",
+                        "Коротко: «ро-хо»",
+                        "Не читается",
+                        "Как [л]",
+                    ),
+                    correctAnswer = "Длинно, как RR: «рро-хо»",
+                    explanation = "R в начале слова всегда читается как длинное вибрирующее RR. То же — после N, L, S.",
+                ),
+                // 4. Пары: буква ↔ название
+                Exercise(
+                    type = ExerciseType.MATCH_PAIRS,
+                    instruction = "Запомни как буквы НАЗЫВАЮТСЯ → найди пары",
+                    correctAnswer = "ok",
+                    pairs = listOf(
+                        // Раунд 1
+                        "R" to "эре",
+                        "S" to "эсе",
+                        "T" to "тэ",
+                        "U" to "у",
+                        "V" to "увэ",
+                        // Раунд 2
+                        "W" to "увэ добле",
+                        "X" to "экис",
+                        "Y" to "и гриега",
+                        "Z" to "сэта",
+                        "RR" to "эрре",
+                    ),
+                ),
+                // 5. Собери слово с RR
                 Exercise(
                     type = ExerciseType.ORDER_LETTERS,
                     instruction = "Собери слово",
                     correctAnswer = "perro",
-                    explanation = "perro — собака. Две R дают длинное вибрирующее [р-р].",
+                    explanation = "perro — собака. Две R дают длинный вибрирующий звук [рр]: «пэ-ррро».",
                 ),
-                Exercise(
-                    type = ExerciseType.SPOT_THE_ERROR,
-                    instruction = "Найди НЕверное произношение",
-                    question = "",
-                    errorVariants = listOf(
-                        "hola = [хо-ла]",
-                        "Japón = [ха-пон]",
-                        "año = [а-ньо]",
-                        "perro = [пэр-ро]",
-                    ),
-                    correctAnswer = "hola = [хо-ла]",
-                    explanation = "H в испанском НЕ читается! hola = «о-ла», без «х».",
-                ),
-                Exercise(
-                    type = ExerciseType.MATCH_PAIRS,
-                    instruction = "Буква ↔ звук",
-                    correctAnswer = "ok",
-                    pairs = listOf(
-                        "H" to "молчит",
-                        "J" to "[х]",
-                        "Ñ" to "[нь]",
-                        "RR" to "[р-р] длинное",
-                        "R одна" to "[р] короткое",
-                    ),
-                ),
+                // 6. Pero vs Perro
                 Exercise(
                     type = ExerciseType.MULTIPLE_CHOICE,
-                    instruction = "В чём разница?",
-                    question = "pero vs perro",
+                    instruction = "В чём разница: «pero» и «perro»?",
+                    question = "",
                     options = listOf(
                         "pero = «но», perro = «собака»",
-                        "оба значат «собака»",
+                        "Оба значат «собака»",
                         "pero = «собака», perro = «но»",
-                        "разница только в написании",
+                        "Только в написании",
                     ),
                     correctAnswer = "pero = «но», perro = «собака»",
-                    explanation = "Одна R и две R меняют смысл. pero (но) ≠ perro (собака).",
+                    explanation = "Одна R = короткий звук. Две R = длинный. Из-за этого меняется смысл: pero (но) ≠ perro (собака).",
+                ),
+                // 7. Диктант — простое слово
+                Exercise(
+                    type = ExerciseType.LISTEN_TYPE,
+                    instruction = "Послушай и напечатай слово",
+                    audioText = "sol",
+                    correctAnswer = "sol",
+                    explanation = "sol — солнце. Три простые буквы: S-O-L.",
                 ),
             ),
         ),

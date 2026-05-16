@@ -112,18 +112,18 @@ fun LessonSessionScreen(
 
     val accentColor = unit.color
     val sections    = content.sections
-    // Authored + auto-generated, interleaved so generated items don't all
-    // bunch at the end. Pattern: 1 authored, 1 generated, 1 authored, ...
+    // V2-уроки (LessonContentDataV2) полностью авторские — генератор отключён.
+    // Если у урока 3+ авторских упражнений — используем только их. Иначе fallback
+    // на генератор (для устаревших V1-уроков без полного покрытия).
     val exercises   = remember(unitId, lessonIndex) {
-        val lessonKey = "u${unitId}_l${lessonIndex}"
-        val generated = ExerciseGenerator.generate(lessonKey, content).toMutableList()
-        val authored  = content.exercises.toMutableList()
-        val mixed = mutableListOf<Exercise>()
-        while (authored.isNotEmpty() || generated.isNotEmpty()) {
-            if (authored.isNotEmpty()) mixed += authored.removeAt(0)
-            if (generated.isNotEmpty()) mixed += generated.removeAt(0)
+        val authored = content.exercises
+        if (authored.size >= 3) {
+            authored
+        } else {
+            val lessonKey = "u${unitId}_l${lessonIndex}"
+            val generated = ExerciseGenerator.generate(lessonKey, content)
+            authored + generated
         }
-        mixed
     }
 
     val totalSteps     = sections.size + exercises.size + 1
@@ -783,8 +783,24 @@ private fun ExerciseCard(
                 }
 
                 ExerciseType.ORDER_LETTERS -> {
+                    // Перевод-подсказка: вытаскиваем из explanation.
+                    // Шаблон: "gente — люди. ..." → "люди"
+                    val hint = remember(exercise.explanation, exercise.correctAnswer) {
+                        val exp = exercise.explanation
+                        val esWord = exercise.correctAnswer.trim()
+                        // Ищем "<esWord> — <ru>." или "<esWord> — <ru>,"
+                        val dashIdx = exp.indexOf(" — ")
+                        if (dashIdx >= 0 && exp.take(dashIdx).contains(esWord, ignoreCase = true)) {
+                            val afterDash = exp.substring(dashIdx + 3)
+                            // обрезаем до первой точки/запятой
+                            afterDash.takeWhile { it != '.' && it != ',' && it != ':' }
+                                .trim()
+                                .takeIf { it.isNotBlank() }
+                        } else null
+                    }
                     OrderLettersInput(
                         correctAnswer = exercise.correctAnswer,
+                        hint = hint,
                         accentColor = accentColor,
                         answered = answered,
                         onAnswer = { built ->
@@ -1539,6 +1555,21 @@ private fun ListenPickInput(
 
     Spacer(Modifier.height(20.dp))
 
+    // Авто-детект: если все опции — короткие буквы/сочетания (≤2 символа),
+    // рисуем сеткой 2×2 больших цветных карточек вместо вертикальных чипов.
+    val isLetterMode = options.all { it.length <= 2 }
+    if (isLetterMode) {
+        BigLetterOptionsGrid(
+            options = options,
+            correctAnswer = correctAnswer,
+            selectedOption = selectedOption,
+            answered = answered,
+            accentColor = accentColor,
+            onAnswer = onAnswer,
+        )
+        return
+    }
+
     // Options grid (vertical list of chips)
     options.forEach { option ->
         val isSelected = selectedOption == option
@@ -1592,6 +1623,7 @@ private fun ListenPickInput(
 @Composable
 private fun OrderLettersInput(
     correctAnswer: String,
+    hint: String? = null,
     accentColor: Color,
     answered: Boolean,
     onAnswer: (String) -> Unit,
@@ -1608,6 +1640,41 @@ private fun OrderLettersInput(
 
     val built     = chosen.joinToString("") { it.value }
     val isCorrect = built.equals(correctAnswer.replace(" ", ""), ignoreCase = true)
+
+    // Перевод-подсказка (если задана)
+    if (!hint.isNullOrBlank()) {
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = accentColor.copy(alpha = 0.10f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "💡",
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(end = 8.dp),
+                )
+                Column {
+                    Text(
+                        "Слово означает",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        hint,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = accentColor,
+                    )
+                }
+            }
+        }
+    }
 
     // Built word area
     Surface(
@@ -2656,5 +2723,83 @@ private fun SpeakRepeatInput(
             onPassed = onPassed,
             onSkipped = onSkipped,
         )
+    }
+}
+
+/**
+ * Сетка 2×2 больших цветных карточек-букв для LISTEN_PICK,
+ * когда все опции — короткие буквы (≤2 символа).
+ * Карточка 96×96dp, шрифт 44sp, явный визуальный фокус на букве.
+ */
+@Composable
+private fun BigLetterOptionsGrid(
+    options: List<String>,
+    correctAnswer: String,
+    selectedOption: String?,
+    answered: Boolean,
+    accentColor: Color,
+    onAnswer: (String) -> Unit,
+) {
+    // Разбиваем на ряды по 2
+    val rows = options.chunked(2)
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        rows.forEach { rowOpts ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                rowOpts.forEach { option ->
+                    val isSelected = selectedOption == option
+                    val isCorrect  = option == correctAnswer
+                    val bgColor = when {
+                        !answered && isSelected              -> accentColor.copy(alpha = 0.18f)
+                        answered && isCorrect                -> Green.copy(alpha = 0.18f)
+                        answered && isSelected && !isCorrect -> Red.copy(alpha = 0.18f)
+                        else                                 -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    }
+                    val borderColor = when {
+                        answered && isCorrect                -> Green
+                        answered && isSelected && !isCorrect -> Red
+                        isSelected                           -> accentColor
+                        else                                 -> accentColor.copy(alpha = 0.2f)
+                    }
+                    val textColor = when {
+                        answered && isCorrect                -> Green
+                        answered && isSelected && !isCorrect -> Red
+                        else                                 -> accentColor
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(18.dp),
+                        color = bgColor,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(110.dp)
+                            .border(
+                                width = if (isSelected || (answered && isCorrect)) 3.dp else 1.dp,
+                                color = borderColor,
+                                shape = RoundedCornerShape(18.dp),
+                            )
+                            .clickable(enabled = !answered) { onAnswer(option) },
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                text = option,
+                                fontSize = 44.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = textColor,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+                }
+                // Если в ряду 1 элемент — добавляем пустой spacer для центрирования
+                if (rowOpts.size == 1) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
     }
 }

@@ -196,26 +196,53 @@ private fun SectionRenderer(
     }
 }
 
+/**
+ * Универсальная тёмная плашка с цветной левой полосой.
+ * Используется для RULE/MNEMONIC/TIP/WARNING — все они визуально похожи,
+ * различаются только акцентным цветом полосы + заголовка.
+ */
 @Composable
-private fun RuleSection(section: TheorySection, accentColor: Color) {
+private fun AccentCard(
+    accent: Color,
+    heading: String,
+    body: String,
+) {
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = accentColor.copy(alpha = 0.10f),
+        color = Color(0xFF2A2A2A),
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Column(Modifier.padding(14.dp)) {
-            if (section.heading.isNotBlank()) {
+        Row(modifier = Modifier.height(androidx.compose.foundation.layout.IntrinsicSize.Min)) {
+            Box(
+                modifier = Modifier
+                    .width(4.dp)
+                    .fillMaxHeight()
+                    .background(accent),
+            )
+            Column(Modifier.padding(14.dp)) {
+                if (heading.isNotBlank()) {
+                    Text(
+                        heading,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = accent,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                }
                 Text(
-                    section.heading,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = accentColor,
+                    body,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    color = Color(0xFFE8E8E8),
                 )
-                Spacer(Modifier.height(6.dp))
             }
-            Text(section.body, fontSize = 14.sp, lineHeight = 20.sp)
         }
     }
+}
+
+@Composable
+private fun RuleSection(section: TheorySection, accentColor: Color) {
+    AccentCard(accent = accentColor, heading = section.heading, body = section.body)
 }
 
 @Composable
@@ -346,63 +373,29 @@ private fun ExamplesSection(
 
 @Composable
 private fun MnemonicSection(section: TheorySection, accentColor: Color) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = Color(0xFFFFF9C4),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFBC02D)),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(12.dp)) {
-            Text(
-                "🧠 ${section.heading.ifBlank { "Запомни" }}",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFFFA000),
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(section.body, fontSize = 14.sp, lineHeight = 20.sp)
-        }
-    }
+    AccentCard(
+        accent = Color(0xFFFFC107),
+        heading = "🧠 ${section.heading.ifBlank { "Запомни" }}",
+        body = section.body,
+    )
 }
 
 @Composable
 private fun TipSection(section: TheorySection) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = Color(0xFFE8F5E9),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(12.dp)) {
-            Text(
-                section.heading.ifBlank { "💡 Лайфхак" },
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF2E7D32),
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(section.body, fontSize = 13.sp, lineHeight = 19.sp)
-        }
-    }
+    AccentCard(
+        accent = Color(0xFF4CAF50),
+        heading = section.heading.ifBlank { "💡 Лайфхак" },
+        body = section.body,
+    )
 }
 
 @Composable
 private fun WarningSection(section: TheorySection) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = Color(0xFFFFEBEE),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(Modifier.padding(12.dp)) {
-            Text(
-                section.heading.ifBlank { "⚠ Внимание" },
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFFC62828),
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(section.body, fontSize = 13.sp, lineHeight = 19.sp)
-        }
-    }
+    AccentCard(
+        accent = Color(0xFFEF5350),
+        heading = section.heading.ifBlank { "⚠ Внимание" },
+        body = section.body,
+    )
 }
 
 @Composable
@@ -421,29 +414,41 @@ private fun ComparisonSection(section: TheorySection, accentColor: Color) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Surface(
                 shape = RoundedCornerShape(10.dp),
-                color = Color(0xFFE3F2FD),
+                color = Color(0xFF2A2A2A),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF42A5F5).copy(alpha = 0.5f)),
                 modifier = Modifier.weight(1f).padding(end = 4.dp),
             ) {
                 Column(Modifier.padding(8.dp)) {
                     Text(comp.leftHeader, fontSize = 12.sp, fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1565C0))
+                        color = Color(0xFF64B5F6))
                     Spacer(Modifier.height(4.dp))
                     comp.pairs.forEach { (left, _) ->
-                        Text(left, fontSize = 12.sp, modifier = Modifier.padding(vertical = 2.dp))
+                        Text(
+                            left,
+                            fontSize = 12.sp,
+                            color = Color(0xFFE8E8E8),
+                            modifier = Modifier.padding(vertical = 2.dp),
+                        )
                     }
                 }
             }
             Surface(
                 shape = RoundedCornerShape(10.dp),
-                color = Color(0xFFFFF3E0),
+                color = Color(0xFF2A2A2A),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFB74D).copy(alpha = 0.5f)),
                 modifier = Modifier.weight(1f).padding(start = 4.dp),
             ) {
                 Column(Modifier.padding(8.dp)) {
                     Text(comp.rightHeader, fontSize = 12.sp, fontWeight = FontWeight.Bold,
-                        color = Color(0xFFE65100))
+                        color = Color(0xFFFFB74D))
                     Spacer(Modifier.height(4.dp))
                     comp.pairs.forEach { (_, right) ->
-                        Text(right, fontSize = 12.sp, modifier = Modifier.padding(vertical = 2.dp))
+                        Text(
+                            right,
+                            fontSize = 12.sp,
+                            color = Color(0xFFE8E8E8),
+                            modifier = Modifier.padding(vertical = 2.dp),
+                        )
                     }
                 }
             }
