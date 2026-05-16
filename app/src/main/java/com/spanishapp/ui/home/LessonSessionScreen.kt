@@ -134,6 +134,17 @@ fun LessonSessionScreen(
     var bestCombo      by remember { mutableStateOf(0) }
     var showQuitDialog by remember { mutableStateOf(false) }
 
+    // Theory overlay для этого урока (если есть теория)
+    val theoryContent = remember(unitId, lessonIndex) {
+        com.spanishapp.data.theory.TheoryContentData.byLessonId("u${unitId}_l${lessonIndex}")
+    }
+    var showTheoryOverlay by remember { mutableStateOf(false) }
+    var theoryPulsing by remember { mutableStateOf(false) }
+    // Авто-открываем теорию ПЕРВЫМ ДЕЛОМ когда заходим в урок
+    LaunchedEffect(theoryContent) {
+        if (theoryContent != null) showTheoryOverlay = true
+    }
+
     val ctxForRating = LocalContext.current.applicationContext
     val scope        = rememberCoroutineScope()
 
@@ -162,10 +173,10 @@ fun LessonSessionScreen(
     }
 
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
+      Box(Modifier.fillMaxSize().padding(padding)) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
         ) {
             // ─── Прогресс-бар + комбо ──────────────────────────────────────
             if (currentStep !is SessionStep.Victory) {
@@ -173,7 +184,14 @@ fun LessonSessionScreen(
                     progress    = stepIndex.toFloat() / (totalSteps - 1).coerceAtLeast(1),
                     accentColor = accentColor,
                     comboCount  = comboCount,
-                    onClose     = { showQuitDialog = true }
+                    onClose     = { showQuitDialog = true },
+                    onTheoryClick = if (theoryContent != null) {
+                        {
+                            showTheoryOverlay = true
+                            theoryPulsing = false
+                        }
+                    } else null,
+                    theoryPulsing = theoryPulsing,
                 )
             }
 
@@ -234,6 +252,8 @@ fun LessonSessionScreen(
                             },
                             onWrong     = {
                                 comboCount = 0
+                                // Подсветить иконку 📖 — намёк «загляни в теорию»
+                                if (theoryContent != null) theoryPulsing = true
                                 scope.launch {
                                     runCatching { ratingUpdater.applyGameAnswer(false) }
                                 }
@@ -278,6 +298,25 @@ fun LessonSessionScreen(
                 }
             }
         }
+
+        // ─── Theory overlay поверх урока ──────────────────────────────
+        // Закрывается крестиком X. Авто-открывается при первом входе в урок.
+        if (theoryContent != null) {
+            androidx.compose.animation.AnimatedVisibility(
+                visible = showTheoryOverlay,
+                enter = androidx.compose.animation.fadeIn() +
+                    androidx.compose.animation.slideInVertically(initialOffsetY = { it / 4 }),
+                exit = androidx.compose.animation.fadeOut() +
+                    androidx.compose.animation.slideOutVertically(targetOffsetY = { it / 4 }),
+            ) {
+                com.spanishapp.ui.theory.TheoryOverlay(
+                    theoryContent = theoryContent,
+                    onClose = { showTheoryOverlay = false },
+                    onTtsSpeak = { word -> tts?.speakSpanish(word, "theory") },
+                )
+            }
+        }
+      } // Box (overlay container)
     }
 }
 
@@ -287,12 +326,25 @@ private fun SessionTopBar(
     progress: Float,
     accentColor: Color,
     comboCount: Int,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onTheoryClick: (() -> Unit)? = null,    // null = нет теории для этого урока (кнопка не показывается)
+    theoryPulsing: Boolean = false,          // true сразу после ошибки → лёгкая пульсация
 ) {
     val animProgress by animateFloatAsState(
         targetValue    = progress,
         animationSpec  = tween(400),
         label          = "progress"
+    )
+    // Пульсация иконки 📖 — циклический скейл для привлечения внимания
+    val pulseTransition = rememberInfiniteTransition(label = "theoryPulse")
+    val pulseScale by pulseTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = if (theoryPulsing) 1.15f else 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(600, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "pulseScale",
     )
     Column {
         Row(
@@ -315,6 +367,24 @@ private fun SessionTopBar(
                 color      = accentColor,
                 trackColor = accentColor.copy(alpha = 0.15f)
             )
+            // Кнопка теории (📖) — если для урока есть теория
+            if (onTheoryClick != null) {
+                Spacer(Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .scale(pulseScale)
+                        .clip(CircleShape)
+                        .background(
+                            if (theoryPulsing) accentColor.copy(alpha = 0.25f)
+                            else accentColor.copy(alpha = 0.12f)
+                        )
+                        .clickable(onClick = onTheoryClick),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text("📖", fontSize = 18.sp)
+                }
+            }
             Spacer(Modifier.width(8.dp))
             // Слот для комбо-бейджа справа
             AnimatedContent(
@@ -730,16 +800,15 @@ private fun ExerciseCard(
                 }
 
                 ExerciseType.MATCH_PAIRS -> {
-                    MatchPairsInput(
-                        pairs = exercise.pairs,
+                    // Новый Memory-game компонент: Learn 10s → Countdown → Play, 2 раунда
+                    com.spanishapp.ui.components.MemoryMatchPairsInput(
+                        allPairs = exercise.pairs,
                         accentColor = accentColor,
-                        answered = answered,
-                        onAnswer = { _ ->
-                            // The user successfully paired everything (only
-                            // way the input emits onAnswer). Partial mistakes
-                            // along the way are tolerated — pairing is by
-                            // nature trial-and-error and we'd punish the
-                            // normal exploration pattern.
+                        learnSeconds = 10,
+                        onPlayWord = { word ->
+                            tts?.speakSpanish(word, "memory")
+                        },
+                        onFinish = { errors ->
                             selectedOption = exercise.correctAnswer
                             answered = true
                         },

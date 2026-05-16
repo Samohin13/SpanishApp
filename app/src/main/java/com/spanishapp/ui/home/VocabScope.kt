@@ -56,11 +56,21 @@ object VocabScope {
 
         // u1_l0..u1_l3 — фонетика. Из примеров в теории слова попадают в scope:
         put("u1_l0", listOf(
+            // v1.3.3: расширено до 12 слов (по 2-3 на гласную)
             ScopeWord("casa", "дом", "u1_l0", "noun"),
+            ScopeWord("mamá", "мама", "u1_l0", "family"),
             ScopeWord("mes", "месяц", "u1_l0", "noun"),
+            ScopeWord("té", "чай", "u1_l0", "food"),
+            ScopeWord("leche", "молоко", "u1_l0", "food"),
             ScopeWord("isla", "остров", "u1_l0", "noun"),
+            ScopeWord("sí", "да", "u1_l0", "particle"),
+            ScopeWord("mi", "мой", "u1_l0", "possessive"),
             ScopeWord("ojo", "глаз", "u1_l0", "noun"),
+            ScopeWord("sol", "солнце", "u1_l0", "noun"),
+            ScopeWord("no", "нет", "u1_l0", "particle"),
             ScopeWord("uva", "виноград", "u1_l0", "noun"),
+            ScopeWord("tú", "ты", "u1_l0", "pronoun"),
+            ScopeWord("luz", "свет", "u1_l0", "noun"),
         ))
         put("u1_l1", listOf(
             ScopeWord("vino", "вино", "u1_l1", "noun"),

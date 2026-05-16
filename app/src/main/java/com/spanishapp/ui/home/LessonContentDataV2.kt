@@ -45,32 +45,33 @@ object LessonContentDataV2 {
 
         // ─────────────────────────────────────────────────────────────
         // u1_l0 — Гласные A E I O U
-        // Type: Phonetics | Упр: LISTEN_PICK, LISTEN_TYPE, ORDER_LETTERS,
-        //                       SPOT_THE_ERROR, MATCH_PAIRS, MULTIPLE_CHOICE
+        // v1.3.3: расширено до 12 слов через гласные.
+        //         LISTEN_PICK букв → LISTEN_PICK слов (полезнее).
+        //         MATCH_PAIRS = Memory-game 2×5 пар «слово↔перевод».
         // ─────────────────────────────────────────────────────────────
         "u1_l0" to LessonContent(
-            intro = "5 чистых гласных. Каждая всегда читается одинаково — никакой редукции как в русском «карова».",
+            intro = "5 чистых гласных + 12 базовых слов. Каждая гласная всегда читается одинаково — никакой редукции как в русском «карова».",
             sections = listOf(
                 LessonSection(
                     heading = "Алфавит — гласные",
                     items = listOf(
-                        LessonItem("A", "[а]", "casa — дом"),
-                        LessonItem("E", "[э]", "mes — месяц"),
-                        LessonItem("I", "[и]", "isla — остров"),
-                        LessonItem("O", "[о]", "ojo — глаз"),
-                        LessonItem("U", "[у]", "uva — виноград"),
+                        LessonItem("A", "[а]", "casa — дом, mamá — мама"),
+                        LessonItem("E", "[э]", "mes — месяц, té — чай"),
+                        LessonItem("I", "[и]", "isla — остров, sí — да"),
+                        LessonItem("O", "[о]", "ojo — глаз, sol — солнце"),
+                        LessonItem("U", "[у]", "uva — виноград, luz — свет"),
                     ),
                 ),
             ),
             exercises = listOf(
-                // Упр.1 LISTEN_PICK — услышь звук → выбери букву
+                // Упр.1 LISTEN_PICK — услышь СЛОВО → выбери из 4 похожих
                 Exercise(
                     type = ExerciseType.LISTEN_PICK,
-                    instruction = "Послушай и выбери букву",
-                    audioText = "a",
-                    options = listOf("A", "E", "I", "O"),
-                    correctAnswer = "A",
-                    explanation = "A → [а]: casa — «ка-са»",
+                    instruction = "Послушай и выбери слово",
+                    audioText = "casa",
+                    options = listOf("casa", "mesa", "cara", "cosa"),
+                    correctAnswer = "casa",
+                    explanation = "casa — дом. Слышишь «ка-са» с чистой A.",
                 ),
                 // Упр.2 LISTEN_TYPE — диктант
                 Exercise(
@@ -101,17 +102,25 @@ object LessonContentDataV2 {
                     correctAnswer = "uva = [ю-ва]",
                     explanation = "U в испанском всегда [у], не [ю]. uva = «у-ба».",
                 ),
-                // Упр.5 MATCH_PAIRS 5 пар — буква ↔ пример
+                // Упр.5 MATCH_PAIRS Memory-game — 10 пар (2 раунда × 5)
+                // Слово ↔ перевод. Раунд 1: основные. Раунд 2: бонусные.
                 Exercise(
                     type = ExerciseType.MATCH_PAIRS,
-                    instruction = "Соедини букву и пример",
+                    instruction = "Запомни пары → найди их после перемешивания",
                     correctAnswer = "ok",
                     pairs = listOf(
-                        "A" to "casa",
-                        "E" to "mes",
-                        "I" to "isla",
-                        "O" to "ojo",
-                        "U" to "uva",
+                        // Раунд 1 — основные 5
+                        "casa" to "дом",
+                        "mes" to "месяц",
+                        "isla" to "остров",
+                        "ojo" to "глаз",
+                        "uva" to "виноград",
+                        // Раунд 2 — бонусные 5 (короткие частотные слова)
+                        "sí" to "да",
+                        "no" to "нет",
+                        "sol" to "солнце",
+                        "mamá" to "мама",
+                        "luz" to "свет",
                     ),
                 ),
                 // Упр.6 MULTIPLE_CHOICE — правило произношения
