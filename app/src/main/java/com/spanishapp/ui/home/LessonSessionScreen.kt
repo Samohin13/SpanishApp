@@ -598,21 +598,29 @@ private fun ExerciseCard(
         ) {
             Spacer(Modifier.height(20.dp))
 
-            // Инструкция + бейдж типа (визуальная идентичность каждому типу)
+            // Инструкция + бейдж типа (визуальная идентичность каждому типу).
+            // Если question пустой — инструкция и есть «вопрос», выводим её
+            // крупно в основной блок ниже. Иначе — мелкая строчка с бейджем,
+            // а question рендерится крупно.
+            val showInstructionInBigBlock = exercise.question.isBlank()
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ExerciseTypeBadge(exercise.type, accentColor)
                 Spacer(Modifier.width(8.dp))
-                Text(
-                    text       = exercise.instruction,
-                    fontSize   = 14.sp,
-                    color      = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Medium,
-                    modifier   = Modifier.weight(1f),
-                )
+                if (!showInstructionInBigBlock) {
+                    Text(
+                        text       = exercise.instruction,
+                        fontSize   = 14.sp,
+                        color      = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium,
+                        modifier   = Modifier.weight(1f),
+                    )
+                }
             }
             Spacer(Modifier.height(12.dp))
 
-            // Вопрос + кнопка озвучки
+            // Большой блок: либо question, либо instruction (если question пуст)
+            val bigText = if (showInstructionInBigBlock) exercise.instruction else exercise.question
             Surface(
                 shape    = RoundedCornerShape(20.dp),
                 color    = accentColor.copy(alpha = 0.08f),
@@ -620,20 +628,23 @@ private fun ExerciseCard(
             ) {
                 Box(Modifier.padding(20.dp)) {
                     Text(
-                        text       = exercise.question,
+                        text       = bigText,
                         modifier   = Modifier.fillMaxWidth(),
-                        fontSize   = 22.sp,
+                        fontSize   = if (showInstructionInBigBlock) 19.sp else 22.sp,
                         fontWeight = FontWeight.ExtraBold,
                         textAlign  = TextAlign.Center,
                         color      = MaterialTheme.colorScheme.onSurface
                     )
-                    // Озвучка вопроса — в правом верхнем углу
-                    SpeakerButton(
-                        text     = exercise.question.replace("___", ""),
-                        tts      = tts,
-                        tint     = accentColor,
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    )
+                    // Озвучка — только для реального question (испанского),
+                    // не для русской инструкции
+                    if (!showInstructionInBigBlock) {
+                        SpeakerButton(
+                            text     = exercise.question.replace("___", ""),
+                            tts      = tts,
+                            tint     = accentColor,
+                            modifier = Modifier.align(Alignment.TopEnd)
+                        )
+                    }
                 }
             }
 

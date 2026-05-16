@@ -358,10 +358,6 @@ private fun PlayPhase(
                 delay(400)
                 selectedLeft = null
                 selectedRight = null
-                if (matchedCount >= pairs.size) {
-                    delay(300)
-                    onDone()
-                }
             } else {
                 leftStates[l] = CardState.WRONG
                 rightStates[r] = CardState.WRONG
@@ -373,6 +369,18 @@ private fun PlayPhase(
                 selectedRight = null
             }
             lockInput = false
+        }
+    }
+
+    // ОТДЕЛЬНЫЙ watcher на matchedCount — переход в RoundDone когда все пары
+    // найдены. Раньше onDone() вызывался ВНУТРИ LaunchedEffect(selectedLeft,
+    // selectedRight), но строки `selectedLeft = null` пересаживали ключи
+    // LaunchedEffect → корутина отменялась ДО onDone(). В итоге юзер
+    // оказывался на экране 5/5 без перехода.
+    LaunchedEffect(matchedCount, pairs.size) {
+        if (matchedCount in 1..pairs.size && matchedCount == pairs.size) {
+            delay(600)
+            onDone()
         }
     }
 
