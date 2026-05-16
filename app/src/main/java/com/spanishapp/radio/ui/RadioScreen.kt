@@ -3,22 +3,20 @@ package com.spanishapp.radio.ui
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,8 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -44,12 +40,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.radio.data.CefrLevel
 import com.spanishapp.radio.data.Country
+import com.spanishapp.radio.data.Station
 import com.spanishapp.radio.player.HapticManager
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 private val Accent = Color(0xFFFF5722)
-private val Green  = Color(0xFF4CAF50)
+private val Green = Color(0xFF4CAF50)
 private val Yellow = Color(0xFFFFC107)
 
 @Composable
@@ -64,10 +59,14 @@ fun RadioScreen(navController: NavHostController) {
     val signal by vm.signal.collectAsState()
     val isPlaying by vm.isPlaying.collectAsState()
     val stations by vm.stations.collectAsState()
+    val favoriteIds by vm.favoriteIds.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        Column(modifier = Modifier.fillMaxSize()) {
-
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
             // ─── Top bar ───
             Row(
                 modifier = Modifier
@@ -82,169 +81,336 @@ fun RadioScreen(navController: NavHostController) {
                 Text("Радио", fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
 
-            // Type chip
-            Row(modifier = Modifier.padding(start = 18.dp, end = 18.dp, bottom = 8.dp)) {
-                Surface(
-                    shape = RoundedCornerShape(100.dp),
-                    color = Accent.copy(alpha = 0.12f),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Accent.copy(alpha = 0.3f)),
-                ) {
-                    Text(
-                        "📻 LIVE FM",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        color = Accent,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
-            }
-
-            // Country selector
+            // Country chips
             CountrySelector(
                 current = country,
                 onSelect = vm::selectCountry,
                 modifier = Modifier.padding(horizontal = 18.dp),
             )
 
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(20.dp))
 
-            // Display panel
-            DisplayPanel(
-                frequency = freq,
+            // ─── HERO — большая «обложка» станции (Apple Music style) ───
+            HeroArtwork(
                 station = station,
                 signal = signal,
-                modifier = Modifier.padding(horizontal = 18.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 36.dp),
             )
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(20.dp))
 
-            // Frequency dial
-            FrequencyDial(
-                currentFreq = freq,
-                fmMin = vm.fmMin,
-                fmMax = vm.fmMax,
-                stationFreqs = stations.map { it.frequency },
-                signal = signal,
-                modifier = Modifier.padding(horizontal = 18.dp),
+            // ─── Station info: name + program + tags ───
+            station?.let { st ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        st.name,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        st.program,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    StationTags(station = st, signal = signal)
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            // ─── PLAYER CONTROLS — Spotify-style ───
+            PlayerControls(
+                isPlaying = isPlaying,
+                isFavorite = station?.id?.let { favoriteIds.contains(it) } ?: false,
+                onPrev = { vm.previousStation(); haptic.stationHit() },
+                onPlayPause = { vm.togglePlayback() },
+                onNext = { vm.nextStation(); haptic.stationHit() },
+                onToggleFavorite = { station?.let { vm.toggleFavorite(it.id) } },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
             )
 
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(28.dp))
 
-            // Tuner wheel
-            TunerWheel(
-                onScroll = { delta ->
-                    vm.onScrollFrequency(delta)
-                    haptic.tickLight()
-                },
-                onScrollStop = { vm.onScrollStop(); haptic.stationHit() },
-                modifier = Modifier.padding(horizontal = 18.dp),
-            )
-
-            Spacer(Modifier.height(14.dp))
-
-            // Controls
-            Row(
+            // ─── TUNER section (secondary) — ниже как «scan band» ───
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 18.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                CtrlButton(text = "⏮", weight = 1f, onClick = { vm.previousStation(); haptic.stationHit() })
-                CtrlButton(
-                    text = if (isPlaying) "⏸" else "▶",
-                    weight = 1.4f,
-                    isPlay = true,
-                    onClick = { vm.togglePlayback() }
+                Text(
+                    "СКАНИРОВАНИЕ FM",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    letterSpacing = 1.5.sp,
+                    modifier = Modifier.padding(bottom = 10.dp, start = 4.dp),
                 )
-                CtrlButton(text = "⏭", weight = 1f, onClick = { vm.nextStation(); haptic.stationHit() })
+
+                // Frequency dial
+                FrequencyDial(
+                    currentFreq = freq,
+                    fmMin = vm.fmMin,
+                    fmMax = vm.fmMax,
+                    stationFreqs = stations.map { it.frequency },
+                    signal = signal,
+                )
+
+                Spacer(Modifier.height(10.dp))
+
+                // Tuner wheel
+                TunerWheel(
+                    onScroll = { delta ->
+                        vm.onScrollFrequency(delta)
+                        haptic.tickLight()
+                    },
+                    onScrollStop = { vm.onScrollStop(); haptic.stationHit() },
+                )
             }
 
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(80.dp)) // отступ под BottomBar + mini-player
+        }
+    }
+}
 
-            // Info card + favorite ⭐ button
-            val favoriteIds by vm.favoriteIds.collectAsState()
-            station?.let { st ->
-                StationInfoCard(
-                    station = st,
-                    isFavorite = favoriteIds.contains(st.id),
-                    onToggleFavorite = { vm.toggleFavorite(st.id) },
-                    modifier = Modifier.padding(horizontal = 18.dp),
+// ════════════════════════════════════════════════════════════════
+//  HERO — большая «обложка» станции (gradient + код)
+// ════════════════════════════════════════════════════════════════
+
+@Composable
+private fun HeroArtwork(
+    station: Station?,
+    signal: SignalStatus,
+    modifier: Modifier = Modifier,
+) {
+    // Гадиент в зависимости от страны → даёт визуальное разнообразие
+    val gradient = when (station?.country) {
+        Country.SPAIN -> listOf(Color(0xFFFF5722), Color(0xFFD32F2F))
+        Country.MEXICO -> listOf(Color(0xFF388E3C), Color(0xFFD32F2F))
+        Country.ARGENTINA -> listOf(Color(0xFF1976D2), Color(0xFF64B5F6))
+        null -> listOf(Color(0xFF666666), Color(0xFF444444))
+    }
+
+    Box(
+        modifier = modifier
+            .aspectRatio(1f)
+            .clip(RoundedCornerShape(24.dp))
+            .background(Brush.linearGradient(gradient)),
+        contentAlignment = Alignment.Center,
+    ) {
+        // Watermark — большие буквы кода станции
+        Text(
+            station?.shortCode ?: "—",
+            fontSize = 72.sp,
+            fontWeight = FontWeight.Black,
+            color = Color.White,
+            letterSpacing = (-2).sp,
+        )
+        // LIVE-pill в верхнем углу
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(14.dp),
+        ) {
+            LivePillCompact(signal)
+        }
+        // Frequency tag в нижнем углу
+        station?.let {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(14.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.Black.copy(alpha = 0.35f))
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
+            ) {
+                Text(
+                    "%.1f MHz".format(it.frequency),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
                 )
             }
         }
     }
 }
 
+@Composable
+private fun LivePillCompact(signal: SignalStatus) {
+    val (label, color) = when (signal) {
+        SignalStatus.ON_STATION -> "LIVE" to Green
+        SignalStatus.WEAK -> "WEAK" to Yellow
+        SignalStatus.NO_SIGNAL -> "—" to Color(0xFF888888)
+    }
+    Surface(
+        shape = RoundedCornerShape(100.dp),
+        color = Color.Black.copy(alpha = 0.35f),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            val transition = rememberInfiniteTransition(label = "pulse")
+            val alpha by transition.animateFloat(
+                initialValue = 1f, targetValue = 0.4f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(900, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse,
+                ),
+                label = "pulse_alpha",
+            )
+            Box(
+                modifier = Modifier
+                    .size(6.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = if (signal == SignalStatus.NO_SIGNAL) 0.5f else alpha))
+            )
+            Spacer(Modifier.width(6.dp))
+            Text(label, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        }
+    }
+}
+
 // ════════════════════════════════════════════════════════════════
-//  StationInfoCard — заполняет пустоту под controls + ⭐ favorite
+//  StationTags — пилюли страны / уровня / жанра
 // ════════════════════════════════════════════════════════════════
 
 @Composable
-private fun StationInfoCard(
-    station: com.spanishapp.radio.data.Station,
+private fun StationTags(station: Station, signal: SignalStatus) {
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        // Country
+        Tag("${station.country.emoji} ${station.country.displayName}", Accent.copy(alpha = 0.12f), Accent)
+        // CEFR
+        val cefrColor = when (station.level) {
+            CefrLevel.A2 -> Color(0xFFFFC107)
+            CefrLevel.B1 -> Accent
+            CefrLevel.B2 -> Color(0xFFE53935)
+        }
+        Tag(station.level.name, cefrColor.copy(alpha = 0.15f), cefrColor)
+        // Genre
+        Tag(
+            "${station.genre.emoji} ${station.genre.displayName}",
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+            MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun Tag(text: String, bg: Color, color: Color) {
+    Surface(shape = RoundedCornerShape(100.dp), color = bg) {
+        Text(
+            text,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = color,
+        )
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  PlayerControls — Spotify-style (big play + skip + favorite)
+// ════════════════════════════════════════════════════════════════
+
+@Composable
+private fun PlayerControls(
+    isPlaying: Boolean,
     isFavorite: Boolean,
+    onPrev: () -> Unit,
+    onPlayPause: () -> Unit,
+    onNext: () -> Unit,
     onToggleFavorite: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        shape = RoundedCornerShape(14.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-        modifier = modifier.fillMaxWidth(),
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // Station code icon
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Accent.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    station.shortCode,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Accent,
-                )
-            }
-            Spacer(Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    station.name,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    maxLines = 1,
-                )
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    "${station.country.emoji} ${station.country.displayName} · ${station.genre.emoji} ${station.genre.displayName}",
-                    fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            // Favorite ⭐
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (isFavorite) Accent.copy(alpha = 0.15f)
-                        else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+        // Favorite ⭐
+        CircularIconButton(
+            symbol = if (isFavorite) "★" else "☆",
+            size = 44.dp,
+            iconSize = 22.sp,
+            color = if (isFavorite) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
+            bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+            onClick = onToggleFavorite,
+        )
+        // Previous
+        CircularIconButton(
+            symbol = "⏮",
+            size = 52.dp,
+            iconSize = 24.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+            onClick = onPrev,
+        )
+        // Play/Pause — БОЛЬШАЯ кнопка (Spotify-style)
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.linearGradient(
+                        listOf(Accent, Accent.copy(alpha = 0.75f))
                     )
-                    .clickable(onClick = onToggleFavorite),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    if (isFavorite) "★" else "☆",
-                    fontSize = 22.sp,
-                    color = if (isFavorite) Accent else Color.White.copy(alpha = 0.6f),
                 )
-            }
+                .clickable(onClick = onPlayPause),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                if (isPlaying) "⏸" else "▶",
+                fontSize = 32.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+            )
         }
+        // Next
+        CircularIconButton(
+            symbol = "⏭",
+            size = 52.dp,
+            iconSize = 24.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+            onClick = onNext,
+        )
+        // Spacer for symmetry with favorite
+        Spacer(modifier = Modifier.size(44.dp))
+    }
+}
+
+@Composable
+private fun CircularIconButton(
+    symbol: String,
+    size: androidx.compose.ui.unit.Dp,
+    iconSize: androidx.compose.ui.unit.TextUnit,
+    color: Color,
+    bg: Color,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(bg)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(symbol, fontSize = iconSize, color = color)
     }
 }
 
@@ -289,176 +455,6 @@ private fun CountrySelector(
 }
 
 // ════════════════════════════════════════════════════════════════
-//  DisplayPanel
-// ════════════════════════════════════════════════════════════════
-
-@Composable
-private fun DisplayPanel(
-    frequency: Float,
-    station: com.spanishapp.radio.data.Station?,
-    signal: SignalStatus,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Column(modifier = Modifier.padding(18.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                SignalPill(signal)
-                Spacer(Modifier.weight(1f))
-                SignalBars(signal)
-                station?.let {
-                    Spacer(Modifier.width(8.dp))
-                    CefrBadge(it.level, signal != SignalStatus.NO_SIGNAL)
-                }
-            }
-            Spacer(Modifier.height(10.dp))
-
-            val freqColor = when (signal) {
-                SignalStatus.ON_STATION -> Color.White
-                SignalStatus.WEAK -> Color.White.copy(alpha = 0.7f)
-                SignalStatus.NO_SIGNAL -> Color.White.copy(alpha = 0.35f)
-            }
-            Text(
-                "%.1f".format(frequency),
-                fontSize = 56.sp,
-                fontWeight = FontWeight.Black,
-                color = freqColor,
-                letterSpacing = (-2.5).sp,
-            )
-            Spacer(Modifier.height(6.dp))
-
-            when (signal) {
-                SignalStatus.ON_STATION -> {
-                    Text(
-                        station?.name ?: "—",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                    )
-                    Text(
-                        station?.program ?: "",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                SignalStatus.WEAK -> {
-                    Text(
-                        station?.name?.let { "…${it.take(3)}…" } ?: "…",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White.copy(alpha = 0.7f),
-                    )
-                    Text(
-                        "приближаешься к станции",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                SignalStatus.NO_SIGNAL -> {
-                    Text(
-                        "🔇 нет сигнала",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White.copy(alpha = 0.4f),
-                    )
-                    Text(
-                        "крути дальше — поймаешь станцию",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun SignalPill(signal: SignalStatus) {
-    val (label, color) = when (signal) {
-        SignalStatus.ON_STATION -> "LIVE" to Green
-        SignalStatus.WEAK -> "WEAK" to Yellow
-        SignalStatus.NO_SIGNAL -> "NO SIGNAL" to Color(0xFF888888)
-    }
-    Surface(
-        shape = RoundedCornerShape(100.dp),
-        color = color.copy(alpha = 0.15f),
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // Pulsing dot
-            val transition = rememberInfiniteTransition(label = "pulse")
-            val alpha by transition.animateFloat(
-                initialValue = 1f, targetValue = 0.4f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(900, easing = LinearEasing),
-                    repeatMode = RepeatMode.Reverse,
-                ),
-                label = "pulse_alpha",
-            )
-            Box(
-                modifier = Modifier
-                    .size(6.dp)
-                    .clip(CircleShape)
-                    .background(color.copy(alpha = if (signal == SignalStatus.NO_SIGNAL) 0.5f else alpha))
-            )
-            Spacer(Modifier.width(6.dp))
-            Text(label, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = color)
-        }
-    }
-}
-
-@Composable
-private fun SignalBars(signal: SignalStatus) {
-    val lit = when (signal) {
-        SignalStatus.ON_STATION -> 4
-        SignalStatus.WEAK -> 2
-        SignalStatus.NO_SIGNAL -> 0
-    }
-    val color = when (signal) {
-        SignalStatus.ON_STATION -> Green
-        SignalStatus.WEAK -> Yellow
-        SignalStatus.NO_SIGNAL -> Color(0xFF555555)
-    }
-    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-        listOf(3, 5, 7, 10).forEachIndexed { i, h ->
-            Box(
-                modifier = Modifier
-                    .size(width = 3.dp, height = h.dp)
-                    .clip(RoundedCornerShape(1.dp))
-                    .background(if (i < lit) color else Color.White.copy(alpha = 0.15f))
-            )
-        }
-    }
-}
-
-@Composable
-private fun CefrBadge(level: CefrLevel, visible: Boolean) {
-    val color = if (visible) Accent else Color(0xFF555555)
-    val text = if (visible) level.name else "—"
-    Surface(
-        shape = RoundedCornerShape(6.dp),
-        color = color.copy(alpha = 0.12f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.25f)),
-    ) {
-        Text(
-            text,
-            modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            color = color,
-        )
-    }
-}
-
-// ════════════════════════════════════════════════════════════════
 //  FrequencyDial — тонкая горизонталь со станциями + стрелка
 // ════════════════════════════════════════════════════════════════
 
@@ -479,28 +475,27 @@ private fun FrequencyDial(
 
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
         modifier = modifier.fillMaxWidth(),
     ) {
-        Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
             Text(
-                "FM %.1f — %.1f MHz".format(fmMin, fmMax),
+                "%.1f MHz · FM %.1f — %.1f".format(currentFreq, fmMin, fmMax),
                 fontSize = 9.sp,
                 color = Color.White.copy(alpha = 0.5f),
                 letterSpacing = 1.5.sp,
                 fontWeight = FontWeight.Bold,
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(6.dp))
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(36.dp),
+                    .height(28.dp),
             ) {
                 val w = size.width
                 val h = size.height
                 val cy = h / 2
 
-                // Central line
                 drawLine(
                     color = Color.White.copy(alpha = 0.25f),
                     start = Offset(0f, cy),
@@ -508,17 +503,15 @@ private fun FrequencyDial(
                     strokeWidth = 1.dp.toPx(),
                 )
 
-                // Station markers
                 stationFreqs.forEach { f ->
                     val x = ((f - fmMin) / (fmMax - fmMin)) * w
                     drawCircle(
                         color = Accent.copy(alpha = 0.6f),
-                        radius = 4.dp.toPx(),
+                        radius = 3.5.dp.toPx(),
                         center = Offset(x, cy),
                     )
                 }
 
-                // Needle
                 val needleX = ((currentFreq - fmMin) / (fmMax - fmMin)) * w
                 drawLine(
                     color = needleColor,
@@ -542,21 +535,19 @@ private fun TunerWheel(
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
-    // Накопленное смещение тиков (для визуальной анимации прокрутки колеса)
     var tickOffsetPx by remember { mutableStateOf(0f) }
 
     Surface(
-        shape = RoundedCornerShape(18.dp),
-        color = Color(0xFF44464C).copy(alpha = 0.45f),
+        shape = RoundedCornerShape(16.dp),
+        color = Color(0xFF44464C).copy(alpha = 0.4f),
         modifier = modifier.fillMaxWidth(),
     ) {
-        Box(modifier = Modifier.padding(vertical = 22.dp)) {
-            // Slot (paz)
+        Box(modifier = Modifier.padding(vertical = 18.dp)) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 28.dp)
-                    .height(74.dp)
+                    .padding(horizontal = 24.dp)
+                    .height(60.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color.Black)
                     .pointerInput(Unit) {
@@ -564,34 +555,26 @@ private fun TunerWheel(
                             onDragEnd = { onScrollStop() },
                             onDragCancel = { onScrollStop() },
                         ) { _, dragAmount ->
-                            // Накопить визуальное смещение
                             tickOffsetPx += dragAmount.x
-                            // delta положителен вправо → инвертируем для частоты
                             val delta = -dragAmount.x / with(density) { 30.dp.toPx() }
                             onScroll(delta)
                         }
                     },
             ) {
-                // Drum surface — vertical gradient simulating cylinder
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
                                 colors = listOf(
-                                    Color(0xFF8C8C96).copy(alpha = 0.55f),
-                                    Color(0xFF646470).copy(alpha = 0.45f),
+                                    Color(0xFF8C8C96).copy(alpha = 0.5f),
                                     Color(0xFF464650).copy(alpha = 0.5f),
-                                    Color(0xFF323238).copy(alpha = 0.6f),
-                                    Color(0xFF23232A).copy(alpha = 0.7f),
-                                    Color(0xFF14141A).copy(alpha = 0.8f),
+                                    Color(0xFF232328).copy(alpha = 0.7f),
                                     Color(0xFF08080A).copy(alpha = 0.9f),
                                 )
                             )
                         ),
                 ) {
-                    // Knurled ticks — uniform, с накопленным offset для иллюзии прокрутки.
-                    // tickOffsetPx читается через лямбду чтобы Canvas пере-рисовался.
                     Canvas(modifier = Modifier.fillMaxSize().padding(vertical = 8.dp)) {
                         val tickColor = Color.Black.copy(alpha = 0.85f)
                         val highlight = Color.White.copy(alpha = 0.12f)
@@ -599,7 +582,6 @@ private fun TunerWheel(
                         val tickGap = 5.dp.toPx()
                         val tickStep = tickWidth + tickGap
                         val tickHeight = size.height
-                        // Берём modulo чтобы offset циклически зацикливался — иллюзия бесконечного колеса
                         val baseOffset = tickOffsetPx.mod(tickStep)
                         val numTicks = (size.width / tickStep).toInt() + 2
                         for (i in -1..numTicks) {
@@ -618,8 +600,6 @@ private fun TunerWheel(
                             )
                         }
                     }
-
-                    // Center highlight line
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -635,8 +615,6 @@ private fun TunerWheel(
                                 )
                             )
                     )
-
-                    // Left/right edge fade
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -651,14 +629,12 @@ private fun TunerWheel(
                     )
                 }
             }
-
-            // Needle in center
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(horizontal = 28.dp)
+                    .padding(horizontal = 24.dp)
                     .fillMaxWidth()
-                    .height(84.dp),
+                    .height(70.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Box(
@@ -669,39 +645,5 @@ private fun TunerWheel(
                 )
             }
         }
-    }
-}
-
-// ════════════════════════════════════════════════════════════════
-//  Control buttons
-// ════════════════════════════════════════════════════════════════
-
-@Composable
-private fun RowScope.CtrlButton(
-    text: String,
-    weight: Float,
-    isPlay: Boolean = false,
-    onClick: () -> Unit,
-) {
-    Surface(
-        shape = RoundedCornerShape(14.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-        border = if (isPlay)
-            androidx.compose.foundation.BorderStroke(2.dp, Accent)
-        else null,
-        modifier = Modifier
-            .weight(weight)
-            .clickable(onClick = onClick),
-    ) {
-        Text(
-            text,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 20.sp,
-            color = if (isPlay) Accent else Color.White,
-            fontWeight = if (isPlay) FontWeight.ExtraBold else FontWeight.Normal,
-        )
     }
 }
