@@ -494,12 +494,11 @@ private fun PairCard(
         CardState.WRONG    -> Red.copy(alpha = 0.14f)
     }
     val borderColor = when (state) {
-        CardState.IDLE     -> Color.Transparent
+        CardState.IDLE     -> accentColor.copy(alpha = 0.2f)  // тонкая рамка чтобы был визуальный контур
         CardState.SELECTED -> accentColor
         CardState.MATCHED  -> Green
         CardState.WRONG    -> Red
     }
-    val borderWidth = if (state == CardState.IDLE) 0.dp else 2.dp
     val textColor = when {
         state == CardState.MATCHED -> Green
         isEs                       -> accentColor
@@ -509,15 +508,18 @@ private fun PairCard(
     Surface(
         shape = RoundedCornerShape(14.dp),
         color = bgColor,
+        // Фиксированная высота 64dp + рамка 2dp (даже для IDLE — прозрачная)
+        // чтобы все карточки выглядели одного размера независимо от состояния.
         modifier = Modifier
             .fillMaxWidth()
-            .border(borderWidth, borderColor, RoundedCornerShape(14.dp))
+            .height(64.dp)
+            .border(2.dp, borderColor, RoundedCornerShape(14.dp))
             .clickable(enabled = enabled, onClick = onClick),
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 16.dp),
+                .fillMaxSize()
+                .padding(horizontal = 12.dp),
             contentAlignment = Alignment.Center,
         ) {
             Row(

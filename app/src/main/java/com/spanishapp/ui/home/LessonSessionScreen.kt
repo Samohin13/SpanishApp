@@ -698,18 +698,23 @@ private fun ExerciseCard(
                                 }
                         ) {
                             Row(
-                                Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                                horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text       = option,
                                     fontSize   = 16.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                    modifier   = Modifier.weight(1f)
+                                    textAlign  = TextAlign.Center,
                                 )
                                 if (answered && isCorrect) {
+                                    Spacer(Modifier.width(8.dp))
                                     Text("✓", color = Green, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                                 } else if (answered && isSelected && !isCorrect) {
+                                    Spacer(Modifier.width(8.dp))
                                     Text("✗", color = Red, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                                 }
                             }
@@ -874,9 +879,22 @@ private fun ExerciseCard(
                 }
 
                 ExerciseType.LISTEN_TYPE -> {
+                    // Перевод-подсказка из explanation: "agua — вода. ..." → "вода"
+                    val hint = remember(exercise.explanation, exercise.correctAnswer) {
+                        val exp = exercise.explanation
+                        val esWord = exercise.correctAnswer.trim()
+                        val dashIdx = exp.indexOf(" — ")
+                        if (dashIdx >= 0 && exp.take(dashIdx).contains(esWord, ignoreCase = true)) {
+                            exp.substring(dashIdx + 3)
+                                .takeWhile { it != '.' && it != ',' && it != ':' }
+                                .trim()
+                                .takeIf { it.isNotBlank() }
+                        } else null
+                    }
                     ListenAndTypeInput(
                         audioText = exercise.audioText.ifBlank { exercise.correctAnswer },
                         correctAnswer = exercise.correctAnswer,
+                        hint = hint,
                         accentColor = accentColor,
                         answered = answered,
                         tts = tts,
@@ -1664,7 +1682,7 @@ private fun OrderLettersInput(
     val built     = chosen.joinToString("") { it.value }
     val isCorrect = built.equals(correctAnswer.replace(" ", ""), ignoreCase = true)
 
-    // Перевод-подсказка (если задана)
+    // Перевод-подсказка (если задана) — центрируем
     if (!hint.isNullOrBlank()) {
         Surface(
             shape = RoundedCornerShape(10.dp),
@@ -1674,27 +1692,24 @@ private fun OrderLettersInput(
                 .padding(bottom = 10.dp),
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                Text("💡 ", fontSize = 16.sp)
                 Text(
-                    "💡",
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(end = 8.dp),
+                    "Слово: ",
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Column {
-                    Text(
-                        "Слово означает",
-                        fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        hint,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = accentColor,
-                    )
-                }
+                Text(
+                    hint,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = accentColor,
+                )
             }
         }
     }
@@ -2052,6 +2067,7 @@ private fun TapMissingWordInput(
 private fun ListenAndTypeInput(
     audioText: String,
     correctAnswer: String,
+    hint: String? = null,
     accentColor: Color,
     answered: Boolean,
     tts: TextToSpeech?,
@@ -2062,6 +2078,7 @@ private fun ListenAndTypeInput(
         delay(300)
         tts?.speakSpanish(audioText, "listen_type")
     }
+    var showHint by remember(audioText) { mutableStateOf(false) }
 
     // Speaker / replay button
     Surface(
@@ -2096,7 +2113,49 @@ private fun ListenAndTypeInput(
         }
     }
 
-    Spacer(Modifier.height(18.dp))
+    // Кнопка/строка подсказки (если есть)
+    if (!hint.isNullOrBlank()) {
+        Spacer(Modifier.height(10.dp))
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = accentColor.copy(alpha = 0.08f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(enabled = !answered) { showHint = !showHint },
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("💡 ", fontSize = 14.sp)
+                if (showHint) {
+                    Text(
+                        "перевод: ",
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        hint,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = accentColor,
+                    )
+                } else {
+                    Text(
+                        "Тапни — подсказка",
+                        fontSize = 13.sp,
+                        color = accentColor,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+            }
+        }
+    }
+
+    Spacer(Modifier.height(14.dp))
 
     FillBlankInput(
         correctAnswer = correctAnswer,
