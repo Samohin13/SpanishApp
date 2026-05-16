@@ -662,7 +662,12 @@ private fun ExerciseCard(
             // Варианты ответа
             when (exercise.type) {
                 ExerciseType.MULTIPLE_CHOICE -> {
-                    exercise.options.forEach { option ->
+                    // Стабильный shuffle: правильный ответ не всегда первый.
+                    val shuffledMcOptions = remember(exercise.correctAnswer, exercise.options) {
+                        val seed = (exercise.correctAnswer + exercise.options.joinToString()).hashCode().toLong()
+                        exercise.options.shuffled(kotlin.random.Random(seed))
+                    }
+                    shuffledMcOptions.forEach { option ->
                         val isSelected = selectedOption == option
                         val isCorrect  = option == exercise.correctAnswer
                         val bgColor = when {
@@ -1596,12 +1601,20 @@ private fun ListenPickInput(
 
     Spacer(Modifier.height(20.dp))
 
+    // Стабильный shuffle: правильный ответ не всегда первый.
+    // Seed = correctAnswer + options.toString() → стабильно для одного упражнения,
+    // разное между разными упражнениями. remember НЕ перешафлит при recompose.
+    val shuffledOptions = remember(correctAnswer, options) {
+        val seed = (correctAnswer + options.joinToString()).hashCode().toLong()
+        options.shuffled(kotlin.random.Random(seed))
+    }
+
     // Авто-детект: если все опции — короткие буквы/сочетания (≤2 символа),
     // рисуем сеткой 2×2 больших цветных карточек вместо вертикальных чипов.
-    val isLetterMode = options.all { it.length <= 2 }
+    val isLetterMode = shuffledOptions.all { it.length <= 2 }
     if (isLetterMode) {
         BigLetterOptionsGrid(
-            options = options,
+            options = shuffledOptions,
             correctAnswer = correctAnswer,
             selectedOption = selectedOption,
             answered = answered,
@@ -1612,7 +1625,7 @@ private fun ListenPickInput(
     }
 
     // Options grid (vertical list of chips)
-    options.forEach { option ->
+    shuffledOptions.forEach { option ->
         val isSelected = selectedOption == option
         val isCorrect  = option == correctAnswer
         val bgColor = when {
@@ -2022,8 +2035,14 @@ private fun TapMissingWordInput(
 
     Spacer(Modifier.height(16.dp))
 
+    // Стабильный shuffle — правильный ответ не всегда первый
+    val shuffledOptions = remember(correctAnswer, options) {
+        val seed = (correctAnswer + options.joinToString()).hashCode().toLong()
+        options.shuffled(kotlin.random.Random(seed))
+    }
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        options.forEach { option ->
+        shuffledOptions.forEach { option ->
             val isSelected = selectedOption == option
             val isCorrect  = option == correctAnswer
             val bgColor = when {
