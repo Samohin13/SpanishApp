@@ -13,6 +13,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -26,7 +28,23 @@ enum class SignalStatus { ON_STATION, WEAK, NO_SIGNAL }
 @HiltViewModel
 class RadioViewModel @Inject constructor(
     private val player: RadioPlayerController,
+    private val favoritesDao: com.spanishapp.radio.data.RadioFavoriteDao,
 ) : ViewModel() {
+
+    /** Множество id избранных станций — для UI ⭐ кнопки. */
+    val favoriteIds: StateFlow<Set<String>> = favoritesDao.observeAllIds()
+        .map { it.toSet() }
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), emptySet())
+
+    fun toggleFavorite(stationId: String) {
+        viewModelScope.launch {
+            if (favoriteIds.value.contains(stationId)) {
+                favoritesDao.remove(stationId)
+            } else {
+                favoritesDao.add(stationId)
+            }
+        }
+    }
 
     // ────────────────────────── State ──────────────────────────
 

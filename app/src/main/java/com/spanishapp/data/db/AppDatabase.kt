@@ -30,8 +30,9 @@ import com.spanishapp.data.db.entity.*
         WeeklyLeagueStateEntity::class,
         WodHistoryEntity::class,
         TheoryProgressEntity::class,
+        com.spanishapp.radio.data.RadioFavoriteEntity::class,
     ],
-    version = 21,
+    version = 22,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -54,6 +55,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun weeklyLeagueDao(): WeeklyLeagueDao
     abstract fun wodHistoryDao(): WodHistoryDao
     abstract fun theoryProgressDao(): TheoryProgressDao
+    abstract fun radioFavoriteDao(): com.spanishapp.radio.data.RadioFavoriteDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -328,6 +330,18 @@ abstract class AppDatabase : RoomDatabase() {
         // Phase 1 нового дизайна курса (1.2.0): теория-карточки.
         // Каждый практический урок получает справочную карточку, прогресс
         // прочтения трекается отдельно от прохождения практики.
+        // ── v22: radio_favorites — избранные радиостанции (1.6.2) ──
+        val MIGRATION_21_22 = object : Migration(21, 22) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS radio_favorites (
+                        station_id TEXT NOT NULL PRIMARY KEY,
+                        added_at INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent())
+            }
+        }
+
         val MIGRATION_20_21 = object : Migration(20, 21) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 // ВАЖНО: НЕ создавать индекс — @Entity не объявляет его через

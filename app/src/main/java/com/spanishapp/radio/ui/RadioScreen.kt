@@ -158,6 +158,92 @@ fun RadioScreen(navController: NavHostController) {
                 )
                 CtrlButton(text = "⏭", weight = 1f, onClick = { vm.nextStation(); haptic.stationHit() })
             }
+
+            Spacer(Modifier.height(14.dp))
+
+            // Info card + favorite ⭐ button
+            val favoriteIds by vm.favoriteIds.collectAsState()
+            station?.let { st ->
+                StationInfoCard(
+                    station = st,
+                    isFavorite = favoriteIds.contains(st.id),
+                    onToggleFavorite = { vm.toggleFavorite(st.id) },
+                    modifier = Modifier.padding(horizontal = 18.dp),
+                )
+            }
+        }
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  StationInfoCard — заполняет пустоту под controls + ⭐ favorite
+// ════════════════════════════════════════════════════════════════
+
+@Composable
+private fun StationInfoCard(
+    station: com.spanishapp.radio.data.Station,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Station code icon
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Accent.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    station.shortCode,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Accent,
+                )
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    station.name,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    maxLines = 1,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "${station.country.emoji} ${station.country.displayName} · ${station.genre.emoji} ${station.genre.displayName}",
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            // Favorite ⭐
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (isFavorite) Accent.copy(alpha = 0.15f)
+                        else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                    )
+                    .clickable(onClick = onToggleFavorite),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    if (isFavorite) "★" else "☆",
+                    fontSize = 22.sp,
+                    color = if (isFavorite) Accent else Color.White.copy(alpha = 0.6f),
+                )
+            }
         }
     }
 }

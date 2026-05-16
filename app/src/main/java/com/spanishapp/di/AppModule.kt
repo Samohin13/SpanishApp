@@ -45,6 +45,7 @@ object AppModule {
                 AppDatabase.MIGRATION_18_19,
                 AppDatabase.MIGRATION_19_20,
                 AppDatabase.MIGRATION_20_21,
+                AppDatabase.MIGRATION_21_22,
             )
         // На время раннего тестирования (Alpha track) включаем fallback и для
         // release — лучше один раз потерять прогресс тестера чем получить
@@ -73,6 +74,7 @@ object AppModule {
     @Provides fun provideWeeklyLeagueDao(db: AppDatabase): WeeklyLeagueDao = db.weeklyLeagueDao()
     @Provides fun provideWodHistoryDao(db: AppDatabase): WodHistoryDao = db.wodHistoryDao()
     @Provides fun provideTheoryProgressDao(db: AppDatabase): com.spanishapp.data.db.dao.TheoryProgressDao = db.theoryProgressDao()
+    @Provides fun provideRadioFavoriteDao(db: AppDatabase): com.spanishapp.radio.data.RadioFavoriteDao = db.radioFavoriteDao()
 
     // ── Radio player (Singleton — выживает между экранами) ───
     @Provides
