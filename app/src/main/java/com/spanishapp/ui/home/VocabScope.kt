@@ -22,7 +22,7 @@ package com.spanishapp.ui.home
  * ## Использование
  *
  * ```kotlin
- * val scope = VocabScope.wordsForLesson("u1_l7")
+ * val scope = VocabScope.wordsForLesson("u1_l10")
  * val distractors = scope.shuffled().take(3)        // отвлекающие варианты
  * val pool = scope.filter { it.cefr == "A1" }       // словарный пул для MATCH_PAIRS
  * ```
@@ -134,61 +134,61 @@ object VocabScope {
             ScopeWord("un café", "один кофе", "u1_l6", "phrase"),
         ))
         // u1_l7 — SER soy/eres/es
-        put("u1_l7", listOf(
-            ScopeWord("soy", "я есть", "u1_l7", "verb"),
-            ScopeWord("eres", "ты есть", "u1_l7", "verb"),
-            ScopeWord("es", "он/она есть", "u1_l7", "verb"),
-            ScopeWord("ruso", "русский (м)", "u1_l7", "nationality"),
-            ScopeWord("Pablo", "Павел", "u1_l7", "name"),
-            ScopeWord("amigo", "друг", "u1_l7", "noun"),
-            ScopeWord("alto", "высокий", "u1_l7", "adjective"),
-            ScopeWord("médico", "врач (м)", "u1_l7", "profession"),
-            ScopeWord("ingeniero", "инженер", "u1_l7", "profession"),
+        put("u1_l10", listOf(
+            ScopeWord("soy", "я есть", "u1_l10", "verb"),
+            ScopeWord("eres", "ты есть", "u1_l10", "verb"),
+            ScopeWord("es", "он/она есть", "u1_l10", "verb"),
+            ScopeWord("ruso", "русский (м)", "u1_l10", "nationality"),
+            ScopeWord("Pablo", "Павел", "u1_l10", "name"),
+            ScopeWord("amigo", "друг", "u1_l10", "noun"),
+            ScopeWord("alto", "высокий", "u1_l10", "adjective"),
+            ScopeWord("médico", "врач (м)", "u1_l10", "profession"),
+            ScopeWord("ingeniero", "инженер", "u1_l10", "profession"),
         ))
         // u1_l8 — SER somos/sois/son
-        put("u1_l8", listOf(
-            ScopeWord("somos", "мы есть", "u1_l8", "verb"),
-            ScopeWord("sois", "вы есть (Исп.)", "u1_l8", "verb"),
-            ScopeWord("son", "они есть", "u1_l8", "verb"),
-            ScopeWord("amigos", "друзья", "u1_l8", "noun"),
-            ScopeWord("estudiantes", "студенты", "u1_l8", "noun"),
-            ScopeWord("amables", "любезные", "u1_l8", "adjective"),
-            ScopeWord("aquí", "здесь", "u1_l8", "adverb"),
+        put("u1_l11", listOf(
+            ScopeWord("somos", "мы есть", "u1_l11", "verb"),
+            ScopeWord("sois", "вы есть (Исп.)", "u1_l11", "verb"),
+            ScopeWord("son", "они есть", "u1_l11", "verb"),
+            ScopeWord("amigos", "друзья", "u1_l11", "noun"),
+            ScopeWord("estudiantes", "студенты", "u1_l11", "noun"),
+            ScopeWord("amables", "любезные", "u1_l11", "adjective"),
+            ScopeWord("aquí", "здесь", "u1_l11", "adverb"),
         ))
         // u1_l9 — Местоимения
-        put("u1_l9", listOf(
-            ScopeWord("yo", "я", "u1_l9", "pronoun"),
-            ScopeWord("tú", "ты", "u1_l9", "pronoun"),
-            ScopeWord("usted", "Вы (формально)", "u1_l9", "pronoun"),
-            ScopeWord("él", "он", "u1_l9", "pronoun"),
-            ScopeWord("ella", "она", "u1_l9", "pronoun"),
-            ScopeWord("nosotros", "мы (м)", "u1_l9", "pronoun"),
-            ScopeWord("nosotras", "мы (ж)", "u1_l9", "pronoun"),
-            ScopeWord("vosotros", "вы (м, Исп.)", "u1_l9", "pronoun"),
-            ScopeWord("ellos", "они (м)", "u1_l9", "pronoun"),
-            ScopeWord("ellas", "они (ж)", "u1_l9", "pronoun"),
-            ScopeWord("hermano", "брат", "u1_l9", "noun"),
-            ScopeWord("rusas", "русские (ж)", "u1_l9", "nationality"),
+        put("u1_l7", listOf(
+            ScopeWord("yo", "я", "u1_l7", "pronoun"),
+            ScopeWord("tú", "ты", "u1_l7", "pronoun"),
+            ScopeWord("usted", "Вы (формально)", "u1_l7", "pronoun"),
+            ScopeWord("él", "он", "u1_l7", "pronoun"),
+            ScopeWord("ella", "она", "u1_l7", "pronoun"),
+            ScopeWord("nosotros", "мы (м)", "u1_l7", "pronoun"),
+            ScopeWord("nosotras", "мы (ж)", "u1_l7", "pronoun"),
+            ScopeWord("vosotros", "вы (м, Исп.)", "u1_l7", "pronoun"),
+            ScopeWord("ellos", "они (м)", "u1_l7", "pronoun"),
+            ScopeWord("ellas", "они (ж)", "u1_l7", "pronoun"),
+            ScopeWord("hermano", "брат", "u1_l7", "noun"),
+            ScopeWord("rusas", "русские (ж)", "u1_l7", "nationality"),
         ))
         // u1_l10 — Род el/la
-        put("u1_l10", listOf(
-            ScopeWord("el", "м.артикль (опр.)", "u1_l10", "article"),
-            ScopeWord("la", "ж.артикль (опр.)", "u1_l10", "article"),
-            ScopeWord("libro", "книга", "u1_l10", "noun"),
-            ScopeWord("día", "день", "u1_l10", "noun"),
-            ScopeWord("mano", "рука", "u1_l10", "noun"),
-            ScopeWord("médica", "врач (ж)", "u1_l10", "profession"),
+        put("u1_l8", listOf(
+            ScopeWord("el", "м.артикль (опр.)", "u1_l8", "article"),
+            ScopeWord("la", "ж.артикль (опр.)", "u1_l8", "article"),
+            ScopeWord("libro", "книга", "u1_l8", "noun"),
+            ScopeWord("día", "день", "u1_l8", "noun"),
+            ScopeWord("mano", "рука", "u1_l8", "noun"),
+            ScopeWord("médica", "врач (ж)", "u1_l8", "profession"),
         ))
         // u1_l11 — Артикли
-        put("u1_l11", listOf(
-            ScopeWord("un", "м.артикль (неопр.)", "u1_l11", "article"),
-            ScopeWord("una", "ж.артикль (неопр.)", "u1_l11", "article"),
-            ScopeWord("los", "м.мн.артикль (опр.)", "u1_l11", "article"),
-            ScopeWord("las", "ж.мн.артикль (опр.)", "u1_l11", "article"),
-            ScopeWord("unos", "м.мн.артикль (неопр.)", "u1_l11", "article"),
-            ScopeWord("unas", "ж.мн.артикль (неопр.)", "u1_l11", "article"),
-            ScopeWord("libros", "книги", "u1_l11", "noun"),
-            ScopeWord("casas", "дома", "u1_l11", "noun"),
+        put("u1_l9", listOf(
+            ScopeWord("un", "м.артикль (неопр.)", "u1_l9", "article"),
+            ScopeWord("una", "ж.артикль (неопр.)", "u1_l9", "article"),
+            ScopeWord("los", "м.мн.артикль (опр.)", "u1_l9", "article"),
+            ScopeWord("las", "ж.мн.артикль (опр.)", "u1_l9", "article"),
+            ScopeWord("unos", "м.мн.артикль (неопр.)", "u1_l9", "article"),
+            ScopeWord("unas", "ж.мн.артикль (неопр.)", "u1_l9", "article"),
+            ScopeWord("libros", "книги", "u1_l9", "noun"),
+            ScopeWord("casas", "дома", "u1_l9", "noun"),
         ))
         // u1_l12 — Страны и национальности
         put("u1_l12", listOf(
@@ -224,131 +224,131 @@ object VocabScope {
         // ═══════════════════════════════════════════════════════════════
         // Блок 1.2 «Мой мир» — числа 11-100, TENER, семья, цвета, ESTAR, дом
         // ═══════════════════════════════════════════════════════════════
-        put("u2_l0", listOf(
-            ScopeWord("once", "одиннадцать", "u2_l0", "number"),
-            ScopeWord("doce", "двенадцать", "u2_l0", "number"),
-            ScopeWord("trece", "тринадцать", "u2_l0", "number"),
-            ScopeWord("catorce", "четырнадцать", "u2_l0", "number"),
-            ScopeWord("quince", "пятнадцать", "u2_l0", "number"),
-            ScopeWord("dieciséis", "шестнадцать", "u2_l0", "number"),
-            ScopeWord("diecisiete", "семнадцать", "u2_l0", "number"),
-            ScopeWord("dieciocho", "восемнадцать", "u2_l0", "number"),
-            ScopeWord("diecinueve", "девятнадцать", "u2_l0", "number"),
-            ScopeWord("veinte", "двадцать", "u2_l0", "number"),
-            ScopeWord("euros", "евро", "u2_l0", "noun"),
-            ScopeWord("años", "годы", "u2_l0", "noun"),
-        ))
-        put("u2_l1", listOf(
-            ScopeWord("veintiuno", "21", "u2_l1", "number"),
-            ScopeWord("veinticinco", "25", "u2_l1", "number"),
-            ScopeWord("treinta", "30", "u2_l1", "number"),
-            ScopeWord("cuarenta", "40", "u2_l1", "number"),
-            ScopeWord("cincuenta", "50", "u2_l1", "number"),
-            ScopeWord("sesenta", "60", "u2_l1", "number"),
-            ScopeWord("setenta", "70", "u2_l1", "number"),
-            ScopeWord("ochenta", "80", "u2_l1", "number"),
-            ScopeWord("noventa", "90", "u2_l1", "number"),
-            ScopeWord("cien", "100", "u2_l1", "number"),
-            ScopeWord("y", "и", "u2_l1", "conjunction"),
-        ))
-        put("u2_l2", listOf(
-            ScopeWord("tengo", "у меня есть", "u2_l2", "verb"),
-            ScopeWord("tienes", "у тебя есть", "u2_l2", "verb"),
-            ScopeWord("tiene", "у него/неё есть", "u2_l2", "verb"),
-            ScopeWord("razón", "правота", "u2_l2", "noun"),
-        ))
-        put("u2_l3", listOf(
-            ScopeWord("tenemos", "у нас есть", "u2_l3", "verb"),
-            ScopeWord("tenéis", "у вас есть (Исп.)", "u2_l3", "verb"),
-            ScopeWord("tienen", "у них есть", "u2_l3", "verb"),
-            ScopeWord("hijas", "дочери", "u2_l3", "noun"),
-        ))
-        put("u2_l4", listOf(
-            ScopeWord("padre", "отец", "u2_l4", "family"),
-            ScopeWord("madre", "мать", "u2_l4", "family"),
-            ScopeWord("hermana", "сестра", "u2_l4", "family"),
-            ScopeWord("hija", "дочь", "u2_l4", "family"),
-            ScopeWord("hermanos", "братья", "u2_l4", "family"),
-            ScopeWord("padres", "родители", "u2_l4", "family"),
-        ))
-        put("u2_l5", listOf(
-            ScopeWord("abuelo", "дед", "u2_l5", "family"),
-            ScopeWord("abuela", "бабушка", "u2_l5", "family"),
-            ScopeWord("tío", "дядя", "u2_l5", "family"),
-            ScopeWord("tía", "тётя", "u2_l5", "family"),
-            ScopeWord("primo", "двоюр.брат", "u2_l5", "family"),
-            ScopeWord("prima", "двоюр.сестра", "u2_l5", "family"),
-            ScopeWord("sobrino", "племянник", "u2_l5", "family"),
-            ScopeWord("sobrina", "племянница", "u2_l5", "family"),
-            ScopeWord("nieto", "внук", "u2_l5", "family"),
-            ScopeWord("nieta", "внучка", "u2_l5", "family"),
-            ScopeWord("Carmen", "Кармен", "u2_l5", "name"),
-            ScopeWord("tíos", "дяди", "u2_l5", "family"),
-            ScopeWord("Madrid", "Мадрид", "u2_l5", "city"),
-        ))
         put("u2_l6", listOf(
-            ScopeWord("mi", "мой/моя", "u2_l6", "possessive"),
-            ScopeWord("mis", "мои", "u2_l6", "possessive"),
-            ScopeWord("tu", "твой/твоя", "u2_l6", "possessive"),
-            ScopeWord("su", "его/её/Ваш", "u2_l6", "possessive"),
-            ScopeWord("nuestro", "наш", "u2_l6", "possessive"),
-            ScopeWord("nuestra", "наша", "u2_l6", "possessive"),
-            ScopeWord("vuestro", "ваш (Исп.)", "u2_l6", "possessive"),
+            ScopeWord("once", "одиннадцать", "u2_l6", "number"),
+            ScopeWord("doce", "двенадцать", "u2_l6", "number"),
+            ScopeWord("trece", "тринадцать", "u2_l6", "number"),
+            ScopeWord("catorce", "четырнадцать", "u2_l6", "number"),
+            ScopeWord("quince", "пятнадцать", "u2_l6", "number"),
+            ScopeWord("dieciséis", "шестнадцать", "u2_l6", "number"),
+            ScopeWord("diecisiete", "семнадцать", "u2_l6", "number"),
+            ScopeWord("dieciocho", "восемнадцать", "u2_l6", "number"),
+            ScopeWord("diecinueve", "девятнадцать", "u2_l6", "number"),
+            ScopeWord("veinte", "двадцать", "u2_l6", "number"),
+            ScopeWord("euros", "евро", "u2_l6", "noun"),
+            ScopeWord("años", "годы", "u2_l6", "noun"),
         ))
         put("u2_l7", listOf(
-            ScopeWord("rojo", "красный", "u2_l7", "color"),
-            ScopeWord("azul", "синий", "u2_l7", "color"),
-            ScopeWord("verde", "зелёный", "u2_l7", "color"),
-            ScopeWord("amarillo", "жёлтый", "u2_l7", "color"),
-            ScopeWord("negro", "чёрный", "u2_l7", "color"),
-            ScopeWord("blanco", "белый", "u2_l7", "color"),
-            ScopeWord("gris", "серый", "u2_l7", "color"),
-            ScopeWord("naranja", "оранжевый", "u2_l7", "color"),
-            ScopeWord("rosa", "розовый", "u2_l7", "color"),
-            ScopeWord("marrón", "коричневый", "u2_l7", "color"),
-            ScopeWord("cielo", "небо", "u2_l7", "noun"),
+            ScopeWord("veintiuno", "21", "u2_l7", "number"),
+            ScopeWord("veinticinco", "25", "u2_l7", "number"),
+            ScopeWord("treinta", "30", "u2_l7", "number"),
+            ScopeWord("cuarenta", "40", "u2_l7", "number"),
+            ScopeWord("cincuenta", "50", "u2_l7", "number"),
+            ScopeWord("sesenta", "60", "u2_l7", "number"),
+            ScopeWord("setenta", "70", "u2_l7", "number"),
+            ScopeWord("ochenta", "80", "u2_l7", "number"),
+            ScopeWord("noventa", "90", "u2_l7", "number"),
+            ScopeWord("cien", "100", "u2_l7", "number"),
+            ScopeWord("y", "и", "u2_l7", "conjunction"),
+        ))
+        put("u2_l4", listOf(
+            ScopeWord("tengo", "у меня есть", "u2_l4", "verb"),
+            ScopeWord("tienes", "у тебя есть", "u2_l4", "verb"),
+            ScopeWord("tiene", "у него/неё есть", "u2_l4", "verb"),
+            ScopeWord("razón", "правота", "u2_l4", "noun"),
+        ))
+        put("u2_l5", listOf(
+            ScopeWord("tenemos", "у нас есть", "u2_l5", "verb"),
+            ScopeWord("tenéis", "у вас есть (Исп.)", "u2_l5", "verb"),
+            ScopeWord("tienen", "у них есть", "u2_l5", "verb"),
+            ScopeWord("hijas", "дочери", "u2_l5", "noun"),
         ))
         put("u2_l8", listOf(
-            ScopeWord("roja", "красная", "u2_l8", "color"),
-            ScopeWord("blanca", "белая", "u2_l8", "color"),
-            ScopeWord("negra", "чёрная", "u2_l8", "color"),
-            ScopeWord("amarilla", "жёлтая", "u2_l8", "color"),
-            ScopeWord("coche", "машина", "u2_l8", "noun"),
+            ScopeWord("padre", "отец", "u2_l8", "family"),
+            ScopeWord("madre", "мать", "u2_l8", "family"),
+            ScopeWord("hermana", "сестра", "u2_l8", "family"),
+            ScopeWord("hija", "дочь", "u2_l8", "family"),
+            ScopeWord("hermanos", "братья", "u2_l8", "family"),
+            ScopeWord("padres", "родители", "u2_l8", "family"),
         ))
         put("u2_l9", listOf(
-            ScopeWord("estoy", "я нахожусь", "u2_l9", "verb"),
-            ScopeWord("estás", "ты находишься", "u2_l9", "verb"),
-            ScopeWord("está", "он/она находится", "u2_l9", "verb"),
-            ScopeWord("cansado", "усталый", "u2_l9", "adjective"),
-            ScopeWord("contento", "довольный", "u2_l9", "adjective"),
-            ScopeWord("en", "в / на", "u2_l9", "preposition"),
+            ScopeWord("abuelo", "дед", "u2_l9", "family"),
+            ScopeWord("abuela", "бабушка", "u2_l9", "family"),
+            ScopeWord("tío", "дядя", "u2_l9", "family"),
+            ScopeWord("tía", "тётя", "u2_l9", "family"),
+            ScopeWord("primo", "двоюр.брат", "u2_l9", "family"),
+            ScopeWord("prima", "двоюр.сестра", "u2_l9", "family"),
+            ScopeWord("sobrino", "племянник", "u2_l9", "family"),
+            ScopeWord("sobrina", "племянница", "u2_l9", "family"),
+            ScopeWord("nieto", "внук", "u2_l9", "family"),
+            ScopeWord("nieta", "внучка", "u2_l9", "family"),
+            ScopeWord("Carmen", "Кармен", "u2_l9", "name"),
+            ScopeWord("tíos", "дяди", "u2_l9", "family"),
+            ScopeWord("Madrid", "Мадрид", "u2_l9", "city"),
         ))
         put("u2_l10", listOf(
-            ScopeWord("sobre", "на (поверх)", "u2_l10", "preposition"),
-            ScopeWord("debajo de", "под", "u2_l10", "preposition"),
-            ScopeWord("al lado de", "рядом с", "u2_l10", "preposition"),
-            ScopeWord("entre", "между", "u2_l10", "preposition"),
-            ScopeWord("delante de", "перед", "u2_l10", "preposition"),
-            ScopeWord("detrás de", "позади", "u2_l10", "preposition"),
-            ScopeWord("oficina", "офис", "u2_l10", "noun"),
-            ScopeWord("lámpara", "лампа", "u2_l10", "noun"),
+            ScopeWord("mi", "мой/моя", "u2_l10", "possessive"),
+            ScopeWord("mis", "мои", "u2_l10", "possessive"),
+            ScopeWord("tu", "твой/твоя", "u2_l10", "possessive"),
+            ScopeWord("su", "его/её/Ваш", "u2_l10", "possessive"),
+            ScopeWord("nuestro", "наш", "u2_l10", "possessive"),
+            ScopeWord("nuestra", "наша", "u2_l10", "possessive"),
+            ScopeWord("vuestro", "ваш (Исп.)", "u2_l10", "possessive"),
         ))
         put("u2_l11", listOf(
-            ScopeWord("sala", "гостиная", "u2_l11", "room"),
-            ScopeWord("cocina", "кухня", "u2_l11", "room"),
-            ScopeWord("dormitorio", "спальня", "u2_l11", "room"),
-            ScopeWord("baño", "ванная", "u2_l11", "room"),
-            ScopeWord("comedor", "столовая", "u2_l11", "room"),
-            ScopeWord("balcón", "балкон", "u2_l11", "room"),
-            ScopeWord("pasillo", "коридор", "u2_l11", "room"),
+            ScopeWord("rojo", "красный", "u2_l11", "color"),
+            ScopeWord("azul", "синий", "u2_l11", "color"),
+            ScopeWord("verde", "зелёный", "u2_l11", "color"),
+            ScopeWord("amarillo", "жёлтый", "u2_l11", "color"),
+            ScopeWord("negro", "чёрный", "u2_l11", "color"),
+            ScopeWord("blanco", "белый", "u2_l11", "color"),
+            ScopeWord("gris", "серый", "u2_l11", "color"),
+            ScopeWord("naranja", "оранжевый", "u2_l11", "color"),
+            ScopeWord("rosa", "розовый", "u2_l11", "color"),
+            ScopeWord("marrón", "коричневый", "u2_l11", "color"),
+            ScopeWord("cielo", "небо", "u2_l11", "noun"),
         ))
         put("u2_l12", listOf(
-            ScopeWord("sofá", "диван", "u2_l12", "furniture"),
-            ScopeWord("mesa", "стол", "u2_l12", "furniture"),
-            ScopeWord("silla", "стул", "u2_l12", "furniture"),
-            ScopeWord("cama", "кровать", "u2_l12", "furniture"),
-            ScopeWord("armario", "шкаф", "u2_l12", "furniture"),
-            ScopeWord("nevera", "холодильник", "u2_l12", "furniture"),
+            ScopeWord("roja", "красная", "u2_l12", "color"),
+            ScopeWord("blanca", "белая", "u2_l12", "color"),
+            ScopeWord("negra", "чёрная", "u2_l12", "color"),
+            ScopeWord("amarilla", "жёлтая", "u2_l12", "color"),
+            ScopeWord("coche", "машина", "u2_l12", "noun"),
+        ))
+        put("u3_l0", listOf(
+            ScopeWord("estoy", "я нахожусь", "u3_l0", "verb"),
+            ScopeWord("estás", "ты находишься", "u3_l0", "verb"),
+            ScopeWord("está", "он/она находится", "u3_l0", "verb"),
+            ScopeWord("cansado", "усталый", "u3_l0", "adjective"),
+            ScopeWord("contento", "довольный", "u3_l0", "adjective"),
+            ScopeWord("en", "в / на", "u3_l0", "preposition"),
+        ))
+        put("u3_l1", listOf(
+            ScopeWord("sobre", "на (поверх)", "u3_l1", "preposition"),
+            ScopeWord("debajo de", "под", "u3_l1", "preposition"),
+            ScopeWord("al lado de", "рядом с", "u3_l1", "preposition"),
+            ScopeWord("entre", "между", "u3_l1", "preposition"),
+            ScopeWord("delante de", "перед", "u3_l1", "preposition"),
+            ScopeWord("detrás de", "позади", "u3_l1", "preposition"),
+            ScopeWord("oficina", "офис", "u3_l1", "noun"),
+            ScopeWord("lámpara", "лампа", "u3_l1", "noun"),
+        ))
+        put("u3_l2", listOf(
+            ScopeWord("sala", "гостиная", "u3_l2", "room"),
+            ScopeWord("cocina", "кухня", "u3_l2", "room"),
+            ScopeWord("dormitorio", "спальня", "u3_l2", "room"),
+            ScopeWord("baño", "ванная", "u3_l2", "room"),
+            ScopeWord("comedor", "столовая", "u3_l2", "room"),
+            ScopeWord("balcón", "балкон", "u3_l2", "room"),
+            ScopeWord("pasillo", "коридор", "u3_l2", "room"),
+        ))
+        put("u3_l3", listOf(
+            ScopeWord("sofá", "диван", "u3_l3", "furniture"),
+            ScopeWord("mesa", "стол", "u3_l3", "furniture"),
+            ScopeWord("silla", "стул", "u3_l3", "furniture"),
+            ScopeWord("cama", "кровать", "u3_l3", "furniture"),
+            ScopeWord("armario", "шкаф", "u3_l3", "furniture"),
+            ScopeWord("nevera", "холодильник", "u3_l3", "furniture"),
         ))
         put("u2_l13", listOf(
             ScopeWord("casas", "дома", "u2_l13", "noun"),
@@ -375,45 +375,45 @@ object VocabScope {
         // ═══════════════════════════════════════════════════════════════
         // Блок 1.3 «Действие» — глаголы AR/ER/IR + еда + querer/poder + e→i + время
         // ═══════════════════════════════════════════════════════════════
-        put("u3_l0", listOf(
-            ScopeWord("hablo", "говорю", "u3_l0", "verb"),
-            ScopeWord("hablas", "говоришь", "u3_l0", "verb"),
-            ScopeWord("habla", "говорит", "u3_l0", "verb"),
-            ScopeWord("trabajo", "работаю", "u3_l0", "verb"),
-            ScopeWord("trabajas", "работаешь", "u3_l0", "verb"),
-            ScopeWord("trabaja", "работает", "u3_l0", "verb"),
+        put("u2_l0", listOf(
+            ScopeWord("hablo", "говорю", "u2_l0", "verb"),
+            ScopeWord("hablas", "говоришь", "u2_l0", "verb"),
+            ScopeWord("habla", "говорит", "u2_l0", "verb"),
+            ScopeWord("trabajo", "работаю", "u2_l0", "verb"),
+            ScopeWord("trabajas", "работаешь", "u2_l0", "verb"),
+            ScopeWord("trabaja", "работает", "u2_l0", "verb"),
         ))
-        put("u3_l1", listOf(
-            ScopeWord("hablamos", "говорим", "u3_l1", "verb"),
-            ScopeWord("habláis", "говорите (Исп)", "u3_l1", "verb"),
-            ScopeWord("hablan", "говорят", "u3_l1", "verb"),
-            ScopeWord("trabajamos", "работаем", "u3_l1", "verb"),
-            ScopeWord("trabajan", "работают", "u3_l1", "verb"),
+        put("u2_l1", listOf(
+            ScopeWord("hablamos", "говорим", "u2_l1", "verb"),
+            ScopeWord("habláis", "говорите (Исп)", "u2_l1", "verb"),
+            ScopeWord("hablan", "говорят", "u2_l1", "verb"),
+            ScopeWord("trabajamos", "работаем", "u2_l1", "verb"),
+            ScopeWord("trabajan", "работают", "u2_l1", "verb"),
         ))
-        put("u3_l2", listOf(
-            ScopeWord("comer", "есть", "u3_l2", "verb"),
-            ScopeWord("como", "ем", "u3_l2", "verb"),
-            ScopeWord("comes", "ешь", "u3_l2", "verb"),
-            ScopeWord("come", "ест", "u3_l2", "verb"),
-            ScopeWord("comemos", "едим", "u3_l2", "verb"),
-            ScopeWord("comen", "едят", "u3_l2", "verb"),
-            ScopeWord("beber", "пить", "u3_l2", "verb"),
-            ScopeWord("bebo", "пью", "u3_l2", "verb"),
-            ScopeWord("bebemos", "пьём", "u3_l2", "verb"),
-            ScopeWord("leer", "читать", "u3_l2", "verb"),
-            ScopeWord("leo", "читаю", "u3_l2", "verb"),
-            ScopeWord("lees", "читаешь", "u3_l2", "verb"),
+        put("u2_l2", listOf(
+            ScopeWord("comer", "есть", "u2_l2", "verb"),
+            ScopeWord("como", "ем", "u2_l2", "verb"),
+            ScopeWord("comes", "ешь", "u2_l2", "verb"),
+            ScopeWord("come", "ест", "u2_l2", "verb"),
+            ScopeWord("comemos", "едим", "u2_l2", "verb"),
+            ScopeWord("comen", "едят", "u2_l2", "verb"),
+            ScopeWord("beber", "пить", "u2_l2", "verb"),
+            ScopeWord("bebo", "пью", "u2_l2", "verb"),
+            ScopeWord("bebemos", "пьём", "u2_l2", "verb"),
+            ScopeWord("leer", "читать", "u2_l2", "verb"),
+            ScopeWord("leo", "читаю", "u2_l2", "verb"),
+            ScopeWord("lees", "читаешь", "u2_l2", "verb"),
         ))
-        put("u3_l3", listOf(
-            ScopeWord("vivir", "жить", "u3_l3", "verb"),
-            ScopeWord("vivo", "живу", "u3_l3", "verb"),
-            ScopeWord("vives", "живёшь", "u3_l3", "verb"),
-            ScopeWord("vive", "живёт", "u3_l3", "verb"),
-            ScopeWord("vivimos", "живём", "u3_l3", "verb"),
-            ScopeWord("escribir", "писать", "u3_l3", "verb"),
-            ScopeWord("escriben", "пишут", "u3_l3", "verb"),
-            ScopeWord("carta", "письмо", "u3_l3", "noun"),
-            ScopeWord("Moscú", "Москва", "u3_l3", "city"),
+        put("u2_l3", listOf(
+            ScopeWord("vivir", "жить", "u2_l3", "verb"),
+            ScopeWord("vivo", "живу", "u2_l3", "verb"),
+            ScopeWord("vives", "живёшь", "u2_l3", "verb"),
+            ScopeWord("vive", "живёт", "u2_l3", "verb"),
+            ScopeWord("vivimos", "живём", "u2_l3", "verb"),
+            ScopeWord("escribir", "писать", "u2_l3", "verb"),
+            ScopeWord("escriben", "пишут", "u2_l3", "verb"),
+            ScopeWord("carta", "письмо", "u2_l3", "noun"),
+            ScopeWord("Moscú", "Москва", "u2_l3", "city"),
         ))
         put("u3_l4", listOf(
             ScopeWord("pan", "хлеб", "u3_l4", "food"),
@@ -543,30 +543,30 @@ object VocabScope {
         // ═══════════════════════════════════════════════════════════════
         // Блок 1.4 «Выживание» — IR + GUSTAR + транспорт + магазин + здоровье
         // ═══════════════════════════════════════════════════════════════
+        put("u4_l2", listOf(
+            ScopeWord("metro", "метро", "u4_l2", "transport"),
+            ScopeWord("autobús", "автобус", "u4_l2", "transport"),
+            ScopeWord("taxi", "такси", "u4_l2", "transport"),
+            ScopeWord("tren", "поезд", "u4_l2", "transport"),
+            ScopeWord("bici", "велик", "u4_l2", "transport"),
+            ScopeWord("avión", "самолёт", "u4_l2", "transport"),
+            ScopeWord("barco", "корабль", "u4_l2", "transport"),
+            ScopeWord("tomo", "беру (использую)", "u4_l2", "verb"),
+        ))
         put("u4_l0", listOf(
-            ScopeWord("metro", "метро", "u4_l0", "transport"),
-            ScopeWord("autobús", "автобус", "u4_l0", "transport"),
-            ScopeWord("taxi", "такси", "u4_l0", "transport"),
-            ScopeWord("tren", "поезд", "u4_l0", "transport"),
-            ScopeWord("bici", "велик", "u4_l0", "transport"),
-            ScopeWord("avión", "самолёт", "u4_l0", "transport"),
-            ScopeWord("barco", "корабль", "u4_l0", "transport"),
-            ScopeWord("tomo", "беру (использую)", "u4_l0", "verb"),
+            ScopeWord("voy", "иду", "u4_l0", "verb"),
+            ScopeWord("vas", "идёшь", "u4_l0", "verb"),
+            ScopeWord("va", "идёт", "u4_l0", "verb"),
+            ScopeWord("vamos", "идём", "u4_l0", "verb"),
+            ScopeWord("vais", "идёте (Исп)", "u4_l0", "verb"),
+            ScopeWord("van", "идут", "u4_l0", "verb"),
+            ScopeWord("ir", "идти", "u4_l0", "verb"),
         ))
         put("u4_l1", listOf(
-            ScopeWord("voy", "иду", "u4_l1", "verb"),
-            ScopeWord("vas", "идёшь", "u4_l1", "verb"),
-            ScopeWord("va", "идёт", "u4_l1", "verb"),
-            ScopeWord("vamos", "идём", "u4_l1", "verb"),
-            ScopeWord("vais", "идёте (Исп)", "u4_l1", "verb"),
-            ScopeWord("van", "идут", "u4_l1", "verb"),
-            ScopeWord("ir", "идти", "u4_l1", "verb"),
-        ))
-        put("u4_l2", listOf(
-            ScopeWord("al", "к (a+el)", "u4_l2", "preposition"),
-            ScopeWord("cine", "кино", "u4_l2", "noun"),
-            ScopeWord("colegio", "школа", "u4_l2", "noun"),
-            ScopeWord("banco", "банк", "u4_l2", "noun"),
+            ScopeWord("al", "к (a+el)", "u4_l1", "preposition"),
+            ScopeWord("cine", "кино", "u4_l1", "noun"),
+            ScopeWord("colegio", "школа", "u4_l1", "noun"),
+            ScopeWord("banco", "банк", "u4_l1", "noun"),
         ))
         put("u4_l3", listOf(
             ScopeWord("derecha", "правая", "u4_l3", "noun"),
@@ -2184,25 +2184,25 @@ object VocabScope {
         // A1 · Блок 1
         addAll(listOf("u1_l0", "u1_l1", "u1_l2", "u1_l3"))                  // фонетика
         addAll(listOf("u1_l4", "u1_l5", "u1_l6"))                            // приветствия / вежливость
-        addAll(listOf("u1_l7", "u1_l8", "u1_l9"))                            // SER + местоимения
-        addAll(listOf("u1_l10", "u1_l11"))                                   // род + артикли
+        addAll(listOf("u1_l10", "u1_l11", "u1_l7"))                            // SER + местоимения
+        addAll(listOf("u1_l8", "u1_l9"))                                   // род + артикли
         addAll(listOf("u1_l12", "u1_l13", "u1_l13_5", "u1_l14"))            // страны + числа + порядковые + checkpoint
         // A1 · Блок 2 «Мой мир»
-        addAll(listOf("u2_l0", "u2_l1"))                                     // числа 11-100
-        addAll(listOf("u2_l2", "u2_l3"))                                     // TENER
-        addAll(listOf("u2_l4", "u2_l5"))                                     // семья
-        addAll(listOf("u2_l6"))                                              // притяжательные
-        addAll(listOf("u2_l7", "u2_l8"))                                     // цвета + согласование
-        addAll(listOf("u2_l9", "u2_l10"))                                    // ESTAR + предлоги места
-        addAll(listOf("u2_l11", "u2_l12", "u2_l13", "u2_l14"))              // дом + мебель + мн.ч. + checkpoint
+        addAll(listOf("u2_l6", "u2_l7"))                                     // числа 11-100
+        addAll(listOf("u2_l4", "u2_l5"))                                     // TENER
+        addAll(listOf("u2_l8", "u2_l9"))                                     // семья
+        addAll(listOf("u2_l10"))                                              // притяжательные
+        addAll(listOf("u2_l11", "u2_l12"))                                     // цвета + согласование
+        addAll(listOf("u3_l0", "u3_l1"))                                    // ESTAR + предлоги места
+        addAll(listOf("u3_l2", "u3_l3", "u2_l13", "u2_l14"))              // дом + мебель + мн.ч. + checkpoint
         // A1 · Блок 3 «Действие»
-        addAll(listOf("u3_l0", "u3_l1", "u3_l2", "u3_l3"))                  // глаголы AR/ER/IR
+        addAll(listOf("u2_l0", "u2_l1", "u2_l2", "u2_l3"))                  // глаголы AR/ER/IR
         addAll(listOf("u3_l4", "u3_l5", "u3_l5_5"))                          // еда + ресторан + hay
         addAll(listOf("u3_l6", "u3_l7", "u3_l7_5"))                          // querer + poder + e→i
         addAll(listOf("u3_l8", "u3_l9", "u3_l10", "u3_l11"))                // время + дни + месяцы + наречия
         addAll(listOf("u3_l12", "u3_l13", "u3_l14"))                        // вопросы + отрицание + checkpoint
         // A1 · Блок 4 «Выживание»
-        addAll(listOf("u4_l0", "u4_l1", "u4_l2", "u4_l3"))                  // транспорт + IR + дорога
+        addAll(listOf("u4_l2", "u4_l0", "u4_l1", "u4_l3"))                  // транспорт + IR + дорога
         addAll(listOf("u4_l4", "u4_l5"))                                     // магазин + деньги
         addAll(listOf("u4_l6", "u4_l7"))                                     // GUSTAR
         addAll(listOf("u4_l8", "u4_l9"))                                     // тело + здоровье

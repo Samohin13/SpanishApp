@@ -464,8 +464,8 @@ object TheoryContentData {
         // ─────────────────────────────────────────────────────────────────
         // u1_l7 — SER: soy, eres, es
         // ─────────────────────────────────────────────────────────────────
-        "u1_l7" to TheoryContent(
-            lessonId = "u1_l7",
+        "u1_l10" to TheoryContent(
+            lessonId = "u1_l10",
             title = "Глагол SER — быть постоянно",
             subtitle = "soy / eres / es — кто ты, откуда, кем работаешь.",
             emoji = "🆔",
@@ -522,14 +522,14 @@ object TheoryContentData {
                 "Имя, национальность, профессия — всегда SER",
                 "Местоимение yo/tú можно опускать",
             ),
-            relatedTheory = listOf("u1_l8", "u1_l9"),
+            relatedTheory = listOf("u1_l11", "u1_l7"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
         // u1_l8 — SER: somos, sois, son
         // ─────────────────────────────────────────────────────────────────
-        "u1_l8" to TheoryContent(
-            lessonId = "u1_l8",
+        "u1_l11" to TheoryContent(
+            lessonId = "u1_l11",
             title = "SER во множественном числе",
             subtitle = "somos / sois / son — мы, вы, они.",
             emoji = "👥",
@@ -598,14 +598,14 @@ object TheoryContentData {
                 "ustedes son — везде, формально и в Латам неформально",
                 "Спряжение SER нерегулярное — учим наизусть",
             ),
-            relatedTheory = listOf("u1_l7", "u1_l9"),
+            relatedTheory = listOf("u1_l10", "u1_l7"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
         // u1_l9 — Личные местоимения
         // ─────────────────────────────────────────────────────────────────
-        "u1_l9" to TheoryContent(
-            lessonId = "u1_l9",
+        "u1_l7" to TheoryContent(
+            lessonId = "u1_l7",
             title = "Личные местоимения",
             subtitle = "yo, tú, él, nosotros — но чаще их опускают.",
             emoji = "🙋",
@@ -677,14 +677,14 @@ object TheoryContentData {
                 "Род: nosotros (м/смеш) vs nosotras (только ж)",
                 "В Аргентине vos вместо tú — но tú везде поймут",
             ),
-            relatedTheory = listOf("u1_l7", "u1_l8"),
+            relatedTheory = listOf("u1_l10", "u1_l11"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
         // u1_l10 — Род существительных el/la
         // ─────────────────────────────────────────────────────────────────
-        "u1_l10" to TheoryContent(
-            lessonId = "u1_l10",
+        "u1_l8" to TheoryContent(
+            lessonId = "u1_l8",
             title = "Род существительных — el или la",
             subtitle = "Окончание -o → м, -a → ж. Но есть исключения.",
             emoji = "⚤",
@@ -738,14 +738,14 @@ object TheoryContentData {
                 "Запомни 5 исключений: el día, la mano, el problema, el sistema, el tema",
                 "Артикль показывает род — учи слово сразу с артиклем",
             ),
-            relatedTheory = listOf("u1_l11"),
+            relatedTheory = listOf("u1_l9"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
         // u1_l11 — Артикли el/la/un/una/los/las
         // ─────────────────────────────────────────────────────────────────
-        "u1_l11" to TheoryContent(
-            lessonId = "u1_l11",
+        "u1_l9" to TheoryContent(
+            lessonId = "u1_l9",
             title = "Все 8 артиклей одной таблицей",
             subtitle = "Определённые el/la/los/las и неопределённые un/una/unos/unas.",
             emoji = "📰",
@@ -808,7 +808,7 @@ object TheoryContentData {
                 "Множественное: los/las (опр.), unos/unas (неопр.)",
                 "Первое упоминание → un, дальше → el",
             ),
-            relatedTheory = listOf("u1_l10", "u1_l12"),
+            relatedTheory = listOf("u1_l8", "u1_l12"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
@@ -871,7 +871,7 @@ object TheoryContentData {
                 "Страны с большой, национальности с маленькой буквы",
                 "¿De dónde eres? — стандартный вопрос",
             ),
-            relatedTheory = listOf("u1_l7", "u1_l13"),
+            relatedTheory = listOf("u1_l10", "u1_l13"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
@@ -1055,7 +1055,7 @@ object TheoryContentData {
         // ═══════════════════════════════════════════════════════════════
         //  БЛОК 1.2 «МОЙ МИР» — 15 теорий
         // ═══════════════════════════════════════════════════════════════
-        t("u2_l0", "Числа 11–20", "11 нерегулярных чисел. Затем 16-19 = «10+ед» слитно.",
+        t("u2_l6", "Числа 11–20", "11 нерегулярных чисел. Затем 16-19 = «10+ед» слитно.",
             emoji = "🔢", cefr = "A1", minutes = 3,
             rule = "Числа 11-15 — отдельные слова (once, doce, trece, catorce, quince). 16-19 пишутся слитно: dieciséis, diecisiete, dieciocho, diecinueve. 20 = veinte.",
             tableHeaders = listOf("Цифра", "Слово"),
@@ -1069,7 +1069,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("11-15 — отдельные слова", "16-19 — слитно diez+y+ед", "20 = veinte (с e!)")),
 
-        t("u2_l1", "Числа 21–100", "21-29 слитно. 30-90 — десятки. 31+ через «y»: treinta y uno.",
+        t("u2_l7", "Числа 21–100", "21-29 слитно. 30-90 — десятки. 31+ через «y»: treinta y uno.",
             emoji = "💯", cefr = "A1", minutes = 3,
             rule = "Десятки: 30 treinta, 40 cuarenta, 50 cincuenta, 60 sesenta, 70 setenta, 80 ochenta, 90 noventa, 100 cien. 21-29 пишутся СЛИТНО (veintiuno-veintinueve). От 31 — через «y»: treinta y uno.",
             tableHeaders = listOf("Цифра", "Слово"),
@@ -1083,7 +1083,7 @@ object TheoryContentData {
             warning = "31+ — РАЗДЕЛЬНО («treinta y uno»), не «treintaiuno»! Слитно — только 21-29.",
             takeaways = listOf("21-29 слитно", "31+ через y", "100 = cien (без s!)")),
 
-        t("u2_l2", "TENER ед. ч.", "tengo / tienes / tiene — иметь / возраст / родство",
+        t("u2_l4", "TENER ед. ч.", "tengo / tienes / tiene — иметь / возраст / родство",
             emoji = "🟠", cefr = "A1", minutes = 3,
             rule = "TENER = «иметь» (нерегулярный). Для возраста: Tengo X años. Для родства: Tengo dos hermanos.",
             tableHeaders = listOf("Лицо", "Форма", "Пример"),
@@ -1096,7 +1096,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("yo tengo (НЕ teno)", "Возраст: tener X años", "Голод: tener hambre")),
 
-        t("u2_l3", "TENER мн. ч.", "tenemos / tenéis / tienen",
+        t("u2_l5", "TENER мн. ч.", "tenemos / tenéis / tienen",
             emoji = "🟠", cefr = "A1", minutes = 3,
             rule = "Множественное TENER: nosotros tenemos / vosotros tenéis (Испания) / ellos tienen.",
             tableHeaders = listOf("Лицо", "Форма"),
@@ -1108,7 +1108,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("nosotros tenemos", "vosotros tenéis — только Испания", "ellos tienen")),
 
-        t("u2_l4", "Семья — основа", "padre, madre, hermano, hijo. Окончания -o/-a по роду.",
+        t("u2_l8", "Семья — основа", "padre, madre, hermano, hijo. Окончания -o/-a по роду.",
             emoji = "👨‍👩‍👧", cefr = "A1", minutes = 3,
             rule = "Базовая семья: padre/madre, hermano/hermana, hijo/hija. Множественное по мужскому: padres = родители, hermanos = братья (или смешанная группа).",
             tableHeaders = listOf("Семья", "М", "Ж"),
@@ -1122,7 +1122,7 @@ object TheoryContentData {
             tip = "padres = «родители» (буквально «отцы», но имеют в виду оба пола).",
             takeaways = listOf("-o = м, -a = ж", "Мн.ч. через -s", "padres = родители")),
 
-        t("u2_l5", "Расширенная семья", "abuelo, tío, primo, sobrino, nieto",
+        t("u2_l9", "Расширенная семья", "abuelo, tío, primo, sobrino, nieto",
             emoji = "👵", cefr = "A1", minutes = 3,
             rule = "abuelo/abuela (дед/баб), tío/tía (дядя/тётя), primo/prima (двоюр.брат/сестра), sobrino/sobrina (племянник/ца), nieto/nieta (внук/внучка).",
             tableHeaders = listOf("Родство", "М", "Ж"),
@@ -1137,7 +1137,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("Все по роду -o/-a", "tía с тильдой", "abuelos = дедушка с бабушкой")),
 
-        t("u2_l6", "Притяжательные mi/tu/su", "mi/tu/su — одна форма для м/ж. nuestro/a меняется.",
+        t("u2_l10", "Притяжательные mi/tu/su", "mi/tu/su — одна форма для м/ж. nuestro/a меняется.",
             emoji = "📎", cefr = "A1", minutes = 3,
             rule = "mi (мой/моя), tu (твой/твоя), su (его/её/Ваш) — НЕ меняются по роду. Меняются по числу: mis, tus, sus. nuestro/nuestra и vuestro/vuestra меняются по роду И числу.",
             tableHeaders = listOf("Лицо", "Ед.", "Мн."),
@@ -1152,7 +1152,7 @@ object TheoryContentData {
             warning = "Важно: tu (без тильды) = «твой», tú (с тильдой) = «ты». Разные слова!",
             takeaways = listOf("mi/tu/su не меняются по роду", "По числу: +s", "nuestro меняется по р И ч")),
 
-        t("u2_l7", "Цвета", "rojo, azul, verde, amarillo, negro, blanco",
+        t("u2_l11", "Цвета", "rojo, azul, verde, amarillo, negro, blanco",
             emoji = "🎨", cefr = "A1", minutes = 3,
             rule = "Базовые цвета: rojo (красный), azul (синий), verde (зелёный), amarillo (жёлтый), negro (чёрный), blanco (белый), gris (серый), naranja (оранжевый), rosa (розовый).",
             examples = listOf(
@@ -1161,7 +1161,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("На -o согласуются (rojo/roja)", "На -e/согласную не меняются", "naranja и rosa — несогласуемые")),
 
-        t("u2_l8", "Согласование цветов", "rojo/roja, blanco/blanca. На -e/согласную НЕ меняются.",
+        t("u2_l12", "Согласование цветов", "rojo/roja, blanco/blanca. На -e/согласную НЕ меняются.",
             emoji = "🌈", cefr = "A1", minutes = 3,
             rule = "Цвета на -o согласуются по роду: rojo→roja, blanco→blanca, negro→negra. На -e (verde) или согласную (azul, gris, marrón) НЕ меняются. naranja и rosa тоже не меняются (это сущ.→adj).",
             tableHeaders = listOf("М", "Ж"),
@@ -1174,7 +1174,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("-o → -a", "verde, azul, gris не меняются", "Множ.: +s")),
 
-        t("u2_l9", "ESTAR ед. ч.", "estoy / estás / está — для местоположения и состояния",
+        t("u3_l0", "ESTAR ед. ч.", "estoy / estás / está — для местоположения и состояния",
             emoji = "📍", cefr = "A1", minutes = 4,
             rule = "ESTAR = «быть/находиться» — для ВРЕМЕННЫХ состояний и местоположения. Не путать с SER (постоянное).",
             tableHeaders = listOf("Лицо", "Форма"),
@@ -1187,7 +1187,7 @@ object TheoryContentData {
             warning = "Местоположение → ESTAR (не SER!). «Я в Мадриде» = Estoy en Madrid, НЕ Soy en Madrid.",
             takeaways = listOf("estoy/estás/está", "Местоположение и временное состояние", "Профессия/национальность → SER")),
 
-        t("u2_l10", "Предлоги места", "en, sobre, debajo de, al lado de, entre",
+        t("u3_l1", "Предлоги места", "en, sobre, debajo de, al lado de, entre",
             emoji = "📌", cefr = "A1", minutes = 3,
             rule = "Где находится: en (в/на), sobre (на поверхности), debajo de (под), al lado de (рядом с), entre (между), delante de (перед), detrás de (за/позади).",
             tableHeaders = listOf("Предлог", "Перевод"),
@@ -1200,7 +1200,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("en — общее", "sobre = поверх", "Сложные предлоги ВСЕГДА с de")),
 
-        t("u2_l11", "Комнаты дома", "sala, cocina, dormitorio, baño",
+        t("u3_l2", "Комнаты дома", "sala, cocina, dormitorio, baño",
             emoji = "🏠", cefr = "A1", minutes = 3,
             rule = "Главные комнаты: la sala (гостиная), la cocina (кухня), el dormitorio (спальня), el baño (ванная), el comedor (столовая), el balcón (балкон), el pasillo (коридор).",
             examples = listOf(
@@ -1209,7 +1209,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("Род запоминать с артиклем", "Комнаты — повседневный словарь", "ir + a + место")),
 
-        t("u2_l12", "Мебель", "sofá, mesa, silla, cama, armario",
+        t("u3_l3", "Мебель", "sofá, mesa, silla, cama, armario",
             emoji = "🛋", cefr = "A1", minutes = 3,
             rule = "Базовая мебель: el sofá (диван), la mesa (стол), la silla (стул), la cama (кровать), el armario (шкаф), la lámpara (лампа), la nevera (холодильник).",
             examples = listOf(
@@ -1234,7 +1234,7 @@ object TheoryContentData {
         // ═══════════════════════════════════════════════════════════════
         //  БЛОК 1.3 «ДЕЙСТВИЕ» — 17 теорий (включая u3_l5_5 и u3_l7_5)
         // ═══════════════════════════════════════════════════════════════
-        t("u3_l0", "Глаголы -AR ед.ч.", "hablo / hablas / habla — окончания -o/-as/-a",
+        t("u2_l0", "Глаголы -AR ед.ч.", "hablo / hablas / habla — окончания -o/-as/-a",
             emoji = "🔵", cefr = "A1", minutes = 3,
             rule = "Глаголы на -AR (hablar, trabajar, estudiar, comprar) — это 80% испанских глаголов. Окончания ед.ч.: -o, -as, -a.",
             tableHeaders = listOf("Лицо", "Окончание", "Пример (hablar)"),
@@ -1246,7 +1246,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("yo -o, tú -as, él -a", "Применимо ко всем -AR", "80% глаголов")),
 
-        t("u3_l1", "Глаголы -AR полное", "Все 6 форм: -o/-as/-a/-amos/-áis/-an",
+        t("u2_l1", "Глаголы -AR полное", "Все 6 форм: -o/-as/-a/-amos/-áis/-an",
             emoji = "🔵", cefr = "A1", minutes = 3,
             rule = "Полная парадигма -AR: окончания -o, -as, -a, -amos, -áis, -an. Один раз выучил — работает со всеми -AR.",
             tableHeaders = listOf("Лицо", "Окончание", "hablar"),
@@ -1255,7 +1255,7 @@ object TheoryContentData {
                 listOf("vosotros", "-áis", "habláis"), listOf("ellos", "-an", "hablan")),
             takeaways = listOf("Учи окончания, не каждое слово", "vosotros -áis с тильдой", "ellos / ustedes -an")),
 
-        t("u3_l2", "Глаголы -ER", "como/comes/come/comemos/coméis/comen",
+        t("u2_l2", "Глаголы -ER", "como/comes/come/comemos/coméis/comen",
             emoji = "🔵", cefr = "A1", minutes = 3,
             rule = "Глаголы на -ER (comer, beber, leer): окончания -o, -es, -e, -emos, -éis, -en.",
             tableHeaders = listOf("Лицо", "Окончание"),
@@ -1268,7 +1268,7 @@ object TheoryContentData {
             ),
             takeaways = listOf("-er → -o/-es/-e", "Отличается от -ar только e/a", "leer → leo, lees, lee")),
 
-        t("u3_l3", "Глаголы -IR", "vivo/vives/vive/vivimos/vivís/viven",
+        t("u2_l3", "Глаголы -IR", "vivo/vives/vive/vivimos/vivís/viven",
             emoji = "🔵", cefr = "A1", minutes = 3,
             rule = "Глаголы на -IR (vivir, escribir, abrir): окончания -o, -es, -e, -imos, -ís, -en. Отличаются от -ER только в nosotros (-imos вместо -emos) и vosotros (-ís).",
             tableHeaders = listOf("Лицо", "-ER", "-IR"),
@@ -1386,12 +1386,12 @@ object TheoryContentData {
         // ═══════════════════════════════════════════════════════════════
         //  БЛОК 1.4 «ВЫЖИВАНИЕ» — 16 теорий (с u4_l13_5)
         // ═══════════════════════════════════════════════════════════════
-        t("u4_l0", "Транспорт", "metro, autobús, taxi, tren, coche, avión",
+        t("u4_l2", "Транспорт", "metro, autobús, taxi, tren, coche, avión",
             emoji = "🚇", cefr = "A1", minutes = 2,
             rule = "Транспорт: el metro, el autobús (с тильдой!), el taxi, el tren, el coche, la bici, el avión, el barco. Конструкция «en + транспорт»: voy en metro, en coche.",
             takeaways = listOf("EN + транспорт", "autobús, avión — с тильдой", "Все мужского рода (искл. la bici)")),
 
-        t("u4_l1", "IR полное", "voy/vas/va/vamos/vais/van",
+        t("u4_l0", "IR полное", "voy/vas/va/vamos/vais/van",
             emoji = "🏃", cefr = "A1", minutes = 3,
             rule = "IR = «идти/ехать». Полностью неправильный.",
             tableHeaders = listOf("Лицо", "Форма"),
@@ -1400,7 +1400,7 @@ object TheoryContentData {
             examples = listOf(Triple("Voy a casa.", "Иду домой.", "")),
             takeaways = listOf("Полностью неправильный", "voy/vas/va/vamos/vais/van", "ir + a + место/цель")),
 
-        t("u4_l2", "IR + A + место", "Voy al cine. a+el → al",
+        t("u4_l1", "IR + A + место", "Voy al cine. a+el → al",
             emoji = "🎯", cefr = "A1", minutes = 3,
             rule = "Конструкция «IR + A + место». Особое правило: a + el СЛИВАЕТСЯ в AL. a + la / a + las / a + los — НЕ сливаются. К casa — без артикля: voy a casa.",
             examples = listOf(

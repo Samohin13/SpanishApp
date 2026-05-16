@@ -747,7 +747,7 @@ object LessonContentDataV2 {
         // ─────────────────────────────────────────────────────────────
         // u1_l7 — SER: soy, eres, es
         // ─────────────────────────────────────────────────────────────
-        "u1_l7" to LessonContent(
+        "u1_l10" to LessonContent(
             intro = "SER = «быть постоянно»: имя, национальность, профессия. yo soy / tú eres / él es.",
             sections = listOf(
                 LessonSection(
@@ -818,7 +818,7 @@ object LessonContentDataV2 {
         // ─────────────────────────────────────────────────────────────
         // u1_l8 — SER: somos, sois, son (мн.ч.)
         // ─────────────────────────────────────────────────────────────
-        "u1_l8" to LessonContent(
+        "u1_l11" to LessonContent(
             intro = "Множественное SER: nosotros somos / vosotros sois (Испания) / ellos son.",
             sections = listOf(
                 LessonSection(
@@ -887,7 +887,7 @@ object LessonContentDataV2 {
         // ─────────────────────────────────────────────────────────────
         // u1_l9 — Местоимения yo / tú / él / ella / nosotros / ellos
         // ─────────────────────────────────────────────────────────────
-        "u1_l9" to LessonContent(
+        "u1_l7" to LessonContent(
             intro = "yo, tú, él, ella, nosotros, ellos. Окончание глагола уже содержит лицо — местоимение часто опускают.",
             sections = listOf(
                 LessonSection(
@@ -959,7 +959,7 @@ object LessonContentDataV2 {
         // ─────────────────────────────────────────────────────────────
         // u1_l10 — Род: el/la
         // ─────────────────────────────────────────────────────────────
-        "u1_l10" to LessonContent(
+        "u1_l8" to LessonContent(
             intro = "Каждое существительное — мужского ИЛИ женского рода. Большинство: -o → м, -a → ж. Артикль показывает род.",
             sections = listOf(
                 LessonSection(
@@ -1044,7 +1044,7 @@ object LessonContentDataV2 {
         // ─────────────────────────────────────────────────────────────
         // u1_l11 — Артикли: el/la/un/una/los/las
         // ─────────────────────────────────────────────────────────────
-        "u1_l11" to LessonContent(
+        "u1_l9" to LessonContent(
             intro = "Определённые el/la/los/las (известный объект) и неопределённые un/una/unos/unas (новый объект).",
             sections = listOf(
                 LessonSection(
@@ -1372,7 +1372,7 @@ object LessonContentDataV2 {
     private fun blockA1_2(): Map<String, LessonContent> = mapOf(
 
         // u2_l0 — Числа 11-20
-        "u2_l0" to LessonContent(
+        "u2_l6" to LessonContent(
             intro = "Числа 11-15 нерегулярные (once-quince), 16-19 — diez+y+ед.: dieciséis, veinte = 20.",
             sections = listOf(
                 LessonSection("Числа 11-20", listOf(
@@ -1405,7 +1405,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l1 — Числа 21-100
-        "u2_l1" to LessonContent(
+        "u2_l7" to LessonContent(
             intro = "21-29 пишутся слитно (veintiuno-veintinueve). 30/40/.../90 — десятки. 31-99 через «y»: treinta y uno.",
             sections = listOf(
                 LessonSection("Десятки и составные", listOf(
@@ -1442,7 +1442,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l2 — TENER ед.ч.
-        "u2_l2" to LessonContent(
+        "u2_l4" to LessonContent(
             intro = "TENER = «иметь»: tengo / tienes / tiene. Используется для возраста, родства, владения.",
             sections = listOf(
                 LessonSection("TENER ед.ч.", listOf(
@@ -1474,7 +1474,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l3 — TENER мн.ч.
-        "u2_l3" to LessonContent(
+        "u2_l5" to LessonContent(
             intro = "Множественное TENER: tenemos / tenéis / tienen. Похоже на SER по структуре окончаний.",
             sections = listOf(
                 LessonSection("TENER мн.ч.", listOf(
@@ -1505,7 +1505,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l4 — Семья 1
-        "u2_l4" to LessonContent(
+        "u2_l8" to LessonContent(
             intro = "Базовая семья: padre/madre, hermano/hermana, hijo/hija. Заметь окончания -o/-a.",
             sections = listOf(
                 LessonSection("Семья — основа", listOf(
@@ -1537,7 +1537,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l5 — Семья 2
-        "u2_l5" to LessonContent(
+        "u2_l9" to LessonContent(
             intro = "Расширенная семья: abuelo (дед), tío (дядя), primo (двоюродный), sobrino (племянник).",
             sections = listOf(
                 LessonSection("Расширенная семья", listOf(
@@ -1570,7 +1570,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l6 — Притяжательные mi/tu/su/nuestro
-        "u2_l6" to LessonContent(
+        "u2_l10" to LessonContent(
             intro = "mi / tu / su — единственная форма для м и ж. nuestro/a меняется по роду. Согласуются по числу.",
             sections = listOf(
                 LessonSection("Притяжательные", listOf(
@@ -1605,7 +1605,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l7 — Цвета
-        "u2_l7" to LessonContent(
+        "u2_l11" to LessonContent(
             intro = "Базовые цвета: rojo, azul, verde, amarillo, negro, blanco, gris.",
             sections = listOf(
                 LessonSection("Цвета", listOf(
@@ -1638,7 +1638,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l8 — Согласование цветов
-        "u2_l8" to LessonContent(
+        "u2_l12" to LessonContent(
             intro = "Цвета на -o согласуются: rojo/roja, blanco/blanca. На -e и согласные не меняются: verde, azul.",
             sections = listOf(
                 LessonSection("Согласование", listOf(
@@ -1673,7 +1673,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l9 — ESTAR ед.ч.
-        "u2_l9" to LessonContent(
+        "u3_l0" to LessonContent(
             intro = "ESTAR = «быть» о ВРЕМЕННОМ: где находишься, как себя чувствуешь. estoy / estás / está.",
             sections = listOf(
                 LessonSection("ESTAR ед.ч.", listOf(
@@ -1710,7 +1710,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l10 — Предлоги места
-        "u2_l10" to LessonContent(
+        "u3_l1" to LessonContent(
             intro = "Где находится: en (в/на), sobre (на), debajo de (под), al lado de (рядом с), entre (между).",
             sections = listOf(
                 LessonSection("Предлоги места", listOf(
@@ -1746,7 +1746,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l11 — Дом: комнаты
-        "u2_l11" to LessonContent(
+        "u3_l2" to LessonContent(
             intro = "Главные комнаты: sala (гостиная), cocina (кухня), dormitorio (спальня), baño (ванная).",
             sections = listOf(
                 LessonSection("Комнаты дома", listOf(
@@ -1781,7 +1781,7 @@ object LessonContentDataV2 {
         ),
 
         // u2_l12 — Мебель
-        "u2_l12" to LessonContent(
+        "u3_l3" to LessonContent(
             intro = "Мебель: sofá, mesa, silla, cama, armario, lámpara.",
             sections = listOf(
                 LessonSection("Мебель", listOf(
@@ -1906,7 +1906,7 @@ object LessonContentDataV2 {
     private fun blockA1_3(): Map<String, LessonContent> = mapOf(
 
         // u3_l0 — Глаголы -AR ед.ч.
-        "u3_l0" to LessonContent(
+        "u2_l0" to LessonContent(
             intro = "Глаголы на -AR (hablar, trabajar) ед.ч.: -o, -as, -a. Это самая большая группа — 80% глаголов.",
             sections = listOf(
                 LessonSection("Окончания -AR ед.ч.", listOf(
@@ -1939,7 +1939,7 @@ object LessonContentDataV2 {
         ),
 
         // u3_l1 — Глаголы -AR полное спряжение
-        "u3_l1" to LessonContent(
+        "u2_l1" to LessonContent(
             intro = "Полная парадигма -AR: -o, -as, -a, -amos, -áis, -an. Учим за один присест — будет работать со всеми -AR глаголами.",
             sections = listOf(
                 LessonSection("Все 6 форм hablar", listOf(
@@ -1974,7 +1974,7 @@ object LessonContentDataV2 {
         ),
 
         // u3_l2 — Глаголы -ER
-        "u3_l2" to LessonContent(
+        "u2_l2" to LessonContent(
             intro = "Глаголы на -ER (comer, beber, leer): -o, -es, -e, -emos, -éis, -en.",
             sections = listOf(
                 LessonSection("Спряжение comer", listOf(
@@ -2008,7 +2008,7 @@ object LessonContentDataV2 {
         ),
 
         // u3_l3 — Глаголы -IR
-        "u3_l3" to LessonContent(
+        "u2_l3" to LessonContent(
             intro = "Глаголы на -IR (vivir, escribir): -o, -es, -e, -imos, -ís, -en. Только nosotros/vosotros отличаются от -ER.",
             sections = listOf(
                 LessonSection("vivir", listOf(
@@ -2525,7 +2525,7 @@ object LessonContentDataV2 {
     private fun blockA1_4(): Map<String, LessonContent> = mapOf(
 
         // u4_l0 — Транспорт
-        "u4_l0" to LessonContent(
+        "u4_l2" to LessonContent(
             intro = "Городской транспорт: metro, autobús, taxi, tren, coche, bici.",
             sections = listOf(
                 LessonSection("Транспорт", listOf(
@@ -2561,7 +2561,7 @@ object LessonContentDataV2 {
         ),
 
         // u4_l1 — IR полное
-        "u4_l1" to LessonContent(
+        "u4_l0" to LessonContent(
             intro = "IR = «идти/ехать». voy / vas / va / vamos / vais / van. Полностью неправильный.",
             sections = listOf(
                 LessonSection("IR — все формы", listOf(
@@ -2595,7 +2595,7 @@ object LessonContentDataV2 {
         ),
 
         // u4_l2 — IR + a + lugar
-        "u4_l2" to LessonContent(
+        "u4_l1" to LessonContent(
             intro = "Конструкция «IR + A + место». a + el → AL (слитно). a + la = a la.",
             sections = listOf(
                 LessonSection("IR + A + место", listOf(

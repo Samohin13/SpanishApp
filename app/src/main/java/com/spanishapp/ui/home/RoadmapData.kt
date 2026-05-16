@@ -41,15 +41,15 @@ object RoadmapData {
                 // 7
                 RoadmapLesson("🙏 Por favor / Gracias / De nada / Perdón",    "content", "phrases"),
                 // 8
-                RoadmapLesson("🟣 SER: soy, eres, es (yo / tú / él)",         "content", "general"),
-                // 9
-                RoadmapLesson("🟣 SER: somos, sois, son (мн. число)",         "content", "general"),
-                // 10
                 RoadmapLesson("👤 Местоимения: yo tú él ella nosotros ellos", "content", "general"),
-                // 11
+                // 9
                 RoadmapLesson("⚤ Род: el/la — мужской и женский",            "content", "general"),
-                // 12
+                // 10
                 RoadmapLesson("📰 Артикли: el/la/un/una/los/las",             "content", "general"),
+                // 11
+                RoadmapLesson("🟣 SER: soy, eres, es (yo / tú / él)",         "content", "general"),
+                // 12
+                RoadmapLesson("🟣 SER: somos, sois, son (мн. число)",         "content", "general"),
                 // 13
                 RoadmapLesson("🌍 Страны: Soy ruso/rusa, de Rusia",           "content", "general"),
                 // 14
@@ -72,31 +72,31 @@ object RoadmapData {
             color = Color(0xFFCA8A04),
             lessons = listOf(
                 // 16
-                RoadmapLesson("🔢 Числа 11–20: once, doce… veinte",           "content", "general"),
+                RoadmapLesson("🔵 Глаголы -AR: hablar, trabajar — yo/tú/él",   "content", "general"),
                 // 17
-                RoadmapLesson("🔢 Числа 21–100: veintiuno, treinta…",          "content", "general"),
+                RoadmapLesson("🔵 Глаголы -AR: полное спряжение",              "content", "general"),
                 // 18
-                RoadmapLesson("🟠 TENER: tengo, tienes, tiene",                "content", "general"),
+                RoadmapLesson("🔵 Глаголы -ER: comer, beber, leer",            "content", "general"),
                 // 19
-                RoadmapLesson("🟠 TENER: tenemos, tenéis, tienen (мн.)",       "content", "general"),
+                RoadmapLesson("🔵 Глаголы -IR: vivir, escribir, abrir",        "content", "general"),
                 // 20
-                RoadmapLesson("👨‍👩‍👧 Семья 1: padre, madre, hermano, hijo",        "content", "familia"),
+                RoadmapLesson("🟠 TENER: tengo, tienes, tiene",                "content", "general"),
                 // 21
-                RoadmapLesson("👨‍👩‍👧 Семья 2: abuelo, tío, primo, sobrino",        "content", "familia"),
+                RoadmapLesson("🟠 TENER: tenemos, tenéis, tienen (мн.)",       "content", "general"),
                 // 22
-                RoadmapLesson("📎 Притяжательные: mi, tu, su, nuestro/a",     "content", "general"),
+                RoadmapLesson("🔢 Числа 11–20: once, doce… veinte",           "content", "general"),
                 // 23
-                RoadmapLesson("🎨 Цвета: rojo, azul, verde, amarillo…",        "content", "general"),
+                RoadmapLesson("🔢 Числа 21–100: veintiuno, treinta…",          "content", "general"),
                 // 24
-                RoadmapLesson("🎨 Согласование: rojo/roja, blanco/blanca",    "content", "general"),
+                RoadmapLesson("👨‍👩‍👧 Семья 1: padre, madre, hermano, hijo",        "content", "familia"),
                 // 25
-                RoadmapLesson("📍 ESTAR: estoy, estás, está — где находишься", "content", "general"),
+                RoadmapLesson("👨‍👩‍👧 Семья 2: abuelo, tío, primo, sobrino",        "content", "familia"),
                 // 26
-                RoadmapLesson("📍 Предлоги: en/sobre/debajo/al lado de",       "content", "general"),
+                RoadmapLesson("📎 Притяжательные: mi, tu, su, nuestro/a",     "content", "general"),
                 // 27
-                RoadmapLesson("🏠 Дом: sala, cocina, dormitorio, baño",        "content", "casa_hogar"),
+                RoadmapLesson("🎨 Цвета: rojo, azul, verde, amarillo…",        "content", "general"),
                 // 28
-                RoadmapLesson("🛋️ Мебель: sofá, mesa, silla, cama, armario",  "content", "casa_hogar"),
+                RoadmapLesson("🎨 Согласование: rojo/roja, blanco/blanca",    "content", "general"),
                 // 29
                 RoadmapLesson("📚 Множественное число: -s и -es",              "content", "general"),
                 // 30  ЧЕКПОИНТ
@@ -117,13 +117,13 @@ object RoadmapData {
             color = Color(0xFFEAB308),
             lessons = listOf(
                 // 31
-                RoadmapLesson("🔵 Глаголы -AR: hablar, trabajar — yo/tú/él",  "content", "general"),
+                RoadmapLesson("📍 ESTAR: estoy, estás, está — где находишься", "content", "general"),
                 // 32
-                RoadmapLesson("🔵 Глаголы -AR: полное спряжение",              "content", "general"),
+                RoadmapLesson("📍 Предлоги: en/sobre/debajo/al lado de",       "content", "general"),
                 // 33
-                RoadmapLesson("🔵 Глаголы -ER: comer, beber, leer",           "content", "general"),
+                RoadmapLesson("🏠 Дом: sala, cocina, dormitorio, baño",        "content", "casa_hogar"),
                 // 34
-                RoadmapLesson("🔵 Глаголы -IR: vivir, escribir, abrir",       "content", "general"),
+                RoadmapLesson("🛋️ Мебель: sofá, mesa, silla, cama, armario",  "content", "casa_hogar"),
                 // 35
                 RoadmapLesson("🍞 Еда: pan, leche, agua, café, fruta, carne", "content", "comida_bebida"),
                 // 36
@@ -162,11 +162,11 @@ object RoadmapData {
             color = Color(0xFFFACC15),
             lessons = listOf(
                 // 46
-                RoadmapLesson("🚇 Транспорт: metro, autobús, taxi, tren",      "content", "viajes"),
-                // 47
                 RoadmapLesson("🏃 IR: voy, vas, va, vamos, vais, van",         "content", "general"),
-                // 48
+                // 47
                 RoadmapLesson("🏃 IR + A + lugar: voy al colegio",             "content", "general"),
+                // 48
+                RoadmapLesson("🚇 Транспорт: metro, autobús, taxi, tren",      "content", "viajes"),
                 // 49
                 RoadmapLesson("🗺️ Дорога: ¿Cómo llego? Gira / Sigue recto",  "content", "ciudad"),
                 // 50
