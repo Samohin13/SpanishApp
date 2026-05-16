@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Радио: фоновое воспроизведение через MediaSessionService -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!--
       CAMERA убрана: на текущий момент аватар-пикер использует
       ActivityResultContracts.PickVisualMedia (Photo Picker, без
@@ -43,6 +47,16 @@
         <activity
             android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Theme.App.ImageCropper" />
+
+        <!-- Радио: MediaSessionService для фонового воспроизведения -->
+        <service
+            android:name="com.spanishapp.radio.player.RadioPlayerService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
 
         <!-- Виджет «Слово дня» -->
         <receiver

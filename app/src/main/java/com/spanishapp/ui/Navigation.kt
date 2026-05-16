@@ -240,6 +240,11 @@ object Navigation {
                 CourseDetailScreen(navController, courseLevel)
             }
 
+            // ── Радио (новая фича 1.6.0) ───────────────────
+            composable("radio") {
+                com.spanishapp.radio.ui.RadioScreen(navController)
+            }
+
             // ── Игры ─────────────────────────────────────────
             composable("games") { GamesScreen(navController) }
             composable("game_articles") {

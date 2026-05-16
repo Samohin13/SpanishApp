@@ -20,6 +20,7 @@
     <string name="nav_games">Игры</string>
     <string name="nav_dictionary">Словарь</string>
     <string name="nav_profile">Профиль</string>
+    <string name="nav_radio">Радио</string>
     <string name="nav_grammar">Грамматика</string>
 
     <!-- ── Общие кнопки ─────────────────────────────────────── -->

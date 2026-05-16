@@ -88,8 +88,8 @@ android {
         applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 31
-        versionName = "1.5.0"
+        versionCode = 32
+        versionName = "1.6.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val anthropicKey = localProps.getProperty("ANTHROPIC_KEY") ?: ""
         buildConfigField("String", "ANTHROPIC_API_KEY", "\"$anthropicKey\"")
@@ -205,6 +205,11 @@ dependencies {
     implementation(libs.androidx.glance.material3)
     implementation(libs.androidx.splashscreen)
     implementation(libs.androidx.biometric)
+
+    // Media3 — для радио (ExoPlayer + MediaSession + HLS поддержка)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.exoplayer.hls)
+    implementation(libs.media3.session)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)

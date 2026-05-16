@@ -31,8 +31,12 @@ googleServices = "4.4.2"
 firebaseBom = "33.7.0"
 crashlytics = "3.0.2"
 biometric = "1.2.0-alpha05"
+media3 = "1.4.1"
 
 [libraries]
+media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
+media3-exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "media3" }
+media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -92,3 +96,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
+# Kotlin coverage tool — генерирует HTML-отчёт покрытия unit-тестами.
+# Запуск: ./gradlew :app:koverHtmlReportDebug → app/build/reports/kover/html/index.html
+kover = { id = "org.jetbrains.kotlinx.kover", version = "0.8.3" }

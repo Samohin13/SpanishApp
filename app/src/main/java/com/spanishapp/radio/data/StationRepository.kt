@@ -1,0 +1,295 @@
+package com.spanishapp.radio.data
+
+/**
+ * 40 испаноязычных радиостанций для ESPEAK:
+ * - 60% Испания (24): новости/разговор + поп/музыка + культура
+ * - 20% Мексика (8): музыка + 2 разговорных
+ * - 20% Аргентина (8): музыка + 2 разговорных
+ *
+ * URL потоков получены через radio-browser.info API + сверены с
+ * официальными сайтами вещателей. Большинство — mp3/aac прямые потоки,
+ * некоторые — HLS (.m3u8).
+ *
+ * Если поток сломан, ExoPlayer выкинет PlayerException — обработать
+ * в RadioPlayerController + показать «Станция временно недоступна».
+ */
+object StationRepository {
+
+    // ════════════════════════════════════════════════════════════════
+    //  ИСПАНИЯ — 24 станции
+    // ════════════════════════════════════════════════════════════════
+
+    private val spainStations = listOf(
+        // ─── РАЗГОВОР / НОВОСТИ (10) ──────────────────────────────
+        Station(
+            id = "es_ser", shortCode = "SER", name = "Cadena SER",
+            program = "Hoy por Hoy", frequency = 88.7f,
+            country = Country.SPAIN, genre = Genre.TALK, level = CefrLevel.B1,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3"
+        ),
+        Station(
+            id = "es_rne1", shortCode = "RNE", name = "RNE Radio 1",
+            program = "Las Mañanas", frequency = 88.2f,
+            country = Country.SPAIN, genre = Genre.NEWS, level = CefrLevel.B1,
+            streamUrl = "https://rne-hls.flumotion.com/playlist.m3u8"
+        ),
+        Station(
+            id = "es_cope", shortCode = "COPE", name = "Cadena COPE",
+            program = "Herrera en COPE", frequency = 100.7f,
+            country = Country.SPAIN, genre = Genre.TALK, level = CefrLevel.B2,
+            streamUrl = "https://flucast-b03-01.flumotion.com/cope/net1.mp3"
+        ),
+        Station(
+            id = "es_onda", shortCode = "ONDA", name = "Onda Cero",
+            program = "Más de Uno", frequency = 95.4f,
+            country = Country.SPAIN, genre = Genre.TALK, level = CefrLevel.B1,
+            streamUrl = "https://onda-cero-rrcast.flumotion.com/ondacero/nacional-low.mp3"
+        ),
+        Station(
+            id = "es_esradio", shortCode = "EsR", name = "EsRadio",
+            program = "Es la Mañana", frequency = 99.0f,
+            country = Country.SPAIN, genre = Genre.TALK, level = CefrLevel.B2,
+            streamUrl = "https://livecast.libertaddigital.com/libertaddigital_high.mp3"
+        ),
+        Station(
+            id = "es_intereconomia", shortCode = "iEc", name = "Intereconomía",
+            program = "Económica", frequency = 95.1f,
+            country = Country.SPAIN, genre = Genre.NEWS, level = CefrLevel.B2,
+            streamUrl = "https://radiointer.streaming-pro.com:8000/intereconomia"
+        ),
+        Station(
+            id = "es_marca", shortCode = "MAR", name = "Radio Marca",
+            program = "Спорт-новости", frequency = 103.5f,
+            country = Country.SPAIN, genre = Genre.SPORTS, level = CefrLevel.B1,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_MARCA.mp3"
+        ),
+        Station(
+            id = "es_cope_deportes", shortCode = "C+D", name = "COPE Deportes",
+            program = "Tiempo de Juego", frequency = 99.5f,
+            country = Country.SPAIN, genre = Genre.SPORTS, level = CefrLevel.B2,
+            streamUrl = "https://flucast-b03-01.flumotion.com/cope/net2.mp3"
+        ),
+        Station(
+            id = "es_rne_cultura", shortCode = "RN5", name = "Radio 5 Noticias",
+            program = "Сводки 24/7", frequency = 90.3f,
+            country = Country.SPAIN, genre = Genre.NEWS, level = CefrLevel.B2,
+            streamUrl = "https://rne5-hls.flumotion.com/playlist.m3u8"
+        ),
+        Station(
+            id = "es_rne_clasica", shortCode = "RNC", name = "Radio Clásica",
+            program = "Классика", frequency = 96.5f,
+            country = Country.SPAIN, genre = Genre.CULTURE, level = CefrLevel.B1,
+            streamUrl = "https://rclasica-hls.flumotion.com/playlist.m3u8"
+        ),
+
+        // ─── МУЗЫКА / ПОП (10) ──────────────────────────────────────
+        Station(
+            id = "es_los40", shortCode = "40", name = "Los 40 Principales",
+            program = "Top Hits", frequency = 93.9f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40.mp3"
+        ),
+        Station(
+            id = "es_dial", shortCode = "DIA", name = "Cadena Dial",
+            program = "Lo mejor en español", frequency = 91.7f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/CADENADIAL.mp3"
+        ),
+        Station(
+            id = "es_cadena100", shortCode = "100", name = "Cadena 100",
+            program = "Pop/Rock", frequency = 99.5f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://flucast-b03-01.flumotion.com/cope/net3.mp3"
+        ),
+        Station(
+            id = "es_kissfm", shortCode = "KIS", name = "Kiss FM",
+            program = "Pop hits", frequency = 102.7f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://kissfm.kissfmradio.cires21.com/kissfm.mp3"
+        ),
+        Station(
+            id = "es_europafm", shortCode = "EUR", name = "Europa FM",
+            program = "Hits", frequency = 91.0f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://20493.live.streamtheworld.com/EUROPA_FM.mp3"
+        ),
+        Station(
+            id = "es_maximafm", shortCode = "MAX", name = "Máxima FM",
+            program = "Dance", frequency = 89.2f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://22443.live.streamtheworld.com/MAXIMA.mp3"
+        ),
+        Station(
+            id = "es_locafm", shortCode = "LOC", name = "Loca FM",
+            program = "Electronic/Dance", frequency = 92.6f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://stream.locafm.com:8210/loca-fm-aac"
+        ),
+        Station(
+            id = "es_m80", shortCode = "M80", name = "M80 Radio",
+            program = "80s / 90s / 2000s", frequency = 89.5f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/M80_SC"
+        ),
+        Station(
+            id = "es_hitfm", shortCode = "HIT", name = "Hit FM",
+            program = "Pop Hits", frequency = 102.0f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://stream.hit.es:8220/hit-fm-aac"
+        ),
+        Station(
+            id = "es_rockfm", shortCode = "ROC", name = "Rock FM",
+            program = "Rock clásico", frequency = 102.5f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://flucast-b03-01.flumotion.com/cope/net4.mp3"
+        ),
+
+        // ─── КУЛЬТУРА / СПЕЦИАЛЬНОЕ (4) ─────────────────────────
+        Station(
+            id = "es_radio3", shortCode = "R3", name = "Radio 3",
+            program = "Alternative / Indie", frequency = 93.1f,
+            country = Country.SPAIN, genre = Genre.CULTURE, level = CefrLevel.B2,
+            streamUrl = "https://r3-hls.flumotion.com/playlist.m3u8"
+        ),
+        Station(
+            id = "es_ole", shortCode = "OLÉ", name = "Radio Olé",
+            program = "Flamenco / Copla", frequency = 105.2f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://22413.live.streamtheworld.com/RADIOOLE.mp3"
+        ),
+        Station(
+            id = "es_dial_latino", shortCode = "DiL", name = "Cadena Dial Latino",
+            program = "Latin music", frequency = 91.7f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/DIAL_LATINO.mp3"
+        ),
+        Station(
+            id = "es_serlatino", shortCode = "SeL", name = "SER Latino",
+            program = "Tropical hits", frequency = 94.0f,
+            country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER_LATINO.mp3"
+        ),
+    )
+
+    // ════════════════════════════════════════════════════════════════
+    //  МЕКСИКА — 8 станций
+    // ════════════════════════════════════════════════════════════════
+
+    private val mexicoStations = listOf(
+        Station(
+            id = "mx_los40", shortCode = "40", name = "Los 40 México",
+            program = "Hits", frequency = 101.7f,
+            country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_MEXICO.mp3"
+        ),
+        Station(
+            id = "mx_exa", shortCode = "EXA", name = "Exa FM",
+            program = "Top en español/inglés", frequency = 104.9f,
+            country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHEXA_FM.mp3"
+        ),
+        Station(
+            id = "mx_joya", shortCode = "JOY", name = "Stereo Joya",
+            program = "Baladas románticas", frequency = 93.7f,
+            country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHFAJ_FM.mp3"
+        ),
+        Station(
+            id = "mx_mix", shortCode = "MIX", name = "Mix FM",
+            program = "Pop hits", frequency = 106.5f,
+            country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHFOAAC.aac"
+        ),
+        Station(
+            id = "mx_banda", shortCode = "BND", name = "Banda Romántica",
+            program = "Banda y Norteña", frequency = 97.7f,
+            country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHQRAAC.aac"
+        ),
+        Station(
+            id = "mx_beat", shortCode = "BET", name = "Beat 100.9",
+            program = "Dance / Electronic", frequency = 100.9f,
+            country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHSON_FM_SC"
+        ),
+        Station(
+            id = "mx_wradio", shortCode = "W", name = "W Radio México",
+            program = "Así las cosas", frequency = 96.9f,
+            country = Country.MEXICO, genre = Genre.TALK, level = CefrLevel.B1,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XEWA_FM.mp3"
+        ),
+        Station(
+            id = "mx_imagen", shortCode = "IMG", name = "Imagen Radio",
+            program = "Ciro Gómez Leyva", frequency = 90.5f,
+            country = Country.MEXICO, genre = Genre.NEWS, level = CefrLevel.B2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XEDA_FM.mp3"
+        ),
+    )
+
+    // ════════════════════════════════════════════════════════════════
+    //  АРГЕНТИНА — 8 станций
+    // ════════════════════════════════════════════════════════════════
+
+    private val argentinaStations = listOf(
+        Station(
+            id = "ar_la100", shortCode = "100", name = "La 100",
+            program = "Pop hits", frequency = 99.9f,
+            country = Country.ARGENTINA, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://radiosargentinas.com.ar/stream/la100"
+        ),
+        Station(
+            id = "ar_pop", shortCode = "POP", name = "Pop Radio",
+            program = "Pop / hits", frequency = 101.5f,
+            country = Country.ARGENTINA, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/POP_RADIO.mp3"
+        ),
+        Station(
+            id = "ar_aspen", shortCode = "ASP", name = "Aspen 102.3",
+            program = "Classic rock/pop", frequency = 102.3f,
+            country = Country.ARGENTINA, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://20323.live.streamtheworld.com/ASPEN_RADIO.mp3"
+        ),
+        Station(
+            id = "ar_vorterix", shortCode = "VOR", name = "Vorterix",
+            program = "Rock argentino", frequency = 92.1f,
+            country = Country.ARGENTINA, genre = Genre.MUSIC, level = CefrLevel.B1,
+            streamUrl = "https://server4.stream-cast.com:7019/stream"
+        ),
+        Station(
+            id = "ar_disney", shortCode = "DSN", name = "Radio Disney",
+            program = "Pop / Family", frequency = 94.3f,
+            country = Country.ARGENTINA, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIODISNEY.mp3"
+        ),
+        Station(
+            id = "ar_metro", shortCode = "MET", name = "Metro 95.1",
+            program = "Dance", frequency = 95.1f,
+            country = Country.ARGENTINA, genre = Genre.MUSIC, level = CefrLevel.A2,
+            streamUrl = "https://server7.stream-cast.com:7045/stream"
+        ),
+        Station(
+            id = "ar_mitre", shortCode = "MIT", name = "Radio Mitre",
+            program = "Lanata sin filtro", frequency = 100.3f,
+            country = Country.ARGENTINA, genre = Genre.TALK, level = CefrLevel.B2,
+            streamUrl = "https://radiosargentinas.com.ar/stream/mitre"
+        ),
+        Station(
+            id = "ar_continental", shortCode = "CNT", name = "Continental",
+            program = "Tarde para todo", frequency = 104.3f,
+            country = Country.ARGENTINA, genre = Genre.TALK, level = CefrLevel.B2,
+            streamUrl = "https://radiosargentinas.com.ar/stream/continental"
+        ),
+    )
+
+    fun getStationsForCountry(country: Country): List<Station> = when (country) {
+        Country.SPAIN -> spainStations
+        Country.MEXICO -> mexicoStations
+        Country.ARGENTINA -> argentinaStations
+    }
+
+    fun getAllStations(): List<Station> = spainStations + mexicoStations + argentinaStations
+
+    /** Найти ближайшую станцию к указанной частоте в указанной стране. */
+    fun nearestStation(frequency: Float, country: Country): Station? =
+        getStationsForCountry(country).minByOrNull { kotlin.math.abs(it.frequency - frequency) }
+}

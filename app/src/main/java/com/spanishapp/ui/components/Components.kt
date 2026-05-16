@@ -40,6 +40,7 @@ val bottomNavItems = listOf(
     NavItem("games",      com.spanishapp.R.string.nav_games,      Icons.Outlined.Gamepad,       Icons.Filled.Gamepad),
     // "Tarjetas" — испанское название, бренд карточек, не локализуем
     NavItem("flashcards", com.spanishapp.R.string.title_flashcards, Icons.Outlined.Style,       Icons.Filled.Style),
+    NavItem("radio",      com.spanishapp.R.string.nav_radio,      Icons.Outlined.Radio,         Icons.Filled.Radio),
     NavItem("dictionary", com.spanishapp.R.string.nav_dictionary, Icons.AutoMirrored.Outlined.MenuBook, Icons.AutoMirrored.Filled.MenuBook),
     NavItem("profile",    com.spanishapp.R.string.nav_profile,    Icons.Outlined.Person,        Icons.Filled.Person)
 )
