@@ -462,6 +462,18 @@ private fun TheoryCard(
         Spacer(Modifier.height(12.dp))
 
         section.items.forEach { item ->
+            // Достаём испанское слово для TTS:
+            //   1) сперва пытаемся вытащить из item.note ("agua — вода" → "agua")
+            //   2) если не вышло — используем item.left
+            // Это даёт корректную озвучку для алфавитных уроков, где левая часть
+            // («B — «бэ»») преимущественно кириллица и inferSpeakText её отбрасывает.
+            val speakWord = remember(item.left, item.note) {
+                val noteDash = item.note.indexOf(" — ")
+                val candidate = if (noteDash > 0) item.note.take(noteDash).trim()
+                                else item.left
+                com.spanishapp.ui.components.inferSpeakText(candidate)
+                    ?: com.spanishapp.ui.components.inferSpeakText(item.left)
+            }
             Surface(
                 shape    = RoundedCornerShape(14.dp),
                 color    = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
@@ -470,18 +482,18 @@ private fun TheoryCard(
                     .padding(vertical = 4.dp)
                     // Whole row plays TTS — no need to aim at the speaker icon.
                     .clickable {
-                        com.spanishapp.ui.components.inferSpeakText(item.left)?.let { t ->
-                            tts?.speakSpanish(t, "item")
-                        }
+                        speakWord?.let { tts?.speakSpanish(it, "item") }
                     }
             ) {
                 Row(
                     Modifier.padding(start = 16.dp, end = 4.dp, top = 12.dp, bottom = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Speaker icon stays as a visual cue; tap is on the whole row
+                    // Speaker icon stays as a visual cue; tap is on the whole row.
+                    // Принудительно показываем когда есть speakWord (фикс v1.3.6 —
+                    // раньше SpeakerButton сам решал по item.left и часто прятался).
                     SpeakerButton(
-                        text = item.left,
+                        text = speakWord ?: item.left,
                         tts  = tts,
                         tint = readableAccent
                     )
