@@ -64,10 +64,10 @@ object StationRepository {
             streamUrl = "https://www.marca.com/radio/geoblock/getSrcApp.php?dial=Nacional&dist=radiomarcaweb"
         ),
         Station(
-            id = "es_cope_deportes", shortCode = "C+D", name = "COPE Deportes",
-            program = "Tiempo de Juego", frequency = 99.5f,
+            id = "es_cope_deportes", shortCode = "C+D", name = "Radio Marca Sport",
+            program = "Спорт-программы", frequency = 99.5f,
             country = Country.SPAIN, genre = Genre.SPORTS, level = CefrLevel.B2,
-            streamUrl = "https://flucast-b03-01.flumotion.com/cope/net2.mp3"
+            streamUrl = "http://flucast29-h-cloud.flumotion.com/cope/copedeportes.mp3"
         ),
         Station(
             id = "es_rne_cultura", shortCode = "RN5", name = "Radio 5 Noticias",
@@ -126,10 +126,10 @@ object StationRepository {
             streamUrl = "http://s3.we4stream.com:8045/liv"
         ),
         Station(
-            id = "es_m80", shortCode = "M80", name = "M80 Radio",
+            id = "es_m80", shortCode = "M80", name = "Oldies Radio",
             program = "80s / 90s / 2000s", frequency = 89.5f,
             country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/M80_SC"
+            streamUrl = "http://radio.latina.red:8000/oldiesradiotime.mp3"
         ),
         Station(
             id = "es_hitfm", shortCode = "HIT", name = "Hit FM",
@@ -152,22 +152,22 @@ object StationRepository {
             streamUrl = "https://radio.eduneu.eu:8020/radio.mp3"
         ),
         Station(
-            id = "es_ole", shortCode = "OLÉ", name = "Radio Olé",
-            program = "Flamenco / Copla", frequency = 105.2f,
+            id = "es_ole", shortCode = "OLÉ", name = "Flamenco Radio",
+            program = "Flamenco · Copla", frequency = 105.2f,
             country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://22413.live.streamtheworld.com/RADIOOLE.mp3"
+            streamUrl = "https://rtva-live-radio.flumotion.com/rtva/flamenco.mp3"
         ),
         Station(
-            id = "es_dial_latino", shortCode = "DiL", name = "Cadena Dial Latino",
-            program = "Latin music", frequency = 91.7f,
+            id = "es_dial_latino", shortCode = "DiL", name = "Latina FM",
+            program = "Latin music España", frequency = 91.7f,
             country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/DIAL_LATINO.mp3"
+            streamUrl = "https://radiostreaming.online:8002/stream?type=http&nocache=8"
         ),
         Station(
-            id = "es_serlatino", shortCode = "SeL", name = "SER Latino",
+            id = "es_serlatino", shortCode = "SeL", name = "Tropical FM",
             program = "Tropical hits", frequency = 94.0f,
             country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER_LATINO.mp3"
+            streamUrl = "https://stream.zeno.fm/4nyf6tp9788uv"
         ),
     )
 
@@ -177,10 +177,10 @@ object StationRepository {
 
     private val mexicoStations = listOf(
         Station(
-            id = "mx_los40", shortCode = "40", name = "Los 40 México",
-            program = "Hits", frequency = 101.7f,
+            id = "mx_los40", shortCode = "40", name = "Los 40 Principales MX",
+            program = "Top Hits Morelia", frequency = 101.7f,
             country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/LOS40_MEXICO.mp3"
+            streamUrl = "http://s4.mexside.net:7040/stream"
         ),
         Station(
             id = "mx_exa", shortCode = "EXA", name = "Exa FM",
@@ -189,22 +189,22 @@ object StationRepository {
             streamUrl = "http://18213.live.streamtheworld.com/XHEXA_SC"
         ),
         Station(
-            id = "mx_joya", shortCode = "JOY", name = "Stereo Joya",
-            program = "Baladas románticas", frequency = 93.7f,
+            id = "mx_joya", shortCode = "JOY", name = "Romántica 1380",
+            program = "Baladas románticas CDMX", frequency = 93.7f,
             country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHFAJ_FM.mp3"
+            streamUrl = "https://cdn1.onstream.audio/proxy/xeco/stream"
         ),
         Station(
-            id = "mx_mix", shortCode = "MIX", name = "Mix FM",
-            program = "Pop hits", frequency = 106.5f,
+            id = "mx_mix", shortCode = "MIX", name = "Mix 80s 90s",
+            program = "Pop ретро Mexico", frequency = 106.5f,
             country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHFOAAC.aac"
+            streamUrl = "https://18443.live.streamtheworld.com:443/XHDFMFMAAC.aac"
         ),
         Station(
-            id = "mx_banda", shortCode = "BND", name = "Banda Romántica",
+            id = "mx_banda", shortCode = "BND", name = "Banda 93.3 MTY",
             program = "Banda y Norteña", frequency = 97.7f,
             country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHQRAAC.aac"
+            streamUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/XHQQ_FMAAC.aac"
         ),
         Station(
             id = "mx_beat", shortCode = "BET", name = "Beat 100.9",
