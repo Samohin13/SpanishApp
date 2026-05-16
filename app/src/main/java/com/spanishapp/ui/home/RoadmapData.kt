@@ -27,11 +27,11 @@ object RoadmapData {
             color = Color(0xFFA16207),
             lessons = listOf(
                 // 1
-                RoadmapLesson("🔤 Гласные: A, E, I, O, U",                  "content", "general"),
+                RoadmapLesson("🔤 Алфавит 1/3: A B C D E F G H I",          "content", "general"),
                 // 2
-                RoadmapLesson("🔤 Согласные: B/V, D, G — испанские секреты","content", "general"),
+                RoadmapLesson("🔤 Алфавит 2/3: J K L M N Ñ O P Q",          "content", "general"),
                 // 3
-                RoadmapLesson("🔤 H молчит · J=[х] · Ñ=[нь] · RR=[рр]",    "content", "general"),
+                RoadmapLesson("🔤 Алфавит 3/3: R S T U V W X Y Z",          "content", "general"),
                 // 4
                 RoadmapLesson("🔤 Ударение и тильда",                         "content", "general"),
                 // 5

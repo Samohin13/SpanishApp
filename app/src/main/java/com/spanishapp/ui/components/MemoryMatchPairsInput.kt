@@ -56,12 +56,16 @@ fun MemoryMatchPairsInput(
     var currentRound by remember { mutableStateOf(0) }
     var totalErrors by remember { mutableStateOf(0) }
     var showRoundDone by remember { mutableStateOf(false) }
+    var finished by remember { mutableStateOf(false) }
 
-    if (currentRound >= rounds.size) {
-        LaunchedEffect(Unit) {
-            delay(100)
-            onFinish(totalErrors)
-        }
+    // Финальный экран — всегда явная кнопка «Дальше»
+    if (finished) {
+        FinishBanner(
+            totalErrors = totalErrors,
+            totalPairs = allPairs.size,
+            accentColor = accentColor,
+            onContinue = { onFinish(totalErrors) },
+        )
         return
     }
 
@@ -89,7 +93,7 @@ fun MemoryMatchPairsInput(
             if (currentRound + 1 < rounds.size) {
                 showRoundDone = true
             } else {
-                currentRound++
+                finished = true
             }
         },
     )
@@ -536,6 +540,68 @@ private fun PairCard(
 // ═══════════════════════════════════════════════════════════════════════
 //  RoundDoneBanner
 // ═══════════════════════════════════════════════════════════════════════
+
+@Composable
+private fun FinishBanner(
+    totalErrors: Int,
+    totalPairs: Int,
+    accentColor: Color,
+    onContinue: () -> Unit,
+) {
+    val perfect = totalErrors == 0
+    val accuracyPercent = if (totalPairs > 0) {
+        ((totalPairs.toFloat() / (totalPairs + totalErrors)) * 100).toInt().coerceIn(0, 100)
+    } else 100
+
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = Green.copy(alpha = 0.10f),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                if (perfect) "🏆" else "✅",
+                fontSize = 56.sp,
+            )
+            Spacer(Modifier.height(10.dp))
+            Text(
+                if (perfect) "Идеально! Все пары с первой попытки" else "Все пары найдены",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "$totalPairs пар · точность $accuracyPercent%",
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(18.dp))
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = accentColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onContinue),
+            ) {
+                Text(
+                    "Дальше →",
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 16.sp,
+                )
+            }
+        }
+    }
+}
 
 @Composable
 private fun RoundDoneBanner(

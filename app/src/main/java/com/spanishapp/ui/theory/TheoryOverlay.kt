@@ -332,14 +332,28 @@ private fun ExamplesSection(
                 shape = RoundedCornerShape(10.dp),
                 color = MaterialTheme.colorScheme.surface,
                 border = androidx.compose.foundation.BorderStroke(1.dp, accentColor.copy(alpha = 0.3f)),
-                modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 3.dp)
+                    .clickable { onTtsSpeak(ex.spanish) },  // ← вся карточка кликабельна
             ) {
                 Row(
                     modifier = Modifier.padding(10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    // 🔊 иконка слева — визуальный сигнал что можно тапнуть
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(CircleShape)
+                            .background(accentColor),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text("🔊", fontSize = 18.sp)
+                    }
+                    Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
-                        Text(ex.spanish, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                        Text(ex.spanish, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.height(2.dp))
                         Text(
                             ex.russian,
@@ -347,23 +361,14 @@ private fun ExamplesSection(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         if (ex.note.isNotBlank()) {
+                            Spacer(Modifier.height(2.dp))
                             Text(
                                 ex.note,
-                                fontSize = 10.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                fontSize = 11.sp,
+                                color = accentColor.copy(alpha = 0.85f),
                                 fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                             )
                         }
-                    }
-                    Box(
-                        modifier = Modifier
-                            .size(34.dp)
-                            .clip(CircleShape)
-                            .background(accentColor)
-                            .clickable { onTtsSpeak(ex.spanish) },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text("▶", fontSize = 12.sp, color = Color.White)
                     }
                 }
             }

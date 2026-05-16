@@ -23,177 +23,160 @@ object TheoryContentData {
     private val ALL: Map<String, TheoryContent> = mapOf(
 
         // ─────────────────────────────────────────────────────────────────
-        // u1_l0 — Гласные: A, E, I, O, U
+        // u1_l0 — Алфавит 1/3: A B C D E F G H I
+        // v1.3.5: переписано под алфавит. Каждая буква = TheoryExample
+        //         с TTS-озвучкой слова-примера.
         // ─────────────────────────────────────────────────────────────────
         "u1_l0" to TheoryContent(
             lessonId = "u1_l0",
-            title = "5 гласных — фундамент испанского",
-            subtitle = "Каждая буква = один звук. Без исключений.",
+            title = "Алфавит 1/3: A B C D E F G H I",
+            subtitle = "9 букв алфавита со звуком и словом-примером. Тапни ▶ — услышишь.",
             emoji = "🔤",
             cefr = "A1",
             readMinutes = 3,
             sections = listOf(
                 TheorySection(
                     type = TheorySectionType.RULE,
-                    heading = "Главное правило",
-                    body = "В испанском **5 гласных букв**, и каждая всегда читается одинаково. Это огромный плюс — нет «закрытых» и «открытых» слогов как в английском.",
-                ),
-                TheorySection(
-                    type = TheorySectionType.TABLE,
-                    heading = "Таблица гласных",
-                    table = TheoryTable(
-                        headers = listOf("Буква", "Звук", "Пример"),
-                        rows = listOf(
-                            listOf("A a", "[а]", "casa — дом"),
-                            listOf("E e", "[э]", "mes — месяц"),
-                            listOf("I i", "[и]", "isla — остров"),
-                            listOf("O o", "[о]", "ojo — глаз"),
-                            listOf("U u", "[у]", "luna — луна"),
-                        ),
-                        highlightedColumns = listOf(1),
-                    ),
+                    heading = "Главное про испанские буквы",
+                    body = "Каждая буква = один звук, без исключений. Гласные A E I O U всегда чистые. Главный сюрприз — H никогда не читается.",
                 ),
                 TheorySection(
                     type = TheorySectionType.EXAMPLES,
-                    heading = "Послушай и повтори",
+                    heading = "Буквы A–I — звук и пример",
                     examples = listOf(
-                        TheoryExample("amigo", "друг", "а-ми-го"),
-                        TheoryExample("español", "испанский", "эс-па-ньол"),
-                        TheoryExample("música", "музыка", "му-си-ка"),
-                        TheoryExample("océano", "океан", "о-сэ-а-но"),
+                        TheoryExample("agua", "вода (на A)", "А — «а»: всегда чистое"),
+                        TheoryExample("bueno", "хороший (на B)", "B — «бэ»: [б] / [в] между гласных"),
+                        TheoryExample("casa", "дом (на C)", "C — «сэ»: [к] или [с] перед e/i"),
+                        TheoryExample("día", "день (на D)", "D — «дэ»: [д] / мягкое [ð] между гласных"),
+                        TheoryExample("elefante", "слон (на E)", "E — «э»: всегда чистое"),
+                        TheoryExample("foto", "фото (на F)", "F — «эфэ»: [ф]"),
+                        TheoryExample("gato", "кот (на G)", "G — «хэ»: [г] или [х] перед e/i"),
+                        TheoryExample("hola", "привет (на H)", "H — «аче»: ВСЕГДА молчит!"),
+                        TheoryExample("isla", "остров (на I)", "I — «и»: всегда чистое"),
                     ),
                 ),
                 TheorySection(
-                    type = TheorySectionType.MNEMONIC,
-                    heading = "Запомни одной фразой",
-                    body = "**A-Э-И-О-У** — пять звуков, чёткие как удары метронома. Никаких «у» вместо «о» (как в английском lOve = «лав»).",
+                    type = TheorySectionType.WARNING,
+                    heading = "Запомни про H",
+                    body = "Буква H **никогда не читается**. hola звучит как «о-ла», hotel как «о-тэль», hospital как «оспиталь». Просто игнорируй её при произношении.",
                 ),
                 TheorySection(
-                    type = TheorySectionType.WARNING,
-                    heading = "Главная ошибка новичков",
-                    body = "Не «глотай» гласные. Русское «малако» по-испански прозвучало бы странно: каждая «о» в испанском **полноценно открытая**. Скажи casa как **«ка-са»**, не «к'са».",
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Лайфхак про C и G",
+                    body = "C и G — «хамелеоны»:\n• C + a/o/u = [к]: casa, cosa, cuna\n• C + e/i = [с]: cinco, cero\n• G + a/o/u = [г]: gato, gusto\n• G + e/i = [х]: gente, gigante",
                 ),
             ),
             keyTakeaways = listOf(
-                "5 гласных, каждая всегда звучит одинаково",
-                "A=[а], E=[э], I=[и], O=[о], U=[у]",
-                "Гласные не редуцируются — произноси чётко",
-                "Слоги в основном открытые: ка-са, не «кса»",
+                "9 букв: A B C D E F G H I",
+                "H никогда не читается",
+                "Гласные A E I — всегда чистые",
+                "C и G меняются перед e/i",
             ),
             relatedTheory = listOf("u1_l1", "u1_l2"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
-        // u1_l1 — Согласные: B/V, D, G
+        // u1_l1 — Алфавит 2/3: J K L M N Ñ O P Q
+        // v1.3.5: переписано под алфавит. Главная героиня — Ñ.
         // ─────────────────────────────────────────────────────────────────
         "u1_l1" to TheoryContent(
             lessonId = "u1_l1",
-            title = "B, V, D, G — три коварных согласных",
-            subtitle = "B и V звучат одинаково. G меняется перед E/I.",
-            emoji = "🗣",
+            title = "Алфавит 2/3: J K L M N Ñ O P Q",
+            subtitle = "9 букв средней трети. Главное — J=[х] и Ñ=[нь].",
+            emoji = "🔤",
             cefr = "A1",
-            readMinutes = 4,
+            readMinutes = 3,
             sections = listOf(
                 TheorySection(
                     type = TheorySectionType.RULE,
-                    heading = "B = V",
-                    body = "В испанском **B и V — это один и тот же звук** [б/в]. Никакой разницы. `vino` (вино) и `bino` звучали бы одинаково. Различай только на письме.",
+                    heading = "Главное про эту треть",
+                    body = "Тут два больших сюрприза:\n• J — всегда читается как русское [х]\n• Ñ — отдельная буква со звуком [нь], НЕ просто «n с тильдой»",
                 ),
                 TheorySection(
-                    type = TheorySectionType.RULE,
-                    heading = "G меняется перед E и I",
-                    body = "Буква **G** ведёт себя как хамелеон:\n• перед **a / o / u** → твёрдое [г]: gato, gota, gusto\n• перед **e / i** → горловое [х]: gente, gigante",
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "Буквы J–Q — звук и пример",
+                    examples = listOf(
+                        TheoryExample("Japón", "Япония (на J)", "J — «хота»: всегда [х]"),
+                        TheoryExample("kilo", "кило (на K)", "K — «ка»: редкая, только в заимствованиях"),
+                        TheoryExample("luna", "луна (на L)", "L — «эле»: [л]"),
+                        TheoryExample("madre", "мать (на M)", "M — «эме»: [м]"),
+                        TheoryExample("noche", "ночь (на N)", "N — «эне»: [н]"),
+                        TheoryExample("año", "год (на Ñ)", "Ñ — «энье»: отдельная буква, [нь]"),
+                        TheoryExample("oro", "золото (на O)", "O — «о»: всегда чистое"),
+                        TheoryExample("padre", "отец (на P)", "P — «пэ»: [п]"),
+                        TheoryExample("queso", "сыр (на Q)", "Q — «ку»: всегда QUE/QUI = [кэ/ки]"),
+                    ),
                 ),
                 TheorySection(
-                    type = TheorySectionType.TABLE,
-                    heading = "Шпаргалка по G",
-                    table = TheoryTable(
-                        headers = listOf("Сочетание", "Звук", "Пример"),
-                        rows = listOf(
-                            listOf("ga", "[га]", "gato — кот"),
-                            listOf("go", "[го]", "gota — капля"),
-                            listOf("gu", "[гу]", "gusto — вкус"),
-                            listOf("ge", "[хэ]", "gente — люди"),
-                            listOf("gi", "[хи]", "gigante — гигант"),
-                            listOf("gue", "[гэ]", "guerra — война"),
-                            listOf("gui", "[ги]", "guitarra — гитара"),
+                    type = TheorySectionType.COMPARISON,
+                    heading = "ano vs año — пример важности Ñ",
+                    body = "Маленькая тильда (~) над n меняет звук И смысл слова. Всегда пиши Ñ когда нужно.",
+                    comparison = TheoryComparison(
+                        leftHeader = "ano",
+                        rightHeader = "año",
+                        pairs = listOf(
+                            "обычная n — [ано]" to "Ñ — [а-ньо]",
+                            "значит «анус»" to "значит «год»",
+                            "tengo 20 anos ❌" to "tengo 20 años ✓",
                         ),
-                        highlightedColumns = listOf(1),
                     ),
                 ),
                 TheorySection(
                     type = TheorySectionType.TIP,
-                    heading = "💡 Лайфхак с U",
-                    body = "Если нужно сказать **[ги]** или **[гэ]**, испанцы вставляют **немую U**: gue, gui. Эта U не читается — она просто «защищает» G от превращения в [х].",
-                ),
-                TheorySection(
-                    type = TheorySectionType.EXAMPLES,
-                    heading = "Потренируйся",
-                    examples = listOf(
-                        TheoryExample("vivir", "жить", "[бибир]"),
-                        TheoryExample("general", "генерал", "[хэнэраль]"),
-                        TheoryExample("guitarra", "гитара", "[гитарра]"),
-                        TheoryExample("dado", "кубик", "[ðаðо] — мягкое D"),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.WARNING,
-                    body = "Не пытайся «правильно» произнести V как [в]. Испанец сразу поймёт, что ты учил язык по учебнику, а не от носителя. **B и V — один звук, точка.**",
+                    heading = "💡 Про букву Q",
+                    body = "Q всегда идёт в паре с U: **QUE/QUI**. И это всегда [кэ/ки], никогда «кве/кви»:\n• queso = «кэ-со» (сыр)\n• quien = «кьен» (кто)\n• química = «кими-ка» (химия)",
                 ),
             ),
             keyTakeaways = listOf(
-                "B и V — один звук [б/в]",
-                "G + a/o/u = [г]; G + e/i = [х]",
-                "GUE/GUI — U немая, чтобы сохранить [г]",
-                "D между гласными — мягкое [ð] почти как английское «th»",
+                "9 букв: J K L M N Ñ O P Q",
+                "J = всегда [х]",
+                "Ñ — отдельная буква [нь]",
+                "Q всегда в QUE/QUI = [кэ/ки]",
             ),
             relatedTheory = listOf("u1_l0", "u1_l2"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
-        // u1_l2 — H, J, Ñ, RR
+        // u1_l2 — Алфавит 3/3: R S T U V W X Y Z
+        // v1.3.5: переписано под алфавит. Главное — R/RR и V (=B).
         // ─────────────────────────────────────────────────────────────────
         "u1_l2" to TheoryContent(
             lessonId = "u1_l2",
-            title = "H, J, Ñ, RR — четыре звуковых сюрприза",
-            subtitle = "H молчит · J=[х] · Ñ=[нь] · RR=[р-р-р]",
-            emoji = "🤫",
+            title = "Алфавит 3/3: R S T U V W X Y Z",
+            subtitle = "Финальные 9 букв. Главное — V звучит как B, а R в начале = RR.",
+            emoji = "🔤",
             cefr = "A1",
-            readMinutes = 4,
+            readMinutes = 3,
             sections = listOf(
                 TheorySection(
                     type = TheorySectionType.RULE,
-                    heading = "H никогда не читается",
-                    body = "**H полностью немая.** `hola` = «о-ла», `hotel` = «о-тэль», `hablar` = «а-бляр». Просто игнорируй её.",
+                    heading = "Два главных правила этой трети",
+                    body = "• V читается точно так же как B — оба [б/в]\n• R в начале слова или после N/L/S → длинно [рр], как RR",
                 ),
                 TheorySection(
-                    type = TheorySectionType.RULE,
-                    heading = "J — горловой [х]",
-                    body = "Буква **J** всегда читается как горловое русское [х] (как в «хочу»). `jamón` = «ха-мон», `Juan` = «ху-ан».",
-                ),
-                TheorySection(
-                    type = TheorySectionType.TABLE,
-                    heading = "Все четыре сюрприза",
-                    table = TheoryTable(
-                        headers = listOf("Буква", "Звук", "Пример"),
-                        rows = listOf(
-                            listOf("H h", "молчит", "hola — «ола»"),
-                            listOf("J j", "[х]", "jefe — «хэ-фэ» (босс)"),
-                            listOf("Ñ ñ", "[нь]", "año — «а-ньо» (год)"),
-                            listOf("RR", "[р-р]", "perro — «пэр-ро» (собака)"),
-                        ),
-                        highlightedColumns = listOf(1),
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "Буквы R–Z — звук и пример",
+                    examples = listOf(
+                        TheoryExample("rojo", "красный (на R)", "R — «эре»: в начале = [рр]"),
+                        TheoryExample("sol", "солнце (на S)", "S — «эсе»: [с]"),
+                        TheoryExample("tomate", "помидор (на T)", "T — «тэ»: [т]"),
+                        TheoryExample("uno", "один (на U)", "U — «у»: всегда чистое"),
+                        TheoryExample("vino", "вино (на V)", "V — «увэ»: ЗВУЧИТ КАК B!"),
+                        TheoryExample("wifi", "вай-фай (на W)", "W — «увэ добле»: редкая"),
+                        TheoryExample("taxi", "такси (на X)", "X — «экис»: [кс]"),
+                        TheoryExample("yo", "я (на Y)", "Y — «и гриега»: [й] или [и]"),
+                        TheoryExample("zapato", "ботинок (на Z)", "Z — «сэта»: [с], НЕ [з]!"),
                     ),
                 ),
                 TheorySection(
                     type = TheorySectionType.COMPARISON,
-                    heading = "PERO vs PERRO",
-                    body = "Одна R и две R меняют смысл слова. Это **смыслоразличительная пара** — путать нельзя.",
+                    heading = "pero vs perro — короткая vs длинная R",
+                    body = "Одна R и две R меняют смысл слова. Путать нельзя — это разные слова.",
                     comparison = TheoryComparison(
                         leftHeader = "pero",
                         rightHeader = "perro",
                         pairs = listOf(
-                            "одна R — короткое [р]" to "две R — длинное [р-р-р]",
+                            "одна R — короткое [р]" to "две R — длинное [рр]",
                             "значит «но»" to "значит «собака»",
                             "Quiero, pero no puedo" to "El perro ladra",
                         ),
@@ -201,28 +184,23 @@ object TheoryContentData {
                 ),
                 TheorySection(
                     type = TheorySectionType.TIP,
-                    heading = "💡 Как тренировать RR",
-                    body = "Зажми кончик языка к нёбу за зубами и выдохни — язык сам начнёт вибрировать. Не получается за раз? Начни с «трр-трр-трр» и постепенно убирай Т.",
+                    heading = "💡 Тренируй RR",
+                    body = "Прижми кончик языка к нёбу за зубами и выдохни — язык сам начнёт вибрировать. Не получается сразу? Начни с «трр-трр-трр» и постепенно убирай Т.",
                 ),
                 TheorySection(
-                    type = TheorySectionType.EXAMPLES,
-                    heading = "Послушай разницу",
-                    examples = listOf(
-                        TheoryExample("hola", "привет", "H молчит"),
-                        TheoryExample("Japón", "Япония", "[ха-пон]"),
-                        TheoryExample("España", "Испания", "[эс-па-нья]"),
-                        TheoryExample("perro", "собака", "[пэр-ро]"),
-                    ),
+                    type = TheorySectionType.WARNING,
+                    heading = "Z — это НЕ [з]",
+                    body = "Русские часто читают Z как [з] (как в «зебра»). По-испански Z = [с]: zapato звучит «са-па-то», zorro — «со-рро». Никаких [з]!",
                 ),
             ),
             keyTakeaways = listOf(
-                "H — всегда молчит",
-                "J — всегда [х]",
-                "Ñ — это «нь», отдельная буква",
-                "RR — длинное вибрирующее [р-р]",
+                "9 букв: R S T U V W X Y Z",
+                "V = B (один звук!)",
+                "R в начале слова = длинное RR",
+                "Z = [с], НЕ [з]",
                 "pero (но) ≠ perro (собака)",
             ),
-            relatedTheory = listOf("u1_l3"),
+            relatedTheory = listOf("u1_l0", "u1_l1"),
         ),
 
         // ─────────────────────────────────────────────────────────────────
