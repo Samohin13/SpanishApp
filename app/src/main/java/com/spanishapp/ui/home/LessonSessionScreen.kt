@@ -2398,73 +2398,125 @@ private fun DialogueFillInput(
     selectedOption: String?,
     onAnswer: (String) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    // Анимированное появление реплик одна за одной (typing-эффект).
+    // Для блока 1.1-1.4 реплики появляются с задержкой 200-400ms.
+    val visibleCount = remember(dialogueLines) { mutableStateOf(0) }
+    val showTyping = remember { mutableStateOf(false) }
+
+    LaunchedEffect(dialogueLines) {
+        visibleCount.value = 0
+        showTyping.value = false
+        for (i in dialogueLines.indices) {
+            // показываем typing-индикатор перед NPC репликой (чётные позиции)
+            if (i % 2 == 0 && i > 0) {
+                showTyping.value = true
+                delay(500)
+                showTyping.value = false
+            }
+            visibleCount.value = i + 1
+            delay(if (i % 2 == 0) 350 else 250)
+        }
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         dialogueLines.forEachIndexed { idx, (speaker, text) ->
-            val isLeft = idx % 2 == 0
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = if (isLeft) Arrangement.Start else Arrangement.End,
-            ) {
-                Surface(
-                    shape = RoundedCornerShape(
-                        topStart = 16.dp, topEnd = 16.dp,
-                        bottomEnd = if (isLeft) 16.dp else 4.dp,
-                        bottomStart = if (isLeft) 4.dp else 16.dp,
+            val isMine = idx % 2 == 1  // нечётные — мои реплики (справа)
+            androidx.compose.animation.AnimatedVisibility(
+                visible = idx < visibleCount.value,
+                enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(220)) +
+                    androidx.compose.animation.slideInVertically(
+                        animationSpec = androidx.compose.animation.core.tween(280),
+                        initialOffsetY = { it / 3 }
                     ),
-                    color = if (isLeft)
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                    else accentColor.copy(alpha = 0.10f),
-                    modifier = Modifier.fillMaxWidth(0.85f),
-                ) {
-                    Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                        Text(
-                            speaker,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Spacer(Modifier.height(2.dp))
-                        // Подставляем выбор если уже ответили
-                        val displayText = if (text.contains("___") && answered)
-                            text.replace("___", "**${selectedOption ?: "___"}**")
-                        else text
-                        Text(displayText, fontSize = 15.sp)
-                    }
-                }
+            ) {
+                // Парсим speaker — убираем emoji + имя
+                val emoji = speaker.split(" ").firstOrNull()?.takeIf {
+                    it.codePoints().anyMatch { c -> c > 127 }
+                } ?: if (isMine) "🙋" else "👤"
+                val name = speaker.replace(emoji, "").trim()
+                val highlight = if (text.contains("___") && answered) (selectedOption ?: "") else ""
+                com.spanishapp.ui.components.ChatBubble(
+                    speaker = name,
+                    text = text,
+                    isMine = isMine,
+                    avatar = emoji,
+                    accentColor = accentColor,
+                    highlightWord = highlight,
+                )
             }
         }
 
-        // Чипы выбора
-        Spacer(Modifier.height(8.dp))
-        Text(
-            "Вставь подходящее:",
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        FlowRowSimple(
-            items = options,
-        ) { option ->
-            val isPicked = selectedOption == option
-            val isCorrect = option == correctAnswer
-            val bg = when {
-                !answered && isPicked -> accentColor.copy(alpha = 0.20f)
-                answered && isCorrect -> Green.copy(alpha = 0.20f)
-                answered && isPicked && !isCorrect -> Red.copy(alpha = 0.20f)
-                else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            }
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = bg,
-                modifier = Modifier
-                    .padding(end = 6.dp, bottom = 6.dp)
-                    .clickable(enabled = !answered) { onAnswer(option) },
-            ) {
+        // Typing-индикатор показывается между репликами NPC
+        androidx.compose.animation.AnimatedVisibility(
+            visible = showTyping.value,
+            enter = androidx.compose.animation.fadeIn(),
+            exit = androidx.compose.animation.fadeOut(),
+        ) {
+            com.spanishapp.ui.components.TypingIndicator(accentColor = accentColor)
+        }
+
+        // Чипы выбора — появляются после всех реплик
+        androidx.compose.animation.AnimatedVisibility(
+            visible = visibleCount.value >= dialogueLines.size,
+            enter = androidx.compose.animation.fadeIn() +
+                androidx.compose.animation.slideInVertically(initialOffsetY = { it / 2 }),
+        ) {
+            Column {
+                Spacer(Modifier.height(12.dp))
                 Text(
-                    option,
-                    fontSize = 14.sp,
+                    "👇 Вставь подходящее в диалог:",
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                    color = accentColor,
                 )
+                Spacer(Modifier.height(8.dp))
+                FlowRowSimple(items = options) { option ->
+                    val isPicked = selectedOption == option
+                    val isCorrect = option == correctAnswer
+                    val bg = when {
+                        !answered && isPicked -> accentColor.copy(alpha = 0.25f)
+                        answered && isCorrect -> Green.copy(alpha = 0.25f)
+                        answered && isPicked && !isCorrect -> Red.copy(alpha = 0.25f)
+                        else -> MaterialTheme.colorScheme.surfaceVariant
+                    }
+                    val border = when {
+                        answered && isCorrect -> Green
+                        answered && isPicked && !isCorrect -> Red
+                        isPicked -> accentColor
+                        else -> Color.Transparent
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(22.dp),
+                        color = bg,
+                        shadowElevation = if (isPicked) 6.dp else 2.dp,
+                        modifier = Modifier
+                            .padding(end = 8.dp, bottom = 8.dp)
+                            .border(
+                                width = if (isPicked || (answered && isCorrect)) 2.dp else 0.dp,
+                                color = border,
+                                shape = RoundedCornerShape(22.dp),
+                            )
+                            .clickable(enabled = !answered) { onAnswer(option) },
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                option,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            if (answered && isCorrect) {
+                                Spacer(Modifier.width(6.dp))
+                                Text("✓", color = Green, fontWeight = FontWeight.Bold)
+                            } else if (answered && isPicked && !isCorrect) {
+                                Spacer(Modifier.width(6.dp))
+                                Text("✗", color = Red, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

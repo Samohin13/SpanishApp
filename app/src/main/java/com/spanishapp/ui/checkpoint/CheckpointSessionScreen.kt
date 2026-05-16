@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -86,94 +87,177 @@ fun CheckpointSessionScreen(
                     }
                 },
                 actions = {
-                    Text("✅ ${state.correctCount}  ❌ ${state.wrongCount}",
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(end = 12.dp))
+                    // Combo-счётчик + общий прогресс актов
+                    com.spanishapp.ui.components.ComboBadge(serial = state.correctCount, accentColor = terra)
+                    if (state.wrongCount > 0) {
+                        Text("❌ ${state.wrongCount}",
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(end = 12.dp))
+                    }
                 },
             )
         }
     ) { padding ->
-        Column(
+        // Сеттинг-градиент: меняется по эмодзи сцены/сценария
+        val sceneEmoji = remember(curScene.title, content.emoji) {
+            "${curScene.title} ${content.emoji}"
+        }
+        val bgBrush = com.spanishapp.ui.components.sceneGradientFor(sceneEmoji)
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .background(bgBrush)
         ) {
-            // Прогресс-бар
-            LinearProgressIndicator(
-                progress = { actNumber / totalActs.toFloat() },
-                modifier = Modifier.fillMaxWidth(),
-                color = terra,
-            )
-            Spacer(Modifier.height(12.dp))
-
-            // Сеттинг сцены (показываем только на первом акте сцены)
-            if (state.actIndex == 0) {
-                Surface(
-                    shape = RoundedCornerShape(14.dp),
-                    color = terra.copy(alpha = 0.10f),
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
+            ) {
+                // Прогресс-бар с градиентом и эмодзи
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
+                    LinearProgressIndicator(
+                        progress = { actNumber / totalActs.toFloat() },
+                        modifier = Modifier.weight(1f).height(8.dp).clip(RoundedCornerShape(4.dp)),
+                        color = terra,
+                        trackColor = terra.copy(alpha = 0.15f),
+                    )
+                    Spacer(Modifier.width(8.dp))
                     Text(
-                        curScene.setting,
-                        fontSize = 13.sp,
-                        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                        modifier = Modifier.padding(12.dp),
+                        "$actNumber/$totalActs",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = terra,
                     )
                 }
-                Spacer(Modifier.height(12.dp))
-            }
+                Spacer(Modifier.height(16.dp))
 
-            // Narration
-            if (curAct.narration.isNotBlank()) {
-                Text(curAct.narration, fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.height(10.dp))
-            }
-
-            // NPC реплика
-            if (curAct.npcLine.isNotBlank()) {
-                NpcBubble(curAct, tts, terra)
-                Spacer(Modifier.height(14.dp))
-            }
-
-            // Input по типу
-            ActInput(
-                act = curAct,
-                answered = state.answered,
-                lastCorrect = state.lastAnswerCorrect,
-                accentColor = terra,
-                onAnswer = vm::submitAnswer,
-                tts = tts,
-            )
-
-            // Объяснение + кнопка «Дальше»
-            AnimatedVisibility(visible = state.answered) {
-                Column {
-                    Spacer(Modifier.height(12.dp))
-                    if (curAct.explanation.isNotBlank()) {
-                        Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = if (state.lastAnswerCorrect == true)
-                                Color(0xFF4CAF50).copy(alpha = 0.12f)
-                            else Color(0xFFFF5252).copy(alpha = 0.12f),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
+                // Сеттинг сцены (показываем только на первом акте сцены)
+                if (state.actIndex == 0) {
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = Color.White.copy(alpha = 0.7f),
+                        shadowElevation = 4.dp,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Column(Modifier.padding(14.dp)) {
                             Text(
-                                "${if (state.lastAnswerCorrect == true) "✅" else "❌"} ${curAct.explanation}",
+                                curScene.title,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = terra,
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                curScene.setting,
                                 fontSize = 13.sp,
-                                modifier = Modifier.padding(12.dp),
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                             )
                         }
-                        Spacer(Modifier.height(12.dp))
                     }
-                    Button(
-                        onClick = { vm.nextAct() },
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = terra),
+                    Spacer(Modifier.height(14.dp))
+                }
+
+                // Narration в стилизованной карточке
+                if (curAct.narration.isNotBlank()) {
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = Color.White.copy(alpha = 0.5f),
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Дальше →", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            "💭 ${curAct.narration}",
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                            modifier = Modifier.padding(12.dp),
+                        )
+                    }
+                    Spacer(Modifier.height(12.dp))
+                }
+
+                // NPC реплика — мессенджер-стиль chat-bubble
+                if (curAct.npcLine.isNotBlank()) {
+                    val emoji = curAct.npcSpeaker.split(" ").firstOrNull()?.takeIf {
+                        it.codePoints().anyMatch { c -> c > 127 }
+                    } ?: "👤"
+                    val name = curAct.npcSpeaker.replace(emoji, "").trim()
+                    com.spanishapp.ui.components.ChatBubble(
+                        speaker = name,
+                        text = curAct.npcLine,
+                        translation = curAct.npcTranslation,
+                        isMine = false,
+                        avatar = emoji,
+                        accentColor = terra,
+                        showTapHint = true,
+                        onTap = { tts?.speakSpanish(curAct.npcLine, "npc") },
+                    )
+                    Spacer(Modifier.height(14.dp))
+                }
+
+                // Input по типу
+                ActInput(
+                    act = curAct,
+                    answered = state.answered,
+                    lastCorrect = state.lastAnswerCorrect,
+                    accentColor = terra,
+                    onAnswer = vm::submitAnswer,
+                    tts = tts,
+                )
+
+                // Реакция NPC + объяснение + кнопка
+                AnimatedVisibility(
+                    visible = state.answered,
+                    enter = androidx.compose.animation.fadeIn() +
+                        androidx.compose.animation.slideInVertically(initialOffsetY = { it / 3 }),
+                ) {
+                    Column {
+                        Spacer(Modifier.height(14.dp))
+                        // Эмоциональная реакция NPC
+                        com.spanishapp.ui.components.NpcReaction(
+                            isCorrect = state.lastAnswerCorrect == true,
+                            customText = if (state.lastAnswerCorrect == true)
+                                listOf("¡Perfecto!", "¡Muy bien!", "¡Excelente!", "¡Eso es!").random()
+                            else
+                                listOf("Casi... Mira la respuesta correcta",
+                                    "No exactamente", "Ahora ves la fórmula").random()
+                        )
+                        if (curAct.explanation.isNotBlank()) {
+                            Spacer(Modifier.height(8.dp))
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = Color.White.copy(alpha = 0.85f),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
+                                    Text("💡", fontSize = 16.sp)
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(
+                                        curAct.explanation,
+                                        fontSize = 13.sp,
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(Modifier.height(14.dp))
+                        Button(
+                            onClick = { vm.nextAct() },
+                            modifier = Modifier.fillMaxWidth().height(54.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = terra),
+                        ) {
+                            Text(
+                                if (actNumber == totalActs) "Завершить 🏆" else "Дальше →",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                 }
             }
@@ -182,6 +266,7 @@ fun CheckpointSessionScreen(
 }
 
 @Composable
+@Suppress("unused")  // оставлен для возможного reuse — основной flow использует ChatBubble
 private fun NpcBubble(act: CheckpointAct, tts: android.speech.tts.TextToSpeech?, accent: Color) {
     Surface(
         shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp, bottomEnd = 18.dp, bottomStart = 4.dp),
