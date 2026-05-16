@@ -65,6 +65,7 @@ fun RadioScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding()         // отступ под status bar (часы, батарея)
                 .verticalScroll(rememberScrollState()),
         ) {
             // ─── Top bar ───
@@ -181,7 +182,9 @@ fun RadioScreen(navController: NavHostController) {
                 )
             }
 
-            Spacer(Modifier.height(80.dp)) // отступ под BottomBar + mini-player
+            // Отступ под BottomBar (62dp) + mini-player (~56dp когда виден) + nav bar
+            // 140dp хватает чтобы wheel не залезал под навигацию
+            Spacer(Modifier.height(140.dp))
         }
     }
 }

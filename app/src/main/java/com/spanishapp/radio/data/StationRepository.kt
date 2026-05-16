@@ -67,19 +67,19 @@ object StationRepository {
             id = "es_cope_deportes", shortCode = "C+D", name = "Radio Marca Sport",
             program = "Спорт-программы", frequency = 99.5f,
             country = Country.SPAIN, genre = Genre.SPORTS, level = CefrLevel.B2,
-            streamUrl = "http://flucast29-h-cloud.flumotion.com/cope/copedeportes.mp3"
+            streamUrl = "http://flucast28-h-cloud.flumotion.com/cope/net1.mp3"
         ),
         Station(
             id = "es_rne_cultura", shortCode = "RN5", name = "Radio 5 Noticias",
             program = "Сводки 24/7", frequency = 90.3f,
             country = Country.SPAIN, genre = Genre.NEWS, level = CefrLevel.B2,
-            streamUrl = "https://f141.rndfnk.com/star/crtve/rne5/gra/mp3/128/stream.mp3"
+            streamUrl = "https://f141.rndfnk.com/star/crtve/rne5/gra/mp3/128/stream.mp3?cid=01GEPXW032X3Y2SXM6M4X4F1X4&sid=2ar1MBXpFkcnL6WuaxAXO1hEITa&token=L_nTm1RjUems0IjZMMQ_ZzFu3XQ_1_faFzfSM3OR5t8&tvf=06JeYFmsqRdmMTQxLnJuZGZuay5jb20"
         ),
         Station(
             id = "es_rne_clasica", shortCode = "RNC", name = "Radio Clásica",
             program = "Классика", frequency = 96.5f,
             country = Country.SPAIN, genre = Genre.CULTURE, level = CefrLevel.B1,
-            streamUrl = "https://f121.rndfnk.com/star/crtve/rnerc/main/mp3/128/stream.mp3"
+            streamUrl = "https://f121.rndfnk.com/star/crtve/rnerc/main/mp3/128/stream.mp3?cid=01GEM633TKTAHEB3GYTNAEZB90&sid=3DJW7d1vUQTr2MlFDR5fBHG2joq&token=cCVkCc78Nf0V3xu63dhQYE5HKMw3WnJ9HKWaNSk-MUQ&tvf=pCEh3arNrBhmMTIxLnJuZGZuay5jb20"
         ),
 
         // ─── МУЗЫКА / ПОП (10) ──────────────────────────────────────
@@ -99,7 +99,7 @@ object StationRepository {
             id = "es_cadena100", shortCode = "100", name = "Cadena 100",
             program = "Pop/Rock", frequency = 99.5f,
             country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://cadena100bcn-cope.flumotion.com/playlist.m3u8"
+            streamUrl = "http://cadena100-streamers-mp3.flumotion.com/cope/cadena100.mp3"
         ),
         Station(
             id = "es_kissfm", shortCode = "KIS", name = "Kiss FM",
@@ -149,7 +149,7 @@ object StationRepository {
             id = "es_radio3", shortCode = "R3", name = "Radio 3",
             program = "Alternative / Indie", frequency = 93.1f,
             country = Country.SPAIN, genre = Genre.CULTURE, level = CefrLevel.B2,
-            streamUrl = "https://radio.eduneu.eu:8020/radio.mp3"
+            streamUrl = "https://rtvelivestream.rtve.es/rtvesec/rne/rne_r3_main.m3u8"
         ),
         Station(
             id = "es_ole", shortCode = "OLÉ", name = "Flamenco Radio",
@@ -167,7 +167,7 @@ object StationRepository {
             id = "es_serlatino", shortCode = "SeL", name = "Tropical FM",
             program = "Tropical hits", frequency = 94.0f,
             country = Country.SPAIN, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "https://stream.zeno.fm/4nyf6tp9788uv"
+            streamUrl = "http://streaming5.elitecomunicacion.es:8030/live.mp3"
         ),
     )
 
@@ -180,7 +180,7 @@ object StationRepository {
             id = "mx_los40", shortCode = "40", name = "Los 40 Principales MX",
             program = "Top Hits Morelia", frequency = 101.7f,
             country = Country.MEXICO, genre = Genre.MUSIC, level = CefrLevel.A2,
-            streamUrl = "http://s4.mexside.net:7040/stream"
+            streamUrl = "http://27063.live.streamtheworld.com/LOS40_MEXICO_SC"
         ),
         Station(
             id = "mx_exa", shortCode = "EXA", name = "Exa FM",
@@ -277,7 +277,7 @@ object StationRepository {
             id = "ar_continental", shortCode = "CNT", name = "Continental",
             program = "Tarde para todo", frequency = 104.3f,
             country = Country.ARGENTINA, genre = Genre.TALK, level = CefrLevel.B2,
-            streamUrl = "https://frontend.radiohdvivo.com/continental/live"
+            streamUrl = "https://radios.solumedia.com:10815/stream"
         ),
     )
 
