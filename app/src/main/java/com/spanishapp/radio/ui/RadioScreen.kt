@@ -52,6 +52,9 @@ fun RadioScreen(navController: NavHostController) {
     val hasError by vm.hasError.collectAsState()
     val stations by vm.stations.collectAsState()
     val favoriteIds by vm.favoriteIds.collectAsState()
+    val discoveryState by vm.discoveryState.collectAsState()
+    val discoveryProgress by vm.discoveryProgress.collectAsState()
+    val discoveryFoundCount by vm.discoveryFoundCount.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
@@ -72,6 +75,76 @@ fun RadioScreen(navController: NavHostController) {
                 }
                 Spacer(Modifier.width(4.dp))
                 Text("Радио", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Spacer(Modifier.weight(1f))
+                // Refresh button — повторный auto-discovery
+                IconButton(
+                    onClick = { vm.refreshCatalog() },
+                    enabled = discoveryState != RadioViewModel.DiscoveryState.LOADING,
+                ) {
+                    Text(
+                        "🔄",
+                        fontSize = 20.sp,
+                        color = if (discoveryState == RadioViewModel.DiscoveryState.LOADING)
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        else MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            }
+
+            // Discovery progress banner
+            if (discoveryState == RadioViewModel.DiscoveryState.LOADING) {
+                Surface(
+                    color = Accent.copy(alpha = 0.10f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 18.dp, vertical = 4.dp),
+                    shape = RoundedCornerShape(10.dp),
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("🔍", fontSize = 16.sp)
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                "Подбираем станции для тебя…",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Accent,
+                                modifier = Modifier.weight(1f),
+                            )
+                            Text(
+                                "${(discoveryProgress * 100).toInt()}%",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Accent,
+                            )
+                        }
+                        Spacer(Modifier.height(6.dp))
+                        // Прогресс-бар
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(3.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(Accent.copy(alpha = 0.18f)),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(discoveryProgress.coerceIn(0f, 1f))
+                                    .fillMaxHeight()
+                                    .background(Accent)
+                            )
+                        }
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+            } else if (discoveryState == RadioViewModel.DiscoveryState.READY && discoveryFoundCount > 0) {
+                // Краткое уведомление о завершении (исчезает в течение 3 сек через animation)
+                Text(
+                    "✓ Найдено $discoveryFoundCount рабочих станций",
+                    fontSize = 11.sp,
+                    color = Color(0xFF4CAF50),
+                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 2.dp),
+                )
             }
 
             // Country chips

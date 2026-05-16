@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.spanishapp.radio.data.Country
 import com.spanishapp.radio.data.Station
 import com.spanishapp.radio.data.StationRepository
+import com.spanishapp.radio.data.toStation
 import com.spanishapp.radio.player.RadioPlayerController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -29,7 +30,43 @@ enum class SignalStatus { ON_STATION, WEAK, NO_SIGNAL }
 class RadioViewModel @Inject constructor(
     private val player: RadioPlayerController,
     private val favoritesDao: com.spanishapp.radio.data.RadioFavoriteDao,
+    private val catalogDao: com.spanishapp.radio.data.RadioCatalogDao,
+    private val catalogRepo: com.spanishapp.radio.data.RadioCatalogRepository,
 ) : ViewModel() {
+
+    /** Состояние подбора станций под страну. */
+    enum class DiscoveryState { IDLE, LOADING, READY, ERROR }
+
+    private val _discoveryState = MutableStateFlow(DiscoveryState.IDLE)
+    val discoveryState: StateFlow<DiscoveryState> = _discoveryState.asStateFlow()
+
+    val discoveryProgress: StateFlow<Float> = catalogRepo.progress
+    val discoveryFoundCount: StateFlow<Int> = catalogRepo.foundCount
+
+    /** Запустить ручное обновление каталога (тап по кнопке 🔄). */
+    fun refreshCatalog() {
+        viewModelScope.launch {
+            _discoveryState.value = DiscoveryState.LOADING
+            val count = catalogRepo.discoverAndCache()
+            _discoveryState.value = if (count > 0) DiscoveryState.READY else DiscoveryState.ERROR
+            // Перечитываем станции из каталога
+            reloadStations()
+        }
+    }
+
+    private suspend fun reloadStations() {
+        val cached = catalogDao.getAll()
+        if (cached.isNotEmpty()) {
+            _stations.value = cached
+                .filter { it.country == _country.value.name }
+                .map { it.toStation() }
+            // Если текущая станция не в новом списке — играем первую
+            val current = currentStation.value
+            if (current == null || _stations.value.none { it.id == current.id }) {
+                playFirstStation()
+            }
+        }
+    }
 
     /** Множество id избранных станций — для UI ⭐ кнопки. */
     val favoriteIds: StateFlow<Set<String>> = favoritesDao.observeAllIds()
@@ -85,17 +122,35 @@ class RadioViewModel @Inject constructor(
     private var snapJob: Job? = null
 
     init {
-        // Запускаем первую станцию ТОЛЬКО если ничего не играет.
-        if (player.currentStation.value == null) {
-            playFirstStation()
-        } else {
-            _frequency.value = player.currentStation.value!!.frequency
-            _signal.value = SignalStatus.ON_STATION
+        // 1. Проверяем кэш каталога. Если есть — используем. Если нет / устарел — запускаем discovery.
+        viewModelScope.launch {
+            val hasCache = catalogDao.count() > 0
+            val isFresh = catalogRepo.isCacheFresh()
+
+            if (hasCache) {
+                reloadStations()
+            }
+
+            // Запускаем первую станцию ТОЛЬКО если ничего не играет.
+            if (player.currentStation.value == null) {
+                playFirstStation()
+            } else {
+                _frequency.value = player.currentStation.value!!.frequency
+                _signal.value = SignalStatus.ON_STATION
+            }
+
+            // Авто-discovery если кэша нет вообще ИЛИ старый
+            if (!hasCache || !isFresh) {
+                _discoveryState.value = DiscoveryState.LOADING
+                val count = catalogRepo.discoverAndCache()
+                _discoveryState.value = if (count > 0) DiscoveryState.READY else DiscoveryState.ERROR
+                reloadStations()
+            } else {
+                _discoveryState.value = DiscoveryState.READY
+            }
         }
 
-        // Авто-skip при ошибке потока: ExoPlayer кидает onPlayerError →
-        // player.hasError = true. Подождём 2 секунды (вдруг сам восстановится),
-        // если ошибка осталась — переключаемся на следующую станцию.
+        // Авто-skip при ошибке потока.
         viewModelScope.launch {
             player.hasError.collect { isError ->
                 if (isError) {
@@ -118,8 +173,13 @@ class RadioViewModel @Inject constructor(
     fun selectCountry(country: Country) {
         if (_country.value == country) return
         _country.value = country
-        _stations.value = StationRepository.getStationsForCountry(country)
-        playFirstStation()
+        // Если есть кэшированный каталог — используем его, иначе хардкод
+        viewModelScope.launch {
+            val cached = catalogDao.getAll().filter { it.country == country.name }
+            _stations.value = if (cached.isNotEmpty()) cached.map { it.toStation() }
+                              else StationRepository.getStationsForCountry(country)
+            playFirstStation()
+        }
     }
 
     /**

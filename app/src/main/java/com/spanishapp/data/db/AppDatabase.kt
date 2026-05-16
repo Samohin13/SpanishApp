@@ -31,8 +31,9 @@ import com.spanishapp.data.db.entity.*
         WodHistoryEntity::class,
         TheoryProgressEntity::class,
         com.spanishapp.radio.data.RadioFavoriteEntity::class,
+        com.spanishapp.radio.data.RadioCatalogEntity::class,
     ],
-    version = 22,
+    version = 23,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -56,6 +57,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun wodHistoryDao(): WodHistoryDao
     abstract fun theoryProgressDao(): TheoryProgressDao
     abstract fun radioFavoriteDao(): com.spanishapp.radio.data.RadioFavoriteDao
+    abstract fun radioCatalogDao(): com.spanishapp.radio.data.RadioCatalogDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -330,6 +332,28 @@ abstract class AppDatabase : RoomDatabase() {
         // Phase 1 нового дизайна курса (1.2.0): теория-карточки.
         // Каждый практический урок получает справочную карточку, прогресс
         // прочтения трекается отдельно от прохождения практики.
+        // ── v23: radio_catalog — динамический каталог (auto-discovery 1.7.0) ──
+        val MIGRATION_22_23 = object : Migration(22, 23) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS radio_catalog (
+                        station_id TEXT NOT NULL PRIMARY KEY,
+                        short_code TEXT NOT NULL,
+                        name TEXT NOT NULL,
+                        program TEXT NOT NULL,
+                        frequency REAL NOT NULL,
+                        country TEXT NOT NULL,
+                        genre TEXT NOT NULL,
+                        level TEXT NOT NULL,
+                        stream_url TEXT NOT NULL,
+                        bitrate INTEGER NOT NULL,
+                        user_country TEXT NOT NULL,
+                        fetched_at INTEGER NOT NULL
+                    )
+                """.trimIndent())
+            }
+        }
+
         // ── v22: radio_favorites — избранные радиостанции (1.6.2) ──
         val MIGRATION_21_22 = object : Migration(21, 22) {
             override fun migrate(db: SupportSQLiteDatabase) {
