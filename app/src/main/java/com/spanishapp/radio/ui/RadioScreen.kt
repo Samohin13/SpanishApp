@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MusicNote
@@ -83,6 +84,7 @@ fun RadioScreen(navController: NavHostController) {
     val favoriteIds by vm.favoriteIds.collectAsState()
     val discoveryState by vm.discoveryState.collectAsState()
     val discoveryProgress by vm.discoveryProgress.collectAsState()
+    val discoveryError by vm.discoveryError.collectAsState()
     val selectedGenres by vm.selectedGenres.collectAsState()
     val showOnlyFavorites by vm.showOnlyFavorites.collectAsState()
 
@@ -104,6 +106,21 @@ fun RadioScreen(navController: NavHostController) {
                 enter = fadeIn(), exit = fadeOut(),
             ) {
                 LoadingBanner(progress = discoveryProgress)
+            }
+
+            // Баннер ошибки если discovery вернул 0 — раньше молчал
+            AnimatedVisibility(
+                visible = discoveryError != null && discoveryState != RadioViewModel.DiscoveryState.LOADING,
+                enter = fadeIn(), exit = fadeOut(),
+            ) {
+                ErrorBanner(
+                    message = discoveryError ?: "",
+                    onRetry = {
+                        vm.dismissError()
+                        vm.refreshCatalog()
+                    },
+                    onDismiss = vm::dismissError,
+                )
             }
 
             CountryChips(
@@ -238,6 +255,66 @@ private fun TopBar(
                 tint = if (refreshEnabled) MaterialTheme.colorScheme.onSurface
                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
             )
+        }
+    }
+}
+
+@Composable
+private fun ErrorBanner(
+    message: String,
+    onRetry: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val red = Color(0xFFE53935)
+    Surface(
+        color = red.copy(alpha = 0.10f),
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(1.dp, red.copy(alpha = 0.35f)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Не удалось подобрать станции",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = red,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    message,
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(Modifier.width(8.dp))
+            Surface(
+                shape = RoundedCornerShape(100.dp),
+                color = red.copy(alpha = 0.18f),
+                modifier = Modifier.clickable(onClick = onRetry),
+            ) {
+                Text(
+                    "Повторить",
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = red,
+                )
+            }
+            Spacer(Modifier.width(4.dp))
+            IconButton(onClick = onDismiss, modifier = Modifier.size(28.dp)) {
+                Icon(
+                    Icons.Filled.Close,
+                    contentDescription = "Закрыть",
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }

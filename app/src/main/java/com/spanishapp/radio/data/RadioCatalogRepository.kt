@@ -1,6 +1,7 @@
 package com.spanishapp.radio.data
 
 import android.content.Context
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -20,6 +21,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TAG = "RadioDiscovery"
+
 /**
  * Auto-discovery радиостанций под страну юзера:
  * 1. Определяем страну юзера через ip-API (если нет интернета — через Locale).
@@ -34,11 +37,34 @@ class RadioCatalogRepository @Inject constructor(
     private val dao: RadioCatalogDao,
 ) {
     private val client = OkHttpClient.Builder()
-        .connectTimeout(8, TimeUnit.SECONDS)
-        .readTimeout(8, TimeUnit.SECONDS)
+        .connectTimeout(12, TimeUnit.SECONDS)
+        .readTimeout(12, TimeUnit.SECONDS)
         .build()
 
     private val json = Json { ignoreUnknownKeys = true }
+
+    /** Сообщение об ошибке если discovery вернул 0 станций. UI его показывает. */
+    private val _lastErrorMessage = MutableStateFlow<String?>(null)
+    val lastErrorMessage: StateFlow<String?> = _lastErrorMessage.asStateFlow()
+
+    fun clearError() { _lastErrorMessage.value = null }
+
+    /** Лог + Crashlytics breadcrumb для диагностики цепочки auto-discovery. */
+    private fun trace(msg: String) {
+        Log.d(TAG, msg)
+        runCatching {
+            com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance().log("[$TAG] $msg")
+        }
+    }
+
+    private fun reportError(stage: String, t: Throwable? = null) {
+        val msg = "[$TAG] $stage failed${t?.message?.let { ": $it" } ?: ""}"
+        Log.w(TAG, msg, t)
+        runCatching {
+            val fc = com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+            if (t != null) fc.recordException(RuntimeException(msg, t)) else fc.log(msg)
+        }
+    }
 
     /** Прогресс fetch'а для UI: 0..1. */
     private val _progress = MutableStateFlow(0f)
@@ -120,13 +146,19 @@ class RadioCatalogRepository @Inject constructor(
     suspend fun discoverAndCache(): Int = withContext(Dispatchers.IO) {
         _progress.value = 0f
         _foundCount.value = 0
+        _lastErrorMessage.value = null
 
+        trace("discoverAndCache: START")
         val userCountry = detectUserCountry()
+        trace("user country = $userCountry")
 
-        // Параллельно запрашиваем большие пулы по жанрам/странам вещания
         val rawPool = fetchPool()
+        trace("fetchPool returned ${rawPool.size} candidates")
 
         if (rawPool.isEmpty()) {
+            reportError("fetchPool returned 0 (radio-browser API down или rate-limit)")
+            _lastErrorMessage.value = "Не удалось получить список станций. Проверь интернет."
+            _progress.value = 1f
             return@withContext 0
         }
 
@@ -147,8 +179,18 @@ class RadioCatalogRepository @Inject constructor(
             if (working.size >= 40) return@forEach
         }
 
-        // Балансируем: 24 ES + 8 MX + 8 AR из найденных живых
+        trace("probe: ${working.size}/${rawPool.size} живых из пула")
+
+        if (working.isEmpty()) {
+            reportError("probe: 0 живых из ${rawPool.size} (все URL не отвечают — возможно блокировка провайдера)")
+            _lastErrorMessage.value = "Все станции недоступны из твоей сети. Попробуй мобильный интернет или VPN."
+            _progress.value = 1f
+            return@withContext 0
+        }
+
+        // Балансируем: 24 ES + 8 MX + 8 AR
         val final = balanceByCountry(working)
+        trace("balanced: ${final.size} (ES=${final.count { it.country == Country.SPAIN }} MX=${final.count { it.country == Country.MEXICO }} AR=${final.count { it.country == Country.ARGENTINA }})")
 
         // Сохраняем в Room
         dao.clear()
@@ -184,7 +226,6 @@ class RadioCatalogRepository @Inject constructor(
     }
 
     private fun detectUserCountry(): String {
-        // Пробуем ip-api сначала (надёжнее)
         runCatching {
             val req = Request.Builder().url("https://api.country.is").build()
             client.newCall(req).execute().use { resp ->
@@ -192,9 +233,11 @@ class RadioCatalogRepository @Inject constructor(
                     val body = resp.body?.string() ?: return@runCatching null
                     val parsed = json.decodeFromString<CountryIsResponse>(body)
                     return parsed.country
+                } else {
+                    reportError("country.is HTTP ${resp.code}")
                 }
             }
-        }
+        }.onFailure { reportError("country.is network", it) }
         // Fallback на Locale
         return Locale.getDefault().country.ifEmpty { "??" }
     }
@@ -252,13 +295,18 @@ class RadioCatalogRepository @Inject constructor(
                 "?countrycode=$countryCode&tag=$tag&hidebroken=true" +
                 "&order=clickcount&reverse=true&limit=15"
         val req = Request.Builder().url(url)
-            .header("User-Agent", "ESPEAK/1.7.0").build()
+            .header("User-Agent", "ESPEAK/1.9.1").build()
         client.newCall(req).execute().use { resp ->
-            if (!resp.isSuccessful) return@runCatching null
+            if (!resp.isSuccessful) {
+                reportError("queryApi $countryCode/$tag HTTP ${resp.code}")
+                return@runCatching null
+            }
             val body = resp.body?.string() ?: return@runCatching null
-            json.decodeFromString<List<ApiStation>>(body)
+            val list = json.decodeFromString<List<ApiStation>>(body)
+            trace("queryApi $countryCode/$tag → ${list.size} результатов")
+            list
         }
-    }.getOrNull()
+    }.onFailure { reportError("queryApi $countryCode/$tag exception", it) }.getOrNull()
 
     private fun probe(url: String): Boolean = runCatching {
         val req = Request.Builder().url(url)

@@ -42,6 +42,11 @@ class RadioViewModel @Inject constructor(
     val discoveryProgress: StateFlow<Float> = catalogRepo.progress
     val discoveryFoundCount: StateFlow<Int> = catalogRepo.foundCount
 
+    /** Сообщение об ошибке поиска (null если всё ок). UI показывает баннер с retry. */
+    val discoveryError: StateFlow<String?> = catalogRepo.lastErrorMessage
+
+    fun dismissError() { catalogRepo.clearError() }
+
     /** Тап по кнопке ↻ — пересоздать каталог с нуля. */
     fun refreshCatalog() {
         viewModelScope.launch {
