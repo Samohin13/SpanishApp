@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -86,6 +87,8 @@ fun RadioScreen(navController: NavHostController) {
     val favoriteIds by vm.favoriteIds.collectAsState()
     val discoveryState by vm.discoveryState.collectAsState()
     val discoveryProgress by vm.discoveryProgress.collectAsState()
+    val discoveryStage by vm.discoveryStage.collectAsState()
+    val discoveryFoundCount by vm.discoveryFoundCount.collectAsState()
     val discoveryError by vm.discoveryError.collectAsState()
     val selectedGenres by vm.selectedGenres.collectAsState()
     val showOnlyFavorites by vm.showOnlyFavorites.collectAsState()
@@ -99,7 +102,7 @@ fun RadioScreen(navController: NavHostController) {
             TopBar(
                 onBack = { navController.popBackStack() },
                 onRefresh = { vm.refreshCatalog() },
-                refreshEnabled = discoveryState != RadioViewModel.DiscoveryState.LOADING,
+                isLoading = discoveryState == RadioViewModel.DiscoveryState.LOADING,
             )
 
             // Тонкий прогресс-бар при поиске
@@ -107,7 +110,11 @@ fun RadioScreen(navController: NavHostController) {
                 visible = discoveryState == RadioViewModel.DiscoveryState.LOADING,
                 enter = fadeIn(), exit = fadeOut(),
             ) {
-                LoadingBanner(progress = discoveryProgress)
+                LoadingBanner(
+                    progress = discoveryProgress,
+                    stage = discoveryStage,
+                    foundCount = discoveryFoundCount,
+                )
             }
 
             // Баннер ошибки если discovery вернул 0 — раньше молчал
@@ -242,7 +249,7 @@ fun RadioScreen(navController: NavHostController) {
 private fun TopBar(
     onBack: () -> Unit,
     onRefresh: () -> Unit,
-    refreshEnabled: Boolean,
+    isLoading: Boolean,
 ) {
     Row(
         modifier = Modifier
@@ -264,13 +271,34 @@ private fun TopBar(
             color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.weight(1f))
-        IconButton(onClick = onRefresh, enabled = refreshEnabled) {
-            Icon(
-                Icons.Filled.Refresh,
-                contentDescription = "Обновить каталог",
-                tint = if (refreshEnabled) MaterialTheme.colorScheme.onSurface
-                       else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+        // Refresh — крутится при LOADING (анимация даёт фидбэк что работа идёт),
+        // но кнопка остаётся active чтобы юзер мог тапнуть ещё раз / отменить
+        if (isLoading) {
+            val transition = rememberInfiniteTransition(label = "spin")
+            val rotation by transition.animateFloat(
+                initialValue = 0f, targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1200, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart,
+                ),
+                label = "rotation",
             )
+            IconButton(onClick = onRefresh) {
+                Icon(
+                    Icons.Filled.Refresh,
+                    contentDescription = "Обновляем…",
+                    tint = Accent,
+                    modifier = Modifier.graphicsLayer(rotationZ = rotation),
+                )
+            }
+        } else {
+            IconButton(onClick = onRefresh) {
+                Icon(
+                    Icons.Filled.Refresh,
+                    contentDescription = "Обновить каталог",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
         }
     }
 }
@@ -336,7 +364,25 @@ private fun ErrorBanner(
 }
 
 @Composable
-private fun LoadingBanner(progress: Float) {
+private fun LoadingBanner(
+    progress: Float,
+    stage: com.spanishapp.radio.data.RadioCatalogRepository.DiscoveryStage,
+    foundCount: Int,
+) {
+    val stageText = when (stage) {
+        com.spanishapp.radio.data.RadioCatalogRepository.DiscoveryStage.IDLE ->
+            "Готовимся…"
+        com.spanishapp.radio.data.RadioCatalogRepository.DiscoveryStage.DETECTING_COUNTRY ->
+            "Определяем регион…"
+        com.spanishapp.radio.data.RadioCatalogRepository.DiscoveryStage.FETCHING_CATALOG ->
+            "Запрашиваем каталог станций…"
+        com.spanishapp.radio.data.RadioCatalogRepository.DiscoveryStage.PROBING ->
+            if (foundCount > 0) "Проверяем станции… (живых: $foundCount)"
+            else "Проверяем доступность станций…"
+        com.spanishapp.radio.data.RadioCatalogRepository.DiscoveryStage.DONE ->
+            "Готово"
+    }
+
     Surface(
         color = Accent.copy(alpha = 0.10f),
         shape = RoundedCornerShape(10.dp),
@@ -347,7 +393,7 @@ private fun LoadingBanner(progress: Float) {
         Column(modifier = Modifier.padding(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "Подбираем станции для тебя…",
+                    stageText,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Accent,
@@ -475,7 +521,7 @@ private fun FilterChipsRow(
         }
         item {
             FilterChip(
-                icon = Icons.Filled.Star,
+                icon = Icons.Filled.Favorite,
                 label = "Избранное",
                 selected = showOnlyFavorites,
                 onClick = onToggleFav,
@@ -882,6 +928,7 @@ private fun StationCard(
                 color = Color.White,
             )
             if (isFavorite) {
+                // Используем то же ♥ что и в контролах — было ★, путало юзера
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -891,10 +938,10 @@ private fun StationCard(
                         .padding(3.dp),
                 ) {
                     Icon(
-                        Icons.Filled.Star,
+                        Icons.Filled.Favorite,
                         contentDescription = "В избранном",
                         modifier = Modifier.size(11.dp),
-                        tint = Color(0xFFFFC107),
+                        tint = Accent,
                     )
                 }
             }
@@ -985,14 +1032,14 @@ private fun FindMoreTile(loading: Boolean, onClick: () -> Unit) {
         }
         Spacer(Modifier.height(5.dp))
         Text(
-            if (loading) "Ищем…" else "Найти ещё",
+            if (loading) "Подбираем…" else "Найти ещё",
             fontSize = 10.sp,
             fontWeight = FontWeight.SemiBold,
             color = Accent,
             maxLines = 1,
         )
         Text(
-            "+20 станций",
+            if (loading) "Подожди немного" else "+20 станций",
             fontSize = 9.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,

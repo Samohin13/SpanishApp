@@ -42,6 +42,10 @@ class RadioViewModel @Inject constructor(
     val discoveryProgress: StateFlow<Float> = catalogRepo.progress
     val discoveryFoundCount: StateFlow<Int> = catalogRepo.foundCount
 
+    /** Текущий этап discovery — для подписи в баннере. */
+    val discoveryStage: StateFlow<com.spanishapp.radio.data.RadioCatalogRepository.DiscoveryStage> =
+        catalogRepo.stage
+
     /** Сообщение об ошибке поиска (null если всё ок). UI показывает баннер с retry. */
     val discoveryError: StateFlow<String?> = catalogRepo.lastErrorMessage
 
@@ -150,11 +154,15 @@ class RadioViewModel @Inject constructor(
     val displayedStations: StateFlow<List<Station>> = combine(
         _stations, _selectedGenres, _showOnlyFavorites, favoriteIds,
     ) { stations, genres, onlyFav, favs ->
-        stations.filter { st ->
+        val filtered = stations.filter { st ->
             val genreOk = genres.isEmpty() || st.genre in genres
             val favOk = !onlyFav || st.id in favs
             genreOk && favOk
         }
+        // Синхронизируем контекст с плеером — mini-player будет skip-ать
+        // по тому же отфильтрованному списку что юзер видит
+        player.setStationContext(filtered.ifEmpty { stations })
+        filtered
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _stations.value)
 
     // ────────────────────── Init ──────────────────────
@@ -214,21 +222,9 @@ class RadioViewModel @Inject constructor(
         }
     }
 
-    fun nextStation() {
-        val list = displayedStations.value.ifEmpty { _stations.value }
-        val current = currentStation.value ?: return
-        val idx = list.indexOf(current)
-        val next = list.getOrNull(idx + 1) ?: list.firstOrNull() ?: return
-        tuneToStation(next)
-    }
-
-    fun previousStation() {
-        val list = displayedStations.value.ifEmpty { _stations.value }
-        val current = currentStation.value ?: return
-        val idx = list.indexOf(current)
-        val prev = list.getOrNull(idx - 1) ?: list.lastOrNull() ?: return
-        tuneToStation(prev)
-    }
+    /** Делегируем контроллеру — контекст уже синхронизирован в displayedStations. */
+    fun nextStation() = player.nextStation()
+    fun previousStation() = player.previousStation()
 
     private fun tuneToStation(station: Station) {
         player.play(station)

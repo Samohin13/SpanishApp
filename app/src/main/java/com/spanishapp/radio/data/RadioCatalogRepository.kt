@@ -90,6 +90,15 @@ class RadioCatalogRepository @Inject constructor(
     private val _foundCount = MutableStateFlow(0)
     val foundCount: StateFlow<Int> = _foundCount.asStateFlow()
 
+    /**
+     * Текущий этап discovery — для информативного баннера в UI.
+     * Раньше юзер видел просто «0%» во время медленного fetchPool (до минуты)
+     * и думал что всё зависло.
+     */
+    enum class DiscoveryStage { IDLE, DETECTING_COUNTRY, FETCHING_CATALOG, PROBING, DONE }
+    private val _stage = MutableStateFlow(DiscoveryStage.IDLE)
+    val stage: StateFlow<DiscoveryStage> = _stage.asStateFlow()
+
     /** Свежесть кэша: < 7 дней. */
     suspend fun isCacheFresh(): Boolean {
         val last = dao.lastFetchedAt() ?: return false
@@ -165,11 +174,16 @@ class RadioCatalogRepository @Inject constructor(
         _lastErrorMessage.value = null
 
         trace("discoverAndCache: START")
+        _stage.value = DiscoveryStage.DETECTING_COUNTRY
+        _progress.value = 0.05f
         val userCountry = detectUserCountry()
         trace("user country = $userCountry")
+        _progress.value = 0.10f
 
+        _stage.value = DiscoveryStage.FETCHING_CATALOG
         val rawPool = fetchPool()
         trace("fetchPool returned ${rawPool.size} candidates")
+        _progress.value = 0.30f
 
         if (rawPool.isEmpty()) {
             reportError("fetchPool returned 0 (radio-browser API down или rate-limit)")
@@ -178,7 +192,8 @@ class RadioCatalogRepository @Inject constructor(
             return@withContext 0
         }
 
-        // Probe — параллельно по 8 URL за раз
+        // Probe — параллельно по 8 URL за раз. Прогресс: 0.30 → 1.0
+        _stage.value = DiscoveryStage.PROBING
         val total = rawPool.size
         val working = mutableListOf<DiscoveredStation>()
         var processed = 0
@@ -191,7 +206,9 @@ class RadioCatalogRepository @Inject constructor(
             }
             results.filterNotNull().forEach { working.add(it) }
             processed += batch.size
-            _progress.value = processed.toFloat() / total
+            // Прогресс probe этапа маппим в 0.30 .. 1.0 диапазон
+            _progress.value = 0.30f + 0.70f * (processed.toFloat() / total)
+            _foundCount.value = working.size
             if (working.size >= 40) return@forEach
         }
 
@@ -230,6 +247,7 @@ class RadioCatalogRepository @Inject constructor(
 
         _foundCount.value = final.size
         _progress.value = 1f
+        _stage.value = DiscoveryStage.DONE
         final.size
     }
 
@@ -272,11 +290,17 @@ class RadioCatalogRepository @Inject constructor(
 
         val pool = mutableListOf<DiscoveredStation>()
         val seenUrls = mutableSetOf<String>()
+        val totalQueries = targets.sumOf { it.second.size }
+        var doneQueries = 0
 
         for ((triple, tags) in targets) {
             val (country, genre, level) = triple
             for (tag in tags) {
-                val results = queryApi(country.isoCode(), tag) ?: continue
+                val results = queryApi(country.isoCode(), tag)
+                doneQueries++
+                // 0.10 → 0.30 на fetchPool стадии (живой progress per query)
+                _progress.value = 0.10f + 0.20f * (doneQueries.toFloat() / totalQueries)
+                if (results == null) continue
                 for (r in results) {
                     val url = r.url_resolved ?: r.url ?: continue
                     if (url in seenUrls) continue

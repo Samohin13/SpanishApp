@@ -75,6 +75,39 @@ class RadioPlayerController(private val context: Context) {
     /** Callback для статистики прослушивания. */
     var onSessionEnded: ((startedAt: Long, endedAt: Long, stationId: String) -> Unit)? = null
 
+    /**
+     * Текущий «контекст» станций для переключения вперёд/назад
+     * (например отфильтрованный список из ViewModel). Сеттится из
+     * RadioViewModel при смене страны/фильтров. Mini-player использует
+     * чтобы next()/previous() работали даже когда RadioScreen не открыт.
+     */
+    private val _stationContext = MutableStateFlow<List<Station>>(emptyList())
+    val stationContext: StateFlow<List<Station>> = _stationContext.asStateFlow()
+
+    fun setStationContext(stations: List<Station>) {
+        _stationContext.value = stations
+    }
+
+    /** Перейти к следующей станции в текущем контексте. */
+    fun nextStation() {
+        val list = _stationContext.value
+        if (list.isEmpty()) return
+        val current = _currentStation.value
+        val idx = list.indexOfFirst { it.id == current?.id }
+        val next = if (idx < 0) list.first() else list.getOrNull(idx + 1) ?: list.first()
+        play(next)
+    }
+
+    /** Перейти к предыдущей. */
+    fun previousStation() {
+        val list = _stationContext.value
+        if (list.isEmpty()) return
+        val current = _currentStation.value
+        val idx = list.indexOfFirst { it.id == current?.id }
+        val prev = if (idx < 0) list.last() else list.getOrNull(idx - 1) ?: list.last()
+        play(prev)
+    }
+
     // ────────────────────── Session tracking ──────────────────────
 
     private var sessionStartedAt: Long = 0L

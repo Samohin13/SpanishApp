@@ -16,6 +16,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,8 +54,11 @@ interface RadioPlayerEntryPoint {
 }
 
 /**
- * Mini-player в стиле Spotify/Apple Music — без резкого border.
+ * Mini-player в стиле Spotify/Apple Music — без резкой обводки.
  * Тонкая accent-полоска по верху, мягкие тени, компактный layout.
+ *
+ * v1.10.1: Material иконки (вместо ⏸/▶ эмодзи) + skip prev/next кнопки
+ * для быстрого переключения станций не открывая полный экран.
  */
 @Composable
 fun RadioMiniPlayer(
@@ -65,6 +75,8 @@ fun RadioMiniPlayer(
     }
     val station by player.currentStation.collectAsState()
     val isPlaying by player.isPlaying.collectAsState()
+    val context_stations by player.stationContext.collectAsState()
+    val canSkip = context_stations.size > 1
 
     val visible = station != null && !isOnRadioScreen
 
@@ -74,7 +86,6 @@ fun RadioMiniPlayer(
         exit = fadeOut() + shrinkVertically(),
         modifier = modifier,
     ) {
-        // Контейнер с градиентом сверху → даёт «свечение» без резкой обводки
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,7 +98,7 @@ fun RadioMiniPlayer(
                 )
                 .clickable(onClick = onClick),
         ) {
-            // Тонкая accent-линия сверху (1dp) — единственная подсветка
+            // Тонкая accent-линия сверху (1dp)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,13 +113,13 @@ fun RadioMiniPlayer(
             )
 
             Row(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Station artwork — мини-плашка с градиентом + код станции
+                // Station artwork
                 Box(
                     modifier = Modifier
-                        .size(44.dp)
+                        .size(40.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(
                             Brush.linearGradient(
@@ -122,12 +133,12 @@ fun RadioMiniPlayer(
                 ) {
                     Text(
                         station?.shortCode ?: "—",
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White,
                     )
                 }
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(10.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         station?.name ?: "—",
@@ -137,7 +148,6 @@ fun RadioMiniPlayer(
                         maxLines = 1,
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // LIVE точка — пульсирует когда играет
                         if (isPlaying) {
                             val transition = rememberInfiniteTransition(label = "pulse")
                             val alpha by transition.animateFloat(
@@ -156,38 +166,69 @@ fun RadioMiniPlayer(
                             )
                             Spacer(Modifier.width(5.dp))
                             Text(
-                                "%.1f · ${station?.program ?: ""}".format(station?.frequency ?: 0f),
-                                fontSize = 11.sp,
+                                "LIVE · ${station?.program ?: ""}",
+                                fontSize = 10.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                             )
                         } else {
                             Text(
-                                "%.1f MHz".format(station?.frequency ?: 0f),
-                                fontSize = 11.sp,
+                                station?.program ?: "—",
+                                fontSize = 10.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                             )
                         }
                     }
                 }
-                // Play/Pause — простая иконка без рамки
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            if (player.isPlaying.value) player.pause() else player.resume()
-                        },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        if (isPlaying) "⏸" else "▶",
-                        fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
+
+                // Контролы: prev / play-pause / next (Material icons)
+                if (canSkip) {
+                    MiniControlButton(
+                        icon = Icons.Filled.SkipPrevious,
+                        cd = "Предыдущая",
+                        onClick = { player.previousStation() },
+                    )
+                }
+                MiniControlButton(
+                    icon = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                    cd = if (isPlaying) "Пауза" else "Играть",
+                    tint = Accent,
+                    onClick = {
+                        if (player.isPlaying.value) player.pause() else player.resume()
+                    },
+                )
+                if (canSkip) {
+                    MiniControlButton(
+                        icon = Icons.Filled.SkipNext,
+                        cd = "Следующая",
+                        onClick = { player.nextStation() },
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun MiniControlButton(
+    icon: ImageVector,
+    cd: String,
+    tint: Color = MaterialTheme.colorScheme.onSurface,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            icon,
+            contentDescription = cd,
+            modifier = Modifier.size(24.dp),
+            tint = tint,
+        )
     }
 }
