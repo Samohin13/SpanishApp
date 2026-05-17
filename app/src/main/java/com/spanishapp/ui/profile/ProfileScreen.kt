@@ -83,8 +83,21 @@ class ProfileViewModel @Inject constructor(
     private val achievementDao: AchievementDao,
     private val authRepository: AuthRepository,
     private val dailyXpDao: com.spanishapp.data.db.dao.DailyXpDao,
-    private val wodHistoryDao: com.spanishapp.data.db.dao.WodHistoryDao
+    private val wodHistoryDao: com.spanishapp.data.db.dao.WodHistoryDao,
+    private val radioListeningDao: com.spanishapp.radio.data.RadioListeningDao,
+    private val radioWordCatchDao: com.spanishapp.radio.data.RadioWordCatchDao,
 ) : ViewModel() {
+
+    /** Минуты прослушано радио (всё время). */
+    val radioMinutes: StateFlow<Long> =
+        radioListeningDao.observeTotalSeconds()
+            .map { it / 60 }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
+
+    /** Сколько слов «поймано» при прослушивании радио. */
+    val radioWordsCaught: StateFlow<Int> =
+        radioWordCatchDao.observeTotalCount()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     /** Последние 5 закреплённых слов дня — для виджета-коллекции в Профиле. */
     val recentWodWords: StateFlow<List<com.spanishapp.data.db.entity.WodHistoryEntity>> =
@@ -287,6 +300,8 @@ fun ProfileScreen(
     val isPhotoUploading by vm.isPhotoUploading.collectAsState()
     val recentWodWords by vm.recentWodWords.collectAsState()
     val wodTotalCount by vm.wodTotalCount.collectAsState()
+    val radioMinutes by vm.radioMinutes.collectAsState()
+    val radioWordsCaught by vm.radioWordsCaught.collectAsState()
     val p = state.progress
     val context = LocalContext.current
 
@@ -418,6 +433,46 @@ fun ProfileScreen(
                         ActivityStatTile("🎯", todayXp.toString(),         "XP СЕГОДНЯ",  AccentTeal,    Modifier.weight(1f))
                     }
                     Spacer(Modifier.height(20.dp))
+                }
+            }
+
+            // ── 📻 МОЁ РАДИО ─────────────────────────────────────
+            // Показываем только если юзер хоть раз слушал радио
+            if (radioMinutes > 0 || radioWordsCaught > 0) {
+                StaggeredEntrance(index = 22) {
+                    Column {
+                        SectionHeader("МОЁ РАДИО", Color(0xFFFF5722), modifier = Modifier.padding(horizontal = 24.dp))
+                        Spacer(Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            ActivityStatTile(
+                                "⏱",
+                                formatRadioMinutes(radioMinutes),
+                                "ПРОСЛУШАНО",
+                                Color(0xFFFF5722),
+                                Modifier.weight(1f),
+                            )
+                            ActivityStatTile(
+                                "💬",
+                                radioWordsCaught.toString(),
+                                "СЛОВ ПОЙМАЛ",
+                                Color(0xFFFF5722),
+                                Modifier.weight(1f),
+                            )
+                            ActivityStatTile(
+                                "📻",
+                                "→",
+                                "ОТКРЫТЬ",
+                                Color(0xFFFF5722),
+                                Modifier.weight(1f).clickable {
+                                    navController.navigate("radio")
+                                },
+                            )
+                        }
+                        Spacer(Modifier.height(20.dp))
+                    }
                 }
             }
 
@@ -1404,4 +1459,12 @@ private fun AchievementRow(ach: AchievementEntity, index: Int) {
             )
         }
     }
+}
+
+
+private fun formatRadioMinutes(minutes: Long): String {
+    if (minutes < 60) return "${minutes}м"
+    val h = minutes / 60
+    val m = minutes % 60
+    return if (m == 0L) "${h}ч" else "${h}ч ${m}м"
 }
