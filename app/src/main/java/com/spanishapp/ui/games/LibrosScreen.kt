@@ -117,7 +117,14 @@ fun LibrosScreen(
                 items(items, key = { it.libro.id }) { item ->
                     LibroCard(
                         item = item,
-                        onClick = { navController.navigate("libro/${item.libro.id}") }
+                        onClick = {
+                            // 1.1.1 fix: дублируем markOpened **до** навигации.
+                            // LaunchedEffect в LibroReadScreen может не успеть
+                            // если юзер мгновенно выйдет назад (back).
+                            // GlobalScope в markOpened гарантирует доставку.
+                            vm.markOpened(item.libro.id)
+                            navController.navigate("libro/${item.libro.id}")
+                        }
                     )
                 }
             }

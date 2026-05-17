@@ -323,7 +323,12 @@ fun ReasonSelectionScreen(
                 onClick = {
                     selectedReason?.let {
                         viewModel.updateReason(it)
-                        navController.navigate("knowledge_check")
+                        // 1.1.0: добавлен экран выбора дневной цели между
+                        // reason и knowledge_check (был раньше, потерялся
+                        // при упрощении flow). Без него dailyGoalMinutes
+                        // оставался дефолтным 10 → виджет «Цель дня»
+                        // показывал непонятное число.
+                        navController.navigate("daily_goal_selection")
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),

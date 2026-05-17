@@ -54,7 +54,10 @@ fun SettingsVoiceScreen(
 
     LaunchedEffect(tts) {
         if (tts != null) {
-            voices = VoicePackInstaller.spanishVoices(tts)
+            // 1.1.1: topSpanishVoices даёт топ-7 HD голосов Spain (Castilian),
+            // без дубликатов и Latino/MX. Раньше показывалось 18 голосов
+            // вперемешку — юзер не мог выбрать.
+            voices = VoicePackInstaller.topSpanishVoices(tts)
                 .sortedByDescending { VoiceCatalog.rank(it) }
                 .map { VoiceCatalog.toFriendly(it) }
         }

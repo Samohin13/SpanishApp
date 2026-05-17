@@ -19,6 +19,56 @@ object VoicePackInstaller {
         }
     }
 
+    /**
+     * 1.1.1 fix: топ-7 HD голосов **только Spain (Castilian)** для UX.
+     * Раньше показывали 18 голосов вперемешку (US/Латино + Spain + не-HD)
+     * — юзер тонул в выборе, дубликаты, не было гарантии HD-качества.
+     *
+     * Алгоритм:
+     *   1. Берём только es_ES (кастильский — наша целевая аудитория)
+     *   2. Только HD (quality >= 400) ИЛИ neural
+     *   3. Дедупликация по comma-name (одинаковые displayName/gender)
+     *   4. Лимит 7 (Apple HIG: ≤ 7 опций для комфортного выбора)
+     */
+    fun topSpanishVoices(tts: TextToSpeech, limit: Int = 7): List<android.speech.tts.Voice> {
+        val all = spanishVoices(tts)
+        // Только Spain Castilian
+        val castilian = all.filter { it.locale.country.equals("ES", ignoreCase = true) }
+        // Только HD
+        val hdOnly = castilian.filter { v ->
+            val name = v.name.lowercase()
+            v.quality >= 400 ||
+            name.contains("network") ||
+            name.contains("wavenet") ||
+            name.contains("neural")  ||
+            name.contains("hd")
+        }
+        // Дедупликация по «base name» (отрезаем суффиксы -local/-network/-1/-2)
+        val seen = mutableSetOf<String>()
+        return hdOnly
+            .sortedByDescending { it.quality }
+            .filter { v ->
+                val base = baseName(v.name)
+                if (seen.contains(base)) false else { seen.add(base); true }
+            }
+            .take(limit)
+    }
+
+    /**
+     * Извлекает «корневое» имя из системного — убирает суффиксы которые
+     * различают локальный/сетевой вариант одного голоса.
+     * Пример: "es-es-x-eef-network", "es-es-x-eef-local" → оба → "es-es-x-eef"
+     */
+    private fun baseName(name: String): String {
+        val lower = name.lowercase()
+        return lower
+            .removeSuffix("-network")
+            .removeSuffix("-local")
+            .removeSuffix("-1")
+            .removeSuffix("-2")
+            .removeSuffix("-3")
+    }
+
     /** True, если установлен хотя бы один высококачественный или neural испанский голос. */
     fun isHdInstalled(tts: TextToSpeech): Boolean {
         return spanishVoices(tts).any { v ->

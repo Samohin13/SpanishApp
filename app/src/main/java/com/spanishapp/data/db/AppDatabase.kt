@@ -32,8 +32,10 @@ import com.spanishapp.data.db.entity.*
         TheoryProgressEntity::class,
         com.spanishapp.radio.data.RadioFavoriteEntity::class,
         com.spanishapp.radio.data.RadioCatalogEntity::class,
+        com.spanishapp.radio.data.RadioListeningSessionEntity::class,
+        com.spanishapp.radio.data.RadioWordCatchEntity::class,
     ],
-    version = 23,
+    version = 24,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -58,6 +60,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun theoryProgressDao(): TheoryProgressDao
     abstract fun radioFavoriteDao(): com.spanishapp.radio.data.RadioFavoriteDao
     abstract fun radioCatalogDao(): com.spanishapp.radio.data.RadioCatalogDao
+    abstract fun radioListeningDao(): com.spanishapp.radio.data.RadioListeningDao
+    abstract fun radioWordCatchDao(): com.spanishapp.radio.data.RadioWordCatchDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -332,6 +336,28 @@ abstract class AppDatabase : RoomDatabase() {
         // Phase 1 нового дизайна курса (1.2.0): теория-карточки.
         // Каждый практический урок получает справочную карточку, прогресс
         // прочтения трекается отдельно от прохождения практики.
+        // ── v24: radio_listening_session + radio_word_catch (Stats 1.8.0) ──
+        val MIGRATION_23_24 = object : Migration(23, 24) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS radio_listening_session (
+                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        started_at INTEGER NOT NULL,
+                        ended_at INTEGER NOT NULL,
+                        station_id TEXT NOT NULL
+                    )
+                """.trimIndent())
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS radio_word_catch (
+                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        caught_at INTEGER NOT NULL,
+                        station_id TEXT NOT NULL,
+                        word_text TEXT
+                    )
+                """.trimIndent())
+            }
+        }
+
         // ── v23: radio_catalog — динамический каталог (auto-discovery 1.7.0) ──
         val MIGRATION_22_23 = object : Migration(22, 23) {
             override fun migrate(db: SupportSQLiteDatabase) {

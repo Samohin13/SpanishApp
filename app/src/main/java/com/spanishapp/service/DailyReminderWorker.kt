@@ -54,6 +54,17 @@ class DailyReminderWorker(
         fun cancel(context: Context) {
             WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
         }
+
+        /**
+         * Мгновенный тестовый запуск — для кнопки «Проверить напоминание»
+         * в Settings. One-time work без задержки → push должен прилететь
+         * в течение нескольких секунд. Если не пришёл — значит проблема
+         * с разрешениями / Do-Not-Disturb / каналом уведомлений.
+         */
+        fun fireOnce(context: Context) {
+            val request = OneTimeWorkRequestBuilder<DailyReminderWorker>().build()
+            WorkManager.getInstance(context).enqueue(request)
+        }
     }
 
     override suspend fun doWork(): Result {

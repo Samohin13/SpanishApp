@@ -27,6 +27,15 @@ class LessonIntroViewModel @Inject constructor(
     fun markLessonComplete(unitId: Int, lessonIndex: Int) {
         viewModelScope.launch {
             val key = "u${unitId}_l${lessonIndex}"
+
+            // ── Idempotency guard (фикс бага «1 урок → счётчик 3») ──
+            // markLessonComplete вызывался из 5 мест (LessonSession, Intro,
+            // Content) → каждый вызов делал `lessonsCompleted += 1`.
+            // Также юзер мог пройти один и тот же урок повторно — счётчик
+            // снова прибавлялся. Теперь: если урок уже в lesson_progress
+            // — НЕ инкрементим счётчик и НЕ начисляем XP/рейтинг повторно.
+            val alreadyDone = lessonProgressDao.isAlreadyCompleted(key)
+
             lessonProgressDao.markComplete(
                 LessonProgressEntity(
                     lessonKey   = key,
@@ -34,17 +43,25 @@ class LessonIntroViewModel @Inject constructor(
                     lessonIndex = lessonIndex
                 )
             )
-            // Bump lessonsCompleted on user_progress so achievements
-            // lesson_first / lesson_10 etc. (gated on this counter) actually fire.
+
+            if (alreadyDone) {
+                // Повторное прохождение — обновили только completed_at,
+                // никаких бонусов. Тихо выходим.
+                return@launch
+            }
+
+            // Первое успешное прохождение — даём всё:
             userProgressDao.getProgressOnce()?.let { p ->
                 userProgressDao.update(p.copy(lessonsCompleted = p.lessonsCompleted + 1))
             }
-            // +15 XP за прохождение урока (с дневным трекингом)
             xpTracker.add(xp = 15, words = 0)
-            // Skill rating: 5 правильных ответов в среднем за урок.
             repeat(5) { ratingUpdater.applyGameAnswer(correct = true) }
-            // Re-evaluate achievements (lesson_first, lesson_10, lessons_25 etc.)
             achievementManager.checkAndUnlock()
+
+            com.spanishapp.service.Analytics.lessonCompleted(
+                lessonId = key,
+                accuracyPercent = 100,
+            )
         }
     }
 

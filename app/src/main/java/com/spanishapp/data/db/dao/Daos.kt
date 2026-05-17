@@ -462,6 +462,15 @@ interface UserProgressDao {
 
     @Query("UPDATE user_progress SET daily_goal_minutes = :minutes")
     suspend fun updateDailyGoal(minutes: Int)
+
+    // ── Word-of-Day streak (added in v19) ────────────────────
+    @Query("""
+        UPDATE user_progress SET
+            wod_streak = :streak,
+            wod_longest_streak = MAX(wod_longest_streak, :streak),
+            wod_last_date = :lastDateMs
+    """)
+    suspend fun updateWodStreak(streak: Int, lastDateMs: Long)
 }
 
 @Dao
@@ -504,6 +513,31 @@ interface AchievementDao {
 
     @Query("SELECT COUNT(*) FROM achievements")
     suspend fun getCount(): Int
+
+    /**
+     * Обновить текст/иконку/XP по id, СОХРАНИВ is_unlocked и unlocked_at.
+     * Используется в seedAchievements при апгрейде версии — чтобы новые
+     * описания подтягивались, но прогресс юзера не сбрасывался.
+     */
+    @Query("""
+        UPDATE achievements
+        SET title_ru = :title,
+            description_ru = :description,
+            icon_name = :iconName,
+            xp_reward = :xpReward,
+            requirement = :requirement,
+            requirement_type = :requirementType
+        WHERE id = :id
+    """)
+    suspend fun updateMetaById(
+        id: String,
+        title: String,
+        description: String,
+        iconName: String,
+        xpReward: Int,
+        requirement: Int,
+        requirementType: String,
+    )
 
     /** Locks every achievement again. Used by Settings → Reset progress. */
     @Query("UPDATE achievements SET is_unlocked = 0, unlocked_at = 0")
@@ -592,6 +626,10 @@ interface LessonProgressDao {
 
     @Query("SELECT COUNT(*) > 0 FROM lesson_progress WHERE completed_at >= :since")
     suspend fun anyCompletedSince(since: Long): Boolean
+
+    /** Idempotency check для markLessonComplete — был ли этот урок уже отмечен. */
+    @Query("SELECT COUNT(*) > 0 FROM lesson_progress WHERE lesson_key = :key")
+    suspend fun isAlreadyCompleted(key: String): Boolean
 
     @Query("DELETE FROM lesson_progress")
     suspend fun deleteAll()

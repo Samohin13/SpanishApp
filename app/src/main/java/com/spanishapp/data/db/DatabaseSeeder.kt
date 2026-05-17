@@ -62,6 +62,50 @@ class DatabaseSeeder @Inject constructor(
         )
     }
 
+    /**
+     * Загружает 1415 слов из assets/spanish_vocab.json. Раньше JSON лежал
+     * мёртвым грузом — никогда не подключался в seedWords(). С 1.0.10
+     * подключаем как один из источников (после dedup потеряется ~600
+     * пересечений с CleanVocab → +800 уникальных слов в БД).
+     *
+     * Структура JSON: { nouns: [...], verbs: [...], adjectives: [...],
+     *                   phrases: [...], adverbs: [...], prepositions: [...] }
+     * У phrases нет поля `example` — подставляем сам spanish.
+     */
+    private fun loadJsonVocab(): List<WordEntity> {
+        return runCatching {
+            val text = context.assets.open("spanish_vocab.json")
+                .bufferedReader().use { it.readText() }
+            val root = org.json.JSONObject(text)
+            val out = mutableListOf<WordEntity>()
+            val typeMap = mapOf(
+                "nouns"        to "noun",
+                "verbs"        to "verb",
+                "adjectives"   to "adjective",
+                "adverbs"      to "adverb",
+                "prepositions" to "preposition",
+                "phrases"      to "phrase",
+            )
+            typeMap.forEach { (jsonKey, wordType) ->
+                val arr = root.optJSONArray(jsonKey) ?: return@forEach
+                for (i in 0 until arr.length()) {
+                    val o = arr.getJSONObject(i)
+                    val es = o.optString("spanish").trim()
+                    if (es.isEmpty()) continue
+                    out += WordEntity(
+                        spanish  = es,
+                        russian  = o.optString("russian").trim(),
+                        example  = o.optString("example", es).trim(),
+                        level    = o.optString("level", "A1"),
+                        category = o.optString("category", "general"),
+                        wordType = wordType,
+                    )
+                }
+            }
+            out
+        }.getOrElse { emptyList() }
+    }
+
     suspend fun seedIfNeeded() = withContext(Dispatchers.IO) {
         seedWords()
         seedConjugations()
@@ -101,8 +145,8 @@ class DatabaseSeeder @Inject constructor(
         //     backup_rules.xml + data_extraction_rules.xml для новых юзеров,
         //     но старые юзеры всё ещё с устаревшим бэкапом).
 
-        // Дедуплицированный набор: CleanVocab + расширения
-        val all = CleanVocab.entries + VocabExtra1.entries + VocabExtra2.entries + VocabExtra3.entries + VocabExtra4.entries + VocabExtra5.entries + VocabExtra6.entries + VocabExtra7.entries + VocabExtra8.entries + VocabExtra9.entries + VocabExtra10.entries + VocabExtra11.entries + VocabExtra12.entries + BasicsVocab.entries
+        // Дедуплицированный набор: CleanVocab + расширения + JSON-ассет
+        val all = CleanVocab.entries + VocabExtra1.entries + VocabExtra2.entries + VocabExtra3.entries + VocabExtra4.entries + VocabExtra5.entries + VocabExtra6.entries + VocabExtra7.entries + VocabExtra8.entries + VocabExtra9.entries + VocabExtra10.entries + VocabExtra11.entries + VocabExtra12.entries + BasicsVocab.entries + loadJsonVocab()
         val unique = all.distinctBy { it.spanish.trim().lowercase() }
 
         // Пометить неправильные и отклоняющиеся глаголы
@@ -153,9 +197,26 @@ class DatabaseSeeder @Inject constructor(
     }
 
     // ── Achievements ──────────────────────────────────────────
+    // 1.1.0: insertAll с IGNORE для новых ачивок + UPDATE-meta для
+    // существующих. Это позволяет апгрейду подтянуть новые названия и
+    // описания (например после редизайна), но прогресс is_unlocked
+    // и unlocked_at сохраняется.
     private suspend fun seedAchievements() {
-        if (db.achievementDao().getCount() > 0) return
-        db.achievementDao().insertAll(achievementManager.defaultAchievements)
+        val dao = db.achievementDao()
+        // INSERT IGNORE — добавит новые ID, существующие пропустит
+        dao.insertAll(achievementManager.defaultAchievements)
+        // UPDATE meta — для всех существующих ID освежить тексты/иконки/XP
+        achievementManager.defaultAchievements.forEach { a ->
+            dao.updateMetaById(
+                id              = a.id,
+                title           = a.titleRu,
+                description     = a.descriptionRu,
+                iconName        = a.iconName,
+                xpReward        = a.xpReward,
+                requirement     = a.requirement,
+                requirementType = a.requirementType,
+            )
+        }
     }
 
     // ── Grammar lessons ───────────────────────────────────────

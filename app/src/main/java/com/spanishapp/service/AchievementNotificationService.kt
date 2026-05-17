@@ -34,31 +34,50 @@ class AchievementManager @Inject constructor(
     private val _unlockedFlow = MutableSharedFlow<AchievementEntity>(extraBufferCapacity = 8)
     val unlockedFlow: SharedFlow<AchievementEntity> = _unlockedFlow.asSharedFlow()
 
+    /**
+     * 23 достижения, переписанных в 1.1.0. Раньше каша из ic_star/ic_book/
+     * ic_medal/ic_trophy/ic_crown/ic_chat и т.д. — юзер не понимал
+     * иерархию: «Золотой кубок» имел иконку медали, бронзовая медаль
+     * выдавалась за лёгкое первое слово.
+     *
+     * Новая система: ОДНА семантика — кубок 🏆. Tier (бронза/серебро/
+     * золото) определяется в UI через xpReward:
+     *   bronze:  5-19   xp — первый шаг, легко
+     *   silver:  20-79  xp — упорство
+     *   gold:    80+    xp — реальное достижение
+     *
+     * Названия и описания пересмотрены — стало понятно по СМЫСЛУ что
+     * легко а что сложно.
+     */
     val defaultAchievements = listOf(
-        AchievementEntity("first_word",    "Первое слово!",        "Выучи своё первое слово",        "ic_star",   5,  requirement = 1,   requirementType = "words"),
-        AchievementEntity("words_10",      "Словарик",             "Выучи 10 слов",                  "ic_book",   10, requirement = 10,  requirementType = "words"),
-        AchievementEntity("words_50",      "Студент",              "Выучи 50 слов",                  "ic_grad",   20, requirement = 50,  requirementType = "words"),
-        AchievementEntity("words_100",     "Знаток слов",          "Выучи 100 слов",                 "ic_medal",  40, requirement = 100, requirementType = "words"),
-        AchievementEntity("words_250",     "Полиглот",             "Выучи 250 слов",                 "ic_globe",  80, requirement = 250, requirementType = "words"),
-        AchievementEntity("words_500",     "Виртуоз",              "Выучи 500 слов",                 "ic_trophy", 150,requirement = 500, requirementType = "words"),
-        AchievementEntity("words_1000",    "Мастер испанского",    "Выучи 1000 слов",                "ic_crown",  300,requirement = 1000,requirementType = "words"),
-        AchievementEntity("streak_3",      "Три дня подряд",       "Занимайся 3 дня подряд",         "ic_fire",   10, requirement = 3,   requirementType = "streak"),
-        AchievementEntity("streak_7",      "Неделя",               "Занимайся 7 дней подряд",        "ic_fire",   25, requirement = 7,   requirementType = "streak"),
-        AchievementEntity("streak_30",     "Месяц!",               "Занимайся 30 дней подряд",       "ic_fire",   100,requirement = 30,  requirementType = "streak"),
-        AchievementEntity("streak_100",    "Легенда",              "100 дней без перерыва!",         "ic_legend", 500,requirement = 100, requirementType = "streak"),
-        AchievementEntity("lesson_first",  "Первый урок",          "Пройди свой первый урок",        "ic_lesson", 10, requirement = 1,   requirementType = "lessons"),
-        AchievementEntity("lesson_10",     "Прилежный ученик",     "Пройди 10 уроков",               "ic_lesson", 50, requirement = 10,  requirementType = "lessons"),
-        AchievementEntity("dialogue_first","Разговорник",          "Пройди первый диалог",           "ic_chat",   15, requirement = 1,   requirementType = "dialogues"),
-        AchievementEntity("dialogue_10",   "Собеседник",           "Пройди 10 диалогов",             "ic_chat",   60, requirement = 10,  requirementType = "dialogues"),
-        AchievementEntity("xp_500",        "Набираешь обороты",    "Набери 500 XP",                  "ic_xp",     20, requirement = 500,  requirementType = "xp"),
-        AchievementEntity("xp_5000",       "XP-коллекционер",      "Набери 5000 XP",                 "ic_xp",     100,requirement = 5000, requirementType = "xp"),
-        // ── Новые: уровни XpSystem, золотые кубки, идеальный рассказ, прогресс игр ──
-        AchievementEntity("level_5",        "5-й уровень",         "Достигни 5 уровня приложения",   "ic_xp",     30, requirement = 5,    requirementType = "applevel"),
-        AchievementEntity("level_15",       "Опытный игрок",       "Достигни 15 уровня приложения",  "ic_xp",     80, requirement = 15,   requirementType = "applevel"),
-        AchievementEntity("first_gold_cup", "Золотой кубок",       "Получи 3 звезды в наборе карточек","ic_trophy",30, requirement = 1,    requirementType = "gold_cup"),
-        AchievementEntity("ten_cups",       "Коллекция кубков",    "Накопи 10 звёзд в наборах",       "ic_trophy",60, requirement = 10,   requirementType = "stars_total"),
-        AchievementEntity("perfect_libro",  "Идеальное чтение",    "Пройди рассказ на 100%",          "ic_book",   25, requirement = 100,  requirementType = "perfect_libro"),
-        AchievementEntity("game_lvl_25",    "Геймер",             "Дойди до 25 уровня в любой игре", "ic_medal",  40, requirement = 25,   requirementType = "game_max_level"),
+        // ── 🥉 БРОНЗА — первые шаги (8 штук) ──────────────────────
+        AchievementEntity("first_word",    "Первое слово",         "Выучи своё первое испанское слово",     "ic_trophy", 5,  requirement = 1,    requirementType = "words"),
+        AchievementEntity("words_10",      "Словарный запас",      "10 слов в копилке",                     "ic_trophy", 10, requirement = 10,   requirementType = "words"),
+        AchievementEntity("streak_3",      "Уже привычка",         "3 дня занятий подряд",                  "ic_trophy", 10, requirement = 3,    requirementType = "streak"),
+        AchievementEntity("lesson_first",  "Первый урок",          "Пройди свой первый урок",               "ic_trophy", 10, requirement = 1,    requirementType = "lessons"),
+        AchievementEntity("dialogue_first","Первый диалог",        "Освой первый диалог",                   "ic_trophy", 15, requirement = 1,    requirementType = "dialogues"),
+        AchievementEntity("xp_500",        "Старт",                "Набери первые 500 XP",                  "ic_trophy", 15, requirement = 500,  requirementType = "xp"),
+        AchievementEntity("level_5",       "5 уровень",            "Достигни 5 уровня приложения",          "ic_trophy", 15, requirement = 5,    requirementType = "applevel"),
+        AchievementEntity("first_gold_cup","Первая 3-звезда",      "Пройди набор карточек на 3 звезды",     "ic_trophy", 15, requirement = 1,    requirementType = "gold_cup"),
+
+        // ── 🥈 СЕРЕБРО — упорство (10 штук) ──────────────────────
+        AchievementEntity("words_50",      "Прилежный",            "50 выученных слов",                     "ic_trophy", 25, requirement = 50,   requirementType = "words"),
+        AchievementEntity("words_100",     "Знаток слов",          "100 выученных слов",                    "ic_trophy", 40, requirement = 100,  requirementType = "words"),
+        AchievementEntity("streak_7",      "Неделя огня",          "7 дней без перерыва",                   "ic_trophy", 30, requirement = 7,    requirementType = "streak"),
+        AchievementEntity("lesson_10",     "Десять уроков",        "Пройди 10 уроков",                      "ic_trophy", 50, requirement = 10,   requirementType = "lessons"),
+        AchievementEntity("dialogue_10",   "Собеседник",           "10 диалогов позади",                    "ic_trophy", 60, requirement = 10,   requirementType = "dialogues"),
+        AchievementEntity("xp_5000",       "XP-коллекционер",      "5 000 XP в копилке",                    "ic_trophy", 60, requirement = 5000, requirementType = "xp"),
+        AchievementEntity("level_15",      "Опытный",              "Достигни 15 уровня",                    "ic_trophy", 60, requirement = 15,   requirementType = "applevel"),
+        AchievementEntity("ten_cups",      "Коллекция звёзд",      "10 звёзд в наборах карточек",           "ic_trophy", 50, requirement = 10,   requirementType = "stars_total"),
+        AchievementEntity("perfect_libro", "Идеальное чтение",     "Пройди любой рассказ на 100%",          "ic_trophy", 30, requirement = 100,  requirementType = "perfect_libro"),
+        AchievementEntity("game_lvl_25",   "Геймер",               "25-й уровень в любой мини-игре",        "ic_trophy", 50, requirement = 25,   requirementType = "game_max_level"),
+
+        // ── 🥇 ЗОЛОТО — редкое достижение (5 штук) ────────────────
+        AchievementEntity("words_250",     "Полиглот",             "250 выученных слов — впечатляет",       "ic_trophy", 100, requirement = 250,  requirementType = "words"),
+        AchievementEntity("words_500",     "Виртуоз",              "500 слов — половина пути к B2",         "ic_trophy", 200, requirement = 500,  requirementType = "words"),
+        AchievementEntity("words_1000",    "Мастер испанского",    "1 000 слов — уровень носителя",         "ic_trophy", 400, requirement = 1000, requirementType = "words"),
+        AchievementEntity("streak_30",     "Месячный марафон",     "30 дней подряд — стальная дисциплина",  "ic_trophy", 150, requirement = 30,   requirementType = "streak"),
+        AchievementEntity("streak_100",    "Легенда",              "100 дней без перерыва — невероятно!",   "ic_trophy", 500, requirement = 100,  requirementType = "streak"),
     )
 
     suspend fun checkAndUnlock(): List<AchievementEntity> {
@@ -196,14 +215,41 @@ class NotificationService @Inject constructor(
         // still unlocked in Room. Silent skip avoids SecurityException on
         // stricter OEM builds.
         if (!canPostNotifications()) return
-        val n = NotificationCompat.Builder(context, CHANNEL_ACHIEVEMENT)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("Достижение разблокировано!")
-            .setContentText("$title — $description")
+
+        // 1.1.1 fix: тестер сообщил что push выглядит дешево, лезет в
+        // статус-бар, не свайпается. Чиним:
+        //  • setSmallIcon → собственный ic_notification_trophy (silhouette
+        //    кубка вместо стандартной серой info-иконки)
+        //  • setColor → orange brand для подкрашивания иконки
+        //  • setStyle(BigText) → описание не обрезается
+        //  • setContentIntent → тап открывает Achievements экран
+        //  • setVisibility(PUBLIC) → видно на lock-screen
+        val launchIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
+            addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+        val pendingIntent = launchIntent?.let {
+            android.app.PendingIntent.getActivity(
+                context,
+                notifId,
+                it,
+                android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE,
+            )
+        }
+
+        val builder = NotificationCompat.Builder(context, CHANNEL_ACHIEVEMENT)
+            .setSmallIcon(com.spanishapp.R.drawable.ic_notification_trophy)
+            .setColor(android.graphics.Color.parseColor("#FF6B35"))   // brand orange
+            .setContentTitle("🏆 Достижение разблокировано!")
+            .setContentText(title)
+            .setStyle(NotificationCompat.BigTextStyle().bigText("$title\n$description"))
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
-        context.getSystemService(NotificationManager::class.java).notify(notifId++, n)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setCategory(NotificationCompat.CATEGORY_SOCIAL)
+
+        if (pendingIntent != null) builder.setContentIntent(pendingIntent)
+
+        context.getSystemService(NotificationManager::class.java).notify(notifId++, builder.build())
     }
 }
 

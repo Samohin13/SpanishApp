@@ -642,6 +642,12 @@ fun LibroReadScreen(
     if (libro == null) { LaunchedEffect(Unit) { navController.popBackStack() }; return }
     com.spanishapp.ui.components.TrackStudyMinutes()
 
+    // Daily-mission fix: ранее `bookPageRead` загорался ✅ только после
+    // прохождения теста (saveResult). Юзер мог прочитать главу и выйти —
+    // галка не появлялась. Теперь засчитываем сам факт открытия рассказа
+    // (touch с completedAt = now) — этого достаточно для daily mission.
+    LaunchedEffect(libroId) { vm.markOpened(libroId) }
+
     val levelColor = mapOf(
         "A1" to Color(0xFF43A047), "A2" to Color(0xFF1E88E5),
         "B1" to Color(0xFFE65100), "B2" to Color(0xFF6A1B9A)

@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.spanishapp.data.db.entity.ChatMessageEntity
@@ -89,9 +90,14 @@ class AiChatViewModel @Inject constructor(
     private val repo: AiChatRepository,
     private val tts: SpanishTts,
     private val stt: com.spanishapp.service.SpanishSpeechRecognizer,
+    private val limiter: com.spanishapp.service.AiChatLimiter,
     @ApplicationContext private val appContext: Context,
     savedStateHandle: androidx.lifecycle.SavedStateHandle
 ) : ViewModel() {
+
+    /** Сколько сообщений осталось до дневного лимита (50/день). */
+    val remainingMessages: StateFlow<Int> = limiter.remainingToday
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.spanishapp.service.AiChatLimiter.DAILY_LIMIT)
 
     /** Read from nav arg `sessionId={...}`. Defaults to free chat. */
     val sessionId: String = savedStateHandle.get<String>("sessionId") ?: "default"
@@ -120,6 +126,15 @@ class AiChatViewModel @Inject constructor(
         _streamingText.value = ""
         _error.value = null
         viewModelScope.launch {
+            // Дневной лимит — 50 сообщений / день. Защита и для юзера
+            // (от случайного перерасхода) и для общего ключа Gemini
+            // (от выжирания дневной квоты одним юзером).
+            if (limiter.isExhausted()) {
+                _error.value = "Достигнут дневной лимит ${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT} сообщений. " +
+                        "Лимит обновится завтра."
+                _isSending.value = false
+                return@launch
+            }
             try {
                 repo.streamMessage(text.trim(), sessionId, theme.systemPromptExtra).collect { progressive ->
                     // Strip the trailing CORRECTIONS_JSON marker for nicer display
@@ -127,6 +142,8 @@ class AiChatViewModel @Inject constructor(
                     val display = progressive.substringBefore("CORRECTIONS_JSON:")
                     _streamingText.value = display
                 }
+                // Инкремент счётчика только после успешного завершения стрима.
+                limiter.increment()
             } catch (e: Exception) {
                 _error.value = when {
                     e.message?.contains("401") == true -> appContext.getString(R.string.chat_error_invalid_key)
@@ -249,10 +266,20 @@ fun AiChatScreen(
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
+                            // Индикатор оставшихся сообщений за день (50/день).
+                            // Заменил «Online» — это полезнее: юзер видит лимит
+                            // ещё до того как упрётся в него.
+                            val remaining by vm.remainingMessages.collectAsStateWithLifecycle()
+                            val limitColor = when {
+                                remaining > 20 -> MaterialTheme.colorScheme.primary
+                                remaining > 5  -> Color(0xFFFFA000)   // янтарь
+                                else           -> Color(0xFFE53935)   // красный
+                            }
                             Text(
-                                androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_status_online),
+                                "Осталось $remaining/${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT} сообщений сегодня",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary
+                                color = limitColor,
+                                fontWeight = FontWeight.SemiBold,
                             )
                         }
                     }

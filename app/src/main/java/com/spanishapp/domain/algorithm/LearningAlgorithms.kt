@@ -191,50 +191,54 @@ object AdaptiveLearning {
 }
 
 // ═════════════════════════════════════════════════════════════
-//  SKILL RATING SYSTEM (ELO-подобный, с медленным затуханием)
-//  Растёт за правильные ответы на сложные слова, падает за
-//  ошибки на лёгких; затухает после 3 дней простоя.
+//  SKILL RATING SYSTEM v2 (старт с 0, активная decay)
+//  Реализовано в 1.1.0 — пересмотр прежней «1000-стартовой»
+//  модели по фидбэку: юзер бесплатно получал половину пути,
+//  лидерборд забит новичками с одинаковым 1000.
+//
+//  Новая модель:
+//    • Старт с 0 — все начинают с нуля
+//    • Лиги пересчитаны (короткие в начале, длинные в конце)
+//    • Прирост щедрее в начале (быстрый wow-эффект)
+//    • Decay агрессивнее: −5/день после 2 дней грейса
+//    • Floor убран — можно вылететь обратно в Aldea
+//    • peakRating сохраняется как «личный рекорд» отдельно
 // ═════════════════════════════════════════════════════════════
 object SkillRatingSystem {
 
-    const val START_RATING = 1000
-    const val FLOOR_RATING = 800
-    const val CEILING_RATING = 3000
+    const val START_RATING = 0
+    const val FLOOR_RATING = 0           // больше нет защитного дна
+    const val CEILING_RATING = 5000      // верхний потолок (Madrid begins at 2800)
 
-    // Daily cap — сколько максимум рейтинга можно поднять за один день.
-    // Защита от марафон-гринда («сел на сутки и до Мадрида»).
-    const val DAILY_GAIN_CAP = 40
+    // Daily cap — защита от марафон-гринда («сел на сутки до Мадрида»)
+    const val DAILY_GAIN_CAP = 80        // повышен с 40 — старт быстрее
 
-    // Затухание
-    const val DECAY_GRACE_DAYS = 3
-    const val DECAY_PER_DAY = 2
-    const val DECAY_PEAK_BUFFER = 200   // не падаем ниже peak - 200
-
+    // Затухание (агрессивнее чем v1)
+    const val DECAY_GRACE_DAYS = 2       // было 3
     private const val DAY_MS = 86_400_000L
 
     /**
      * Tier-aware K-factor: чем выше лига — тем меньше прирост за ответ.
-     * Топ-лиги защищены от быстрого роста (как ELO в шахматах).
+     * В новой системе старт ОЧЕНЬ щедрый чтобы дать новичку быстрый
+     * прогресс в первые минуты — потом замедляется как обычный ELO.
      */
     private fun kFactorForRating(rating: Int): Float = when {
-        rating < 1100 -> 12f   // Aldea — старт лёгкий, чтобы зацепить
-        rating < 1300 -> 8f    // Santiago
-        rating < 1500 -> 6f    // Bilbao
-        rating < 1700 -> 5f    // Zaragoza
-        rating < 1900 -> 4f    // Valencia
-        rating < 2100 -> 3f    // Sevilla
-        rating < 2300 -> 2.5f  // Barcelona
-        else          -> 2f    // Madrid — каждый пункт на вес золота
+        rating < 50    -> 8f     // первые 50 очков — мощный wow
+        rating < 100   -> 6f     // Aldea (0-100)
+        rating < 300   -> 5f     // Santiago (100-300)
+        rating < 600   -> 4f     // Bilbao (300-600)
+        rating < 1000  -> 3f     // Zaragoza (600-1000)
+        rating < 1500  -> 2.5f   // Valencia (1000-1500)
+        rating < 2100  -> 2f     // Sevilla (1500-2100)
+        rating < 2800  -> 1.5f   // Barcelona (2100-2800)
+        else           -> 1f     // Madrid — каждый пункт на вес золота
     }
 
-    /**
-     * Промо-резистенция: за 30 пунктов до новой лиги прирост × 0.5.
-     * Делает переход в высшую лигу осмысленным событием, не очередным +9.
-     */
+    /** Около границы лиги — половина прироста (промо-резистанс). */
     private fun promoResistance(rating: Int): Float {
-        val tiers = intArrayOf(1100, 1300, 1500, 1700, 1900, 2100, 2300)
-        val nearTier = tiers.firstOrNull { it - rating in 1..30 } ?: return 1f
-        return 0.5f
+        val tiers = intArrayOf(100, 300, 600, 1000, 1500, 2100, 2800)
+        val near = tiers.any { it - rating in 1..15 }
+        return if (near) 0.5f else 1f
     }
 
     /**
@@ -252,23 +256,31 @@ object SkillRatingSystem {
             quality == 2 -> k * 0.2f
             else         -> -k * (1.0f - difficulty * 0.4f)
         }
-        // Promotion-resistance multiplier only on positive gains.
         val deltaF = if (baseDelta > 0f) baseDelta * promoResistance(currentRating) else baseDelta
         val delta = deltaF.roundToInt()
         return (currentRating + delta).coerceIn(FLOOR_RATING, CEILING_RATING)
     }
 
     /**
-     * Затухание после долгого простоя.
+     * Активная decay — после 2 дней без активности рейтинг падает.
+     * Шкала: 1 неделя = -30, 2 недели = -80. Floor убран — можно вылететь
+     * обратно в Aldea. peakRating сохраняется отдельно как «личный рекорд».
+     *
      * @return новый рейтинг (или тот же, если простой <= GRACE).
      */
     fun applyDecay(currentRating: Int, peakRating: Int, lastUpdateMs: Long, nowMs: Long): Int {
         if (lastUpdateMs <= 0L) return currentRating
         val days = ((nowMs - lastUpdateMs) / DAY_MS).toInt()
         if (days <= DECAY_GRACE_DAYS) return currentRating
-        val penalty = (days - DECAY_GRACE_DAYS) * DECAY_PER_DAY
-        val floor = max(FLOOR_RATING, peakRating - DECAY_PEAK_BUFFER)
-        return max(floor, currentRating - penalty)
+
+        val daysOver = days - DECAY_GRACE_DAYS
+        // Прогрессивный штраф: чем дольше нет — тем больнее каждый день
+        val penalty = when {
+            daysOver <= 5  -> daysOver * 5     // 1-5 дней: -5/день
+            daysOver <= 12 -> 25 + (daysOver - 5) * 8  // 6-12: -8/день
+            else           -> 81 + (daysOver - 12) * 12 // 13+: -12/день (резко)
+        }
+        return max(FLOOR_RATING, currentRating - penalty)
     }
 }
 
@@ -289,15 +301,21 @@ data class League(
 
 object LeagueResolver {
 
+    // Лиги пересчитаны для системы «старт с 0». Кривая не-линейная:
+    // вначале лиги короткие (быстрая дофамин-петля для новичка),
+    // в конце длинные (Madrid — реальное достижение, не «через неделю»).
+    //
+    // Примерные сроки активного юзера до каждой лиги:
+    //   Santiago: 2-3 дня, Bilbao: неделя, Valencia: месяц, Madrid: полгода+
     val LEAGUES: List<League> = listOf(
-        League(1, "Aldea perdida",          "Extremadura",            0,    1099, "🏚️", 0xFF8D6E63),
-        League(2, "Santiago de Compostela", "Galicia",             1100,    1299, "⛪",  0xFF4DB6AC),
-        League(3, "Bilbao",                 "País Vasco",          1300,    1499, "⚓",  0xFF455A64),
-        League(4, "Zaragoza",               "Aragón",              1500,    1699, "🏛️", 0xFF8E24AA),
-        League(5, "Valencia",               "Comunidad Valenciana",1700,    1899, "🍊",  0xFFFF7043),
-        League(6, "Sevilla",                "Andalucía",           1900,    2099, "💃",  0xFFD81B60),
-        League(7, "Barcelona",              "Cataluña",            2100,    2299, "🏰",  0xFF1976D2),
-        League(8, "Madrid — ¡La Capital!",  "Madrid",              2300, 999999, "👑",  0xFFC62828)
+        League(1, "Aldea perdida",          "Extremadura",            0,     99, "🏚️", 0xFF8D6E63),
+        League(2, "Santiago de Compostela", "Galicia",              100,    299, "⛪",  0xFF4DB6AC),
+        League(3, "Bilbao",                 "País Vasco",           300,    599, "⚓",  0xFF455A64),
+        League(4, "Zaragoza",               "Aragón",               600,    999, "🏛️", 0xFF8E24AA),
+        League(5, "Valencia",               "Comunidad Valenciana",1000,   1499, "🍊",  0xFFFF7043),
+        League(6, "Sevilla",                "Andalucía",           1500,   2099, "💃",  0xFFD81B60),
+        League(7, "Barcelona",              "Cataluña",            2100,   2799, "🏰",  0xFF1976D2),
+        League(8, "Madrid — ¡La Capital!",  "Madrid",              2800, 999999, "👑",  0xFFC62828)
     )
 
     fun fromRating(rating: Int): League =

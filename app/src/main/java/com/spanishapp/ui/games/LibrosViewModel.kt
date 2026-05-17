@@ -73,6 +73,38 @@ class LibrosViewModel @Inject constructor(
 
     // ── Сохранение результата теста ───────────────────────────
 
+    /**
+     * Touch-метод для daily mission: вызывается при открытии экрана чтения,
+     * до прохождения теста. Обновляет completedAt = now (без isCompleted),
+     * чтобы галка «прочитал страницу» загоралась сразу после захода в рассказ.
+     *
+     * 1.1.1 fix: используем GlobalScope потому что юзер может **мгновенно**
+     * выйти из LibroReadScreen (тестер сообщил что галка на главной не
+     * появляется). При viewModelScope корутина отменяется при destroy
+     * экрана → upsert не успевает завершиться. GlobalScope гарантирует
+     * что DB-запись пройдёт.
+     */
+    fun markOpened(libroId: Int) {
+        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            try {
+                val existing = dao.getById(libroId)
+                dao.upsert(
+                    LibroProgressEntity(
+                        libroId     = libroId,
+                        isCompleted = existing?.isCompleted == true,   // не сбрасываем
+                        bestScore   = existing?.bestScore ?: 0,
+                        completedAt = System.currentTimeMillis()
+                    )
+                )
+            } catch (e: Exception) {
+                runCatching {
+                    com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                        .recordException(e)
+                }
+            }
+        }
+    }
+
     fun saveResult(libroId: Int, correctCount: Int, totalCount: Int) {
         val score = if (totalCount > 0) correctCount * 100 / totalCount else 0
         val passed = correctCount >= LibrosData.PASS_CORRECT

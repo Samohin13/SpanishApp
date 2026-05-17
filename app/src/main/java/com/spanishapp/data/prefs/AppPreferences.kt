@@ -32,7 +32,17 @@ class AppPreferences @Inject constructor(
         val REMINDER_MINUTE  = intPreferencesKey("reminder_minute")  // 0..59
         val FONT_SIZE        = stringPreferencesKey("font_size") // SMALL, MEDIUM, LARGE
         val UI_LANGUAGE      = stringPreferencesKey("ui_language") // "ru", "en", "system"
+        val FEATURE_TOUR_SEEN = booleanPreferencesKey("feature_tour_seen")
     }
+
+    /**
+     * Видел ли пользователь 3-экранный feature-tour после auth-онбординга.
+     * Показывается ровно один раз — после введения имени и выбора уровня,
+     * перед первым входом на главный экран. Защита от повторного показа
+     * при каждом старте — флаг хранится в DataStore и переживает перезапуски.
+     */
+    val featureTourSeen: Flow<Boolean> = context.dataStore.data.map { it[FEATURE_TOUR_SEEN] ?: false }
+    suspend fun setFeatureTourSeen(seen: Boolean) = context.dataStore.edit { it[FEATURE_TOUR_SEEN] = seen }
 
     val soundEffectsEnabled: Flow<Boolean> = context.dataStore.data.map { it[SOUND_EFFECTS] ?: true }
     suspend fun setSoundEffectsEnabled(enabled: Boolean) = context.dataStore.edit { it[SOUND_EFFECTS] = enabled }

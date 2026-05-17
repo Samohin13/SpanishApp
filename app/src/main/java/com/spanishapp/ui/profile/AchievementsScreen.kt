@@ -219,13 +219,20 @@ private fun AnimatedAchievementCard(
 
 @Composable
 private fun AchievementCard(a: AchievementEntity, unlocked: Boolean, isFresh: Boolean = false) {
-    val icon = when {
-        a.requirementType == "streak"    -> "🔥"
-        a.requirementType == "words"     -> "📚"
-        a.requirementType == "lessons"   -> "📖"
-        a.requirementType == "dialogues" -> "💬"
-        a.requirementType == "xp"        -> "⭐"
-        else -> "🏅"
+    // 1.1.0: единая семантика — все достижения = кубок 🏆.
+    // Иерархия (бронза/серебро/золото) определяется через xpReward,
+    // не через разные эмодзи — раньше каша иконок (🔥/📚/💬/⭐) сбивала
+    // юзера с толку, не было понятно что важнее.
+    val icon = "🏆"
+    val tier = when {
+        a.xpReward >= 80 -> AchievementTier.GOLD
+        a.xpReward >= 20 -> AchievementTier.SILVER
+        else             -> AchievementTier.BRONZE
+    }
+    val tierColor = when (tier) {
+        AchievementTier.BRONZE -> Color(0xFFCD7F32)   // bronze
+        AchievementTier.SILVER -> Color(0xFFB0B0B5)   // silver-grey
+        AchievementTier.GOLD   -> AppColors.Gold      // gold (brand)
     }
 
     // Лёгкая пульсация иконки для свежих достижений.
@@ -258,10 +265,10 @@ private fun AchievementCard(a: AchievementEntity, unlocked: Boolean, isFresh: Bo
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Icon box
+            // Icon box — фон цвета tier (bronze/silver/gold)
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = if (unlocked) AppColors.Gold.copy(alpha = 0.15f)
+                color = if (unlocked) tierColor.copy(alpha = 0.15f)
                         else MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.scale(iconScale)
             ) {
@@ -304,10 +311,10 @@ private fun AchievementCard(a: AchievementEntity, unlocked: Boolean, isFresh: Bo
                 )
             }
 
-            // XP badge
+            // XP badge — цвет tier для unlocked
             Surface(
                 shape = RoundedCornerShape(8.dp),
-                color = if (unlocked) AppColors.Gold.copy(alpha = 0.2f)
+                color = if (unlocked) tierColor.copy(alpha = 0.2f)
                         else MaterialTheme.colorScheme.surfaceVariant
             ) {
                 Text(
@@ -315,10 +322,12 @@ private fun AchievementCard(a: AchievementEntity, unlocked: Boolean, isFresh: Bo
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
-                    color = if (unlocked) AppColors.GoldDark
+                    color = if (unlocked) tierColor
                             else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
     }
 }
+
+private enum class AchievementTier { BRONZE, SILVER, GOLD }

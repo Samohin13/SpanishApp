@@ -111,17 +111,73 @@ class SettingsViewModel @Inject constructor(
         userProgressDao.update(UserProgressEntity())
     }
 
-    /** Returns: true=success, false=failure (incl. not signed in). */
-    suspend fun syncNow(): Boolean {
-        val signedIn = FirebaseAuth.getInstance().currentUser != null
-        if (!signedIn) return false
-        val up = syncRepository.uploadAll(force = true).isSuccess
-        val down = syncRepository.downloadAll().isSuccess
-        return up && down
+    /** Результат синхронизации — для понятных Toast-сообщений. */
+    enum class SyncResult { SUCCESS, NO_INTERNET, AUTH_FAILED, FAILED }
+
+    /**
+     * 1.1.1 fix: раньше требовалась авторизация (Google Sign-In).
+     * Теперь — auto sign-in **anonymously** если юзер не залогинен.
+     * Anonymous-аккаунт даёт uid в Firebase → достаточно для синхронизации
+     * прогресса между устройствами одного юзера через recover-flow.
+     */
+    suspend fun syncNow(): SyncResult {
+        // 1. Гарантируем наличие uid — авто-логин если нужно
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            val authOk = runCatching {
+                FirebaseAuth.getInstance().signInAnonymously().await()
+            }.isSuccess
+            if (!authOk) return SyncResult.AUTH_FAILED
+        }
+        // 2. Upload + Download
+        val up = syncRepository.uploadAll(force = true)
+        val down = syncRepository.downloadAll()
+        return when {
+            up.isSuccess && down.isSuccess -> SyncResult.SUCCESS
+            // Network errors часто содержат "UNAVAILABLE" / "network" в message
+            up.exceptionOrNull()?.message?.contains("network", true) == true ||
+            down.exceptionOrNull()?.message?.contains("network", true) == true ->
+                SyncResult.NO_INTERNET
+            else -> {
+                runCatching {
+                    val e = up.exceptionOrNull() ?: down.exceptionOrNull() ?: return@runCatching
+                    com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                        .recordException(e)
+                }
+                SyncResult.FAILED
+            }
+        }
     }
 
     val appLockEnabled = appLockPreferences.isEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    /**
+     * 1.1.1: Контент-инвентарь для отображения в Settings → секция «Контент».
+     * Тестер не мог проверить «10К+ слов в словаре» — теперь видно явно.
+     * Считаем live из БД (slow paths не критично — Settings редко открывают).
+     */
+    data class ContentStats(
+        val wordsCount: Int = 0,
+        val lessonsCount: Int = 0,
+        val verbsCount: Int = 0,
+        val librosCount: Int = 0,
+    )
+
+    val contentStats: StateFlow<ContentStats> = flow {
+        emit(
+            ContentStats(
+                wordsCount   = runCatching { wordDao.getCount() }.getOrDefault(0),
+                lessonsCount = com.spanishapp.ui.home.RoadmapData.units
+                    .sumOf { it.lessons.size },
+                verbsCount   = runCatching {
+                    com.spanishapp.data.repository.ConjugationData.getAll().size +
+                    com.spanishapp.data.repository.ConjugationData2.getAll().size +
+                    com.spanishapp.data.repository.ConjugationData3.getAll().size
+                }.getOrDefault(0),
+                librosCount  = com.spanishapp.ui.games.LibrosData.all.size,
+            )
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ContentStats())
 
     val biometricUsable: Boolean get() = appLockManager.biometricAvailability().isUsable
 
@@ -262,6 +318,16 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * «Проверить напоминание сейчас» — мгновенно показывает тестовое
+     * push-уведомление. Защита от ситуации «настроил время, но push не
+     * приходят» (POST_NOTIFICATIONS не дано / Do-Not-Disturb / админ
+     * лаунчера блокирует канал). Юзер сразу видит работает оно или нет.
+     */
+    fun sendTestReminder(context: android.content.Context) = viewModelScope.launch {
+        com.spanishapp.service.DailyReminderWorker.fireOnce(context)
+    }
+
     fun setFontSize(s: String) = viewModelScope.launch { appPreferences.setFontSize(s) }
     fun logout() = viewModelScope.launch {
         // Sign out from Firebase first; the leaderboard/sync code keys off the
@@ -333,6 +399,7 @@ fun SettingsScreen(
     navController: NavHostController,
     vm: SettingsViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(Unit) { com.spanishapp.service.Analytics.settingsOpened() }
     val progress by vm.progress.collectAsStateWithLifecycle()
     val userName by vm.userName.collectAsStateWithLifecycle()
     val isPhotoLoading by vm.isPhotoLoading.collectAsStateWithLifecycle()
@@ -489,31 +556,38 @@ fun SettingsScreen(
 
             SettingsSection(stringResource(R.string.settings_section_profile)) {
                 SettingsItem(Icons.Default.Edit, stringResource(R.string.settings_change_name), userName?.takeIf { it.isNotBlank() } ?: progress.displayName) { showNameDialog = true }
-                SettingsItem(Icons.Default.Translate, stringResource(R.string.set_spanish_level), when(progress.currentLevel) {
-                    "A1" -> stringResource(R.string.set_level_a1)
-                    "A2" -> stringResource(R.string.set_level_a2)
-                    "B1" -> stringResource(R.string.set_level_b1)
-                    "B2" -> stringResource(R.string.set_level_b2)
-                    else -> progress.currentLevel
-                }) { showLevelDialog = true }
+                // Уровень — read-only с возможностью пересдать тест.
+                // Раньше тап открывал диалог где юзер мог самовольно
+                // поменять с A1 на C2 — это ломало адаптивность системы.
+                // Теперь тап показывает диалог: «Уровень определяется
+                // тестом. Хочешь пересдать?» → запуск placement-test.
+                SettingsItem(
+                    Icons.Default.Translate,
+                    stringResource(R.string.set_spanish_level),
+                    when(progress.currentLevel) {
+                        "A1" -> stringResource(R.string.set_level_a1)
+                        "A2" -> stringResource(R.string.set_level_a2)
+                        "B1" -> stringResource(R.string.set_level_b1)
+                        "B2" -> stringResource(R.string.set_level_b2)
+                        else -> progress.currentLevel
+                    }
+                ) { showLevelDialog = true }
                 SettingsItem(Icons.Default.Timer, stringResource(R.string.settings_daily_goal), "${progress.dailyGoalMinutes} ${stringResource(R.string.settings_minutes_short)}") { showGoalDialog = true }
                 SettingsItem(Icons.Default.BarChart, stringResource(R.string.set_progress_stats)) { navController.navigate("achievements") }
                 // ── Sync Now (Phase 4) ──
+                // 1.1.1: понятные сообщения по результату sync вместо
+                // generic "не удалось". Всегда сначала пытаемся auto sign-in.
                 val syncSuccess = stringResource(R.string.settings_sync_success)
                 val syncError = stringResource(R.string.settings_sync_error)
-                val syncSigninRequired = stringResource(R.string.settings_sync_signin_required)
                 SettingsItem(Icons.Default.Sync, stringResource(R.string.settings_sync_now)) {
                     scope.launch {
-                        val ok = vm.syncNow()
-                        Toast.makeText(
-                            context,
-                            when {
-                                ok -> syncSuccess
-                                FirebaseAuth.getInstance().currentUser == null -> syncSigninRequired
-                                else -> syncError
-                            },
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        val msg = when (vm.syncNow()) {
+                            SettingsViewModel.SyncResult.SUCCESS      -> syncSuccess
+                            SettingsViewModel.SyncResult.NO_INTERNET  -> "Нет интернета — попробуйте позже"
+                            SettingsViewModel.SyncResult.AUTH_FAILED  -> "Не удалось войти в Firebase. Проверьте интернет."
+                            SettingsViewModel.SyncResult.FAILED       -> syncError
+                        }
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -560,6 +634,16 @@ fun SettingsScreen(
                         "%02d:%02d".format(reminderHour, reminderMinute)
                     ) {
                         showTimePicker = true
+                    }
+                    // Кнопка диагностики: «Проверить напоминание» — мгновенный
+                    // тестовый push. Помогает юзеру убедиться что разрешения
+                    // даны, канал не заблокирован и время выставлено правильно.
+                    SettingsItem(
+                        Icons.Default.NotificationsActive,
+                        "Проверить напоминание",
+                        "Получить тестовое уведомление сейчас"
+                    ) {
+                        vm.sendTestReminder(context)
                     }
                 }
                 if (showTimePicker) {
@@ -623,6 +707,19 @@ fun SettingsScreen(
                     }
                     context.startActivity(Intent.createChooser(intent, emailChooser))
                 }
+            }
+
+            // ── Контент-инвентарь (1.1.1) ───────────────────────
+            // Тестер не мог проверить «реально ли в словаре 10К+ слов».
+            // Показываем явные числа что есть в приложении.
+            val contentStats by vm.contentStats.collectAsStateWithLifecycle()
+            SettingsSection("Контент") {
+                SettingsItem(Icons.Default.Translate, "Слова в словаре", "${contentStats.wordsCount}") {
+                    navController.navigate("dictionary") { launchSingleTop = true }
+                }
+                SettingsItem(Icons.Default.MenuBook, "Уроков всего", "${contentStats.lessonsCount}")
+                SettingsItem(Icons.Default.RecordVoiceOver, "Глаголов в тренажёре", "${contentStats.verbsCount}")
+                SettingsItem(Icons.Default.Book, "Рассказов Libros", "${contentStats.librosCount}")
             }
 
             // ── Биометрический замок ─────────────────────────────
@@ -773,29 +870,50 @@ fun SettingsScreen(
     }
 
     if (showLevelDialog) {
-        val levels = listOf(
-            "A1" to stringResource(R.string.set_level_a1_short),
-            "A2" to stringResource(R.string.set_level_a2_short),
-            "B1" to stringResource(R.string.set_level_b1_short),
-            "B2" to stringResource(R.string.set_level_b2_short)
-        )
+        // Read-only диалог: показывает текущий уровень + предлагает
+        // пересдать placement-test. Раньше юзер мог самовольно поставить
+        // C2 при нулевом прогрессе → ломалась адаптивность контента.
+        val levelLabel = when(progress.currentLevel) {
+            "A1" -> stringResource(R.string.set_level_a1)
+            "A2" -> stringResource(R.string.set_level_a2)
+            "B1" -> stringResource(R.string.set_level_b1)
+            "B2" -> stringResource(R.string.set_level_b2)
+            else -> progress.currentLevel
+        }
         AlertDialog(
             onDismissRequest = { showLevelDialog = false },
             title = { Text(stringResource(R.string.set_spanish_level)) },
             text = {
                 Column {
-                    levels.forEach { (key, label) ->
-                        Row(
-                            Modifier.fillMaxWidth().clickable { vm.updateLevel(key); showLevelDialog = false }.padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(selected = progress.currentLevel == key, onClick = { vm.updateLevel(key); showLevelDialog = false })
-                            Text(label, modifier = Modifier.padding(start = 8.dp))
-                        }
-                    }
+                    Text(
+                        "Твой уровень: $levelLabel",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        "Уровень определяется автоматически на основе " +
+                        "пройденных уроков и упражнений. Если хочешь " +
+                        "переопределить — пройди тест уровня заново.",
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 18.sp,
+                    )
                 }
             },
-            confirmButton = {}
+            confirmButton = {
+                TextButton(onClick = {
+                    showLevelDialog = false
+                    navController.navigate("placement_test") { launchSingleTop = true }
+                }) {
+                    Text("Пересдать тест")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLevelDialog = false }) {
+                    Text(stringResource(R.string.btn_close))
+                }
+            }
         )
     }
 
@@ -829,6 +947,31 @@ fun SettingsScreen(
             title = { Text(stringResource(R.string.settings_language_ui)) },
             text = {
                 Column {
+                    // ВАЖНО для не-русскоязычных юзеров: контент (уроки, слова,
+                    // рассказы) сейчас полностью на русском. Меняется только
+                    // язык интерфейса. Без этого предупреждения юзер выбирает
+                    // English/Українська/Español → видит «битый» опыт (меню
+                    // английское, контент русский) → разочарование, удаление.
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.6f),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            verticalAlignment = Alignment.Top,
+                        ) {
+                            Text("⚠", fontSize = 18.sp)
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                "Контент уроков сейчас только на русском. " +
+                                "Перевод на другие языки в работе.",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                lineHeight = 16.sp,
+                            )
+                        }
+                    }
                     // 4 explicit languages with flag emojis. "System" option
                     // dropped — explicit choice is clearer and lets users with
                     // Spanish system locale still pick Russian for the UI.

@@ -26,6 +26,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +56,8 @@ fun RadioScreen(navController: NavHostController) {
     val discoveryState by vm.discoveryState.collectAsState()
     val discoveryProgress by vm.discoveryProgress.collectAsState()
     val discoveryFoundCount by vm.discoveryFoundCount.collectAsState()
+    val totalCaughtWords by vm.totalCaughtWords.collectAsState()
+    val totalListeningMinutes by vm.totalListeningMinutes.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
@@ -210,7 +213,19 @@ fun RadioScreen(navController: NavHostController) {
                     .padding(horizontal = 24.dp),
             )
 
-            Spacer(Modifier.height(28.dp))
+            Spacer(Modifier.height(20.dp))
+
+            // ─── ОБУЧАЮЩАЯ СЕКЦИЯ — Поймал слово + статистика ───
+            WordCatchCard(
+                totalCaught = totalCaughtWords,
+                totalMinutes = totalListeningMinutes,
+                onCatchWord = { vm.catchWord() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 18.dp),
+            )
+
+            Spacer(Modifier.height(20.dp))
 
             // ─── СТАНЦИИ horizontal scroll ───
             Text(
@@ -579,6 +594,145 @@ private fun StationCard(
 // ════════════════════════════════════════════════════════════════
 //  CountrySelector
 // ════════════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════════════
+//  WordCatchCard — обучающий элемент: «Поймал слово!» + stats
+// ════════════════════════════════════════════════════════════════
+
+@Composable
+private fun WordCatchCard(
+    totalCaught: Int,
+    totalMinutes: Long,
+    onCatchWord: () -> Boolean,
+    modifier: Modifier = Modifier,
+) {
+    // Pulse-анимация когда юзер тапнул
+    var pulse by remember { mutableStateOf(false) }
+    val scale by androidx.compose.animation.core.animateFloatAsState(
+        targetValue = if (pulse) 1.08f else 1f,
+        animationSpec = androidx.compose.animation.core.tween(150),
+        label = "catch_pulse",
+    )
+    LaunchedEffect(pulse) {
+        if (pulse) {
+            kotlinx.coroutines.delay(200)
+            pulse = false
+        }
+    }
+
+    Column(modifier = modifier) {
+        // Big "Поймал слово!" button
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Accent.copy(alpha = 0.10f),
+            border = androidx.compose.foundation.BorderStroke(1.5.dp, Accent.copy(alpha = 0.4f)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    val ok = onCatchWord()
+                    if (ok) pulse = true
+                },
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
+                    .scale(scale),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("💬", fontSize = 26.sp)
+                Spacer(Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Поймал слово!",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        "Тапни когда услышал знакомое",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = Accent.copy(alpha = 0.18f),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Accent.copy(alpha = 0.4f)),
+                ) {
+                    Text(
+                        "+5 XP",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Accent,
+                    )
+                }
+            }
+        }
+
+        // Mini stats row
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            StatChip(
+                emoji = "💬",
+                value = totalCaught.toString(),
+                label = "слов",
+                modifier = Modifier.weight(1f),
+            )
+            StatChip(
+                emoji = "⏱",
+                value = formatMinutes(totalMinutes),
+                label = "прослушано",
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatChip(
+    emoji: String,
+    value: String,
+    label: String,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+        modifier = modifier,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(emoji, fontSize = 18.sp)
+            Spacer(Modifier.width(8.dp))
+            Column {
+                Text(
+                    value,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    label,
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+private fun formatMinutes(minutes: Long): String {
+    if (minutes < 60) return "$minutes мин"
+    val h = minutes / 60
+    val m = minutes % 60
+    return if (m == 0L) "$h ч" else "$h ч $m мин"
+}
 
 @Composable
 private fun CountrySelector(

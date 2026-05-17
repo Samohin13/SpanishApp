@@ -58,6 +58,7 @@ class LanguagePickerViewModel @Inject constructor(
     fun set(code: String, onWritten: () -> Unit) {
         viewModelScope.launch {
             prefs.setUiLanguage(code)
+            com.spanishapp.service.Analytics.languageChanged(code)
             onWritten()
         }
     }

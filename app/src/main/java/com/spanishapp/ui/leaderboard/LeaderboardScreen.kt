@@ -120,11 +120,39 @@ fun LeaderboardScreen(
             }
 
             // WEEK tab is just a navigation jump — fall through to LOCAL view if user lands here
-            val effectiveTab = if (tab == Tab.WEEK) Tab.LOCAL else tab
+            var effectiveTab = if (tab == Tab.WEEK) Tab.LOCAL else tab
+
+            // Auto-fallback на «Мир» если в твоей стране меньше 5 юзеров.
+            // Иначе юзер видит вкладку «Россия / Казахстан» с одной строкой
+            // (только собой) — выглядит мёртво, нет конкуренции.
+            val MIN_LOCAL_USERS = 5
+            val countryEmpty = data.countryTotal < MIN_LOCAL_USERS
+            if (effectiveTab == Tab.LOCAL && countryEmpty) {
+                effectiveTab = Tab.WORLD
+            }
+
             val rows = if (effectiveTab == Tab.LOCAL) data.countryRows else data.worldRows
             val myRank = if (effectiveTab == Tab.LOCAL) data.myCountryRank else data.myWorldRank
             val total = if (effectiveTab == Tab.LOCAL) data.countryTotal else data.worldTotal
             val tabName = if (effectiveTab == Tab.LOCAL) CountryNames.nameOf(state.deviceCountry) else stringResource(R.string.lb_world)
+
+            // Подсказка пользователю что мы временно показываем мировой топ
+            if (tab == Tab.LOCAL && countryEmpty) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f)
+                ) {
+                    Text(
+                        "В твоей стране пока мало игроков (${data.countryTotal}). " +
+                        "Показываем мировой рейтинг — присоединяйся к топу!",
+                        modifier = Modifier.padding(10.dp),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        lineHeight = 16.sp,
+                    )
+                }
+            }
 
             // Шапка с моим рангом
             if (myRank != null) {

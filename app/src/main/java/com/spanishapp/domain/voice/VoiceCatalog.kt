@@ -19,9 +19,23 @@ object VoiceCatalog {
 
     // Эвристика для имени и пола Google TTS-голосов.
     // Имена системных голосов: "es-es-x-eef-network", "es-us-x-esd-local" и т.п.
-    // Третий сегмент часто намекает на пол: -e?f-/-e?d- = female, -e?m-/-e?b- = male
-    private val FEMALE_HINTS = setOf("eef", "esf", "ana", "lupe", "marisol", "valentina", "mia", "sofia", "carmen", "elena")
-    private val MALE_HINTS   = setOf("eem", "esm", "diego", "carlos", "miguel", "jorge", "andres", "pablo")
+    //
+    // 1.1.1: расширенные подсказки. Раньше «Хорхе» (Jorge) показывался без
+    // пола (Gender.UNKNOWN) → отображалось «Голос» вместо «Мужской голос».
+    // Добавлены все коды Google TTS Spanish suffixes:
+    //   eef/esd/esf/eed = female
+    //   eem/esm/esa/esb/esc/eea/eec = male (определено эмпирически)
+    private val FEMALE_HINTS = setOf(
+        "eef", "esd", "esf", "eed",  // Google TTS suffixes (female)
+        "ana", "lupe", "marisol", "valentina", "mia", "sofia",
+        "carmen", "elena", "lucia", "lusia", "maria",
+    )
+    private val MALE_HINTS = setOf(
+        "eem", "esm", "esa", "esb", "esc", "eea", "eec", "een",  // Google TTS suffixes (male)
+        "diego", "carlos", "miguel", "jorge", "хорхе",
+        "andres", "andrés", "pablo", "antonio", "alberto",
+        "luis", "javier",
+    )
 
     private val REGION_NAMES = mapOf(
         "ES" to ("Испания (Кастильский)" to "🇪🇸"),

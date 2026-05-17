@@ -116,6 +116,12 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    // ВНИМАНИЕ: FeatureTourGate отключён намеренно (v1.0.6).
+    // В 1.0.5 автопоказ feature-tour ломал старт у уже зарегистрированных
+    // юзеров (race с auth-flow → краш). Маршрут "feature_tour" остаётся
+    // в Navigation.kt — можно добавить кнопку «Показать обзор» в Settings,
+    // если решим возвращать tour. Не вызывать FeatureTourGate автоматически.
+
     val state         by viewModel.uiState.collectAsStateWithLifecycle()
     val wordOfDay     by viewModel.wordOfTheDay.collectAsStateWithLifecycle()
     val lastLesson    by viewModel.lastLessonInProgress.collectAsStateWithLifecycle()
@@ -173,7 +179,8 @@ fun HomeScreen(
                             skillRating  = state.skillRating,
                             league       = state.currentLeague,
                             hasPracticed = state.totalXp > 0,
-                            onClick      = { navController.navigate("profile") { launchSingleTop = true } }
+                            onClick      = { navController.navigate("profile") { launchSingleTop = true } },
+                            streakFreezes = state.streakFreezes,
                         )
                         Spacer(Modifier.height(12.dp))
                     }
@@ -215,6 +222,7 @@ fun HomeScreen(
                                 tts           = tts,
                                 viewModel     = viewModel,
                                 navController = navController,
+                                wodStreak     = state.wodStreak,
                             )
                             Spacer(Modifier.height(12.dp))
                         }
@@ -482,7 +490,8 @@ private fun StatsBar(
     skillRating: Int,
     league: Int,
     hasPracticed: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    streakFreezes: Int = 0,
 ) {
     val progress = if (goalMinutes > 0) (todayMinutes.toFloat() / goalMinutes).coerceIn(0f, 1f) else 0f
     val animatedProgress by animateFloatAsState(progress, tween(500), label = "stats_ring")
@@ -511,7 +520,25 @@ private fun StatsBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            StatCell(emoji = "🔥", text = "$streak", color = OrangeColor, modifier = Modifier.weight(1f))
+            // Стрик с бэйджем заморозок: ❄ × N — даёт юзеру понять что
+            // у него есть «страховка» (раньше freezes тратились молча,
+            // юзер не знал об их существовании).
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                StatCell(emoji = "🔥", text = "$streak", color = OrangeColor, modifier = Modifier.weight(1f, fill = false))
+                if (streakFreezes > 0) {
+                    Text(
+                        text = "❄$streakFreezes",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF60A5FA),  // лёд-голубой
+                        modifier = Modifier.padding(start = 2.dp),
+                    )
+                }
+            }
 
             // Daily-goal mini ring + minutes label.
             Row(
@@ -775,6 +802,7 @@ private fun WordOfDayQuizCard(
     tts: android.speech.tts.TextToSpeech?,
     viewModel: HomeViewModel,
     navController: NavHostController,
+    wodStreak: Int = 0,
 ) {
     var showQuiz by remember { mutableStateOf(false) }
 
@@ -807,6 +835,30 @@ private fun WordOfDayQuizCard(
                     )
                     LevelPill(word.level)
                     Spacer(Modifier.weight(1f))
+                    // 🔥 Стрик закреплённых слов дня — эмоциональная награда
+                    // ровно там, где юзер закончил WoD-квиз. Показываем только
+                    // если серия уже больше нуля, чтобы не мозолить глаза
+                    // новичкам.
+                    if (wodStreak > 0) {
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = Color(0xFFFF6B35).copy(alpha = 0.14f),
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                            ) {
+                                Text("🔥", fontSize = 12.sp)
+                                Text(
+                                    wodStreak.toString(),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color(0xFFFF6B35),
+                                )
+                            }
+                        }
+                    }
                     if (word.wasPracticed) {
                         Text("✓", fontSize = 16.sp, color = Color(0xFF4CAF50))
                     }
@@ -1155,6 +1207,10 @@ private fun WodCompletionStage(
     onCardsClick: () -> Unit,
     onClose: () -> Unit
 ) {
+    // Triumph beep — играем 1 раз при первом показе финальной стадии.
+    val sound = rememberAnswerSound()
+    LaunchedEffect(word.wordId) { sound.correct() }
+
     Column(
         modifier = Modifier.fillMaxSize().padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally

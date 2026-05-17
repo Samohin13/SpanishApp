@@ -32,7 +32,34 @@ class RadioViewModel @Inject constructor(
     private val favoritesDao: com.spanishapp.radio.data.RadioFavoriteDao,
     private val catalogDao: com.spanishapp.radio.data.RadioCatalogDao,
     private val catalogRepo: com.spanishapp.radio.data.RadioCatalogRepository,
+    private val listeningDao: com.spanishapp.radio.data.RadioListeningDao,
+    private val wordCatchDao: com.spanishapp.radio.data.RadioWordCatchDao,
 ) : ViewModel() {
+
+    /** Сколько слов «поймано» за всё время. */
+    val totalCaughtWords: StateFlow<Int> = wordCatchDao.observeTotalCount()
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
+
+    /** Сколько минут прослушано всего. */
+    val totalListeningMinutes: StateFlow<Long> = listeningDao.observeTotalSeconds()
+        .map { it / 60 }
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0L)
+
+    /**
+     * Юзер тапнул «Поймал слово!» — сохраняем в БД, ViewModel выдаст triggerXp.
+     * Возврат: true = успех, false = слишком быстрые тапы (debounce 1 сек).
+     */
+    private var lastWordCatchAt = 0L
+    fun catchWord(): Boolean {
+        val now = System.currentTimeMillis()
+        if (now - lastWordCatchAt < 1000) return false  // защита от спама
+        lastWordCatchAt = now
+        val stationId = currentStation.value?.id ?: return false
+        viewModelScope.launch {
+            wordCatchDao.insert(now, stationId)
+        }
+        return true
+    }
 
     /** Состояние подбора станций под страну. */
     enum class DiscoveryState { IDLE, LOADING, READY, ERROR }
@@ -122,6 +149,14 @@ class RadioViewModel @Inject constructor(
     private var snapJob: Job? = null
 
     init {
+        // Подключаем трекер listening sessions — сохраняем в БД когда сессия заканчивается.
+        // GlobalScope чтобы запись прошла даже если ViewModel умрёт.
+        player.onSessionEnded = { startedAt, endedAt, stationId ->
+            kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                listeningDao.insert(startedAt, endedAt, stationId)
+            }
+        }
+
         // 1. Проверяем кэш каталога. Если есть — используем. Если нет / устарел — запускаем discovery.
         viewModelScope.launch {
             val hasCache = catalogDao.count() > 0

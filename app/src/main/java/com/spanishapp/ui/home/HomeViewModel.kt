@@ -62,6 +62,8 @@ internal fun motivationResFor(date: LocalDate): Int {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    @dagger.hilt.android.qualifiers.ApplicationContext
+    private val appContext: android.content.Context,
     private val userProgressDao: UserProgressDao,
     private val wordDao: WordDao,
     private val lessonDao: LessonDao,
@@ -71,6 +73,7 @@ class HomeViewModel @Inject constructor(
     private val libroProgressDao: LibroProgressDao,
     private val flashcardSetProgressDao: FlashcardSetProgressDao,
     private val recentSearchDao: RecentSearchDao,
+    private val wodHistoryDao: WodHistoryDao,
     private val achievementManager: AchievementManager,
     private val authRepository: AuthRepository
 ) : ViewModel() {
@@ -137,6 +140,7 @@ class HomeViewModel @Inject constructor(
             userPhotoUrl     = photoUrl,
             skillRating      = p.skillRating,
             currentLeague    = p.currentLeague,
+            wodStreak        = p.wodStreak,
             isLoading        = false
         )
     }
@@ -299,10 +303,67 @@ class HomeViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    /** Mark today's WoD as practised — called after the user clears any quiz mode. */
+    /**
+     * Mark today's WoD as practised — called once after the user finishes the quiz flow.
+     *
+     * Side-effects:
+     *   1. daily_words.was_practiced = 1
+     *   2. INSERT into wod_history (для коллекции «Слов дня» и стат-виджета)
+     *   3. Пересчёт wod_streak:
+     *        — сегодня уже отмечено → ничего не трогаем (idempotent на повторный заход)
+     *        — последняя отметка была вчера → streak + 1
+     *        — иначе → streak = 1 (новая серия)
+     */
     fun markWordOfDayPractised() {
         viewModelScope.launch {
-            dailyWordDao.markPracticed(LocalDate.now().toString())
+            val today = LocalDate.now()
+            val todayStr = today.toString()
+
+            dailyWordDao.markPracticed(todayStr)
+
+            val word = wordOfTheDay.value ?: return@launch
+            val progress = userProgressDao.getProgressOnce() ?: return@launch
+
+            val lastDate = if (progress.wodLastDate > 0L) {
+                java.time.Instant.ofEpochMilli(progress.wodLastDate)
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate()
+            } else null
+
+            // Idempotent: повторный заход в течение того же дня не должен ни писать в историю,
+            // ни инкрементить серию.
+            if (lastDate == today) return@launch
+
+            // История — отдельный insert: 1 запись = 1 закрепление в день.
+            wodHistoryDao.insert(
+                com.spanishapp.data.db.entity.WodHistoryEntity(
+                    wordId  = word.wordId,
+                    spanish = word.spanish,
+                    russian = word.russian,
+                    level   = word.level,
+                )
+            )
+
+            val newStreak = when {
+                lastDate == null                           -> 1
+                lastDate == today.minusDays(1)             -> progress.wodStreak + 1
+                else                                       -> 1
+            }
+
+            userProgressDao.updateWodStreak(
+                streak     = newStreak,
+                lastDateMs = System.currentTimeMillis()
+            )
+
+            // Точечное повторение через 1 час — пик кривой забывания.
+            com.spanishapp.service.WoDReminderWorker.scheduleInOneHour(
+                context = appContext,
+                spanish = word.spanish,
+                russian = word.russian,
+            )
+
+            // Analytics: первое успешное закрепление за сегодня.
+            com.spanishapp.service.Analytics.wodCompleted(level = word.level)
         }
     }
 
@@ -331,6 +392,13 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val p = userProgressDao.getProgressOnce() ?: return@launch
             val (newStreak, bonus) = StreakManager.calculateStreak(p.lastStudyDate, p.currentStreak)
+
+            // Analytics: серия прервалась — старый стрик упал до 1 (не +1).
+            // Это самый ценный сигнал: показывает в какой день недели юзеры
+            // перестают заниматься (можно адаптировать пуш-уведомления).
+            if (newStreak == 1 && p.currentStreak > 1) {
+                com.spanishapp.service.Analytics.streakLost(daysWas = p.currentStreak)
+            }
 
             userProgressDao.update(
                 p.copy(
@@ -368,8 +436,9 @@ data class HomeUiState(
     val shouldLevelUp: Boolean = false,
     val roadmapUnits: List<RoadmapUnit> = emptyList(),
     val userPhotoUrl: String? = null,
-    val skillRating: Int = 1000,
+    val skillRating: Int = 0,   // v1.1.0: старт с 0 (было 1000)
     val currentLeague: Int = 1,
+    val wodStreak: Int = 0,
     val isLoading: Boolean = true,
     val error: String? = null
 )
