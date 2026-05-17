@@ -90,8 +90,9 @@ fun RadioMiniPlayer(
     val isPlaying by player.isPlaying.collectAsState()
     val context_stations by player.stationContext.collectAsState()
     val canSkip = context_stations.size > 1
+    val hiddenBySwipe by player.miniPlayerHidden.collectAsState()
 
-    val visible = station != null && !isOnRadioScreen
+    val visible = station != null && !isOnRadioScreen && !hiddenBySwipe
 
     // Swipe-to-dismiss state. Threshold 30% ширины контейнера → закрыть радио.
     // Иначе snap-back к исходной позиции (легкий случайный жест не закрывает).
@@ -125,14 +126,18 @@ fun RadioMiniPlayer(
                         onDragEnd = {
                             scope.launch {
                                 if (abs(offsetX.value) >= dismissThreshold) {
-                                    // Закрываем — сильный haptic + slide-out до края + stop()
+                                    // СКРЫВАЕМ (не останавливаем!) — радио продолжает играть
+                                    // в фоне, notification на месте. Mini-player вернётся
+                                    // когда юзер откроет radio-экран (LaunchedEffect там
+                                    // сбросит miniPlayerHidden в false).
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     val targetX = if (offsetX.value > 0) containerWidthPx
                                                   else -containerWidthPx
                                     offsetX.animateTo(targetX, tween(durationMillis = 200))
-                                    player.stop()
-                                    // После stop станция = null → AnimatedVisibility hide
-                                    // offset сбросится через LaunchedEffect на следующем show
+                                    player.hideMiniPlayer()
+                                    // Сбрасываем offset обратно к 0 чтобы при следующем
+                                    // show'е mini-player был на правильном месте
+                                    offsetX.snapTo(0f)
                                 } else {
                                     // Snap back — лёгкий spring без haptic
                                     offsetX.animateTo(

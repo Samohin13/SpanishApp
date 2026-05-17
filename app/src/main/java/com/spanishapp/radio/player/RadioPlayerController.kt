@@ -76,6 +76,20 @@ class RadioPlayerController(private val context: Context) {
     private val _nowPlaying = MutableStateFlow<String?>(null)
     val nowPlaying: StateFlow<String?> = _nowPlaying.asStateFlow()
 
+    /**
+     * Скрыт ли mini-player (юзер свайпнул его в сторону).
+     * Радио продолжает играть, notification на месте — просто mini-player
+     * не отображается на главной/других экранах. Сбрасывается в false
+     * когда юзер заходит в радио-экран (RadioScreen.LaunchedEffect).
+     *
+     * Session-scoped — не персистится. App restart → false.
+     */
+    private val _miniPlayerHidden = MutableStateFlow(false)
+    val miniPlayerHidden: StateFlow<Boolean> = _miniPlayerHidden.asStateFlow()
+
+    fun hideMiniPlayer() { _miniPlayerHidden.value = true }
+    fun showMiniPlayer() { _miniPlayerHidden.value = false }
+
     /** Callback для статистики прослушивания. */
     var onSessionEnded: ((startedAt: Long, endedAt: Long, stationId: String) -> Unit)? = null
 

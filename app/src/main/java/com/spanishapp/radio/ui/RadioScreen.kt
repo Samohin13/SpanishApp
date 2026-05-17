@@ -86,6 +86,13 @@ private val Green = Color(0xFF4CAF50)
 fun RadioScreen(navController: NavHostController) {
     val vm: RadioViewModel = hiltViewModel()
 
+    // Юзер зашёл в радио → возвращаем mini-player на главную/др экраны.
+    // Раньше юзер мог свайпнуть mini-player вниз/в сторону → он скрыт.
+    // Открыл радио = «хочу видеть» → reset.
+    LaunchedEffect(Unit) {
+        vm.resetMiniPlayerVisibility()
+    }
+
     val country by vm.country.collectAsState()
     val station by vm.currentStation.collectAsState()
     val isPlaying by vm.isPlaying.collectAsState()

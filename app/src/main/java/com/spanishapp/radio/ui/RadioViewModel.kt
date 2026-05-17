@@ -337,6 +337,9 @@ class RadioViewModel @Inject constructor(
     fun nextStation() = player.nextStation()
     fun previousStation() = player.previousStation()
 
+    /** Вернуть mini-player на не-радио-экраны если юзер его скрыл свайпом. */
+    fun resetMiniPlayerVisibility() = player.showMiniPlayer()
+
     private fun tuneToStation(station: Station) {
         player.play(station)
     }
