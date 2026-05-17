@@ -440,7 +440,8 @@ private fun AllWordsContent(
         map
     }
 
-    Column(Modifier.fillMaxSize()) {
+    // v1.12.5: imePadding — клавиатура не перекрывает search input + список.
+    Column(Modifier.fillMaxSize().imePadding()) {
         // ── Поиск + история ───────────────────────────────
         Box(Modifier.fillMaxWidth()) {
             OutlinedTextField(

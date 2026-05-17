@@ -340,13 +340,21 @@ class RadioViewModel @Inject constructor(
     /** Вернуть mini-player на не-радио-экраны если юзер его скрыл свайпом. */
     fun resetMiniPlayerVisibility() = player.showMiniPlayer()
 
-    private fun tuneToStation(station: Station) {
-        player.play(station)
+    /**
+     * v1.12.5: добавлен параметр autoPlay.
+     * - true (тап юзера, switch station пока играет, dead skip) → play
+     * - false (init VM, reload каталога, смена страны) → только prepare,
+     *   юзер сам нажмёт ▶.
+     * До v1.12.5 любой tuneToStation запускал авто-play при заходе на /radio
+     * — юзеры жаловались что радио включается само.
+     */
+    private fun tuneToStation(station: Station, autoPlay: Boolean = false) {
+        if (autoPlay) player.play(station) else player.prepareOnly(station)
     }
 
     /** Тап по карточке станции — мгновенно переключаем (UI обновится через StateFlow). */
     fun tuneToStationDirect(station: Station) {
-        tuneToStation(station)
+        tuneToStation(station, autoPlay = true)
     }
 
     fun togglePlayback() {

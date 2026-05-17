@@ -2423,7 +2423,7 @@ object LibrosData {
         Libro(
             id = 66,
             title = "Un Día en la Ciudad",
-            level = "B1", difficulty = 2, topic = "Городская жизнь",
+            level = "B2", difficulty = 2, topic = "Городская жизнь",
             text = """
                 Cada vez que Marcos sale a la ciudad para hacer recados, vuelve a casa con la sensación de haber vivido tres días en uno.
                 Empieza la mañana cogiendo el metro a las ocho, junto con cientos de personas con caras de sueño.
@@ -2460,7 +2460,7 @@ object LibrosData {
         Libro(
             id = 67,
             title = "La Primera Cena",
-            level = "B1", difficulty = 2, topic = "Любовь / Кухня",
+            level = "B2", difficulty = 2, topic = "Любовь / Кухня",
             text = """
                 Cuando Pablo invitó a Carmen a cenar a su casa por primera vez, decidió que quería impresionarla cocinando él mismo en lugar de pedir comida.
                 El problema era que Pablo, a sus treinta años, prácticamente no había cocinado nunca: vivía a base de ensaladas frías y comida congelada.
@@ -2498,7 +2498,7 @@ object LibrosData {
         Libro(
             id = 68,
             title = "El Profesor que No Olvido",
-            level = "B1", difficulty = 3, topic = "Образование / Воспоминания",
+            level = "B2", difficulty = 3, topic = "Образование / Воспоминания",
             text = """
                 Cuando le pregunté a mi padre quién había sido la persona más influyente en su vida, no dudó en responder: el señor Méndez, su profesor de literatura del instituto.
                 «No nos enseñaba a aprobar exámenes», me dijo. «Nos enseñaba a leer.»
@@ -2536,7 +2536,7 @@ object LibrosData {
         Libro(
             id = 69,
             title = "El Mensaje en la Botella",
-            level = "B1", difficulty = 4, topic = "Море / Связь",
+            level = "B2", difficulty = 4, topic = "Море / Связь",
             text = """
                 En agosto, mientras paseaba por la playa de Calella al atardecer, Lucía vio una botella de cristal medio enterrada en la arena.
                 Dentro había un papel doblado que parecía haber pasado tiempo en el mar.
@@ -2574,7 +2574,7 @@ object LibrosData {
         Libro(
             id = 70,
             title = "La Reforma de la Cocina",
-            level = "B1", difficulty = 5, topic = "Дом / Терпение",
+            level = "B2", difficulty = 5, topic = "Дом / Терпение",
             text = """
                 Cuando los Hernández compraron un piso de los años setenta a buen precio, sabían que tendrían que reformarlo, pero no imaginaban hasta qué punto.
                 Lo que iba a ser una reforma de tres meses se convirtió en una odisea de casi un año.

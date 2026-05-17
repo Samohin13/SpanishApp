@@ -388,6 +388,30 @@ class RadioPlayerController(private val context: Context) {
         }
     }
 
+    /**
+     * v1.12.5: «Подготовить» станцию БЕЗ автоплея.
+     * Используется при заходе на /radio чтобы UI знал «текущую» станцию,
+     * но не начал играть автоматически. Юзер сам нажмёт ▶.
+     */
+    fun prepareOnly(station: Station) {
+        _hasError.value = false
+        _currentStation.value = station
+        _nowPlaying.value = null
+        // НЕ сбрасываем reconnect — это «pre-load», а не активная сессия.
+        val context = _stationContext.value
+        val playStation = station
+        val (items, startIndex) = if (context.size <= 1 || !context.any { it.id == playStation.id }) {
+            listOf(playStation.toMediaItem()) to 0
+        } else {
+            context.map { it.toMediaItem() } to context.indexOfFirst { it.id == playStation.id }
+        }
+        ensureConnectedAndRun { controller ->
+            controller.setMediaItems(items, startIndex.coerceAtLeast(0), 0L)
+            controller.prepare()
+            // НЕТ controller.play() — играть начнём только по тапу юзера.
+        }
+    }
+
     /** Station → MediaItem с stable mediaId (для onMediaItemTransition matching). */
     private fun Station.toMediaItem(): MediaItem = MediaItem.Builder()
         .setMediaId(id)
