@@ -272,7 +272,9 @@ fun SpanishNavigationRail(
     }
 
     androidx.compose.material3.NavigationRail(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier
+            .fillMaxHeight()
+            .width(96.dp),  // v1.12.2: было 80dp default → 96dp чтобы текст "Карточки" не обрезался
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         // Top spacer чтобы иконки начинались чуть ниже top edge
@@ -283,18 +285,21 @@ fun SpanishNavigationRail(
             androidx.compose.material3.NavigationRailItem(
                 selected = selected,
                 onClick = { onNavigate(item.route) },
+                alwaysShowLabel = true,
                 icon = {
                     Icon(
                         if (selected) item.iconSelected else item.icon,
                         contentDescription = androidx.compose.ui.res.stringResource(item.labelRes),
-                        modifier = Modifier.size(26.dp),
+                        modifier = Modifier.size(24.dp),
                     )
                 },
                 label = {
                     Text(
                         androidx.compose.ui.res.stringResource(item.labelRes),
-                        fontSize = 10.sp,
+                        fontSize = 11.sp,
                         fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                        maxLines = 1,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     )
                 },
                 colors = androidx.compose.material3.NavigationRailItemDefaults.colors(

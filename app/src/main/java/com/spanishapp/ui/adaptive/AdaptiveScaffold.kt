@@ -76,42 +76,51 @@ fun AdaptiveScaffold(
         )
     } else {
         // ─── Medium / Expanded — NavigationRail слева ───
-        Row(
+        // v1.12.2: переделано — Column [Row(rail | content), miniPlayer].
+        // Раньше mini-player был зажат в 96dp slot слева сверху rail'а —
+        // выглядел сломанным огрызком. Теперь снизу на всю ширину, как
+        // у Spotify/YouTube Music на планшете.
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
         ) {
-            if (showNavigation) {
-                // Колонка слева: mini-player сверху (если есть) + nav rail
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .windowInsetsPadding(WindowInsets.systemBars),
-                ) {
-                    Box(modifier = Modifier.width(96.dp)) {
-                        topOverlay()
-                    }
-                    navigationRail()
-                }
-            }
-            // Контент занимает остаток ширины + auto-centered с max-width.
-            // v1.12.1: оборачиваем в Box с adaptiveContentWidth() чтобы ВСЕ
-            // 49 экранов автоматически получили cap без необходимости
-            // править каждый файл вручную. Box(fillMaxSize) + inner Box
-            // (adaptiveContentWidth) → контент центрируется + по бокам
-            // фон Scaffold.
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopCenter,
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
             ) {
+                if (showNavigation) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .windowInsetsPadding(WindowInsets.systemBars),
+                    ) {
+                        navigationRail()
+                    }
+                }
+                // Контент: auto-centered с max-width. Box(fillMaxSize) +
+                // inner Box(adaptiveContentWidth) → контент центрируется,
+                // по бокам — фон. Один файл = эффект на все 49 экранов.
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .adaptiveContentWidth(),
+                        .weight(1f),
+                    contentAlignment = Alignment.TopCenter,
                 ) {
-                    content(PaddingValues(0.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .adaptiveContentWidth(),
+                    ) {
+                        content(PaddingValues(0.dp))
+                    }
                 }
             }
+            // Mini-player снизу на всю ширину (если есть). На Compact он
+            // живёт в bottomBar = Column(topOverlay, bottomBar), здесь —
+            // отдельный full-width bar под Row(rail | content).
+            topOverlay()
         }
     }
 }
