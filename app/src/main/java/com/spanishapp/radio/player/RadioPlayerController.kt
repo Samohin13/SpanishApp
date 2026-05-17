@@ -197,6 +197,21 @@ class RadioPlayerController(private val context: Context) {
                     ?: mediaMetadata.displayTitle?.toString()
                 _nowPlaying.value = sanitizeNowPlaying(raw)
             }
+
+            /**
+             * Срабатывает когда плеер сам переключился на следующий/предыдущий
+             * media item (например юзер нажал skip на media-notification).
+             * Обновляем _currentStation чтобы UI и StateFlow синхронизировались.
+             */
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                val mediaId = mediaItem?.mediaId ?: return
+                val station = _stationContext.value.find { it.id == mediaId }
+                if (station != null) {
+                    _currentStation.value = station
+                    _nowPlaying.value = null  // новый ICY придёт
+                    _hasError.value = false
+                }
+            }
         })
     }
 
@@ -218,34 +233,48 @@ class RadioPlayerController(private val context: Context) {
     // ────────────────────── Public commands ──────────────────────
 
     /**
-     * Играть станцию. Триггерит подключение MediaController если ещё нет.
-     * Сразу после connect Media3 публикует media-notification с обложкой
-     * на lock screen + шторке.
+     * Играть станцию. Загружает ВСЮ карусель (stationContext) как playlist,
+     * выбирая нужную как стартовую. Это даёт:
+     *  - Media3 показывает skip prev/next кнопки в notification (queue > 1)
+     *  - Bluetooth headset / Android Auto navigation работает
+     *  - seekToNext/Previous переключают между станциями
+     *
+     * Если stationContext пуст или станция не в нём — играем как single item.
      */
     fun play(station: Station) {
         _hasError.value = false
         _currentStation.value = station
-        _nowPlaying.value = null  // сбрасываем — новый трек придёт из ICY
+        _nowPlaying.value = null  // новый трек придёт из ICY
 
-        val mediaItem = MediaItem.Builder()
-            .setUri(station.streamUrl)
-            .setMediaMetadata(
-                MediaMetadata.Builder()
-                    .setTitle(station.name)
-                    .setArtist("${station.country.emoji} ${station.country.displayName} · ${station.genre.displayName}")
-                    .setStation(station.name)
-                    .setIsBrowsable(false)
-                    .setIsPlayable(true)
-                    .build()
-            )
-            .build()
+        val context = _stationContext.value
+        val playStation = station
+        val (items, startIndex) = if (context.size <= 1 || !context.any { it.id == playStation.id }) {
+            listOf(playStation.toMediaItem()) to 0
+        } else {
+            context.map { it.toMediaItem() } to context.indexOfFirst { it.id == playStation.id }
+        }
 
         ensureConnectedAndRun { controller ->
-            controller.setMediaItem(mediaItem)
+            controller.setMediaItems(items, startIndex.coerceAtLeast(0), 0L)
             controller.prepare()
             controller.play()
         }
     }
+
+    /** Station → MediaItem с stable mediaId (для onMediaItemTransition matching). */
+    private fun Station.toMediaItem(): MediaItem = MediaItem.Builder()
+        .setMediaId(id)
+        .setUri(streamUrl)
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(name)
+                .setArtist("${country.emoji} ${country.displayName} · ${genre.displayName}")
+                .setStation(name)
+                .setIsBrowsable(false)
+                .setIsPlayable(true)
+                .build()
+        )
+        .build()
 
     fun pause() {
         mediaController?.takeIf { it.isConnected }?.pause()
@@ -264,8 +293,23 @@ class RadioPlayerController(private val context: Context) {
         }
     }
 
-    /** Переключение на следующую станцию в контексте (см. setStationContext). */
+    /**
+     * Переключение на следующую станцию в контексте.
+     * Если подключены и queue > 1 — используем нативный seekToNextMediaItem
+     * (тот же метод что зовётся из media notification skip-кнопки).
+     * Иначе fallback на play() с manual ресетом queue.
+     */
     fun nextStation() {
+        val mc = mediaController
+        if (mc != null && mc.isConnected && mc.mediaItemCount > 1) {
+            if (mc.hasNextMediaItem()) {
+                mc.seekToNextMediaItem()
+            } else {
+                mc.seekTo(0, 0L)  // wrap to first
+            }
+            return
+        }
+        // Fallback (queue не загружен ещё)
         val list = _stationContext.value
         if (list.isEmpty()) return
         val current = _currentStation.value
@@ -275,6 +319,16 @@ class RadioPlayerController(private val context: Context) {
     }
 
     fun previousStation() {
+        val mc = mediaController
+        if (mc != null && mc.isConnected && mc.mediaItemCount > 1) {
+            if (mc.hasPreviousMediaItem()) {
+                mc.seekToPreviousMediaItem()
+            } else {
+                mc.seekTo(mc.mediaItemCount - 1, 0L)  // wrap to last
+            }
+            return
+        }
+        // Fallback
         val list = _stationContext.value
         if (list.isEmpty()) return
         val current = _currentStation.value

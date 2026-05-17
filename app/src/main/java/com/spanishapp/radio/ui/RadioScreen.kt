@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -92,6 +93,12 @@ fun RadioScreen(navController: NavHostController) {
     val discoveryError by vm.discoveryError.collectAsState()
     val selectedGenres by vm.selectedGenres.collectAsState()
     val showOnlyFavorites by vm.showOnlyFavorites.collectAsState()
+
+    // Adaptive layout — в landscape компактнее (hero меньше, paddings уже)
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation ==
+        android.content.res.Configuration.ORIENTATION_LANDSCAPE
+    val heroSize = if (isLandscape) 160.dp else 240.dp
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
@@ -158,9 +165,10 @@ fun RadioScreen(navController: NavHostController) {
                 HeroArtwork(
                     station = station,
                     playbackState = playbackState,
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .aspectRatio(1f),
+                    // Fixed size — в landscape экран широкий, fillMaxWidth(0.7f)
+                    // давал гигантский hero (~600dp). Cap делает layout
+                    // адаптивным под обе ориентации.
+                    modifier = Modifier.size(heroSize),
                 )
 
                 Spacer(Modifier.height(16.dp))

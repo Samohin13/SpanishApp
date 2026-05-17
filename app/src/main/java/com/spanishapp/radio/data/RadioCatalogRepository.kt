@@ -185,22 +185,24 @@ class RadioCatalogRepository @Inject constructor(
     suspend fun discoverMore(targetCount: Int = 20): Int = withContext(Dispatchers.IO) {
         _progress.value = 0f
 
-        // Дозапрос: учитываем не только существующие URL'ы, но и заполненность
-        // брендов. Если в кэше уже 2 «Cadena SER» — новых SER'ов не принимаем,
-        // чтобы дозапрос приносил новые БРЕНДЫ а не очередной регион того же.
+        // Дозапрос ищет НОВЫЕ БРЕНДЫ. Юзер тапнул «Найти ещё» — он хочет
+        // разнообразия, а не очередной региональный вариант существующих.
+        // Раньше (v1.10.5) фильтровали по MAX_PER_BRAND=2, но это давало
+        // фактически 0 новых если все основные сети уже заполнены —
+        // юзер видел «ничего не добавляется».
+        //
+        // Теперь: фильтруем по «есть ли бренд уже в кэше». Если SER уже
+        // есть — все новые SER скипаются, ищем COPE/Onda/Europa FM итд.
         val existing = dao.getAll()
         val existingUrls = existing.map { it.streamUrl }.toSet()
-        val brandCount = mutableMapOf<String, Int>()
-        existing.forEach { ent ->
-            val brand = brandKey(ent.name)
-            brandCount[brand] = (brandCount[brand] ?: 0) + 1
-        }
+        val existingBrands = existing.map { brandKey(it.name) }.toSet()
 
         val userCountry = detectUserCountry()
         val rawPool = fetchPool()
             .filter { it.streamUrl !in existingUrls }
-            .filter { (brandCount[brandKey(it.name)] ?: 0) < MAX_PER_BRAND }
+            .filter { brandKey(it.name) !in existingBrands }  // только НОВЫЕ бренды
         if (rawPool.isEmpty()) {
+            _lastErrorMessage.value = "Все доступные сети уже в каталоге"
             _progress.value = 1f
             return@withContext 0
         }
