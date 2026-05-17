@@ -149,12 +149,13 @@ fun HomeScreen(
         SpanishCitiesWatermark(modifier = Modifier.fillMaxSize())
 
         // v1.12.0 Phase 2: adaptive content width — на планшете контент
-        // центрируется и не растягивается на всю ширину (600/720dp max).
+        // центрируется и не растягивается на всю ширину (cap из AdaptiveScaffold).
+        // v1.12.3: убрал второй .adaptiveContentWidth() — AdaptiveScaffold
+        // уже капит. Дублирование приводило к двойной обёртке.
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .adaptiveContentWidth(),
+                .statusBarsPadding(),
             contentPadding = PaddingValues(bottom = 96.dp)
         ) {
             // ── Compact header (~72dp) ─────────────────────────

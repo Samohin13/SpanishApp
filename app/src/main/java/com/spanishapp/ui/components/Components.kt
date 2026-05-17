@@ -276,10 +276,27 @@ fun SpanishNavigationRail(
             .fillMaxHeight()
             .width(96.dp),  // v1.12.2: было 80dp default → 96dp чтобы текст "Карточки" не обрезался
         containerColor = MaterialTheme.colorScheme.surface,
+        header = {
+            // v1.12.3: Material3-standard NavigationRail header slot.
+            // ESPEAK brand mark — orange ◉ circle с буквой "E".
+            Spacer(modifier = Modifier.height(20.dp))
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(androidx.compose.foundation.shape.CircleShape)
+                    .background(activeColor),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    "E",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.White,
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+        },
     ) {
-        // Top spacer чтобы иконки начинались чуть ниже top edge
-        Spacer(modifier = Modifier.height(16.dp))
-
         bottomNavItems.forEach { item ->
             val selected = effectiveRoute.startsWith(item.route)
             androidx.compose.material3.NavigationRailItem(

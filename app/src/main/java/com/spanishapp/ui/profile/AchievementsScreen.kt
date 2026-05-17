@@ -12,6 +12,10 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed as gridItemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -88,16 +92,21 @@ fun AchievementsScreen(
             )
         }
     ) { padding ->
-        LazyColumn(
+        // v1.12.3: grid 1/2/3 колонки. Achievement cards одной высоты —
+        // отлично смотрятся в grid на планшете.
+        val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 1, medium = 2, expanded = 3)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(cols),
             contentPadding = PaddingValues(
                 start = 16.dp, end = 16.dp,
                 top = padding.calculateTopPadding() + 8.dp,
                 bottom = 24.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // ── Summary ──────────────────────────────────────
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 AchievementSummary(
                     unlocked = unlocked.size,
                     total    = achievements.size,
@@ -108,10 +117,10 @@ fun AchievementsScreen(
 
             // ── Unlocked ─────────────────────────────────────
             if (unlocked.isNotEmpty()) {
-                item {
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     SectionLabel(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.achievements_section_unlocked, unlocked.size))
                 }
-                itemsIndexed(
+                gridItemsIndexed(
                     items = unlocked,
                     key = { _, a -> a.id }
                 ) { index, a ->
@@ -123,12 +132,14 @@ fun AchievementsScreen(
                         index       = index
                     )
                 }
-                item { Spacer(Modifier.height(8.dp)) }
+                item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(8.dp)) }
             }
 
             // ── Locked ───────────────────────────────────────
-            item { SectionLabel(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.achievements_section_locked, locked.size)) }
-            itemsIndexed(
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionLabel(androidx.compose.ui.res.stringResource(com.spanishapp.R.string.achievements_section_locked, locked.size))
+            }
+            gridItemsIndexed(
                 items = locked,
                 key = { _, a -> a.id }
             ) { index, a ->

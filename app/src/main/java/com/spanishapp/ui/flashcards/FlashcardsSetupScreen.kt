@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed as gridItemsIndexed
 import com.spanishapp.ui.components.StaggeredEntrance
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -178,15 +182,22 @@ fun FlashcardsSetupScreen(
     // if the user switches A1→A2 quickly, an in-flight A1 query could overwrite
     // the A2 result after it had already been shown.
 
+    // v1.12.3: на планшете показываем sets как grid 2/3 колонки
+    // (раньше длинный список full-width row выглядел узким и пустым).
+    val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 1, medium = 2, expanded = 3)
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(cols),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .statusBarsPadding(),
-            contentPadding = PaddingValues(bottom = 32.dp)
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 32.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // Stagger entrance was disabled per user feedback — flashcard set
             // rows are tall and the slide-up cascade looked off. All items
@@ -194,7 +205,7 @@ fun FlashcardsSetupScreen(
             // smooth re-ordering when a set's progress changes.
 
             // ── Header ─────────────────────────────────────────
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -217,16 +228,16 @@ fun FlashcardsSetupScreen(
             }
 
             // ── Practice tile ─────────────────────────────────
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 PracticeTile(
                     weakCount = weakCount,
                     onClick = { navController.navigate("practice") },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
 
             // ── Level tabs ─────────────────────────────────────
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -245,11 +256,11 @@ fun FlashcardsSetupScreen(
                 }
             }
 
-            item { Spacer(Modifier.height(12.dp)) }
+            item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(12.dp)) }
 
             // ── Empty state ─────────────────────────────────────
             if (sets.isEmpty()) {
-                item {
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     Box(
                         modifier = Modifier.fillMaxWidth().padding(32.dp),
                         contentAlignment = Alignment.Center
@@ -263,8 +274,8 @@ fun FlashcardsSetupScreen(
                 }
             }
 
-            // ── Sets list ─────────────────────────────────────
-            itemsIndexed(sets, key = { _, it -> it.set.id }) { _, row ->
+            // ── Sets list (grid 1/2/3 cols по ширине экрана) ─────
+            gridItemsIndexed(sets, key = { _, it -> it.set.id }) { _, row ->
                 SetRow(
                     row = row,
                     onClick = {
@@ -275,9 +286,7 @@ fun FlashcardsSetupScreen(
                             )
                         }
                     },
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
-                        .animateItem()
+                    modifier = Modifier.animateItem()
                 )
             }
         }

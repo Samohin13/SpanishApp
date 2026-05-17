@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items as gridItems
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -70,15 +74,21 @@ fun LibrosScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        LazyColumn(
+        // v1.12.3: grid 1/2/3 колонки. На телефоне — как было (row card),
+        // на планшете — 2-3 колонки чтобы не было «лонг-листа в центре».
+        val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 1, medium = 2, expanded = 3)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(cols),
             modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(bottom = 24.dp)
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // Фильтр по уровню
-            item {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 val allLabel = stringResource(R.string.libros_filter_all)
                 LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                    contentPadding = PaddingValues(vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val filters = listOf("all", "A1", "A2", "B1", "B2")
@@ -101,7 +111,7 @@ fun LibrosScreen(
             }
 
             if (items.isEmpty()) {
-                item {
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     Box(
                         Modifier.fillMaxWidth().padding(top = 80.dp),
                         contentAlignment = Alignment.Center
@@ -114,14 +124,11 @@ fun LibrosScreen(
                     }
                 }
             } else {
-                items(items, key = { it.libro.id }) { item ->
+                gridItems(items, key = { it.libro.id }) { item ->
                     LibroCard(
                         item = item,
                         onClick = {
                             // 1.1.1 fix: дублируем markOpened **до** навигации.
-                            // LaunchedEffect в LibroReadScreen может не успеть
-                            // если юзер мгновенно выйдет назад (back).
-                            // GlobalScope в markOpened гарантирует доставку.
                             vm.markOpened(item.libro.id)
                             navController.navigate("libro/${item.libro.id}")
                         }
@@ -140,7 +147,6 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
