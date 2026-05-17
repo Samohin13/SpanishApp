@@ -113,11 +113,18 @@ class MainActivity : FragmentActivity() {
                 else -> 1.0f
             }
             val baseDensity = LocalDensity.current
+            // v1.12.0 Phase 0: WindowSizeClass для tablet-first adaptive layouts.
+            // Рассчитывается один раз на reconfigure, провайдится через CompositionLocal,
+            // используется в com.spanishapp.ui.adaptive.* утилитах.
+            @OptIn(androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi::class)
+            val windowSizeClass = androidx.compose.material3.windowsizeclass
+                .calculateWindowSizeClass(this@MainActivity)
             CompositionLocalProvider(
                 LocalDensity provides Density(
                     density = baseDensity.density,
                     fontScale = baseDensity.fontScale * fontScale
-                )
+                ),
+                com.spanishapp.ui.adaptive.LocalWindowSizeClass provides windowSizeClass,
             ) {
                 SpanishAppTheme(darkTheme = darkTheme) {
                     SpanishBackground {
