@@ -195,7 +195,17 @@ class RadioPlayerController(private val context: Context) {
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                 val raw = mediaMetadata.title?.toString()
                     ?: mediaMetadata.displayTitle?.toString()
-                _nowPlaying.value = sanitizeNowPlaying(raw)
+                val cleaned = sanitizeNowPlaying(raw)
+                // Игнорируем если ICY всё ещё равно нашему initial title
+                // (мы сами выставили name станции в setMediaItem → Media3
+                // фарит это через onMediaMetadataChanged ДО прихода ICY).
+                // Реальное ICY обычно «Artist - Track», отличается от name.
+                val stationName = _currentStation.value?.name
+                _nowPlaying.value = when {
+                    cleaned == null -> null
+                    cleaned.equals(stationName, ignoreCase = true) -> null
+                    else -> cleaned
+                }
             }
 
             /**

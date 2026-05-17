@@ -583,18 +583,59 @@ private fun HeroArtwork(
     playbackState: com.spanishapp.radio.player.RadioPlaybackState,
     modifier: Modifier = Modifier,
 ) {
+    // 3-stop gradients с контрастом: lighter top-left → base mid → deeper bottom-right.
+    // Диагональный sweep даёт ощущение объёма + перекликается с iOS-style album art.
     val gradient = when (station?.country) {
-        Country.SPAIN -> listOf(Color(0xFFFF5722), Color(0xFFD32F2F))
-        Country.MEXICO -> listOf(Color(0xFF388E3C), Color(0xFFD32F2F))
-        Country.ARGENTINA -> listOf(Color(0xFF1976D2), Color(0xFF64B5F6))
-        null -> listOf(Color(0xFF666666), Color(0xFF444444))
+        Country.SPAIN -> listOf(
+            Color(0xFFFFAB91),  // мягкий персик top
+            Color(0xFFFF5722),  // accent orange mid
+            Color(0xFF8B0000),  // глубокий бордо bottom
+        )
+        Country.MEXICO -> listOf(
+            Color(0xFF66BB6A),  // светло-зелёный top
+            Color(0xFF1B5E20),  // тёмно-зелёный mid
+            Color(0xFFB71C1C),  // флаговый красный bottom
+        )
+        Country.ARGENTINA -> listOf(
+            Color(0xFF90CAF9),  // небесно-голубой top
+            Color(0xFF1976D2),  // классический синий mid
+            Color(0xFF0D47A1),  // глубокий navy bottom
+        )
+        null -> listOf(
+            Color(0xFF757575),
+            Color(0xFF424242),
+            Color(0xFF212121),
+        )
     }
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(Brush.linearGradient(gradient)),
+            .background(
+                Brush.linearGradient(
+                    colors = gradient,
+                    // Диагональ top-left → bottom-right
+                    start = androidx.compose.ui.geometry.Offset(0f, 0f),
+                    end = androidx.compose.ui.geometry.Offset.Infinite,
+                )
+            ),
         contentAlignment = Alignment.Center,
     ) {
+        // Subtle iOS-glass highlight в верхнем углу — добавляет глубины
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clip(RoundedCornerShape(20.dp))
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.15f),
+                            Color.Transparent,
+                        ),
+                        center = androidx.compose.ui.geometry.Offset(0f, 0f),
+                        radius = 400f,
+                    )
+                )
+        )
         Text(
             station?.shortCode ?: "—",
             fontSize = 56.sp,
