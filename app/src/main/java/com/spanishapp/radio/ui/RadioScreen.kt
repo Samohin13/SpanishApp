@@ -1,22 +1,40 @@
 package com.spanishapp.radio.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.RecordVoiceOver
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.filled.SportsBasketball
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.TheaterComedy
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,9 +44,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,11 +56,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.radio.data.CefrLevel
 import com.spanishapp.radio.data.Country
+import com.spanishapp.radio.data.Genre
 import com.spanishapp.radio.data.Station
 
 private val Accent = Color(0xFFFF5722)
 private val Green = Color(0xFF4CAF50)
 
+/**
+ * Главный экран радио — статичный single-view layout (без вертикального
+ * скролла). Сверху TopBar/чипы, в середине Hero+контролы, снизу карусель
+ * станций. Чуть похоже на Spotify Now Playing.
+ *
+ * Все размеры подобраны так, чтобы layout помещался на экранах от 360×640dp
+ * (минимальный поддерживаемый Android-телефон). На больших — Spacer'ы
+ * растягиваются, hero остаётся пропорциональным.
+ */
 @Composable
 fun RadioScreen(navController: NavHostController) {
     val vm: RadioViewModel = hiltViewModel()
@@ -51,199 +79,349 @@ fun RadioScreen(navController: NavHostController) {
     val station by vm.currentStation.collectAsState()
     val isPlaying by vm.isPlaying.collectAsState()
     val hasError by vm.hasError.collectAsState()
-    val stations by vm.stations.collectAsState()
+    val displayedStations by vm.displayedStations.collectAsState()
     val favoriteIds by vm.favoriteIds.collectAsState()
     val discoveryState by vm.discoveryState.collectAsState()
     val discoveryProgress by vm.discoveryProgress.collectAsState()
-    val discoveryFoundCount by vm.discoveryFoundCount.collectAsState()
-    val totalCaughtWords by vm.totalCaughtWords.collectAsState()
-    val totalListeningMinutes by vm.totalListeningMinutes.collectAsState()
+    val selectedGenres by vm.selectedGenres.collectAsState()
+    val showOnlyFavorites by vm.showOnlyFavorites.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .verticalScroll(rememberScrollState()),
+                .statusBarsPadding(),
         ) {
-            // ─── Top bar ───
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+            TopBar(
+                onBack = { navController.popBackStack() },
+                onRefresh = { vm.refreshCatalog() },
+                refreshEnabled = discoveryState != RadioViewModel.DiscoveryState.LOADING,
+            )
+
+            // Тонкий прогресс-бар при поиске
+            AnimatedVisibility(
+                visible = discoveryState == RadioViewModel.DiscoveryState.LOADING,
+                enter = fadeIn(), exit = fadeOut(),
             ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
-                }
-                Spacer(Modifier.width(4.dp))
-                Text("Радио", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Spacer(Modifier.weight(1f))
-                // Refresh button — повторный auto-discovery
-                IconButton(
-                    onClick = { vm.refreshCatalog() },
-                    enabled = discoveryState != RadioViewModel.DiscoveryState.LOADING,
-                ) {
-                    Text(
-                        "🔄",
-                        fontSize = 20.sp,
-                        color = if (discoveryState == RadioViewModel.DiscoveryState.LOADING)
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                        else MaterialTheme.colorScheme.onSurface,
-                    )
-                }
+                LoadingBanner(progress = discoveryProgress)
             }
 
-            // Discovery progress banner
-            if (discoveryState == RadioViewModel.DiscoveryState.LOADING) {
-                Surface(
-                    color = Accent.copy(alpha = 0.10f),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 18.dp, vertical = 4.dp),
-                    shape = RoundedCornerShape(10.dp),
-                ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("🔍", fontSize = 16.sp)
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                "Подбираем станции для тебя…",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Accent,
-                                modifier = Modifier.weight(1f),
-                            )
-                            Text(
-                                "${(discoveryProgress * 100).toInt()}%",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Accent,
-                            )
-                        }
-                        Spacer(Modifier.height(6.dp))
-                        // Прогресс-бар
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(3.dp)
-                                .clip(RoundedCornerShape(2.dp))
-                                .background(Accent.copy(alpha = 0.18f)),
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(discoveryProgress.coerceIn(0f, 1f))
-                                    .fillMaxHeight()
-                                    .background(Accent)
-                            )
-                        }
-                    }
-                }
-                Spacer(Modifier.height(8.dp))
-            } else if (discoveryState == RadioViewModel.DiscoveryState.READY && discoveryFoundCount > 0) {
-                // Краткое уведомление о завершении (исчезает в течение 3 сек через animation)
-                Text(
-                    "✓ Найдено $discoveryFoundCount рабочих станций",
-                    fontSize = 11.sp,
-                    color = Color(0xFF4CAF50),
-                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 2.dp),
-                )
-            }
-
-            // Country chips
-            CountrySelector(
+            CountryChips(
                 current = country,
                 onSelect = vm::selectCountry,
-                modifier = Modifier.padding(horizontal = 18.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
             )
 
-            Spacer(Modifier.height(20.dp))
+            FilterChipsRow(
+                selectedGenres = selectedGenres,
+                showOnlyFavorites = showOnlyFavorites,
+                onToggleGenre = vm::toggleGenreFilter,
+                onToggleFav = vm::toggleFavoritesFilter,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            )
 
-            // ─── HERO ───
-            HeroArtwork(
-                station = station,
-                isPlaying = isPlaying,
-                hasError = hasError,
+            // Hero + контролы — забирают остаток пространства
+            Column(
                 modifier = Modifier
+                    .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 36.dp),
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            // ─── Station info ───
-            station?.let { st ->
-                Column(
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                HeroArtwork(
+                    station = station,
+                    isPlaying = isPlaying,
+                    hasError = hasError,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
+                        .fillMaxWidth(0.7f)
+                        .aspectRatio(1f),
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                station?.let { st ->
                     Text(
                         st.name,
-                        fontSize = 24.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.Black,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        if (hasError) "Станция временно недоступна — следующая…" else st.program,
-                        fontSize = 13.sp,
+                        if (hasError) "Станция недоступна — следующая…" else st.program,
+                        fontSize = 12.sp,
                         color = if (hasError) Color(0xFFE53935) else MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                     )
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(8.dp))
                     StationTags(station = st)
-                }
+                } ?: Text(
+                    "Выбери станцию ниже",
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                PlayerControls(
+                    isPlaying = isPlaying,
+                    isFavorite = station?.id?.let { favoriteIds.contains(it) } ?: false,
+                    canControl = station != null,
+                    onPrev = vm::previousStation,
+                    onPlayPause = vm::togglePlayback,
+                    onNext = vm::nextStation,
+                    onToggleFavorite = { station?.let { vm.toggleFavorite(it.id) } },
+                )
             }
 
-            Spacer(Modifier.height(24.dp))
+            // Карусель — фиксированный блок снизу
+            Column(modifier = Modifier.padding(bottom = 8.dp)) {
+                Text(
+                    "СТАНЦИИ · ${country.displayName} · ${displayedStations.size}",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    letterSpacing = 1.4.sp,
+                    modifier = Modifier.padding(start = 18.dp, bottom = 8.dp),
+                )
+                StationCarousel(
+                    stations = displayedStations,
+                    currentStationId = station?.id,
+                    favoriteIds = favoriteIds,
+                    onStationClick = { vm.tuneToStationDirect(it) },
+                    onFindMore = { vm.discoverMore() },
+                    isLoadingMore = discoveryState == RadioViewModel.DiscoveryState.LOADING,
+                )
+            }
+        }
+    }
+}
 
-            // ─── PLAYER CONTROLS ───
-            PlayerControls(
-                isPlaying = isPlaying,
-                isFavorite = station?.id?.let { favoriteIds.contains(it) } ?: false,
-                onPrev = { vm.previousStation() },
-                onPlayPause = { vm.togglePlayback() },
-                onNext = { vm.nextStation() },
-                onToggleFavorite = { station?.let { vm.toggleFavorite(it.id) } },
+// ════════════════════════════════════════════════════════════════
+//  TopBar
+// ════════════════════════════════════════════════════════════════
+
+@Composable
+private fun TopBar(
+    onBack: () -> Unit,
+    onRefresh: () -> Unit,
+    refreshEnabled: Boolean,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Назад",
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+        Text(
+            "Радио",
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.weight(1f))
+        IconButton(onClick = onRefresh, enabled = refreshEnabled) {
+            Icon(
+                Icons.Filled.Refresh,
+                contentDescription = "Обновить каталог",
+                tint = if (refreshEnabled) MaterialTheme.colorScheme.onSurface
+                       else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun LoadingBanner(progress: Float) {
+    Surface(
+        color = Accent.copy(alpha = 0.10f),
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 2.dp),
+    ) {
+        Column(modifier = Modifier.padding(10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Подбираем станции для тебя…",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Accent,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    "${(progress * 100).toInt()}%",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Accent,
+                )
+            }
+            Spacer(Modifier.height(4.dp))
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-            )
+                    .height(3.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(Accent.copy(alpha = 0.18f)),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress.coerceIn(0f, 1f))
+                        .fillMaxHeight()
+                        .background(Accent),
+                )
+            }
+        }
+    }
+}
 
-            Spacer(Modifier.height(20.dp))
+// ════════════════════════════════════════════════════════════════
+//  Country + Filter chips
+// ════════════════════════════════════════════════════════════════
 
-            // ─── ОБУЧАЮЩАЯ СЕКЦИЯ — Поймал слово + статистика ───
-            WordCatchCard(
-                totalCaught = totalCaughtWords,
-                totalMinutes = totalListeningMinutes,
-                onCatchWord = { vm.catchWord() },
+@Composable
+private fun CountryChips(
+    current: Country,
+    onSelect: (Country) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Country.values().forEach { c ->
+            val isActive = c == current
+            Surface(
+                shape = RoundedCornerShape(100.dp),
+                color = if (isActive) Accent.copy(alpha = 0.14f)
+                        else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                border = if (isActive) BorderStroke(1.5.dp, Accent.copy(alpha = 0.5f)) else null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 18.dp),
+                    .weight(1f)
+                    .clickable { onSelect(c) },
+            ) {
+                Text(
+                    "${c.emoji} ${c.displayName}",
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    textAlign = TextAlign.Center,
+                    fontSize = 12.sp,
+                    fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium,
+                    color = if (isActive) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * 6 чипов фильтра: 5 жанров (Music/Talk/News/Sports/Culture) + Favorites.
+ * Multi-select. Пустой выбор = «все станции».
+ */
+@Composable
+private fun FilterChipsRow(
+    selectedGenres: Set<Genre>,
+    showOnlyFavorites: Boolean,
+    onToggleGenre: (Genre) -> Unit,
+    onToggleFav: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        item {
+            FilterChip(
+                icon = Icons.Filled.MusicNote,
+                label = "Музыка",
+                selected = Genre.MUSIC in selectedGenres,
+                onClick = { onToggleGenre(Genre.MUSIC) },
             )
+        }
+        item {
+            FilterChip(
+                icon = Icons.Filled.RecordVoiceOver,
+                label = "Разговор",
+                selected = Genre.TALK in selectedGenres,
+                onClick = { onToggleGenre(Genre.TALK) },
+            )
+        }
+        item {
+            FilterChip(
+                icon = Icons.Filled.Newspaper,
+                label = "Новости",
+                selected = Genre.NEWS in selectedGenres,
+                onClick = { onToggleGenre(Genre.NEWS) },
+            )
+        }
+        item {
+            FilterChip(
+                icon = Icons.Filled.SportsBasketball,
+                label = "Спорт",
+                selected = Genre.SPORTS in selectedGenres,
+                onClick = { onToggleGenre(Genre.SPORTS) },
+            )
+        }
+        item {
+            FilterChip(
+                icon = Icons.Filled.TheaterComedy,
+                label = "Культура",
+                selected = Genre.CULTURE in selectedGenres,
+                onClick = { onToggleGenre(Genre.CULTURE) },
+            )
+        }
+        item {
+            FilterChip(
+                icon = Icons.Filled.Star,
+                label = "Избранное",
+                selected = showOnlyFavorites,
+                onClick = onToggleFav,
+            )
+        }
+    }
+}
 
-            Spacer(Modifier.height(20.dp))
-
-            // ─── СТАНЦИИ horizontal scroll ───
+@Composable
+private fun FilterChip(
+    icon: ImageVector,
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(100.dp),
+        color = if (selected) Accent.copy(alpha = 0.18f)
+                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+        border = if (selected) BorderStroke(1.2.dp, Accent.copy(alpha = 0.6f)) else null,
+        modifier = Modifier.clickable(onClick = onClick),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = if (selected) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.width(5.dp))
             Text(
-                "ВСЕ СТАНЦИИ · ${country.displayName}",
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                letterSpacing = 1.5.sp,
-                modifier = Modifier.padding(start = 22.dp, bottom = 10.dp),
+                label,
+                fontSize = 11.sp,
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                color = if (selected) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            StationCarousel(
-                stations = stations,
-                currentStationId = station?.id,
-                favoriteIds = favoriteIds,
-                onStationClick = { vm.tuneToStationDirect(it) },
-            )
-
-            Spacer(Modifier.height(140.dp))
         }
     }
 }
@@ -265,60 +443,38 @@ private fun HeroArtwork(
         Country.ARGENTINA -> listOf(Color(0xFF1976D2), Color(0xFF64B5F6))
         null -> listOf(Color(0xFF666666), Color(0xFF444444))
     }
-
     Box(
         modifier = modifier
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(20.dp))
             .background(Brush.linearGradient(gradient)),
         contentAlignment = Alignment.Center,
     ) {
-        // Большие буквы кода
         Text(
             station?.shortCode ?: "—",
-            fontSize = 72.sp,
+            fontSize = 56.sp,
             fontWeight = FontWeight.Black,
             color = Color.White,
             letterSpacing = (-2).sp,
         )
-        // LIVE / ERROR pill
         Box(
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(14.dp),
+                .padding(10.dp),
         ) {
-            if (hasError) ErrorPill() else LivePillCompact(isPlaying)
-        }
-        // Frequency
-        station?.let {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(14.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.Black.copy(alpha = 0.35f))
-                    .padding(horizontal = 10.dp, vertical = 5.dp),
-            ) {
-                Text(
-                    "%.1f MHz".format(it.frequency),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                )
-            }
+            if (hasError) ErrorPill() else LivePill(isPlaying)
         }
     }
 }
 
 @Composable
-private fun LivePillCompact(isPlaying: Boolean) {
+private fun LivePill(isPlaying: Boolean) {
     val color = if (isPlaying) Green else Color(0xFF888888)
     Surface(
         shape = RoundedCornerShape(100.dp),
         color = Color.Black.copy(alpha = 0.35f),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (isPlaying) {
@@ -333,21 +489,21 @@ private fun LivePillCompact(isPlaying: Boolean) {
                 )
                 Box(
                     modifier = Modifier
-                        .size(6.dp)
+                        .size(5.dp)
                         .clip(CircleShape)
-                        .background(color.copy(alpha = alpha))
+                        .background(color.copy(alpha = alpha)),
                 )
-                Spacer(Modifier.width(6.dp))
-                Text("LIVE", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                Spacer(Modifier.width(5.dp))
+                Text("LIVE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
             } else {
                 Box(
                     modifier = Modifier
-                        .size(6.dp)
+                        .size(5.dp)
                         .clip(CircleShape)
-                        .background(color)
+                        .background(color),
                 )
-                Spacer(Modifier.width(6.dp))
-                Text("PAUSED", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                Spacer(Modifier.width(5.dp))
+                Text("PAUSED", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
             }
         }
     }
@@ -361,8 +517,8 @@ private fun ErrorPill() {
     ) {
         Text(
             "ERROR",
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-            fontSize = 10.sp,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+            fontSize = 9.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
         )
@@ -371,8 +527,8 @@ private fun ErrorPill() {
 
 @Composable
 private fun StationTags(station: Station) {
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Tag("${station.country.emoji} ${station.country.displayName}", Accent.copy(alpha = 0.12f), Accent)
+    Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+        Tag(station.country.displayName, Accent.copy(alpha = 0.12f), Accent)
         val cefrColor = when (station.level) {
             CefrLevel.A2 -> Color(0xFFFFC107)
             CefrLevel.B1 -> Accent
@@ -380,7 +536,7 @@ private fun StationTags(station: Station) {
         }
         Tag(station.level.name, cefrColor.copy(alpha = 0.15f), cefrColor)
         Tag(
-            "${station.genre.emoji} ${station.genre.displayName}",
+            station.genre.displayName,
             MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
             MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -392,83 +548,93 @@ private fun Tag(text: String, bg: Color, color: Color) {
     Surface(shape = RoundedCornerShape(100.dp), color = bg) {
         Text(
             text,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-            fontSize = 11.sp,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+            fontSize = 10.sp,
             fontWeight = FontWeight.SemiBold,
             color = color,
         )
     }
 }
 
+// ════════════════════════════════════════════════════════════════
+//  Controls
+// ════════════════════════════════════════════════════════════════
+
 @Composable
 private fun PlayerControls(
     isPlaying: Boolean,
     isFavorite: Boolean,
+    canControl: Boolean,
     onPrev: () -> Unit,
     onPlayPause: () -> Unit,
     onNext: () -> Unit,
     onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier,
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CircularIconButton(
-            symbol = if (isFavorite) "★" else "☆",
+        CircleBtn(
+            icon = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            cd = if (isFavorite) "В избранном" else "Добавить в избранное",
             size = 44.dp,
-            iconSize = 22.sp,
-            color = if (isFavorite) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
+            iconSize = 22.dp,
+            tint = if (isFavorite) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
             bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+            enabled = canControl,
             onClick = onToggleFavorite,
         )
-        CircularIconButton(
-            symbol = "⏮",
+        CircleBtn(
+            icon = Icons.Filled.SkipPrevious,
+            cd = "Предыдущая",
             size = 52.dp,
-            iconSize = 24.sp,
-            color = MaterialTheme.colorScheme.onSurface,
+            iconSize = 28.dp,
+            tint = MaterialTheme.colorScheme.onSurface,
             bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+            enabled = canControl,
             onClick = onPrev,
         )
+        // Big play/pause (gradient)
         Box(
             modifier = Modifier
                 .size(72.dp)
                 .clip(CircleShape)
-                .background(
-                    Brush.linearGradient(
-                        listOf(Accent, Accent.copy(alpha = 0.75f))
-                    )
-                )
-                .clickable(onClick = onPlayPause),
+                .background(Brush.linearGradient(listOf(Accent, Accent.copy(alpha = 0.75f))))
+                .clickable(enabled = canControl, onClick = onPlayPause),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                if (isPlaying) "⏸" else "▶",
-                fontSize = 32.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
+            Icon(
+                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                contentDescription = if (isPlaying) "Пауза" else "Играть",
+                modifier = Modifier.size(36.dp),
+                tint = Color.White,
             )
         }
-        CircularIconButton(
-            symbol = "⏭",
+        CircleBtn(
+            icon = Icons.Filled.SkipNext,
+            cd = "Следующая",
             size = 52.dp,
-            iconSize = 24.sp,
-            color = MaterialTheme.colorScheme.onSurface,
+            iconSize = 28.dp,
+            tint = MaterialTheme.colorScheme.onSurface,
             bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+            enabled = canControl,
             onClick = onNext,
         )
-        Spacer(modifier = Modifier.size(44.dp))
+        // Spacer чтобы play остался по центру (компенсация за favorite слева)
+        Spacer(Modifier.size(44.dp))
     }
 }
 
 @Composable
-private fun CircularIconButton(
-    symbol: String,
+private fun CircleBtn(
+    icon: ImageVector,
+    cd: String,
     size: androidx.compose.ui.unit.Dp,
-    iconSize: androidx.compose.ui.unit.TextUnit,
-    color: Color,
+    iconSize: androidx.compose.ui.unit.Dp,
+    tint: Color,
     bg: Color,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Box(
@@ -476,15 +642,20 @@ private fun CircularIconButton(
             .size(size)
             .clip(CircleShape)
             .background(bg)
-            .clickable(onClick = onClick),
+            .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Text(symbol, fontSize = iconSize, color = color)
+        Icon(
+            icon,
+            contentDescription = cd,
+            modifier = Modifier.size(iconSize),
+            tint = if (enabled) tint else tint.copy(alpha = 0.4f),
+        )
     }
 }
 
 // ════════════════════════════════════════════════════════════════
-//  StationCarousel — горизонтальный скролл всех станций страны
+//  Carousel
 // ════════════════════════════════════════════════════════════════
 
 @Composable
@@ -493,8 +664,20 @@ private fun StationCarousel(
     currentStationId: String?,
     favoriteIds: Set<String>,
     onStationClick: (Station) -> Unit,
+    onFindMore: () -> Unit,
+    isLoadingMore: Boolean,
 ) {
+    val listState = rememberLazyListState()
+
+    // Авто-скролл к активной станции при её смене (например тапнули чип/skip)
+    LaunchedEffect(currentStationId, stations) {
+        if (currentStationId == null) return@LaunchedEffect
+        val idx = stations.indexOfFirst { it.id == currentStationId }
+        if (idx >= 0) listState.animateScrollToItem(idx)
+    }
+
     LazyRow(
+        state = listState,
         contentPadding = PaddingValues(horizontal = 18.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -505,6 +688,9 @@ private fun StationCarousel(
                 isFavorite = favoriteIds.contains(st.id),
                 onClick = { onStationClick(st) },
             )
+        }
+        item("find_more") {
+            FindMoreTile(loading = isLoadingMore, onClick = onFindMore)
         }
     }
 }
@@ -523,249 +709,143 @@ private fun StationCard(
     }
     Column(
         modifier = Modifier
-            .width(108.dp)
+            .width(96.dp)
             .clickable(onClick = onClick),
     ) {
         Box(
             modifier = Modifier
-                .size(108.dp)
+                .size(96.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .background(Brush.linearGradient(gradient)),
+                .background(Brush.linearGradient(gradient))
+                .then(
+                    if (isPlaying) Modifier.border(
+                        BorderStroke(2.dp, Accent),
+                        RoundedCornerShape(14.dp),
+                    ) else Modifier
+                ),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 station.shortCode,
-                fontSize = 26.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White,
             )
-            // ⭐ badge top-right
             if (isFavorite) {
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(6.dp)
+                        .padding(5.dp)
                         .clip(CircleShape)
-                        .background(Color.Black.copy(alpha = 0.35f))
-                        .padding(4.dp),
+                        .background(Color.Black.copy(alpha = 0.4f))
+                        .padding(3.dp),
                 ) {
-                    Text("★", fontSize = 11.sp, color = Color(0xFFFFC107))
+                    Icon(
+                        Icons.Filled.Star,
+                        contentDescription = "В избранном",
+                        modifier = Modifier.size(11.dp),
+                        tint = Color(0xFFFFC107),
+                    )
                 }
             }
-            // Active border
             if (isPlaying) {
+                // Overlay с большой play-кнопкой → мгновенный визуальный отклик
                 Box(
                     modifier = Modifier
                         .matchParentSize()
                         .clip(RoundedCornerShape(14.dp))
-                        .background(Color.Black.copy(alpha = 0.18f)),
+                        .background(Color.Black.copy(alpha = 0.22f)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(34.dp)
                             .clip(CircleShape)
                             .background(Color.White.copy(alpha = 0.95f)),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text("▶", fontSize = 20.sp, color = Accent, fontWeight = FontWeight.Bold)
+                        Icon(
+                            Icons.Filled.PlayArrow,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = Accent,
+                        )
                     }
                 }
             }
         }
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(5.dp))
         Text(
             station.name,
-            fontSize = 11.sp,
+            fontSize = 10.sp,
             fontWeight = if (isPlaying) FontWeight.Bold else FontWeight.SemiBold,
             color = if (isPlaying) Accent else MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
         Text(
-            "%.1f · ${station.level.name}".format(station.frequency),
-            fontSize = 10.sp,
+            station.level.name,
+            fontSize = 9.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
         )
     }
 }
 
-// ════════════════════════════════════════════════════════════════
-//  CountrySelector
-// ════════════════════════════════════════════════════════════════
-
-// ════════════════════════════════════════════════════════════════
-//  WordCatchCard — обучающий элемент: «Поймал слово!» + stats
-// ════════════════════════════════════════════════════════════════
-
+/**
+ * Последний тайл карусели — «+ Найти ещё». Тап → discoverMore(20).
+ * Пока идёт поиск показываем тонкий пульс через alpha.
+ */
 @Composable
-private fun WordCatchCard(
-    totalCaught: Int,
-    totalMinutes: Long,
-    onCatchWord: () -> Boolean,
-    modifier: Modifier = Modifier,
-) {
-    // Pulse-анимация когда юзер тапнул
-    var pulse by remember { mutableStateOf(false) }
-    val scale by androidx.compose.animation.core.animateFloatAsState(
-        targetValue = if (pulse) 1.08f else 1f,
-        animationSpec = androidx.compose.animation.core.tween(150),
-        label = "catch_pulse",
-    )
-    LaunchedEffect(pulse) {
-        if (pulse) {
-            kotlinx.coroutines.delay(200)
-            pulse = false
-        }
-    }
+private fun FindMoreTile(loading: Boolean, onClick: () -> Unit) {
+    val pulse = if (loading) {
+        val transition = rememberInfiniteTransition(label = "more_pulse")
+        transition.animateFloat(
+            initialValue = 0.4f, targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(800, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse,
+            ),
+            label = "more_alpha",
+        ).value
+    } else 1f
 
-    Column(modifier = modifier) {
-        // Big "Поймал слово!" button
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = Accent.copy(alpha = 0.10f),
-            border = androidx.compose.foundation.BorderStroke(1.5.dp, Accent.copy(alpha = 0.4f)),
+    Column(
+        modifier = Modifier
+            .width(96.dp)
+            .clickable(enabled = !loading, onClick = onClick),
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    val ok = onCatchWord()
-                    if (ok) pulse = true
-                },
+                .size(96.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(Accent.copy(alpha = 0.12f * pulse))
+                .border(
+                    BorderStroke(1.5.dp, Accent.copy(alpha = 0.5f * pulse)),
+                    RoundedCornerShape(14.dp),
+                ),
+            contentAlignment = Alignment.Center,
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 14.dp)
-                    .scale(scale),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text("💬", fontSize = 26.sp)
-                Spacer(Modifier.width(12.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        "Поймал слово!",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Text(
-                        "Тапни когда услышал знакомое",
-                        fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = Accent.copy(alpha = 0.18f),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Accent.copy(alpha = 0.4f)),
-                ) {
-                    Text(
-                        "+5 XP",
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Accent,
-                    )
-                }
-            }
-        }
-
-        // Mini stats row
-        Spacer(Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            StatChip(
-                emoji = "💬",
-                value = totalCaught.toString(),
-                label = "слов",
-                modifier = Modifier.weight(1f),
-            )
-            StatChip(
-                emoji = "⏱",
-                value = formatMinutes(totalMinutes),
-                label = "прослушано",
-                modifier = Modifier.weight(1f),
+            Icon(
+                Icons.Filled.Add,
+                contentDescription = "Найти ещё станции",
+                modifier = Modifier.size(32.dp),
+                tint = Accent.copy(alpha = pulse),
             )
         }
-    }
-}
-
-@Composable
-private fun StatChip(
-    emoji: String,
-    value: String,
-    label: String,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-        modifier = modifier,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(emoji, fontSize = 18.sp)
-            Spacer(Modifier.width(8.dp))
-            Column {
-                Text(
-                    value,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    label,
-                    fontSize = 10.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
-
-private fun formatMinutes(minutes: Long): String {
-    if (minutes < 60) return "$minutes мин"
-    val h = minutes / 60
-    val m = minutes % 60
-    return if (m == 0L) "$h ч" else "$h ч $m мин"
-}
-
-@Composable
-private fun CountrySelector(
-    current: Country,
-    onSelect: (Country) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Country.values().forEach { c ->
-            val isActive = c == current
-            Surface(
-                shape = RoundedCornerShape(100.dp),
-                color = if (isActive) Accent.copy(alpha = 0.12f)
-                        else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                border = if (isActive)
-                    androidx.compose.foundation.BorderStroke(1.5.dp, Accent.copy(alpha = 0.5f))
-                else null,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { onSelect(c) },
-            ) {
-                Text(
-                    "${c.emoji} ${c.displayName}",
-                    modifier = Modifier.padding(vertical = 9.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 12.sp,
-                    fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium,
-                    color = if (isActive) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
+        Spacer(Modifier.height(5.dp))
+        Text(
+            if (loading) "Ищем…" else "Найти ещё",
+            fontSize = 10.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Accent,
+            maxLines = 1,
+        )
+        Text(
+            "+20 станций",
+            fontSize = 9.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+        )
     }
 }

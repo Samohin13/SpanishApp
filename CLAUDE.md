@@ -2,7 +2,59 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-17, сессия 19 (Radio epic v1.6.0–1.8.4)**
+> Последнее обновление: **2026-05-17, сессия 20 (Radio v1.9.0 — фоновое + редизайн)**
+
+## 📻 Radio v1.9.0 — фоновое воспроизведение + чистый редизайн (сессия 20)
+
+Критичный фикс + большой UX-апгрейд по итогам тестирования v1.8.x.
+
+### Что починили
+**Lock screen / фоновое воспроизведение** — была архитектурная ошибка:
+- Было: 2 разных ExoPlayer (один в `RadioPlayerController`, второй пустой в `RadioPlayerService`)
+- MediaSession была привязана к пустому player'у → система не видела что играет
+- Не запускался foreground service → Android убивал процесс при блокировке
+- Lock screen / шторка не показывали media controls
+
+Стало:
+- ОДИН `ExoPlayer` в контроллере, к нему привязан `MediaSession` через Hilt EntryPoint
+- `RadioPlayerController.play()` стартует `ContextCompat.startForegroundService(RadioPlayerService)`
+- В `MediaItem.MediaMetadata` передаём `title=station.name`, `artist=country+genre`
+- `onTaskRemoved` НЕ убивает сервис пока играет (поведение как у Spotify)
+- Permissions уже были: `FOREGROUND_SERVICE_MEDIA_PLAYBACK` + `WAKE_LOCK`
+
+### Что убрали по запросу владельца
+- WordCatchCard (кнопка «Поймал слово!») — слишком игровой элемент, не вписывается в концепцию пассивного слушания
+- Из ProfileScreen → тайл «СЛОВ ПОЙМАЛ» (остались «прослушано» + «открыть»)
+- Из RadioViewModel: `catchWord()`, `totalCaughtWords`
+- DI: `provideRadioWordCatchDao` (DAO и таблица в БД остались — без миграции вниз)
+
+### Что добавили: новый layout RadioScreen
+- **Без vertical scroll** — всё помещается на одном экране как Spotify Now Playing
+- TopBar (Material иконки): back ← + title + refresh ↻
+- Country chips (3 шт)
+- **Filter chips row** (6 шт, multi-select): 🎵 Музыка · 🎙 Разговор · 📰 Новости · ⚽ Спорт · 🎭 Культура · ⭐ Избранное
+- Hero (компактный 70% ширины, aspect 1:1) с LIVE/PAUSED/ERROR pill
+- Station info: name + program + 3 tags (страна/уровень/жанр)
+- Controls: ♥ ⏮ ▶ ⏭ (все Material icons, не эмодзи)
+- Bottom carousel: станции + последний тайл «+ Найти ещё» с pulse-анимацией при загрузке
+
+### Что добавили: discoverMore() в RadioCatalogRepository
+- Тап на «+ Найти ещё» → `discoverMore(20)` — дозапросить станций без очистки кэша
+- ID станций = stable `hashCode(url)` → `INSERT OR REPLACE` дедуплицирует
+- Старая балансировка 24+8+8 осталась только для первичного `discoverAndCache()`
+
+### Версия
+- versionCode 45 → **46**, versionName 1.8.4 → **1.9.0**
+
+### Что НЕ сделано (на потом)
+- WorkManager weekly catalog refresh (сейчас при входе если кэш > 7 дн)
+- Auto-discovery silent failures (юзер сообщал «ничего не подбирает» — нужно диагностировать)
+- Listening streak (отдельный от learning streak)
+- Achievements за радио («1 час», «10 часов»)
+- Lockscreen artwork (сейчас только текст + accent цвет — добавить gradient bitmap)
+- Transcript / shownotes — для обучения нужно показать что играет (название трека)
+
+---
 
 ## 📻 Radio epic — v1.6.0 → 1.8.4 (сессия 19, 2026-05-16…17)
 

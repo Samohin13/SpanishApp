@@ -79,7 +79,8 @@ object AppModule {
     @Provides fun provideRadioFavoriteDao(db: AppDatabase): com.spanishapp.radio.data.RadioFavoriteDao = db.radioFavoriteDao()
     @Provides fun provideRadioCatalogDao(db: AppDatabase): com.spanishapp.radio.data.RadioCatalogDao = db.radioCatalogDao()
     @Provides fun provideRadioListeningDao(db: AppDatabase): com.spanishapp.radio.data.RadioListeningDao = db.radioListeningDao()
-    @Provides fun provideRadioWordCatchDao(db: AppDatabase): com.spanishapp.radio.data.RadioWordCatchDao = db.radioWordCatchDao()
+    // RadioWordCatchDao убран в v1.9.0 (фича «Поймал слово» вырезана).
+    // Таблица оставлена в БД для совместимости — без миграции вниз.
 
     // ── Radio player (Singleton — выживает между экранами) ───
     @Provides

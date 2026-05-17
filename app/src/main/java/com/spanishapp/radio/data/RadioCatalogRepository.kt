@@ -58,7 +58,63 @@ class RadioCatalogRepository @Inject constructor(
     suspend fun hasCache(): Boolean = dao.count() > 0
 
     /**
-     * Главный метод: запросить + probe + закэшировать.
+     * Дозапросить ещё станций и добавить к существующему каталогу
+     * БЕЗ очистки. Используется по тапу «+ Найти ещё».
+     *
+     * Дубликаты автоматически отсеиваются — id станции = stable hash от URL,
+     * INSERT OR REPLACE в DAO обновит запись если URL уже есть.
+     *
+     * @return сколько НОВЫХ станций добавилось (не считая обновлённых).
+     */
+    suspend fun discoverMore(targetCount: Int = 20): Int = withContext(Dispatchers.IO) {
+        _progress.value = 0f
+
+        val existingUrls = dao.getAll().map { it.streamUrl }.toSet()
+        val userCountry = detectUserCountry()
+        val rawPool = fetchPool().filter { it.streamUrl !in existingUrls }
+        if (rawPool.isEmpty()) {
+            _progress.value = 1f
+            return@withContext 0
+        }
+
+        val total = rawPool.size
+        val working = mutableListOf<DiscoveredStation>()
+        var processed = 0
+
+        rawPool.chunked(8).forEach { batch ->
+            val results = coroutineScope {
+                batch.map { st -> async { if (probe(st.streamUrl)) st else null } }.awaitAll()
+            }
+            results.filterNotNull().forEach { working.add(it) }
+            processed += batch.size
+            _progress.value = processed.toFloat() / total
+            if (working.size >= targetCount) return@forEach
+        }
+
+        val now = System.currentTimeMillis()
+        working.take(targetCount).forEach { st ->
+            dao.upsert(
+                stationId = st.id,
+                shortCode = st.shortCode,
+                name = st.name,
+                program = st.program,
+                frequency = st.frequency,
+                country = st.country.name,
+                genre = st.genre.name,
+                level = st.level.name,
+                streamUrl = st.streamUrl,
+                bitrate = st.bitrate,
+                userCountry = userCountry,
+                fetchedAt = now,
+            )
+        }
+        _foundCount.value = working.size
+        _progress.value = 1f
+        working.size.coerceAtMost(targetCount)
+    }
+
+    /**
+     * Главный метод: запросить + probe + закэшировать (с очисткой).
      * Возвращает количество найденных рабочих станций.
      */
     suspend fun discoverAndCache(): Int = withContext(Dispatchers.IO) {
@@ -170,7 +226,9 @@ class RadioCatalogRepository @Inject constructor(
                     seenUrls.add(url)
                     pool.add(
                         DiscoveredStation(
-                            id = "auto_${pool.size}",
+                            // Стабильный id из URL — позволяет INSERT OR REPLACE
+                            // дедуплицировать при повторных discoverMore() вызовах.
+                            id = "auto_${url.hashCode().toUInt().toString(16)}",
                             shortCode = shortCodeFromName(r.name ?: "?"),
                             name = (r.name ?: "?").trim().take(40),
                             program = tag.replaceFirstChar { it.uppercase() },
