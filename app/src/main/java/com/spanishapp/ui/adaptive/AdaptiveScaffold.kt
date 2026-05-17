@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
@@ -93,10 +94,23 @@ fun AdaptiveScaffold(
                     navigationRail()
                 }
             }
-            // Контент занимает остаток ширины
-            Box(modifier = Modifier.fillMaxSize()) {
-                // Передаём пустые PaddingValues — навигация уже отдельная колонка
-                content(PaddingValues(0.dp))
+            // Контент занимает остаток ширины + auto-centered с max-width.
+            // v1.12.1: оборачиваем в Box с adaptiveContentWidth() чтобы ВСЕ
+            // 49 экранов автоматически получили cap без необходимости
+            // править каждый файл вручную. Box(fillMaxSize) + inner Box
+            // (adaptiveContentWidth) → контент центрируется + по бокам
+            // фон Scaffold.
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .adaptiveContentWidth(),
+                ) {
+                    content(PaddingValues(0.dp))
+                }
             }
         }
     }

@@ -96,8 +96,11 @@ fun Modifier.adaptiveContentWidth(): Modifier {
     val sizeClass = LocalWindowSizeClass.current
     val maxWidth = when (sizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> Dp.Unspecified  // без ограничения
-        WindowWidthSizeClass.Medium -> 600.dp
-        WindowWidthSizeClass.Expanded -> 720.dp
+        WindowWidthSizeClass.Medium -> 720.dp
+        // v1.12.1: было 720dp → стало 900dp по фидбэку юзера (Tab S9 1280dp
+        // — 720 это 56% ширины, 44% по бокам пусто). 900dp = ~70% ширины,
+        // выглядит сбалансированно, не «одиноко» в центре.
+        WindowWidthSizeClass.Expanded -> 900.dp
         else -> Dp.Unspecified
     }
     return if (maxWidth != Dp.Unspecified) {

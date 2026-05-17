@@ -68,9 +68,11 @@ fun GamesScreen(
     vm: GamesScreenViewModel = hiltViewModel()
 ) {
     val progress by vm.gameProgress.collectAsState()
+    // v1.12.1: adaptive grid — 2 на телефоне, 3 на foldable, 4 на планшете.
+    val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 2, medium = 3, expanded = 4)
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(cols),
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
@@ -79,7 +81,7 @@ fun GamesScreen(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        item(span = { GridItemSpan(2) }) {
+        item(span = { GridItemSpan(cols) }) {
             Column {
                 Text(
                     androidx.compose.ui.res.stringResource(com.spanishapp.R.string.games_title),
