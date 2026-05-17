@@ -2,7 +2,69 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-15, сессия 18 (Theory cards Phase 1 + v1.2.0)**
+> Последнее обновление: **2026-05-17, сессия 19 (Radio epic v1.6.0–1.8.4)**
+
+## 📻 Radio epic — v1.6.0 → 1.8.4 (сессия 19, 2026-05-16…17)
+
+Большая фича — испаноязычное радио прямо в приложении. Интегрирован
+сторонний проект RadioTuner (com.example.radiotuner) → перенесён под
+`com.spanishapp.radio.*` и серьёзно переработан под нашу обучающую
+аудиторию + стилистику.
+
+### Что появилось
+| Версия | Что |
+|---|---|
+| 1.6.0 | База: 40 испаноязычных станций (24 ES + 8 MX + 8 AR), ExoPlayer Media3, MediaSessionService, HapticManager (TICK/CLICK/HEAVY_CLICK), 5-я нав-кнопка 📻, Tuner wheel + Frequency dial |
+| 1.6.1 | P0 фиксы: хаотичные скачки станций, колесо визуально крутится, Singleton player (выживает между экранами), Mini-player над BottomBar |
+| 1.6.2 | URL verification через radio-browser.info (31/40 verified), Favorites Room таблица + ⭐ кнопка, StationInfoCard под controls |
+| 1.6.3 | Замена 9 мёртвых станций живыми из API (Flamenco Radio 320 kbps добавлен!) |
+| 1.6.4 | Spotify/Apple Music визуал: hero artwork с country-gradient, большая 72dp play-кнопка с linearGradient, station tags, mini-player без border |
+| 1.6.5 | 8 broken URL заменены живыми (полный probe через HEAD), status/nav bar insets фикс |
+| 1.6.6 | **Убрал колесо tuner** (по запросу владельца) → горизонтальная карусель станций + авто-skip при ошибке потока |
+| 1.6.7 | 13 geo-blocked заменены на global-CDN потоки (streamtheworld, zeno.fm — работают из не-EU стран) |
+| **1.7.0** | **Auto-discovery**: при первом заходе на радио → ip-API определяет страну → radio-browser API ищет испаноязычные станции → PROBE каждого URL → балансирует 24+8+8 → кэширует в Room (24h). UI: «🔍 Подбираем станции… 47%» с progress |
+| 1.8.0 | Обучающие фичи: listening time tracker (radio_listening_session), «💬 Поймал слово!» кнопка с +5 XP бейджем, debounce 1 сек, scale-pulse анимация |
+| 1.8.1 | Stats секция в ProfileScreen «📻 МОЁ РАДИО» (минуты прослушано / слов поймал / → открыть) |
+| 1.8.2 | Featured-карточка на HomeScreen — реактивно показывает LIVE-станцию или приглашение «Слушай живой эфир» |
+| 1.8.3 | 5-я Daily mission «5 мин радио» (300+ секунд за день) с smart-routing в /radio |
+| 1.8.4 | TTS↔Radio coordination — радио на паузу когда играет TTS в уроке (RadioCoordinator object + hook в speakSpanish()) |
+
+### Структура модуля
+```
+com.spanishapp.radio/
+├── data/
+│   ├── Station.kt (Country / Genre / CefrLevel enums + data class)
+│   ├── StationRepository.kt (40 hardcoded fallback)
+│   ├── RadioFavoriteEntity + DAO (Room таблица)
+│   ├── RadioCatalogEntity + DAO (dynamic catalog cache)
+│   ├── RadioCatalogRepository (API + probe + cache)
+│   └── RadioStatsEntity (listening_session + word_catch)
+├── player/
+│   ├── RadioPlayerController.kt (ExoPlayer wrapper, Singleton)
+│   ├── RadioPlayerService.kt (MediaSessionService для фона)
+│   ├── HapticManager.kt (detent haptics — TICK/CLICK/HEAVY_CLICK)
+│   └── RadioCoordinator.kt (TTS↔Radio mutex)
+└── ui/
+    ├── RadioScreen.kt (главный экран: hero + controls + carousel)
+    ├── RadioViewModel.kt @HiltViewModel
+    ├── RadioMiniPlayer.kt (overlay над BottomBar)
+    ├── HomeRadioCard.kt (featured-карточка на главной)
+    └── (всё в стиле ESPEAK: orange Accent + dark surfaceVariant)
+```
+
+### Версии БД
+v22: radio_favorites
+v23: radio_catalog (dynamic stations from API)
+v24: radio_listening_session + radio_word_catch (stats)
+
+### Что НЕ сделано
+- WorkManager weekly catalog refresh (сейчас только при входе если кэш > 7 дн)
+- Listening streak (отдельный от learning streak)
+- Achievements за радио («1 час», «10 часов», «100 слов»)
+- Транскрипция через Whisper API
+- All-stations library screen с фильтром «только избранные»
+
+---
 
 ## 📖 Theory cards Phase 1 (v1.2.0, сессия 18, 2026-05-15)
 
