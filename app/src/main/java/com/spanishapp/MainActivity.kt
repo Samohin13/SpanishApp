@@ -209,53 +209,57 @@ fun SpanishAppRoot() {
         "conjugation", "quiz", "dialogues", "settings", "pronunciation"
     ) || currentRoute.startsWith("flashcards")
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            if (showBottomBar) {
-                androidx.compose.foundation.layout.Column {
-                    // Mini-player над BottomBar — показывается когда играет радио
-                    // и юзер НЕ на экране радио (где уже есть полный плеер).
-                    com.spanishapp.radio.ui.RadioMiniPlayer(
-                        isOnRadioScreen = currentRoute == "radio",
-                        onClick = {
-                            // Открыть полный экран радио
-                            navController.navigate("radio") {
-                                launchSingleTop = true
-                            }
-                        }
-                    )
-                    SpanishBottomBar(
-                    currentRoute = currentRoute,
-                    onNavigate = { route ->
-                        // Bottom-bar tap behaviour:
-                        // 1. If the target route is already in the back stack,
-                        //    pop to it (cheaper, preserves its state, and
-                        //    avoids the previous launchSingleTop + restoreState
-                        //    combo which silently no-op'd Profile/Settings →
-                        //    Home).
-                        // 2. Otherwise navigate normally — pop everything
-                        //    above home so we don't grow the stack across
-                        //    horizontal tab moves.
-                        val popped = navController.popBackStack(
-                            route = route, inclusive = false
-                        )
-                        if (!popped) {
-                            navController.navigate(route) {
-                                popUpTo("home") {
-                                    saveState = true
-                                    inclusive = false
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    }
-                )
+    // v1.12.0 Phase 1: Adaptive navigation — BottomBar на телефоне,
+    // NavigationRail на планшете. Логика навигации идентична.
+    val handleNavigate: (String) -> Unit = { route ->
+        // Bottom-bar/rail tap behaviour:
+        // 1. If the target route is already in the back stack,
+        //    pop to it (cheaper, preserves its state, and
+        //    avoids the previous launchSingleTop + restoreState
+        //    combo which silently no-op'd Profile/Settings → Home).
+        // 2. Otherwise navigate normally — pop everything above home
+        //    so we don't grow the stack across horizontal tab moves.
+        val popped = navController.popBackStack(
+            route = route, inclusive = false
+        )
+        if (!popped) {
+            navController.navigate(route) {
+                popUpTo("home") {
+                    saveState = true
+                    inclusive = false
                 }
+                launchSingleTop = true
+                restoreState = true
             }
         }
+    }
+    val miniPlayerOverlay: @Composable () -> Unit = {
+        // Mini-player показывается когда играет радио и юзер НЕ на радио-экране.
+        // На Compact — отрисовывается над BottomBar.
+        // На Medium/Expanded — над NavigationRail в левой колонке.
+        com.spanishapp.radio.ui.RadioMiniPlayer(
+            isOnRadioScreen = currentRoute == "radio",
+            onClick = {
+                navController.navigate("radio") {
+                    launchSingleTop = true
+                }
+            }
+        )
+    }
+
+    com.spanishapp.ui.adaptive.AdaptiveScaffold(
+        modifier = Modifier.fillMaxSize(),
+        showNavigation = showBottomBar,
+        topOverlay = miniPlayerOverlay,
+        bottomBar = {
+            SpanishBottomBar(currentRoute = currentRoute, onNavigate = handleNavigate)
+        },
+        navigationRail = {
+            com.spanishapp.ui.components.SpanishNavigationRail(
+                currentRoute = currentRoute,
+                onNavigate = handleNavigate,
+            )
+        },
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Navigation.SpanishNavHost(

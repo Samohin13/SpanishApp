@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import com.spanishapp.ui.adaptive.adaptiveContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -147,10 +148,13 @@ fun HomeScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         SpanishCitiesWatermark(modifier = Modifier.fillMaxSize())
 
+        // v1.12.0 Phase 2: adaptive content width — на планшете контент
+        // центрируется и не растягивается на всю ширину (600/720dp max).
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding(),
+                .statusBarsPadding()
+                .adaptiveContentWidth(),
             contentPadding = PaddingValues(bottom = 96.dp)
         ) {
             // ── Compact header (~72dp) ─────────────────────────

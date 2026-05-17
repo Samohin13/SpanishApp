@@ -241,3 +241,70 @@ fun XpProgressBar(level: Int, progress: Float, totalXp: Int, modifier: Modifier 
         }
     }
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  NAVIGATION RAIL — для планшетов (v1.12.0 Phase 1 adaptive)
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Vertical navigation для планшетов и foldables (Medium/Expanded widths).
+ * Использует Material3 NavigationRail с теми же brand colors что SpanishBottomBar.
+ *
+ * Активируется через AdaptiveScaffold (см. ui/adaptive/AdaptiveScaffold.kt).
+ * Compact (телефон portrait) продолжает использовать SpanishBottomBar.
+ */
+@Composable
+fun SpanishNavigationRail(
+    currentRoute: String,
+    onNavigate: (String) -> Unit,
+) {
+    val activeColor = Color(0xFFFF6B35)
+    val inactive = Color(0xFFAEAEB2)
+
+    // Sub-routes которые мапятся на parent tab (как в SpanishBottomBar)
+    val effectiveRoute = when {
+        currentRoute.startsWith("settings")     -> "profile"
+        currentRoute.startsWith("achievements") -> "profile"
+        currentRoute.startsWith("leaderboard")  -> "profile"
+        currentRoute.startsWith("rating")       -> "profile"
+        currentRoute.startsWith("weak_words")   -> "dictionary"
+        else -> currentRoute
+    }
+
+    androidx.compose.material3.NavigationRail(
+        modifier = Modifier.fillMaxHeight(),
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        // Top spacer чтобы иконки начинались чуть ниже top edge
+        Spacer(modifier = Modifier.height(16.dp))
+
+        bottomNavItems.forEach { item ->
+            val selected = effectiveRoute.startsWith(item.route)
+            androidx.compose.material3.NavigationRailItem(
+                selected = selected,
+                onClick = { onNavigate(item.route) },
+                icon = {
+                    Icon(
+                        if (selected) item.iconSelected else item.icon,
+                        contentDescription = androidx.compose.ui.res.stringResource(item.labelRes),
+                        modifier = Modifier.size(26.dp),
+                    )
+                },
+                label = {
+                    Text(
+                        androidx.compose.ui.res.stringResource(item.labelRes),
+                        fontSize = 10.sp,
+                        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                    )
+                },
+                colors = androidx.compose.material3.NavigationRailItemDefaults.colors(
+                    selectedIconColor = activeColor,
+                    selectedTextColor = activeColor,
+                    unselectedIconColor = inactive,
+                    unselectedTextColor = inactive,
+                    indicatorColor = activeColor.copy(alpha = 0.12f),
+                ),
+            )
+        }
+    }
+}

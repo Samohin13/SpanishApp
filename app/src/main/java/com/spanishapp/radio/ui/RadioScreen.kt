@@ -1,5 +1,6 @@
 package com.spanishapp.radio.ui
 
+import com.spanishapp.ui.adaptive.adaptiveContentWidth
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
@@ -119,7 +120,8 @@ fun RadioScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding(),
+                .statusBarsPadding()
+                .adaptiveContentWidth(),
         ) {
             TopBar(
                 onBack = { navController.popBackStack() },

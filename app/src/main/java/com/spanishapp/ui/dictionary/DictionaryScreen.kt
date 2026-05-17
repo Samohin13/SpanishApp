@@ -1,5 +1,6 @@
 package com.spanishapp.ui.dictionary
 
+import com.spanishapp.ui.adaptive.adaptiveContentWidth
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -533,7 +534,8 @@ private fun AllWordsContent(
         }
 
         // ── Список слов ───────────────────────────────────
-        Row(Modifier.fillMaxSize()) {
+        // v1.12.0 adaptive — на планшете список центрируется с max-width
+        Row(Modifier.fillMaxSize().adaptiveContentWidth()) {
             LazyColumn(
                 state = listState,
                 contentPadding     = PaddingValues(start = 16.dp, end = if (showIndex) 4.dp else 16.dp, top = 4.dp, bottom = 4.dp),
