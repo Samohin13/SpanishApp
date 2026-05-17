@@ -52,9 +52,22 @@ class RadioCatalogRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dao: RadioCatalogDao,
 ) {
+    /** Клиент для API-запросов (radio-browser, country.is) — JSON, более долгий таймаут. */
     private val client = OkHttpClient.Builder()
         .connectTimeout(12, TimeUnit.SECONDS)
         .readTimeout(12, TimeUnit.SECONDS)
+        .build()
+
+    /**
+     * Отдельный клиент для probe — 5 сек на ВСЁ.
+     * Если стрим за 5 сек не отдал первые байты — он мёртвый.
+     * Раньше использовали один клиент с 12с таймаутом → probe 100 URL
+     * занимал до 2.5 минут (12с × 100/8 параллельных).
+     */
+    private val probeClient = OkHttpClient.Builder()
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .readTimeout(5, TimeUnit.SECONDS)
+        .callTimeout(5, TimeUnit.SECONDS)  // жёсткий лимит на всю операцию
         .build()
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -129,17 +142,24 @@ class RadioCatalogRepository @Inject constructor(
         }
 
         val total = rawPool.size
-        val working = mutableListOf<DiscoveredStation>()
-        var processed = 0
+        val working = java.util.Collections.synchronizedList(mutableListOf<DiscoveredStation>())
+        val processed = java.util.concurrent.atomic.AtomicInteger(0)
 
-        rawPool.chunked(8).forEach { batch ->
-            val results = coroutineScope {
-                batch.map { st -> async { if (probe(st.streamUrl)) st else null } }.awaitAll()
+        run probeLoop@ {
+            rawPool.chunked(8).forEach { batch ->
+                coroutineScope {
+                    batch.map { st ->
+                        async {
+                            if (probe(st.streamUrl)) {
+                                working.add(st)
+                            }
+                            val p = processed.incrementAndGet()
+                            _progress.value = p.toFloat() / total
+                        }
+                    }.awaitAll()
+                }
+                if (working.size >= targetCount) return@probeLoop
             }
-            results.filterNotNull().forEach { working.add(it) }
-            processed += batch.size
-            _progress.value = processed.toFloat() / total
-            if (working.size >= targetCount) return@forEach
         }
 
         val now = System.currentTimeMillis()
@@ -193,23 +213,30 @@ class RadioCatalogRepository @Inject constructor(
         }
 
         // Probe — параллельно по 8 URL за раз. Прогресс: 0.30 → 1.0
+        // - per-probe прогресс через AtomicInteger (плавная анимация вместо рывков по 8%)
+        // - реальный break когда нашли 40+ живых (раньше return@forEach был continue!)
         _stage.value = DiscoveryStage.PROBING
         val total = rawPool.size
-        val working = mutableListOf<DiscoveredStation>()
-        var processed = 0
+        val working = java.util.Collections.synchronizedList(mutableListOf<DiscoveredStation>())
+        val processed = java.util.concurrent.atomic.AtomicInteger(0)
 
-        rawPool.chunked(8).forEach { batch ->
-            val results = coroutineScope {
-                batch.map { st ->
-                    async { if (probe(st.streamUrl)) st else null }
-                }.awaitAll()
+        run probeLoop@ {
+            rawPool.chunked(8).forEach { batch ->
+                coroutineScope {
+                    batch.map { st ->
+                        async {
+                            if (probe(st.streamUrl)) {
+                                working.add(st)
+                                _foundCount.value = working.size
+                            }
+                            val p = processed.incrementAndGet()
+                            _progress.value = 0.30f + 0.70f * (p.toFloat() / total)
+                        }
+                    }.awaitAll()
+                }
+                // Реальный break — return@probeLoop выходит ИЗ всего forEach
+                if (working.size >= 40) return@probeLoop
             }
-            results.filterNotNull().forEach { working.add(it) }
-            processed += batch.size
-            // Прогресс probe этапа маппим в 0.30 .. 1.0 диапазон
-            _progress.value = 0.30f + 0.70f * (processed.toFloat() / total)
-            _foundCount.value = working.size
-            if (working.size >= 40) return@forEach
         }
 
         trace("probe: ${working.size}/${rawPool.size} живых из пула")
@@ -351,10 +378,10 @@ class RadioCatalogRepository @Inject constructor(
 
     private fun probe(url: String): Boolean = runCatching {
         val req = Request.Builder().url(url)
-            .header("User-Agent", "ESPEAK/1.7.0")
+            .header("User-Agent", "ESPEAK/1.10.2")
             .header("Range", "bytes=0-2048")
             .build()
-        client.newCall(req).execute().use { resp: Response ->
+        probeClient.newCall(req).execute().use { resp: Response ->
             if (!resp.isSuccessful && resp.code != 206) return@runCatching false
             val bytes = resp.body?.bytes()?.size ?: 0
             bytes > 100

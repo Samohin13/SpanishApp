@@ -56,7 +56,15 @@ class RadioViewModel @Inject constructor(
         viewModelScope.launch {
             _discoveryState.value = DiscoveryState.LOADING
             val count = catalogRepo.discoverAndCache()
-            _discoveryState.value = if (count > 0) DiscoveryState.READY else DiscoveryState.ERROR
+            // Cache fallback: если discovery вернул 0 (сеть/API упали),
+            // но в БД ЕЩЁ ЕСТЬ предыдущий кэш — не считаем это ошибкой.
+            // Юзер продолжает слушать что слушал, без вспышки красного баннера.
+            val hasAnyCache = catalogDao.count() > 0
+            _discoveryState.value = when {
+                count > 0 -> DiscoveryState.READY
+                hasAnyCache -> DiscoveryState.READY  // живём со старым кэшем
+                else -> DiscoveryState.ERROR
+            }
             reloadStations()
         }
     }
@@ -193,7 +201,13 @@ class RadioViewModel @Inject constructor(
             if (!hasCache || !isFresh) {
                 _discoveryState.value = DiscoveryState.LOADING
                 val count = catalogRepo.discoverAndCache()
-                _discoveryState.value = if (count > 0) DiscoveryState.READY else DiscoveryState.ERROR
+                // Cache fallback — если discovery провалился, но кэш всё же
+                // остался от предыдущего раза, продолжаем работать с ним
+                _discoveryState.value = when {
+                    count > 0 -> DiscoveryState.READY
+                    hasCache -> DiscoveryState.READY
+                    else -> DiscoveryState.ERROR
+                }
                 reloadStations()
             } else {
                 _discoveryState.value = DiscoveryState.READY
