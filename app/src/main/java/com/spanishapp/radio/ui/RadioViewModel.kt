@@ -111,10 +111,19 @@ class RadioViewModel @Inject constructor(
 
     // ────────────────────── Country + stations ──────────────────────
 
-    private val _country = MutableStateFlow(Country.SPAIN)
+    /**
+     * Стартовая страна — если уже играет станция (зашли через mini-player
+     * с главной), берём её страну. Иначе дефолт Spain.
+     *
+     * Раньше: всегда стартовали со Spain, юзер слушал Аргентину,
+     * тапал mini-player → возвращался почему-то в Spain.
+     */
+    private val initialCountry = player.currentStation.value?.country ?: Country.SPAIN
+
+    private val _country = MutableStateFlow(initialCountry)
     val country: StateFlow<Country> = _country.asStateFlow()
 
-    private val _stations = MutableStateFlow(StationRepository.getStationsForCountry(Country.SPAIN))
+    private val _stations = MutableStateFlow(StationRepository.getStationsForCountry(initialCountry))
     val stations: StateFlow<List<Station>> = _stations.asStateFlow()
 
     /** Активная станция — берётся из Singleton-плеера, чтобы пережить смену экранов. */
