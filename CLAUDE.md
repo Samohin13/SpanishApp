@@ -575,17 +575,34 @@ git push origin master
 
 ## 🗂 16. Структура документации
 
-После консолидации (2026-05-17) в репе остались только essential .md:
+После аудита 2026-05-17 актуальная картина:
 
+### Активные .md (5, в git)
 - **`CLAUDE.md`** (этот файл) — единый источник правды
-- `PRIVACY_POLICY.md` — публичная страница для Play Console (legal)
-- `PRIVACY_POLICY.html` — HTML-зеркало для gh-pages
+- `PRIVACY_POLICY.md` — публичная политика для Play Console (legal)
 - `LICENSES.md` — open-source licenses
 - `index.md` — GitHub Pages landing
-- `backend/cloudflare-worker/README.md` — отдельный backend проект
-- `design_system/*.md` (6) — отдельный design system project
-- `docs/qa/*.md` (8) — формальная QA инфраструктура
-- `.github/ISSUE_TEMPLATE/*.md` (3) — GitHub Issues templates
+- `backend/cloudflare-worker/README.md` — документация AI proxy
 
-Удалено в этой консолидации (содержимое поглощено CLAUDE.md):
+### Архив `docs/archive/` (6, в git)
+- `docs/archive/design_system/*` — design system от 2026-05-08 (устаревший
+  стек, упоминает Claude/EASPEAK вместо Gemini/ESPEAK). Не используется в
+  коде, но сохранён как референс. См. `docs/archive/README.md`.
+
+### Untracked локально (11, НЕ в git — фактически на GitHub их нет)
+- `docs/qa/*` (8) — формальная QA-инфраструктура (test cases, smoke, release
+  checklist, beta tester guide и др.). Существует только локально.
+- `.github/ISSUE_TEMPLATE/*` (3) — templates для GitHub Issues. **GitHub
+  Issues их не использует** т.к. не закоммичены.
+- **TODO:** решить — коммитить или удалять.
+
+### Архив worktree (28, в `.claude/worktrees/stoic-cohen-8019d1/`)
+Snapshot старой версии проекта от прошлых сессий Claude Code. Содержит
+дубликаты + 18 файлов которые удалены в консолидации (PLAN, CHECKLIST,
+README_NEW, LEARNING_GUIDE, docs/ADS_PLAN, и др.). Не отображается в
+обычном git, не мешает workspace. Можно удалить через
+`git worktree remove .claude/worktrees/stoic-cohen-8019d1`.
+
+### История консолидации (2026-05-17)
+Удалено 18 .md (содержимое поглощено CLAUDE.md):
 PLAN.md, CHECKLIST.md, README_NEW.md, LEARNING_GUIDE.md, radio.md, docs/ADS_PLAN.md, docs/articles_game_design.md, docs/AUDIT_REPORT.md, docs/DONATIONS_PLAN.md, docs/LESSON_EXERCISES_PLAN.md, docs/MINDMAP.md, docs/MONETIZATION_PLAN.md, docs/PLAY_CONSOLE_CHEATSHEET.md, docs/PLAY_STORE_LISTING.md, docs/PUBLISH_PRIVACY_POLICY.md, docs/RELEASE_CHECKLIST.md, docs/SCREENS.md, docs/play_assets/SCREENSHOTS_GUIDE.md.
