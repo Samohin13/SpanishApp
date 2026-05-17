@@ -80,6 +80,13 @@ class RadioPlayerController(private val context: Context) {
     var onSessionEnded: ((startedAt: Long, endedAt: Long, stationId: String) -> Unit)? = null
 
     /**
+     * Callback когда станция признана «мёртвой» — auto-reconnect исчерпал
+     * все попытки. ViewModel блокирует её в displayedStations + auto-skip
+     * на следующую рабочую.
+     */
+    var onStationDead: ((Station) -> Unit)? = null
+
+    /**
      * Контекст станций для next/previous (отфильтрованный список из VM).
      * Mini-player и Service media-notification кнопки skip работают по нему.
      */
@@ -114,8 +121,10 @@ class RadioPlayerController(private val context: Context) {
         reconnectJob?.cancel()
         val station = _currentStation.value ?: return
         if (reconnectAttempts >= maxReconnectAttempts) {
-            Log.w(TAG_ICY, "auto-reconnect: max attempts reached, giving up")
+            Log.w(TAG_ICY, "auto-reconnect: max attempts reached, station ${station.name} is dead")
             reconnectAttempts = 0
+            // Сообщаем VM что станция мёртвая → она заблочит + переключит
+            onStationDead?.invoke(station)
             return
         }
         val attempt = reconnectAttempts + 1

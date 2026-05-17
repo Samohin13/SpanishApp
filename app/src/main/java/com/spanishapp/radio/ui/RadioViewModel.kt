@@ -150,6 +150,16 @@ class RadioViewModel @Inject constructor(
     private val _showOnlyFavorites = MutableStateFlow(false)
     val showOnlyFavorites: StateFlow<Boolean> = _showOnlyFavorites.asStateFlow()
 
+    /**
+     * In-memory blocklist «мёртвых» станций (auto-reconnect не справился).
+     * Не в БД — даём шанс восстановиться при следующем catalog refresh
+     * через WorkManager (раз в неделю весь каталог пере-probe-ится).
+     * Если URL действительно мёртв — отвалится при probe. Если временный
+     * флап — снова появится в каталоге.
+     */
+    private val _blockedStationIds = MutableStateFlow<Set<String>>(emptySet())
+    val blockedStationIds: StateFlow<Set<String>> = _blockedStationIds.asStateFlow()
+
     fun toggleGenreFilter(genre: Genre) {
         val current = _selectedGenres.value
         _selectedGenres.value = if (genre in current) current - genre else current + genre
@@ -169,16 +179,27 @@ class RadioViewModel @Inject constructor(
      * Если ничего не подходит — отдаём пустой список (UI покажет hint).
      */
     val displayedStations: StateFlow<List<Station>> = combine(
-        _stations, _selectedGenres, _showOnlyFavorites, favoriteIds,
-    ) { stations, genres, onlyFav, favs ->
+        _stations, _selectedGenres, _showOnlyFavorites, favoriteIds, _blockedStationIds,
+    ) { values ->
+        @Suppress("UNCHECKED_CAST")
+        val stations = values[0] as List<Station>
+        @Suppress("UNCHECKED_CAST")
+        val genres = values[1] as Set<Genre>
+        val onlyFav = values[2] as Boolean
+        @Suppress("UNCHECKED_CAST")
+        val favs = values[3] as Set<String>
+        @Suppress("UNCHECKED_CAST")
+        val blocked = values[4] as Set<String>
+
         val filtered = stations.filter { st ->
             val genreOk = genres.isEmpty() || st.genre in genres
             val favOk = !onlyFav || st.id in favs
-            genreOk && favOk
+            val notBlocked = st.id !in blocked
+            genreOk && favOk && notBlocked
         }
-        // Синхронизируем контекст с плеером — mini-player будет skip-ать
-        // по тому же отфильтрованному списку что юзер видит
-        player.setStationContext(filtered.ifEmpty { stations })
+        // Синхронизируем контекст с плеером — mini-player и notification
+        // skip-кнопки будут навигировать по тому же отфильтрованному списку
+        player.setStationContext(filtered.ifEmpty { stations.filter { it.id !in blocked } })
         filtered
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _stations.value)
 
@@ -193,6 +214,17 @@ class RadioViewModel @Inject constructor(
             kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                 listeningDao.insert(startedAt, endedAt, stationId)
             }
+        }
+
+        // Станция признана мёртвой (3 auto-reconnect не помогли) →
+        // блочим в displayedStations + переключаемся на следующую рабочую.
+        player.onStationDead = { dead ->
+            _blockedStationIds.value = _blockedStationIds.value + dead.id
+            // Скип на следующую станцию которая ещё не в blocklist
+            val available = _stations.value.filter {
+                it.id != dead.id && it.id !in _blockedStationIds.value
+            }
+            available.firstOrNull()?.let { player.play(it) }
         }
 
         viewModelScope.launch {
@@ -223,15 +255,9 @@ class RadioViewModel @Inject constructor(
             }
         }
 
-        // Авто-skip при ошибке потока
-        viewModelScope.launch {
-            player.hasError.collect { isError ->
-                if (isError) {
-                    kotlinx.coroutines.delay(2000)
-                    if (player.hasError.value) nextStation()
-                }
-            }
-        }
+        // Авто-skip убран — теперь обрабатывается через player.onStationDead
+        // ПОСЛЕ того как auto-reconnect (v1.11.0) исчерпал 3 попытки.
+        // Без этого VM мгновенно скипал станцию до того как reconnect шанс получит.
     }
 
     fun selectCountry(country: Country) {
