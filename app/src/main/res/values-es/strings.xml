@@ -13,9 +13,11 @@
     <!-- ── Navegación inferior ── -->
     <string name="nav_home">Inicio</string>
     <string name="nav_games">Juegos</string>
+    <string name="nav_radio">Radio</string>
     <string name="nav_dictionary">Diccionario</string>
     <string name="nav_profile">Perfil</string>
     <string name="nav_grammar">Gramática</string>
+    <string name="bento_goal_radio">5 min de radio</string>
 
     <!-- ── Botones comunes ── -->
     <string name="btn_continue">Siguiente</string>

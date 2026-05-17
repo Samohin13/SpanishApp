@@ -13,9 +13,11 @@
     <!-- ── Нижня навігація ── -->
     <string name="nav_home">Головна</string>
     <string name="nav_games">Ігри</string>
+    <string name="nav_radio">Радіо</string>
     <string name="nav_dictionary">Словник</string>
     <string name="nav_profile">Профіль</string>
     <string name="nav_grammar">Граматика</string>
+    <string name="bento_goal_radio">5 хв радіо</string>
 
     <!-- ── Загальні кнопки ── -->
     <string name="btn_continue">Далі</string>

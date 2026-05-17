@@ -4,9 +4,11 @@
     <!-- ── Bottom navigation ── -->
     <string name="nav_home">Home</string>
     <string name="nav_games">Games</string>
+    <string name="nav_radio">Radio</string>
     <string name="nav_dictionary">Dictionary</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_grammar">Grammar</string>
+    <string name="bento_goal_radio">5 min radio</string>
 
     <!-- ── Common buttons ── -->
     <string name="btn_continue">Next</string>
