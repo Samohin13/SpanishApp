@@ -51,9 +51,16 @@
 ## 📦 2. Контент-инвентарь (verified by grep)
 
 ### Уроки
-- **240/240** уроков с контентом — `LessonContentData.kt` имеет 240 `LessonContent(...)` определений (16 unit × 15)
-- **240** lessons в `RoadmapData.kt` (полное покрытие roadmap)
-- **63** override-определения в `LessonContentDataV2.kt` — рефакторинг под новый xlsx-курс (block A1.1 готов, остальные ещё на V1)
+- **254** уникальных lesson ID в коде:
+  - **240** в `LessonContentData.kt` (V1, базовый набор 16 unit × 15)
+  - **+14 новых** в `LessonContentDataV2.kt` (суффикс `_5` — промежуточные:
+    `u1_l13_5`, `u3_l5_5`, `u3_l7_5`, `u4_l13_5`, `u5_l8_5`, `u6_l9_5`,
+    `u7_l5_5`, `u9_l11_5`, `u11_l5_5`, `u12_l9_5`, `u13_l5_5`, `u14_l9_5`,
+    `u15_l11_5`, `u16_l4_5`)
+  - **+49 overrides** в V2 (переписка существующих под xlsx-курс)
+- **240** RoadmapLesson в `RoadmapData.kt` — ⚠ roadmap НЕ ЗНАЕТ про 14 новых
+  V2-уроков. Контент есть, но юзер их в курсе не видит. **TODO: добавить
+  в roadmap либо подтвердить что доступны через checkpoint-разблокировки.**
 
 ### Libros (книги/рассказы)
 - **100/100** рассказов в `LibrosData.kt`:
@@ -336,8 +343,13 @@ UI → AiChatRepository → Cloudflare Worker proxy
 
 ### Высокий приоритет
 1. **Локализация контента уроков** на en/uk/es — UI переведён, контент русский (большой scope)
-2. **V2 курса (xlsx) рефакторинг** — 15/240 уроков переписаны, остальные 225 на V1 (тоже валидны, V2 — улучшение качества)
-3. **22 IMPORTANT из audit 2026-05-17** (best practices):
+2. **V2 курса (xlsx) рефакторинг** — 49/240 уроков переписаны под xlsx, остальные на V1 (тоже валидны, V2 — улучшение качества)
+3. **14 V2-only уроков (`_5` суффикс) НЕ в roadmap** — есть в `LessonContentDataV2.kt`,
+   `TheoryContentData.kt`, `VocabScope.kt` (все 3 уровня контента готовы), но
+   юзер их не видит т.к. `RoadmapData.kt` ещё имеет 240 пунктов. Нужно добавить
+   `RoadmapLesson` для каждого из 14 промежуточных уроков, либо удалить
+   контент если не планируется
+4. **22 IMPORTANT из audit 2026-05-17** (best practices):
    - `rememberSaveable` на формах (потеря ввода при rotation)
    - `popUpTo("home")` safe-fallback
    - `MainActivity` runBlocking DataStore → async
