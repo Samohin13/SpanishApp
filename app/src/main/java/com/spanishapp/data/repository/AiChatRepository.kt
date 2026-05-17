@@ -29,29 +29,37 @@ class AiChatRepository @Inject constructor(
         private const val MODEL = "gemini-flash-latest"
 
         /**
-         * If [BuildConfig.AI_PROXY_URL] is set in local.properties, use it —
-         * the proxy hides the API key from the APK. Otherwise fall back to
-         * direct Gemini calls with the bundled key (dev/local builds only).
+         * If [BuildConfig.AI_PROXY_URL] is set, use it — proxy hides the API
+         * key from APK. В release-сборке fallback на direct Gemini ЗАПРЕЩЁН:
+         * если proxy не сконфигурирован, лучше показать ошибку чем запечь
+         * ключ в production APK (откуда его легко достать через jadx).
+         *
+         * В debug-сборке direct call разрешён для удобства разработки.
          */
         private fun apiUrl(): String {
             val proxy = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
-            return if (proxy.isNotEmpty()) {
-                "$proxy/v1beta/models/$MODEL:generateContent"
-            } else {
-                "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
-                    "?key=${BuildConfig.GEMINI_API_KEY}"
+            if (proxy.isNotEmpty()) {
+                return "$proxy/v1beta/models/$MODEL:generateContent"
             }
+            require(BuildConfig.DEBUG) {
+                "AI_PROXY_URL must be configured for release builds. " +
+                "Direct Gemini calls expose the API key in the APK."
+            }
+            return "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
+                "?key=${BuildConfig.GEMINI_API_KEY}"
         }
 
         /** Server-Sent-Events streaming endpoint. */
         private fun streamUrl(): String {
             val proxy = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
-            return if (proxy.isNotEmpty()) {
-                "$proxy/v1beta/models/$MODEL:streamGenerateContent"
-            } else {
-                "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:streamGenerateContent" +
-                    "?key=${BuildConfig.GEMINI_API_KEY}&alt=sse"
+            if (proxy.isNotEmpty()) {
+                return "$proxy/v1beta/models/$MODEL:streamGenerateContent"
             }
+            require(BuildConfig.DEBUG) {
+                "AI_PROXY_URL must be configured for release builds."
+            }
+            return "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:streamGenerateContent" +
+                "?key=${BuildConfig.GEMINI_API_KEY}&alt=sse"
         }
 
         /**
@@ -67,6 +75,38 @@ class AiChatRepository @Inject constructor(
                 header("X-App-Secret", secret)
             }
             return this
+        }
+
+        /**
+         * Превращает технический HTTP-error от Gemini в понятное юзеру
+         * сообщение. Никаких raw JSON, кодов, stack traces — короткая
+         * человеческая фраза которую можно показать в чате.
+         */
+        internal fun humanizeError(code: Int, body: String): String {
+            val bodyLower = body.lowercase()
+            return when {
+                // Ключ зарепортен/заблокирован Google
+                bodyLower.contains("reported as leaked") ||
+                bodyLower.contains("api key not valid") ->
+                    "ИИ-репетитор временно недоступен — обновляем ключ доступа. " +
+                    "Попробуй через несколько минут."
+
+                // Превышение квоты
+                code == 429 || bodyLower.contains("quota") ->
+                    "Слишком много запросов сейчас. Подожди минуту и попробуй снова 🙏"
+
+                // Permission / authorization issues
+                code == 401 || code == 403 ->
+                    "ИИ-репетитор временно недоступен. Мы уже чиним 🔧"
+
+                // Server-side errors
+                code in 500..599 ->
+                    "Сервер ИИ не отвечает. Проверь интернет или попробуй позже."
+
+                // Network / unknown
+                else ->
+                    "Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту."
+            }
         }
 
         private val SYSTEM_PROMPT = """
@@ -136,7 +176,7 @@ class AiChatRepository @Inject constructor(
 
             if (!response.isSuccessful) {
                 val errBody = response.body?.string() ?: ""
-                return@withContext Result.failure(Exception("Gemini error ${response.code}: $errBody"))
+                return@withContext Result.failure(Exception(humanizeError(response.code, errBody)))
             }
 
             val json = Json.parseToJsonElement(response.body!!.string()).jsonObject
@@ -199,7 +239,7 @@ class AiChatRepository @Inject constructor(
         val response = okHttpClient.newCall(request).execute()
         if (!response.isSuccessful) {
             val errBody = response.body?.string() ?: ""
-            throw Exception("Gemini error ${response.code}: $errBody")
+            throw Exception(humanizeError(response.code, errBody))
         }
 
         val source = response.body?.source()
