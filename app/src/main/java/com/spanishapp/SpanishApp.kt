@@ -22,6 +22,9 @@ class SpanishApp : Application() {
     @Inject lateinit var databaseSeeder: DatabaseSeeder
     @Inject lateinit var appPreferences: AppPreferences
 
+    /** Радио-плеер инжектится для регистрации в RadioCoordinator (TTS↔Radio mutex). */
+    @Inject lateinit var radioPlayerController: com.spanishapp.radio.player.RadioPlayerController
+
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
@@ -36,6 +39,18 @@ class SpanishApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Регистрируем радио-плеер в координаторе:
+        // когда speakSpanish() вызывается из урока, радио ставится на паузу.
+        runCatching {
+            com.spanishapp.radio.player.RadioCoordinator.setPlayer(radioPlayerController)
+        }.onFailure { e ->
+            runCatching {
+                com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                    .recordException(RuntimeException("[SpanishApp] RadioCoordinator init failed", e))
+            }
+        }
+
         // ВСЕ background-инициализации обёрнуты в try/catch.
         // Цель: даже если что-то падает (миграция, seeder, worker scheduling),
         // приложение всё равно стартует и юзер видит UI. Стектрейс пишется

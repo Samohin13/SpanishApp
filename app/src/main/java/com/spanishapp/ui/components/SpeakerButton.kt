@@ -176,6 +176,9 @@ fun isSpanishSpeakable(text: String?): Boolean = inferSpeakText(text) != null
  */
 fun TextToSpeech.speakSpanish(text: String?, utteranceId: String = "spk"): Boolean {
     val cleaned = inferSpeakText(text) ?: return false
+    // Если радио играет в фоне — ставим на паузу, чтобы не звучало
+    // одновременно с произношением слова из урока.
+    com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
     speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
     return true
 }
