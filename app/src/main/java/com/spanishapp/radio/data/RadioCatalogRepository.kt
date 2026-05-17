@@ -23,8 +23,60 @@ import javax.inject.Singleton
 
 private const val TAG = "RadioDiscovery"
 
+/** Максимум станций одного «бренда» (Cadena SER, RNE...) в каталоге. */
+private const val MAX_PER_BRAND = 2
+
 /** Допустимые схемы URL потока. */
 private val SAFE_SCHEMES = setOf("http", "https", "rtsp")
+
+/**
+ * Нормализованный «brand key» из названия станции — для дедупликации
+ * по семьям. Берём первые 2 значимых слова в lowercase.
+ *
+ * Примеры:
+ *   "Cadena SER España"       → "cadena ser"
+ *   "Cadena SER Radio Madrid" → "cadena ser"
+ *   "RNE Radio 1"             → "rne radio"
+ *   "Los 40 Principales"      → "los 40"
+ *   "Caracol"                 → "caracol"
+ *
+ * Visible for testing.
+ */
+internal fun brandKey(name: String): String {
+    val clean = name.lowercase()
+        .replace(Regex("[^\\p{L}0-9\\s]"), " ")   // буквы (вкл. диакритику) + цифры
+        .replace(Regex("\\s+"), " ").trim()
+    val parts = clean.split(" ").filter { it.isNotEmpty() }
+    return when {
+        parts.isEmpty() -> ""
+        parts.size == 1 -> parts[0]
+        else -> "${parts[0]} ${parts[1]}"
+    }
+}
+
+/**
+ * Из списка станций оставляет не более MAX_PER_BRAND штук на бренд.
+ * Это даёт юзеру вариативность брендов вместо нескольких региональных
+ * вариантов одной сети (например 5 «Cadena SER» в разных городах).
+ *
+ * Порядок сохраняется — приоритет первым найденным (обычно более популярным).
+ *
+ * Visible for testing.
+ */
+internal fun deduplicateByBrand(
+    stations: List<DiscoveredStation>,
+    maxPerBrand: Int = MAX_PER_BRAND,
+): List<DiscoveredStation> {
+    val brandCount = mutableMapOf<String, Int>()
+    return stations.filter { st ->
+        val brand = brandKey(st.name)
+        val count = brandCount.getOrDefault(brand, 0)
+        if (count < maxPerBrand) {
+            brandCount[brand] = count + 1
+            true
+        } else false
+    }
+}
 
 /**
  * URL-схема whitelist. radio-browser.info — user-submitted каталог,
@@ -133,9 +185,21 @@ class RadioCatalogRepository @Inject constructor(
     suspend fun discoverMore(targetCount: Int = 20): Int = withContext(Dispatchers.IO) {
         _progress.value = 0f
 
-        val existingUrls = dao.getAll().map { it.streamUrl }.toSet()
+        // Дозапрос: учитываем не только существующие URL'ы, но и заполненность
+        // брендов. Если в кэше уже 2 «Cadena SER» — новых SER'ов не принимаем,
+        // чтобы дозапрос приносил новые БРЕНДЫ а не очередной регион того же.
+        val existing = dao.getAll()
+        val existingUrls = existing.map { it.streamUrl }.toSet()
+        val brandCount = mutableMapOf<String, Int>()
+        existing.forEach { ent ->
+            val brand = brandKey(ent.name)
+            brandCount[brand] = (brandCount[brand] ?: 0) + 1
+        }
+
         val userCountry = detectUserCountry()
-        val rawPool = fetchPool().filter { it.streamUrl !in existingUrls }
+        val rawPool = fetchPool()
+            .filter { it.streamUrl !in existingUrls }
+            .filter { (brandCount[brandKey(it.name)] ?: 0) < MAX_PER_BRAND }
         if (rawPool.isEmpty()) {
             _progress.value = 1f
             return@withContext 0
@@ -278,11 +342,16 @@ class RadioCatalogRepository @Inject constructor(
         final.size
     }
 
-    /** Берём 24 ES + 8 MX + 8 AR из пула. */
+    /**
+     * Берём 24 ES + 8 MX + 8 AR из пула.
+     * Внутри каждой страны применяем dedup по бренду — максимум 2
+     * станции на «семью» (Cadena SER, RNE, COPE...). Это даёт юзеру
+     * вариативность брендов вместо 5 региональных вариантов одной сети.
+     */
     private fun balanceByCountry(pool: List<DiscoveredStation>): List<DiscoveredStation> {
-        val es = pool.filter { it.country == Country.SPAIN }.take(24)
-        val mx = pool.filter { it.country == Country.MEXICO }.take(8)
-        val ar = pool.filter { it.country == Country.ARGENTINA }.take(8)
+        val es = deduplicateByBrand(pool.filter { it.country == Country.SPAIN }).take(24)
+        val mx = deduplicateByBrand(pool.filter { it.country == Country.MEXICO }).take(8)
+        val ar = deduplicateByBrand(pool.filter { it.country == Country.ARGENTINA }).take(8)
         return es + mx + ar
     }
 

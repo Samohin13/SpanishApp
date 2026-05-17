@@ -88,8 +88,8 @@ android {
         applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 52
-        versionName = "1.10.4"
+        versionCode = 53
+        versionName = "1.10.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         val anthropicKey = localProps.getProperty("ANTHROPIC_KEY") ?: ""
         buildConfigField("String", "ANTHROPIC_API_KEY", "\"$anthropicKey\"")
