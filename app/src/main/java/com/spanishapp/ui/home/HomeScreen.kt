@@ -279,6 +279,17 @@ fun HomeScreen(
                 }
             }
 
+            // ── 📻 Радио featured-карточка ───────────────────────
+            item {
+                StaggeredEntrance(index = 55) {
+                    com.spanishapp.radio.ui.HomeRadioCard(
+                        onClick = { navController.navigate("radio") },
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    )
+                    Spacer(Modifier.height(12.dp))
+                }
+            }
+
             // ── Streak heatmap ─────────────────────────────────
             item {
                 StaggeredEntrance(index = 6) {
