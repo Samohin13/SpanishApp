@@ -74,9 +74,9 @@ fun LibrosScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        // v1.12.3: grid 1/2/3 колонки. На телефоне — как было (row card),
-        // на планшете — 2-3 колонки чтобы не было «лонг-листа в центре».
-        val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 1, medium = 2, expanded = 3)
+        // v1.12.4: 1/2/2 cols (было 1/2/3 — при 3 cols текст рвался
+        // по 3 символа в карточке row-style #N + title + dots + topic).
+        val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 1, medium = 2, expanded = 2)
         LazyVerticalGrid(
             columns = GridCells.Fixed(cols),
             modifier = Modifier.fillMaxSize().padding(padding),
@@ -145,8 +145,11 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
     val levelColor = LevelColors[libro.level] ?: LibrosPurple
 
     Card(
+        // v1.12.4: heightIn(min = 110.dp) — все карточки одной высоты
+        // в grid'е. Без этого row card стакалась рваными прямоугольниками.
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(min = 110.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),

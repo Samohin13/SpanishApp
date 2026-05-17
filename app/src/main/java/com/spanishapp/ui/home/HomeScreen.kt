@@ -146,7 +146,16 @@ fun HomeScreen(
     var sheetWord by remember { mutableStateOf<WordEntity?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        SpanishCitiesWatermark(modifier = Modifier.fillMaxSize())
+        // v1.12.4: на планшете mini-player снизу (56dp) перекрывал
+        // нижнюю часть skyline. Добавил bottom padding = высота player'a
+        // когда играет радио. На телефоне player над bottomBar — без проблем.
+        val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+        val miniPlayerHeight = if (isWide) 64.dp else 0.dp
+        SpanishCitiesWatermark(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = miniPlayerHeight),
+        )
 
         // v1.12.0 Phase 2: adaptive content width — на планшете контент
         // центрируется и не растягивается на всю ширину (cap из AdaptiveScaffold).

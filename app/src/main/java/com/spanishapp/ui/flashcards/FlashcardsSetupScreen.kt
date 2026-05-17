@@ -182,9 +182,9 @@ fun FlashcardsSetupScreen(
     // if the user switches A1→A2 quickly, an in-flight A1 query could overwrite
     // the A2 result after it had already been shown.
 
-    // v1.12.3: на планшете показываем sets как grid 2/3 колонки
-    // (раньше длинный список full-width row выглядел узким и пустым).
-    val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 1, medium = 2, expanded = 3)
+    // v1.12.4: 1/2/2 cols (было 1/2/3 — на 3 cols Сет 1 unlocked
+    // высокий, остальные locked короткие → рваная геометрия).
+    val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 1, medium = 2, expanded = 2)
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -333,7 +333,9 @@ private fun SetRow(
 
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        // v1.12.4: heightIn(min = 116.dp) — все карточки одной высоты
+        // в grid'е. Сет 1 unlocked был выше locked-сетов → рваный layout.
+        modifier = modifier.fillMaxWidth().heightIn(min = 116.dp),
         shape = RoundedCornerShape(18.dp),
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         shadowElevation = if (row.unlocked) 3.dp else 0.dp,
@@ -341,7 +343,7 @@ private fun SetRow(
     ) {
         Box(
             Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .drawBehind {
                     if (row.unlocked) {
                         // Left accent stripe (level colour)
