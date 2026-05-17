@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
@@ -70,6 +71,20 @@ class RadioPlayerService : MediaSessionService() {
                 .setWakeMode(C.WAKE_MODE_NETWORK)   // CPU + Wi-Fi lock пока играем
                 .build()
             player = exoPlayer
+
+            // Если player перешёл в STATE_IDLE (контроллер.stop() вызвал
+            // .stop() + clearMediaItems()) — service больше не нужен,
+            // снимаем foreground и останавливаемся. Notification исчезает.
+            exoPlayer.addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(state: Int) {
+                    if (state == Player.STATE_IDLE) {
+                        runCatching {
+                            stopForeground(STOP_FOREGROUND_REMOVE)
+                            stopSelf()
+                        }
+                    }
+                }
+            })
 
             // SessionActivity → тап на media-notification открывает приложение
             val openIntent = Intent(this, MainActivity::class.java).apply {

@@ -1,11 +1,13 @@
 package com.spanishapp.radio.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -13,6 +15,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,17 +28,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spanishapp.radio.player.RadioPlayerController
@@ -43,6 +53,9 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import kotlin.math.abs
+import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 private val Accent = Color(0xFFFF5722)
 private val Green = Color(0xFF4CAF50)
@@ -80,15 +93,61 @@ fun RadioMiniPlayer(
 
     val visible = station != null && !isOnRadioScreen
 
+    // Swipe-to-dismiss state. Threshold 30% ширины контейнера → закрыть радио.
+    // Иначе snap-back к исходной позиции (легкий случайный жест не закрывает).
+    val offsetX = remember { Animatable(0f) }
+    val scope = rememberCoroutineScope()
+    val haptic = LocalHapticFeedback.current
+    // Сбрасываем offset когда станция меняется (новый mini-player after stop+play)
+    LaunchedEffect(station?.id) {
+        if (station != null && offsetX.value != 0f) offsetX.snapTo(0f)
+    }
+
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically(),
         modifier = modifier,
     ) {
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            val containerWidthPx = constraints.maxWidth.toFloat()
+            val dismissThreshold = containerWidthPx * 0.30f
+            // Fade text/elements по мере свайпа — визуальный отклик
+            val swipeAlpha = 1f - (abs(offsetX.value) / containerWidthPx).coerceIn(0f, 0.7f)
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .offset { IntOffset(offsetX.value.roundToInt(), 0) }
+                .alpha(swipeAlpha)
+                .pointerInput(containerWidthPx) {
+                    detectHorizontalDragGestures(
+                        onDragEnd = {
+                            scope.launch {
+                                if (abs(offsetX.value) >= dismissThreshold) {
+                                    // Закрываем — сильный haptic + slide-out до края + stop()
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    val targetX = if (offsetX.value > 0) containerWidthPx
+                                                  else -containerWidthPx
+                                    offsetX.animateTo(targetX, tween(durationMillis = 200))
+                                    player.stop()
+                                    // После stop станция = null → AnimatedVisibility hide
+                                    // offset сбросится через LaunchedEffect на следующем show
+                                } else {
+                                    // Snap back — лёгкий spring без haptic
+                                    offsetX.animateTo(
+                                        0f,
+                                        spring(dampingRatio = 0.7f, stiffness = 400f),
+                                    )
+                                }
+                            }
+                        },
+                        onHorizontalDrag = { change, delta ->
+                            change.consume()
+                            scope.launch { offsetX.snapTo(offsetX.value + delta) }
+                        }
+                    )
+                }
                 .background(
                     Brush.verticalGradient(
                         0.0f to Accent.copy(alpha = 0.04f),
@@ -207,6 +266,7 @@ fun RadioMiniPlayer(
                 }
             }
         }
+        }  // close BoxWithConstraints
     }
 }
 

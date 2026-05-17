@@ -457,6 +457,55 @@ class RadioPlayerController(private val context: Context) {
         connectionFuture = null
         pendingCommands.clear()
     }
+
+    /**
+     * Полная остановка радио — для swipe-to-dismiss на mini-player.
+     * 1. Cancel pending reconnect
+     * 2. Stop player + release MediaController
+     * 3. Clear все StateFlow → UI hide mini-player
+     * 4. Stop foreground service → notification исчезает
+     *
+     * После этого радио в состоянии «не запущено». Юзер должен явно
+     * тапнуть станцию чтобы возобновить.
+     */
+    fun stop() {
+        // Cancel auto-reconnect
+        reconnectJob?.cancel()
+        reconnectJob = null
+        reconnectAttempts = 0
+
+        // Stop player через MediaController
+        runCatching {
+            val mc = mediaController
+            if (mc != null && mc.isConnected) {
+                mc.stop()
+                mc.clearMediaItems()
+            }
+        }
+
+        // Release controller binding → отвязывает session
+        runCatching { mediaController?.release() }
+        mediaController = null
+        connectionFuture?.cancel(true)
+        connectionFuture = null
+        pendingCommands.clear()
+
+        // Сбрасываем StateFlow — UI триггерит hide mini-player через
+        // visible = (station != null && !isOnRadioScreen)
+        endSessionIfActive()
+        _isPlaying.value = false
+        _hasError.value = false
+        _nowPlaying.value = null
+        _playbackState.value = RadioPlaybackState.IDLE
+        _currentStation.value = null
+
+        // Stop foreground service → notification исчезает
+        runCatching {
+            context.stopService(Intent(context, RadioPlayerService::class.java))
+        }
+
+        Log.d(TAG_ICY, "stop() — player fully released")
+    }
 }
 
 /**
