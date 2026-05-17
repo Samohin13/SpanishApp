@@ -1,57 +1,51 @@
 package com.spanishapp.radio.player
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
-import android.media.AudioManager
-import android.os.Build
 import androidx.annotation.OptIn
 import androidx.core.content.ContextCompat
-import androidx.media3.common.AudioAttributes as Media3AudioAttributes
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import androidx.media3.common.Player
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.google.common.util.concurrent.ListenableFuture
 import com.spanishapp.radio.data.Station
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.ArrayDeque
+import java.util.concurrent.Executor
 
 /**
- * Состояние воспроизведения (агрегат над ExoPlayer.PlaybackState + isPlaying).
- *
- * UI должен показывать:
- *  - IDLE       → «—» (ничего не выбрано)
- *  - BUFFERING  → «Загрузка…» (со спиннером)
- *  - PLAYING    → «LIVE» (зелёный пульсирующий dot)
- *  - PAUSED     → «PAUSED»
- *  - ENDED      → «Поток прерван» (редкий случай — обычно радио бесконечно)
- *  - ERROR      → «ERROR» (красная плашка)
+ * Состояние воспроизведения (агрегат над Player state + isPlaying).
  */
 enum class RadioPlaybackState { IDLE, BUFFERING, PLAYING, PAUSED, ENDED, ERROR }
 
 /**
- * Тонкая обёртка над ExoPlayer для воспроизведения радио-потоков.
+ * Facade для UI над радио-плеером. Внутри держит MediaController,
+ * который привязывается к RadioPlayerService через SessionToken.
  *
- * Singleton (Hilt). Создаёт ОДИН ExoPlayer, к которому привязывается
- * MediaSession внутри RadioPlayerService.
+ * Архитектура v1.10.4 (канонический Media3):
+ *   UI → RadioPlayerController → MediaController ──binder──> Service (player + session)
  *
- * Что обрабатывает:
- *  - Запуск foreground service для lock screen controls + фона
- *  - Audio focus (пауза при звонке/уведомлении, ducking при тихих)
- *  - Becoming-noisy (выдернули наушники → авто-пауза)
- *  - Buffering / playing / paused / ended / error состояния
- *  - ICY metadata из потока («Сейчас играет [track name]»)
- *  - Трекинг listening sessions для статистики
+ * Раньше (v1.6-v1.10.3) UI работал с ExoPlayer напрямую через controller.
+ * Media3 не считал session «активной» (нет подключенного клиента) →
+ * не публиковал media-notification → lock screen был пуст.
+ *
+ * Сейчас MediaController = подключенный клиент → Media3 автоматически
+ * постит rich media notification с обложкой + кнопками play/pause/skip.
+ *
+ * Singleton (Hilt). MediaController создаётся LAZY на первый play() —
+ * сервис может ещё не быть запущен.
  */
 @OptIn(UnstableApi::class)
 class RadioPlayerController(private val context: Context) {
 
-    // ────────────────────── Public state ──────────────────────
+    // ────────────────────── Public state (для UI) ──────────────────────
 
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
@@ -66,8 +60,8 @@ class RadioPlayerController(private val context: Context) {
     val hasError: StateFlow<Boolean> = _hasError.asStateFlow()
 
     /**
-     * Текущий трек/программа из ICY metadata потока. null если поток
-     * метаданные не отдаёт (большинство talk-станций) или ещё не пришло.
+     * Текущий трек из ICY metadata потока. null если поток метаданные
+     * не отдаёт (talk-станции обычно нет) или ещё не пришло.
      */
     private val _nowPlaying = MutableStateFlow<String?>(null)
     val nowPlaying: StateFlow<String?> = _nowPlaying.asStateFlow()
@@ -76,36 +70,14 @@ class RadioPlayerController(private val context: Context) {
     var onSessionEnded: ((startedAt: Long, endedAt: Long, stationId: String) -> Unit)? = null
 
     /**
-     * Текущий «контекст» станций для переключения вперёд/назад
-     * (например отфильтрованный список из ViewModel). Сеттится из
-     * RadioViewModel при смене страны/фильтров. Mini-player использует
-     * чтобы next()/previous() работали даже когда RadioScreen не открыт.
+     * Контекст станций для next/previous (отфильтрованный список из VM).
+     * Mini-player и Service media-notification кнопки skip работают по нему.
      */
     private val _stationContext = MutableStateFlow<List<Station>>(emptyList())
     val stationContext: StateFlow<List<Station>> = _stationContext.asStateFlow()
 
     fun setStationContext(stations: List<Station>) {
         _stationContext.value = stations
-    }
-
-    /** Перейти к следующей станции в текущем контексте. */
-    fun nextStation() {
-        val list = _stationContext.value
-        if (list.isEmpty()) return
-        val current = _currentStation.value
-        val idx = list.indexOfFirst { it.id == current?.id }
-        val next = if (idx < 0) list.first() else list.getOrNull(idx + 1) ?: list.first()
-        play(next)
-    }
-
-    /** Перейти к предыдущей. */
-    fun previousStation() {
-        val list = _stationContext.value
-        if (list.isEmpty()) return
-        val current = _currentStation.value
-        val idx = list.indexOfFirst { it.id == current?.id }
-        val prev = if (idx < 0) list.last() else list.getOrNull(idx - 1) ?: list.last()
-        play(prev)
     }
 
     // ────────────────────── Session tracking ──────────────────────
@@ -132,149 +104,113 @@ class RadioPlayerController(private val context: Context) {
         sessionStationId = null
     }
 
-    // ────────────────────── Audio focus ──────────────────────
+    // ────────────────────── MediaController connection ──────────────────────
 
-    private val audioManager: AudioManager =
-        context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private var mediaController: MediaController? = null
+    private var connectionFuture: ListenableFuture<MediaController>? = null
 
-    /**
-     * Был ли плеер на паузе из-за временной потери фокуса (звонок,
-     * уведомление). Если да — возобновим автоматом когда фокус вернётся.
-     */
-    private var pausedByFocusLoss = false
+    /** Команды, ожидающие подключения. Выполняются после connect. */
+    private val pendingCommands = ArrayDeque<(MediaController) -> Unit>()
 
-    private val focusChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
-        when (focusChange) {
-            AudioManager.AUDIOFOCUS_LOSS -> {
-                // Постоянная потеря (другое приложение взяло аудио надолго).
-                // Не возобновляем автоматом — юзер сам решит когда вернуться.
-                pausedByFocusLoss = false
-                pauseInternal(releaseFocus = false)
-            }
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                // Временная потеря (звонок, навигатор, короткое уведомление).
-                // Запоминаем чтобы возобновить при GAIN.
-                pausedByFocusLoss = player.isPlaying
-                pauseInternal(releaseFocus = false)
-            }
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                // Тихое уведомление — понижаем громкость вместо паузы.
-                // Радио продолжает играть фоном.
-                player.volume = 0.25f
-            }
-            AudioManager.AUDIOFOCUS_GAIN -> {
-                player.volume = 1.0f
-                if (pausedByFocusLoss) {
-                    pausedByFocusLoss = false
-                    player.play()
-                }
-            }
-        }
-    }
-
-    private val focusRequest: AudioFocusRequest? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-            )
-            .setAcceptsDelayedFocusGain(true)
-            .setOnAudioFocusChangeListener(focusChangeListener)
-            .build()
-    } else null
-
-    /** Запросить audio focus. true = можем играть, false = система не дала. */
-    private fun requestFocus(): Boolean {
-        val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && focusRequest != null) {
-            audioManager.requestAudioFocus(focusRequest)
-        } else {
-            @Suppress("DEPRECATION")
-            audioManager.requestAudioFocus(
-                focusChangeListener,
-                AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN,
-            )
-        }
-        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-    }
-
-    private fun abandonFocus() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && focusRequest != null) {
-            audioManager.abandonAudioFocusRequest(focusRequest)
-        } else {
-            @Suppress("DEPRECATION")
-            audioManager.abandonAudioFocus(focusChangeListener)
-        }
-    }
-
-    // ────────────────────── ExoPlayer ──────────────────────
+    private val executor: Executor = ContextCompat.getMainExecutor(context)
 
     /**
-     * Player для RadioPlayerService (он привязывает к нему MediaSession).
-     * UI с ним напрямую НЕ работает, только через методы контроллера.
-     *
-     * Настроен с:
-     *  - setHandleAudioBecomingNoisy(true) → выдернули наушники → авто-пауза
-     *  - AudioAttributes USAGE_MEDIA → правильная маршрутизация
-     *  - Wake mode NETWORK → не засыпать пока играем (CPU + Wi-Fi lock)
+     * Lazy подключение к RadioPlayerService через MediaController.
+     * Если ещё не подключены — запускаем service + buildAsync,
+     * команда выполнится в callback после connect.
      */
-    val player: ExoPlayer = ExoPlayer.Builder(context)
-        .setAudioAttributes(
-            Media3AudioAttributes.Builder()
-                .setUsage(C.USAGE_MEDIA)
-                .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                .build(),
-            /* handleAudioFocus = */ false, // мы делаем сами через AudioManager
+    private fun ensureConnectedAndRun(command: (MediaController) -> Unit) {
+        // Уже подключены — выполняем сразу
+        mediaController?.let { c ->
+            if (c.isConnected) {
+                command(c)
+                return
+            }
+        }
+
+        pendingCommands.addLast(command)
+
+        // Если уже идёт connect — просто ждём
+        if (connectionFuture != null) return
+
+        // Стартуем service явно (на случай если ещё не запущен) +
+        // запускаем connect к session token
+        runCatching {
+            ContextCompat.startForegroundService(
+                context, Intent(context, RadioPlayerService::class.java),
+            )
+        }
+
+        val token = SessionToken(
+            context,
+            ComponentName(context, RadioPlayerService::class.java),
         )
-        .setHandleAudioBecomingNoisy(true)
-        .setWakeMode(C.WAKE_MODE_NETWORK)
-        .build()
-        .apply {
-            addListener(object : Player.Listener {
-                override fun onIsPlayingChanged(playing: Boolean) {
-                    _isPlaying.value = playing
-                    if (playing) {
-                        _hasError.value = false
-                        _currentStation.value?.let { startSession(it.id) }
-                    } else {
-                        endSessionIfActive()
-                    }
-                    updatePlaybackState()
+        val future = MediaController.Builder(context, token).buildAsync()
+        connectionFuture = future
+        future.addListener({
+            runCatching {
+                val controller = future.get()
+                mediaController = controller
+                attachListeners(controller)
+                // Выполняем все накопленные команды
+                while (pendingCommands.isNotEmpty()) {
+                    pendingCommands.removeFirst().invoke(controller)
                 }
-
-                override fun onPlaybackStateChanged(state: Int) {
-                    updatePlaybackState()
+            }.onFailure { e ->
+                pendingCommands.clear()
+                runCatching {
+                    com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                        .recordException(RuntimeException("[RadioController] MediaController connect failed", e))
                 }
+            }
+            connectionFuture = null
+        }, executor)
+    }
 
-                override fun onPlayerError(error: PlaybackException) {
-                    _hasError.value = true
-                    _isPlaying.value = false
-                    _playbackState.value = RadioPlaybackState.ERROR
+    /** Подписка на изменения состояния плеера через MediaController. */
+    private fun attachListeners(controller: MediaController) {
+        controller.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(playing: Boolean) {
+                _isPlaying.value = playing
+                if (playing) {
+                    _hasError.value = false
+                    _currentStation.value?.let { startSession(it.id) }
+                } else {
                     endSessionIfActive()
                 }
+                updatePlaybackState()
+            }
 
-                /**
-                 * ICY metadata из потока — название текущего трека/программы.
-                 * Поле title заполняется автоматически Media3 из ICY headers
-                 * (Icy-MetaData: 1 → периодические StreamTitle блоки).
-                 */
-                override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-                    val raw = mediaMetadata.title?.toString()
-                        ?: mediaMetadata.displayTitle?.toString()
-                    _nowPlaying.value = sanitizeNowPlaying(raw)
-                }
-            })
-        }
+            override fun onPlaybackStateChanged(state: Int) {
+                updatePlaybackState()
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                _hasError.value = true
+                _isPlaying.value = false
+                _playbackState.value = RadioPlaybackState.ERROR
+                endSessionIfActive()
+            }
+
+            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+                val raw = mediaMetadata.title?.toString()
+                    ?: mediaMetadata.displayTitle?.toString()
+                _nowPlaying.value = sanitizeNowPlaying(raw)
+            }
+        })
+    }
 
     private fun updatePlaybackState() {
+        val c = mediaController ?: run {
+            _playbackState.value = RadioPlaybackState.IDLE
+            return
+        }
         _playbackState.value = when {
             _hasError.value -> RadioPlaybackState.ERROR
-            player.playbackState == Player.STATE_IDLE -> RadioPlaybackState.IDLE
-            player.playbackState == Player.STATE_BUFFERING -> RadioPlaybackState.BUFFERING
-            player.playbackState == Player.STATE_ENDED -> RadioPlaybackState.ENDED
-            player.isPlaying -> RadioPlaybackState.PLAYING
+            c.playbackState == Player.STATE_IDLE -> RadioPlaybackState.IDLE
+            c.playbackState == Player.STATE_BUFFERING -> RadioPlaybackState.BUFFERING
+            c.playbackState == Player.STATE_ENDED -> RadioPlaybackState.ENDED
+            c.isPlaying -> RadioPlaybackState.PLAYING
             else -> RadioPlaybackState.PAUSED
         }
     }
@@ -282,19 +218,14 @@ class RadioPlayerController(private val context: Context) {
     // ────────────────────── Public commands ──────────────────────
 
     /**
-     * Играть станцию. Запрашивает audio focus, передаёт metadata в плеер,
-     * стартует foreground service (для lock screen + фона).
+     * Играть станцию. Триггерит подключение MediaController если ещё нет.
+     * Сразу после connect Media3 публикует media-notification с обложкой
+     * на lock screen + шторке.
      */
     fun play(station: Station) {
-        if (!requestFocus()) {
-            // Система не дала фокус (например идёт звонок). Не падаем,
-            // просто отмечаем что играть нельзя. Юзер увидит «PAUSED».
-            return
-        }
-
         _hasError.value = false
         _currentStation.value = station
-        _nowPlaying.value = null // сбрасываем — новый трек придёт из ICY
+        _nowPlaying.value = null  // сбрасываем — новый трек придёт из ICY
 
         val mediaItem = MediaItem.Builder()
             .setUri(station.streamUrl)
@@ -308,55 +239,65 @@ class RadioPlayerController(private val context: Context) {
                     .build()
             )
             .build()
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.playWhenReady = true
 
-        // Поднимаем foreground service. Идемпотентно.
-        runCatching {
-            ContextCompat.startForegroundService(
-                context,
-                Intent(context, RadioPlayerService::class.java),
-            )
+        ensureConnectedAndRun { controller ->
+            controller.setMediaItem(mediaItem)
+            controller.prepare()
+            controller.play()
         }
     }
 
     fun pause() {
-        pausedByFocusLoss = false
-        pauseInternal(releaseFocus = true)
-    }
-
-    /**
-     * Внутренняя пауза. releaseFocus=false когда паузим из-за временной
-     * потери фокуса — не отдаём фокус чтобы вернулся когда отыграет звонок.
-     */
-    private fun pauseInternal(releaseFocus: Boolean) {
-        if (player.isPlaying) player.pause()
-        if (releaseFocus) abandonFocus()
+        mediaController?.takeIf { it.isConnected }?.pause()
     }
 
     fun resume() {
-        if (requestFocus()) {
-            player.play()
-        }
+        ensureConnectedAndRun { it.play() }
     }
 
     fun togglePlayback() {
-        if (player.isPlaying) pause() else resume()
+        val c = mediaController
+        if (c != null && c.isConnected) {
+            if (c.isPlaying) c.pause() else c.play()
+        } else {
+            resume()
+        }
+    }
+
+    /** Переключение на следующую станцию в контексте (см. setStationContext). */
+    fun nextStation() {
+        val list = _stationContext.value
+        if (list.isEmpty()) return
+        val current = _currentStation.value
+        val idx = list.indexOfFirst { it.id == current?.id }
+        val next = if (idx < 0) list.first() else list.getOrNull(idx + 1) ?: list.first()
+        play(next)
+    }
+
+    fun previousStation() {
+        val list = _stationContext.value
+        if (list.isEmpty()) return
+        val current = _currentStation.value
+        val idx = list.indexOfFirst { it.id == current?.id }
+        val prev = if (idx < 0) list.last() else list.getOrNull(idx - 1) ?: list.last()
+        play(prev)
     }
 
     fun release() {
-        abandonFocus()
-        player.release()
+        mediaController?.release()
+        mediaController = null
+        connectionFuture?.cancel(true)
+        connectionFuture = null
+        pendingCommands.clear()
     }
 }
 
 /**
  * Чистит текст метаданных перед показом юзеру.
  *  - null/blank → null
- *  - ограничиваем длину 120 символов (защита от вредных больших title)
- *  - убираем control characters и RTL-override (защита от спуфинга)
- *  - убираем «typical noise» из ICY: ID, dashes без контекста
+ *  - ограничиваем длину 120 символов
+ *  - убираем control characters, RTL-override, zero-width chars
+ *  - убираем «typical noise» из ICY: unknown, no title, "-"
  *
  * Visible for testing.
  */
@@ -378,7 +319,6 @@ internal fun sanitizeNowPlaying(raw: String?): String? {
         .trim()
         .take(120)
     if (cleaned.isBlank()) return null
-    // Типичный noise от Icecast: «- », «unknown», «no title»
     val lower = cleaned.lowercase()
     if (lower in setOf("unknown", "no title", "-", "—", "n/a")) return null
     return cleaned
