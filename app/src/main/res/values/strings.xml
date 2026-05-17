@@ -908,6 +908,7 @@
     <string name="bento_goal_flashcard">Сет карточек</string>
     <string name="bento_goal_book_page">Страница книги</string>
     <string name="bento_goal_wod">Слово дня</string>
+    <string name="bento_goal_radio">5 мин радио</string>
 
     <!-- Home — quick actions -->
     <string name="quick_action_random">Случайное</string>

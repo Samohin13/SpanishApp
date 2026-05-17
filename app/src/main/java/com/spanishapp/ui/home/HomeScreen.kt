@@ -270,6 +270,7 @@ fun HomeScreen(
                                     !dailyGoals.flashcardSetCompleted  -> nav("flashcards")
                                     !dailyGoals.bookPageRead           -> nav("game_libros")
                                     !dailyGoals.wordOfDaySolved        -> { /* word-of-day is on Home itself */ }
+                                    !dailyGoals.radioListened          -> nav("radio")
                                     else -> { /* all done — informational only */ }
                                 }
                             }
@@ -1817,6 +1818,7 @@ private fun BentoRow(
                 GoalLine(stringResource(R.string.bento_goal_flashcard), goals.flashcardSetCompleted)
                 GoalLine(stringResource(R.string.bento_goal_book_page), goals.bookPageRead)
                 GoalLine(stringResource(R.string.bento_goal_wod), goals.wordOfDaySolved)
+                GoalLine(stringResource(R.string.bento_goal_radio), goals.radioListened)
                 if (goals.allDone) {
                     Spacer(Modifier.height(8.dp))
                     Surface(

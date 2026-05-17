@@ -28,6 +28,10 @@ interface RadioListeningDao {
     @Query("SELECT COALESCE(SUM(ended_at - started_at), 0) / 1000 FROM radio_listening_session")
     fun observeTotalSeconds(): Flow<Long>
 
+    /** Секунд прослушано с указанного момента (для проверки дневной нормы). */
+    @Query("SELECT COALESCE(SUM(ended_at - started_at), 0) / 1000 FROM radio_listening_session WHERE started_at >= :sinceMs")
+    fun observeSecondsSince(sinceMs: Long): Flow<Long>
+
     /** Дни (timestamps midnight) когда было хоть какое-то прослушивание. */
     @Query("SELECT DISTINCT (started_at / 86400000) FROM radio_listening_session ORDER BY 1 DESC LIMIT 60")
     suspend fun activeDayBuckets(): List<Long>

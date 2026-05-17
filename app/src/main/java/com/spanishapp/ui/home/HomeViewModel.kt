@@ -75,7 +75,8 @@ class HomeViewModel @Inject constructor(
     private val recentSearchDao: RecentSearchDao,
     private val wodHistoryDao: WodHistoryDao,
     private val achievementManager: AchievementManager,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val radioListeningDao: com.spanishapp.radio.data.RadioListeningDao,
 ) : ViewModel() {
 
     // ── UI State ──────────────────────────────────────────────
@@ -222,31 +223,30 @@ class HomeViewModel @Inject constructor(
     // Goal #1: at least one flashcard set completed today.
     // Goal #2: any libro touched today (proxied by completedAt).
     // Goal #3: word-of-day quiz solved (DailyWordEntity.wasPracticed).
-    val dailyGoals: StateFlow<DailyGoals> = combine(
-        flashcardSetProgressDao.observeAll(),
-        libroProgressDao.getAll(),
-        lessonProgressDao.getAllCompletedKeys(),
-        flow {
-            val today = LocalDate.now().toString()
-            emit(dailyWordDao.getForDate(today)?.wasPracticed == true)
-        }
-    ) { sets, libros, lessonKeys, wodPracticed ->
+    val dailyGoals: StateFlow<DailyGoals> = run {
         val todayStart = LocalDate.now().atStartOfDay()
             .atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val setDoneToday = sets.any { it.completedAt >= todayStart && it.stars > 0 }
-        val libroToday   = libros.any { it.completedAt >= todayStart }
-        // We don't have per-lesson completedAt in the Flow; need a separate query.
-        // For now: at least one completed key existing today is approximated via
-        // a fresh DB hit. Use simple heuristic: any progress key → check timestamp
-        // via repository helper. Simpler: read the latest row's completed_at.
-        val lessonToday = lessonProgressDao.anyCompletedSince(todayStart)
-        DailyGoals(
-            lessonCompleted       = lessonToday,
-            flashcardSetCompleted = setDoneToday,
-            bookPageRead          = libroToday,
-            wordOfDaySolved       = wodPracticed
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DailyGoals())
+        combine(
+            flashcardSetProgressDao.observeAll(),
+            libroProgressDao.getAll(),
+            flow {
+                val today = LocalDate.now().toString()
+                emit(dailyWordDao.getForDate(today)?.wasPracticed == true)
+            },
+            radioListeningDao.observeSecondsSince(todayStart),
+        ) { sets, libros, wodPracticed, radioSecondsToday ->
+            val setDoneToday = sets.any { it.completedAt >= todayStart && it.stars > 0 }
+            val libroToday   = libros.any { it.completedAt >= todayStart }
+            val lessonToday  = lessonProgressDao.anyCompletedSince(todayStart)
+            DailyGoals(
+                lessonCompleted       = lessonToday,
+                flashcardSetCompleted = setDoneToday,
+                bookPageRead          = libroToday,
+                wordOfDaySolved       = wodPracticed,
+                radioListened         = radioSecondsToday >= 300,  // 5 минут
+            )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DailyGoals())
+    }
 
     private fun buildRoadmapUnits(completedKeys: Set<String>): List<RoadmapUnit> {
         return RoadmapData.units.map { unit ->
@@ -461,24 +461,26 @@ data class ContinueLesson(
     val lessonTitle: String
 )
 
-/** Four-checkbox daily mission used by the bento "Цель дня" tile. */
+/** Five-checkbox daily mission used by the bento "Цель дня" tile. */
 data class DailyGoals(
     val lessonCompleted: Boolean = false,           // closed a roadmap lesson today
     val flashcardSetCompleted: Boolean = false,
     val bookPageRead: Boolean = false,
-    val wordOfDaySolved: Boolean = false
+    val wordOfDaySolved: Boolean = false,
+    val radioListened: Boolean = false,             // listened to radio 5+ min today
 ) {
     val completedCount: Int get() =
-        listOf(lessonCompleted, flashcardSetCompleted, bookPageRead, wordOfDaySolved).count { it }
-    val total: Int = 4
+        listOf(lessonCompleted, flashcardSetCompleted, bookPageRead, wordOfDaySolved, radioListened).count { it }
+    val total: Int = 5
     val allDone: Boolean get() = completedCount == total
 
     /** First unfinished goal — drives the smart "tap to do next" navigation. */
     fun nextRoute(): String? = when {
-        !lessonCompleted        -> "course_detail/A1"      // current course (overridden by caller if known)
+        !lessonCompleted        -> "course_detail/A1"
         !flashcardSetCompleted  -> "flashcards"
         !bookPageRead           -> "game_libros"
-        !wordOfDaySolved        -> "home"                  // word-of-day lives on Home itself
+        !wordOfDaySolved        -> "home"
+        !radioListened          -> "radio"
         else                    -> null
     }
 }
