@@ -15,6 +15,7 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.*
 import androidx.glance.text.*
 import androidx.room.Room
+import com.spanishapp.BuildConfig
 import com.spanishapp.MainActivity
 import com.spanishapp.data.db.AppDatabase
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +67,7 @@ class WordOfDayWidget : GlanceAppWidget() {
                         AppDatabase.MIGRATION_21_22, AppDatabase.MIGRATION_22_23,
                         AppDatabase.MIGRATION_23_24,
                     )
-                    .fallbackToDestructiveMigration()
+                    .apply { if (BuildConfig.DEBUG) fallbackToDestructiveMigration() }
                     .build()
 
                 try {

@@ -354,4 +354,16 @@ class RadioViewModel @Inject constructor(
     }
 
     // Не вызываем player.release() — Singleton живёт дольше ViewModel.
+
+    /**
+     * При уничтожении VM обнуляем callbacks на Singleton player.
+     * Иначе lambda захватывает this@RadioViewModel → старый VM висит в памяти
+     * пока player жив (а он Singleton, всегда). При rotation × N открытий →
+     * N утечек VM. Видно через LeakCanary / Profiler heap dump.
+     */
+    override fun onCleared() {
+        player.onSessionEnded = null
+        player.onStationDead = null
+        super.onCleared()
+    }
 }

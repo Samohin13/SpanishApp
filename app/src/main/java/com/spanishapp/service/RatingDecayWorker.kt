@@ -3,6 +3,7 @@ package com.spanishapp.service
 import android.content.Context
 import androidx.room.Room
 import androidx.work.*
+import com.spanishapp.BuildConfig
 import com.spanishapp.data.db.AppDatabase
 import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.domain.algorithm.SkillRatingSystem
@@ -50,7 +51,7 @@ class RatingDecayWorker(
                 AppDatabase.MIGRATION_21_22, AppDatabase.MIGRATION_22_23,
                 AppDatabase.MIGRATION_23_24
             )
-            .fallbackToDestructiveMigration()
+            .apply { if (BuildConfig.DEBUG) fallbackToDestructiveMigration() }
             .build()
 
         return try {

@@ -166,7 +166,10 @@ class ProfileViewModel @Inject constructor(
 
                 // Облако ОК — обновляем URL на cloud-ссылку (синхрон с другими устройствами).
                 authRepository.setUserPhotoUrl(downloadUrl)
-                Log.d("ProfileVM", "Avatar uploaded: $downloadUrl")
+                // НЕ логируем downloadUrl в release — содержит signed Firebase token.
+                if (com.spanishapp.BuildConfig.DEBUG) {
+                    Log.d("ProfileVM", "Avatar uploaded: $downloadUrl")
+                }
             } catch (e: Exception) {
                 // Облако упало — юзер уже видит локальную копию, ничего не теряем.
                 Log.w("ProfileVM", "Avatar cloud upload failed, local copy retained", e)

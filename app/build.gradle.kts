@@ -88,16 +88,12 @@ android {
         applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 64
-        versionName = "1.11.6"
+        versionCode = 65
+        versionName = "1.11.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val anthropicKey = localProps.getProperty("ANTHROPIC_KEY") ?: ""
-        buildConfigField("String", "ANTHROPIC_API_KEY", "\"$anthropicKey\"")
-        val geminiKey = localProps.getProperty("GEMINI_KEY") ?: ""
-        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
         // Proxy URL for production: hides the API key from the APK.
         // When non-empty, AiChatRepository routes requests through it.
-        // When empty, falls back to direct Gemini calls with GEMINI_API_KEY (dev only).
+        // Release-сборки ОБЯЗАНЫ иметь этот URL (см. AiChatRepository.apiUrl()).
         val aiProxyUrl = localProps.getProperty("AI_PROXY_URL") ?: ""
         buildConfigField("String", "AI_PROXY_URL", "\"$aiProxyUrl\"")
         // Shared secret sent in X-App-Secret header so the Worker rejects
@@ -105,6 +101,10 @@ android {
         // match Cloudflare env var APP_SECRET.
         val aiProxySecret = localProps.getProperty("AI_PROXY_SECRET") ?: ""
         buildConfigField("String", "AI_PROXY_SECRET", "\"$aiProxySecret\"")
+        // ANTHROPIC_API_KEY удалён в v1.11.7 — поле было dead code (никто не использует),
+        // но запекалось в BuildConfig каждого APK = surface для будущей утечки.
+        // GEMINI_API_KEY теперь только в debug buildType (см. buildTypes { debug })
+        // чтобы release AAB не содержал ключ в скомпилированном виде.
     }
 
     signingConfigs {
@@ -136,10 +136,18 @@ android {
             if (rootProject.file("keystore.properties").exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
+            // Release НЕ содержит GEMINI_API_KEY вообще. Пустая константа
+            // → R8 заинлайнит и оптимизирует, ключа в APK не остаётся.
+            // AiChatRepository.apiUrl() в release требует AI_PROXY_URL (через
+            // require(BuildConfig.DEBUG)), иначе крашит — это намеренная защита.
+            buildConfigField("String", "GEMINI_API_KEY", "\"\"")
         }
         debug {
             // Debug-сборка не минифицируется — быстрее и удобнее отлаживать.
             isMinifyEnabled = false
+            // GEMINI_API_KEY только в debug — для локальной разработки без proxy
+            val geminiKey = localProps.getProperty("GEMINI_KEY") ?: ""
+            buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
         }
     }
 

@@ -41,17 +41,20 @@ class GeminiTranslator @Inject constructor(
         const val MODEL = "gemini-flash-latest"
 
         /**
-         * Routes through the Cloudflare Worker proxy when configured (release
-         * builds), otherwise direct Gemini call with bundled key (dev only).
+         * Routes through the Cloudflare Worker proxy when configured.
+         * В release-сборке fallback на direct call ЗАПРЕЩЁН (как в AiChatRepository) —
+         * иначе ключ ушёл бы в APK. Только debug разрешает direct.
          */
         fun apiUrl(): String {
             val proxy = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
-            return if (proxy.isNotEmpty()) {
-                "$proxy/v1beta/models/$MODEL:generateContent"
-            } else {
-                "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
-                    "?key=${BuildConfig.GEMINI_API_KEY}"
+            if (proxy.isNotEmpty()) {
+                return "$proxy/v1beta/models/$MODEL:generateContent"
             }
+            require(BuildConfig.DEBUG) {
+                "AI_PROXY_URL must be configured for release builds (GeminiTranslator)."
+            }
+            return "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" +
+                "?key=${BuildConfig.GEMINI_API_KEY}"
         }
     }
 

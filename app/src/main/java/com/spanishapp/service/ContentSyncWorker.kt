@@ -3,6 +3,7 @@ package com.spanishapp.service
 import android.content.Context
 import androidx.room.Room
 import androidx.work.*
+import com.spanishapp.BuildConfig
 import com.spanishapp.data.content.ContentDownloader
 import com.spanishapp.data.content.ContentImporter
 import com.spanishapp.data.content.ContentVersionStore
@@ -61,7 +62,7 @@ class ContentSyncWorker(
                         AppDatabase.MIGRATION_21_22, AppDatabase.MIGRATION_22_23,
                         AppDatabase.MIGRATION_23_24
                     )
-                    .fallbackToDestructiveMigration()
+                    .apply { if (BuildConfig.DEBUG) fallbackToDestructiveMigration() }
                     .build()
                 try {
                     val importer = ContentImporter(db.wordDao())

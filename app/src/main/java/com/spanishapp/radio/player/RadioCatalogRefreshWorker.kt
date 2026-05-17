@@ -9,6 +9,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.spanishapp.BuildConfig
 import com.spanishapp.data.db.AppDatabase
 import com.spanishapp.radio.data.RadioCatalogRepository
 import java.util.concurrent.TimeUnit
@@ -76,7 +77,7 @@ class RadioCatalogRefreshWorker(
                 AppDatabase.MIGRATION_21_22,AppDatabase.MIGRATION_22_23,
                 AppDatabase.MIGRATION_23_24,
             )
-            .fallbackToDestructiveMigration()
+            .apply { if (BuildConfig.DEBUG) fallbackToDestructiveMigration() }
             .build()
 
         return try {

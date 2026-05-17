@@ -2,10 +2,18 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
-    // Аватары пользователей: только владелец может писать
+    // Аватары пользователей: только владелец пишет, с лимитами на
+    // размер и MIME-тип. Без этих guards anonymous-auth юзер мог
+    // залить exe/гигабайт → cost DoS + правовая ответственность.
+    //
+    // 5 MB — достаточно для аватара даже неоптимизированной фотки.
+    // Только image/* — никаких exe/zip/etc.
     match /users/{uid}/{file=**} {
       allow read:  if true;
-      allow write: if request.auth != null && request.auth.uid == uid;
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
     }
 
     // Контент-пакеты лежат в корне бакета как *.json:

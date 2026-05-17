@@ -206,6 +206,17 @@ class SpanishSpeechRecognizer @Inject constructor(
 
         val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
 
+        // Защита от двойного вызова на OEM-устройствах: некоторые прошивки
+        // отправляют onResults дважды или onResults после onError.
+        // Второй cont.resume() кинул бы IllegalStateException → краш.
+        val finished = java.util.concurrent.atomic.AtomicBoolean(false)
+        fun finishOnce(result: SpeechResult) {
+            if (!finished.compareAndSet(false, true)) return
+            _isListening.value = false
+            runCatching { recognizer.destroy() }
+            if (cont.isActive) cont.resume(result)
+        }
+
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, language)
@@ -222,22 +233,20 @@ class SpanishSpeechRecognizer @Inject constructor(
             override fun onEndOfSpeech() { _isListening.value = false }
 
             override fun onResults(results: Bundle?) {
-                _isListening.value = false
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 val scores  = results?.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)
-                if (!matches.isNullOrEmpty()) {
+                val result = if (!matches.isNullOrEmpty()) {
                     val alts = matches.mapIndexed { i, t ->
                         t to (scores?.getOrNull(i) ?: 1f)
                     }
-                    cont.resume(SpeechResult.Success(alts[0].first, alts[0].second, alts))
+                    SpeechResult.Success(alts[0].first, alts[0].second, alts)
                 } else {
-                    cont.resume(SpeechResult.Error("Не расслышал, попробуй ещё раз"))
+                    SpeechResult.Error("Не расслышал, попробуй ещё раз")
                 }
-                recognizer.destroy()
+                finishOnce(result)
             }
 
             override fun onError(error: Int) {
-                _isListening.value = false
                 val isSilence = error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT ||
                                 error == SpeechRecognizer.ERROR_NO_MATCH
                 val msg = when (error) {
@@ -248,8 +257,7 @@ class SpanishSpeechRecognizer @Inject constructor(
                     SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Нет разрешения на микрофон"
                     else -> "Ошибка ($error), попробуй ещё раз"
                 }
-                cont.resume(SpeechResult.Error(msg, isSilence))
-                recognizer.destroy()
+                finishOnce(SpeechResult.Error(msg, isSilence))
             }
 
             override fun onPartialResults(partialResults: Bundle?) {}
@@ -259,10 +267,16 @@ class SpanishSpeechRecognizer @Inject constructor(
         recognizer.startListening(intent)
 
         cont.invokeOnCancellation {
-            _isListening.value = false
-            recognizer.cancel()
-            recognizer.destroy()
-            cont.resume(SpeechResult.Cancelled)
+            // НЕ зовём cont.resume() — continuation уже cancelled.
+            // Просто чистим ресурсы. compareAndSet гарантирует что recognizer.destroy
+            // зовётся ровно один раз даже если onError/onResults тоже сработает.
+            if (finished.compareAndSet(false, true)) {
+                _isListening.value = false
+                runCatching {
+                    recognizer.cancel()
+                    recognizer.destroy()
+                }
+            }
         }
     }
 

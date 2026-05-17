@@ -61,7 +61,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun radioFavoriteDao(): com.spanishapp.radio.data.RadioFavoriteDao
     abstract fun radioCatalogDao(): com.spanishapp.radio.data.RadioCatalogDao
     abstract fun radioListeningDao(): com.spanishapp.radio.data.RadioListeningDao
-    abstract fun radioWordCatchDao(): com.spanishapp.radio.data.RadioWordCatchDao
+    // radioWordCatchDao() удалён в v1.11.7 — фича «Поймал слово!» выпилена в v1.9.0.
+    // Абстрактный метод оставался без Hilt-провайдера → ЛЮБОЙ @Inject его =
+    // crash на старте (Dagger graph MissingBinding). Entity RadioWordCatchEntity
+    // оставлена в @Database — таблица в БД пустая, удалять ради 0 байт не стоит риска.
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {

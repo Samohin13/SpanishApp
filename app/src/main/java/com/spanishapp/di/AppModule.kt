@@ -49,11 +49,14 @@ object AppModule {
                 AppDatabase.MIGRATION_22_23,
                 AppDatabase.MIGRATION_23_24,
             )
-        // На время раннего тестирования (Alpha track) включаем fallback и для
-        // release — лучше один раз потерять прогресс тестера чем получить
-        // hard-crash при апгрейде с потерей юзера навсегда. Снимем это после
-        // публичного релиза, когда количество DB-схем стабилизируется.
-        builder.fallbackToDestructiveMigration()
+        // fallbackToDestructiveMigration ТОЛЬКО в debug. Раньше было всегда —
+        // любая будущая ошибка миграции в release молча wipe'ала весь прогресс
+        // юзеров (XP, streak, флэшкарты). Теперь release крашит — это лучше:
+        // увидим crash в Crashlytics и сможем выкатить migration fix, а не
+        // потерять данные половины аудитории.
+        if (BuildConfig.DEBUG) {
+            builder.fallbackToDestructiveMigration()
+        }
         return builder.build()
     }
 
