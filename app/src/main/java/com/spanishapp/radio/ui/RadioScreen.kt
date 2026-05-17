@@ -891,6 +891,18 @@ private fun StationCarousel(
     }
 }
 
+/**
+ * iOS-style «frosted graphite» карточка станции.
+ *
+ * Дизайн:
+ *  - База: тёмно-серый вертикальный градиент 0xFF3A3A3C → 0xFF1C1C1E
+ *    (systemGray3 → systemGray6 dark в iOS терминологии)
+ *  - «Glass rim»: 0.5dp белая обводка alpha 12% — имитация iOS-стекла
+ *  - «Inner glow»: верхний highlight 6% white → transparent (40dp высота)
+ *  - Country accent: 2dp полоска сверху из цвета страны (тонкая, не доминирует)
+ *  - ♥ favorite: iOS-red на graphite читается отлично, без чёрного фона-таблетки
+ *  - Active state: 2dp orange border + полупрозрачный overlay с play-кругом
+ */
 @Composable
 private fun StationCard(
     station: Station,
@@ -898,11 +910,13 @@ private fun StationCard(
     isFavorite: Boolean,
     onClick: () -> Unit,
 ) {
-    val gradient = when (station.country) {
-        Country.SPAIN -> listOf(Color(0xFFFF5722), Color(0xFFD32F2F))
-        Country.MEXICO -> listOf(Color(0xFF388E3C), Color(0xFFD32F2F))
-        Country.ARGENTINA -> listOf(Color(0xFF1976D2), Color(0xFF64B5F6))
+    val countryAccent = when (station.country) {
+        Country.SPAIN -> Color(0xFFFF5722)
+        Country.MEXICO -> Color(0xFF4CAF50)
+        Country.ARGENTINA -> Color(0xFF42A5F5)
     }
+    val baseGradient = listOf(Color(0xFF3A3A3C), Color(0xFF1C1C1E))
+
     Column(
         modifier = Modifier
             .width(96.dp)
@@ -912,46 +926,73 @@ private fun StationCard(
             modifier = Modifier
                 .size(96.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .background(Brush.linearGradient(gradient))
-                .then(
-                    if (isPlaying) Modifier.border(
-                        BorderStroke(2.dp, Accent),
-                        RoundedCornerShape(14.dp),
-                    ) else Modifier
+                .background(Brush.verticalGradient(baseGradient))
+                .border(
+                    BorderStroke(
+                        if (isPlaying) 2.dp else 0.5.dp,
+                        if (isPlaying) Accent else Color.White.copy(alpha = 0.12f),
+                    ),
+                    RoundedCornerShape(14.dp),
                 ),
             contentAlignment = Alignment.Center,
         ) {
+            // iOS glass inner highlight — тонкое свечение сверху
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .align(Alignment.TopCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                Color.White.copy(alpha = 0.06f),
+                                Color.Transparent,
+                            )
+                        )
+                    )
+            )
+
+            // Country accent — тонкая 2dp полоска по верху, идентификатор страны
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .align(Alignment.TopCenter)
+                    .background(countryAccent.copy(alpha = 0.8f))
+            )
+
+            // Station code — белый, читается на graphite
             Text(
                 station.shortCode,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White,
+                letterSpacing = (-0.5).sp,
             )
+
+            // ♥ favorite — iOS red, виден без чёрной таблетки-обводки
             if (isFavorite) {
-                // Используем то же ♥ что и в контролах — было ★, путало юзера
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(5.dp)
-                        .clip(CircleShape)
-                        .background(Color.Black.copy(alpha = 0.4f))
-                        .padding(3.dp),
+                        .padding(6.dp),
                 ) {
                     Icon(
                         Icons.Filled.Favorite,
                         contentDescription = "В избранном",
-                        modifier = Modifier.size(11.dp),
-                        tint = Accent,
+                        modifier = Modifier.size(14.dp),
+                        tint = Color(0xFFFF3B30),  // iOS systemRed
                     )
                 }
             }
+
+            // Active overlay
             if (isPlaying) {
-                // Overlay с большой play-кнопкой → мгновенный визуальный отклик
                 Box(
                     modifier = Modifier
                         .matchParentSize()
                         .clip(RoundedCornerShape(14.dp))
-                        .background(Color.Black.copy(alpha = 0.22f)),
+                        .background(Color.Black.copy(alpha = 0.30f)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Box(
@@ -1012,17 +1053,38 @@ private fun FindMoreTile(loading: Boolean, onClick: () -> Unit) {
             .width(96.dp)
             .clickable(enabled = !loading, onClick = onClick),
     ) {
+        // Та же graphite-glass база что и у обычных карточек, плюс
+        // accent-обводка для отличия (это action-tile)
         Box(
             modifier = Modifier
                 .size(96.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .background(Accent.copy(alpha = 0.12f * pulse))
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color(0xFF3A3A3C), Color(0xFF1C1C1E))
+                    )
+                )
                 .border(
                     BorderStroke(1.5.dp, Accent.copy(alpha = 0.5f * pulse)),
                     RoundedCornerShape(14.dp),
                 ),
             contentAlignment = Alignment.Center,
         ) {
+            // iOS glass inner highlight
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .align(Alignment.TopCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                Color.White.copy(alpha = 0.06f),
+                                Color.Transparent,
+                            )
+                        )
+                    )
+            )
             Icon(
                 Icons.Filled.Add,
                 contentDescription = "Найти ещё станции",
