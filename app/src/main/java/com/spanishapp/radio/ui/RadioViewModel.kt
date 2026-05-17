@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -26,6 +28,7 @@ class RadioViewModel @Inject constructor(
     private val catalogDao: com.spanishapp.radio.data.RadioCatalogDao,
     private val catalogRepo: com.spanishapp.radio.data.RadioCatalogRepository,
     private val listeningDao: com.spanishapp.radio.data.RadioListeningDao,
+    private val blocklistPrefs: com.spanishapp.radio.data.RadioBlocklistPrefs,
 ) : ViewModel() {
 
     /** Сколько минут прослушано всего — для бэйджа в Profile. */
@@ -151,14 +154,35 @@ class RadioViewModel @Inject constructor(
     val showOnlyFavorites: StateFlow<Boolean> = _showOnlyFavorites.asStateFlow()
 
     /**
-     * In-memory blocklist «мёртвых» станций (auto-reconnect не справился).
-     * Не в БД — даём шанс восстановиться при следующем catalog refresh
-     * через WorkManager (раз в неделю весь каталог пере-probe-ится).
-     * Если URL действительно мёртв — отвалится при probe. Если временный
-     * флап — снова появится в каталоге.
+     * Persistent blocklist «мёртвых» станций. Хранится в DataStore через
+     * RadioBlocklistPrefs, TTL 48ч. После TTL станция возвращается в
+     * карусель — даём шанс восстановиться (URL мог временно флапать).
+     *
+     * Раньше (v1.11.1) был in-memory only → после рестарта приложения
+     * мёртвые станции возвращались и auto-skip сжигал 7 сек на каждый.
      */
-    private val _blockedStationIds = MutableStateFlow<Set<String>>(emptySet())
-    val blockedStationIds: StateFlow<Set<String>> = _blockedStationIds.asStateFlow()
+    val blockedStationIds: StateFlow<Set<String>> = blocklistPrefs.activeIds
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
+
+    /**
+     * Защита от бесконечного цикла auto-skip — если ВСЕ станции мертвы
+     * (общий сетевой отвал), нельзя бесконечно переключаться. Лимит
+     * 5 авто-скипов в минуту, потом плеер просто останавливается.
+     */
+    private val deadSkipCount = java.util.concurrent.atomic.AtomicInteger(0)
+
+    companion object {
+        /** Лимит авто-скипов мёртвых станций за минуту (защита от loop). */
+        private const val MAX_DEAD_SKIPS_PER_WINDOW = 5
+
+        /**
+         * Timestamp релиза v1.11.2 (2026-05-17 00:00 UTC) — когда исправили
+         * genre mapping. Каталоги с lastFetchedAt < этой даты считаются
+         * old-schema и форсируются на re-discovery. После refresh
+         * lastFetched будет now() → проверка больше не срабатывает.
+         */
+        private const val SCHEMA_V_1_11_2_RELEASE_MS = 1778976000000L
+    }
 
     fun toggleGenreFilter(genre: Genre) {
         val current = _selectedGenres.value
@@ -178,8 +202,14 @@ class RadioViewModel @Inject constructor(
      * Отфильтрованный список станций под текущие чипы.
      * Если ничего не подходит — отдаём пустой список (UI покажет hint).
      */
+    /**
+     * Чистое combine без side-effect. Раньше тут был
+     * `player.setStationContext(...)` — anti-pattern, side-effect в data
+     * transformation срабатывал на каждое изменение любого из 5 источников
+     * даже если результат тот же. Вынесен в отдельный launch ниже + distinctUntilChanged.
+     */
     val displayedStations: StateFlow<List<Station>> = combine(
-        _stations, _selectedGenres, _showOnlyFavorites, favoriteIds, _blockedStationIds,
+        _stations, _selectedGenres, _showOnlyFavorites, favoriteIds, blockedStationIds,
     ) { values ->
         @Suppress("UNCHECKED_CAST")
         val stations = values[0] as List<Station>
@@ -191,16 +221,12 @@ class RadioViewModel @Inject constructor(
         @Suppress("UNCHECKED_CAST")
         val blocked = values[4] as Set<String>
 
-        val filtered = stations.filter { st ->
+        stations.filter { st ->
             val genreOk = genres.isEmpty() || st.genre in genres
             val favOk = !onlyFav || st.id in favs
             val notBlocked = st.id !in blocked
             genreOk && favOk && notBlocked
         }
-        // Синхронизируем контекст с плеером — mini-player и notification
-        // skip-кнопки будут навигировать по тому же отфильтрованному списку
-        player.setStationContext(filtered.ifEmpty { stations.filter { it.id !in blocked } })
-        filtered
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _stations.value)
 
     // ────────────────────── Init ──────────────────────
@@ -217,29 +243,42 @@ class RadioViewModel @Inject constructor(
         }
 
         // Станция признана мёртвой (3 auto-reconnect не помогли) →
-        // блочим в displayedStations + переключаемся на следующую рабочую.
+        // персистим в DataStore (TTL 48ч) + переключаемся на следующую рабочую.
+        // Защита от бесконечного цикла: skipsThisSecond не более 5/сек.
         player.onStationDead = { dead ->
-            _blockedStationIds.value = _blockedStationIds.value + dead.id
-            // Скип на следующую станцию которая ещё не в blocklist
-            val available = _stations.value.filter {
-                it.id != dead.id && it.id !in _blockedStationIds.value
+            viewModelScope.launch {
+                blocklistPrefs.block(dead.id)
+                // Подождём пока activeIds flow обновится, потом найдём кандидата
+                val currentBlocked = blocklistPrefs.activeIds.first()
+                val available = _stations.value.filter {
+                    it.id != dead.id && it.id !in currentBlocked
+                }
+                val candidate = available.firstOrNull()
+                if (candidate != null && deadSkipCount.incrementAndGet() <= MAX_DEAD_SKIPS_PER_WINDOW) {
+                    player.play(candidate)
+                }
+                // Если все станции мертвы — просто остановимся, не зацикливаемся
             }
-            available.firstOrNull()?.let { player.play(it) }
+        }
+        // Каждую минуту обнуляем счётчик авто-скипов
+        viewModelScope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(60_000)
+                deadSkipCount.set(0)
+            }
         }
 
         viewModelScope.launch {
             val hasCache = catalogDao.count() > 0
             val isFresh = catalogRepo.isCacheFresh()
 
-            // v1.11.2 migration: проверяем что в кэше есть SPORTS станции.
-            // Старые версии (≤1.11.1) НИКОГДА не запрашивали "sports" тег и
-            // ошибочно мапили "news" → Genre.TALK. Если catalog не имеет ни
-            // одной SPORTS станции — он old-schema, форсируем re-discovery
-            // с правильным genre mapping.
-            val hasNewSchema = hasCache && catalogDao.getAll().any {
-                it.genre == Genre.SPORTS.name
-            }
-            val needsSchemaRefresh = hasCache && !hasNewSchema
+            // v1.11.2 migration: catalog с genre mapping per-tag (NEWS, SPORTS,
+            // CULTURE правильно категоризированы). Проверяем lastFetchedAt против
+            // даты релиза v1.11.2 — это устойчивее чем проверять «есть ли SPORTS»
+            // (в каком-то регионе sports-тегированных станций может не быть вообще,
+            // и тогда тот check срабатывал бы forever loop при каждом открытии).
+            val lastFetched = catalogDao.lastFetchedAt() ?: 0L
+            val needsSchemaRefresh = hasCache && lastFetched < SCHEMA_V_1_11_2_RELEASE_MS
 
             if (hasCache) reloadStations()
 
@@ -267,7 +306,20 @@ class RadioViewModel @Inject constructor(
 
         // Авто-skip убран — теперь обрабатывается через player.onStationDead
         // ПОСЛЕ того как auto-reconnect (v1.11.0) исчерпал 3 попытки.
-        // Без этого VM мгновенно скипал станцию до того как reconnect шанс получит.
+
+        // Пробрасываем отфильтрованный список в плеер для notification skip
+        // и mini-player navigation. distinctUntilChanged защищает от лишних
+        // re-set'ов когда тот же список переходит туда-сюда через combine.
+        viewModelScope.launch {
+            displayedStations
+                .distinctUntilChanged { old, new -> old.map { it.id } == new.map { it.id } }
+                .collect { filtered ->
+                    val context = filtered.ifEmpty {
+                        _stations.value.filter { it.id !in blockedStationIds.value }
+                    }
+                    player.setStationContext(context)
+                }
+        }
     }
 
     fun selectCountry(country: Country) {
