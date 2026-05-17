@@ -71,16 +71,23 @@
 - Каждый рассказ + 4 quiz-вопроса, перевод по long-press, sm2-стиль
 
 ### Словарь
-- **10086** уникальных слов после dedup из:
-  - `CleanVocab.kt` (4764 строк) — основной деduplicated
-  - `BasicsVocab.kt` (1229 строк) — A1 фундамент
-  - `VocabExtra1-12.kt` — 12 файлов расширений
-  - `assets/spanish_vocab.json` — 1415 слов (подключены в v1.0.10)
+- **12616 записей всего** (до dedup):
+  - `CleanVocab.kt`: **4712** слов
+  - `BasicsVocab.kt`: **1189** слов
+  - `VocabExtra1-12.kt`: суммарно **5300** слов (диапазон 294-557 на файл)
+  - `assets/spanish_vocab.json`: **1415** слов (подключены через `loadJsonVocab()` в DatabaseSeeder)
+- **~10086 уникальных после `distinctBy { spanish.trim().lowercase() }`** в `DatabaseSeeder.seedWords()`
+- Старое утверждение «1300 пересечений после dedup» — это **разница 12616 - 10086 = 2530 дубликатов** (правильное число)
 
 ### Спряжение глаголов
-- **~1300** глаголов в `ConjugationData.kt` + `ConjugationData2.kt` + `ConjugationData3.kt`
-- **159** с полными таблицами 6 времён
-- Verb trainer (5 тиров × 6 времён в backlog для PRO)
+- **159 глаголов** с **полными авторскими таблицами 6 времён** (ConjugationData.kt + ConjugationData2.kt + ConjugationData3.kt — все 6 времён × 159 = 954 ConjugationEntity записей)
+- **1327 глаголов** в `SpanishVerbBank` (5 тиров, для тренажёра):
+  - Tier 1 (топ-50): 50
+  - Tier 2 (51-100): 50
+  - Tier 3 (101-200): 102
+  - Tier 4 (201-350): 149
+  - Tier 5 (351-850 полный список): 976
+- 159 с таблицами помечены как `AUTHORED`, остальные генерируются `SpanishConjugator` по правилам (REGULAR_AR/ER/IR, STEM_E_IE, etc.)
 
 ### Грамматика
 - **75 уроков**: A1×15, A2×20, B1×20, B2×20
@@ -99,7 +106,8 @@
 - Хаб: GamesScreen
 
 ### Theory cards
-- **10** теория-карточек блока 1.1 (u1_l0..u1_l9)
+- **16** теория-карточек в `TheoryContentData.kt` (не 10 как раньше писали)
+- Расширились дальше блока A1.1
 - TheoryReader + TheoryLibrary
 - ~3-5 мин чтения каждая
 
@@ -463,7 +471,8 @@ Comment'нуто: CAMERA (убрана т.к. PickVisualMedia без permission)
 - `AiChatLimiterTest` (4)
 - `LibroTextHelpersTest` (20)
 - `ExerciseGeneratorTest`, `CrosswordTest`, `RatingSystemTest`, ...
-- `LocalizationIntegrityTest` ⚠ 1 known failure (incomplete translations, не блокер)
+- `LocalizationIntegrityTest` ✅ (раньше падал — починен в v1.11.7 добавлением `nav_radio` + `bento_goal_radio` в en/uk/es)
+- **Всего 236/236 зелёные** (verified `./gradlew testDebugUnitTest --rerun-tasks`)
 
 ### Запуск
 ```bash
