@@ -356,6 +356,10 @@ fun HomeScreen(
         val combinedScale = entranceScale.value * pulse
         val shadowDp = 8.dp + ((pulse - 1f) * 80f).dp
 
+        // v1.13.0: adaptive FAB size — на планшете крупнее, чтобы не
+        // выглядел маленьким (60dp на 1280dp экране = крошка).
+        val fabSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 72.dp else 60.dp
+        val fabIconSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 36.dp else 30.dp
         FloatingActionButton(
             onClick = { navController.navigate("ai_chat_sessions") },
             modifier = Modifier
@@ -371,7 +375,7 @@ fun HomeScreen(
                     spotColor = Orange,
                     ambientColor = Orange
                 )
-                .size(60.dp),
+                .size(fabSize),
             containerColor = Orange,
             contentColor = Color.White,
             shape = CircleShape
@@ -379,7 +383,7 @@ fun HomeScreen(
             Icon(
                 painter = androidx.compose.ui.res.painterResource(R.drawable.ic_bull),
                 contentDescription = stringResource(R.string.title_ai_chat),
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier.size(fabIconSize)
             )
         }
     }

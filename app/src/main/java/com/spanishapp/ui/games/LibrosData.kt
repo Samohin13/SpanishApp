@@ -2274,7 +2274,7 @@ object LibrosData {
         Libro(
             id = 61,
             title = "El Algoritmo de la Soledad",
-            level = "B2", difficulty = 1, topic = "Технологии / Общество",
+            level = "B1", difficulty = 1, topic = "Технологии / Общество",
             text = """
                 Cuando Natalia cumplió cuarenta años, decidió hacer un experimento: pasaría un mes entero sin redes sociales para entender cómo había cambiado su vida desde que se había hecho dependiente de ellas.
                 Los primeros días fueron desconcertantes; sentía un impulso constante de coger el móvil cada pocos minutos, aunque no había nada que mirar.
@@ -2311,7 +2311,7 @@ object LibrosData {
         Libro(
             id = 62,
             title = "La Tierra que Ya No Era",
-            level = "B2", difficulty = 2, topic = "Эмиграция / Идентичность",
+            level = "B1", difficulty = 2, topic = "Эмиграция / Идентичность",
             text = """
                 Después de veintidós años viviendo en Madrid, Julián volvió a Buenos Aires para el funeral de su padre.
                 Había salido de Argentina huyendo de la crisis económica, dejando atrás un país que para él significaba imposibilidad.
@@ -2348,7 +2348,7 @@ object LibrosData {
         Libro(
             id = 63,
             title = "El Libro que lo Cambió Todo",
-            level = "B2", difficulty = 3, topic = "Литература / Личностный рост",
+            level = "B1", difficulty = 3, topic = "Литература / Личностный рост",
             text = """
                 Existen libros que se leen y se olvidan, libros que entretienen unas horas y luego quedan en una estantería como simple decoración.
                 Pero hay otros, mucho menos frecuentes, que llegan a la vida de uno en el momento exacto y lo dejan diferente para siempre.
@@ -2386,7 +2386,7 @@ object LibrosData {
         Libro(
             id = 64,
             title = "El Peso de la Elección",
-            level = "B2", difficulty = 4, topic = "Психология / Современная жизнь",
+            level = "B1", difficulty = 4, topic = "Психология / Современная жизнь",
             text = """
                 En el supermercado del barrio había, cuando él era niño, tres tipos de aceite y dos marcas de pan.
                 Hoy, frente a la estantería del aceite, Ricardo cuenta veintinueve variedades distintas y siente, no la libertad que se supone que da la abundancia, sino una especie de parálisis silenciosa que le cuesta describir.
@@ -2423,7 +2423,7 @@ object LibrosData {
         Libro(
             id = 66,
             title = "Un Día en la Ciudad",
-            level = "B2", difficulty = 2, topic = "Городская жизнь",
+            level = "B1", difficulty = 2, topic = "Городская жизнь",
             text = """
                 Cada vez que Marcos sale a la ciudad para hacer recados, vuelve a casa con la sensación de haber vivido tres días en uno.
                 Empieza la mañana cogiendo el metro a las ocho, junto con cientos de personas con caras de sueño.
@@ -2460,7 +2460,7 @@ object LibrosData {
         Libro(
             id = 67,
             title = "La Primera Cena",
-            level = "B2", difficulty = 2, topic = "Любовь / Кухня",
+            level = "B1", difficulty = 2, topic = "Любовь / Кухня",
             text = """
                 Cuando Pablo invitó a Carmen a cenar a su casa por primera vez, decidió que quería impresionarla cocinando él mismo en lugar de pedir comida.
                 El problema era que Pablo, a sus treinta años, prácticamente no había cocinado nunca: vivía a base de ensaladas frías y comida congelada.
@@ -2498,7 +2498,7 @@ object LibrosData {
         Libro(
             id = 68,
             title = "El Profesor que No Olvido",
-            level = "B2", difficulty = 3, topic = "Образование / Воспоминания",
+            level = "B1", difficulty = 3, topic = "Образование / Воспоминания",
             text = """
                 Cuando le pregunté a mi padre quién había sido la persona más influyente en su vida, no dudó en responder: el señor Méndez, su profesor de literatura del instituto.
                 «No nos enseñaba a aprobar exámenes», me dijo. «Nos enseñaba a leer.»
@@ -2536,7 +2536,7 @@ object LibrosData {
         Libro(
             id = 69,
             title = "El Mensaje en la Botella",
-            level = "B2", difficulty = 4, topic = "Море / Связь",
+            level = "B1", difficulty = 4, topic = "Море / Связь",
             text = """
                 En agosto, mientras paseaba por la playa de Calella al atardecer, Lucía vio una botella de cristal medio enterrada en la arena.
                 Dentro había un papel doblado que parecía haber pasado tiempo en el mar.
@@ -2574,7 +2574,7 @@ object LibrosData {
         Libro(
             id = 70,
             title = "La Reforma de la Cocina",
-            level = "B2", difficulty = 5, topic = "Дом / Терпение",
+            level = "B1", difficulty = 5, topic = "Дом / Терпение",
             text = """
                 Cuando los Hernández compraron un piso de los años setenta a buen precio, sabían que tendrían que reformarlo, pero no imaginaban hasta qué punto.
                 Lo que iba a ser una reforma de tres meses se convirtió en una odisea de casi un año.
@@ -2612,7 +2612,7 @@ object LibrosData {
         Libro(
             id = 71,
             title = "La Autenticidad en la Era de los Algoritmos",
-            level = "B2", difficulty = 2, topic = "Технологии / Идентичность",
+            level = "B1", difficulty = 2, topic = "Технологии / Идентичность",
             text = """
                 Hace apenas una década, lo más íntimo que mostrabas a un desconocido era una conversación de café; hoy compartimos rutinas, comidas, opiniones políticas y caras semidesnudas con miles de personas a las que nunca veremos.
                 Lo curioso es que, cuanto más nos exponemos, más nos cuesta saber quiénes somos realmente.
@@ -2651,7 +2651,7 @@ object LibrosData {
         Libro(
             id = 72,
             title = "Lo que Entiendes a los Cuarenta",
-            level = "B2", difficulty = 3, topic = "Возраст / Размышления",
+            level = "B1", difficulty = 3, topic = "Возраст / Размышления",
             text = """
                 A los cuarenta años uno empieza a comprender ciertas cosas que a los veinte le parecían inverosímiles, y a los treinta sospechosas.
                 Que el éxito profesional, por ejemplo, no es una línea ascendente sino un péndulo que oscila entre temporadas brillantes y períodos en los que apenas sabes para qué te levantas por las mañanas.
@@ -2688,7 +2688,7 @@ object LibrosData {
         Libro(
             id = 73,
             title = "El Perdón que No Llegó a Tiempo",
-            level = "B2", difficulty = 4, topic = "Семья / Прощение",
+            level = "B1", difficulty = 4, topic = "Семья / Прощение",
             text = """
                 Roberto y su padre habían dejado de hablarse después de una discusión absurda sobre dinero hace nueve años.
                 Empezó como un préstamo no devuelto, escaló a reproches sobre toda una vida en común y terminó con una frase que ninguno de los dos olvidaría: «Para mí, ya no eres mi hijo».
@@ -2728,7 +2728,7 @@ object LibrosData {
         Libro(
             id = 74,
             title = "El Silencio Olvidado",
-            level = "B2", difficulty = 4, topic = "Тишина / Современность",
+            level = "B1", difficulty = 4, topic = "Тишина / Современность",
             text = """
                 Hace cien años, el silencio formaba parte de la vida cotidiana de cualquier persona: durante las comidas, en los trayectos a pie, en las largas tardes leyendo o cosiendo.
                 Hoy, mucha gente no soporta más de tres minutos sin estímulo: en cuanto sale de una reunión, abre el móvil; en cuanto llega a casa, enciende la televisión; en cuanto se mete en la cama, pone un podcast para «relajarse».
@@ -2765,7 +2765,7 @@ object LibrosData {
         Libro(
             id = 75,
             title = "El Primer Amor, Veinte Años Después",
-            level = "B2", difficulty = 5, topic = "Любовь / Время",
+            level = "B1", difficulty = 5, topic = "Любовь / Время",
             text = """
                 Cuando Daniela vio en LinkedIn la solicitud de Iván, tardó varios minutos en reconocer al chico de diecisiete años con el que había compartido el primer beso de su vida.
                 Veinte años después, ambos eran personas distintas: él trabajaba en logística en Buenos Aires, divorciado con dos hijos; ella era profesora de filosofía en Madrid, soltera por convicción.
@@ -2806,7 +2806,7 @@ object LibrosData {
         Libro(
             id = 65,
             title = "Memoria de un Verano que No Recuerdo",
-            level = "B2", difficulty = 5, topic = "Память / Фотография",
+            level = "B1", difficulty = 5, topic = "Память / Фотография",
             text = """
                 Mi madre conserva en un álbum una fotografía de un verano de mi infancia que yo, por más que lo intento, no logro recordar.
                 En la imagen aparezco con seis o siete años, sonriendo en la orilla del mar, sosteniendo un pez pequeño que, según ella, había pescado yo solo después de horas de paciencia.

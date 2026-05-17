@@ -144,25 +144,34 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
     val libro = item.libro
     val levelColor = LevelColors[libro.level] ?: LibrosPurple
 
+    // v1.13.0: adaptive sizing — на планшете шрифт и круглый бейдж
+    // больше чтобы карточка не выглядела «детской». На телефоне как было.
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val cardMinHeight = if (isWide) 130.dp else 110.dp
+    val numberSize = if (isWide) 56.dp else 44.dp
+    val numberFont = if (isWide) 18.sp else 15.sp
+    val titleFont = if (isWide) 18.sp else 15.sp
+    val topicFont = if (isWide) 14.sp else 12.sp
+    val buttonFont = if (isWide) 14.sp else 12.sp
+    val cardPadding = if (isWide) 20.dp else 16.dp
+
     Card(
-        // v1.12.4: heightIn(min = 110.dp) — все карточки одной высоты
-        // в grid'е. Без этого row card стакалась рваными прямоугольниками.
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 110.dp)
+            .heightIn(min = cardMinHeight)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(cardPadding),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Номер
             Box(
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(numberSize)
                     .clip(RoundedCornerShape(12.dp))
                     .background(levelColor.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
@@ -170,7 +179,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                 Text(
                     "#${libro.id}",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
+                    fontSize = numberFont,
                     color = levelColor
                 )
             }
@@ -182,7 +191,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                     Text(
                         libro.title,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp,
+                        fontSize = titleFont,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     if (item.isCompleted) {
@@ -210,7 +219,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                     // Точки сложности
                     DifficultyDots(libro.difficulty)
                     Spacer(Modifier.width(8.dp))
-                    Text(libro.topic, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(libro.topic, fontSize = topicFont, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 if (item.isCompleted) {
                     Spacer(Modifier.height(4.dp))
@@ -232,7 +241,7 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                 Text(
                     if (item.isCompleted) stringResource(R.string.libros_repeat) else stringResource(R.string.libros_read),
                     color = if (item.isCompleted) Color(0xFF2E7D32) else Color.White,
-                    fontSize = 12.sp,
+                    fontSize = buttonFont,
                     fontWeight = FontWeight.SemiBold
                 )
             }

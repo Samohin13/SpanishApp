@@ -82,6 +82,16 @@ fun SpanishBottomBar(
     }
     val activeIdx = bottomNavItems.indexOfFirst { effectiveRoute.startsWith(it.route) }.coerceAtLeast(0)
 
+    // v1.13.0: adaptive sizing — на планшете BottomBar чуть крупнее
+    // чтобы соответствовать масштабу экрана (Duolingo-style).
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val barHeight = if (isWide) 76.dp else 62.dp
+    val iconSize = if (isWide) 28.dp else 24.dp
+    val labelSize = if (isWide) 12.sp else 10.sp
+    val pillHeight = if (isWide) 48.dp else 38.dp
+    val pillWidth = if (isWide) 60.dp else 48.dp
+    val pillYOffset = if (isWide) 12.dp else 9.dp
+
     // Gliding pill offset — animates between tab positions
     val pillOffset by animateFloatAsState(
         targetValue   = activeIdx.toFloat(),
@@ -104,15 +114,15 @@ fun SpanishBottomBar(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface)
                 .navigationBarsPadding()
-                .height(62.dp)
+                .height(barHeight)
         ) {
             val tabWidth = maxWidth / bottomNavItems.size
 
             // Gliding pill behind active tab
             Box(
                 modifier = Modifier
-                    .offset(x = tabWidth * pillOffset + (tabWidth - 48.dp) / 2, y = 9.dp)
-                    .size(48.dp, 38.dp)
+                    .offset(x = tabWidth * pillOffset + (tabWidth - pillWidth) / 2, y = pillYOffset)
+                    .size(pillWidth, pillHeight)
                     .clip(RoundedCornerShape(14.dp))
                     .background(pillBg)
                     .then(
@@ -203,12 +213,12 @@ fun SpanishBottomBar(
                             Icon(
                                 imageVector        = if (selected) item.iconSelected else item.icon,
                                 contentDescription = itemLabel,
-                                modifier           = Modifier.size(24.dp),
+                                modifier           = Modifier.size(iconSize),
                                 tint               = iconColor
                             )
                             Text(
                                 text       = itemLabel,
-                                fontSize   = 10.sp,
+                                fontSize   = labelSize,
                                 color      = iconColor,
                                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
                                 maxLines   = 1
