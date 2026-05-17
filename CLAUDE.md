@@ -2,7 +2,93 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-17, сессия 20 (Radio v1.10.0 — production polish)**
+> Последнее обновление: **2026-05-17, сессия 20 (v1.11.7 — security audit + AAB build)**
+
+---
+
+# 📍 CURRENT STATE v1.11.7 (2026-05-17)
+
+**Версия:** v1.11.7, versionCode 65. AAB собран (38 МБ), подан на закрытое тестирование Play.
+
+**Содержит:** 5 critical security fixes + 2 critical DB fixes + 2 critical concurrency fixes + radio production polish (v1.6.0→1.11.7).
+
+## ✅ Что работает
+
+**Контент:**
+- 10086 уникальных слов (CleanVocab + 12 ext + JSON-asset + BasicsVocab — все подключены ✓)
+- 240 уроков (16 unit × 15) с auto-generated упражнениями (Phase 1-3 движка)
+- 1300+ глаголов спряжения, 159 с полными таблицами
+- 100 рассказов Libros (A1 готовы, A2-B2 в развитии)
+- 10 теория-карточек блока 1.1 + библиотека
+- 75 уроков грамматики (A1×15, A2×20, B1×20, B2×20)
+- 8 мини-игр (6 в GamesScreen + Verbos + Libros)
+- 23 достижения (bronze/silver/gold через xpReward)
+
+**Системы:**
+- SM-2 интервальное повторение
+- SkillRating v2 (старт 0, decay progressive, peakRating сохраняется)
+- 8 лиг «Путь до Мадрида» с реактивным UI
+- Weekly Leagues (Firestore cohorts, опт-ин)
+- Лидерборд (страна + Мир, auto-fallback)
+- Daily Mission (4 цели + 5-я «5 мин радио»)
+- Streak с freezes, видимы на главной
+- AI Chat (Gemini Flash через Cloudflare Worker, 50/день, humanized errors)
+- Биометрия для входа в PRO зоны
+- Темы (Light/Dark/Auto), 4 локали UI (ru/en/uk/es)
+- Виджет «Слово дня»
+- 📻 **Радио v1.11.5** — production-ready (см. radio.md)
+
+**Инфраструктура:**
+- Room v24 (24 миграции, все прописаны в 5 местах: AppModule + 3 Worker + Widget)
+- DataStore: voice_prefs, app_lock_prefs, content_versions, radio_blocklist (TTL 48ч), и др.
+- WorkManager: RatingDecay (daily), RadioCatalogRefresh (weekly, UNMETERED+batteryNotLow), ContentSync, DailyReminder
+- Firebase Auth (Anonymous + Google), Firestore, Storage (5MB+image MIME guards), Crashlytics, Analytics
+- Cloudflare Worker proxy для AI (`espeak-gemini-proxy.bravochief21.workers.dev`)
+- 65 unit-тестов (включая 40 для радио)
+- Coverage через Kover, preRelease task для CI-like локальной проверки
+
+## ❌ Что РЕАЛЬНО не сделано (актуальный backlog)
+
+**Высокий приоритет:**
+1. **Локализация контента уроков** — UI переведён на en/uk/es, но контент только русский → бардак при смене языка
+2. **Контент A2-B2 расширение** — Libros 25/100, многие уроки заглушки
+3. **22 IMPORTANT из аудита 2026-05-17** — best practices, не critical
+   (rememberSaveable формы, popUpTo("home") fix, MainActivity runBlocking, и др.)
+
+**Средний приоритет:**
+4. **Sleep timer для радио** (~1.5ч работы)
+5. **Lockscreen artwork radio** (gradient bitmap, ~1.5ч)
+6. **Recently played карусель радио** (~1.5ч)
+7. **Listening streak** (отдельный от learning streak)
+8. **Achievements за радио** («1 час», «10 часов», «100 слов»)
+9. **Android Auto support** через MediaBrowserService (~2ч)
+10. **Локализация radio модуля** (~478 русских литералов × 3 локали)
+11. **CLAUDE.md sync с production** — этот файл, периодически)
+
+**Низкий / отложено:**
+12. **Whisper транскрипция** — Holdback (платно, $1000/мес)
+13. **Share station deep link**
+14. **«T» button флип карточки** → перевод (обсуждали — отменили)
+15. **Google Play Billing для PRO subscription** — план есть, не реализовано
+16. **Озвучка Libros** профессиональными актёрами
+
+## 🔒 Security state (после audit 2026-05-17)
+
+**Критичные — все закрыто в v1.11.7:**
+- ✓ GEMINI_API_KEY больше не в release APK (только debug BuildConfig)
+- ✓ Cloudflare Worker secret enforced (X-App-Secret header)
+- ✓ Firebase Storage rules: size 5MB + image/* MIME (apply'нуто в Console)
+- ✓ radioWordCatchDao() bomb обезврежен
+- ✓ fallbackToDestructiveMigration только в debug (5 мест)
+- ✓ RadioViewModel callbacks leak fixed
+- ✓ SpeechRecognizer cancellation race fixed
+
+**Что осталось из audit (IMPORTANT):**
+- ANTHROPIC_API_KEY поле было dead code — удалено в v1.11.7
+- ProfileScreen Log.d с downloadUrl — gated в v1.11.7
+- network_security_config — не имеет HTTPS-only allowlist для samohin13.github.io
+
+---
 
 ## 📻 Radio v1.10.0 — production polish (сессия 20, после фикса v1.9.1)
 
@@ -182,12 +268,15 @@ v22: radio_favorites
 v23: radio_catalog (dynamic stations from API)
 v24: radio_listening_session + radio_word_catch (stats)
 
-### Что НЕ сделано
-- WorkManager weekly catalog refresh (сейчас только при входе если кэш > 7 дн)
-- Listening streak (отдельный от learning streak)
-- Achievements за радио («1 час», «10 часов», «100 слов»)
-- Транскрипция через Whisper API
-- All-stations library screen с фильтром «только избранные»
+### Что НЕ сделано (актуально на v1.11.7)
+- ✅ ~~WorkManager weekly catalog refresh~~ → сделано в v1.10.0
+- ✅ ~~HomeRadioCard~~ → удалена в v1.11.0 (juzер запросил)
+- ⚠ Listening streak (отдельный от learning streak) — не сделано
+- ⚠ Achievements за радио («1 час», «10 часов», «100 слов») — не сделано
+- ⚠ Sleep timer + Lockscreen artwork + Recently played + Share — отложенный nice-to-have
+- ⚠ Android Auto support через MediaBrowserService — отложено
+- ⚠ Whisper транскрипция — на holdback ($1000/мес ongoing cost)
+- ⚠ Локализация ~478 русских литералов в radio/* — большой scope
 
 ---
 
@@ -288,29 +377,32 @@ u1_l9 «Личные местоимения».
 
 **База данных:** version=19, миграции 1→19 все прописаны в AppModule + Worker'ах + Widget'е.
 
-## 🐛 BACKLOG найденных проблем (тестер 2026-05-14)
+## 🐛 BACKLOG тестера 2026-05-14 (АРХИВ — 15/16 закрыто)
 
-### Критичные баги (нужно чинить)
-1. ❌ **Lesson count 1→3** — прошёл 1 урок, статистика показывает 3
-2. ❌ **Photo upload** — фото из галереи не сохраняется в облако (Firebase Storage)
-3. ❌ **Libros в Daily Mission** — прочитал главу, не отмечается ✅ на главной
-4. ❌ **POST_NOTIFICATIONS** — на Android 13+ не запрашиваем разрешение → ВСЕ push молчат
-5. ❌ **`spanish_vocab.json` не используется** — 1415 слов лежит мёртвым грузом
+> Этот список из ранней сессии тестирования. Сохранён как history record.
+> Актуальный backlog — в секции «CURRENT STATE» наверху файла.
+
+### Критичные баги
+1. ✅ **Lesson count 1→3** — fixed в v1.0.10
+2. ✅ **Photo upload в Firebase Storage** — fixed в v1.0.10
+3. ✅ **Libros в Daily Mission** — fixed в v1.0.10
+4. ✅ **POST_NOTIFICATIONS Android 13+** — fixed в v1.0.10 (`MainActivity.kt:82-95`)
+5. ✅ **`spanish_vocab.json` не подключён** — fixed в v1.0.10 (`DatabaseSeeder.kt:149` `loadJsonVocab()`)
 
 ### UX/логика
-6. ⚠ **Уровень в Settings** — можно вручную менять с A1 на C2 (не должно)
-7. ⚠ **Дневная цель** — пропала из onboarding (была после "Зачем испанский?")
-8. ⚠ **«Путь до Мадрида»** — юзер не понимает как считается
-9. ⚠ **Стартовый рейтинг 1000** — ✅ ОДОБРЕНО переделать на старт с 0 + новые лиги + активная decay
-10. ⚠ **Лидерборд по странам пустой** — если в стране < 5 юзеров
-11. ⚠ **Streak freezes** — есть в БД, не показано юзеру
-12. ⚠ **AI Chat лимит** — нет индикации сколько осталось сообщений
-13. ⚠ **Время напоминания** — не проверено что WorkManager-задача правильно перепланируется
-14. ⚠ **Локализация контента** — UI можно сменить на en/uk/es, но уроки только русские → бардак
-15. ⚠ **Cold start медленный** — seed 10К+ слов занимает время, нет splash с прогрессом
+6. ✅ **Уровень в Settings → read-only** — fixed в v1.1.0
+7. ✅ **Дневная цель в onboarding** — fixed в v1.1.0 (отдельный экран)
+8. ✅ **«Путь до Мадрида» прозрачнее** — fixed в v1.1.0
+9. ✅ **Стартовый рейтинг 1000 → 0 + новые лиги + активная decay** — fixed в v1.1.0 (SkillRatingSystem v2)
+10. ✅ **Лидерборд auto-fallback на «Мир»** — fixed в v1.1.0
+11. ✅ **Streak freezes видимы** — fixed в v1.1.0 (❄N иконка на главной)
+12. ✅ **AI Chat лимит индикатор** — fixed в v1.1.0 (AiChatLimiter, «осталось 47/50»)
+13. ✅ **Reminder «Проверить сейчас»** — fixed в v1.1.0 (Settings)
+14. ⚠ **Локализация контента уроков** — UI переведён, контент только русский. **РЕАЛЬНО НЕ СДЕЛАНО**, большой объём
+15. ✅ **Cold start splash** — fixed в v1.1.0
 
 ### Редизайн
-16. 🎨 **Достижения: медали vs кубки** — каша в семантике, нужна единая система + переписать 23 шт
+16. ✅ **Достижения пересмотрены** — fixed в v1.1.0 (bronze/silver/gold через xpReward, единая 🏆 иконка)
 
 ## 💎 ПЛАН МОНЕТИЗАЦИИ v2.0 (утверждено 2026-05-14)
 
@@ -357,7 +449,21 @@ u1_l9 «Личные местоимения».
 | 1.0.8 | 14 | A+B+C: ProGuard для Glance, async виджет, 8 Analytics events |
 | 1.0.9 | 15 | Обновлён логотип (premium iOS-style) — был на review |
 | 1.0.10 | 16 | 5 критичных багов: lesson count, photo, libros mission, push perm, +1415 слов JSON |
-| 1.1.0 | 17 | **Текущая** — большой батч из 11 фиксов «Качество и баланс» |
+| 1.1.0 | 17 | Большой батч из 11 фиксов «Качество и баланс» |
+| 1.2.0 | 19 | Theory cards Phase 1 (10 теорий блока 1.1, библиотека) |
+| 1.6.0 | 26 | Radio launch (40 станций, ExoPlayer, MediaSessionService) |
+| 1.6.x | 27-31 | Radio polish: фиксы, auto-discovery, Spotify-стиль |
+| 1.7.0 | 32 | Radio auto-discovery (ip-API + radio-browser + probe + кэш) |
+| 1.8.x | 33-37 | Listening tracker, daily mission «5 мин радио», TTS↔Radio mutex |
+| 1.9.0 | 41 | Radio чистый редизайн (single-screen, фильтр-чипы, без «Поймал слово!») |
+| 1.9.1 | 42 | Foreground service crash fix + discovery diagnostics |
+| 1.10.0 | 48 | Audio focus, headphone unplug, ICY metadata, WorkManager weekly, URL whitelist |
+| 1.10.1-4 | 49-52 | Lock screen + canonical Media3 refactor (MediaController) |
+| 1.10.5-9 | 53-57 | Brand dedup, landscape, mini-player фиксы |
+| 1.11.0 | 58 | Top-5 polish (auto-reconnect, haptic, loudness norm, animations) |
+| 1.11.1-5 | 59-63 | Dead stations blocklist, genre mapping fix, swipe-to-hide mini |
+| 1.11.6 | 64 | AI Chat security: Gemini proxy enforced + humanized errors |
+| **1.11.7** | **65** | **Текущая** — 10 critical из аудита: security/DB/concurrency. AAB готов. |
 
 ## 🚀 Что в 1.1.0 (сессия 16, автономная)
 
@@ -731,8 +837,8 @@ DB version 18 (с двумя миграциями за сессию: 14→15 rec
 - **SettingsVoice**: 8 персонажей, ползунки, диагностический баннер
 - **AI Chat** включён в навигацию
 - **Словарь 5000+ слов** + DictionaryScreen v2 (вкладки, пользовательские списки)
-- **Room version = 7**, миграции 1→7 все прописаны
-- **Listening game 🎧**: 1089 предложений Tatoeba
+- **Room version = 24** (история резюме — версия 7 устарела, см. CURRENT STATE наверху)
+- **Listening game 🎧**: 1089 предложений Tatoeba (УДАЛЕНО в сессии 9 — ассеты убраны, см. §9)
 - **Libros 📚** — 8-я игра, полностью реализована:
   - 25 рассказов уровня A1 (LibrosData.kt), 4 вопроса на каждый
   - Фильтр по уровню (A1/A2/B1/B2), карточки с DifficultyDots
@@ -746,17 +852,17 @@ DB version 18 (с двумя миграциями за сессию: 14→15 rec
   - LessonContentData полностью переписан (ключи u1_l0 … u4_l13)
   - Placeholder 🚧 для уроков без контента (кнопка «Отметить как пройденный»)
 
-**Следующие задачи (roadmap):**
-1. **Streak / Home**: счётчик серии на главном экране
-2. **Word of Day**: слово дня с озвучкой на HomeScreen
-3. **WeakWords**: экран слабых слов (данные уже в DAO)
-4. **AI Chat**: живой экран чата с Claude
-5. **Libros A2/B1/B2**: добавить рассказы 26–100 (сейчас только 25 × A1)
+**Следующие задачи (этот roadmap УСТАРЕЛ — см. CURRENT STATE наверху):**
+1. ✅ ~~Streak / Home счётчик~~ — давно сделано, freezes тоже видимы
+2. ✅ ~~Word of Day~~ — есть на HomeScreen + виджет
+3. ✅ ~~WeakWords экран~~ — есть
+4. ✅ ~~AI Chat живой~~ — есть (Gemini Flash через Cloudflare proxy)
+5. ⚠ **Libros A2/B1/B2** — частично (25 A1 + остальные в развитии)
 
 ---
 
 ## 1. Обзор проекта
-Полнофункциональное Android-приложение на Kotlin + Jetpack Compose для изучения испанского языка русскоязычными пользователями. Включает ИИ-репетитора на базе Claude API.
+Полнофункциональное Android-приложение на Kotlin + Jetpack Compose для изучения испанского языка русскоязычными пользователями. Включает ИИ-репетитора на базе Google Gemini Flash (через Cloudflare Worker proxy).
 
 **Целевая аудитория:** новички (дети и взрослые), доходящие до уровня B2.
 **Методика:** CEFR + современная лексика + обучение в контексте (короткие примеры) + озвучка.
@@ -769,11 +875,13 @@ DB version 18 (с двумя миграциями за сессию: 14→15 rec
 - **БД:** Room (SQLite, офлайн)
 - **Навигация:** Navigation Compose
 - **Асинхронность:** Coroutines + Flow
-- **ИИ:** Anthropic Claude API (`claude-sonnet-4-20250514`)
-- **Фоновые задачи:** WorkManager
-- **Виджет:** Glance AppWidget
+- **ИИ:** Google Gemini Flash API (через Cloudflare Worker proxy `espeak-gemini-proxy.bravochief21.workers.dev`)
+  — старая запись «Anthropic Claude» устарела, переключились на Gemini в сессии 12-13
+- **Фоновые задачи:** WorkManager (RatingDecay, RadioCatalogRefresh, ContentSync, DailyReminder)
+- **Виджет:** Glance AppWidget («Слово дня»)
 - **HTTP:** OkHttp
-- **Хранилище настроек:** DataStore (будет использован для SettingsVoice)
+- **Хранилище настроек:** DataStore (voice_prefs, app_lock_prefs, radio_blocklist, content_versions, ...)
+- **Медиа:** Media3 ExoPlayer + MediaSession (для радио)
 - **minSdk:** 26, **targetSdk:** 35, **compileSdk:** 35
 
 ## 3. Структура проекта
@@ -789,7 +897,7 @@ app/src/main/java/com/spanishapp/
 │   │   ├── DatabaseSeeder.kt               — засев БД из assets/spanish_vocab.json + ModernVocab
 │   │   └── ModernVocab.kt                  — ✨ NEW: ~55 современных/разговорных слов
 │   └── repository/
-│       ├── AiChatRepository.kt             — Claude API + история чата
+│       ├── AiChatRepository.kt             — Gemini Flash через Cloudflare Worker + история чата
 │       └── ConjugationData.kt              — 20 глаголов × 6 времён
 ├── di/AppModule.kt                         — Hilt DI модуль (Room + OkHttp)
 ├── domain/algorithm/LearningAlgorithms.kt  — SM-2, XpSystem, StreakManager, AdaptiveLearning
@@ -891,12 +999,16 @@ suspend fun categoriesForLevel(level): List<String>                            /
 5. **Для детей** (6–12): тематические блоки без грамматической терминологии, короткие сессии 5–10 мин
 6. **Для взрослых:** CEFR + ситуативные модули (работа, путешествия)
 
-## 7. ИИ-репетитор (Claude API)
-- Модель: `claude-sonnet-4-20250514`
-- Системный промпт: отвечает на испанском, переводит трудные слова в [скобках], исправляет ошибки
+## 7. ИИ-репетитор (Gemini Flash API через Cloudflare Worker)
+- Модель: `gemini-flash-latest` (Google-managed alias на актуальную бесплатную Flash)
+- **Архитектура:** UI → AiChatRepository → Cloudflare Worker proxy (X-App-Secret) → Gemini API
+- Worker URL: `espeak-gemini-proxy.bravochief21.workers.dev`
+- Системный промпт: дружелюбный репетитор для русскоязычных A1/A2, короткие ответы (4-5 строк), исправления формата CORRECTIONS_JSON:[...]
 - История: последние 20 сообщений из Room
-- Проверка грамматики: отдельный endpoint → JSON с исправлениями
-- API ключ: `local.properties` → `ANTHROPIC_KEY=sk-ant-...`
+- Лимит юзера: 50 запросов/день через `AiChatLimiter`
+- Release-сборка **обязана** иметь `AI_PROXY_URL` (иначе `require(BuildConfig.DEBUG)` крашит)
+- Debug-сборка может использовать direct call с `GEMINI_KEY` из local.properties
+- Старое (Claude API) → переключились в сессии 12-13 на Gemini Flash (стоит дешевле, квота больше)
 
 ## 8. Экраны приложения
 
