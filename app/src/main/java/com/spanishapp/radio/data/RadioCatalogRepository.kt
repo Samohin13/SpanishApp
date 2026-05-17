@@ -374,42 +374,62 @@ class RadioCatalogRepository @Inject constructor(
         return Locale.getDefault().country.ifEmpty { "??" }
     }
 
-    /** Запросить большой пул кандидатов из radio-browser.info по жанрам. */
+    /**
+     * Запросить большой пул кандидатов из radio-browser.info по тегам.
+     *
+     * Genre выводим из САМОГО ТЕГА (tagToGenre map), а не из группы.
+     * Раньше: `"news"` группировался с `"talk"` → genre=TALK для обоих,
+     * фильтр Новости в UI ничего не показывал. Теперь news → Genre.NEWS,
+     * sports → Genre.SPORTS, и т.д.
+     *
+     * Каждая страна запрашивается по своему набору тегов (региональная
+     * специфика — sports/futbol в LATAM популярнее чем в Spain итд).
+     */
     private fun fetchPool(): List<DiscoveredStation> {
-        val targets = listOf(
-            Triple(Country.SPAIN, Genre.TALK, CefrLevel.B1) to listOf("talk", "news"),
-            Triple(Country.SPAIN, Genre.MUSIC, CefrLevel.A2) to listOf("pop", "rock", "dance"),
-            Triple(Country.SPAIN, Genre.CULTURE, CefrLevel.B1) to listOf("classical", "culture"),
-            Triple(Country.MEXICO, Genre.MUSIC, CefrLevel.A2) to listOf("pop", "banda", "romantic"),
-            Triple(Country.MEXICO, Genre.NEWS, CefrLevel.B2) to listOf("news"),
-            Triple(Country.ARGENTINA, Genre.MUSIC, CefrLevel.A2) to listOf("pop", "rock"),
-            Triple(Country.ARGENTINA, Genre.TALK, CefrLevel.B2) to listOf("talk"),
+        val countryTags = listOf(
+            // Spain — европейский набор: news, talk, классика, pop/rock, спорт
+            Country.SPAIN to listOf(
+                "news", "talk", "sports",
+                "pop", "rock", "dance", "indie",
+                "classical", "culture", "jazz",
+            ),
+            // Mexico — больше LATAM-специфики
+            Country.MEXICO to listOf(
+                "news", "talk", "sports",
+                "pop", "banda", "romantic", "regional", "salsa",
+                "culture",
+            ),
+            // Argentina — tango, rock nacional, futbol
+            Country.ARGENTINA to listOf(
+                "news", "talk", "sports",
+                "pop", "rock", "tango",
+                "culture", "jazz",
+            ),
         )
 
         val pool = mutableListOf<DiscoveredStation>()
         val seenUrls = mutableSetOf<String>()
-        val totalQueries = targets.sumOf { it.second.size }
+        val totalQueries = countryTags.sumOf { it.second.size }
         var doneQueries = 0
 
-        for ((triple, tags) in targets) {
-            val (country, genre, level) = triple
+        for ((country, tags) in countryTags) {
             for (tag in tags) {
                 val results = queryApi(country.isoCode(), tag)
                 doneQueries++
                 // 0.10 → 0.30 на fetchPool стадии (живой progress per query)
                 _progress.value = 0.10f + 0.20f * (doneQueries.toFloat() / totalQueries)
                 if (results == null) continue
+                val genre = tagToGenre(tag)
+                val level = tagToCefr(tag)
                 for (r in results) {
                     val url = r.url_resolved ?: r.url ?: continue
                     if (url in seenUrls) continue
-                    if (!isSafeStreamUrl(url)) continue   // безопасность: только http/https/rtsp
+                    if (!isSafeStreamUrl(url)) continue
                     if (isGeoBlockedDomain(url)) continue
-                    if ((r.bitrate ?: 0) < 48) continue   // отсекаем мусор
+                    if ((r.bitrate ?: 0) < 48) continue
                     seenUrls.add(url)
                     pool.add(
                         DiscoveredStation(
-                            // Стабильный id из URL — позволяет INSERT OR REPLACE
-                            // дедуплицировать при повторных discoverMore() вызовах.
                             id = "auto_${url.hashCode().toUInt().toString(16)}",
                             shortCode = shortCodeFromName(r.name ?: "?"),
                             name = (r.name ?: "?").trim().take(40),
@@ -423,10 +443,29 @@ class RadioCatalogRepository @Inject constructor(
                         )
                     )
                 }
-                if (pool.size >= 100) return pool
+                if (pool.size >= 120) return pool
             }
         }
         return pool
+    }
+
+    /** Tag из radio-browser API → наш Genre enum. Источник истины. */
+    private fun tagToGenre(tag: String): Genre = when (tag.lowercase()) {
+        "news" -> Genre.NEWS
+        "talk", "discussion" -> Genre.TALK
+        "sports", "sport", "futbol" -> Genre.SPORTS
+        "culture", "classical", "jazz", "opera" -> Genre.CULTURE
+        else -> Genre.MUSIC  // pop/rock/dance/indie/banda/etc — всё музыка
+    }
+
+    /** Tag → CEFR-сложность контента (talk сложнее музыки для понимания). */
+    private fun tagToCefr(tag: String): CefrLevel = when (tag.lowercase()) {
+        "news" -> CefrLevel.B2          // дикторы говорят быстро, лексика
+        "talk", "discussion" -> CefrLevel.B1
+        "sports", "sport", "futbol" -> CefrLevel.B1
+        "culture", "classical" -> CefrLevel.B1
+        "jazz" -> CefrLevel.A2
+        else -> CefrLevel.A2  // музыка — самый простой контент
     }
 
     private fun queryApi(countryCode: String, tag: String): List<ApiStation>? = runCatching {

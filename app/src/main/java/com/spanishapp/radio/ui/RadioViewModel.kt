@@ -231,6 +231,16 @@ class RadioViewModel @Inject constructor(
             val hasCache = catalogDao.count() > 0
             val isFresh = catalogRepo.isCacheFresh()
 
+            // v1.11.2 migration: проверяем что в кэше есть SPORTS станции.
+            // Старые версии (≤1.11.1) НИКОГДА не запрашивали "sports" тег и
+            // ошибочно мапили "news" → Genre.TALK. Если catalog не имеет ни
+            // одной SPORTS станции — он old-schema, форсируем re-discovery
+            // с правильным genre mapping.
+            val hasNewSchema = hasCache && catalogDao.getAll().any {
+                it.genre == Genre.SPORTS.name
+            }
+            val needsSchemaRefresh = hasCache && !hasNewSchema
+
             if (hasCache) reloadStations()
 
             // Первая станция — только если ничего не играет.
@@ -238,8 +248,8 @@ class RadioViewModel @Inject constructor(
                 _stations.value.firstOrNull()?.let { tuneToStation(it) }
             }
 
-            // Авто-discovery если кэш пустой / устарел
-            if (!hasCache || !isFresh) {
+            // Авто-discovery если кэш пустой / устарел / старая схема
+            if (!hasCache || !isFresh || needsSchemaRefresh) {
                 _discoveryState.value = DiscoveryState.LOADING
                 val count = catalogRepo.discoverAndCache()
                 // Cache fallback — если discovery провалился, но кэш всё же
