@@ -280,16 +280,9 @@ fun HomeScreen(
                 }
             }
 
-            // ── 📻 Радио featured-карточка ───────────────────────
-            item {
-                StaggeredEntrance(index = 55) {
-                    com.spanishapp.radio.ui.HomeRadioCard(
-                        onClick = { navController.navigate("radio") },
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    )
-                    Spacer(Modifier.height(12.dp))
-                }
-            }
+            // Карточка-приглашение «Радио на испанском» убрана в v1.11.0 —
+            // радио доступно через 5-ю иконку в BottomBar, отдельная featured
+            // карточка дублировала навигацию и шумела главный экран.
 
             // ── Streak heatmap ─────────────────────────────────
             item {

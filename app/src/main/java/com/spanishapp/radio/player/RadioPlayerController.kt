@@ -16,9 +16,15 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
 import com.spanishapp.radio.data.Station
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.ArrayDeque
 import java.util.concurrent.Executor
 
@@ -82,6 +88,50 @@ class RadioPlayerController(private val context: Context) {
 
     fun setStationContext(stations: List<Station>) {
         _stationContext.value = stations
+    }
+
+    // ────────────────────── Coroutine scope ──────────────────────
+
+    /**
+     * Scope для фоновых задач controller'а (auto-reconnect, etc).
+     * SupervisorJob — падение одной корутины не убивает остальные.
+     * Main dispatcher — все вызовы MediaController должны быть на main.
+     */
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    // ────────────────────── Auto-reconnect ──────────────────────
+
+    /**
+     * Авто-переподключение при разрыве потока (CDN flap, network blip).
+     * Раньше: stream упал → ERROR навсегда пока юзер не тапнет skip.
+     * Стало: 3 попытки с exponential backoff (1s, 2s, 4s).
+     */
+    private var reconnectAttempts = 0
+    private var reconnectJob: Job? = null
+    private val maxReconnectAttempts = 3
+
+    private fun scheduleReconnect() {
+        reconnectJob?.cancel()
+        val station = _currentStation.value ?: return
+        if (reconnectAttempts >= maxReconnectAttempts) {
+            Log.w(TAG_ICY, "auto-reconnect: max attempts reached, giving up")
+            reconnectAttempts = 0
+            return
+        }
+        val attempt = reconnectAttempts + 1
+        val delayMs = 1000L * (1L shl reconnectAttempts)  // 1s, 2s, 4s
+        Log.d(TAG_ICY, "auto-reconnect: attempt $attempt in ${delayMs}ms for ${station.name}")
+        reconnectJob = scope.launch {
+            delay(delayMs)
+            reconnectAttempts++
+            play(station)
+        }
+    }
+
+    private fun resetReconnect() {
+        reconnectAttempts = 0
+        reconnectJob?.cancel()
+        reconnectJob = null
     }
 
     // ────────────────────── Session tracking ──────────────────────
@@ -178,6 +228,7 @@ class RadioPlayerController(private val context: Context) {
                 _isPlaying.value = playing
                 if (playing) {
                     _hasError.value = false
+                    resetReconnect()  // успешно играем → счётчик попыток в 0
                     _currentStation.value?.let { startSession(it.id) }
                 } else {
                     endSessionIfActive()
@@ -190,10 +241,13 @@ class RadioPlayerController(private val context: Context) {
             }
 
             override fun onPlayerError(error: PlaybackException) {
+                Log.w(TAG_ICY, "player error: ${error.message}", error)
                 _hasError.value = true
                 _isPlaying.value = false
                 _playbackState.value = RadioPlaybackState.ERROR
                 endSessionIfActive()
+                // Auto-reconnect — поток мог временно упасть (CDN flap, сеть)
+                scheduleReconnect()
             }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -291,6 +345,10 @@ class RadioPlayerController(private val context: Context) {
         _hasError.value = false
         _currentStation.value = station
         _nowPlaying.value = null  // новый трек придёт из ICY
+        // Если play() вызван НЕ из reconnect-loop (новая станция, тап юзера) —
+        // сбрасываем счётчик попыток
+        val isReconnecting = reconnectJob?.isActive == true
+        if (!isReconnecting) resetReconnect()
 
         val context = _stationContext.value
         val playStation = station

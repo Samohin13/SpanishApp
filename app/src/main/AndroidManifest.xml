@@ -11,6 +11,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Loudness normalization (LoudnessEnhancer audio effect) — выравнивает
+         громкость между станциями. Normal permission, без runtime запроса. -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!--
       CAMERA убрана: на текущий момент аватар-пикер использует
       ActivityResultContracts.PickVisualMedia (Photo Picker, без

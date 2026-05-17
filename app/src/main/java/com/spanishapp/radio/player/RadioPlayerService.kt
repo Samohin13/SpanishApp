@@ -3,8 +3,12 @@ package com.spanishapp.radio.player
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
+import android.media.audiofx.LoudnessEnhancer
 import android.os.Build
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -35,6 +39,18 @@ class RadioPlayerService : MediaSessionService() {
 
     private var mediaSession: MediaSession? = null
     private var player: ExoPlayer? = null
+
+    /**
+     * LoudnessEnhancer — выравнивает громкость между станциями.
+     * Radio-станции имеют разный нормализованный loudness (разброс
+     * до 15 dB между Cadena 100 и каким-нибудь регионалом). Это
+     * заставляет юзера постоянно крутить системный volume.
+     *
+     * +400 mB (= +4 dB) — консервативный буст, помогает тихим
+     * станциям без распадания громких. Это не «true ReplayGain»
+     * (без анализа потока), но решает 80% проблемы.
+     */
+    private var loudnessEnhancer: LoudnessEnhancer? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -67,11 +83,37 @@ class RadioPlayerService : MediaSessionService() {
             mediaSession = MediaSession.Builder(this, exoPlayer)
                 .setSessionActivity(openPi)
                 .build()
+
+            // Loudness normalization — выравниваем громкость между станциями.
+            // Делаем после MediaSession build (чтобы audioSessionId был корректно
+            // выставлен Media3 на player). Wrapped в runCatching — некоторые
+            // OEM/устройства не поддерживают LoudnessEnhancer, не падаем.
+            initLoudnessEnhancer(exoPlayer)
         } catch (e: Exception) {
             runCatching {
                 com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
                     .recordException(RuntimeException("[RadioService] onCreate failed", e))
             }
+        }
+    }
+
+    private fun initLoudnessEnhancer(player: ExoPlayer) {
+        runCatching {
+            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val sessionId = audioManager.generateAudioSessionId()
+            if (sessionId == AudioManager.ERROR) {
+                Log.w("RadioService", "generateAudioSessionId returned ERROR — skip loudness")
+                return
+            }
+            player.audioSessionId = sessionId
+            loudnessEnhancer = LoudnessEnhancer(sessionId).apply {
+                setTargetGain(400)  // +4 dB
+                enabled = true
+            }
+            Log.d("RadioService", "LoudnessEnhancer enabled at +4dB, sessionId=$sessionId")
+        }.onFailure { e ->
+            Log.w("RadioService", "LoudnessEnhancer init failed: ${e.message}", e)
+            // Не критично — играем без normalization
         }
     }
 
@@ -89,6 +131,11 @@ class RadioPlayerService : MediaSessionService() {
     }
 
     override fun onDestroy() {
+        runCatching {
+            loudnessEnhancer?.enabled = false
+            loudnessEnhancer?.release()
+        }
+        loudnessEnhancer = null
         mediaSession?.run {
             this.player.release()  // player из session — тот же что мы создали
             release()

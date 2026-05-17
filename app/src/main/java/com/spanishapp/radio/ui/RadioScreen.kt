@@ -1,11 +1,14 @@
 package com.spanishapp.radio.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -13,6 +16,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -45,10 +50,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -577,6 +585,30 @@ private fun FilterChip(
 //  HERO
 // ════════════════════════════════════════════════════════════════
 
+/** Country-specific 3-stop gradient palette (light top → mid → deep bottom). */
+private fun gradientColorsForCountry(country: Country?): Triple<Color, Color, Color> = when (country) {
+    Country.SPAIN -> Triple(
+        Color(0xFFFFAB91),  // мягкий персик
+        Color(0xFFFF5722),  // accent orange
+        Color(0xFF8B0000),  // глубокий бордо
+    )
+    Country.MEXICO -> Triple(
+        Color(0xFF66BB6A),  // светло-зелёный
+        Color(0xFF1B5E20),  // тёмно-зелёный
+        Color(0xFFB71C1C),  // флаговый красный
+    )
+    Country.ARGENTINA -> Triple(
+        Color(0xFF90CAF9),  // небесно-голубой
+        Color(0xFF1976D2),  // классический синий
+        Color(0xFF0D47A1),  // глубокий navy
+    )
+    null -> Triple(
+        Color(0xFF757575),
+        Color(0xFF424242),
+        Color(0xFF212121),
+    )
+}
+
 @Composable
 private fun HeroArtwork(
     station: Station?,
@@ -584,36 +616,30 @@ private fun HeroArtwork(
     modifier: Modifier = Modifier,
 ) {
     // 3-stop gradients с контрастом: lighter top-left → base mid → deeper bottom-right.
-    // Диагональный sweep даёт ощущение объёма + перекликается с iOS-style album art.
-    val gradient = when (station?.country) {
-        Country.SPAIN -> listOf(
-            Color(0xFFFFAB91),  // мягкий персик top
-            Color(0xFFFF5722),  // accent orange mid
-            Color(0xFF8B0000),  // глубокий бордо bottom
-        )
-        Country.MEXICO -> listOf(
-            Color(0xFF66BB6A),  // светло-зелёный top
-            Color(0xFF1B5E20),  // тёмно-зелёный mid
-            Color(0xFFB71C1C),  // флаговый красный bottom
-        )
-        Country.ARGENTINA -> listOf(
-            Color(0xFF90CAF9),  // небесно-голубой top
-            Color(0xFF1976D2),  // классический синий mid
-            Color(0xFF0D47A1),  // глубокий navy bottom
-        )
-        null -> listOf(
-            Color(0xFF757575),
-            Color(0xFF424242),
-            Color(0xFF212121),
-        )
-    }
+    // Цвета анимируются плавно при смене станции — раньше был instant swap.
+    val (target1, target2, target3) = gradientColorsForCountry(station?.country)
+    val c1 by animateColorAsState(
+        target1,
+        animationSpec = tween(durationMillis = 450),
+        label = "hero_c1",
+    )
+    val c2 by animateColorAsState(
+        target2,
+        animationSpec = tween(durationMillis = 450),
+        label = "hero_c2",
+    )
+    val c3 by animateColorAsState(
+        target3,
+        animationSpec = tween(durationMillis = 450),
+        label = "hero_c3",
+    )
+
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
             .background(
                 Brush.linearGradient(
-                    colors = gradient,
-                    // Диагональ top-left → bottom-right
+                    colors = listOf(c1, c2, c3),
                     start = androidx.compose.ui.geometry.Offset(0f, 0f),
                     end = androidx.compose.ui.geometry.Offset.Infinite,
                 )
@@ -840,21 +866,39 @@ private fun PlayerControls(
             enabled = canControl,
             onClick = onPrev,
         )
-        // Big play/pause (gradient)
-        Box(
-            modifier = Modifier
-                .size(72.dp)
-                .clip(CircleShape)
-                .background(Brush.linearGradient(listOf(Accent, Accent.copy(alpha = 0.75f))))
-                .clickable(enabled = canControl, onClick = onPlayPause),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                contentDescription = if (isPlaying) "Пауза" else "Играть",
-                modifier = Modifier.size(36.dp),
-                tint = Color.White,
+        // Big play/pause (gradient) — с press scale + haptic
+        run {
+            val playInteraction = remember { MutableInteractionSource() }
+            val isPressed by playInteraction.collectIsPressedAsState()
+            val playScale by animateFloatAsState(
+                targetValue = if (isPressed && canControl) 0.92f else 1f,
+                animationSpec = spring(dampingRatio = 0.55f, stiffness = 500f),
+                label = "play_scale",
             )
+            val haptic = LocalHapticFeedback.current
+            Box(
+                modifier = Modifier
+                    .scale(playScale)
+                    .size(72.dp)
+                    .clip(CircleShape)
+                    .background(Brush.linearGradient(listOf(Accent, Accent.copy(alpha = 0.75f))))
+                    .clickable(
+                        interactionSource = playInteraction,
+                        indication = null,
+                        enabled = canControl,
+                    ) {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        onPlayPause()
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                    contentDescription = if (isPlaying) "Пауза" else "Играть",
+                    modifier = Modifier.size(36.dp),
+                    tint = Color.White,
+                )
+            }
         }
         CircleBtn(
             icon = Icons.Filled.SkipNext,
@@ -882,12 +926,28 @@ private fun CircleBtn(
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed && enabled) 0.92f else 1f,
+        animationSpec = spring(dampingRatio = 0.55f, stiffness = 500f),
+        label = "btn_press_scale",
+    )
+    val haptic = LocalHapticFeedback.current
     Box(
         modifier = Modifier
+            .scale(scale)
             .size(size)
             .clip(CircleShape)
             .background(bg)
-            .clickable(enabled = enabled, onClick = onClick),
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled,
+            ) {
+                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                onClick()
+            },
         contentAlignment = Alignment.Center,
     ) {
         Icon(
