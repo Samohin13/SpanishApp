@@ -3,10 +3,12 @@ package com.spanishapp.radio.player
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.core.content.ContextCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Metadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -19,6 +21,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.ArrayDeque
 import java.util.concurrent.Executor
+
+private const val TAG_ICY = "RadioICY"
 
 /**
  * Состояние воспроизведения (агрегат над Player state + isPlaying).
@@ -193,18 +197,31 @@ class RadioPlayerController(private val context: Context) {
             }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+                Log.d(TAG_ICY, "onMediaMetadataChanged: title=${mediaMetadata.title}, artist=${mediaMetadata.artist}, displayTitle=${mediaMetadata.displayTitle}")
                 val raw = mediaMetadata.title?.toString()
                     ?: mediaMetadata.displayTitle?.toString()
-                val cleaned = sanitizeNowPlaying(raw)
-                // Игнорируем если ICY всё ещё равно нашему initial title
-                // (мы сами выставили name станции в setMediaItem → Media3
-                // фарит это через onMediaMetadataChanged ДО прихода ICY).
-                // Реальное ICY обычно «Artist - Track», отличается от name.
-                val stationName = _currentStation.value?.name
-                _nowPlaying.value = when {
-                    cleaned == null -> null
-                    cleaned.equals(stationName, ignoreCase = true) -> null
-                    else -> cleaned
+                handleIncomingTitle(raw)
+            }
+
+            /**
+             * Прямой listener на raw ICY/ID3 frames из аудио-потока.
+             * Это БОЛЕЕ НАДЁЖНЫЙ путь чем onMediaMetadataChanged для радио:
+             *   - HTTP Shoutcast/Icecast потоки шлют ICY frames с StreamTitle
+             *   - HLS потоки шлют ID3 TextInformationFrame (TIT2, TPE1)
+             *   - onMediaMetadataChanged их МЕРДЖИТ но не всегда корректно
+             *     для radio (он рассчитан больше на VOD контент)
+             */
+            override fun onMetadata(metadata: Metadata) {
+                Log.d(TAG_ICY, "onMetadata: ${metadata.length()} entries")
+                for (i in 0 until metadata.length()) {
+                    val entry = metadata.get(i)
+                    val className = entry::class.simpleName ?: "?"
+                    Log.d(TAG_ICY, "  [$i] $className: $entry")
+                    val title = extractTitleFromMetadataEntry(entry)
+                    if (title != null) {
+                        Log.d(TAG_ICY, "  extracted title: '$title'")
+                        handleIncomingTitle(title)
+                    }
                 }
             }
 
@@ -223,6 +240,25 @@ class RadioPlayerController(private val context: Context) {
                 }
             }
         })
+    }
+
+    /**
+     * Применяем title из ICY/ID3 — но только если это похоже на трек,
+     * а не на name самой станции (наш initial value из MediaItem).
+     */
+    private fun handleIncomingTitle(raw: String?) {
+        val cleaned = sanitizeNowPlaying(raw)
+        val stationName = _currentStation.value?.name
+        val isStationNameEcho = cleaned != null && stationName != null &&
+            (cleaned.equals(stationName, ignoreCase = true) ||
+             cleaned.contains(stationName, ignoreCase = true) ||
+             stationName.contains(cleaned, ignoreCase = true))
+        _nowPlaying.value = when {
+            cleaned == null -> null
+            isStationNameEcho -> null
+            else -> cleaned
+        }
+        Log.d(TAG_ICY, "nowPlaying = ${_nowPlaying.value} (raw='$raw', cleaned='$cleaned', echo=$isStationNameEcho)")
     }
 
     private fun updatePlaybackState() {
@@ -354,6 +390,62 @@ class RadioPlayerController(private val context: Context) {
         connectionFuture = null
         pendingCommands.clear()
     }
+}
+
+/**
+ * Извлечь title из Metadata.Entry — работает для всех типов которые
+ * Media3 может прислать из радио-потока:
+ *
+ *   IcyInfo            — Shoutcast/Icecast ICY frames (плоский HTTP MP3/AAC)
+ *   TextInformationFrame — ID3v2 frames (TIT2 = title, TPE1 = artist), HLS-стримы
+ *   PrivFrame          — private ID3 frames с custom payload
+ *
+ * Используем reflection / instanceof через имя класса чтобы не зависеть
+ * жёстко от конкретных media3-extractor классов в импортах.
+ */
+@OptIn(UnstableApi::class)
+internal fun extractTitleFromMetadataEntry(entry: Metadata.Entry): String? {
+    val className = entry::class.simpleName ?: return null
+    val text = entry.toString()
+
+    return when {
+        className == "IcyInfo" -> {
+            // IcyInfo.toString() формата: "ICY: title=\"Artist - Track\", url=\"...\""
+            extractQuoted(text, "title=")
+        }
+        className == "IcyHeaders" -> {
+            // IcyHeaders несёт name/genre/url — обычно name = station name, не нужно
+            null
+        }
+        className == "TextInformationFrame" -> {
+            // TextInformationFrame { id=TIT2, value=Artist - Track }
+            // или id=TPE1 для artist. Берём value если id=TIT2 (title).
+            val id = extractField(text, "id=")
+            if (id == "TIT2" || id == "TT2") {
+                extractField(text, "value=")
+            } else null
+        }
+        else -> null
+    }
+}
+
+private fun extractQuoted(s: String, key: String): String? {
+    val idx = s.indexOf(key)
+    if (idx < 0) return null
+    val rest = s.substring(idx + key.length)
+    if (!rest.startsWith("\"")) return null
+    val endIdx = rest.indexOf('"', 1)
+    if (endIdx <= 1) return null
+    return rest.substring(1, endIdx).takeIf { it.isNotBlank() }
+}
+
+private fun extractField(s: String, key: String): String? {
+    val idx = s.indexOf(key)
+    if (idx < 0) return null
+    val rest = s.substring(idx + key.length)
+    val endIdx = rest.indexOfAny(charArrayOf(',', '}', ' '))
+    val raw = if (endIdx < 0) rest else rest.substring(0, endIdx)
+    return raw.trim('"', ' ', ',', '}').takeIf { it.isNotBlank() }
 }
 
 /**
