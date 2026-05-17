@@ -23,6 +23,22 @@ import javax.inject.Singleton
 
 private const val TAG = "RadioDiscovery"
 
+/** Допустимые схемы URL потока. */
+private val SAFE_SCHEMES = setOf("http", "https", "rtsp")
+
+/**
+ * URL-схема whitelist. radio-browser.info — user-submitted каталог,
+ * теоретически может вернуть `javascript:`, `file:`, `content:` и т.п.
+ * ExoPlayer корректно их обрабатывает, но мы лучше явно отсечём
+ * чтобы исключить любые сюрпризы с локальным контентом.
+ *
+ * Visible for testing — поэтому top-level internal.
+ */
+internal fun isSafeStreamUrl(url: String): Boolean {
+    val scheme = runCatching { java.net.URI(url).scheme?.lowercase() }.getOrNull()
+    return scheme in SAFE_SCHEMES
+}
+
 /**
  * Auto-discovery радиостанций под страну юзера:
  * 1. Определяем страну юзера через ip-API (если нет интернета — через Locale).
@@ -264,8 +280,9 @@ class RadioCatalogRepository @Inject constructor(
                 for (r in results) {
                     val url = r.url_resolved ?: r.url ?: continue
                     if (url in seenUrls) continue
+                    if (!isSafeStreamUrl(url)) continue   // безопасность: только http/https/rtsp
                     if (isGeoBlockedDomain(url)) continue
-                    if ((r.bitrate ?: 0) < 48) continue  // отсекаем мусор
+                    if ((r.bitrate ?: 0) < 48) continue   // отсекаем мусор
                     seenUrls.add(url)
                     pool.add(
                         DiscoveredStation(

@@ -72,6 +72,12 @@ class SpanishApp : Application() {
             com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
                 .recordException(RuntimeException("[SpanishApp] RatingDecayWorker scheduling failed", e))
         }
+        runCatching {
+            com.spanishapp.radio.player.RadioCatalogRefreshWorker.schedule(this)
+        }.onFailure { e ->
+            com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                .recordException(RuntimeException("[SpanishApp] RadioCatalogRefreshWorker scheduling failed", e))
+        }
         appScope.launch {
             runCatching {
                 databaseSeeder.seedIfNeeded()

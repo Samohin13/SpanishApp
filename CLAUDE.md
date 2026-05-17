@@ -2,7 +2,80 @@
 
 > Этот файл — **живая память проекта**. Обновляется каждые 30–60 минут работы.
 > Не перезаписывать целиком, а структурированно дополнять.
-> Последнее обновление: **2026-05-17, сессия 20 (Radio v1.9.0 — фоновое + редизайн)**
+> Последнее обновление: **2026-05-17, сессия 20 (Radio v1.10.0 — production polish)**
+
+## 📻 Radio v1.10.0 — production polish (сессия 20, после фикса v1.9.1)
+
+Пакет «обязательное + рекомендуемое для media-app». Закрывает Google Play
+требования к media-приложениям + улучшает UX до уровня Spotify/Apple Music.
+
+### Что добавлено (5 пунктов + security)
+
+**1. Audio focus handling (KZ KZ требование Google Play)**
+- `AudioManager.requestAudioFocus()` при `play()` с USAGE_MEDIA
+- Обработка `AUDIOFOCUS_LOSS` (постоянная) → пауза
+- Обработка `AUDIOFOCUS_LOSS_TRANSIENT` (звонок) → пауза + auto-resume при `GAIN`
+- Обработка `AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK` → ducking (volume 0.25)
+- API 26+ через `AudioFocusRequest`, ниже — legacy API с deprecation suppress
+
+**2. Headphone unplug → auto-pause**
+- `ExoPlayer.Builder().setHandleAudioBecomingNoisy(true)` — одна строка, Media3 сам слушает `ACTION_AUDIO_BECOMING_NOISY`
+- Выдернули наушники → не орёт через динамик в людном месте
+
+**3. Buffering indicator (детальный playback state)**
+- Новый enum `RadioPlaybackState`: IDLE / BUFFERING / PLAYING / PAUSED / ENDED / ERROR
+- StateFlow в контроллере, обновляется в `onPlaybackStateChanged` + `onIsPlayingChanged`
+- UI новый `StatePill` диспетчер вместо одного `LivePill`:
+  - PLAYING → LIVE (зелёный пульс)
+  - BUFFERING → LOADING (жёлтая бегущая точка)
+  - PAUSED / IDLE → static label
+  - ERROR → красный pill
+
+**4. ICY metadata «Сейчас играет [track]»**
+- `Player.Listener.onMediaMetadataChanged` ловит StreamTitle из Icecast/Shoutcast потоков
+- Media3 парсит ICY headers автоматом — поле `MediaMetadata.title`
+- StateFlow `nowPlaying` в контроллере + ViewModel
+- UI: под названием станции «🎵 Enrique Iglesias - Bailamos» (приоритетнее programме)
+- Sanitizer: убирает control chars / RTL spoofing / zero-width / типичный noise (unknown, no title, "-")
+- Лимит 120 символов (защита от OOM на вредном потоке)
+
+**5. WorkManager weekly refresh**
+- `RadioCatalogRefreshWorker` — раз в 7 дней (initial delay 24h)
+- Constraints: UNMETERED (Wi-Fi only) + battery not low
+- Без участия юзера каталог пересобирается → открываешь радио = свежее
+- Schedule в `SpanishApp.onCreate()` через `enqueueUniquePeriodicWork(KEEP)`
+
+**6. Security: URL whitelist + Network Security Config**
+- `isSafeStreamUrl()` фильтрует pool в `fetchPool` — только http/https/rtsp
+- Блокирует: javascript:, file://, content://, data:, ftp:, malformed
+- `network_security_config.xml`: cleartext **разрешён по дефолту** (нужен для half of radio streams без HTTPS), но **запрещён** для критичных API:
+  - radio-browser.info mirrors
+  - api.country.is
+  - workers.dev (наш AI proxy)
+  - Firebase (firestore/storage/auth/crashlytics)
+  - Anthropic / Google AI fallback
+- Подключён в манифесте `android:networkSecurityConfig`
+- При MITM на публичном Wi-Fi: атакующий не сможет подменить ответ Firebase или naszego API
+
+### Unit tests (22 новых)
+- `RadioSanitizeTest` — 11 тестов: null/blank, длина, control chars, RTL override, zero-width, unknown noise, испанские символы, эмодзи
+- `RadioUrlSafetyTest` — 11 тестов: http/https/rtsp allow, case-insensitive, javascript/file/content/data/ftp deny, malformed, реальные URL из каталога
+
+### Что НЕ сделано (отложено на v1.11.0)
+- Sleep timer (заснуть под радио)
+- Lockscreen artwork (gradient bitmap вместо просто текста)
+- Voice EQ preset для TALK станций
+- Share station deep link
+- Recently played карусель
+- Android Auto support через MediaBrowserService
+- Custom URL input (для энтузиастов)
+
+### Версия
+- versionCode 47 → **48**, versionName 1.9.1 → **1.10.0**
+
+---
+
+## 📻 Radio v1.9.0 → 1.9.1 — фоновое воспроизведение + редизайн (сессия 20)
 
 ## 📻 Radio v1.9.0 — фоновое воспроизведение + чистый редизайн (сессия 20)
 

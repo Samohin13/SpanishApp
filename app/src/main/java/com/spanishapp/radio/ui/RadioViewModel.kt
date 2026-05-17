@@ -111,6 +111,12 @@ class RadioViewModel @Inject constructor(
     val isPlaying: StateFlow<Boolean> = player.isPlaying
     val hasError: StateFlow<Boolean> = player.hasError
 
+    /** Детальное состояние (IDLE/BUFFERING/PLAYING/PAUSED/ENDED/ERROR). */
+    val playbackState: StateFlow<com.spanishapp.radio.player.RadioPlaybackState> = player.playbackState
+
+    /** Что сейчас играет (ICY metadata). null если поток метаданные не отдаёт. */
+    val nowPlaying: StateFlow<String?> = player.nowPlaying
+
     // ────────────────────── Filters ──────────────────────
 
     /**

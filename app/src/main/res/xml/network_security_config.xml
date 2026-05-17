@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Network Security Config.
+
+    ВАЖНО про cleartext (HTTP без TLS):
+    Многие радиостанции — особенно региональные и небольшие — вещают
+    потоки только по HTTP. Запрет cleartext полностью сломал бы половину
+    каталога. Поэтому:
+
+        base-config cleartextTrafficPermitted="true"   ← разрешаем по дефолту
+
+    НО для наших критичных endpoints (Firebase, наш Cloudflare Worker,
+    radio-browser.info API, geo-IP) — принудительно HTTPS. Это защищает
+    от MITM на публичном Wi-Fi в кафе/аэропортах: даже если кто-то
+    попробует подменить ответ нашего API через ARP-spoofing, Android
+    откажет в соединении на этих доменах.
+
+    Если в будущем все радио-потоки в каталоге будут HTTPS — можно
+    будет переключить base-config на false и стать более защищёнными.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- ESPEAK API — только HTTPS, никаких MITM -->
+    <domain-config cleartextTrafficPermitted="false">
+        <!-- radio-browser.info API mirrors -->
+        <domain includeSubdomains="true">api.radio-browser.info</domain>
+        <domain includeSubdomains="true">de1.api.radio-browser.info</domain>
+        <domain includeSubdomains="true">nl1.api.radio-browser.info</domain>
+        <domain includeSubdomains="true">fi1.api.radio-browser.info</domain>
+        <domain includeSubdomains="true">all.api.radio-browser.info</domain>
+
+        <!-- Geo-IP API (определение страны юзера) -->
+        <domain includeSubdomains="true">api.country.is</domain>
+
+        <!-- ESPEAK Cloudflare Worker (AI proxy) -->
+        <domain includeSubdomains="true">workers.dev</domain>
+
+        <!-- Firebase backend -->
+        <domain includeSubdomains="true">firebaseio.com</domain>
+        <domain includeSubdomains="true">firebaseapp.com</domain>
+        <domain includeSubdomains="true">firebase.googleapis.com</domain>
+        <domain includeSubdomains="true">firestore.googleapis.com</domain>
+        <domain includeSubdomains="true">firebasestorage.googleapis.com</domain>
+        <domain includeSubdomains="true">crashlytics.com</domain>
+
+        <!-- Anthropic / Google AI напрямую (если когда-либо без proxy) -->
+        <domain includeSubdomains="true">api.anthropic.com</domain>
+        <domain includeSubdomains="true">generativelanguage.googleapis.com</domain>
+    </domain-config>
+</network-security-config>

@@ -80,6 +80,8 @@ fun RadioScreen(navController: NavHostController) {
     val station by vm.currentStation.collectAsState()
     val isPlaying by vm.isPlaying.collectAsState()
     val hasError by vm.hasError.collectAsState()
+    val playbackState by vm.playbackState.collectAsState()
+    val nowPlaying by vm.nowPlaying.collectAsState()
     val displayedStations by vm.displayedStations.collectAsState()
     val favoriteIds by vm.favoriteIds.collectAsState()
     val discoveryState by vm.discoveryState.collectAsState()
@@ -148,8 +150,7 @@ fun RadioScreen(navController: NavHostController) {
             ) {
                 HeroArtwork(
                     station = station,
-                    isPlaying = isPlaying,
-                    hasError = hasError,
+                    playbackState = playbackState,
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
                         .aspectRatio(1f),
@@ -168,11 +169,26 @@ fun RadioScreen(navController: NavHostController) {
                         overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(Modifier.height(4.dp))
+                    // Под названием станции — что сейчас играет (ICY) или программа.
+                    // ICY метаданные приоритетны если есть.
+                    val subtitle = when {
+                        hasError -> "Станция недоступна — следующая…"
+                        playbackState == com.spanishapp.radio.player.RadioPlaybackState.BUFFERING -> "Загружаем поток…"
+                        nowPlaying != null -> "🎵 $nowPlaying"
+                        else -> st.program
+                    }
                     Text(
-                        if (hasError) "Станция недоступна — следующая…" else st.program,
+                        subtitle,
                         fontSize = 12.sp,
-                        color = if (hasError) Color(0xFFE53935) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = if (nowPlaying != null) FontWeight.SemiBold else FontWeight.Normal,
+                        color = when {
+                            hasError -> Color(0xFFE53935)
+                            nowPlaying != null -> MaterialTheme.colorScheme.onSurface
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                         textAlign = TextAlign.Center,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(Modifier.height(8.dp))
                     StationTags(station = st)
@@ -510,8 +526,7 @@ private fun FilterChip(
 @Composable
 private fun HeroArtwork(
     station: Station?,
-    isPlaying: Boolean,
-    hasError: Boolean,
+    playbackState: com.spanishapp.radio.player.RadioPlaybackState,
     modifier: Modifier = Modifier,
 ) {
     val gradient = when (station?.country) {
@@ -538,14 +553,29 @@ private fun HeroArtwork(
                 .align(Alignment.TopStart)
                 .padding(10.dp),
         ) {
-            if (hasError) ErrorPill() else LivePill(isPlaying)
+            StatePill(playbackState)
         }
     }
 }
 
+/**
+ * Универсальный pill в верхнем углу hero — отображает все состояния
+ * плеера (LIVE / BUFFERING / PAUSED / ERROR / ENDED).
+ */
 @Composable
-private fun LivePill(isPlaying: Boolean) {
-    val color = if (isPlaying) Green else Color(0xFF888888)
+private fun StatePill(state: com.spanishapp.radio.player.RadioPlaybackState) {
+    when (state) {
+        com.spanishapp.radio.player.RadioPlaybackState.PLAYING -> LivePillCompact()
+        com.spanishapp.radio.player.RadioPlaybackState.BUFFERING -> BufferingPill()
+        com.spanishapp.radio.player.RadioPlaybackState.PAUSED -> StaticPill("PAUSED", Color(0xFF888888))
+        com.spanishapp.radio.player.RadioPlaybackState.IDLE -> StaticPill("READY", Color(0xFF888888))
+        com.spanishapp.radio.player.RadioPlaybackState.ENDED -> StaticPill("ENDED", Color(0xFFE53935))
+        com.spanishapp.radio.player.RadioPlaybackState.ERROR -> ErrorPill()
+    }
+}
+
+@Composable
+private fun LivePillCompact() {
     Surface(
         shape = RoundedCornerShape(100.dp),
         color = Color.Black.copy(alpha = 0.35f),
@@ -554,34 +584,77 @@ private fun LivePill(isPlaying: Boolean) {
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (isPlaying) {
-                val transition = rememberInfiniteTransition(label = "pulse")
-                val alpha by transition.animateFloat(
-                    initialValue = 1f, targetValue = 0.4f,
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(900, easing = LinearEasing),
-                        repeatMode = RepeatMode.Reverse,
-                    ),
-                    label = "pulse_alpha",
-                )
-                Box(
-                    modifier = Modifier
-                        .size(5.dp)
-                        .clip(CircleShape)
-                        .background(color.copy(alpha = alpha)),
-                )
-                Spacer(Modifier.width(5.dp))
-                Text("LIVE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
-            } else {
-                Box(
-                    modifier = Modifier
-                        .size(5.dp)
-                        .clip(CircleShape)
-                        .background(color),
-                )
-                Spacer(Modifier.width(5.dp))
-                Text("PAUSED", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
-            }
+            val transition = rememberInfiniteTransition(label = "pulse")
+            val alpha by transition.animateFloat(
+                initialValue = 1f, targetValue = 0.4f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(900, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse,
+                ),
+                label = "pulse_alpha",
+            )
+            Box(
+                modifier = Modifier
+                    .size(5.dp)
+                    .clip(CircleShape)
+                    .background(Green.copy(alpha = alpha)),
+            )
+            Spacer(Modifier.width(5.dp))
+            Text("LIVE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        }
+    }
+}
+
+@Composable
+private fun BufferingPill() {
+    val transition = rememberInfiniteTransition(label = "buf")
+    val dotShift by transition.animateFloat(
+        initialValue = 0f, targetValue = 3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(450, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "buf_dot",
+    )
+    Surface(
+        shape = RoundedCornerShape(100.dp),
+        color = Color.Black.copy(alpha = 0.35f),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Имитация бегущих точек — bouncing dot
+            Box(
+                modifier = Modifier
+                    .size(5.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFFFC107).copy(alpha = 0.6f + (dotShift / 10f))),
+            )
+            Spacer(Modifier.width(5.dp))
+            Text("LOADING", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        }
+    }
+}
+
+@Composable
+private fun StaticPill(text: String, color: Color) {
+    Surface(
+        shape = RoundedCornerShape(100.dp),
+        color = Color.Black.copy(alpha = 0.35f),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(5.dp)
+                    .clip(CircleShape)
+                    .background(color),
+            )
+            Spacer(Modifier.width(5.dp))
+            Text(text, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
     }
 }
