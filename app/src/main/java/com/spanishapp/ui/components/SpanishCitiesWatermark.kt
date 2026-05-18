@@ -35,7 +35,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SpanishCitiesWatermark(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10f),
+    // v1.17.1: alpha разный для dark/light. В dark белый @0.10 видим,
+    // в light нужен тёмный @0.07 (опт. на сером bg #F2F2F7).
+    color: Color = MaterialTheme.colorScheme.onBackground.copy(
+        alpha = if (androidx.compose.foundation.isSystemInDarkTheme()) 0.10f else 0.07f
+    ),
     bgColor: Color = MaterialTheme.colorScheme.background,
     stripHeight: Dp = 130.dp
 ) {

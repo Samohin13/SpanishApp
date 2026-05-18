@@ -1083,8 +1083,10 @@ private fun StationCard(
                 .background(Brush.verticalGradient(baseGradient))
                 .border(
                     BorderStroke(
-                        if (isPlaying) 2.dp else 0.5.dp,
-                        if (isPlaying) Accent else Color.White.copy(alpha = 0.12f),
+                        if (isPlaying) 2.dp else 1.dp,
+                        // v1.17.1: theme-aware border (раньше всегда белый @0.12
+                        // — невидим на light theme где fond светлый)
+                        if (isPlaying) Accent else com.spanishapp.ui.theme.AppPalette.outline(),
                     ),
                     RoundedCornerShape(14.dp),
                 ),
@@ -1115,12 +1117,14 @@ private fun StationCard(
                     .background(countryAccent.copy(alpha = 0.8f))
             )
 
-            // Station code — белый, читается на graphite
+            // v1.17.1: theme-aware text color (на light gradient белый текст
+            // невидим, в dark — белый виден на graphite). onSurface даёт
+            // правильный контраст в обеих темах.
             Text(
                 station.shortCode,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
-                color = Color.White,
+                color = com.spanishapp.ui.theme.AppPalette.onSurface(),
                 letterSpacing = (-0.5).sp,
             )
 

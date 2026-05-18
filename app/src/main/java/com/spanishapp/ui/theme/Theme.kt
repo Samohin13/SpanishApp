@@ -108,18 +108,21 @@ private val LightColors = lightColorScheme(
     tertiaryContainer    = Color(0xFFFFE7A6),
     onTertiaryContainer  = Color(0xFF6D4C00),
 
-    background           = Color(0xFFFFFFFF),           // Чисто-белый Apple
-    onBackground         = Color(0xFF1C1C1E),           // Apple primary text
+    // v1.17.1: iOS systemGroupedBackground паттерн.
+    // background = серый (#F2F2F7), surface/Container = белый.
+    // Карточки чётко выделяются на сером фоне.
+    background           = Color(0xFFF2F2F7),           // iOS systemGroupedBg
+    onBackground         = Color(0xFF1C1C1E),
 
-    surface                  = Color(0xFFFFFFFF),       // Карточки
+    surface                  = Color(0xFFFFFFFF),       // Карточки = чисто белый
     onSurface                = Color(0xFF1C1C1E),
-    surfaceVariant           = Color(0xFFF2F2F7),       // iOS systemGrouped
-    onSurfaceVariant         = Color(0xFF6E6E73),       // iOS secondary 65%
+    surfaceVariant           = Color(0xFFEAEAEF),
+    onSurfaceVariant         = Color(0xFF6E6E73),
     surfaceContainerLowest   = Color(0xFFFFFFFF),
-    surfaceContainerLow      = Color(0xFFF8F8FA),
-    surfaceContainer         = Color(0xFFF2F2F7),
-    surfaceContainerHigh     = Color(0xFFEAEAEF),
-    surfaceContainerHighest  = Color(0xFFE5E5EA),
+    surfaceContainerLow      = Color(0xFFFFFFFF),
+    surfaceContainer         = Color(0xFFFFFFFF),       // Все карточки белые на сером bg
+    surfaceContainerHigh     = Color(0xFFFFFFFF),
+    surfaceContainerHighest  = Color(0xFFE5E5EA),       // Только input / sticky highlighted
 
     outline              = Color(0xFFC6C6C8),           // iOS-style separator
     outlineVariant       = Color(0xFFE5E5EA),           // Слабый divider

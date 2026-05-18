@@ -43,12 +43,14 @@ object AppPalette {
     //  SURFACES (фоны)
     // ──────────────────────────────────────────────────────────
 
+    // v1.17.1: bg чуть серее surface в light для visual depth.
+
     /** Корневой фон экранов (статус-бар, фон под Scaffold). */
     @Composable @ReadOnlyComposable
     fun background(): Color =
-        if (isSystemInDarkTheme()) Color(0xFF0F0F11) else Color(0xFFFFFFFF)
+        if (isSystemInDarkTheme()) Color(0xFF0F0F11) else Color(0xFFF2F2F7)
 
-    /** Карточки 1-го уровня (item cards, dialogs). */
+    /** Карточки 1-го уровня (item cards, dialogs). На light = белый поверх серого bg. */
     @Composable @ReadOnlyComposable
     fun surface(): Color =
         if (isSystemInDarkTheme()) Color(0xFF1C1C1E) else Color(0xFFFFFFFF)
@@ -56,19 +58,19 @@ object AppPalette {
     /** Лёгкий контейнер (subtle surfaces в списках). */
     @Composable @ReadOnlyComposable
     fun surfaceContainerLow(): Color =
-        if (isSystemInDarkTheme()) Color(0xFF1C1C1E) else Color(0xFFF8F8FA)
+        if (isSystemInDarkTheme()) Color(0xFF1C1C1E) else Color(0xFFFAFAFC)
 
-    /** Контейнер уровня списка / chip group. Apple iOS systemGrouped. */
+    /** Контейнер уровня списка / chip group. На light = белый (карточка). */
     @Composable @ReadOnlyComposable
     fun surfaceContainer(): Color =
-        if (isSystemInDarkTheme()) Color(0xFF2A2A2D) else Color(0xFFF2F2F7)
+        if (isSystemInDarkTheme()) Color(0xFF2A2A2D) else Color(0xFFFFFFFF)
 
-    /** Приподнятые карточки (Bento tiles, главный contentcard). */
+    /** Приподнятые карточки (Bento tiles). На light — чуть приподнятый white. */
     @Composable @ReadOnlyComposable
     fun surfaceElevated(): Color =
-        if (isSystemInDarkTheme()) Color(0xFF2C2C2E) else Color(0xFFEAEAEF)
+        if (isSystemInDarkTheme()) Color(0xFF2C2C2E) else Color(0xFFFFFFFF)
 
-    /** Самый верхний уровень (top app bar если выделена, input fields). */
+    /** Самый верхний уровень (input fields, top bar если highlighted). */
     @Composable @ReadOnlyComposable
     fun surfaceHighest(): Color =
         if (isSystemInDarkTheme()) Color(0xFF3A3A3C) else Color(0xFFE5E5EA)
