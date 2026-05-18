@@ -143,14 +143,18 @@ private fun GameCard(
         label = "wobble_angle_${game.route}"
     )
 
-    // v1.13.2: на планшете карточка крупнее (160dp → 220dp)
+    // v1.14.2: квадратнее (юзер: "карточки игр более пропорциональными,
+    // более квадратными"). Было height fixed 220dp = aspect 1.6:1 wide.
+    // aspectRatio(1f) даёт 280×280dp на 2 cols × 600dp экрана.
     val isWide = com.spanishapp.ui.adaptive.isWideScreen()
-    val cardHeight = if (isWide) 220.dp else 160.dp
+    val cardModifier = if (isWide) {
+        Modifier.fillMaxWidth().aspectRatio(1f)
+    } else {
+        Modifier.fillMaxWidth().height(160.dp)
+    }
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(cardHeight),
+        modifier = cardModifier,
         shape = RoundedCornerShape(20.dp),
         shadowElevation = 4.dp
     ) {

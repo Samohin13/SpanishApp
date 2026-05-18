@@ -30,12 +30,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 
-private val LibrosPurple = Color(0xFFFF6B35)  // Orange primary (sunset palette)
+// v1.14.2: единая палитра CEFR (см. ui/theme/CefrColors.kt).
+// Раньше Libros имели свой набор (A1=green, A2=blue, B1=orange,
+// B2=purple) — рассинхрон с Flashcards и общим брендом ESPEAK.
+// Юзер: "почему эта логика рушится в книгах?"
+private val LibrosPurple = com.spanishapp.ui.theme.CefrColors.Default
 private val LevelColors = mapOf(
-    "A1" to Color(0xFF43A047),
-    "A2" to Color(0xFF1E88E5),
-    "B1" to Color(0xFFE65100),
-    "B2" to Color(0xFF6A1B9A)
+    "A1" to com.spanishapp.ui.theme.CefrColors.A1,
+    "A2" to com.spanishapp.ui.theme.CefrColors.A2,
+    "B1" to com.spanishapp.ui.theme.CefrColors.B1,
+    "B2" to com.spanishapp.ui.theme.CefrColors.B2,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,16 +148,15 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
     val libro = item.libro
     val levelColor = LevelColors[libro.level] ?: LibrosPurple
 
-    // v1.13.6: ОТКАТ к умеренным размерам.
-    // Юзер: list cards не должны быть feature cards.
+    // v1.14.2: compact (юзер хочет единый стиль с Tarjetas).
     val isWide = com.spanishapp.ui.adaptive.isWideScreen()
-    val cardMinHeight = if (isWide) 116.dp else 110.dp
-    val numberSize = if (isWide) 48.dp else 44.dp
-    val numberFont = if (isWide) 16.sp else 15.sp
-    val titleFont = if (isWide) 16.sp else 15.sp
-    val topicFont = if (isWide) 13.sp else 12.sp
-    val buttonFont = if (isWide) 13.sp else 12.sp
-    val cardPadding = if (isWide) 16.dp else 16.dp
+    val cardMinHeight = if (isWide) 88.dp else 96.dp
+    val numberSize = if (isWide) 40.dp else 40.dp
+    val numberFont = if (isWide) 14.sp else 14.sp
+    val titleFont = if (isWide) 15.sp else 14.sp
+    val topicFont = if (isWide) 12.sp else 11.sp
+    val buttonFont = if (isWide) 12.sp else 11.sp
+    val cardPadding = if (isWide) 12.dp else 12.dp
 
     Card(
         modifier = Modifier

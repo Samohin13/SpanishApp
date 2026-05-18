@@ -47,14 +47,9 @@ import javax.inject.Inject
 
 private val LEVELS = listOf("A1", "A2", "B1", "B2")
 
-// CEFR accent colours — match HomeScreen pills exactly
-private fun levelAccent(level: String): Color = when (level) {
-    "A1" -> Color(0xFFEAB308)   // amber-yellow
-    "A2" -> Color(0xFF06B6D4)   // cyan
-    "B1" -> Color(0xFF22C55E)   // green
-    "B2" -> Color(0xFFDB2777)   // rose
-    else -> Color(0xFFFF6B35)
-}
+// v1.14.2: используем единую палитру CefrColors (см. ui/theme/CefrColors.kt).
+private fun levelAccent(level: String): Color =
+    com.spanishapp.ui.theme.CefrColors.forLevel(level)
 
 // ── UI state types ─────────────────────────────────────────────
 
@@ -331,13 +326,10 @@ private fun SetRow(
 ) {
     val accent = levelAccent(row.set.level)
 
-    // v1.13.6: ОТКАТ adaptive sizing к умеренным значениям.
-    // Юзер: "ты увеличил карточки сетов, теперь смотрится не верно".
-    // Раньше было 150dp/72dp emoji — карточки выглядели как feature
-    // cards, не как list items. Список должен быть компактным.
-    // Возвращаем близко к compact: minHeight 120dp (был 116→150).
+    // v1.14.2: ещё компактнее (юзер: "ужми эти окна до светового
+    // паттерна, не более"). Высота карточки = высота accent stripe.
     val isWide = com.spanishapp.ui.adaptive.isWideScreen()
-    val cardMinHeight = if (isWide) 120.dp else 116.dp
+    val cardMinHeight = if (isWide) 96.dp else 96.dp
 
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
@@ -375,13 +367,12 @@ private fun SetRow(
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // v1.13.6: умеренные размеры — было 72dp emoji / 19sp title,
-                // выглядело как feature card. Возвращаем близко к compact.
-                val emojiSize = if (isWide) 60.dp else 56.dp
-                val emojiFont = if (isWide) 30.sp else 28.sp
-                val lockSize = if (isWide) 24.dp else 22.dp
-                val titleFont = if (isWide) 17.sp else 16.sp
-                val metaFont = if (isWide) 13.sp else 12.sp
+                // v1.14.2: compact (юзер хочет «как световой паттерн»).
+                val emojiSize = if (isWide) 48.dp else 44.dp
+                val emojiFont = if (isWide) 24.sp else 22.sp
+                val lockSize = if (isWide) 20.dp else 18.dp
+                val titleFont = if (isWide) 15.sp else 14.sp
+                val metaFont = if (isWide) 12.sp else 11.sp
                 Box(
                     modifier = Modifier
                         .size(emojiSize)
