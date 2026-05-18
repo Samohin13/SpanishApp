@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :app:assembleDebug)",
+      "Bash(./gradlew :app:compileDebugKotlin)",
+      "Bash(./gradlew :app:compileReleaseKotlin)",
+      "Bash(./gradlew :app:bundleRelease)",
+      "Bash(./gradlew :app:bundleDebug)",
+      "Bash(./gradlew :app:testDebugUnitTest)",
+      "Bash(./gradlew :app:testReleaseUnitTest)",
+      "Bash(./gradlew :app:lintDebug)",
+      "Bash(./gradlew :app:lintRelease)",
+      "Bash(./gradlew :app:koverHtmlReportDebug)",
+      "Bash(./gradlew :app:preRelease)",
+      "Bash(./gradlew.bat assembleDebug)",
+      "Bash(./gradlew.bat compileDebugKotlin)",
+      "Bash(curl -sI *)",
+      "Bash(adb logcat *)",
+      "mcp__ccd_session__mark_chapter"
+    ]
+  }
+}
