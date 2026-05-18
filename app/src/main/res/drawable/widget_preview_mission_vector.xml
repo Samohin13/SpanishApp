@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- v1.14.3: Vector preview для «Цель дня». 3/5 + 5 точек. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+    <!-- Тёмный фон -->
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M0,16 L0,144 Q0,160 16,160 L144,160 Q160,160 160,144 L160,16 Q160,0 144,0 L16,0 Q0,0 0,16 Z" />
+
+    <!-- Оранжевая полоска заголовка «ЦЕЛЬ ДНЯ» -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M16,24 L16,32 L80,32 L80,24 Z" />
+
+    <!-- Большое число 3 (большой зелёный прямоугольник как «3») -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M16,50 L16,90 L40,90 L40,50 Z" />
+
+    <!-- /5 серое -->
+    <path
+        android:fillColor="#AEAEB2"
+        android:pathData="M46,68 L46,86 L72,86 L72,68 Z" />
+
+    <!-- 5 точек прогресса (3 зелёных + 2 серых) -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M22,108 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M42,108 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M62,108 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+    <path
+        android:fillColor="#3A3A3C"
+        android:pathData="M82,108 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+    <path
+        android:fillColor="#3A3A3C"
+        android:pathData="M102,108 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+
+    <!-- «Открыть →» -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M16,138 L16,146 L72,146 L72,138 Z" />
+</vector>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- v1.14.3: Vector preview для «Репетитор» (AI Chat). Оранжевый круг ♉ + текст. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="80dp"
+    android:viewportWidth="320"
+    android:viewportHeight="80">
+    <!-- Тёмная пилюля -->
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M0,40 Q0,0 40,0 L280,0 Q320,0 320,40 Q320,80 280,80 L40,80 Q0,80 0,40 Z" />
+
+    <!-- Оранжевый круг — аватар быка -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M40,40 m-22,0 a22,22 0 1,0 44,0 a22,22 0 1,0 -44,0" />
+
+    <!-- Символ быка ♉ внутри круга (упрощённо: окружность + рога) -->
+    <path
+        android:fillColor="#FFF5E1"
+        android:pathData="M40,42 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0" />
+    <path
+        android:fillColor="#FFF5E1"
+        android:pathData="M31,30 L31,38 L34,38 L34,32 Z M46,30 L46,38 L49,38 L49,32 Z" />
+
+    <!-- Текст «Репетитор» -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M78,30 L78,42 L160,42 L160,30 Z" />
+
+    <!-- Subtitle «¿Cómo se dice…?» -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M78,50 L78,58 L200,58 L200,50 Z" />
+</vector>

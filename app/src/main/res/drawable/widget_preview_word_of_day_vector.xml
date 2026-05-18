@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    v1.14.3: Vector preview для «Слово дня».
+    Vector drawable работает на любом launcher (One UI, Pixel, MIUI)
+    в отличие от previewLayout, который требует поддержки Android 12+
+    и совместимости с Glance.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <!-- Тёмный фон с скруглёнными углами -->
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M0,16 L0,164 Q0,180 16,180 L304,180 Q320,180 320,164 L320,16 Q320,0 304,0 L16,0 Q0,0 0,16 Z" />
+
+    <!-- Оранжевая полоска заголовка слева -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M20,28 L20,42 L120,42 L120,28 Z" />
+
+    <!-- Большой белый текст-имитация испанского слова (3 «слова» прямоугольниками) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,60 L20,90 L60,90 L60,60 Z M68,60 L68,90 L120,90 L120,60 Z M128,60 L128,90 L200,90 L200,60 Z" />
+
+    <!-- Серый перевод -->
+    <path
+        android:fillColor="#AEAEB2"
+        android:pathData="M20,100 L20,114 L160,114 L160,100 Z" />
+
+    <!-- Оранжевая пилюля «Учить →» -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M20,138 L20,162 Q20,170 28,170 L96,170 Q104,170 104,162 L104,138 Q104,130 96,130 L28,130 Q20,130 20,138 Z" />
+
+    <!-- Огонёк-стрик в правом верхнем -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M275,32 m-8,0 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0" />
+</vector>

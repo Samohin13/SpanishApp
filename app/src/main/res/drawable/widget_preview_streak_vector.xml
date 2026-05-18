@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- v1.14.3: Vector preview для «Streak дней подряд». Огонь + цифра 12. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+    <!-- Тёмный фон -->
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M0,16 L0,144 Q0,160 16,160 L144,160 Q160,160 160,144 L160,16 Q160,0 144,0 L16,0 Q0,0 0,16 Z" />
+
+    <!-- Стилизованный flame icon (две капли) -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M80,30 C72,42 65,52 65,64 C65,76 72,84 80,84 C88,84 95,76 95,64 C95,52 88,42 80,30 Z" />
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M80,48 C76,54 73,60 73,66 C73,72 76,76 80,76 C84,76 87,72 87,66 C87,60 84,54 80,48 Z" />
+
+    <!-- Большая цифра «12» — две вертикальные палочки (стилизация) -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M55,98 L55,138 L65,138 L65,98 Z" />
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M75,98 L75,138 L105,138 L105,128 L85,128 L85,118 L105,118 L105,108 L85,108 L85,98 Z" />
+</vector>

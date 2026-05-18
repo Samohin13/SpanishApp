@@ -7,6 +7,6 @@
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen"
     android:initialLayout="@layout/glance_default_loading_layout"
-    android:previewLayout="@layout/widget_preview_dictionary"
+    android:previewImage="@drawable/widget_preview_dictionary_vector"
     android:description="@string/widget_dictionary_search_desc"
     android:resizeMode="horizontal" />

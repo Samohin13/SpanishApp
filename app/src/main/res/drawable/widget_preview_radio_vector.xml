@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- v1.14.3: Vector preview для «Радио España». 📻 + название + ▶. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="80dp"
+    android:viewportWidth="320"
+    android:viewportHeight="80">
+    <!-- Тёмная пилюля -->
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M0,40 Q0,0 40,0 L280,0 Q320,0 320,40 Q320,80 280,80 L40,80 Q0,80 0,40 Z" />
+
+    <!-- Оранжевый квадрат — артворк станции -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M22,22 L22,58 Q22,62 26,62 L58,62 Q62,62 62,58 L62,22 Q62,18 58,18 L26,18 Q22,18 22,22 Z" />
+
+    <!-- Радио-силуэт внутри артворка (упрощённо: антенна + корпус) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,30 L42,30 L42,42 L40,42 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,42 L52,42 L52,52 L30,52 Z" />
+
+    <!-- Название станции «Cadena SER» -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M78,30 L78,42 L170,42 L170,30 Z" />
+
+    <!-- Подпись «🇪🇸 España» -->
+    <path
+        android:fillColor="#AEAEB2"
+        android:pathData="M78,50 L78,58 L170,58 L170,50 Z" />
+
+    <!-- Play button круг -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M280,40 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+
+    <!-- Play triangle ▶ внутри круга -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M275,32 L275,48 L290,40 Z" />
+</vector>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- v1.14.3: Vector preview для «Поиск в словаре». Пилюля с лупой. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="80dp"
+    android:viewportWidth="320"
+    android:viewportHeight="80">
+    <!-- Тёмная пилюля -->
+    <path
+        android:fillColor="#1C1C1E"
+        android:pathData="M0,40 Q0,0 40,0 L280,0 Q320,0 320,40 Q320,80 280,80 L40,80 Q0,80 0,40 Z" />
+
+    <!-- Лупа — круг + хвост -->
+    <path
+        android:strokeColor="#AEAEB2"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M40,40 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0 M60,52 L70,62" />
+
+    <!-- Placeholder text «Найти слово» полоска -->
+    <path
+        android:fillColor="#AEAEB2"
+        android:pathData="M82,36 L82,44 L200,44 L200,36 Z" />
+
+    <!-- Лейбл ESPEAK -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M252,36 L252,44 L300,44 L300,36 Z" />
+</vector>
