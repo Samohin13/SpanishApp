@@ -170,10 +170,17 @@ private fun StoryText(
         }
     }
 
+    // v1.13.4: текст крупнее на планшете (юзер: "Текст книг для
+    // планшетов мелкий, выглядит как стишок — крупнее и центрируй").
+    // На планшете 22sp / lineHeight 34sp. На телефоне как было.
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val storyFont = if (isWide) 22.sp else 17.sp
+    val storyLine = if (isWide) 34.sp else 26.sp
+
     Text(
         text = annotated,
-        fontSize = 17.sp,
-        lineHeight = 26.sp,
+        fontSize = storyFont,
+        lineHeight = storyLine,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
@@ -738,14 +745,26 @@ fun LibroReadScreen(
                             .padding(horizontal = 16.dp)
                             .padding(top = 12.dp, bottom = 12.dp)
                     ) {
+                        // v1.13.4: на планшете text card ограничена 720dp +
+                        // центрирована — текст не растягивается на 1280dp
+                        // (читать длинные строки тяжело — readability rule).
+                        val cardMod = if (com.spanishapp.ui.adaptive.isWideScreen())
+                            Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .widthIn(max = 720.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
+                        else
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+
                         // Карточка с текстом (вес 1 — занимает всё свободное место)
                         Card(
                             shape = RoundedCornerShape(20.dp),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
                             elevation = CardDefaults.cardElevation(3.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
+                            modifier = cardMod
                         ) {
                             Column(
                                 Modifier

@@ -312,9 +312,20 @@ private fun MathKeypad(
     onSubmit: () -> Unit,
     enabled: Boolean
 ) {
+    // v1.13.4: keypad крупнее на планшете. Юзер: "Кнопки выглядят
+    // слишком плоско, на планшете сложно тянуться к верху чтобы
+    // нажать кнопку." Делаем кнопки выше + ниже на экране.
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val keyHeight = if (isWide) 88.dp else 60.dp
+    val keyFont = if (isWide) 28.sp else 20.sp
+    val submitHeight = if (isWide) 76.dp else 56.dp
+    val submitFont = if (isWide) 22.sp else 18.sp
+    val keySpacing = if (isWide) 12.dp else 8.dp
+    val maxKeypadWidth = if (isWide) 560.dp else androidx.compose.ui.unit.Dp.Unspecified
+
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = if (isWide) Modifier.fillMaxWidth().widthIn(max = maxKeypadWidth) else Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(keySpacing),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val rows = listOf(
@@ -326,13 +337,14 @@ private fun MathKeypad(
 
         rows.forEach { row ->
             Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
+                horizontalArrangement = Arrangement.spacedBy(keySpacing, Alignment.CenterHorizontally)) {
                 row.forEach { char ->
                     KeyButton(
                         text = char,
                         modifier = Modifier
                             .weight(1f)
-                            .height(60.dp),
+                            .height(keyHeight),
+                        textSize = keyFont,
                         onClick = {
                             when (char) {
                                 "C"   -> onClear()
@@ -351,13 +363,13 @@ private fun MathKeypad(
             onClick = onSubmit,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(submitHeight)
                 .padding(top = 4.dp),
             shape = RoundedCornerShape(16.dp),
             enabled = enabled,
             colors = ButtonDefaults.buttonColors(containerColor = ACCENT)
         ) {
-            Text(stringResource(R.string.math_submit), fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.math_submit), fontSize = submitFont, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -368,7 +380,8 @@ private fun KeyButton(
     modifier: Modifier,
     onClick: () -> Unit,
     enabled: Boolean,
-    isAction: Boolean = false
+    isAction: Boolean = false,
+    textSize: androidx.compose.ui.unit.TextUnit = 22.sp,
 ) {
     Surface(
         modifier = modifier.clickable(enabled = enabled, onClick = onClick),
@@ -378,11 +391,13 @@ private fun KeyButton(
     ) {
         Box(contentAlignment = Alignment.Center) {
             if (text == "DEL") {
-                Icon(Icons.Default.Backspace, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                Icon(Icons.Default.Backspace, null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(if (textSize.value >= 24f) 32.dp else 24.dp))
             } else {
                 Text(
                     text,
-                    fontSize = 22.sp,
+                    fontSize = textSize,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )

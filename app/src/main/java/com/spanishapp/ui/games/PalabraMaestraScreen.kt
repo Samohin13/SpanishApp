@@ -168,10 +168,14 @@ private fun PalabraActiveGame(
                         !q.isChecked ||
                         (q.isChecked && q.isCorrect == false && state.isAutoValidate)
                     )
+                    // v1.13.4: ячейки слова крупнее на планшете
+                    val isWideCell = com.spanishapp.ui.adaptive.isWideScreen()
+                    val cellSize = if (isWideCell) 64.dp else 45.dp
+                    val cellFont = if (isWideCell) 30.sp else 22.sp
                     Surface(
                         modifier = Modifier
                             .padding(4.dp)
-                            .size(45.dp)
+                            .size(cellSize)
                             .clickable(enabled = tapEnabled) {
                                 viewModel.removeLetter(idx)
                             },
@@ -190,7 +194,7 @@ private fun PalabraActiveGame(
                         Box(contentAlignment = Alignment.Center) {
                             Text(
                                 letter?.char?.uppercase() ?: "",
-                                fontSize = 22.sp,
+                                fontSize = cellFont,
                                 fontWeight = FontWeight.Bold,
                                 color = if (q.isChecked) Color.White else TextMain
                             )
@@ -210,10 +214,14 @@ private fun PalabraActiveGame(
                 ) {
                     q.shuffledLetters.forEach { letter ->
                         val isUsed = letter.isUsed
+                        // v1.13.4: shuffled буквы крупнее на планшете
+                        val isWideShuf = com.spanishapp.ui.adaptive.isWideScreen()
+                        val shufSize = if (isWideShuf) 68.dp else 50.dp
+                        val shufFont = if (isWideShuf) 30.sp else 24.sp
                         Surface(
                             modifier = Modifier
                                 .padding(4.dp)
-                                .size(50.dp)
+                                .size(shufSize)
                                 .clickable(enabled = !isUsed) { viewModel.onLetterClick(letter) },
                             shape = RoundedCornerShape(12.dp),
                             color = if (isUsed) BgGray else CardSurface,
@@ -224,7 +232,7 @@ private fun PalabraActiveGame(
                             Box(contentAlignment = Alignment.Center) {
                                 Text(
                                     if (isUsed) "" else letter.char.uppercase(),
-                                    fontSize = 24.sp,
+                                    fontSize = shufFont,
                                     fontWeight = FontWeight.Bold,
                                     color = ACCENT
                                 )
@@ -325,11 +333,18 @@ private fun PalabraActiveGame(
 
 @Composable
 private fun HintButton(icon: ImageVector, label: String, modifier: Modifier, onClick: () -> Unit) {
+    // v1.13.4: крупнее на планшете
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val btnHeight = if (isWide) 64.dp else 44.dp
+    val iconSize = if (isWide) 26.dp else 18.dp
+    val fontSp = if (isWide) 15.sp else 11.sp
+    val gap = if (isWide) 8.dp else 4.dp
+
     Surface(
         modifier = modifier
-            .height(44.dp)
+            .height(btnHeight)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(if (isWide) 14.dp else 10.dp),
         border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder),
         color = CardSurface
     ) {
@@ -338,9 +353,9 @@ private fun HintButton(icon: ImageVector, label: String, modifier: Modifier, onC
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {
-            Icon(icon, null, tint = ACCENT, modifier = Modifier.size(18.dp))
-            Spacer(Modifier.width(4.dp))
-            Text(label, fontSize = 11.sp, fontWeight = FontWeight.Medium, color = TextGray)
+            Icon(icon, null, tint = ACCENT, modifier = Modifier.size(iconSize))
+            Spacer(Modifier.width(gap))
+            Text(label, fontSize = fontSp, fontWeight = FontWeight.Medium, color = TextGray)
         }
     }
 }

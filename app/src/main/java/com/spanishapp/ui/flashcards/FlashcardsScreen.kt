@@ -469,6 +469,12 @@ private fun SessionBody(
         Spacer(Modifier.height(12.dp))
 
         // ── Action buttons (swipe still works in parallel) ────────
+        // v1.13.4: на планшете кнопки крупнее (52dp → 72dp, font 14sp → 18sp)
+        val isWideActions = com.spanishapp.ui.adaptive.isWideScreen()
+        val actionHeight = if (isWideActions) 72.dp else 52.dp
+        val actionFont = if (isWideActions) 18.sp else 14.sp
+        val actionIcon = if (isWideActions) 22.dp else 15.dp
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -481,7 +487,7 @@ private fun SessionBody(
                 onClick = { onAnswer(ReviewButton.HARD) },
                 modifier = Modifier
                     .weight(1f)
-                    .height(52.dp),
+                    .height(actionHeight),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
@@ -493,10 +499,10 @@ private fun SessionBody(
             ) {
                 Icon(
                     Icons.Default.Close, null,
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier.size(actionIcon)
                 )
                 Spacer(Modifier.width(4.dp))
-                Text(stringResource(com.spanishapp.R.string.flashcards_action_forgot), fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(stringResource(com.spanishapp.R.string.flashcards_action_forgot), fontWeight = FontWeight.SemiBold, fontSize = actionFont)
             }
 
             // Undo chip — visible only after previous card was answered
@@ -534,11 +540,11 @@ private fun SessionBody(
                 onClick = { onAnswer(ReviewButton.GOOD) },
                 modifier = Modifier
                     .weight(1.3f)
-                    .height(52.dp),
+                    .height(actionHeight),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
             ) {
-                Text(stringResource(com.spanishapp.R.string.flashcards_action_know), fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text(stringResource(com.spanishapp.R.string.flashcards_action_know), fontWeight = FontWeight.Bold, fontSize = actionFont)
                 Spacer(Modifier.width(4.dp))
                 Icon(
                     Icons.Default.Check, null,
@@ -571,10 +577,22 @@ private fun FlipCard(
         label = "flip"
     )
 
-    Box(
-        modifier = Modifier
+    // v1.13.4: на планшете карточка квадратная (cap 560dp + aspectRatio 1.2),
+    // а не растянутый прямоугольник 3:1. Юзер: "Карточки стали
+    // прямоугольными, а должен быть квадрат."
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val cardModifier = if (isWide) {
+        Modifier
+            .widthIn(max = 560.dp)
+            .fillMaxWidth()
+            .aspectRatio(1.2f)
+    } else {
+        Modifier
             .fillMaxWidth()
             .height(400.dp)
+    }
+    Box(
+        modifier = cardModifier
             .graphicsLayer {
                 rotationY    = rotation
                 cameraDistance = 12f * density

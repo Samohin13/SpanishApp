@@ -487,20 +487,29 @@ fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     var accentMenuKey by remember { mutableStateOf<Char?>(null) }
 
+    // v1.13.4: клавиатура крупнее на планшете. Юзер: "Клавиатура в
+    // кроссвордах не адаптивная, слишком сжата и плоская." Размер
+    // клавиш 44dp → 64dp height (+ font 16sp → 22sp), delete 44 → 64dp.
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+
     val rows = listOf("QWERTYUIOP", "ASDFGHJKLÑ", "ZXCVBNM")
     val accentsMap = mapOf(
         'A' to listOf('Á'), 'E' to listOf('É'), 'I' to listOf('Í'),
         'O' to listOf('Ó'), 'U' to listOf('Ú', 'Ü'), 'N' to listOf('Ñ')
     )
 
+    val rowSpacing = if (isWide) 8.dp else 4.dp
+    val keySpacing = if (isWide) 5.dp else 3.dp
+    val deleteWidth = if (isWide) 64.dp else 44.dp
+
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(rowSpacing)
     ) {
         rows.forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                if (row == "ZXCVBNM") Spacer(Modifier.width(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(keySpacing)) {
+                if (row == "ZXCVBNM") Spacer(Modifier.width(if (isWide) 12.dp else 8.dp))
                 row.forEach { char ->
                     Box(modifier = Modifier.weight(1f)) {
                         KeyItem(
@@ -542,7 +551,7 @@ fun IntegratedSpanishKeyboard(onKey: (Char) -> Unit, onDelete: () -> Unit) {
                         }
                     }
                 }
-                if (row == "ZXCVBNM") KeyItem("⌫", Modifier.width(44.dp), BgGray) { onDelete() }
+                if (row == "ZXCVBNM") KeyItem("⌫", Modifier.width(deleteWidth), BgGray) { onDelete() }
             }
         }
     }
@@ -555,13 +564,17 @@ fun KeyItem(
     color: Color = MaterialTheme.colorScheme.surfaceVariant,
     onLongClick: (() -> Unit)? = null, onClick: () -> Unit
 ) {
+    // v1.13.4: adaptive height/font для удобного тапа на планшете
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val keyHeight = if (isWide) 64.dp else 44.dp
+    val keyFont = if (isWide) 22.sp else 16.sp
     Surface(
-        modifier = modifier.height(44.dp).combinedClickable(onClick = onClick, onLongClick = onLongClick),
-        color = color, shape = RoundedCornerShape(6.dp), shadowElevation = 1.dp,
+        modifier = modifier.height(keyHeight).combinedClickable(onClick = onClick, onLongClick = onLongClick),
+        color = color, shape = RoundedCornerShape(if (isWide) 10.dp else 6.dp), shadowElevation = 1.dp,
         border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder.copy(alpha = 0.3f))
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Text(text, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = TextMain)
+            Text(text, fontWeight = FontWeight.Bold, fontSize = keyFont, color = TextMain)
         }
     }
 }
