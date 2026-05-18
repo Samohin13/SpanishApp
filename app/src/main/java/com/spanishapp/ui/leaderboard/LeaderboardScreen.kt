@@ -27,6 +27,7 @@ import com.spanishapp.data.repository.LeaderboardEntry
 import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.domain.rating.CountryNames
 import com.spanishapp.ui.components.LeagueBadge
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private enum class Tab { WEEK, LOCAL, WORLD }
 
@@ -36,7 +37,7 @@ fun LeaderboardScreen(
     navController: NavHostController,
     vm: LeaderboardViewModel = hiltViewModel()
 ) {
-    val state by vm.state.collectAsState()
+    val state by vm.state.collectAsStateWithLifecycle()
     var tab by remember { mutableStateOf(Tab.LOCAL) }
 
     Scaffold(

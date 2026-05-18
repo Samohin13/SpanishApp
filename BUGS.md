@@ -48,7 +48,7 @@
 - **Action:** Libros оставить с комментарием, Radio — проверить нужна ли. **Не блокер.**
 - **Status:** OPEN (после релиза)
 
-#### BUG-017 — 🟡 P2 — Lifecycle — 55 экранов используют collectAsState вместо collectAsStateWithLifecycle
+#### BUG-017 — 🟡 P2 — Lifecycle — 55 экранов используют collectAsState вместо collectAsStateWithLifecycle [FIXED v1.17.6]
 - **Файлы:** AiChatScreen, ConjugationScreen, DictionaryScreen + 50+ других
 - **Симптом:** Flow продолжает собирать данные когда экран в background. Не утечка памяти (state cancels на recompose) но избыточная работа.
 - **Fix:** Massive find-replace `collectAsState(` → `collectAsStateWithLifecycle(`. ~30 мин работы.
@@ -147,9 +147,23 @@ DataStore в `MainActivity.attachBaseContext()` (известный IMPORTANT и
 
 ---
 
+## 🧊 DEFERRED (требует data migration)
+
+#### BUG-020 — 🟡 P2 — Content — 14 V2-only уроков не показаны в roadmap
+- **Симптом:** контент готов в `LessonContentDataV2.kt` для 14 уроков с суффиксом `_5` (`u1_l13_5`, `u3_l5_5`, ..., `u16_l4_5`), но `RoadmapData.kt` не имеет соответствующих `RoadmapLesson` записей. Юзеры не видят эти уроки в курсе.
+- **Архитектурная проблема:** `lessonKey` формируется как `"u${unitId}_l${lessonIndex}"` где `lessonIndex` = позиция в `unit.lessons` массиве. Вставка нового урока между существующими сдвинет индексы всех последующих → **сломает прогресс существующих юзеров** (lesson_progress в Room).
+- **Чтобы безопасно добавить:**
+  - Добавить опциональное поле `keyOverride: String?` в RoadmapLesson
+  - Обновить ВСЕ места формирования ключа (~6 файлов): LessonContentScreen, LessonIntroScreen, LessonIntroViewModel, HomeViewModel x2, LessonSessionScreen
+  - Написать Room миграцию для пересчёта lesson_progress.lessonKey
+  - Тестирование на реальном проге
+- **Effort:** 3-4 часа + риск регрессии
+- **Когда делать:** в большое окно (v1.18+), не на горящем тестировании
+- **Status:** DEFERRED
+
 ## 🟣 DESIGN NEEDED
 
-#### BUG-004 — 🟡 P2 — UI — sceneGradientFor() пастельные градиенты в dark theme
+#### BUG-004 — 🟡 P2 — UI — sceneGradientFor() пастельные градиенты в dark theme [FIXED v1.17.6]
 - **Файл:** [ChatBubble.kt:253-280](app/src/main/java/com/spanishapp/ui/components/ChatBubble.kt:253)
 - **Симптом:** функция возвращает пастельные градиенты для тематических сцен диалогов (🍽 ресторан beige, 🏨 отель light blue, 🚖 такси mint, и др.). В dark theme выглядят чужеродными светлыми пятнами.
 - **Используется в:** CheckpointSessionScreen, DialogueFillInput

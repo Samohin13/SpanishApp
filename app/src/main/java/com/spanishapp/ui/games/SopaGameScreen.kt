@@ -38,6 +38,7 @@ import com.spanishapp.R
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private val ACCENT = Color(0xFF4CAF50)
 private val BgGray
@@ -55,7 +56,7 @@ fun SopaGameScreen(
     navController: NavHostController,
     viewModel: SopaViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     when {
         state.showLevelMap -> {
@@ -116,7 +117,7 @@ private fun SopaGameContent(
                 },
                 actions = {
                     // v1.16.0: HintBadge + hint button (вместо score-based hint)
-                    val hintBalance by viewModel.hintBalance.collectAsState()
+                    val hintBalance by viewModel.hintBalance.collectAsStateWithLifecycle()
                     var showNoHintsDialog by remember { mutableStateOf(false) }
                     if (showNoHintsDialog) {
                         AlertDialog(

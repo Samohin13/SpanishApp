@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // Достижение считается «свежим», если разблокировано за последние сутки.
 private const val FRESH_UNLOCK_WINDOW_MS = 24L * 60L * 60L * 1000L
@@ -63,7 +64,7 @@ fun AchievementsScreen(
     navController: NavHostController,
     vm: AchievementsViewModel = hiltViewModel()
 ) {
-    val achievements by vm.achievements.collectAsState()
+    val achievements by vm.achievements.collectAsStateWithLifecycle()
 
     // Свежеразблокированные — наверх среди unlocked.
     val now = remember(achievements) { System.currentTimeMillis() }

@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.R
 import com.spanishapp.ui.components.tappableForSpeak
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 private fun verbModeTitle(mode: VerbTrainingMode): String = when (mode) {
@@ -75,7 +76,7 @@ fun VerbTrainingScreen(
     navController: NavHostController,
     viewModel: VerbViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {

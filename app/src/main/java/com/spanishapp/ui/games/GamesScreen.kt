@@ -20,7 +20,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private data class Game(
     val title: String,
@@ -67,7 +68,7 @@ fun GamesScreen(
     navController: NavHostController,
     vm: GamesScreenViewModel = hiltViewModel()
 ) {
-    val progress by vm.gameProgress.collectAsState()
+    val progress by vm.gameProgress.collectAsStateWithLifecycle()
     // v1.13.2: 2 cols ВЕЗДЕ (юзер: "должно быть 2 столбца 4 строки
     // как в мобильной просто крупнее"). Раньше было 4 cols × 2 rows
     // на планшете — выглядело как «сетка чисел», карточки маленькие.

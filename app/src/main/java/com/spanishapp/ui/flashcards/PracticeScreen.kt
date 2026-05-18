@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── State ──────────────────────────────────────────────────────
 
@@ -303,7 +304,7 @@ fun PracticeScreen(
     navController: NavHostController,
     vm: PracticeViewModel = hiltViewModel()
 ) {
-    val state by vm.state.collectAsState()
+    val state by vm.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     val sound = com.spanishapp.ui.components.rememberAnswerSound()
     com.spanishapp.ui.components.TrackStudyMinutes()

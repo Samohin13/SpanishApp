@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── ViewModel ─────────────────────────────────────────────────
 
@@ -67,8 +68,8 @@ fun GrammarScreen(
     navController: NavHostController,
     vm: GrammarViewModel = hiltViewModel()
 ) {
-    val level   by vm.level.collectAsState()
-    val lessons by vm.lessons.collectAsState()
+    val level   by vm.level.collectAsStateWithLifecycle()
+    val lessons by vm.lessons.collectAsStateWithLifecycle()
     val levels  = listOf("A1", "A2", "B1", "B2")
 
     Scaffold(

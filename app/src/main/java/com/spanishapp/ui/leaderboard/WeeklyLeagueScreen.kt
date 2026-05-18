@@ -28,6 +28,7 @@ import androidx.navigation.NavHostController
 import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.service.WeeklyLeagueService
 import com.spanishapp.service.WeeklyMember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +36,7 @@ fun WeeklyLeagueScreen(
     navController: NavHostController,
     vm: WeeklyLeagueViewModel = hiltViewModel()
 ) {
-    val ui by vm.ui.collectAsState()
+    val ui by vm.ui.collectAsStateWithLifecycle()
     var showInfo by remember { mutableStateOf(false) }
 
     Scaffold(

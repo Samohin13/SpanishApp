@@ -40,6 +40,7 @@ import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
 import com.spanishapp.ui.games.common.ProgressDots
 import com.spanishapp.ui.games.common.rememberShakeOffset
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private val ACCENT = Color(0xFFF44336)
 
@@ -49,7 +50,7 @@ fun MathGameScreen(
     navController: NavHostController,
     viewModel: MathViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     // rememberSaveable переживает ротацию экрана; ключ — currentRound, чтобы
     // ввод сбрасывался при смене раунда.
     var inputVal by rememberSaveable(state.currentRound) { mutableStateOf("") }

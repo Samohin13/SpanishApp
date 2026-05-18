@@ -5,7 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 /**
  * Three states a phone's data connection can be in for our purposes.
@@ -54,6 +55,6 @@ fun networkTypeFlow(context: Context): Flow<NetworkType> = callbackFlow {
 fun rememberNetworkType(): NetworkType {
     val context = LocalContext.current
     val flow = remember { networkTypeFlow(context) }
-    val state by flow.collectAsState(initial = NetworkType.NONE)
+    val state by flow.collectAsStateWithLifecycle(initialValue = NetworkType.NONE)
     return state
 }

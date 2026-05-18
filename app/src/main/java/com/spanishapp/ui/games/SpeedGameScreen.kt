@@ -27,6 +27,7 @@ import com.spanishapp.R
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private val ACCENT = Color(0xFFE040FB)
 
@@ -36,7 +37,7 @@ fun SpeedGameScreen(
     navController: NavHostController,
     viewModel: SpeedViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     when {

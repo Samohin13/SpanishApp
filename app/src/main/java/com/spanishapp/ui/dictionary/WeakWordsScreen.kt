@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── ViewModel ─────────────────────────────────────────────────
 
@@ -56,7 +57,7 @@ fun WeakWordsScreen(
     navController: NavHostController,
     vm: WeakWordsViewModel = hiltViewModel()
 ) {
-    val words by vm.words.collectAsState()
+    val words by vm.words.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {

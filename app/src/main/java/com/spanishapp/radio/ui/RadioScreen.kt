@@ -70,6 +70,7 @@ import com.spanishapp.radio.data.CefrLevel
 import com.spanishapp.radio.data.Country
 import com.spanishapp.radio.data.Genre
 import com.spanishapp.radio.data.Station
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private val Accent = Color(0xFFFF5722)
 private val Green = Color(0xFF4CAF50)
@@ -94,21 +95,21 @@ fun RadioScreen(navController: NavHostController) {
         vm.resetMiniPlayerVisibility()
     }
 
-    val country by vm.country.collectAsState()
-    val station by vm.currentStation.collectAsState()
-    val isPlaying by vm.isPlaying.collectAsState()
-    val hasError by vm.hasError.collectAsState()
-    val playbackState by vm.playbackState.collectAsState()
-    val nowPlaying by vm.nowPlaying.collectAsState()
-    val displayedStations by vm.displayedStations.collectAsState()
-    val favoriteIds by vm.favoriteIds.collectAsState()
-    val discoveryState by vm.discoveryState.collectAsState()
-    val discoveryProgress by vm.discoveryProgress.collectAsState()
-    val discoveryStage by vm.discoveryStage.collectAsState()
-    val discoveryFoundCount by vm.discoveryFoundCount.collectAsState()
-    val discoveryError by vm.discoveryError.collectAsState()
-    val selectedGenres by vm.selectedGenres.collectAsState()
-    val showOnlyFavorites by vm.showOnlyFavorites.collectAsState()
+    val country by vm.country.collectAsStateWithLifecycle()
+    val station by vm.currentStation.collectAsStateWithLifecycle()
+    val isPlaying by vm.isPlaying.collectAsStateWithLifecycle()
+    val hasError by vm.hasError.collectAsStateWithLifecycle()
+    val playbackState by vm.playbackState.collectAsStateWithLifecycle()
+    val nowPlaying by vm.nowPlaying.collectAsStateWithLifecycle()
+    val displayedStations by vm.displayedStations.collectAsStateWithLifecycle()
+    val favoriteIds by vm.favoriteIds.collectAsStateWithLifecycle()
+    val discoveryState by vm.discoveryState.collectAsStateWithLifecycle()
+    val discoveryProgress by vm.discoveryProgress.collectAsStateWithLifecycle()
+    val discoveryStage by vm.discoveryStage.collectAsStateWithLifecycle()
+    val discoveryFoundCount by vm.discoveryFoundCount.collectAsStateWithLifecycle()
+    val discoveryError by vm.discoveryError.collectAsStateWithLifecycle()
+    val selectedGenres by vm.selectedGenres.collectAsStateWithLifecycle()
+    val showOnlyFavorites by vm.showOnlyFavorites.collectAsStateWithLifecycle()
 
     // Adaptive layout — в landscape компактнее (hero меньше, paddings уже)
     val configuration = LocalConfiguration.current

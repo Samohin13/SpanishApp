@@ -72,7 +72,7 @@
         },
         {
             "es": "Adiós",
-            "ru": "Пока / До свидания",
+            "ru": "До свидания",
             "level": "A1",
             "category": "despedidas",
             "type": "phrase"
@@ -660,7 +660,7 @@
         },
         {
             "es": "Disculpe",
-            "ru": "Простите",
+            "ru": "Извините",
             "level": "A1",
             "category": "cortesia",
             "type": "phrase"
@@ -5568,7 +5568,7 @@
         },
         {
             "es": "Perdón",
-            "ru": "Извините",
+            "ru": "Простите",
             "level": "A1",
             "category": "cortesia",
             "type": "phrase"

@@ -4,40 +4,40 @@
             "id": "core",
             "version": 1,
             "url": "content/core_v1.json",
-            "sizeBytes": 1983613,
-            "sha256": "c995dbc394dde49559a9a1632fcb23bfe716c3d448390ee77d8037a68bdef285",
+            "sizeBytes": 1983602,
+            "sha256": "72009a2ddecd7d2df18f21b5b50ae40972f972619073dc30c82aeb6c812844ad",
             "displayName": "Базовый словарь"
         },
         {
             "id": "lessons_a1",
             "version": 1,
             "url": "content/lessons_a1_v1.json",
-            "sizeBytes": 350506,
-            "sha256": "4c3425fac1328d416aab0b1830a64c8ed695112dd8abc6615f437a1daf0b9fe1",
+            "sizeBytes": 267499,
+            "sha256": "a57b5190508b408d1f0cbb50bcf4f0779ea6f76dd65e6b32427f38b8b41adb43",
             "displayName": "Уроки A1"
         },
         {
             "id": "lessons_a2",
             "version": 1,
             "url": "content/lessons_a2_v1.json",
-            "sizeBytes": 338708,
-            "sha256": "00732e1f152dd5630c26446634107f9a4e4ef9b5513a634d6e569ca4493b045d",
+            "sizeBytes": 237456,
+            "sha256": "ad471da2bd647eaccc3c153476a9fe0ceaacaee4189d516f951636541e32ec53",
             "displayName": "Уроки A2"
         },
         {
             "id": "lessons_b1",
             "version": 1,
             "url": "content/lessons_b1_v1.json",
-            "sizeBytes": 365893,
-            "sha256": "fc0abe1a301bb802f0f8308b81b2618067b786176bac8ea1e8e3fc90ea2b964c",
+            "sizeBytes": 231501,
+            "sha256": "0ed012e1dc29494d3a073ef20940e098b491842114a7b991d57ac0648f3b8323",
             "displayName": "Уроки B1"
         },
         {
             "id": "lessons_b2",
             "version": 1,
             "url": "content/lessons_b2_v1.json",
-            "sizeBytes": 368070,
-            "sha256": "3da786182dd40f2a2f9cceb5146be85097fec9a435b95e846fb9eb3b3f35b1dd",
+            "sizeBytes": 220101,
+            "sha256": "aabd0cf81ae6a811e47c60722c7b7bf8c38f6cd2b08bd654e8007ce3fb8a7024",
             "displayName": "Уроки B2"
         },
         {
@@ -60,16 +60,16 @@
             "id": "libros_b1",
             "version": 1,
             "url": "content/libros_b1_v1.json",
-            "sizeBytes": 39132,
-            "sha256": "6b57f44604bc01036c7f171bbefbc48f25b36be2e2a8d2124b8c1ebf762dc9e3",
+            "sizeBytes": 70735,
+            "sha256": "4b4f8e76560a491cbf56ead647c121590ed83bf42fb7f74f78d13b8a89625a05",
             "displayName": "Рассказы B1"
         },
         {
             "id": "libros_b2",
             "version": 1,
             "url": "content/libros_b2_v1.json",
-            "sizeBytes": 105045,
-            "sha256": "fbbd3c387b0537f5bec1e76aadeeb063dfe27861abfafdb85dc8b9b865505eea",
+            "sizeBytes": 73442,
+            "sha256": "fe19ee461f000cdbe34b410cbb32802dd894af4c32f6e0ae855cd7cbf76ea30d",
             "displayName": "Рассказы B2"
         }
     ]

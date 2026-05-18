@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── Утилита сравнения произношения ────────────────────────────
 
@@ -195,7 +196,7 @@ fun PronunciationScreen(
     navController: NavHostController,
     vm: PronunciationViewModel = hiltViewModel()
 ) {
-    val state by vm.state.collectAsState()
+    val state by vm.state.collectAsStateWithLifecycle()
     val context = androidx.compose.ui.platform.LocalContext.current
 
     // RECORD_AUDIO permission flow. Without this the recognizer fails with

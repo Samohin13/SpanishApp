@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── ViewModel ─────────────────────────────────────────────────
 
@@ -85,8 +86,8 @@ fun DialoguesScreen(
     navController: NavHostController,
     vm: DialoguesViewModel = hiltViewModel()
 ) {
-    val level     by vm.level.collectAsState()
-    val dialogues by vm.dialogues.collectAsState()
+    val level     by vm.level.collectAsStateWithLifecycle()
+    val dialogues by vm.dialogues.collectAsStateWithLifecycle()
     val levels    = listOf("A1", "A2", "B1", "B2")
 
     Scaffold(

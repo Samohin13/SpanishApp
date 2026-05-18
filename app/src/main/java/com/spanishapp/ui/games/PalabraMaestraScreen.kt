@@ -31,6 +31,7 @@ import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
 import com.spanishapp.ui.adaptive.adaptiveContentWidth
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private val ACCENT = Color(0xFFFF9500)
 private val BgGray
@@ -52,7 +53,7 @@ fun PalabraMaestraScreen(
     navController: NavHostController,
     viewModel: PalabraMaestraViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     when {
         state.showLevelMap -> {

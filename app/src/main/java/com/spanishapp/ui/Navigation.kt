@@ -62,7 +62,7 @@ import com.spanishapp.ui.auth.DailyGoalSelectionScreen
 import com.spanishapp.data.prefs.AppLockPreferences
 import com.spanishapp.service.AppLockManager
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+
 import javax.inject.Inject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.ViewModel
@@ -103,7 +103,7 @@ object Navigation {
         appLockGate: AppLockGateViewModel = hiltViewModel(),
     ) {
         val authState by authViewModel.uiState.collectAsStateWithLifecycle()
-        val lockState by appLockGate.state.collectAsState()
+        val lockState by appLockGate.state.collectAsStateWithLifecycle()
 
         // ── Start destination ──
         // OTA content gate is DISABLED for v1 release — built-in content from

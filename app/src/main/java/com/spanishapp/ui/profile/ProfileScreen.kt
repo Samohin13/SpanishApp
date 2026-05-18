@@ -71,6 +71,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ═══════════════════════════════════════════════════════════
 //  ViewModel — без изменений в логике, только добавлен поток
@@ -291,14 +292,14 @@ fun ProfileScreen(
     vm: ProfileViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) { com.spanishapp.service.Analytics.profileOpened() }
-    val state by vm.state.collectAsState()
-    val xpHistory by vm.xpHistory.collectAsState()
-    val achievements by vm.achievements.collectAsState()
-    val localPhotoUri by vm.localPhotoUri.collectAsState()
-    val isPhotoUploading by vm.isPhotoUploading.collectAsState()
-    val recentWodWords by vm.recentWodWords.collectAsState()
-    val wodTotalCount by vm.wodTotalCount.collectAsState()
-    val radioMinutes by vm.radioMinutes.collectAsState()
+    val state by vm.state.collectAsStateWithLifecycle()
+    val xpHistory by vm.xpHistory.collectAsStateWithLifecycle()
+    val achievements by vm.achievements.collectAsStateWithLifecycle()
+    val localPhotoUri by vm.localPhotoUri.collectAsStateWithLifecycle()
+    val isPhotoUploading by vm.isPhotoUploading.collectAsStateWithLifecycle()
+    val recentWodWords by vm.recentWodWords.collectAsStateWithLifecycle()
+    val wodTotalCount by vm.wodTotalCount.collectAsStateWithLifecycle()
+    val radioMinutes by vm.radioMinutes.collectAsStateWithLifecycle()
     val p = state.progress
     val context = LocalContext.current
 

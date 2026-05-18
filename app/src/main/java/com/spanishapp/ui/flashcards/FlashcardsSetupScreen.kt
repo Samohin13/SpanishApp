@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private val LEVELS = listOf("A1", "A2", "B1", "B2")
 
@@ -167,9 +168,9 @@ fun FlashcardsSetupScreen(
     navController: NavHostController,
     viewModel: FlashcardsSetupViewModel = hiltViewModel()
 ) {
-    val selectedLevel by viewModel.selectedLevel.collectAsState()
-    val sets          by viewModel.setsForLevel.collectAsState()
-    val weakCount     by viewModel.weakCount.collectAsState()
+    val selectedLevel by viewModel.selectedLevel.collectAsStateWithLifecycle()
+    val sets          by viewModel.setsForLevel.collectAsStateWithLifecycle()
+    val weakCount     by viewModel.weakCount.collectAsStateWithLifecycle()
 
     // loadSetsFor is already called from ViewModel.selectLevel() and from the
     // observeAll-collect watcher in init — no need to call it again here.

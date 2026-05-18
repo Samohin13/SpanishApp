@@ -56,6 +56,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ══════════════════════════════════════════════════════════════
 //  VIEW MODEL
@@ -225,14 +226,14 @@ fun DictionaryScreen(
     navController: NavHostController,
     vm: DictionaryViewModel = hiltViewModel()
 ) {
-    val query         by vm.query.collectAsState()
-    val wordsOnly     by vm.wordsOnly.collectAsState()
-    val phrases       by vm.phrases.collectAsState()
-    val myLists       by vm.myLists.collectAsState()
-    val listWords     by vm.listWords.collectAsState()
-    val selectedId    by vm.selectedListId.collectAsState()
-    val membership    by vm.wordListMembership.collectAsState()
-    val searchHistory by vm.searchHistory.collectAsState()
+    val query         by vm.query.collectAsStateWithLifecycle()
+    val wordsOnly     by vm.wordsOnly.collectAsStateWithLifecycle()
+    val phrases       by vm.phrases.collectAsStateWithLifecycle()
+    val myLists       by vm.myLists.collectAsStateWithLifecycle()
+    val listWords     by vm.listWords.collectAsStateWithLifecycle()
+    val selectedId    by vm.selectedListId.collectAsStateWithLifecycle()
+    val membership    by vm.wordListMembership.collectAsStateWithLifecycle()
+    val searchHistory by vm.searchHistory.collectAsStateWithLifecycle()
 
     // Вкладки: 0 = Все слова, 1 = Фразы, 2 = Мои списки
     var tab by remember { mutableIntStateOf(0) }

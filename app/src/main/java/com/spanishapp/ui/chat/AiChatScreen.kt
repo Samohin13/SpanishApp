@@ -202,12 +202,12 @@ fun AiChatScreen(
     navController: NavHostController,
     vm: AiChatViewModel = hiltViewModel()
 ) {
-    val messages       by vm.messages.collectAsState()
-    val isSending      by vm.isSending.collectAsState()
-    val streamingText  by vm.streamingText.collectAsState()
-    val error          by vm.error.collectAsState()
+    val messages       by vm.messages.collectAsStateWithLifecycle()
+    val isSending      by vm.isSending.collectAsStateWithLifecycle()
+    val streamingText  by vm.streamingText.collectAsStateWithLifecycle()
+    val error          by vm.error.collectAsStateWithLifecycle()
     var showClearDialog by remember { mutableStateOf(false) }
-    val isListening by vm.isListening.collectAsState()
+    val isListening by vm.isListening.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var input     by remember { mutableStateOf("") }
     val haptic    = com.spanishapp.ui.components.rememberCheckedHaptic()

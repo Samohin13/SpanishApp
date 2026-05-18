@@ -248,33 +248,52 @@ fun TypingIndicator(
  *   🏠 — дом              → пастельный жёлтый
  *   💼 — работа           → бежевый
  *   ❤ — личное           → розовый
+ *
+ * v1.17.6 (BUG-004): в dark theme — затемнённые версии с сохранением hue.
+ * Раньше были одинаковые пастельные на обеих темах, и в dark выглядели
+ * чужеродными светлыми пятнами на тёмном фоне. Теперь оттенок узнаваем,
+ * но яркость опущена для консистентности с темой.
  */
 @Composable
 fun sceneGradientFor(emoji: String): Brush {
+    val dark = androidx.compose.foundation.isSystemInDarkTheme()
     val (top, bottom) = when {
-        emoji.contains("🍽") || emoji.contains("☕") || emoji.contains("🍷")
-            -> Color(0xFFFFF4E5) to Color(0xFFFFE0B2)
-        emoji.contains("🏨") || emoji.contains("🛏")
-            -> Color(0xFFE3F2FD) to Color(0xFFBBDEFB)
-        emoji.contains("🚖") || emoji.contains("🚇") || emoji.contains("🚗") || emoji.contains("✈")
-            -> Color(0xFFE8F5E9) to Color(0xFFC8E6C9)
-        emoji.contains("🏥") || emoji.contains("🤒") || emoji.contains("💊")
-            -> Color(0xFFE0F7FA) to Color(0xFFB2EBF2)
-        emoji.contains("🛂") || emoji.contains("📋") || emoji.contains("📝")
-            -> Color(0xFFECEFF1) to Color(0xFFCFD8DC)
-        emoji.contains("🏠") || emoji.contains("🚪") || emoji.contains("✍")
-            -> Color(0xFFFFF9C4) to Color(0xFFFFF59D)
-        emoji.contains("💼") || emoji.contains("🤝") || emoji.contains("👔")
-            -> Color(0xFFEFEBE9) to Color(0xFFD7CCC8)
-        emoji.contains("❤") || emoji.contains("💌") || emoji.contains("💕")
-            -> Color(0xFFFCE4EC) to Color(0xFFF8BBD0)
-        emoji.contains("🌅") || emoji.contains("🌄")
-            -> Color(0xFFFFECB3) to Color(0xFFFFCC80)
-        emoji.contains("🌙") || emoji.contains("🌃")
-            -> Color(0xFFE1BEE7) to Color(0xFFCE93D8)
-        emoji.contains("🏆") || emoji.contains("🌟")
-            -> Color(0xFFFFF9C4) to Color(0xFFFFD54F)
-        else -> Color(0xFFFFFFFF) to Color(0xFFF5F5F5)
+        emoji.contains("🍽") || emoji.contains("☕") || emoji.contains("🍷") ->
+            if (dark) Color(0xFF3D2E1F) to Color(0xFF5C3F1A)
+            else Color(0xFFFFF4E5) to Color(0xFFFFE0B2)
+        emoji.contains("🏨") || emoji.contains("🛏") ->
+            if (dark) Color(0xFF1A2E3D) to Color(0xFF1F3F5C)
+            else Color(0xFFE3F2FD) to Color(0xFFBBDEFB)
+        emoji.contains("🚖") || emoji.contains("🚇") || emoji.contains("🚗") || emoji.contains("✈") ->
+            if (dark) Color(0xFF1F3D24) to Color(0xFF2A5C30)
+            else Color(0xFFE8F5E9) to Color(0xFFC8E6C9)
+        emoji.contains("🏥") || emoji.contains("🤒") || emoji.contains("💊") ->
+            if (dark) Color(0xFF1A3D3D) to Color(0xFF1F5C5C)
+            else Color(0xFFE0F7FA) to Color(0xFFB2EBF2)
+        emoji.contains("🛂") || emoji.contains("📋") || emoji.contains("📝") ->
+            if (dark) Color(0xFF2A3338) to Color(0xFF3A4348)
+            else Color(0xFFECEFF1) to Color(0xFFCFD8DC)
+        emoji.contains("🏠") || emoji.contains("🚪") || emoji.contains("✍") ->
+            if (dark) Color(0xFF3D381A) to Color(0xFF5C5224)
+            else Color(0xFFFFF9C4) to Color(0xFFFFF59D)
+        emoji.contains("💼") || emoji.contains("🤝") || emoji.contains("👔") ->
+            if (dark) Color(0xFF332D28) to Color(0xFF463E36)
+            else Color(0xFFEFEBE9) to Color(0xFFD7CCC8)
+        emoji.contains("❤") || emoji.contains("💌") || emoji.contains("💕") ->
+            if (dark) Color(0xFF3D1F2D) to Color(0xFF5C2A40)
+            else Color(0xFFFCE4EC) to Color(0xFFF8BBD0)
+        emoji.contains("🌅") || emoji.contains("🌄") ->
+            if (dark) Color(0xFF3D2E1A) to Color(0xFF5C3F20)
+            else Color(0xFFFFECB3) to Color(0xFFFFCC80)
+        emoji.contains("🌙") || emoji.contains("🌃") ->
+            if (dark) Color(0xFF2E1F3D) to Color(0xFF402A5C)
+            else Color(0xFFE1BEE7) to Color(0xFFCE93D8)
+        emoji.contains("🏆") || emoji.contains("🌟") ->
+            if (dark) Color(0xFF3D3818) to Color(0xFF5C4F1A)
+            else Color(0xFFFFF9C4) to Color(0xFFFFD54F)
+        else ->
+            if (dark) Color(0xFF1C1C1E) to Color(0xFF2A2A2D)
+            else Color(0xFFFFFFFF) to Color(0xFFF5F5F5)
     }
     return Brush.verticalGradient(listOf(top, bottom))
 }

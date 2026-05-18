@@ -29,7 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,6 +56,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private val Accent = Color(0xFFFF5722)
 private val Green = Color(0xFF4CAF50)
@@ -86,11 +87,11 @@ fun RadioMiniPlayer(
             RadioPlayerEntryPoint::class.java,
         ).radioPlayer()
     }
-    val station by player.currentStation.collectAsState()
-    val isPlaying by player.isPlaying.collectAsState()
-    val context_stations by player.stationContext.collectAsState()
+    val station by player.currentStation.collectAsStateWithLifecycle()
+    val isPlaying by player.isPlaying.collectAsStateWithLifecycle()
+    val context_stations by player.stationContext.collectAsStateWithLifecycle()
     val canSkip = context_stations.size > 1
-    val hiddenBySwipe by player.miniPlayerHidden.collectAsState()
+    val hiddenBySwipe by player.miniPlayerHidden.collectAsStateWithLifecycle()
 
     val visible = station != null && !isOnRadioScreen && !hiddenBySwipe
 

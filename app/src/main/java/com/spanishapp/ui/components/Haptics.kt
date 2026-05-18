@@ -1,7 +1,7 @@
 package com.spanishapp.ui.components
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.hapticfeedback.HapticFeedback
@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 /**
  * Exposes vibration intensity (0..3) and the [VibrationHelper] to Composables.
@@ -41,7 +42,7 @@ class HapticPrefViewModel @Inject constructor(
 fun rememberCheckedHaptic(): HapticFeedback {
     val real = LocalHapticFeedback.current
     val vm: HapticPrefViewModel = hiltViewModel()
-    val percent by vm.intensity.collectAsState()
+    val percent by vm.intensity.collectAsStateWithLifecycle()
     val helper = vm.vibrator
 
     return remember(real, percent, helper) {

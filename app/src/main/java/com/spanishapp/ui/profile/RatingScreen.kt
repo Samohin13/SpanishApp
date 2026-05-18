@@ -24,6 +24,7 @@ import com.spanishapp.R
 import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.ui.components.LeagueBadge
 import com.spanishapp.ui.components.SpanishFlagRating
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private enum class SortMode(val labelRes: Int) {
     WEAK(R.string.rating_sort_weak), STRONG(R.string.rating_sort_strong), ALPHABET(R.string.rating_sort_alpha)
@@ -35,8 +36,8 @@ fun RatingScreen(
     navController: NavHostController,
     vm: ProfileViewModel = hiltViewModel()
 ) {
-    val state by vm.state.collectAsState()
-    val items by vm.categoryRatings.collectAsState()
+    val state by vm.state.collectAsStateWithLifecycle()
+    val items by vm.categoryRatings.collectAsStateWithLifecycle()
     var sortMode by remember { mutableStateOf(SortMode.WEAK) }
     val league = LeagueResolver.fromTier(state.progress.currentLeague.coerceAtLeast(1))
 

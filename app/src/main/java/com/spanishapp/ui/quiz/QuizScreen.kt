@@ -32,6 +32,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── Model ─────────────────────────────────────────────────────
 
@@ -119,7 +120,7 @@ fun QuizScreen(
     navController: NavHostController,
     vm: QuizViewModel = hiltViewModel()
 ) {
-    val state by vm.state.collectAsState()
+    val state by vm.state.collectAsStateWithLifecycle()
 
     Scaffold(
         containerColor = Color.Transparent,

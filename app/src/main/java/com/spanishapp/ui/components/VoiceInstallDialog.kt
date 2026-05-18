@@ -25,6 +25,7 @@ import com.spanishapp.data.prefs.VoicePreferences
 import com.spanishapp.data.prefs.VoiceSettings
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
@@ -46,7 +47,7 @@ fun VoiceInstallPromptHost(tts: TextToSpeech?) {
             VoiceInstallEntryPoint::class.java
         ).voicePreferences()
     }
-    val settings by prefs.settings.collectAsState(initial = VoiceSettings())
+    val settings by prefs.settings.collectAsStateWithLifecycle(initialValue = VoiceSettings())
 
     var show by remember { mutableStateOf(false) }
 

@@ -32,6 +32,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.Locale
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
@@ -56,7 +57,7 @@ fun rememberSpanishTts(): TextToSpeech? {
     val ttsState = remember { mutableStateOf<TextToSpeech?>(null) }
 
     val prefs = remember(context) { voicePreferences(context) }
-    val settings by prefs.settings.collectAsState(initial = VoiceSettings())
+    val settings by prefs.settings.collectAsStateWithLifecycle(initialValue = VoiceSettings())
 
     DisposableEffect(Unit) {
         var instance: TextToSpeech? = null

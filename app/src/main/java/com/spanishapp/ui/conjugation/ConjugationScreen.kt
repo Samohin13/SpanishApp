@@ -37,6 +37,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── ViewModel ─────────────────────────────────────────────────
 
@@ -117,12 +118,12 @@ fun ConjugationScreen(
     navController: NavHostController,
     vm: ConjugationViewModel = hiltViewModel()
 ) {
-    val verbs        by vm.verbs.collectAsState()
-    val query        by vm.query.collectAsState()
-    val filter       by vm.filter.collectAsState()
-    val irregularSet by vm.irregularVerbs.collectAsState()
-    val selectedVerb by vm.selectedVerb.collectAsState()
-    val conjugations by vm.conjugations.collectAsState()
+    val verbs        by vm.verbs.collectAsStateWithLifecycle()
+    val query        by vm.query.collectAsStateWithLifecycle()
+    val filter       by vm.filter.collectAsStateWithLifecycle()
+    val irregularSet by vm.irregularVerbs.collectAsStateWithLifecycle()
+    val selectedVerb by vm.selectedVerb.collectAsStateWithLifecycle()
+    val conjugations by vm.conjugations.collectAsStateWithLifecycle()
 
     // Group by tense, sorted by TENSE_ORDER
     val byTense = remember(conjugations) {

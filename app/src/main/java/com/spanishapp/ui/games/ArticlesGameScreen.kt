@@ -39,6 +39,7 @@ import com.spanishapp.data.db.entity.ArticleWordEntity
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.*
 import java.text.Normalizer
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── Цвета ─────────────────────────────────────────────────────
 private val ACCENT        = Color(0xFF7B2FBE)
@@ -66,7 +67,7 @@ fun ArticlesGameScreen(
     navController: NavHostController,
     viewModel: ArticlesViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     when {
         state.showLevelMap -> LevelMapScreen(
             gameId       = GameId.ARTICLES,

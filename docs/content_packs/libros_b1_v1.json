@@ -451,6 +451,186 @@
             ]
         },
         {
+            "id": 61,
+            "level": "B1",
+            "title": "El Algoritmo de la Soledad",
+            "theme": "Технологии / Общество",
+            "text": "Cuando Natalia cumplió cuarenta años, decidió hacer un experimento: pasaría un mes entero sin redes sociales para entender cómo había cambiado su vida desde que se había hecho dependiente de ellas.\nLos primeros días fueron desconcertantes; sentía un impulso constante de coger el móvil cada pocos minutos, aunque no había nada que mirar.\nA medida que pasaban las semanas, empezó a darse cuenta de que durante años había estado consumiendo vidas ajenas mientras la suya pasaba en silencio frente a una pantalla.\nRecuperó hábitos que había abandonado: leer novelas, llamar a amigos por teléfono, salir a caminar sin documentar el paseo en historias de Instagram.\nCuando, al cabo de un mes, volvió a abrir las aplicaciones, le sorprendió la cantidad de notificaciones acumuladas y, sobre todo, lo poco que importaba ya nada de aquello.\nNatalia decidió no volver a publicar en redes y, aunque sus seguidores fueron disminuyendo, ella sintió que recuperaba algo más valioso: el control sobre su propia atención.\n«No hemos perdido el contacto unos con otros», escribió en su diario. «Hemos perdido el contacto con nosotros mismos».",
+            "questions": [
+                {
+                    "q": "¿En qué consistía el experimento de Natalia?",
+                    "options": [
+                        "Pasar un mes sin redes sociales",
+                        "Vivir un mes sin internet",
+                        "Estar un mes sin móvil"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Qué descubrió durante ese mes?",
+                    "options": [
+                        "Que extrañaba mucho a sus contactos",
+                        "Que había estado consumiendo vidas ajenas mientras la suya pasaba en silencio",
+                        "Que sus amigos no la echaban de menos"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hizo después del experimento?",
+                    "options": [
+                        "Volvió a publicar como antes",
+                        "Decidió no volver a publicar en redes",
+                        "Borró todas las aplicaciones para siempre"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál es la conclusión de Natalia en su diario?",
+                    "options": [
+                        "Hemos perdido el contacto con nosotros mismos",
+                        "Las redes son útiles si se usan con moderación",
+                        "Es imposible vivir sin tecnología hoy"
+                    ],
+                    "correctIndex": 0
+                }
+            ]
+        },
+        {
+            "id": 62,
+            "level": "B1",
+            "title": "La Tierra que Ya No Era",
+            "theme": "Эмиграция / Идентичность",
+            "text": "Después de veintidós años viviendo en Madrid, Julián volvió a Buenos Aires para el funeral de su padre.\nHabía salido de Argentina huyendo de la crisis económica, dejando atrás un país que para él significaba imposibilidad.\nCuando aterrizó, esperaba reconocer las calles de su infancia, pero la ciudad había cambiado tanto que se sintió extranjero en su propio barrio.\nEl edificio donde había crecido tenía un código de seguridad que él no conocía, los kioscos donde compraba caramelos eran ahora cafeterías de moda, y sus antiguos amigos del colegio hablaban con un acento que ya no sonaba al suyo.\nTras dos semanas, Julián entendió que la nostalgia que había sentido durante años no era por una Buenos Aires real, sino por una Buenos Aires de su memoria que ya no existía y probablemente nunca había existido del todo.\nVolvió a Madrid con una sensación extraña: no se sentía completamente español, pero ya no podía decir que era argentino tampoco.\nEra algo nuevo, sin nombre, que solo entienden los que han vivido entre dos países durante demasiado tiempo.",
+            "questions": [
+                {
+                    "q": "¿Por qué había salido Julián de Argentina?",
+                    "options": [
+                        "Por trabajo",
+                        "Huyendo de la crisis económica",
+                        "Por amor"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo se sintió al volver a su barrio?",
+                    "options": [
+                        "En casa, como si no se hubiera ido",
+                        "Extranjero en su propio barrio",
+                        "Profundamente feliz"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué entiende Julián sobre su nostalgia?",
+                    "options": [
+                        "Que era una pérdida real de su patria",
+                        "Que era por una Buenos Aires que ya no existía y quizás nunca existió del todo",
+                        "Que era una emoción inventada"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo describe su identidad al final?",
+                    "options": [
+                        "Completamente española",
+                        "Completamente argentina",
+                        "Algo nuevo, sin nombre, propio de quien vive entre dos países"
+                    ],
+                    "correctIndex": 2
+                }
+            ]
+        },
+        {
+            "id": 63,
+            "level": "B1",
+            "title": "El Libro que lo Cambió Todo",
+            "theme": "Литература / Личностный рост",
+            "text": "Existen libros que se leen y se olvidan, libros que entretienen unas horas y luego quedan en una estantería como simple decoración.\nPero hay otros, mucho menos frecuentes, que llegan a la vida de uno en el momento exacto y lo dejan diferente para siempre.\nPara Inés, ese libro fue una novela rusa del siglo diecinueve que le regaló un profesor cuando tenía dieciocho años y atravesaba una crisis existencial sin saberlo.\nLo leyó en tres semanas, subrayando frases hasta el punto de que el ejemplar se volvió ilegible, y al terminarlo se dio cuenta de que ya no podía continuar estudiando la carrera que había elegido por presión familiar.\nCambió a Filosofía a los pocos meses, una decisión que sus padres tardaron años en aceptar.\nVeinte años después, Inés es profesora universitaria y conserva aquel libro destrozado en su mesilla, no por sentimentalismo sino como recordatorio de que las palabras adecuadas en el momento adecuado pueden alterar el rumbo de una existencia más que cualquier consejo, terapia o conversación profunda.\nA veces, cuando algún alumno suyo se siente perdido, Inés le presta el libro sin decir mucho.\nAlgunos lo devuelven impasibles; otros, transformados.",
+            "questions": [
+                {
+                    "q": "¿Cuándo leyó Inés el libro que cambió su vida?",
+                    "options": [
+                        "A los veintiocho años, recién casada",
+                        "A los dieciocho, en una crisis existencial sin saberlo",
+                        "A los treinta, antes de empezar a enseñar"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué decisión tomó después de leerlo?",
+                    "options": [
+                        "Empezar a escribir su propia novela",
+                        "Cambiar de carrera a Filosofía",
+                        "Mudarse a otro país"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo reaccionaron sus padres?",
+                    "options": [
+                        "Inmediatamente la apoyaron",
+                        "Tardaron años en aceptar la decisión",
+                        "Nunca se lo perdonaron"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hace Inés ahora con el libro?",
+                    "options": [
+                        "Lo guarda en el sótano",
+                        "Lo presta a alumnos perdidos sin decir mucho",
+                        "Lo regaló hace años"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 64,
+            "level": "B1",
+            "title": "El Peso de la Elección",
+            "theme": "Психология / Современная жизнь",
+            "text": "En el supermercado del barrio había, cuando él era niño, tres tipos de aceite y dos marcas de pan.\nHoy, frente a la estantería del aceite, Ricardo cuenta veintinueve variedades distintas y siente, no la libertad que se supone que da la abundancia, sino una especie de parálisis silenciosa que le cuesta describir.\nLleva años leyendo sobre la llamada «paradoja de la elección»: la idea de que más opciones, lejos de hacernos más felices, nos generan ansiedad y arrepentimiento porque siempre podemos imaginar que la opción no elegida habría sido mejor.\nEn su trabajo como diseñador de productos, Ricardo intenta aplicar esta idea reduciendo intencionadamente las variantes que ofrece a sus clientes.\nSus jefes lo critican: «La gente quiere elegir», le dicen.\nPero cuando lanza una nueva línea con tres opciones en lugar de quince, las ventas suben un treinta por ciento y los clientes reportan estar más satisfechos.\nRicardo no pretende haber descubierto nada nuevo, simplemente recuerda en silencio una verdad que parecemos haber olvidado: que demasiada libertad de elección puede pesar tanto como la falta de ella.",
+            "questions": [
+                {
+                    "q": "¿Qué siente Ricardo frente a las veintinueve variedades de aceite?",
+                    "options": [
+                        "Felicidad por la abundancia",
+                        "Una parálisis silenciosa difícil de describir",
+                        "Curiosidad por probar todas"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿En qué consiste la «paradoja de la elección»?",
+                    "options": [
+                        "En que más opciones siempre nos hacen más felices",
+                        "En que más opciones generan ansiedad y arrepentimiento",
+                        "En que las marcas eligen por nosotros"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué pasó cuando lanzó tres opciones en lugar de quince?",
+                    "options": [
+                        "Las ventas bajaron drásticamente",
+                        "Las ventas subieron un treinta por ciento y los clientes estaban más satisfechos",
+                        "No hubo ningún cambio"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál es la verdad que parecemos haber olvidado, según el texto?",
+                    "options": [
+                        "Que la abundancia es siempre buena",
+                        "Que demasiada libertad de elección puede pesar tanto como la falta de ella",
+                        "Que los productos artesanales son mejores"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
             "id": 66,
             "level": "B1",
             "title": "Un Día en la Ciudad",
@@ -672,6 +852,276 @@
                         "Nunca jamás"
                     ],
                     "correctIndex": 2
+                }
+            ]
+        },
+        {
+            "id": 71,
+            "level": "B1",
+            "title": "La Autenticidad en la Era de los Algoritmos",
+            "theme": "Технологии / Идентичность",
+            "text": "Hace apenas una década, lo más íntimo que mostrabas a un desconocido era una conversación de café; hoy compartimos rutinas, comidas, opiniones políticas y caras semidesnudas con miles de personas a las que nunca veremos.\nLo curioso es que, cuanto más nos exponemos, más nos cuesta saber quiénes somos realmente.\nLos algoritmos premian un cierto tipo de personalidad: la que reacciona, opina rápido, polariza, simplifica.\nQuien no encaja en esa lógica, simplemente desaparece de los feeds.\nEmpezamos, sin darnos cuenta, a actuar para una audiencia silenciosa, a moldear nuestros pensamientos en función de lo que sabemos que recibirá likes.\nTras un tiempo, dejamos de distinguir lo que pensamos sinceramente de lo que pensamos para mostrar.\nEs un proceso lento, casi invisible, pero terriblemente eficaz.\nVolver a la autenticidad, en este contexto, ya no significa ser «uno mismo» como antes, sino reaprender qué partes de nosotros son nuestras y cuáles son una construcción mediada por la métrica.\nQuizá el verdadero acto de rebeldía contemporáneo no sea tener una opinión fuerte sobre todo, sino atreverse a no opinar; no compartir; permanecer, durante un rato cada día, completamente fuera del alcance de los demás.",
+            "questions": [
+                {
+                    "q": "Según el texto, ¿qué premian los algoritmos?",
+                    "options": [
+                        "La complejidad y los matices",
+                        "Personalidades que reaccionan rápido, polarizan y simplifican",
+                        "El silencio reflexivo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué pasa cuando alguien no encaja en esa lógica?",
+                    "options": [
+                        "Se vuelve más popular",
+                        "Desaparece de los feeds",
+                        "Recibe más interacción"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál es el peligro descrito según el autor?",
+                    "options": [
+                        "Volverse adicto a las redes",
+                        "Dejar de distinguir entre lo que pensamos y lo que pensamos para mostrar",
+                        "Aislarse socialmente"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál sería el «verdadero acto de rebeldía contemporáneo»?",
+                    "options": [
+                        "Tener opiniones fuertes sobre todo",
+                        "Atreverse a no opinar, no compartir, permanecer fuera de alcance un rato cada día",
+                        "Borrar todas las redes sociales"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 72,
+            "level": "B1",
+            "title": "Lo que Entiendes a los Cuarenta",
+            "theme": "Возраст / Размышления",
+            "text": "A los cuarenta años uno empieza a comprender ciertas cosas que a los veinte le parecían inverosímiles, y a los treinta sospechosas.\nQue el éxito profesional, por ejemplo, no es una línea ascendente sino un péndulo que oscila entre temporadas brillantes y períodos en los que apenas sabes para qué te levantas por las mañanas.\nQue las amistades verdaderas no son las que aguantan veinte años sin esfuerzo, sino las que sobreviven a momentos en los que ambas partes tendrían razones legítimas para abandonar.\nQue la salud, eso que durante décadas dabas por descontado, empieza a llamarte la atención con pequeñas señales: una rodilla que cruje, una espalda que se queja, una digestión que ya no perdona ciertos excesos.\nQue muchos de los miedos de la juventud eran imaginarios, y que los miedos reales, los que de verdad te quitan el sueño, no se descubren hasta que tienes un hijo dormido al lado.\nY, sobre todo, que el tiempo del que tanto hablaban los adultos cuando tú eras joven existe efectivamente, aunque no funciona como uno cree: no es un río constante, sino una sucesión de aceleraciones extrañas en las que de repente diciembre vuelve a estar a la vuelta de la esquina.\nA los cuarenta uno todavía no es sabio, pero al menos ha dejado de tener prisa por aparentarlo.",
+            "questions": [
+                {
+                    "q": "¿Cómo describe el autor el éxito profesional?",
+                    "options": [
+                        "Como una línea ascendente clara",
+                        "Como un péndulo entre temporadas brillantes y períodos difíciles",
+                        "Como una decepción inevitable"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "Según el texto, ¿qué son las amistades verdaderas?",
+                    "options": [
+                        "Las que duran sin esfuerzo veinte años",
+                        "Las que sobreviven a momentos en los que ambas partes podrían abandonar",
+                        "Las que se hacen en la infancia"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuándo se descubren los miedos «reales» según el autor?",
+                    "options": [
+                        "En la adolescencia",
+                        "Cuando tienes un hijo dormido al lado",
+                        "Cuando empieza la jubilación"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo funciona el tiempo según la conclusión?",
+                    "options": [
+                        "Como un río constante y predecible",
+                        "Como una sucesión de aceleraciones extrañas",
+                        "Como un círculo que vuelve sobre sí mismo"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 73,
+            "level": "B1",
+            "title": "El Perdón que No Llegó a Tiempo",
+            "theme": "Семья / Прощение",
+            "text": "Roberto y su padre habían dejado de hablarse después de una discusión absurda sobre dinero hace nueve años.\nEmpezó como un préstamo no devuelto, escaló a reproches sobre toda una vida en común y terminó con una frase que ninguno de los dos olvidaría: «Para mí, ya no eres mi hijo».\nDurante los años siguientes, ambos esperaron que el otro diera el primer paso.\nA través de la madre y los hermanos, Roberto sabía que su padre seguía orgulloso pero que también lo echaba de menos: hablaba de él con los nietos, conservaba sus fotos, se interesaba por su carrera.\nRoberto, por su parte, escribió tres cartas que jamás llegó a enviar, todas guardadas en un cajón al lado de su despacho.\nCuando recibió la llamada del hospital una mañana de febrero, dejó todo y cogió el primer tren, pero llegó cuarenta minutos tarde: su padre había muerto sin recuperar la conciencia.\nRoberto se quedó solo en la habitación con el cuerpo durante una hora, hablándole al hombre que ya no podía oírle, diciéndole todo lo que tendría que haberle dicho aquel día, antes, durante los nueve años de silencio.\nVolvió a casa, sacó las tres cartas del cajón y las quemó una a una.\n«No esperéis», es la única lección que repite ahora cuando alguien le habla de un conflicto familiar.\n«No esperéis. El otro puede irse antes de que estéis preparados.»",
+            "questions": [
+                {
+                    "q": "¿Cuánto tiempo llevaban Roberto y su padre sin hablarse?",
+                    "options": [
+                        "Tres años",
+                        "Nueve años",
+                        "Quince años"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué hizo Roberto durante esos años?",
+                    "options": [
+                        "Escribió tres cartas que nunca envió",
+                        "Llamó cada Navidad sin éxito",
+                        "Visitó a su padre en secreto"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Por cuánto tiempo no llegó a tiempo al hospital?",
+                    "options": [
+                        "Veinte minutos",
+                        "Cuarenta minutos",
+                        "Dos horas"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cuál es la única lección que Roberto repite ahora?",
+                    "options": [
+                        "Nunca discutir por dinero",
+                        "No esperar, el otro puede irse antes de que estés preparado",
+                        "Escribir cartas siempre"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 74,
+            "level": "B1",
+            "title": "El Silencio Olvidado",
+            "theme": "Тишина / Современность",
+            "text": "Hace cien años, el silencio formaba parte de la vida cotidiana de cualquier persona: durante las comidas, en los trayectos a pie, en las largas tardes leyendo o cosiendo.\nHoy, mucha gente no soporta más de tres minutos sin estímulo: en cuanto sale de una reunión, abre el móvil; en cuanto llega a casa, enciende la televisión; en cuanto se mete en la cama, pone un podcast para «relajarse».\nHemos sustituido el silencio por un ruido de fondo permanente, casi imperceptible, que nos acompaña desde que nos levantamos hasta que nos dormimos.\nEl problema no es solo la pérdida de horas valiosas en redes y plataformas, sino algo más profundo: hemos perdido la capacidad de aburrirnos, y con ella, una de las puertas tradicionales hacia la creatividad y la introspección.\nLos grandes pensadores de la historia describían el aburrimiento como un estado fértil, incómodo pero necesario, donde las ideas que llevamos meses incubando finalmente emergen.\nHoy, ese vacío lo llenamos con vídeos cortos, scrolling infinito y «contenido» rápido que pasa sin dejar huella.\nQuizá lo más radical que pueda hacer una persona en 2026 sea, sencillamente, sentarse en una silla durante media hora sin ningún aparato cerca y resistir la tentación de interrumpir el silencio.",
+            "questions": [
+                {
+                    "q": "Según el texto, ¿con qué hemos sustituido el silencio?",
+                    "options": [
+                        "Con la música clásica",
+                        "Con un ruido de fondo permanente",
+                        "Con conversaciones largas"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué capacidad hemos perdido junto con el silencio?",
+                    "options": [
+                        "La capacidad de aburrirnos",
+                        "La capacidad de leer libros largos",
+                        "La capacidad de hablar entre nosotros"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Cómo describían los grandes pensadores el aburrimiento?",
+                    "options": [
+                        "Como una pérdida de tiempo",
+                        "Como un estado fértil, incómodo pero necesario",
+                        "Como un síntoma de depresión"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué propone el autor como acto «radical»?",
+                    "options": [
+                        "Borrar las redes sociales",
+                        "Sentarse media hora sin aparatos y resistir la tentación de interrumpir el silencio",
+                        "Salir al campo el fin de semana"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 75,
+            "level": "B1",
+            "title": "El Primer Amor, Veinte Años Después",
+            "theme": "Любовь / Время",
+            "text": "Cuando Daniela vio en LinkedIn la solicitud de Iván, tardó varios minutos en reconocer al chico de diecisiete años con el que había compartido el primer beso de su vida.\nVeinte años después, ambos eran personas distintas: él trabajaba en logística en Buenos Aires, divorciado con dos hijos; ella era profesora de filosofía en Madrid, soltera por convicción.\nAceptó la solicitud sin pensarlo demasiado, esperando una conversación cordial de cinco minutos.\nPero las conversaciones se alargaron noches enteras, pasaron del español neutro de los primeros mensajes a las muletillas adolescentes que ambos creían haber olvidado, y, sin que ninguno de los dos lo formulara abiertamente, reconstruyeron en pocas semanas lo que se había roto en una despedida apresurada en el aeropuerto en agosto de 2005.\nPero veinte años no son veinte años: son hijos, divorcios, ciudades, idiomas internos diferentes, costumbres adquiridas con otras personas que ya no se pueden desaprender.\nCuando Iván viajó a Madrid en marzo, los dos se vieron por primera vez frente al café que ella había elegido cuidadosamente.\nHablaron durante horas, se rieron, se confesaron cosas íntimas, pero ambos sabían, sin necesidad de decirlo, que aquello no podía continuar.\nNo porque el sentimiento no existiera —existía, intenso y desconcertante—, sino porque no eran ya las personas que habían sentido aquello, y reconstruir un puente con materiales nuevos no era lo mismo que reparar el viejo.\nSe despidieron con un abrazo largo y sin promesas falsas.\nDaniela lloró todo el camino de vuelta a casa.\nIván volvió a Buenos Aires y nunca más se escribieron, y eso, paradójicamente, fue la mayor prueba de respeto que se habían dado en veinte años.",
+            "questions": [
+                {
+                    "q": "¿Cómo se reencontraron Daniela e Iván?",
+                    "options": [
+                        "Por una solicitud en LinkedIn",
+                        "En un funeral común",
+                        "Por un mensaje en Instagram"
+                    ],
+                    "correctIndex": 0
+                },
+                {
+                    "q": "¿Qué descubrieron al hablar durante semanas?",
+                    "options": [
+                        "Que ya no tenían nada en común",
+                        "Que reconstruyeron rápidamente lo que se había roto en 2005",
+                        "Que solo querían ser amigos"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué entendieron tras verse en Madrid?",
+                    "options": [
+                        "Que querían empezar una relación",
+                        "Que el sentimiento existía pero que ya no eran las mismas personas",
+                        "Que el reencuentro había sido un error desde el inicio"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo interpreta el narrador que no volvieran a escribirse?",
+                    "options": [
+                        "Como una pelea final",
+                        "Como la mayor prueba de respeto entre los dos",
+                        "Como un acto de cobardía"
+                    ],
+                    "correctIndex": 1
+                }
+            ]
+        },
+        {
+            "id": 65,
+            "level": "B1",
+            "title": "Memoria de un Verano que No Recuerdo",
+            "theme": "Память / Фотография",
+            "text": "Mi madre conserva en un álbum una fotografía de un verano de mi infancia que yo, por más que lo intento, no logro recordar.\nEn la imagen aparezco con seis o siete años, sonriendo en la orilla del mar, sosteniendo un pez pequeño que, según ella, había pescado yo solo después de horas de paciencia.\nCuando me cuenta esa historia, lo hace con tanto detalle que durante un tiempo creí recordarla yo también: el sabor del bocadillo de aquella mañana, la sensación del sol quemándome los hombros, el orgullo al ver el pez moverse en el cubo.\nPero un día comprendí que mi memoria de aquel día no era mi memoria, sino la memoria de mi madre prestada a través de la repetición.\nAquello me dejó pensando durante semanas: cuántos de mis recuerdos más vívidos son realmente míos y cuántos son construcciones colectivas, fotografías miradas mil veces hasta volverse experiencia, anécdotas familiares contadas tantas veces que terminamos creyendo haberlas vivido.\nQuizá la identidad sea menos un archivo personal que un préstamo permanente que hacemos con la gente que nos rodea, y la memoria, lejos de ser una cámara, sea más bien un colectivo de voces que se confunden con la nuestra hasta que ya no sabemos cuál era la original.\nCierro el álbum con cierta inquietud, pero también con una extraña gratitud: tal vez no recuerde aquel verano, pero gracias a mi madre ese día existe en alguna parte, aunque no sea exactamente dentro de mí.",
+            "questions": [
+                {
+                    "q": "¿Por qué el narrador no recuerda aquel verano por sí mismo?",
+                    "options": [
+                        "Porque era demasiado pequeño y olvidó todo",
+                        "Porque su memoria del día es la memoria prestada de su madre",
+                        "Porque su madre le inventó la historia"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Qué reflexión le provoca esa fotografía?",
+                    "options": [
+                        "Que las fotos nunca son fiables",
+                        "Que muchos recuerdos podrían ser construcciones colectivas más que personales",
+                        "Que quiere ser fotógrafo"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Cómo describe la identidad al final del texto?",
+                    "options": [
+                        "Como un archivo personal completo",
+                        "Como un préstamo permanente con la gente que nos rodea",
+                        "Como un secreto guardado"
+                    ],
+                    "correctIndex": 1
+                },
+                {
+                    "q": "¿Con qué sentimiento cierra el álbum?",
+                    "options": [
+                        "Con pura tristeza",
+                        "Con inquietud y también extraña gratitud",
+                        "Con indiferencia total"
+                    ],
+                    "correctIndex": 1
                 }
             ]
         }

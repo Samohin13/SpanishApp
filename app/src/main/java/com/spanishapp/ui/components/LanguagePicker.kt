@@ -13,7 +13,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 /**
  * Standalone VM exposing the UI language preference.
@@ -77,7 +78,7 @@ fun LanguagePickerButton(
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
-    val current by vm.current.collectAsState()
+    val current by vm.current.collectAsStateWithLifecycle()
     var showDialog by remember { mutableStateOf(false) }
 
     val flag = when (current) {

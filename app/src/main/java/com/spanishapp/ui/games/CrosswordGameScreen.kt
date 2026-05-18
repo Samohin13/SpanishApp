@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.R
 import com.spanishapp.ui.adaptive.adaptiveContentWidth
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // Accent colour for Crucigrama. MUST match the icon tint used in
 // GamesScreen.kt (Crucigrama icon = 0xFF26A69A teal). The variable name
@@ -64,7 +65,7 @@ fun CrosswordGameScreen(
     navController: NavHostController,
     viewModel: CrosswordViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     var showRules by remember { mutableStateOf(false) }
 
     if (showRules) RulesDialog(onDismiss = { showRules = false })
