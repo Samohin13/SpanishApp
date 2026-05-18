@@ -53,6 +53,20 @@
 
 ### Tests (предсуществующие, обнаружены 2026-05-18)
 
+#### BUG-014 — 🟠 P1 — Firebase Storage — Avatar upload permission denied [FIXED v1.17.3]
+- **Симптом:** при попытке загрузить аватар через SettingsScreen появляется toast "Ошибка сохранения в облако: User does not have permission to access this object"
+- **Root cause:** **рассинхрон путей и bucket'ов** между двумя экранами:
+  - `SettingsScreen.kt:235` → bucket `gs://spanishapp-35092.firebasestorage.app` + путь `avatars/{uid}.jpg`
+  - `ProfileScreen.kt:164` → default bucket + путь `users/{uid}/avatar.jpg`
+  - Storage rules в Firebase Console: `users/{uid}/*` (CLAUDE.md §10)
+  - SettingsScreen path **не подпадал** под rules → permission denied
+- **Fix:**
+  - SettingsScreen перешёл на default bucket (`FirebaseStorage.getInstance()`)
+  - Upload path → `users/{uid}/avatar.jpg`
+  - Delete path (при удалении аккаунта) → `users/{uid}/avatar.jpg`
+- **Status:** ✅ FIXED в v1.17.3
+
+
 #### BUG-001 — 🟠 P1 — Tests — SkillRatingSystemTest 3 fails
 - **Файл:** `app/src/test/java/com/spanishapp/SkillRatingSystemTest.kt`
 - **Failures:**

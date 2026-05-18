@@ -189,7 +189,11 @@ class SettingsViewModel @Inject constructor(
         if (enabled) appLockManager.markUnlocked()
     }
 
-    private val storage = FirebaseStorage.getInstance("gs://spanishapp-35092.firebasestorage.app")
+    // v1.17.3: default bucket + users/{uid}/* путь — синхрон с ProfileScreen
+    // и Storage rules в Firebase Console (см. CLAUDE.md §10). Раньше был
+    // отдельный bucket "firebasestorage.app" и путь "avatars/{uid}.jpg" —
+    // не подпадал под rules `users/{uid}/*` → permission denied.
+    private val storage = FirebaseStorage.getInstance()
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
@@ -231,8 +235,9 @@ class SettingsViewModel @Inject constructor(
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos)
                 val data = baos.toByteArray()
 
-                // Путь в Storage (упрощенный)
-                val storageRef = storage.reference.child("avatars/${currentUser.uid}.jpg")
+                // v1.17.3: путь users/{uid}/avatar.jpg синхронизирован с
+                // ProfileScreen и Storage rules `users/{uid}/*` в Firebase Console.
+                val storageRef = storage.reference.child("users/${currentUser.uid}/avatar.jpg")
                 
                 // Загрузка
                 storageRef.putBytes(data).await()
@@ -360,7 +365,7 @@ class SettingsViewModel @Inject constructor(
 
         // 2. Storage avatar
         if (uid != null) {
-            runCatching { storage.reference.child("avatars/$uid.jpg").delete().await() }
+            runCatching { storage.reference.child("users/$uid/avatar.jpg").delete().await() }
                 .onFailure { Log.w("SettingsVM", "Avatar delete failed", it) }
         }
 
