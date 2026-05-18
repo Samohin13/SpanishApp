@@ -68,8 +68,12 @@ fun GamesScreen(
     vm: GamesScreenViewModel = hiltViewModel()
 ) {
     val progress by vm.gameProgress.collectAsState()
-    // v1.12.1: adaptive grid — 2 на телефоне, 3 на foldable, 4 на планшете.
-    val cols = com.spanishapp.ui.adaptive.adaptiveColumns(compact = 2, medium = 3, expanded = 4)
+    // v1.13.2: 2 cols ВЕЗДЕ (юзер: "должно быть 2 столбца 4 строки
+    // как в мобильной просто крупнее"). Раньше было 4 cols × 2 rows
+    // на планшете — выглядело как «сетка чисел», карточки маленькие.
+    // 2 cols + adaptive heightIn = крупные читаемые карточки.
+    val cols = 2
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(cols),
@@ -139,11 +143,14 @@ private fun GameCard(
         label = "wobble_angle_${game.route}"
     )
 
+    // v1.13.2: на планшете карточка крупнее (160dp → 220dp)
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val cardHeight = if (isWide) 220.dp else 160.dp
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp),
+            .height(cardHeight),
         shape = RoundedCornerShape(20.dp),
         shadowElevation = 4.dp
     ) {
@@ -152,36 +159,46 @@ private fun GameCard(
         // sits behind the icon + title, anchored bottom-right, alpha
         // ~0.13. Same system used by Bento and Continue cards.
         com.spanishapp.ui.home.ThematicWatermark(theme = game.watermark, accent = game.color)
+        // v1.13.2: adaptive sizing для карточки игры
+        val cardIsWide = com.spanishapp.ui.adaptive.isWideScreen()
+        val pad = if (cardIsWide) 20.dp else 14.dp
+        val iconBoxSize = if (cardIsWide) 64.dp else 44.dp
+        val iconSize = if (cardIsWide) 36.dp else 24.dp
+        val titleFont = if (cardIsWide) 22.sp else 16.sp
+        val descFont = if (cardIsWide) 15.sp else 12.sp
+        val descLineHeight = if (cardIsWide) 18.sp else 14.sp
+        val progFont = if (cardIsWide) 13.sp else 11.sp
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(14.dp),
+                .padding(pad),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Box(
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(iconBoxSize)
                     .clip(CircleShape)
                     .background(game.color.copy(alpha = 0.12f))
                     .graphicsLayer { rotationZ = wobble },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(game.icon, null, tint = game.color, modifier = Modifier.size(24.dp))
+                Icon(game.icon, null, tint = game.color, modifier = Modifier.size(iconSize))
             }
 
             Column {
                 Text(
                     game.title,
-                    fontSize = 16.sp,
+                    fontSize = titleFont,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1
                 )
                 Text(
                     androidx.compose.ui.res.stringResource(game.descriptionRes),
-                    fontSize = 12.sp,
+                    fontSize = descFont,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    lineHeight = 14.sp,
+                    lineHeight = descLineHeight,
                     maxLines = 2
                 )
             }
@@ -194,7 +211,7 @@ private fun GameCard(
                 ) {
                     Text(
                         progress.label,
-                        fontSize = 11.sp,
+                        fontSize = progFont,
                         fontWeight = FontWeight.SemiBold,
                         color = game.color,
                         textAlign = TextAlign.Center,

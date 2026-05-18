@@ -37,6 +37,7 @@ import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.R
+import com.spanishapp.ui.adaptive.adaptiveContentWidth
 
 // Accent colour for Crucigrama. MUST match the icon tint used in
 // GamesScreen.kt (Crucigrama icon = 0xFF26A69A teal). The variable name
@@ -103,16 +104,25 @@ fun CrosswordGameScreen(
             )
         }
     ) { padding ->
+        // v1.13.2: cap на планшете — кроссворд + level selection
+        // центрируются, не растягиваются на всю ширину 1280dp.
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            when {
-                state.showSetup  -> CrosswordLevelSelection(state, viewModel)
-                state.isGameOver -> CrosswordVictory(state, viewModel) { viewModel.resetToMenu() }
-                else             -> CrosswordActiveContent(state, viewModel)
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .adaptiveContentWidth(),
+            ) {
+                when {
+                    state.showSetup  -> CrosswordLevelSelection(state, viewModel)
+                    state.isGameOver -> CrosswordVictory(state, viewModel) { viewModel.resetToMenu() }
+                    else             -> CrosswordActiveContent(state, viewModel)
+                }
             }
         }
     }

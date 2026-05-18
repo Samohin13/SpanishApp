@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.spanishapp.R
 import com.spanishapp.domain.games.GameId
+import com.spanishapp.ui.adaptive.adaptiveContentWidth
 import com.spanishapp.ui.games.common.ComboBadge
 import com.spanishapp.ui.games.common.ConfettiEffect
 import com.spanishapp.ui.games.common.LevelCompleteSheet
@@ -150,6 +151,8 @@ private fun MathGameContent(
             .padding(padding)
             .background(MaterialTheme.colorScheme.background)
         ) {
+            // v1.13.2: full-width — клавиатура внизу должна быть на
+            // всю ширину для удобства тапа. Cap нежелателен.
             Column(
                 modifier = Modifier
                     .fillMaxSize()

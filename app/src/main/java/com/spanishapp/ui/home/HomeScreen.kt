@@ -146,16 +146,12 @@ fun HomeScreen(
     var sheetWord by remember { mutableStateOf<WordEntity?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // v1.12.4: на планшете mini-player снизу (56dp) перекрывал
-        // нижнюю часть skyline. Добавил bottom padding = высота player'a
-        // когда играет радио. На телефоне player над bottomBar — без проблем.
-        val isWide = com.spanishapp.ui.adaptive.isWideScreen()
-        val miniPlayerHeight = if (isWide) 64.dp else 0.dp
-        SpanishCitiesWatermark(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = miniPlayerHeight),
-        )
+        // v1.13.2: убрал padding снизу — watermark теперь прижимается
+        // к низу контейнера (HomeScreen). Scaffold v1.13.0 даёт
+        // корректный paddingValues, так что watermark не уходит под
+        // BottomBar/mini-player. Юзер жаловался "watermark оторван
+        // от нижнего бара" — между skyline и BottomBar был чёрный gap.
+        SpanishCitiesWatermark(modifier = Modifier.fillMaxSize())
 
         // v1.12.0 Phase 2: adaptive content width — на планшете контент
         // центрируется и не растягивается на всю ширину (cap из AdaptiveScaffold).
@@ -663,9 +659,11 @@ private fun ContinuePager(
             modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
         )
 
+        // v1.13.2: pager высота adaptive — на планшете крупнее
+        val pagerHeight = if (com.spanishapp.ui.adaptive.isWideScreen()) 200.dp else 140.dp
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxWidth().height(140.dp),
+            modifier = Modifier.fillMaxWidth().height(pagerHeight),
             pageSpacing = 8.dp
         ) { page ->
             when (page) {
@@ -727,9 +725,11 @@ private fun ContinueCard(
     onClick: () -> Unit,
     theme: WatermarkTheme? = null
 ) {
+    // v1.13.2: ContinueCard adaptive height (выравнивается с pager выше)
+    val cardHeight = if (com.spanishapp.ui.adaptive.isWideScreen()) 200.dp else 140.dp
     PressableCard(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth().height(140.dp),
+        modifier = Modifier.fillMaxWidth().height(cardHeight),
         shape = RoundedCornerShape(20.dp),
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         shadowElevation = 4.dp,
@@ -1880,9 +1880,15 @@ private fun BentoTile(
     content: @Composable ColumnScope.() -> Unit
 ) {
     val baseColor = MaterialTheme.colorScheme.surfaceContainerHigh
+    // v1.13.2: на планшете aspectRatio 1.8 (~квадрат), на телефоне
+    // fixed 180dp. Юзер: "Виджеты на главной прямоугольные, а должны
+    // быть более квадратные." 2 cols × 600dp / 1.8 = 333dp высота —
+    // близко к квадрату, как у Duolingo / iOS home widgets.
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val tileModifier = if (isWide) modifier.aspectRatio(1.8f) else modifier.height(180.dp)
     PressableCard(
         onClick = onClick,
-        modifier = modifier.height(180.dp),
+        modifier = tileModifier,
         shape = RoundedCornerShape(22.dp),
         backgroundColor = baseColor,
         shadowElevation = 6.dp

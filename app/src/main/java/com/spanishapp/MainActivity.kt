@@ -12,8 +12,15 @@ import androidx.fragment.app.FragmentActivity
 import com.spanishapp.util.LocaleHelper
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -166,32 +173,54 @@ class MainActivity : FragmentActivity() {
  *
  * Без overlay юзер видит белый экран, думает «зависло» и закрывает.
  */
+/**
+ * v1.13.2: переделан под dark splash theme (themes.xml).
+ * Тёмный фон + крупная оранжевая иконка-кружок + бренд + индикатор.
+ * Выглядит как продолжение system splash, а не как другой экран.
+ */
 @Composable
 private fun FirstLaunchLoadingOverlay() {
-    androidx.compose.foundation.layout.Box(
-        modifier = androidx.compose.ui.Modifier.fillMaxSize(),
-        contentAlignment = androidx.compose.ui.Alignment.Center,
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF0F0F11)),
+        contentAlignment = Alignment.Center,
     ) {
-        androidx.compose.foundation.layout.Column(
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            androidx.compose.material3.CircularProgressIndicator(
-                modifier = androidx.compose.ui.Modifier.size(48.dp),
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 4.dp,
-            )
-            androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(20.dp))
+            // Оранжевый круг с быком (бренд)
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFFF6B35)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(
+                    painter = painterResource(id = com.spanishapp.R.drawable.ic_bull),
+                    contentDescription = null,
+                    modifier = Modifier.size(72.dp),
+                )
+            }
+            Spacer(Modifier.height(24.dp))
             androidx.compose.material3.Text(
                 "ESPEAK",
-                style = MaterialTheme.typography.headlineSmall,
+                fontSize = 32.sp,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary,
+                color = Color.White,
             )
-            androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(8.dp))
+            Spacer(Modifier.height(16.dp))
+            androidx.compose.material3.CircularProgressIndicator(
+                modifier = Modifier.size(36.dp),
+                color = Color(0xFFFF6B35),
+                strokeWidth = 3.dp,
+            )
+            Spacer(Modifier.height(12.dp))
             androidx.compose.material3.Text(
                 "Готовим словарь...",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 14.sp,
+                color = Color.White.copy(alpha = 0.7f),
             )
         }
     }

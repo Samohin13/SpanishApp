@@ -4,17 +4,19 @@
     <style name="Theme.SpanishApp" parent="android:Theme.Material.Light.NoActionBar" />
 
     <!-- Splash Screen Theme (SplashScreen API, Android 12+).
-         Цвета совпадают с брендом «Sunset over Barcelona» — оранжевый Purple
-         в Color.kt = #FF6B35. -->
+         v1.13.2: было solid #FF6B35 — на планшете огромный пустой
+         оранжевый фон выглядел ужасно. Теперь dark background +
+         оранжевый круг с иконкой = премиальный look, иконка в фокусе. -->
     <style name="Theme.SpanishApp.Splash" parent="Theme.SplashScreen">
-        <!-- Фон сплэш-экрана -->
-        <item name="windowSplashScreenBackground">#FF6B35</item>
+        <!-- Тёмный фон — иконка контрастно выделяется -->
+        <item name="windowSplashScreenBackground">#0F0F11</item>
 
         <!-- Иконка в центре (adaptive icon foreground) -->
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
 
-        <!-- Подложка под иконку (Android 12+ автоматически окрашивает) -->
-        <item name="windowSplashScreenIconBackgroundColor">#FFFFFF</item>
+        <!-- Оранжевая подложка под иконку (Android 12+ автоматически
+             рисует circle ~200dp с этим background color). -->
+        <item name="windowSplashScreenIconBackgroundColor">#FF6B35</item>
 
         <!-- Тема которая применяется после скрытия сплеша -->
         <item name="postSplashScreenTheme">@style/Theme.SpanishApp</item>

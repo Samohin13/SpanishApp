@@ -30,6 +30,7 @@ import com.spanishapp.R
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.LevelCompleteSheet
 import com.spanishapp.ui.games.common.LevelMapScreen
+import com.spanishapp.ui.adaptive.adaptiveContentWidth
 
 private val ACCENT = Color(0xFFFF9500)
 private val BgGray
@@ -110,11 +111,19 @@ private fun PalabraActiveGame(
             )
         }
     ) { padding ->
-        Column(
+        // v1.13.2: на планшете контент центрируется (cap 720dp)
+        // чтобы UI не растягивался уродливо на 1280dp.
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(BgGray)
+                .background(BgGray),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .adaptiveContentWidth()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -310,6 +319,7 @@ private fun PalabraActiveGame(
 
             Spacer(Modifier.height(24.dp))
         }
+        } // close adaptive Box
     }
 }
 
