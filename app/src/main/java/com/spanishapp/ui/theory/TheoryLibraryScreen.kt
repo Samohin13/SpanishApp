@@ -79,11 +79,13 @@ fun TheoryLibraryScreen(
                 if (cards.isEmpty()) return@forEach
 
                 item(key = "header_$level") {
+                    // v1.15.0 P1: цвет уровня из единой палитры CefrColors
+                    val levelColor = com.spanishapp.ui.theme.CefrColors.forLevel(level)
                     Text(
                         "Уровень $level · ${cards.size} карточек",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = levelColor,
                         modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
                     )
                 }

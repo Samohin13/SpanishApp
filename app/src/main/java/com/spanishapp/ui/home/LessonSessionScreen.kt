@@ -423,11 +423,13 @@ private fun TheoryCard(
     tts: TextToSpeech?,
     onNext: () -> Unit
 ) {
+    // v1.15.0 P0: imePadding — клавиатура не перекрывает input для ответов
     Column(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .adaptiveContentWidth()
+            .imePadding()
             .padding(horizontal = 20.dp),
     ) {
         Spacer(Modifier.height(16.dp))

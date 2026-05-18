@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.spanishapp.R
+import com.spanishapp.ui.adaptive.adaptiveContentWidth
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -444,10 +445,13 @@ fun SettingsScreen(
     var showGoalDialog by remember { mutableStateOf(false) }
     var showLanguageDialog by remember { mutableStateOf(false) }
 
+    // v1.15.0 P2: adaptive font для TopAppBar (18 → 22sp на планшете)
+    val isWideSettings = com.spanishapp.ui.adaptive.isWideScreen()
+    val settingsTitleFont = if (isWideSettings) 22.sp else 18.sp
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.title_settings), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.title_settings), fontWeight = FontWeight.SemiBold, fontSize = settingsTitleFont) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.btn_back))
@@ -456,8 +460,14 @@ fun SettingsScreen(
             )
         }
     ) { padding ->
+        // v1.15.0 P2: cap 720dp на планшете чтобы settings не растягивались
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(bottom = 32.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .adaptiveContentWidth()
+                .padding(bottom = 32.dp)
         ) {
             // ── Шапка профиля ──
             Box(modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp), contentAlignment = Alignment.Center) {
@@ -1026,12 +1036,16 @@ fun SettingsScreen(
             onDismissRequest = { showNameDialog = false; vm.clearNameError() },
             title = { Text(stringResource(R.string.set_dlg_name_title)) },
             text = {
-                OutlinedTextField(
-                    value = tempName, onValueChange = { tempName = it; vm.clearNameError() },
-                    label = { Text(stringResource(R.string.set_dlg_name_label)) }, isError = nameError != null,
-                    supportingText = { if (nameError != null) Text(nameError!!, color = MaterialTheme.colorScheme.error) },
-                    singleLine = true, modifier = Modifier.fillMaxWidth()
-                )
+                // v1.15.0 P0: Box с imePadding гарантирует что клавиатура
+                // не перекроет TextField даже если AlertDialog не обрабатывает ime автоматически.
+                Box(modifier = Modifier.imePadding()) {
+                    OutlinedTextField(
+                        value = tempName, onValueChange = { tempName = it; vm.clearNameError() },
+                        label = { Text(stringResource(R.string.set_dlg_name_label)) }, isError = nameError != null,
+                        supportingText = { if (nameError != null) Text(nameError!!, color = MaterialTheme.colorScheme.error) },
+                        singleLine = true, modifier = Modifier.fillMaxWidth()
+                    )
+                }
             },
             confirmButton = {
                 Button(onClick = {

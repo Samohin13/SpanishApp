@@ -113,10 +113,11 @@ fun LessonContentScreen(
                         }
                         navController.popBackStack()
                     },
+                    // v1.15.0 P2: adaptive height (56 → 72dp на планшете)
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 16.dp)
-                        .height(56.dp),
+                        .height(if (com.spanishapp.ui.adaptive.isWideScreen()) 72.dp else 56.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = accentColor)
                 ) {
@@ -153,7 +154,8 @@ fun LessonContentScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(unit.icon, fontSize = 28.sp)
-                        Text(
+                        // v1.15.0 P1: MarkdownText рендерит **bold** правильно
+                        com.spanishapp.ui.components.MarkdownText(
                             text = content.intro,
                             fontSize = 15.sp,
                             lineHeight = 22.sp,
@@ -178,7 +180,7 @@ private fun ContentSection(section: LessonSection, accentColor: Color) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
 
         // Заголовок секции
-        Text(
+        com.spanishapp.ui.components.MarkdownText(
             text = section.heading,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
@@ -226,7 +228,7 @@ private fun ContentRow(item: LessonItem, accentColor: Color) {
                 .widthIn(min = 56.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(
+            com.spanishapp.ui.components.MarkdownText(
                 text = item.left,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
@@ -238,14 +240,14 @@ private fun ContentRow(item: LessonItem, accentColor: Color) {
 
         // Правая часть — перевод / пояснение + пример
         Column(modifier = Modifier.weight(1f)) {
-            Text(
+            com.spanishapp.ui.components.MarkdownText(
                 text = item.right,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             if (item.note.isNotBlank()) {
-                Text(
+                com.spanishapp.ui.components.MarkdownText(
                     text = item.note,
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

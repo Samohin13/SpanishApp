@@ -274,13 +274,18 @@ fun parseDialogueLines(json: String): List<DialogueLine> = runCatching {
 @Composable
 private fun DialogueLineItem(line: DialogueLine, onSpeak: (String) -> Unit) {
     val isA = line.speaker == "A"
-    
+
+    // v1.15.0 P0+P2: на планшете bubble шире — 480dp вместо 300dp.
+    // Раньше на 1280dp экране bubble выглядел узко (телефонная ширина).
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val bubbleMaxWidth = if (isWide) 480.dp else 300.dp
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (isA) Arrangement.Start else Arrangement.End
     ) {
         Column(
-            modifier = Modifier.widthIn(max = 300.dp),
+            modifier = Modifier.widthIn(max = bubbleMaxWidth),
             horizontalAlignment = if (isA) Alignment.Start else Alignment.End
         ) {
             Surface(
@@ -296,7 +301,8 @@ private fun DialogueLineItem(line: DialogueLine, onSpeak: (String) -> Unit) {
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
+                        // v1.15.0 P1: MarkdownText для **bold** в диалогах
+                        com.spanishapp.ui.components.MarkdownText(
                             line.es,
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.SemiBold,
@@ -310,7 +316,7 @@ private fun DialogueLineItem(line: DialogueLine, onSpeak: (String) -> Unit) {
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                    Text(
+                    com.spanishapp.ui.components.MarkdownText(
                         line.ru,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant

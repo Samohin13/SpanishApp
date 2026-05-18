@@ -367,11 +367,13 @@ private fun TenseTable(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // v1.15.0 P2: pronoun column шире на планшете
+                val pronounWidth = if (com.spanishapp.ui.adaptive.isWideScreen()) 100.dp else 72.dp
                 Text(
                     pronoun,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.width(72.dp)
+                    modifier = Modifier.width(pronounWidth)
                 )
                 Text(
                     form,

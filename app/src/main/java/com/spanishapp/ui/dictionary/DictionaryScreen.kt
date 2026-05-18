@@ -1036,13 +1036,11 @@ private fun LevelDot(level: String) {
     }
 }
 
+// v1.15.0 P3: использует единую CefrColors палитру для синхронизации
+// с Tarjetas / Libros / PlacementTest / TheoryLibrary.
 private fun levelColor(level: String): Color = when (level) {
-    "A1" -> Color(0xFF059669)
-    "A2" -> Color(0xFF0284C7)
-    "B1" -> Color(0xFFD97706)
-    "B2" -> Color(0xFFF05A28)
-    "C1" -> Color(0xFF7C3AED)
-    else -> Color(0xFF9CA3AF)
+    "C1" -> Color(0xFF7C3AED)  // C1 — наш фиолетовый (CefrColors не покрывает C1)
+    else -> com.spanishapp.ui.theme.CefrColors.forLevel(level)
 }
 
 /**

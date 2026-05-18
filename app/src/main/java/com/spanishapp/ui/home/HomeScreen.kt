@@ -82,13 +82,13 @@ private val TextGray    = Color(0xFF8E8E93)
 private val LockGray    = Color(0xFFC7C7CC)
 
 // CEFR pill colours.
-// A1 = yellow, A2 = cyan, B1 = green, B2 = magenta/rose.
-// B2 was previously orange — but every B2 unit inside RoadmapData uses
-// a pink/rose shade (#9F1239..#E11D48). Pill now matches content.
-private val A1Color = Color(0xFFEAB308)
-private val A2Color = Color(0xFF06B6D4)
-private val B1Color = Color(0xFF22C55E)
-private val B2Color = Color(0xFFDB2777)
+// v1.15.0 P3: используем единую CefrColors палитру.
+// Раньше у каждого экрана были свои hex'ы (близкие но не идентичные),
+// теперь все 4 уровня — single source of truth.
+private val A1Color = com.spanishapp.ui.theme.CefrColors.A1
+private val A2Color = com.spanishapp.ui.theme.CefrColors.A2
+private val B1Color = com.spanishapp.ui.theme.CefrColors.B1
+private val B2Color = com.spanishapp.ui.theme.CefrColors.B2
 
 // Continue-pager per-page accents.
 private val LessonAccent = Color(0xFFEAB308)

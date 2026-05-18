@@ -50,6 +50,7 @@ import com.spanishapp.data.db.entity.ChatMessageEntity
 import com.spanishapp.data.repository.AiChatRepository
 import com.spanishapp.service.SpanishTts
 import com.spanishapp.R
+import com.spanishapp.ui.adaptive.adaptiveContentWidth
 import com.spanishapp.ui.theme.AppColors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -315,11 +316,16 @@ fun AiChatScreen(
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     })
                 } else {
+                    // v1.15.0 P2: cap 720dp на планшете чтобы chat
+                    // не растягивался на всю ширину 1280dp (читать
+                    // длинные строки тяжело — readability rule).
                     LazyColumn(
                         state = listState,
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .adaptiveContentWidth()
                     ) {
                         items(messages, key = { it.id }) { msg ->
                             // Each new message slides up + fades in. Existing
@@ -696,8 +702,10 @@ private fun ChatBubble(
             ) {
                 Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
                     if (isUser) {
-                        Text(
-                            text = AnnotatedString(message.content),
+                        // v1.15.0 P1: MarkdownText вместо plain AnnotatedString.
+                        // Юзер может писать **bold** в своих сообщениях — рендерим правильно.
+                        com.spanishapp.ui.components.MarkdownText(
+                            text = message.content,
                             fontSize = 16.sp,
                             lineHeight = 22.sp,
                             color = MaterialTheme.colorScheme.onPrimary

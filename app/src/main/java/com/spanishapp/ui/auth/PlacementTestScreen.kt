@@ -316,16 +316,19 @@ fun PlacementResultScreen(
         )
         Spacer(Modifier.height(12.dp))
 
+        // v1.15.0 P1: бэйдж уровня окрашен в единую CefrColors палитру
+        // (A1=amber, A2=cyan, B1=green, B2=pink) вместо purple-only.
+        val levelColor = com.spanishapp.ui.theme.CefrColors.forLevel(level)
         Box(
             modifier = Modifier
-                .background(AppColors.PurplePale, RoundedCornerShape(12.dp))
+                .background(levelColor.copy(alpha = 0.18f), RoundedCornerShape(12.dp))
                 .padding(horizontal = 24.dp, vertical = 8.dp)
         ) {
             Text(
                 stringResource(com.spanishapp.R.string.auth_placement_level_label, level),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = AppColors.Purple
+                color = levelColor
             )
         }
 
