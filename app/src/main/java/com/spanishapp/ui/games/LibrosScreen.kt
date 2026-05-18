@@ -148,15 +148,15 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
     val libro = item.libro
     val levelColor = LevelColors[libro.level] ?: LibrosPurple
 
-    // v1.14.2: compact (юзер хочет единый стиль с Tarjetas).
+    // v1.15.1: ultra-compact (единый стиль с Tarjetas 72dp)
     val isWide = com.spanishapp.ui.adaptive.isWideScreen()
-    val cardMinHeight = if (isWide) 88.dp else 96.dp
-    val numberSize = if (isWide) 40.dp else 40.dp
-    val numberFont = if (isWide) 14.sp else 14.sp
-    val titleFont = if (isWide) 15.sp else 14.sp
-    val topicFont = if (isWide) 12.sp else 11.sp
-    val buttonFont = if (isWide) 12.sp else 11.sp
-    val cardPadding = if (isWide) 12.dp else 12.dp
+    val cardMinHeight = if (isWide) 68.dp else 72.dp
+    val numberSize = if (isWide) 36.dp else 36.dp
+    val numberFont = if (isWide) 13.sp else 13.sp
+    val titleFont = if (isWide) 14.sp else 14.sp
+    val topicFont = if (isWide) 11.sp else 11.sp
+    val buttonFont = if (isWide) 11.sp else 11.sp
+    val cardPadding = if (isWide) 10.dp else 10.dp
 
     Card(
         modifier = Modifier

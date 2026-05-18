@@ -326,15 +326,16 @@ private fun SetRow(
 ) {
     val accent = levelAccent(row.set.level)
 
-    // v1.14.2: ещё компактнее (юзер: "ужми эти окна до светового
-    // паттерна, не более"). Высота карточки = высота accent stripe.
+    // v1.15.1: ужал ещё (юзер: "что я попросил сделать с этим, исправляй").
+    // Карточка stays минимально-функциональной — только высота emoji+text,
+    // никакого лишнего пространства. Реально как «световой паттерн».
     val isWide = com.spanishapp.ui.adaptive.isWideScreen()
-    val cardMinHeight = if (isWide) 96.dp else 96.dp
+    val cardMinHeight = if (isWide) 68.dp else 72.dp
 
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
         modifier = modifier.fillMaxWidth().heightIn(min = cardMinHeight),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(14.dp),
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         shadowElevation = if (row.unlocked) 3.dp else 0.dp,
         enabled = row.unlocked
@@ -347,7 +348,7 @@ private fun SetRow(
                         // Left accent stripe (level colour)
                         drawRect(
                             color = accent,
-                            size  = Size(5.dp.toPx(), size.height)
+                            size  = Size(4.dp.toPx(), size.height)
                         )
                         // Subtle radial glow from top-right
                         drawRect(
@@ -363,16 +364,16 @@ private fun SetRow(
         ) {
             Row(
                 modifier = Modifier.padding(
-                    start = 20.dp, end = 16.dp, top = 16.dp, bottom = 16.dp
+                    start = 14.dp, end = 12.dp, top = 10.dp, bottom = 10.dp
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // v1.14.2: compact (юзер хочет «как световой паттерн»).
-                val emojiSize = if (isWide) 48.dp else 44.dp
-                val emojiFont = if (isWide) 24.sp else 22.sp
-                val lockSize = if (isWide) 20.dp else 18.dp
-                val titleFont = if (isWide) 15.sp else 14.sp
-                val metaFont = if (isWide) 12.sp else 11.sp
+                // v1.15.1: ещё компактнее (минимум для читабельности)
+                val emojiSize = if (isWide) 40.dp else 40.dp
+                val emojiFont = if (isWide) 20.sp else 20.sp
+                val lockSize = if (isWide) 18.dp else 18.dp
+                val titleFont = if (isWide) 14.sp else 14.sp
+                val metaFont = if (isWide) 11.sp else 11.sp
                 Box(
                     modifier = Modifier
                         .size(emojiSize)
@@ -397,7 +398,7 @@ private fun SetRow(
                     }
                 }
 
-                Spacer(Modifier.width(14.dp))
+                Spacer(Modifier.width(10.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
@@ -405,9 +406,10 @@ private fun SetRow(
                         fontSize   = titleFont,
                         fontWeight = FontWeight.SemiBold,
                         color      = if (row.unlocked) MaterialTheme.colorScheme.onSurface
-                                     else MaterialTheme.colorScheme.onSurfaceVariant
+                                     else MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(2.dp))
                     if (row.unlocked) {
                         val wordOne = stringResource(com.spanishapp.R.string.word_count_one)
                         val wordFew = stringResource(com.spanishapp.R.string.word_count_few)
@@ -431,22 +433,22 @@ private fun SetRow(
                                            Color(0xFF4CAF50)
                                        else MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Spacer(Modifier.height(6.dp))
-                        // Progress bar in level accent colour
+                        Spacer(Modifier.height(4.dp))
+                        // Progress bar — тонкий 4dp, занимает мало места
                         val progressFraction =
                             if (row.total > 0) row.seenCount.toFloat() / row.total else 0f
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(6.dp)
-                                .clip(RoundedCornerShape(3.dp))
+                                .height(4.dp)
+                                .clip(RoundedCornerShape(2.dp))
                                 .background(MaterialTheme.colorScheme.surfaceVariant)
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxHeight()
                                     .fillMaxWidth(progressFraction.coerceIn(0f, 1f))
-                                    .clip(RoundedCornerShape(3.dp))
+                                    .clip(RoundedCornerShape(2.dp))
                                     .background(accent)
                             )
                         }
