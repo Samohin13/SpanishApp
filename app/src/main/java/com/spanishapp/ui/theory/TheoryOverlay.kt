@@ -166,10 +166,12 @@ private fun SectionView(section: TheorySection, onPlayAudio: (String) -> Unit) {
 private fun TextSection(heading: String, body: String) {
     Column {
         if (heading.isNotBlank()) {
-            Text(heading, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            com.spanishapp.ui.components.MarkdownText(
+                heading, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
         }
-        Text(body, fontSize = 14.sp, lineHeight = 20.sp)
+        com.spanishapp.ui.components.MarkdownText(
+            body, fontSize = 14.sp, lineHeight = 20.sp)
     }
 }
 
@@ -182,7 +184,7 @@ private fun RuleSection(heading: String, body: String) {
     ) {
         Column(Modifier.padding(14.dp)) {
             if (heading.isNotBlank()) {
-                Text(
+                com.spanishapp.ui.components.MarkdownText(
                     "🧠 $heading",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
@@ -190,7 +192,7 @@ private fun RuleSection(heading: String, body: String) {
                 )
                 Spacer(Modifier.height(6.dp))
             }
-            Text(
+            com.spanishapp.ui.components.MarkdownText(
                 body,
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
@@ -312,7 +314,7 @@ private fun MnemonicSection(body: String) {
         Row(Modifier.padding(14.dp)) {
             Text("💡", fontSize = 22.sp)
             Spacer(Modifier.width(12.dp))
-            Text(
+            com.spanishapp.ui.components.MarkdownText(
                 body,
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
@@ -333,7 +335,7 @@ private fun TipSection(body: String) {
         Row(Modifier.padding(12.dp)) {
             Text("💡", fontSize = 18.sp)
             Spacer(Modifier.width(10.dp))
-            Text(
+            com.spanishapp.ui.components.MarkdownText(
                 body,
                 fontSize = 13.sp,
                 lineHeight = 18.sp,
@@ -353,7 +355,7 @@ private fun WarningSection(body: String) {
         Row(Modifier.padding(12.dp)) {
             Text("⚠", fontSize = 18.sp)
             Spacer(Modifier.width(10.dp))
-            Text(
+            com.spanishapp.ui.components.MarkdownText(
                 body,
                 fontSize = 13.sp,
                 lineHeight = 18.sp,

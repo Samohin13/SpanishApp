@@ -213,8 +213,10 @@ private fun LessonCard(
                         for (i in 0 until rulesArr.length()) {
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 Text("·", color = AppColors.Teal, fontWeight = FontWeight.Bold)
-                                Text(rulesArr.getString(i),
-                                     style = MaterialTheme.typography.bodySmall)
+                                // v1.13.5: MarkdownText рендерит **bold** правильно
+                                com.spanishapp.ui.components.MarkdownText(
+                                    rulesArr.getString(i),
+                                    style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }
@@ -240,11 +242,13 @@ private fun LessonCard(
                             Surface(shape = RoundedCornerShape(10.dp),
                                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)) {
                                 Column(modifier = Modifier.padding(10.dp)) {
-                                    Text(ex.optString("es"), fontWeight = FontWeight.SemiBold,
-                                         style = MaterialTheme.typography.bodyMedium)
-                                    Text(ex.optString("ru"),
-                                         style = MaterialTheme.typography.bodySmall,
-                                         color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    com.spanishapp.ui.components.MarkdownText(
+                                        ex.optString("es"), fontWeight = FontWeight.SemiBold,
+                                        style = MaterialTheme.typography.bodyMedium)
+                                    com.spanishapp.ui.components.MarkdownText(
+                                        ex.optString("ru"),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
@@ -276,7 +280,8 @@ private fun InfoBlock(label: String, text: String, color: androidx.compose.ui.gr
         Text(label, style = MaterialTheme.typography.labelLarge,
              fontWeight = FontWeight.Bold, color = color)
         Spacer(Modifier.height(4.dp))
-        Text(text, style = MaterialTheme.typography.bodySmall)
+        // v1.13.5: MarkdownText рендерит **bold** правильно
+        com.spanishapp.ui.components.MarkdownText(text, style = MaterialTheme.typography.bodySmall)
     }
 }
 

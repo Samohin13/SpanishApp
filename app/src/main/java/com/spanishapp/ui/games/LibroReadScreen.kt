@@ -820,6 +820,16 @@ fun LibroReadScreen(
 
                         Spacer(Modifier.height(12.dp))
 
+                        // v1.13.5: на планшете кнопки крупнее (46→72dp,
+                        // start_quiz 52→80dp). Юзер: «надо было сам рассказ
+                        // и кнопки к нему крупнее».
+                        val isWideBtn = com.spanishapp.ui.adaptive.isWideScreen()
+                        val btnRowHeight = if (isWideBtn) 72.dp else 46.dp
+                        val btnIconSize = if (isWideBtn) 28.dp else 18.dp
+                        val btnFontSp = if (isWideBtn) 18.sp else 14.sp
+                        val quizHeight = if (isWideBtn) 80.dp else 52.dp
+                        val quizFont = if (isWideBtn) 20.sp else 16.sp
+
                         // ── Слушать весь текст + Читать вслух ──
                         Row(
                             Modifier.fillMaxWidth(),
@@ -834,7 +844,7 @@ fun LibroReadScreen(
                                         isSpeaking = true
                                     }
                                 },
-                                modifier = Modifier.weight(1f).height(46.dp),
+                                modifier = Modifier.weight(1f).height(btnRowHeight),
                                 shape = RoundedCornerShape(12.dp),
                                 border = androidx.compose.foundation.BorderStroke(
                                     1.5.dp, if (isSpeaking) Color(0xFFC62828) else levelColor
@@ -844,13 +854,14 @@ fun LibroReadScreen(
                                     if (isSpeaking) Icons.Default.Stop else Icons.Default.Headphones,
                                     contentDescription = null,
                                     tint = if (isSpeaking) Color(0xFFC62828) else levelColor,
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(btnIconSize)
                                 )
-                                Spacer(Modifier.width(4.dp))
+                                Spacer(Modifier.width(6.dp))
                                 Text(
                                     if (isSpeaking) stringResource(R.string.lread_stop) else stringResource(R.string.lread_audiobook),
                                     color = if (isSpeaking) Color(0xFFC62828) else levelColor,
-                                    fontSize = 14.sp
+                                    fontSize = btnFontSp,
+                                    fontWeight = FontWeight.SemiBold,
                                 )
                             }
 
@@ -864,13 +875,15 @@ fun LibroReadScreen(
                                         results   = List(sentences.size) { null }
                                     )
                                 },
-                                modifier = Modifier.weight(1f).height(46.dp),
+                                modifier = Modifier.weight(1f).height(btnRowHeight),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = levelColor)
                             ) {
-                                Icon(Icons.Default.Mic, null, modifier = Modifier.size(18.dp))
-                                Spacer(Modifier.width(4.dp))
-                                Text(stringResource(R.string.lread_read_aloud), fontSize = 14.sp)
+                                Icon(Icons.Default.Mic, null, modifier = Modifier.size(btnIconSize))
+                                Spacer(Modifier.width(6.dp))
+                                Text(stringResource(R.string.lread_read_aloud),
+                                    fontSize = btnFontSp,
+                                    fontWeight = FontWeight.SemiBold)
                             }
                         }
 
@@ -882,11 +895,11 @@ fun LibroReadScreen(
                                 vm.dismissTranslation()
                                 state = ReadState.Quiz(0, List(libro.questions.size) { null })
                             },
-                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            modifier = Modifier.fillMaxWidth().height(quizHeight),
                             shape = RoundedCornerShape(14.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = levelColor)
                         ) {
-                            Text(stringResource(R.string.lread_start_quiz), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.lread_start_quiz), fontSize = quizFont, fontWeight = FontWeight.Bold)
                         }
                     }
 

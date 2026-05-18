@@ -171,14 +171,27 @@ private fun SectionView(section: TheorySection, onPlayAudio: (String) -> Unit) {
     }
 }
 
+// v1.13.5: helper для adaptive font size теории.
+// Юзер: "теорию можно сделать чуть крупнее для удобного прочтения,
+// мелко, приходится напрягаться". На планшете +4sp ко всем.
+@Composable
+private fun theoryFont(base: Int): androidx.compose.ui.unit.TextUnit =
+    (if (com.spanishapp.ui.adaptive.isWideScreen()) base + 4 else base).sp
+
+@Composable
+private fun theoryLine(base: Int): androidx.compose.ui.unit.TextUnit =
+    (if (com.spanishapp.ui.adaptive.isWideScreen()) base + 6 else base).sp
+
 @Composable
 private fun TextSection(heading: String, body: String) {
     Column {
         if (heading.isNotBlank()) {
-            Text(heading, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            com.spanishapp.ui.components.MarkdownText(
+                heading, fontSize = theoryFont(16), fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
         }
-        Text(body, fontSize = 14.sp, lineHeight = 20.sp)
+        com.spanishapp.ui.components.MarkdownText(
+            body, fontSize = theoryFont(14), lineHeight = theoryLine(20))
     }
 }
 
@@ -191,15 +204,16 @@ private fun RuleSection(heading: String, body: String) {
     ) {
         Column(Modifier.padding(14.dp)) {
             if (heading.isNotBlank()) {
-                Text(
+                com.spanishapp.ui.components.MarkdownText(
                     "🧠 $heading",
-                    fontSize = 13.sp,
+                    fontSize = theoryFont(13),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Spacer(Modifier.height(6.dp))
             }
-            Text(body, fontSize = 15.sp, lineHeight = 22.sp,
+            com.spanishapp.ui.components.MarkdownText(
+                body, fontSize = theoryFont(15), lineHeight = theoryLine(22),
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.SemiBold)
         }
@@ -210,7 +224,8 @@ private fun RuleSection(heading: String, body: String) {
 private fun TableSection(heading: String, table: TheoryTable) {
     Column {
         if (heading.isNotBlank()) {
-            Text("📊 $heading", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            com.spanishapp.ui.components.MarkdownText(
+                "📊 $heading", fontSize = theoryFont(14), fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
         }
         Surface(
@@ -222,10 +237,10 @@ private fun TableSection(heading: String, table: TheoryTable) {
                 // Headers
                 Row {
                     table.headers.forEachIndexed { i, h ->
-                        Text(
+                        com.spanishapp.ui.components.MarkdownText(
                             h,
                             modifier = Modifier.weight(1f).padding(6.dp),
-                            fontSize = 12.sp,
+                            fontSize = theoryFont(12),
                             fontWeight = FontWeight.Bold,
                             color = if (i in table.highlightedColumns)
                                 MaterialTheme.colorScheme.primary
@@ -243,10 +258,10 @@ private fun TableSection(heading: String, table: TheoryTable) {
                         )
                     ) {
                         row.forEachIndexed { i, cell ->
-                            Text(
+                            com.spanishapp.ui.components.MarkdownText(
                                 cell,
                                 modifier = Modifier.weight(1f).padding(6.dp),
-                                fontSize = 14.sp,
+                                fontSize = theoryFont(14),
                                 fontWeight = if (i in table.highlightedColumns)
                                     FontWeight.Bold else FontWeight.Normal,
                                 color = if (i in table.highlightedColumns)
@@ -264,7 +279,8 @@ private fun TableSection(heading: String, table: TheoryTable) {
 @Composable
 private fun ExamplesSection(heading: String, examples: List<TheoryExample>, onPlayAudio: (String) -> Unit) {
     Column {
-        Text("🗣 ${heading.ifBlank { "Примеры" }}", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        com.spanishapp.ui.components.MarkdownText(
+            "🗣 ${heading.ifBlank { "Примеры" }}", fontSize = theoryFont(14), fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             examples.forEach { ex ->
@@ -278,11 +294,14 @@ private fun ExamplesSection(heading: String, examples: List<TheoryExample>, onPl
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Column(Modifier.weight(1f)) {
-                            Text(ex.spanish, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                            Text(ex.russian, fontSize = 13.sp,
+                            com.spanishapp.ui.components.MarkdownText(
+                                ex.spanish, fontSize = theoryFont(15), fontWeight = FontWeight.SemiBold)
+                            com.spanishapp.ui.components.MarkdownText(
+                                ex.russian, fontSize = theoryFont(13),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                             if (ex.note.isNotBlank()) {
-                                Text(ex.note, fontSize = 11.sp,
+                                com.spanishapp.ui.components.MarkdownText(
+                                    ex.note, fontSize = theoryFont(11),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
                             }
                         }
@@ -305,7 +324,8 @@ private fun MnemonicSection(body: String) {
         Row(Modifier.padding(14.dp)) {
             Text("💡", fontSize = 22.sp)
             Spacer(Modifier.width(12.dp))
-            Text(body, fontSize = 14.sp, lineHeight = 20.sp,
+            com.spanishapp.ui.components.MarkdownText(
+                body, fontSize = theoryFont(14), lineHeight = theoryLine(20),
                 fontWeight = FontWeight.Medium,
                 color = Color(0xFF6D4C00))
         }
@@ -322,7 +342,8 @@ private fun TipSection(body: String) {
         Row(Modifier.padding(12.dp)) {
             Text("💡", fontSize = 18.sp)
             Spacer(Modifier.width(10.dp))
-            Text(body, fontSize = 13.sp, lineHeight = 18.sp,
+            com.spanishapp.ui.components.MarkdownText(
+                body, fontSize = theoryFont(13), lineHeight = theoryLine(18),
                 color = MaterialTheme.colorScheme.onTertiaryContainer)
         }
     }
@@ -338,7 +359,8 @@ private fun WarningSection(body: String) {
         Row(Modifier.padding(12.dp)) {
             Text("⚠", fontSize = 18.sp)
             Spacer(Modifier.width(10.dp))
-            Text(body, fontSize = 13.sp, lineHeight = 18.sp,
+            com.spanishapp.ui.components.MarkdownText(
+                body, fontSize = theoryFont(13), lineHeight = theoryLine(18),
                 color = MaterialTheme.colorScheme.onErrorContainer)
         }
     }
@@ -348,7 +370,8 @@ private fun WarningSection(body: String) {
 private fun ComparisonSection(heading: String, comp: TheoryComparison) {
     Column {
         if (heading.isNotBlank()) {
-            Text(heading, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            com.spanishapp.ui.components.MarkdownText(
+                heading, fontSize = theoryFont(14), fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
         }
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -359,11 +382,13 @@ private fun ComparisonSection(heading: String, comp: TheoryComparison) {
                 modifier = Modifier.weight(1f),
             ) {
                 Column(Modifier.padding(10.dp)) {
-                    Text(comp.leftHeader, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+                    com.spanishapp.ui.components.MarkdownText(
+                        comp.leftHeader, fontSize = theoryFont(13), fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.height(6.dp))
                     comp.pairs.forEach { (l, _) ->
-                        Text("• $l", fontSize = 13.sp, modifier = Modifier.padding(vertical = 2.dp))
+                        com.spanishapp.ui.components.MarkdownText(
+                            "• $l", fontSize = theoryFont(13), modifier = Modifier.padding(vertical = 2.dp))
                     }
                 }
             }
@@ -374,11 +399,13 @@ private fun ComparisonSection(heading: String, comp: TheoryComparison) {
                 modifier = Modifier.weight(1f),
             ) {
                 Column(Modifier.padding(10.dp)) {
-                    Text(comp.rightHeader, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+                    com.spanishapp.ui.components.MarkdownText(
+                        comp.rightHeader, fontSize = theoryFont(13), fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.tertiary)
                     Spacer(Modifier.height(6.dp))
                     comp.pairs.forEach { (_, r) ->
-                        Text("• $r", fontSize = 13.sp, modifier = Modifier.padding(vertical = 2.dp))
+                        com.spanishapp.ui.components.MarkdownText(
+                            "• $r", fontSize = theoryFont(13), modifier = Modifier.padding(vertical = 2.dp))
                     }
                 }
             }
@@ -395,14 +422,15 @@ private fun TakeawaysCard(takeaways: List<String>) {
     ) {
         Column(Modifier.padding(14.dp)) {
             Text("📝 Что важно запомнить",
-                fontSize = 14.sp, fontWeight = FontWeight.Bold,
+                fontSize = theoryFont(14), fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSecondaryContainer)
             Spacer(Modifier.height(8.dp))
             takeaways.forEach { t ->
                 Row(Modifier.padding(vertical = 3.dp)) {
-                    Text("✓ ", fontSize = 14.sp, color = MaterialTheme.colorScheme.primary,
+                    Text("✓ ", fontSize = theoryFont(14), color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold)
-                    Text(t, fontSize = 13.sp, lineHeight = 18.sp,
+                    com.spanishapp.ui.components.MarkdownText(
+                        t, fontSize = theoryFont(13), lineHeight = theoryLine(18),
                         color = MaterialTheme.colorScheme.onSecondaryContainer)
                 }
             }
