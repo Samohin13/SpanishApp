@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.sp
 import androidx.glance.*
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.cornerRadius
 import androidx.glance.unit.ColorProvider
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
@@ -96,22 +97,25 @@ class WordOfDayWidget : GlanceAppWidget() {
 
 @Composable
 private fun WidgetContent(spanish: String, russian: String, streak: Int) {
-    val terracotta = Color(0xFFFF5722)
-    val white      = Color(0xFFFFFFFF)
-    val lightBg    = Color(0xFFFFF3EF)
+    val orange = Color(0xFFFF6B35)
+    val white  = Color(0xFFFFFFFF)
+    val dark   = Color(0xFF1C1C1E)
+    val dim    = Color(0xFFAEAEB2)
 
+    // v1.14.1: переделан под dark theme как остальные виджеты ESPEAK.
+    // Раньше был кремовый (lightBg) и выбивался из set'а.
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
-            .background(lightBg)
+            .background(dark)
+            .cornerRadius(20.dp)
             .clickable(actionStartActivity<MainActivity>()),
-        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalAlignment = Alignment.Vertical.CenterVertically,
+            verticalAlignment = Alignment.Vertical.Top,
             horizontalAlignment = Alignment.Horizontal.Start
         ) {
             // Заголовок + стрик-бэйдж справа
@@ -120,10 +124,10 @@ private fun WidgetContent(spanish: String, russian: String, streak: Int) {
                 verticalAlignment = Alignment.Vertical.CenterVertically,
             ) {
                 Text(
-                    text = "📅 Слово дня",
+                    text = "📅 СЛОВО ДНЯ",
                     style = TextStyle(
-                        color = ColorProvider(terracotta),
-                        fontSize = 11.sp,
+                        color = ColorProvider(orange),
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -132,19 +136,19 @@ private fun WidgetContent(spanish: String, russian: String, streak: Int) {
                     Text(
                         text = "🔥 $streak",
                         style = TextStyle(
-                            color = ColorProvider(terracotta),
+                            color = ColorProvider(orange),
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )
                 }
             }
-            Spacer(GlanceModifier.height(6.dp))
+            Spacer(GlanceModifier.height(8.dp))
             // Испанское слово
             Text(
                 text = spanish,
                 style = TextStyle(
-                    color = ColorProvider(Color(0xFF212121)),
+                    color = ColorProvider(white),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -154,23 +158,24 @@ private fun WidgetContent(spanish: String, russian: String, streak: Int) {
             Text(
                 text = russian,
                 style = TextStyle(
-                    color = ColorProvider(Color(0xFF757575)),
+                    color = ColorProvider(dim),
                     fontSize = 14.sp
                 )
             )
-            Spacer(GlanceModifier.height(8.dp))
-            // Кнопка
+            Spacer(GlanceModifier.defaultWeight())
+            // Кнопка-пилюля
             Box(
                 modifier = GlanceModifier
-                    .background(terracotta)
-                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                    .background(orange)
+                    .cornerRadius(12.dp)
+                    .padding(horizontal = 14.dp, vertical = 6.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Учить →",
                     style = TextStyle(
                         color = ColorProvider(white),
-                        fontSize = 11.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
                 )
