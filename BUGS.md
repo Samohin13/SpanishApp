@@ -40,7 +40,12 @@
 - **Fix:** заменить `!!` на safe access `?.` + `?:` с fallback или kotlinx.serialization type-safe data classes
 - **Status:** OPEN (не блокер, после релиза)
 
-#### BUG-016 — 🟡 P2 — Code — GlobalScope.launch в 2 ViewModels
+#### BUG-016 — 🧊 WONTFIX — Code — GlobalScope.launch в 2 ViewModels [v1.17.7]
+**Решение:** оставить как есть. Оба случая (RadioViewModel:240 onSessionEnded
+и LibrosViewModel:89 lesson progress) — намеренные fire-and-forget с
+комментарием, гарантируют запись данных при мгновенном уходе с экрана.
+Замена на viewModelScope сломает гарантию. Альтернатива — отдельный
+ApplicationScope в Hilt — overkill для 2 use cases.
 - **Файлы:**
   - [RadioViewModel.kt:240](app/src/main/java/com/spanishapp/radio/ui/RadioViewModel.kt:240) — IO работа в `onSessionEnded`
   - [LibrosViewModel.kt:89](app/src/main/java/com/spanishapp/ui/games/LibrosViewModel.kt:89) — **намеренно** (комментарий объясняет — гарантия записи прогресса при мгновенном уходе с экрана)
@@ -60,7 +65,12 @@
 - **Risk:** низкий (нет secrets), но засоряет diff на каждом изменении Firebase project settings
 - **Status:** OPEN (косметика)
 
-#### BUG-019 — 🟢 P3 — UI — LaunchedEffect(Unit) без keys в 4 файлах
+#### BUG-019 — 🧊 WONTFIX — UI — LaunchedEffect(Unit) без keys в 4 файлах [v1.17.7]
+**Решение:** оставить как есть. Это one-shot анимации (StaggeredEntrance
+fade-in, CompletionBadge celebration, MemoryMatchPairsInput init, AppLockScreen
+biometric prompt). В текущем коде работают корректно. Замена ключей несёт
+риск регрессии (анимации могут стартовать не в тот момент) при нулевом
+видимом улучшении.
 - **Файлы:** StaggeredEntrance:34, CompletionBadge:95, MemoryMatchPairsInput:182, AppLockScreen:117
 - **Симптом:** Анимации могут рестартовать на parent recomposition. В текущем коде работает корректно.
 - **Status:** OPEN (косметика, документировать или починить)

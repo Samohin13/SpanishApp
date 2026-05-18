@@ -10,7 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeOff
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -118,7 +118,7 @@ private fun MathGameContent(
                 actions = {
                     IconButton(onClick = { viewModel.toggleAudio() }) {
                         Icon(
-                            if (state.audioEnabled) Icons.AutoMirrored.Filled.VolumeUp
+                            if (state.audioEnabled) Icons.Default.VolumeUp
                             else Icons.AutoMirrored.Filled.VolumeOff,
                             contentDescription = if (state.audioEnabled) stringResource(R.string.math_audio_off) else stringResource(R.string.math_audio_on),
                             tint = if (state.audioEnabled) ACCENT else Color.Gray

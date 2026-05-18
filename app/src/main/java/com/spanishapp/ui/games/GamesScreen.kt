@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material3.*
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -58,7 +59,7 @@ private val GAMES: List<Game> = listOf(
     Game("Palabra Maestra",com.spanishapp.R.string.game_palabra_desc,   Icons.Default.TextFields, Color(0xFFFF9500), "game_palabra",    com.spanishapp.ui.home.WatermarkTheme.GAME_PALABRA),
     Game("Cálculo",        com.spanishapp.R.string.game_math_desc,      Icons.Default.Calculate,  Color(0xFFF44336), "game_math",       com.spanishapp.ui.home.WatermarkTheme.GAME_MATH),
     Game("Crucigrama",     com.spanishapp.R.string.game_crossword_desc, Icons.Default.BorderAll,  Color(0xFF26A69A), "game_crossword",  com.spanishapp.ui.home.WatermarkTheme.GAME_CROSSWORD),
-    Game("Libros",         com.spanishapp.R.string.game_libros_desc,    Icons.Default.MenuBook,   Color(
+    Game("Libros",         com.spanishapp.R.string.game_libros_desc,    Icons.AutoMirrored.Filled.MenuBook,   Color(
         0xFFBEA62F
     ), "game_libros", com.spanishapp.ui.home.WatermarkTheme.GAME_LIBROS)
 )

@@ -12,7 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.PlayArrow
@@ -311,7 +311,7 @@ private fun DialogueLineItem(line: DialogueLine, onSpeak: (String) -> Unit) {
                         )
                         Spacer(Modifier.width(8.dp))
                         Icon(
-                            Icons.AutoMirrored.Filled.VolumeUp,
+                            Icons.Default.VolumeUp,
                             null,
                             modifier = Modifier.size(16.dp),
                             tint = MaterialTheme.colorScheme.primary

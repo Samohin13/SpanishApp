@@ -9,7 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Replay
@@ -402,7 +402,7 @@ private fun AuditivoCard(q: VerbQuestion, vm: VerbViewModel) {
                 onClick = { vm.replayAudio() },
                 modifier = Modifier.size(72.dp)
             ) {
-                Icon(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.verb_listen),
+                Icon(Icons.Default.VolumeUp, stringResource(R.string.verb_listen),
                     tint = ACCENT, modifier = Modifier.size(56.dp))
             }
             Spacer(Modifier.height(8.dp))

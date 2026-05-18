@@ -22,6 +22,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -675,7 +679,7 @@ fun SettingsScreen(
             }
 
             SettingsSection(stringResource(R.string.settings_section_sound)) {
-                SettingsSwitchItem(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.settings_sound_effects), soundEffects) { vm.toggleSoundEffects(it) }
+                SettingsSwitchItem(Icons.Default.VolumeUp, stringResource(R.string.settings_sound_effects), soundEffects) { vm.toggleSoundEffects(it) }
                 SettingsSwitchItem(Icons.Default.RecordVoiceOver, stringResource(R.string.settings_voice_announcer), ttsEnabled) { vm.toggleTts(it) }
                 SettingsSwitchItem(Icons.Default.Vibration, stringResource(R.string.set_vibration), vibration) { vm.toggleVibration(it) }
                 SettingsItem(Icons.Default.InterpreterMode, stringResource(R.string.set_voice_setup)) {
@@ -732,7 +736,7 @@ fun SettingsScreen(
                 SettingsItem(Icons.Default.Translate, "Слова в словаре", "${contentStats.wordsCount}") {
                     navController.navigate("dictionary") { launchSingleTop = true }
                 }
-                SettingsItem(Icons.Default.MenuBook, "Уроков всего", "${contentStats.lessonsCount}")
+                SettingsItem(Icons.AutoMirrored.Filled.MenuBook, "Уроков всего", "${contentStats.lessonsCount}")
                 SettingsItem(Icons.Default.RecordVoiceOver, "Глаголов в тренажёре", "${contentStats.verbsCount}")
                 SettingsItem(Icons.Default.Book, "Рассказов Libros", "${contentStats.librosCount}")
             }

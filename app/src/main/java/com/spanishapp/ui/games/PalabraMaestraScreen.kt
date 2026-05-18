@@ -8,9 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.Lightbulb
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -286,7 +286,7 @@ private fun PalabraActiveGame(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         HintButton(Icons.Default.Translate, stringResource(R.string.palabra_hint_translation),
                             Modifier.weight(1f)) { viewModel.showTranslation() }
-                        HintButton(Icons.AutoMirrored.Filled.VolumeUp, stringResource(R.string.palabra_hint_audio),
+                        HintButton(Icons.Default.VolumeUp, stringResource(R.string.palabra_hint_audio),
                             Modifier.weight(1f)) { viewModel.playAudio() }
                     }
                     if (state.params.hintsAllowed > 0) {
@@ -294,7 +294,7 @@ private fun PalabraActiveGame(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             HintButton(Icons.Default.Lightbulb, stringResource(R.string.palabra_hint_first_letter),
                                 Modifier.weight(1f)) { viewModel.useFirstLetterHint() }
-                            HintButton(Icons.Default.MenuBook, stringResource(R.string.palabra_hint_rule),
+                            HintButton(Icons.AutoMirrored.Filled.MenuBook, stringResource(R.string.palabra_hint_rule),
                                 Modifier.weight(1f)) { viewModel.showRuleHint() }
                         }
                     }

@@ -3,6 +3,8 @@ package com.spanishapp.ui.flashcards
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.spanishapp.R
 
@@ -26,14 +28,14 @@ object CategoryMeta {
         CategoryInfo("comida",          R.string.cat_comida,          Icons.Filled.Restaurant),
         CategoryInfo("compras",         R.string.cat_compras,         Icons.Filled.ShoppingCart),
         CategoryInfo("comunicacion",    R.string.cat_comunicacion,    Icons.Filled.Chat),
-        CategoryInfo("conocimiento",    R.string.cat_conocimiento,    Icons.Filled.MenuBook),
+        CategoryInfo("conocimiento",    R.string.cat_conocimiento,    Icons.AutoMirrored.Filled.MenuBook),
         CategoryInfo("cortesia",        R.string.cat_cortesia,        Icons.Filled.ThumbUp),
         CategoryInfo("cotidiano",       R.string.cat_cotidiano,       Icons.Filled.Today),
         CategoryInfo("creatividad",     R.string.cat_creatividad,     Icons.Filled.Lightbulb),
         CategoryInfo("cuerpo",          R.string.cat_cuerpo,          Icons.Filled.Accessibility),
         CategoryInfo("cultura",         R.string.cat_cultura,         Icons.Filled.TheaterComedy),
         CategoryInfo("deporte",         R.string.cat_deporte,         Icons.Filled.SportsSoccer),
-        CategoryInfo("despedidas",      R.string.cat_despedidas,      Icons.Filled.Logout),
+        CategoryInfo("despedidas",      R.string.cat_despedidas,      Icons.AutoMirrored.Filled.Logout),
         CategoryInfo("educacion",       R.string.cat_educacion,       Icons.Filled.School),
         CategoryInfo("emociones",       R.string.cat_emociones,       Icons.Filled.Mood),
         CategoryInfo("entretenimiento", R.string.cat_entretenimiento, Icons.Filled.Movie),
