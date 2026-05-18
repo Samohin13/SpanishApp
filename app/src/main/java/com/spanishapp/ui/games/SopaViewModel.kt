@@ -97,44 +97,64 @@ class SopaViewModel @Inject constructor(
         viewModelScope.launch {
             val params = LevelDifficulty.forLevel(level)
             val config = configFor(level)
-            // v1.15.2: Sopa специфический CEFR per уровень (юзер задал):
-            // 1-20: A1, 21-60: A2, 61-80: B1, 81-100: B2
             val sopaCefr = sopaCefrFor(level)
 
             gameStartTime = SystemClock.elapsedRealtime()
             lastFindTime  = gameStartTime
 
-            // ── Получаем большой пул слов нужного CEFR-слоя ───
-            val pool = wordDao.getRandomWords(500).filter {
-                it.level in sopaCefr && it.russian.isNotBlank() && it.spanish.isNotBlank()
-            }
-            val maxWordLen = config.gridSize - 1   // оставляем запас
-            val candidates = pool.map {
-                SopaWord(
-                    id          = it.id,
-                    word        = stripArticle(it.spanish).uppercase().replace(" ", "").replace("-", ""),
-                    translation = it.russian
-                )
-            }.filter { it.word.length in 3..maxWordLen }
-             .distinctBy { it.word }
-             .shuffled()
+            // v1.15.4: ДЕТЕРМИНИРОВАННАЯ генерация уровней.
+            // Юзер: "проверь на дубликаты, чтобы каждый уровень был
+            // уникальным и соответственно на сложность".
+            //
+            // Алгоритм:
+            // 1. Pool слов CEFR группы — стабильный (sortedBy length + id),
+            //    каждый раз одни и те же слова в одном порядке.
+            // 2. Slice для конкретного уровня — берём окно индексом
+            //    (levelInGroup * wordsPerLevel) по длине слов:
+            //    уровень 1 = слова #0..#7 (короткие),
+            //    уровень 2 = #8..#15, и т.д.
+            // 3. Сложность растёт по длине слов внутри CEFR.
+            // 4. Random(seed = level) для размещения на grid → одинаковая
+            //    сетка для одного уровня (юзер может вернуться и узнать).
+            val maxWordLen = config.gridSize - 1
+            val allPool = sopaCefr.flatMap { wordDao.getWordsByLevelSync(it) }
+                .filter { it.russian.isNotBlank() && it.spanish.isNotBlank() }
+                .map {
+                    SopaWord(
+                        id          = it.id,
+                        word        = stripArticle(it.spanish).uppercase().replace(" ", "").replace("-", ""),
+                        translation = it.russian
+                    )
+                }
+                .filter { it.word.length in 3..maxWordLen }
+                .distinctBy { it.word }
+                .sortedWith(compareBy({ it.word.length }, { it.id }))  // короткие → длинные
+
+            if (allPool.isEmpty()) return@launch
+
+            // Какой slice взять для этого уровня?
+            val (groupStart, levelsInGroup) = groupForLevel(level)
+            val levelInGroup = level - groupStart
+            val startIdx = (levelInGroup * config.targetWords) % allPool.size
+            // Берём wrap-around если выходим за конец pool
+            val candidates = (allPool.drop(startIdx) + allPool.take(startIdx))
+                .take(config.targetWords * 3)  // запас на случай если не уместятся
+
+            // Random с seed = level для детерминированного размещения
+            val seededRandom = Random(level.toLong())
 
             // ── Пытаемся уместить нужное число слов на сетке ───
-            // v1.15.2: размещаем ТОЛЬКО прямыми линиями (горизонтально или
-            // вертикально). Раньше использовался placeWordSnake — змейка
-            // плюс 4 диагонали, юзер не мог пройти уровни т.к. слова
-            // ломались на изгибах.
             val grid = Array(config.gridSize) { CharArray(config.gridSize) { ' ' } }
             val placed = mutableListOf<SopaWord>()
             for (sw in candidates) {
                 if (placed.size >= config.targetWords) break
                 val path = mutableListOf<Pair<Int, Int>>()
-                if (placeWordStraight(grid, sw.word, path)) {
+                if (placeWordStraight(grid, sw.word, path, seededRandom)) {
                     placed.add(sw)
                 }
             }
             if (placed.isEmpty()) return@launch
-            fillEmptyCells(grid)
+            fillEmptyCells(grid, seededRandom)
 
             _state.value = SopaGameState(
                 params       = params,
@@ -185,6 +205,19 @@ class SopaViewModel @Inject constructor(
     }
 
     /**
+     * v1.15.4: возвращает (firstLevelOfGroup, countInGroup) для уровня.
+     * Используется для расчёта slice слов внутри CEFR группы.
+     */
+    private fun groupForLevel(level: Int): Pair<Int, Int> = when {
+        level <= 10  -> 1 to 10   // A1 группа 1: уровни 1-10
+        level <= 20  -> 11 to 10  // A1 группа 2: уровни 11-20
+        level <= 40  -> 21 to 20  // A2 группа 1: уровни 21-40
+        level <= 60  -> 41 to 20  // A2 группа 2: уровни 41-60
+        level <= 80  -> 61 to 20  // B1: уровни 61-80
+        else         -> 81 to 20  // B2: уровни 81-100
+    }
+
+    /**
      * v1.15.3: Размещение слова **прямой линией в 8 направлениях**
      * (классический word search / sopa de letras):
      *  →  ←  ↓  ↑  ↘  ↙  ↗  ↖
@@ -199,12 +232,12 @@ class SopaViewModel @Inject constructor(
         grid: Array<CharArray>,
         word: String,
         path: MutableList<Pair<Int, Int>>,
+        rng: Random = Random,
     ): Boolean {
         val size = grid.size
         if (word.length > size) return false
 
         // 8 направлений: 4 ортогональные + 4 диагональные.
-        // Каждый раз shuffled чтобы распределение было равномерным.
         val directions = listOf(
             0 to 1,   // →
             0 to -1,  // ←
@@ -219,9 +252,9 @@ class SopaViewModel @Inject constructor(
         var attempts = 0
         while (attempts < 400) {
             attempts++
-            val dir = directions.random()
-            val startR = Random.nextInt(size)
-            val startC = Random.nextInt(size)
+            val dir = directions[rng.nextInt(directions.size)]
+            val startR = rng.nextInt(size)
+            val startC = rng.nextInt(size)
             // Проверяем что слово целиком умещается в направлении
             val endR = startR + dir.first * (word.length - 1)
             val endC = startC + dir.second * (word.length - 1)
@@ -252,11 +285,13 @@ class SopaViewModel @Inject constructor(
         return false
     }
 
-    private fun fillEmptyCells(grid: Array<CharArray>) {
+    private fun fillEmptyCells(grid: Array<CharArray>, rng: Random = Random) {
         val freq = "EEEEAAAAOOOOOSSSSRRRRNNNNIIIIIDDDDLLLLCCCCTTTTUUUUMMMM"
+        val alphabet = ('A'..'Z').toList()
         for (r in grid.indices) for (c in grid[r].indices) {
             if (grid[r][c] == ' ') {
-                grid[r][c] = if (Random.nextInt(100) < 85) freq.random() else ('A'..'Z').random()
+                grid[r][c] = if (rng.nextInt(100) < 85) freq[rng.nextInt(freq.length)]
+                             else alphabet[rng.nextInt(alphabet.size)]
             }
         }
     }
