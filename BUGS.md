@@ -28,6 +28,29 @@
 
 ## 🔴 OPEN
 
+### Startup / Runtime
+
+#### BUG-013 — 🔴 P0 — Runtime — ANR на запуске после pull v1.17.2
+- **Симптом:** Android показывает "Приложение ESPEAK не отвечает" с кнопками "Закрыть/Подождать"
+- **Скриншот:** на экране CourseDetailScreen (Курс B1), но юзер говорит ANR при запуске с нуля
+- **Когда началось:** 2026-05-18, сразу после `git pull` v1.17.2 (cd9ed19..237a9b0)
+- **Устройство:** планшет (видно по скриншоту, разрешение ~800px width, dark theme)
+- **Подозреваемые источники (в порядке вероятности):**
+  1. `MainActivity.attachBaseContext` runBlocking DataStore (CLAUDE.md known IMPORTANT)
+  2. `databaseSeeder.seedIfNeeded()` если БД была очищена при pull (10K+ слов на старом CPU = 5+ сек)
+  3. HomeViewModel загрузка roadmap + progress
+  4. CourseDetailScreen рендер 16+ уроков с progress lookup
+  5. Какой-то Hilt heavy graph init
+- **НЕ от моих изменений в v1.17.2 напрямую:**
+  - Все мои фиксы — Composable scope, не startup path
+  - Drawable add — compile-time
+  - Но регрессия по времени связана с pull → нужен Logcat
+- **Action:**
+  1. Запросить Logcat у юзера в момент ANR
+  2. Stack trace главного потока покажет точку блокировки
+  3. После root cause — фиксить async/await
+- **Status:** в работе
+
 ### Tests (предсуществующие, обнаружены 2026-05-18)
 
 #### BUG-001 — 🟠 P1 — Tests — SkillRatingSystemTest 3 fails
