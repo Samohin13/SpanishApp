@@ -97,13 +97,16 @@ class SopaViewModel @Inject constructor(
         viewModelScope.launch {
             val params = LevelDifficulty.forLevel(level)
             val config = configFor(level)
+            // v1.15.2: Sopa специфический CEFR per уровень (юзер задал):
+            // 1-20: A1, 21-60: A2, 61-80: B1, 81-100: B2
+            val sopaCefr = sopaCefrFor(level)
 
             gameStartTime = SystemClock.elapsedRealtime()
             lastFindTime  = gameStartTime
 
             // ── Получаем большой пул слов нужного CEFR-слоя ───
-            val pool = wordDao.getRandomWords(300).filter {
-                it.level in params.cefr && it.russian.isNotBlank() && it.spanish.isNotBlank()
+            val pool = wordDao.getRandomWords(500).filter {
+                it.level in sopaCefr && it.russian.isNotBlank() && it.spanish.isNotBlank()
             }
             val maxWordLen = config.gridSize - 1   // оставляем запас
             val candidates = pool.map {
@@ -117,12 +120,16 @@ class SopaViewModel @Inject constructor(
              .shuffled()
 
             // ── Пытаемся уместить нужное число слов на сетке ───
+            // v1.15.2: размещаем ТОЛЬКО прямыми линиями (горизонтально или
+            // вертикально). Раньше использовался placeWordSnake — змейка
+            // плюс 4 диагонали, юзер не мог пройти уровни т.к. слова
+            // ломались на изгибах.
             val grid = Array(config.gridSize) { CharArray(config.gridSize) { ' ' } }
             val placed = mutableListOf<SopaWord>()
             for (sw in candidates) {
                 if (placed.size >= config.targetWords) break
                 val path = mutableListOf<Pair<Int, Int>>()
-                if (placeWordSnake(grid, sw.word, path)) {
+                if (placeWordStraight(grid, sw.word, path)) {
                     placed.add(sw)
                 }
             }
@@ -148,47 +155,84 @@ class SopaViewModel @Inject constructor(
     }
 
     /**
-     * Конфигурация уровня для Sopa.
-     * Сетка плавно растёт 6→16, количество слов 4→18, таймер сжимается.
+     * v1.15.2: Конфигурация уровней по требованию юзера.
+     *  1-10  → 8 слов A1,  grid 10
+     *  11-20 → 10 слов A1, grid 11
+     *  21-40 → 14 слов A2, grid 13
+     *  41-60 → 16 слов A2, grid 14
+     *  61-80 → 18 слов B1, grid 15
+     *  81-100→ 20 слов B2, grid 16
+     * Таймер растёт с уровнем (нет таймера на туториале 1-10).
      */
     private fun configFor(level: Int): SopaLevelConfig = when {
-        level <= 10  -> SopaLevelConfig(gridSize = 7,  targetWords = 4,  timeSec = 0,   ghost = false)
-        level <= 25  -> SopaLevelConfig(gridSize = 8,  targetWords = 6,  timeSec = 300, ghost = false)
-        level <= 40  -> SopaLevelConfig(gridSize = 10, targetWords = 8,  timeSec = 280, ghost = false)
-        level <= 55  -> SopaLevelConfig(gridSize = 11, targetWords = 10, timeSec = 260, ghost = false)
-        level <= 70  -> SopaLevelConfig(gridSize = 12, targetWords = 12, timeSec = 240, ghost = false)
-        level <= 85  -> SopaLevelConfig(gridSize = 14, targetWords = 14, timeSec = 240, ghost = false)
-        else         -> SopaLevelConfig(gridSize = 15, targetWords = 16, timeSec = 240, ghost = true)
+        level <= 10  -> SopaLevelConfig(gridSize = 10, targetWords = 8,  timeSec = 0,   ghost = false)
+        level <= 20  -> SopaLevelConfig(gridSize = 11, targetWords = 10, timeSec = 300, ghost = false)
+        level <= 40  -> SopaLevelConfig(gridSize = 13, targetWords = 14, timeSec = 360, ghost = false)
+        level <= 60  -> SopaLevelConfig(gridSize = 14, targetWords = 16, timeSec = 360, ghost = false)
+        level <= 80  -> SopaLevelConfig(gridSize = 15, targetWords = 18, timeSec = 420, ghost = false)
+        else         -> SopaLevelConfig(gridSize = 16, targetWords = 20, timeSec = 420, ghost = true)
     }
 
-    private fun placeWordSnake(grid: Array<CharArray>, word: String, path: MutableList<Pair<Int, Int>>): Boolean {
+    /**
+     * v1.15.2: CEFR pool по требованию юзера (для Sopa специфично,
+     * не переиспользует общий LevelDifficulty.cefr).
+     */
+    private fun sopaCefrFor(level: Int): List<String> = when {
+        level <= 20  -> listOf("A1")
+        level <= 60  -> listOf("A2")
+        level <= 80  -> listOf("B1")
+        else         -> listOf("B2")
+    }
+
+    /**
+     * v1.15.2: Размещение слова прямой линией (горизонтально → или
+     * вертикально ↓). Допустимы 2 направления вместо 8.
+     * Не допускает пересечений с уже размещёнными буквами (если они
+     * не совпадают).
+     */
+    private fun placeWordStraight(
+        grid: Array<CharArray>,
+        word: String,
+        path: MutableList<Pair<Int, Int>>,
+    ): Boolean {
         val size = grid.size
+        if (word.length > size) return false
+
+        // Перебираем 2 направления и случайные стартовые точки
+        val directions = listOf(0 to 1, 1 to 0).shuffled()  // → ↓
         var attempts = 0
-        while (attempts < 200) {
+        while (attempts < 300) {
             attempts++
+            val dir = directions.random()
             val startR = Random.nextInt(size)
             val startC = Random.nextInt(size)
-            path.clear()
-            if (findPath(grid, word, 0, startR, startC, path)) {
-                path.forEachIndexed { i, pos -> grid[pos.first][pos.second] = word[i] }
-                return true
+            // Проверяем что слово целиком умещается в направлении
+            val endR = startR + dir.first * (word.length - 1)
+            val endC = startC + dir.second * (word.length - 1)
+            if (endR !in 0 until size || endC !in 0 until size) continue
+
+            // Проверяем что все ячейки либо пусты, либо совпадают с буквой
+            var canPlace = true
+            for (i in word.indices) {
+                val r = startR + dir.first * i
+                val c = startC + dir.second * i
+                if (grid[r][c] != ' ' && grid[r][c] != word[i]) {
+                    canPlace = false
+                    break
+                }
             }
-        }
-        return false
-    }
+            if (!canPlace) continue
 
-    private fun findPath(grid: Array<CharArray>, word: String, index: Int, r: Int, c: Int, path: MutableList<Pair<Int, Int>>): Boolean {
-        if (index == word.length) return true
-        if (r !in grid.indices || c !in grid[0].indices) return false
-        if (grid[r][c] != ' ') return false
-        if (path.contains(r to c)) return false
-
-        path.add(r to c)
-        val dirs = listOf(0 to 1, 0 to -1, 1 to 0, -1 to 0, 1 to 1, 1 to -1, -1 to 1, -1 to -1).shuffled()
-        for (d in dirs) {
-            if (findPath(grid, word, index + 1, r + d.first, c + d.second, path)) return true
+            // Размещаем
+            path.clear()
+            for (i in word.indices) {
+                val r = startR + dir.first * i
+                val c = startC + dir.second * i
+                grid[r][c] = word[i]
+                path.add(r to c)
+            }
+            return true
         }
-        path.removeAt(path.size - 1)
         return false
     }
 
@@ -222,7 +266,28 @@ class SopaViewModel @Inject constructor(
         if (s.isGameOver || s.selectedCells.isEmpty()) return
         val last = s.selectedCells.last()
         if (last == (r to c)) return
-        if (abs(r - last.first) <= 1 && abs(c - last.second) <= 1) {
+
+        // v1.15.2: только H/V (запрет диагоналей).
+        // Если уже выбрано 2+ клетки — направление зафиксировано (H xor V),
+        // следующая клетка должна продолжать ту же ось.
+        val first = s.selectedCells.first()
+        val horizontal = s.selectedCells.size == 1 || first.first == last.first
+        val vertical = s.selectedCells.size == 1 || first.second == last.second
+
+        // Сосед только если совпадает по одной оси и шаг = 1 по другой
+        val deltaR = abs(r - last.first)
+        val deltaC = abs(c - last.second)
+        val isHorizontalStep = deltaR == 0 && deltaC == 1
+        val isVerticalStep   = deltaR == 1 && deltaC == 0
+
+        val canExtend = when {
+            s.selectedCells.size == 1 -> isHorizontalStep || isVerticalStep
+            horizontal && !vertical -> isHorizontalStep && r == first.first
+            vertical && !horizontal -> isVerticalStep && c == first.second
+            else -> isHorizontalStep || isVerticalStep
+        }
+
+        if (canExtend) {
             if (s.selectedCells.size > 1 && s.selectedCells[s.selectedCells.size - 2] == (r to c)) {
                 _state.value = s.copy(selectedCells = s.selectedCells.dropLast(1))
             } else if (!s.selectedCells.contains(r to c)) {
