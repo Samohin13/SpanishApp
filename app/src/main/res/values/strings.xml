@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name" translatable="false">ESPEAK</string>
     <string name="widget_description">Слово дня на испанском</string>
+    <!-- v1.14.0: новые виджеты -->
+    <string name="widget_dictionary_search_desc">Быстрый поиск слов словаря</string>
+    <string name="widget_mission_desc">Прогресс ежедневных целей</string>
+    <string name="widget_streak_desc">Streak дней подряд (🔥)</string>
+    <string name="widget_ai_chat_desc">ИИ-репетитор испанского</string>
+    <string name="widget_radio_desc">Испанское радио — слушай и учись</string>
 
     <!-- Google Sign-In Web Client ID (из google-services.json, client_type=3). -->
     <string name="default_web_client_id" translatable="false">664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com</string>

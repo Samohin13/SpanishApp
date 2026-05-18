@@ -162,7 +162,7 @@ private fun SectionView(section: TheorySection, onPlayAudio: (String) -> Unit) {
     when (section.type) {
         TheorySectionType.TEXT -> TextSection(section.heading, section.body)
         TheorySectionType.RULE -> RuleSection(section.heading, section.body)
-        TheorySectionType.TABLE -> section.table?.let { TableSection(section.heading, it) }
+        TheorySectionType.TABLE -> section.table?.let { TableSection(section.heading, it, onPlayAudio) }
         TheorySectionType.EXAMPLES -> ExamplesSection(section.heading, section.examples, onPlayAudio)
         TheorySectionType.MNEMONIC -> MnemonicSection(section.body)
         TheorySectionType.TIP -> TipSection(section.body)
@@ -221,7 +221,14 @@ private fun RuleSection(heading: String, body: String) {
 }
 
 @Composable
-private fun TableSection(heading: String, table: TheoryTable) {
+private fun TableSection(heading: String, table: TheoryTable, onPlayAudio: (String) -> Unit) {
+    // v1.13.7: добавлена озвучка для строк таблицы. Юзер: «в первом
+    // уроке (буквы) каждую букву можно прослушать, а в числах нет».
+    // Источник TTS — highlighted column (обычно испанское слово).
+    // Тап в любом месте row = play. Speaker icon — visual cue.
+    val ttsColumnIdx = table.highlightedColumns.firstOrNull() ?: 1
+    val ttsEnabled = ttsColumnIdx < (table.headers.size.takeIf { it > 0 } ?: 0).coerceAtLeast(0)
+
     Column {
         if (heading.isNotBlank()) {
             com.spanishapp.ui.components.MarkdownText(
@@ -235,7 +242,7 @@ private fun TableSection(heading: String, table: TheoryTable) {
         ) {
             Column(Modifier.padding(8.dp)) {
                 // Headers
-                Row {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     table.headers.forEachIndexed { i, h ->
                         com.spanishapp.ui.components.MarkdownText(
                             h,
@@ -247,15 +254,24 @@ private fun TableSection(heading: String, table: TheoryTable) {
                             else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
+                    // Spacer под speaker icon column
+                    if (ttsEnabled) Spacer(Modifier.width(40.dp))
                 }
                 HorizontalDivider()
                 // Rows
                 table.rows.forEachIndexed { ri, row ->
+                    val ttsText = row.getOrNull(ttsColumnIdx)?.takeIf { it.isNotBlank() }
                     Row(
-                        modifier = Modifier.background(
-                            if (ri % 2 == 0) Color.Transparent
-                            else MaterialTheme.colorScheme.surfaceContainerHighest
-                        )
+                        modifier = Modifier
+                            .background(
+                                if (ri % 2 == 0) Color.Transparent
+                                else MaterialTheme.colorScheme.surfaceContainerHighest
+                            )
+                            .let { mod ->
+                                if (ttsText != null) mod.clickable { onPlayAudio(ttsText) }
+                                else mod
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         row.forEachIndexed { i, cell ->
                             com.spanishapp.ui.components.MarkdownText(
@@ -268,6 +284,21 @@ private fun TableSection(heading: String, table: TheoryTable) {
                                     MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.onSurface,
                             )
+                        }
+                        if (ttsEnabled) {
+                            IconButton(
+                                onClick = { ttsText?.let(onPlayAudio) },
+                                enabled = ttsText != null,
+                                modifier = Modifier.size(40.dp),
+                            ) {
+                                Icon(
+                                    Icons.Default.VolumeUp,
+                                    contentDescription = "Произнести",
+                                    tint = if (ttsText != null) MaterialTheme.colorScheme.primary
+                                           else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                                    modifier = Modifier.size(20.dp),
+                                )
+                            }
                         }
                     }
                 }

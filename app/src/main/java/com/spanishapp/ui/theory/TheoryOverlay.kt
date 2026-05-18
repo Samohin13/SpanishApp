@@ -153,7 +153,7 @@ private fun SectionView(section: TheorySection, onPlayAudio: (String) -> Unit) {
     when (section.type) {
         TheorySectionType.TEXT -> TextSection(section.heading, section.body)
         TheorySectionType.RULE -> RuleSection(section.heading, section.body)
-        TheorySectionType.TABLE -> section.table?.let { TableSection(section.heading, it) }
+        TheorySectionType.TABLE -> section.table?.let { TableSection(section.heading, it, onPlayAudio) }
         TheorySectionType.EXAMPLES -> ExamplesSection(section.heading, section.examples, onPlayAudio)
         TheorySectionType.MNEMONIC -> MnemonicSection(section.body)
         TheorySectionType.TIP -> TipSection(section.body)
@@ -204,7 +204,10 @@ private fun RuleSection(heading: String, body: String) {
 }
 
 @Composable
-private fun TableSection(heading: String, table: TheoryTable) {
+private fun TableSection(heading: String, table: TheoryTable, onPlayAudio: (String) -> Unit) {
+    // v1.13.7: озвучка для строк таблицы (как в TheoryReader)
+    val ttsColumnIdx = table.highlightedColumns.firstOrNull() ?: 1
+    val ttsEnabled = table.headers.size > ttsColumnIdx
     Column {
         if (heading.isNotBlank()) {
             Text("📊 $heading", fontSize = 14.sp, fontWeight = FontWeight.Bold)
@@ -216,7 +219,7 @@ private fun TableSection(heading: String, table: TheoryTable) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             Column(Modifier.padding(8.dp)) {
-                Row {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     table.headers.forEachIndexed { i, h ->
                         Text(
                             h,
@@ -228,14 +231,19 @@ private fun TableSection(heading: String, table: TheoryTable) {
                             else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
+                    if (ttsEnabled) Spacer(Modifier.width(36.dp))
                 }
                 HorizontalDivider()
                 table.rows.forEachIndexed { ri, row ->
+                    val ttsText = row.getOrNull(ttsColumnIdx)?.takeIf { it.isNotBlank() }
                     Row(
-                        modifier = Modifier.background(
-                            if (ri % 2 == 0) Color.Transparent
-                            else MaterialTheme.colorScheme.surfaceContainerHighest
-                        )
+                        modifier = Modifier
+                            .background(
+                                if (ri % 2 == 0) Color.Transparent
+                                else MaterialTheme.colorScheme.surfaceContainerHighest
+                            )
+                            .let { mod -> if (ttsText != null) mod.clickable { onPlayAudio(ttsText) } else mod },
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         row.forEachIndexed { i, cell ->
                             Text(
@@ -247,6 +255,21 @@ private fun TableSection(heading: String, table: TheoryTable) {
                                     MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.onSurface,
                             )
+                        }
+                        if (ttsEnabled) {
+                            IconButton(
+                                onClick = { ttsText?.let(onPlayAudio) },
+                                enabled = ttsText != null,
+                                modifier = Modifier.size(36.dp),
+                            ) {
+                                Icon(
+                                    Icons.Default.VolumeUp,
+                                    contentDescription = "Произнести",
+                                    tint = if (ttsText != null) MaterialTheme.colorScheme.primary
+                                           else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            }
                         }
                     }
                 }

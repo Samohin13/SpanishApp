@@ -1,6 +1,7 @@
 package com.spanishapp
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -102,12 +103,26 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    // v1.14.0: target от виджета (Dictionary / AiChat / Radio).
+    // Используем mutableStateOf чтобы SpanishAppRoot реагировал на
+    // onNewIntent (юзер тапнул виджет когда app уже открыто).
+    private val widgetTarget = androidx.compose.runtime.mutableStateOf<String?>(null)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        intent.getStringExtra(com.spanishapp.widget.WidgetIntents.EXTRA_NAV_TARGET)
+            ?.let { widgetTarget.value = it }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splash = installSplashScreen()
         splash.setKeepOnScreenCondition { splashHoldOpen }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         maybeRequestNotificationPermission()
+        widgetTarget.value = intent
+            ?.getStringExtra(com.spanishapp.widget.WidgetIntents.EXTRA_NAV_TARGET)
         setContent {
             val fontSize by appPreferences.fontSize.collectAsStateWithLifecycle(
                 initialValue = "MEDIUM"
@@ -144,7 +159,7 @@ class MainActivity : FragmentActivity() {
                             if (seedReady) splashHoldOpen = false
                         }
                         if (seedReady) {
-                            SpanishAppRoot()
+                            SpanishAppRoot(widgetTarget = widgetTarget)
                         } else {
                             FirstLaunchLoadingOverlay()
                         }
@@ -227,10 +242,27 @@ private fun FirstLaunchLoadingOverlay() {
 }
 
 @Composable
-fun SpanishAppRoot() {
+fun SpanishAppRoot(
+    widgetTarget: androidx.compose.runtime.MutableState<String?> =
+        androidx.compose.runtime.mutableStateOf(null),
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: "home"
+
+    // v1.14.0: реагируем на widget deep link (Dictionary / AiChat / Radio).
+    // Когда widgetTarget меняется — навигируем и сбрасываем (чтобы повторное
+    // открытие виджета снова сработало).
+    LaunchedEffect(widgetTarget.value) {
+        val target = widgetTarget.value ?: return@LaunchedEffect
+        if (target.isNotBlank() && target != currentRoute) {
+            navController.navigate(target) {
+                popUpTo("home") { inclusive = false; saveState = true }
+                launchSingleTop = true
+            }
+        }
+        widgetTarget.value = null
+    }
 
     val showBottomBar = currentRoute in listOf(
         "home", "games", "dictionary", "profile", "radio",

@@ -76,6 +76,76 @@
                 android:resource="@xml/word_of_day_widget_info" />
         </receiver>
 
+        <!-- v1.14.0: Виджет «Поиск в словаре» -->
+        <receiver
+            android:name=".widget.DictionarySearchWidgetReceiver"
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET"
+            android:label="Поиск в словаре">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/dictionary_search_widget_info" />
+        </receiver>
+
+        <!-- v1.14.0: Виджет «Цель дня» -->
+        <receiver
+            android:name=".widget.MissionTrackerWidgetReceiver"
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET"
+            android:label="Цель дня">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/mission_tracker_widget_info" />
+        </receiver>
+
+        <!-- v1.14.0: Виджет «Streak 🔥» -->
+        <receiver
+            android:name=".widget.StreakFlameWidgetReceiver"
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET"
+            android:label="Streak дней подряд">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/streak_flame_widget_info" />
+        </receiver>
+
+        <!-- v1.14.0: Виджет «Репетитор» (AI Chat shortcut) -->
+        <receiver
+            android:name=".widget.AiChatWidgetReceiver"
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET"
+            android:label="Репетитор">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ai_chat_widget_info" />
+        </receiver>
+
+        <!-- v1.14.0: Виджет «Радио» -->
+        <receiver
+            android:name=".widget.RadioWidgetReceiver"
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET"
+            android:label="Радио España">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/radio_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>
