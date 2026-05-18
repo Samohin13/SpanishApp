@@ -30,6 +30,41 @@
 
 ### Startup / Runtime
 
+### Code quality (обнаружено в полном аудите 2026-05-18)
+
+#### BUG-015 — 🟠 P1 — API — Unsafe JSON parsing в AiChatRepository
+- **Файлы:** [AiChatRepository.kt:183-189](app/src/main/java/com/spanishapp/data/repository/AiChatRepository.kt:183), [AiChatRepository.kt:323-329](app/src/main/java/com/spanishapp/data/repository/AiChatRepository.kt:323)
+- **Симптом:** 7x `!!` подряд при парсинге Gemini response. Если API вернёт пустой `candidates` array или изменит структуру — NPE / IndexOutOfBoundsException.
+- **Mitigated by:** внешний `try/catch(Exception)` (line 204, 332) — крах перехватится, юзер увидит generic error.
+- **Risk:** функциональный (юзер не получит ответ), не crash.
+- **Fix:** заменить `!!` на safe access `?.` + `?:` с fallback или kotlinx.serialization type-safe data classes
+- **Status:** OPEN (не блокер, после релиза)
+
+#### BUG-016 — 🟡 P2 — Code — GlobalScope.launch в 2 ViewModels
+- **Файлы:**
+  - [RadioViewModel.kt:240](app/src/main/java/com/spanishapp/radio/ui/RadioViewModel.kt:240) — IO работа в `onSessionEnded`
+  - [LibrosViewModel.kt:89](app/src/main/java/com/spanishapp/ui/games/LibrosViewModel.kt:89) — **намеренно** (комментарий объясняет — гарантия записи прогресса при мгновенном уходе с экрана)
+- **Симптом:** GlobalScope обходит lifecycle — fire-and-forget. Технически утечка, но осознанная в Libros.
+- **Action:** Libros оставить с комментарием, Radio — проверить нужна ли. **Не блокер.**
+- **Status:** OPEN (после релиза)
+
+#### BUG-017 — 🟡 P2 — Lifecycle — 55 экранов используют collectAsState вместо collectAsStateWithLifecycle
+- **Файлы:** AiChatScreen, ConjugationScreen, DictionaryScreen + 50+ других
+- **Симптом:** Flow продолжает собирать данные когда экран в background. Не утечка памяти (state cancels на recompose) но избыточная работа.
+- **Fix:** Massive find-replace `collectAsState(` → `collectAsStateWithLifecycle(`. ~30 мин работы.
+- **Status:** OPEN (после релиза, batch refactor)
+
+#### BUG-018 — 🟢 P3 — Security — google-services.json не в .gitignore
+- **Симптом:** файл закоммичен в git (содержит только public IDs, не секреты)
+- **Best practice:** Firebase Console генерирует новый каждый раз, безопаснее не коммитить
+- **Risk:** низкий (нет secrets), но засоряет diff на каждом изменении Firebase project settings
+- **Status:** OPEN (косметика)
+
+#### BUG-019 — 🟢 P3 — UI — LaunchedEffect(Unit) без keys в 4 файлах
+- **Файлы:** StaggeredEntrance:34, CompletionBadge:95, MemoryMatchPairsInput:182, AppLockScreen:117
+- **Симптом:** Анимации могут рестартовать на parent recomposition. В текущем коде работает корректно.
+- **Status:** OPEN (косметика, документировать или починить)
+
 #### BUG-013 — 🔴 P0 — Runtime — ANR на запуске после pull v1.17.2
 - **Симптом:** Android показывает "Приложение ESPEAK не отвечает" с кнопками "Закрыть/Подождать"
 - **Скриншот:** на экране CourseDetailScreen (Курс B1), но юзер говорит ANR при запуске с нуля
