@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ESPEAK</string>
+    <!-- v1.14.0: widgets adicionales -->
+    <string name="widget_dictionary_search_desc">Búsqueda rápida en el diccionario</string>
+    <string name="widget_mission_desc">Progreso de objetivos diarios</string>
+    <string name="widget_streak_desc">Racha de días seguidos (🔥)</string>
+    <string name="widget_ai_chat_desc">Tutor de español con IA</string>
+    <string name="widget_radio_desc">Radio en español — escucha y aprende</string>
+
+    <!-- v1.16.0: Hint Bank — motivos para ganar pistas -->
+    <string name="hint_earn_lesson">Lección completada</string>
+    <string name="hint_earn_theory">Teoría leída</string>
+    <string name="hint_earn_flashcard">Set de tarjetas al 100%</string>
+    <string name="hint_earn_libro">Libro — test superado</string>
+    <string name="hint_earn_streak">Racha +1 día</string>
+    <string name="hint_earn_wod">Palabra del día resuelta</string>
+    <string name="hint_earn_achievement">Logro desbloqueado</string>
+    <string name="hint_earn_3stars">3 estrellas en un juego</string>
+    <string name="hint_bank_empty_title">Sin pistas</string>
+    <string name="hint_bank_empty_msg">Gana 💡 estudiando: lecciones, teoría, tarjetas, libros.</string>
+    <string name="hint_bank_label">Pistas</string>
+    <string name="hint_consume_one">Pista</string>
+    <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
     <string name="widget_description">Palabra del día en español</string>
 
     <!-- Google Sign-In Web Client ID -->

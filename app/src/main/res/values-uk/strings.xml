@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ESPEAK</string>
+    <!-- v1.14.0: додаткові віджети -->
+    <string name="widget_dictionary_search_desc">Швидкий пошук слів у словнику</string>
+    <string name="widget_mission_desc">Прогрес щоденних цілей</string>
+    <string name="widget_streak_desc">Серія днів поспіль (🔥)</string>
+    <string name="widget_ai_chat_desc">ШІ-репетитор іспанської</string>
+    <string name="widget_radio_desc">Іспанське радіо — слухай і вчись</string>
+
+    <!-- v1.16.0: Hint Bank — причини отримання -->
+    <string name="hint_earn_lesson">Урок пройдено</string>
+    <string name="hint_earn_theory">Теорію прочитано</string>
+    <string name="hint_earn_flashcard">Сет карток на 100%</string>
+    <string name="hint_earn_libro">Книга — тест складено</string>
+    <string name="hint_earn_streak">Серія +1 день</string>
+    <string name="hint_earn_wod">Слово дня відгадано</string>
+    <string name="hint_earn_achievement">Досягнення розблоковано</string>
+    <string name="hint_earn_3stars">3 зірки у грі</string>
+    <string name="hint_bank_empty_title">Підказок немає</string>
+    <string name="hint_bank_empty_msg">Заробляй 💡 у навчанні: урок, теорія, картки, книги.</string>
+    <string name="hint_bank_label">Підказки</string>
+    <string name="hint_consume_one">Підказка</string>
+    <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
     <string name="widget_description">Слово дня іспанською</string>
 
     <!-- Google Sign-In Web Client ID -->

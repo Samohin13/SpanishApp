@@ -67,7 +67,7 @@
 - **Status:** ✅ FIXED в v1.17.3
 
 
-#### BUG-001 — 🟠 P1 — Tests — SkillRatingSystemTest 3 fails
+#### BUG-001 — 🟠 P1 — Tests — SkillRatingSystemTest 3 fails [FIXED v1.17.4]
 - **Файл:** `app/src/test/java/com/spanishapp/SkillRatingSystemTest.kt`
 - **Failures:**
   - `decayKicksInAfterGracePeriod` (RatingSystemTest.kt:59)
@@ -78,7 +78,7 @@
 - **Блокирует:** `./gradlew preRelease` (нельзя собрать AAB через гейт)
 - **Action:** диагностировать — изменилась логика RatingUpdater или сами тесты устарели
 
-#### BUG-002 — 🟠 P1 — Tests — LeagueResolverTest 3 fails
+#### BUG-002 — 🟠 P1 — Tests — LeagueResolverTest 3 fails [FIXED v1.17.4]
 - **Failures:**
   - `ratingThresholdsAreContiguous`
   - `progressInLeagueRespectsBounds`
@@ -87,7 +87,7 @@
 - **Блокирует:** preRelease
 - **Action:** связан с BUG-001 (rating thresholds могли быть изменены)
 
-#### BUG-003 — 🟠 P1 — Tests — LocalizationIntegrityTest 2 fails
+#### BUG-003 — 🟠 P1 — Tests — LocalizationIntegrityTest 2 fails [FIXED v1.17.4]
 - **Failures:**
   - `every_translatable_ru_key_exists_in_all_other_locales` (LocalizationIntegrityTest.kt:82)
   - `locale_key_counts_are_balanced` (LocalizationIntegrityTest.kt:279)
@@ -113,6 +113,22 @@
 ---
 
 ## ✅ FIXED (последние 30 дней)
+
+### v1.17.4 — Release readiness: tests + локализация (2026-05-18)
+
+| ID | Priority | Title |
+|---|---|---|
+| BUG-001 | 🟠 P1 | SkillRatingSystemTest 2 fails — тесты под старую rating v1, обновлены под v2 (start=0, decay 5/8/12, FLOOR=0) |
+| BUG-002 | 🟠 P1 | LeagueResolverTest 3 fails — пороги переписаны под v2 (Aldea 0-99, ..., Madrid 2800+) |
+| BUG-003 | 🟠 P1 | LocalizationIntegrityTest 2 fails — добавлены 18 переводов hint_* и widget_* в en/uk/es |
+
+Тесты: 178/185 → **185/185 PASS** ✅
+
+### v1.17.3 — Firebase Storage avatar fix (b41735d, 2026-05-18)
+
+| ID | Priority | Title | File |
+|---|---|---|---|
+| BUG-014 | 🟠 P1 | Avatar upload permission denied — путь синхронизирован `users/{uid}/avatar.jpg` | [SettingsScreen.kt:237](app/src/main/java/com/spanishapp/ui/settings/SettingsScreen.kt:237) |
 
 ### v1.17.2 — Light theme полировка (cd9ed19, 2026-05-18)
 

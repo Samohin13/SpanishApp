@@ -45,6 +45,7 @@ class SkillRatingSystemTest {
     @Test
     fun decayDoesNothingDuringGracePeriod() {
         val now = 100L * 86_400_000L
+        // v2: grace = 2 дня. Проверяем что ровно 2 дня — без штрафа.
         val twoDaysAgo = now - 2 * 86_400_000L
         val r = SkillRatingSystem.applyDecay(currentRating = 1500, peakRating = 1500, lastUpdateMs = twoDaysAgo, nowMs = now)
         assertEquals(1500, r)
@@ -54,19 +55,22 @@ class SkillRatingSystemTest {
     fun decayKicksInAfterGracePeriod() {
         val now = 100L * 86_400_000L
         val tenDaysAgo = now - 10 * 86_400_000L
-        // 10 - 3 grace = 7 days × 2 = -14
+        // v2 (с 1.1.0): grace = 2 дня, прогрессивный штраф.
+        // daysOver = 10 - 2 = 8. Попадает в зону 6-12: penalty = 25 + (8-5)*8 = 49.
+        // 1500 - 49 = 1451
         val r = SkillRatingSystem.applyDecay(currentRating = 1500, peakRating = 1500, lastUpdateMs = tenDaysAgo, nowMs = now)
-        assertEquals(1486, r)
+        assertEquals(1451, r)
     }
 
     @Test
-    fun decayDoesNotGoBelowPeakBuffer() {
+    fun decayClampsToFloorOnExtremeAbsence() {
         val now = 2000L * 86_400_000L
-        val long_ago = now - 1000L * 86_400_000L   // 1000 days ago, NOT zero
-        // peak 1500 → floor max(800, 1300) = 1300. Currently 1310.
-        // 1000 days × 2/day - 3 grace = -1994 penalty, clamped to floor 1300.
+        val long_ago = now - 1000L * 86_400_000L   // 1000 days ago
+        // v2: FLOOR_RATING = 0 (peak больше НЕ защищает current — peak только
+        // как личный рекорд в UI). 1000 дней простоя = penalty уносит ниже 0,
+        // зажимается до FLOOR_RATING.
         val r = SkillRatingSystem.applyDecay(currentRating = 1310, peakRating = 1500, lastUpdateMs = long_ago, nowMs = now)
-        assertEquals(1300, r)
+        assertEquals(SkillRatingSystem.FLOOR_RATING, r)
     }
 
     @Test
@@ -80,18 +84,21 @@ class LeagueResolverTest {
 
     @Test
     fun startingRatingMapsToAldea() {
-        val l = LeagueResolver.fromRating(1000)
+        // v2 (с 1.1.0): START_RATING = 0 (раньше 1000). Все новички в Aldea.
+        val l = LeagueResolver.fromRating(SkillRatingSystem.START_RATING)
         assertEquals(1, l.tier)
         assertEquals("Aldea perdida", l.city)
     }
 
     @Test
     fun ratingThresholdsAreContiguous() {
-        // 1099 → tier 1, 1100 → tier 2
-        assertEquals(1, LeagueResolver.fromRating(1099).tier)
-        assertEquals(2, LeagueResolver.fromRating(1100).tier)
-        assertEquals(7, LeagueResolver.fromRating(2299).tier)
-        assertEquals(8, LeagueResolver.fromRating(2300).tier)
+        // v2 границы (из CLAUDE.md §5):
+        //  Aldea 0-99 / Santiago 100-299 / Bilbao 300-599 / Zaragoza 600-999
+        //  Valencia 1000-1499 / Sevilla 1500-2099 / Barcelona 2100-2799 / Madrid 2800+
+        assertEquals(1, LeagueResolver.fromRating(99).tier)
+        assertEquals(2, LeagueResolver.fromRating(100).tier)
+        assertEquals(7, LeagueResolver.fromRating(2799).tier)
+        assertEquals(8, LeagueResolver.fromRating(2800).tier)
     }
 
     @Test
@@ -115,10 +122,10 @@ class LeagueResolverTest {
 
     @Test
     fun progressInLeagueRespectsBounds() {
-        // 1100 = старт Santiago (tier 2). Progress ≈ 0.0
-        assertTrue(LeagueResolver.progressInLeague(1100) < 0.05f)
-        // 1299 = конец Santiago. Progress ≈ 1.0
-        assertTrue(LeagueResolver.progressInLeague(1299) > 0.95f)
+        // v2: 100 = старт Santiago (tier 2). Progress ≈ 0.0
+        assertTrue(LeagueResolver.progressInLeague(100) < 0.05f)
+        // 299 = конец Santiago. Progress ≈ 1.0
+        assertTrue(LeagueResolver.progressInLeague(299) > 0.95f)
         // Madrid всегда 1.0
         assertEquals(1f, LeagueResolver.progressInLeague(5000), 0.001f)
     }

@@ -1,5 +1,26 @@
 <resources>
     <string name="widget_description">Word of the day in Spanish</string>
+    <!-- v1.14.0: additional widgets -->
+    <string name="widget_dictionary_search_desc">Quick dictionary word lookup</string>
+    <string name="widget_mission_desc">Daily goals progress</string>
+    <string name="widget_streak_desc">Day-streak counter (🔥)</string>
+    <string name="widget_ai_chat_desc">AI Spanish tutor</string>
+    <string name="widget_radio_desc">Spanish radio — listen and learn</string>
+
+    <!-- v1.16.0: Hint Bank earn reasons -->
+    <string name="hint_earn_lesson">Lesson completed</string>
+    <string name="hint_earn_theory">Theory read</string>
+    <string name="hint_earn_flashcard">Flashcard set 100%</string>
+    <string name="hint_earn_libro">Book — quiz passed</string>
+    <string name="hint_earn_streak">Streak +1 day</string>
+    <string name="hint_earn_wod">Word of the day solved</string>
+    <string name="hint_earn_achievement">Achievement unlocked</string>
+    <string name="hint_earn_3stars">3 stars in a game</string>
+    <string name="hint_bank_empty_title">No hints yet</string>
+    <string name="hint_bank_empty_msg">Earn 💡 by studying: lessons, theory, flashcards, books.</string>
+    <string name="hint_bank_label">Hints</string>
+    <string name="hint_consume_one">Hint</string>
+    <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
 
     <!-- ── Bottom navigation ── -->
     <string name="nav_home">Home</string>
