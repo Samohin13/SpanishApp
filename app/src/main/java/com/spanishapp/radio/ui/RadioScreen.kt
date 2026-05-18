@@ -1062,7 +1062,11 @@ private fun StationCard(
         Country.MEXICO -> Color(0xFF4CAF50)
         Country.ARGENTINA -> Color(0xFF42A5F5)
     }
-    val baseGradient = listOf(Color(0xFF3A3A3C), Color(0xFF1C1C1E))
+    // v1.17.0: theme-aware gradient (раньше hardcoded dark, на light выглядел чёрной плашкой)
+    val baseGradient = listOf(
+        com.spanishapp.ui.theme.AppPalette.surfaceHighest(),
+        com.spanishapp.ui.theme.AppPalette.surface()
+    )
 
     // v1.13.1: карточки крупнее на планшете (96dp → 140dp).
     val cardSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 140.dp else 96.dp
@@ -1213,7 +1217,10 @@ private fun FindMoreTile(loading: Boolean, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(14.dp))
                 .background(
                     Brush.verticalGradient(
-                        listOf(Color(0xFF3A3A3C), Color(0xFF1C1C1E))
+                        listOf(
+                            com.spanishapp.ui.theme.AppPalette.surfaceHighest(),
+                            com.spanishapp.ui.theme.AppPalette.surface()
+                        )
                     )
                 )
                 .border(

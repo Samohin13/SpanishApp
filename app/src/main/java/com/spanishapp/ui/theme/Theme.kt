@@ -88,40 +88,62 @@ val AppTypography = Typography(
     labelSmall  = TextStyle(fontWeight = FontWeight.Bold,        fontSize = 11.sp, letterSpacing = 0.5.sp)
 )
 
+// v1.17.0: Premium light theme — Apple HIG × Material 3 hybrid.
+// Чисто-белый background, 5-уровневая иерархия surfaces, iOS-style
+// secondary text (#6E6E73), тонкие separators (#C6C6C8).
 private val LightColors = lightColorScheme(
-    primary              = AppColors.Purple,        // Orange #FF6B35
+    primary              = AppColors.Purple,            // #FF6B35 brand orange
     onPrimary            = Color.White,
-    primaryContainer     = AppColors.PurplePale,    // Peach #FFF1E6
-    onPrimaryContainer   = Color(0xFF8B2500),       // Deep burnt orange for text on peach
+    primaryContainer     = Color(0xFFFFE5DA),           // Мягкий персиковый tint
+    onPrimaryContainer   = Color(0xFFC24A1A),           // Deep burnt orange — текст на tint
+    inversePrimary       = Color(0xFFFFAB8B),
 
-    secondary            = AppColors.Pink,          // Magenta #D62867
+    secondary            = AppColors.Pink,              // #D62867 magenta
     onSecondary          = Color.White,
-    secondaryContainer   = AppColors.PurplePill,    // Peach dark #FFDECC
-    onSecondaryContainer = AppColors.Pink,
+    secondaryContainer   = Color(0xFFFFD0DC),
+    onSecondaryContainer = Color(0xFF8A1944),
 
-    tertiary             = AppColors.Gold,          // Sun #FFB400
-    onTertiary           = Color.White,
+    tertiary             = AppColors.Gold,              // #FFB400
+    onTertiary           = Color(0xFF1A1100),
+    tertiaryContainer    = Color(0xFFFFE7A6),
+    onTertiaryContainer  = Color(0xFF6D4C00),
 
-    background           = AppColors.BgWhite,
-    onBackground         = AppColors.TextPrimary,   // Ocean #264653
+    background           = Color(0xFFFFFFFF),           // Чисто-белый Apple
+    onBackground         = Color(0xFF1C1C1E),           // Apple primary text
 
-    surface              = AppColors.CardBg,
-    onSurface            = AppColors.TextPrimary,
-    surfaceVariant       = AppColors.BgLight,       // Warm peach tint #FFF8F2
-    surfaceContainer     = AppColors.BgLight,
-    onSurfaceVariant     = AppColors.TextSecondary,
+    surface                  = Color(0xFFFFFFFF),       // Карточки
+    onSurface                = Color(0xFF1C1C1E),
+    surfaceVariant           = Color(0xFFF2F2F7),       // iOS systemGrouped
+    onSurfaceVariant         = Color(0xFF6E6E73),       // iOS secondary 65%
+    surfaceContainerLowest   = Color(0xFFFFFFFF),
+    surfaceContainerLow      = Color(0xFFF8F8FA),
+    surfaceContainer         = Color(0xFFF2F2F7),
+    surfaceContainerHigh     = Color(0xFFEAEAEF),
+    surfaceContainerHighest  = Color(0xFFE5E5EA),
 
-    outline              = AppColors.BorderColor,   // Warm gray #E8E5E0
-    outlineVariant       = AppColors.BorderColor,
+    outline              = Color(0xFFC6C6C8),           // iOS-style separator
+    outlineVariant       = Color(0xFFE5E5EA),           // Слабый divider
 
-    error                = AppColors.Error
+    inverseSurface       = Color(0xFF1C1C1E),
+    inverseOnSurface     = Color(0xFFFFFFFF),
+
+    error                = Color(0xFFFF3B30),
+    onError              = Color.White,
+    errorContainer       = Color(0xFFFFD8D4),
+    onErrorContainer     = Color(0xFF8B1F1A),
+
+    scrim                = Color(0xFF000000)
 )
 
+// v1.17.0: Dark theme — НЕ ТРОГАЕМ значения (тщательная гарантия что
+// существующая dark выглядит идентично). Добавлены только новые slots
+// (surfaceContainerLow/High/Highest) с тёмными hex'ами в общем стиле.
 private val DarkColors = darkColorScheme(
     primary              = AppColors.Purple,           // Keep brand orange — readable on dark
     onPrimary            = Color.White,
     primaryContainer     = Color(0xFF5C2A0F),          // Deep burnt orange container
     onPrimaryContainer   = Color(0xFFFFDECF),
+    inversePrimary       = Color(0xFFFFAB8B),
 
     secondary            = AppColors.Pink,
     onSecondary          = Color.White,
@@ -130,20 +152,34 @@ private val DarkColors = darkColorScheme(
 
     tertiary             = AppColors.Gold,
     onTertiary           = Color(0xFF1A1100),
+    tertiaryContainer    = Color(0xFF6D4C00),
+    onTertiaryContainer  = Color(0xFFFFE7A6),
 
     background           = Color(0xFF121212),
     onBackground         = Color(0xFFEDEDED),
 
-    surface              = Color(0xFF1C1C1E),
-    onSurface            = Color(0xFFEDEDED),
-    surfaceVariant       = Color(0xFF2C2C2E),
-    surfaceContainer     = Color(0xFF1C1C1E),
-    onSurfaceVariant     = Color(0xFFB0B0B0),
+    surface                  = Color(0xFF1C1C1E),
+    onSurface                = Color(0xFFEDEDED),
+    surfaceVariant           = Color(0xFF2C2C2E),
+    onSurfaceVariant         = Color(0xFFB0B0B0),
+    surfaceContainerLowest   = Color(0xFF0F0F11),
+    surfaceContainerLow      = Color(0xFF1C1C1E),
+    surfaceContainer         = Color(0xFF1C1C1E),
+    surfaceContainerHigh     = Color(0xFF2C2C2E),
+    surfaceContainerHighest  = Color(0xFF3A3A3C),
 
     outline              = Color(0xFF3A3A3C),
     outlineVariant       = Color(0xFF2C2C2E),
 
-    error                = AppColors.Error
+    inverseSurface       = Color(0xFFEDEDED),
+    inverseOnSurface     = Color(0xFF1C1C1E),
+
+    error                = AppColors.Error,
+    onError              = Color.White,
+    errorContainer       = Color(0xFF5C1A1A),
+    onErrorContainer     = Color(0xFFFFD8D4),
+
+    scrim                = Color(0xFF000000)
 )
 
 @Composable

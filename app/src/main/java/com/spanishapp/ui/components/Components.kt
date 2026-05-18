@@ -67,7 +67,7 @@ fun SpanishBottomBar(
 ) {
     // Sunset palette
     val activeColor  = Color(0xFFFF6B35)  // Orange primary
-    val inactive     = Color(0xFFAEAEB2)
+    val inactive     = com.spanishapp.ui.theme.AppPalette.onSurfaceDim()  // v1.17.0: theme-aware
     val pillBg       = Color(0x1AFF6B35)  // 10% orange tint
     val pillBorder   = Color(0x33FF6B35)  // 20% orange border
 
