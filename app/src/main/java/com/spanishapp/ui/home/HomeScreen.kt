@@ -477,18 +477,23 @@ private fun CompactHeader(
 
         Spacer(Modifier.width(12.dp))
 
+        // v1.13.1: явный color + adaptive font для planshетного контраста.
+        // Юзер жаловался "Текст в верхнем баре не читабелен".
+        val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+        val greetingFont = if (isWide) 22.sp else 18.sp
+        val motivationFont = if (isWide) 15.sp else 13.sp
+
         Column(modifier = Modifier.weight(1f)) {
-            // Animated greeting reused — replayKey on greeting so morning →
-            // afternoon transitions re-trigger the staggered reveal.
             Text(
                 greeting,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 18.sp
+                fontSize = greetingFont,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 motivation,
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = motivationFont,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

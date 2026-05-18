@@ -114,14 +114,19 @@ fun RadioScreen(navController: NavHostController) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation ==
         android.content.res.Configuration.ORIENTATION_LANDSCAPE
-    val heroSize = if (isLandscape) 160.dp else 240.dp
+    // v1.13.1: на планшете hero крупнее — 320dp вместо 240/160.
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val heroSize = when {
+        isWide -> 320.dp
+        isLandscape -> 160.dp
+        else -> 240.dp
+    }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .adaptiveContentWidth(),
+                .statusBarsPadding(),
         ) {
             TopBar(
                 onBack = { navController.popBackStack() },
@@ -460,6 +465,11 @@ private fun CountryChips(
     onSelect: (Country) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // v1.13.1: на планшете chip-и крупнее (Duolingo-style).
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val chipPadding = if (isWide) 14.dp else 8.dp
+    val chipFont = if (isWide) 16.sp else 12.sp
+
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -477,9 +487,9 @@ private fun CountryChips(
             ) {
                 Text(
                     "${c.emoji} ${c.displayName}",
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    modifier = Modifier.padding(vertical = chipPadding),
                     textAlign = TextAlign.Center,
-                    fontSize = 12.sp,
+                    fontSize = chipFont,
                     fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium,
                     color = if (isActive) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -569,20 +579,28 @@ private fun FilterChip(
         border = if (selected) BorderStroke(1.2.dp, Accent.copy(alpha = 0.6f)) else null,
         modifier = Modifier.clickable(onClick = onClick),
     ) {
+        // v1.13.1: filter chip крупнее на планшете
+        val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+        val padH = if (isWide) 16.dp else 10.dp
+        val padV = if (isWide) 10.dp else 6.dp
+        val iconDp = if (isWide) 20.dp else 14.dp
+        val gap = if (isWide) 8.dp else 5.dp
+        val fontSp = if (isWide) 14.sp else 11.sp
+
         Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = padH, vertical = padV),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 icon,
                 contentDescription = null,
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(iconDp),
                 tint = if (selected) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Spacer(Modifier.width(5.dp))
+            Spacer(Modifier.width(gap))
             Text(
                 label,
-                fontSize = 11.sp,
+                fontSize = fontSp,
                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                 color = if (selected) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -850,6 +868,17 @@ private fun PlayerControls(
     onNext: () -> Unit,
     onToggleFavorite: () -> Unit,
 ) {
+    // v1.13.1: на планшете все кнопки крупнее (Duolingo-style):
+    // play 72→100dp, skip 52→72dp, fav 44→60dp, spacer 44→60dp.
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val favSize = if (isWide) 60.dp else 44.dp
+    val favIcon = if (isWide) 30.dp else 22.dp
+    val skipSize = if (isWide) 72.dp else 52.dp
+    val skipIcon = if (isWide) 38.dp else 28.dp
+    val playSize = if (isWide) 100.dp else 72.dp
+    val playIcon = if (isWide) 48.dp else 36.dp
+    val spacerSize = if (isWide) 60.dp else 44.dp
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -858,8 +887,8 @@ private fun PlayerControls(
         CircleBtn(
             icon = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
             cd = if (isFavorite) "В избранном" else "Добавить в избранное",
-            size = 44.dp,
-            iconSize = 22.dp,
+            size = favSize,
+            iconSize = favIcon,
             tint = if (isFavorite) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
             bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
             enabled = canControl,
@@ -868,8 +897,8 @@ private fun PlayerControls(
         CircleBtn(
             icon = Icons.Filled.SkipPrevious,
             cd = "Предыдущая",
-            size = 52.dp,
-            iconSize = 28.dp,
+            size = skipSize,
+            iconSize = skipIcon,
             tint = MaterialTheme.colorScheme.onSurface,
             bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
             enabled = canControl,
@@ -888,7 +917,7 @@ private fun PlayerControls(
             Box(
                 modifier = Modifier
                     .scale(playScale)
-                    .size(72.dp)
+                    .size(playSize)
                     .clip(CircleShape)
                     .background(Brush.linearGradient(listOf(Accent, Accent.copy(alpha = 0.75f))))
                     .clickable(
@@ -904,7 +933,7 @@ private fun PlayerControls(
                 Icon(
                     if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                     contentDescription = if (isPlaying) "Пауза" else "Играть",
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier.size(playIcon),
                     tint = Color.White,
                 )
             }
@@ -912,15 +941,15 @@ private fun PlayerControls(
         CircleBtn(
             icon = Icons.Filled.SkipNext,
             cd = "Следующая",
-            size = 52.dp,
-            iconSize = 28.dp,
+            size = skipSize,
+            iconSize = skipIcon,
             tint = MaterialTheme.colorScheme.onSurface,
             bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
             enabled = canControl,
             onClick = onNext,
         )
         // Spacer чтобы play остался по центру (компенсация за favorite слева)
-        Spacer(Modifier.size(44.dp))
+        Spacer(Modifier.size(spacerSize))
     }
 }
 
@@ -1035,14 +1064,17 @@ private fun StationCard(
     }
     val baseGradient = listOf(Color(0xFF3A3A3C), Color(0xFF1C1C1E))
 
+    // v1.13.1: карточки крупнее на планшете (96dp → 140dp).
+    val cardSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 140.dp else 96.dp
+
     Column(
         modifier = Modifier
-            .width(96.dp)
+            .width(cardSize)
             .clickable(onClick = onClick),
     ) {
         Box(
             modifier = Modifier
-                .size(96.dp)
+                .size(cardSize)
                 .clip(RoundedCornerShape(14.dp))
                 .background(Brush.verticalGradient(baseGradient))
                 .border(
@@ -1166,16 +1198,18 @@ private fun FindMoreTile(loading: Boolean, onClick: () -> Unit) {
         ).value
     } else 1f
 
+    val tileSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 140.dp else 96.dp
+
     Column(
         modifier = Modifier
-            .width(96.dp)
+            .width(tileSize)
             .clickable(enabled = !loading, onClick = onClick),
     ) {
         // Та же graphite-glass база что и у обычных карточек, плюс
         // accent-обводка для отличия (это action-tile)
         Box(
             modifier = Modifier
-                .size(96.dp)
+                .size(tileSize)
                 .clip(RoundedCornerShape(14.dp))
                 .background(
                     Brush.verticalGradient(

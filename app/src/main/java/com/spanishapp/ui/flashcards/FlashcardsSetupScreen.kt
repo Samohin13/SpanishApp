@@ -331,11 +331,13 @@ private fun SetRow(
 ) {
     val accent = levelAccent(row.set.level)
 
+    // v1.13.1: на планшете карточка крупнее
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val cardMinHeight = if (isWide) 150.dp else 116.dp
+
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
-        // v1.12.4: heightIn(min = 116.dp) — все карточки одной высоты
-        // в grid'е. Сет 1 unlocked был выше locked-сетов → рваный layout.
-        modifier = modifier.fillMaxWidth().heightIn(min = 116.dp),
+        modifier = modifier.fillMaxWidth().heightIn(min = cardMinHeight),
         shape = RoundedCornerShape(18.dp),
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         shadowElevation = if (row.unlocked) 3.dp else 0.dp,
@@ -370,9 +372,14 @@ private fun SetRow(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Emoji circle — tinted in level accent colour
+                val emojiSize = if (isWide) 72.dp else 56.dp
+                val emojiFont = if (isWide) 36.sp else 28.sp
+                val lockSize = if (isWide) 28.dp else 22.dp
+                val titleFont = if (isWide) 19.sp else 16.sp
+                val metaFont = if (isWide) 14.sp else 12.sp
                 Box(
                     modifier = Modifier
-                        .size(56.dp)
+                        .size(emojiSize)
                         .clip(CircleShape)
                         .background(
                             when {
@@ -387,10 +394,10 @@ private fun SetRow(
                         Icon(
                             Icons.Default.Lock, null,
                             tint     = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(lockSize)
                         )
                     } else {
-                        Text(row.set.emoji, fontSize = 28.sp)
+                        Text(row.set.emoji, fontSize = emojiFont)
                     }
                 }
 
@@ -399,7 +406,7 @@ private fun SetRow(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         stringResource(com.spanishapp.R.string.flashcards_set_row_title_template, row.set.order, row.set.title),
-                        fontSize   = 16.sp,
+                        fontSize   = titleFont,
                         fontWeight = FontWeight.SemiBold,
                         color      = if (row.unlocked) MaterialTheme.colorScheme.onSurface
                                      else MaterialTheme.colorScheme.onSurfaceVariant
@@ -423,7 +430,7 @@ private fun SetRow(
                         }
                         Text(
                             statusText,
-                            fontSize = 12.sp,
+                            fontSize = metaFont,
                             color    = if (row.seenCount >= row.total && row.total > 0)
                                            Color(0xFF4CAF50)
                                        else MaterialTheme.colorScheme.onSurfaceVariant
@@ -450,7 +457,7 @@ private fun SetRow(
                     } else {
                         Text(
                             stringResource(com.spanishapp.R.string.flashcards_set_locked),
-                            fontSize = 12.sp,
+                            fontSize = metaFont,
                             color    = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }

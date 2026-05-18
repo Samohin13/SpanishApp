@@ -53,19 +53,12 @@ fun AdaptiveScaffold(
             }
         },
     ) { paddingValues ->
-        // Контент центрируется с adaptiveContentWidth (cap 900dp на
-        // Expanded). На Compact width = Dp.Unspecified → full-width.
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .adaptiveContentWidth(),
-            ) {
-                content(paddingValues)
-            }
-        }
+        // v1.13.1: global cap убран. Контент рисуется full-width.
+        // Юзер жаловался "Все мелко как на телефоне" — cap 900dp на
+        // 1280dp планшете оставлял UI как-будто на телефоне в центре.
+        // Длинные тексты (Libros read, AiChat) применяют cap локально
+        // через Modifier.adaptiveContentWidth(). UI/dashboard экраны
+        // используют adaptive sizing (isWideScreen → больше шрифт/dp).
+        content(paddingValues)
     }
 }

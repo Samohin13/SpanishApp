@@ -176,14 +176,24 @@ fun RadioMiniPlayer(
                     )
             )
 
+            // v1.13.1: mini-player крупнее на планшете
+            val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+            val playerPadH = if (isWide) 16.dp else 10.dp
+            val playerPadV = if (isWide) 10.dp else 6.dp
+            val artworkSize = if (isWide) 56.dp else 40.dp
+            val artworkFont = if (isWide) 14.sp else 10.sp
+            val titleFont = if (isWide) 16.sp else 13.sp
+            val metaFont = if (isWide) 12.sp else 10.sp
+            val dotSize = if (isWide) 7.dp else 5.dp
+
             Row(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                modifier = Modifier.padding(horizontal = playerPadH, vertical = playerPadV),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // Station artwork
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(artworkSize)
                         .clip(RoundedCornerShape(8.dp))
                         .background(
                             Brush.linearGradient(
@@ -197,16 +207,16 @@ fun RadioMiniPlayer(
                 ) {
                     Text(
                         station?.shortCode ?: "—",
-                        fontSize = 10.sp,
+                        fontSize = artworkFont,
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.White,
                     )
                 }
-                Spacer(Modifier.width(10.dp))
+                Spacer(Modifier.width(if (isWide) 14.dp else 10.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         station?.name ?: "—",
-                        fontSize = 13.sp,
+                        fontSize = titleFont,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
@@ -224,21 +234,21 @@ fun RadioMiniPlayer(
                             )
                             Box(
                                 modifier = Modifier
-                                    .size(5.dp)
+                                    .size(dotSize)
                                     .clip(CircleShape)
                                     .background(Green.copy(alpha = alpha))
                             )
                             Spacer(Modifier.width(5.dp))
                             Text(
                                 "LIVE · ${station?.program ?: ""}",
-                                fontSize = 10.sp,
+                                fontSize = metaFont,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                             )
                         } else {
                             Text(
                                 station?.program ?: "—",
-                                fontSize = 10.sp,
+                                fontSize = metaFont,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                             )
@@ -282,9 +292,13 @@ private fun MiniControlButton(
     tint: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit,
 ) {
+    // v1.13.1: mini-player кнопки крупнее на планшете
+    val isWide = com.spanishapp.ui.adaptive.isWideScreen()
+    val btnSize = if (isWide) 56.dp else 40.dp
+    val iconSize = if (isWide) 32.dp else 24.dp
     Box(
         modifier = Modifier
-            .size(40.dp)
+            .size(btnSize)
             .clip(CircleShape)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -292,7 +306,7 @@ private fun MiniControlButton(
         Icon(
             icon,
             contentDescription = cd,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(iconSize),
             tint = tint,
         )
     }
