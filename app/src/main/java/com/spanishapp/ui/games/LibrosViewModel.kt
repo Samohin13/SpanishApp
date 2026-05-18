@@ -41,6 +41,7 @@ class LibrosViewModel @Inject constructor(
     private val ratingUpdater: RatingUpdater,
     private val geminiTranslator: GeminiTranslator,
     private val achievementManager: com.spanishapp.service.AchievementManager,
+    private val hintBank: com.spanishapp.service.HintBankManager,
 ) : ViewModel() {
 
     private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
@@ -132,6 +133,12 @@ class LibrosViewModel @Inject constructor(
             // Trigger reading-related achievement check after every Libro
             // completion (was silently missing — owner-reported gap).
             runCatching { achievementManager.checkAndUnlock() }
+            // v1.16.0: +2 💡 если quiz пройден (≥ PASS_CORRECT) И это
+            // первое прохождение (existing == null или wasNotCompleted)
+            val wasFirstPass = passed && (existing == null || !existing.isCompleted)
+            if (wasFirstPass) {
+                hintBank.award(2, com.spanishapp.service.HintEarnReason.LIBRO_QUIZ_PASSED)
+            }
         }
     }
 

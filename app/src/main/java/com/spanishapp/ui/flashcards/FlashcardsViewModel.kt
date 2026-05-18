@@ -54,7 +54,8 @@ class FlashcardsViewModel @Inject constructor(
     private val tts: SpanishTts,
     private val ratingUpdater: RatingUpdater,
     private val xpTracker: com.spanishapp.service.XpTracker,
-    private val setProgressDao: com.spanishapp.data.db.dao.FlashcardSetProgressDao
+    private val setProgressDao: com.spanishapp.data.db.dao.FlashcardSetProgressDao,
+    private val hintBank: com.spanishapp.service.HintBankManager,
 ) : ViewModel() {
 
     /** Set ID being practiced this session (null = legacy category mode). */
@@ -298,6 +299,10 @@ class FlashcardsViewModel @Inject constructor(
                             completedAt = System.currentTimeMillis()
                         )
                     )
+                    // v1.16.0: +3 💡 за прохождение сета на 100% (perfect)
+                    if (percent == 100) {
+                        hintBank.award(3, com.spanishapp.service.HintEarnReason.FLASHCARD_SET_100)
+                    }
                 }
             }
         }

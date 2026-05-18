@@ -68,7 +68,8 @@ object LevelDifficulty {
  */
 @Singleton
 class GameLevelManager @Inject constructor(
-    private val dao: GameLevelProgressDao
+    private val dao: GameLevelProgressDao,
+    private val hintBank: com.spanishapp.service.HintBankManager? = null,
 ) {
     /** Доступен ли уровень для игры. Уровень 1 всегда открыт; N+1 — если N пройден. */
     suspend fun isUnlocked(gameId: String, level: Int): Boolean {
@@ -106,6 +107,11 @@ class GameLevelManager @Inject constructor(
                 completedAt = System.currentTimeMillis()
             )
         )
+        // v1.16.0: +5 💡 за 3 звезды (только при первом достижении 3* — newStars
+        // = 3 И existing.stars < 3, чтоб не давать повторно при перепрохождении).
+        if (newStars == 3 && (existing?.stars ?: 0) < 3) {
+            hintBank?.award(5, com.spanishapp.service.HintEarnReason.GAME_3_STARS)
+        }
         return stars
     }
 
@@ -135,6 +141,10 @@ class GameLevelManager @Inject constructor(
                 completedAt = System.currentTimeMillis()
             )
         )
+        // v1.16.0: +5 💡 за первое 3-звёздочное прохождение
+        if (newStars == 3 && (existing?.stars ?: 0) < 3) {
+            hintBank?.award(5, com.spanishapp.service.HintEarnReason.GAME_3_STARS)
+        }
         return newStars
     }
 }

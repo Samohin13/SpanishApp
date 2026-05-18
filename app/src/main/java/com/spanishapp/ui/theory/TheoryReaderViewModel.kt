@@ -25,6 +25,7 @@ import javax.inject.Inject
 class TheoryReaderViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val theoryProgressDao: TheoryProgressDao,
+    private val hintBank: com.spanishapp.service.HintBankManager,
 ) : ViewModel() {
 
     val lessonId: String = savedStateHandle.get<String>("lessonId") ?: ""
@@ -61,12 +62,17 @@ class TheoryReaderViewModel @Inject constructor(
      */
     fun markRead() {
         viewModelScope.launch {
+            // v1.16.0: +1 💡 только при ПЕРВОМ прочтении (не повторных)
+            val wasFirstTime = !_state.value.isAlreadyRead
             theoryProgressDao.markRead(lessonId)
             _state.value = _state.value.copy(
                 isAlreadyRead = true,
                 readCount = _state.value.readCount + 1,
                 justMarkedRead = true,
             )
+            if (wasFirstTime) {
+                hintBank.award(1, com.spanishapp.service.HintEarnReason.THEORY_READ)
+            }
         }
     }
 }

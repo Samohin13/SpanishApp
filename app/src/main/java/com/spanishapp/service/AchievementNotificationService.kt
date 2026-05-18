@@ -28,7 +28,8 @@ class AchievementManager @Inject constructor(
     private val flashcardSetProgressDao: FlashcardSetProgressDao,
     private val libroProgressDao: LibroProgressDao,
     private val gameLevelProgressDao: GameLevelProgressDao,
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
+    private val hintBank: HintBankManager,
 ) {
     /** Шина новых ачивок — собирается в Composable для показа диалога. */
     private val _unlockedFlow = MutableSharedFlow<AchievementEntity>(extraBufferCapacity = 8)
@@ -146,6 +147,8 @@ class AchievementManager @Inject constructor(
         acc.add(updated)
         _unlockedFlow.tryEmit(updated)
         notificationService.showAchievement(updated.titleRu, updated.descriptionRu)
+        // v1.16.0: +5 💡 за разблокировку достижения
+        hintBank.award(5, HintEarnReason.ACHIEVEMENT)
     }
 }
 

@@ -115,10 +115,31 @@ private fun SopaGameContent(
                     }
                 },
                 actions = {
+                    // v1.16.0: HintBadge + hint button (вместо score-based hint)
+                    val hintBalance by viewModel.hintBalance.collectAsState()
+                    var showNoHintsDialog by remember { mutableStateOf(false) }
+                    if (showNoHintsDialog) {
+                        AlertDialog(
+                            onDismissRequest = { showNoHintsDialog = false },
+                            title = { Text(stringResource(R.string.hint_bank_empty_title)) },
+                            text = { Text(stringResource(R.string.hint_bank_empty_msg)) },
+                            confirmButton = {
+                                TextButton(onClick = { showNoHintsDialog = false }) {
+                                    Text("OK")
+                                }
+                            }
+                        )
+                    }
                     if (!state.isGameOver) {
-                        IconButton(onClick = { viewModel.useHint() }, enabled = state.score >= 30) {
+                        com.spanishapp.ui.components.HintBadge(
+                            count = hintBalance,
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                        IconButton(onClick = {
+                            viewModel.useHint(onNoHints = { showNoHintsDialog = true })
+                        }) {
                             Icon(Icons.Default.Lightbulb, "Hint",
-                                tint = if (state.score >= 30) ACCENT else Color.Gray)
+                                tint = if (hintBalance > 0) ACCENT else Color.Gray)
                         }
                     }
                 }

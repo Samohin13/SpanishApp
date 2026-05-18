@@ -8,6 +8,21 @@
     <string name="widget_ai_chat_desc">ИИ-репетитор испанского</string>
     <string name="widget_radio_desc">Испанское радио — слушай и учись</string>
 
+    <!-- v1.16.0: Hint Bank earn reasons -->
+    <string name="hint_earn_lesson">Урок пройден</string>
+    <string name="hint_earn_theory">Теория прочитана</string>
+    <string name="hint_earn_flashcard">Сет карточек на 100%</string>
+    <string name="hint_earn_libro">Книга — тест пройден</string>
+    <string name="hint_earn_streak">Streak +1 день</string>
+    <string name="hint_earn_wod">Слово дня разгадано</string>
+    <string name="hint_earn_achievement">Достижение разблокировано</string>
+    <string name="hint_earn_3stars">3 звезды в игре</string>
+    <string name="hint_bank_empty_title">Подсказок нет</string>
+    <string name="hint_bank_empty_msg">Заработай 💡 в учёбе: урок, теория, карточки, книги.</string>
+    <string name="hint_bank_label">Подсказки</string>
+    <string name="hint_consume_one">Подсказка</string>
+    <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
+
     <!-- Google Sign-In Web Client ID (из google-services.json, client_type=3). -->
     <string name="default_web_client_id" translatable="false">664028454974-o540v64im5moli6e3im89o5t6r14uadp.apps.googleusercontent.com</string>
 

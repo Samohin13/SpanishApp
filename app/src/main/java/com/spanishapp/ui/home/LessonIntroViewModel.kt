@@ -17,7 +17,8 @@ class LessonIntroViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val ratingUpdater: RatingUpdater,
     private val xpTracker: XpTracker,
-    private val achievementManager: com.spanishapp.service.AchievementManager
+    private val achievementManager: com.spanishapp.service.AchievementManager,
+    private val hintBank: com.spanishapp.service.HintBankManager,
 ) : ViewModel() {
 
     /**
@@ -57,6 +58,8 @@ class LessonIntroViewModel @Inject constructor(
             xpTracker.add(xp = 15, words = 0)
             repeat(5) { ratingUpdater.applyGameAnswer(correct = true) }
             achievementManager.checkAndUnlock()
+            // v1.16.0: +2 💡 за прохождение урока (Hint Bank)
+            hintBank.award(2, com.spanishapp.service.HintEarnReason.LESSON_COMPLETE)
 
             com.spanishapp.service.Analytics.lessonCompleted(
                 lessonId = key,

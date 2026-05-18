@@ -18,6 +18,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.abs
@@ -75,8 +76,13 @@ class SopaViewModel @Inject constructor(
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
     private val ratingUpdater: RatingUpdater,
-    val levelManager: GameLevelManager
+    val levelManager: GameLevelManager,
+    private val hintBank: com.spanishapp.service.HintBankManager,
 ) : ViewModel() {
+
+    // v1.16.0: reactive поток баланса 💡 для UI badge
+    val hintBalance: kotlinx.coroutines.flow.StateFlow<Int> = hintBank.hintsFlow
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
 
     private val _state = MutableStateFlow(SopaGameState())
     val state = _state.asStateFlow()
@@ -440,16 +446,28 @@ class SopaViewModel @Inject constructor(
         }
     }
 
-    fun useHint() {
-        val s = _state.value
-        if (s.score < 30) return
-        val targetWord = s.words.find { !it.isFound } ?: return
-        for (r in 0 until s.config.gridSize) {
-            for (c in 0 until s.config.gridSize) {
-                if (s.grid[r][c] == targetWord.word[0]) {
-                    if (s.foundWords.none { it.cells.contains(r to c) } && !s.hintCells.contains(r to c)) {
-                        _state.value = s.copy(score = s.score - 30, hintCells = s.hintCells + (r to c))
-                        return
+    /**
+     * v1.16.0: подсказка тратит 1 💡 из Hint Bank (раньше — 30 очков
+     * текущего уровня, которые сбрасывались между уровнями).
+     * Возвращает false если у юзера нет 💡 — UI показывает диалог
+     * «заработай в учёбе».
+     */
+    fun useHint(onNoHints: () -> Unit = {}) {
+        viewModelScope.launch {
+            val ok = hintBank.tryConsume(1)
+            if (!ok) {
+                onNoHints()
+                return@launch
+            }
+            val s = _state.value
+            val targetWord = s.words.find { !it.isFound } ?: return@launch
+            for (r in 0 until s.config.gridSize) {
+                for (c in 0 until s.config.gridSize) {
+                    if (s.grid[r][c] == targetWord.word[0]) {
+                        if (s.foundWords.none { it.cells.contains(r to c) } && !s.hintCells.contains(r to c)) {
+                            _state.value = s.copy(hintCells = s.hintCells + (r to c))
+                            return@launch
+                        }
                     }
                 }
             }
