@@ -20,3 +20,9 @@ keystore.properties
 *.keystore
 *.jks
 .kotlin/
+
+# Firebase config (содержит public project IDs, не secrets, но best practice
+# не коммитить — генерируется Firebase Console на каждом изменении настроек).
+# Existing tracked file нужно удалить отдельно: git rm --cached app/google-services.json
+google-services.json
+app/google-services.json

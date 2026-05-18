@@ -179,14 +179,18 @@ class AiChatRepository @Inject constructor(
                 return@withContext Result.failure(Exception(humanizeError(response.code, errBody)))
             }
 
-            val json = Json.parseToJsonElement(response.body!!.string()).jsonObject
-            val assistantText = json["candidates"]!!
-                .jsonArray[0]
-                .jsonObject["content"]!!
-                .jsonObject["parts"]!!
-                .jsonArray[0]
-                .jsonObject["text"]!!
-                .jsonPrimitive.content
+            // v1.17.5: safe-navigation. Раньше было 7×!! — крашилось NPE/IOOBE
+            // если Gemini менял структуру ответа или возвращал пустой candidates.
+            val bodyStr = response.body?.string() ?: error("Empty response body")
+            val json = Json.parseToJsonElement(bodyStr).jsonObject
+            val assistantText = json["candidates"]
+                ?.jsonArray?.firstOrNull()
+                ?.jsonObject?.get("content")
+                ?.jsonObject?.get("parts")
+                ?.jsonArray?.firstOrNull()
+                ?.jsonObject?.get("text")
+                ?.jsonPrimitive?.content
+                ?: error("Gemini response missing candidates[0].content.parts[0].text")
 
             val correctionJson = extractCorrections(assistantText)
             val cleanText = assistantText.substringBefore("CORRECTIONS_JSON:").trim()
@@ -319,14 +323,16 @@ class AiChatRepository @Inject constructor(
                     .build()
 
                 val response = okHttpClient.newCall(request).execute()
-                val raw = Json.parseToJsonElement(response.body!!.string())
-                    .jsonObject["candidates"]!!
-                    .jsonArray[0]
-                    .jsonObject["content"]!!
-                    .jsonObject["parts"]!!
-                    .jsonArray[0]
-                    .jsonObject["text"]!!
-                    .jsonPrimitive.content
+                // v1.17.5: safe-navigation. См. комментарий в send().
+                val bodyStr = response.body?.string() ?: error("Empty response body")
+                val raw = Json.parseToJsonElement(bodyStr).jsonObject["candidates"]
+                    ?.jsonArray?.firstOrNull()
+                    ?.jsonObject?.get("content")
+                    ?.jsonObject?.get("parts")
+                    ?.jsonArray?.firstOrNull()
+                    ?.jsonObject?.get("text")
+                    ?.jsonPrimitive?.content
+                    ?: error("Gemini response missing candidates[0].content.parts[0].text")
 
                 // Strip possible markdown code block
                 val jsonText = raw

@@ -11,8 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.spanishapp.util.LocaleHelper
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -58,20 +56,18 @@ class MainActivity : FragmentActivity() {
     /**
      * Применяем выбранный пользователем язык UI ДО создания UI.
      * При изменении в Settings вызываем activity.recreate() —
-     * attachBaseContext перечитает свежее значение из DataStore.
+     * attachBaseContext перечитает свежее значение из SharedPreferences cache.
      *
-     * runBlocking здесь оправдан: это одноразовое чтение одного флага
-     * на главной нити при старте Activity, и без него мы не знаем,
-     * какой язык применять к ресурсам Compose.
+     * v1.17.5: больше НЕТ runBlocking на DataStore. Используем синхронный
+     * SharedPreferences-кэш (instant read, memory-mapped). Это убирает
+     * потенциальный ANR-источник на cold start (DataStore мог занимать
+     * 200-500ms при холодной инициализации).
+     *
+     * Канонический источник — DataStore. Кэш обновляется автоматически
+     * через setUiLanguage() и bootstrapLanguageCache() (см. AppPreferences).
      */
     override fun attachBaseContext(newBase: Context) {
-        // На раннем этапе Hilt ещё не доступен — собираем DataStore
-        // через AppPreferences с обычным ApplicationContext.
-        val lang = runBlocking {
-            runCatching {
-                AppPreferences(newBase.applicationContext).uiLanguage.first()
-            }.getOrDefault("system")
-        }
+        val lang = AppPreferences.cachedUiLanguage(newBase.applicationContext)
         super.attachBaseContext(LocaleHelper.applyLocale(newBase, lang))
     }
 

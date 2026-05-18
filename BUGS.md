@@ -32,7 +32,7 @@
 
 ### Code quality (обнаружено в полном аудите 2026-05-18)
 
-#### BUG-015 — 🟠 P1 — API — Unsafe JSON parsing в AiChatRepository
+#### BUG-015 — 🟠 P1 — API — Unsafe JSON parsing в AiChatRepository [FIXED v1.17.5]
 - **Файлы:** [AiChatRepository.kt:183-189](app/src/main/java/com/spanishapp/data/repository/AiChatRepository.kt:183), [AiChatRepository.kt:323-329](app/src/main/java/com/spanishapp/data/repository/AiChatRepository.kt:323)
 - **Симптом:** 7x `!!` подряд при парсинге Gemini response. Если API вернёт пустой `candidates` array или изменит структуру — NPE / IndexOutOfBoundsException.
 - **Mitigated by:** внешний `try/catch(Exception)` (line 204, 332) — крах перехватится, юзер увидит generic error.
@@ -54,7 +54,7 @@
 - **Fix:** Massive find-replace `collectAsState(` → `collectAsStateWithLifecycle(`. ~30 мин работы.
 - **Status:** OPEN (после релиза, batch refactor)
 
-#### BUG-018 — 🟢 P3 — Security — google-services.json не в .gitignore
+#### BUG-018 — 🟢 P3 — Security — google-services.json не в .gitignore [FIXED v1.17.5]
 - **Симптом:** файл закоммичен в git (содержит только public IDs, не секреты)
 - **Best practice:** Firebase Console генерирует новый каждый раз, безопаснее не коммитить
 - **Risk:** низкий (нет secrets), но засоряет diff на каждом изменении Firebase project settings
@@ -65,7 +65,21 @@
 - **Симптом:** Анимации могут рестартовать на parent recomposition. В текущем коде работает корректно.
 - **Status:** OPEN (косметика, документировать или починить)
 
-#### BUG-013 — 🔴 P0 — Runtime — ANR на запуске после pull v1.17.2
+#### BUG-013 — 🔴 P0 — Runtime — ANR на запуске после pull v1.17.2 [LIKELY-FIXED v1.17.5]
+**Update 2026-05-18:** Профилактический фикш применён без диагностики Logcat
+(юзер не хочет диагностики). Самая вероятная причина — `runBlocking` на
+DataStore в `MainActivity.attachBaseContext()` (известный IMPORTANT из CLAUDE.md).
+
+Решение v1.17.5: hybrid SharedPreferences-кэш для UI language.
+- `attachBaseContext()` читает синхронно из SharedPreferences (instant,
+  memory-mapped) вместо runBlocking на DataStore (200-500ms на cold start)
+- `setUiLanguage()` пишет в оба storage
+- `SpanishApp.onCreate` бутстрапит кэш из DataStore (idempotent)
+- См. [AppPreferences.kt cachedUiLanguage()](app/src/main/java/com/spanishapp/data/prefs/AppPreferences.kt) и [MainActivity.kt attachBaseContext()](app/src/main/java/com/spanishapp/MainActivity.kt)
+
+Если ANR воспроизведётся в v1.17.5 — Crashlytics покажет stack trace и
+точную root cause.
+
 - **Симптом:** Android показывает "Приложение ESPEAK не отвечает" с кнопками "Закрыть/Подождать"
 - **Скриншот:** на экране CourseDetailScreen (Курс B1), но юзер говорит ANR при запуске с нуля
 - **Когда началось:** 2026-05-18, сразу после `git pull` v1.17.2 (cd9ed19..237a9b0)

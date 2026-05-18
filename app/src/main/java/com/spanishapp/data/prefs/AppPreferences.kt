@@ -8,11 +8,18 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private val Context.dataStore by preferencesDataStore(name = "app_preferences")
+
+// v1.17.5: отдельный SharedPreferences-кэш для UI language.
+// Цель — synchronous read в Activity.attachBaseContext() без runBlocking
+// на DataStore (который мог давать 200-500ms на cold start и провоцировать ANR).
+private const val LOCALE_CACHE_PREFS = "app_preferences_locale_cache"
+private const val LOCALE_CACHE_KEY = "ui_language"
 
 enum class ThemeMode { AUTO, LIGHT, DARK }
 
@@ -33,6 +40,28 @@ class AppPreferences @Inject constructor(
         val FONT_SIZE        = stringPreferencesKey("font_size") // SMALL, MEDIUM, LARGE
         val UI_LANGUAGE      = stringPreferencesKey("ui_language") // "ru", "en", "system"
         val FEATURE_TOUR_SEEN = booleanPreferencesKey("feature_tour_seen")
+
+        /**
+         * v1.17.5: Synchronous read of UI language for Activity.attachBaseContext().
+         * Reads from SharedPreferences cache (memory-mapped, instant) instead of
+         * DataStore (which requires IO and was blocking main thread via runBlocking).
+         *
+         * On first install — returns "ru" (the canonical default). The first
+         * subsequent app process bootstraps the cache from DataStore (see
+         * [bootstrapLanguageCache] called from SpanishApp.onCreate), so on the
+         * second cold start the cache reflects the actual user choice.
+         *
+         * Call from any Context (including before Hilt is ready in attachBaseContext).
+         */
+        @JvmStatic
+        fun cachedUiLanguage(context: Context): String =
+            context.getSharedPreferences(LOCALE_CACHE_PREFS, Context.MODE_PRIVATE)
+                .getString(LOCALE_CACHE_KEY, "ru") ?: "ru"
+
+        private fun writeLanguageCache(context: Context, lang: String) {
+            context.getSharedPreferences(LOCALE_CACHE_PREFS, Context.MODE_PRIVATE)
+                .edit().putString(LOCALE_CACHE_KEY, lang).apply()
+        }
     }
 
     /**
@@ -99,7 +128,24 @@ class AppPreferences @Inject constructor(
      * чтобы новый юзер не пробовал en/uk/es и не получил «битый» UX.
      */
     val uiLanguage: Flow<String> = context.dataStore.data.map { it[UI_LANGUAGE] ?: "ru" }
-    suspend fun setUiLanguage(lang: String) = context.dataStore.edit { it[UI_LANGUAGE] = lang }
+    suspend fun setUiLanguage(lang: String) {
+        // v1.17.5: пишем И в DataStore, И в SharedPreferences-кэш чтобы
+        // attachBaseContext() на следующем старте мгновенно прочитал
+        // правильное значение без блокировки main thread.
+        writeLanguageCache(context, lang)
+        context.dataStore.edit { it[UI_LANGUAGE] = lang }
+    }
+
+    /**
+     * v1.17.5: Bootstrap SharedPreferences-кэша из DataStore на старте приложения.
+     * Идемпотентно — вызывается из [SpanishApp.onCreate] в фоне.
+     * После первого вызова attachBaseContext() при следующем cold start
+     * прочитает правильное значение синхронно без runBlocking.
+     */
+    suspend fun bootstrapLanguageCache() {
+        val current = uiLanguage.first()
+        writeLanguageCache(context, current)
+    }
 
     /** Глобальный тумблер звука (TTS). По умолчанию — включён. */
     val ttsEnabled: Flow<Boolean> = context.dataStore.data

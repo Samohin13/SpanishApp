@@ -90,5 +90,17 @@ class SpanishApp : Application() {
             }
             _seedReady.value = true
         }
+
+        // v1.17.5: синкаем SharedPreferences-кэш UI-языка из DataStore.
+        // attachBaseContext() читает из кэша синхронно (без runBlocking).
+        // Этот bootstrap гарантирует что после первого запуска кэш содержит
+        // канонический выбор юзера для следующих cold start.
+        appScope.launch {
+            runCatching { appPreferences.bootstrapLanguageCache() }
+                .onFailure { e ->
+                    com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                        .recordException(RuntimeException("[SpanishApp] bootstrapLanguageCache FAILED", e))
+                }
+        }
     }
 }
