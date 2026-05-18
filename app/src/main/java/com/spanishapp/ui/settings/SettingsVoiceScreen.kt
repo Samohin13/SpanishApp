@@ -37,7 +37,6 @@ import com.spanishapp.R
 import com.spanishapp.ui.components.rememberSpanishTts
 
 private val Purple   = Color(0xFF7C4DFF)
-private val LightBg  = Color(0xFFF5F5F8)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -133,7 +133,7 @@ fun LessonContentScreen(
                 }
             }
         },
-        containerColor = Color(0xFFF5F5F8)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -191,7 +191,7 @@ private fun ContentSection(section: LessonSection, accentColor: Color) {
         // Строки таблицы
         Surface(
             shape = RoundedCornerShape(14.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 2.dp
         ) {
             Column {
@@ -199,7 +199,7 @@ private fun ContentSection(section: LessonSection, accentColor: Color) {
                     ContentRow(item = item, accentColor = accentColor)
                     if (idx < section.items.lastIndex) {
                         HorizontalDivider(
-                            color = Color(0xFFF0F0F0),
+                            color = MaterialTheme.colorScheme.outlineVariant,
                             modifier = Modifier.padding(horizontal = 14.dp)
                         )
                     }

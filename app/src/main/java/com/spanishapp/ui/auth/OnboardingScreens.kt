@@ -196,13 +196,13 @@ fun AgeSelectionScreen(
             if (isYoung) {
                 Spacer(Modifier.height(24.dp))
                 Surface(
-                    color = Color(0xFFFFF3E0),
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
                         stringResource(R.string.onboarding_under13_hint),
                         fontSize = 15.sp,
-                        color = Color(0xFF6A4F00),
+                        color = MaterialTheme.colorScheme.onTertiaryContainer,
                         textAlign = TextAlign.Center,
                         lineHeight = 18.sp,
                         modifier = Modifier.padding(16.dp)

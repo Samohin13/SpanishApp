@@ -345,13 +345,13 @@ fun PlacementResultScreen(
             Spacer(Modifier.height(16.dp))
             Box(
                 modifier = Modifier
-                    .background(Color(0xFFFFF8E1), RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.tertiaryContainer, RoundedCornerShape(12.dp))
                     .padding(16.dp)
             ) {
                 Text(
                     stringResource(com.spanishapp.R.string.auth_placement_upcoming_note, level),
                     fontSize = 15.sp,
-                    color = Color(0xFF795548),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
                     textAlign = TextAlign.Center,
                     lineHeight = 20.sp
                 )

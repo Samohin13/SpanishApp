@@ -106,7 +106,7 @@ private fun VoiceInstallDialog(
                 Spacer(Modifier.height(10.dp))
                 Surface(
                     shape = RoundedCornerShape(10.dp),
-                    color = Color(0xFFF5F5F8),
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(Modifier.padding(12.dp)) {
