@@ -215,9 +215,18 @@ private fun SopaGameContent(
                                         ),
                                     contentAlignment = Alignment.Center
                                 ) {
+                                    // v1.15.3: на планшете шрифт крупнее.
+                                    // Юзер: "буквы слишком мелкие".
+                                    val isWideSopa = com.spanishapp.ui.adaptive.isWideScreen()
+                                    val cellFontSize = when {
+                                        cells > 14 -> if (isWideSopa) 18.sp else 11.sp
+                                        cells > 12 -> if (isWideSopa) 20.sp else 13.sp
+                                        cells > 9  -> if (isWideSopa) 22.sp else 14.sp
+                                        else       -> if (isWideSopa) 26.sp else 18.sp
+                                    }
                                     Text(
                                         ch.toString(),
-                                        fontSize = if (cells > 12) 11.sp else if (cells > 9) 14.sp else 18.sp,
+                                        fontSize = cellFontSize,
                                         fontWeight = FontWeight.ExtraBold,
                                         color = when {
                                             foundWord != null -> foundWord.color.copy(alpha = 0.85f)

@@ -185,10 +185,15 @@ class SopaViewModel @Inject constructor(
     }
 
     /**
-     * v1.15.2: Размещение слова прямой линией (горизонтально → или
-     * вертикально ↓). Допустимы 2 направления вместо 8.
-     * Не допускает пересечений с уже размещёнными буквами (если они
-     * не совпадают).
+     * v1.15.3: Размещение слова **прямой линией в 8 направлениях**
+     * (классический word search / sopa de letras):
+     *  →  ←  ↓  ↑  ↘  ↙  ↗  ↖
+     *
+     * Юзер: "слова должны быть расположены не чисто вертикально или
+     * горизонтально". В v1.15.2 было только → и ↓ (слишком ограниченно).
+     * Раньше использовалась змейка (snake) — слово могло извиваться
+     * буквой Z, юзер не мог его найти. Теперь — прямая линия, но
+     * любая из 8 осей. Это правильная механика word search.
      */
     private fun placeWordStraight(
         grid: Array<CharArray>,
@@ -198,10 +203,21 @@ class SopaViewModel @Inject constructor(
         val size = grid.size
         if (word.length > size) return false
 
-        // Перебираем 2 направления и случайные стартовые точки
-        val directions = listOf(0 to 1, 1 to 0).shuffled()  // → ↓
+        // 8 направлений: 4 ортогональные + 4 диагональные.
+        // Каждый раз shuffled чтобы распределение было равномерным.
+        val directions = listOf(
+            0 to 1,   // →
+            0 to -1,  // ←
+            1 to 0,   // ↓
+            -1 to 0,  // ↑
+            1 to 1,   // ↘
+            1 to -1,  // ↙
+            -1 to 1,  // ↗
+            -1 to -1, // ↖
+        )
+
         var attempts = 0
-        while (attempts < 300) {
+        while (attempts < 400) {
             attempts++
             val dir = directions.random()
             val startR = Random.nextInt(size)
@@ -267,27 +283,34 @@ class SopaViewModel @Inject constructor(
         val last = s.selectedCells.last()
         if (last == (r to c)) return
 
-        // v1.15.2: только H/V (запрет диагоналей).
-        // Если уже выбрано 2+ клетки — направление зафиксировано (H xor V),
-        // следующая клетка должна продолжать ту же ось.
+        // v1.15.3: drag по 8 направлениям прямой линией (классика word
+        // search). После 2-й клетки direction фиксируется — следующая
+        // клетка должна продолжать ту же ось.
         val first = s.selectedCells.first()
-        val horizontal = s.selectedCells.size == 1 || first.first == last.first
-        val vertical = s.selectedCells.size == 1 || first.second == last.second
+        val deltaR = r - last.first
+        val deltaC = c - last.second
+        val absDr = abs(deltaR)
+        val absDc = abs(deltaC)
 
-        // Сосед только если совпадает по одной оси и шаг = 1 по другой
-        val deltaR = abs(r - last.first)
-        val deltaC = abs(c - last.second)
-        val isHorizontalStep = deltaR == 0 && deltaC == 1
-        val isVerticalStep   = deltaR == 1 && deltaC == 0
+        // Шаг должен быть на 1 клетку в одном из 8 направлений
+        val isValidStep = (absDr <= 1 && absDc <= 1) && (absDr + absDc > 0)
+        if (!isValidStep) return
 
-        val canExtend = when {
-            s.selectedCells.size == 1 -> isHorizontalStep || isVerticalStep
-            horizontal && !vertical -> isHorizontalStep && r == first.first
-            vertical && !horizontal -> isVerticalStep && c == first.second
-            else -> isHorizontalStep || isVerticalStep
+        val canExtend: Boolean = if (s.selectedCells.size == 1) {
+            true
+        } else {
+            // Направление зафиксировано первыми 2 клетками.
+            val dirR = (s.selectedCells[1].first - first.first).coerceIn(-1, 1)
+            val dirC = (s.selectedCells[1].second - first.second).coerceIn(-1, 1)
+            // Новая клетка должна продолжать линию: на ось dirR/dirC
+            // от last на шаг 1 строго в той же стороне.
+            val expectedR = last.first + dirR
+            val expectedC = last.second + dirC
+            r == expectedR && c == expectedC
         }
 
         if (canExtend) {
+            // Backstep — снимаем последнюю выделенную клетку
             if (s.selectedCells.size > 1 && s.selectedCells[s.selectedCells.size - 2] == (r to c)) {
                 _state.value = s.copy(selectedCells = s.selectedCells.dropLast(1))
             } else if (!s.selectedCells.contains(r to c)) {

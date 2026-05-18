@@ -382,6 +382,8 @@ class RadioPlayerController(private val context: Context) {
         }
 
         ensureConnectedAndRun { controller ->
+            // v1.15.3: явно playWhenReady=true (защита от прошлого prepareOnly)
+            controller.playWhenReady = true
             controller.setMediaItems(items, startIndex.coerceAtLeast(0), 0L)
             controller.prepare()
             controller.play()
@@ -392,6 +394,11 @@ class RadioPlayerController(private val context: Context) {
      * v1.12.5: «Подготовить» станцию БЕЗ автоплея.
      * Используется при заходе на /radio чтобы UI знал «текущую» станцию,
      * но не начал играть автоматически. Юзер сам нажмёт ▶.
+     *
+     * v1.15.3: ВАЖНО — `controller.playWhenReady = false` ДО prepare().
+     * ExoPlayer по умолчанию имеет playWhenReady=true: prepare() сразу
+     * запускает воспроизведение когда станция загружена. Юзер жаловался
+     * «радио включается само при переходе на экран» — это и было причиной.
      */
     fun prepareOnly(station: Station) {
         _hasError.value = false
@@ -406,9 +413,9 @@ class RadioPlayerController(private val context: Context) {
             context.map { it.toMediaItem() } to context.indexOfFirst { it.id == playStation.id }
         }
         ensureConnectedAndRun { controller ->
+            controller.playWhenReady = false  // КРИТИЧНО — не играть auto после prepare
             controller.setMediaItems(items, startIndex.coerceAtLeast(0), 0L)
             controller.prepare()
-            // НЕТ controller.play() — играть начнём только по тапу юзера.
         }
     }
 
