@@ -151,6 +151,10 @@ class SopaViewModel @Inject constructor(
             val seededRandom = Random(level.toLong())
 
             // ── Пытаемся уместить нужное число слов на сетке ───
+            // v1.15.6: если не удалось разместить targetWords из исходного
+            // slice, добиваем из расширенного pool (все слова CEFR кроме
+            // уже использованных). Это гарантирует что юзер всегда увидит
+            // ровно targetWords слов на grid (не "ghost" слова в panel).
             val grid = Array(config.gridSize) { CharArray(config.gridSize) { ' ' } }
             val placed = mutableListOf<SopaWord>()
             for (sw in candidates) {
@@ -158,6 +162,18 @@ class SopaViewModel @Inject constructor(
                 val path = mutableListOf<Pair<Int, Int>>()
                 if (placeWordStraight(grid, sw.word, path, seededRandom)) {
                     placed.add(sw)
+                }
+            }
+            // Fallback — если placed < targetWords, добиваем из всего pool
+            if (placed.size < config.targetWords) {
+                val placedIds = placed.map { it.id }.toSet()
+                val fallback = allPool.filterNot { it.id in placedIds }
+                for (sw in fallback) {
+                    if (placed.size >= config.targetWords) break
+                    val path = mutableListOf<Pair<Int, Int>>()
+                    if (placeWordStraight(grid, sw.word, path, seededRandom)) {
+                        placed.add(sw)
+                    }
                 }
             }
             if (placed.isEmpty()) return@launch
@@ -322,42 +338,43 @@ class SopaViewModel @Inject constructor(
     fun onDragUpdate(r: Int, c: Int) {
         val s = _state.value
         if (s.isGameOver || s.selectedCells.isEmpty()) return
-        val last = s.selectedCells.last()
-        if (last == (r to c)) return
-
-        // v1.15.3: drag по 8 направлениям прямой линией (классика word
-        // search). После 2-й клетки direction фиксируется — следующая
-        // клетка должна продолжать ту же ось.
         val first = s.selectedCells.first()
-        val deltaR = r - last.first
-        val deltaC = c - last.second
+
+        // v1.15.6: ЛИНЕЙНЫЙ режим (классика word search).
+        // Раньше требовался шаг ровно 1 от последней клетки — при
+        // быстром drag по диагонали палец перескакивал клетки и
+        // выделение прерывалось (юзер: "GOL, BAR невозможно собрать").
+        // Теперь от first до (r,c) автоматически строится прямая
+        // линия в любом из 8 направлений.
+        val deltaR = r - first.first
+        val deltaC = c - first.second
         val absDr = abs(deltaR)
         val absDc = abs(deltaC)
 
-        // Шаг должен быть на 1 клетку в одном из 8 направлений
-        val isValidStep = (absDr <= 1 && absDc <= 1) && (absDr + absDc > 0)
-        if (!isValidStep) return
-
-        val canExtend: Boolean = if (s.selectedCells.size == 1) {
-            true
-        } else {
-            // Направление зафиксировано первыми 2 клетками.
-            val dirR = (s.selectedCells[1].first - first.first).coerceIn(-1, 1)
-            val dirC = (s.selectedCells[1].second - first.second).coerceIn(-1, 1)
-            // Новая клетка должна продолжать линию: на ось dirR/dirC
-            // от last на шаг 1 строго в той же стороне.
-            val expectedR = last.first + dirR
-            val expectedC = last.second + dirC
-            r == expectedR && c == expectedC
+        // Если current = first → reset до 1 клетки
+        if (absDr == 0 && absDc == 0) {
+            _state.value = s.copy(selectedCells = listOf(first))
+            return
         }
 
-        if (canExtend) {
-            // Backstep — снимаем последнюю выделенную клетку
-            if (s.selectedCells.size > 1 && s.selectedCells[s.selectedCells.size - 2] == (r to c)) {
-                _state.value = s.copy(selectedCells = s.selectedCells.dropLast(1))
-            } else if (!s.selectedCells.contains(r to c)) {
-                _state.value = s.copy(selectedCells = s.selectedCells + (r to c))
-            }
+        // Допустима только прямая линия (8 направлений):
+        // - горизонталь (deltaR == 0)
+        // - вертикаль (deltaC == 0)
+        // - диагональ (absDr == absDc)
+        val isStraight = deltaR == 0 || deltaC == 0 || absDr == absDc
+        if (!isStraight) return
+
+        // Строим линию от first до (r,c) шагом 1
+        val len = kotlin.math.max(absDr, absDc) + 1
+        val dirR = if (deltaR == 0) 0 else deltaR / absDr
+        val dirC = if (deltaC == 0) 0 else deltaC / absDc
+
+        val line = (0 until len).map { i ->
+            (first.first + dirR * i) to (first.second + dirC * i)
+        }
+
+        if (line != s.selectedCells) {
+            _state.value = s.copy(selectedCells = line)
         }
     }
 
