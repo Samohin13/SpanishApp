@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    v1.13.3: переделан на правильную adaptive icon архитектуру.
+
+    Было: background = mipmap PNG с bull уже встроенным внутри.
+    Foreground = почти пустой PNG. Launcher маскировал background
+    своей формой и поверх рисовал свой собственный launcher-mask,
+    из-за чего юзер видел «иконка-в-иконке» (внешний оранжевый
+    прямоугольник + внутри другая центрированная иконка с быком).
+
+    Стало: background = solid orange vector (просто #FF6B35 fill).
+    Foreground = ic_bull vector в safe zone (28..80 из 108).
+    Launcher mask теперь маскирует ОБА слоя одновременно —
+    bull всегда центрирован, фон всегда заполняет всю маску.
+-->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Drawable references give us crisp vector rendering at every density,
-         making the per-density mipmap PNGs (foreground/background) effectively
-         unused. They're kept for older launchers that don't read adaptive-icon. -->
-    <background android:drawable="@drawable/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+    <background android:drawable="@drawable/ic_launcher_background_v2" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground_v2" />
+    <monochrome android:drawable="@drawable/ic_launcher_foreground_v2" />
 </adaptive-icon>
