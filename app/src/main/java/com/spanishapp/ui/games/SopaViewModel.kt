@@ -117,7 +117,14 @@ class SopaViewModel @Inject constructor(
             // 4. Random(seed = level) для размещения на grid → одинаковая
             //    сетка для одного уровня (юзер может вернуться и узнать).
             val maxWordLen = config.gridSize - 1
-            val allPool = sopaCefr.flatMap { wordDao.getWordsByLevelSync(it) }
+            // v1.15.5: getWordsByLevelSync — синхронная функция Room.
+            // Room запрещает её вызов с main thread (IllegalStateException
+            // = краш приложения). viewModelScope.launch по default Main —
+            // оборачиваем БД-вызов в Dispatchers.IO.
+            val rawWords = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                sopaCefr.flatMap { wordDao.getWordsByLevelSync(it) }
+            }
+            val allPool = rawWords
                 .filter { it.russian.isNotBlank() && it.spanish.isNotBlank() }
                 .map {
                     SopaWord(
