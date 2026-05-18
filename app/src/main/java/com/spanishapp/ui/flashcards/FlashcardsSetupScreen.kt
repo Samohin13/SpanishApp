@@ -331,9 +331,13 @@ private fun SetRow(
 ) {
     val accent = levelAccent(row.set.level)
 
-    // v1.13.1: на планшете карточка крупнее
+    // v1.13.6: ОТКАТ adaptive sizing к умеренным значениям.
+    // Юзер: "ты увеличил карточки сетов, теперь смотрится не верно".
+    // Раньше было 150dp/72dp emoji — карточки выглядели как feature
+    // cards, не как list items. Список должен быть компактным.
+    // Возвращаем близко к compact: minHeight 120dp (был 116→150).
     val isWide = com.spanishapp.ui.adaptive.isWideScreen()
-    val cardMinHeight = if (isWide) 150.dp else 116.dp
+    val cardMinHeight = if (isWide) 120.dp else 116.dp
 
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
@@ -371,12 +375,13 @@ private fun SetRow(
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Emoji circle — tinted in level accent colour
-                val emojiSize = if (isWide) 72.dp else 56.dp
-                val emojiFont = if (isWide) 36.sp else 28.sp
-                val lockSize = if (isWide) 28.dp else 22.dp
-                val titleFont = if (isWide) 19.sp else 16.sp
-                val metaFont = if (isWide) 14.sp else 12.sp
+                // v1.13.6: умеренные размеры — было 72dp emoji / 19sp title,
+                // выглядело как feature card. Возвращаем близко к compact.
+                val emojiSize = if (isWide) 60.dp else 56.dp
+                val emojiFont = if (isWide) 30.sp else 28.sp
+                val lockSize = if (isWide) 24.dp else 22.dp
+                val titleFont = if (isWide) 17.sp else 16.sp
+                val metaFont = if (isWide) 13.sp else 12.sp
                 Box(
                     modifier = Modifier
                         .size(emojiSize)

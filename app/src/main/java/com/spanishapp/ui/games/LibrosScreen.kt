@@ -144,16 +144,16 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
     val libro = item.libro
     val levelColor = LevelColors[libro.level] ?: LibrosPurple
 
-    // v1.13.0: adaptive sizing — на планшете шрифт и круглый бейдж
-    // больше чтобы карточка не выглядела «детской». На телефоне как было.
+    // v1.13.6: ОТКАТ к умеренным размерам.
+    // Юзер: list cards не должны быть feature cards.
     val isWide = com.spanishapp.ui.adaptive.isWideScreen()
-    val cardMinHeight = if (isWide) 130.dp else 110.dp
-    val numberSize = if (isWide) 56.dp else 44.dp
-    val numberFont = if (isWide) 18.sp else 15.sp
-    val titleFont = if (isWide) 18.sp else 15.sp
-    val topicFont = if (isWide) 14.sp else 12.sp
-    val buttonFont = if (isWide) 14.sp else 12.sp
-    val cardPadding = if (isWide) 20.dp else 16.dp
+    val cardMinHeight = if (isWide) 116.dp else 110.dp
+    val numberSize = if (isWide) 48.dp else 44.dp
+    val numberFont = if (isWide) 16.sp else 15.sp
+    val titleFont = if (isWide) 16.sp else 15.sp
+    val topicFont = if (isWide) 13.sp else 12.sp
+    val buttonFont = if (isWide) 13.sp else 12.sp
+    val cardPadding = if (isWide) 16.dp else 16.dp
 
     Card(
         modifier = Modifier
