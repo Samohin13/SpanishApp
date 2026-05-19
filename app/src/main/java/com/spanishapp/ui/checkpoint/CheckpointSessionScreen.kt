@@ -166,17 +166,23 @@ fun CheckpointSessionScreen(
                     Spacer(Modifier.height(14.dp))
                 }
 
-                // Narration в стилизованной карточке (theme-aware)
+                // v1.18.14: Narration с brand-tint фоном (terra оранжевый
+                // @ 12% alpha) + border. Заметно контрастнее чем просто
+                // surfaceVariant — юзер раньше жаловался «цвет не изменился».
                 if (curAct.narration.isNotBlank()) {
                     Surface(
                         shape = RoundedCornerShape(10.dp),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = terra.copy(alpha = 0.10f),
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            terra.copy(alpha = 0.35f),
+                        ),
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
                             "💭 ${curAct.narration}",
                             fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                             modifier = Modifier.padding(12.dp),
                         )
@@ -376,6 +382,53 @@ private fun OptionsList(
     }
 }
 
+/**
+ * v1.18.14: Fuzzy match для ответа в checkpoint.
+ *
+ * Раньше использовался strict equals — «Me llamo Sergei» отвергался
+ * если эталон «Me llamo». Теперь:
+ *  - Удаляем пунктуацию (¿?¡!.,) и нормализуем регистр
+ *  - Strict совпадение → correct ✅
+ *  - Иначе: проверяем что все слова эталона есть во вводе
+ *    в правильном порядке (subsequence match) → correct ✅
+ *
+ * Это правильно для контента «Me llamo X» — юзер вводит своё имя,
+ * формула «Me llamo» содержится в его вводе → принимаем.
+ */
+private fun isAnswerCorrect(userInput: String, expected: String): Boolean {
+    val clean = { s: String ->
+        s.trim()
+            .replace(Regex("[¿?¡!.,]"), "")
+            .lowercase()
+            .replace(Regex("\\s+"), " ")
+    }
+    val user = clean(userInput)
+    val exp = clean(expected)
+    if (user.isEmpty()) return false
+    if (user == exp) return true
+
+    val userTokens = user.split(" ")
+    val expTokens = exp.split(" ")
+    if (expTokens.isEmpty()) return false
+
+    // Subsequence match: все expected tokens должны встретиться в input
+    // в правильном порядке (но между ними могут быть другие слова).
+    var userIdx = 0
+    for (expToken in expTokens) {
+        var found = false
+        while (userIdx < userTokens.size) {
+            if (userTokens[userIdx] == expToken) {
+                userIdx++
+                found = true
+                break
+            }
+            userIdx++
+        }
+        if (!found) return false
+    }
+    return true
+}
+
 @Composable
 private fun TypeReplyInput(
     expected: String,
@@ -397,9 +450,7 @@ private fun TypeReplyInput(
         if (!answered) {
             Button(
                 onClick = {
-                    val correct = input.text.trim()
-                        .replace(Regex("[¿?¡!.,]"), "")
-                        .equals(expected.trim().replace(Regex("[¿?¡!.,]"), ""), ignoreCase = true)
+                    val correct = isAnswerCorrect(input.text, expected)
                     onAnswer(correct)
                 },
                 enabled = input.text.isNotBlank(),
