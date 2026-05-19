@@ -241,17 +241,25 @@ class AiChatViewModel @Inject constructor(
     }
 
     /**
-     * v1.18.17: премиум-озвучка через Google Cloud TTS Neural2.
-     * Сначала чистим текст (убираем эмодзи, markdown, переводы в []),
-     * затем пробуем remote TTS. Если не удалось — fallback на Android TTS.
+     * v1.18.18: premium TTS с сегментацией ru/es и toggle-stop.
+     * Если уже играет — повторный тап останавливает (toggle).
+     * Иначе чистит текст и запускает воспроизведение.
      */
-    fun speak(text: String) = viewModelScope.launch {
+    val isSpeaking: StateFlow<Boolean> = remoteTts.isPlaying
+
+    fun speak(text: String) {
+        // Toggle: если уже говорит — стоп
+        if (remoteTts.isPlaying.value) {
+            remoteTts.stop()
+            tts.stop()
+            return
+        }
         val cleaned = sanitizeForSpeech(text)
-        if (cleaned.isBlank()) return@launch
+        if (cleaned.isBlank()) return
         val ok = remoteTts.speak(cleaned)
         if (!ok) {
             // Fallback на системный TTS если remote недоступен
-            tts.speak(text, fullMixed = true)
+            viewModelScope.launch { tts.speak(text, fullMixed = true) }
         }
     }
 

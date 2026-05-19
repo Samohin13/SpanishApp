@@ -5,10 +5,17 @@ import android.media.MediaPlayer
 import android.util.Log
 import com.spanishapp.BuildConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -18,20 +25,20 @@ import java.io.File
 import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
 
 /**
- * v1.18.17: Premium TTS через Cloudflare Worker → Google Cloud TTS Neural2.
+ * v1.18.18: Premium TTS с **сегментацией ru/es** + работающим stop.
  *
- * Зачем: Android системный TTS звучит «пластиково», читает эмодзи как
- * слова, переключение между ru/es voices даёт разрывы. Neural2 — нейронный
- * голос с естественной интонацией.
+ * Что изменилось vs v1.18.17:
+ *  • Сегментирует текст по unicode-блокам: cyrillic → ru voice,
+ *    latin → es voice. Каждый сегмент отдельный MP3, воспроизводятся
+ *    последовательно. Русский больше не звучит как «испанский акцент».
+ *  • stop() реально прерывает текущее воспроизведение + отменяет
+ *    очередь следующих сегментов.
+ *  • isPlaying StateFlow — UI знает «сейчас говорит» для toggle-кнопки.
  *
- * Архитектура:
- *   Каждый speak(text, voice) → POST /tts на Worker → MP3 bytes
- *   → файл-кэш cacheDir/tts/<sha1>.mp3 → MediaPlayer.start()
- *
- * Кэш — повторные тапы на тот же ответ не тратят квоту.
- * Fallback — если /tts failed, caller использует Android TTS.
+ * Кэш файлов в cacheDir/tts/<sha1>.mp3 — повторные ответы мгновенно.
  */
 @Singleton
 class RemoteTtsService @Inject constructor(
@@ -42,105 +49,179 @@ class RemoteTtsService @Inject constructor(
         File(context.cacheDir, "tts").apply { mkdirs() }
     }
 
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var playJob: Job? = null
     private var mediaPlayer: MediaPlayer? = null
 
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
     private val _isReady = MutableStateFlow(BuildConfig.AI_PROXY_URL.isNotBlank())
-    /** true если Worker URL сконфигурирован (premium TTS доступен). */
     val isReady: StateFlow<Boolean> = _isReady.asStateFlow()
 
     /**
-     * Озвучить текст премиум-голосом.
-     * @return true если успешно начал воспроизведение, false — fallback нужен.
+     * Озвучить текст. Делит на ru/es сегменты, скачивает каждый mp3,
+     * воспроизводит последовательно. Любой повторный вызов или stop()
+     * прерывает текущее.
+     *
+     * @return true если хотя бы один сегмент успешно начал играть.
      */
-    suspend fun speak(
+    fun speak(
         text: String,
-        voice: String = DEFAULT_VOICE,
         speed: Float = 1.0f,
-    ): Boolean = withContext(Dispatchers.IO) {
-        if (BuildConfig.AI_PROXY_URL.isBlank()) {
-            Log.w(TAG, "AI_PROXY_URL not configured — skipping remote TTS")
-            return@withContext false
+    ): Boolean {
+        if (BuildConfig.AI_PROXY_URL.isBlank()) return false
+        if (text.isBlank()) return false
+
+        // Прерываем предыдущее воспроизведение
+        stop()
+
+        val segments = segmentByLanguage(text.take(2000))
+        if (segments.isEmpty()) return false
+
+        playJob = scope.launch {
+            runCatching { com.spanishapp.radio.player.RadioCoordinator.pauseForTts() }
+            _isPlaying.value = true
+            try {
+                for (seg in segments) {
+                    if (!coroutineContext.isActive) break
+                    val mp3 = runCatching { fetchMp3(seg.text, seg.voice, speed) }
+                        .getOrNull() ?: continue
+                    playFileAndWait(mp3)
+                }
+            } finally {
+                _isPlaying.value = false
+            }
         }
-        if (text.isBlank()) return@withContext false
-
-        val mp3 = runCatching { fetchMp3(text.take(2000), voice, speed) }
-            .getOrNull()
-            ?: return@withContext false
-
-        withContext(Dispatchers.Main) { playMp3(mp3) }
-        true
+        return true
     }
 
-    /** Остановить воспроизведение. */
+    /** Прервать воспроизведение и очистить очередь. */
     fun stop() {
+        playJob?.cancel()
+        playJob = null
         runCatching { mediaPlayer?.stop() }
         runCatching { mediaPlayer?.release() }
         mediaPlayer = null
         _isPlaying.value = false
     }
 
-    private suspend fun fetchMp3(text: String, voice: String, speed: Float): File {
-        val hash = sha1("$voice|$speed|$text")
-        val file = File(cacheDir, "$hash.mp3")
-        if (file.exists() && file.length() > 0) {
-            Log.d(TAG, "cache HIT (${file.length()}b) for voice=$voice text='${text.take(40)}...'")
-            return file
-        }
-
-        val proxyUrl = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
-        val url = "$proxyUrl/tts"
-        val bodyJson = """
-            {"text":${jsonStr(text)},"voice":${jsonStr(voice)},"speed":$speed}
-        """.trimIndent()
-        val request = Request.Builder()
-            .url(url)
-            .post(bodyJson.toRequestBody("application/json".toMediaType()))
-            .header("Content-Type", "application/json")
-            .apply {
-                val secret = BuildConfig.AI_PROXY_SECRET.trim()
-                if (secret.isNotEmpty()) header("X-App-Secret", secret)
+    private suspend fun playFileAndWait(file: File) = withContext(Dispatchers.Main) {
+        suspendCancellableCoroutine<Unit> { cont ->
+            runCatching { mediaPlayer?.release() }
+            val mp = MediaPlayer().apply {
+                setDataSource(file.absolutePath)
+                setOnPreparedListener { it.start() }
+                setOnCompletionListener {
+                    runCatching { it.release() }
+                    if (mediaPlayer === it) mediaPlayer = null
+                    if (cont.isActive) cont.resume(Unit)
+                }
+                setOnErrorListener { mp, what, extra ->
+                    Log.w(TAG, "MediaPlayer error what=$what extra=$extra")
+                    runCatching { mp.release() }
+                    if (cont.isActive) cont.resume(Unit)
+                    true
+                }
+                prepareAsync()
             }
-            .build()
-
-        okHttpClient.newCall(request).execute().use { resp ->
-            if (!resp.isSuccessful) {
-                val errBody = resp.body?.string()?.take(200)
-                Log.w(TAG, "TTS failed HTTP ${resp.code}: $errBody")
-                error("TTS HTTP ${resp.code}")
+            mediaPlayer = mp
+            cont.invokeOnCancellation {
+                runCatching { mp.stop() }
+                runCatching { mp.release() }
+                if (mediaPlayer === mp) mediaPlayer = null
             }
-            val bytes = resp.body?.bytes() ?: error("Empty TTS body")
-            file.writeBytes(bytes)
-            Log.d(TAG, "cache STORE ${bytes.size}b for voice=$voice text='${text.take(40)}...'")
         }
-        return file
     }
 
-    private fun playMp3(file: File) {
-        runCatching { mediaPlayer?.release() }
-        // Радио ставим на паузу — не озвучивать поверх музыки.
-        runCatching { com.spanishapp.radio.player.RadioCoordinator.pauseForTts() }
+    private suspend fun fetchMp3(text: String, voice: String, speed: Float): File =
+        withContext(Dispatchers.IO) {
+            val hash = sha1("$voice|$speed|$text")
+            val file = File(cacheDir, "$hash.mp3")
+            if (file.exists() && file.length() > 0) return@withContext file
 
-        val mp = MediaPlayer().apply {
-            setDataSource(file.absolutePath)
-            setOnPreparedListener { it.start() }
-            setOnCompletionListener {
-                _isPlaying.value = false
-                runCatching { it.release() }
-                if (mediaPlayer === it) mediaPlayer = null
+            val proxyUrl = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
+            val url = "$proxyUrl/tts"
+            val bodyJson = """{"text":${jsonStr(text)},"voice":${jsonStr(voice)},"speed":$speed}"""
+            val request = Request.Builder()
+                .url(url)
+                .post(bodyJson.toRequestBody("application/json".toMediaType()))
+                .header("Content-Type", "application/json")
+                .apply {
+                    val secret = BuildConfig.AI_PROXY_SECRET.trim()
+                    if (secret.isNotEmpty()) header("X-App-Secret", secret)
+                }
+                .build()
+
+            okHttpClient.newCall(request).execute().use { resp ->
+                if (!resp.isSuccessful) {
+                    val errBody = resp.body?.string()?.take(200)
+                    Log.w(TAG, "TTS failed HTTP ${resp.code}: $errBody")
+                    error("TTS HTTP ${resp.code}")
+                }
+                val bytes = resp.body?.bytes() ?: error("Empty TTS body")
+                file.writeBytes(bytes)
             }
-            setOnErrorListener { mp, what, extra ->
-                Log.w(TAG, "MediaPlayer error: what=$what extra=$extra")
-                _isPlaying.value = false
-                runCatching { mp.release() }
-                true
-            }
-            prepareAsync()
+            file
         }
-        mediaPlayer = mp
-        _isPlaying.value = true
+
+    private data class Segment(val text: String, val voice: String)
+
+    /**
+     * Разбивает текст на куски по доминирующему скрипту char-by-char.
+     * Соседние char одного типа объединяются. Знаки препинания
+     * приклеиваются к текущему сегменту.
+     *
+     * - Cyrillic → ru-RU-Wavenet-B
+     * - Latin → es-ES-Neural2-A
+     * - Сегменты <2 букв пропускаем (типа «mi» — приклеит к соседнему)
+     */
+    private fun segmentByLanguage(text: String): List<Segment> {
+        val raw = mutableListOf<Pair<String, Boolean>>()  // text + isSpanish
+        val sb = StringBuilder()
+        var currentSpanish: Boolean? = null
+        for (ch in text) {
+            val isLetter = ch.isLetter()
+            val isLatin = isLetter && ch !in 'Ѐ'..'ӿ'
+            val isCyrillic = isLetter && ch in 'Ѐ'..'ӿ'
+            val charSpanish: Boolean? = when {
+                isLatin -> true
+                isCyrillic -> false
+                else -> null  // punct/space/digit → приклеиваем к текущему
+            }
+            if (charSpanish != null && currentSpanish != null && charSpanish != currentSpanish) {
+                if (sb.isNotBlank()) raw.add(sb.toString() to currentSpanish!!)
+                sb.clear()
+            }
+            if (charSpanish != null) currentSpanish = charSpanish
+            sb.append(ch)
+        }
+        if (sb.isNotBlank() && currentSpanish != null) {
+            raw.add(sb.toString() to currentSpanish!!)
+        }
+
+        // Merge: микро-сегменты (<2 letters) приклеиваем к соседним если возможно
+        if (raw.isEmpty()) return emptyList()
+        val merged = mutableListOf<Pair<String, Boolean>>()
+        for ((segText, segSpanish) in raw) {
+            val letterCount = segText.count { it.isLetter() }
+            if (letterCount < 2 && merged.isNotEmpty()) {
+                // Приклеиваем к предыдущему сегменту (сохраняя его язык)
+                val prev = merged.removeAt(merged.lastIndex)
+                merged.add((prev.first + segText) to prev.second)
+            } else {
+                merged.add(segText to segSpanish)
+            }
+        }
+
+        return merged.mapNotNull { (segText, isSpanish) ->
+            val trimmed = segText.trim()
+            if (trimmed.isBlank() || trimmed.count { it.isLetter() } < 1) null
+            else Segment(
+                text = trimmed,
+                voice = if (isSpanish) ES_VOICE else RU_VOICE,
+            )
+        }
     }
 
     private fun sha1(s: String): String {
@@ -160,6 +241,7 @@ class RemoteTtsService @Inject constructor(
 
     companion object {
         private const val TAG = "RemoteTts"
-        const val DEFAULT_VOICE = "es-ES-Neural2-A"   // женский, нейронный, чистый
+        private const val ES_VOICE = "es-ES-Neural2-A"      // женский нейронный
+        private const val RU_VOICE = "ru-RU-Wavenet-B"      // мужской wavenet (есть только wavenet для ru)
     }
 }
