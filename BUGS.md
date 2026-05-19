@@ -30,6 +30,19 @@
 
 ### Startup / Runtime
 
+### Runtime (обнаружено юзером 2026-05-19)
+
+#### BUG-021 — 🔴 P0 — Home — Карточка «Слово дня» пропала с главной [FIXED v1.17.8]
+- **Симптом:** WoD-карточка не отображалась на главной после смены даты (2026-05-18 → 2026-05-19) без рестарта приложения.
+- **Root cause** (два совмещённых бага):
+  1. `wordOfTheDay` в HomeViewModel был **one-shot** `flow { emit() }` — читал DailyWord один раз при subscribe. Если seedDailyWord() ещё не закончился → `null` навсегда.
+  2. `seedIfNeeded()` запускается только в `SpanishApp.onCreate()` — при смене даты без рестарта DailyWord для нового дня НЕ создаётся.
+- **Fix:**
+  - `DailyWordDao.observeForDate()` — reactive `Flow<DailyWordEntity?>` (Room автоматически эмиттит при INSERT)
+  - `HomeViewModel.init { ensureDailyWordExists() }` — создаёт WoD на сегодня при возврате юзера на главную (idempotent)
+  - `wordOfTheDay` переписан на map от observeForDate — UI обновляется автоматически
+- **Status:** ✅ FIXED v1.17.8
+
 ### Code quality (обнаружено в полном аудите 2026-05-18)
 
 #### BUG-015 — 🟠 P1 — API — Unsafe JSON parsing в AiChatRepository [FIXED v1.17.5]

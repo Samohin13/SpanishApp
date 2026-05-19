@@ -552,6 +552,14 @@ interface DailyWordDao {
     @Query("SELECT * FROM daily_words WHERE date = :date")
     suspend fun getForDate(date: String): DailyWordEntity?
 
+    /**
+     * v1.17.8: reactive вариант для HomeViewModel. Нужен чтобы UI обновлялся
+     * автоматически когда seedDailyWord()/ensureDailyWordExists() закончит
+     * INSERT (после subscribe). Раньше flow {} читал один раз → race condition.
+     */
+    @Query("SELECT * FROM daily_words WHERE date = :date")
+    fun observeForDate(date: String): kotlinx.coroutines.flow.Flow<DailyWordEntity?>
+
     @Query("UPDATE daily_words SET was_practiced = 1 WHERE date = :date")
     suspend fun markPracticed(date: String)
 }

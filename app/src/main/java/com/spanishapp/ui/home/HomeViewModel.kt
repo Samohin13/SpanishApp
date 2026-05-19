@@ -282,26 +282,56 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    val wordOfTheDay: StateFlow<WordOfDay?> = flow {
-        val today = LocalDate.now().toString()
-        val daily = dailyWordDao.getForDate(today)
-        if (daily != null) {
-            val word = wordDao.getById(daily.wordId)
-            if (word != null) emit(
-                WordOfDay(
-                    spanish      = word.spanish,
-                    russian      = word.russian,
-                    example      = word.example,
-                    wasPracticed = daily.wasPracticed,
-                    wordId       = word.id,
-                    level        = word.level,
-                    category     = word.category
-                )
-            )
-        } else {
-            emit(null)
+    /**
+     * v1.17.8 (fix: WoD пропадал с главной после смены даты):
+     * - Раньше `flow { emit() }` читал DailyWord **один раз** при subscribe.
+     *   Если seedDailyWord() ещё не закончился → emit null → карточка
+     *   скрыта НАВСЕГДА в этом lifecycle (даже после insert).
+     * - Также после смены даты (юзер не закрывал app) WoD не пересоздавался,
+     *   потому что seedIfNeeded() вызывается только в SpanishApp.onCreate.
+     *
+     * Новая реализация:
+     *  1. ensureDailyWordExists() в init — создаёт WoD на сегодня если нет.
+     *     Гарантирует наличие при любом возврате юзера на главную.
+     *  2. Reactive Flow через observeForDate(today) — UI обновляется
+     *     автоматически когда seeder/ensure вставит запись.
+     */
+    init {
+        viewModelScope.launch {
+            ensureDailyWordExists()
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    }
+
+    private suspend fun ensureDailyWordExists() {
+        val today = LocalDate.now().toString()
+        if (dailyWordDao.getForDate(today) != null) return
+        val a1Ids = wordDao.getA1WordIds()
+        if (a1Ids.isEmpty()) return
+        val wordId = a1Ids[LocalDate.now().dayOfYear % a1Ids.size]
+        dailyWordDao.upsert(
+            com.spanishapp.data.db.entity.DailyWordEntity(
+                date = today,
+                wordId = wordId
+            )
+        )
+    }
+
+    val wordOfTheDay: StateFlow<WordOfDay?> = dailyWordDao
+        .observeForDate(LocalDate.now().toString())
+        .map { daily ->
+            if (daily == null) return@map null
+            val word = wordDao.getById(daily.wordId) ?: return@map null
+            WordOfDay(
+                spanish      = word.spanish,
+                russian      = word.russian,
+                example      = word.example,
+                wasPracticed = daily.wasPracticed,
+                wordId       = word.id,
+                level        = word.level,
+                category     = word.category
+            )
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     /**
      * Mark today's WoD as practised — called once after the user finishes the quiz flow.
