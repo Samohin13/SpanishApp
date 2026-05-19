@@ -23,6 +23,7 @@
     <string name="hint_consume_one">Підказка</string>
     <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
     <string name="chat_send_cd">Надіслати</string>
+    <string name="chat_error_rate_limit">Занадто швидко — ШІ просить 30 секунд паузи 🙏</string>
     <string name="widget_description">Слово дня іспанською</string>
 
     <!-- Google Sign-In Web Client ID -->
@@ -171,7 +172,6 @@
     <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
     <string name="chat_welcome_subtitle">Я допоможу тобі практикувати іспанську. Про що хочеш поговорити?</string>
     <string name="chat_error_network">Немає інтернету</string>
-    <string name="chat_error_rate_limit">Перевищено ліміт запитів, зачекай</string>
     <string name="chat_error_generic">Помилка: %1$s</string>
 
     <!-- ── Pronunciation ── -->

@@ -174,7 +174,7 @@
     <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
     <string name="chat_welcome_subtitle">Я помогу тебе практиковать испанский язык. О чём хочешь поговорить?</string>
     <string name="chat_error_network">Нет интернета</string>
-    <string name="chat_error_rate_limit">Превышен лимит запросов, подожди</string>
+    <string name="chat_error_rate_limit">Слишком быстро — ИИ просит 30 секунд паузы 🙏</string>
     <string name="chat_error_generic">Ошибка: %1$s</string>
 
     <!-- ── Pronunciation ────────────────────────────────────── -->

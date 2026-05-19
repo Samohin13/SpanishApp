@@ -167,12 +167,36 @@ class AiChatViewModel @Inject constructor(
                 }
                 _streamingText.value = ""
             } catch (e: Exception) {
-                _error.value = when {
-                    e.message?.contains("401") == true -> appContext.getString(R.string.chat_error_invalid_key)
-                    e.message?.contains("429") == true -> appContext.getString(R.string.chat_error_rate_limit)
-                    e.message?.contains("network", ignoreCase = true) == true ||
-                    e.message?.contains("timeout", ignoreCase = true) == true -> appContext.getString(R.string.chat_error_network)
-                    else -> appContext.getString(R.string.chat_error_generic, e.message ?: "")
+                // v1.18.6: на 429 (rate limit) пробуем один авто-retry через 6 сек
+                // — обычно достаточно для сброса квоты Gemini Flash (15 RPM).
+                val is429 = e.message?.contains("429") == true
+                if (is429) {
+                    _streamingText.value = ""
+                    kotlinx.coroutines.delay(6000)
+                    try {
+                        repo.streamMessage(text.trim(), sessionId, theme.systemPromptExtra).collect { progressive ->
+                            val display = progressive.substringBefore("CORRECTIONS_JSON:")
+                            _streamingText.value = display
+                        }
+                        limiter.increment()
+                        _isSending.value = false
+                        kotlinx.coroutines.delay(200)
+                        _streamingText.value = ""
+                        return@launch
+                    } catch (e2: Exception) {
+                        // Retry тоже упал — показываем ошибку
+                        _error.value = if (e2.message?.contains("429") == true)
+                            appContext.getString(R.string.chat_error_rate_limit)
+                        else
+                            appContext.getString(R.string.chat_error_generic, e2.message ?: "")
+                    }
+                } else {
+                    _error.value = when {
+                        e.message?.contains("401") == true -> appContext.getString(R.string.chat_error_invalid_key)
+                        e.message?.contains("network", ignoreCase = true) == true ||
+                        e.message?.contains("timeout", ignoreCase = true) == true -> appContext.getString(R.string.chat_error_network)
+                        else -> appContext.getString(R.string.chat_error_generic, e.message ?: "")
+                    }
                 }
                 _streamingText.value = ""
                 _isSending.value = false
@@ -964,63 +988,67 @@ private fun QuickReplies(onPick: (String) -> Unit) {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  Voice Waveform (v1.18.4)
+//  Voice Waveform (v1.18.6 — Gemini Live / ChatGPT voice style)
 // ════════════════════════════════════════════════════════════════
 
 /**
- * Анимированная аудио-волна для индикации «ИИ слушает голос юзера».
- * Похоже на Gemini Live / Google Assistant.
+ * Pulsing centered bars — индикатор «ИИ слушает».
  *
- * Принцип:
- *  - Держим rolling buffer последних 32 значений rmsDb
- *  - Каждый новый amplitude шифтит буфер влево, новое значение слева
- *  - Canvas рисует 32 вертикальных линии: высота пропорциональна
- *    нормализованному значению (rmsDb диапазон -2..10 → 0..1)
- *  - Smoothing через animateFloat — линии не дёргаются
- *  - Цвет — brand primary с лёгким fade-out у краёв (центр ярче)
+ * v1.18.4 был scroll-стиль (как Telegram playback) — bars бежали слева
+ * направо. Юзер: «звуковая волна куда-то бежит». Заменил на pulsing
+ * static bars как у Gemini Live / ChatGPT voice mode:
+ *  - 5 широких столбиков, фиксированные позиции (по центру)
+ *  - Высота КАЖДОГО независимо пульсирует на основе current amplitude
+ *  - Smooth animation через animateFloat (не дёргаются)
+ *  - Центральный bar больше реагирует, крайние мягче (envelope)
+ *  - Brand primary, alpha по громкости
  */
 @Composable
 private fun VoiceWaveform(
     amplitude: Float,
     modifier: Modifier = Modifier,
 ) {
-    val bars = 32
-    val history = remember { mutableStateListOf<Float>().apply { repeat(bars) { add(0f) } } }
     val brand = MaterialTheme.colorScheme.primary
-
     // Нормализация rmsDb (-2..10) → 0..1
     val normalized = ((amplitude + 2f) / 12f).coerceIn(0f, 1f)
 
-    LaunchedEffect(amplitude) {
-        history.removeAt(0)
-        history.add(normalized)
+    // Envelope per bar — крайние bars менее реактивные чем центральные.
+    // 5 столбиков: коэффициенты от center к краям.
+    val envelopes = listOf(0.55f, 0.85f, 1.0f, 0.85f, 0.55f)
+
+    // Smooth animation на каждый bar
+    val animated = envelopes.map { env ->
+        val target = (0.15f + normalized * env).coerceIn(0.15f, 1f)
+        animateFloatAsState(
+            targetValue = target,
+            animationSpec = tween(
+                durationMillis = 140,
+                easing = androidx.compose.animation.core.FastOutSlowInEasing,
+            ),
+            label = "bar_height",
+        ).value
     }
 
     androidx.compose.foundation.Canvas(modifier = modifier) {
         val w = size.width
         val h = size.height
         val centerY = h / 2f
-        val barWidth = w / bars.toFloat() * 0.6f
-        val gap = w / bars.toFloat() * 0.4f
-        val totalStep = barWidth + gap
-        // Минимальная высота столбика чтобы waveform был виден даже в тишине
-        val minHeight = 4.dp.toPx()
-        val maxHeight = h * 0.85f
+        val bars = envelopes.size
+        val barWidth = 6.dp.toPx()
+        val gap = 10.dp.toPx()
+        val totalWidth = bars * barWidth + (bars - 1) * gap
+        val startX = (w - totalWidth) / 2f
+        val maxHeight = h * 0.78f
 
         for (i in 0 until bars) {
-            val value = history[i]
-            // Fade-out у краёв — центральные ярче (как у Gemini)
-            val distFromCenter = kotlin.math.abs(i - bars / 2f) / (bars / 2f)
-            val edgeFade = (1f - distFromCenter * 0.5f).coerceIn(0.3f, 1f)
-            val barHeight = (minHeight + value * (maxHeight - minHeight) * edgeFade)
-                .coerceAtLeast(minHeight)
-            val x = i * totalStep + gap / 2f
+            val barHeight = animated[i] * maxHeight
+            val x = startX + i * (barWidth + gap)
             drawRoundRect(
                 color = brand,
                 topLeft = androidx.compose.ui.geometry.Offset(x, centerY - barHeight / 2f),
                 size = androidx.compose.ui.geometry.Size(barWidth, barHeight),
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(barWidth / 2f),
-                alpha = (0.4f + value * 0.6f).coerceAtMost(1f),
+                alpha = (0.5f + normalized * 0.5f).coerceAtMost(1f),
             )
         }
     }

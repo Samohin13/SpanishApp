@@ -23,6 +23,7 @@
     <string name="hint_consume_one">Pista</string>
     <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
     <string name="chat_send_cd">Enviar</string>
+    <string name="chat_error_rate_limit">Más despacio — IA necesita 30 segundos de pausa 🙏</string>
     <string name="widget_description">Palabra del día en español</string>
 
     <!-- Google Sign-In Web Client ID -->
@@ -171,7 +172,6 @@
     <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
     <string name="chat_welcome_subtitle">Te ayudaré a practicar español. ¿De qué quieres hablar?</string>
     <string name="chat_error_network">Sin conexión a Internet</string>
-    <string name="chat_error_rate_limit">Límite de peticiones superado, espera un momento</string>
     <string name="chat_error_generic">Error: %1$s</string>
 
     <!-- ── Pronunciation ── -->
