@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import com.spanishapp.domain.voice.FriendlyVoice
 import com.spanishapp.domain.voice.TutorPersonality
 import com.spanishapp.domain.voice.VoiceCatalog
+import com.spanishapp.domain.voice.VoiceGender
 import com.spanishapp.domain.voice.VoicePackInstaller
 import com.spanishapp.R
 import com.spanishapp.ui.components.rememberSpanishTts
@@ -45,6 +46,7 @@ fun SettingsVoiceScreen(
     val tts = rememberSpanishTts()
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val personality by viewModel.personality.collectAsStateWithLifecycle()
+    val voiceGender by viewModel.voiceGender.collectAsStateWithLifecycle()
     val premiumReady by viewModel.isPremiumTtsReady.collectAsStateWithLifecycle()
     val previewPlaying by viewModel.isPreviewPlaying.collectAsStateWithLifecycle()
 
@@ -112,10 +114,26 @@ fun SettingsVoiceScreen(
                 }
             }
 
+            // ── Сегментный переключатель пола голоса ───────────────
+            item {
+                GenderSegmented(
+                    selected = voiceGender,
+                    onSelect = { g ->
+                        viewModel.selectVoiceGender(g)
+                        // мгновенно повторим preview если играет
+                        if (previewPlaying) {
+                            viewModel.stopPreview()
+                            viewModel.previewPersonality(personality)
+                        }
+                    }
+                )
+            }
+
             // ── 4 карточки характеров ──────────────────────────────
             items(TutorPersonality.entries.toTypedArray(), key = { it.id }) { p ->
                 PersonalityCard(
                     personality = p,
+                    gender = voiceGender,
                     isSelected = personality.id == p.id,
                     isPlaying = previewPlaying && personality.id == p.id,
                     premiumReady = premiumReady,
@@ -208,6 +226,7 @@ fun SettingsVoiceScreen(
 @Composable
 private fun PersonalityCard(
     personality: TutorPersonality,
+    gender: VoiceGender,
     isSelected: Boolean,
     isPlaying: Boolean,
     premiumReady: Boolean,
@@ -267,8 +286,8 @@ private fun PersonalityCard(
                     color = MaterialTheme.colorScheme.surfaceContainerHighest
                 ) {
                     Text(
-                        text = "ES: ${shortVoiceLabel(personality.esVoice)} · " +
-                                "RU: ${shortVoiceLabel(personality.ruVoice)} · " +
+                        text = "ES: ${shortVoiceLabel(personality.esVoice(gender))} · " +
+                                "RU: ${shortVoiceLabel(personality.ruVoice(gender))} · " +
                                 "темп ${"%.2f".format(personality.speed)}",
                         fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -311,21 +330,65 @@ private fun shortVoiceLabel(fullVoice: String): String {
 }
 
 @Composable
+private fun GenderSegmented(
+    selected: VoiceGender,
+    onSelect: (VoiceGender) -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(Modifier.padding(4.dp)) {
+            VoiceGender.entries.forEach { g ->
+                val isSel = g == selected
+                val emoji = if (g == VoiceGender.FEMALE) "👩" else "👨"
+                val label = if (g == VoiceGender.FEMALE) "Женский" else "Мужской"
+                Surface(
+                    shape = RoundedCornerShape(10.dp),
+                    color = if (isSel) BrandOrange else Color.Transparent,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onSelect(g) }
+                ) {
+                    Row(
+                        Modifier.padding(vertical = 10.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(emoji, fontSize = 16.sp)
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            label,
+                            fontSize = 14.sp,
+                            fontWeight = if (isSel) FontWeight.Bold else FontWeight.Medium,
+                            color = if (isSel) Color.White else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun VoicePackBanner(
     hdInstalled: Boolean,
     voicesCount: Int,
     onInstall: () -> Unit,
     onManage: () -> Unit
 ) {
-    val containerColor = if (hdInstalled)
-        Color(0xFFE8F5E9)
-    else
-        BrandOrange.copy(alpha = 0.10f)
-    val tint = if (hdInstalled) Color(0xFF2E7D32) else BrandOrange
+    // v1.18.21: theme-aware — раньше было Color(0xFFE8F5E9) (хардкод светлый
+    // зелёный), который в тёмной теме давал слишком яркий «островок».
+    // Теперь используем surface + tint иконки → блок сливается с остальными.
+    val tint = if (hdInstalled) Color(0xFF22C55E) else BrandOrange
+    val containerColor = MaterialTheme.colorScheme.surface
 
     Surface(
         shape = RoundedCornerShape(18.dp),
         color = containerColor,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(Modifier.padding(16.dp)) {
@@ -345,7 +408,7 @@ private fun VoicePackBanner(
                             stringResource(R.string.voice_pack),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        color = tint
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = if (hdInstalled)
@@ -353,7 +416,7 @@ private fun VoicePackBanner(
                         else
                             stringResource(R.string.voice_pack_promo),
                         fontSize = 13.sp,
-                        color = tint.copy(alpha = 0.8f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -362,7 +425,7 @@ private fun VoicePackBanner(
                 Text(
                     text = stringResource(R.string.voice_pack_size),
                     fontSize = 12.sp,
-                    color = tint.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
                 Button(

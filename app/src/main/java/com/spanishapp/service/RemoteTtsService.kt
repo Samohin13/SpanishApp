@@ -84,11 +84,13 @@ class RemoteTtsService @Inject constructor(
             // в Settings применяется без рестарта.
             val personalityId = authRepository.tutorPersonality.firstOrNull()
             val personality = com.spanishapp.domain.voice.TutorPersonality.byId(personalityId)
+            val genderId = authRepository.voiceGender.firstOrNull()
+            val gender = com.spanishapp.domain.voice.VoiceGender.byId(genderId)
             val finalSpeed = speed ?: personality.speed
             val segments = segmentByLanguage(
                 text = text.take(2000),
-                esVoice = personality.esVoice,
-                ruVoice = personality.ruVoice,
+                esVoice = personality.esVoice(gender),
+                ruVoice = personality.ruVoice(gender),
             )
             if (segments.isEmpty()) {
                 _isPlaying.value = false

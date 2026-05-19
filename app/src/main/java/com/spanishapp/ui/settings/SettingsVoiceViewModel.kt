@@ -6,6 +6,7 @@ import com.spanishapp.data.prefs.VoicePreferences
 import com.spanishapp.data.prefs.VoiceSettings
 import com.spanishapp.data.repository.AuthRepository
 import com.spanishapp.domain.voice.TutorPersonality
+import com.spanishapp.domain.voice.VoiceGender
 import com.spanishapp.service.RemoteTtsService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,7 +29,7 @@ class SettingsVoiceViewModel @Inject constructor(
         initialValue = VoiceSettings()
     )
 
-    /** v1.18.20: выбранный характер репетитора (из AuthRepository). */
+    /** v1.18.20: выбранный характер репетитора. */
     val personality: StateFlow<TutorPersonality> = authRepository.tutorPersonality
         .map { TutorPersonality.byId(it) }
         .stateIn(
@@ -37,14 +38,24 @@ class SettingsVoiceViewModel @Inject constructor(
             initialValue = TutorPersonality.DEFAULT
         )
 
-    /** Признак: премиум TTS доступен (AI_PROXY_URL настроен). */
-    val isPremiumTtsReady: StateFlow<Boolean> = remoteTts.isReady
+    /** v1.18.21: пол голоса (общий для ru+es). */
+    val voiceGender: StateFlow<VoiceGender> = authRepository.voiceGender
+        .map { VoiceGender.byId(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = VoiceGender.DEFAULT
+        )
 
-    /** Сейчас играет ли premium TTS preview. */
+    val isPremiumTtsReady: StateFlow<Boolean> = remoteTts.isReady
     val isPreviewPlaying: StateFlow<Boolean> = remoteTts.isPlaying
 
     fun selectPersonality(personality: TutorPersonality) = viewModelScope.launch {
         authRepository.setTutorPersonality(personality.id)
+    }
+
+    fun selectVoiceGender(gender: VoiceGender) = viewModelScope.launch {
+        authRepository.setVoiceGender(gender.id)
     }
 
     /** Прослушать seed-фразу выбранного характера (mix ru + es). */

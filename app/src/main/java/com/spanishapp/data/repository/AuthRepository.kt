@@ -32,6 +32,8 @@ class AuthRepository @Inject constructor(
     private val USER_GENDER = stringPreferencesKey("user_gender")        // "male" | "female"
     // v1.18.20: выбранный характер репетитора (TutorPersonality.id)
     private val TUTOR_PERSONALITY = stringPreferencesKey("tutor_personality")
+    // v1.18.21: пол голоса репетитора (VoiceGender.id — "female" | "male")
+    private val VOICE_GENDER = stringPreferencesKey("voice_gender")
     private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
@@ -71,6 +73,12 @@ class AuthRepository @Inject constructor(
     val tutorPersonality: Flow<String?> = context.dataStore.data.map { it[TUTOR_PERSONALITY] }
     suspend fun setTutorPersonality(id: String) {
         context.dataStore.edit { it[TUTOR_PERSONALITY] = id }
+    }
+
+    // v1.18.21: пол голоса репетитора (общий для ru+es)
+    val voiceGender: Flow<String?> = context.dataStore.data.map { it[VOICE_GENDER] }
+    suspend fun setVoiceGender(gender: String) {
+        context.dataStore.edit { it[VOICE_GENDER] = gender }
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARDING_COMPLETED] ?: false }

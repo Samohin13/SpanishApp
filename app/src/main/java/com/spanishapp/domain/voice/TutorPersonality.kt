@@ -1,22 +1,29 @@
 package com.spanishapp.domain.voice
 
 /**
- * v1.18.20: Характер репетитора — bundle из AI-тона, TTS-голоса и темпа.
+ * v1.18.21: Характер репетитора + раздельный выбор пола голоса.
  *
- * Применяется глобально (везде где идёт TTS + AI):
- *  - AI Chat: toneInstructions подмешиваются в system prompt
- *  - RemoteTtsService: esVoice/ruVoice/speed используются для синтеза
+ * Раньше каждый пресет имел фиксированную пару (es+ru) одного пола.
+ * Юзер просил явный выбор «мужской / женский» — теперь каждый пресет
+ * содержит ДВЕ согласованные пары, выбираемые через [VoiceGender].
  *
- * 4 пресета покрывают основные стили взаимодействия. По умолчанию —
- * FRIENDLY (наименее формально, для большинства юзеров).
+ * Все голоса — Google Cloud TTS HD (Neural2 / Wavenet / Studio).
+ * Russian gender проверен по docs:
+ *   • ru-RU-Wavenet-A / C / E — FEMALE
+ *   • ru-RU-Wavenet-B / D     — MALE
+ * Spanish gender:
+ *   • es-ES-Neural2-A / C / D / E, Studio-F — FEMALE
+ *   • es-ES-Neural2-B / F, Studio-C         — MALE
  */
 enum class TutorPersonality(
     val id: String,
     val displayName: String,
     val emoji: String,
     val description: String,
-    val esVoice: String,
-    val ruVoice: String,
+    private val esVoiceMale: String,
+    private val ruVoiceMale: String,
+    private val esVoiceFemale: String,
+    private val ruVoiceFemale: String,
     val speed: Float,
     /** Дополнение к system prompt — задаёт тон. */
     val toneInstructions: String,
@@ -26,8 +33,10 @@ enum class TutorPersonality(
         displayName = "Строгий",
         emoji = "🎓",
         description = "Формально, точно, исправляет каждую мелочь",
-        esVoice = "es-ES-Neural2-B",   // male
-        ruVoice = "ru-RU-Wavenet-B",   // male
+        esVoiceMale = "es-ES-Neural2-B",
+        ruVoiceMale = "ru-RU-Wavenet-B",
+        esVoiceFemale = "es-ES-Neural2-A",
+        ruVoiceFemale = "ru-RU-Wavenet-E",
         speed = 0.92f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — СТРОГИЙ:
@@ -45,8 +54,10 @@ enum class TutorPersonality(
         displayName = "Вежливый",
         emoji = "🤝",
         description = "Сдержанно, мягкие подсказки, на «ты»",
-        esVoice = "es-ES-Neural2-A",   // female нейтральная
-        ruVoice = "ru-RU-Wavenet-E",   // female нейтральная
+        esVoiceMale = "es-ES-Neural2-F",
+        ruVoiceMale = "ru-RU-Wavenet-D",
+        esVoiceFemale = "es-ES-Neural2-C",
+        ruVoiceFemale = "ru-RU-Wavenet-E",
         speed = 1.0f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ВЕЖЛИВЫЙ:
@@ -63,8 +74,10 @@ enum class TutorPersonality(
         displayName = "Дружелюбный",
         emoji = "😊",
         description = "Легко, с шутками, сленг — ок",
-        esVoice = "es-ES-Neural2-D",   // female живая
-        ruVoice = "ru-RU-Wavenet-A",   // female живая
+        esVoiceMale = "es-ES-Neural2-B",
+        ruVoiceMale = "ru-RU-Wavenet-D",
+        esVoiceFemale = "es-ES-Neural2-D",
+        ruVoiceFemale = "ru-RU-Wavenet-A",
         speed = 1.05f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ДРУЖЕЛЮБНЫЙ:
@@ -82,8 +95,10 @@ enum class TutorPersonality(
         displayName = "Тёплый",
         emoji = "💕",
         description = "Эмоционально, поэтично, для души",
-        esVoice = "es-ES-Studio-F",    // multilingual премиум female
-        ruVoice = "ru-RU-Wavenet-C",   // female тёплая
+        esVoiceMale = "es-ES-Studio-C",
+        ruVoiceMale = "ru-RU-Wavenet-D",
+        esVoiceFemale = "es-ES-Studio-F",
+        ruVoiceFemale = "ru-RU-Wavenet-C",
         speed = 0.95f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ТЁПЛЫЙ:
@@ -96,10 +111,28 @@ enum class TutorPersonality(
         """.trimIndent(),
     );
 
+    fun esVoice(gender: VoiceGender): String =
+        if (gender == VoiceGender.MALE) esVoiceMale else esVoiceFemale
+
+    fun ruVoice(gender: VoiceGender): String =
+        if (gender == VoiceGender.MALE) ruVoiceMale else ruVoiceFemale
+
     companion object {
         val DEFAULT = FRIENDLY
 
         fun byId(id: String?): TutorPersonality =
+            entries.firstOrNull { it.id == id } ?: DEFAULT
+    }
+}
+
+/** Пол голоса репетитора — общий для ru+es чтобы не было микса. */
+enum class VoiceGender(val id: String) {
+    FEMALE("female"),
+    MALE("male");
+
+    companion object {
+        val DEFAULT = FEMALE
+        fun byId(id: String?): VoiceGender =
             entries.firstOrNull { it.id == id } ?: DEFAULT
     }
 }

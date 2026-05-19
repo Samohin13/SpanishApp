@@ -88,8 +88,8 @@ android {
         applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 120
-        versionName = "1.18.20"
+        versionCode = 121
+        versionName = "1.18.21"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Proxy URL for production: hides the API key from the APK.
         // When non-empty, AiChatRepository routes requests through it.
