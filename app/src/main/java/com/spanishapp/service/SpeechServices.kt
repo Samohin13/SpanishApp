@@ -31,7 +31,8 @@ import kotlin.coroutines.resume
 class SpanishTts @Inject constructor(
     @ApplicationContext private val context: Context,
     private val appPreferences: AppPreferences,
-    private val voicePreferences: VoicePreferences
+    private val voicePreferences: VoicePreferences,
+    private val remoteTts: RemoteTtsService,
 ) {
     private var tts: TextToSpeech? = null
     private val _isReady = MutableStateFlow(false)
@@ -164,6 +165,24 @@ class SpanishTts @Inject constructor(
      */
     fun speak(text: String, slow: Boolean = false, fullMixed: Boolean = false) {
         if (!enabled) return  // Юзер отключил голос диктора в настройках.
+
+        // v1.18.22: ВСЕ курсы тоже идут через premium TTS (Google Cloud
+        // с выбранным TutorPersonality + полом голоса). Так в Flashcards,
+        // Pronunciation, Conjugation, Dialogues, играх и Dictionary
+        // звучит тот же голос что и в AI Chat — пользователь жаловался
+        // что был «другой голос».
+        // Fallback на системный TTS если premium не настроен (AI_PROXY_URL пустой)
+        // или isReady=false на старте — чтобы никогда не быть «немыми».
+        if (remoteTts.isReady.value) {
+            val speakText = if (fullMixed) sanitizeForFullSpeech(text) else inferSpeakText(text)
+            if (!speakText.isNullOrBlank()) {
+                val speedMul = if (slow) 0.7f else 1.0f
+                remoteTts.speak(speakText, speed = speedMul)
+                return
+            }
+        }
+
+        // Fallback: системный Android TTS.
         val t = tts ?: return
         if (!_isReady.value) return
         val rate = if (slow) (voiceCfg.rate * 0.7f).coerceIn(0.3f, 2.0f)
@@ -310,6 +329,30 @@ class SpanishTts @Inject constructor(
                 if (cont.isActive) cont.resume(Unit)
                 return@suspendCancellableCoroutine
             }
+
+            // v1.18.22: premium TTS если доступно.
+            // Ждём завершения через isPlaying StateFlow (см. observer ниже).
+            if (remoteTts.isReady.value) {
+                val speedMul = if (slow) 0.7f else 1.0f
+                remoteTts.speak(speakText, speed = speedMul)
+                val observerJob = scope.launch {
+                    // Ждём пока isPlaying станет true, потом обратно false
+                    var sawPlaying = false
+                    remoteTts.isPlaying.collect { playing ->
+                        if (playing) sawPlaying = true
+                        if (!playing && sawPlaying) {
+                            if (cont.isActive) cont.resume(Unit)
+                            return@collect
+                        }
+                    }
+                }
+                cont.invokeOnCancellation {
+                    runCatching { observerJob.cancel() }
+                    runCatching { remoteTts.stop() }
+                }
+                return@suspendCancellableCoroutine
+            }
+
             val id = "wait_${System.currentTimeMillis()}"
             tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {}
@@ -325,7 +368,11 @@ class SpanishTts @Inject constructor(
             cont.invokeOnCancellation { tts?.stop() }
         }
 
-    fun stop() { tts?.stop() }
+    fun stop() {
+        // v1.18.22: stop работает для обоих движков
+        runCatching { remoteTts.stop() }
+        runCatching { tts?.stop() }
+    }
 
     fun shutdown() {
         tts?.stop()

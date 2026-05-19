@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.spanishapp.R
 import com.spanishapp.data.prefs.VoicePreferences
 import com.spanishapp.data.prefs.VoiceSettings
+import com.spanishapp.service.RemoteTtsService
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -38,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @InstallIn(SingletonComponent::class)
 private interface VoicePrefsEntryPoint {
     fun voicePreferences(): VoicePreferences
+    fun remoteTtsService(): RemoteTtsService
 }
 
 private fun voicePreferences(context: Context): VoicePreferences =
@@ -45,6 +47,12 @@ private fun voicePreferences(context: Context): VoicePreferences =
         context.applicationContext,
         VoicePrefsEntryPoint::class.java
     ).voicePreferences()
+
+internal fun remoteTtsFrom(context: Context): RemoteTtsService =
+    EntryPointAccessors.fromApplication(
+        context.applicationContext,
+        VoicePrefsEntryPoint::class.java
+    ).remoteTtsService()
 
 /**
  * Создаёт TTS, привязанный к жизненному циклу composable, и применяет к нему
@@ -213,6 +221,27 @@ fun TextToSpeech.speakSpanish(text: String?, utteranceId: String = "spk"): Boole
     return true
 }
 
+/**
+ * v1.18.22: озвучить через premium TTS (Google Cloud) если настроено,
+ * иначе через переданный системный TextToSpeech. Все курсы должны идти
+ * через premium с выбранным TutorPersonality + полом голоса.
+ */
+internal fun speakViaPremiumOrFallback(
+    context: Context,
+    text: String,
+    fallbackTts: TextToSpeech?,
+    utteranceId: String = "spk_${System.currentTimeMillis()}",
+) {
+    val cleaned = inferSpeakText(text) ?: return
+    val remote = runCatching { remoteTtsFrom(context) }.getOrNull()
+    if (remote != null && remote.isReady.value) {
+        remote.speak(cleaned)
+        return
+    }
+    com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
+    fallbackTts?.speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+}
+
 /** Очищает текст перед озвучкой: убирает плейсхолдеры. */
 fun sanitizeForTts(text: String): String =
     text.replace("___", " ")
@@ -253,6 +282,7 @@ fun SpeakerButton(
 ) {
     val speakText = remember(text) { inferSpeakText(text) } ?: return
 
+    val context = LocalContext.current
     var speaking by remember { mutableStateOf(false) }
 
     val iconTint by animateColorAsState(
@@ -271,11 +301,11 @@ fun SpeakerButton(
     IconButton(
         onClick = {
             tts?.stop()
-            tts?.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, "speak_${System.currentTimeMillis()}")
+            speakViaPremiumOrFallback(context, speakText, tts)
             speaking = true
         },
         modifier = modifier.size(36.dp),
-        enabled = tts != null
+        enabled = tts != null || runCatching { remoteTtsFrom(context).isReady.value }.getOrDefault(false)
     ) {
         Icon(
             imageVector = Icons.Default.VolumeUp,
