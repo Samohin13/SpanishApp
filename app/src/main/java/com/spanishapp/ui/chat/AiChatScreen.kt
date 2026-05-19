@@ -136,31 +136,36 @@ class AiChatViewModel @Inject constructor(
                 _isSending.value = false
                 return@launch
             }
-            // v1.18.1 (BUG: AI Chat нестабильность):
-            // Запоминаем количество сообщений ДО отправки, чтобы потом дождаться
-            // пока Room flow эмитит обновление messages с финальным assistant
-            // сообщением. Без этого было мигание: streamingText очищался ДО
-            // того как messages обновлялся → юзер видел пропажу ответа на 100-300ms.
+            // v1.18.5: race condition fix v2. Раньше (v1.18.1) был один loop
+            // в finally который держал _isSending=true ДО 1 сек ожидая Room
+            // flow. Это блокировало кнопку отправки + индикатор «загрузка»
+            // висел лишнюю секунду → юзер ощущал что ИИ медленный.
+            //
+            // Теперь:
+            //  - Сразу после collect() освобождаем UI (isSending=false).
+            //    Юзер может отправлять новое сообщение моментально.
+            //  - Короткий 200ms guard ТОЛЬКО на streamingText — защита от
+            //    100-300ms flicker когда Room ещё не эмитнул финальный INSERT.
+            //  - В catch — всё чистим сразу, никакого ожидания.
             val messageCountBefore = messages.value.size
             try {
                 repo.streamMessage(text.trim(), sessionId, theme.systemPromptExtra).collect { progressive ->
-                    // Strip the trailing CORRECTIONS_JSON marker for nicer display
-                    // while streaming (it'll be parsed cleanly when persisted).
+                    // Strip the trailing CORRECTIONS_JSON marker for nicer display.
                     val display = progressive.substringBefore("CORRECTIONS_JSON:")
                     _streamingText.value = display
                 }
-                // Инкремент счётчика только после успешного завершения стрима.
                 limiter.increment()
-                // Ждём пока Room flow пропустит INSERT assistant сообщения
-                // (Repository.streamMessage делает INSERT после flow). Если
-                // за 1 сек не дождались — продолжаем (DB issue, не блокируем UX).
-                val deadline = System.currentTimeMillis() + 1000L
+                // Освобождаем UI сразу — юзер может отправлять следующее.
+                _isSending.value = false
+                // Короткий guard от flicker (макс 200ms).
+                val deadline = System.currentTimeMillis() + 200L
                 while (
-                    messages.value.size <= messageCountBefore + 1 && // ждём user + assistant
+                    messages.value.size <= messageCountBefore + 1 &&
                     System.currentTimeMillis() < deadline
                 ) {
                     kotlinx.coroutines.delay(20)
                 }
+                _streamingText.value = ""
             } catch (e: Exception) {
                 _error.value = when {
                     e.message?.contains("401") == true -> appContext.getString(R.string.chat_error_invalid_key)
@@ -169,7 +174,6 @@ class AiChatViewModel @Inject constructor(
                     e.message?.contains("timeout", ignoreCase = true) == true -> appContext.getString(R.string.chat_error_network)
                     else -> appContext.getString(R.string.chat_error_generic, e.message ?: "")
                 }
-            } finally {
                 _streamingText.value = ""
                 _isSending.value = false
             }
