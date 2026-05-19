@@ -10,29 +10,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.spanishapp.domain.voice.FriendlyVoice
 import com.spanishapp.domain.voice.TutorPersonality
-import com.spanishapp.domain.voice.VoiceCatalog
 import com.spanishapp.domain.voice.VoiceGender
-import com.spanishapp.domain.voice.VoicePackInstaller
 import com.spanishapp.R
-import com.spanishapp.ui.components.rememberSpanishTts
 
 private val BrandOrange = Color(0xFFFF7A1A)
 
@@ -42,23 +35,11 @@ fun SettingsVoiceScreen(
     navController: NavHostController,
     viewModel: SettingsVoiceViewModel = androidx.hilt.navigation.compose.hiltViewModel()
 ) {
-    val ctx = LocalContext.current
-    val tts = rememberSpanishTts()
-    val settings by viewModel.settings.collectAsStateWithLifecycle()
     val personality by viewModel.personality.collectAsStateWithLifecycle()
     val voiceGender by viewModel.voiceGender.collectAsStateWithLifecycle()
+    val voiceSpeedMultiplier by viewModel.voiceSpeedMultiplier.collectAsStateWithLifecycle()
     val premiumReady by viewModel.isPremiumTtsReady.collectAsStateWithLifecycle()
     val previewPlaying by viewModel.isPreviewPlaying.collectAsStateWithLifecycle()
-
-    var voices by remember { mutableStateOf<List<FriendlyVoice>>(emptyList()) }
-    LaunchedEffect(tts) {
-        if (tts != null) {
-            voices = VoicePackInstaller.topSpanishVoices(tts)
-                .sortedByDescending { VoiceCatalog.rank(it) }
-                .map { VoiceCatalog.toFriendly(it) }
-        }
-    }
-    val hdInstalled = remember(voices) { voices.any { it.isHighQuality } }
 
     // Останавливаем preview при выходе с экрана
     DisposableEffect(Unit) {
@@ -151,74 +132,101 @@ fun SettingsVoiceScreen(
 
             item { Spacer(Modifier.height(16.dp)) }
 
-            // ── Расширенно: системные настройки TTS (fallback) ─────
+            // ── Скорость речи (применяется к premium TTS) ──────────
             item {
-                Text(
-                    "Расширенные настройки",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                SpeedSliderCard(
+                    multiplier = voiceSpeedMultiplier,
+                    onChange = { viewModel.setVoiceSpeedMultiplier(it) },
+                    onPreview = {
+                        if (previewPlaying) viewModel.stopPreview()
+                        else viewModel.previewPersonality(personality)
+                    },
+                    isPlaying = previewPlaying,
+                    premiumReady = premiumReady,
                 )
-            }
-
-            // ── Баннер: HD пакет системного TTS (для fallback) ─────
-            item {
-                VoicePackBanner(
-                    hdInstalled = hdInstalled,
-                    voicesCount = voices.size,
-                    onInstall = { VoicePackInstaller.launchInstaller(ctx) },
-                    onManage = { VoicePackInstaller.openTtsSettings(ctx) }
-                )
-            }
-
-            // ── Скорость и тон (для системного TTS fallback) ───────
-            item {
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(Modifier.padding(16.dp)) {
-                        Text(
-                            stringResource(R.string.voice_rate),
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            stringResource(R.string.voice_rate_hint),
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Slider(
-                            value = settings.rate,
-                            onValueChange = { viewModel.setRate(it) },
-                            valueRange = 0.5f..1.5f,
-                            steps = 9
-                        )
-                        Spacer(Modifier.height(12.dp))
-                        Text(
-                            stringResource(R.string.voice_pitch),
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            stringResource(R.string.voice_pitch_hint),
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Slider(
-                            value = settings.pitch,
-                            onValueChange = { viewModel.setPitch(it) },
-                            valueRange = 0.7f..1.4f,
-                            steps = 6
-                        )
-                    }
-                }
             }
 
             item { Spacer(Modifier.height(20.dp)) }
+        }
+    }
+}
+
+@Composable
+private fun SpeedSliderCard(
+    multiplier: Float,
+    onChange: (Float) -> Unit,
+    onPreview: () -> Unit,
+    isPlaying: Boolean,
+    premiumReady: Boolean,
+) {
+    Surface(
+        shape = RoundedCornerShape(18.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        "Скорость речи",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        "${(multiplier * 100).toInt()}% от базовой скорости персонажа",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (multiplier != 1.0f) {
+                    TextButton(onClick = { onChange(1.0f) }) {
+                        Text("Сброс", fontSize = 12.sp, color = BrandOrange)
+                    }
+                }
+            }
+            Slider(
+                value = multiplier,
+                onValueChange = onChange,
+                valueRange = 0.5f..1.5f,
+                steps = 9,
+                colors = SliderDefaults.colors(
+                    thumbColor = BrandOrange,
+                    activeTrackColor = BrandOrange,
+                )
+            )
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("0.5×", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("1.0×", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("1.5×", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Spacer(Modifier.height(8.dp))
+            Button(
+                onClick = onPreview,
+                enabled = premiumReady,
+                modifier = Modifier.fillMaxWidth().height(44.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isPlaying) MaterialTheme.colorScheme.surfaceContainerHighest else BrandOrange,
+                    contentColor = if (isPlaying) MaterialTheme.colorScheme.onSurface else Color.White
+                )
+            ) {
+                Icon(
+                    if (isPlaying) Icons.Default.Stop else Icons.Default.PlayArrow,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    if (isPlaying) "Стоп" else "Прослушать с этой скоростью",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }
@@ -372,91 +380,3 @@ private fun GenderSegmented(
     }
 }
 
-@Composable
-private fun VoicePackBanner(
-    hdInstalled: Boolean,
-    voicesCount: Int,
-    onInstall: () -> Unit,
-    onManage: () -> Unit
-) {
-    // v1.18.21: theme-aware — раньше было Color(0xFFE8F5E9) (хардкод светлый
-    // зелёный), который в тёмной теме давал слишком яркий «островок».
-    // Теперь используем surface + tint иконки → блок сливается с остальными.
-    val tint = if (hdInstalled) Color(0xFF22C55E) else BrandOrange
-    val containerColor = MaterialTheme.colorScheme.surface
-
-    Surface(
-        shape = RoundedCornerShape(18.dp),
-        color = containerColor,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = if (hdInstalled) Icons.Default.CheckCircle else Icons.Default.CloudDownload,
-                    contentDescription = null,
-                    tint = tint,
-                    modifier = Modifier.size(28.dp)
-                )
-                Spacer(Modifier.width(12.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        text = if (hdInstalled)
-                            stringResource(R.string.voice_hd_installed)
-                        else
-                            stringResource(R.string.voice_pack),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = if (hdInstalled)
-                            stringResource(R.string.voice_found_count, voicesCount)
-                        else
-                            stringResource(R.string.voice_pack_promo),
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-            if (!hdInstalled) {
-                Text(
-                    text = stringResource(R.string.voice_pack_size),
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 10.dp)
-                )
-                Button(
-                    onClick = onInstall,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
-                ) {
-                    Text(
-                        stringResource(R.string.voice_install_pack),
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                }
-            } else {
-                OutlinedButton(
-                    onClick = onManage,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(44.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Icon(Icons.Default.Settings, null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        stringResource(R.string.voice_manage_in_android),
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
-        }
-    }
-}

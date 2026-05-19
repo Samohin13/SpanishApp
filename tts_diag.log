@@ -1,0 +1,25 @@
+﻿--------- beginning of main
+D/RemoteTts( 1665): speak() text='agua' speed=null
+D/RemoteTts( 1665): personality=friendly gender=male segments=1
+D/RemoteTts( 1665): playing seg='agua' voice=es-ES-Neural2-B file=5376b
+D/RemoteTts( 1665): speak() text='bueno' speed=null
+D/RemoteTts( 1665): personality=friendly gender=male segments=1
+D/RemoteTts( 1665): playing seg='bueno' voice=es-ES-Neural2-B file=5760b
+D/RemoteTts( 1665): speak() text='casa' speed=null
+D/RemoteTts( 1665): personality=friendly gender=male segments=1
+D/RemoteTts( 1665): playing seg='casa' voice=es-ES-Neural2-B file=5376b
+D/RemoteTts( 1665): speak() text='día' speed=null
+D/RemoteTts( 1665): personality=friendly gender=male segments=1
+D/RemoteTts( 1665): playing seg='día' voice=es-ES-Neural2-B file=5568b
+D/RemoteTts( 1665): speak() text='elefante' speed=null
+D/RemoteTts( 1665): personality=friendly gender=male segments=1
+D/RemoteTts( 1665): playing seg='elefante' voice=es-ES-Neural2-B file=7296b
+D/RemoteTts( 1665): speak() text='María llega a la oficina a las nueve. Dice: "¡Buenos días!" ' speed=null
+D/RemoteTts( 1665): personality=friendly gender=male segments=1
+D/RemoteTts( 1665): playing seg='María llega a la oficina a las nueve. Di' voice=es-ES-Neural2-B file=117120b
+D/RemoteTts( 1665): speak() text='agua' speed=null
+D/RemoteTts( 1665): personality=friendly gender=male segments=1
+D/RemoteTts( 1665): playing seg='agua' voice=es-ES-Neural2-B file=5376b
+D/RemoteTts( 1665): speak() text='bueno' speed=null
+D/RemoteTts( 1665): personality=friendly gender=male segments=1
+D/RemoteTts( 1665): playing seg='bueno' voice=es-ES-Neural2-B file=5760b

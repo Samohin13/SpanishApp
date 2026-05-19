@@ -47,6 +47,18 @@ class SettingsVoiceViewModel @Inject constructor(
             initialValue = VoiceGender.DEFAULT
         )
 
+    /** v1.18.25: пользовательский множитель скорости (0.5..1.5). */
+    val voiceSpeedMultiplier: StateFlow<Float> = authRepository.voiceSpeedMultiplier
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = 1.0f
+        )
+
+    fun setVoiceSpeedMultiplier(value: Float) = viewModelScope.launch {
+        authRepository.setVoiceSpeedMultiplier(value)
+    }
+
     val isPremiumTtsReady: StateFlow<Boolean> = remoteTts.isReady
     val isPreviewPlaying: StateFlow<Boolean> = remoteTts.isPlaying
 

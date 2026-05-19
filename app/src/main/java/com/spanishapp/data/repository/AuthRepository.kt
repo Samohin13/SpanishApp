@@ -2,6 +2,7 @@ package com.spanishapp.data.repository
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -34,6 +35,9 @@ class AuthRepository @Inject constructor(
     private val TUTOR_PERSONALITY = stringPreferencesKey("tutor_personality")
     // v1.18.21: пол голоса репетитора (VoiceGender.id — "female" | "male")
     private val VOICE_GENDER = stringPreferencesKey("voice_gender")
+    // v1.18.25: множитель скорости голоса (0.5..1.5). Применяется поверх
+    // personality.speed как final = personality.speed * multiplier.
+    private val VOICE_SPEED_MULT = floatPreferencesKey("voice_speed_mult")
     private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
@@ -79,6 +83,13 @@ class AuthRepository @Inject constructor(
     val voiceGender: Flow<String?> = context.dataStore.data.map { it[VOICE_GENDER] }
     suspend fun setVoiceGender(gender: String) {
         context.dataStore.edit { it[VOICE_GENDER] = gender }
+    }
+
+    // v1.18.25: множитель скорости голоса (0.5..1.5, default 1.0)
+    val voiceSpeedMultiplier: Flow<Float> = context.dataStore.data
+        .map { it[VOICE_SPEED_MULT] ?: 1.0f }
+    suspend fun setVoiceSpeedMultiplier(value: Float) {
+        context.dataStore.edit { it[VOICE_SPEED_MULT] = value.coerceIn(0.5f, 1.5f) }
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARDING_COMPLETED] ?: false }

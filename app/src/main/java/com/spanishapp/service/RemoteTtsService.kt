@@ -91,7 +91,11 @@ class RemoteTtsService @Inject constructor(
             val personality = com.spanishapp.domain.voice.TutorPersonality.byId(personalityId)
             val genderId = authRepository.voiceGender.firstOrNull()
             val gender = com.spanishapp.domain.voice.VoiceGender.byId(genderId)
-            val finalSpeed = speed ?: personality.speed
+            // v1.18.25: пользовательский множитель скорости поверх personality.speed.
+            // Если caller передал speed явно (например slow=true → 0.7), используем
+            // её, иначе personality.speed * userMultiplier.
+            val userMult = authRepository.voiceSpeedMultiplier.firstOrNull() ?: 1.0f
+            val finalSpeed = (speed ?: (personality.speed * userMult)).coerceIn(0.25f, 4.0f)
             val segments = segmentByLanguage(
                 text = text.take(2000),
                 esVoice = personality.esVoice(gender),
