@@ -214,8 +214,12 @@ fun isSpanishSpeakable(text: String?): Boolean = inferSpeakText(text) != null
  */
 fun TextToSpeech.speakSpanish(text: String?, utteranceId: String = "spk"): Boolean {
     val cleaned = inferSpeakText(text) ?: return false
-    // Если радио играет в фоне — ставим на паузу, чтобы не звучало
-    // одновременно с произношением слова из урока.
+    // v1.18.24: глобальный routing — все 30+ call sites автоматически
+    // идут через premium Google Cloud TTS если он зарегистрирован.
+    if (com.spanishapp.service.AppTtsRouter.speakIfReady(cleaned)) {
+        return true
+    }
+    // Fallback: системный Android TTS как раньше.
     com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
     speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
     return true

@@ -1109,11 +1109,11 @@ private fun WodRevealStage(
     // Авто-проигрывание озвучки при появлении (двукратно: сразу + через 1.5с)
     LaunchedEffect(word.wordId) {
         kotlinx.coroutines.delay(300)
-        tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod-reveal-1")
+        tts?.speakSpanish(word.spanish, "wod-reveal-1")
         kotlinx.coroutines.delay(1500)
         showRussian = true
         kotlinx.coroutines.delay(800)
-        tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod-reveal-2")
+        tts?.speakSpanish(word.spanish, "wod-reveal-2")
     }
 
     // Countdown 5 → 0
@@ -1142,7 +1142,7 @@ private fun WodRevealStage(
         // Кнопка "повторить аудио"
         Surface(
             onClick = {
-                tts?.speak(word.spanish, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "wod-replay")
+                tts?.speakSpanish(word.spanish, "wod-replay")
             },
             shape = CircleShape,
             color = MaterialTheme.colorScheme.primaryContainer,

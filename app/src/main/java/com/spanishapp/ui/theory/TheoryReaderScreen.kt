@@ -30,6 +30,7 @@ import com.spanishapp.data.theory.TheoryTable
 import com.spanishapp.data.theory.TheoryExample
 import com.spanishapp.data.theory.TheoryComparison
 import com.spanishapp.ui.components.rememberSpanishTts
+import com.spanishapp.ui.components.speakSpanish
 
 /**
  * Экран чтения теории-карточки.
@@ -85,7 +86,7 @@ fun TheoryReaderScreen(
                 content = state.content!!,
                 isRead = state.isAlreadyRead,
                 onMarkRead = vm::markRead,
-                onPlayAudio = { text -> tts?.speak(text, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "theory_${text.hashCode()}") },
+                onPlayAudio = { text -> tts?.speakSpanish(text, "theory_${text.hashCode()}") },
                 modifier = Modifier.padding(padding),
             )
         }

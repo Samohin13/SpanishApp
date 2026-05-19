@@ -25,6 +25,10 @@ class SpanishApp : Application() {
     /** Радио-плеер инжектится для регистрации в RadioCoordinator (TTS↔Radio mutex). */
     @Inject lateinit var radioPlayerController: com.spanishapp.radio.player.RadioPlayerController
 
+    /** v1.18.24: premium TTS — регистрируем в глобальном роутере чтобы
+     *  TextToSpeech.speakSpanish() мог автоматически роутить в premium. */
+    @Inject lateinit var remoteTtsService: com.spanishapp.service.RemoteTtsService
+
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
@@ -50,6 +54,11 @@ class SpanishApp : Application() {
                     .recordException(RuntimeException("[SpanishApp] RadioCoordinator init failed", e))
             }
         }
+
+        // v1.18.24: Регистрируем premium TTS в глобальном роутере. После этого
+        // TextToSpeech.speakSpanish() во ВСЕХ экранах автоматически идёт
+        // через Google Cloud TTS с выбранным TutorPersonality.
+        com.spanishapp.service.AppTtsRouter.register(remoteTtsService)
 
         // ВСЕ background-инициализации обёрнуты в try/catch.
         // Цель: даже если что-то падает (миграция, seeder, worker scheduling),
