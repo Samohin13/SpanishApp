@@ -151,7 +151,9 @@ class AiChatViewModel @Inject constructor(
             try {
                 repo.streamMessage(text.trim(), sessionId, theme.systemPromptExtra).collect { progressive ->
                     // Strip the trailing CORRECTIONS_JSON marker for nicer display.
-                    val display = progressive.substringBefore("CORRECTIONS_JSON:")
+                    val display = progressive
+                        .substringBefore("CORRECTIONS_JSON:")
+                        .substringBefore("PROFILE_UPDATE_JSON:")
                     _streamingText.value = display
                 }
                 limiter.increment()
@@ -175,7 +177,9 @@ class AiChatViewModel @Inject constructor(
                     kotlinx.coroutines.delay(6000)
                     try {
                         repo.streamMessage(text.trim(), sessionId, theme.systemPromptExtra).collect { progressive ->
-                            val display = progressive.substringBefore("CORRECTIONS_JSON:")
+                            val display = progressive
+                        .substringBefore("CORRECTIONS_JSON:")
+                        .substringBefore("PROFILE_UPDATE_JSON:")
                             _streamingText.value = display
                         }
                         limiter.increment()

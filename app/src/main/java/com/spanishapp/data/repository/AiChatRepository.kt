@@ -137,6 +137,23 @@ class AiChatRepository @Inject constructor(
 
             ФОРМАТ ИСПРАВЛЕНИЙ (только при ошибке, в конце):
             CORRECTIONS_JSON:[{"original":"anos","corrected":"años","explanation":"тильда"}]
+
+            ЗАПОМИНАНИЕ УЧЕНИКА (важно!):
+            • Если ученик НОВЫЙ (нет данных в «О ТВОЁМ УЧЕНИКЕ») — мягко
+              познакомься в первых 2-3 сообщениях: спроси имя, цель изучения,
+              сколько уже знает. Не как анкета — естественно по ходу разговора.
+            • Если ученик упомянул что-то о себе (имя, возраст, город, работу,
+              хобби, цель изучения, любимые темы, что давно не учит и т.п.) —
+              в КОНЦЕ ответа добавь маркер JSON (один или несколько полей):
+
+            PROFILE_UPDATE_JSON:{"name":"Сергей","interests":["футбол","кино"],"goal":"путешествие в Барселону","level":"A2","notes":"стесняется говорить"}
+
+            • Поля опциональны — заполняй только те что узнал. notes — свободный
+              текст об особенностях ученика (его стиль общения, любимые темы,
+              чего избегает) для следующих сессий.
+            • Данные из «О ТВОЁМ УЧЕНИКЕ» могут быть устаревшие/неверные.
+              Если ученик сказал что его зовут иначе — доверяй чату, не Settings.
+            • Не показывай юзеру что ты записываешь — это незаметно.
         """.trimIndent()
     }
 
@@ -199,7 +216,12 @@ class AiChatRepository @Inject constructor(
                 ?: error("Gemini response missing candidates[0].content.parts[0].text")
 
             val correctionJson = extractCorrections(assistantText)
-            val cleanText = assistantText.substringBefore("CORRECTIONS_JSON:").trim()
+            // v1.18.11: парсим и применяем PROFILE_UPDATE_JSON ДО strip'а
+            extractAndApplyProfileUpdate(assistantText)
+            val cleanText = assistantText
+                .substringBefore("CORRECTIONS_JSON:")
+                .substringBefore("PROFILE_UPDATE_JSON:")
+                .trim()
 
             chatMessageDao.insert(
                 ChatMessageEntity(
@@ -284,10 +306,15 @@ class AiChatRepository @Inject constructor(
             }
         }
 
-        // Persist the final message (strip CORRECTIONS_JSON tail).
+        // Persist the final message (strip CORRECTIONS_JSON + PROFILE_UPDATE_JSON tail).
         val full = accumulated.toString()
         val correctionJson = extractCorrections(full)
-        val cleanText = full.substringBefore("CORRECTIONS_JSON:").trim()
+        // v1.18.11: применяем профиль обновления ДО strip
+        extractAndApplyProfileUpdate(full)
+        val cleanText = full
+            .substringBefore("CORRECTIONS_JSON:")
+            .substringBefore("PROFILE_UPDATE_JSON:")
+            .trim()
         if (cleanText.isNotEmpty()) {
             chatMessageDao.insert(
                 ChatMessageEntity(
@@ -373,6 +400,10 @@ class AiChatRepository @Inject constructor(
         val age = authRepository.userAge.first()
         val level = authRepository.userLevel.first()?.takeIf { it.isNotBlank() }
         val reason = authRepository.userReason.first()?.takeIf { it.isNotBlank() }
+        // v1.18.11: AI-learned поля
+        val interests = authRepository.userInterests.first()?.takeIf { it.isNotBlank() }
+        val goal = authRepository.userGoal.first()?.takeIf { it.isNotBlank() }
+        val notes = authRepository.userNotes.first()?.takeIf { it.isNotBlank() }
         val progress = userProgressDao.getProgressOnce()
         val wordsLearned = progress?.wordsLearned ?: 0
         val streak = progress?.currentStreak ?: 0
@@ -381,7 +412,8 @@ class AiChatRepository @Inject constructor(
             if (name != null) add("имя — **$name**")
             if (age != null) add("возраст — $age лет")
             if (level != null) add("уровень — $level")
-            if (reason != null) {
+            if (goal != null) add("цель — $goal")
+            else if (reason != null) {
                 val reasonText = when (reason.lowercase()) {
                     "travel" -> "учит для путешествий"
                     "work" -> "учит для работы"
@@ -392,19 +424,86 @@ class AiChatRepository @Inject constructor(
                 }
                 add(reasonText)
             }
+            if (interests != null) add("интересы: $interests")
             if (wordsLearned > 0) add("выучил $wordsLearned слов")
             if (streak > 0) add("серия занятий — $streak дней")
         }
-        if (parts.isEmpty()) return ""
+        if (parts.isEmpty() && notes == null) return ""
 
-        return """
+        return buildString {
+            append("\n\nО ТВОЁМ УЧЕНИКЕ (помни это в каждом ответе):\n")
+            if (parts.isNotEmpty()) {
+                append(parts.joinToString(", "))
+                append(".\n")
+            }
+            if (notes != null) {
+                append("Заметки: $notes\n")
+            }
+            append("• Обращайся по имени когда уместно (не каждое сообщение).\n")
+            append("• Адаптируй сложность под уровень.\n")
+            append("• Используй интересы ученика в примерах.\n")
+            append("• Иногда хвали за прогресс.\n")
+        }
+    }
 
-            О ТВОЁМ УЧЕНИКЕ (помни это в каждом ответе):
-            ${parts.joinToString(", ")}.
-            • Обращайся по имени когда уместно (1 раз на ответ, не каждое сообщение).
-            • Адаптируй сложность под уровень.
-            • Если знаешь сколько слов выучил — иногда хвали за прогресс.
-        """.trimIndent()
+    /**
+     * v1.18.11: парсит PROFILE_UPDATE_JSON маркер из ответа ИИ и применяет
+     * изменения к AuthRepository. ИИ сам решает когда обновлять (когда
+     * узнал имя/предпочтения из чата). Юзеру это незаметно — маркер
+     * уже отрезан от display через substringBefore() в ViewModel.
+     */
+    private suspend fun extractAndApplyProfileUpdate(rawResponse: String) {
+        val marker = "PROFILE_UPDATE_JSON:"
+        val idx = rawResponse.indexOf(marker)
+        if (idx < 0) return
+        val jsonStart = idx + marker.length
+        // Берём JSON object — от первой { до соответствующей }
+        val openBrace = rawResponse.indexOf('{', jsonStart)
+        if (openBrace < 0) return
+        var depth = 0
+        var endIdx = -1
+        for (i in openBrace until rawResponse.length) {
+            when (rawResponse[i]) {
+                '{' -> depth++
+                '}' -> {
+                    depth--
+                    if (depth == 0) {
+                        endIdx = i
+                        break
+                    }
+                }
+            }
+        }
+        if (endIdx < 0) return
+        val jsonStr = rawResponse.substring(openBrace, endIdx + 1)
+        runCatching {
+            val obj = Json.parseToJsonElement(jsonStr).jsonObject
+            obj["name"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let {
+                authRepository.setUserName(it)
+            }
+            obj["level"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let {
+                authRepository.setUserLevel(it)
+            }
+            obj["goal"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let {
+                authRepository.setUserGoal(it)
+            }
+            obj["interests"]?.let { el ->
+                val csv = when (el) {
+                    is JsonArray -> el.mapNotNull { it.jsonPrimitive.contentOrNull }.joinToString(", ")
+                    else -> el.jsonPrimitive.contentOrNull ?: ""
+                }
+                if (csv.isNotBlank()) authRepository.setUserInterests(csv)
+            }
+            obj["notes"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let {
+                // Merge с существующими notes (не перезаписываем, добавляем)
+                val existing = authRepository.userNotes.first().orEmpty()
+                val merged = if (existing.isBlank()) it
+                             else "$existing | $it"
+                authRepository.setUserNotes(merged.take(500))  // safety cap
+            }
+        }.onFailure { e ->
+            android.util.Log.w("AiChatRepo", "Failed to parse PROFILE_UPDATE_JSON: ${e.message}")
+        }
     }
 
     // ── Build Gemini REST body ────────────────────────────────

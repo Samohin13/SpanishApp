@@ -25,13 +25,19 @@ object VoiceCatalog {
     // Добавлены все коды Google TTS Spanish suffixes:
     //   eef/esd/esf/eed = female
     //   eem/esm/esa/esb/esc/eea/eec = male (определено эмпирически)
+    // v1.18.11: чистка mappings — оставлены ТОЛЬКО проверенные суффиксы.
+    // Юзер сообщил «Пабло — голос женский, имя мужское». eec/eea/een
+    // ранее были помечены как male, но Google TTS изменил их на female
+    // в свежих voice packs. Эти три суффикса теперь в FEMALE_HINTS.
     private val FEMALE_HINTS = setOf(
-        "eef", "esd", "esf", "eed",  // Google TTS suffixes (female)
+        "eef", "eed", "eea", "eec", "een",  // es-ES female (Google TTS обновлённый mapping)
+        "esd", "esf",                        // es-US female
         "ana", "lupe", "marisol", "valentina", "mia", "sofia",
         "carmen", "elena", "lucia", "lusia", "maria",
     )
     private val MALE_HINTS = setOf(
-        "eem", "esm", "esa", "esb", "esc", "eea", "eec", "een",  // Google TTS suffixes (male)
+        "eem",                               // es-ES male (единственный надёжный)
+        "esm", "esa", "esb", "esc",          // es-US male
         "diego", "carlos", "miguel", "jorge", "хорхе",
         "andres", "andrés", "pablo", "antonio", "alberto",
         "luis", "javier",
@@ -48,15 +54,18 @@ object VoiceCatalog {
         "VE" to ("Венесуэла" to "🇻🇪")
     )
 
-    // Дружелюбные имена для типичных голосов Google TTS
+    // v1.18.11: дружелюбные имена обновлены под актуальный Google TTS mapping.
+    // Раньше eec→Пабло, eea→Антонио, een→Альберто (мужские) — но Google
+    // изменил их на женские. Соответствующие имена тоже изменены на женские,
+    // чтобы display name всегда совпадал с фактическим гендером голоса.
     private val FRIENDLY_NAMES = mapOf(
         // es-ES
-        "es-es-x-eef" to "Кармен",
-        "es-es-x-eed" to "Лусия",
-        "es-es-x-eem" to "Карлос",
-        "es-es-x-eea" to "Антонио",
-        "es-es-x-een" to "Альберто",
-        "es-es-x-eec" to "Пабло",
+        "es-es-x-eef" to "Кармен",   // female (стабильно)
+        "es-es-x-eed" to "Лусия",    // female (стабильно)
+        "es-es-x-eea" to "Елена",    // female (было «Антонио» — неверно)
+        "es-es-x-een" to "Изабель",  // female (было «Альберто» — неверно)
+        "es-es-x-eec" to "Пабла",    // female (было «Пабло» — неверно; женский вариант)
+        "es-es-x-eem" to "Карлос",   // male (единственный мужской в es-ES)
         // es-US (латино)
         "es-us-x-esd" to "София",
         "es-us-x-esf" to "Лупе",

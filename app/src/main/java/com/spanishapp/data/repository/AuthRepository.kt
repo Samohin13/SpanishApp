@@ -24,6 +24,10 @@ class AuthRepository @Inject constructor(
     private val USER_PHOTO = stringPreferencesKey("user_photo_url")
     private val USER_AGE = intPreferencesKey("user_age")
     private val USER_REASON = stringPreferencesKey("user_reason")
+    // v1.18.11: поля для AI auto-learn — заполняются из чата ИИ
+    private val USER_INTERESTS = stringPreferencesKey("user_interests")  // CSV
+    private val USER_GOAL = stringPreferencesKey("user_goal")            // конкретная цель
+    private val USER_NOTES = stringPreferencesKey("user_notes")          // стиль общения, особенности
     private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
@@ -39,6 +43,21 @@ class AuthRepository @Inject constructor(
     val userName: Flow<String?> = context.dataStore.data.map { it[USER_NAME] }
     val userAge: Flow<Int?> = context.dataStore.data.map { it[USER_AGE] }
     val userReason: Flow<String?> = context.dataStore.data.map { it[USER_REASON] }
+    // v1.18.11: AI-learned поля
+    val userInterests: Flow<String?> = context.dataStore.data.map { it[USER_INTERESTS] }
+    val userGoal: Flow<String?> = context.dataStore.data.map { it[USER_GOAL] }
+    val userNotes: Flow<String?> = context.dataStore.data.map { it[USER_NOTES] }
+
+    suspend fun setUserInterests(interests: String) {
+        context.dataStore.edit { it[USER_INTERESTS] = interests }
+    }
+    suspend fun setUserGoal(goal: String) {
+        context.dataStore.edit { it[USER_GOAL] = goal }
+    }
+    suspend fun setUserNotes(notes: String) {
+        context.dataStore.edit { it[USER_NOTES] = notes }
+    }
+
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARDING_COMPLETED] ?: false }
 
     val userPhotoUrl: Flow<String?> = context.dataStore.data.map { it[USER_PHOTO] }

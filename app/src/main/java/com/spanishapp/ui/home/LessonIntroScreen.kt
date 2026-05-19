@@ -162,10 +162,23 @@ fun LessonIntroScreen(
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
                     val route = buildActivityRoute(lesson, unit.cefrLevel, unitId, lessonIndex)
+                    val lessonId = "u${unitId}_l${lessonIndex}"
+                    val isCheckpoint = com.spanishapp.data.checkpoint.CheckpointContentData.byId(lessonId) != null
 
-                    // Content-уроки сами отмечают себя выполненными (кнопка «Понятно!»)
-                    // Остальные — отмечаем здесь при старте
-                    if (lesson.type != "content") {
+                    // v1.18.11 (BUG-025): для CHECKPOINT и CONTENT уроков — НЕ
+                    // помечаем automark здесь. Эти типы имеют собственную
+                    // completion-логику:
+                    //   - Content (LessonContentScreen/Session) — на кнопку «Понятно»
+                    //     или VictoryScreen
+                    //   - Checkpoint — CheckpointSessionViewModel помечает при
+                    //     accuracy ≥ 70%
+                    //
+                    // Для остальных (vocab/phrase/grammar/quiz) automark при
+                    // старте остаётся — целевые экраны (flashcards/grammar/quiz)
+                    // не имеют связи с lesson_progress и сами не помечают.
+                    // Это TODO для будущего рефактора.
+                    val hasOwnCompletion = isCheckpoint || lesson.type == "content"
+                    if (!hasOwnCompletion) {
                         viewModel.markLessonComplete(unitId, lessonIndex)
                     }
 

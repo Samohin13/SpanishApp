@@ -64,7 +64,8 @@ fun rememberSpanishTts(): TextToSpeech? {
         instance = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 val tts = instance ?: return@TextToSpeech
-                applyBestVoice(tts, settings.selectedVoiceName)
+                // Применяем без retry (sync) — будет retry через LaunchedEffect ниже
+                applyVoiceImmediate(tts, settings.selectedVoiceName)
                 tts.setSpeechRate(settings.rate)
                 tts.setPitch(settings.pitch)
                 ttsState.value = tts
@@ -77,22 +78,24 @@ fun rememberSpanishTts(): TextToSpeech? {
         }
     }
 
-    // При изменении настроек — переприменяем
-    LaunchedEffect(settings) {
-        ttsState.value?.let { tts ->
-            applyBestVoice(tts, settings.selectedVoiceName)
-            tts.setSpeechRate(settings.rate)
-            tts.setPitch(settings.pitch)
-        }
+    // v1.18.11: При изменении settings ИЛИ когда TTS только что init'илось —
+    // применяем preferred voice с RETRY. Раньше если voice list ещё не
+    // загружен на момент init (race condition), fallback на «лучший» давал
+    // **разный голос на разных экранах**. Юзер жаловался: «где-то женский,
+    // где-то мужской». Теперь до 1.5 сек ждём пока preferred появится.
+    LaunchedEffect(settings, ttsState.value) {
+        val tts = ttsState.value ?: return@LaunchedEffect
+        applyBestVoiceWithRetry(tts, settings.selectedVoiceName)
+        tts.setSpeechRate(settings.rate)
+        tts.setPitch(settings.pitch)
     }
 
     return ttsState.value
 }
 
-private fun applyBestVoice(tts: TextToSpeech, preferredName: String?) {
+/** Sync (без retry) — для callback из TextToSpeech.onInit. */
+private fun applyVoiceImmediate(tts: TextToSpeech, preferredName: String?) {
     val voices = tts.voices ?: emptySet()
-
-    // 1. Пытаемся применить выбранный пользователем голос
     if (preferredName != null) {
         val match = voices.firstOrNull { it.name == preferredName }
         if (match != null) {
@@ -100,8 +103,34 @@ private fun applyBestVoice(tts: TextToSpeech, preferredName: String?) {
             return
         }
     }
+    // Никакого fallback здесь — пусть LaunchedEffect retry попробует найти
+    // preferred. Если совсем не получится — установит language только.
+    tts.language = Locale("es", "ES")
+}
 
-    // 2. Иначе — лучший доступный (HD/Neural в приоритете)
+/**
+ * Async с retry — preferred voice пытаемся применить до 5 раз
+ * (1.5 сек total). Это решает проблему когда tts.voices ещё пуст на
+ * момент первого вызова — после установки voice pack или на медленных
+ * устройствах список загружается с задержкой.
+ */
+private suspend fun applyBestVoiceWithRetry(tts: TextToSpeech, preferredName: String?) {
+    // 1. Пытаемся применить выбранный пользователем голос (с retry).
+    if (preferredName != null) {
+        repeat(5) {
+            val voices = tts.voices ?: emptySet()
+            val match = voices.firstOrNull { it.name == preferredName }
+            if (match != null) {
+                tts.voice = match
+                return
+            }
+            delay(300)
+        }
+        // Preferred not found after retries — fallthrough на «best available»
+    }
+
+    // 2. Fallback — лучший доступный (HD/Neural в приоритете).
+    val voices = tts.voices ?: emptySet()
     val spanishVoices = voices.filter { v ->
         v.locale.language == "es" &&
         !v.features.contains(android.speech.tts.TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED)
