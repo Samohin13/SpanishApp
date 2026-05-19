@@ -2584,12 +2584,15 @@ private fun NumberTapInput(
         }
         Spacer(Modifier.height(16.dp))
 
-        // Грид цифр 4 в ряд
+        // v1.18.13: Грид цифр 4 в ряд, последний неполный row центрирован
+        // (раньше 8-9-10 были выровнены слева — выглядело крипово).
         val rows = numbers.chunked(4)
         rows.forEach { row ->
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
             ) {
                 row.forEach { n ->
                     val isPicked = picked == n

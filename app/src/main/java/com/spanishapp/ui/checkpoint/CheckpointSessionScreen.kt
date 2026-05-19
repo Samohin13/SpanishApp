@@ -137,11 +137,13 @@ fun CheckpointSessionScreen(
                 }
                 Spacer(Modifier.height(16.dp))
 
-                // Сеттинг сцены (показываем только на первом акте сцены)
+                // v1.18.13: Сеттинг сцены — theme-aware фон вместо
+                // Color.White.copy(0.7) (в dark давал серый туман с плохой
+                // читаемостью текста).
                 if (state.actIndex == 0) {
                     Surface(
                         shape = RoundedCornerShape(16.dp),
-                        color = Color.White.copy(alpha = 0.7f),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
                         shadowElevation = 4.dp,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
@@ -157,24 +159,24 @@ fun CheckpointSessionScreen(
                                 curScene.setting,
                                 fontSize = 13.sp,
                                 fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
                     }
                     Spacer(Modifier.height(14.dp))
                 }
 
-                // Narration в стилизованной карточке
+                // Narration в стилизованной карточке (theme-aware)
                 if (curAct.narration.isNotBlank()) {
                     Surface(
                         shape = RoundedCornerShape(10.dp),
-                        color = Color.White.copy(alpha = 0.5f),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
                             "💭 ${curAct.narration}",
                             fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                             modifier = Modifier.padding(12.dp),
                         )
@@ -232,7 +234,7 @@ fun CheckpointSessionScreen(
                             Spacer(Modifier.height(8.dp))
                             Surface(
                                 shape = RoundedCornerShape(12.dp),
-                                color = Color.White.copy(alpha = 0.85f),
+                                color = MaterialTheme.colorScheme.tertiaryContainer,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Row(Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
@@ -241,6 +243,7 @@ fun CheckpointSessionScreen(
                                     Text(
                                         curAct.explanation,
                                         fontSize = 13.sp,
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
                                     )
                                 }
                             }
