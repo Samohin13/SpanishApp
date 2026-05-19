@@ -26,11 +26,10 @@ class AiChatRepository @Inject constructor(
         // gemini-flash-latest — Google-managed alias на актуальную бесплатную Flash-модель.
         // Старое имя "gemini-1.5-flash" убрано из v1beta; "gemini-2.0-flash" имеет квоту 0
         // на текущем ключе. Этот alias работает без сюрпризов.
-        // v1.18.8: откат с 2.5-flash-lite на flash-latest — Cloudflare Worker
-        // имеет ALLOWED_MODELS whitelist (см. docs/gemini-proxy-worker.js)
-        // и lite не в списке → 400 «Model not allowed». После того как
-        // Worker деплой обновится с расширенным whitelist — можно вернуть.
-        private const val MODEL = "gemini-flash-latest"
+        // v1.18.9: переход на gemini-2.5-flash-lite — 2-3× быстрее flash-latest,
+        // оптимизирована для коротких ответов (идеально для A1/A2 tutor-чата).
+        // Worker whitelist обновлён (deploy 2026-05-19).
+        private const val MODEL = "gemini-2.5-flash-lite"
 
         /**
          * If [BuildConfig.AI_PROXY_URL] is set, use it — proxy hides the API
