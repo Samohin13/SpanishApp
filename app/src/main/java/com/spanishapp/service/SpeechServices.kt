@@ -170,12 +170,62 @@ class SpanishTts @Inject constructor(
                    else voiceCfg.rate.coerceIn(0.3f, 2.0f)
         t.setSpeechRate(rate)
 
-        if (fullMixed && hasCyrillic(text)) {
-            speakBilingual(t, text)
+        if (fullMixed) {
+            val clean = sanitizeForFullSpeech(text)
+            if (clean.isBlank()) return
+            speakFullSingleVoice(t, clean)
         } else {
             val speakText = inferSpeakText(text) ?: return
             t.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, "utterance_${System.currentTimeMillis()}")
         }
+    }
+
+    /**
+     * v1.18.16: очистка текста перед полной озвучкой.
+     *  • Убирает все эмодзи (Unicode emoji blocks) — TTS читает их как
+     *    «эмодзи лица улыбки», «эмодзи поднятые руки» — раздражает.
+     *  • Убирает markdown маркеры **bold** и [перевод-в-скобках].
+     *    Скобки оставляют только испанский фрагмент без перевода —
+     *    юзер уже видит перевод в чате, читать его второй раз не нужно.
+     *  • Сжимает множественные пробелы.
+     */
+    private fun sanitizeForFullSpeech(raw: String): String {
+        var s = raw
+        // Markdown **bold** → просто текст без звёздочек
+        s = s.replace(Regex("\\*\\*([^*]+)\\*\\*"), "$1")
+        // [перевод] — убираем целиком (русский внутри дублирует объяснение)
+        s = s.replace(Regex("\\[[^\\]]+\\]"), "")
+        // Эмодзи и misc symbols — убираем
+        // Unicode blocks: Emoticons, Misc Symbols, Transport, Supplemental, etc.
+        s = s.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+        // Surrogates (multi-codepoint emoji)
+        s = s.replace(Regex("[\\uD800-\\uDFFF]"), "")
+        // CORRECTIONS_JSON / PROFILE_UPDATE_JSON tail — safety
+        s = s.substringBefore("CORRECTIONS_JSON:").substringBefore("PROFILE_UPDATE_JSON:")
+        // Сжать whitespace
+        s = s.replace(Regex("\\s+"), " ").trim()
+        return s
+    }
+
+    /**
+     * v1.18.16: читает текст одним русским голосом (всё подряд).
+     * Раньше переключал ru/es между сегментами — звучало как разные
+     * дикторы, разрывы между фразами. Теперь один голос:
+     *  • Русский TTS читает русские слова естественно
+     *  • Испанские слова читает с русским акцентом (mejor = «мейор»)
+     *  • НЕТ разрывов и переключений
+     *
+     * Если ru-RU не установлен → fallback на испанский голос.
+     */
+    private fun speakFullSingleVoice(tts: TextToSpeech, text: String) {
+        val ruLocale = java.util.Locale("ru", "RU")
+        val ruAvailable = tts.isLanguageAvailable(ruLocale) >= TextToSpeech.LANG_AVAILABLE
+        if (ruAvailable) {
+            tts.language = ruLocale
+        }
+        // safety cap чтоб TTS не подавился
+        val capped = text.take(1000)
+        tts.speak(capped, TextToSpeech.QUEUE_FLUSH, null, "full_${System.currentTimeMillis()}")
     }
 
     private fun hasCyrillic(text: String): Boolean =
