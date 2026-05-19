@@ -8,6 +8,7 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.util.Log
 import com.spanishapp.data.prefs.AppPreferences
 import com.spanishapp.data.prefs.VoicePreferences
 import com.spanishapp.data.prefs.VoiceSettings
@@ -164,21 +165,27 @@ class SpanishTts @Inject constructor(
      *                   Если false (default) — только испанские части.
      */
     fun speak(text: String, slow: Boolean = false, fullMixed: Boolean = false) {
-        if (!enabled) return  // Юзер отключил голос диктора в настройках.
+        if (!enabled) {
+            Log.d(TAG_ROUTE, "speak() blocked: ttsEnabled=false")
+            return
+        }
 
-        // v1.18.22: ВСЕ курсы тоже идут через premium TTS (Google Cloud
-        // с выбранным TutorPersonality + полом голоса). Так в Flashcards,
-        // Pronunciation, Conjugation, Dialogues, играх и Dictionary
-        // звучит тот же голос что и в AI Chat — пользователь жаловался
-        // что был «другой голос».
-        // Fallback на системный TTS если premium не настроен (AI_PROXY_URL пустой)
-        // или isReady=false на старте — чтобы никогда не быть «немыми».
-        if (remoteTts.isReady.value) {
+        // v1.18.23: ВСЕ курсы тоже идут через premium TTS (Google Cloud
+        // с выбранным TutorPersonality + полом голоса).
+        val remoteReady = remoteTts.isReady.value
+        Log.d(TAG_ROUTE, "speak() text='${text.take(40)}' slow=$slow mixed=$fullMixed remote=$remoteReady")
+        if (remoteReady) {
             val speakText = if (fullMixed) sanitizeForFullSpeech(text) else inferSpeakText(text)
             if (!speakText.isNullOrBlank()) {
-                val speedMul = if (slow) 0.7f else 1.0f
-                remoteTts.speak(speakText, speed = speedMul)
-                return
+                val ok = if (slow) {
+                    remoteTts.speak(speakText, speed = 0.7f)
+                } else {
+                    remoteTts.speak(speakText, speed = null)
+                }
+                Log.d(TAG_ROUTE, "→ remoteTts.speak() returned $ok")
+                if (ok) return
+            } else {
+                Log.d(TAG_ROUTE, "→ skipped (inferSpeakText returned null/blank)")
             }
         }
 
@@ -378,6 +385,10 @@ class SpanishTts @Inject constructor(
         tts?.stop()
         tts?.shutdown()
         _isReady.value = false
+    }
+
+    companion object {
+        private const val TAG_ROUTE = "SpanishTtsRoute"
     }
 }
 

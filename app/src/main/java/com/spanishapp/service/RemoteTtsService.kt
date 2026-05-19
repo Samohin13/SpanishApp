@@ -72,8 +72,13 @@ class RemoteTtsService @Inject constructor(
         text: String,
         speed: Float? = null,
     ): Boolean {
-        if (BuildConfig.AI_PROXY_URL.isBlank()) return false
+        if (BuildConfig.AI_PROXY_URL.isBlank()) {
+            Log.d(TAG, "speak() blocked: AI_PROXY_URL blank")
+            return false
+        }
         if (text.isBlank()) return false
+
+        Log.d(TAG, "speak() text='${text.take(60)}' speed=$speed")
 
         // Прерываем предыдущее воспроизведение
         stop()
@@ -92,6 +97,7 @@ class RemoteTtsService @Inject constructor(
                 esVoice = personality.esVoice(gender),
                 ruVoice = personality.ruVoice(gender),
             )
+            Log.d(TAG, "personality=${personality.id} gender=${gender.id} segments=${segments.size}")
             if (segments.isEmpty()) {
                 _isPlaying.value = false
                 return@launch
@@ -102,7 +108,9 @@ class RemoteTtsService @Inject constructor(
                 for (seg in segments) {
                     if (!coroutineContext.isActive) break
                     val mp3 = runCatching { fetchMp3(seg.text, seg.voice, finalSpeed) }
+                        .onFailure { Log.w(TAG, "fetchMp3 failed for seg='${seg.text.take(40)}' voice=${seg.voice}", it) }
                         .getOrNull() ?: continue
+                    Log.d(TAG, "playing seg='${seg.text.take(40)}' voice=${seg.voice} file=${mp3.length()}b")
                     playFileAndWait(mp3)
                 }
             } finally {
