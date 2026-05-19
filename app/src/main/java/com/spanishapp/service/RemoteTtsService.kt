@@ -241,7 +241,9 @@ class RemoteTtsService @Inject constructor(
 
     companion object {
         private const val TAG = "RemoteTts"
-        private const val ES_VOICE = "es-ES-Neural2-A"      // женский нейронный
-        private const val RU_VOICE = "ru-RU-Wavenet-B"      // мужской wavenet (есть только wavenet для ru)
+        // v1.18.19: оба голоса ЖЕНСКИЕ — единый «диктор» чтобы не звучало
+        // как «девушка + мужчина» в одном предложении.
+        private const val ES_VOICE = "es-ES-Neural2-A"      // женский нейронный (es)
+        private const val RU_VOICE = "ru-RU-Wavenet-E"      // женский wavenet (ru)
     }
 }
