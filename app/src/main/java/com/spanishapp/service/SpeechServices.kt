@@ -221,6 +221,14 @@ class SpanishSpeechRecognizer @Inject constructor(
     val isListening: StateFlow<Boolean> = _isListening
 
     /**
+     * v1.18.4: текущий уровень входного сигнала в dB (приблизительно -2..10).
+     * Обновляется через RecognitionListener.onRmsChanged ~10×/сек.
+     * UI рисует waveform на основе истории этих значений.
+     */
+    private val _rmsDb = MutableStateFlow(0f)
+    val rmsDb: StateFlow<Float> = _rmsDb
+
+    /**
      * Recognize speech once.
      *
      * @param language BCP-47 locale tag. Default `es-ES` (Spanish-Spain) for
@@ -257,9 +265,9 @@ class SpanishSpeechRecognizer @Inject constructor(
         recognizer.setRecognitionListener(object : RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) { _isListening.value = true }
             override fun onBeginningOfSpeech() {}
-            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onRmsChanged(rmsdB: Float) { _rmsDb.value = rmsdB }
             override fun onBufferReceived(buffer: ByteArray?) {}
-            override fun onEndOfSpeech() { _isListening.value = false }
+            override fun onEndOfSpeech() { _isListening.value = false; _rmsDb.value = 0f }
 
             override fun onResults(results: Bundle?) {
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)

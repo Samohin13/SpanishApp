@@ -208,6 +208,9 @@ class AiChatViewModel @Inject constructor(
     }
 
     fun speak(text: String) = viewModelScope.launch { tts.speak(text) }
+
+    /** v1.18.4: real-time amplitude от mic для waveform visualizer. */
+    val voiceAmplitude: StateFlow<Float> = stt.rmsDb
 }
 
 // ── Screen ────────────────────────────────────────────────────
@@ -227,6 +230,7 @@ fun AiChatScreen(
     val context = LocalContext.current
     var input     by remember { mutableStateOf("") }
     val haptic    = com.spanishapp.ui.components.rememberCheckedHaptic()
+    val voiceAmplitude by vm.voiceAmplitude.collectAsStateWithLifecycle()
 
     // RECORD_AUDIO permission flow for the mic button.
     val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
@@ -453,40 +457,49 @@ fun AiChatScreen(
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    // ── Pill-input: серый округлый container, без border ──
+                    // ── Pill-input: TextField или waveform когда listening ──
                     Surface(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(24.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     ) {
-                        OutlinedTextField(
-                            value = input,
-                            onValueChange = { input = it },
-                            placeholder = {
-                                Text(
-                                    androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder),
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            },
-                            textStyle = androidx.compose.ui.text.TextStyle(
-                                color = MaterialTheme.colorScheme.onSurface,
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(24.dp),
-                            maxLines = 5,
-                            enabled = !isSending,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedBorderColor = Color.Transparent,
-                                focusedBorderColor = Color.Transparent,
-                                disabledBorderColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                focusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                            ),
-                        )
+                        if (isListening) {
+                            VoiceWaveform(
+                                amplitude = voiceAmplitude,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp),
+                            )
+                        } else {
+                            OutlinedTextField(
+                                value = input,
+                                onValueChange = { input = it },
+                                placeholder = {
+                                    Text(
+                                        androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder),
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                },
+                                textStyle = androidx.compose.ui.text.TextStyle(
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                ),
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(24.dp),
+                                maxLines = 5,
+                                enabled = !isSending,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedBorderColor = Color.Transparent,
+                                    focusedBorderColor = Color.Transparent,
+                                    disabledBorderColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                ),
+                            )
+                        }
                     }
 
                     // ── Кнопка действия: микрофон или send (как в Telegram) ──
@@ -941,6 +954,69 @@ private fun QuickReplies(onPick: (String) -> Unit) {
                 label = { Text("$emoji$text", fontSize = 13.sp) },
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier.padding(vertical = 2.dp)
+            )
+        }
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Voice Waveform (v1.18.4)
+// ════════════════════════════════════════════════════════════════
+
+/**
+ * Анимированная аудио-волна для индикации «ИИ слушает голос юзера».
+ * Похоже на Gemini Live / Google Assistant.
+ *
+ * Принцип:
+ *  - Держим rolling buffer последних 32 значений rmsDb
+ *  - Каждый новый amplitude шифтит буфер влево, новое значение слева
+ *  - Canvas рисует 32 вертикальных линии: высота пропорциональна
+ *    нормализованному значению (rmsDb диапазон -2..10 → 0..1)
+ *  - Smoothing через animateFloat — линии не дёргаются
+ *  - Цвет — brand primary с лёгким fade-out у краёв (центр ярче)
+ */
+@Composable
+private fun VoiceWaveform(
+    amplitude: Float,
+    modifier: Modifier = Modifier,
+) {
+    val bars = 32
+    val history = remember { mutableStateListOf<Float>().apply { repeat(bars) { add(0f) } } }
+    val brand = MaterialTheme.colorScheme.primary
+
+    // Нормализация rmsDb (-2..10) → 0..1
+    val normalized = ((amplitude + 2f) / 12f).coerceIn(0f, 1f)
+
+    LaunchedEffect(amplitude) {
+        history.removeAt(0)
+        history.add(normalized)
+    }
+
+    androidx.compose.foundation.Canvas(modifier = modifier) {
+        val w = size.width
+        val h = size.height
+        val centerY = h / 2f
+        val barWidth = w / bars.toFloat() * 0.6f
+        val gap = w / bars.toFloat() * 0.4f
+        val totalStep = barWidth + gap
+        // Минимальная высота столбика чтобы waveform был виден даже в тишине
+        val minHeight = 4.dp.toPx()
+        val maxHeight = h * 0.85f
+
+        for (i in 0 until bars) {
+            val value = history[i]
+            // Fade-out у краёв — центральные ярче (как у Gemini)
+            val distFromCenter = kotlin.math.abs(i - bars / 2f) / (bars / 2f)
+            val edgeFade = (1f - distFromCenter * 0.5f).coerceIn(0.3f, 1f)
+            val barHeight = (minHeight + value * (maxHeight - minHeight) * edgeFade)
+                .coerceAtLeast(minHeight)
+            val x = i * totalStep + gap / 2f
+            drawRoundRect(
+                color = brand,
+                topLeft = androidx.compose.ui.geometry.Offset(x, centerY - barHeight / 2f),
+                size = androidx.compose.ui.geometry.Size(barWidth, barHeight),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(barWidth / 2f),
+                alpha = (0.4f + value * 0.6f).coerceAtMost(1f),
             )
         }
     }
