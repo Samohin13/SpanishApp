@@ -5,6 +5,7 @@ import com.spanishapp.data.db.dao.ChatMessageDao
 import com.spanishapp.data.db.entity.ChatMessageEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
@@ -19,7 +20,9 @@ import javax.inject.Singleton
 @Singleton
 class AiChatRepository @Inject constructor(
     private val chatMessageDao: ChatMessageDao,
-    private val okHttpClient: OkHttpClient
+    private val okHttpClient: OkHttpClient,
+    private val authRepository: AuthRepository,
+    private val userProgressDao: com.spanishapp.data.db.dao.UserProgressDao,
 ) {
 
     companion object {
@@ -163,7 +166,10 @@ class AiChatRepository @Inject constructor(
             val history = chatMessageDao.getSessionOnce(sessionId)
                 .takeLast(10)  // v1.18.4: 20→10 для ускорения first-token
 
-            val body = buildGeminiRequest(history)
+            // v1.18.10: persistent user profile в каждом запросе — ИИ помнит
+            // имя/уровень/цель даже если они вне 10-message окна.
+            val profileBlock = buildUserProfileBlock()
+            val body = buildGeminiRequest(history, userProfileBlock = profileBlock)
 
             val request = Request.Builder()
                 .url(apiUrl())
@@ -230,7 +236,8 @@ class AiChatRepository @Inject constructor(
         )
 
         val history = chatMessageDao.getSessionOnce(sessionId).takeLast(10)  // v1.18.4: 20→10 для ускорения first-token
-        val body = buildGeminiRequest(history, extraSystemPrompt = extraSystemPrompt)
+        val profileBlock = buildUserProfileBlock()  // v1.18.10: persistent profile
+        val body = buildGeminiRequest(history, extraSystemPrompt = extraSystemPrompt, userProfileBlock = profileBlock)
 
         val request = Request.Builder()
             .url(streamUrl())
@@ -352,18 +359,76 @@ class AiChatRepository @Inject constructor(
         chatMessageDao.clearSession(sessionId)
     }
 
+    // ── User profile (v1.18.10) ───────────────────────────────
+    /**
+     * Собирает блок «О ученике» который добавляется в system prompt при
+     * КАЖДОМ запросе. Так ИИ знает имя, уровень, возраст, цель — даже
+     * если они упомянуты только в Settings/Onboarding, а не в текущем
+     * 10-сообщений-окне history.
+     *
+     * Пустой блок если юзер ничего не заполнил — ИИ работает как раньше.
+     */
+    private suspend fun buildUserProfileBlock(): String {
+        val name = authRepository.userName.first()?.takeIf { it.isNotBlank() }
+        val age = authRepository.userAge.first()
+        val level = authRepository.userLevel.first()?.takeIf { it.isNotBlank() }
+        val reason = authRepository.userReason.first()?.takeIf { it.isNotBlank() }
+        val progress = userProgressDao.getProgressOnce()
+        val wordsLearned = progress?.wordsLearned ?: 0
+        val streak = progress?.currentStreak ?: 0
+
+        val parts = buildList {
+            if (name != null) add("имя — **$name**")
+            if (age != null) add("возраст — $age лет")
+            if (level != null) add("уровень — $level")
+            if (reason != null) {
+                val reasonText = when (reason.lowercase()) {
+                    "travel" -> "учит для путешествий"
+                    "work" -> "учит для работы"
+                    "family" -> "учит ради семьи/любви"
+                    "hobby" -> "учит как хобби"
+                    "study" -> "учит для учёбы/экзаменов"
+                    else -> "цель: $reason"
+                }
+                add(reasonText)
+            }
+            if (wordsLearned > 0) add("выучил $wordsLearned слов")
+            if (streak > 0) add("серия занятий — $streak дней")
+        }
+        if (parts.isEmpty()) return ""
+
+        return """
+
+            О ТВОЁМ УЧЕНИКЕ (помни это в каждом ответе):
+            ${parts.joinToString(", ")}.
+            • Обращайся по имени когда уместно (1 раз на ответ, не каждое сообщение).
+            • Адаптируй сложность под уровень.
+            • Если знаешь сколько слов выучил — иногда хвали за прогресс.
+        """.trimIndent()
+    }
+
     // ── Build Gemini REST body ────────────────────────────────
     private fun buildGeminiRequest(
         messages: List<ChatMessageEntity>,
         withSystem: Boolean = true,
-        extraSystemPrompt: String = ""
+        extraSystemPrompt: String = "",
+        userProfileBlock: String = "",
     ): RequestBody {
         val json = buildJsonObject {
             // System instruction (Gemini 1.5 supports it). Optional theme-specific
             // prompt is appended so e.g. "Travel" mode adds airport scenarios.
             if (withSystem) {
-                val fullPrompt = if (extraSystemPrompt.isBlank()) SYSTEM_PROMPT
-                                 else "$SYSTEM_PROMPT\n\n$extraSystemPrompt"
+                val fullPrompt = buildString {
+                    append(SYSTEM_PROMPT)
+                    if (userProfileBlock.isNotBlank()) {
+                        append("\n")
+                        append(userProfileBlock)
+                    }
+                    if (extraSystemPrompt.isNotBlank()) {
+                        append("\n\n")
+                        append(extraSystemPrompt)
+                    }
+                }
                 // Gemini's REST schema requires `parts` to be an ARRAY of objects,
                 // not a single object. Flash is lenient and accepts both, but Pro
                 // and future stricter validators silently drop scenario prompts
