@@ -46,9 +46,11 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.TheaterComedy
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -1364,22 +1366,30 @@ private fun SleepTimerCountdown(
 }
 
 /**
- * Диалог выбора времени sleep timer.
- *  - 4 пресета chips: 15 / 30 / 45 / 60 минут (быстрый тап)
- *  - Слайдер для кастомного 5–180 минут (шаг 5)
- *  - При активном таймере — кнопка отмены вместо «Закрыть»
+ * Диалог выбора времени sleep timer — Material 3 TimePicker с
+ * круглым clock-face (как Samsung «Время напоминания»).
  *
- * Дизайн в духе iOS Sleep Timer / Apple Music.
+ * Длительность кодируется как «время» 0:00–9:59:
+ *  - hour = часы таймера (0–9)
+ *  - minute = минуты (0–59)
+ *  - итого = hour * 60 + minute минут
+ *
+ * Native TimePicker встроенно поддерживает haptic + accessibility,
+ * переключение clock-face / numeric input, hour/minute ring.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SleepTimerDialog(
     currentRemainingMs: Long?,
     onConfirmMinutes: (Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val initialMinutes = currentRemainingMs?.let { (it / 60_000L).toInt().coerceAtLeast(1) } ?: 30
-    var sliderValue by remember { mutableStateOf(initialMinutes.toFloat()) }
-    val current = sliderValue.toInt().coerceIn(5, 180)
+    val totalMinutes = currentRemainingMs?.let { (it / 60_000L).toInt().coerceAtLeast(1) } ?: 30
+    val state = rememberTimePickerState(
+        initialHour = (totalMinutes / 60).coerceIn(0, 9),
+        initialMinute = (totalMinutes % 60).coerceIn(0, 59),
+        is24Hour = true,
+    )
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1393,75 +1403,36 @@ private fun SleepTimerDialog(
             }
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 Text(
                     "Радио выключится через выбранное время.",
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
                 )
-                // Пресеты
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    listOf(15, 30, 45, 60).forEach { mins ->
-                        val selected = current == mins
-                        Surface(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 2.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .clickable { sliderValue = mins.toFloat() },
-                            shape = RoundedCornerShape(12.dp),
-                            color = if (selected) Accent.copy(alpha = 0.18f)
-                                    else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-                            border = if (selected) BorderStroke(1.dp, Accent) else null,
-                        ) {
-                            Text(
-                                "${mins}м",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 10.dp),
-                                textAlign = TextAlign.Center,
-                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                                fontSize = 14.sp,
-                                color = if (selected) Accent else MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                    }
-                }
-                // Slider 5..180 минут шагом 5
-                Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text("Своё время", fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                        Text(
-                            "$current мин",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Accent,
-                        )
-                    }
-                    Slider(
-                        value = sliderValue,
-                        onValueChange = { sliderValue = it },
-                        valueRange = 5f..180f,
-                        steps = (180 - 5) / 5 - 1,
-                        colors = SliderDefaults.colors(
-                            thumbColor = Accent,
-                            activeTrackColor = Accent,
-                        ),
-                    )
-                }
+                TimePicker(
+                    state = state,
+                    colors = TimePickerDefaults.colors(
+                        selectorColor = Accent,
+                        timeSelectorSelectedContainerColor = Accent.copy(alpha = 0.18f),
+                        timeSelectorSelectedContentColor = Accent,
+                        clockDialSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+                        periodSelectorSelectedContainerColor = Accent.copy(alpha = 0.18f),
+                        periodSelectorSelectedContentColor = Accent,
+                    ),
+                )
             }
         },
         confirmButton = {
+            val totalMins = state.hour * 60 + state.minute
             Button(
-                onClick = { onConfirmMinutes(current) },
+                onClick = { onConfirmMinutes(totalMins.coerceAtLeast(1)) },
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Accent),
+                enabled = totalMins > 0,
             ) {
                 Text("Запустить", fontWeight = FontWeight.Bold)
             }
