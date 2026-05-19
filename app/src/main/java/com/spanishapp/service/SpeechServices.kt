@@ -107,23 +107,52 @@ class SpanishTts @Inject constructor(
     }
 
     /**
-     * Решает, имеет ли смысл озвучивать строку через испанский TTS.
-     *  • Минимум 2 латинские буквы подряд (отсекает "a", "?", "1", "___")
-     *  • Без кириллицы (русский перевод не озвучиваем)
+     * Решает, что озвучивать через испанский TTS.
+     *
+     * v1.18.3 (BUG-024): AI Chat ответы — смешанный русский + испанские
+     * слова в скобках/после двоеточия. Старая логика «cyrillic > 50% →
+     * null» молчала на 100% ответов ИИ.
+     *
+     * Новая логика:
+     *  1. Чистый испанский (≤15% кириллицы) — озвучить целиком.
+     *  2. Смешанный (русский + испанские фрагменты) — extract все
+     *     испанские слова/фразы (последовательности латинских букв с
+     *     accent marks, длиной 2+), склеить через паузы.
+     *  3. Если латиницы нет совсем → null.
      */
     private fun inferSpeakText(text: String?): String? {
         if (text.isNullOrBlank()) return null
         val cleaned = text.replace("_", " ").trim()
         val letters = cleaned.filter { it.isLetter() }
         if (letters.isEmpty()) return null
-        val cyrillic = letters.count { it in 'Ѐ'..'ӿ' }
-        val latin = letters.count { it !in 'Ѐ'..'ӿ' }
-        if (latin == 0) return null
-        if (cyrillic.toDouble() / letters.length > 0.5) return null
-        val uniqueFolded = letters.filter { it !in 'Ѐ'..'ӿ' }.map { it.lowercaseChar() }.toSet()
-        if (uniqueFolded.size == 1) return uniqueFolded.first().toString()
-        if (!Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)) return null
-        return cleaned.replace("___", " ").replace(Regex("\\s+"), " ").trim()
+        val cyrillicCount = letters.count { it in 'Ѐ'..'ӿ' }
+        val latinCount = letters.count { it !in 'Ѐ'..'ӿ' }
+        if (latinCount == 0) return null
+
+        // Чистый испанский / латиница — озвучиваем целиком
+        if (cyrillicCount.toDouble() / letters.length <= 0.15) {
+            val uniqueFolded = letters.map { it.lowercaseChar() }.toSet()
+            if (uniqueFolded.size == 1) return uniqueFolded.first().toString()
+            if (!Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(cleaned)) return null
+            return cleaned.replace("___", " ").replace(Regex("\\s+"), " ").trim()
+        }
+
+        // Смешанный текст — extract испанские фрагменты.
+        // Регулярка: последовательность латинских (с accent marks),
+        // включая дефисы и апострофы (cómo, l'apostrophe, well-known),
+        // длиной 2+ символа. Punctuation ¿?¡! берём чтобы интонация
+        // прозвучала естественно.
+        val spanishRegex = Regex(
+            "[¿¡]?[A-Za-zÁÉÍÓÚÜÑáéíóúüñ][A-Za-zÁÉÍÓÚÜÑáéíóúüñ'-]+(?:[?!.,;:]?\\s+[¿¡]?[A-Za-zÁÉÍÓÚÜÑáéíóúüñ][A-Za-zÁÉÍÓÚÜÑáéíóúüñ'-]+)*[?!.]?"
+        )
+        val fragments = spanishRegex.findAll(cleaned)
+            .map { it.value.trim() }
+            .filter { it.length >= 2 && Regex("[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}").containsMatchIn(it) }
+            .toList()
+
+        if (fragments.isEmpty()) return null
+        // Склеиваем через ". " — TTS добавит паузу между фразами.
+        return fragments.joinToString(". ").take(500)  // safety cap
     }
 
     /** Speak Spanish text aloud. @param slow — 0.66× rate for careful listening. */
