@@ -96,3 +96,28 @@ D/RemoteTts(13457): speak() text='Привет, давай начнём урок
 D/RemoteTts(13457): personality=strict gender=male segments=2
 D/RemoteTts(13457): playing seg='Привет, давай начнём урок.' voice=ru-RU-Wavenet-B file=19392b
 D/RemoteTts(13457): playing seg='Hola, ¿cómo estás?' voice=es-ES-Polyglot-1 file=16704b
+D/RemoteTts(20007): speak() text='Здравствуйте. Сегодня изучаем глагол ser. Hola, ¿cómo está u' speed=null
+D/RemoteTts(20007): personality=friendly gender=female segments=2
+D/RemoteTts(20007): playing seg='Здравствуйте. Сегодня изучаем глагол' voice=ru-RU-Wavenet-A pitch=2.5 file=24000b
+D/RemoteTts(20007): speak() text='Привет, давай начнём урок. Hola, ¿cómo estás?' speed=null
+D/RemoteTts(20007): personality=strict gender=female segments=2
+D/RemoteTts(20007): playing seg='Привет, давай начнём урок.' voice=ru-RU-Wavenet-C pitch=-3.0 file=20736b
+W/RemoteTts(20007): fetchMp3 failed for seg='ser. Hola, ¿cómo está usted?' voice=es-ES-Neural2-D
+W/RemoteTts(20007): kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@cfb42f4
+D/RemoteTts(20007): playing seg='Hola, ¿cómo estás?' voice=es-ES-Neural2-E pitch=-3.0 file=13632b
+D/RemoteTts(20007): speak() text='Хей, погнали учить испанский! ¡Hola, qué tal!' speed=null
+D/RemoteTts(20007): personality=polite gender=female segments=2
+D/RemoteTts(20007): playing seg='Хей, погнали учить испанский! ¡' voice=ru-RU-Standard-E pitch=-1.0 file=21120b
+D/RemoteTts(20007): speak() text='Какое прекрасное утро. Hola, mi querido amigo.' speed=null
+D/RemoteTts(20007): personality=friendly gender=female segments=2
+D/RemoteTts(20007): playing seg='Какое прекрасное утро.' voice=ru-RU-Wavenet-A pitch=2.5 file=13056b
+D/RemoteTts(20007): playing seg='Hola, mi querido amigo.' voice=es-ES-Neural2-D pitch=2.5 file=14016b
+D/RemoteTts(20007): speak() text='Здравствуйте. Сегодня изучаем глагол ser. Hola, ¿cómo está u' speed=null
+D/RemoteTts(20007): personality=romantic gender=male segments=2
+D/RemoteTts(20007): playing seg='Здравствуйте. Сегодня изучаем глагол' voice=ru-RU-Standard-B pitch=0.5 file=23424b
+D/RemoteTts(20007): speak() text='Привет, давай начнём урок. Hola, ¿cómo estás?' speed=null
+D/RemoteTts(20007): personality=strict gender=male segments=2
+D/RemoteTts(20007): playing seg='Привет, давай начнём урок.' voice=ru-RU-Wavenet-B pitch=-3.0 file=17280b
+W/RemoteTts(20007): fetchMp3 failed for seg='ser. Hola, ¿cómo está usted?' voice=es-ES-Studio-C
+W/RemoteTts(20007): kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@4d0edfb
+D/RemoteTts(20007): playing seg='Hola, ¿cómo estás?' voice=es-ES-Polyglot-1 pitch=-3.0 file=15552b

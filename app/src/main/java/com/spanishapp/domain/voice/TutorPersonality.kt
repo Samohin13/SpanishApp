@@ -1,19 +1,17 @@
 package com.spanishapp.domain.voice
 
 /**
- * v1.18.21: Характер репетитора + раздельный выбор пола голоса.
+ * v1.18.28: 8 уникальных голосов — каждая (personality + gender) пара
+ * = отдельный человек со своим тембром.
  *
- * Раньше каждый пресет имел фиксированную пару (es+ru) одного пола.
- * Юзер просил явный выбор «мужской / женский» — теперь каждый пресет
- * содержит ДВЕ согласованные пары, выбираемые через [VoiceGender].
+ * Достигается смешиванием:
+ *  • Engines: Polyglot (deep multilingual), Studio (premium character),
+ *    Neural2 (standard HD), Wavenet (smoother), Standard (different timbre)
+ *  • Locales: es-ES (Spain) для строгих/тёплых, es-US (Latin) для
+ *    дружелюбного — кардинально другой акцент, звучит как другой человек
+ *  • Russian: Wavenet vs Standard для phonetic diversity
  *
- * Все голоса — Google Cloud TTS HD (Neural2 / Wavenet / Studio).
- * Russian gender проверен по docs:
- *   • ru-RU-Wavenet-A / C / E — FEMALE
- *   • ru-RU-Wavenet-B / D     — MALE
- * Spanish gender:
- *   • es-ES-Neural2-A / C / D / E, Studio-F — FEMALE
- *   • es-ES-Neural2-B / F, Studio-C         — MALE
+ * Гендер каждого голоса подтверждён по Google Cloud TTS docs.
  */
 enum class TutorPersonality(
     val id: String,
@@ -25,10 +23,7 @@ enum class TutorPersonality(
     private val esVoiceFemale: String,
     private val ruVoiceFemale: String,
     val speed: Float,
-    /** Pitch offset в semitones (-20..20). Делает голоса персонажей
-     *  явно различимыми даже если Google voice ID похожи. */
     val pitch: Float,
-    /** Дополнение к system prompt — задаёт тон. */
     val toneInstructions: String,
 ) {
     STRICT(
@@ -36,15 +31,13 @@ enum class TutorPersonality(
         displayName = "Строгий",
         emoji = "🎓",
         description = "Формально, точно, исправляет каждую мелочь",
-        // v1.18.26: Polyglot-1 — авторитетный мужской премиум.
-        // Wavenet-B (ru) — традиционный «учительский» мужской.
+        // Spain academic: Polyglot deep male + Neural2-E mature female
         esVoiceMale = "es-ES-Polyglot-1",
         ruVoiceMale = "ru-RU-Wavenet-B",
-        // Neural2-E — зрелая женская, академический тон.
         esVoiceFemale = "es-ES-Neural2-E",
         ruVoiceFemale = "ru-RU-Wavenet-C",
         speed = 0.92f,
-        pitch = -3.0f,  // ниже, авторитетнее
+        pitch = 0f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — СТРОГИЙ:
             • Обращайся на «Вы». Уважительно, без панибратства.
@@ -61,13 +54,13 @@ enum class TutorPersonality(
         displayName = "Вежливый",
         emoji = "🤝",
         description = "Сдержанно, мягкие подсказки, на «ты»",
-        // Wavenet engine — другой тембр чем Neural2, спокойный
+        // Spain Wavenet engine — smoother, older sound (другой engine vs STRICT)
         esVoiceMale = "es-ES-Wavenet-B",
         ruVoiceMale = "ru-RU-Standard-D",
         esVoiceFemale = "es-ES-Wavenet-C",
         ruVoiceFemale = "ru-RU-Standard-E",
         speed = 1.0f,
-        pitch = -1.0f,  // слегка ниже, спокойный
+        pitch = 0f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ВЕЖЛИВЫЙ:
             • Обращайся на «ты», но сдержанно, без излишней фамильярности.
@@ -83,13 +76,15 @@ enum class TutorPersonality(
         displayName = "Дружелюбный",
         emoji = "😊",
         description = "Легко, с шутками, сленг — ок",
-        // Neural2 пара — молодой энергичный звук
-        esVoiceMale = "es-ES-Neural2-B",
+        // Latin American (es-US) — кардинально другой акцент!
+        // Звучит как мексиканец/латиноамериканец, явно отличается
+        // от формального испанского Spain.
+        esVoiceMale = "es-US-Neural2-B",
         ruVoiceMale = "ru-RU-Wavenet-D",
-        esVoiceFemale = "es-ES-Neural2-D",
+        esVoiceFemale = "es-US-Neural2-A",
         ruVoiceFemale = "ru-RU-Wavenet-A",
         speed = 1.05f,
-        pitch = 2.5f,  // выше, энергично, молодо
+        pitch = 0f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ДРУЖЕЛЮБНЫЙ:
             • На «ты», как с другом. Расслабленно, не зажато.
@@ -106,13 +101,13 @@ enum class TutorPersonality(
         displayName = "Тёплый",
         emoji = "💕",
         description = "Эмоционально, поэтично, для души",
-        // Studio voices — премиум, характерные, эмоциональные
+        // Studio voices — премиум, характерные, единственные с эмоцией
         esVoiceMale = "es-ES-Studio-C",
         ruVoiceMale = "ru-RU-Standard-B",
         esVoiceFemale = "es-ES-Studio-F",
         ruVoiceFemale = "ru-RU-Wavenet-E",
         speed = 0.95f,
-        pitch = 0.5f,  // близко к нейтральному, тёплый
+        pitch = 0f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ТЁПЛЫЙ:
             • На «ты», с теплотой. Как будто говоришь с близким человеком.
@@ -138,7 +133,6 @@ enum class TutorPersonality(
     }
 }
 
-/** Пол голоса репетитора — общий для ru+es чтобы не было микса. */
 enum class VoiceGender(val id: String) {
     FEMALE("female"),
     MALE("male");
