@@ -74,3 +74,25 @@ D/RemoteTts( 8269): personality=romantic gender=female segments=2
 D/RemoteTts( 8269): playing seg='Хей, погнали учить испанский! ¡' voice=ru-RU-Wavenet-C file=26496b
 W/RemoteTts( 8269): fetchMp3 failed for seg='ser. Hola, ¿cómo está usted?' voice=es-ES-Studio-F
 W/RemoteTts( 8269): kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@5bf4f7
+D/RemoteTts(13457): speak() text='Здравствуйте. Сегодня изучаем глагол ser. Hola, ¿cómo está u' speed=null
+D/RemoteTts(13457): personality=friendly gender=female segments=2
+D/RemoteTts(13457): playing seg='Здравствуйте. Сегодня изучаем глагол' voice=ru-RU-Wavenet-A file=26112b
+D/RemoteTts(13457): speak() text='Привет, давай начнём урок. Hola, ¿cómo estás?' speed=null
+D/RemoteTts(13457): personality=strict gender=female segments=2
+D/RemoteTts(13457): playing seg='Привет, давай начнём урок.' voice=ru-RU-Wavenet-C file=23040b
+W/RemoteTts(13457): fetchMp3 failed for seg='ser. Hola, ¿cómo está usted?' voice=es-ES-Neural2-D
+W/RemoteTts(13457): kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@c4113b8
+D/RemoteTts(13457): speak() text='Хей, погнали учить испанский! ¡Hola, qué tal!' speed=null
+D/RemoteTts(13457): personality=polite gender=female segments=2
+D/RemoteTts(13457): playing seg='Хей, погнали учить испанский! ¡' voice=ru-RU-Standard-E file=23040b
+D/RemoteTts(13457): speak() text='Какое прекрасное утро. Hola, mi querido amigo.' speed=null
+D/RemoteTts(13457): personality=friendly gender=female segments=2
+D/RemoteTts(13457): playing seg='Какое прекрасное утро.' voice=ru-RU-Wavenet-A file=14592b
+D/RemoteTts(13457): playing seg='Hola, mi querido amigo.' voice=es-ES-Neural2-D file=15552b
+D/RemoteTts(13457): speak() text='Здравствуйте. Сегодня изучаем глагол ser. Hola, ¿cómo está u' speed=null
+D/RemoteTts(13457): personality=romantic gender=male segments=2
+D/RemoteTts(13457): playing seg='Здравствуйте. Сегодня изучаем глагол' voice=ru-RU-Standard-B file=25728b
+D/RemoteTts(13457): speak() text='Привет, давай начнём урок. Hola, ¿cómo estás?' speed=null
+D/RemoteTts(13457): personality=strict gender=male segments=2
+D/RemoteTts(13457): playing seg='Привет, давай начнём урок.' voice=ru-RU-Wavenet-B file=19392b
+D/RemoteTts(13457): playing seg='Hola, ¿cómo estás?' voice=es-ES-Polyglot-1 file=16704b

@@ -25,6 +25,9 @@ enum class TutorPersonality(
     private val esVoiceFemale: String,
     private val ruVoiceFemale: String,
     val speed: Float,
+    /** Pitch offset в semitones (-20..20). Делает голоса персонажей
+     *  явно различимыми даже если Google voice ID похожи. */
+    val pitch: Float,
     /** Дополнение к system prompt — задаёт тон. */
     val toneInstructions: String,
 ) {
@@ -41,6 +44,7 @@ enum class TutorPersonality(
         esVoiceFemale = "es-ES-Neural2-E",
         ruVoiceFemale = "ru-RU-Wavenet-C",
         speed = 0.92f,
+        pitch = -3.0f,  // ниже, авторитетнее
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — СТРОГИЙ:
             • Обращайся на «Вы». Уважительно, без панибратства.
@@ -63,6 +67,7 @@ enum class TutorPersonality(
         esVoiceFemale = "es-ES-Wavenet-C",
         ruVoiceFemale = "ru-RU-Standard-E",
         speed = 1.0f,
+        pitch = -1.0f,  // слегка ниже, спокойный
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ВЕЖЛИВЫЙ:
             • Обращайся на «ты», но сдержанно, без излишней фамильярности.
@@ -84,6 +89,7 @@ enum class TutorPersonality(
         esVoiceFemale = "es-ES-Neural2-D",
         ruVoiceFemale = "ru-RU-Wavenet-A",
         speed = 1.05f,
+        pitch = 2.5f,  // выше, энергично, молодо
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ДРУЖЕЛЮБНЫЙ:
             • На «ты», как с другом. Расслабленно, не зажато.
@@ -106,6 +112,7 @@ enum class TutorPersonality(
         esVoiceFemale = "es-ES-Studio-F",
         ruVoiceFemale = "ru-RU-Wavenet-E",
         speed = 0.95f,
+        pitch = 0.5f,  // близко к нейтральному, тёплый
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ТЁПЛЫЙ:
             • На «ты», с теплотой. Как будто говоришь с близким человеком.

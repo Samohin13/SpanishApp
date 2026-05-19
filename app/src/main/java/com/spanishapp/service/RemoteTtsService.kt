@@ -91,11 +91,10 @@ class RemoteTtsService @Inject constructor(
             val personality = com.spanishapp.domain.voice.TutorPersonality.byId(personalityId)
             val genderId = authRepository.voiceGender.firstOrNull()
             val gender = com.spanishapp.domain.voice.VoiceGender.byId(genderId)
-            // v1.18.25: пользовательский множитель скорости поверх personality.speed.
-            // Если caller передал speed явно (например slow=true → 0.7), используем
-            // её, иначе personality.speed * userMultiplier.
             val userMult = authRepository.voiceSpeedMultiplier.firstOrNull() ?: 1.0f
             val finalSpeed = (speed ?: (personality.speed * userMult)).coerceIn(0.25f, 4.0f)
+            // v1.18.27: pitch per personality — добавляет phonetic diversity
+            val finalPitch = personality.pitch
             val segments = segmentByLanguage(
                 text = text.take(2000),
                 esVoice = personality.esVoice(gender),
@@ -111,10 +110,10 @@ class RemoteTtsService @Inject constructor(
             try {
                 for (seg in segments) {
                     if (!coroutineContext.isActive) break
-                    val mp3 = runCatching { fetchMp3(seg.text, seg.voice, finalSpeed) }
+                    val mp3 = runCatching { fetchMp3(seg.text, seg.voice, finalSpeed, finalPitch) }
                         .onFailure { Log.w(TAG, "fetchMp3 failed for seg='${seg.text.take(40)}' voice=${seg.voice}", it) }
                         .getOrNull() ?: continue
-                    Log.d(TAG, "playing seg='${seg.text.take(40)}' voice=${seg.voice} file=${mp3.length()}b")
+                    Log.d(TAG, "playing seg='${seg.text.take(40)}' voice=${seg.voice} pitch=$finalPitch file=${mp3.length()}b")
                     playFileAndWait(mp3)
                 }
             } finally {
@@ -178,15 +177,15 @@ class RemoteTtsService @Inject constructor(
         }
     }
 
-    private suspend fun fetchMp3(text: String, voice: String, speed: Float): File =
+    private suspend fun fetchMp3(text: String, voice: String, speed: Float, pitch: Float = 0f): File =
         withContext(Dispatchers.IO) {
-            val hash = sha1("$voice|$speed|$text")
+            val hash = sha1("$voice|$speed|$pitch|$text")
             val file = File(cacheDir, "$hash.mp3")
             if (file.exists() && file.length() > 0) return@withContext file
 
             val proxyUrl = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
             val url = "$proxyUrl/tts"
-            val bodyJson = """{"text":${jsonStr(text)},"voice":${jsonStr(voice)},"speed":$speed}"""
+            val bodyJson = """{"text":${jsonStr(text)},"voice":${jsonStr(voice)},"speed":$speed,"pitch":$pitch}"""
             val request = Request.Builder()
                 .url(url)
                 .post(bodyJson.toRequestBody("application/json".toMediaType()))

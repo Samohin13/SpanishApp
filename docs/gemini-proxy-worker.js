@@ -229,6 +229,8 @@ async function handleTts(request, env) {
     return jsonError(400, `Voice ${voice} not allowed`);
   }
   const speed = Math.max(0.5, Math.min(2.0, Number(body.speed) || 1.0));
+  // v1.18.27: pitch для разных персонажей (-20..20 semitones).
+  const pitch = Math.max(-20, Math.min(20, Number(body.pitch) || 0));
 
   // languageCode = "es-ES" / "ru-RU" / "es-US" (первые 5 символов voice)
   const languageCode = voice.substring(0, 5);
@@ -236,7 +238,7 @@ async function handleTts(request, env) {
   const ttsBody = {
     input: { text: text },
     voice: { languageCode: languageCode, name: voice },
-    audioConfig: { audioEncoding: "MP3", speakingRate: speed },
+    audioConfig: { audioEncoding: "MP3", speakingRate: speed, pitch: pitch },
   };
 
   const upstream = await fetch(
