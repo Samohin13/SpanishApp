@@ -92,6 +92,7 @@ class AiChatViewModel @Inject constructor(
     private val tts: SpanishTts,
     private val stt: com.spanishapp.service.SpanishSpeechRecognizer,
     private val limiter: com.spanishapp.service.AiChatLimiter,
+    private val remoteTts: com.spanishapp.service.RemoteTtsService,
     @ApplicationContext private val appContext: Context,
     savedStateHandle: androidx.lifecycle.SavedStateHandle
 ) : ViewModel() {
@@ -240,11 +241,36 @@ class AiChatViewModel @Inject constructor(
     }
 
     /**
-     * v1.18.15: для AI Chat читаем ответ ИИ ЦЕЛИКОМ — русские пояснения
-     * через ru-RU voice, испанские слова через выбранный es-ES voice.
-     * fullMixed=true переключает локаль между сегментами.
+     * v1.18.17: премиум-озвучка через Google Cloud TTS Neural2.
+     * Сначала чистим текст (убираем эмодзи, markdown, переводы в []),
+     * затем пробуем remote TTS. Если не удалось — fallback на Android TTS.
      */
-    fun speak(text: String) = viewModelScope.launch { tts.speak(text, fullMixed = true) }
+    fun speak(text: String) = viewModelScope.launch {
+        val cleaned = sanitizeForSpeech(text)
+        if (cleaned.isBlank()) return@launch
+        val ok = remoteTts.speak(cleaned)
+        if (!ok) {
+            // Fallback на системный TTS если remote недоступен
+            tts.speak(text, fullMixed = true)
+        }
+    }
+
+    private fun sanitizeForSpeech(raw: String): String {
+        var s = raw
+        // Markdown **bold** → текст без звёздочек
+        s = s.replace(Regex("\\*\\*([^*]+)\\*\\*"), "$1")
+        // [перевод] — удаляем (юзер уже видит в UI)
+        s = s.replace(Regex("\\[[^\\]]+\\]"), "")
+        // Эмодзи и misc symbols
+        s = s.replace(Regex("[\\p{So}\\p{Sk}]"), "")
+        // Surrogates (multi-codepoint emoji)
+        s = s.replace(Regex("[\\uD800-\\uDFFF]"), "")
+        // Хвосты системных markers
+        s = s.substringBefore("CORRECTIONS_JSON:").substringBefore("PROFILE_UPDATE_JSON:")
+        // Сжать whitespace
+        s = s.replace(Regex("\\s+"), " ").trim()
+        return s
+    }
 
     /** v1.18.4: real-time amplitude от mic для waveform visualizer. */
     val voiceAmplitude: StateFlow<Float> = stt.rmsDb

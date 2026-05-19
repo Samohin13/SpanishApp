@@ -1,38 +1,23 @@
 // ────────────────────────────────────────────────────────────────
-//  ESPEAK — Gemini API proxy for Cloudflare Workers
-//  Hides the GEMINI_KEY from the Android APK so it cannot be
-//  extracted and abused.
+//  ESPEAK — Gemini + TTS proxy for Cloudflare Workers
+//  Hides API keys from the Android APK + adds rate limiting.
 //
-//  Hardening (v2):
-//   • Shared secret in X-App-Secret header (rejects unknown callers)
-//   • Per-IP rate limit  : 30 req/min  (in-memory bucket)
-//   • Per-IP daily cap   : 300 req/day (per worker isolate)
-//   • Global daily cap   : 5000 req/day across all users (in-memory)
-//   • Allowed-models whitelist
+//  Endpoints:
+//   POST /v1beta/models/<model>:generateContent
+//   POST /v1beta/models/<model>:streamGenerateContent
+//   POST /tts  — Google Cloud Text-to-Speech (v1.18.17)
 //
-// ────────────────────────────────────────────────────────────────
-//  Deploy:
-//    1. https://dash.cloudflare.com/ → Workers & Pages → Create
-//    2. Pick "Hello World" template, name it `espeak-gemini-proxy`
-//    3. Paste this entire file as the worker code
-//    4. Settings → Variables → "Add variable" (Encrypt = ON):
-//         GEMINI_KEY  = <your real Google Generative Language API key>
-//         APP_SECRET  = <random 32-char string — paste same one to
-//                       local.properties as AI_PROXY_SECRET>
-//    5. Deploy. Copy the public URL, e.g.:
-//         https://espeak-gemini-proxy.<your-account>.workers.dev
-//    6. local.properties:
-//         AI_PROXY_URL=https://espeak-gemini-proxy.<your-account>.workers.dev
-//         AI_PROXY_SECRET=<same random string as APP_SECRET>
-//    7. Rebuild the app.
+//  Auth: X-App-Secret header (rejects unknown callers)
+//  Rate limit: 30 req/min/IP, 300/day/IP, 5000/day global
 //
-//  How to generate a random secret:
-//    Linux/Mac:  openssl rand -hex 32
-//    PowerShell: -join ((48..57)+(97..122) | Get-Random -Count 32 | % {[char]$_})
-//    Or use:     https://www.random.org/strings/
+//  Secrets in Cloudflare:
+//    GEMINI_KEY     — Generative Language API key
+//    GOOGLE_TTS_KEY — Cloud Text-to-Speech API key (v1.18.17)
+//    APP_SECRET     — shared secret (matches AI_PROXY_SECRET in app)
 // ────────────────────────────────────────────────────────────────
 
 const GEMINI_HOST = "https://generativelanguage.googleapis.com";
+const TTS_HOST = "https://texttospeech.googleapis.com";
 
 const ALLOWED_MODELS = [
   "gemini-1.5-flash",
@@ -43,34 +28,47 @@ const ALLOWED_MODELS = [
   "gemini-2.0-flash",
   "gemini-2.0-flash-001",
   "gemini-2.0-flash-exp",
+  "gemini-2.0-flash-lite",
   "gemini-2.5-flash",
   "gemini-2.5-flash-preview",
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-pro",
   "gemini-flash-latest",
+  "gemini-flash-lite-latest",
+];
+
+// v1.18.17: Google Cloud TTS voices whitelist (нейронные / wavenet).
+const ALLOWED_TTS_VOICES = [
+  // es-ES Neural2 (премиум нейронные, бесплатно 1M chars/мес)
+  "es-ES-Neural2-A", "es-ES-Neural2-B", "es-ES-Neural2-C",
+  "es-ES-Neural2-D", "es-ES-Neural2-E", "es-ES-Neural2-F",
+  // es-ES Studio (Chirp) — премиум, multilingual
+  "es-ES-Studio-C", "es-ES-Studio-F",
+  // ru-RU Wavenet (Neural2 для ru пока не доступен)
+  "ru-RU-Wavenet-A", "ru-RU-Wavenet-B",
+  "ru-RU-Wavenet-C", "ru-RU-Wavenet-D", "ru-RU-Wavenet-E",
+  // es-US Neural2 (латино-американский)
+  "es-US-Neural2-A", "es-US-Neural2-B", "es-US-Neural2-C",
 ];
 
 // ── Rate limits ──
-const RPM_PER_IP = 30;            // 30 requests per minute per IP
-const DAILY_PER_IP = 300;         // 300 requests per day per IP
-const DAILY_GLOBAL = 5000;        // 5000 requests per day across ALL users
-                                  // (protects your Gemini free-tier quota)
+const RPM_PER_IP = 30;
+const DAILY_PER_IP = 300;
+const DAILY_GLOBAL = 5000;
 
-// In-memory state — per worker isolate. Cloudflare may spin up multiple
-// isolates so these counters are an *approximate* floor, not exact.
-// For exact cross-isolate counters use Cloudflare KV or Durable Objects.
-const ipRpmBucket = new Map();    // ip → { windowStart, count }
-const ipDailyBucket = new Map();  // ip → { day, count }
+const ipRpmBucket = new Map();
+const ipDailyBucket = new Map();
 let globalDayKey = "";
 let globalDayCount = 0;
 
 function todayKey() {
-  return new Date().toISOString().slice(0, 10);   // "YYYY-MM-DD" UTC
+  return new Date().toISOString().slice(0, 10);
 }
 
 function checkRateLimits(ip) {
   const now = Date.now();
   const day = todayKey();
 
-  // Reset global counter on day boundary
   if (globalDayKey !== day) {
     globalDayKey = day;
     globalDayCount = 0;
@@ -79,7 +77,6 @@ function checkRateLimits(ip) {
     return { ok: false, status: 429, error: "Global daily quota exceeded — try tomorrow" };
   }
 
-  // Per-IP per-minute
   const rpmEntry = ipRpmBucket.get(ip);
   if (!rpmEntry || now - rpmEntry.windowStart > 60_000) {
     ipRpmBucket.set(ip, { windowStart: now, count: 1 });
@@ -90,7 +87,6 @@ function checkRateLimits(ip) {
     }
   }
 
-  // Per-IP per-day
   const dailyEntry = ipDailyBucket.get(ip);
   if (!dailyEntry || dailyEntry.day !== day) {
     ipDailyBucket.set(ip, { day, count: 1 });
@@ -105,7 +101,6 @@ function checkRateLimits(ip) {
   return { ok: true };
 }
 
-// Constant-time string compare to defeat timing attacks on the secret.
 function safeEquals(a, b) {
   if (typeof a !== "string" || typeof b !== "string") return false;
   if (a.length !== b.length) return false;
@@ -126,9 +121,6 @@ export default {
     }
 
     // ── Shared secret check ──
-    // If APP_SECRET is configured on Cloudflare, every request MUST include
-    // the matching X-App-Secret header. If APP_SECRET is empty, the check
-    // is skipped (back-compat with old deployments).
     if (env.APP_SECRET && env.APP_SECRET.length > 0) {
       const sent = request.headers.get("X-App-Secret") || "";
       if (!safeEquals(sent, env.APP_SECRET)) {
@@ -137,9 +129,13 @@ export default {
     }
 
     const url = new URL(request.url);
-    // Expected paths:
-    //   /v1beta/models/<model>:generateContent       (one-shot)
-    //   /v1beta/models/<model>:streamGenerateContent (Server-Sent Events stream)
+
+    // v1.18.17: TTS endpoint
+    if (url.pathname === "/tts" || url.pathname === "/tts/") {
+      return handleTts(request, env);
+    }
+
+    // Gemini endpoints
     const match = url.pathname.match(
       /^\/v1beta\/models\/([a-z0-9.\-]+):(stream)?generateContent\/?$/i,
     );
@@ -159,7 +155,6 @@ export default {
       return jsonError(500, "Proxy not configured: missing GEMINI_KEY");
     }
 
-    // Forward body as-is to Gemini, appending the secret key as a query param.
     const verb = isStream ? "streamGenerateContent" : "generateContent";
     const sseSuffix = isStream ? "&alt=sse" : "";
     const upstream = await fetch(
@@ -189,6 +184,80 @@ export default {
     });
   },
 };
+
+// ────────────────────────────────────────────────────────────────
+//  TTS — Google Cloud Text-to-Speech proxy (v1.18.17)
+// ────────────────────────────────────────────────────────────────
+//
+// Request: POST /tts
+//   Body: { "text": "Hola...", "voice": "es-ES-Neural2-A", "speed": 1.0 }
+//   Header: X-App-Secret
+//
+// Response: audio/mpeg (MP3 bytes)
+async function handleTts(request, env) {
+  const ip = request.headers.get("CF-Connecting-IP") || "anon";
+  const limit = checkRateLimits(ip);
+  if (!limit.ok) return jsonError(limit.status, limit.error);
+
+  if (!env.GOOGLE_TTS_KEY) {
+    return jsonError(500, "TTS not configured: missing GOOGLE_TTS_KEY");
+  }
+
+  let body;
+  try { body = await request.json(); }
+  catch { return jsonError(400, "Bad JSON body"); }
+
+  const text = (body.text || "").trim();
+  if (!text) return jsonError(400, "Missing text");
+  if (text.length > 2000) return jsonError(400, "Text too long (max 2000 chars)");
+
+  const voice = body.voice || "es-ES-Neural2-A";
+  if (!ALLOWED_TTS_VOICES.includes(voice)) {
+    return jsonError(400, `Voice ${voice} not allowed`);
+  }
+  const speed = Math.max(0.5, Math.min(2.0, Number(body.speed) || 1.0));
+
+  // languageCode = "es-ES" / "ru-RU" / "es-US" (первые 5 символов voice)
+  const languageCode = voice.substring(0, 5);
+
+  const ttsBody = {
+    input: { text: text },
+    voice: { languageCode: languageCode, name: voice },
+    audioConfig: { audioEncoding: "MP3", speakingRate: speed },
+  };
+
+  const upstream = await fetch(
+    `${TTS_HOST}/v1/text:synthesize?key=${env.GOOGLE_TTS_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(ttsBody),
+    },
+  );
+
+  if (!upstream.ok) {
+    const errText = await upstream.text();
+    return jsonError(upstream.status, `TTS failed: ${errText.substring(0, 200)}`);
+  }
+
+  // Google TTS возвращает {"audioContent": "<base64>"} — декодируем в bytes.
+  const json = await upstream.json();
+  if (!json.audioContent) {
+    return jsonError(500, "TTS response missing audioContent");
+  }
+  const binary = atob(json.audioContent);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+  return new Response(bytes, {
+    status: 200,
+    headers: {
+      "Content-Type": "audio/mpeg",
+      "Cache-Control": "public, max-age=86400",
+      ...corsHeaders(),
+    },
+  });
+}
 
 function corsHeaders() {
   return {
