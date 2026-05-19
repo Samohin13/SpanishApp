@@ -156,34 +156,6 @@ class SettingsViewModel @Inject constructor(
     val appLockEnabled = appLockPreferences.isEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    /**
-     * 1.1.1: Контент-инвентарь для отображения в Settings → секция «Контент».
-     * Тестер не мог проверить «10К+ слов в словаре» — теперь видно явно.
-     * Считаем live из БД (slow paths не критично — Settings редко открывают).
-     */
-    data class ContentStats(
-        val wordsCount: Int = 0,
-        val lessonsCount: Int = 0,
-        val verbsCount: Int = 0,
-        val librosCount: Int = 0,
-    )
-
-    val contentStats: StateFlow<ContentStats> = flow {
-        emit(
-            ContentStats(
-                wordsCount   = runCatching { wordDao.getCount() }.getOrDefault(0),
-                lessonsCount = com.spanishapp.ui.home.RoadmapData.units
-                    .sumOf { it.lessons.size },
-                verbsCount   = runCatching {
-                    com.spanishapp.data.repository.ConjugationData.getAll().size +
-                    com.spanishapp.data.repository.ConjugationData2.getAll().size +
-                    com.spanishapp.data.repository.ConjugationData3.getAll().size
-                }.getOrDefault(0),
-                librosCount  = com.spanishapp.ui.games.LibrosData.all.size,
-            )
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ContentStats())
-
     val biometricUsable: Boolean get() = appLockManager.biometricAvailability().isUsable
 
     fun setAppLockEnabled(enabled: Boolean) = viewModelScope.launch {
@@ -726,19 +698,6 @@ fun SettingsScreen(
                     }
                     context.startActivity(Intent.createChooser(intent, emailChooser))
                 }
-            }
-
-            // ── Контент-инвентарь (1.1.1) ───────────────────────
-            // Тестер не мог проверить «реально ли в словаре 10К+ слов».
-            // Показываем явные числа что есть в приложении.
-            val contentStats by vm.contentStats.collectAsStateWithLifecycle()
-            SettingsSection("Контент") {
-                SettingsItem(Icons.Default.Translate, "Слова в словаре", "${contentStats.wordsCount}") {
-                    navController.navigate("dictionary") { launchSingleTop = true }
-                }
-                SettingsItem(Icons.AutoMirrored.Filled.MenuBook, "Уроков всего", "${contentStats.lessonsCount}")
-                SettingsItem(Icons.Default.RecordVoiceOver, "Глаголов в тренажёре", "${contentStats.verbsCount}")
-                SettingsItem(Icons.Default.Book, "Рассказов Libros", "${contentStats.librosCount}")
             }
 
             // ── Биометрический замок ─────────────────────────────

@@ -361,6 +361,19 @@ class RadioViewModel @Inject constructor(
         if (player.isPlaying.value) player.pause() else player.resume()
     }
 
+    // ────────────────────── Sleep Timer (v1.18.0) ──────────────────────
+    /** null = не активен, иначе мс до остановки. UI пересчитывает в M:SS. */
+    val sleepTimerRemainingMs: StateFlow<Long?> = player.sleepTimerRemainingMs
+
+    /** Запустить или отменить sleep timer. minutes <= 0 → отмена. */
+    fun setSleepTimerMinutes(minutes: Int) {
+        if (minutes <= 0) {
+            player.setSleepTimer(null)
+        } else {
+            player.setSleepTimer(minutes * 60_000L)
+        }
+    }
+
     // Не вызываем player.release() — Singleton живёт дольше ViewModel.
 
     /**

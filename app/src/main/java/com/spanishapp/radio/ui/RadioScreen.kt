@@ -28,6 +28,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.filled.BedtimeOff
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -42,6 +44,11 @@ import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.SportsBasketball
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.TheaterComedy
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -110,6 +117,9 @@ fun RadioScreen(navController: NavHostController) {
     val discoveryError by vm.discoveryError.collectAsStateWithLifecycle()
     val selectedGenres by vm.selectedGenres.collectAsStateWithLifecycle()
     val showOnlyFavorites by vm.showOnlyFavorites.collectAsStateWithLifecycle()
+    // v1.18.0 — Sleep Timer
+    val sleepRemainingMs by vm.sleepTimerRemainingMs.collectAsStateWithLifecycle()
+    var showSleepDialog by remember { mutableStateOf(false) }
 
     // Adaptive layout — в landscape компактнее (hero меньше, paddings уже)
     val configuration = LocalConfiguration.current
@@ -236,16 +246,27 @@ fun RadioScreen(navController: NavHostController) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
+                // v1.18.0 — countdown chip если sleep timer активен
+                if (sleepRemainingMs != null) {
+                    Spacer(Modifier.height(8.dp))
+                    SleepTimerCountdown(
+                        remainingMs = sleepRemainingMs!!,
+                        onCancel = { vm.setSleepTimerMinutes(0) },
+                    )
+                }
+
                 Spacer(Modifier.height(16.dp))
 
                 PlayerControls(
                     isPlaying = isPlaying,
                     isFavorite = station?.id?.let { favoriteIds.contains(it) } ?: false,
                     canControl = station != null,
+                    sleepActive = sleepRemainingMs != null,
                     onPrev = vm::previousStation,
                     onPlayPause = vm::togglePlayback,
                     onNext = vm::nextStation,
                     onToggleFavorite = { station?.let { vm.toggleFavorite(it.id) } },
+                    onSleepTimer = { showSleepDialog = true },
                 )
             }
 
@@ -268,6 +289,18 @@ fun RadioScreen(navController: NavHostController) {
                     isLoadingMore = discoveryState == RadioViewModel.DiscoveryState.LOADING,
                 )
             }
+        }
+
+        // v1.18.0 — Sleep Timer dialog поверх всего
+        if (showSleepDialog) {
+            SleepTimerDialog(
+                currentRemainingMs = sleepRemainingMs,
+                onConfirmMinutes = { mins ->
+                    vm.setSleepTimerMinutes(mins)
+                    showSleepDialog = false
+                },
+                onDismiss = { showSleepDialog = false },
+            )
         }
     }
 }
@@ -864,10 +897,12 @@ private fun PlayerControls(
     isPlaying: Boolean,
     isFavorite: Boolean,
     canControl: Boolean,
+    sleepActive: Boolean,
     onPrev: () -> Unit,
     onPlayPause: () -> Unit,
     onNext: () -> Unit,
     onToggleFavorite: () -> Unit,
+    onSleepTimer: () -> Unit,
 ) {
     // v1.13.1: на планшете все кнопки крупнее (Duolingo-style):
     // play 72→100dp, skip 52→72dp, fav 44→60dp, spacer 44→60dp.
@@ -949,8 +984,18 @@ private fun PlayerControls(
             enabled = canControl,
             onClick = onNext,
         )
-        // Spacer чтобы play остался по центру (компенсация за favorite слева)
-        Spacer(Modifier.size(spacerSize))
+        // v1.18.0 — Sleep Timer. Раньше тут был Spacer для симметрии (5 элементов),
+        // теперь 5-я позиция — кнопка таймера сна. Активный таймер подсвечен брендом.
+        CircleBtn(
+            icon = if (sleepActive) Icons.Filled.Bedtime else Icons.Filled.BedtimeOff,
+            cd = if (sleepActive) "Таймер сна активен" else "Таймер сна",
+            size = spacerSize,
+            iconSize = favIcon,
+            tint = if (sleepActive) Accent else MaterialTheme.colorScheme.onSurfaceVariant,
+            bg = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+            enabled = true,
+            onClick = onSleepTimer,
+        )
     }
 }
 
@@ -1272,3 +1317,164 @@ private fun FindMoreTile(loading: Boolean, onClick: () -> Unit) {
         )
     }
 }
+
+// ════════════════════════════════════════════════════════════════
+//  Sleep Timer (v1.18.0)
+// ════════════════════════════════════════════════════════════════
+
+/**
+ * Chip над PlayerControls когда sleep timer активен. «💤 23:45 · отмена».
+ * Тап → отменяет таймер.
+ */
+@Composable
+private fun SleepTimerCountdown(
+    remainingMs: Long,
+    onCancel: () -> Unit,
+) {
+    val totalSeconds = (remainingMs / 1000L).coerceAtLeast(0L)
+    val minutes = totalSeconds / 60L
+    val seconds = totalSeconds % 60L
+    val timeText = String.format("%d:%02d", minutes, seconds)
+    Surface(
+        shape = CircleShape,
+        color = Accent.copy(alpha = 0.12f),
+        modifier = Modifier
+            .clip(CircleShape)
+            .clickable { onCancel() },
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(
+                Icons.Filled.Bedtime,
+                contentDescription = null,
+                tint = Accent,
+                modifier = Modifier.size(16.dp),
+            )
+            Text(
+                "Через $timeText · отмена",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Accent,
+            )
+        }
+    }
+}
+
+/**
+ * Диалог выбора времени sleep timer.
+ *  - 4 пресета chips: 15 / 30 / 45 / 60 минут (быстрый тап)
+ *  - Слайдер для кастомного 5–180 минут (шаг 5)
+ *  - При активном таймере — кнопка отмены вместо «Закрыть»
+ *
+ * Дизайн в духе iOS Sleep Timer / Apple Music.
+ */
+@Composable
+private fun SleepTimerDialog(
+    currentRemainingMs: Long?,
+    onConfirmMinutes: (Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val initialMinutes = currentRemainingMs?.let { (it / 60_000L).toInt().coerceAtLeast(1) } ?: 30
+    var sliderValue by remember { mutableStateOf(initialMinutes.toFloat()) }
+    val current = sliderValue.toInt().coerceIn(5, 180)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(Icons.Filled.Bedtime, contentDescription = null, tint = Accent)
+                Text("Таймер сна", fontWeight = FontWeight.Bold)
+            }
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text(
+                    "Радио выключится через выбранное время.",
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                // Пресеты
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    listOf(15, 30, 45, 60).forEach { mins ->
+                        val selected = current == mins
+                        Surface(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 2.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .clickable { sliderValue = mins.toFloat() },
+                            shape = RoundedCornerShape(12.dp),
+                            color = if (selected) Accent.copy(alpha = 0.18f)
+                                    else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                            border = if (selected) BorderStroke(1.dp, Accent) else null,
+                        ) {
+                            Text(
+                                "${mins}м",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp),
+                                textAlign = TextAlign.Center,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                                fontSize = 14.sp,
+                                color = if (selected) Accent else MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
+                }
+                // Slider 5..180 минут шагом 5
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Своё время", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                        Text(
+                            "$current мин",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Accent,
+                        )
+                    }
+                    Slider(
+                        value = sliderValue,
+                        onValueChange = { sliderValue = it },
+                        valueRange = 5f..180f,
+                        steps = (180 - 5) / 5 - 1,
+                        colors = SliderDefaults.colors(
+                            thumbColor = Accent,
+                            activeTrackColor = Accent,
+                        ),
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirmMinutes(current) },
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Accent),
+            ) {
+                Text("Запустить", fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            if (currentRemainingMs != null) {
+                TextButton(onClick = { onConfirmMinutes(0) }) {
+                    Text("Отменить таймер")
+                }
+            } else {
+                TextButton(onClick = onDismiss) { Text("Закрыть") }
+            }
+        },
+    )
+}
+

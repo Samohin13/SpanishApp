@@ -90,6 +90,48 @@ class RadioPlayerController(private val context: Context) {
     fun hideMiniPlayer() { _miniPlayerHidden.value = true }
     fun showMiniPlayer() { _miniPlayerHidden.value = false }
 
+    // ────────────────────── Sleep Timer (v1.18.0) ──────────────────────
+    /**
+     * Sleep Timer — авто-стоп радио через заданное время.
+     *
+     * `null` = не активен. > 0 = миллисекунд до остановки.
+     * UI читает значение каждую секунду через countdown.
+     *
+     * Используется ночью когда юзер засыпает под радио: «через 30 минут
+     * выключи». При истечении вызывается [pause] — потоки сразу
+     * отпускают сеть/аккумулятор.
+     */
+    private val _sleepTimerRemainingMs = MutableStateFlow<Long?>(null)
+    val sleepTimerRemainingMs: StateFlow<Long?> = _sleepTimerRemainingMs.asStateFlow()
+
+    private var sleepTimerJob: Job? = null
+
+    /**
+     * Запустить или отменить sleep timer.
+     * @param durationMs длительность в мс. null / 0 = отмена активного таймера.
+     */
+    fun setSleepTimer(durationMs: Long?) {
+        sleepTimerJob?.cancel()
+        if (durationMs == null || durationMs <= 0) {
+            _sleepTimerRemainingMs.value = null
+            return
+        }
+        val deadline = System.currentTimeMillis() + durationMs
+        _sleepTimerRemainingMs.value = durationMs
+        sleepTimerJob = scope.launch {
+            while (true) {
+                val remaining = deadline - System.currentTimeMillis()
+                if (remaining <= 0L) {
+                    _sleepTimerRemainingMs.value = null
+                    pause()
+                    break
+                }
+                _sleepTimerRemainingMs.value = remaining
+                delay(1000L)
+            }
+        }
+    }
+
     /** Callback для статистики прослушивания. */
     var onSessionEnded: ((startedAt: Long, endedAt: Long, stationId: String) -> Unit)? = null
 

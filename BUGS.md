@@ -200,6 +200,13 @@ DataStore в `MainActivity.attachBaseContext()` (известный IMPORTANT и
 
 ## ✅ FIXED (последние 30 дней)
 
+### v1.18.0 — Sleep Timer + Settings cleanup (2026-05-19)
+
+| Что | Файлы |
+|---|---|
+| ✨ **Sleep Timer** в радио — пресеты 15/30/45/60 + слайдер 5–180 мин (кастомное время) + countdown chip + кнопка отмены | [RadioPlayerController.kt](app/src/main/java/com/spanishapp/radio/player/RadioPlayerController.kt) + [RadioViewModel.kt](app/src/main/java/com/spanishapp/radio/ui/RadioViewModel.kt) + [RadioScreen.kt](app/src/main/java/com/spanishapp/radio/ui/RadioScreen.kt) |
+| 🧹 Удалён блок «Контент» из Settings (Слова/Уроки/Глаголы/Рассказы) — не нужен юзеру | [SettingsScreen.kt](app/src/main/java/com/spanishapp/ui/settings/SettingsScreen.kt) |
+
 ### v1.17.4 — Release readiness: tests + локализация (2026-05-18)
 
 | ID | Priority | Title |
