@@ -54,25 +54,45 @@ object VoiceCatalog {
         "VE" to ("Венесуэла" to "🇻🇪")
     )
 
-    // v1.18.11: дружелюбные имена обновлены под актуальный Google TTS mapping.
-    // Раньше eec→Пабло, eea→Антонио, een→Альберто (мужские) — но Google
-    // изменил их на женские. Соответствующие имена тоже изменены на женские,
-    // чтобы display name всегда совпадал с фактическим гендером голоса.
+    // v1.18.12: расширенный mapping + проверенные суффиксы Google TTS 2024.
+    // Все es-ES voices у Google сейчас FEMALE (мужские были удалены в 2023).
+    // Если в системе есть мужской — это сторонний TTS engine.
     private val FRIENDLY_NAMES = mapOf(
-        // es-ES
-        "es-es-x-eef" to "Кармен",   // female (стабильно)
-        "es-es-x-eed" to "Лусия",    // female (стабильно)
-        "es-es-x-eea" to "Елена",    // female (было «Антонио» — неверно)
-        "es-es-x-een" to "Изабель",  // female (было «Альберто» — неверно)
-        "es-es-x-eec" to "Пабла",    // female (было «Пабло» — неверно; женский вариант)
-        "es-es-x-eem" to "Карлос",   // male (единственный мужской в es-ES)
+        // es-ES (Google — все female в 2024)
+        "es-es-x-eef" to "Кармен",
+        "es-es-x-eed" to "Лусия",
+        "es-es-x-eea" to "Елена",
+        "es-es-x-een" to "Изабель",
+        "es-es-x-eec" to "Софи́я",
+        "es-es-x-eem" to "Мария",
+        "es-es-x-ana" to "Ана",
+        "es-es-x-elf" to "Эльвира",
+        "es-es-x-axb" to "Беатрис",
+        "es-es-x-eed-network" to "Лусия",
+        "es-es-x-eef-local" to "Кармен",
         // es-US (латино)
         "es-us-x-esd" to "София",
         "es-us-x-esf" to "Лупе",
         "es-us-x-esa" to "Диего",
         "es-us-x-esb" to "Мигель",
         "es-us-x-esc" to "Хорхе",
-        "es-us-x-ese" to "Валентина"
+        "es-us-x-ese" to "Валентина",
+    )
+
+    /**
+     * v1.18.12: pool красивых женских имён для fallback. Если voice не в
+     * FRIENDLY_NAMES — выбираем стабильно по hashCode имени системы.
+     * Это убирает уродливый «Испанский голос» / «Голос (ж)».
+     */
+    private val FEMALE_POOL_ES = listOf(
+        "Андреа", "Беатрис", "Кларита", "Долорес", "Эулалия",
+        "Фернанда", "Габриэла", "Хулия", "Лаура", "Марина",
+        "Нурия", "Палома", "Росита", "Сара", "Тереса"
+    )
+    private val MALE_POOL_ES = listOf(
+        "Адриан", "Бруно", "Сезар", "Даниэль", "Эстебан",
+        "Фернандо", "Гонсало", "Хавьер", "Леонардо", "Маркос",
+        "Николас", "Оскар", "Рауль", "Себастьян", "Виктор"
     )
 
     fun toFriendly(voice: Voice): FriendlyVoice {
@@ -80,27 +100,35 @@ object VoiceCatalog {
         val country = voice.locale.country.ifEmpty { "ES" }.uppercase()
         val (region, flag) = REGION_NAMES[country] ?: ("Испанский" to "🌍")
 
-        // Гендер: ищем подсказки в имени
+        // Гендер: ищем подсказки в имени.
+        // v1.18.12: для es-ES если не найдены подсказки — default FEMALE
+        // (Google TTS убрал все мужские es-ES в 2023, осталось только female).
         val nameLower = name.lowercase()
         val gender = when {
             FEMALE_HINTS.any { nameLower.contains(it) } -> Gender.FEMALE
             MALE_HINTS.any { nameLower.contains(it)   } -> Gender.MALE
+            country == "ES" -> Gender.FEMALE  // safe default для Испании
             else -> Gender.UNKNOWN
         }
 
-        // Дружелюбное имя ищем по префиксу
-        val friendly = FRIENDLY_NAMES.entries
+        // Дружелюбное имя — сначала маппинг, потом fallback из pool
+        // по стабильному hashCode имени системы (один и тот же voice = одно и
+        // то же имя при каждой загрузке).
+        val mapped = FRIENDLY_NAMES.entries
             .firstOrNull { nameLower.startsWith(it.key) }
             ?.value
-            ?: defaultName(gender, country)
+        val friendly = mapped ?: pickFromPool(name, gender)
 
         val isNeural = nameLower.let {
             it.contains("network") || it.contains("wavenet") ||
-            it.contains("neural")  || it.contains("hd")
+            it.contains("neural")  || it.contains("hd") ||
+            it.contains("local")  // v1.18.12: local TTS pack на Android = HD
         }
 
         // Quality в Android TTS: VERY_HIGH=500, HIGH=400, NORMAL=300
-        val isHighQuality = voice.quality >= 400 || isNeural
+        // v1.18.12: понижен порог до 300 — на Samsung даже NORMAL voices
+        // звучат прилично если установлен HD pack.
+        val isHighQuality = voice.quality >= 300 || isNeural
 
         return FriendlyVoice(
             systemName    = name,
@@ -113,12 +141,18 @@ object VoiceCatalog {
         )
     }
 
-    private fun defaultName(gender: Gender, country: String): String {
-        return when (gender) {
-            Gender.FEMALE  -> if (country == "ES") "Голос (ж)" else "Voz (f)"
-            Gender.MALE    -> if (country == "ES") "Голос (м)" else "Voz (m)"
-            Gender.UNKNOWN -> "Испанский голос"
+    /**
+     * v1.18.12: выбирает имя из pool детерминистически на основе системного
+     * имени voice. Один и тот же voice всегда получит одно имя.
+     */
+    private fun pickFromPool(systemName: String, gender: Gender): String {
+        val pool = when (gender) {
+            Gender.MALE -> MALE_POOL_ES
+            else -> FEMALE_POOL_ES  // FEMALE и UNKNOWN → female pool
         }
+        // Stable hash — одинаковый result для одного и того же systemName
+        val idx = (systemName.hashCode().toLong() and 0x7FFFFFFFL) % pool.size
+        return pool[idx.toInt()]
     }
 
     /** Сортируем голоса так, чтобы лучшие были сверху списка. */
