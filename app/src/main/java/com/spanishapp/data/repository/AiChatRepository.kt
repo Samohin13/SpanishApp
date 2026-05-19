@@ -146,7 +146,12 @@ class AiChatRepository @Inject constructor(
               хобби, цель изучения, любимые темы, что давно не учит и т.п.) —
               в КОНЦЕ ответа добавь маркер JSON (один или несколько полей):
 
-            PROFILE_UPDATE_JSON:{"name":"Сергей","interests":["футбол","кино"],"goal":"путешествие в Барселону","level":"A2","notes":"стесняется говорить"}
+            PROFILE_UPDATE_JSON:{"name":"Сергей","gender":"male","interests":["футбол","кино"],"goal":"путешествие в Барселону","level":"A2","notes":"стесняется говорить"}
+
+            ВАЖНО про gender: если из чата ПОНЯТНО мужчина или женщина
+            (форма глаголов «готов»/«готова», «сказал»/«сказала», имя)
+            — обязательно отметь "gender":"male" или "female". Это нужно
+            чтобы ты в дальнейшем обращался в правильном роде.
 
             • Поля опциональны — заполняй только те что узнал. notes — свободный
               текст об особенностях ученика (его стиль общения, любимые темы,
@@ -404,12 +409,24 @@ class AiChatRepository @Inject constructor(
         val interests = authRepository.userInterests.first()?.takeIf { it.isNotBlank() }
         val goal = authRepository.userGoal.first()?.takeIf { it.isNotBlank() }
         val notes = authRepository.userNotes.first()?.takeIf { it.isNotBlank() }
+        val gender = authRepository.userGender.first()?.takeIf { it.isNotBlank() }
+        // v1.18.20: характер репетитора — задаёт тон ответов
+        val personalityId = authRepository.tutorPersonality.first()
+        val personality = com.spanishapp.domain.voice.TutorPersonality.byId(personalityId)
         val progress = userProgressDao.getProgressOnce()
         val wordsLearned = progress?.wordsLearned ?: 0
         val streak = progress?.currentStreak ?: 0
 
         val parts = buildList {
             if (name != null) add("имя — **$name**")
+            if (gender != null) {
+                val g = when (gender.lowercase()) {
+                    "male", "m", "мужской", "мужчина" -> "мужчина (обращаться в МУЖСКОМ роде)"
+                    "female", "f", "женский", "женщина" -> "женщина (обращаться в ЖЕНСКОМ роде)"
+                    else -> gender
+                }
+                add(g)
+            }
             if (age != null) add("возраст — $age лет")
             if (level != null) add("уровень — $level")
             if (goal != null) add("цель — $goal")
@@ -431,18 +448,24 @@ class AiChatRepository @Inject constructor(
         if (parts.isEmpty() && notes == null) return ""
 
         return buildString {
-            append("\n\nО ТВОЁМ УЧЕНИКЕ (помни это в каждом ответе):\n")
-            if (parts.isNotEmpty()) {
-                append(parts.joinToString(", "))
-                append(".\n")
+            // v1.18.20: блок персонажа всегда добавляется
+            append("\n\n")
+            append(personality.toneInstructions)
+            append("\n")
+            if (parts.isNotEmpty() || notes != null) {
+                append("\nО ТВОЁМ УЧЕНИКЕ (помни это в каждом ответе):\n")
+                if (parts.isNotEmpty()) {
+                    append(parts.joinToString(", "))
+                    append(".\n")
+                }
+                if (notes != null) {
+                    append("Заметки: $notes\n")
+                }
+                append("• Обращайся по имени когда уместно (не каждое сообщение).\n")
+                append("• Адаптируй сложность под уровень.\n")
+                append("• Используй интересы ученика в примерах.\n")
+                append("• Иногда хвали за прогресс.\n")
             }
-            if (notes != null) {
-                append("Заметки: $notes\n")
-            }
-            append("• Обращайся по имени когда уместно (не каждое сообщение).\n")
-            append("• Адаптируй сложность под уровень.\n")
-            append("• Используй интересы ученика в примерах.\n")
-            append("• Иногда хвали за прогресс.\n")
         }
     }
 
@@ -483,6 +506,9 @@ class AiChatRepository @Inject constructor(
             }
             obj["level"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let {
                 authRepository.setUserLevel(it)
+            }
+            obj["gender"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let {
+                authRepository.setUserGender(it)
             }
             obj["goal"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }?.let {
                 authRepository.setUserGoal(it)

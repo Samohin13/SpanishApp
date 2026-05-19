@@ -28,6 +28,10 @@ class AuthRepository @Inject constructor(
     private val USER_INTERESTS = stringPreferencesKey("user_interests")  // CSV
     private val USER_GOAL = stringPreferencesKey("user_goal")            // конкретная цель
     private val USER_NOTES = stringPreferencesKey("user_notes")          // стиль общения, особенности
+    // v1.18.11: gender для правильного грамматического рода в AI ответах
+    private val USER_GENDER = stringPreferencesKey("user_gender")        // "male" | "female"
+    // v1.18.20: выбранный характер репетитора (TutorPersonality.id)
+    private val TUTOR_PERSONALITY = stringPreferencesKey("tutor_personality")
     private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
@@ -56,6 +60,17 @@ class AuthRepository @Inject constructor(
     }
     suspend fun setUserNotes(notes: String) {
         context.dataStore.edit { it[USER_NOTES] = notes }
+    }
+
+    val userGender: Flow<String?> = context.dataStore.data.map { it[USER_GENDER] }
+    suspend fun setUserGender(gender: String) {
+        context.dataStore.edit { it[USER_GENDER] = gender }
+    }
+
+    // v1.18.20: характер репетитора
+    val tutorPersonality: Flow<String?> = context.dataStore.data.map { it[TUTOR_PERSONALITY] }
+    suspend fun setTutorPersonality(id: String) {
+        context.dataStore.edit { it[TUTOR_PERSONALITY] = id }
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARDING_COMPLETED] ?: false }

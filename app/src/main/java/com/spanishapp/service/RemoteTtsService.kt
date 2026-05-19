@@ -14,6 +14,7 @@ import kotlin.coroutines.coroutineContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -44,6 +45,7 @@ import kotlin.coroutines.resume
 class RemoteTtsService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val okHttpClient: OkHttpClient,
+    private val authRepository: com.spanishapp.data.repository.AuthRepository,
 ) {
     private val cacheDir: File by lazy {
         File(context.cacheDir, "tts").apply { mkdirs() }
@@ -68,7 +70,7 @@ class RemoteTtsService @Inject constructor(
      */
     fun speak(
         text: String,
-        speed: Float = 1.0f,
+        speed: Float? = null,
     ): Boolean {
         if (BuildConfig.AI_PROXY_URL.isBlank()) return false
         if (text.isBlank()) return false
@@ -76,16 +78,28 @@ class RemoteTtsService @Inject constructor(
         // Прерываем предыдущее воспроизведение
         stop()
 
-        val segments = segmentByLanguage(text.take(2000))
-        if (segments.isEmpty()) return false
-
         playJob = scope.launch {
+            // v1.18.20: голос/темп из текущего TutorPersonality.
+            // Personality читается из DataStore при каждом speak — изменение
+            // в Settings применяется без рестарта.
+            val personalityId = authRepository.tutorPersonality.firstOrNull()
+            val personality = com.spanishapp.domain.voice.TutorPersonality.byId(personalityId)
+            val finalSpeed = speed ?: personality.speed
+            val segments = segmentByLanguage(
+                text = text.take(2000),
+                esVoice = personality.esVoice,
+                ruVoice = personality.ruVoice,
+            )
+            if (segments.isEmpty()) {
+                _isPlaying.value = false
+                return@launch
+            }
             runCatching { com.spanishapp.radio.player.RadioCoordinator.pauseForTts() }
             _isPlaying.value = true
             try {
                 for (seg in segments) {
                     if (!coroutineContext.isActive) break
-                    val mp3 = runCatching { fetchMp3(seg.text, seg.voice, speed) }
+                    val mp3 = runCatching { fetchMp3(seg.text, seg.voice, finalSpeed) }
                         .getOrNull() ?: continue
                     playFileAndWait(mp3)
                 }
@@ -94,6 +108,22 @@ class RemoteTtsService @Inject constructor(
             }
         }
         return true
+    }
+
+    /**
+     * Sample preview — озвучить демо одного voice (используется в Settings
+     * при выборе характера). НЕ прерывает текущее основное воспроизведение
+     * только если оно уже остановлено.
+     */
+    fun previewVoice(text: String, voice: String, speed: Float = 1.0f) {
+        if (BuildConfig.AI_PROXY_URL.isBlank()) return
+        stop()
+        playJob = scope.launch {
+            val mp3 = runCatching { fetchMp3(text.take(200), voice, speed) }
+                .getOrNull() ?: return@launch
+            _isPlaying.value = true
+            try { playFileAndWait(mp3) } finally { _isPlaying.value = false }
+        }
     }
 
     /** Прервать воспроизведение и очистить очередь. */
@@ -168,15 +198,19 @@ class RemoteTtsService @Inject constructor(
     private data class Segment(val text: String, val voice: String)
 
     /**
-     * Разбивает текст на куски по доминирующему скрипту char-by-char.
-     * Соседние char одного типа объединяются. Знаки препинания
-     * приклеиваются к текущему сегменту.
+     * v1.18.20: разбивает текст на куски по unicode-блокам с указанными
+     * voices для каждого языка (берутся из TutorPersonality).
      *
-     * - Cyrillic → ru-RU-Wavenet-B
-     * - Latin → es-ES-Neural2-A
-     * - Сегменты <2 букв пропускаем (типа «mi» — приклеит к соседнему)
+     * - Cyrillic → ruVoice
+     * - Latin → esVoice
+     * - Микро-сегменты (<2 letters) приклеиваются к соседним
+     * - Punctuation/whitespace присоединяются к текущему сегменту
      */
-    private fun segmentByLanguage(text: String): List<Segment> {
+    private fun segmentByLanguage(
+        text: String,
+        esVoice: String,
+        ruVoice: String,
+    ): List<Segment> {
         val raw = mutableListOf<Pair<String, Boolean>>()  // text + isSpanish
         val sb = StringBuilder()
         var currentSpanish: Boolean? = null
@@ -219,7 +253,7 @@ class RemoteTtsService @Inject constructor(
             if (trimmed.isBlank() || trimmed.count { it.isLetter() } < 1) null
             else Segment(
                 text = trimmed,
-                voice = if (isSpanish) ES_VOICE else RU_VOICE,
+                voice = if (isSpanish) esVoice else ruVoice,
             )
         }
     }
@@ -241,9 +275,7 @@ class RemoteTtsService @Inject constructor(
 
     companion object {
         private const val TAG = "RemoteTts"
-        // v1.18.19: оба голоса ЖЕНСКИЕ — единый «диктор» чтобы не звучало
-        // как «девушка + мужчина» в одном предложении.
-        private const val ES_VOICE = "es-ES-Neural2-A"      // женский нейронный (es)
-        private const val RU_VOICE = "ru-RU-Wavenet-E"      // женский wavenet (ru)
+        // v1.18.20: voices теперь берутся из TutorPersonality (см. speak).
+        // Эти константы остались как fallback если нет personality.
     }
 }
