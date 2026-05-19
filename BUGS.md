@@ -200,6 +200,14 @@ DataStore в `MainActivity.attachBaseContext()` (известный IMPORTANT и
 
 ## ✅ FIXED (последние 30 дней)
 
+### v1.18.1 — AI Chat: Telegram-style input + flicker fix (2026-05-19)
+
+| Что | Файлы |
+|---|---|
+| 🎨 Input bar в стиле Telegram/WhatsApp — pill-input с brand-цветами, без анимированных радужных обводок (раньше было мерцание yellow→orange→red в 3.5s loop). Одна кнопка справа: микрофон когда поле пусто, send когда есть текст. | [AiChatScreen.kt](app/src/main/java/com/spanishapp/ui/chat/AiChatScreen.kt) |
+| 🐛 **Нестабильность ответов ИИ** — race condition: `streamingText` обнулялся ДО того как Room flow эмитил INSERT финального assistant сообщения. Юзер видел мигание (стрим пропал, финальное ещё не появилось 100-300ms). Фикс: ждём в send() пока messages.size увеличится на 2 (user + assistant) с deadline 1 сек. | AiChatViewModel.send() |
+| 🌍 4 локализации `chat_send_cd` (ru/en/uk/es) | strings.xml × 4 |
+
 ### v1.18.0 — Sleep Timer + Settings cleanup (2026-05-19)
 
 | Что | Файлы |

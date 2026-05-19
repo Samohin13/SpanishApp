@@ -22,6 +22,7 @@
     <string name="hint_bank_label">Підказки</string>
     <string name="hint_consume_one">Підказка</string>
     <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
+    <string name="chat_send_cd">Надіслати</string>
     <string name="widget_description">Слово дня іспанською</string>
 
     <!-- Google Sign-In Web Client ID -->

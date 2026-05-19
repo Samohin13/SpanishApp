@@ -813,6 +813,7 @@
     <string name="chat_quick_check">Проверь грамматику</string>
     <string name="chat_quick_practice">Давай попрактикуем</string>
     <string name="chat_voice_input_cd">Голосовой ввод</string>
+    <string name="chat_send_cd">Отправить</string>
 
     <!-- ═══════════════════════════════════════════════════════
          Auth / Onboarding screens — вынесены из хардкода в Kotlin.

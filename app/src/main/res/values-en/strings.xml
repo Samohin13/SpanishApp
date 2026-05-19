@@ -21,6 +21,7 @@
     <string name="hint_bank_label">Hints</string>
     <string name="hint_consume_one">Hint</string>
     <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
+    <string name="chat_send_cd">Send</string>
 
     <!-- ── Bottom navigation ── -->
     <string name="nav_home">Home</string>

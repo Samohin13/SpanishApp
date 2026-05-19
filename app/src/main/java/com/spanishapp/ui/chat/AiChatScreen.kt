@@ -136,6 +136,12 @@ class AiChatViewModel @Inject constructor(
                 _isSending.value = false
                 return@launch
             }
+            // v1.18.1 (BUG: AI Chat нестабильность):
+            // Запоминаем количество сообщений ДО отправки, чтобы потом дождаться
+            // пока Room flow эмитит обновление messages с финальным assistant
+            // сообщением. Без этого было мигание: streamingText очищался ДО
+            // того как messages обновлялся → юзер видел пропажу ответа на 100-300ms.
+            val messageCountBefore = messages.value.size
             try {
                 repo.streamMessage(text.trim(), sessionId, theme.systemPromptExtra).collect { progressive ->
                     // Strip the trailing CORRECTIONS_JSON marker for nicer display
@@ -145,6 +151,16 @@ class AiChatViewModel @Inject constructor(
                 }
                 // Инкремент счётчика только после успешного завершения стрима.
                 limiter.increment()
+                // Ждём пока Room flow пропустит INSERT assistant сообщения
+                // (Repository.streamMessage делает INSERT после flow). Если
+                // за 1 сек не дождались — продолжаем (DB issue, не блокируем UX).
+                val deadline = System.currentTimeMillis() + 1000L
+                while (
+                    messages.value.size <= messageCountBefore + 1 && // ждём user + assistant
+                    System.currentTimeMillis() < deadline
+                ) {
+                    kotlinx.coroutines.delay(20)
+                }
             } catch (e: Exception) {
                 _error.value = when {
                     e.message?.contains("401") == true -> appContext.getString(R.string.chat_error_invalid_key)
@@ -408,95 +424,40 @@ fun AiChatScreen(
                 }
             }
 
-            // Animated AI-style gradient border (yellow → orange → red, looping).
-            // Using infiniteTransition phase shift to animate the gradient angle.
-            // Seamless gradient loop: phase oscillates 0→1→0 (Reverse), so the
-            // gradient drifts left-then-right with no visible "jump" reset.
-            val infiniteTransition = androidx.compose.animation.core.rememberInfiniteTransition(label = "ai_border")
-            val phase by infiniteTransition.animateFloat(
-                initialValue = 0f,
-                targetValue = 1f,
+            // v1.18.1: Telegram/WhatsApp-style input bar — без анимированных
+            // обводок (раньше юзер видел постоянное мерцание yellow→orange→red).
+            // Чистый surface фон + округлый pill-input + одна кнопка справа
+            // (микрофон когда пусто, send когда есть текст).
+            val sendActive = input.isNotBlank()
+            // Pulse для активного recording — единственная анимация в баре.
+            val micPulse by androidx.compose.animation.core.rememberInfiniteTransition(label = "mic_pulse").animateFloat(
+                initialValue = 1f,
+                targetValue = 1.18f,
                 animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-                    animation = androidx.compose.animation.core.tween(3500, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+                    animation = androidx.compose.animation.core.tween(550, easing = androidx.compose.animation.core.LinearEasing),
                     repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
                 ),
-                label = "ai_border_phase"
-            )
-            val aiColors = listOf(
-                Color(0xFFFFD600), // yellow
-                Color(0xFFFF9800), // orange
-                Color(0xFFFF3D00), // red
-                Color(0xFFFF9800), // orange
-                Color(0xFFFFD600)  // yellow (loop seamlessly)
+                label = "mic_pulse_anim"
             )
 
             Surface(
-                // tonalElevation overlays primary tint in M3 dark = brown.
-                // Use shadowElevation only for the soft drop-shadow.
-                shadowElevation = 8.dp,
-                color = MaterialTheme.colorScheme.surfaceContainerHighest
+                shadowElevation = 4.dp,
+                color = MaterialTheme.colorScheme.surface,
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 12.dp)
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
                         .navigationBarsPadding()
                         .imePadding(),
                     verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    // ── Mic button — voice input via SpanishSpeechRecognizer.
-                    val micPulse by androidx.compose.animation.core.rememberInfiniteTransition(label = "mic_pulse").animateFloat(
-                        initialValue = 1f,
-                        targetValue = 1.18f,
-                        animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-                            animation = androidx.compose.animation.core.tween(550, easing = androidx.compose.animation.core.LinearEasing),
-                            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
-                        ),
-                        label = "mic_pulse_anim"
-                    )
-                    IconButton(
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            launchVoiceInput()
-                        },
-                        enabled = !isSending && !isListening,
-                        modifier = Modifier
-                            .size(48.dp)
-                            .scale(if (isListening) micPulse else 1f)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Mic,
-                            contentDescription = stringResource(com.spanishapp.R.string.chat_voice_input_cd),
-                            tint = if (isListening) Color(0xFFFF3D00) else MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(26.dp)
-                        )
-                    }
-
-                    // Animated gradient border around the text field.
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .drawBehind {
-                                val borderWidth = 1.5.dp.toPx()
-                                val cornerRadius = androidx.compose.ui.geometry.CornerRadius(24.dp.toPx())
-                                val brush = Brush.linearGradient(
-                                    colors = aiColors,
-                                    start = androidx.compose.ui.geometry.Offset(
-                                        x = size.width * (phase - 0.5f),
-                                        y = 0f
-                                    ),
-                                    end = androidx.compose.ui.geometry.Offset(
-                                        x = size.width * (phase + 0.5f),
-                                        y = size.height
-                                    )
-                                )
-                                drawRoundRect(
-                                    brush = brush,
-                                    cornerRadius = cornerRadius,
-                                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = borderWidth)
-                                )
-                            }
+                    // ── Pill-input: серый округлый container, без border ──
+                    Surface(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(24.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     ) {
                         OutlinedTextField(
                             value = input,
@@ -504,72 +465,68 @@ fun AiChatScreen(
                             placeholder = {
                                 Text(
                                     androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder),
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             },
-                            textStyle = androidx.compose.ui.text.TextStyle(color = MaterialTheme.colorScheme.onSurface),
+                            textStyle = androidx.compose.ui.text.TextStyle(
+                                color = MaterialTheme.colorScheme.onSurface,
+                            ),
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(24.dp),
                             maxLines = 5,
                             enabled = !isSending,
                             colors = OutlinedTextFieldDefaults.colors(
-                                // Hide the default OutlinedTextField border — we draw our own animated one.
                                 unfocusedBorderColor = Color.Transparent,
                                 focusedBorderColor = Color.Transparent,
                                 disabledBorderColor = Color.Transparent,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
                                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                                 unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                disabledTextColor = MaterialTheme.colorScheme.onSurface
-                            )
+                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                            ),
                         )
                     }
 
-                    // Send button with the same animated gradient ring (when idle).
-                    val sendActive = input.isNotBlank()
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .drawBehind {
-                                val borderWidth = 1.5.dp.toPx()
-                                val brush = Brush.linearGradient(
-                                    colors = aiColors,
-                                    start = androidx.compose.ui.geometry.Offset(
-                                        x = size.width * (phase - 0.5f),
-                                        y = 0f
-                                    ),
-                                    end = androidx.compose.ui.geometry.Offset(
-                                        x = size.width * (phase + 0.5f),
-                                        y = size.height
-                                    )
-                                )
-                                drawCircle(
-                                    brush = brush,
-                                    radius = (size.minDimension - borderWidth) / 2f,
-                                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = borderWidth)
-                                )
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        FloatingActionButton(
-                            onClick = {
+                    // ── Кнопка действия: микрофон или send (как в Telegram) ──
+                    val (action, icon, cd) = when {
+                        sendActive -> Triple(
+                            {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 vm.send(input)
                                 input = ""
                             },
-                            containerColor = if (sendActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest,
-                            contentColor = if (sendActive) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(44.dp),
-                            shape = CircleShape,
-                            elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
-                        ) {
-                            if (isSending) {
-                                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
-                            } else {
-                                Icon(Icons.AutoMirrored.Filled.Send, null, modifier = Modifier.size(20.dp))
-                            }
+                            Icons.AutoMirrored.Filled.Send,
+                            stringResource(com.spanishapp.R.string.chat_send_cd),
+                        )
+                        else -> Triple(
+                            {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                launchVoiceInput()
+                            },
+                            Icons.Default.Mic,
+                            stringResource(com.spanishapp.R.string.chat_voice_input_cd),
+                        )
+                    }
+                    FloatingActionButton(
+                        onClick = { if (!isSending && (sendActive || !isListening)) action() },
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .scale(if (isListening && !sendActive) micPulse else 1f),
+                        shape = CircleShape,
+                        elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
+                    ) {
+                        if (isSending) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                strokeWidth = 2.dp,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        } else {
+                            Icon(icon, contentDescription = cd, modifier = Modifier.size(22.dp))
                         }
                     }
                 }
