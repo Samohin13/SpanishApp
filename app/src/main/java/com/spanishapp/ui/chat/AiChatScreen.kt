@@ -239,7 +239,12 @@ class AiChatViewModel @Inject constructor(
         }
     }
 
-    fun speak(text: String) = viewModelScope.launch { tts.speak(text) }
+    /**
+     * v1.18.15: для AI Chat читаем ответ ИИ ЦЕЛИКОМ — русские пояснения
+     * через ru-RU voice, испанские слова через выбранный es-ES voice.
+     * fullMixed=true переключает локаль между сегментами.
+     */
+    fun speak(text: String) = viewModelScope.launch { tts.speak(text, fullMixed = true) }
 
     /** v1.18.4: real-time amplitude от mic для waveform visualizer. */
     val voiceAmplitude: StateFlow<Float> = stt.rmsDb

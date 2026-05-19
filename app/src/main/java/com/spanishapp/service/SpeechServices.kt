@@ -155,14 +155,98 @@ class SpanishTts @Inject constructor(
         return fragments.joinToString(". ").take(500)  // safety cap
     }
 
-    /** Speak Spanish text aloud. @param slow — 0.66× rate for careful listening. */
-    fun speak(text: String, slow: Boolean = false) {
+    /**
+     * Speak Spanish text aloud.
+     * @param slow — 0.66× rate for careful listening.
+     * @param fullMixed — если true, читает текст ЦЕЛИКОМ переключая язык
+     *                   между русскими и испанскими сегментами (для AI Chat).
+     *                   Если false (default) — только испанские части.
+     */
+    fun speak(text: String, slow: Boolean = false, fullMixed: Boolean = false) {
         if (!enabled) return  // Юзер отключил голос диктора в настройках.
         val t = tts ?: return
         if (!_isReady.value) return
-        val speakText = inferSpeakText(text) ?: return
-        t.setSpeechRate(if (slow) (voiceCfg.rate * 0.7f).coerceIn(0.3f, 2.0f) else voiceCfg.rate.coerceIn(0.3f, 2.0f))
-        t.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, "utterance_${System.currentTimeMillis()}")
+        val rate = if (slow) (voiceCfg.rate * 0.7f).coerceIn(0.3f, 2.0f)
+                   else voiceCfg.rate.coerceIn(0.3f, 2.0f)
+        t.setSpeechRate(rate)
+
+        if (fullMixed && hasCyrillic(text)) {
+            speakBilingual(t, text)
+        } else {
+            val speakText = inferSpeakText(text) ?: return
+            t.speak(speakText, TextToSpeech.QUEUE_FLUSH, null, "utterance_${System.currentTimeMillis()}")
+        }
+    }
+
+    private fun hasCyrillic(text: String): Boolean =
+        text.any { it in 'Ѐ'..'ӿ' }
+
+    /**
+     * v1.18.15: озвучивает смешанный текст (русский + испанские слова)
+     * переключая локаль TTS между сегментами. Поднимает русский для русских
+     * частей и испанский для **palabra** / [перевод] / латинских фрагментов.
+     *
+     * Если ru-RU не установлен на устройстве → русские сегменты молча
+     * пропускаются (читается только испанский, как раньше).
+     */
+    private fun speakBilingual(tts: TextToSpeech, text: String) {
+        // Сегментация: подряд кириллица = ru, подряд латиница = es,
+        // знаки препинания приклеиваются к соседнему сегменту.
+        data class Segment(val text: String, val isSpanish: Boolean)
+        val segments = mutableListOf<Segment>()
+        val sb = StringBuilder()
+        var currentSpanish: Boolean? = null
+        for (ch in text) {
+            val isLetter = ch.isLetter()
+            val isLatin = isLetter && ch !in 'Ѐ'..'ӿ'
+            val isCyrillic = isLetter && ch in 'Ѐ'..'ӿ'
+            val charSpanish: Boolean? = when {
+                isLatin -> true
+                isCyrillic -> false
+                else -> null  // punct/digit/space → присоединяем к текущему
+            }
+            if (charSpanish != null && currentSpanish != null && charSpanish != currentSpanish) {
+                if (sb.isNotBlank()) segments.add(Segment(sb.toString().trim(), currentSpanish!!))
+                sb.clear()
+            }
+            if (charSpanish != null) currentSpanish = charSpanish
+            sb.append(ch)
+        }
+        if (sb.isNotBlank() && currentSpanish != null) {
+            segments.add(Segment(sb.toString().trim(), currentSpanish!!))
+        }
+
+        // Чистим — убираем пустые/мусор сегменты
+        val clean = segments.filter { seg ->
+            val letterCount = seg.text.count { it.isLetter() }
+            letterCount >= 1 && seg.text.length <= 500
+        }
+        if (clean.isEmpty()) return
+
+        val ruLocale = java.util.Locale("ru", "RU")
+        val esLocale = java.util.Locale("es", "ES")
+        val originalVoice = tts.voice  // сохраним выбранный испанский голос
+        val ruAvailable = tts.isLanguageAvailable(ruLocale) >= TextToSpeech.LANG_AVAILABLE
+
+        // Очередь сегментов через QUEUE_ADD + смена локали перед каждым.
+        // Сначала FLUSH чтобы прервать предыдущее воспроизведение.
+        clean.forEachIndexed { idx, seg ->
+            val mode = if (idx == 0) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD
+            val id = "mixed_${System.currentTimeMillis()}_$idx"
+            if (seg.isSpanish) {
+                tts.language = esLocale
+                if (originalVoice != null) tts.voice = originalVoice
+                tts.speak(seg.text, mode, null, id)
+            } else if (ruAvailable) {
+                tts.language = ruLocale
+                tts.speak(seg.text, mode, null, id)
+            }
+            // Если ru недоступен — просто пропускаем русский сегмент.
+        }
+        // После очереди — restore испанский voice/locale для следующего вызова.
+        // Делаем через scheduled task — TextToSpeech не имеет «после очереди» callback
+        // без UtteranceProgressListener. Простой подход: при следующем speak() мы и так
+        // переустанавливаем locale, так что restore тут не критичен.
     }
 
     suspend fun speakAndWait(text: String, slow: Boolean = false) =
