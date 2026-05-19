@@ -33,10 +33,13 @@ enum class TutorPersonality(
         displayName = "Строгий",
         emoji = "🎓",
         description = "Формально, точно, исправляет каждую мелочь",
-        esVoiceMale = "es-ES-Neural2-B",
+        // v1.18.26: Polyglot-1 — авторитетный мужской премиум.
+        // Wavenet-B (ru) — традиционный «учительский» мужской.
+        esVoiceMale = "es-ES-Polyglot-1",
         ruVoiceMale = "ru-RU-Wavenet-B",
-        esVoiceFemale = "es-ES-Neural2-A",
-        ruVoiceFemale = "ru-RU-Wavenet-E",
+        // Neural2-E — зрелая женская, академический тон.
+        esVoiceFemale = "es-ES-Neural2-E",
+        ruVoiceFemale = "ru-RU-Wavenet-C",
         speed = 0.92f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — СТРОГИЙ:
@@ -54,10 +57,11 @@ enum class TutorPersonality(
         displayName = "Вежливый",
         emoji = "🤝",
         description = "Сдержанно, мягкие подсказки, на «ты»",
-        esVoiceMale = "es-ES-Neural2-F",
-        ruVoiceMale = "ru-RU-Wavenet-D",
-        esVoiceFemale = "es-ES-Neural2-C",
-        ruVoiceFemale = "ru-RU-Wavenet-E",
+        // Wavenet engine — другой тембр чем Neural2, спокойный
+        esVoiceMale = "es-ES-Wavenet-B",
+        ruVoiceMale = "ru-RU-Standard-D",
+        esVoiceFemale = "es-ES-Wavenet-C",
+        ruVoiceFemale = "ru-RU-Standard-E",
         speed = 1.0f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ВЕЖЛИВЫЙ:
@@ -74,6 +78,7 @@ enum class TutorPersonality(
         displayName = "Дружелюбный",
         emoji = "😊",
         description = "Легко, с шутками, сленг — ок",
+        // Neural2 пара — молодой энергичный звук
         esVoiceMale = "es-ES-Neural2-B",
         ruVoiceMale = "ru-RU-Wavenet-D",
         esVoiceFemale = "es-ES-Neural2-D",
@@ -95,10 +100,11 @@ enum class TutorPersonality(
         displayName = "Тёплый",
         emoji = "💕",
         description = "Эмоционально, поэтично, для души",
+        // Studio voices — премиум, характерные, эмоциональные
         esVoiceMale = "es-ES-Studio-C",
-        ruVoiceMale = "ru-RU-Wavenet-D",
+        ruVoiceMale = "ru-RU-Standard-B",
         esVoiceFemale = "es-ES-Studio-F",
-        ruVoiceFemale = "ru-RU-Wavenet-C",
+        ruVoiceFemale = "ru-RU-Wavenet-E",
         speed = 0.95f,
         toneInstructions = """
             СТИЛЬ ОБЩЕНИЯ — ТЁПЛЫЙ:

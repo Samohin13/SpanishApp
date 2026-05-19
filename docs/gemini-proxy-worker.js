@@ -37,17 +37,30 @@ const ALLOWED_MODELS = [
   "gemini-flash-lite-latest",
 ];
 
-// v1.18.17: Google Cloud TTS voices whitelist (нейронные / wavenet).
+// v1.18.26: расширенный whitelist — Neural2 + Studio + Wavenet + Standard
+// + Polyglot для МАКСИМАЛЬНОЙ уникальности голосов между персонажами.
+// Раньше все female Neural2 (A/C/D/E) звучали почти одинаково; добавили
+// Wavenet/Standard/Studio для phonetic diversity.
 const ALLOWED_TTS_VOICES = [
-  // es-ES Neural2 (премиум нейронные, бесплатно 1M chars/мес)
+  // es-ES Neural2
   "es-ES-Neural2-A", "es-ES-Neural2-B", "es-ES-Neural2-C",
   "es-ES-Neural2-D", "es-ES-Neural2-E", "es-ES-Neural2-F",
-  // es-ES Studio (Chirp) — премиум, multilingual
+  // es-ES Studio (Chirp) — премиум, характерные
   "es-ES-Studio-C", "es-ES-Studio-F",
-  // ru-RU Wavenet (Neural2 для ru пока не доступен)
+  // es-ES Wavenet — другой тембр чем Neural2
+  "es-ES-Wavenet-B", "es-ES-Wavenet-C", "es-ES-Wavenet-D",
+  // es-ES Standard — ещё другой звук
+  "es-ES-Standard-A", "es-ES-Standard-B",
+  "es-ES-Standard-C", "es-ES-Standard-D",
+  // es-ES Polyglot — multilingual мужской премиум
+  "es-ES-Polyglot-1",
+  // ru-RU Wavenet
   "ru-RU-Wavenet-A", "ru-RU-Wavenet-B",
   "ru-RU-Wavenet-C", "ru-RU-Wavenet-D", "ru-RU-Wavenet-E",
-  // es-US Neural2 (латино-американский)
+  // ru-RU Standard — для разных тембров между персонажами
+  "ru-RU-Standard-A", "ru-RU-Standard-B",
+  "ru-RU-Standard-C", "ru-RU-Standard-D", "ru-RU-Standard-E",
+  // es-US Neural2 (латино)
   "es-US-Neural2-A", "es-US-Neural2-B", "es-US-Neural2-C",
 ];
 
