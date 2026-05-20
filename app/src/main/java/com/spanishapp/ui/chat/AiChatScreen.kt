@@ -567,8 +567,8 @@ fun AiChatScreen(
                     Surface(
                         modifier = Modifier
                             .weight(1f)
-                            .heightIn(min = 48.dp),
-                        shape = RoundedCornerShape(24.dp),
+                            .heightIn(min = 44.dp),
+                        shape = RoundedCornerShape(22.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,
                         shadowElevation = 2.dp,
                     ) {
@@ -577,37 +577,39 @@ fun AiChatScreen(
                                 amplitude = voiceAmplitude,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(56.dp),
+                                    .height(44.dp),
                             )
                         } else {
-                            OutlinedTextField(
-                                value = input,
-                                onValueChange = { input = it },
-                                placeholder = {
+                            // v1.18.40: BasicTextField вместо OutlinedTextField — у того
+                            // жёсткий min-height 56dp. Сейчас pill тонкий как в WhatsApp.
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 18.dp, vertical = 12.dp),
+                                contentAlignment = Alignment.CenterStart,
+                            ) {
+                                if (input.isEmpty()) {
                                     Text(
-                                        androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder),
+                                        text = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder),
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontSize = 15.sp,
                                     )
-                                },
-                                textStyle = androidx.compose.ui.text.TextStyle(
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                ),
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(24.dp),
-                                maxLines = 5,
-                                enabled = !isSending,
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedBorderColor = Color.Transparent,
-                                    focusedBorderColor = Color.Transparent,
-                                    disabledBorderColor = Color.Transparent,
-                                    unfocusedContainerColor = Color.Transparent,
-                                    focusedContainerColor = Color.Transparent,
-                                    disabledContainerColor = Color.Transparent,
-                                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                                ),
-                            )
+                                }
+                                androidx.compose.foundation.text.BasicTextField(
+                                    value = input,
+                                    onValueChange = { input = it },
+                                    enabled = !isSending,
+                                    textStyle = androidx.compose.ui.text.TextStyle(
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontSize = 15.sp,
+                                    ),
+                                    cursorBrush = androidx.compose.ui.graphics.SolidColor(
+                                        MaterialTheme.colorScheme.primary
+                                    ),
+                                    maxLines = 5,
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
+                            }
                         }
                     }
 
@@ -636,7 +638,7 @@ fun AiChatScreen(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(44.dp)
                             .scale(if (isListening && !sendActive) micPulse else 1f),
                         shape = CircleShape,
                         elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
