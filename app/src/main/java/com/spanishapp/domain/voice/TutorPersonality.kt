@@ -19,61 +19,61 @@ object PremiumVoiceCatalog {
 
     val RU_VOICES = listOf(
         Voice(
-            id = "ru-RU-DmitryNeural",
+            id = "ru-RU-Wavenet-B",
             displayName = "Дмитрий",
-            description = "Зрелый, формальный, спокойный",
+            description = "Низкий, спокойный, формальный",
             isMale = true,
         ),
         Voice(
-            id = "en-US-AndrewMultilingualNeural",
-            displayName = "Андрей",
-            description = "Тёплый, деловой, дружелюбный",
+            id = "ru-RU-Wavenet-D",
+            displayName = "Михаил",
+            description = "Энергичный, средний тембр",
             isMale = true,
         ),
         Voice(
-            id = "ru-RU-SvetlanaNeural",
-            displayName = "Светлана",
-            description = "Молодая, профессиональная, чёткая",
+            id = "ru-RU-Wavenet-A",
+            displayName = "Анна",
+            description = "Живая, бодрая, средне-высокая",
             isMale = false,
         ),
         Voice(
-            id = "ru-RU-DariyaNeural",
-            displayName = "Дария",
-            description = "Универсальная, живая, бодрая",
+            id = "ru-RU-Wavenet-C",
+            displayName = "Мария",
+            description = "Тёплая, мягкая, чуть ниже",
             isMale = false,
         ),
     )
 
     val ES_VOICES = listOf(
         Voice(
-            id = "es-ES-AlvaroNeural",
-            displayName = "Álvaro",
-            description = "Стандартный кастильский мужской",
+            id = "es-ES-Polyglot-1",
+            displayName = "Carlos",
+            description = "Глубокий, многоязычный — премиум",
             isMale = true,
         ),
         Voice(
-            id = "es-ES-DarioNeural",
-            displayName = "Darío",
-            description = "Тёплый, мягкий мужской",
+            id = "es-ES-Neural2-B",
+            displayName = "Pablo",
+            description = "Молодой, естественный",
             isMale = true,
         ),
         Voice(
-            id = "es-ES-ElviraNeural",
-            displayName = "Elvira",
-            description = "Зрелая, ясная женская",
+            id = "es-ES-Neural2-D",
+            displayName = "Lucía",
+            description = "Ясная, живая, средне-высокая",
             isMale = false,
         ),
         Voice(
-            id = "es-ES-XimenaNeural",
-            displayName = "Ximena",
-            description = "Молодая, энергичная женская",
+            id = "es-ES-Wavenet-C",
+            displayName = "Sofía",
+            description = "Мягкая, тёплая, чуть ниже",
             isMale = false,
         ),
     )
 
-    // Defaults — на случай если в DataStore ещё ничего нет
-    const val DEFAULT_RU_VOICE = "ru-RU-SvetlanaNeural"
-    const val DEFAULT_ES_VOICE = "es-ES-ElviraNeural"
+    // Defaults — friendly female для нового юзера
+    const val DEFAULT_RU_VOICE = "ru-RU-Wavenet-A"
+    const val DEFAULT_ES_VOICE = "es-ES-Neural2-D"
 
     fun ruVoiceById(id: String?): Voice =
         RU_VOICES.firstOrNull { it.id == id } ?: RU_VOICES.firstOrNull { it.id == DEFAULT_RU_VOICE }!!
