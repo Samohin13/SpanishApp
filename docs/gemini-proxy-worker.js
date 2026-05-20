@@ -187,6 +187,14 @@ export default {
       if (upstream.status !== 429 && upstream.status !== 503) break;
     }
 
+    // v1.18.34: если все модели исчерпали квоту → добавим header с UTC
+    // timestamp следующего сброса (полночь Pacific Time → UTC epoch).
+    // App покажет юзеру относительное время «через Nч Mм» на его локали
+    // независимо от его часового пояса.
+    const quotaResetHeader = (upstream.status === 429)
+      ? { "X-Quota-Reset-Utc": String(nextPacificMidnightUtcMs()) }
+      : {};
+
     if (isStream) {
       return new Response(upstream.body, {
         status: upstream.status,
@@ -194,6 +202,7 @@ export default {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
           "X-Used-Model": usedModel,
+          ...quotaResetHeader,
           ...corsHeaders(),
         },
       });
@@ -205,6 +214,7 @@ export default {
       headers: {
         "Content-Type": "application/json",
         "X-Used-Model": usedModel,
+        ...quotaResetHeader,
         ...corsHeaders(),
       },
     });
@@ -304,6 +314,28 @@ function buildFallbackChain(primaryModel) {
     if (m !== primaryModel) chain.push(m);
   }
   return chain;
+}
+
+// v1.18.34: следующая полночь Pacific Time в UTC ms (Gemini сбрасывает
+// квоты в 00:00 PT, что разный «местный час» в Astana/Tbilisi/Valencia
+// — клиент получает абсолютный UTC timestamp и форматирует под себя).
+function nextPacificMidnightUtcMs() {
+  const now = new Date();
+  // PT = UTC-8 (PST) или UTC-7 (PDT). Берём более широкий offset (PST=UTC-8)
+  // — даже если сейчас PDT, юзер увидит чуть больший resetIn, не критично.
+  const PT_OFFSET_HOURS = 8;
+  // Текущий момент в "Pacific local time"
+  const ptNowMs = now.getTime() - PT_OFFSET_HOURS * 3600 * 1000;
+  const ptNow = new Date(ptNowMs);
+  // Следующая полночь PT
+  const ptMidnight = new Date(Date.UTC(
+    ptNow.getUTCFullYear(),
+    ptNow.getUTCMonth(),
+    ptNow.getUTCDate() + 1,
+    0, 0, 0, 0
+  ));
+  // Возвращаем обратно в UTC
+  return ptMidnight.getTime() + PT_OFFSET_HOURS * 3600 * 1000;
 }
 
 function corsHeaders() {

@@ -88,7 +88,11 @@ class AiChatRepository @Inject constructor(
          * сообщение. Никаких raw JSON, кодов, stack traces — короткая
          * человеческая фраза которую можно показать в чате.
          */
-        internal fun humanizeError(code: Int, body: String): String {
+        internal fun humanizeError(
+            code: Int,
+            body: String,
+            quotaResetUtcMs: Long? = null,
+        ): String {
             val bodyLower = body.lowercase()
             return when {
                 // Ключ зарепортен/заблокирован Google
@@ -97,9 +101,10 @@ class AiChatRepository @Inject constructor(
                     "ИИ-репетитор временно недоступен — обновляем ключ доступа. " +
                     "Попробуй через несколько минут."
 
-                // Превышение квоты
-                code == 429 || bodyLower.contains("quota") ->
-                    "Слишком много запросов сейчас. Подожди минуту и попробуй снова 🙏"
+                // Превышение квоты Gemini — все fallback модели исчерпаны
+                code == 429 || bodyLower.contains("quota") ||
+                bodyLower.contains("resource_exhausted") ->
+                    formatQuotaError(quotaResetUtcMs)
 
                 // Permission / authorization issues
                 code == 401 || code == 403 ->
@@ -113,6 +118,27 @@ class AiChatRepository @Inject constructor(
                 else ->
                     "Не удалось получить ответ от ИИ. Попробуй ещё раз через минуту."
             }
+        }
+
+        /**
+         * v1.18.34: форматирует «сбросится через Xч Yм» от UTC timestamp.
+         * Локальное время юзера вычисляется автоматически (System.currentTimeMillis()
+         * сравнивается с UTC reset moment — разница не зависит от часового пояса).
+         */
+        private fun formatQuotaError(quotaResetUtcMs: Long?): String {
+            if (quotaResetUtcMs == null || quotaResetUtcMs <= System.currentTimeMillis()) {
+                return "Сегодня лимит ИИ-чата исчерпан. Попробуй чуть позже 🙏"
+            }
+            val diffMs = quotaResetUtcMs - System.currentTimeMillis()
+            val totalMinutes = (diffMs / 60_000).toInt()
+            val hours = totalMinutes / 60
+            val minutes = totalMinutes % 60
+            val relative = when {
+                hours >= 1 && minutes > 0 -> "${hours}ч ${minutes}м"
+                hours >= 1 -> "${hours}ч"
+                else -> "${minutes}м"
+            }
+            return "Сегодня лимит ИИ-чата исчерпан. Сбросится через $relative 🙏"
         }
 
         // v1.18.4: prompt сокращён ~60% для уменьшения latency first-token.
@@ -204,7 +230,8 @@ class AiChatRepository @Inject constructor(
 
             if (!response.isSuccessful) {
                 val errBody = response.body?.string() ?: ""
-                return@withContext Result.failure(Exception(humanizeError(response.code, errBody)))
+                val quotaReset = response.header("X-Quota-Reset-Utc")?.toLongOrNull()
+                return@withContext Result.failure(Exception(humanizeError(response.code, errBody, quotaReset)))
             }
 
             // v1.17.5: safe-navigation. Раньше было 7×!! — крашилось NPE/IOOBE
@@ -277,7 +304,8 @@ class AiChatRepository @Inject constructor(
         val response = okHttpClient.newCall(request).execute()
         if (!response.isSuccessful) {
             val errBody = response.body?.string() ?: ""
-            throw Exception(humanizeError(response.code, errBody))
+            val quotaReset = response.header("X-Quota-Reset-Utc")?.toLongOrNull()
+            throw Exception(humanizeError(response.code, errBody, quotaReset))
         }
 
         val source = response.body?.source()
