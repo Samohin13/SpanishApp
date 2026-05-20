@@ -552,23 +552,25 @@ fun AiChatScreen(
                 label = "mic_pulse_anim"
             )
 
-            Surface(
-                shadowElevation = 4.dp,
-                color = MaterialTheme.colorScheme.surface,
+            // v1.18.39: input bar теперь "плавает" на обоях — без outer Surface.
+            // Pill и кнопка имеют свой собственный фон, поверх wallpaper'а.
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .imePadding()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .imePadding()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
                     // ── Pill-input: TextField или waveform когда listening ──
                     Surface(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .heightIn(min = 48.dp),
                         shape = RoundedCornerShape(24.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        shadowElevation = 2.dp,
                     ) {
                         if (isListening) {
                             VoiceWaveform(
@@ -650,7 +652,6 @@ fun AiChatScreen(
                         }
                     }
                 }
-            }
         }
     }
 
