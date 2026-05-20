@@ -564,8 +564,8 @@ fun AiChatScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .navigationBarsPadding()
-                        .padding(horizontal = 10.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                        .padding(start = 10.dp, end = 10.dp, top = 4.dp, bottom = 2.dp),
+                    verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     // ── Pill-input: TextField или waveform когда listening ──
