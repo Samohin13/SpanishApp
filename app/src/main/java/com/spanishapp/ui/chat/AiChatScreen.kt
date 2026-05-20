@@ -428,6 +428,7 @@ fun AiChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .imePadding()
         ) {
             ChatWallpaperBackground(
                 wallpaper = wallpaper,
