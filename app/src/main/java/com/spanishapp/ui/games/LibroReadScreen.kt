@@ -678,7 +678,10 @@ fun LibroReadScreen(
 
     // Останавливаем TTS при выходе с экрана
     DisposableEffect(tts) {
-        onDispose { tts?.stop() }
+        onDispose {
+            tts?.stop()
+            com.spanishapp.service.AppTtsRouter.stop()
+        }
     }
 
     // STT для «Читать вслух»
@@ -839,7 +842,9 @@ fun LibroReadScreen(
                             OutlinedButton(
                                 onClick = {
                                     if (isSpeaking) {
-                                        tts?.stop(); isSpeaking = false
+                                        tts?.stop()
+                                        com.spanishapp.service.AppTtsRouter.stop()
+                                        isSpeaking = false
                                     } else {
                                         tts?.speakSpanish(libro.text.trim(), "libro_full")
                                         isSpeaking = true

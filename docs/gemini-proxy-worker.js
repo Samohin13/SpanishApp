@@ -56,9 +56,11 @@ const ALLOWED_TTS_VOICES = [
 ];
 
 // ── Rate limits ──
-const RPM_PER_IP = 30;
-const DAILY_PER_IP = 300;
-const DAILY_GLOBAL = 5000;
+// v1.18.32: подняты — TTS preview/курсы часто дёргают endpoint.
+// MP3 кэшируется на устройстве → реальный месячный трафик низкий.
+const RPM_PER_IP = 90;
+const DAILY_PER_IP = 2000;
+const DAILY_GLOBAL = 20000;
 
 const ipRpmBucket = new Map();
 const ipDailyBucket = new Map();
