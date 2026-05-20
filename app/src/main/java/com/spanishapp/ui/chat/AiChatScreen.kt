@@ -336,6 +336,7 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -530,8 +531,7 @@ fun AiChatScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .imePadding()
-                        .navigationBarsPadding()
-                        .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 4.dp),
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
