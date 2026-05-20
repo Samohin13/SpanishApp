@@ -350,6 +350,9 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        // v1.18.50: union включает ime → padding(scaffoldPadding) даёт
+        // корректный bottom без double-count nav bar при открытой клавиатуре.
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -428,7 +431,6 @@ fun AiChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .imePadding()
         ) {
             ChatWallpaperBackground(
                 wallpaper = wallpaper,
