@@ -158,7 +158,8 @@ class HomeViewModel @Inject constructor(
                 RoadmapData.units.firstNotNullOfOrNull { unit ->
                     val unitId = unit.id.toIntOrNull() ?: return@firstNotNullOfOrNull null
                     val nextIdx = unit.lessons.indices.firstOrNull { idx ->
-                        "u${unitId}_l${idx}" !in done
+                        val key = unit.lessons[idx].id ?: "u${unitId}_l${idx}"
+                        key !in done
                     } ?: return@firstNotNullOfOrNull null
                     ContinueLesson(
                         unitId       = unitId,
@@ -267,7 +268,8 @@ class HomeViewModel @Inject constructor(
             val unlocked = true
 
             val lessonsWithProgress = unit.lessons.mapIndexed { idx, lesson ->
-                lesson.copy(isCompleted = "u${unitId}_l${idx}" in completedKeys)
+                val key = lesson.id ?: "u${unitId}_l${idx}"
+                lesson.copy(isCompleted = key in completedKeys)
             }
 
             val completedCount = lessonsWithProgress.count { it.isCompleted }

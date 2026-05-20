@@ -96,7 +96,9 @@ fun LessonSessionScreen(
     com.spanishapp.ui.components.TrackStudyMinutes()
     val unit    = remember(unitId) { RoadmapData.units.getOrNull(unitId - 1) }
     val lesson  = remember(unit, lessonIndex) { unit?.lessons?.getOrNull(lessonIndex) }
-    val content = remember(unitId, lessonIndex) { LessonContentData.lessons["u${unitId}_l${lessonIndex}"] }
+    // Поддержка _5 уроков-вставок: lesson.id override'ит позиционный ключ.
+    val lessonKey = lesson?.id ?: "u${unitId}_l${lessonIndex}"
+    val content = remember(lessonKey) { LessonContentData.lessons[lessonKey] }
 
     if (unit == null || lesson == null || content == null) {
         LaunchedEffect(Unit) { navController.popBackStack() }
@@ -106,7 +108,7 @@ fun LessonSessionScreen(
     // Analytics — урок открыт. Срабатывает один раз на вход.
     LaunchedEffect(unitId, lessonIndex) {
         com.spanishapp.service.Analytics.lessonStarted(
-            lessonId = "u${unitId}_l${lessonIndex}",
+            lessonId = lessonKey,
             level = unit.cefrLevel,
         )
     }
@@ -121,7 +123,6 @@ fun LessonSessionScreen(
         if (authored.size >= 3) {
             authored
         } else {
-            val lessonKey = "u${unitId}_l${lessonIndex}"
             val generated = ExerciseGenerator.generate(lessonKey, content)
             authored + generated
         }
@@ -136,8 +137,8 @@ fun LessonSessionScreen(
     var showQuitDialog by remember { mutableStateOf(false) }
 
     // Theory overlay для этого урока (если есть теория)
-    val theoryContent = remember(unitId, lessonIndex) {
-        com.spanishapp.data.theory.TheoryContentData.byLessonId("u${unitId}_l${lessonIndex}")
+    val theoryContent = remember(lessonKey) {
+        com.spanishapp.data.theory.TheoryContentData.byLessonId(lessonKey)
     }
     var showTheoryOverlay by remember { mutableStateOf(false) }
     var theoryPulsing by remember { mutableStateOf(false) }

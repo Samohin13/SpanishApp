@@ -27,7 +27,10 @@ class LessonIntroViewModel @Inject constructor(
      */
     fun markLessonComplete(unitId: Int, lessonIndex: Int) {
         viewModelScope.launch {
-            val key = "u${unitId}_l${lessonIndex}"
+            // Поддержка _5 уроков-вставок: если у RoadmapLesson задан id —
+            // используем его; иначе fallback на позиционный ключ.
+            val lesson = RoadmapData.units.getOrNull(unitId - 1)?.lessons?.getOrNull(lessonIndex)
+            val key = lesson?.id ?: "u${unitId}_l${lessonIndex}"
 
             // ── Idempotency guard (фикс бага «1 урок → счётчик 3») ──
             // markLessonComplete вызывался из 5 мест (LessonSession, Intro,

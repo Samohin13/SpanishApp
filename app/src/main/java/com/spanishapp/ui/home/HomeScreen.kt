@@ -67,7 +67,14 @@ data class RoadmapLesson(
     val type: String,
     val category: String = "general",
     val isCompleted: Boolean = false,
-    val isPremium: Boolean = false
+    val isPremium: Boolean = false,
+    /**
+     * Override для lesson ID. Когда null → fallback на позиционный
+     * `"u${unitId}_l${lessonIndex}"`. Используется для уроков-вставок
+     * с суффиксом `_5` (например `u3_l5_5`), которые не вписываются
+     * в позиционную нумерацию.
+     */
+    val id: String? = null,
 )
 
 // ═══════════════════════════════════════════════════════════════

@@ -162,7 +162,7 @@ fun LessonIntroScreen(
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
                     val route = buildActivityRoute(lesson, unit.cefrLevel, unitId, lessonIndex)
-                    val lessonId = "u${unitId}_l${lessonIndex}"
+                    val lessonId = lesson.id ?: "u${unitId}_l${lessonIndex}"
                     val isCheckpoint = com.spanishapp.data.checkpoint.CheckpointContentData.byId(lessonId) != null
 
                     // v1.18.11 (BUG-025): для CHECKPOINT и CONTENT уроков — НЕ
@@ -214,7 +214,7 @@ private fun buildActivityRoute(
     lessonIndex: Int
 ): String {
     val cat = lesson.category
-    val lessonId = "u${unitId}_l${lessonIndex}"
+    val lessonId = lesson.id ?: "u${unitId}_l${lessonIndex}"
 
     // Если для этого урока есть checkpoint-сценарий — отправляем туда вместо обычной сессии.
     // Используется для всех 21 финалов блоков из xlsx (u1_l14, u4_l14, u8_l14 и т.д.).
