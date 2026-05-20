@@ -395,10 +395,17 @@ fun AiChatScreen(
             )
         }
     ) { padding ->
+        // v1.18.36: bottom inset не консьюмим из Scaffold — input Surface
+        // сам уходит под навбар (как в WhatsApp), а Row внутри respects
+        // nav inset через navigationBarsPadding.
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(
+                    top = padding.calculateTopPadding(),
+                    start = padding.calculateStartPadding(androidx.compose.ui.platform.LocalLayoutDirection.current),
+                    end = padding.calculateEndPadding(androidx.compose.ui.platform.LocalLayoutDirection.current),
+                )
         ) {
             Box(modifier = Modifier.weight(1f)) {
                 if (messages.isEmpty()) {
@@ -523,6 +530,7 @@ fun AiChatScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .imePadding()
+                        .navigationBarsPadding()
                         .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 4.dp),
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
