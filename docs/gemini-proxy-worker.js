@@ -307,13 +307,29 @@ async function handleTts(request, env) {
 // вернёт ошибку и клиент сделает fallback на Google.
 
 const EDGE_TTS_TOKEN = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
-// Cloudflare Workers fetch API использует https:// для WebSocket
-// connection (с Upgrade header), а не wss://.
-const EDGE_TTS_WSS = `https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${EDGE_TTS_TOKEN}`;
+
+// v1.18.30: Sec-MS-GEC token — Microsoft anti-abuse в 2024 году
+// требует подписанный SHA-256 от timestamp + секрета.
+async function generateSecMsGec() {
+  // Windows file time: 100-нс интервалов с 1601-01-01
+  let ticks = Math.floor((Date.now() / 1000 + 11644473600) * 10000000);
+  // Round down to nearest 5 minutes (3000000000 ticks)
+  ticks -= ticks % 3000000000;
+  const input = `${ticks}${EDGE_TTS_TOKEN}`;
+  const encoder = new TextEncoder();
+  const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(input));
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase();
+}
 
 async function edgeTtsSynthesize(text, voice, speed, pitch) {
-  // Открываем WebSocket к Microsoft endpoint
-  const resp = await fetch(EDGE_TTS_WSS, {
+  const secMsGec = await generateSecMsGec();
+  // Cloudflare Workers fetch использует https:// + Upgrade header для WS.
+  const url = `https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${EDGE_TTS_TOKEN}&Sec-MS-GEC=${secMsGec}&Sec-MS-GEC-Version=1-130.0.2849.68`;
+
+  const resp = await fetch(url, {
     headers: {
       "Upgrade": "websocket",
       "Pragma": "no-cache",
