@@ -37,32 +37,38 @@ const ALLOWED_MODELS = [
   "gemini-flash-lite-latest",
 ];
 
-// v1.18.26: расширенный whitelist — Neural2 + Studio + Wavenet + Standard
-// + Polyglot для МАКСИМАЛЬНОЙ уникальности голосов между персонажами.
-// Раньше все female Neural2 (A/C/D/E) звучали почти одинаково; добавили
-// Wavenet/Standard/Studio для phonetic diversity.
+// v1.18.29: голоса разделены на 2 провайдера:
+//  • Edge TTS (Azure Neural quality, free unofficial endpoint) — основной
+//  • Google Cloud TTS — fallback
+//
+// Воркер маршрутизирует по voice name: если в имени есть "Neural"
+// или "Multilingual" → Edge TTS, иначе → Google.
 const ALLOWED_TTS_VOICES = [
-  // es-ES Neural2
+  // ─── Edge TTS (Azure Neural) — production голоса ───────────────
+  "ru-RU-DmitryNeural", "ru-RU-SvetlanaNeural", "ru-RU-DariyaNeural",
+  "en-US-AndrewMultilingualNeural",  // multilingual мужской (говорит по-русски)
+  "es-ES-AlvaroNeural", "es-ES-ElviraNeural",
+  "es-ES-DarioNeural", "es-ES-XimenaNeural",
+  // ─── Google Cloud TTS — fallback / legacy ──────────────────────
   "es-ES-Neural2-A", "es-ES-Neural2-B", "es-ES-Neural2-C",
   "es-ES-Neural2-D", "es-ES-Neural2-E", "es-ES-Neural2-F",
-  // es-ES Studio (Chirp) — премиум, характерные
   "es-ES-Studio-C", "es-ES-Studio-F",
-  // es-ES Wavenet — другой тембр чем Neural2
   "es-ES-Wavenet-B", "es-ES-Wavenet-C", "es-ES-Wavenet-D",
-  // es-ES Standard — ещё другой звук
   "es-ES-Standard-A", "es-ES-Standard-B",
   "es-ES-Standard-C", "es-ES-Standard-D",
-  // es-ES Polyglot — multilingual мужской премиум
   "es-ES-Polyglot-1",
-  // ru-RU Wavenet
   "ru-RU-Wavenet-A", "ru-RU-Wavenet-B",
   "ru-RU-Wavenet-C", "ru-RU-Wavenet-D", "ru-RU-Wavenet-E",
-  // ru-RU Standard — для разных тембров между персонажами
   "ru-RU-Standard-A", "ru-RU-Standard-B",
   "ru-RU-Standard-C", "ru-RU-Standard-D", "ru-RU-Standard-E",
-  // es-US Neural2 (латино)
   "es-US-Neural2-A", "es-US-Neural2-B", "es-US-Neural2-C",
 ];
+
+// Edge TTS использует Azure Neural voices через free unofficial endpoint
+// который использует Microsoft Edge для "Read aloud" feature.
+function isEdgeTtsVoice(voice) {
+  return voice.includes("Neural") || voice.includes("Multilingual");
+}
 
 // ── Rate limits ──
 const RPM_PER_IP = 30;
@@ -229,10 +235,27 @@ async function handleTts(request, env) {
     return jsonError(400, `Voice ${voice} not allowed`);
   }
   const speed = Math.max(0.5, Math.min(2.0, Number(body.speed) || 1.0));
-  // v1.18.27: pitch для разных персонажей (-20..20 semitones).
   const pitch = Math.max(-20, Math.min(20, Number(body.pitch) || 0));
 
-  // languageCode = "es-ES" / "ru-RU" / "es-US" (первые 5 символов voice)
+  // v1.18.29: route Azure Neural voices → Edge TTS (free unofficial endpoint)
+  if (isEdgeTtsVoice(voice)) {
+    try {
+      const mp3 = await edgeTtsSynthesize(text, voice, speed, pitch);
+      return new Response(mp3, {
+        status: 200,
+        headers: {
+          "Content-Type": "audio/mpeg",
+          "Cache-Control": "public, max-age=86400",
+          ...corsHeaders(),
+        },
+      });
+    } catch (e) {
+      // Edge TTS failure → fallback на Google если возможно
+      return jsonError(502, `Edge TTS failed: ${(e.message || e).toString().substring(0, 200)}`);
+    }
+  }
+
+  // ─── Google Cloud TTS path ─────────────────────────────────────
   const languageCode = voice.substring(0, 5);
 
   const ttsBody = {
@@ -272,6 +295,140 @@ async function handleTts(request, env) {
       ...corsHeaders(),
     },
   });
+}
+
+// ────────────────────────────────────────────────────────────────
+//  Edge TTS — Azure Neural через unofficial Microsoft endpoint
+//  (тот же что использует Edge браузер для "Read aloud" feature)
+// ────────────────────────────────────────────────────────────────
+//
+// Бесплатно, без авторизации. Качество = Azure Neural (премиум).
+// Риск: Microsoft теоретически может прикрыть, в этом случае upstream
+// вернёт ошибку и клиент сделает fallback на Google.
+
+const EDGE_TTS_TOKEN = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
+const EDGE_TTS_WSS = `wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${EDGE_TTS_TOKEN}`;
+
+async function edgeTtsSynthesize(text, voice, speed, pitch) {
+  // Открываем WebSocket к Microsoft endpoint
+  const resp = await fetch(EDGE_TTS_WSS, {
+    headers: {
+      "Upgrade": "websocket",
+      "Pragma": "no-cache",
+      "Cache-Control": "no-cache",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Origin": "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold",
+    },
+  });
+  if (resp.status !== 101) {
+    throw new Error(`WS upgrade failed: HTTP ${resp.status}`);
+  }
+  const ws = resp.webSocket;
+  if (!ws) throw new Error("WS not available in response");
+  ws.accept();
+
+  const requestId = crypto.randomUUID().replace(/-/g, "");
+  const timestamp = new Date().toString();
+
+  return await new Promise((resolve, reject) => {
+    const audioChunks = [];
+    let timeoutId = setTimeout(() => {
+      try { ws.close(); } catch {}
+      reject(new Error("Edge TTS timeout (15s)"));
+    }, 15000);
+
+    ws.addEventListener("message", async (event) => {
+      try {
+        if (typeof event.data === "string") {
+          // Текстовое сообщение с заголовками — проверяем end-of-turn
+          if (event.data.includes("Path:turn.end")) {
+            clearTimeout(timeoutId);
+            try { ws.close(); } catch {}
+            if (audioChunks.length === 0) {
+              reject(new Error("Edge TTS returned no audio"));
+              return;
+            }
+            // Конкатенация всех chunks в один Uint8Array
+            const totalSize = audioChunks.reduce((s, c) => s + c.length, 0);
+            const result = new Uint8Array(totalSize);
+            let offset = 0;
+            for (const chunk of audioChunks) {
+              result.set(chunk, offset);
+              offset += chunk.length;
+            }
+            resolve(result);
+          }
+        } else {
+          // Бинарное сообщение — аудио chunk с header'ом
+          const buffer = event.data instanceof ArrayBuffer
+            ? event.data
+            : await event.data.arrayBuffer();
+          const view = new DataView(buffer);
+          // Первые 2 байта — длина заголовка (big-endian)
+          if (buffer.byteLength < 2) return;
+          const headerLength = view.getUint16(0, false);
+          if (buffer.byteLength <= 2 + headerLength) return;
+          const audioPart = new Uint8Array(buffer, 2 + headerLength);
+          audioChunks.push(audioPart);
+        }
+      } catch (e) {
+        clearTimeout(timeoutId);
+        try { ws.close(); } catch {}
+        reject(e);
+      }
+    });
+
+    ws.addEventListener("close", () => {
+      clearTimeout(timeoutId);
+      if (audioChunks.length === 0) {
+        reject(new Error("Edge TTS WS closed without audio"));
+      }
+    });
+
+    ws.addEventListener("error", (e) => {
+      clearTimeout(timeoutId);
+      try { ws.close(); } catch {}
+      reject(new Error(`Edge TTS WS error: ${e.message || "unknown"}`));
+    });
+
+    // 1) Send speech config
+    const configMsg =
+      `X-Timestamp:${timestamp}\r\n` +
+      `Content-Type:application/json; charset=utf-8\r\n` +
+      `Path:speech.config\r\n\r\n` +
+      `{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"false"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`;
+    ws.send(configMsg);
+
+    // 2) Send SSML request
+    const ratePercent = Math.round((speed - 1.0) * 100);
+    const rateStr = ratePercent >= 0 ? `+${ratePercent}%` : `${ratePercent}%`;
+    const pitchHz = Math.round(pitch * 10); // semitones → roughly Hz
+    const pitchStr = pitchHz >= 0 ? `+${pitchHz}Hz` : `${pitchHz}Hz`;
+    const lang = voice.substring(0, 5);
+    const ssml =
+      `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='${lang}'>` +
+      `<voice name='${voice}'>` +
+      `<prosody rate='${rateStr}' pitch='${pitchStr}'>${escapeXml(text)}</prosody>` +
+      `</voice></speak>`;
+    const ssmlMsg =
+      `X-RequestId:${requestId}\r\n` +
+      `Content-Type:application/ssml+xml\r\n` +
+      `X-Timestamp:${timestamp}\r\n` +
+      `Path:ssml\r\n\r\n` +
+      ssml;
+    ws.send(ssmlMsg);
+  });
+}
+
+function escapeXml(s) {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 function corsHeaders() {

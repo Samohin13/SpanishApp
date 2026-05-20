@@ -1,138 +1,115 @@
 package com.spanishapp.domain.voice
 
 /**
- * v1.18.28: 8 уникальных голосов — каждая (personality + gender) пара
- * = отдельный человек со своим тембром.
+ * v1.18.29: каталог премиум-голосов через Edge TTS (Azure Neural quality).
  *
- * Достигается смешиванием:
- *  • Engines: Polyglot (deep multilingual), Studio (premium character),
- *    Neural2 (standard HD), Wavenet (smoother), Standard (different timbre)
- *  • Locales: es-ES (Spain) для строгих/тёплых, es-US (Latin) для
- *    дружелюбного — кардинально другой акцент, звучит как другой человек
- *  • Russian: Wavenet vs Standard для phonetic diversity
+ * Юзер выбирает 1 русский + 1 испанский голос в Settings → Голос диктора.
+ * Эти два голоса применяются везде в приложении (AI Chat + курсы + игры).
  *
- * Гендер каждого голоса подтверждён по Google Cloud TTS docs.
+ * Все 8 голосов — Azure Neural качество, бесплатно через unofficial
+ * Microsoft endpoint (тот же что Edge browser использует для Read aloud).
  */
-enum class TutorPersonality(
-    val id: String,
-    val displayName: String,
-    val emoji: String,
-    val description: String,
-    private val esVoiceMale: String,
-    private val ruVoiceMale: String,
-    private val esVoiceFemale: String,
-    private val ruVoiceFemale: String,
-    val speed: Float,
-    val pitch: Float,
-    val toneInstructions: String,
-) {
-    STRICT(
-        id = "strict",
-        displayName = "Строгий",
-        emoji = "🎓",
-        description = "Формально, точно, исправляет каждую мелочь",
-        // Spain academic: Polyglot deep male + Neural2-E mature female
-        esVoiceMale = "es-ES-Polyglot-1",
-        ruVoiceMale = "ru-RU-Wavenet-B",
-        esVoiceFemale = "es-ES-Neural2-E",
-        ruVoiceFemale = "ru-RU-Wavenet-C",
-        speed = 0.92f,
-        pitch = 0f,
-        toneInstructions = """
-            СТИЛЬ ОБЩЕНИЯ — СТРОГИЙ:
-            • Обращайся на «Вы». Уважительно, без панибратства.
-            • Объясняй грамотно, точно, по делу. Никаких «крч», «жиза», «вайб».
-            • Замечай ВСЕ ошибки — даже мелкие (опечатки, пунктуация).
-            • Хвали скупо, по результату, без восклицательных знаков.
-            • Эмодзи минимум — 0-1 на ответ, только смысловые (✏, 📚).
-            • Тон: преподаватель ВУЗа, требовательный но справедливый.
-        """.trimIndent(),
-    ),
+object PremiumVoiceCatalog {
+    data class Voice(
+        val id: String,
+        val displayName: String,
+        val description: String,
+        val isMale: Boolean,
+    )
 
-    POLITE(
-        id = "polite",
-        displayName = "Вежливый",
-        emoji = "🤝",
-        description = "Сдержанно, мягкие подсказки, на «ты»",
-        // Spain Wavenet engine — smoother, older sound (другой engine vs STRICT)
-        esVoiceMale = "es-ES-Wavenet-B",
-        ruVoiceMale = "ru-RU-Standard-D",
-        esVoiceFemale = "es-ES-Wavenet-C",
-        ruVoiceFemale = "ru-RU-Standard-E",
-        speed = 1.0f,
-        pitch = 0f,
-        toneInstructions = """
-            СТИЛЬ ОБЩЕНИЯ — ВЕЖЛИВЫЙ:
-            • Обращайся на «ты», но сдержанно, без излишней фамильярности.
-            • Мягко подводи к правильному ответу. Не критикуй резко.
-            • Объясняй спокойно, последовательно.
-            • Эмодзи 1-2 на ответ, тёплые (😊 🙂 ✏️).
-            • Тон: воспитанный наставник, хороший репетитор.
-        """.trimIndent(),
-    ),
+    val RU_VOICES = listOf(
+        Voice(
+            id = "ru-RU-DmitryNeural",
+            displayName = "Дмитрий",
+            description = "Зрелый, формальный, спокойный",
+            isMale = true,
+        ),
+        Voice(
+            id = "en-US-AndrewMultilingualNeural",
+            displayName = "Андрей",
+            description = "Тёплый, деловой, дружелюбный",
+            isMale = true,
+        ),
+        Voice(
+            id = "ru-RU-SvetlanaNeural",
+            displayName = "Светлана",
+            description = "Молодая, профессиональная, чёткая",
+            isMale = false,
+        ),
+        Voice(
+            id = "ru-RU-DariyaNeural",
+            displayName = "Дария",
+            description = "Универсальная, живая, бодрая",
+            isMale = false,
+        ),
+    )
 
-    FRIENDLY(
-        id = "friendly",
-        displayName = "Дружелюбный",
-        emoji = "😊",
-        description = "Легко, с шутками, сленг — ок",
-        // Latin American (es-US) — кардинально другой акцент!
-        // Звучит как мексиканец/латиноамериканец, явно отличается
-        // от формального испанского Spain.
-        esVoiceMale = "es-US-Neural2-B",
-        ruVoiceMale = "ru-RU-Wavenet-D",
-        esVoiceFemale = "es-US-Neural2-A",
-        ruVoiceFemale = "ru-RU-Wavenet-A",
-        speed = 1.05f,
-        pitch = 0f,
-        toneInstructions = """
-            СТИЛЬ ОБЩЕНИЯ — ДРУЖЕЛЮБНЫЙ:
-            • На «ты», как с другом. Расслабленно, не зажато.
-            • Шутки уместны, лайтовый юмор поощряется.
-            • Сленг ОК — используй и понимай свободно («норм», «топчик», «вайб»).
-            • Хвали часто и искренне, эмоционально.
-            • Эмодзи 1-3 на ответ, разнообразные (👋 🔥 💪 ✨).
-            • Тон: классный друг который знает испанский и помогает.
-        """.trimIndent(),
-    ),
+    val ES_VOICES = listOf(
+        Voice(
+            id = "es-ES-AlvaroNeural",
+            displayName = "Álvaro",
+            description = "Стандартный кастильский мужской",
+            isMale = true,
+        ),
+        Voice(
+            id = "es-ES-DarioNeural",
+            displayName = "Darío",
+            description = "Тёплый, мягкий мужской",
+            isMale = true,
+        ),
+        Voice(
+            id = "es-ES-ElviraNeural",
+            displayName = "Elvira",
+            description = "Зрелая, ясная женская",
+            isMale = false,
+        ),
+        Voice(
+            id = "es-ES-XimenaNeural",
+            displayName = "Ximena",
+            description = "Молодая, энергичная женская",
+            isMale = false,
+        ),
+    )
 
-    ROMANTIC(
-        id = "romantic",
-        displayName = "Тёплый",
-        emoji = "💕",
-        description = "Эмоционально, поэтично, для души",
-        // Studio voices — премиум, характерные, единственные с эмоцией
-        esVoiceMale = "es-ES-Studio-C",
-        ruVoiceMale = "ru-RU-Standard-B",
-        esVoiceFemale = "es-ES-Studio-F",
-        ruVoiceFemale = "ru-RU-Wavenet-E",
-        speed = 0.95f,
-        pitch = 0f,
-        toneInstructions = """
-            СТИЛЬ ОБЩЕНИЯ — ТЁПЛЫЙ:
-            • На «ты», с теплотой. Как будто говоришь с близким человеком.
-            • Эмоциональные слова: «здорово», «прекрасно», «обожаю это слово».
-            • Иногда поэтично: «звучит как песня», «красиво — будто из стихотворения».
-            • Поддерживай сильно — комплименты искренние, развёрнутые.
-            • Эмодзи 2-3 на ответ, тёплые (💕 ✨ 🌹 ☀️).
-            • Тон: добрая, заинтересованная подруга / репетитор-вдохновитель.
-        """.trimIndent(),
-    );
+    // Defaults — на случай если в DataStore ещё ничего нет
+    const val DEFAULT_RU_VOICE = "ru-RU-SvetlanaNeural"
+    const val DEFAULT_ES_VOICE = "es-ES-ElviraNeural"
 
-    fun esVoice(gender: VoiceGender): String =
-        if (gender == VoiceGender.MALE) esVoiceMale else esVoiceFemale
+    fun ruVoiceById(id: String?): Voice =
+        RU_VOICES.firstOrNull { it.id == id } ?: RU_VOICES.firstOrNull { it.id == DEFAULT_RU_VOICE }!!
 
-    fun ruVoice(gender: VoiceGender): String =
-        if (gender == VoiceGender.MALE) ruVoiceMale else ruVoiceFemale
+    fun esVoiceById(id: String?): Voice =
+        ES_VOICES.firstOrNull { it.id == id } ?: ES_VOICES.firstOrNull { it.id == DEFAULT_ES_VOICE }!!
+}
+
+// ── Legacy compat — TutorPersonality оставлен как stub т.к. на него
+// ссылаются AiChatRepository и старые prefs. Все методы возвращают
+// нейтральные значения. Будет удалено когда AiChat refactor завершён.
+@Suppress("unused")
+enum class TutorPersonality(val id: String) {
+    STRICT("strict"),
+    POLITE("polite"),
+    FRIENDLY("friendly"),
+    ROMANTIC("romantic");
+
+    val displayName: String get() = "Дружелюбный"
+    val emoji: String get() = "😊"
+    val description: String get() = "Универсальный"
+    val speed: Float get() = 1.0f
+    val pitch: Float get() = 0f
+    val toneInstructions: String get() = ""
+
+    fun esVoice(gender: VoiceGender): String = PremiumVoiceCatalog.DEFAULT_ES_VOICE
+    fun ruVoice(gender: VoiceGender): String = PremiumVoiceCatalog.DEFAULT_RU_VOICE
 
     companion object {
         val DEFAULT = FRIENDLY
-
         fun byId(id: String?): TutorPersonality =
             entries.firstOrNull { it.id == id } ?: DEFAULT
     }
 }
 
+@Suppress("unused")
 enum class VoiceGender(val id: String) {
     FEMALE("female"),
     MALE("male");

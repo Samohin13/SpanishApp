@@ -23,9 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.spanishapp.domain.voice.TutorPersonality
-import com.spanishapp.domain.voice.VoiceGender
 import com.spanishapp.R
+import com.spanishapp.domain.voice.PremiumVoiceCatalog
 
 private val BrandOrange = Color(0xFFFF7A1A)
 
@@ -35,13 +34,14 @@ fun SettingsVoiceScreen(
     navController: NavHostController,
     viewModel: SettingsVoiceViewModel = androidx.hilt.navigation.compose.hiltViewModel()
 ) {
-    val personality by viewModel.personality.collectAsStateWithLifecycle()
-    val voiceGender by viewModel.voiceGender.collectAsStateWithLifecycle()
+    val selectedRuVoice by viewModel.selectedRuVoice.collectAsStateWithLifecycle()
+    val selectedEsVoice by viewModel.selectedEsVoice.collectAsStateWithLifecycle()
     val voiceSpeedMultiplier by viewModel.voiceSpeedMultiplier.collectAsStateWithLifecycle()
     val premiumReady by viewModel.isPremiumTtsReady.collectAsStateWithLifecycle()
     val previewPlaying by viewModel.isPreviewPlaying.collectAsStateWithLifecycle()
 
-    // Останавливаем preview при выходе с экрана
+    var playingVoiceId by remember { mutableStateOf<String?>(null) }
+
     DisposableEffect(Unit) {
         onDispose { viewModel.stopPreview() }
     }
@@ -73,76 +73,72 @@ fun SettingsVoiceScreen(
                 .fillMaxSize()
                 .padding(padding),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            // ── Заголовок: характер репетитора ─────────────────────
             item {
-                Column(Modifier.padding(start = 4.dp, top = 4.dp, bottom = 4.dp)) {
+                if (!premiumReady) {
                     Text(
-                        "Характер репетитора",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        "Выберите тон, голос и темп для AI-уроков. " +
-                                if (premiumReady) "Премиум HD-голоса Google."
-                                else "⚠ Подключение TTS не настроено — используется системный голос.",
+                        "⚠ Premium TTS не настроен — голоса будут не доступны",
                         fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 2.dp)
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(8.dp)
                     )
                 }
             }
 
-            // ── Сегментный переключатель пола голоса ───────────────
+            // ── 🇷🇺 Русский голос ────────────────────────────────────
             item {
-                GenderSegmented(
-                    selected = voiceGender,
-                    onSelect = { g ->
-                        viewModel.selectVoiceGender(g)
-                        // мгновенно повторим preview если играет
-                        if (previewPlaying) {
-                            viewModel.stopPreview()
-                            viewModel.previewPersonality(personality)
-                        }
-                    }
-                )
+                SectionHeader("🇷🇺 Русский голос")
             }
-
-            // ── 4 карточки характеров ──────────────────────────────
-            items(TutorPersonality.entries.toTypedArray(), key = { it.id }) { p ->
-                PersonalityCard(
-                    personality = p,
-                    gender = voiceGender,
-                    isSelected = personality.id == p.id,
-                    isPlaying = previewPlaying && personality.id == p.id,
-                    premiumReady = premiumReady,
-                    onSelect = { viewModel.selectPersonality(p) },
+            items(PremiumVoiceCatalog.RU_VOICES, key = { it.id }) { voice ->
+                VoiceCard(
+                    voice = voice,
+                    isSelected = selectedRuVoice == voice.id,
+                    isPlaying = previewPlaying && playingVoiceId == voice.id,
+                    enabled = premiumReady,
+                    onSelect = { viewModel.selectRuVoice(voice.id) },
                     onPreview = {
-                        if (previewPlaying && personality.id == p.id) {
+                        if (previewPlaying && playingVoiceId == voice.id) {
                             viewModel.stopPreview()
+                            playingVoiceId = null
                         } else {
-                            viewModel.selectPersonality(p)
-                            viewModel.previewPersonality(p)
+                            playingVoiceId = voice.id
+                            viewModel.previewVoice(voice.id)
                         }
                     }
                 )
             }
 
-            item { Spacer(Modifier.height(16.dp)) }
+            // ── 🇪🇸 Испанский голос ──────────────────────────────────
+            item { Spacer(Modifier.height(8.dp)) }
+            item {
+                SectionHeader("🇪🇸 Испанский голос")
+            }
+            items(PremiumVoiceCatalog.ES_VOICES, key = { it.id }) { voice ->
+                VoiceCard(
+                    voice = voice,
+                    isSelected = selectedEsVoice == voice.id,
+                    isPlaying = previewPlaying && playingVoiceId == voice.id,
+                    enabled = premiumReady,
+                    onSelect = { viewModel.selectEsVoice(voice.id) },
+                    onPreview = {
+                        if (previewPlaying && playingVoiceId == voice.id) {
+                            viewModel.stopPreview()
+                            playingVoiceId = null
+                        } else {
+                            playingVoiceId = voice.id
+                            viewModel.previewVoice(voice.id)
+                        }
+                    }
+                )
+            }
 
-            // ── Скорость речи (применяется к premium TTS) ──────────
+            // ── Скорость речи ────────────────────────────────────────
+            item { Spacer(Modifier.height(8.dp)) }
             item {
                 SpeedSliderCard(
                     multiplier = voiceSpeedMultiplier,
                     onChange = { viewModel.setVoiceSpeedMultiplier(it) },
-                    onPreview = {
-                        if (previewPlaying) viewModel.stopPreview()
-                        else viewModel.previewPersonality(personality)
-                    },
-                    isPlaying = previewPlaying,
-                    premiumReady = premiumReady,
                 )
             }
 
@@ -152,15 +148,97 @@ fun SettingsVoiceScreen(
 }
 
 @Composable
+private fun SectionHeader(text: String) {
+    Text(
+        text = text,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.padding(start = 4.dp, top = 8.dp, bottom = 4.dp)
+    )
+}
+
+@Composable
+private fun VoiceCard(
+    voice: PremiumVoiceCatalog.Voice,
+    isSelected: Boolean,
+    isPlaying: Boolean,
+    enabled: Boolean,
+    onSelect: () -> Unit,
+    onPreview: () -> Unit,
+) {
+    val borderColor = if (isSelected) BrandOrange else MaterialTheme.colorScheme.outlineVariant
+    val borderWidth = if (isSelected) 2.dp else 1.dp
+    val containerColor = if (isSelected)
+        BrandOrange.copy(alpha = 0.08f)
+    else
+        MaterialTheme.colorScheme.surface
+
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = containerColor,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = enabled, onClick = onSelect)
+            .border(BorderStroke(borderWidth, borderColor), RoundedCornerShape(16.dp))
+    ) {
+        Row(
+            Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                if (voice.isMale) "👨" else "👩",
+                fontSize = 28.sp
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        voice.displayName,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    if (isSelected) {
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            Icons.Default.CheckCircle,
+                            contentDescription = null,
+                            tint = BrandOrange,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+                Text(
+                    voice.description,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 1.dp)
+                )
+            }
+            IconButton(
+                onClick = onPreview,
+                enabled = enabled,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    if (isPlaying) Icons.Default.Stop else Icons.Default.PlayArrow,
+                    contentDescription = "Прослушать",
+                    tint = BrandOrange,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun SpeedSliderCard(
     multiplier: Float,
     onChange: (Float) -> Unit,
-    onPreview: () -> Unit,
-    isPlaying: Boolean,
-    premiumReady: Boolean,
 ) {
     Surface(
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = Modifier.fillMaxWidth()
@@ -171,11 +249,11 @@ private fun SpeedSliderCard(
                     Text(
                         "Скорость речи",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
+                        fontSize = 15.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        "${(multiplier * 100).toInt()}% от базовой скорости персонажа",
+                        "${(multiplier * 100).toInt()}%",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -203,178 +281,6 @@ private fun SpeedSliderCard(
                 Text("0.5×", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("1.0×", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text("1.5×", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Spacer(Modifier.height(8.dp))
-            Button(
-                onClick = onPreview,
-                enabled = premiumReady,
-                modifier = Modifier.fillMaxWidth().height(44.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isPlaying) MaterialTheme.colorScheme.surfaceContainerHighest else BrandOrange,
-                    contentColor = if (isPlaying) MaterialTheme.colorScheme.onSurface else Color.White
-                )
-            ) {
-                Icon(
-                    if (isPlaying) Icons.Default.Stop else Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(Modifier.width(6.dp))
-                Text(
-                    if (isPlaying) "Стоп" else "Прослушать с этой скоростью",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun PersonalityCard(
-    personality: TutorPersonality,
-    gender: VoiceGender,
-    isSelected: Boolean,
-    isPlaying: Boolean,
-    premiumReady: Boolean,
-    onSelect: () -> Unit,
-    onPreview: () -> Unit,
-) {
-    val borderColor = if (isSelected) BrandOrange else MaterialTheme.colorScheme.outlineVariant
-    val borderWidth = if (isSelected) 2.dp else 1.dp
-    val containerColor = if (isSelected)
-        BrandOrange.copy(alpha = 0.08f)
-    else
-        MaterialTheme.colorScheme.surface
-
-    Surface(
-        shape = RoundedCornerShape(18.dp),
-        color = containerColor,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onSelect)
-            .border(BorderStroke(borderWidth, borderColor), RoundedCornerShape(18.dp))
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(personality.emoji, fontSize = 32.sp)
-                Spacer(Modifier.width(12.dp))
-                Column(Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            personality.displayName,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 17.sp,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        if (isSelected) {
-                            Spacer(Modifier.width(8.dp))
-                            Icon(
-                                Icons.Default.CheckCircle,
-                                contentDescription = null,
-                                tint = BrandOrange,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    }
-                    Text(
-                        personality.description,
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-                }
-            }
-            Spacer(Modifier.height(10.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                // Voice meta chip
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainerHighest
-                ) {
-                    Text(
-                        text = "ES: ${shortVoiceLabel(personality.esVoice(gender))} · " +
-                                "RU: ${shortVoiceLabel(personality.ruVoice(gender))} · " +
-                                "темп ${"%.2f".format(personality.speed)}",
-                        fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
-                Spacer(Modifier.weight(1f))
-                Button(
-                    onClick = onPreview,
-                    enabled = premiumReady,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isPlaying) MaterialTheme.colorScheme.surfaceContainerHighest else BrandOrange,
-                        contentColor = if (isPlaying) MaterialTheme.colorScheme.onSurface else Color.White
-                    ),
-                    modifier = Modifier.height(36.dp),
-                    contentPadding = PaddingValues(horizontal = 12.dp)
-                ) {
-                    Icon(
-                        if (isPlaying) Icons.Default.Stop else Icons.Default.PlayArrow,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        if (isPlaying) "Стоп" else "Прослушать",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            }
-        }
-    }
-}
-
-/** Преобразует "es-ES-Neural2-D" → "Neural2-D". */
-private fun shortVoiceLabel(fullVoice: String): String {
-    val parts = fullVoice.split('-')
-    return if (parts.size >= 4) parts.drop(2).joinToString("-") else fullVoice
-}
-
-@Composable
-private fun GenderSegmented(
-    selected: VoiceGender,
-    onSelect: (VoiceGender) -> Unit,
-) {
-    Surface(
-        shape = RoundedCornerShape(14.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(Modifier.padding(4.dp)) {
-            VoiceGender.entries.forEach { g ->
-                val isSel = g == selected
-                val emoji = if (g == VoiceGender.FEMALE) "👩" else "👨"
-                val label = if (g == VoiceGender.FEMALE) "Женский" else "Мужской"
-                Surface(
-                    shape = RoundedCornerShape(10.dp),
-                    color = if (isSel) BrandOrange else Color.Transparent,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { onSelect(g) }
-                ) {
-                    Row(
-                        Modifier.padding(vertical = 10.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(emoji, fontSize = 16.sp)
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            label,
-                            fontSize = 14.sp,
-                            fontWeight = if (isSel) FontWeight.Bold else FontWeight.Medium,
-                            color = if (isSel) Color.White else MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
             }
         }
     }

@@ -38,6 +38,9 @@ class AuthRepository @Inject constructor(
     // v1.18.25: множитель скорости голоса (0.5..1.5). Применяется поверх
     // personality.speed как final = personality.speed * multiplier.
     private val VOICE_SPEED_MULT = floatPreferencesKey("voice_speed_mult")
+    // v1.18.29: прямой выбор голоса (без пресетов) — VoiceCatalog id
+    private val SELECTED_RU_VOICE = stringPreferencesKey("selected_ru_voice")
+    private val SELECTED_ES_VOICE = stringPreferencesKey("selected_es_voice")
     private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
@@ -90,6 +93,17 @@ class AuthRepository @Inject constructor(
         .map { it[VOICE_SPEED_MULT] ?: 1.0f }
     suspend fun setVoiceSpeedMultiplier(value: Float) {
         context.dataStore.edit { it[VOICE_SPEED_MULT] = value.coerceIn(0.5f, 1.5f) }
+    }
+
+    // v1.18.29: прямой выбор премиум-голосов
+    val selectedRuVoice: Flow<String?> = context.dataStore.data.map { it[SELECTED_RU_VOICE] }
+    suspend fun setSelectedRuVoice(voiceId: String) {
+        context.dataStore.edit { it[SELECTED_RU_VOICE] = voiceId }
+    }
+
+    val selectedEsVoice: Flow<String?> = context.dataStore.data.map { it[SELECTED_ES_VOICE] }
+    suspend fun setSelectedEsVoice(voiceId: String) {
+        context.dataStore.edit { it[SELECTED_ES_VOICE] = voiceId }
     }
 
     val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARDING_COMPLETED] ?: false }

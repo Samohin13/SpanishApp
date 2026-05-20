@@ -87,20 +87,20 @@ class RemoteTtsService @Inject constructor(
             // v1.18.20: голос/темп из текущего TutorPersonality.
             // Personality читается из DataStore при каждом speak — изменение
             // в Settings применяется без рестарта.
-            val personalityId = authRepository.tutorPersonality.firstOrNull()
-            val personality = com.spanishapp.domain.voice.TutorPersonality.byId(personalityId)
-            val genderId = authRepository.voiceGender.firstOrNull()
-            val gender = com.spanishapp.domain.voice.VoiceGender.byId(genderId)
+            // v1.18.29: прямой выбор голоса (без пресетов)
+            val ruVoiceId = authRepository.selectedRuVoice.firstOrNull()
+                ?: com.spanishapp.domain.voice.PremiumVoiceCatalog.DEFAULT_RU_VOICE
+            val esVoiceId = authRepository.selectedEsVoice.firstOrNull()
+                ?: com.spanishapp.domain.voice.PremiumVoiceCatalog.DEFAULT_ES_VOICE
             val userMult = authRepository.voiceSpeedMultiplier.firstOrNull() ?: 1.0f
-            val finalSpeed = (speed ?: (personality.speed * userMult)).coerceIn(0.25f, 4.0f)
-            // v1.18.27: pitch per personality — добавляет phonetic diversity
-            val finalPitch = personality.pitch
+            val finalSpeed = (speed ?: userMult).coerceIn(0.25f, 4.0f)
+            val finalPitch = 0f
             val segments = segmentByLanguage(
                 text = text.take(2000),
-                esVoice = personality.esVoice(gender),
-                ruVoice = personality.ruVoice(gender),
+                esVoice = esVoiceId,
+                ruVoice = ruVoiceId,
             )
-            Log.d(TAG, "personality=${personality.id} gender=${gender.id} segments=${segments.size}")
+            Log.d(TAG, "voices ru=$ruVoiceId es=$esVoiceId segments=${segments.size}")
             if (segments.isEmpty()) {
                 _isPlaying.value = false
                 return@launch
