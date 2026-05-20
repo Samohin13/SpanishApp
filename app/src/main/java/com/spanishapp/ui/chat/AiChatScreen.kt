@@ -572,8 +572,8 @@ fun AiChatScreen(
                     Surface(
                         modifier = Modifier
                             .weight(1f)
-                            .heightIn(min = 44.dp),
-                        shape = RoundedCornerShape(22.dp),
+                            .heightIn(min = 48.dp),
+                        shape = RoundedCornerShape(24.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,
                         shadowElevation = 2.dp,
                     ) {
@@ -582,7 +582,7 @@ fun AiChatScreen(
                                 amplitude = voiceAmplitude,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(44.dp),
+                                    .height(48.dp),
                             )
                         } else {
                             // v1.18.40: BasicTextField вместо OutlinedTextField — у того
@@ -643,7 +643,7 @@ fun AiChatScreen(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
-                            .size(44.dp)
+                            .size(48.dp)
                             .scale(if (isListening && !sendActive) micPulse else 1f),
                         shape = CircleShape,
                         elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
