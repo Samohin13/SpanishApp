@@ -301,23 +301,28 @@ class AiChatViewModel @Inject constructor(
 @Composable
 fun AiChatScreen(
     navController: NavHostController,
-    vm: AiChatViewModel = hiltViewModel()
+    vm: AiChatViewModel = hiltViewModel(),
 ) {
+    // ─── State ──────────────────────────────────────────────────
     val messages       by vm.messages.collectAsStateWithLifecycle()
     val isSending      by vm.isSending.collectAsStateWithLifecycle()
     val streamingText  by vm.streamingText.collectAsStateWithLifecycle()
     val error          by vm.error.collectAsStateWithLifecycle()
+    val isListening    by vm.isListening.collectAsStateWithLifecycle()
+    val wallpaperId    by vm.wallpaperId.collectAsStateWithLifecycle()
+    val voiceAmplitude by vm.voiceAmplitude.collectAsStateWithLifecycle()
+    val remaining      by vm.remainingMessages.collectAsStateWithLifecycle()
+    val wallpaper = com.spanishapp.domain.chat.ChatWallpapers.byId(wallpaperId)
+
+    var input by remember { mutableStateOf("") }
     var showClearDialog by remember { mutableStateOf(false) }
     var showWallpaperPicker by remember { mutableStateOf(false) }
-    val wallpaperId by vm.wallpaperId.collectAsStateWithLifecycle()
-    val wallpaper = com.spanishapp.domain.chat.ChatWallpapers.byId(wallpaperId)
-    val isListening by vm.isListening.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    var input     by remember { mutableStateOf("") }
-    val haptic    = com.spanishapp.ui.components.rememberCheckedHaptic()
-    val voiceAmplitude by vm.voiceAmplitude.collectAsStateWithLifecycle()
 
-    // RECORD_AUDIO permission flow for the mic button.
+    val context = LocalContext.current
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    val listState = rememberLazyListState()
+
+    // ─── Voice/mic permission ───────────────────────────────────
     val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -327,19 +332,11 @@ fun AiChatScreen(
         val granted = androidx.core.content.ContextCompat.checkSelfPermission(
             context, android.Manifest.permission.RECORD_AUDIO
         ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        if (granted) {
-            vm.startVoice { recognized -> input = recognized }
-        } else {
-            micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
-        }
+        if (granted) vm.startVoice { recognized -> input = recognized }
+        else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
     }
 
-    val listState = rememberLazyListState()
-
-    // Single coalesced auto-scroll. Two separate LaunchedEffects (one on
-    // messages.size, one on streamingText) were racing each other on every
-    // streamed chunk, producing visible jitter. One effect keyed on both
-    // signals lets the scheduler dedupe properly.
+    // ─── Auto-scroll к нижним сообщениям ────────────────────────
     LaunchedEffect(messages.size, streamingText.length) {
         val target = if (streamingText.isNotEmpty()) messages.size
                      else (messages.size - 1).coerceAtLeast(0)
@@ -348,17 +345,30 @@ fun AiChatScreen(
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    //  Layout (WhatsApp/Telegram pattern, v1.18.55 rewrite from scratch)
+    // ═══════════════════════════════════════════════════════════════
+    //
+    //  Scaffold = root.
+    //    • topBar    = TopAppBar (back, title, остаток квоты, фон, новый чат).
+    //    • bottomBar = ChatInputBar (Surface c .imePadding() — стандартный
+    //                  Jetchat sample pattern). При открытии клавы Scaffold
+    //                  ПЕРЕМЕРЯЕТ bottomBar (его intrinsic высота включает
+    //                  imePadding) и сдвигает контент вверх — никаких ручных
+    //                  расчётов inset'ов.
+    //    • content   = ChatWallpaperBackground с messages/welcome поверх.
+    //                  paddingValues автоматически содержит height bottomBar'а.
+    //
+    //  consumeWindowInsets в MainActivity (v1.18.54) делает navBar=0 внутри
+    //  NavHost'а, поэтому ChatInputBar добавляет ТОЛЬКО imePadding — без
+    //  navigationBarsPadding (иначе double-count).
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        // v1.18.54: contentWindowInsets=0 → Scaffold не добавляет padding снизу
-        // (outer NavHost уже консьюмит navBar). Внутренний Box.align(BottomCenter)
-        // позиционирует Row с safeDrawing-padding — wallpaper заполняет ВЁСЬ
-        // Box, в т.ч. позади input-бара, поэтому никакой тёмной зоны под pill'ом
-        // не появится.
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                ),
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
@@ -366,9 +376,8 @@ fun AiChatScreen(
                                 .size(36.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.primaryContainer),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.Center,
                         ) {
-                            // Theme emoji (e.g., ✈️ for travel) instead of generic ✨.
                             Text(vm.theme.emoji, fontSize = 18.sp)
                         }
                         Spacer(Modifier.width(12.dp))
@@ -376,16 +385,12 @@ fun AiChatScreen(
                             Text(
                                 vm.theme.title,
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
                             )
-                            // Индикатор оставшихся сообщений за день (50/день).
-                            // Заменил «Online» — это полезнее: юзер видит лимит
-                            // ещё до того как упрётся в него.
-                            val remaining by vm.remainingMessages.collectAsStateWithLifecycle()
                             val limitColor = when {
                                 remaining > 20 -> MaterialTheme.colorScheme.primary
-                                remaining > 5  -> Color(0xFFFFA000)   // янтарь
-                                else           -> Color(0xFFE53935)   // красный
+                                remaining > 5  -> Color(0xFFFFA000)
+                                else           -> Color(0xFFE53935)
                             }
                             Text(
                                 "Осталось $remaining/${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT} сообщений сегодня",
@@ -417,256 +422,145 @@ fun AiChatScreen(
                     IconButton(
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            // Only ask to confirm if there's actually a history to wipe.
                             if (messages.isEmpty()) vm.newChat() else showClearDialog = true
                         }
                     ) {
-                        Icon(Icons.Default.AddComment, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Icon(
+                            Icons.Default.AddComment,
+                            null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
-                }
+                },
             )
-        }
+        },
+        bottomBar = {
+            ChatInputBar(
+                input = input,
+                onInputChange = { input = it },
+                onSend = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    vm.send(input)
+                    input = ""
+                },
+                onMicClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    launchVoiceInput()
+                },
+                isSending = isSending,
+                isListening = isListening,
+                voiceAmplitude = voiceAmplitude,
+            )
+        },
     ) { padding ->
-        // v1.18.36: bottom inset не консьюмим из Scaffold — input Surface
-        // сам уходит под навбар (как в WhatsApp), а Row внутри respects
-        // nav inset через navigationBarsPadding.
-        // v1.18.54: Box-overlay. Wallpaper заполняет ВСЁ (включая зону под input-bar),
-        // input bar = Row с align(BottomCenter) + safeDrawing-padding.
-        // Когда клавиатура открыта — Row уезжает вверх с ime, wallpaper остаётся
-        // позади input-бара. Никаких dark/transparent зон не видно.
-        val sendActive = input.isNotBlank()
-        val micPulse by androidx.compose.animation.core.rememberInfiniteTransition(label = "mic_pulse").animateFloat(
-            initialValue = 1f,
-            targetValue = 1.18f,
-            animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-                animation = androidx.compose.animation.core.tween(550, easing = androidx.compose.animation.core.LinearEasing),
-                repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
-            ),
-            label = "mic_pulse_anim"
-        )
-        Box(
+        ChatWallpaperBackground(
+            wallpaper = wallpaper,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding),
         ) {
-            ChatWallpaperBackground(
-                wallpaper = wallpaper,
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                if (messages.isEmpty()) {
-                    WelcomeHint(onSuggestion = { 
-                        vm.send(it)
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    })
-                } else {
-                    // v1.15.0 P2: cap 720dp на планшете чтобы chat
-                    // не растягивался на всю ширину 1280dp (читать
-                    // длинные строки тяжело — readability rule).
-                    LazyColumn(
-                        state = listState,
-                        // v1.18.54: bottom contentPadding = 80dp чтобы последнее
-                        // сообщение не пряталось за input-баром (Box-overlay).
-                        contentPadding = PaddingValues(
-                            start = 16.dp, end = 16.dp,
-                            top = 16.dp, bottom = 80.dp,
-                        ),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .adaptiveContentWidth()
-                    ) {
-                        items(messages, key = { it.id }) { msg ->
-                            // Each new message slides up + fades in. Existing
-                            // messages reflow smoothly when a new one arrives.
+            if (messages.isEmpty()) {
+                WelcomeHint(onSuggestion = {
+                    vm.send(it)
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                })
+            } else {
+                LazyColumn(
+                    state = listState,
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .adaptiveContentWidth(),
+                ) {
+                    items(messages, key = { it.id }) { msg ->
+                        ChatBubble(
+                            message = msg,
+                            onSpeak = {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                vm.speak(msg.content)
+                            },
+                            onSpeakWord = { word ->
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                vm.speak(word)
+                            },
+                            modifier = Modifier.animateItem(
+                                fadeInSpec = tween(280),
+                                placementSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessMediumLow,
+                                ),
+                                fadeOutSpec = tween(180),
+                            ),
+                        )
+                    }
+                    if (streamingText.isNotEmpty()) {
+                        item(key = "streaming") {
                             ChatBubble(
-                                message = msg,
-                                onSpeak = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                    vm.speak(msg.content)
-                                },
+                                message = ChatMessageEntity(
+                                    id = -1,
+                                    role = "assistant",
+                                    content = streamingText,
+                                    sessionId = "default",
+                                    correctionJson = "",
+                                ),
+                                onSpeak = { /* no-op while streaming */ },
                                 onSpeakWord = { word ->
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                     vm.speak(word)
                                 },
-                                modifier = Modifier.animateItem(
-                                    fadeInSpec = tween(280),
-                                    placementSpec = spring(
-                                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                                        stiffness = Spring.StiffnessMediumLow
-                                    ),
-                                    fadeOutSpec = tween(180)
-                                )
+                                modifier = Modifier,
                             )
                         }
-                        // Streaming preview: while Gemini is generating, show a
-                        // ChatBubble with the partial text. Disappears when the
-                        // final message lands in `messages`.
-                        if (streamingText.isNotEmpty()) {
-                            item(key = "streaming") {
-                                ChatBubble(
-                                    message = ChatMessageEntity(
-                                        id = -1,
-                                        role = "assistant",
-                                        content = streamingText,
-                                        sessionId = "default",
-                                        correctionJson = ""
-                                    ),
-                                    onSpeak = { /* no-op while streaming */ },
-                                    onSpeakWord = { word ->
-                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                        vm.speak(word)
-                                    },
-                                    modifier = Modifier
-                                )
-                            }
-                        } else if (isSending) {
-                            item("typing") { TypingIndicator() }
-                        }
+                    } else if (isSending) {
+                        item("typing") { TypingIndicator() }
+                    }
 
-                        // Quick-replies under the most recent assistant message
-                        // (only when not currently streaming and last msg is from AI).
-                        val lastIsAssistant = messages.lastOrNull()?.role == "assistant"
-                        if (lastIsAssistant && !isSending && streamingText.isEmpty()) {
-                            item("quick_replies") {
-                                QuickReplies(
-                                    onPick = { preset ->
-                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        vm.send(preset)
-                                    }
-                                )
-                            }
+                    val lastIsAssistant = messages.lastOrNull()?.role == "assistant"
+                    if (lastIsAssistant && !isSending && streamingText.isEmpty()) {
+                        item("quick_replies") {
+                            QuickReplies(
+                                onPick = { preset ->
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    vm.send(preset)
+                                }
+                            )
                         }
                     }
                 }
             }
+        }
+    }
 
-            // Error banner — поверх wallpaper, над input-баром.
-            AnimatedVisibility(
-                visible = error != null,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 80.dp)
-                    .windowInsetsPadding(WindowInsets.safeDrawing),
-            ) {
-                Surface(
-                    color = MaterialTheme.colorScheme.errorContainer,
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(error ?: "", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
-                        IconButton(onClick = vm::clearError) { Icon(Icons.Default.Close, stringResource(R.string.chat_close_cd)) }
-                    }
-                }
-            }
-
-            // v1.18.54: Input bar — overlay поверх wallpaper'а. align(BottomCenter)
-            // прижимает Row к низу Box'а. windowInsetsPadding(safeDrawing) поднимает
-            // содержимое над клавой/navBar'ом. Wallpaper заполняет ВСЁ позади Row —
-            // никаких dark/transparent зон под pill'ом.
-            Row(
+    // Error snackbar-style banner (modal overlay поверх Scaffold).
+    if (error != null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.safeDrawing),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.errorContainer,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .padding(horizontal = 10.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    .padding(start = 12.dp, end = 12.dp, bottom = 80.dp),
+                shape = RoundedCornerShape(12.dp),
             ) {
-                    // ── Pill-input: TextField или waveform когда listening ──
-                    Surface(
-                        modifier = Modifier
-                            .weight(1f)
-                            .heightIn(min = 48.dp),
-                        shape = RoundedCornerShape(24.dp),
-                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        shadowElevation = 2.dp,
-                    ) {
-                        if (isListening) {
-                            VoiceWaveform(
-                                amplitude = voiceAmplitude,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp),
-                            )
-                        } else {
-                            // v1.18.40: BasicTextField вместо OutlinedTextField — у того
-                            // жёсткий min-height 56dp. Сейчас pill тонкий как в WhatsApp.
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 18.dp, vertical = 12.dp),
-                                contentAlignment = Alignment.CenterStart,
-                            ) {
-                                if (input.isEmpty()) {
-                                    Text(
-                                        text = androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_message_placeholder),
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontSize = 15.sp,
-                                    )
-                                }
-                                androidx.compose.foundation.text.BasicTextField(
-                                    value = input,
-                                    onValueChange = { input = it },
-                                    enabled = !isSending,
-                                    textStyle = androidx.compose.ui.text.TextStyle(
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 15.sp,
-                                    ),
-                                    cursorBrush = androidx.compose.ui.graphics.SolidColor(
-                                        MaterialTheme.colorScheme.primary
-                                    ),
-                                    maxLines = 5,
-                                    modifier = Modifier.fillMaxWidth(),
-                                )
-                            }
-                        }
-                    }
-
-                    // ── Кнопка действия: микрофон или send (как в Telegram) ──
-                    val (action, icon, cd) = when {
-                        sendActive -> Triple(
-                            {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                vm.send(input)
-                                input = ""
-                            },
-                            Icons.AutoMirrored.Filled.Send,
-                            stringResource(com.spanishapp.R.string.chat_send_cd),
-                        )
-                        else -> Triple(
-                            {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                launchVoiceInput()
-                            },
-                            Icons.Default.Mic,
-                            stringResource(com.spanishapp.R.string.chat_voice_input_cd),
-                        )
-                    }
-                    FloatingActionButton(
-                        onClick = { if (!isSending && (sendActive || !isListening)) action() },
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .size(48.dp)
-                            .scale(if (isListening && !sendActive) micPulse else 1f),
-                        shape = CircleShape,
-                        elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
-                    ) {
-                        if (isSending) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                strokeWidth = 2.dp,
-                                color = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        } else {
-                            Icon(icon, contentDescription = cd, modifier = Modifier.size(22.dp))
-                        }
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        error ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.weight(1f),
+                    )
+                    IconButton(onClick = vm::clearError) {
+                        Icon(Icons.Default.Close, stringResource(R.string.chat_close_cd))
                     }
                 }
+            }
         }
     }
 
@@ -693,7 +587,7 @@ fun AiChatScreen(
                 }) {
                     Text(
                         stringResource(com.spanishapp.R.string.chat_clear_confirm),
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
                     )
                 }
             },
@@ -701,10 +595,139 @@ fun AiChatScreen(
                 TextButton(onClick = { showClearDialog = false }) {
                     Text(stringResource(com.spanishapp.R.string.btn_cancel))
                 }
-            }
+            },
         )
     }
 }
+
+// ─── Input bar (Jetchat pattern) ──────────────────────────────────
+//
+// Surface с .imePadding() = bottomBar slot из Scaffold. Когда клавиатура
+// открывается, intrinsic высота Surface'а растёт на ime, Scaffold
+// перемеряет и поднимает bottomBar над клавой. Контент чата сдвигается
+// вверх через paddingValues автоматически.
+//
+// navigationBarsPadding НЕ нужен: outer NavHost в MainActivity уже
+// консьюмит navBar inset (v1.18.54). При попытке добавить тут — double-count.
+@Composable
+private fun ChatInputBar(
+    input: String,
+    onInputChange: (String) -> Unit,
+    onSend: () -> Unit,
+    onMicClick: () -> Unit,
+    isSending: Boolean,
+    isListening: Boolean,
+    voiceAmplitude: Float,
+) {
+    val sendActive = input.isNotBlank()
+    val micPulse by rememberInfiniteTransition(label = "mic_pulse").animateFloat(
+        initialValue = 1f,
+        targetValue = 1.18f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(550, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "mic_pulse_anim",
+    )
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .imePadding(),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            // ── Pill: текстовое поле или waveform во время записи ─────
+            Surface(
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 44.dp),
+                shape = RoundedCornerShape(22.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            ) {
+                if (isListening) {
+                    VoiceWaveform(
+                        amplitude = voiceAmplitude,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(44.dp),
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 11.dp),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        if (input.isEmpty()) {
+                            Text(
+                                text = stringResource(com.spanishapp.R.string.chat_message_placeholder),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 15.sp,
+                            )
+                        }
+                        androidx.compose.foundation.text.BasicTextField(
+                            value = input,
+                            onValueChange = onInputChange,
+                            enabled = !isSending,
+                            textStyle = androidx.compose.ui.text.TextStyle(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 15.sp,
+                            ),
+                            cursorBrush = androidx.compose.ui.graphics.SolidColor(
+                                MaterialTheme.colorScheme.primary
+                            ),
+                            maxLines = 5,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                }
+            }
+
+            // ── FAB: микрофон когда пусто, send когда есть текст ───
+            val (action, icon, cd) = when {
+                sendActive -> Triple(
+                    onSend,
+                    Icons.AutoMirrored.Filled.Send,
+                    stringResource(com.spanishapp.R.string.chat_send_cd),
+                )
+                else -> Triple(
+                    onMicClick,
+                    Icons.Default.Mic,
+                    stringResource(com.spanishapp.R.string.chat_voice_input_cd),
+                )
+            }
+            FloatingActionButton(
+                onClick = { if (!isSending && (sendActive || !isListening)) action() },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .size(44.dp)
+                    .scale(if (isListening && !sendActive) micPulse else 1f),
+                shape = CircleShape,
+                elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
+            ) {
+                if (isSending) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                } else {
+                    Icon(icon, contentDescription = cd, modifier = Modifier.size(20.dp))
+                }
+            }
+        }
+    }
+}
+
 
 /**
  * Lightweight markdown for chat: makes **bold** parts bold and
