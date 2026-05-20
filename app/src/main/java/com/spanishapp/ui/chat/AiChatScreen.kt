@@ -350,7 +350,6 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -428,11 +427,7 @@ fun AiChatScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = padding.calculateTopPadding(),
-                    start = padding.calculateStartPadding(androidx.compose.ui.platform.LocalLayoutDirection.current),
-                    end = padding.calculateEndPadding(androidx.compose.ui.platform.LocalLayoutDirection.current),
-                )
+                .padding(padding)
         ) {
             ChatWallpaperBackground(
                 wallpaper = wallpaper,
@@ -555,9 +550,7 @@ fun AiChatScreen(
             // v1.18.41: возвращён компактный input-bar контейнер (как в WhatsApp).
             // Тонкая плашка-Surface под pill и кнопкой, минимальные отступы.
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .imePadding(),
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.surface,
             ) {
                 Row(
