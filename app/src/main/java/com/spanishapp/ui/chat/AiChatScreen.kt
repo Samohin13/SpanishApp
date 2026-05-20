@@ -563,8 +563,7 @@ fun AiChatScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .navigationBarsPadding()
-                        .padding(start = 10.dp, end = 10.dp, top = 4.dp, bottom = 2.dp),
+                        .padding(start = 10.dp, end = 10.dp, top = 4.dp, bottom = 8.dp),
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
