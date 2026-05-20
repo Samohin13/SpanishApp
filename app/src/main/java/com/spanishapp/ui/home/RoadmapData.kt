@@ -81,28 +81,30 @@ object RoadmapData {
                 RoadmapLesson("🔵 Глаголы -ER: comer, beber, leer",            "content", "general"),
                 // 19
                 RoadmapLesson("🔵 Глаголы -IR: vivir, escribir, abrir",        "content", "general"),
-                // 20
+                // 20  l4
                 RoadmapLesson("🟠 TENER: tengo, tienes, tiene",                "content", "general"),
-                // 21
+                // 21  l5
                 RoadmapLesson("🟠 TENER: tenemos, tenéis, tienen (мн.)",       "content", "general"),
-                // 22
-                RoadmapLesson("🔢 Числа 11–20: once, doce… veinte",           "content", "general"),
-                // 23
-                RoadmapLesson("🔢 Числа 21–100: veintiuno, treinta…",          "content", "general"),
-                // 24
-                RoadmapLesson("👨‍👩‍👧 Семья 1: padre, madre, hermano, hijo",        "content", "familia"),
-                // 25
-                RoadmapLesson("👨‍👩‍👧 Семья 2: abuelo, tío, primo, sobrino",        "content", "familia"),
-                // 26
-                RoadmapLesson("📎 Притяжательные: mi, tu, su, nuestro/a",     "content", "general"),
-                // 27
-                RoadmapLesson("🎨 Цвета: rojo, azul, verde, amarillo…",        "content", "general"),
-                // 28
-                RoadmapLesson("🎨 Согласование: rojo/roja, blanco/blanca",    "content", "general"),
-                // 29
-                RoadmapLesson("📚 Множественное число: -s и -es",              "content", "general"),
-                // 30  ЧЕКПОИНТ
-                RoadmapLesson("🏁 Чекпоинт: «Аренда жилья»",                   "quiz",    "all")
+                // 22  🆕 Нерегулярные yo-формы — сразу после TENER (объясняет почему tengo, salgo, pongo)
+                RoadmapLesson("🎯 Нерегулярные yo-формы (tengo, salgo, pongo)","content", "general", id = "u4_l13_5"),
+                // 23  l6
+                RoadmapLesson("🔢 Числа 11–20: once, doce… veinte",           "content", "general", id = "u2_l6"),
+                // 24  l7
+                RoadmapLesson("🔢 Числа 21–100: veintiuno, treinta…",          "content", "general", id = "u2_l7"),
+                // 25  l8
+                RoadmapLesson("👨‍👩‍👧 Семья 1: padre, madre, hermano, hijo",        "content", "familia", id = "u2_l8"),
+                // 26  l9
+                RoadmapLesson("👨‍👩‍👧 Семья 2: abuelo, tío, primo, sobrino",        "content", "familia", id = "u2_l9"),
+                // 27  l10
+                RoadmapLesson("📎 Притяжательные: mi, tu, su, nuestro/a",     "content", "general", id = "u2_l10"),
+                // 28  l11
+                RoadmapLesson("🎨 Цвета: rojo, azul, verde, amarillo…",        "content", "general", id = "u2_l11"),
+                // 29  l12
+                RoadmapLesson("🎨 Согласование: rojo/roja, blanco/blanca",    "content", "general", id = "u2_l12"),
+                // 30  l13
+                RoadmapLesson("📚 Множественное число: -s и -es",              "content", "general", id = "u2_l13"),
+                // 31  ЧЕКПОИНТ l14
+                RoadmapLesson("🏁 Чекпоинт: «Аренда жилья»",                   "quiz",    "all",     id = "u2_l14")
             )
         ),
 
@@ -191,13 +193,11 @@ object RoadmapData {
                 RoadmapLesson("👗 Одежда: camisa, pantalón, vestido, zapatos", "content", "ropa"),
                 // 57
                 RoadmapLesson("🌤️ Погода: Hace calor/frío / Llueve / Nieva",  "content", "general"),
-                // 58
-                RoadmapLesson("🌅 Мой день: me levanto, desayuno, trabajo…",   "content", "general"),
-                // 59  l13
-                RoadmapLesson("🔄 Возвратные: levantarse, ducharse, acostarse","content", "general"),
-                // 60  🆕 l13_5 вставка после возвратных
-                RoadmapLesson("🎯 Нерегулярные yo-формы (tengo, salgo)",       "content", "general", id = "u4_l13_5"),
-                // 61  ФИНАЛЬНЫЙ БОСС l14
+                // 58  ✅ Сначала ТЕОРИЯ возвратных (была pos 13, перенесена сюда)
+                RoadmapLesson("🔄 Возвратные: levantarse, ducharse, acostarse","content", "general", id = "u4_l13"),
+                // 59  ✅ Потом ПРАКТИКА возвратных в контексте дня (была pos 12)
+                RoadmapLesson("🌅 Мой день: me levanto, desayuno, trabajo…",   "content", "general", id = "u4_l12"),
+                // 60  🆕 yo-формы перемещены в A1 Блок 2 (Fix #2). Здесь остаётся только финал
                 RoadmapLesson("🏆 ФИНАЛЬНЫЙ БОСС: «Один день в Мадриде»",      "quiz",    "all",     id = "u4_l14")
             )
         ),
@@ -232,20 +232,19 @@ object RoadmapData {
                 RoadmapLesson("📅 Irregulares: tener → tuve, estar → estuve",      "content", "general"),
                 // l8
                 RoadmapLesson("📅 Irregulares: hacer → hice, querer → quise",      "content", "general"),
-                // 🆕 l8_5 вставка после Irregulares hacer/querer
-                RoadmapLesson("⏪ Pluscuamperfecto: había hablado",                  "content", "general", id = "u5_l8_5"),
+                // 🆕 Pluscuamperfecto перемещён в A2 Блок 3 (Fix #3) — там после participio
                 // l9
-                RoadmapLesson("📝 Por vs Para: основы",                             "content", "general", id = "u5_l9"),
+                RoadmapLesson("📝 Por vs Para: основы",                             "content", "general"),
                 // l10
-                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "content", "phrases", id = "u5_l10"),
+                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "content", "phrases"),
                 // l11
-                RoadmapLesson("📅 Irregulares: poder → pude, saber → supe",        "content", "general", id = "u5_l11"),
+                RoadmapLesson("📅 Irregulares: poder → pude, saber → supe",        "content", "general"),
                 // l12
-                RoadmapLesson("📅 Irregulares: dar → di, ver → vi, decir → dije",  "content", "general", id = "u5_l12"),
+                RoadmapLesson("📅 Irregulares: dar → di, ver → vi, decir → dije",  "content", "general"),
                 // l13
-                RoadmapLesson("🗣️ Рассказ в прошлом: связный текст",               "content", "general", id = "u5_l13"),
+                RoadmapLesson("🗣️ Рассказ в прошлом: связный текст",               "content", "general"),
                 // l14 чекпоинт
-                RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all",     id = "u5_l14")
+                RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all")
             )
         ),
 
@@ -312,22 +311,25 @@ object RoadmapData {
                 RoadmapLesson("✅ Pretérito Perfecto: he comido, has vivido",       "content", "general"),
                 // l1
                 RoadmapLesson("✅ Participios irregulares: hecho, dicho, visto",    "content", "general"),
+                // 🆕 Fix #3: Pluscuamperfecto — сразу после participio (нужен он + imperfecto haber)
+                RoadmapLesson("⏪ Pluscuamperfecto: había hablado",                  "content", "general", id = "u5_l8_5"),
                 // l2
-                RoadmapLesson("🔀 Perfecto vs Indefinido: когда что использовать",  "content", "general"),
+                RoadmapLesson("🔀 Perfecto vs Indefinido: когда что использовать",  "content", "general", id = "u7_l2"),
                 // l3
-                RoadmapLesson("📌 Ya / Todavía / Aún: уже, ещё, до сих пор",       "content",   "phrases"),
+                RoadmapLesson("📌 Ya / Todavía / Aún: уже, ещё, до сих пор",       "content",   "phrases", id = "u7_l3"),
                 // l4
-                RoadmapLesson("🔄 Estar + gerundio: estoy comiendo (сейчас)",       "content", "general"),
+                RoadmapLesson("🔄 Estar + gerundio: estoy comiendo (сейчас)",       "content", "general", id = "u7_l4"),
                 // l5
-                RoadmapLesson("🔄 Seguir + gerundio / Llevar + gerundio",           "content", "general"),
-                // 🆕 l5_5 вставка после Seguir+gerundio
-                RoadmapLesson("🗯️ Императив TÚ нерегулярный: di, haz, pon",          "content", "general", id = "u7_l5_5"),
-                // l6
-                RoadmapLesson("💼 Работа: buscar empleo, currículum, entrevista",   "content",   "trabajo", id = "u7_l6"),
-                // l7
+                RoadmapLesson("🔄 Seguir + gerundio / Llevar + gerundio",           "content", "general", id = "u7_l5"),
+                // ✅ Fix #4: сначала ПРАВИЛЬНЫЕ императивы, потом нерегулярные
+                // l7 (был l7) — Imperativo afirmativo ПЕРЕД нерегулярным
                 RoadmapLesson("📢 Imperativo afirmativo: ¡habla! ¡come! ¡escribe!", "content", "general",   id = "u7_l7"),
-                // l8
+                // l8 (был l8) — Imperativo negativo
                 RoadmapLesson("🚫 Imperativo negativo: ¡no hables! ¡no comas!",    "content", "general",   id = "u7_l8"),
+                // 🆕 l5_5 — Императив TÚ нерегулярный ПОСЛЕ регулярного
+                RoadmapLesson("🗯️ Императив TÚ нерегулярный: di, haz, pon",          "content", "general", id = "u7_l5_5"),
+                // l6 — Работа
+                RoadmapLesson("💼 Работа: buscar empleo, currículum, entrevista",   "content",   "trabajo", id = "u7_l6"),
                 // l9
                 RoadmapLesson("🏥 У врача: síntomas, me duele, tengo fiebre",       "content",   "salud",   id = "u7_l9"),
                 // l10
