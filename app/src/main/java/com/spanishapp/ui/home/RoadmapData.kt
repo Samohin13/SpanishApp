@@ -54,10 +54,10 @@ object RoadmapData {
                 RoadmapLesson("🌍 Страны: Soy ruso/rusa, de Rusia",           "content", "general"),
                 // 14
                 RoadmapLesson("🔢 Числа 0–10: cero, uno, dos… diez",          "content", "general"),
-                // 15  ЧЕКПОИНТ
-                RoadmapLesson("🏁 Чекпоинт: «Паспортный контроль»",           "quiz",    "all"),
-                // 16  🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("🔢 Порядковые: primero, segundo…",            "content", "general", id = "u1_l13_5")
+                // 15  🆕 Вставка: после числительных — порядковые
+                RoadmapLesson("🔢 Порядковые: primero, segundo…",             "content", "general", id = "u1_l13_5"),
+                // 16  ЧЕКПОИНТ
+                RoadmapLesson("🏁 Чекпоинт: «Паспортный контроль»",           "quiz",    "all", id = "u1_l14")
             )
         ),
 
@@ -118,39 +118,40 @@ object RoadmapData {
             cefrLevel = "A1",
             color = Color(0xFFEAB308),
             lessons = listOf(
-                // 31
+                // 31  l0
                 RoadmapLesson("📍 ESTAR: estoy, estás, está — где находишься", "content", "general"),
-                // 32
+                // 32  l1
                 RoadmapLesson("📍 Предлоги: en/sobre/debajo/al lado de",       "content", "general"),
-                // 33
+                // 33  l2
                 RoadmapLesson("🏠 Дом: sala, cocina, dormitorio, baño",        "content", "casa_hogar"),
-                // 34
+                // 34  l3
                 RoadmapLesson("🛋️ Мебель: sofá, mesa, silla, cama, armario",  "content", "casa_hogar"),
-                // 35
+                // 35  l4
                 RoadmapLesson("🍞 Еда: pan, leche, agua, café, fruta, carne", "content", "comida_bebida"),
-                // 36
+                // 36  l5
                 RoadmapLesson("🍽️ В ресторане: el menú, el plato, la cuenta", "content", "comida_bebida"),
-                // 37
-                RoadmapLesson("❤️ QUERER: quiero, quieres, quiere (хотеть)",   "content", "general"),
-                // 38
-                RoadmapLesson("💪 PODER: puedo, puedes, puede (мочь)",         "content", "general"),
-                // 39
-                RoadmapLesson("⏰ Время: ¿Qué hora es? Son las… Es la una",   "content", "general"),
-                // 40
-                RoadmapLesson("📅 Дни недели: lunes, martes… domingo",         "content", "general"),
-                // 41
-                RoadmapLesson("📅 Месяцы: enero, febrero… diciembre",          "content", "general"),
-                // 42
-                RoadmapLesson("⏱️ ¿Cuándo? hoy / mañana / ayer / ahora",      "content", "general"),
-                // 43
-                RoadmapLesson("❓ Вопросы: ¿Qué? ¿Quién? ¿Dónde? ¿Cuánto?",  "content", "general"),
-                // 44
-                RoadmapLesson("🚫 Отрицание: No + глагол / nunca / jamás",    "content", "general"),
-                // 45  ЧЕКПОИНТ
-                RoadmapLesson("🏁 Чекпоинт: «Обед в ресторане»",               "quiz",    "all"),
-                // 46-47  🆕 БОНУС: уроки-вставки из xlsx
+                // 37  🆕 l5_5 вставка после ресторана
                 RoadmapLesson("📍 hay — есть/имеется",                         "content", "general", id = "u3_l5_5"),
-                RoadmapLesson("🔄 Глаголы e→i: pedir, servir",                 "content", "general", id = "u3_l7_5")
+                // 38  l6
+                RoadmapLesson("❤️ QUERER: quiero, quieres, quiere (хотеть)",   "content", "general", id = "u3_l6"),
+                // 39  l7
+                RoadmapLesson("💪 PODER: puedo, puedes, puede (мочь)",         "content", "general", id = "u3_l7"),
+                // 40  🆕 l7_5 вставка после PODER
+                RoadmapLesson("🔄 Глаголы e→i: pedir, servir",                 "content", "general", id = "u3_l7_5"),
+                // 41  l8
+                RoadmapLesson("⏰ Время: ¿Qué hora es? Son las… Es la una",   "content", "general", id = "u3_l8"),
+                // 42  l9
+                RoadmapLesson("📅 Дни недели: lunes, martes… domingo",         "content", "general", id = "u3_l9"),
+                // 43  l10
+                RoadmapLesson("📅 Месяцы: enero, febrero… diciembre",          "content", "general", id = "u3_l10"),
+                // 44  l11
+                RoadmapLesson("⏱️ ¿Cuándo? hoy / mañana / ayer / ahora",      "content", "general", id = "u3_l11"),
+                // 45  l12
+                RoadmapLesson("❓ Вопросы: ¿Qué? ¿Quién? ¿Dónde? ¿Cuánto?",  "content", "general", id = "u3_l12"),
+                // 46  l13
+                RoadmapLesson("🚫 Отрицание: No + глагол / nunca / jamás",    "content", "general", id = "u3_l13"),
+                // 47  ЧЕКПОИНТ l14
+                RoadmapLesson("🏁 Чекпоинт: «Обед в ресторане»",               "quiz",    "all",     id = "u3_l14")
             )
         ),
 
@@ -192,12 +193,12 @@ object RoadmapData {
                 RoadmapLesson("🌤️ Погода: Hace calor/frío / Llueve / Nieva",  "content", "general"),
                 // 58
                 RoadmapLesson("🌅 Мой день: me levanto, desayuno, trabajo…",   "content", "general"),
-                // 59
+                // 59  l13
                 RoadmapLesson("🔄 Возвратные: levantarse, ducharse, acostarse","content", "general"),
-                // 60  ФИНАЛЬНЫЙ БОСС
-                RoadmapLesson("🏆 ФИНАЛЬНЫЙ БОСС: «Один день в Мадриде»",      "quiz",    "all"),
-                // 61  🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("🎯 Нерегулярные yo-формы (tengo, salgo)",       "content", "general", id = "u4_l13_5")
+                // 60  🆕 l13_5 вставка после возвратных
+                RoadmapLesson("🎯 Нерегулярные yo-формы (tengo, salgo)",       "content", "general", id = "u4_l13_5"),
+                // 61  ФИНАЛЬНЫЙ БОСС l14
+                RoadmapLesson("🏆 ФИНАЛЬНЫЙ БОСС: «Один день в Мадриде»",      "quiz",    "all",     id = "u4_l14")
             )
         ),
 
@@ -213,23 +214,38 @@ object RoadmapData {
             cefrLevel = "A2",
             color = Color(0xFF0E7490),
             lessons = listOf(
+                // l0
                 RoadmapLesson("📅 Pretérito Indefinido: что это и когда",          "content", "general"),
+                // l1
                 RoadmapLesson("📅 Regulares -AR: hablar → hablé, hablaste, habló", "content", "general"),
+                // l2
                 RoadmapLesson("📅 Regulares -ER/-IR: comer → comí, vivir → viví",  "content", "general"),
+                // l3
                 RoadmapLesson("🌍 Ser vs Estar: ключевые различия",                "content", "general"),
+                // l4
                 RoadmapLesson("💬 ¿Qué hiciste ayer? — первые истории",            "content",   "phrases"),
+                // l5
                 RoadmapLesson("🎯 Мини-тест: Regulares",                            "quiz",    "all"),
+                // l6
                 RoadmapLesson("📅 Irregulares: ir/ser → fui/fue/fuimos",           "content", "general"),
+                // l7
                 RoadmapLesson("📅 Irregulares: tener → tuve, estar → estuve",      "content", "general"),
+                // l8
                 RoadmapLesson("📅 Irregulares: hacer → hice, querer → quise",      "content", "general"),
-                RoadmapLesson("📝 Por vs Para: основы",                             "content", "general"),
-                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "content", "phrases"),
-                RoadmapLesson("📅 Irregulares: poder → pude, saber → supe",        "content", "general"),
-                RoadmapLesson("📅 Irregulares: dar → di, ver → vi, decir → dije",  "content", "general"),
-                RoadmapLesson("🗣️ Рассказ в прошлом: связный текст",               "content", "general"),
-                RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all"),
-                // 🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("⏪ Pluscuamperfecto: había hablado",                  "content", "general", id = "u5_l8_5")
+                // 🆕 l8_5 вставка после Irregulares hacer/querer
+                RoadmapLesson("⏪ Pluscuamperfecto: había hablado",                  "content", "general", id = "u5_l8_5"),
+                // l9
+                RoadmapLesson("📝 Por vs Para: основы",                             "content", "general", id = "u5_l9"),
+                // l10
+                RoadmapLesson("💬 Диалог: «Расскажи о своих выходных»",            "content", "phrases", id = "u5_l10"),
+                // l11
+                RoadmapLesson("📅 Irregulares: poder → pude, saber → supe",        "content", "general", id = "u5_l11"),
+                // l12
+                RoadmapLesson("📅 Irregulares: dar → di, ver → vi, decir → dije",  "content", "general", id = "u5_l12"),
+                // l13
+                RoadmapLesson("🗣️ Рассказ в прошлом: связный текст",               "content", "general", id = "u5_l13"),
+                // l14 чекпоинт
+                RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all",     id = "u5_l14")
             )
         ),
 
@@ -245,23 +261,38 @@ object RoadmapData {
             cefrLevel = "A2",
             color = Color(0xFF0891B2),
             lessons = listOf(
+                // l0
                 RoadmapLesson("⏳ Imperfecto -AR: hablaba, trabajaba, estudiaba",   "content", "general"),
+                // l1
                 RoadmapLesson("⏳ Imperfecto -ER/-IR: comía, vivía + ser/ir/ver",   "content", "general"),
+                // l2
                 RoadmapLesson("⚡ Indefinido vs Imperfecto: когда что использовать","content", "general"),
+                // l3
                 RoadmapLesson("📖 Описания из прошлого: era niño, tenía...",        "content",   "phrases"),
+                // l4
                 RoadmapLesson("📊 Сравнение: más...que / menos...que",              "content", "general"),
+                // l5
                 RoadmapLesson("📊 Сравнение: tan...como / tanto...como",            "content", "general"),
+                // l6
                 RoadmapLesson("🏆 Превосходная степень: el más, el mejor",          "content", "general"),
+                // l7
                 RoadmapLesson("🎯 Прилагательные-описания: alto, simpático, listo", "content",   "general"),
+                // l8
                 RoadmapLesson("👆 Местоимения OD: lo, la, los, las",                "content", "general"),
+                // l9
                 RoadmapLesson("👆 Местоимения OI: me, te, le, nos, os, les",       "content", "general"),
-                RoadmapLesson("⏱️ Hace + tiempo + que: hace dos años que...",       "content", "general"),
-                RoadmapLesson("👗 Одежда и мода: talla, probarse, quedar bien",     "content",   "ropa"),
-                RoadmapLesson("📝 Por vs Para: продвинутый уровень",                "content", "general"),
-                RoadmapLesson("😊 Эмоции: alegría, tristeza, miedo, sorpresa",     "content",   "emociones"),
-                RoadmapLesson("🏁 Чекпоинт: «Расскажи о своём детстве»",           "quiz",    "all"),
-                // 🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("👥 Двойные местоимения: te lo doy",                   "content", "general", id = "u6_l9_5")
+                // 🆕 l9_5 вставка после OI
+                RoadmapLesson("👥 Двойные местоимения: te lo doy",                  "content", "general", id = "u6_l9_5"),
+                // l10
+                RoadmapLesson("⏱️ Hace + tiempo + que: hace dos años que...",       "content", "general", id = "u6_l10"),
+                // l11
+                RoadmapLesson("👗 Одежда и мода: talla, probarse, quedar bien",     "content",   "ropa",  id = "u6_l11"),
+                // l12
+                RoadmapLesson("📝 Por vs Para: продвинутый уровень",                "content", "general", id = "u6_l12"),
+                // l13
+                RoadmapLesson("😊 Эмоции: alegría, tristeza, miedo, sorpresa",     "content",   "emociones", id = "u6_l13"),
+                // l14 чекпоинт
+                RoadmapLesson("🏁 Чекпоинт: «Расскажи о своём детстве»",           "quiz",    "all",     id = "u6_l14")
             )
         ),
 
@@ -277,23 +308,38 @@ object RoadmapData {
             cefrLevel = "A2",
             color = Color(0xFF06B6D4),
             lessons = listOf(
+                // l0
                 RoadmapLesson("✅ Pretérito Perfecto: he comido, has vivido",       "content", "general"),
+                // l1
                 RoadmapLesson("✅ Participios irregulares: hecho, dicho, visto",    "content", "general"),
+                // l2
                 RoadmapLesson("🔀 Perfecto vs Indefinido: когда что использовать",  "content", "general"),
+                // l3
                 RoadmapLesson("📌 Ya / Todavía / Aún: уже, ещё, до сих пор",       "content",   "phrases"),
+                // l4
                 RoadmapLesson("🔄 Estar + gerundio: estoy comiendo (сейчас)",       "content", "general"),
+                // l5
                 RoadmapLesson("🔄 Seguir + gerundio / Llevar + gerundio",           "content", "general"),
-                RoadmapLesson("💼 Работа: buscar empleo, currículum, entrevista",   "content",   "trabajo"),
-                RoadmapLesson("📢 Imperativo afirmativo: ¡habla! ¡come! ¡escribe!", "content", "general"),
-                RoadmapLesson("🚫 Imperativo negativo: ¡no hables! ¡no comas!",    "content", "general"),
-                RoadmapLesson("🏥 У врача: síntomas, me duele, tengo fiebre",       "content",   "salud"),
-                RoadmapLesson("🔗 ОД + ОИ вместе: te lo doy, se lo digo",           "content", "general"),
-                RoadmapLesson("✈️ В путешествии: hotel, billete, reserva",          "content",   "viajes"),
-                RoadmapLesson("🔗 Придаточные с que: creo que / pienso que",        "content", "general"),
-                RoadmapLesson("🍽️ Гастрономия: tapas, paella, tortilla española",  "content",   "comida_bebida"),
-                RoadmapLesson("🏁 Чекпоинт: «Мой обычный день»",                   "quiz",    "all"),
-                // 🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("🗯️ Императив TÚ нерегулярный: di, haz, pon",          "content", "general", id = "u7_l5_5")
+                // 🆕 l5_5 вставка после Seguir+gerundio
+                RoadmapLesson("🗯️ Императив TÚ нерегулярный: di, haz, pon",          "content", "general", id = "u7_l5_5"),
+                // l6
+                RoadmapLesson("💼 Работа: buscar empleo, currículum, entrevista",   "content",   "trabajo", id = "u7_l6"),
+                // l7
+                RoadmapLesson("📢 Imperativo afirmativo: ¡habla! ¡come! ¡escribe!", "content", "general",   id = "u7_l7"),
+                // l8
+                RoadmapLesson("🚫 Imperativo negativo: ¡no hables! ¡no comas!",    "content", "general",   id = "u7_l8"),
+                // l9
+                RoadmapLesson("🏥 У врача: síntomas, me duele, tengo fiebre",       "content",   "salud",   id = "u7_l9"),
+                // l10
+                RoadmapLesson("🔗 ОД + ОИ вместе: te lo doy, se lo digo",           "content", "general",   id = "u7_l10"),
+                // l11
+                RoadmapLesson("✈️ В путешествии: hotel, billete, reserva",          "content",   "viajes",  id = "u7_l11"),
+                // l12
+                RoadmapLesson("🔗 Придаточные с que: creo que / pienso que",        "content", "general",   id = "u7_l12"),
+                // l13
+                RoadmapLesson("🍽️ Гастрономия: tapas, paella, tortilla española",  "content",   "comida_bebida", id = "u7_l13"),
+                // l14 чекпоинт
+                RoadmapLesson("🏁 Чекпоинт: «Мой обычный день»",                   "quiz",    "all",       id = "u7_l14")
             )
         ),
 
@@ -361,16 +407,16 @@ object RoadmapData {
                 RoadmapLesson("🚫 No creer que / Dudar que — сомнение",             "content", "general"),
                 // 11
                 RoadmapLesson("🌟 Ojalá + Subjuntivo — мечты и надежды",            "content", "phrases"),
-                // 12
+                // 12  l11
                 RoadmapLesson("🎯 Para que + Subjuntivo — цель",                     "content", "general"),
-                // 13
-                RoadmapLesson("⏰ Cuando + Subjuntivo — будущее время",              "content", "general"),
-                // 14
-                RoadmapLesson("📝 Aunque: факт vs гипотеза",                         "content", "general"),
-                // 15  ЧЕКПОИНТ
-                RoadmapLesson("🏁 Чекпоинт: «Совет другу»",                         "quiz",    "all"),
-                // 16  🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("🔮 Antes de que + Subjuntivo",                       "content", "general", id = "u9_l11_5")
+                // 13  🆕 l11_5 вставка после Para que
+                RoadmapLesson("🔮 Antes de que + Subjuntivo",                       "content", "general", id = "u9_l11_5"),
+                // 14  l12
+                RoadmapLesson("⏰ Cuando + Subjuntivo — будущее время",              "content", "general", id = "u9_l12"),
+                // 15  l13
+                RoadmapLesson("📝 Aunque: факт vs гипотеза",                         "content", "general", id = "u9_l13"),
+                // 16  ЧЕКПОИНТ l14
+                RoadmapLesson("🏁 Чекпоинт: «Совет другу»",                         "quiz",    "all",     id = "u9_l14")
             )
         ),
 
@@ -439,30 +485,30 @@ object RoadmapData {
                 RoadmapLesson("💬 Изменение времён в косвенной речи",                 "content", "general"),
                 // 34
                 RoadmapLesson("💬 Косвенные приказы: pidió que + Imp.Subj.",          "content", "general"),
-                // 35
+                // 35  l4
                 RoadmapLesson("🔗 Cláusulas relativas: que, quien, donde",            "content", "general"),
-                // 36
+                // 36  l5
                 RoadmapLesson("🔗 Cuyo / el cual / lo cual",                          "content", "general"),
-                // 37
-                RoadmapLesson("🎭 Voz pasiva: ser + participio",                      "content", "general"),
-                // 38
-                RoadmapLesson("🎭 Ser vs Estar + participio: es hecho / está hecho",  "content", "general"),
-                // 39
-                RoadmapLesson("⚙️ Perífrasis: llevar + gerundio",                     "content", "general"),
-                // 40
-                RoadmapLesson("⚙️ Perífrasis: seguir/continuar + gerundio",           "content", "general"),
-                // 41
-                RoadmapLesson("⚙️ Perífrasis: acabar de / volver a + infinitivo",     "content", "general"),
-                // 42
-                RoadmapLesson("📝 Conectores: sin embargo / por lo tanto / además",   "content", "general"),
-                // 43
-                RoadmapLesson("📝 Concesión: aunque / a pesar de (que)",              "content", "general"),
-                // 44
-                RoadmapLesson("📝 Conclusión: en definitiva / en resumen / es decir", "content", "general"),
-                // 45  ЧЕКПОИНТ
-                RoadmapLesson("🏁 Чекпоинт: «Интервью»",                              "quiz",    "all"),
-                // 46  🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("💡 Lo + прилагательное (lo bueno)",                    "content", "general", id = "u11_l5_5")
+                // 37  🆕 l5_5 вставка после Cuyo / el cual
+                RoadmapLesson("💡 Lo + прилагательное (lo bueno)",                    "content", "general", id = "u11_l5_5"),
+                // 38  l6
+                RoadmapLesson("🎭 Voz pasiva: ser + participio",                      "content", "general", id = "u11_l6"),
+                // 39  l7
+                RoadmapLesson("🎭 Ser vs Estar + participio: es hecho / está hecho",  "content", "general", id = "u11_l7"),
+                // 40  l8
+                RoadmapLesson("⚙️ Perífrasis: llevar + gerundio",                     "content", "general", id = "u11_l8"),
+                // 41  l9
+                RoadmapLesson("⚙️ Perífrasis: seguir/continuar + gerundio",           "content", "general", id = "u11_l9"),
+                // 42  l10
+                RoadmapLesson("⚙️ Perífrasis: acabar de / volver a + infinitivo",     "content", "general", id = "u11_l10"),
+                // 43  l11
+                RoadmapLesson("📝 Conectores: sin embargo / por lo tanto / además",   "content", "general", id = "u11_l11"),
+                // 44  l12
+                RoadmapLesson("📝 Concesión: aunque / a pesar de (que)",              "content", "general", id = "u11_l12"),
+                // 45  l13
+                RoadmapLesson("📝 Conclusión: en definitiva / en resumen / es decir", "content", "general", id = "u11_l13"),
+                // 46  ЧЕКПОИНТ l14
+                RoadmapLesson("🏁 Чекпоинт: «Интервью»",                              "quiz",    "all",     id = "u11_l14")
             )
         ),
 
@@ -496,20 +542,20 @@ object RoadmapData {
                 RoadmapLesson("🎭 Modismos con TENER: tener ganas / razón / en cuenta","content","general"),
                 // 54
                 RoadmapLesson("🎭 Modismos con HACER: hacer falta / caso / ilusión",   "content","general"),
-                // 55
+                // 55  l9
                 RoadmapLesson("🎭 Modismos con LLEVAR: llevar a cabo / la contraria",  "content","general"),
-                // 56
-                RoadmapLesson("✍️ Registro formal vs coloquial: diferencias clave",    "content","general"),
-                // 57
-                RoadmapLesson("✍️ Carta de solicitud: estructura y fórmulas",          "content","general"),
-                // 58
-                RoadmapLesson("🗣️ Debatir: expresar acuerdo / desacuerdo / matizar",  "content","general"),
-                // 59
-                RoadmapLesson("🗣️ Argumentar: por un lado... por otro lado...",        "content","general"),
-                // 60  ФИНАЛЬНЫЙ ЧЕКПОИНТ B1
-                RoadmapLesson("🏆 Чекпоинт «Финал B1»",                               "quiz",   "all"),
-                // 61  🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("🤲 Идиомы PONER/PONERSE",                              "content", "general", id = "u12_l9_5")
+                // 56  🆕 l9_5 вставка после Modismos LLEVAR
+                RoadmapLesson("🤲 Идиомы PONER/PONERSE",                              "content", "general", id = "u12_l9_5"),
+                // 57  l10
+                RoadmapLesson("✍️ Registro formal vs coloquial: diferencias clave",    "content","general", id = "u12_l10"),
+                // 58  l11
+                RoadmapLesson("✍️ Carta de solicitud: estructura y fórmulas",          "content","general", id = "u12_l11"),
+                // 59  l12
+                RoadmapLesson("🗣️ Debatir: expresar acuerdo / desacuerdo / matizar",  "content","general", id = "u12_l12"),
+                // 60  l13
+                RoadmapLesson("🗣️ Argumentar: por un lado... por otro lado...",        "content","general", id = "u12_l13"),
+                // 61  ФИНАЛЬНЫЙ ЧЕКПОИНТ B1 l14
+                RoadmapLesson("🏆 Чекпоинт «Финал B1»",                               "quiz",   "all",      id = "u12_l14")
             )
         ),
 
@@ -522,23 +568,38 @@ object RoadmapData {
             cefrLevel = "B2",
             color = Color(0xFF9F1239),
             lessons = listOf(
+                // l0
                 RoadmapLesson("🔮 Subjuntivo Imperfecto: -ra и -se формы",              "content", "general"),
+                // l1
                 RoadmapLesson("🔮 Образование: tablara/hablase, irregulares",           "content", "general"),
+                // l2
                 RoadmapLesson("🔮 Si + Imp.Subj. + Condicional: нереальные условия",   "content", "general"),
+                // l3
                 RoadmapLesson("🔮 Ojalá + Imp.Subj.: «Если бы только...»",             "content", "general"),
+                // l4
                 RoadmapLesson("🔮 Como si... — «как будто»",                            "content", "general"),
+                // l5
                 RoadmapLesson("🎯 Мини-тест: Subjuntivo Imperfecto",                    "quiz",    "all"),
-                RoadmapLesson("🔮 Pluscuamperfecto de Subjuntivo: hubiera + participio","content", "general"),
-                RoadmapLesson("🔮 Si hubiera sabido... — сожаление о прошлом",         "content", "general"),
-                RoadmapLesson("🔮 Condicional Compuesto: habría viajado",               "content", "general"),
-                RoadmapLesson("🔮 Que yo sepa / que yo recuerde — устойчивые формы",   "content", "general"),
-                RoadmapLesson("🔮 Aunque + Subj. vs Indicativo: оттенки смысла",       "content", "general"),
-                RoadmapLesson("🔮 Subj. в придаточных цели: para que, a fin de que",   "content", "general"),
-                RoadmapLesson("🔮 Subj. в придаточных времени: cuando llegues",        "content", "general"),
-                RoadmapLesson("🔮 Subj. в придаточных относительных: alguien que sepa","content", "general"),
-                RoadmapLesson("🏆 Чекпоинт Блока 1 B2",                                "quiz",    "all"),
-                // 🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("🤔 Quizás vs A lo mejor — оттенки",                     "content", "general", id = "u13_l5_5")
+                // 🆕 l5_5 вставка после мини-теста
+                RoadmapLesson("🤔 Quizás vs A lo mejor — оттенки",                     "content", "general", id = "u13_l5_5"),
+                // l6
+                RoadmapLesson("🔮 Pluscuamperfecto de Subjuntivo: hubiera + participio","content", "general", id = "u13_l6"),
+                // l7
+                RoadmapLesson("🔮 Si hubiera sabido... — сожаление о прошлом",         "content", "general", id = "u13_l7"),
+                // l8
+                RoadmapLesson("🔮 Condicional Compuesto: habría viajado",               "content", "general", id = "u13_l8"),
+                // l9
+                RoadmapLesson("🔮 Que yo sepa / que yo recuerde — устойчивые формы",   "content", "general", id = "u13_l9"),
+                // l10
+                RoadmapLesson("🔮 Aunque + Subj. vs Indicativo: оттенки смысла",       "content", "general", id = "u13_l10"),
+                // l11
+                RoadmapLesson("🔮 Subj. в придаточных цели: para que, a fin de que",   "content", "general", id = "u13_l11"),
+                // l12
+                RoadmapLesson("🔮 Subj. в придаточных времени: cuando llegues",        "content", "general", id = "u13_l12"),
+                // l13
+                RoadmapLesson("🔮 Subj. в придаточных относительных: alguien que sepa","content", "general", id = "u13_l13"),
+                // l14 чекпоинт
+                RoadmapLesson("🏆 Чекпоинт Блока 1 B2",                                "quiz",    "all",     id = "u13_l14")
             )
         ),
 
@@ -550,23 +611,38 @@ object RoadmapData {
             cefrLevel = "B2",
             color = Color(0xFFBE185D),
             lessons = listOf(
+                // l0
                 RoadmapLesson("⚙️ Voz pasiva con SER: fue construido",                 "content", "general"),
+                // l1
                 RoadmapLesson("⚙️ Estar + participio: está hecho / están cerrados",    "content", "general"),
+                // l2
                 RoadmapLesson("⚙️ Se pasivo y se impersonal",                          "content", "general"),
+                // l3
                 RoadmapLesson("⚙️ Perífrasis: ir a / acabar de / volver a",            "content", "general"),
+                // l4
                 RoadmapLesson("⚙️ Perífrasis: llevar + gerundio",                      "content", "general"),
+                // l5
                 RoadmapLesson("🎯 Мини-тест: Pasiva y Perífrasis",                     "quiz",    "all"),
+                // l6
                 RoadmapLesson("⚙️ Perífrasis: seguir / dejar de / ponerse a",          "content", "general"),
+                // l7
                 RoadmapLesson("⚙️ Participio como adjetivo: una puerta cerrada",       "content", "general"),
+                // l8
                 RoadmapLesson("⚙️ Gerundio: usos avanzados — habiendo llegado",        "content", "general"),
+                // l9
                 RoadmapLesson("⚙️ Infinitivo: como sujeto y complemento",              "content", "general"),
-                RoadmapLesson("💬 Cláusulas relativas: que, quien, cuyo, donde",       "content", "general"),
-                RoadmapLesson("💬 Estilo indirecto: cambio de tiempos verbales",       "content", "general"),
-                RoadmapLesson("💬 Ser vs Estar: нюансы и сложные случаи",              "content", "general"),
-                RoadmapLesson("💬 Nominalización: de verbo a sustantivo",              "content", "general"),
-                RoadmapLesson("🏆 Чекпоинт Блока 2 B2",                                "quiz",    "all"),
-                // 🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("🔗 Сложные предлоги: a través de, en torno a",          "content", "general", id = "u14_l9_5")
+                // 🆕 l9_5 вставка после Infinitivo
+                RoadmapLesson("🔗 Сложные предлоги: a través de, en torno a",          "content", "general", id = "u14_l9_5"),
+                // l10
+                RoadmapLesson("💬 Cláusulas relativas: que, quien, cuyo, donde",       "content", "general", id = "u14_l10"),
+                // l11
+                RoadmapLesson("💬 Estilo indirecto: cambio de tiempos verbales",       "content", "general", id = "u14_l11"),
+                // l12
+                RoadmapLesson("💬 Ser vs Estar: нюансы и сложные случаи",              "content", "general", id = "u14_l12"),
+                // l13
+                RoadmapLesson("💬 Nominalización: de verbo a sustantivo",              "content", "general", id = "u14_l13"),
+                // l14 чекпоинт
+                RoadmapLesson("🏆 Чекпоинт Блока 2 B2",                                "quiz",    "all",     id = "u14_l14")
             )
         ),
 
@@ -578,23 +654,38 @@ object RoadmapData {
             cefrLevel = "B2",
             color = Color(0xFFDB2777),
             lessons = listOf(
+                // l0
                 RoadmapLesson("✍️ Регистры: formal, neutro, coloquial",                "content", "general"),
+                // l1
                 RoadmapLesson("✍️ Carta formal: solicitud, queja, agradecimiento",     "content", "general"),
+                // l2
                 RoadmapLesson("✍️ Informe escrito: структура и обороты",               "content", "general"),
+                // l3
                 RoadmapLesson("✍️ Artículo de opinión: структура",                    "content", "general"),
+                // l4
                 RoadmapLesson("🔗 Коннекторы контраста: sin embargo, no obstante",    "content", "general"),
+                // l5
                 RoadmapLesson("🎯 Мини-тест: Conectores y Registro",                   "quiz",    "all"),
+                // l6
                 RoadmapLesson("🔗 Коннекторы причины: dado que, puesto que, ya que",   "content", "general"),
+                // l7
                 RoadmapLesson("🔗 Коннекторы следствия: de ahí que, de modo que",     "content", "general"),
+                // l8
                 RoadmapLesson("🔗 Коннекторы уступки: a pesar de que, si bien",       "content", "general"),
+                // l9
                 RoadmapLesson("🗣️ Аргументация: тезис, доказательство, вывод",        "content", "general"),
+                // l10
                 RoadmapLesson("🗣️ Цитирование: según, de acuerdo con, a juicio de",   "content", "general"),
+                // l11
                 RoadmapLesson("📚 Latinismos y cultismos: per se, a posteriori",       "content", "general"),
-                RoadmapLesson("📚 Nominalización в деловом языке",                    "content", "general"),
-                RoadmapLesson("📚 Léxico académico: demostrar, evidenciar, sostener",  "content", "general"),
-                RoadmapLesson("🏆 Чекпоинт Блока 3 B2",                                "quiz",    "all"),
-                // 🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("↔️ Полусоюзы: mientras vs aunque",                       "content", "general", id = "u15_l11_5")
+                // 🆕 l11_5 вставка после Latinismos
+                RoadmapLesson("↔️ Полусоюзы: mientras vs aunque",                       "content", "general", id = "u15_l11_5"),
+                // l12
+                RoadmapLesson("📚 Nominalización в деловом языке",                    "content", "general", id = "u15_l12"),
+                // l13
+                RoadmapLesson("📚 Léxico académico: demostrar, evidenciar, sostener",  "content", "general", id = "u15_l13"),
+                // l14 чекпоинт
+                RoadmapLesson("🏆 Чекпоинт Блока 3 B2",                                "quiz",    "all",     id = "u15_l14")
             )
         ),
 
@@ -606,23 +697,38 @@ object RoadmapData {
             cefrLevel = "B2",
             color = Color(0xFFE11D48),
             lessons = listOf(
+                // l0
                 RoadmapLesson("🌟 Modismos B2: a rajatabla, en boca de todos",         "content", "general"),
+                // l1
                 RoadmapLesson("🌟 Modismos B2: no hay mal que... / a lo mejor",        "content", "general"),
+                // l2
                 RoadmapLesson("🌟 Refranes: El que mucho abarca...",                   "content", "general"),
+                // l3
                 RoadmapLesson("🌟 Eufemismos y lenguaje diplomático",                  "content", "general"),
+                // l4
                 RoadmapLesson("🌟 Lenguaje metafórico y figurado",                     "content", "general"),
-                RoadmapLesson("🎯 Мини-тест: Modismos y Refranes",                     "quiz",    "all"),
-                RoadmapLesson("🌍 Español latinoamericano: основные различия",         "content", "general"),
-                RoadmapLesson("🌍 Falsos amigos: embarazada, sensible, actual",        "content", "general"),
-                RoadmapLesson("🌍 Diminutivos y aumentativos: casita / hombrón",       "content", "general"),
-                RoadmapLesson("📱 Léxico moderno: startup, sostenibilidad, branding",  "content", "general"),
-                RoadmapLesson("💼 Léxico profesional: negocios, derecho, medicina",    "content", "general"),
-                RoadmapLesson("🎨 Cultura hispana: literatura, arte, historia",        "content", "general"),
-                RoadmapLesson("🔤 Tricky cases: sino/pero, también/tampoco, por/para", "content", "general"),
-                RoadmapLesson("🔤 Ortografía y puntuación avanzada",                   "content", "general"),
-                RoadmapLesson("🏆 ФИНАЛЬНЫЙ ЧЕКПОИНТ B2",                              "quiz",    "all"),
-                // 🆕 БОНУС: урок-вставка из xlsx
-                RoadmapLesson("🃏 Falsos cognados: embarazada ≠ embarrassed",          "content", "general", id = "u16_l4_5")
+                // 🆕 l4_5 вставка после Lenguaje metafórico
+                RoadmapLesson("🃏 Falsos cognados: embarazada ≠ embarrassed",          "content", "general", id = "u16_l4_5"),
+                // l5
+                RoadmapLesson("🎯 Мини-тест: Modismos y Refranes",                     "quiz",    "all",     id = "u16_l5"),
+                // l6
+                RoadmapLesson("🌍 Español latinoamericano: основные различия",         "content", "general", id = "u16_l6"),
+                // l7
+                RoadmapLesson("🌍 Falsos amigos: embarazada, sensible, actual",        "content", "general", id = "u16_l7"),
+                // l8
+                RoadmapLesson("🌍 Diminutivos y aumentativos: casita / hombrón",       "content", "general", id = "u16_l8"),
+                // l9
+                RoadmapLesson("📱 Léxico moderno: startup, sostenibilidad, branding",  "content", "general", id = "u16_l9"),
+                // l10
+                RoadmapLesson("💼 Léxico profesional: negocios, derecho, medicina",    "content", "general", id = "u16_l10"),
+                // l11
+                RoadmapLesson("🎨 Cultura hispana: literatura, arte, historia",        "content", "general", id = "u16_l11"),
+                // l12
+                RoadmapLesson("🔤 Tricky cases: sino/pero, también/tampoco, por/para", "content", "general", id = "u16_l12"),
+                // l13
+                RoadmapLesson("🔤 Ortografía y puntuación avanzada",                   "content", "general", id = "u16_l13"),
+                // l14 финальный чекпоинт
+                RoadmapLesson("🏆 ФИНАЛЬНЫЙ ЧЕКПОИНТ B2",                              "quiz",    "all",     id = "u16_l14")
             )
         )
     )
