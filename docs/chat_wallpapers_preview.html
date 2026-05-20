@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESPEAK — фоны чата v3 (vector)</title>
+<style>
+  body {
+    margin: 0; padding: 24px;
+    background: #1a1a1a; color: #eee;
+    font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+  }
+  h1 { text-align: center; margin-bottom: 8px; font-size: 24px; }
+  h2 { margin: 48px 0 16px; font-size: 18px; color: #FF7A1A; border-bottom: 1px solid #333; padding-bottom: 8px; }
+  .subtitle { text-align: center; color: #999; margin-bottom: 32px; font-size: 13px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .card {
+    background: #2a2a2a;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .preview {
+    width: 100%;
+    height: 440px;
+    position: relative;
+    overflow: hidden;
+  }
+  .label {
+    padding: 12px 14px;
+    background: #2a2a2a;
+  }
+  .label h3 { margin: 0 0 2px 0; font-size: 14px; }
+  .label p { margin: 0; color: #999; font-size: 11px; }
+  .bubble {
+    position: absolute;
+    padding: 9px 13px;
+    border-radius: 16px;
+    font-size: 12px;
+    max-width: 70%;
+  }
+  .bubble-them {
+    left: 14px;
+    background: rgba(255,255,255,0.93);
+    color: #222;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .bubble-me {
+    right: 14px;
+    background: rgba(255,122,26,0.96);
+    color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.20);
+  }
+
+  /* ─── 1. Atardecer (sun rays + clouds, чисто SVG) ─────────────── */
+  .wp-1 {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><g opacity='0.22' fill='%23fff'><circle cx='25' cy='25' r='6'/><g transform='translate(25 25)'><path d='M0,-12 L0,-9 M0,12 L0,9 M-12,0 L-9,0 M12,0 L9,0 M-8,-8 L-6,-6 M8,8 L6,6 M-8,8 L-6,6 M8,-8 L6,-6' stroke='%23fff' stroke-width='1.2'/></g><path d='M100,40 Q105,32 113,35 Q118,28 125,33 Q132,30 132,40 Q135,45 128,46 L102,46 Q95,45 100,40 Z'/><path d='M40,90 Q45,82 53,85 Q58,78 65,83 Q72,80 72,90 Q75,95 68,96 L42,96 Q35,95 40,90 Z'/><path d='M105,115 Q110,108 117,111 Q122,105 128,109 Q135,107 135,115 Q138,120 131,121 L107,121 Q100,120 105,115 Z'/></g></svg>"),
+      linear-gradient(135deg, #FFD89B 0%, #FFA07A 35%, #FF6B6B 65%, #C44569 100%);
+  }
+
+  /* ─── 2. Azulejos Noche (мавританские плитки) ─────────────────── */
+  .wp-2 {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><g fill='none' stroke='%23a4d4ed' stroke-width='1.2' opacity='0.35'><path d='M50,15 L60,25 L60,40 L50,50 L40,40 L40,25 Z'/><circle cx='50' cy='32' r='3' fill='%23a4d4ed'/><path d='M15,65 L25,55 L40,55 L50,65 L40,75 L25,75 Z'/><circle cx='32' cy='65' r='3' fill='%23a4d4ed'/><path d='M65,80 L75,70 L90,70 L100,80 L90,90 L75,90 Z'/></g></svg>"),
+      linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%);
+  }
+
+  /* ─── 3. Corazón Flamenco (сердца + веера SVG) ────────────────── */
+  .wp-3 {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><g opacity='0.30' fill='%23ffb4b4'><path d='M30,30 C22,22 8,30 30,50 C52,30 38,22 30,30 Z'/><path d='M110,90 C102,82 88,90 110,110 C132,90 118,82 110,90 Z'/></g><g opacity='0.30' fill='none' stroke='%23ffd4d4' stroke-width='1.5'><path d='M85,40 L100,55 L115,40 M85,40 L85,55 L115,55 L115,40 M85,40 L100,45 L115,40 M85,55 Q100,52 115,55'/><path d='M25,95 L40,110 L55,95 M25,95 L25,110 L55,110 L55,95 M25,95 L40,100 L55,95 M25,110 Q40,107 55,110'/></g></svg>"),
+      linear-gradient(135deg, #200122 0%, #6f0000 100%);
+  }
+
+  /* ─── 4. Mediterráneo Verde (оливковые листья + лимоны) ───────── */
+  .wp-4 {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><g opacity='0.30'><g fill='%23d4e8c8'><ellipse cx='25' cy='30' rx='10' ry='4' transform='rotate(-30 25 30)'/><ellipse cx='32' cy='35' rx='8' ry='3' transform='rotate(-30 32 35)'/></g><g fill='%23ffe88a'><ellipse cx='100' cy='50' rx='9' ry='6'/><path d='M100,44 Q102,42 104,44' stroke='%23c4a44a' stroke-width='1' fill='none'/></g><g fill='%23c4d4a8'><ellipse cx='40' cy='95' rx='11' ry='4' transform='rotate(20 40 95)'/><ellipse cx='48' cy='100' rx='9' ry='3' transform='rotate(20 48 100)'/></g><g fill='%23d4a888'><circle cx='105' cy='110' r='6'/><circle cx='112' cy='115' r='5'/><circle cx='108' cy='118' r='4'/></g></g></svg>"),
+      linear-gradient(135deg, #134E5E 0%, #71B280 100%);
+  }
+
+  /* ─── 5. Alhambra Noche (8-point stars + арки) ────────────────── */
+  .wp-5 {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><g fill='none' stroke='%23d4af37' stroke-width='1' opacity='0.55'><path d='M30,30 L36,18 L42,30 L54,30 L44,38 L48,50 L36,42 L24,50 L28,38 L18,30 Z'/><path d='M90,90 L96,78 L102,90 L114,90 L104,98 L108,110 L96,102 L84,110 L88,98 L78,90 Z'/><circle cx='90' cy='30' r='10'/><path d='M85,30 Q90,20 95,30'/><circle cx='30' cy='90' r='10'/><path d='M25,90 Q30,80 35,90'/></g></svg>"),
+      linear-gradient(135deg, #0F0C29 0%, #302B63 50%, #24243e 100%);
+  }
+
+  /* ─── 6. Fiesta (гитары, барабаны, маракасы — SVG) ────────────── */
+  .wp-6 {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><g opacity='0.25' fill='none' stroke='%238b4513' stroke-width='1.5'><!-- guitar --><ellipse cx='30' cy='40' rx='12' ry='15'/><path d='M30,55 L30,80'/><rect x='27' y='80' width='6' height='14' rx='1'/><circle cx='30' cy='40' r='3' fill='%238b4513'/><!-- drum --><circle cx='110' cy='50' r='15'/><circle cx='110' cy='50' r='10'/><path d='M95,42 L125,42 M95,58 L125,58'/><!-- maraca --><ellipse cx='40' cy='115' rx='8' ry='10'/><path d='M40,125 L40,135 M37,135 L43,135'/><!-- castanets --><ellipse cx='115' cy='115' rx='10' ry='6'/><ellipse cx='115' cy='125' rx='10' ry='6'/></g></svg>"),
+      linear-gradient(135deg, #FFA751 0%, #FFE259 100%);
+  }
+
+  /* ─── 7. Costa Brava (волны, ракушки, рыбы — SVG) ─────────────── */
+  .wp-7 {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><g opacity='0.30' fill='none' stroke='%23ffffff' stroke-width='1.3'><!-- wave --><path d='M10,30 Q20,22 30,30 T50,30'/><path d='M55,30 Q65,22 75,30 T95,30'/><!-- shell --><g transform='translate(100 60)'><path d='M0,0 L-8,15 L-4,15 M0,0 L-3,15 L0,15 M0,0 L3,15 L0,15 M0,0 L8,15 L4,15 M0,0 L0,15' /></g><!-- fish --><g transform='translate(30 95)'><path d='M0,0 Q8,-4 16,0 Q8,4 0,0 Z' fill='%23ffffff' fill-opacity='0.3'/><path d='M16,0 L22,-4 L22,4 Z' fill='%23ffffff' fill-opacity='0.3'/><circle cx='4' cy='-1' r='1' fill='%23ffffff'/></g><!-- boat --><g transform='translate(95 110)'><path d='M-12,4 L12,4 L8,12 L-8,12 Z'/><path d='M0,4 L0,-8 L8,2 L0,2'/></g></g></svg>"),
+      linear-gradient(135deg, #2E86AB 0%, #6CB4D4 60%, #B8E0E8 100%);
+  }
+
+  /* ─── 8. Sevilla Rosa (розы, веера, бутоны — SVG) ─────────────── */
+  .wp-8 {
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><g opacity='0.28'><!-- rose --><g transform='translate(30 35)' fill='%23c44569'><circle r='4'/><path d='M-4,-2 Q-6,-5 -2,-6 Q0,-3 -4,-2 Z'/><path d='M4,-2 Q6,-5 2,-6 Q0,-3 4,-2 Z'/><path d='M-3,3 Q-7,4 -5,7 Q-2,5 -3,3 Z'/><path d='M3,3 Q7,4 5,7 Q2,5 3,3 Z'/><path d='M0,-5 Q-2,-8 2,-9 Q4,-6 0,-5 Z'/></g><!-- fan --><g transform='translate(100 55)' fill='none' stroke='%23ffc4d4' stroke-width='1.2'><path d='M0,12 L-12,-8 M0,12 L-6,-12 M0,12 L0,-14 M0,12 L6,-12 M0,12 L12,-8'/><path d='M-12,-8 Q0,-15 12,-8' fill='%23ffc4d4' fill-opacity='0.3'/></g><!-- bud --><g transform='translate(45 100)' fill='%23ff8aa8'><ellipse rx='4' ry='6'/><path d='M0,6 L0,12' stroke='%23a4744a' stroke-width='1' fill='none'/><path d='M-3,8 Q-5,11 -2,11' fill='%23c4d4a8'/></g><!-- bud 2 --><g transform='translate(105 110)' fill='%23ff6788'><circle r='4'/><path d='M-3,-2 Q-2,-5 0,-3 Q2,-5 3,-2 Z'/><path d='M0,4 L0,10' stroke='%23a4744a' stroke-width='1' fill='none'/></g></g></svg>"),
+      linear-gradient(135deg, #F2709C 0%, #FF9472 100%);
+  }
+
+  /* ─── UI Mock — picker screen ───────────────────────────── */
+  .picker-mock {
+    max-width: 360px;
+    margin: 0 auto;
+    background: #1a1a1a;
+    border-radius: 24px;
+    border: 4px solid #2a2a2a;
+    overflow: hidden;
+  }
+  .picker-header {
+    display: flex; align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .picker-header h4 { margin: 0; font-size: 16px; flex: 1; }
+  .picker-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+  .picker-cell {
+    aspect-ratio: 0.6;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    border: 2px solid transparent;
+    overflow: hidden;
+  }
+  .picker-cell.selected {
+    border-color: #FF7A1A;
+  }
+  .picker-cell.selected::after {
+    content: '✓';
+    position: absolute; top: 6px; right: 6px;
+    width: 22px; height: 22px;
+    background: #FF7A1A; color: white;
+    border-radius: 50%; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 13px; font-weight: bold;
+  }
+  .picker-cell-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white; font-size: 10px;
+    padding: 14px 8px 6px;
+    text-align: center;
+  }
+  .picker-current {
+    margin: 14px;
+    padding: 14px;
+    background: rgba(255,122,26,0.1);
+    border: 1px solid rgba(255,122,26,0.3);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 12px;
+    color: #FF7A1A;
+  }
+</style>
+</head>
+<body>
+<h1>ESPEAK — фоны чата · v3</h1>
+<p class="subtitle">Чистые SVG векторы вместо эмодзи · Telegram-style</p>
+
+<h2>🎨 8 вариантов</h2>
+<div class="grid">
+
+  <div class="card">
+    <div class="preview wp-1">
+      <div class="bubble bubble-them" style="top:60px;">¿Cómo estás?</div>
+      <div class="bubble bubble-me" style="top:115px;">Привет, отлично!</div>
+    </div>
+    <div class="label"><h3>1. Atardecer</h3><p>Закат · солнце+облака векторные</p></div>
+  </div>
+
+  <div class="card">
+    <div class="preview wp-2">
+      <div class="bubble bubble-them" style="top:60px;">¿Cómo estás?</div>
+      <div class="bubble bubble-me" style="top:115px;">Привет, отлично!</div>
+    </div>
+    <div class="label"><h3>2. Azulejos Noche</h3><p>Тёмно-синий · мавританские плитки</p></div>
+  </div>
+
+  <div class="card">
+    <div class="preview wp-3">
+      <div class="bubble bubble-them" style="top:60px;">¿Cómo estás?</div>
+      <div class="bubble bubble-me" style="top:115px;">Привет, отлично!</div>
+    </div>
+    <div class="label"><h3>3. Corazón Flamenco</h3><p>Бордо · сердца и веера контурно</p></div>
+  </div>
+
+  <div class="card">
+    <div class="preview wp-4">
+      <div class="bubble bubble-them" style="top:60px;">¿Cómo estás?</div>
+      <div class="bubble bubble-me" style="top:115px;">Привет, отлично!</div>
+    </div>
+    <div class="label"><h3>4. Mediterráneo Verde</h3><p>Зелёный · оливки, лимоны, виноград</p></div>
+  </div>
+
+  <div class="card">
+    <div class="preview wp-5">
+      <div class="bubble bubble-them" style="top:60px;">¿Cómo estás?</div>
+      <div class="bubble bubble-me" style="top:115px;">Привет, отлично!</div>
+    </div>
+    <div class="label"><h3>5. Alhambra Noche</h3><p>Фиолет · золотые 8-конечные звёзды</p></div>
+  </div>
+
+  <div class="card">
+    <div class="preview wp-6">
+      <div class="bubble bubble-them" style="top:60px;">¿Cómo estás?</div>
+      <div class="bubble bubble-me" style="top:115px;">Привет, отлично!</div>
+    </div>
+    <div class="label"><h3>6. Fiesta</h3><p>Тёплый жёлтый · гитары, барабаны</p></div>
+  </div>
+
+  <div class="card">
+    <div class="preview wp-7">
+      <div class="bubble bubble-them" style="top:60px;">¿Cómo estás?</div>
+      <div class="bubble bubble-me" style="top:115px;">Привет, отлично!</div>
+    </div>
+    <div class="label"><h3>7. Costa Brava</h3><p>Бирюза → светлый · волны, рыбки</p></div>
+  </div>
+
+  <div class="card">
+    <div class="preview wp-8">
+      <div class="bubble bubble-them" style="top:60px;">¿Cómo estás?</div>
+      <div class="bubble bubble-me" style="top:115px;">Привет, отлично!</div>
+    </div>
+    <div class="label"><h3>8. Sevilla Rosa</h3><p>Розовый · розы, веера, бутоны</p></div>
+  </div>
+
+</div>
+
+<h2>🎛 UI переключателя</h2>
+<p style="text-align:center;color:#aaa;font-size:13px;margin-bottom:24px;">
+  Кнопка ⋮ в AppBar чата → пункт «Сменить фон» → bottom-sheet 2×4 превью.<br>
+  Тап = live-preview · второй тап на «Применить» → сохраняется в DataStore.
+</p>
+
+<div class="picker-mock">
+  <div class="picker-header">
+    <h4>← Фон чата</h4>
+  </div>
+  <div class="picker-current">
+    Сейчас выбран: <strong>Alhambra Noche</strong>
+  </div>
+  <div class="picker-grid">
+    <div class="picker-cell wp-1"><div class="picker-cell-label">Atardecer</div></div>
+    <div class="picker-cell wp-2"><div class="picker-cell-label">Azulejos</div></div>
+    <div class="picker-cell wp-3"><div class="picker-cell-label">Flamenco</div></div>
+    <div class="picker-cell wp-4"><div class="picker-cell-label">Mediterráneo</div></div>
+    <div class="picker-cell wp-5 selected"><div class="picker-cell-label">Alhambra</div></div>
+    <div class="picker-cell wp-6"><div class="picker-cell-label">Fiesta</div></div>
+    <div class="picker-cell wp-7"><div class="picker-cell-label">Costa Brava</div></div>
+    <div class="picker-cell wp-8"><div class="picker-cell-label">Sevilla</div></div>
+  </div>
+</div>
+
+<p style="text-align:center;color:#666;margin-top:40px;font-size:11px;">
+  В Compose реализация: Brush (градиент) + ImageVector (паттерн).<br>
+  Только SVG, никаких эмодзи. ~2-5 KB на тему inline.
+</p>
+</body>
+</html>

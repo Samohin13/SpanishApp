@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -93,6 +94,7 @@ class AiChatViewModel @Inject constructor(
     private val stt: com.spanishapp.service.SpanishSpeechRecognizer,
     private val limiter: com.spanishapp.service.AiChatLimiter,
     private val remoteTts: com.spanishapp.service.RemoteTtsService,
+    private val authRepository: com.spanishapp.data.repository.AuthRepository,
     @ApplicationContext private val appContext: Context,
     savedStateHandle: androidx.lifecycle.SavedStateHandle
 ) : ViewModel() {
@@ -100,6 +102,15 @@ class AiChatViewModel @Inject constructor(
     /** Сколько сообщений осталось до дневного лимита (50/день). */
     val remainingMessages: StateFlow<Int> = limiter.remainingToday
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.spanishapp.service.AiChatLimiter.DAILY_LIMIT)
+
+    /** v1.18.38: выбранный фон чата (ChatWallpapers.id). */
+    val wallpaperId: StateFlow<String> = authRepository.chatWallpaper
+        .map { it ?: com.spanishapp.domain.chat.ChatWallpapers.DEFAULT_ID }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.spanishapp.domain.chat.ChatWallpapers.DEFAULT_ID)
+
+    fun setWallpaper(id: String) = viewModelScope.launch {
+        authRepository.setChatWallpaper(id)
+    }
 
     /** Read from nav arg `sessionId={...}`. Defaults to free chat. */
     val sessionId: String = savedStateHandle.get<String>("sessionId") ?: "default"
@@ -297,6 +308,9 @@ fun AiChatScreen(
     val streamingText  by vm.streamingText.collectAsStateWithLifecycle()
     val error          by vm.error.collectAsStateWithLifecycle()
     var showClearDialog by remember { mutableStateOf(false) }
+    var showWallpaperPicker by remember { mutableStateOf(false) }
+    val wallpaperId by vm.wallpaperId.collectAsStateWithLifecycle()
+    val wallpaper = com.spanishapp.domain.chat.ChatWallpapers.byId(wallpaperId)
     val isListening by vm.isListening.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var input     by remember { mutableStateOf("") }
@@ -386,6 +400,18 @@ fun AiChatScreen(
                     IconButton(
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            showWallpaperPicker = true
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Wallpaper,
+                            contentDescription = "Сменить фон",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             // Only ask to confirm if there's actually a history to wipe.
                             if (messages.isEmpty()) vm.newChat() else showClearDialog = true
                         }
@@ -408,7 +434,10 @@ fun AiChatScreen(
                     end = padding.calculateEndPadding(androidx.compose.ui.platform.LocalLayoutDirection.current),
                 )
         ) {
-            Box(modifier = Modifier.weight(1f)) {
+            ChatWallpaperBackground(
+                wallpaper = wallpaper,
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+            ) {
                 if (messages.isEmpty()) {
                     WelcomeHint(onSuggestion = { 
                         vm.send(it)
@@ -623,6 +652,17 @@ fun AiChatScreen(
                 }
             }
         }
+    }
+
+    if (showWallpaperPicker) {
+        ChatWallpaperPickerSheet(
+            currentId = wallpaperId,
+            onPick = { id ->
+                vm.setWallpaper(id)
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            },
+            onDismiss = { showWallpaperPicker = false },
+        )
     }
 
     if (showClearDialog) {
