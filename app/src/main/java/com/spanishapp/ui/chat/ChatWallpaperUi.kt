@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
@@ -42,6 +43,7 @@ fun ChatWallpaperBackground(
     val density = androidx.compose.ui.platform.LocalDensity.current
     Box(
         modifier = modifier
+            .clipToBounds()  // v1.18.46: чтобы тайлы не вылазили за нижнюю границу
             .background(wallpaper.gradient)
             .drawBehind {
                 val tilePx = with(density) { wallpaper.tileSize.dp.toPx() }
