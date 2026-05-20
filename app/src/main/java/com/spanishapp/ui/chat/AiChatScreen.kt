@@ -552,17 +552,22 @@ fun AiChatScreen(
                 label = "mic_pulse_anim"
             )
 
-            // v1.18.39: input bar теперь "плавает" на обоях — без outer Surface.
-            // Pill и кнопка имеют свой собственный фон, поверх wallpaper'а.
-            Row(
+            // v1.18.41: возвращён компактный input-bar контейнер (как в WhatsApp).
+            // Тонкая плашка-Surface под pill и кнопкой, минимальные отступы.
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .imePadding()
-                    .navigationBarsPadding()
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    .imePadding(),
+                color = MaterialTheme.colorScheme.surface,
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                     // ── Pill-input: TextField или waveform когда listening ──
                     Surface(
                         modifier = Modifier
@@ -654,6 +659,7 @@ fun AiChatScreen(
                         }
                     }
                 }
+            }
         }
     }
 
