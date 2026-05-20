@@ -350,15 +350,12 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        // v1.18.53: Default Scaffold (без contentWindowInsets override) +
-        // имя/navBar-padding на самом Row input-бара (как в WhatsApp/Telegram).
-        // Гарантия:
-        //   - Default contentWindowInsets = systemBars → Scaffold paddingValues.bottom
-        //     учитывает navBar. Column.padding(padding) даёт нужный отступ.
-        //   - Row сам берёт ime + nav инсеты (consume-aware). Когда клавиатура
-        //     закрыта, navBar; когда открыта — ime (включая navBar). Без double-count.
-        //   - Outer Surface УБРАН: «тёмная полоса» вокруг pill — это была не gap,
-        //     а surface color вокруг pill, видимый поверх wallpaper'а.
+        // v1.18.54: contentWindowInsets=0 → Scaffold не добавляет padding снизу
+        // (outer NavHost уже консьюмит navBar). Внутренний Box.align(BottomCenter)
+        // позиционирует Row с safeDrawing-padding — wallpaper заполняет ВЁСЬ
+        // Box, в т.ч. позади input-бара, поэтому никакой тёмной зоны под pill'ом
+        // не появится.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -433,14 +430,28 @@ fun AiChatScreen(
         // v1.18.36: bottom inset не консьюмим из Scaffold — input Surface
         // сам уходит под навбар (как в WhatsApp), а Row внутри respects
         // nav inset через navigationBarsPadding.
-        Column(
+        // v1.18.54: Box-overlay. Wallpaper заполняет ВСЁ (включая зону под input-bar),
+        // input bar = Row с align(BottomCenter) + safeDrawing-padding.
+        // Когда клавиатура открыта — Row уезжает вверх с ime, wallpaper остаётся
+        // позади input-бара. Никаких dark/transparent зон не видно.
+        val sendActive = input.isNotBlank()
+        val micPulse by androidx.compose.animation.core.rememberInfiniteTransition(label = "mic_pulse").animateFloat(
+            initialValue = 1f,
+            targetValue = 1.18f,
+            animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+                animation = androidx.compose.animation.core.tween(550, easing = androidx.compose.animation.core.LinearEasing),
+                repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
+            ),
+            label = "mic_pulse_anim"
+        )
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
             ChatWallpaperBackground(
                 wallpaper = wallpaper,
-                modifier = Modifier.weight(1f).fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
             ) {
                 if (messages.isEmpty()) {
                     WelcomeHint(onSuggestion = { 
@@ -453,7 +464,12 @@ fun AiChatScreen(
                     // длинные строки тяжело — readability rule).
                     LazyColumn(
                         state = listState,
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                        // v1.18.54: bottom contentPadding = 80dp чтобы последнее
+                        // сообщение не пряталось за input-баром (Box-overlay).
+                        contentPadding = PaddingValues(
+                            start = 16.dp, end = 16.dp,
+                            top = 16.dp, bottom = 80.dp,
+                        ),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier
                             .fillMaxSize()
@@ -524,7 +540,14 @@ fun AiChatScreen(
                 }
             }
 
-            AnimatedVisibility(error != null) {
+            // Error banner — поверх wallpaper, над input-баром.
+            AnimatedVisibility(
+                visible = error != null,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 80.dp)
+                    .windowInsetsPadding(WindowInsets.safeDrawing),
+            ) {
                 Surface(
                     color = MaterialTheme.colorScheme.errorContainer,
                     modifier = Modifier.fillMaxWidth().padding(8.dp),
@@ -540,34 +563,15 @@ fun AiChatScreen(
                 }
             }
 
-            // v1.18.1: Telegram/WhatsApp-style input bar — без анимированных
-            // обводок (раньше юзер видел постоянное мерцание yellow→orange→red).
-            // Чистый surface фон + округлый pill-input + одна кнопка справа
-            // (микрофон когда пусто, send когда есть текст).
-            val sendActive = input.isNotBlank()
-            // Pulse для активного recording — единственная анимация в баре.
-            val micPulse by androidx.compose.animation.core.rememberInfiniteTransition(label = "mic_pulse").animateFloat(
-                initialValue = 1f,
-                targetValue = 1.18f,
-                animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-                    animation = androidx.compose.animation.core.tween(550, easing = androidx.compose.animation.core.LinearEasing),
-                    repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
-                ),
-                label = "mic_pulse_anim"
-            )
-
-            // v1.18.53: возвращён паттерн v1.18.39 — input bar «плавает» на
-            // wallpaper'е, без обёртывающего Surface. Pill (Surface с собственным
-            // surfaceContainerHighest + shadow) и FAB-mic имеют свои фоны.
-            // imePadding + navigationBarsPadding ПРЯМО на Row — стандартный
-            // Compose-паттерн WhatsApp/Telegram. Когда клавиатура открыта, ime
-            // содержит navBar, поэтому navigationBarsPadding эффективно =0
-            // (consumed). Когда закрыта — даёт 24dp над навбаром. Без double-count.
+            // v1.18.54: Input bar — overlay поверх wallpaper'а. align(BottomCenter)
+            // прижимает Row к низу Box'а. windowInsetsPadding(safeDrawing) поднимает
+            // содержимое над клавой/navBar'ом. Wallpaper заполняет ВСЁ позади Row —
+            // никаких dark/transparent зон под pill'ом.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .imePadding()
-                    .navigationBarsPadding()
+                    .align(Alignment.BottomCenter)
+                    .windowInsetsPadding(WindowInsets.safeDrawing)
                     .padding(horizontal = 10.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

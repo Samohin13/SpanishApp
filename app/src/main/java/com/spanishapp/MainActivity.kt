@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Alignment
@@ -319,9 +320,18 @@ fun SpanishAppRoot(
         },
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
+            // v1.18.54: padding + consume — позволяет дочерним экранам корректно
+            // считать ime/safeDrawing inset'ы. Без consume чат не мог отличить
+            // «navBar уже учтён в outer» от «navBar надо ещё применить» → double-count.
             Navigation.SpanishNavHost(
                 navController = navController,
-                modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
+                modifier = Modifier
+                    .padding(bottom = paddingValues.calculateBottomPadding())
+                    .consumeWindowInsets(
+                        androidx.compose.foundation.layout.PaddingValues(
+                            bottom = paddingValues.calculateBottomPadding()
+                        )
+                    ),
             )
             // Глобальный оверлей для разблокировки достижений
             com.spanishapp.ui.components.AchievementUnlockHost()
