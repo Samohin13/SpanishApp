@@ -350,9 +350,14 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        // v1.18.50: union включает ime → padding(scaffoldPadding) даёт
-        // корректный bottom без double-count nav bar при открытой клавиатуре.
-        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets.safeDrawing,
+        // v1.18.51: outer NavHost уже применил padding(bottom=navBar) БЕЗ
+        // consumeWindowInsets → дочерние composable видят navBar=24dp
+        // нетронутым. Если Scaffold добавит safeDrawing (= ime = 350dp,
+        // включая navBar), итог = 24 + 350 = 374dp → gap 24dp при открытой
+        // клавиатуре. Решение: Scaffold не трогает bottom-insets (0),
+        // Column сам применяет windowInsetsPadding(ime.exclude(navBar))
+        // = 326dp. 24 (outer) + 326 (inner) = 350 = позиция клавиатуры ✓.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -431,6 +436,7 @@ fun AiChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .windowInsetsPadding(WindowInsets.ime.exclude(WindowInsets.navigationBars))
         ) {
             ChatWallpaperBackground(
                 wallpaper = wallpaper,
