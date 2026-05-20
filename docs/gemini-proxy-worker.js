@@ -307,7 +307,9 @@ async function handleTts(request, env) {
 // вернёт ошибку и клиент сделает fallback на Google.
 
 const EDGE_TTS_TOKEN = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
-const EDGE_TTS_WSS = `wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${EDGE_TTS_TOKEN}`;
+// Cloudflare Workers fetch API использует https:// для WebSocket
+// connection (с Upgrade header), а не wss://.
+const EDGE_TTS_WSS = `https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${EDGE_TTS_TOKEN}`;
 
 async function edgeTtsSynthesize(text, voice, speed, pitch) {
   // Открываем WebSocket к Microsoft endpoint
