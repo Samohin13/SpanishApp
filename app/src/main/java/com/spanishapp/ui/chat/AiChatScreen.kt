@@ -433,6 +433,7 @@ fun AiChatScreen(
                     start = padding.calculateStartPadding(androidx.compose.ui.platform.LocalLayoutDirection.current),
                     end = padding.calculateEndPadding(androidx.compose.ui.platform.LocalLayoutDirection.current),
                 )
+                .imePadding()
         ) {
             ChatWallpaperBackground(
                 wallpaper = wallpaper,
@@ -555,9 +556,7 @@ fun AiChatScreen(
             // v1.18.41: возвращён компактный input-bar контейнер (как в WhatsApp).
             // Тонкая плашка-Surface под pill и кнопкой, минимальные отступы.
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .imePadding(),
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.surface,
             ) {
                 Row(
