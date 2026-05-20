@@ -350,13 +350,15 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        // v1.18.52: MainActivity теперь делает consumeWindowInsets(bottom=navBar),
-        // поэтому внутри NavHost WindowInsets.navigationBars.bottom = 0, а
-        // WindowInsets.ime.bottom = ime_total - navBar (= 326 при открытой клаве).
-        // Scaffold игнорирует bottom-insets (consumed выше), Column применяет
-        // обычный imePadding() — он автоматически возьмёт effective 326dp.
-        // Итог: outer 24 + inner 326 = 350 = позиция клавиатуры, без gap ✓.
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        // v1.18.53: Default Scaffold (без contentWindowInsets override) +
+        // имя/navBar-padding на самом Row input-бара (как в WhatsApp/Telegram).
+        // Гарантия:
+        //   - Default contentWindowInsets = systemBars → Scaffold paddingValues.bottom
+        //     учитывает navBar. Column.padding(padding) даёт нужный отступ.
+        //   - Row сам берёт ime + nav инсеты (consume-aware). Когда клавиатура
+        //     закрыта, navBar; когда открыта — ime (включая navBar). Без double-count.
+        //   - Outer Surface УБРАН: «тёмная полоса» вокруг pill — это была не gap,
+        //     а surface color вокруг pill, видимый поверх wallpaper'а.
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -435,7 +437,6 @@ fun AiChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .imePadding()
         ) {
             ChatWallpaperBackground(
                 wallpaper = wallpaper,
@@ -555,19 +556,22 @@ fun AiChatScreen(
                 label = "mic_pulse_anim"
             )
 
-            // v1.18.41: возвращён компактный input-bar контейнер (как в WhatsApp).
-            // Тонкая плашка-Surface под pill и кнопкой, минимальные отступы.
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surface,
+            // v1.18.53: возвращён паттерн v1.18.39 — input bar «плавает» на
+            // wallpaper'е, без обёртывающего Surface. Pill (Surface с собственным
+            // surfaceContainerHighest + shadow) и FAB-mic имеют свои фоны.
+            // imePadding + navigationBarsPadding ПРЯМО на Row — стандартный
+            // Compose-паттерн WhatsApp/Telegram. Когда клавиатура открыта, ime
+            // содержит navBar, поэтому navigationBarsPadding эффективно =0
+            // (consumed). Когда закрыта — даёт 24dp над навбаром. Без double-count.
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .imePadding()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp, top = 4.dp, bottom = 8.dp),
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
                     // ── Pill-input: TextField или waveform когда listening ──
                     Surface(
                         modifier = Modifier
@@ -659,7 +663,6 @@ fun AiChatScreen(
                         }
                     }
                 }
-            }
         }
     }
 

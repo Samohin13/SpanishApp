@@ -6,25 +6,29 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * v1.18.52: регрессионный тест на gap между input-bar и клавиатурой в AiChatScreen.
+ * v1.18.53: регрессионный тест на gap между input-bar и клавиатурой в AiChatScreen.
  *
- * Архитектура inset'ов:
- *   SpanishAppRoot.NavHost → padding(bottom=navBar) + consumeWindowInsets(bottom=navBar).
- *     После consume: WindowInsets.navigationBars.bottom = 0,
- *                    WindowInsets.ime.bottom = ime_total - navBar.
- *   AiChatScreen.Scaffold  → contentWindowInsets = WindowInsets(0) — bottom не трогает.
- *   AiChatScreen.Column    → imePadding() = WindowInsets.ime (effective = ime - navBar).
+ * Архитектура inset'ов (восстановлена из v1.18.39 — последняя визуально рабочая):
+ *   SpanishAppRoot.NavHost → padding(bottom = navBar = 24dp).
+ *   AiChatScreen.Scaffold  → дефолтный contentWindowInsets (systemBars).
+ *   AiChatScreen.Column    → .padding(scaffoldPadding) (top=topBar, bottom=navBar consumed Scaffold'ом).
+ *   Input-bar Row          → .imePadding().navigationBarsPadding().padding(h=10, v=8).
  *
- * Итого bottom-смещение:
- *   closed kbd: 24 (outer navBar) + 0 (effective ime=0)             = 24dp ← над navBar ✓
- *   open kbd:   24 (outer navBar) + 326 (effective ime=350-24)      = 350dp = клавиатура ✓
+ * ime включает navBar (Android convention). При закрытой клаве:
+ *   • imePadding = 0
+ *   • navigationBarsPadding = 24 (unconsumed) → Row выше navBar
+ * При открытой клаве:
+ *   • imePadding = 350 → consume ime
+ *   • navigationBarsPadding = max(0, navBar - consumed_ime) = max(0, 24-?) = 0
+ *     (если consume ime включает navBar)
  *
- * История багов:
- *   v1.18.49 — padding(scaffoldPadding) + imePadding(): navBar считался 2 раза.
- *   v1.18.50 — contentWindowInsets=safeDrawing: outer navBar не потреблён → gap 24dp.
- *   v1.18.51 — попытка через ime.exclude(navBar): теоретически верно, но на устройстве
- *              gap всё ещё виден (видимо, exclude игнорирует consumed-state).
- *   v1.18.52 — consumeWindowInsets на NavHost + обычный imePadding(): канонично.
+ * История:
+ *   v1.18.34 — рабочая версия ДО wallpaper (gap был, но не виден на solid bg).
+ *   v1.18.38 — добавлен wallpaper → gap стал виден.
+ *   v1.18.39 — Row плавает без outer Surface, imePadding+navigationBarsPadding.
+ *   v1.18.40–.52 — серия попыток с компактным Surface и манипуляциями inset
+ *                  (все создавали double-count либо clip mic-кнопки).
+ *   v1.18.53 — возврат к v1.18.39: Row без outer Surface, тот же inset-паттерн.
  */
 class ChatInputInsetTest {
 
