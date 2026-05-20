@@ -350,13 +350,12 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        // v1.18.51: outer NavHost уже применил padding(bottom=navBar) БЕЗ
-        // consumeWindowInsets → дочерние composable видят navBar=24dp
-        // нетронутым. Если Scaffold добавит safeDrawing (= ime = 350dp,
-        // включая navBar), итог = 24 + 350 = 374dp → gap 24dp при открытой
-        // клавиатуре. Решение: Scaffold не трогает bottom-insets (0),
-        // Column сам применяет windowInsetsPadding(ime.exclude(navBar))
-        // = 326dp. 24 (outer) + 326 (inner) = 350 = позиция клавиатуры ✓.
+        // v1.18.52: MainActivity теперь делает consumeWindowInsets(bottom=navBar),
+        // поэтому внутри NavHost WindowInsets.navigationBars.bottom = 0, а
+        // WindowInsets.ime.bottom = ime_total - navBar (= 326 при открытой клаве).
+        // Scaffold игнорирует bottom-insets (consumed выше), Column применяет
+        // обычный imePadding() — он автоматически возьмёт effective 326dp.
+        // Итог: outer 24 + inner 326 = 350 = позиция клавиатуры, без gap ✓.
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
@@ -436,7 +435,7 @@ fun AiChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .windowInsetsPadding(WindowInsets.ime.exclude(WindowInsets.navigationBars))
+                .imePadding()
         ) {
             ChatWallpaperBackground(
                 wallpaper = wallpaper,

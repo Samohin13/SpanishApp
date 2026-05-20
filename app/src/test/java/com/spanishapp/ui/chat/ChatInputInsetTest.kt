@@ -6,21 +6,25 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * v1.18.51: регрессионный тест на gap между input-bar и клавиатурой в AiChatScreen.
+ * v1.18.52: регрессионный тест на gap между input-bar и клавиатурой в AiChatScreen.
  *
  * Архитектура inset'ов:
- *   SpanishAppRoot.NavHost → padding(bottom = navBar = 24dp) БЕЗ consumeWindowInsets.
+ *   SpanishAppRoot.NavHost → padding(bottom=navBar) + consumeWindowInsets(bottom=navBar).
+ *     После consume: WindowInsets.navigationBars.bottom = 0,
+ *                    WindowInsets.ime.bottom = ime_total - navBar.
  *   AiChatScreen.Scaffold  → contentWindowInsets = WindowInsets(0) — bottom не трогает.
- *   AiChatScreen.Column    → windowInsetsPadding(ime.exclude(navBar)) = ime - navBar.
+ *   AiChatScreen.Column    → imePadding() = WindowInsets.ime (effective = ime - navBar).
  *
  * Итого bottom-смещение:
- *   closed kbd: 24 (outer navBar) + 0 (ime.exclude(navBar)=0)          = 24dp ← над navBar ✓
- *   open kbd:   24 (outer navBar) + (350-24) (ime-navBar = 326dp)       = 350dp = клавиатура ✓
+ *   closed kbd: 24 (outer navBar) + 0 (effective ime=0)             = 24dp ← над navBar ✓
+ *   open kbd:   24 (outer navBar) + 326 (effective ime=350-24)      = 350dp = клавиатура ✓
  *
  * История багов:
  *   v1.18.49 — padding(scaffoldPadding) + imePadding(): navBar считался 2 раза.
  *   v1.18.50 — contentWindowInsets=safeDrawing: outer navBar не потреблён → gap 24dp.
- *   v1.18.51 — Scaffold(contentWindowInsets=0) + ime.exclude(navBar): корректно.
+ *   v1.18.51 — попытка через ime.exclude(navBar): теоретически верно, но на устройстве
+ *              gap всё ещё виден (видимо, exclude игнорирует consumed-state).
+ *   v1.18.52 — consumeWindowInsets на NavHost + обычный imePadding(): канонично.
  */
 class ChatInputInsetTest {
 

@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Alignment
@@ -319,9 +320,22 @@ fun SpanishAppRoot(
         },
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
+            // v1.18.52: consumeWindowInsets + padding — канонический Compose-паттерн.
+            // Без consume чат-экран не мог корректно посчитать ime.exclude(navBar):
+            // outer Modifier.padding(bottom=navBar) шринкал layout НО не помечал
+            // navBar как consumed, поэтому WindowInsets.navigationBars.bottom внутри
+            // оставался = 24dp → double-count при applying ime padding.
+            // С consume: navBar внутри = 0, ime.bottom = ime - navBar, imePadding()
+            // даёт ровно (ime - navBar) → outer 24 + inner 326 = 350 = клавиатура ✓.
             Navigation.SpanishNavHost(
                 navController = navController,
-                modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())
+                modifier = Modifier
+                    .padding(bottom = paddingValues.calculateBottomPadding())
+                    .consumeWindowInsets(
+                        androidx.compose.foundation.layout.PaddingValues(
+                            bottom = paddingValues.calculateBottomPadding()
+                        )
+                    ),
             )
             // Глобальный оверлей для разблокировки достижений
             com.spanishapp.ui.components.AchievementUnlockHost()
