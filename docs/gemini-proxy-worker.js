@@ -163,14 +163,29 @@ export default {
 
     const verb = isStream ? "streamGenerateContent" : "generateContent";
     const sseSuffix = isStream ? "&alt=sse" : "";
-    const upstream = await fetch(
-      `${GEMINI_HOST}/v1beta/models/${model}:${verb}?key=${env.GEMINI_KEY}${sseSuffix}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: await request.text(),
-      },
-    );
+    const bodyText = await request.text();
+
+    // v1.18.33: автоматический fallback по моделям при 429 / 503.
+    // У каждой Gemini модели своя дневная квота — если основная
+    // исчерпана, пробуем следующую. Streaming тоже поддерживается
+    // (первая успешная стримит, остальные не дёргаются).
+    const fallbackChain = buildFallbackChain(model);
+
+    let upstream;
+    let usedModel = model;
+    for (const tryModel of fallbackChain) {
+      upstream = await fetch(
+        `${GEMINI_HOST}/v1beta/models/${tryModel}:${verb}?key=${env.GEMINI_KEY}${sseSuffix}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: bodyText,
+        },
+      );
+      usedModel = tryModel;
+      // 429 = квота исчерпана, 503 = service unavailable — пробуем след. модель
+      if (upstream.status !== 429 && upstream.status !== 503) break;
+    }
 
     if (isStream) {
       return new Response(upstream.body, {
@@ -178,6 +193,7 @@ export default {
         headers: {
           "Content-Type": "text/event-stream",
           "Cache-Control": "no-cache",
+          "X-Used-Model": usedModel,
           ...corsHeaders(),
         },
       });
@@ -186,7 +202,11 @@ export default {
     const text = await upstream.text();
     return new Response(text, {
       status: upstream.status,
-      headers: { "Content-Type": "application/json", ...corsHeaders() },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Used-Model": usedModel,
+        ...corsHeaders(),
+      },
     });
   },
 };
@@ -264,6 +284,26 @@ async function handleTts(request, env) {
       ...corsHeaders(),
     },
   });
+}
+
+// v1.18.33: цепочка fallback моделей. У каждой свой ежедневный квота
+// у Google → если основная исчерпана, пробуем след.
+// Порядок: запрошенная модель первая, потом самые «дешёвые» по квоте.
+const MODEL_FALLBACK_ORDER = [
+  "gemini-flash-lite-latest",      // самая дешёвая, большая квота
+  "gemini-2.5-flash-lite",
+  "gemini-2.0-flash-lite",
+  "gemini-flash-latest",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+];
+
+function buildFallbackChain(primaryModel) {
+  const chain = [primaryModel];
+  for (const m of MODEL_FALLBACK_ORDER) {
+    if (m !== primaryModel) chain.push(m);
+  }
+  return chain;
 }
 
 function corsHeaders() {
