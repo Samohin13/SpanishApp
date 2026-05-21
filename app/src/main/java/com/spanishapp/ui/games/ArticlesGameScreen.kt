@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedback
@@ -177,51 +178,151 @@ private fun ArticlesGameContent(
                 )
             }
 
-            // Картинка (с тряской) — квадратная
+            // Картинка с flip-механикой (тап → переворот, показ перевода и примера)
             word?.let { w ->
-                val context   = LocalContext.current
+                val context = LocalContext.current
                 val imageFile = stripAccents(w.word.lowercase())
+                var flipped by remember(w.word) { mutableStateOf(false) }
+                val rotation by animateFloatAsState(
+                    targetValue = if (flipped) 180f else 0f,
+                    animationSpec = tween(durationMillis = 450, easing = FastOutSlowInEasing),
+                    label = "card_flip"
+                )
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp)
                         .offset(x = shakeOffset.dp)
-                        .aspectRatio(1f)              // квадрат
+                        .aspectRatio(1f)
+                        .graphicsLayer {
+                            rotationY = rotation
+                            cameraDistance = 12f * density
+                        }
                         .clip(RoundedCornerShape(24.dp))
                         .background(ImageCardBg)
+                        .clickable(
+                            interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            flipped = !flipped
+                        }
                 ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data("file:///android_asset/word_images/$imageFile.png")
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = w.word,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    // Лёгкий градиент снизу
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                            .align(Alignment.BottomCenter)
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(Color.Transparent, Color.Black.copy(alpha = 0.10f))
-                                )
-                            )
-                    )
-                    // Бейдж уровня
-                    Surface(
-                        modifier = Modifier.align(Alignment.TopEnd).padding(10.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        color = ACCENT.copy(alpha = 0.85f)
-                    ) {
-                        Text(
-                            "Lvl ${state.level}",
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                            fontSize = 11.sp, color = Color.White, fontWeight = FontWeight.Bold
+                    if (rotation <= 90f) {
+                        // Лицевая сторона — картинка
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data("file:///android_asset/word_images/$imageFile.png")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = w.word,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
                         )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .align(Alignment.BottomCenter)
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(Color.Transparent, Color.Black.copy(alpha = 0.10f))
+                                    )
+                                )
+                        )
+                        // Бейдж уровня
+                        Surface(
+                            modifier = Modifier.align(Alignment.TopEnd).padding(10.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            color = ACCENT.copy(alpha = 0.85f)
+                        ) {
+                            Text(
+                                "Lvl ${state.level}",
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                fontSize = 11.sp, color = Color.White, fontWeight = FontWeight.Bold
+                            )
+                        }
+                        // Подсказка «тап для перевода»
+                        Surface(
+                            modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            color = Color.Black.copy(alpha = 0.4f)
+                        ) {
+                            Text(
+                                "👆 перевод",
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                fontSize = 10.sp, color = Color.White
+                            )
+                        }
+                    } else {
+                        // Обратная сторона — карточка с переводом и примером
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .graphicsLayer { rotationY = 180f }    // зеркалим обратно
+                                .background(
+                                    Brush.linearGradient(
+                                        listOf(Color(0xFF7B2FBE), Color(0xFF4F1F7F))
+                                    )
+                                )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(20.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    "${w.article} ${w.word}",
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color.White,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(Modifier.height(12.dp))
+                                Surface(
+                                    color = Color.White.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text(
+                                        "Перевод",
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
+                                        fontSize = 11.sp, color = Color.White,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                                Spacer(Modifier.height(8.dp))
+                                Text(
+                                    w.russian.ifBlank { "—" },
+                                    fontSize = 22.sp,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(Modifier.height(20.dp))
+                                Text(
+                                    "Пример:",
+                                    fontSize = 11.sp,
+                                    color = Color.White.copy(alpha = 0.7f),
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    "Este es ${w.article} ${w.word}.",
+                                    fontSize = 16.sp,
+                                    color = Color.White,
+                                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(Modifier.height(16.dp))
+                                Text(
+                                    "👆 тап чтобы вернуться",
+                                    fontSize = 11.sp,
+                                    color = Color.White.copy(alpha = 0.6f)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -305,6 +406,85 @@ private fun ArticlesGameContent(
                     xpGain     = state.lastXpGain,
                     onContinue = { viewModel.continueToNext() }
                 )
+            }
+        }
+
+        // ── Overlay-правило перед началом уровня ──────────────
+        AnimatedVisibility(
+            visible = state.showRulePopup && state.levelRuleHint.isNotBlank(),
+            enter = fadeIn(tween(180)) + scaleIn(initialScale = 0.9f),
+            exit  = fadeOut(tween(150)) + scaleOut(targetScale = 0.9f)
+        ) {
+            RulePopup(
+                level    = state.level,
+                ruleHint = state.levelRuleHint,
+                onDismiss = { viewModel.dismissRulePopup() }
+            )
+        }
+    }
+}
+
+@Composable
+private fun RulePopup(level: Int, ruleHint: String, onDismiss: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.55f))
+            .clickable(
+                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                indication = null,
+                onClick = onDismiss
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Surface(
+            modifier = Modifier.padding(horizontal = 28.dp).fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 16.dp
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Surface(
+                    color = ACCENT.copy(alpha = 0.15f),
+                    shape = CircleShape,
+                    modifier = Modifier.size(56.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                        Text("💡", fontSize = 28.sp)
+                    }
+                }
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    "Уровень $level — правило",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    ruleHint,
+                    fontSize = 16.sp,
+                    color = PrimaryText,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 22.sp
+                )
+                Spacer(Modifier.height(20.dp))
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().height(52.dp)
+                ) {
+                    Text(
+                        "Понятно, играю!",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
