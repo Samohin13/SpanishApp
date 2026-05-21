@@ -33,13 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.spanishapp.R
 import com.spanishapp.data.db.entity.ArticleWordEntity
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.ui.games.common.*
-import java.text.Normalizer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── Цвета ─────────────────────────────────────────────────────
@@ -178,10 +175,10 @@ private fun ArticlesGameContent(
                 )
             }
 
-            // Картинка с flip-механикой (тап → переворот, показ перевода и примера)
+            // Карточка слова — flip-механика (тап → перевод + пример)
+            // Картинки удалены, на лицевой стороне крупное испанское слово
+            // на фиолетовом градиенте с уровнем-бейджем.
             word?.let { w ->
-                val context = LocalContext.current
-                val imageFile = stripAccents(w.word.lowercase())
                 var flipped by remember(w.word) { mutableStateOf(false) }
                 val rotation by animateFloatAsState(
                     targetValue = if (flipped) 180f else 0f,
@@ -193,13 +190,17 @@ private fun ArticlesGameContent(
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp)
                         .offset(x = shakeOffset.dp)
-                        .aspectRatio(1f)
+                        .aspectRatio(1.4f)
                         .graphicsLayer {
                             rotationY = rotation
                             cameraDistance = 12f * density
                         }
                         .clip(RoundedCornerShape(24.dp))
-                        .background(ImageCardBg)
+                        .background(
+                            Brush.linearGradient(
+                                listOf(Color(0xFF8B3FCE), Color(0xFF4F1F7F))
+                            )
+                        )
                         .clickable(
                             interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
                             indication = null
@@ -209,32 +210,22 @@ private fun ArticlesGameContent(
                         }
                 ) {
                     if (rotation <= 90f) {
-                        // Лицевая сторона — картинка
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data("file:///android_asset/word_images/$imageFile.png")
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = w.word,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(60.dp)
-                                .align(Alignment.BottomCenter)
-                                .background(
-                                    Brush.verticalGradient(
-                                        listOf(Color.Transparent, Color.Black.copy(alpha = 0.10f))
-                                    )
-                                )
-                        )
+                        // Лицевая сторона — слово крупно
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(
+                                text = w.word,
+                                fontSize = 56.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = Color.White,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
+                        }
                         // Бейдж уровня
                         Surface(
                             modifier = Modifier.align(Alignment.TopEnd).padding(10.dp),
                             shape = RoundedCornerShape(10.dp),
-                            color = ACCENT.copy(alpha = 0.85f)
+                            color = Color.White.copy(alpha = 0.25f)
                         ) {
                             Text(
                                 "Lvl ${state.level}",
@@ -246,7 +237,7 @@ private fun ArticlesGameContent(
                         Surface(
                             modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp),
                             shape = RoundedCornerShape(10.dp),
-                            color = Color.Black.copy(alpha = 0.4f)
+                            color = Color.Black.copy(alpha = 0.25f)
                         ) {
                             Text(
                                 "👆 перевод",
@@ -255,16 +246,11 @@ private fun ArticlesGameContent(
                             )
                         }
                     } else {
-                        // Обратная сторона — карточка с переводом и примером
+                        // Обратная сторона — артикль + перевод + пример
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .graphicsLayer { rotationY = 180f }    // зеркалим обратно
-                                .background(
-                                    Brush.linearGradient(
-                                        listOf(Color(0xFF7B2FBE), Color(0xFF4F1F7F))
-                                    )
-                                )
+                                .graphicsLayer { rotationY = 180f }
                         ) {
                             Column(
                                 modifier = Modifier
@@ -280,46 +266,21 @@ private fun ArticlesGameContent(
                                     color = Color.White,
                                     textAlign = TextAlign.Center
                                 )
-                                Spacer(Modifier.height(12.dp))
-                                Surface(
-                                    color = Color.White.copy(alpha = 0.2f),
-                                    shape = RoundedCornerShape(8.dp)
-                                ) {
-                                    Text(
-                                        "Перевод",
-                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
-                                        fontSize = 11.sp, color = Color.White,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-                                Spacer(Modifier.height(8.dp))
+                                Spacer(Modifier.height(10.dp))
                                 Text(
                                     w.russian.ifBlank { "—" },
-                                    fontSize = 22.sp,
-                                    color = Color.White,
+                                    fontSize = 20.sp,
+                                    color = Color.White.copy(alpha = 0.95f),
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center
                                 )
-                                Spacer(Modifier.height(20.dp))
-                                Text(
-                                    "Пример:",
-                                    fontSize = 11.sp,
-                                    color = Color.White.copy(alpha = 0.7f),
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                                Spacer(Modifier.height(4.dp))
+                                Spacer(Modifier.height(14.dp))
                                 Text(
                                     "Este es ${w.article} ${w.word}.",
-                                    fontSize = 16.sp,
-                                    color = Color.White,
+                                    fontSize = 15.sp,
+                                    color = Color.White.copy(alpha = 0.85f),
                                     fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                                     textAlign = TextAlign.Center
-                                )
-                                Spacer(Modifier.height(16.dp))
-                                Text(
-                                    "👆 тап чтобы вернуться",
-                                    fontSize = 11.sp,
-                                    color = Color.White.copy(alpha = 0.6f)
                                 )
                             }
                         }
@@ -327,21 +288,7 @@ private fun ArticlesGameContent(
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
-
-            // Слово (с тряской)
-            Text(
-                text = word?.word ?: "",
-                fontSize = 46.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = PrimaryText,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(horizontal = 24.dp)
-                    .offset(x = shakeOffset.dp)
-            )
-
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(16.dp))
 
             // Комбо-бейдж
             AnimatedVisibility(
@@ -609,9 +556,3 @@ private fun ArticleBtn(
     }
 }
 
-// ─────────────────────────────────────────────────────────────
-
-private fun stripAccents(s: String): String {
-    val normalized = Normalizer.normalize(s, Normalizer.Form.NFD)
-    return normalized.replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
-}
