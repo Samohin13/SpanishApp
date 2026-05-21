@@ -36,11 +36,7 @@ GEN_SCRIPT = ROOT / "generate_images.py"
 LOCAL_PROPS = ROOT / "local.properties"
 
 API_URL = "https://external.api.recraft.ai/v1/images/generations"
-BASE = (
-    "realistic photo, cinematic, natural white balance true to the scene, "
-    "large clear subject filling the frame, easy to understand at a glance, "
-    "no environment, no text"
-)
+# BASE убран — теперь весь стиль внутри smart_prompt (был лимит 1000 символов API)
 
 
 def strip_accents(s: str) -> str:
@@ -84,30 +80,93 @@ def load_curated_prompts() -> dict[str, tuple[str, str]]:
     return result
 
 
-def load_needed_words() -> list[tuple[str, str]]:
-    """Возвращает [(filename, spanish_word_with_accents), ...] уникально."""
+def load_needed_words() -> list[dict]:
+    """Возвращает список dict'ов с full context: word, article, russian, plural."""
     data = json.loads(LEVELS_JSON.read_text(encoding="utf-8"))
-    seen: dict[str, str] = {}
+    seen: dict[str, dict] = {}
     for level in data:
         for w in level["words"]:
             word = w["word"].strip()
             filename = strip_accents(word)
             if filename not in seen:
-                seen[filename] = word
-    return [(fn, w) for fn, w in seen.items()]
+                seen[filename] = {
+                    "filename": filename,
+                    "word": word,
+                    "article": w.get("article", ""),
+                    "russian": w.get("russian", "").strip(),
+                    "is_plural": w.get("is_plural", False),
+                }
+    return list(seen.values())
 
 
-def generic_prompt(spanish_word: str) -> str:
-    """Generic prompt для слов без кастомного варианта."""
-    base = strip_accents(spanish_word)
+# Сцены для слов где simple перевод недостаточен или AI путается.
+# Каждая сцена даёт иконическое, моментально узнаваемое представление.
+# Формат: filename → "English scene description"
+SCENES: dict[str, str] = {
+    # Уже протестированные (4-я итерация)
+    "cura":           "an open first aid kit on a wooden table with bandages and medicine bottles, top-down view, no people",
+    "clave":          "a single shiny house key with a small keychain, hanging on a hook",
+    "coma":           "a giant white comma punctuation symbol on a plain pastel background",
+    "final":          "a golden championship sports trophy with a star on top, on a podium",
+    "parte":          "a single slice of pie separated from the rest of the pie",
+    "ejemplo":        "a single red apple separated from a row of green apples, isolated by a red arrow",
+    "abastecimiento": "delivery trucks loaded with crates being unloaded at a warehouse loading dock",
+    "almacen":        "interior of a large industrial warehouse with tall shelves full of cardboard boxes",
+    "modelo":         "a young female fashion model walking on a brightly lit runway during a fashion show",
+    # Самые частые абстракции
+    "problema":       "a tangled knot of colorful ropes on a plain white background",
+    "oportunidad":    "an open door with bright sunlight streaming through, hopeful atmosphere",
+    "decision":       "a fork in a country road, two paths diverging, signpost in the middle",
+    "idea":           "a glowing yellow light bulb on a plain background, lit up brightly",
+    "experiencia":    "an elderly mountain climber at a summit, weathered face, looking confident",
+    "diferencia":     "two identical apples side by side, one red and one green, on white background",
+    "razon":          "a chess player thinking deeply, hand on chin, pondering the next move",
+    "futuro":         "a futuristic city skyline at sunset with flying vehicles",
+    "pasado":         "an old vintage sepia photograph in a wooden frame, antique style",
+    "presente":       "a wrapped gift box with a red bow on a white surface",
+    "vida":           "a single green plant sprout growing from soil, sunlight from above",
+    "amor":           "a single red heart shape, glossy, on a soft pink background",
+    "muerte":         "a single black skull on a plain gray background, simple silhouette",
+    "paz":            "a white dove flying with an olive branch in its beak, blue sky",
+    "libertad":       "a bird flying free from an open cage against a blue sky",
+    "tiempo":         "a vintage round wall clock with roman numerals, simple background",
+    "lugar":          "a red location pin marker stuck on a paper map",
+    "forma":          "wooden geometric shapes — cube, sphere, pyramid — arranged on white",
+    "tipo":           "three different bottles arranged in a row, each a different shape",
+    "nivel":          "a yellow construction spirit level tool with a bubble, on white",
+    "manera":         "a winding road through countryside seen from above, single path",
+    "causa":          "a domino effect — first domino falling toward a row of dominoes",
+    "efecto":         "a stone dropped into water creating concentric ripples",
+    "resultado":      "a final test paper with a big red A+ grade and a checkmark",
+    "caso":           "a magnifying glass on top of an open detective file with photos",
+    "verdad":         "an open book with the word TRUTH highlighted (use generic symbol of truth instead)",
+    "mentira":        "a long Pinocchio-style wooden nose, isolated on white",
+}
+
+
+def smart_prompt(meta: dict) -> str:
+    """Иконический textbook prompt: артикль + scene или русский перевод."""
+    article = meta["article"]
+    word = meta["word"]
+    russian = meta["russian"]
+    filename = meta["filename"]
+
+    # Берём явную сцену если есть, иначе строим из русского перевода
+    scene = SCENES.get(filename)
+    if not scene:
+        plural = "several " if meta["is_plural"] else "a single "
+        scene = f"{plural}{russian} (the Spanish word «{article} {word}»)"
+
     return (
-        f"a clear photograph of a single {base} (Spanish: {spanish_word}), "
-        f"centered in frame, soft natural daylight, plain neutral background"
+        f"Simple iconic photograph: {scene}. "
+        f"Anyone seeing this must instantly understand «{russian}». "
+        f"Single subject, fully visible, NOT cropped, centered, fills 70% of frame. "
+        f"NO hands holding it, NO phones/tablets/screens, NO picture frames, NO foreground objects, NO text, NO logos. "
+        f"Plain background, soft natural light, sharp focus, photorealistic."
     )
 
 
 def generate_one(api_key: str, prompt: str) -> bytes | None:
-    full = f"{prompt}, {BASE}"
     try:
         resp = requests.post(
             API_URL,
@@ -116,7 +175,7 @@ def generate_one(api_key: str, prompt: str) -> bytes | None:
                 "Content-Type": "application/json",
             },
             json={
-                "prompt": full,
+                "prompt": prompt,
                 "style": "realistic_image",
                 "substyle": "natural_light",
                 "n": 1,
@@ -142,50 +201,51 @@ def main() -> None:
                     help="реально генерить (без флага — dry-run)")
     ap.add_argument("--limit", type=int, default=0,
                     help="ограничить количество картинок (для теста)")
+    ap.add_argument("--regen", action="store_true",
+                    help="перегенерить 9 тестовых слов (cura, clave, coma и др.)")
     ap.add_argument("--throttle", type=float, default=0.4,
                     help="пауза между запросами в секундах")
     args = ap.parse_args()
 
     IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     existing = {f.stem for f in IMAGES_DIR.iterdir() if f.suffix == ".png"}
-    curated = load_curated_prompts()
     needed = load_needed_words()
+    needed_filenames = {m["filename"] for m in needed}
 
-    missing = [(fn, sp) for fn, sp in needed if fn not in existing]
-    have_curated = sum(1 for fn, _ in missing if fn in curated)
+    missing = [m for m in needed if m["filename"] not in existing]
 
     print(f"📊 Статистика:")
     print(f"   Слов нужно для игры:       {len(needed)}")
-    print(f"   Картинок уже есть:         {len(existing & {fn for fn, _ in needed})} (нужных)")
-    print(f"   Картинок есть, но не нужно:{len(existing - {fn for fn, _ in needed})} (мусор)")
+    print(f"   Картинок уже есть:         {len(existing & needed_filenames)} (нужных)")
+    print(f"   Картинок есть, но не нужно:{len(existing - needed_filenames)} (мусор)")
     print(f"   Картинок не хватает:       {len(missing)}")
-    print(f"   Из них с custom-prompt:    {have_curated}")
-    print(f"   Из них с generic-prompt:   {len(missing) - have_curated}")
     print(f"   Стоимость:                 ~${len(missing) * 0.04:.2f}")
     print()
 
+    # Список конкретных слов для теста (включая ранее неудачные)
+    test_words = ["cura", "clave", "coma", "final", "parte", "ejemplo", "abastecimiento", "almacen", "modelo"]
+    if args.limit and not args.regen:
+        missing = missing[: args.limit]
+    elif args.regen:
+        # Регенерим только то что в test_words (даже если файл уже есть)
+        missing = [m for m in needed if m["filename"] in test_words]
+        print(f"♻️  REGEN: пере-генерация {len(missing)} тестовых слов с новым prompt\n")
+
     if not args.go:
         print("Dry-run. Запусти с --go чтобы реально сгенерить.")
-        print("Сначала тест: --go --limit 5")
+        print("Тест нового prompt: --go --regen")
         return
-
-    if args.limit:
-        missing = missing[: args.limit]
-        print(f"⚠️  Ограничено первыми {len(missing)} словами\n")
 
     api_key = read_api_key()
     ok = err = 0
     t0 = time.time()
-    for i, (filename, spanish) in enumerate(missing, 1):
-        if filename in curated:
-            _, prompt = curated[filename]
-            tag = "custom"
-        else:
-            prompt = generic_prompt(spanish)
-            tag = "generic"
+    for i, meta in enumerate(missing, 1):
+        filename = meta["filename"]
+        spanish = f"{meta['article']} {meta['word']}"
+        prompt = smart_prompt(meta)
 
         target = IMAGES_DIR / f"{filename}.png"
-        print(f"[{i:3}/{len(missing)}] 🎨 {spanish:25} ({tag})")
+        print(f"[{i:3}/{len(missing)}] 🎨 {spanish:25} = {meta['russian']}")
         png = generate_one(api_key, prompt)
         if png:
             target.write_bytes(png)
