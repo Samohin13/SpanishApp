@@ -34,8 +34,9 @@ import com.spanishapp.data.db.entity.*
         com.spanishapp.radio.data.RadioCatalogEntity::class,
         com.spanishapp.radio.data.RadioListeningSessionEntity::class,
         com.spanishapp.radio.data.RadioWordCatchEntity::class,
+        GameMistakeEntity::class,
     ],
-    version = 24,
+    version = 25,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -61,6 +62,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun radioFavoriteDao(): com.spanishapp.radio.data.RadioFavoriteDao
     abstract fun radioCatalogDao(): com.spanishapp.radio.data.RadioCatalogDao
     abstract fun radioListeningDao(): com.spanishapp.radio.data.RadioListeningDao
+    abstract fun gameMistakesDao(): GameMistakesDao
     // radioWordCatchDao() удалён в v1.11.7 — фича «Поймал слово!» выпилена в v1.9.0.
     // Абстрактный метод оставался без Hilt-провайдера → ЛЮБОЙ @Inject его =
     // crash на старте (Dagger graph MissingBinding). Entity RadioWordCatchEntity
@@ -339,6 +341,24 @@ abstract class AppDatabase : RoomDatabase() {
         // Phase 1 нового дизайна курса (1.2.0): теория-карточки.
         // Каждый практический урок получает справочную карточку, прогресс
         // прочтения трекается отдельно от прохождения практики.
+        // ── v25: game_mistakes — «Работа над ошибками» во всех 4 играх (1.22.0) ──
+        val MIGRATION_24_25 = object : Migration(24, 25) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS game_mistakes (
+                        game_id      TEXT NOT NULL,
+                        item_id      TEXT NOT NULL,
+                        display_hint TEXT NOT NULL DEFAULT '',
+                        display_main TEXT NOT NULL DEFAULT '',
+                        attempts     INTEGER NOT NULL DEFAULT 1,
+                        added_at     INTEGER NOT NULL,
+                        last_seen_at INTEGER NOT NULL,
+                        PRIMARY KEY (game_id, item_id)
+                    )
+                """.trimIndent())
+            }
+        }
+
         // ── v24: radio_listening_session + radio_word_catch (Stats 1.8.0) ──
         val MIGRATION_23_24 = object : Migration(23, 24) {
             override fun migrate(db: SupportSQLiteDatabase) {

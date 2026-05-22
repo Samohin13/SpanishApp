@@ -15,6 +15,7 @@ import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -49,7 +50,8 @@ data class PalabraState(
     val ruleHint: String? = null,
     val showLevelMap: Boolean = true,
     val finalStars: Int = 0,
-    val finalPercent: Int = 0
+    val finalPercent: Int = 0,
+    val isMistakesPractice: Boolean = false,
 ) {
     val level: Int get() = params.level
     val totalRounds: Int get() = questions.size.coerceAtLeast(1)
@@ -63,11 +65,47 @@ class PalabraMaestraViewModel @Inject constructor(
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
     private val ratingUpdater: RatingUpdater,
+    private val mistakesDao: com.spanishapp.data.db.dao.GameMistakesDao,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PalabraState())
     val state = _state.asStateFlow()
+
+    val mistakesCount: kotlinx.coroutines.flow.StateFlow<Int> = mistakesDao
+        .observeCount(GameId.PALABRA)
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
+
+    /** v1.22.0: «Работа над ошибками» — 5 слов из mistakes по очереди. */
+    fun startMistakesPractice() {
+        viewModelScope.launch {
+            val batch = mistakesDao.getNextBatch(GameId.PALABRA, 5)
+            if (batch.isEmpty()) return@launch
+            // Восстановим WordEntity по испанскому слову из main
+            val words = batch.mapNotNull { m ->
+                val clean = stripArticle(m.itemId).lowercase()
+                wordDao.findBySpanish(m.displayMain) ?: wordDao.findBySpanish(clean)
+            }
+            if (words.isEmpty()) return@launch
+            val questions = words.map { word ->
+                val clean = stripArticle(word.spanish).lowercase()
+                val chars = clean.map { it.toString() }
+                PalabraQuestion(
+                    word = word,
+                    targetWord = clean,
+                    shuffledLetters = shuffleLetters(chars),
+                    assembledLetters = List(chars.size) { null },
+                )
+            }
+            val params = LevelDifficulty.forLevel(1).copy(rounds = questions.size)
+            _state.value = PalabraState(
+                params = params,
+                questions = questions,
+                showLevelMap = false,
+                isMistakesPractice = true,
+            )
+        }
+    }
 
     fun startLevel(level: Int) {
         viewModelScope.launch {
@@ -193,6 +231,24 @@ class PalabraMaestraViewModel @Inject constructor(
                     )
                     viewModelScope.launch { ratingUpdater.applyGameAnswer(true) }
                     tts.speak(q.word.spanish)
+                    // v1.22.0: «Работа над ошибками»
+                    viewModelScope.launch {
+                        val itemId = q.targetWord.lowercase()
+                        if (s.isMistakesPractice) {
+                            // Чистое прохождение в режиме практики → удаляем из mistakes
+                            if (updated.mistakesCount == 0) {
+                                mistakesDao.removeMistake(GameId.PALABRA, itemId)
+                            }
+                        } else if (updated.mistakesCount > 0) {
+                            // В обычной игре зафиксировал ошибки при сборке → запоминаем
+                            mistakesDao.recordMistake(
+                                gameId = GameId.PALABRA,
+                                itemId = itemId,
+                                hint = q.word.russian,
+                                main = q.word.spanish,
+                            )
+                        }
+                    }
                 } else {
                     // Слово собрано полностью, но неправильно. Показываем красным,
                     // даём юзеру возможность сбросить буквы и попробовать снова.

@@ -55,6 +55,7 @@ fun MathGameScreen(
     // ввод сбрасывался при смене раунда.
     var inputVal by rememberSaveable(state.currentRound) { mutableStateOf("") }
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
 
     when {
         state.showLevelMap -> {
@@ -64,7 +65,9 @@ fun MathGameScreen(
                 accent  = ACCENT,
                 manager = viewModel.levelManager,
                 onBack  = { navController.popBackStack() },
-                onLevelStart = { lvl -> viewModel.startLevel(lvl) }
+                onLevelStart = { lvl -> viewModel.startLevel(lvl) },
+                mistakesCount = mistakesCount,
+                onMistakesPractice = { viewModel.startMistakesPractice() },
             )
         }
         state.isGameOver -> {

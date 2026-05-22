@@ -16,6 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,7 +36,8 @@ data class SpeedPremiumState(
     val weakWords: MutableList<WordEntity> = mutableListOf(),
     val finalStars: Int = 0,
     val finalPercent: Int = 0,
-    val showLevelMap: Boolean = true
+    val showLevelMap: Boolean = true,
+    val isMistakesPractice: Boolean = false,
 ) {
     val totalRounds: Int get() = params.rounds
     val level: Int get() = params.level
@@ -48,15 +50,21 @@ class SpeedViewModel @Inject constructor(
     private val achievementManager: AchievementManager,
     private val ratingUpdater: RatingUpdater,
     private val tts: com.spanishapp.service.SpanishTts,
+    private val mistakesDao: com.spanishapp.data.db.dao.GameMistakesDao,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SpeedPremiumState())
     val state = _state.asStateFlow()
 
+    val mistakesCount: kotlinx.coroutines.flow.StateFlow<Int> = mistakesDao
+        .observeCount(GameId.SPEED)
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
+
     private var timerJob: Job? = null
     private var roundStartTime = 0L
     @Volatile private var roundResolved = false
+    private var mistakesBatch: List<com.spanishapp.data.db.entity.GameMistakeEntity> = emptyList()
 
     fun startLevel(level: Int) {
         timerJob?.cancel()
@@ -69,6 +77,61 @@ class SpeedViewModel @Inject constructor(
     fun openLevelMap() {
         timerJob?.cancel()
         _state.value = _state.value.copy(showLevelMap = true, isGameOver = false)
+    }
+
+    /** v1.22.0: «Работа над ошибками» — 5 слов из mistakes по очереди. */
+    fun startMistakesPractice() {
+        timerJob?.cancel()
+        roundResolved = false
+        viewModelScope.launch {
+            val batch = mistakesDao.getNextBatch(GameId.SPEED, 5)
+            if (batch.isEmpty()) return@launch
+            mistakesBatch = batch
+            val params = LevelDifficulty.forLevel(1).copy(rounds = batch.size, timePerRoundSec = 0f)
+            _state.value = SpeedPremiumState(
+                params = params,
+                showLevelMap = false,
+                isMistakesPractice = true,
+            )
+            nextMistakeRound()
+        }
+    }
+
+    private fun nextMistakeRound() {
+        val s = _state.value
+        if (s.currentRound >= mistakesBatch.size) {
+            finishGame()
+            return
+        }
+        roundResolved = false
+        viewModelScope.launch {
+            val mistake = mistakesBatch[s.currentRound]
+            val wordId = mistake.itemId.toIntOrNull() ?: run {
+                _state.value = s.copy(currentRound = s.currentRound + 1)
+                nextMistakeRound()
+                return@launch
+            }
+            val word = wordDao.findById(wordId) ?: run {
+                _state.value = s.copy(currentRound = s.currentRound + 1)
+                nextMistakeRound()
+                return@launch
+            }
+            // 3 случайных дистрактора из пула
+            val distractors = wordDao.getRandomWords(20)
+                .filter { it.id != word.id && it.russian.isNotBlank() }
+                .map { it.russian }
+                .distinct()
+                .take(3)
+            val options = (distractors + word.russian).shuffled()
+            _state.value = s.copy(
+                currentWord = word,
+                options = options,
+                currentRound = s.currentRound + 1,
+                lastCorrect = null,
+                timeLeft = 1f,
+            )
+            roundStartTime = System.currentTimeMillis()
+        }
     }
 
     private fun nextRound() {
@@ -153,6 +216,23 @@ class SpeedViewModel @Inject constructor(
         if (isCorrect) s.reactionTimes.add(reactionTime)
         else s.currentWord?.let { s.weakWords.add(it) }
 
+        // v1.22.0: «Работа над ошибками»
+        viewModelScope.launch {
+            val w = s.currentWord
+            if (w != null) {
+                if (isCorrect && s.isMistakesPractice) {
+                    mistakesDao.removeMistake(GameId.SPEED, w.id.toString())
+                } else if (!isCorrect) {
+                    mistakesDao.recordMistake(
+                        gameId = GameId.SPEED,
+                        itemId = w.id.toString(),
+                        hint = w.russian,
+                        main = w.spanish,
+                    )
+                }
+            }
+        }
+
         val newStreak = if (isCorrect) s.streak + 1 else 0
         val newMultiplier = 1.0f + (newStreak / 5) * 0.2f
         val points = if (isCorrect) (10 * newMultiplier).toInt() else 0
@@ -173,7 +253,8 @@ class SpeedViewModel @Inject constructor(
 
         viewModelScope.launch {
             delay(if (isCorrect) 600 else 1200)
-            nextRound()
+            if (_state.value.isMistakesPractice) nextMistakeRound()
+            else nextRound()
         }
     }
 

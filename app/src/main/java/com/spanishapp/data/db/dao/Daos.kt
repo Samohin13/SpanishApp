@@ -674,6 +674,10 @@ interface ArticleGameDao {
     @Query("SELECT COUNT(*) FROM article_words WHERE level IN (:levels)")
     suspend fun countForLevels(levels: List<String>): Int
 
+    /** Найти ArticleWordEntity по слову (для режима «Работа над ошибками»). */
+    @Query("SELECT * FROM article_words WHERE word = :word LIMIT 1")
+    suspend fun findByWord(word: String): ArticleWordEntity?
+
     @Update
     suspend fun updateWord(word: ArticleWordEntity)
 
@@ -772,5 +776,58 @@ interface FlashcardSetProgressDao {
     suspend fun getOne(setId: String): FlashcardSetProgressEntity?
 
     @Query("DELETE FROM flashcard_set_progress")
+    suspend fun deleteAll()
+}
+
+/**
+ * «Работа над ошибками» — слова и задания в которых юзер ошибался.
+ * Общий DAO на все 4 игры (Articles, Speed, PalabraMaestra, Math) — игры
+ * различаются полем `gameId`.
+ */
+@Dao
+interface GameMistakesDao {
+    /**
+     * Зарегистрировать ошибку. Если запись уже была — increment attempts +
+     * обновить lastSeenAt и displayHint/displayMain (на случай если перевод
+     * изменился между запусками).
+     */
+    @Query("""
+        INSERT INTO game_mistakes (game_id, item_id, display_hint, display_main, attempts, added_at, last_seen_at)
+        VALUES (:gameId, :itemId, :hint, :main, 1, :now, :now)
+        ON CONFLICT (game_id, item_id) DO UPDATE SET
+            attempts      = attempts + 1,
+            last_seen_at  = :now,
+            display_hint  = :hint,
+            display_main  = :main
+    """)
+    suspend fun recordMistake(
+        gameId: String,
+        itemId: String,
+        hint: String,
+        main: String,
+        now: Long = System.currentTimeMillis(),
+    )
+
+    @Query("SELECT * FROM game_mistakes WHERE game_id = :gameId ORDER BY last_seen_at ASC LIMIT :limit")
+    suspend fun getNextBatch(gameId: String, limit: Int = 5): List<GameMistakeEntity>
+
+    @Query("SELECT * FROM game_mistakes WHERE game_id = :gameId ORDER BY last_seen_at DESC")
+    fun observeAll(gameId: String): Flow<List<GameMistakeEntity>>
+
+    @Query("SELECT COUNT(*) FROM game_mistakes WHERE game_id = :gameId")
+    fun observeCount(gameId: String): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM game_mistakes WHERE game_id = :gameId")
+    suspend fun count(gameId: String): Int
+
+    /** При правильном ответе в режиме практики — удаляем запись. */
+    @Query("DELETE FROM game_mistakes WHERE game_id = :gameId AND item_id = :itemId")
+    suspend fun removeMistake(gameId: String, itemId: String)
+
+    /** Сбросить ошибки для игры (юзер может сбросить вручную). */
+    @Query("DELETE FROM game_mistakes WHERE game_id = :gameId")
+    suspend fun clearForGame(gameId: String)
+
+    @Query("DELETE FROM game_mistakes")
     suspend fun deleteAll()
 }

@@ -54,6 +54,7 @@ fun PalabraMaestraScreen(
     viewModel: PalabraMaestraViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
 
     when {
         state.showLevelMap -> {
@@ -63,7 +64,9 @@ fun PalabraMaestraScreen(
                 accent  = ACCENT,
                 manager = viewModel.levelManager,
                 onBack  = { navController.popBackStack() },
-                onLevelStart = { lvl -> viewModel.startLevel(lvl) }
+                onLevelStart = { lvl -> viewModel.startLevel(lvl) },
+                mistakesCount = mistakesCount,
+                onMistakesPractice = { viewModel.startMistakesPractice() },
             )
         }
         state.isGameOver -> {

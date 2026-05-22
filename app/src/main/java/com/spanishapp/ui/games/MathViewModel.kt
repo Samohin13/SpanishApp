@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
@@ -46,7 +47,8 @@ data class MathGameState(
     val answerHistory: List<Boolean> = emptyList(),  // для ProgressDots
     val finalStars: Int = 0,
     val finalPercent: Int = 0,
-    val showLevelMap: Boolean = true
+    val showLevelMap: Boolean = true,
+    val isMistakesPractice: Boolean = false,
 ) {
     val totalRounds: Int get() = params.rounds
     val level: Int get() = params.level
@@ -58,11 +60,79 @@ class MathViewModel @Inject constructor(
     private val achievementManager: AchievementManager,
     private val tts: SpanishTts,
     private val ratingUpdater: RatingUpdater,
+    private val mistakesDao: com.spanishapp.data.db.dao.GameMistakesDao,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MathGameState())
     val state = _state.asStateFlow()
+
+    val mistakesCount: kotlinx.coroutines.flow.StateFlow<Int> = mistakesDao
+        .observeCount(GameId.MATH)
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
+
+    private var mistakesBatch: List<com.spanishapp.data.db.entity.GameMistakeEntity> = emptyList()
+
+    /** v1.22.0: «Работа над ошибками» — 5 заданий из mistakes. */
+    fun startMistakesPractice() {
+        timerJob?.cancel()
+        roundResolved = false
+        viewModelScope.launch {
+            val batch = mistakesDao.getNextBatch(GameId.MATH, 5)
+            if (batch.isEmpty()) return@launch
+            mistakesBatch = batch
+            val params = LevelDifficulty.forLevel(1).copy(rounds = batch.size, timePerRoundSec = 0f)
+            _state.value = MathGameState(
+                params = params,
+                displayMode = MathDisplayMode.SPANISH,
+                audioEnabled = _state.value.audioEnabled,
+                showLevelMap = false,
+                isMistakesPractice = true,
+            )
+            nextMistakeQuestion()
+        }
+    }
+
+    private fun nextMistakeQuestion() {
+        val s = _state.value
+        if (s.currentRound >= mistakesBatch.size) {
+            finishGame()
+            return
+        }
+        roundResolved = false
+        val mistake = mistakesBatch[s.currentRound]
+        // itemId хранит выражение типа "3 + 5", main — то же. correctAnswer
+        // не сохраняем, пересчитываем из выражения.
+        val expr = mistake.itemId
+        val correctAnswer = evaluateSimpleExpression(expr) ?: run {
+            _state.value = s.copy(currentRound = s.currentRound + 1)
+            nextMistakeQuestion()
+            return
+        }
+        _state.value = s.copy(
+            currentRound = s.currentRound + 1,
+            expressionText = expr,
+            expressionSpoken = expr,
+            correctAnswer = correctAnswer,
+            lastCorrect = null,
+            timeLeft = 1f,
+        )
+    }
+
+    /** Считает простое выражение «3 + 5» / «12 - 4» / «6 * 2» / «10 / 2». */
+    private fun evaluateSimpleExpression(expr: String): Int? {
+        val parts = expr.trim().split(Regex("\\s+"))
+        if (parts.size != 3) return null
+        val a = parts[0].toIntOrNull() ?: return null
+        val b = parts[2].toIntOrNull() ?: return null
+        return when (parts[1]) {
+            "+" -> a + b
+            "-" -> a - b
+            "*", "×" -> a * b
+            "/", "÷" -> if (b != 0) a / b else null
+            else -> null
+        }
+    }
 
     private var timerJob: kotlinx.coroutines.Job? = null
     @Volatile private var roundResolved = false
@@ -279,11 +349,29 @@ class MathViewModel @Inject constructor(
             answerHistory = s.answerHistory + isCorrect
         )
 
+        // v1.22.0: «Работа над ошибками»
+        viewModelScope.launch {
+            val itemId = s.expressionSpoken
+            if (itemId.isNotBlank()) {
+                if (isCorrect && s.isMistakesPractice) {
+                    mistakesDao.removeMistake(GameId.MATH, itemId)
+                } else if (!isCorrect) {
+                    mistakesDao.recordMistake(
+                        gameId = GameId.MATH,
+                        itemId = itemId,
+                        hint = "= ${s.correctAnswer}",
+                        main = itemId,
+                    )
+                }
+            }
+        }
+
         viewModelScope.launch {
             ratingUpdater.applyGameAnswer(isCorrect)
             // На правильном ответе короче (поощряем темп), на ошибке — даём прочитать
             delay(if (isCorrect) 800 else 1500)
-            nextQuestion()
+            if (_state.value.isMistakesPractice) nextMistakeQuestion()
+            else nextQuestion()
         }
     }
 

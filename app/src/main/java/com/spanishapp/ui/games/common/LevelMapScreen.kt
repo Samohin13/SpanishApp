@@ -45,7 +45,10 @@ fun LevelMapScreen(
     accent: Color,
     manager: GameLevelManager,
     onBack: () -> Unit,
-    onLevelStart: (Int) -> Unit
+    onLevelStart: (Int) -> Unit,
+    /** v1.22.0: счётчик ошибок и колбэк на запуск режима практики. */
+    mistakesCount: Int = 0,
+    onMistakesPractice: () -> Unit = {},
 ) {
     var progress by remember { mutableStateOf<Map<Int, GameLevelProgressEntity>>(emptyMap()) }
     var nextLevel by remember { mutableIntStateOf(1) }
@@ -80,34 +83,95 @@ fun LevelMapScreen(
             )
         }
     ) { padding ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(5),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentPadding = PaddingValues(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items((1..100).toList()) { level ->
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            // ── v1.22.0: Карточка «Работа над ошибками» ───────────
+            if (mistakesCount > 0) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color(0xFFFF6B35).copy(alpha = 0.12f),
+                    border = androidx.compose.foundation.BorderStroke(
+                        1.dp,
+                        Color(0xFFFF6B35).copy(alpha = 0.5f)
+                    ),
+                    onClick = onMistakesPractice,
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("📝", fontSize = 28.sp)
+                        Spacer(Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                "Работа над ошибками",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                "$mistakesCount ${pluralWords(mistakesCount)} к повторению (по 5 за раз)",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Surface(
+                            color = Color(0xFFFF6B35),
+                            shape = RoundedCornerShape(12.dp),
+                        ) {
+                            Text(
+                                "$mistakesCount",
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            )
+                        }
+                    }
+                }
+            }
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(5),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items((1..100).toList()) { level ->
                 val entry = progress[level]
                 val unlocked = level <= nextLevel
                 val isNext = level == nextLevel
 
-                GameLevelCell(
-                    level    = level,
-                    stars    = entry?.stars ?: 0,
-                    unlocked = unlocked,
-                    isNext   = isNext,
-                    accent   = accent,
-                    onClick  = {
-                        if (unlocked) {
-                            scope.launch { onLevelStart(level) }
+                    GameLevelCell(
+                        level    = level,
+                        stars    = entry?.stars ?: 0,
+                        unlocked = unlocked,
+                        isNext   = isNext,
+                        accent   = accent,
+                        onClick  = {
+                            if (unlocked) {
+                                scope.launch { onLevelStart(level) }
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
+    }
+}
+
+/** Простое склонение «слово / слова / слов» для русского. */
+private fun pluralWords(n: Int): String {
+    val mod100 = n % 100
+    val mod10 = n % 10
+    return when {
+        mod100 in 11..19 -> "слов"
+        mod10 == 1 -> "слово"
+        mod10 in 2..4 -> "слова"
+        else -> "слов"
     }
 }
 

@@ -69,6 +69,7 @@ fun ArticlesGameScreen(
     viewModel: ArticlesViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
     when {
         state.showLevelMap -> LevelMapScreen(
             gameId       = GameId.ARTICLES,
@@ -76,7 +77,9 @@ fun ArticlesGameScreen(
             accent       = ACCENT,
             manager      = viewModel.levelManager,
             onBack       = { navController.popBackStack() },
-            onLevelStart = { lvl -> viewModel.startLevel(lvl) }
+            onLevelStart = { lvl -> viewModel.startLevel(lvl) },
+            mistakesCount = mistakesCount,
+            onMistakesPractice = { viewModel.startMistakesPractice() },
         )
         state.isGameOver -> {
             ArticlesGameContent(state, viewModel, onBack = { viewModel.openLevelMap() })

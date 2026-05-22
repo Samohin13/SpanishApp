@@ -39,6 +39,7 @@ fun SpeedGameScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
 
     when {
         state.showLevelMap -> {
@@ -48,7 +49,9 @@ fun SpeedGameScreen(
                 accent  = ACCENT,
                 manager = viewModel.levelManager,
                 onBack  = { navController.popBackStack() },
-                onLevelStart = { lvl -> viewModel.startLevel(lvl) }
+                onLevelStart = { lvl -> viewModel.startLevel(lvl) },
+                mistakesCount = mistakesCount,
+                onMistakesPractice = { viewModel.startMistakesPractice() },
             )
         }
         state.isGameOver -> {

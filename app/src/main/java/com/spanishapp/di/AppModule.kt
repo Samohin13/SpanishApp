@@ -47,6 +47,7 @@ object AppModule {
                 AppDatabase.MIGRATION_20_21,
                 AppDatabase.MIGRATION_21_22,
                 AppDatabase.MIGRATION_22_23,
+                AppDatabase.MIGRATION_24_25,
                 AppDatabase.MIGRATION_23_24,
             )
         // fallbackToDestructiveMigration ТОЛЬКО в debug. Раньше было всегда —
@@ -73,6 +74,7 @@ object AppModule {
     @Provides fun provideLessonProgressDao(db: AppDatabase): LessonProgressDao = db.lessonProgressDao()
     @Provides fun provideLibroProgressDao(db: AppDatabase): LibroProgressDao = db.libroProgressDao()
     @Provides fun provideGameLevelProgressDao(db: AppDatabase): GameLevelProgressDao = db.gameLevelProgressDao()
+    @Provides fun provideGameMistakesDao(db: AppDatabase): com.spanishapp.data.db.dao.GameMistakesDao = db.gameMistakesDao()
     @Provides fun provideDailyXpDao(db: AppDatabase): DailyXpDao = db.dailyXpDao()
     @Provides fun provideFlashcardSetProgressDao(db: AppDatabase): FlashcardSetProgressDao = db.flashcardSetProgressDao()
     @Provides fun provideRecentSearchDao(db: AppDatabase): RecentSearchDao = db.recentSearchDao()

@@ -20,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import javax.inject.Inject
@@ -40,7 +41,12 @@ data class ArticlesPremiumState(
     val academicHint: String? = null,
     val finalStars: Int = 0,
     val finalPercent: Int = 0,
-    val showLevelMap: Boolean = true
+    val showLevelMap: Boolean = true,
+    /** v1.22.0: режим «Работа над ошибками». В этом режиме верный ответ удаляет
+     *  слово из mistakes, не начисляет звёзды за уровень, и не учитывается в
+     *  GameLevelManager. */
+    val isMistakesPractice: Boolean = false,
+    val mistakesCount: Int = 0
 ) {
     val totalRounds: Int get() = params.rounds
     val level: Int get() = params.level
@@ -56,13 +62,21 @@ class ArticlesViewModel @Inject constructor(
     private val tts: SpanishTts,
     private val soundPlayer: SoundPlayer,
     private val ratingUpdater: RatingUpdater,
+    private val mistakesDao: com.spanishapp.data.db.dao.GameMistakesDao,
     val levelManager: GameLevelManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ArticlesPremiumState())
     val state = _state.asStateFlow()
 
+    /** Live-счётчик ошибок текущей игры — для бейджа на карте уровней. */
+    val mistakesCount: kotlinx.coroutines.flow.StateFlow<Int> = mistakesDao
+        .observeCount(GameId.ARTICLES)
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
+
     private var questionStartTime = 0L
+    /** Буфер слов для режима «Работа над ошибками» — 5 за раз. */
+    private var mistakesBatch: List<com.spanishapp.data.db.entity.GameMistakeEntity> = emptyList()
 
     init {
         viewModelScope.launch {
@@ -76,6 +90,57 @@ class ArticlesViewModel @Inject constructor(
                 dao.deleteAllWords()
                 seedFromJson()
             }
+        }
+    }
+
+    /**
+     * Запустить режим «Работа над ошибками» — берём первые 5 mistakes из БД,
+     * прогоняем через тот же UI игры. Верный ответ удаляет из mistakes;
+     * неверный — оставляет (attempts++).
+     */
+    fun startMistakesPractice() {
+        viewModelScope.launch {
+            val batch = mistakesDao.getNextBatch(GameId.ARTICLES, limit = 5)
+            if (batch.isEmpty()) return@launch
+            mistakesBatch = batch
+            // Используем псевдо-уровень 0 (отключает level-progression логику)
+            // params используем как у первого уровня для UI, но не сохраняем результат
+            val params = LevelDifficulty.forLevel(1)
+            _state.value = ArticlesPremiumState(
+                params = params,
+                showLevelMap = false,
+                isMistakesPractice = true,
+                mistakesCount = batch.size,
+                answerHistory = emptyList()
+            )
+            nextMistakeRound()
+        }
+    }
+
+    private fun nextMistakeRound() {
+        val s = _state.value
+        if (s.currentRound >= mistakesBatch.size) {
+            // Закончили пятёрку — закрыть, вернуться на levelMap
+            _state.value = s.copy(
+                isGameOver = true,
+                finalPercent = if (s.totalRounds == 0) 0
+                               else (s.correctCount * 100 / mistakesBatch.size),
+                finalStars = 0    // в режиме практики звёзды не даются
+            )
+            return
+        }
+        viewModelScope.launch {
+            val mistake = mistakesBatch[s.currentRound]
+            // Восстановим слово из ArticleWordEntity (если оно есть в БД)
+            val word = dao.findByWord(mistake.itemId) ?: return@launch
+            _state.value = s.copy(
+                currentWord = word,
+                currentRound = s.currentRound + 1,
+                lastCorrect = null,
+                chosenArticle = null,
+                academicHint = null
+            )
+            questionStartTime = System.currentTimeMillis()
         }
     }
 
@@ -156,9 +221,20 @@ class ArticlesViewModel @Inject constructor(
                 soundPlayer.playCorrect()
                 tts.speak("${word.article} ${word.word}")
                 word.errorWeight = (word.errorWeight - 1).coerceAtLeast(0)
+                // Если играем в режиме «Работа над ошибками» — удаляем из mistakes
+                if (s.isMistakesPractice) {
+                    mistakesDao.removeMistake(GameId.ARTICLES, word.word)
+                }
             } else {
                 soundPlayer.playWrong()
                 word.errorWeight += 2
+                // Регистрируем ошибку: всегда (даже в обычной игре)
+                mistakesDao.recordMistake(
+                    gameId = GameId.ARTICLES,
+                    itemId = word.word,                // ключ без артикля
+                    hint = word.russian,                // перевод для отображения
+                    main = "${word.article} ${word.word}",
+                )
             }
             dao.updateWord(word)
             ratingUpdater.applyGameAnswer(isCorrect)
@@ -181,7 +257,8 @@ class ArticlesViewModel @Inject constructor(
 
     /** Вызывается кнопкой CONTINUAR после ответа. */
     fun continueToNext() {
-        nextRound()
+        if (_state.value.isMistakesPractice) nextMistakeRound()
+        else nextRound()
     }
 
     private fun finishGame() {

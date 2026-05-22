@@ -236,6 +236,40 @@ data class GameLevelProgressEntity(
 )
 
 /**
+ * «Работа над ошибками» (v25) — слова/задания которые юзер сделал неверно.
+ *
+ * Логика:
+ *  • Юзер ошибся в игре → запись добавляется (или updated если уже есть).
+ *  • Юзер заходит в режим «работа над ошибками» → видит свои ошибки группами по 5.
+ *  • Верный ответ в режиме практики → запись УДАЛЯЕТСЯ из таблицы.
+ *  • Неверный → attempts++ , остаётся в таблице.
+ *
+ * itemId — гибкое поле:
+ *  • Articles: испанское слово без артикля ("perro")
+ *  • Speed:    word_id из words-таблицы (как строка)
+ *  • PalabraMaestra: испанское слово
+ *  • Math:     текст выражения ("3 + 5")
+ *
+ * Композитный ключ (gameId, itemId) — одна запись на каждое слово/задание
+ * в каждой игре. Если юзер опять ошибся в том же → просто attempts++.
+ */
+@Entity(
+    tableName = "game_mistakes",
+    primaryKeys = ["game_id", "item_id"]
+)
+data class GameMistakeEntity(
+    @ColumnInfo(name = "game_id")     val gameId: String,
+    @ColumnInfo(name = "item_id")     val itemId: String,
+    /** Доп.поле для отображения: например для Articles это перевод "собака". */
+    @ColumnInfo(name = "display_hint") val displayHint: String = "",
+    /** Доп.поле для отображения: например "el perro" с артиклем. */
+    @ColumnInfo(name = "display_main") val displayMain: String = "",
+    @ColumnInfo(name = "attempts")    val attempts: Int = 1,
+    @ColumnInfo(name = "added_at")    val addedAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "last_seen_at") val lastSeenAt: Long = System.currentTimeMillis()
+)
+
+/**
  * Прогресс прохождения flashcard-сета (Daily Sets system).
  * Один сет = один ID из FlashcardSetData. Mastered count считается на лету
  * по таблице `words` (isLearned), здесь храним только звёзды и timestamp.
