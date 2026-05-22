@@ -88,8 +88,8 @@ android {
         applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 158
-        versionName = "1.20.1"
+        versionCode = 159
+        versionName = "1.20.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Proxy URL for production: hides the API key from the APK.
         // When non-empty, AiChatRepository routes requests through it.
@@ -145,9 +145,16 @@ android {
         debug {
             // Debug-сборка не минифицируется — быстрее и удобнее отлаживать.
             isMinifyEnabled = false
-            // GEMINI_API_KEY только в debug — для локальной разработки без proxy
-            val geminiKey = localProps.getProperty("GEMINI_KEY") ?: ""
-            buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
+            // v1.20.2 SECURITY: GEMINI_API_KEY больше НЕ запекается даже в debug.
+            // Раньше debug-APK содержал ключ в BuildConfig → если debug APK
+            // случайно раздавался тестерам, ключ можно было вытащить за минуту
+            // через jadx/strings. Так уже потеряли один ключ
+            // (AIzaSyBoTl..., Google пометил как leaked).
+            //
+            // Теперь debug, как и release, ходит ТОЛЬКО через AI_PROXY_URL.
+            // Это значит для debug-сборки тоже нужен Cloudflare Worker —
+            // что вообще-то правильно, debug должен повторять архитектуру prod.
+            buildConfigField("String", "GEMINI_API_KEY", "\"\"")
         }
     }
 
