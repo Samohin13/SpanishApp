@@ -69,19 +69,52 @@ class AiChatRepository @Inject constructor(
         }
 
         /**
-         * Adds the X-App-Secret header when the proxy is in use AND a secret
-         * was configured at build time. The Worker rejects mismatching
-         * requests with 403 — protects the proxy from random callers who
-         * stumble onto the public URL.
+         * Adds X-App-Secret (фильтр случайных гостей) и Authorization: Bearer
+         * с Firebase ID Token (доказательство что запрос от настоящего юзера
+         * приложения, а не из извлечённого APK секрета).
+         *
+         * Двухслойная защита:
+         *  • X-App-Secret  — общий секрет приложения, легко достать из APK
+         *  • Firebase ID Token — JWT уникальный для каждого юзера, привязан к
+         *    Firebase UID, имеет 1-час exp, нельзя массово получить без
+         *    регистрации в Firebase Auth.
+         *
+         * Если Firebase Auth ещё не инициализирован (cold start) — отправляем
+         * только X-App-Secret, Worker может пропустить (если FIREBASE_PROJECT
+         * env не задан) или отвергнуть с 401.
          */
-        private fun Request.Builder.withProxySecret(): Request.Builder {
+        private suspend fun Request.Builder.withProxyAuth(): Request.Builder {
             val proxy = BuildConfig.AI_PROXY_URL.trim()
             val secret = BuildConfig.AI_PROXY_SECRET.trim()
-            if (proxy.isNotEmpty() && secret.isNotEmpty()) {
+            if (proxy.isEmpty()) return this  // direct Gemini в debug — без auth
+            if (secret.isNotEmpty()) {
                 header("X-App-Secret", secret)
+            }
+            // Firebase ID Token (если юзер залогинен — anonymous или Google).
+            // JWT уникальный для каждого юзера, нельзя массово получить без
+            // регистрации в Firebase Auth. Доказывает что запрос от настоящего
+            // юзера приложения, а не из извлечённого секрета APK.
+            val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                try {
+                    val token = awaitTask(user.getIdToken(false))
+                    token.token?.let { header("Authorization", "Bearer $it") }
+                } catch (_: Exception) {
+                    // Тихий failover — без токена Worker может отказать,
+                    // но это лучше чем краш UI на ровном месте.
+                }
             }
             return this
         }
+
+        /** Самописный await для Task<T> (без зависимости от kotlinx-coroutines-play-services). */
+        private suspend fun <T> awaitTask(task: com.google.android.gms.tasks.Task<T>): T =
+            kotlinx.coroutines.suspendCancellableCoroutine { cont ->
+                task.addOnSuccessListener { result ->
+                    @Suppress("UNCHECKED_CAST")
+                    cont.resumeWith(Result.success(result as T))
+                }.addOnFailureListener { cont.resumeWith(Result.failure(it)) }
+            }
 
         /**
          * Превращает технический HTTP-error от Gemini в понятное юзеру
@@ -223,7 +256,7 @@ class AiChatRepository @Inject constructor(
                 .url(apiUrl())
                 .post(body)
                 .header("Content-Type", "application/json")
-                .withProxySecret()
+                .withProxyAuth()
                 .build()
 
             val response = okHttpClient.newCall(request).execute()
@@ -298,7 +331,7 @@ class AiChatRepository @Inject constructor(
             .post(body)
             .header("Content-Type", "application/json")
             .header("Accept", "text/event-stream")
-            .withProxySecret()
+            .withProxyAuth()
             .build()
 
         val response = okHttpClient.newCall(request).execute()
@@ -386,7 +419,7 @@ class AiChatRepository @Inject constructor(
                     .url(apiUrl())
                     .post(body)
                     .header("Content-Type", "application/json")
-                    .withProxySecret()
+                    .withProxyAuth()
                     .build()
 
                 val response = okHttpClient.newCall(request).execute()

@@ -1,0 +1,68 @@
+#!/bin/sh
+# ESPEAK pre-commit hook — блокирует коммит если в diff есть API-ключи.
+#
+# Подключение (один раз):
+#   git config core.hooksPath .githooks
+#
+# Снять блокировку: git commit --no-verify (не используй без причины!)
+
+set -e
+
+# Паттерны секретов
+PATTERNS='AIzaSy[A-Za-z0-9_-]{33}|sk-[A-Za-z0-9]{32,}|sk-proj-[A-Za-z0-9_-]{40,}|re_[A-Za-z0-9]{20,}|rk_[A-Za-z0-9_]{32,}|ghp_[A-Za-z0-9]{36}|gho_[A-Za-z0-9]{36}|xoxb-[0-9]+-[0-9]+-[A-Za-z0-9]+|-----BEGIN [A-Z]+ PRIVATE KEY-----'
+
+# Проверяем только staged-изменения
+STAGED_DIFF=$(git diff --cached --no-color)
+
+if [ -z "$STAGED_DIFF" ]; then
+    exit 0
+fi
+
+# Ищем секреты в staged-изменениях
+FOUND=$(echo "$STAGED_DIFF" | grep -E "^\+" | grep -E "$PATTERNS" || true)
+
+if [ -n "$FOUND" ]; then
+    echo ""
+    echo "╔════════════════════════════════════════════════════════════════╗"
+    echo "║  🚨 СЕКРЕТ ОБНАРУЖЕН В КОММИТЕ — КОММИТ ЗАБЛОКИРОВАН          ║"
+    echo "╚════════════════════════════════════════════════════════════════╝"
+    echo ""
+    echo "Найдено в staged-изменениях:"
+    echo ""
+    echo "$FOUND" | head -5 | sed 's/^/  /'
+    echo ""
+    echo "Что делать:"
+    echo "  1. Убери ключ из коммита (положи в local.properties или env)"
+    echo "  2. Если ключ уже в git-истории — РОТИРУЙ его (сгенери новый)"
+    echo "  3. git reset --soft HEAD~0  чтобы расстейджить"
+    echo ""
+    echo "Заведомо ложное срабатывание? Запусти:  git commit --no-verify"
+    echo ""
+    exit 1
+fi
+
+# Также проверяем .properties / .json / .env файлы целиком (а не только diff)
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+for file in $STAGED_FILES; do
+    case "$file" in
+        *.properties|*.env|*.json|*google-services*)
+            if [ -f "$file" ]; then
+                # Скипаем .example файлы
+                case "$file" in
+                    *.example|*example*) continue ;;
+                esac
+                MATCHES=$(grep -E "$PATTERNS" "$file" 2>/dev/null || true)
+                if [ -n "$MATCHES" ]; then
+                    echo ""
+                    echo "🚨 Секрет в файле: $file"
+                    echo "$MATCHES" | head -3 | sed 's/^/  /'
+                    echo ""
+                    echo "Файлы с ключами не должны быть в git. Проверь .gitignore."
+                    exit 1
+                fi
+            fi
+            ;;
+    esac
+done
+
+exit 0
