@@ -102,6 +102,32 @@ class LeagueResolverTest {
     }
 
     @Test
+    fun wrongAnswerInGameLosesRating() {
+        // v1.22.1 регрессия: на quality=2 (ошибка в игре) рейтинг должен
+        // ПАДАТЬ, а не расти. Раньше код возвращал +k*0.2 на quality=2,
+        // и юзер видел «+2 ⭐» при неверном ответе.
+        val before = 500
+        val after = SkillRatingSystem.applyAnswer(
+            currentRating = before,
+            easeFactor = 2.5f,
+            quality = 2,    // = applyGameAnswer(correct = false)
+        )
+        assertTrue("Wrong answer must DECREASE rating, got $before → $after", after < before)
+    }
+
+    @Test
+    fun correctAnswerInGameGainsRating() {
+        // Контрольный: на quality=3 (верный ответ в игре) рейтинг растёт.
+        val before = 500
+        val after = SkillRatingSystem.applyAnswer(
+            currentRating = before,
+            easeFactor = 2.5f,
+            quality = 3,
+        )
+        assertTrue("Correct answer must INCREASE rating, got $before → $after", after > before)
+    }
+
+    @Test
     fun veryHighRatingIsMadrid() {
         assertEquals("Madrid — ¡La Capital!", LeagueResolver.fromRating(5000).city)
     }

@@ -253,7 +253,11 @@ object SkillRatingSystem {
             quality >= 5 -> k * (1.0f + difficulty * 0.5f)
             quality == 4 -> k * (0.6f + difficulty * 0.4f)
             quality == 3 -> k * 0.3f
-            quality == 2 -> k * 0.2f
+            // v1.22.1 FIX: quality==2 = ошибка (как написано в комментарии RatingUpdater
+            // «ошибка → quality 2 — мелкая потеря»), но раньше тут было +k*0.2 — это давало
+            // ПОЛОЖИТЕЛЬНЫЙ delta на неверный ответ. Юзер видел «+2 ⭐» на Incorrecto.
+            // Делаем мелкую потерю как и задумывалось.
+            quality == 2 -> -k * 0.2f
             else         -> -k * (1.0f - difficulty * 0.4f)
         }
         val deltaF = if (baseDelta > 0f) baseDelta * promoResistance(currentRating) else baseDelta

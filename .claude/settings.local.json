@@ -32,7 +32,8 @@
       "Bash(git -C \"C:\\\\Users\\\\bravo\\\\AndroidStudioProjects\\\\SpanishApp2\" diff app/src/main/java/com/spanishapp/ui/chat/AiChatScreen.kt)",
       "Bash(ls C:/Users/bravo/AndroidStudioProjects/SpanishApp2/local.properties 2>&1; echo \"---\"; ls .claude/worktrees/affectionate-driscoll-600591/local.properties 2>&1)",
       "Bash(cp C:/Users/bravo/AndroidStudioProjects/SpanishApp2/local.properties .claude/worktrees/affectionate-driscoll-600591/local.properties && echo OK)",
-      "Bash(cd /c/Users/bravo/AndroidStudioProjects/SpanishApp2 && find . -type f \\\\\\( -name \"LearningAlgorithms.kt\" -o -name \"LeagueResolver.kt\" -o -name \"SkillRatingSystem.kt\" \\\\\\) ! -path \"*test*\" | head -5)"
+      "Bash(cd /c/Users/bravo/AndroidStudioProjects/SpanishApp2 && find . -type f \\\\\\( -name \"LearningAlgorithms.kt\" -o -name \"LeagueResolver.kt\" -o -name \"SkillRatingSystem.kt\" \\\\\\) ! -path \"*test*\" | head -5)",
+      "Bash(cd /c/Users/bravo/AndroidStudioProjects/SpanishApp2 && ./gradlew :app:bundleRelease 2>&1 | tail -3)"
     ]
   },
   "sandbox": {
