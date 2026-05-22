@@ -37,6 +37,11 @@ data class SpeedPremiumState(
     val currentRound: Int = 0,
     val isGameOver: Boolean = false,
     val lastCorrect: Boolean? = null,
+    /**
+     * v1.22.5: что юзер выбрал в этом раунде (для красной подсветки
+     * именно его выбора, а не только зелёной на правильном).
+     */
+    val lastAnswer: String? = null,
     val reactionTimes: MutableList<Long> = mutableListOf(),
     val weakWords: MutableList<WordEntity> = mutableListOf(),
     val finalStars: Int = 0,
@@ -189,6 +194,7 @@ class SpeedViewModel @Inject constructor(
                 options = options,
                 currentRound = s.currentRound + 1,
                 lastCorrect = null,
+                lastAnswer = null,
                 timeLeft = 1f,
             )
             roundStartTime = System.currentTimeMillis()
@@ -237,7 +243,8 @@ class SpeedViewModel @Inject constructor(
                 options      = options,
                 currentRound = s.currentRound + 1,
                 timeLeft     = 1f,
-                lastCorrect  = null
+                lastCorrect  = null,
+                lastAnswer   = null,
             )
             runCatching { tts.speak(word.spanish) }
             roundStartTime = System.currentTimeMillis()
@@ -302,7 +309,8 @@ class SpeedViewModel @Inject constructor(
             correctCount = if (isCorrect) s.correctCount + 1 else s.correctCount,
             streak       = newStreak,
             multiplier   = newMultiplier,
-            lastCorrect  = isCorrect
+            lastCorrect  = isCorrect,
+            lastAnswer   = answer,
         )
 
         // Feed the rating system — Speed game was the only mini-game NOT

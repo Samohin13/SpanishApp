@@ -181,25 +181,41 @@ private fun SpeedGameContent(
             Spacer(Modifier.weight(0.5f))
 
             // ── Варианты ─────────────────────────────────────
+            // v1.22.5: красная подсветка на ОШИБКЕ юзера, зелёная — на
+            // правильном ответе. Раньше зелёным горел ТОЛЬКО правильный
+            // (даже когда юзер выбрал другое), это сбивало — выглядело
+            // как будто игра «нажала за тебя».
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 state.options.forEach { option ->
-                    val isCorrectShown = state.lastCorrect != null &&
-                                          option == state.currentWord?.russian
+                    val answered = state.lastCorrect != null
+                    val correctOption = state.currentWord?.russian
+                    val isCorrectOption = option == correctOption
+                    val isUserChoice = state.lastAnswer == option
+                    val isWrongChoice = answered && isUserChoice && !isCorrectOption
+
+                    val green = Color(0xFF4CAF50)
+                    val red   = Color(0xFFFF4B4B)
+
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(64.dp)
-                            .clickable(enabled = state.lastCorrect == null) {
+                            .clickable(enabled = !answered) {
                                 viewModel.submitAnswer(option)
                             },
                         shape = RoundedCornerShape(16.dp),
                         color = when {
-                            isCorrectShown -> Color(0xFF4CAF50).copy(alpha = 0.20f)
-                            else            -> MaterialTheme.colorScheme.surfaceContainerHighest
+                            answered && isCorrectOption -> green.copy(alpha = 0.20f)
+                            isWrongChoice               -> red.copy(alpha = 0.20f)
+                            else                        -> MaterialTheme.colorScheme.surfaceContainerHighest
                         },
                         border = androidx.compose.foundation.BorderStroke(
                             1.dp,
-                            if (isCorrectShown) Color(0xFF4CAF50) else MaterialTheme.colorScheme.outline
+                            when {
+                                answered && isCorrectOption -> green
+                                isWrongChoice               -> red
+                                else                        -> MaterialTheme.colorScheme.outline
+                            }
                         )
                     ) {
                         Box(contentAlignment = Alignment.Center) {
