@@ -336,7 +336,7 @@ UI → AiChatRepository → Cloudflare Worker proxy
                           → Gemini Flash API
 ```
 
-- **Worker URL:** `espeak-gemini-proxy.bravochief21.workers.dev`
+- **Worker URL:** `espeak-gemini-proxy.es-espeak13.workers.dev`
 - **Модель:** `gemini-flash-latest` (auto-alias на актуальную бесплатную)
 - **Системный промпт:** дружелюбный репетитор для русскоязычных A1/A2, короткие ответы (4-5 строк), корректировки в формате `CORRECTIONS_JSON:[...]`
 - **История:** 20 последних сообщений из Room (`chat_messages`)
@@ -569,7 +569,7 @@ git push origin master
 - **Play Console:** es.espeak13@gmail.com
 - **GitHub Pages:** https://samohin13.github.io/SpanishApp/ (Privacy Policy, gh-pages branch)
 - **Content packs CDN:** https://samohin13.github.io/SpanishApp/content_packs/manifest.json
-- **AI proxy:** https://espeak-gemini-proxy.bravochief21.workers.dev/
+- **AI proxy:** https://espeak-gemini-proxy.es-espeak13.workers.dev/
 
 ---
 
