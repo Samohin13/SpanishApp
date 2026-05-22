@@ -172,9 +172,14 @@ class SpeedViewModel @Inject constructor(
                 russian = mistake.displayHint,
                 level   = "A1",
             )
-            // 3 случайных дистрактора из пула
+            // 3 случайных дистрактора из пула (фильтруем мусор: цифры, пустоты)
             val distractors = wordDao.getRandomWords(20)
-                .filter { it.russian.isNotBlank() && it.russian != word.russian }
+                .filter {
+                    it.russian.isNotBlank()
+                        && it.russian != word.russian
+                        && it.spanish.none { c -> c.isDigit() }
+                        && it.russian.none { c -> c.isDigit() }
+                }
                 .map { it.russian }
                 .distinct()
                 .take(3)
@@ -206,7 +211,16 @@ class SpeedViewModel @Inject constructor(
             // Раньше брали wordDao.getRandomWords(80) + случайные distractors
             // → один и тот же level каждый раз показывал РАЗНЫЕ слова и
             // РАЗНОЕ их количество. Теперь 100 уровней × 10 слов из ассета.
-            val word = wordDao.findBySpanish(round.word) ?: WordEntity(
+            //
+            // Защита: если в БД от старых debug-сборок остался мусор
+            // (WordEntity с цифрами вместо слова), синтетика из JSON
+            // перебивает её — даже если findBySpanish что-то вернёт.
+            val dbWord = wordDao.findBySpanish(round.word)
+            val dbValid = dbWord != null
+                && dbWord.spanish.isNotBlank()
+                && dbWord.spanish.none { it.isDigit() }
+                && dbWord.russian.isNotBlank()
+            val word = if (dbValid) dbWord!! else WordEntity(
                 spanish = round.word,
                 russian = round.russian,
                 level   = s.params.cefr.firstOrNull() ?: "A1",

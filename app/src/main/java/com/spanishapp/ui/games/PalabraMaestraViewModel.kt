@@ -168,7 +168,13 @@ class PalabraMaestraViewModel @Inject constructor(
             val questions = items.map { (sp, ru) ->
                 val clean = sp.lowercase()
                 val dbWord = wordDao.findBySpanish(clean) ?: wordDao.findBySpanish("el $clean")
-                val word = dbWord ?: WordEntity(
+                // Защита от мусора в БД (старые тестовые сборки могли
+                // насеять WordEntity с цифрами). Если DB-запись подозрительная,
+                // используем синтетику прямо из JSON.
+                val dbValid = dbWord != null
+                    && dbWord.russian.isNotBlank()
+                    && dbWord.spanish.none { it.isDigit() }
+                val word = if (dbValid) dbWord!! else WordEntity(
                     spanish = clean,
                     russian = ru,
                     level   = baseParams.cefr.firstOrNull() ?: "A1",
