@@ -961,6 +961,16 @@
     <string name="level_complete_try_again_button">Спробувати знову</string>
     <string name="level_complete_back_to_menu">Повернутися до меню</string>
 
+    <string name="mistakes_practice_title">Робота над помилками</string>
+    <string name="mistakes_practice_card_subtitle_words">%1$d %2$s до повторення (по 5 за раз)</string>
+    <string name="mistakes_practice_card_subtitle_tasks">%1$d %2$s до повторення (по 5 за раз)</string>
+    <string name="mistakes_practice_done_title">Сесію завершено</string>
+    <string name="mistakes_practice_done_score">Розібрав %1$d з %2$d</string>
+    <string name="mistakes_practice_pool_left">У пулі залишилось %1$d %2$s</string>
+    <string name="mistakes_practice_pool_empty">Пул помилок порожній! 🎉</string>
+    <string name="mistakes_practice_continue">Продовжити</string>
+    <string name="mistakes_practice_done">Закрити</string>
+
     <!-- Wave 3 -->
     <string name="profile_title">Профіль</string>
     <string name="profile_section_activity">АКТИВНІСТЬ</string>

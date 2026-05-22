@@ -1014,6 +1014,17 @@
     <string name="level_complete_try_again_button">Попробовать снова</string>
     <string name="level_complete_back_to_menu">Вернуться в меню</string>
 
+    <!-- Mistakes practice (v1.22.4) -->
+    <string name="mistakes_practice_title">Работа над ошибками</string>
+    <string name="mistakes_practice_card_subtitle_words">%1$d %2$s к повторению (по 5 за раз)</string>
+    <string name="mistakes_practice_card_subtitle_tasks">%1$d %2$s к повторению (по 5 за раз)</string>
+    <string name="mistakes_practice_done_title">Сессия завершена</string>
+    <string name="mistakes_practice_done_score">Разобрал %1$d из %2$d</string>
+    <string name="mistakes_practice_pool_left">В пуле осталось %1$d %2$s</string>
+    <string name="mistakes_practice_pool_empty">Пул ошибок чист! 🎉</string>
+    <string name="mistakes_practice_continue">Продолжить</string>
+    <string name="mistakes_practice_done">Закрыть</string>
+
     <!-- Wave 3 — оставшиеся хардкоды по экранам -->
 
     <!-- Profile screen -->

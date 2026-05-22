@@ -89,9 +89,18 @@ fun ArticlesGameScreen(
                 percent = state.finalPercent,
                 accent  = ACCENT,
                 onRetry = { viewModel.startLevel(state.level) },
-                onNext  = if (state.finalStars > 0 && state.level < 100)
-                              { { viewModel.startLevel(state.level + 1, isTransition = true) } } else null,
-                onExit  = { viewModel.openLevelMap() }
+                onNext  = when {
+                    state.isMistakesPractice && mistakesCount > 0 -> { { viewModel.startMistakesPractice() } }
+                    !state.isMistakesPractice && state.finalStars > 0 && state.level < 100 -> {
+                        { viewModel.startLevel(state.level + 1, isTransition = true) }
+                    }
+                    else -> null
+                },
+                onExit  = { viewModel.openLevelMap() },
+                isMistakesPractice = state.isMistakesPractice,
+                mistakesCorrect = state.correctCount,
+                mistakesTotal = state.totalRounds,
+                mistakesPoolLeft = mistakesCount,
             )
         }
         else -> ArticlesGameContent(state, viewModel, onBack = { viewModel.openLevelMap() })
@@ -244,7 +253,8 @@ private fun ArticlesGameContent(
                             color = Color.White.copy(alpha = 0.25f)
                         ) {
                             Text(
-                                "Lvl ${state.level}",
+                                if (state.isMistakesPractice) "📝"
+                                else "Lvl ${state.level}",
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                                 fontSize = 11.sp, color = Color.White, fontWeight = FontWeight.Bold
                             )

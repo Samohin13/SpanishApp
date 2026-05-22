@@ -391,11 +391,15 @@ class MathViewModel @Inject constructor(
         val percent = if (s.totalRounds > 0) (s.correctCount * 100) / s.totalRounds else 0
 
         viewModelScope.launch {
-            val stars = levelManager.completeLevel(GameId.MATH, s.level, percent)
+            // v1.22.4: режим «работа над ошибками» — не помечаем уровень,
+            // +3 XP за каждое разобранное задание.
+            val stars = if (s.isMistakesPractice) 0
+                        else levelManager.completeLevel(GameId.MATH, s.level, percent)
 
             val p = userProgressDao.getProgressOnce()
             if (p != null) {
-                val xpGain = (s.score / 5).coerceAtLeast(5)
+                val xpGain = if (s.isMistakesPractice) s.correctCount * 3
+                             else (s.score / 5).coerceAtLeast(5)
                 userProgressDao.update(p.copy(totalXp = p.totalXp + xpGain))
                 achievementManager.checkAndUnlock()
             }

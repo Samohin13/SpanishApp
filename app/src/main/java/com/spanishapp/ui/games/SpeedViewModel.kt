@@ -323,13 +323,20 @@ class SpeedViewModel @Inject constructor(
         val percent = if (s.totalRounds > 0) (s.correctCount * 100) / s.totalRounds else 0
 
         viewModelScope.launch {
-            val stars = levelManager.completeLevel(GameId.SPEED, s.level, percent)
+            // v1.22.4: режим «работа над ошибками» — не помечаем уровень,
+            // +3 XP за каждое разобранное слово.
+            val stars = if (s.isMistakesPractice) 0
+                        else levelManager.completeLevel(GameId.SPEED, s.level, percent)
 
             val p = userProgressDao.getProgressOnce()
             if (p != null) {
-                // Floor XP at 5 so completion always feels rewarding even
-                // after a poor run.
-                val xpDelta = (s.score / 2).coerceAtLeast(5)
+                val xpDelta = if (s.isMistakesPractice) {
+                    s.correctCount * 3
+                } else {
+                    // Floor XP at 5 so completion always feels rewarding
+                    // even after a poor run.
+                    (s.score / 2).coerceAtLeast(5)
+                }
                 userProgressDao.update(p.copy(totalXp = p.totalXp + xpDelta))
                 achievementManager.checkAndUnlock()
             }

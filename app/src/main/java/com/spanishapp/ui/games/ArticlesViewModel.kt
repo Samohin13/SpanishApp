@@ -266,29 +266,37 @@ class ArticlesViewModel @Inject constructor(
         val percent = if (s.totalRounds > 0) (s.correctCount * 100) / s.totalRounds else 0
 
         viewModelScope.launch {
-            val stars = levelManager.completeLevel(GameId.ARTICLES, s.level, percent)
+            // v1.22.4: режим «работа над ошибками» — НЕ помечаем CEFR-уровень
+            // и не даём звёзды. XP начисляем символически (+3 за разобранное).
+            val stars = if (s.isMistakesPractice) 0
+                        else levelManager.completeLevel(GameId.ARTICLES, s.level, percent)
 
-            // Совместимость со старым `article_level_progress` (используется на главном экране)
-            val cefrTag = s.params.cefr.first()
-            val existing = dao.getProgress(cefrTag)
-            dao.upsertProgress(
-                ArticleLevelProgressEntity(
-                    levelId    = cefrTag,
-                    stars      = maxOf(existing?.stars ?: 0, stars),
-                    isUnlocked = true,
-                    bestScore  = maxOf(existing?.bestScore ?: 0, percent)
+            if (!s.isMistakesPractice) {
+                // Совместимость со старым `article_level_progress` (главный экран)
+                val cefrTag = s.params.cefr.first()
+                val existing = dao.getProgress(cefrTag)
+                dao.upsertProgress(
+                    ArticleLevelProgressEntity(
+                        levelId    = cefrTag,
+                        stars      = maxOf(existing?.stars ?: 0, stars),
+                        isUnlocked = true,
+                        bestScore  = maxOf(existing?.bestScore ?: 0, percent)
+                    )
                 )
-            )
+            }
 
             val p = userProgressDao.getProgressOnce()
             if (p != null) {
-                userProgressDao.update(p.copy(totalXp = p.totalXp + s.score))
+                val xpDelta = if (s.isMistakesPractice) s.correctCount * 3 else s.score
+                userProgressDao.update(p.copy(totalXp = p.totalXp + xpDelta))
                 achievementManager.checkAndUnlock()
             }
 
-            // Звук финала
-            if (stars == 3) soundPlayer.playPerfect()
-            else if (stars > 0) soundPlayer.playLevelDone()
+            // Звук финала только для обычных уровней
+            if (!s.isMistakesPractice) {
+                if (stars == 3) soundPlayer.playPerfect()
+                else if (stars > 0) soundPlayer.playLevelDone()
+            }
 
             _state.value = s.copy(
                 isGameOver  = true,

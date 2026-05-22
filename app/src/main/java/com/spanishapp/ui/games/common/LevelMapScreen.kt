@@ -18,14 +18,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.spanishapp.R
 import com.spanishapp.data.db.entity.GameLevelProgressEntity
 import com.spanishapp.domain.games.GameLevelManager
 import com.spanishapp.domain.games.LevelDifficulty
 import com.spanishapp.domain.games.LevelMode
 import kotlinx.coroutines.launch
+
+/**
+ * v1.22.4: единица измерения в пуле ошибок. WORDS — для словесных игр
+ * (Articles, Speed, Palabra), TASKS — для Math (там «задания», не «слова»).
+ */
+enum class MistakesUnit { WORDS, TASKS }
 
 /**
  * Универсальный экран выбора уровня (10×10 сетка). Используется всеми играми.
@@ -49,6 +57,11 @@ fun LevelMapScreen(
     /** v1.22.0: счётчик ошибок и колбэк на запуск режима практики. */
     mistakesCount: Int = 0,
     onMistakesPractice: () -> Unit = {},
+    /**
+     * v1.22.4: единица измерения в пуле ошибок — WORDS для словесных игр,
+     * TASKS для Calculo (математика).
+     */
+    mistakesUnit: MistakesUnit = MistakesUnit.WORDS,
 ) {
     var progress by remember { mutableStateOf<Map<Int, GameLevelProgressEntity>>(emptyMap()) }
     var nextLevel by remember { mutableIntStateOf(1) }
@@ -106,13 +119,20 @@ fun LevelMapScreen(
                         Spacer(Modifier.width(12.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                "Работа над ошибками",
+                                stringResource(R.string.mistakes_practice_title),
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                "$mistakesCount ${pluralWords(mistakesCount)} к повторению (по 5 за раз)",
+                                stringResource(
+                                    when (mistakesUnit) {
+                                        MistakesUnit.WORDS -> R.string.mistakes_practice_card_subtitle_words
+                                        MistakesUnit.TASKS -> R.string.mistakes_practice_card_subtitle_tasks
+                                    },
+                                    mistakesCount,
+                                    pluralFor(mistakesCount, mistakesUnit),
+                                ),
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -164,14 +184,22 @@ fun LevelMapScreen(
 }
 
 /** Простое склонение «слово / слова / слов» для русского. */
-private fun pluralWords(n: Int): String {
+internal fun pluralFor(n: Int, unit: MistakesUnit): String {
     val mod100 = n % 100
     val mod10 = n % 10
-    return when {
-        mod100 in 11..19 -> "слов"
-        mod10 == 1 -> "слово"
-        mod10 in 2..4 -> "слова"
-        else -> "слов"
+    return when (unit) {
+        MistakesUnit.WORDS -> when {
+            mod100 in 11..19 -> "слов"
+            mod10 == 1 -> "слово"
+            mod10 in 2..4 -> "слова"
+            else -> "слов"
+        }
+        MistakesUnit.TASKS -> when {
+            mod100 in 11..19 -> "заданий"
+            mod10 == 1 -> "задание"
+            mod10 in 2..4 -> "задания"
+            else -> "заданий"
+        }
     }
 }
 

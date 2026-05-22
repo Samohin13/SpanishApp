@@ -408,11 +408,16 @@ class PalabraMaestraViewModel @Inject constructor(
             (s.correctCount * 100) / s.questions.size else 0
 
         viewModelScope.launch {
-            val stars = levelManager.completeLevel(GameId.PALABRA, s.level, percent)
+            // v1.22.4: в режиме «работа над ошибками» НЕ помечаем уровень
+            // пройденным (это не уровень) и начисляем символический XP
+            // только за фактически разобранные слова (по +3 XP/слово).
+            val stars = if (s.isMistakesPractice) 0
+                        else levelManager.completeLevel(GameId.PALABRA, s.level, percent)
 
             val p = userProgressDao.getProgressOnce()
             if (p != null) {
-                userProgressDao.update(p.copy(totalXp = p.totalXp + s.score))
+                val xpDelta = if (s.isMistakesPractice) s.correctCount * 3 else s.score
+                userProgressDao.update(p.copy(totalXp = p.totalXp + xpDelta))
                 achievementManager.checkAndUnlock()
             }
 

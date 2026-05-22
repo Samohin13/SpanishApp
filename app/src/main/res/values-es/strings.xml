@@ -961,6 +961,16 @@
     <string name="level_complete_try_again_button">Intentar otra vez</string>
     <string name="level_complete_back_to_menu">Volver al menú</string>
 
+    <string name="mistakes_practice_title">Práctica de errores</string>
+    <string name="mistakes_practice_card_subtitle_words">%1$d %2$s para repasar (5 a la vez)</string>
+    <string name="mistakes_practice_card_subtitle_tasks">%1$d %2$s para repasar (5 a la vez)</string>
+    <string name="mistakes_practice_done_title">Sesión completa</string>
+    <string name="mistakes_practice_done_score">Resueltos %1$d de %2$d</string>
+    <string name="mistakes_practice_pool_left">%1$d %2$s restantes</string>
+    <string name="mistakes_practice_pool_empty">¡Sin errores pendientes! 🎉</string>
+    <string name="mistakes_practice_continue">Continuar</string>
+    <string name="mistakes_practice_done">Cerrar</string>
+
     <!-- Wave 3 -->
     <string name="profile_title">Perfil</string>
     <string name="profile_section_activity">ACTIVIDAD</string>

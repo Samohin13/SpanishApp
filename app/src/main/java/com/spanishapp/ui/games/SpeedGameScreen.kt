@@ -62,10 +62,18 @@ fun SpeedGameScreen(
                 percent = state.finalPercent,
                 accent  = ACCENT,
                 onRetry = { viewModel.startLevel(state.level) },
-                onNext  = if (state.finalStars > 0 && state.level < 100)
-                              { { viewModel.startLevel(state.level + 1) } }
-                          else null,
-                onExit  = { viewModel.openLevelMap() }
+                onNext  = when {
+                    state.isMistakesPractice && mistakesCount > 0 -> { { viewModel.startMistakesPractice() } }
+                    !state.isMistakesPractice && state.finalStars > 0 && state.level < 100 -> {
+                        { viewModel.startLevel(state.level + 1) }
+                    }
+                    else -> null
+                },
+                onExit  = { viewModel.openLevelMap() },
+                isMistakesPractice = state.isMistakesPractice,
+                mistakesCorrect = state.correctCount,
+                mistakesTotal = state.totalRounds,
+                mistakesPoolLeft = mistakesCount,
             )
         }
         else -> SpeedGameContent(state, viewModel, haptic,
@@ -92,10 +100,19 @@ private fun SpeedGameContent(
             TopAppBar(
                 title = {
                     Column {
-                        Text(stringResource(R.string.speed_level_of, state.level), fontWeight = FontWeight.Bold)
-                        Text("${state.params.cefr.joinToString("+")} · ${state.params.mode.name.lowercase()}",
-                            fontSize = 11.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        if (state.isMistakesPractice) {
+                            Text(stringResource(R.string.mistakes_practice_title), fontWeight = FontWeight.Bold)
+                            Text(
+                                "${state.currentRound.coerceAtLeast(1)} / ${state.totalRounds}",
+                                fontSize = 11.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        } else {
+                            Text(stringResource(R.string.speed_level_of, state.level), fontWeight = FontWeight.Bold)
+                            Text("${state.params.cefr.joinToString("+")} · ${state.params.mode.name.lowercase()}",
+                                fontSize = 11.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
                 },
                 navigationIcon = {
