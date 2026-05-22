@@ -1,5 +1,5 @@
 /**
- * ESPEAK Gemini Proxy (Cloudflare Worker) v2 — Hardened
+ * ESPEAK Gemini + TTS Proxy (Cloudflare Worker) v3
  *
  * Многослойная защита:
  *   1. X-App-Secret           — фильтр случайных гостей (любой APK имеет)
@@ -7,11 +7,18 @@
  *   3. Rate-limit per IP      — макс N запросов / IP / окно
  *   4. Model fallback         — при 429/503 пробуем другие модели Gemini
  *
+ * Endpoints:
+ *   POST /v1beta/models/{model}:{action}  — Gemini Chat (как было)
+ *   POST /tts                              — Google Cloud Text-to-Speech (v3, добавлен 1.22.6)
+ *
  * Env vars (Cloudflare Dashboard → Settings → Variables and Secrets):
- *   • GEMINI_API_KEY    — Google AI Studio ключ
- *   • APP_SECRET        — общий секрет (тот же что AI_PROXY_SECRET в Android)
- *   • FIREBASE_PROJECT  — "spanishapp-35092" (для валидации ID Token)
- *   • RATE_LIMIT        — макс запросов на IP за минуту (по умолчанию 20)
+ *   • GEMINI_API_KEY      — Google AI Studio ключ (для Gemini)
+ *   • GOOGLE_TTS_API_KEY  — Cloud Text-to-Speech API ключ (для /tts; можно
+ *                           использовать тот же что GEMINI_API_KEY если
+ *                           включены оба API на одном проекте)
+ *   • APP_SECRET          — общий секрет (тот же что AI_PROXY_SECRET в Android)
+ *   • FIREBASE_PROJECT    — "spanishapp-35092" (для валидации ID Token)
+ *   • RATE_LIMIT          — макс запросов на IP за минуту (по умолчанию 20)
  */
 
 const FALLBACK_MODELS = [
@@ -213,6 +220,12 @@ export default {
 
     // ── Парсим path ───────────────────────────────────────────
     const url = new URL(request.url);
+
+    // ── /tts endpoint (v3, 1.22.6) — Google Cloud Text-to-Speech ──
+    if (url.pathname === "/tts") {
+      return handleTts(request, env);
+    }
+
     const match = url.pathname.match(/^\/v1beta\/models\/([^:]+):(\w+)/);
     if (!match) {
       return new Response("Bad request path", { status: 400 });
@@ -264,3 +277,111 @@ export default {
     );
   },
 };
+
+// ─────────────────────────────────────────────────────────────────
+// /tts — Google Cloud Text-to-Speech proxy
+// ─────────────────────────────────────────────────────────────────
+//
+// Принимает: { text, voice, speed, pitch }
+//   voice — id из PremiumVoiceCatalog (Android), напр. "es-ES-Neural2-D"
+//           или "ru-RU-Wavenet-A". Языковой код извлекается из id.
+//   speed — 0.25 .. 4.0 (умножитель темпа)
+//   pitch — -20.0 .. 20.0 (полутонов)
+//
+// Возвращает: audio/mpeg (mp3-байты) или 4xx с JSON ошибки.
+//
+// Использует Google Cloud Text-to-Speech REST API:
+//   https://texttospeech.googleapis.com/v1/text:synthesize?key=KEY
+async function handleTts(request, env) {
+  const ttsKey = env.GOOGLE_TTS_API_KEY || env.GEMINI_API_KEY;
+  if (!ttsKey) {
+    return new Response(
+      JSON.stringify({ error: "GOOGLE_TTS_API_KEY not configured" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ error: "Bad JSON body" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  const text = (payload.text || "").toString().trim();
+  if (!text) {
+    return new Response(
+      JSON.stringify({ error: "Missing text" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  // voice id вида "es-ES-Neural2-D" → languageCode = "es-ES"
+  const voiceName = (payload.voice || "es-ES-Neural2-D").toString();
+  const langMatch = voiceName.match(/^([a-z]{2})-([A-Z]{2})/);
+  const languageCode = langMatch ? `${langMatch[1]}-${langMatch[2]}` : "es-ES";
+
+  const speed = clamp(Number(payload.speed) || 1.0, 0.25, 4.0);
+  const pitch = clamp(Number(payload.pitch) || 0, -20.0, 20.0);
+
+  const ttsBody = {
+    input: { text: text.slice(0, 5000) }, // hard cap чтобы не сжечь квоту на одном запросе
+    voice: { languageCode, name: voiceName },
+    audioConfig: {
+      audioEncoding: "MP3",
+      speakingRate: speed,
+      pitch: pitch,
+    },
+  };
+
+  const ttsUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${ttsKey}`;
+  const upstream = await fetch(ttsUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(ttsBody),
+  });
+
+  if (!upstream.ok) {
+    const errText = await upstream.text();
+    return new Response(
+      JSON.stringify({
+        error: `Cloud TTS HTTP ${upstream.status}`,
+        details: errText.slice(0, 500),
+      }),
+      {
+        status: upstream.status,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  const data = await upstream.json();
+  const audioBase64 = data.audioContent;
+  if (!audioBase64) {
+    return new Response(
+      JSON.stringify({ error: "Cloud TTS returned no audioContent" }),
+      { status: 502, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  // base64 → bytes
+  const bin = atob(audioBase64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+
+  return new Response(bytes, {
+    status: 200,
+    headers: {
+      "Content-Type": "audio/mpeg",
+      "Cache-Control": "public, max-age=86400",
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+}
+
+function clamp(v, lo, hi) {
+  return Math.min(hi, Math.max(lo, v));
+}
