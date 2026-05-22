@@ -1,5 +1,6 @@
 package com.spanishapp.ui.games
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
@@ -13,10 +14,14 @@ import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import com.spanishapp.service.SpanishTts
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import java.util.UUID
 import javax.inject.Inject
 
@@ -60,6 +65,7 @@ data class PalabraState(
 
 @HiltViewModel
 class PalabraMaestraViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
@@ -71,6 +77,41 @@ class PalabraMaestraViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(PalabraState())
     val state = _state.asStateFlow()
+
+    /**
+     * Кэш детерминированных уровней из assets/palabra_levels.json.
+     * 100 уровней × 10 слов = 1000 уникальных. Грузим один раз.
+     * Источник правды: scripts/build_palabra_levels.py.
+     */
+    @Volatile private var levelsCache: List<List<Pair<String, String>>>? = null
+
+    private suspend fun loadLevels(): List<List<Pair<String, String>>> {
+        levelsCache?.let { return it }
+        return withContext(Dispatchers.IO) {
+            val raw = try {
+                appContext.assets.open("palabra_levels.json")
+                    .bufferedReader(Charsets.UTF_8)
+                    .use { it.readText() }
+            } catch (_: Exception) {
+                ""
+            }
+            if (raw.isBlank()) return@withContext emptyList<List<Pair<String, String>>>()
+            val arr = JSONArray(raw)
+            val result = ArrayList<List<Pair<String, String>>>(arr.length())
+            for (i in 0 until arr.length()) {
+                val lvlObj = arr.getJSONObject(i)
+                val wordsArr = lvlObj.getJSONArray("words")
+                val list = ArrayList<Pair<String, String>>(wordsArr.length())
+                for (j in 0 until wordsArr.length()) {
+                    val w = wordsArr.getJSONObject(j)
+                    list += w.getString("word").lowercase() to w.getString("russian")
+                }
+                result += list
+            }
+            levelsCache = result
+            result
+        }
+    }
 
     val mistakesCount: kotlinx.coroutines.flow.StateFlow<Int> = mistakesDao
         .observeCount(GameId.PALABRA)
@@ -109,40 +150,42 @@ class PalabraMaestraViewModel @Inject constructor(
 
     fun startLevel(level: Int) {
         viewModelScope.launch {
-            val params = LevelDifficulty.forLevel(level)
-            val (minLen, maxLen) = lengthRange(level)
-            val needAccent = level in 56..70
-            val needDouble = level in 71..85
+            val baseParams = LevelDifficulty.forLevel(level)
 
-            // Большой пул из нужного CEFR-слоя
-            val pool = wordDao.getRandomWords(400).filter {
-                it.level in params.cefr && it.spanish.isNotBlank() && it.russian.isNotBlank()
-            }
-            val candidates = pool.filter { w ->
-                val clean = stripArticle(w.spanish)
-                if (clean.contains(' ') || clean.contains('-')) return@filter false
-                if (clean.length !in minLen..maxLen) return@filter false
-                if (needAccent && !hasAccent(clean)) return@filter false
-                if (needDouble && !hasDoubleLetter(clean)) return@filter false
-                true
-            }.shuffled().distinctBy { stripArticle(it.spanish).lowercase() }
+            // v1.22.2: ДЕТЕРМИНИРОВАННАЯ загрузка из palabra_levels.json.
+            // Раньше startLevel брал wordDao.getRandomWords(400) + фильтр по
+            // длине → один и тот же «уровень 5» давал РАЗНОЕ число слов в
+            // зависимости от случайной выборки. Теперь 100 уровней × 10 слов
+            // ровно из ассета (источник правды: scripts/build_palabra_levels.py).
+            val levels = loadLevels()
+            val idx = (level - 1).coerceIn(0, (levels.size - 1).coerceAtLeast(0))
+            val items = levels.getOrNull(idx) ?: emptyList()
+            if (items.isEmpty()) return@launch
 
-            // Сколько раундов — из общей шкалы. Если кандидатов меньше — берём сколько есть.
-            val target = params.rounds.coerceAtMost(candidates.size).coerceAtLeast(1)
-            val picked = candidates.take(target)
-            if (picked.isEmpty()) return@launch
-
-            val questions = picked.map { word ->
-                val clean = stripArticle(word.spanish).lowercase()
+            // Для каждого слова берём WordEntity из БД (для TTS/level), а если
+            // нет — строим синтетический. PalabraQuestion использует только
+            // word.spanish / word.russian, так что синтетика безопасна.
+            val questions = items.map { (sp, ru) ->
+                val clean = sp.lowercase()
+                val dbWord = wordDao.findBySpanish(clean) ?: wordDao.findBySpanish("el $clean")
+                val word = dbWord ?: WordEntity(
+                    spanish = clean,
+                    russian = ru,
+                    level   = baseParams.cefr.firstOrNull() ?: "A1",
+                )
                 val chars = clean.map { it.toString() }
                 PalabraQuestion(
-                    word            = word,
-                    targetWord      = clean,
-                    shuffledLetters = shuffleLetters(chars),
+                    word             = word,
+                    targetWord       = clean,
+                    shuffledLetters  = shuffleLetters(chars),
                     assembledLetters = List(chars.size) { null },
-                    startTime       = System.currentTimeMillis()
+                    startTime        = System.currentTimeMillis()
                 )
             }
+
+            // Фиксируем точное число раундов из ассета (= 10), чтобы UI
+            // и LevelDifficulty были согласованы.
+            val params = baseParams.copy(rounds = questions.size)
 
             _state.value = PalabraState(
                 params       = params,

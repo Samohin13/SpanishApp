@@ -1,0 +1,4602 @@
+[
+  {
+    "level": 1,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "col",
+        "russian": "капуста"
+      },
+      {
+        "word": "acá",
+        "russian": "здесь"
+      },
+      {
+        "word": "uña",
+        "russian": "ноготь"
+      },
+      {
+        "word": "ama",
+        "russian": "хозяйка"
+      },
+      {
+        "word": "oso",
+        "russian": "медведь"
+      },
+      {
+        "word": "café",
+        "russian": "кофе"
+      },
+      {
+        "word": "zoo",
+        "russian": "зоопарк"
+      },
+      {
+        "word": "ría",
+        "russian": "эстуарий / устье"
+      },
+      {
+        "word": "mil",
+        "russian": "тысяча"
+      },
+      {
+        "word": "azul",
+        "russian": "синий / голубой"
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "ser",
+        "russian": "быть (постоянно)"
+      },
+      {
+        "word": "rap",
+        "russian": "рэп"
+      },
+      {
+        "word": "sal",
+        "russian": "соль"
+      },
+      {
+        "word": "útil",
+        "russian": "полезный"
+      },
+      {
+        "word": "yen",
+        "russian": "йена"
+      },
+      {
+        "word": "pop",
+        "russian": "поп-музыка"
+      },
+      {
+        "word": "agua",
+        "russian": "вода"
+      },
+      {
+        "word": "gas",
+        "russian": "газ"
+      },
+      {
+        "word": "año",
+        "russian": "год"
+      },
+      {
+        "word": "bis",
+        "russian": "бис"
+      }
+    ]
+  },
+  {
+    "level": 3,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "cal",
+        "russian": "известь"
+      },
+      {
+        "word": "bar",
+        "russian": "бар"
+      },
+      {
+        "word": "frío",
+        "russian": "холодный"
+      },
+      {
+        "word": "oír",
+        "russian": "слышать"
+      },
+      {
+        "word": "boca",
+        "russian": "рот"
+      },
+      {
+        "word": "mes",
+        "russian": "месяц"
+      },
+      {
+        "word": "oca",
+        "russian": "игра в гуся"
+      },
+      {
+        "word": "aire",
+        "russian": "воздух"
+      },
+      {
+        "word": "rúa",
+        "russian": "улица"
+      },
+      {
+        "word": "baño",
+        "russian": "ванная"
+      }
+    ]
+  },
+  {
+    "level": 4,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "amar",
+        "russian": "любить"
+      },
+      {
+        "word": "tío",
+        "russian": "дядя"
+      },
+      {
+        "word": "uva",
+        "russian": "виноград"
+      },
+      {
+        "word": "dar",
+        "russian": "давать"
+      },
+      {
+        "word": "alto",
+        "russian": "высокий"
+      },
+      {
+        "word": "leer",
+        "russian": "читать"
+      },
+      {
+        "word": "ace",
+        "russian": "эйс"
+      },
+      {
+        "word": "pie",
+        "russian": "нога (стопа)"
+      },
+      {
+        "word": "tos",
+        "russian": "кашель"
+      },
+      {
+        "word": "gol",
+        "russian": "гол"
+      }
+    ]
+  },
+  {
+    "level": 5,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "oído",
+        "russian": "ухо (орган слуха)"
+      },
+      {
+        "word": "eco",
+        "russian": "эхо"
+      },
+      {
+        "word": "lio",
+        "russian": "путаница / сверток / любовная связь"
+      },
+      {
+        "word": "pez",
+        "russian": "рыба"
+      },
+      {
+        "word": "ojo",
+        "russian": "глаз"
+      },
+      {
+        "word": "voz",
+        "russian": "голос"
+      },
+      {
+        "word": "ira",
+        "russian": "ярость"
+      },
+      {
+        "word": "ano",
+        "russian": "анус"
+      },
+      {
+        "word": "spa",
+        "russian": "спа"
+      },
+      {
+        "word": "opa",
+        "russian": "поглощение (биржа)"
+      }
+    ]
+  },
+  {
+    "level": 6,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "aro",
+        "russian": "обруч"
+      },
+      {
+        "word": "uso",
+        "russian": "пользование / употребление"
+      },
+      {
+        "word": "cama",
+        "russian": "кровать"
+      },
+      {
+        "word": "tía",
+        "russian": "тётя"
+      },
+      {
+        "word": "ola",
+        "russian": "волна"
+      },
+      {
+        "word": "par",
+        "russian": "пара / четное число"
+      },
+      {
+        "word": "bug",
+        "russian": "баг, ошибка ПО"
+      },
+      {
+        "word": "luz",
+        "russian": "свет"
+      },
+      {
+        "word": "niña",
+        "russian": "девочка"
+      },
+      {
+        "word": "gen",
+        "russian": "ген"
+      }
+    ]
+  },
+  {
+    "level": 7,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "era",
+        "russian": "эра/эпоха"
+      },
+      {
+        "word": "ajo",
+        "russian": "чеснок"
+      },
+      {
+        "word": "emú",
+        "russian": "эму"
+      },
+      {
+        "word": "red",
+        "russian": "сеть"
+      },
+      {
+        "word": "río",
+        "russian": "река"
+      },
+      {
+        "word": "oro",
+        "russian": "золото"
+      },
+      {
+        "word": "reír",
+        "russian": "смеяться"
+      },
+      {
+        "word": "bajo",
+        "russian": "низкий"
+      },
+      {
+        "word": "menú",
+        "russian": "меню"
+      },
+      {
+        "word": "amo",
+        "russian": "хозяин"
+      }
+    ]
+  },
+  {
+    "level": 8,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "sur",
+        "russian": "юг"
+      },
+      {
+        "word": "zen",
+        "russian": "дзен"
+      },
+      {
+        "word": "sed",
+        "russian": "жажда"
+      },
+      {
+        "word": "día",
+        "russian": "день"
+      },
+      {
+        "word": "feo",
+        "russian": "некрасивый"
+      },
+      {
+        "word": "ron",
+        "russian": "ром"
+      },
+      {
+        "word": "gel",
+        "russian": "гель"
+      },
+      {
+        "word": "cada",
+        "russian": "каждый"
+      },
+      {
+        "word": "paz",
+        "russian": "мир"
+      },
+      {
+        "word": "hoz",
+        "russian": "серп / ущелье"
+      }
+    ]
+  },
+  {
+    "level": 9,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "algo",
+        "russian": "что-то"
+      },
+      {
+        "word": "wok",
+        "russian": "вок"
+      },
+      {
+        "word": "ala",
+        "russian": "крыло"
+      },
+      {
+        "word": "fin",
+        "russian": "конец / цель"
+      },
+      {
+        "word": "rey",
+        "russian": "король"
+      },
+      {
+        "word": "niño",
+        "russian": "мальчик / ребёнок"
+      },
+      {
+        "word": "rol",
+        "russian": "роль"
+      },
+      {
+        "word": "pan",
+        "russian": "хлеб"
+      },
+      {
+        "word": "ají",
+        "russian": "острый перец"
+      },
+      {
+        "word": "amor",
+        "russian": "любовь"
+      }
+    ]
+  },
+  {
+    "level": 10,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "sol",
+        "russian": "солнце"
+      },
+      {
+        "word": "ver",
+        "russian": "видеть"
+      },
+      {
+        "word": "arte",
+        "russian": "искусство"
+      },
+      {
+        "word": "mal",
+        "russian": "зло / болезнь"
+      },
+      {
+        "word": "ley",
+        "russian": "закон"
+      },
+      {
+        "word": "mar",
+        "russian": "море"
+      },
+      {
+        "word": "set",
+        "russian": "сет"
+      },
+      {
+        "word": "app",
+        "russian": "приложение"
+      },
+      {
+        "word": "bebé",
+        "russian": "младенец"
+      },
+      {
+        "word": "sofá",
+        "russian": "диван"
+      }
+    ]
+  },
+  {
+    "level": 11,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "paté",
+        "russian": "паштет"
+      },
+      {
+        "word": "bidé",
+        "russian": "биде"
+      },
+      {
+        "word": "coco",
+        "russian": "кокос"
+      },
+      {
+        "word": "arco",
+        "russian": "арка / дуга"
+      },
+      {
+        "word": "alma",
+        "russian": "душа"
+      },
+      {
+        "word": "auge",
+        "russian": "расцвет"
+      },
+      {
+        "word": "caso",
+        "russian": "случай"
+      },
+      {
+        "word": "menu",
+        "russian": "меню"
+      },
+      {
+        "word": "cita",
+        "russian": "встреча/цитата"
+      },
+      {
+        "word": "arce",
+        "russian": "клён"
+      }
+    ]
+  },
+  {
+    "level": 12,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "grúa",
+        "russian": "автокран/эвакуатор"
+      },
+      {
+        "word": "aura",
+        "russian": "аура"
+      },
+      {
+        "word": "aria",
+        "russian": "ария"
+      },
+      {
+        "word": "óleo",
+        "russian": "масло (краска)"
+      },
+      {
+        "word": "bono",
+        "russian": "премия"
+      },
+      {
+        "word": "base",
+        "russian": "основание / база"
+      },
+      {
+        "word": "aula",
+        "russian": "аудитория"
+      },
+      {
+        "word": "asco",
+        "russian": "отвращение"
+      },
+      {
+        "word": "alud",
+        "russian": "лавина"
+      },
+      {
+        "word": "clip",
+        "russian": "скрепка"
+      }
+    ]
+  },
+  {
+    "level": 13,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "cono",
+        "russian": "конус"
+      },
+      {
+        "word": "real",
+        "russian": "реальный"
+      },
+      {
+        "word": "piso",
+        "russian": "этаж / квартира"
+      },
+      {
+        "word": "atún",
+        "russian": "тунец"
+      },
+      {
+        "word": "chat",
+        "russian": "чат"
+      },
+      {
+        "word": "roto",
+        "russian": "сломанный"
+      },
+      {
+        "word": "nada",
+        "russian": "ничего"
+      },
+      {
+        "word": "suma",
+        "russian": "сумма"
+      },
+      {
+        "word": "guía",
+        "russian": "гид"
+      },
+      {
+        "word": "riña",
+        "russian": "ссора"
+      }
+    ]
+  },
+  {
+    "level": 14,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "arpa",
+        "russian": "арфа"
+      },
+      {
+        "word": "león",
+        "russian": "лев"
+      },
+      {
+        "word": "boda",
+        "russian": "свадьба"
+      },
+      {
+        "word": "viña",
+        "russian": "виноградник"
+      },
+      {
+        "word": "rosa",
+        "russian": "розовый"
+      },
+      {
+        "word": "feed",
+        "russian": "лента (соц. сети)"
+      },
+      {
+        "word": "cubo",
+        "russian": "ведро"
+      },
+      {
+        "word": "peón",
+        "russian": "пешка"
+      },
+      {
+        "word": "baya",
+        "russian": "ягода"
+      },
+      {
+        "word": "lila",
+        "russian": "сиреневый"
+      }
+    ]
+  },
+  {
+    "level": 15,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "mesa",
+        "russian": "стол"
+      },
+      {
+        "word": "caza",
+        "russian": "охота"
+      },
+      {
+        "word": "coro",
+        "russian": "хор"
+      },
+      {
+        "word": "dedo",
+        "russian": "палец"
+      },
+      {
+        "word": "pato",
+        "russian": "утка"
+      },
+      {
+        "word": "alba",
+        "russian": "заря"
+      },
+      {
+        "word": "caro",
+        "russian": "дорогой"
+      },
+      {
+        "word": "codo",
+        "russian": "локоть"
+      },
+      {
+        "word": "jazz",
+        "russian": "джаз"
+      },
+      {
+        "word": "apio",
+        "russian": "сельдерей"
+      }
+    ]
+  },
+  {
+    "level": 16,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "cola",
+        "russian": "клей"
+      },
+      {
+        "word": "jefe",
+        "russian": "начальник"
+      },
+      {
+        "word": "ceja",
+        "russian": "бровь"
+      },
+      {
+        "word": "arca",
+        "russian": "сундук / ковчег"
+      },
+      {
+        "word": "vino",
+        "russian": "вино"
+      },
+      {
+        "word": "yoyó",
+        "russian": "йо-йо"
+      },
+      {
+        "word": "brie",
+        "russian": "бри"
+      },
+      {
+        "word": "ropa",
+        "russian": "одежда"
+      },
+      {
+        "word": "trío",
+        "russian": "трио"
+      },
+      {
+        "word": "cuna",
+        "russian": "колыбель"
+      }
+    ]
+  },
+  {
+    "level": 17,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "lana",
+        "russian": "шерсть"
+      },
+      {
+        "word": "capa",
+        "russian": "слой / плащ"
+      },
+      {
+        "word": "caña",
+        "russian": "трость / удочка / стакан пива"
+      },
+      {
+        "word": "paño",
+        "russian": "сукно / тряпка"
+      },
+      {
+        "word": "leña",
+        "russian": "дрова"
+      },
+      {
+        "word": "pelo",
+        "russian": "волосы"
+      },
+      {
+        "word": "coca",
+        "russian": "кока (испан. лепёшка)"
+      },
+      {
+        "word": "copa",
+        "russian": "кубок/бокал"
+      },
+      {
+        "word": "caos",
+        "russian": "хаос"
+      },
+      {
+        "word": "cara",
+        "russian": "лицо"
+      }
+    ]
+  },
+  {
+    "level": 18,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "isla",
+        "russian": "остров"
+      },
+      {
+        "word": "hoja",
+        "russian": "лист бумаги"
+      },
+      {
+        "word": "edad",
+        "russian": "возраст"
+      },
+      {
+        "word": "zoom",
+        "russian": "зум"
+      },
+      {
+        "word": "tupé",
+        "russian": "наглость / челка"
+      },
+      {
+        "word": "moto",
+        "russian": "мотоцикл"
+      },
+      {
+        "word": "país",
+        "russian": "страна"
+      },
+      {
+        "word": "acné",
+        "russian": "акне"
+      },
+      {
+        "word": "seco",
+        "russian": "сухой"
+      },
+      {
+        "word": "nube",
+        "russian": "облако"
+      }
+    ]
+  },
+  {
+    "level": 19,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "tela",
+        "russian": "ткань"
+      },
+      {
+        "word": "jugo",
+        "russian": "сок"
+      },
+      {
+        "word": "cava",
+        "russian": "кава"
+      },
+      {
+        "word": "oler",
+        "russian": "нюхать"
+      },
+      {
+        "word": "imán",
+        "russian": "магнит / имам"
+      },
+      {
+        "word": "hijo",
+        "russian": "сын"
+      },
+      {
+        "word": "maní",
+        "russian": "арахис"
+      },
+      {
+        "word": "rubí",
+        "russian": "рубин"
+      },
+      {
+        "word": "capó",
+        "russian": "капот"
+      },
+      {
+        "word": "taxi",
+        "russian": "такси"
+      }
+    ]
+  },
+  {
+    "level": 20,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "hora",
+        "russian": "час"
+      },
+      {
+        "word": "mamá",
+        "russian": "мама"
+      },
+      {
+        "word": "acto",
+        "russian": "акт / поступок"
+      },
+      {
+        "word": "tabú",
+        "russian": "табу"
+      },
+      {
+        "word": "luna",
+        "russian": "луна"
+      },
+      {
+        "word": "puño",
+        "russian": "кулак / манжета"
+      },
+      {
+        "word": "arma",
+        "russian": "оружие"
+      },
+      {
+        "word": "mano",
+        "russian": "рука (кисть)"
+      },
+      {
+        "word": "afán",
+        "russian": "рвение / стремление"
+      },
+      {
+        "word": "casa",
+        "russian": "дом"
+      }
+    ]
+  },
+  {
+    "level": 21,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "chef",
+        "russian": "шеф-повар"
+      },
+      {
+        "word": "hija",
+        "russian": "дочь"
+      },
+      {
+        "word": "peor",
+        "russian": "худший"
+      },
+      {
+        "word": "ante",
+        "russian": "замша"
+      },
+      {
+        "word": "rojo",
+        "russian": "красный"
+      },
+      {
+        "word": "bata",
+        "russian": "халат"
+      },
+      {
+        "word": "duro",
+        "russian": "твёрдый"
+      },
+      {
+        "word": "cabo",
+        "russian": "конец / мыс / сержант"
+      },
+      {
+        "word": "raro",
+        "russian": "редкий / странный"
+      },
+      {
+        "word": "raíz",
+        "russian": "корень"
+      }
+    ]
+  },
+  {
+    "level": 22,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "todo",
+        "russian": "весь"
+      },
+      {
+        "word": "lago",
+        "russian": "озеро"
+      },
+      {
+        "word": "sopa",
+        "russian": "суп"
+      },
+      {
+        "word": "alza",
+        "russian": "рост / подъем"
+      },
+      {
+        "word": "mono",
+        "russian": "обезьяна"
+      },
+      {
+        "word": "tren",
+        "russian": "поезд"
+      },
+      {
+        "word": "ítem",
+        "russian": "пункт"
+      },
+      {
+        "word": "cruz",
+        "russian": "крест"
+      },
+      {
+        "word": "euro",
+        "russian": "евро"
+      },
+      {
+        "word": "papá",
+        "russian": "папа"
+      }
+    ]
+  },
+  {
+    "level": 23,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "piña",
+        "russian": "ананас / шишка"
+      },
+      {
+        "word": "moño",
+        "russian": "пучок"
+      },
+      {
+        "word": "buey",
+        "russian": "бык"
+      },
+      {
+        "word": "gato",
+        "russian": "кошка"
+      },
+      {
+        "word": "piel",
+        "russian": "кожа"
+      },
+      {
+        "word": "ateo",
+        "russian": "атеист"
+      },
+      {
+        "word": "maíz",
+        "russian": "кукуруза"
+      },
+      {
+        "word": "coma",
+        "russian": "запятая"
+      },
+      {
+        "word": "beca",
+        "russian": "стипендия/грант"
+      },
+      {
+        "word": "flor",
+        "russian": "цветок"
+      }
+    ]
+  },
+  {
+    "level": 24,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "puré",
+        "russian": "пюре"
+      },
+      {
+        "word": "lobo",
+        "russian": "волк"
+      },
+      {
+        "word": "liso",
+        "russian": "гладкий"
+      },
+      {
+        "word": "nota",
+        "russian": "оценка"
+      },
+      {
+        "word": "poco",
+        "russian": "мало"
+      },
+      {
+        "word": "alga",
+        "russian": "водоросль"
+      },
+      {
+        "word": "bazo",
+        "russian": "селезёнка"
+      },
+      {
+        "word": "vaca",
+        "russian": "корова"
+      },
+      {
+        "word": "idea",
+        "russian": "идея"
+      },
+      {
+        "word": "anís",
+        "russian": "анис"
+      }
+    ]
+  },
+  {
+    "level": 25,
+    "cefr": "A1",
+    "words": [
+      {
+        "word": "gris",
+        "russian": "серый"
+      },
+      {
+        "word": "club",
+        "russian": "клуб"
+      },
+      {
+        "word": "malo",
+        "russian": "плохой"
+      },
+      {
+        "word": "cena",
+        "russian": "ужин"
+      },
+      {
+        "word": "cine",
+        "russian": "кинотеатро"
+      },
+      {
+        "word": "caja",
+        "russian": "коробка, касса"
+      },
+      {
+        "word": "búho",
+        "russian": "сова"
+      },
+      {
+        "word": "cima",
+        "russian": "вершина"
+      },
+      {
+        "word": "olla",
+        "russian": "кастрюля"
+      },
+      {
+        "word": "daño",
+        "russian": "ущерб"
+      }
+    ]
+  },
+  {
+    "level": 26,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "huevo",
+        "russian": "яйцо"
+      },
+      {
+        "word": "traer",
+        "russian": "приносить"
+      },
+      {
+        "word": "deber",
+        "russian": "должен"
+      },
+      {
+        "word": "largo",
+        "russian": "длинный"
+      },
+      {
+        "word": "prima",
+        "russian": "двоюродная сестра"
+      },
+      {
+        "word": "feliz",
+        "russian": "счастливый"
+      },
+      {
+        "word": "brazo",
+        "russian": "рука (рука целиком)"
+      },
+      {
+        "word": "playa",
+        "russian": "пляж"
+      },
+      {
+        "word": "museo",
+        "russian": "музей"
+      },
+      {
+        "word": "cerdo",
+        "russian": "свинья"
+      }
+    ]
+  },
+  {
+    "level": 27,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "araña",
+        "russian": "паук"
+      },
+      {
+        "word": "fresa",
+        "russian": "клубника"
+      },
+      {
+        "word": "ancho",
+        "russian": "широкий"
+      },
+      {
+        "word": "beber",
+        "russian": "пить"
+      },
+      {
+        "word": "hobby",
+        "russian": "хобби"
+      },
+      {
+        "word": "volar",
+        "russian": "летать"
+      },
+      {
+        "word": "carne",
+        "russian": "мясo"
+      },
+      {
+        "word": "saber",
+        "russian": "знать (уметь)"
+      },
+      {
+        "word": "texto",
+        "russian": "текст"
+      },
+      {
+        "word": "queso",
+        "russian": "сыр"
+      }
+    ]
+  },
+  {
+    "level": 28,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "bueno",
+        "russian": "хороший"
+      },
+      {
+        "word": "salir",
+        "russian": "выходить"
+      },
+      {
+        "word": "acera",
+        "russian": "тротуар"
+      },
+      {
+        "word": "subir",
+        "russian": "подниматься"
+      },
+      {
+        "word": "pollo",
+        "russian": "курица"
+      },
+      {
+        "word": "metro",
+        "russian": "метро"
+      },
+      {
+        "word": "durar",
+        "russian": "длиться"
+      },
+      {
+        "word": "clase",
+        "russian": "урок / класс"
+      },
+      {
+        "word": "oveja",
+        "russian": "овца"
+      },
+      {
+        "word": "lleno",
+        "russian": "полный"
+      }
+    ]
+  },
+  {
+    "level": 29,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "nacer",
+        "russian": "рождаться"
+      },
+      {
+        "word": "techo",
+        "russian": "потолок / крыша"
+      },
+      {
+        "word": "pagar",
+        "russian": "платить"
+      },
+      {
+        "word": "plaza",
+        "russian": "площадь"
+      },
+      {
+        "word": "viaje",
+        "russian": "путешествие"
+      },
+      {
+        "word": "nariz",
+        "russian": "нос"
+      },
+      {
+        "word": "limón",
+        "russian": "лимон"
+      },
+      {
+        "word": "amigo",
+        "russian": "друг"
+      },
+      {
+        "word": "anden",
+        "russian": "платформа (ж/д)"
+      },
+      {
+        "word": "váter",
+        "russian": "унитаз"
+      }
+    ]
+  },
+  {
+    "level": 30,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "ganar",
+        "russian": "выигрывать / зарабатывать"
+      },
+      {
+        "word": "silla",
+        "russian": "стул"
+      },
+      {
+        "word": "salud",
+        "russian": "здоровье"
+      },
+      {
+        "word": "venir",
+        "russian": "приходить"
+      },
+      {
+        "word": "gorra",
+        "russian": "кепка"
+      },
+      {
+        "word": "llave",
+        "russian": "ключ"
+      },
+      {
+        "word": "negro",
+        "russian": "чёрный"
+      },
+      {
+        "word": "avión",
+        "russian": "самолёт"
+      },
+      {
+        "word": "poner",
+        "russian": "ставить / класть"
+      },
+      {
+        "word": "gordo",
+        "russian": "толстый (человек)"
+      }
+    ]
+  },
+  {
+    "level": 31,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "pedir",
+        "russian": "просить / заказывать"
+      },
+      {
+        "word": "hotel",
+        "russian": "отель"
+      },
+      {
+        "word": "pasta",
+        "russian": "макароны"
+      },
+      {
+        "word": "vivir",
+        "russian": "жить"
+      },
+      {
+        "word": "mirar",
+        "russian": "смотреть"
+      },
+      {
+        "word": "papel",
+        "russian": "бумага"
+      },
+      {
+        "word": "ducha",
+        "russian": "душ"
+      },
+      {
+        "word": "radio",
+        "russian": "радио"
+      },
+      {
+        "word": "ratón",
+        "russian": "мышь"
+      },
+      {
+        "word": "falda",
+        "russian": "юбка"
+      }
+    ]
+  },
+  {
+    "level": 32,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "manta",
+        "russian": "одеяло"
+      },
+      {
+        "word": "arroz",
+        "russian": "рис"
+      },
+      {
+        "word": "decir",
+        "russian": "говорить / сказать"
+      },
+      {
+        "word": "cenar",
+        "russian": "ужинать"
+      },
+      {
+        "word": "noche",
+        "russian": "ночь"
+      },
+      {
+        "word": "lunes",
+        "russian": "понедельник"
+      },
+      {
+        "word": "oreja",
+        "russian": "ухо (внешнее)"
+      },
+      {
+        "word": "beige",
+        "russian": "бежевый"
+      },
+      {
+        "word": "abrir",
+        "russian": "открывать"
+      },
+      {
+        "word": "carta",
+        "russian": "письмо"
+      }
+    ]
+  },
+  {
+    "level": 33,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "tonto",
+        "russian": "глупый"
+      },
+      {
+        "word": "madre",
+        "russian": "мать"
+      },
+      {
+        "word": "crear",
+        "russian": "создавать"
+      },
+      {
+        "word": "andar",
+        "russian": "ходить"
+      },
+      {
+        "word": "vacío",
+        "russian": "пустой"
+      },
+      {
+        "word": "viejo",
+        "russian": "старый"
+      },
+      {
+        "word": "barro",
+        "russian": "грязь / глина"
+      },
+      {
+        "word": "cruce",
+        "russian": "перекрёсток"
+      },
+      {
+        "word": "horno",
+        "russian": "духовка"
+      },
+      {
+        "word": "mayor",
+        "russian": "пожилой / старший"
+      }
+    ]
+  },
+  {
+    "level": 34,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "arena",
+        "russian": "песок"
+      },
+      {
+        "word": "tener",
+        "russian": "иметь"
+      },
+      {
+        "word": "abeja",
+        "russian": "пчела"
+      },
+      {
+        "word": "actor",
+        "russian": "актёр"
+      },
+      {
+        "word": "amiga",
+        "russian": "подруга"
+      },
+      {
+        "word": "creer",
+        "russian": "верить / думать"
+      },
+      {
+        "word": "cable",
+        "russian": "кабель"
+      },
+      {
+        "word": "fácil",
+        "russian": "лёгкий"
+      },
+      {
+        "word": "cuero",
+        "russian": "кожа (материал)"
+      },
+      {
+        "word": "nuevo",
+        "russian": "новый"
+      }
+    ]
+  },
+  {
+    "level": 35,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "comer",
+        "russian": "есть"
+      },
+      {
+        "word": "libro",
+        "russian": "книга"
+      },
+      {
+        "word": "perro",
+        "russian": "собака"
+      },
+      {
+        "word": "baile",
+        "russian": "танец"
+      },
+      {
+        "word": "danza",
+        "russian": "танец (искусство)"
+      },
+      {
+        "word": "girar",
+        "russian": "поворачивать"
+      },
+      {
+        "word": "bolso",
+        "russian": "сумка"
+      },
+      {
+        "word": "campo",
+        "russian": "поле / деревня"
+      },
+      {
+        "word": "guapo",
+        "russian": "красивый"
+      },
+      {
+        "word": "novio",
+        "russian": "жених / парень"
+      }
+    ]
+  },
+  {
+    "level": 36,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "cielo",
+        "russian": "небо"
+      },
+      {
+        "word": "fruta",
+        "russian": "фрукт"
+      },
+      {
+        "word": "coche",
+        "russian": "машина"
+      },
+      {
+        "word": "poder",
+        "russian": "мочь"
+      },
+      {
+        "word": "jugar",
+        "russian": "играть"
+      },
+      {
+        "word": "suave",
+        "russian": "нежный / мягкий"
+      },
+      {
+        "word": "curar",
+        "russian": "лечить"
+      },
+      {
+        "word": "fuego",
+        "russian": "огонь"
+      },
+      {
+        "word": "mitad",
+        "russian": "половина"
+      },
+      {
+        "word": "calle",
+        "russian": "улица"
+      }
+    ]
+  },
+  {
+    "level": 37,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "parar",
+        "russian": "останавливать"
+      },
+      {
+        "word": "bajar",
+        "russian": "спускаться"
+      },
+      {
+        "word": "hacer",
+        "russian": "делать"
+      },
+      {
+        "word": "primo",
+        "russian": "двоюродный брат"
+      },
+      {
+        "word": "dejar",
+        "russian": "оставлять"
+      },
+      {
+        "word": "dolor",
+        "russian": "боль"
+      },
+      {
+        "word": "nieve",
+        "russian": "снег"
+      },
+      {
+        "word": "tarde",
+        "russian": "вечер / полдень"
+      },
+      {
+        "word": "serio",
+        "russian": "серьёзный"
+      },
+      {
+        "word": "suelo",
+        "russian": "пол"
+      }
+    ]
+  },
+  {
+    "level": 38,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "árbol",
+        "russian": "дерево"
+      },
+      {
+        "word": "tenis",
+        "russian": "теннис"
+      },
+      {
+        "word": "costa",
+        "russian": "побережье"
+      },
+      {
+        "word": "serie",
+        "russian": "сериал"
+      },
+      {
+        "word": "tocar",
+        "russian": "играть (на инструменте) / трогать"
+      },
+      {
+        "word": "salón",
+        "russian": "гостиная"
+      },
+      {
+        "word": "coger",
+        "russian": "брать"
+      },
+      {
+        "word": "leche",
+        "russian": "молоко"
+      },
+      {
+        "word": "padre",
+        "russian": "отец"
+      },
+      {
+        "word": "novia",
+        "russian": "невеста / девушка"
+      }
+    ]
+  },
+  {
+    "level": 39,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "estar",
+        "russian": "быть (временно)"
+      },
+      {
+        "word": "lento",
+        "russian": "медленный"
+      },
+      {
+        "word": "frase",
+        "russian": "фраза / предложение"
+      },
+      {
+        "word": "lápiz",
+        "russian": "карандаш"
+      },
+      {
+        "word": "mucho",
+        "russian": "много"
+      },
+      {
+        "word": "sueño",
+        "russian": "сон / мечта"
+      },
+      {
+        "word": "corto",
+        "russian": "короткий"
+      },
+      {
+        "word": "gripe",
+        "russian": "грипп"
+      },
+      {
+        "word": "juego",
+        "russian": "игра"
+      },
+      {
+        "word": "sucio",
+        "russian": "грязный"
+      }
+    ]
+  },
+  {
+    "level": 40,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "pared",
+        "russian": "стена"
+      },
+      {
+        "word": "barco",
+        "russian": "корабль"
+      },
+      {
+        "word": "joven",
+        "russian": "молодой"
+      },
+      {
+        "word": "tomar",
+        "russian": "брать / принимать"
+      },
+      {
+        "word": "nadar",
+        "russian": "плавать"
+      },
+      {
+        "word": "banco",
+        "russian": "банк"
+      },
+      {
+        "word": "verde",
+        "russian": "зелёный"
+      },
+      {
+        "word": "mujer",
+        "russian": "женщина"
+      },
+      {
+        "word": "haber",
+        "russian": "иметься (вспомогательный)"
+      },
+      {
+        "word": "mejor",
+        "russian": "лучший"
+      }
+    ]
+  },
+  {
+    "level": 41,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "dorado",
+        "russian": "золотой"
+      },
+      {
+        "word": "caerse",
+        "russian": "падать"
+      },
+      {
+        "word": "llorar",
+        "russian": "плакать"
+      },
+      {
+        "word": "cruzar",
+        "russian": "переходить"
+      },
+      {
+        "word": "equipo",
+        "russian": "команда"
+      },
+      {
+        "word": "granja",
+        "russian": "ферма"
+      },
+      {
+        "word": "triste",
+        "russian": "грустный"
+      },
+      {
+        "word": "viajar",
+        "russian": "путешествовать"
+      },
+      {
+        "word": "banera",
+        "russian": "ванна"
+      },
+      {
+        "word": "grande",
+        "russian": "большой"
+      }
+    ]
+  },
+  {
+    "level": 42,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "viento",
+        "russian": "ветер"
+      },
+      {
+        "word": "abuelo",
+        "russian": "дедушка"
+      },
+      {
+        "word": "amable",
+        "russian": "любезный"
+      },
+      {
+        "word": "precio",
+        "russian": "цена"
+      },
+      {
+        "word": "colega",
+        "russian": "коллега"
+      },
+      {
+        "word": "saltar",
+        "russian": "прыгать"
+      },
+      {
+        "word": "cocina",
+        "russian": "кухня"
+      },
+      {
+        "word": "cantar",
+        "russian": "петь"
+      },
+      {
+        "word": "lujoso",
+        "russian": "роскошный"
+      },
+      {
+        "word": "gastar",
+        "russian": "тратить"
+      }
+    ]
+  },
+  {
+    "level": 43,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "postre",
+        "russian": "десерт"
+      },
+      {
+        "word": "fútbol",
+        "russian": "футбол"
+      },
+      {
+        "word": "diente",
+        "russian": "зуб"
+      },
+      {
+        "word": "jueves",
+        "russian": "четверг"
+      },
+      {
+        "word": "probar",
+        "russian": "пробовать"
+      },
+      {
+        "word": "morado",
+        "russian": "фиолетовый"
+      },
+      {
+        "word": "perder",
+        "russian": "проигрывать / терять"
+      },
+      {
+        "word": "correr",
+        "russian": "бежать"
+      },
+      {
+        "word": "lengua",
+        "russian": "язык (орган) / язык"
+      },
+      {
+        "word": "bailar",
+        "russian": "танцевать"
+      }
+    ]
+  },
+  {
+    "level": 44,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "rápido",
+        "russian": "быстрый"
+      },
+      {
+        "word": "limpio",
+        "russian": "чистый"
+      },
+      {
+        "word": "pierna",
+        "russian": "нога"
+      },
+      {
+        "word": "acabar",
+        "russian": "заканчивать"
+      },
+      {
+        "word": "tacaño",
+        "russian": "скупой"
+      },
+      {
+        "word": "nombre",
+        "russian": "имя"
+      },
+      {
+        "word": "crecer",
+        "russian": "расти"
+      },
+      {
+        "word": "ligero",
+        "russian": "лёгкий"
+      },
+      {
+        "word": "vender",
+        "russian": "продавать"
+      },
+      {
+        "word": "sábado",
+        "russian": "суббота"
+      }
+    ]
+  },
+  {
+    "level": 45,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "músico",
+        "russian": "музыкант"
+      },
+      {
+        "word": "piedra",
+        "russian": "камень"
+      },
+      {
+        "word": "hombre",
+        "russian": "мужчина"
+      },
+      {
+        "word": "blanco",
+        "russian": "белый"
+      },
+      {
+        "word": "seguro",
+        "russian": "безопасный / уверенный"
+      },
+      {
+        "word": "delfín",
+        "russian": "дельфин"
+      },
+      {
+        "word": "inútil",
+        "russian": "бесполезный"
+      },
+      {
+        "word": "entrar",
+        "russian": "входить"
+      },
+      {
+        "word": "tímido",
+        "russian": "застенчивый"
+      },
+      {
+        "word": "azúcar",
+        "russian": "сахар"
+      }
+    ]
+  },
+  {
+    "level": 46,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "parque",
+        "russian": "парк"
+      },
+      {
+        "word": "hablar",
+        "russian": "говорить"
+      },
+      {
+        "word": "jersey",
+        "russian": "свитер"
+      },
+      {
+        "word": "ayudar",
+        "russian": "помогать"
+      },
+      {
+        "word": "áspero",
+        "russian": "шершавый"
+      },
+      {
+        "word": "jardín",
+        "russian": "сад"
+      },
+      {
+        "word": "elegir",
+        "russian": "выбирать"
+      },
+      {
+        "word": "toalla",
+        "russian": "полотенце"
+      },
+      {
+        "word": "pronto",
+        "russian": "скоро"
+      },
+      {
+        "word": "dinero",
+        "russian": "деньги"
+      }
+    ]
+  },
+  {
+    "level": 47,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "cajero",
+        "russian": "банкомат"
+      },
+      {
+        "word": "bosque",
+        "russian": "лес"
+      },
+      {
+        "word": "hierro",
+        "russian": "железо"
+      },
+      {
+        "word": "esposa",
+        "russian": "жена"
+      },
+      {
+        "word": "romper",
+        "russian": "ломать"
+      },
+      {
+        "word": "fiebre",
+        "russian": "температура / жар"
+      },
+      {
+        "word": "nevera",
+        "russian": "холодильник"
+      },
+      {
+        "word": "puerta",
+        "russian": "дверь"
+      },
+      {
+        "word": "cuello",
+        "russian": "шея"
+      },
+      {
+        "word": "cerrar",
+        "russian": "закрывать"
+      }
+    ]
+  },
+  {
+    "level": 48,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "cabeza",
+        "russian": "голова"
+      },
+      {
+        "word": "llamar",
+        "russian": "звонить / называть"
+      },
+      {
+        "word": "último",
+        "russian": "последний"
+      },
+      {
+        "word": "grueso",
+        "russian": "толстый"
+      },
+      {
+        "word": "pueblo",
+        "russian": "деревня / посёлок"
+      },
+      {
+        "word": "vecino",
+        "russian": "сосед"
+      },
+      {
+        "word": "pájaro",
+        "russian": "птица"
+      },
+      {
+        "word": "abrigo",
+        "russian": "пальто"
+      },
+      {
+        "word": "puerto",
+        "russian": "порт"
+      },
+      {
+        "word": "música",
+        "russian": "музыка"
+      }
+    ]
+  },
+  {
+    "level": 49,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "barato",
+        "russian": "дешёвый"
+      },
+      {
+        "word": "tomate",
+        "russian": "помидор"
+      },
+      {
+        "word": "marrón",
+        "russian": "коричневый"
+      },
+      {
+        "word": "cámara",
+        "russian": "камера"
+      },
+      {
+        "word": "recreo",
+        "russian": "перемена"
+      },
+      {
+        "word": "teatro",
+        "russian": "театр"
+      },
+      {
+        "word": "ciudad",
+        "russian": "город"
+      },
+      {
+        "word": "minuto",
+        "russian": "минута"
+      },
+      {
+        "word": "cálido",
+        "russian": "тёплый"
+      },
+      {
+        "word": "hombro",
+        "russian": "плечо"
+      }
+    ]
+  },
+  {
+    "level": 50,
+    "cefr": "A2",
+    "words": [
+      {
+        "word": "número",
+        "russian": "число"
+      },
+      {
+        "word": "mojado",
+        "russian": "мокрый"
+      },
+      {
+        "word": "celoso",
+        "russian": "ревнивый"
+      },
+      {
+        "word": "dibujo",
+        "russian": "рисунок"
+      },
+      {
+        "word": "esposo",
+        "russian": "муж"
+      },
+      {
+        "word": "buscar",
+        "russian": "искать"
+      },
+      {
+        "word": "querer",
+        "russian": "хотеть"
+      },
+      {
+        "word": "blando",
+        "russian": "мягкий"
+      },
+      {
+        "word": "activo",
+        "russian": "активный"
+      },
+      {
+        "word": "enviar",
+        "russian": "отправлять"
+      }
+    ]
+  },
+  {
+    "level": 51,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "cuenta",
+        "russian": "счёт (в ресторане)"
+      },
+      {
+        "word": "acento",
+        "russian": "акцент"
+      },
+      {
+        "word": "volcán",
+        "russian": "вулкан"
+      },
+      {
+        "word": "física",
+        "russian": "физика"
+      },
+      {
+        "word": "idioma",
+        "russian": "язык"
+      },
+      {
+        "word": "lluvia",
+        "russian": "дождь"
+      },
+      {
+        "word": "regalo",
+        "russian": "подарок"
+      },
+      {
+        "word": "fresco",
+        "russian": "свежий"
+      },
+      {
+        "word": "normal",
+        "russian": "нормальный"
+      },
+      {
+        "word": "semana",
+        "russian": "неделя"
+      }
+    ]
+  },
+  {
+    "level": 52,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "barrio",
+        "russian": "район"
+      },
+      {
+        "word": "seguir",
+        "russian": "следовать / продолжать"
+      },
+      {
+        "word": "avisar",
+        "russian": "предупреждать"
+      },
+      {
+        "word": "herida",
+        "russian": "рана"
+      },
+      {
+        "word": "aceite",
+        "russian": "масло (растительное)"
+      },
+      {
+        "word": "llegar",
+        "russian": "прибывать"
+      },
+      {
+        "word": "mañana",
+        "russian": "утро"
+      },
+      {
+        "word": "pesado",
+        "russian": "тяжёлый"
+      },
+      {
+        "word": "harina",
+        "russian": "мука"
+      },
+      {
+        "word": "médico",
+        "russian": "врач"
+      }
+    ]
+  },
+  {
+    "level": 53,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "sentir",
+        "russian": "чувствовать"
+      },
+      {
+        "word": "maleta",
+        "russian": "чемодан"
+      },
+      {
+        "word": "gritar",
+        "russian": "кричать"
+      },
+      {
+        "word": "examen",
+        "russian": "экзамен"
+      },
+      {
+        "word": "tierra",
+        "russian": "земля"
+      },
+      {
+        "word": "dormir",
+        "russian": "спать"
+      },
+      {
+        "word": "quitar",
+        "russian": "убирать / снимать"
+      },
+      {
+        "word": "martes",
+        "russian": "вторник"
+      },
+      {
+        "word": "tiempo",
+        "russian": "время / погода"
+      },
+      {
+        "word": "piloto",
+        "russian": "пилот"
+      }
+    ]
+  },
+  {
+    "level": 54,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "húmedo",
+        "russian": "влажный"
+      },
+      {
+        "word": "pensar",
+        "russian": "думать"
+      },
+      {
+        "word": "cuidar",
+        "russian": "ухаживать / беречь"
+      },
+      {
+        "word": "gustar",
+        "russian": "нравиться"
+      },
+      {
+        "word": "vecina",
+        "russian": "соседка"
+      },
+      {
+        "word": "conejo",
+        "russian": "кролик"
+      },
+      {
+        "word": "patata",
+        "russian": "картофель"
+      },
+      {
+        "word": "balcón",
+        "russian": "балкон"
+      },
+      {
+        "word": "tienda",
+        "russian": "магазин"
+      },
+      {
+        "word": "fallar",
+        "russian": "провалиться"
+      }
+    ]
+  },
+  {
+    "level": 55,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "garaje",
+        "russian": "гараж"
+      },
+      {
+        "word": "abuela",
+        "russian": "бабушка"
+      },
+      {
+        "word": "hierba",
+        "russian": "трава"
+      },
+      {
+        "word": "espejo",
+        "russian": "зеркало"
+      },
+      {
+        "word": "cobrar",
+        "russian": "получать плату"
+      },
+      {
+        "word": "bañera",
+        "russian": "ванна"
+      },
+      {
+        "word": "camisa",
+        "russian": "рубашка"
+      },
+      {
+        "word": "fiesta",
+        "russian": "праздник / вечеринка"
+      },
+      {
+        "word": "llevar",
+        "russian": "нести / носить"
+      },
+      {
+        "word": "contar",
+        "russian": "рассказывать / считать"
+      }
+    ]
+  },
+  {
+    "level": 56,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "álgebra",
+        "russian": "алгебра"
+      },
+      {
+        "word": "aserrín",
+        "russian": "опилки"
+      },
+      {
+        "word": "apagado",
+        "russian": "выключенный"
+      },
+      {
+        "word": "reenvío",
+        "russian": "пересылка"
+      },
+      {
+        "word": "ponerse",
+        "russian": "надевать"
+      },
+      {
+        "word": "alergia",
+        "russian": "аллергия"
+      },
+      {
+        "word": "dibujar",
+        "russian": "рисовать"
+      },
+      {
+        "word": "sección",
+        "russian": "секция / отдел"
+      },
+      {
+        "word": "egoista",
+        "russian": "эгоистичный"
+      },
+      {
+        "word": "alegrar",
+        "russian": "радовать"
+      }
+    ]
+  },
+  {
+    "level": 57,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "ballena",
+        "russian": "кит"
+      },
+      {
+        "word": "aluvión",
+        "russian": "аллювий / поток"
+      },
+      {
+        "word": "caminar",
+        "russian": "ходить"
+      },
+      {
+        "word": "bufanda",
+        "russian": "шарф"
+      },
+      {
+        "word": "policía",
+        "russian": "полицейский"
+      },
+      {
+        "word": "tobillo",
+        "russian": "лодыжка"
+      },
+      {
+        "word": "cebolla",
+        "russian": "лук"
+      },
+      {
+        "word": "alacrán",
+        "russian": "скорпион"
+      },
+      {
+        "word": "lampara",
+        "russian": "лампа"
+      },
+      {
+        "word": "vestido",
+        "russian": "платье"
+      }
+    ]
+  },
+  {
+    "level": 58,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "prestar",
+        "russian": "давать в долг / одалживать"
+      },
+      {
+        "word": "naranja",
+        "russian": "апельсин"
+      },
+      {
+        "word": "manzana",
+        "russian": "яблоко"
+      },
+      {
+        "word": "montaña",
+        "russian": "гора"
+      },
+      {
+        "word": "afición",
+        "russian": "фанаты"
+      },
+      {
+        "word": "lámpara",
+        "russian": "лампа"
+      },
+      {
+        "word": "comedor",
+        "russian": "столовая"
+      },
+      {
+        "word": "revisar",
+        "russian": "проверять"
+      },
+      {
+        "word": "primero",
+        "russian": "первый"
+      },
+      {
+        "word": "grosero",
+        "russian": "грубый"
+      }
+    ]
+  },
+  {
+    "level": 59,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "pescado",
+        "russian": "рыба"
+      },
+      {
+        "word": "recibir",
+        "russian": "получать"
+      },
+      {
+        "word": "trabajo",
+        "russian": "работа"
+      },
+      {
+        "word": "ejemplo",
+        "russian": "пример"
+      },
+      {
+        "word": "domingo",
+        "russian": "воскресенье"
+      },
+      {
+        "word": "pequeño",
+        "russian": "маленький"
+      },
+      {
+        "word": "negocio",
+        "russian": "бизнес"
+      },
+      {
+        "word": "repetir",
+        "russian": "повторять"
+      },
+      {
+        "word": "aprobar",
+        "russian": "сдавать (экзамен) / одобрять"
+      },
+      {
+        "word": "bombero",
+        "russian": "пожарный"
+      }
+    ]
+  },
+  {
+    "level": 60,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "hormiga",
+        "russian": "муравей"
+      },
+      {
+        "word": "lavarse",
+        "russian": "мыться"
+      },
+      {
+        "word": "navidad",
+        "russian": "Рождество"
+      },
+      {
+        "word": "jugador",
+        "russian": "игрок"
+      },
+      {
+        "word": "saludar",
+        "russian": "здороваться"
+      },
+      {
+        "word": "salario",
+        "russian": "зарплата"
+      },
+      {
+        "word": "limpiar",
+        "russian": "убирать"
+      },
+      {
+        "word": "aparcar",
+        "russian": "парковать"
+      },
+      {
+        "word": "cobarde",
+        "russian": "трусливый"
+      },
+      {
+        "word": "billete",
+        "russian": "билет"
+      }
+    ]
+  },
+  {
+    "level": 61,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "propina",
+        "russian": "чаевые"
+      },
+      {
+        "word": "palabra",
+        "russian": "слово"
+      },
+      {
+        "word": "vacunar",
+        "russian": "вакцинировать"
+      },
+      {
+        "word": "curioso",
+        "russian": "любознательный"
+      },
+      {
+        "word": "esperar",
+        "russian": "ждать / надеяться"
+      },
+      {
+        "word": "lección",
+        "russian": "урок"
+      },
+      {
+        "word": "canción",
+        "russian": "песня"
+      },
+      {
+        "word": "caballo",
+        "russian": "лошадь"
+      },
+      {
+        "word": "algunos",
+        "russian": "некоторые"
+      },
+      {
+        "word": "conocer",
+        "russian": "знать (быть знакомым)"
+      }
+    ]
+  },
+  {
+    "level": 62,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "avenida",
+        "russian": "проспект"
+      },
+      {
+        "word": "ventana",
+        "russian": "окно"
+      },
+      {
+        "word": "segundo",
+        "russian": "секунда"
+      },
+      {
+        "word": "armazón",
+        "russian": "каркас"
+      },
+      {
+        "word": "recetar",
+        "russian": "прописывать (лекарство)"
+      },
+      {
+        "word": "cocinar",
+        "russian": "готовить"
+      },
+      {
+        "word": "cerveza",
+        "russian": "пиво"
+      },
+      {
+        "word": "cambiar",
+        "russian": "изменяться"
+      },
+      {
+        "word": "mejorar",
+        "russian": "улучшаться"
+      },
+      {
+        "word": "tarjeta",
+        "russian": "карта"
+      }
+    ]
+  },
+  {
+    "level": 63,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "almacén",
+        "russian": "склад/магазин"
+      },
+      {
+        "word": "empezar",
+        "russian": "начинать"
+      },
+      {
+        "word": "próximo",
+        "russian": "следующий"
+      },
+      {
+        "word": "oficina",
+        "russian": "офис"
+      },
+      {
+        "word": "posible",
+        "russian": "возможный"
+      },
+      {
+        "word": "noticia",
+        "russian": "новость"
+      },
+      {
+        "word": "árbitro",
+        "russian": "судья, арбитр"
+      },
+      {
+        "word": "abierto",
+        "russian": "открытый"
+      },
+      {
+        "word": "olvidar",
+        "russian": "забывать"
+      },
+      {
+        "word": "invitar",
+        "russian": "приглашать"
+      }
+    ]
+  },
+  {
+    "level": 64,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "teclado",
+        "russian": "клавиатура"
+      },
+      {
+        "word": "piscina",
+        "russian": "бассейн"
+      },
+      {
+        "word": "hermana",
+        "russian": "сестра"
+      },
+      {
+        "word": "difícil",
+        "russian": "трудный"
+      },
+      {
+        "word": "factura",
+        "russian": "счёт / квитанция"
+      },
+      {
+        "word": "honesto",
+        "russian": "честный"
+      },
+      {
+        "word": "traílla",
+        "russian": "поводок (длинн.)"
+      },
+      {
+        "word": "enseñar",
+        "russian": "учить (преподавать)"
+      },
+      {
+        "word": "ordenar",
+        "russian": "упорядочивать / приказывать"
+      },
+      {
+        "word": "espalda",
+        "russian": "спина"
+      }
+    ]
+  },
+  {
+    "level": 65,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "decidir",
+        "russian": "решать"
+      },
+      {
+        "word": "albañil",
+        "russian": "каменщик"
+      },
+      {
+        "word": "hermano",
+        "russian": "брат"
+      },
+      {
+        "word": "mochila",
+        "russian": "рюкзак"
+      },
+      {
+        "word": "vinagre",
+        "russian": "уксус"
+      },
+      {
+        "word": "pañuelo",
+        "russian": "платок / носовой платок"
+      },
+      {
+        "word": "cliente",
+        "russian": "клиент"
+      },
+      {
+        "word": "facción",
+        "russian": "черта лица / фракция"
+      },
+      {
+        "word": "mercado",
+        "russian": "рынок"
+      },
+      {
+        "word": "manejar",
+        "russian": "управлять"
+      }
+    ]
+  },
+  {
+    "level": 66,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "amistad",
+        "russian": "дружба"
+      },
+      {
+        "word": "almíbar",
+        "russian": "сироп"
+      },
+      {
+        "word": "alegría",
+        "russian": "радость"
+      },
+      {
+        "word": "armario",
+        "russian": "шкаф"
+      },
+      {
+        "word": "arañazo",
+        "russian": "царапина"
+      },
+      {
+        "word": "momento",
+        "russian": "момент"
+      },
+      {
+        "word": "corbata",
+        "russian": "галстук"
+      },
+      {
+        "word": "ahorrar",
+        "russian": "экономить"
+      },
+      {
+        "word": "gallina",
+        "russian": "курица"
+      },
+      {
+        "word": "rodilla",
+        "russian": "колено"
+      }
+    ]
+  },
+  {
+    "level": 67,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "mensaje",
+        "russian": "сообщение"
+      },
+      {
+        "word": "escuela",
+        "russian": "школа"
+      },
+      {
+        "word": "gorrión",
+        "russian": "воробей"
+      },
+      {
+        "word": "autobús",
+        "russian": "автобус"
+      },
+      {
+        "word": "abogado",
+        "russian": "адвокат"
+      },
+      {
+        "word": "revista",
+        "russian": "журнал"
+      },
+      {
+        "word": "batería",
+        "russian": "аккумулятор"
+      },
+      {
+        "word": "partido",
+        "russian": "матч"
+      },
+      {
+        "word": "educado",
+        "russian": "воспитанный"
+      },
+      {
+        "word": "ninguno",
+        "russian": "ни один"
+      }
+    ]
+  },
+  {
+    "level": 68,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "navegar",
+        "russian": "плавать / navegar"
+      },
+      {
+        "word": "comprar",
+        "russian": "покупать"
+      },
+      {
+        "word": "plátano",
+        "russian": "банан"
+      },
+      {
+        "word": "ciencia",
+        "russian": "наука"
+      },
+      {
+        "word": "estadio",
+        "russian": "стадион"
+      },
+      {
+        "word": "ficción",
+        "russian": "вымысел / фикция"
+      },
+      {
+        "word": "viernes",
+        "russian": "пятница"
+      },
+      {
+        "word": "verdura",
+        "russian": "овощ"
+      },
+      {
+        "word": "corazón",
+        "russian": "сердце"
+      },
+      {
+        "word": "fábrica",
+        "russian": "фабрика"
+      }
+    ]
+  },
+  {
+    "level": 69,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "empresa",
+        "russian": "компания"
+      },
+      {
+        "word": "pintura",
+        "russian": "живопись / картина"
+      },
+      {
+        "word": "informe",
+        "russian": "отчёт"
+      },
+      {
+        "word": "algodón",
+        "russian": "хлопок"
+      },
+      {
+        "word": "reunión",
+        "russian": "встреча / совещание"
+      },
+      {
+        "word": "antiguo",
+        "russian": "древний / старинный"
+      },
+      {
+        "word": "artista",
+        "russian": "художник / артист"
+      },
+      {
+        "word": "química",
+        "russian": "химия"
+      },
+      {
+        "word": "delgado",
+        "russian": "тонкий / худой"
+      },
+      {
+        "word": "apretón",
+        "russian": "сжатие"
+      }
+    ]
+  },
+  {
+    "level": 70,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "pizarra",
+        "russian": "доска"
+      },
+      {
+        "word": "cerrado",
+        "russian": "закрытый"
+      },
+      {
+        "word": "iglesia",
+        "russian": "церковь"
+      },
+      {
+        "word": "cansado",
+        "russian": "уставший"
+      },
+      {
+        "word": "urgente",
+        "russian": "срочный"
+      },
+      {
+        "word": "bañarse",
+        "russian": "купаться"
+      },
+      {
+        "word": "visitar",
+        "russian": "навещать"
+      },
+      {
+        "word": "moderno",
+        "russian": "современный"
+      },
+      {
+        "word": "animado",
+        "russian": "воодушевлённый"
+      },
+      {
+        "word": "párrafo",
+        "russian": "абзац"
+      }
+    ]
+  },
+  {
+    "level": 71,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "gimnasio",
+        "russian": "спортзал"
+      },
+      {
+        "word": "medicina",
+        "russian": "лекарство"
+      },
+      {
+        "word": "reciente",
+        "russian": "недавний"
+      },
+      {
+        "word": "estrecho",
+        "russian": "узкий"
+      },
+      {
+        "word": "equipaje",
+        "russian": "багаж"
+      },
+      {
+        "word": "molestar",
+        "russian": "мешать / раздражать"
+      },
+      {
+        "word": "desierto",
+        "russian": "пустыня"
+      },
+      {
+        "word": "mariposa",
+        "russian": "бабочка"
+      },
+      {
+        "word": "plateado",
+        "russian": "серебристый"
+      },
+      {
+        "word": "prometer",
+        "russian": "обещать"
+      }
+    ]
+  },
+  {
+    "level": 72,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "original",
+        "russian": "оригинальный"
+      },
+      {
+        "word": "cocinero",
+        "russian": "повар"
+      },
+      {
+        "word": "proyecto",
+        "russian": "проект"
+      },
+      {
+        "word": "vestirse",
+        "russian": "одеваться"
+      },
+      {
+        "word": "arreglar",
+        "russian": "чинить"
+      },
+      {
+        "word": "especial",
+        "russian": "особенный"
+      },
+      {
+        "word": "sentarse",
+        "russian": "садиться"
+      },
+      {
+        "word": "amarillo",
+        "russian": "жёлтый"
+      },
+      {
+        "word": "empleado",
+        "russian": "сотрудник"
+      },
+      {
+        "word": "encantar",
+        "russian": "обожать"
+      }
+    ]
+  },
+  {
+    "level": 73,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "preparar",
+        "russian": "готовить (к чему-либо)"
+      },
+      {
+        "word": "elefante",
+        "russian": "слон"
+      },
+      {
+        "word": "temprano",
+        "russian": "ранний"
+      },
+      {
+        "word": "solución",
+        "russian": "решение"
+      },
+      {
+        "word": "pimiento",
+        "russian": "перец (болгарский)"
+      },
+      {
+        "word": "almuerzo",
+        "russian": "обед"
+      },
+      {
+        "word": "imaginar",
+        "russian": "воображать"
+      },
+      {
+        "word": "ensalada",
+        "russian": "салат"
+      },
+      {
+        "word": "enfadado",
+        "russian": "злой / сердитый"
+      },
+      {
+        "word": "semaforo",
+        "russian": "светофор"
+      }
+    ]
+  },
+  {
+    "level": 74,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "chaqueta",
+        "russian": "куртка / пиджак"
+      },
+      {
+        "word": "tracción",
+        "russian": "тяга"
+      },
+      {
+        "word": "agresión",
+        "russian": "агрессия"
+      },
+      {
+        "word": "aburrido",
+        "russian": "скучный"
+      },
+      {
+        "word": "ciclismo",
+        "russian": "велоспорт"
+      },
+      {
+        "word": "engordar",
+        "russian": "толстеть"
+      },
+      {
+        "word": "bastante",
+        "russian": "достаточно"
+      },
+      {
+        "word": "historia",
+        "russian": "история"
+      },
+      {
+        "word": "teléfono",
+        "russian": "телефон"
+      },
+      {
+        "word": "mayonesa",
+        "russian": "майонез"
+      }
+    ]
+  },
+  {
+    "level": 75,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "pantalla",
+        "russian": "экран"
+      },
+      {
+        "word": "comparar",
+        "russian": "сравнивать"
+      },
+      {
+        "word": "tormenta",
+        "russian": "буря / гроза"
+      },
+      {
+        "word": "ascensor",
+        "russian": "лифт"
+      },
+      {
+        "word": "capellán",
+        "russian": "капеллан"
+      },
+      {
+        "word": "adopción",
+        "russian": "усыновление / принятие"
+      },
+      {
+        "word": "ordenado",
+        "russian": "аккуратный / прибранный"
+      },
+      {
+        "word": "despedir",
+        "russian": "прощаться"
+      },
+      {
+        "word": "inacción",
+        "russian": "бездействие"
+      },
+      {
+        "word": "anterior",
+        "russian": "предыдущий"
+      }
+    ]
+  },
+  {
+    "level": 76,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "internet",
+        "russian": "интернет"
+      },
+      {
+        "word": "afección",
+        "russian": "заболевание"
+      },
+      {
+        "word": "camiseta",
+        "russian": "футболка"
+      },
+      {
+        "word": "fricción",
+        "russian": "трение"
+      },
+      {
+        "word": "permitir",
+        "russian": "позволять"
+      },
+      {
+        "word": "explicar",
+        "russian": "объяснять"
+      },
+      {
+        "word": "almorzar",
+        "russian": "обедать"
+      },
+      {
+        "word": "plástico",
+        "russian": "пластик"
+      },
+      {
+        "word": "entregar",
+        "russian": "сдавать / вручать"
+      },
+      {
+        "word": "recordar",
+        "russian": "помнить"
+      }
+    ]
+  },
+  {
+    "level": 77,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "corregir",
+        "russian": "исправлять"
+      },
+      {
+        "word": "enfermar",
+        "russian": "заболевать"
+      },
+      {
+        "word": "mejillón",
+        "russian": "мидия"
+      },
+      {
+        "word": "horrible",
+        "russian": "кошмарный"
+      },
+      {
+        "word": "sociable",
+        "russian": "общительный"
+      },
+      {
+        "word": "escalera",
+        "russian": "лестница"
+      },
+      {
+        "word": "creativo",
+        "russian": "творческий"
+      },
+      {
+        "word": "paciente",
+        "russian": "терпеливый"
+      },
+      {
+        "word": "contento",
+        "russian": "довольный"
+      },
+      {
+        "word": "estrella",
+        "russian": "звезда"
+      }
+    ]
+  },
+  {
+    "level": 78,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "escritor",
+        "russian": "писатель"
+      },
+      {
+        "word": "callejón",
+        "russian": "переулок"
+      },
+      {
+        "word": "nervioso",
+        "russian": "нервный"
+      },
+      {
+        "word": "programa",
+        "russian": "программа"
+      },
+      {
+        "word": "hospital",
+        "russian": "больница"
+      },
+      {
+        "word": "zoología",
+        "russian": "зоология"
+      },
+      {
+        "word": "camarero",
+        "russian": "официант"
+      },
+      {
+        "word": "reservar",
+        "russian": "бронировать"
+      },
+      {
+        "word": "perfecto",
+        "russian": "идеальный"
+      },
+      {
+        "word": "consulta",
+        "russian": "приём / консультация"
+      }
+    ]
+  },
+  {
+    "level": 79,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "dentista",
+        "russian": "стоматолог"
+      },
+      {
+        "word": "escuchar",
+        "russian": "слушать"
+      },
+      {
+        "word": "prohibir",
+        "russian": "запрещать"
+      },
+      {
+        "word": "elección",
+        "russian": "выборы"
+      },
+      {
+        "word": "cantidad",
+        "russian": "количество"
+      },
+      {
+        "word": "tristeza",
+        "russian": "грусть"
+      },
+      {
+        "word": "acrónimo",
+        "russian": "акроним"
+      },
+      {
+        "word": "natación",
+        "russian": "плавание"
+      },
+      {
+        "word": "estación",
+        "russian": "станция / вокзал"
+      },
+      {
+        "word": "ducharse",
+        "russian": "принимать душ"
+      }
+    ]
+  },
+  {
+    "level": 80,
+    "cefr": "B1",
+    "words": [
+      {
+        "word": "intentar",
+        "russian": "пытаться"
+      },
+      {
+        "word": "cinturón",
+        "russian": "ремень"
+      },
+      {
+        "word": "entender",
+        "russian": "понимать"
+      },
+      {
+        "word": "sencillo",
+        "russian": "простой"
+      },
+      {
+        "word": "estudiar",
+        "russian": "учиться"
+      },
+      {
+        "word": "comenzar",
+        "russian": "начинать"
+      },
+      {
+        "word": "farmacia",
+        "russian": "аптека"
+      },
+      {
+        "word": "batallón",
+        "russian": "батальон"
+      },
+      {
+        "word": "perezoso",
+        "russian": "ленивый"
+      },
+      {
+        "word": "acrílico",
+        "russian": "акрил"
+      }
+    ]
+  },
+  {
+    "level": 81,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "asustado",
+        "russian": "испуганный"
+      },
+      {
+        "word": "valiente",
+        "russian": "храбрый"
+      },
+      {
+        "word": "estomago",
+        "russian": "желудок"
+      },
+      {
+        "word": "adhesión",
+        "russian": "присоединение / адгезия"
+      },
+      {
+        "word": "semáforo",
+        "russian": "светофор"
+      },
+      {
+        "word": "quedarse",
+        "russian": "оставаться"
+      },
+      {
+        "word": "biología",
+        "russian": "биология"
+      },
+      {
+        "word": "alfombra",
+        "russian": "ковёр"
+      },
+      {
+        "word": "lavadora",
+        "russian": "стиральная машина"
+      },
+      {
+        "word": "prórroga",
+        "russian": "дополнительное время"
+      }
+    ]
+  },
+  {
+    "level": 82,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "caliente",
+        "russian": "горячий"
+      },
+      {
+        "word": "sorpresa",
+        "russian": "удивление"
+      },
+      {
+        "word": "desayuno",
+        "russian": "завтрак"
+      },
+      {
+        "word": "admisión",
+        "russian": "прием / допуск"
+      },
+      {
+        "word": "cancelar",
+        "russian": "отменять"
+      },
+      {
+        "word": "acordeón",
+        "russian": "аккордеон"
+      },
+      {
+        "word": "estómago",
+        "russian": "живот / желудок"
+      },
+      {
+        "word": "terminar",
+        "russian": "заканчивать"
+      },
+      {
+        "word": "vendedor",
+        "russian": "продавец"
+      },
+      {
+        "word": "generoso",
+        "russian": "щедрый"
+      }
+    ]
+  },
+  {
+    "level": 83,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "garganta",
+        "russian": "горло"
+      },
+      {
+        "word": "reacción",
+        "russian": "реакция"
+      },
+      {
+        "word": "cuaderno",
+        "russian": "тетрадь"
+      },
+      {
+        "word": "trabajar",
+        "russian": "работать"
+      },
+      {
+        "word": "sombrero",
+        "russian": "шляпа"
+      },
+      {
+        "word": "fracción",
+        "russian": "дробь / фракция"
+      },
+      {
+        "word": "contrato",
+        "russian": "контракт"
+      },
+      {
+        "word": "apellido",
+        "russian": "фамилия"
+      },
+      {
+        "word": "mosquito",
+        "russian": "комар"
+      },
+      {
+        "word": "pregunta",
+        "russian": "вопрос"
+      }
+    ]
+  },
+  {
+    "level": 84,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "pastilla",
+        "russian": "таблетка"
+      },
+      {
+        "word": "cargador",
+        "russian": "зарядное устройство"
+      },
+      {
+        "word": "gratuito",
+        "russian": "бесплатный"
+      },
+      {
+        "word": "mecánico",
+        "russian": "механик"
+      },
+      {
+        "word": "peinarse",
+        "russian": "причёсываться"
+      },
+      {
+        "word": "película",
+        "russian": "фильм"
+      },
+      {
+        "word": "conducir",
+        "russian": "водить"
+      },
+      {
+        "word": "empeorar",
+        "russian": "ухудшаться"
+      },
+      {
+        "word": "terrible",
+        "russian": "ужасный"
+      },
+      {
+        "word": "perdonar",
+        "russian": "прощать"
+      }
+    ]
+  },
+  {
+    "level": 85,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "traducir",
+        "russian": "переводить"
+      },
+      {
+        "word": "quitarse",
+        "russian": "снимать (одежду)"
+      },
+      {
+        "word": "aprender",
+        "russian": "учить"
+      },
+      {
+        "word": "escribir",
+        "russian": "писать"
+      },
+      {
+        "word": "adicción",
+        "russian": "зависимость"
+      },
+      {
+        "word": "profesor",
+        "russian": "учитель"
+      },
+      {
+        "word": "almohada",
+        "russian": "подушка"
+      },
+      {
+        "word": "respirar",
+        "russian": "дышать"
+      },
+      {
+        "word": "problema",
+        "russian": "проблема"
+      },
+      {
+        "word": "acústica",
+        "russian": "акустика"
+      }
+    ]
+  },
+  {
+    "level": 86,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "crepúsculo",
+        "russian": "сумерки"
+      },
+      {
+        "word": "paráfrasis",
+        "russian": "парафраз"
+      },
+      {
+        "word": "artillería",
+        "russian": "артиллерия"
+      },
+      {
+        "word": "prepararse",
+        "russian": "готовиться"
+      },
+      {
+        "word": "aminoácido",
+        "russian": "аминокислота"
+      },
+      {
+        "word": "cotización",
+        "russian": "котировка"
+      },
+      {
+        "word": "enfermedad",
+        "russian": "болезнь"
+      },
+      {
+        "word": "arqueólogo",
+        "russian": "археолог"
+      },
+      {
+        "word": "metástasis",
+        "russian": "метастаз"
+      },
+      {
+        "word": "ornitólogo",
+        "russian": "орнитолог"
+      }
+    ]
+  },
+  {
+    "level": 87,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "cartógrafo",
+        "russian": "картограф"
+      },
+      {
+        "word": "metafísica",
+        "russian": "метафизика"
+      },
+      {
+        "word": "antigüedad",
+        "russian": "древность"
+      },
+      {
+        "word": "jardinería",
+        "russian": "садоводство"
+      },
+      {
+        "word": "jubilación",
+        "russian": "пенсия / выход на пенсию"
+      },
+      {
+        "word": "disolución",
+        "russian": "распад"
+      },
+      {
+        "word": "limitación",
+        "russian": "ограничение"
+      },
+      {
+        "word": "antipatico",
+        "russian": "неприятный"
+      },
+      {
+        "word": "dialéctica",
+        "russian": "диалектика"
+      },
+      {
+        "word": "alergólogo",
+        "russian": "аллерголог"
+      }
+    ]
+  },
+  {
+    "level": 88,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "fotografía",
+        "russian": "фотография"
+      },
+      {
+        "word": "traducción",
+        "russian": "перевод"
+      },
+      {
+        "word": "corrupción",
+        "russian": "коррупция"
+      },
+      {
+        "word": "complexión",
+        "russian": "телосложение"
+      },
+      {
+        "word": "ambigüedad",
+        "russian": "двусмысленность"
+      },
+      {
+        "word": "imputación",
+        "russian": "обвинение"
+      },
+      {
+        "word": "entrevista",
+        "russian": "интервью / собеседование"
+      },
+      {
+        "word": "aprobación",
+        "russian": "одобрение"
+      },
+      {
+        "word": "impaciente",
+        "russian": "нетерпеливый"
+      },
+      {
+        "word": "intérprete",
+        "russian": "устный переводчик"
+      }
+    ]
+  },
+  {
+    "level": 89,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "excavación",
+        "russian": "земляные работы"
+      },
+      {
+        "word": "insolación",
+        "russian": "солнечный удар"
+      },
+      {
+        "word": "microondas",
+        "russian": "микроволновка"
+      },
+      {
+        "word": "aeropuerto",
+        "russian": "аэропорт"
+      },
+      {
+        "word": "secretario",
+        "russian": "секретарь"
+      },
+      {
+        "word": "astronomía",
+        "russian": "астрономия"
+      },
+      {
+        "word": "desinterés",
+        "russian": "незаинтересованность"
+      },
+      {
+        "word": "odontólogo",
+        "russian": "стоматолог"
+      },
+      {
+        "word": "matemática",
+        "russian": "математика"
+      },
+      {
+        "word": "anticiclón",
+        "russian": "антициклон"
+      }
+    ]
+  },
+  {
+    "level": 90,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "importante",
+        "russian": "важный"
+      },
+      {
+        "word": "conversión",
+        "russian": "обращение в веру"
+      },
+      {
+        "word": "ampliación",
+        "russian": "расширение"
+      },
+      {
+        "word": "depilación",
+        "russian": "депиляция"
+      },
+      {
+        "word": "motivación",
+        "russian": "мотивация"
+      },
+      {
+        "word": "hidroavión",
+        "russian": "гидросамолёт"
+      },
+      {
+        "word": "decoración",
+        "russian": "декор"
+      },
+      {
+        "word": "inundación",
+        "russian": "наводнение"
+      },
+      {
+        "word": "científico",
+        "russian": "учёный"
+      },
+      {
+        "word": "indecisión",
+        "russian": "нерешительность"
+      }
+    ]
+  },
+  {
+    "level": 91,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "diferencia",
+        "russian": "разница"
+      },
+      {
+        "word": "incitación",
+        "russian": "подстрекательство"
+      },
+      {
+        "word": "generación",
+        "russian": "поколение"
+      },
+      {
+        "word": "periodista",
+        "russian": "журналист"
+      },
+      {
+        "word": "ginecólogo",
+        "russian": "гинеколог"
+      },
+      {
+        "word": "coronación",
+        "russian": "коронация"
+      },
+      {
+        "word": "casuística",
+        "russian": "казуистика"
+      },
+      {
+        "word": "asociación",
+        "russian": "ассоциация"
+      },
+      {
+        "word": "entrenador",
+        "russian": "тренер"
+      },
+      {
+        "word": "conclusión",
+        "russian": "вывод/заключение"
+      }
+    ]
+  },
+  {
+    "level": 92,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "amputación",
+        "russian": "ампутация"
+      },
+      {
+        "word": "aplicación",
+        "russian": "приложение"
+      },
+      {
+        "word": "dormitorio",
+        "russian": "спальня"
+      },
+      {
+        "word": "irritación",
+        "russian": "раздражение"
+      },
+      {
+        "word": "hipopótamo",
+        "russian": "бегемот"
+      },
+      {
+        "word": "ingeniería",
+        "russian": "инженерия"
+      },
+      {
+        "word": "agricultor",
+        "russian": "фермер"
+      },
+      {
+        "word": "dedicación",
+        "russian": "преданность делу"
+      },
+      {
+        "word": "admiración",
+        "russian": "восхищение"
+      },
+      {
+        "word": "astrología",
+        "russian": "астрология"
+      }
+    ]
+  },
+  {
+    "level": 93,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "filatélico",
+        "russian": "филателист"
+      },
+      {
+        "word": "innovación",
+        "russian": "инновация"
+      },
+      {
+        "word": "entonación",
+        "russian": "интонация"
+      },
+      {
+        "word": "difamación",
+        "russian": "клевета"
+      },
+      {
+        "word": "guarnición",
+        "russian": "гарнир"
+      },
+      {
+        "word": "coreógrafo",
+        "russian": "хореограф"
+      },
+      {
+        "word": "ciudadanía",
+        "russian": "гражданство"
+      },
+      {
+        "word": "indicación",
+        "russian": "указание"
+      },
+      {
+        "word": "cronómetro",
+        "russian": "секундомер"
+      },
+      {
+        "word": "oligarquía",
+        "russian": "олигархия"
+      }
+    ]
+  },
+  {
+    "level": 94,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "indagación",
+        "russian": "расследование"
+      },
+      {
+        "word": "carnicería",
+        "russian": "мясная лавка / бойня"
+      },
+      {
+        "word": "castración",
+        "russian": "кастрация"
+      },
+      {
+        "word": "fantástico",
+        "russian": "фантастический"
+      },
+      {
+        "word": "ferretería",
+        "russian": "хозяйственный магазин"
+      },
+      {
+        "word": "estanteria",
+        "russian": "полка / стеллаж"
+      },
+      {
+        "word": "alteración",
+        "russian": "изменение"
+      },
+      {
+        "word": "catástrofe",
+        "russian": "катастрофа"
+      },
+      {
+        "word": "trabajador",
+        "russian": "трудолюбивый"
+      },
+      {
+        "word": "centímetro",
+        "russian": "сантиметр"
+      }
+    ]
+  },
+  {
+    "level": 95,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "nominación",
+        "russian": "номинация"
+      },
+      {
+        "word": "caballería",
+        "russian": "кавалерия"
+      },
+      {
+        "word": "homeopatía",
+        "russian": "гомеопатия"
+      },
+      {
+        "word": "bioquímica",
+        "russian": "биохимия"
+      },
+      {
+        "word": "flexómetro",
+        "russian": "рулетка строительная"
+      },
+      {
+        "word": "cosmología",
+        "russian": "космология"
+      },
+      {
+        "word": "cardiólogo",
+        "russian": "кардиолог"
+      },
+      {
+        "word": "conjunción",
+        "russian": "союз (грам.)"
+      },
+      {
+        "word": "antipático",
+        "russian": "неприятный"
+      },
+      {
+        "word": "preocupado",
+        "russian": "обеспокоенный"
+      }
+    ]
+  },
+  {
+    "level": 96,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "abdicación",
+        "russian": "отречение"
+      },
+      {
+        "word": "estudiante",
+        "russian": "студент"
+      },
+      {
+        "word": "complicado",
+        "russian": "сложный"
+      },
+      {
+        "word": "arquitecto",
+        "russian": "архитектор"
+      },
+      {
+        "word": "habitación",
+        "russian": "комната"
+      },
+      {
+        "word": "aclaración",
+        "russian": "разъяснение"
+      },
+      {
+        "word": "afirmación",
+        "russian": "утверждение"
+      },
+      {
+        "word": "cepillarse",
+        "russian": "чистить (зубы/волосы)"
+      },
+      {
+        "word": "melancolía",
+        "russian": "меланхолия"
+      },
+      {
+        "word": "litografía",
+        "russian": "литография"
+      }
+    ]
+  },
+  {
+    "level": 97,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "infantería",
+        "russian": "пехота"
+      },
+      {
+        "word": "maleducado",
+        "russian": "невоспитанный"
+      },
+      {
+        "word": "biblioteca",
+        "russian": "библиотека"
+      },
+      {
+        "word": "sorprender",
+        "russian": "удивлять"
+      },
+      {
+        "word": "murciélago",
+        "russian": "летучая мышь"
+      },
+      {
+        "word": "genealogía",
+        "russian": "генеалогия"
+      },
+      {
+        "word": "exposición",
+        "russian": "выставка"
+      },
+      {
+        "word": "analgésico",
+        "russian": "обезболивающее"
+      },
+      {
+        "word": "equitación",
+        "russian": "конный спорт"
+      },
+      {
+        "word": "inspección",
+        "russian": "осмотр / инспекция"
+      }
+    ]
+  },
+  {
+    "level": 98,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "federación",
+        "russian": "федерация"
+      },
+      {
+        "word": "emocionado",
+        "russian": "взволнованный"
+      },
+      {
+        "word": "asignatura",
+        "russian": "предмет"
+      },
+      {
+        "word": "contraseña",
+        "russian": "пароль"
+      },
+      {
+        "word": "inhibición",
+        "russian": "торможение / запрет"
+      },
+      {
+        "word": "filántropo",
+        "russian": "филантроп"
+      },
+      {
+        "word": "graduación",
+        "russian": "выпускной / градуировка"
+      },
+      {
+        "word": "aceptación",
+        "russian": "принятие"
+      },
+      {
+        "word": "panorámica",
+        "russian": "панорама"
+      },
+      {
+        "word": "abstención",
+        "russian": "воздержание"
+      }
+    ]
+  },
+  {
+    "level": 99,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "paréntesis",
+        "russian": "скобки (круглые)"
+      },
+      {
+        "word": "estantería",
+        "russian": "полка"
+      },
+      {
+        "word": "infracción",
+        "russian": "нарушение"
+      },
+      {
+        "word": "invitación",
+        "russian": "приглашение"
+      },
+      {
+        "word": "juguetería",
+        "russian": "магазин игрушек"
+      },
+      {
+        "word": "adaptación",
+        "russian": "адаптация"
+      },
+      {
+        "word": "currículum",
+        "russian": "резюме"
+      },
+      {
+        "word": "baloncesto",
+        "russian": "баскетбол"
+      },
+      {
+        "word": "escalofrío",
+        "russian": "озноб/мурашки"
+      },
+      {
+        "word": "delegación",
+        "russian": "делегирование"
+      }
+    ]
+  },
+  {
+    "level": 100,
+    "cefr": "B2",
+    "words": [
+      {
+        "word": "cumpleaños",
+        "russian": "день рождения"
+      },
+      {
+        "word": "suficiente",
+        "russian": "достаточный"
+      },
+      {
+        "word": "levantarse",
+        "russian": "вставать"
+      },
+      {
+        "word": "obligación",
+        "russian": "обязательство"
+      },
+      {
+        "word": "comprender",
+        "russian": "понимать"
+      },
+      {
+        "word": "matemático",
+        "russian": "математик"
+      },
+      {
+        "word": "lavandería",
+        "russian": "прачечная"
+      },
+      {
+        "word": "abnegación",
+        "russian": "самопожертвование"
+      },
+      {
+        "word": "meditación",
+        "russian": "медитация"
+      },
+      {
+        "word": "inhalación",
+        "russian": "вдыхание"
+      }
+    ]
+  }
+]

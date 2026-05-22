@@ -1,5 +1,6 @@
 package com.spanishapp.ui.games
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
@@ -12,12 +13,16 @@ import com.spanishapp.domain.games.LevelParams
 import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.AchievementManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import javax.inject.Inject
 
 data class SpeedPremiumState(
@@ -43,8 +48,16 @@ data class SpeedPremiumState(
     val level: Int get() = params.level
 }
 
+/** Один раунд игры Rapido: правильный перевод + 3 отвлечения (детерминированно). */
+internal data class SpeedRound(
+    val word: String,
+    val russian: String,
+    val distractors: List<String>,
+)
+
 @HiltViewModel
 class SpeedViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val wordDao: WordDao,
     private val userProgressDao: UserProgressDao,
     private val achievementManager: AchievementManager,
@@ -66,12 +79,58 @@ class SpeedViewModel @Inject constructor(
     @Volatile private var roundResolved = false
     private var mistakesBatch: List<com.spanishapp.data.db.entity.GameMistakeEntity> = emptyList()
 
+    /** Кэш детерминированных уровней. См. scripts/build_speed_levels.py. */
+    @Volatile private var levelsCache: List<List<SpeedRound>>? = null
+    /** Заранее сгенерированные раунды текущего уровня. */
+    private var levelRounds: List<SpeedRound> = emptyList()
+
+    private suspend fun loadLevels(): List<List<SpeedRound>> {
+        levelsCache?.let { return it }
+        return withContext(Dispatchers.IO) {
+            val raw = try {
+                appContext.assets.open("speed_levels.json")
+                    .bufferedReader(Charsets.UTF_8)
+                    .use { it.readText() }
+            } catch (_: Exception) {
+                ""
+            }
+            if (raw.isBlank()) return@withContext emptyList<List<SpeedRound>>()
+            val arr = JSONArray(raw)
+            val result = ArrayList<List<SpeedRound>>(arr.length())
+            for (i in 0 until arr.length()) {
+                val lvlObj = arr.getJSONObject(i)
+                val wordsArr = lvlObj.getJSONArray("words")
+                val list = ArrayList<SpeedRound>(wordsArr.length())
+                for (j in 0 until wordsArr.length()) {
+                    val w = wordsArr.getJSONObject(j)
+                    val distArr = w.getJSONArray("distractors")
+                    val distractors = ArrayList<String>(distArr.length())
+                    for (k in 0 until distArr.length()) distractors += distArr.getString(k)
+                    list += SpeedRound(
+                        word = w.getString("word").lowercase(),
+                        russian = w.getString("russian"),
+                        distractors = distractors,
+                    )
+                }
+                result += list
+            }
+            levelsCache = result
+            result
+        }
+    }
+
     fun startLevel(level: Int) {
         timerJob?.cancel()
         roundResolved = false
-        val params = LevelDifficulty.forLevel(level)
-        _state.value = SpeedPremiumState(params = params, showLevelMap = false)
-        nextRound()
+        viewModelScope.launch {
+            val levels = loadLevels()
+            val idx = (level - 1).coerceIn(0, (levels.size - 1).coerceAtLeast(0))
+            levelRounds = levels.getOrNull(idx) ?: emptyList()
+            val baseParams = LevelDifficulty.forLevel(level)
+            val params = baseParams.copy(rounds = levelRounds.size.coerceAtLeast(1))
+            _state.value = SpeedPremiumState(params = params, showLevelMap = false)
+            nextRound()
+        }
     }
 
     fun openLevelMap() {
@@ -106,19 +165,16 @@ class SpeedViewModel @Inject constructor(
         roundResolved = false
         viewModelScope.launch {
             val mistake = mistakesBatch[s.currentRound]
-            val wordId = mistake.itemId.toIntOrNull() ?: run {
-                _state.value = s.copy(currentRound = s.currentRound + 1)
-                nextMistakeRound()
-                return@launch
-            }
-            val word = wordDao.findById(wordId) ?: run {
-                _state.value = s.copy(currentRound = s.currentRound + 1)
-                nextMistakeRound()
-                return@launch
-            }
+            // v1.22.2: itemId = lowercase(spanish), как в PalabraMaestra
+            val sp = mistake.itemId.lowercase()
+            val word = wordDao.findBySpanish(sp) ?: WordEntity(
+                spanish = sp,
+                russian = mistake.displayHint,
+                level   = "A1",
+            )
             // 3 случайных дистрактора из пула
             val distractors = wordDao.getRandomWords(20)
-                .filter { it.id != word.id && it.russian.isNotBlank() }
+                .filter { it.russian.isNotBlank() && it.russian != word.russian }
                 .map { it.russian }
                 .distinct()
                 .take(3)
@@ -140,54 +196,41 @@ class SpeedViewModel @Inject constructor(
             finishGame()
             return
         }
+        val round = levelRounds.getOrNull(s.currentRound) ?: run {
+            finishGame()
+            return
+        }
 
         viewModelScope.launch {
-            // Берём 80 случайных слов и фильтруем по нужному CEFR-слою.
-            val pool = wordDao.getRandomWords(80)
-            val cefrPool = pool.filter {
-                it.level in s.params.cefr && it.russian.isNotBlank() && it.spanish.isNotBlank()
-            }
-            // Фолбэк на остальной словарь, если в CEFR-слое мало.
-            val candidates = if (cefrPool.size >= 4) cefrPool
-                             else (cefrPool + pool.filter { it.russian.isNotBlank() })
-                                  .distinctBy { it.id }
-                                  .take(20)
-            if (candidates.size < 4) {
-                // Avoid CPU-burning tight recursion: if the DB hasn't enough
-                // words to make a 4-option round, finish gracefully.
-                finishGame()
-                return@launch
-            }
-
-            // Выбираем правильное слово, потом 3 ОТВЛЕЧЕНИЯ С УНИКАЛЬНЫМ переводом.
-            val correct = candidates.random()
-            val distractors = candidates
-                .filter { it.id != correct.id && it.russian != correct.russian }
-                .distinctBy { it.russian }
-                .shuffled()
-                .take(3)
-            if (distractors.size < 3) {
-                // Не нашлось 3 уникальных переводов — пропускаем этот раунд.
-                _state.value = s.copy(currentRound = s.currentRound + 1)
-                nextRound()
-                return@launch
-            }
-            val options = (distractors + correct).map { it.russian }.shuffled()
+            // v1.22.2: ДЕТЕРМИНИРОВАННАЯ выборка из speed_levels.json.
+            // Раньше брали wordDao.getRandomWords(80) + случайные distractors
+            // → один и тот же level каждый раз показывал РАЗНЫЕ слова и
+            // РАЗНОЕ их количество. Теперь 100 уровней × 10 слов из ассета.
+            val word = wordDao.findBySpanish(round.word) ?: WordEntity(
+                spanish = round.word,
+                russian = round.russian,
+                level   = s.params.cefr.firstOrNull() ?: "A1",
+            )
+            // Перестановка кнопок зависит от round+level — стабильна между запусками.
+            val seed = s.level * 10_000L + s.currentRound
+            val options = (round.distractors + round.russian)
+                .distinct()
+                .shuffled(kotlin.random.Random(seed))
 
             roundResolved = false
             _state.value = s.copy(
-                currentWord  = correct,
+                currentWord  = word,
                 options      = options,
                 currentRound = s.currentRound + 1,
                 timeLeft     = 1f,
                 lastCorrect  = null
             )
-            // Audio reinforcement on every Speed round — was missing.
-            runCatching { tts.speak(correct.spanish) }
+            runCatching { tts.speak(word.spanish) }
             roundStartTime = System.currentTimeMillis()
             startTimer()
         }
     }
+
 
     private fun startTimer() {
         timerJob?.cancel()
@@ -217,15 +260,18 @@ class SpeedViewModel @Inject constructor(
         else s.currentWord?.let { s.weakWords.add(it) }
 
         // v1.22.0: «Работа над ошибками»
+        // v1.22.2: itemId = lowercase(spanish) — синтетические WordEntity из
+        // JSON могут иметь id=0, что приводило бы к коллизиям.
         viewModelScope.launch {
             val w = s.currentWord
             if (w != null) {
+                val itemId = w.spanish.lowercase()
                 if (isCorrect && s.isMistakesPractice) {
-                    mistakesDao.removeMistake(GameId.SPEED, w.id.toString())
+                    mistakesDao.removeMistake(GameId.SPEED, itemId)
                 } else if (!isCorrect) {
                     mistakesDao.recordMistake(
                         gameId = GameId.SPEED,
-                        itemId = w.id.toString(),
+                        itemId = itemId,
                         hint = w.russian,
                         main = w.spanish,
                     )

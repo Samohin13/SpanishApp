@@ -187,7 +187,18 @@ class MathViewModel @Inject constructor(
             return
         }
 
-        val (display, spoken, answer) = generateExpression(s.level, s.displayMode)
+        // v1.22.2: ДЕТЕРМИНИРОВАННАЯ генерация. Seed = (level, round) →
+        // одно и то же выражение для одного и того же раунда. Раньше
+        // использовался kotlin.random.Random.Default → каждый запуск
+        // одного уровня давал новые цифры (и иногда РАЗНОЕ их количество
+        // т.к. в Math количество фиксировано через params.rounds, но юзер
+        // жаловался на «вариативность» именно из-за этой случайности).
+        val seed = s.level * 10_000L + s.currentRound
+        val (display, spoken, answer) = generateExpression(
+            s.level,
+            s.displayMode,
+            Random(seed),
+        )
         roundResolved = false
 
         _state.value = s.copy(
@@ -211,14 +222,14 @@ class MathViewModel @Inject constructor(
 
     private data class Expr(val display: String, val spoken: String, val answer: Int)
 
-    private fun generateExpression(level: Int, mode: MathDisplayMode): Expr {
+    private fun generateExpression(level: Int, mode: MathDisplayMode, rng: Random): Expr {
         // ── Подбор выражения по диапазону уровней ────────────
         val (display, spoken, answer) = when {
             level <= 10 -> {
                 // +/- от 1 до 10 (словами)
-                val a = Random.nextInt(1, 11)
-                val b = Random.nextInt(1, 11)
-                if (Random.nextBoolean()) {
+                val a = rng.nextInt(1, 11)
+                val b = rng.nextInt(1, 11)
+                if (rng.nextBoolean()) {
                     Triple(
                         "${NumberToSpanish.convert(a)} + ${NumberToSpanish.convert(b)}",
                         "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}",
@@ -235,8 +246,8 @@ class MathViewModel @Inject constructor(
             }
             level <= 25 -> {
                 // +/- от 1 до 20
-                val a = Random.nextInt(1, 21); val b = Random.nextInt(1, 21)
-                if (Random.nextBoolean()) {
+                val a = rng.nextInt(1, 21); val b = rng.nextInt(1, 21)
+                if (rng.nextBoolean()) {
                     Triple(
                         "${NumberToSpanish.convert(a)} + ${NumberToSpanish.convert(b)}",
                         "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}",
@@ -253,8 +264,8 @@ class MathViewModel @Inject constructor(
             }
             level <= 40 -> {
                 // +/- от 1 до 50
-                val a = Random.nextInt(1, 51); val b = Random.nextInt(1, 51)
-                if (Random.nextBoolean()) {
+                val a = rng.nextInt(1, 51); val b = rng.nextInt(1, 51)
+                if (rng.nextBoolean()) {
                     Triple("?", "${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}", a + b)
                 } else {
                     val mx = maxOf(a, b); val mn = minOf(a, b)
@@ -264,8 +275,8 @@ class MathViewModel @Inject constructor(
             level <= 70 -> {
                 // ×/÷ : до 10 (уровни 41-55) или до 12 (уровни 56-70)
                 val maxFactor = if (level <= 55) 11 else 13
-                val a = Random.nextInt(2, maxFactor); val b = Random.nextInt(2, maxFactor)
-                if (Random.nextBoolean()) {
+                val a = rng.nextInt(2, maxFactor); val b = rng.nextInt(2, maxFactor)
+                if (rng.nextBoolean()) {
                     Triple("?", "${NumberToSpanish.convert(a)} por ${NumberToSpanish.convert(b)}", a * b)
                 } else {
                     val prod = a * b
@@ -274,37 +285,37 @@ class MathViewModel @Inject constructor(
             }
             level <= 85 -> {
                 // la mitad / el doble / el triple
-                when (Random.nextInt(3)) {
+                when (rng.nextInt(3)) {
                     0 -> {
-                        val a = Random.nextInt(10, 101)
+                        val a = rng.nextInt(10, 101)
                         Triple("?", "La mitad de ${NumberToSpanish.convert(a * 2)}", a)
                     }
                     1 -> {
-                        val a = Random.nextInt(5, 51)
+                        val a = rng.nextInt(5, 51)
                         Triple("?", "El doble de ${NumberToSpanish.convert(a)}", a * 2)
                     }
                     else -> {
-                        val a = Random.nextInt(3, 31)
+                        val a = rng.nextInt(3, 31)
                         Triple("?", "El triple de ${NumberToSpanish.convert(a)}", a * 3)
                     }
                 }
             }
             else -> {
                 // Комбинированные
-                when (Random.nextInt(3)) {
+                when (rng.nextInt(3)) {
                     0 -> {
                         // «Тройное a минус b»
-                        val a = Random.nextInt(5, 31); val b = Random.nextInt(2, 8)
+                        val a = rng.nextInt(5, 31); val b = rng.nextInt(2, 8)
                         Triple("?", "El triple de ${NumberToSpanish.convert(a)} menos ${NumberToSpanish.convert(b)}", a * 3 - b)
                     }
                     1 -> {
                         // «Двойное a плюс b»
-                        val a = Random.nextInt(10, 51); val b = Random.nextInt(5, 21)
+                        val a = rng.nextInt(10, 51); val b = rng.nextInt(5, 21)
                         Triple("?", "El doble de ${NumberToSpanish.convert(a)} más ${NumberToSpanish.convert(b)}", a * 2 + b)
                     }
                     else -> {
                         // «Половина a минус b», a всегда чётное
-                        val a = Random.nextInt(10, 51) * 2; val b = Random.nextInt(2, 11)
+                        val a = rng.nextInt(10, 51) * 2; val b = rng.nextInt(2, 11)
                         Triple("?", "La mitad de ${NumberToSpanish.convert(a)} menos ${NumberToSpanish.convert(b)}", a / 2 - b)
                     }
                 }
