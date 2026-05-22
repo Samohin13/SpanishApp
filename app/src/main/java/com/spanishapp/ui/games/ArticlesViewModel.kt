@@ -40,11 +40,7 @@ data class ArticlesPremiumState(
     val academicHint: String? = null,
     val finalStars: Int = 0,
     val finalPercent: Int = 0,
-    val showLevelMap: Boolean = true,
-    /** Показывать ли правило-overlay перед первым раундом нового уровня. */
-    val showRulePopup: Boolean = false,
-    /** Текст правила для текущего уровня (из ruleHint первого слова). */
-    val levelRuleHint: String = ""
+    val showLevelMap: Boolean = true
 ) {
     val totalRounds: Int get() = params.rounds
     val level: Int get() = params.level
@@ -127,26 +123,15 @@ class ArticlesViewModel @Inject constructor(
             val idx  = s.currentRound.coerceIn(0, shuffled.size - 1)
             val word = shuffled[idx]
 
-            // Перед самым первым раундом уровня — показываем правило-overlay.
-            // ruleHint берём из первого слова (в JSON он одинаков для всех слов уровня).
-            val showRule = s.currentRound == 0 && word.ruleHint.isNotBlank()
-
             _state.value = s.copy(
                 currentWord = word,
                 currentRound = s.currentRound + 1,
                 lastCorrect = null,
                 chosenArticle = null,
-                academicHint = null,
-                showRulePopup = showRule,
-                levelRuleHint = if (showRule) word.ruleHint else s.levelRuleHint
+                academicHint = null
             )
             questionStartTime = System.currentTimeMillis()
         }
-    }
-
-    /** Закрыть overlay с правилом, начать играть раунды. */
-    fun dismissRulePopup() {
-        _state.value = _state.value.copy(showRulePopup = false)
     }
 
     fun submitAnswer(article: String) {

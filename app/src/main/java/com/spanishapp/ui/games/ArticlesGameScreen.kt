@@ -4,6 +4,8 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -105,6 +108,7 @@ private fun ArticlesGameContent(
     val isCorrect  = state.lastCorrect == true
     val word       = state.currentWord
     val showPlural = word?.block?.let { it != "A1-base" } ?: false
+    var showRulesSheet by remember { mutableStateOf(false) }
 
     // ── Тряска карточки при ошибке ────────────────────────────
     val shakeOffset = rememberShakeOffset(
@@ -155,6 +159,15 @@ private fun ArticlesGameContent(
                     "${state.currentRound}/${state.totalRounds}",
                     fontSize = 15.sp, color = SecondaryText, fontWeight = FontWeight.SemiBold
                 )
+                Spacer(Modifier.width(4.dp))
+                // 💡 — постоянно доступная подсказка с правилом артиклей
+                IconButton(onClick = { showRulesSheet = true }) {
+                    Icon(
+                        Icons.Default.Lightbulb,
+                        contentDescription = "Правила артиклей",
+                        tint = ACCENT,
+                    )
+                }
             }
 
             // ── XP + верных — крупно, над картинкой ──────────
@@ -356,84 +369,152 @@ private fun ArticlesGameContent(
             }
         }
 
-        // ── Overlay-правило перед началом уровня ──────────────
-        AnimatedVisibility(
-            visible = state.showRulePopup && state.levelRuleHint.isNotBlank(),
-            enter = fadeIn(tween(180)) + scaleIn(initialScale = 0.9f),
-            exit  = fadeOut(tween(150)) + scaleOut(targetScale = 0.9f)
+        // ── Bottom-sheet с правилом артиклей (кнопка 💡 в топбаре) ──
+        if (showRulesSheet) {
+            ArticlesRulesSheet(onDismiss = { showRulesSheet = false })
+        }
+    }
+}
+
+/**
+ * Грамотное правило испанских артиклей — одно общее на всю игру.
+ * Открывается тапом на 💡 в топбаре, доступно в любой момент уровня.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ArticlesRulesSheet(onDismiss: () -> Unit) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .padding(bottom = 32.dp),
         ) {
-            RulePopup(
-                level    = state.level,
-                ruleHint = state.levelRuleHint,
-                onDismiss = { viewModel.dismissRulePopup() }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("💡", fontSize = 28.sp)
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    "Правила артиклей",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = PrimaryText,
+                )
+            }
+            Spacer(Modifier.height(20.dp))
+
+            RuleSectionHeader("Базовое правило", ACCENT)
+            RuleRow(article = "EL", color = COLOR_EL, descr = "Мужской род: окончание -o, или согласный",
+                examples = "el libro, el coche, el sol, el hotel")
+            RuleRow(article = "LA", color = COLOR_LA, descr = "Женский род: окончание -a",
+                examples = "la casa, la mesa, la flor, la mujer")
+
+            Spacer(Modifier.height(20.dp))
+            RuleSectionHeader("Окончания → артикль", ACCENT)
+            RuleRow(article = "EL", color = COLOR_EL,
+                descr = "-aje (paisaje), -ón (corazón)",
+                examples = "el paisaje, el corazón, el camión")
+            RuleRow(article = "LA", color = COLOR_LA,
+                descr = "-ción, -sión, -dad, -tad, -tud, -ez",
+                examples = "la canción, la ciudad, la libertad, la vejez")
+
+            Spacer(Modifier.height(20.dp))
+            RuleSectionHeader("Исключения (нужно запомнить)", ACCENT)
+            RuleRow(article = "EL", color = COLOR_EL,
+                descr = "Греческие на -ma: всегда EL",
+                examples = "el problema, el sistema, el tema, el clima, el idioma, el mapa")
+            RuleRow(article = "EL", color = COLOR_EL,
+                descr = "Один знаменитый «не на -o»",
+                examples = "el día")
+            RuleRow(article = "LA", color = COLOR_LA,
+                descr = "Сокращения от женских слов",
+                examples = "la foto (← fotografía), la moto (← motocicleta), la radio")
+            RuleRow(article = "LA", color = COLOR_LA,
+                descr = "Один знаменитый «не на -a»",
+                examples = "la mano")
+
+            Spacer(Modifier.height(20.dp))
+            RuleSectionHeader("Особый случай: ударное а-/ha-", ACCENT)
+            Text(
+                "Слово начинается на ударное «a-» или «ha-» → в единственном числе ставим EL для созвучия, НО слово остаётся женского рода (прилагательное — женское).",
+                fontSize = 14.sp,
+                lineHeight = 20.sp,
+                color = PrimaryText,
+            )
+            Spacer(Modifier.height(8.dp))
+            ExampleBlock("el agua (но: el agua fría)\nel águila, el alma, el hambre, el área\nВо мн.ч.: las aguas, las águilas")
+
+            Spacer(Modifier.height(20.dp))
+            RuleSectionHeader("Множественное число", ACCENT)
+            RuleRow(article = "LOS", color = COLOR_LOS, descr = "Мужской мн.", examples = "los libros, los coches")
+            RuleRow(article = "LAS", color = COLOR_LAS, descr = "Женский мн.", examples = "las casas, las mujeres")
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Окончание мн.числа:\n• Гласный → +s (libro → libros)\n• Согласный → +es (mujer → mujeres, ciudad → ciudades)",
+                fontSize = 14.sp,
+                lineHeight = 22.sp,
+                color = PrimaryText,
             )
         }
     }
 }
 
 @Composable
-private fun RulePopup(level: Int, ruleHint: String, onDismiss: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.55f))
-            .clickable(
-                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
-                indication = null,
-                onClick = onDismiss
-            ),
-        contentAlignment = Alignment.Center
+private fun RuleSectionHeader(title: String, accent: Color) {
+    Text(
+        title,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.ExtraBold,
+        color = accent,
+        letterSpacing = 1.sp,
+        modifier = Modifier.padding(bottom = 10.dp),
+    )
+}
+
+@Composable
+private fun RuleRow(article: String, color: Color, descr: String, examples: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        verticalAlignment = Alignment.Top,
     ) {
         Surface(
-            modifier = Modifier.padding(horizontal = 28.dp).fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.surface,
-            shadowElevation = 16.dp
+            color = color,
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier.padding(top = 2.dp),
         ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Surface(
-                    color = ACCENT.copy(alpha = 0.15f),
-                    shape = CircleShape,
-                    modifier = Modifier.size(56.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                        Text("💡", fontSize = 28.sp)
-                    }
-                }
-                Spacer(Modifier.height(14.dp))
-                Text(
-                    "Уровень $level — правило",
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    ruleHint,
-                    fontSize = 16.sp,
-                    color = PrimaryText,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 22.sp
-                )
-                Spacer(Modifier.height(20.dp))
-                Button(
-                    onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(containerColor = ACCENT),
-                    shape = RoundedCornerShape(14.dp),
-                    modifier = Modifier.fillMaxWidth().height(52.dp)
-                ) {
-                    Text(
-                        "Понятно, играю!",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            }
+            Text(
+                article,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
+                fontSize = 12.sp, color = Color.White, fontWeight = FontWeight.ExtraBold,
+            )
         }
+        Spacer(Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(descr, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = PrimaryText)
+            Spacer(Modifier.height(2.dp))
+            Text(examples, fontSize = 13.sp, color = SecondaryText, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
+        }
+    }
+}
+
+@Composable
+private fun ExampleBlock(text: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Text(
+            text,
+            modifier = Modifier.padding(12.dp),
+            fontSize = 13.sp,
+            lineHeight = 20.sp,
+            color = PrimaryText,
+            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+        )
     }
 }
 

@@ -88,19 +88,13 @@ class LeaderboardRepository @Inject constructor(
         val progress = userProgressDao.getProgressOnce() ?: return false
         if (!progress.leaderboardOptIn) return false
 
-        // Не пишем в лидерборд пользователей, которые ничего не делали
-        // (totalXp == 0). Иначе новый юзер сразу появляется на доске
-        // со стартовым skillRating=1000, хотя ни одного ответа не дал.
-        // Запись создастся при первом ответе через RatingUpdater.
-        if (progress.totalXp <= 0) {
-            // На случай если запись уже есть от прошлой логики — удалим её,
-            // чтобы существующие тестовые пустые записи тоже исчезли.
-            try {
-                val cur = auth.currentUser
-                if (cur != null) collection.document(cur.uid).delete().await()
-            } catch (_: Exception) { /* ignore */ }
-            return false
-        }
+        // v1.21.1: убрана totalXp==0 фильтрация.
+        // Старая логика удаляла запись юзера если он opt-in но ещё не играл,
+        // что ломало закрытое тестирование (тестеры не появлялись в таблице).
+        // С v1.1.0 skillRating стартует с 0, а не с 1000 → опасность «фейкового
+        // топ-игрока с дефолтным рейтингом» снята автоматически. Любой
+        // opt-in юзер появляется в таблице снизу (rating=0) и поднимается
+        // по мере игры.
 
         val uid = ensureAuth()
         val data = mapOf(
