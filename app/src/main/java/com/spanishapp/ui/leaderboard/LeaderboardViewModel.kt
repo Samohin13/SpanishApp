@@ -6,10 +6,13 @@ import com.spanishapp.data.db.dao.UserProgressDao
 import com.spanishapp.data.repository.LeaderboardData
 import com.spanishapp.data.repository.LeaderboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 data class LeaderboardUiState(
@@ -27,7 +30,12 @@ class LeaderboardViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(LeaderboardUiState(deviceCountry = repo.deviceCountryCode()))
+    // v1.22.3: НЕ вызываем deviceCountryCode() в инициализаторе StateFlow —
+    // это срабатывает на main thread в момент создания ViewModel. На некоторых
+    // девайсах (особенно с двойной SIM / без сети / с roaming) TelephonyManager
+    // блокирует поток на ~3-7 секунд → ANR. Теперь стартовое значение "XX",
+    // а реальная страна подгружается асинхронно в loadInitial().
+    private val _state = MutableStateFlow(LeaderboardUiState(deviceCountry = "XX"))
     val state: StateFlow<LeaderboardUiState> = _state.asStateFlow()
 
     init {
@@ -37,10 +45,16 @@ class LeaderboardViewModel @Inject constructor(
     private fun loadInitial() {
         viewModelScope.launch {
             val progress = userProgressDao.getProgressOnce()
+            // deviceCountryCode дёргает TelephonyManager — оборачиваем в IO,
+            // чтобы main thread не ждал. На большинстве устройств это быстро,
+            // но защита нужна на edge-кейсах (плохая SIM, roaming, отсутствие сети).
+            val country = withContext(Dispatchers.IO) {
+                runCatching { repo.deviceCountryCode() }.getOrDefault("XX")
+            }
             _state.value = _state.value.copy(
                 optedIn = progress?.leaderboardOptIn == true,
                 displayName = progress?.displayName.orEmpty().ifBlank { "Estudiante" },
-                deviceCountry = repo.deviceCountryCode()
+                deviceCountry = country
             )
             if (progress?.leaderboardOptIn == true) refresh()
         }
@@ -70,12 +84,23 @@ class LeaderboardViewModel @Inject constructor(
     fun refresh() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, error = null)
-            try {
-                if (_state.value.optedIn) repo.syncSelf()
-                val data = repo.fetch()
+            // v1.22.3: общий таймаут 15 секунд. Раньше при плохом интернете
+            // Firestore await мог висеть «вечно» — индикатор крутился, юзер
+            // тыкал refresh ещё раз, накапливались coroutine'ы → главный поток
+            // в итоге блокировался Firebase internals → ANR.
+            val data = withTimeoutOrNull(15_000L) {
+                runCatching {
+                    if (_state.value.optedIn) repo.syncSelf()
+                    repo.fetch()
+                }.getOrNull()
+            }
+            if (data != null) {
                 _state.value = _state.value.copy(isLoading = false, data = data)
-            } catch (e: Exception) {
-                _state.value = _state.value.copy(isLoading = false, error = e.message ?: "Ошибка загрузки")
+            } else {
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    error = "Не удалось загрузить — проверь интернет"
+                )
             }
         }
     }
