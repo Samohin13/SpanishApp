@@ -1,0 +1,333 @@
+{
+  "id": "cp2",
+  "cefr": "A1",
+  "block": 2,
+  "title_ru": "Аренда квартиры",
+  "title_es": "Alquilar un piso",
+  "description_ru": "После паспортного контроля ты ищешь жильё в Мадриде. Sra. López — хозяйка квартиры — показывает тебе уютную квартиру. Расскажи о семье, оцени цвета и мебель, узнай цену. Понравишься хозяйке — снимешь квартиру.",
+  "stakes_ru": "Если справишься — Sra. López сдаст тебе квартиру. Завалишь — она выберет другого арендатора.",
+  "scene": {
+    "name": "Piso de Sra. López, Malasaña",
+    "type": "apartment",
+    "city": "Madrid",
+    "background_image": "scene_cp2_apartment.jpg",
+    "ambient_sound": "apartment_quiet.mp3"
+  },
+  "npc": {
+    "id": "sra_lopez",
+    "name": "Sra. López",
+    "role_ru": "Хозяйка квартиры",
+    "role_es": "Casera",
+    "voice_id": "es-ES-Wavenet-C",
+    "portrait_image": "npc_sra_lopez.jpg",
+    "personality": "тёплая, разговорчивая женщина средних лет. Хочет понять что Andrea за человек — много расспрашивает о семье, любит когда отвечают подробно. Если юзер часто ошибается — становится сомневающейся, может предпочесть другого жильца."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 350,
+    "silver_xp_bonus": 75,
+    "gold_xp_bonus": 200,
+    "badge_id": "first_home",
+    "badge_name_ru": "Первый дом в Мадриде",
+    "unlocks_block": 3
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Приветствие хозяйки",
+      "tested_lesson": "u1_l4",
+      "npc_line_es": "¡Buenos días! Pase, por favor.",
+      "npc_line_ru": "Доброе утро! Проходите, пожалуйста.",
+      "prompt_ru": "Sra. López открыла дверь. Что отвечаешь?",
+      "correct_answer": "Buenos días, gracias.",
+      "distractors": ["Hasta luego.", "De nada.", "Buenas noches."]
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "ESTAR · yo estoy",
+      "tested_grammar": "ESTAR 1p sing",
+      "tested_lesson": "u3_l0 (блок 2)",
+      "npc_line_es": "¿Está usted aquí para ver el piso?",
+      "npc_line_ru": "Вы здесь чтобы посмотреть квартиру?",
+      "prompt_ru": "Поставь форму ESTAR:",
+      "sentence_template": "Sí, yo ___ aquí para ver el piso.",
+      "verb_infinitive": "estar",
+      "correct_answer": "estoy",
+      "distractors": ["estás", "está", "soy"],
+      "explanation_on_fail_ru": "ESTAR 1 л. ед. ч. → «estoy» (НЕ путать с «soy» от SER). Сложно: SER для постоянных характеристик, ESTAR для текущего состояния/места."
+    },
+    {
+      "round": 3,
+      "format": "CHOICE",
+      "topic_ru": "ESTAR · ¿cómo está?",
+      "tested_grammar": "ESTAR vs SER",
+      "tested_lesson": "u3_l0",
+      "npc_line_es": "¿Cómo está usted?",
+      "npc_line_ru": "Как у вас дела?",
+      "prompt_ru": "Что отвечаешь?",
+      "correct_answer": "Estoy bien, gracias.",
+      "distractors": ["Soy bien, gracias.", "Tengo bien.", "Hasta luego."],
+      "explanation_on_fail_ru": "Состояние (как дела) — всегда через ESTAR: «estoy bien». «Soy bien» — грамматическая ошибка."
+    },
+    {
+      "round": 4,
+      "format": "BUILD",
+      "topic_ru": "Представление · повторение SER",
+      "tested_lesson": "u1_l10",
+      "npc_line_es": "Y usted, ¿quién es?",
+      "npc_line_ru": "А вы кто?",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Soy Andrea soy de Rusia",
+      "word_bank": ["Soy", "Andrea", "de", "Rusia", "estoy", "tengo", "y"],
+      "explanation_on_fail_ru": "«Soy Andrea, soy de Rusia» — представление через SER (национальность/имя — постоянные характеристики)."
+    },
+    {
+      "round": 5,
+      "format": "CHOICE",
+      "topic_ru": "TENER + семья",
+      "tested_grammar": "TENER 1p sing + familia",
+      "tested_lesson": "u2_l4 + u2_l8",
+      "npc_line_es": "¿Tiene usted familia aquí en España?",
+      "npc_line_ru": "У вас есть семья здесь в Испании?",
+      "prompt_ru": "Что отвечаешь?",
+      "correct_answer": "No, tengo familia en Rusia.",
+      "distractors": [
+        "Sí, estoy familia.",
+        "Soy familia.",
+        "Hasta luego."
+      ],
+      "explanation_on_fail_ru": "«Иметь» = TENER. 1 л. ед. ч. → «tengo». Не путать с ESTAR / SER."
+    },
+    {
+      "round": 6,
+      "format": "CONJUGATE",
+      "topic_ru": "TENER yo tengo",
+      "tested_grammar": "TENER 1p sing",
+      "tested_lesson": "u2_l4",
+      "npc_line_es": "¿Hijos?",
+      "npc_line_ru": "Дети?",
+      "prompt_ru": "Поставь форму TENER:",
+      "sentence_template": "No, pero yo ___ una hermana.",
+      "verb_infinitive": "tener",
+      "correct_answer": "tengo",
+      "distractors": ["tienes", "tiene", "soy"]
+    },
+    {
+      "round": 7,
+      "format": "BUILD",
+      "topic_ru": "Семья · brother + sister",
+      "tested_lesson": "u2_l8 + u2_l4",
+      "npc_line_es": "¿Una hermana? ¿Y nadie más?",
+      "npc_line_ru": "Одна сестра? И больше никого?",
+      "prompt_ru": "Соберите ответ про семью:",
+      "correct_answer": "Tengo un hermano y una hermana",
+      "word_bank": ["Tengo", "un", "hermano", "y", "una", "hermana", "padre", "soy", "es"],
+      "explanation_on_fail_ru": "«Un hermano» (м.р.) + «y» + «una hermana» (ж.р.). Артикли согласуются с родом."
+    },
+    {
+      "round": 8,
+      "format": "LISTEN",
+      "topic_ru": "Числа 21-100 · возраст брата",
+      "tested_grammar": "números compuestos",
+      "tested_lesson": "u2_l7",
+      "npc_line_es": "¿Y cuántos años tiene su hermano?",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Sra. López спрашивает возраст брата (юзер уже ответил). Сколько лет твоему брату?",
+      "correct_answer": "27",
+      "distractors": ["17", "37", "47"],
+      "translation_after_answer_ru": "«Veintisiete años» = 27 лет",
+      "explanation_on_fail_ru": "«Veintisiete» = 27. Не путать с «diecisiete» = 17, «treinta y siete» = 37."
+    },
+    {
+      "round": 9,
+      "format": "CONJUGATE",
+      "topic_ru": "Притяжательное «mi»",
+      "tested_grammar": "posesivos 1p sing",
+      "tested_lesson": "u2_l10",
+      "npc_line_es": "Y su familia... ¿de dónde es?",
+      "npc_line_ru": "А ваша семья... откуда?",
+      "prompt_ru": "Какое притяжательное?",
+      "sentence_template": "___ familia es de Moscú.",
+      "verb_infinitive": "posesivo",
+      "correct_answer": "Mi",
+      "distractors": ["Tu", "Su", "Nuestra"],
+      "explanation_on_fail_ru": "«Mi familia» = моя семья. «Tu» = твоя, «su» = его/её/ваша, «nuestra» = наша."
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Цвет комнаты",
+      "tested_grammar": "colores · concordancia",
+      "tested_lesson": "u2_l11 + u2_l12",
+      "npc_line_es": "Esta es la sala. ¿Le gustan los colores?",
+      "npc_line_ru": "Это гостиная. Нравятся цвета?",
+      "prompt_ru": "Sra. López показывает синюю комнату. Что отвечаешь?",
+      "correct_answer": "Sí, la sala es azul. Muy bonita.",
+      "distractors": [
+        "La sala es rojo.",
+        "La sala están azul.",
+        "Sala es la azul."
+      ],
+      "explanation_on_fail_ru": "«La sala» = ж.р. + «es azul» (azul — нейтральный род). «Rojo» нужно согласовать в ж.р. → «roja». «Están» — это ESTAR мн. ч. (не подходит)."
+    },
+    {
+      "round": 11,
+      "format": "CONJUGATE",
+      "topic_ru": "Согласование цвета · ж.р. мн.",
+      "tested_grammar": "concordancia adj plural feminino",
+      "tested_lesson": "u2_l12 + u2_l13",
+      "npc_line_es": "Y las sillas, ¿le gustan?",
+      "npc_line_ru": "А стулья, нравятся?",
+      "prompt_ru": "Какая форма цвета?",
+      "sentence_template": "Sí, las sillas son ___.",
+      "verb_infinitive": "rojo",
+      "correct_answer": "rojas",
+      "distractors": ["rojo", "roja", "rojos"],
+      "explanation_on_fail_ru": "«Sillas» — ж.р. мн. → прилагательное в ж.р. мн.: «rojas». Правило: -o (м.р.) / -a (ж.р.) / -os (м.р. мн.) / -as (ж.р. мн.)."
+    },
+    {
+      "round": 12,
+      "format": "BUILD",
+      "topic_ru": "Описание мебели · SER + цвет",
+      "tested_lesson": "u3_l3 + u2_l11",
+      "npc_line_es": "Es bonita la sala, ¿verdad?",
+      "npc_line_ru": "Красивая гостиная, правда?",
+      "prompt_ru": "Опиши мебель:",
+      "correct_answer": "El sofá es rojo y la mesa es azul",
+      "word_bank": ["El", "sofá", "es", "rojo", "y", "la", "mesa", "azul", "están", "tiene"],
+      "explanation_on_fail_ru": "«El sofá» — м.р., «rojo». «La mesa» — ж.р., но «azul» не меняется (заканчивается на согласную)."
+    },
+    {
+      "round": 13,
+      "format": "CHOICE",
+      "topic_ru": "ESTAR + предлог места",
+      "tested_grammar": "ESTAR 3p sing + preposición",
+      "tested_lesson": "u3_l0 + u3_l1",
+      "npc_line_es": "¿Y dónde está la cocina?",
+      "npc_line_ru": "А где кухня?",
+      "prompt_ru": "Где находится кухня?",
+      "correct_answer": "Está al lado de la sala.",
+      "distractors": [
+        "Es al lado de la sala.",
+        "Tiene al lado.",
+        "Soy en la cocina."
+      ],
+      "explanation_on_fail_ru": "Местоположение — всегда ESTAR. «Está al lado de» = находится рядом с. SER для местоположения НЕ используется."
+    },
+    {
+      "round": 14,
+      "format": "CONJUGATE",
+      "topic_ru": "ESTAR · 3 л. ед. ч.",
+      "tested_grammar": "ESTAR 3p sing",
+      "tested_lesson": "u3_l0",
+      "npc_line_es": "Y el baño...",
+      "npc_line_ru": "А ванная...",
+      "prompt_ru": "Поставь форму ESTAR:",
+      "sentence_template": "El baño ___ aquí, al lado del dormitorio.",
+      "verb_infinitive": "estar",
+      "correct_answer": "está",
+      "distractors": ["es", "están", "tiene"]
+    },
+    {
+      "round": 15,
+      "format": "LISTEN",
+      "topic_ru": "Цена в евро · числа 21-100",
+      "tested_grammar": "números 21-100",
+      "tested_lesson": "u2_l7",
+      "npc_line_es": "El alquiler son noventa euros por día.",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Sra. López назвала цену аренды. Сколько?",
+      "correct_answer": "90 €",
+      "distractors": ["19 €", "70 €", "100 €"],
+      "translation_after_answer_ru": "«Noventa» = 90",
+      "explanation_on_fail_ru": "«Noventa» = 90. «Diecinueve» = 19, «setenta» = 70, «cien» = 100."
+    },
+    {
+      "round": 16,
+      "format": "CHOICE",
+      "topic_ru": "Артикль мн. ч. · los",
+      "tested_grammar": "artículo definido plural",
+      "tested_lesson": "u1_l9 + u2_l13",
+      "npc_line_es": "Mire, hay ___ dormitorios grandes en el piso.",
+      "npc_line_ru": "Смотрите, в квартире есть ___ большие спальни.",
+      "prompt_ru": "Какой артикль?",
+      "correct_answer": "los",
+      "distractors": ["las", "el", "la"],
+      "explanation_on_fail_ru": "«Dormitorios» — м.р. мн. ч. → «los». Правило артиклей: el (м.ед) / la (ж.ед) / los (м.мн) / las (ж.мн)."
+    },
+    {
+      "round": 17,
+      "format": "BUILD",
+      "topic_ru": "Финальное решение · SER + adj",
+      "tested_lesson": "u1_l10 + u2_l10",
+      "npc_line_es": "¿Y bien? ¿Le gusta el piso?",
+      "npc_line_ru": "Ну как? Нравится квартира?",
+      "prompt_ru": "Andrea решила снять. Соберите:",
+      "correct_answer": "Mi nueva casa está aquí",
+      "word_bank": ["Mi", "nueva", "casa", "está", "aquí", "es", "tengo", "son"],
+      "explanation_on_fail_ru": "«Mi casa está aquí» = мой дом здесь (местоположение → ESTAR). «Nueva» = новая (согласована с ж.р. «casa»)."
+    },
+    {
+      "round": 18,
+      "format": "BUILD",
+      "topic_ru": "Прощание + благодарность",
+      "tested_lesson": "u1_l5 + u1_l6",
+      "npc_line_es": "¡Perfecto! Bienvenida a su nuevo hogar.",
+      "npc_line_ru": "Прекрасно! Добро пожаловать в новый дом.",
+      "prompt_ru": "Прощаешься:",
+      "correct_answer": "Muchas gracias hasta luego",
+      "word_bank": ["Muchas", "gracias", "hasta", "luego", "buenos", "mañana", "días"]
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Excelente. El piso es suyo, Andrea. Bienvenida.",
+      "carlos_line_ru": "Отлично. Квартира ваша, Andrea. Добро пожаловать.",
+      "scene_description_ru": "Sra. López тепло обнимает тебя, протягивает ключи двумя руками. «Vamos a ser muy buenas vecinas.»"
+    },
+    "silver": {
+      "carlos_line_es": "Muy bien. Hablamos del contrato mañana.",
+      "carlos_line_ru": "Очень хорошо. Поговорим о контракте завтра.",
+      "scene_description_ru": "Sra. López пожимает руку, протягивает ключи. «Hasta mañana.»"
+    },
+    "bronze": {
+      "carlos_line_es": "Está bien. El piso es suyo.",
+      "carlos_line_ru": "Ладно. Квартира ваша.",
+      "scene_description_ru": "Sra. López неуверенно даёт ключи. «Espero que esté bien aquí.»"
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Hmm... lo siento. Tengo otro inquilino interesado.",
+      "carlos_line_ru": "Хм... извините. У меня есть другой заинтересованный жилец.",
+      "scene_description_ru": "Sra. López качает головой, забирает ключи. «Suerte con la búsqueda.»",
+      "stakes_ru": "Квартира досталась другому. Подучи блок 2 и попробуй снова."
+    },
+    "low": {
+      "carlos_line_es": "Lo siento, no puedo. Adiós.",
+      "carlos_line_ru": "Мне жаль, не могу. До свидания.",
+      "scene_description_ru": "Sra. López кратко прощается и закрывает дверь. Ты остаёшься на улице с чемоданом.",
+      "stakes_ru": "Снимать квартиру пока не у кого. Повтори уроки блока 2."
+    },
+    "very_low": {
+      "carlos_line_es": "Lo siento, hay problemas de comunicación.",
+      "carlos_line_ru": "Мне жаль, есть проблемы с пониманием.",
+      "scene_description_ru": "Sra. López вежливо но твёрдо отказывает. «Adiós.»",
+      "stakes_ru": "Серьёзно повтори блок 2 — TENER, ESTAR, семья, цвета, числа, притяжательные."
+    }
+  }
+}

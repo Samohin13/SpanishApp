@@ -1,0 +1,379 @@
+{
+  "id": "cp3",
+  "cefr": "A1",
+  "block": 3,
+  "title_ru": "Обед в ресторане",
+  "title_es": "Almuerzo en el restaurante",
+  "description_ru": "Ты обустраиваешься в квартире и идёшь обедать в La Tasca — небольшой ресторан в Малазанье. Diego — официант, шутник, но требовательный к заказу. Закажи правильно — он порекомендует это место друзьям.",
+  "stakes_ru": "Закажешь правильно — Diego станет твоим любимым местом, будет узнавать. Завалишь — закажешь не то, неуютно поешь, без рекомендаций.",
+  "scene": {
+    "name": "La Tasca, Malasaña",
+    "type": "restaurant",
+    "city": "Madrid",
+    "background_image": "scene_cp3_restaurant.jpg",
+    "ambient_sound": "restaurant_busy.mp3"
+  },
+  "npc": {
+    "id": "diego",
+    "name": "Diego",
+    "role_ru": "Официант",
+    "role_es": "Camarero",
+    "voice_id": "es-ES-Neural2-B",
+    "portrait_image": "npc_diego.jpg",
+    "personality": "молодой испанец, дружелюбный, любит пошутить. На правильные ответы реагирует одобрительно («¡Muy bien!»). На ошибках вежливо переспрашивает («¿Cómo dice?»). После 2-3 ошибок становится более терпеливым но менее улыбчивым."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 450,
+    "silver_xp_bonus": 100,
+    "gold_xp_bonus": 250,
+    "badge_id": "favorite_restaurant",
+    "badge_name_ru": "Любимый ресторан в Мадриде",
+    "unlocks_block": 4
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Приветствие официанта",
+      "tested_lesson": "u1_l4",
+      "npc_line_es": "¡Hola! ¿Mesa para uno?",
+      "npc_line_ru": "Привет! Столик на одного?",
+      "prompt_ru": "Diego встречает тебя у входа. Что отвечаешь?",
+      "correct_answer": "Sí, por favor.",
+      "distractors": ["No, hasta luego.", "De nada.", "Buenas noches."]
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "QUERER · yo quiero",
+      "tested_grammar": "QUERER 1p sing (e→ie)",
+      "tested_lesson": "u3_l6",
+      "npc_line_es": "¿Qué quiere para comer?",
+      "npc_line_ru": "Что хотите поесть?",
+      "prompt_ru": "Поставь форму QUERER:",
+      "sentence_template": "Yo ___ ver el menú, por favor.",
+      "verb_infinitive": "querer",
+      "correct_answer": "quiero",
+      "distractors": ["quieres", "quiere", "queremos"],
+      "explanation_on_fail_ru": "QUERER — глагол с изменением корня (e→ie). 1 л. ед. → «quiero»."
+    },
+    {
+      "round": 3,
+      "format": "LISTEN",
+      "topic_ru": "Hay · цена меню",
+      "tested_grammar": "hay + números",
+      "tested_lesson": "u3_l5_5 + u2_l7",
+      "npc_line_es": "Hoy hay menú del día. Cuesta doce euros.",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Diego называет цену меню дня. Сколько?",
+      "correct_answer": "12 €",
+      "distractors": ["2 €", "20 €", "22 €"],
+      "translation_after_answer_ru": "«Doce» = 12. «Hay» = есть в наличии."
+    },
+    {
+      "round": 4,
+      "format": "BUILD",
+      "topic_ru": "Hay + еда",
+      "tested_grammar": "hay + comida",
+      "tested_lesson": "u3_l5_5 + u3_l4",
+      "npc_line_es": "¿Qué quiere comer?",
+      "npc_line_ru": "Что желаете на обед?",
+      "prompt_ru": "Спроси что есть на сегодня:",
+      "correct_answer": "¿Hay pollo y pescado?",
+      "word_bank": ["¿Hay", "pollo", "y", "pescado?", "tengo", "estoy", "casa"],
+      "explanation_on_fail_ru": "«Hay» = есть (безличное). Используется для наличия чего-то. «Pollo» = курица, «pescado» = рыба."
+    },
+    {
+      "round": 5,
+      "format": "CONJUGATE",
+      "topic_ru": "Регулярный -ER · yo como",
+      "tested_grammar": "COMER 1p sing",
+      "tested_lesson": "u2_l1",
+      "npc_line_es": "Recomiendo el pescado del día. ¿Le interesa?",
+      "npc_line_ru": "Рекомендую рыбу дня. Интересует?",
+      "prompt_ru": "Поставь форму COMER:",
+      "sentence_template": "Sí, yo ___ pescado, por favor.",
+      "verb_infinitive": "comer",
+      "correct_answer": "como",
+      "distractors": ["comer", "comes", "comemos"]
+    },
+    {
+      "round": 6,
+      "format": "CHOICE",
+      "topic_ru": "QUERER + напиток",
+      "tested_grammar": "QUERER + comida/bebida",
+      "tested_lesson": "u3_l6 + u3_l4",
+      "npc_line_es": "¿Y para beber? ¿Agua o vino?",
+      "npc_line_ru": "А пить? Воду или вино?",
+      "prompt_ru": "Andrea не пьёт алкоголь. Что отвечаешь?",
+      "correct_answer": "Quiero agua, por favor.",
+      "distractors": [
+        "Tengo agua, por favor.",
+        "Estoy agua.",
+        "Soy agua, por favor."
+      ],
+      "explanation_on_fail_ru": "«Хотеть» что-либо → QUERER. «Quiero agua» = хочу воду. TENER/ESTAR/SER здесь не подходят."
+    },
+    {
+      "round": 7,
+      "format": "CONJUGATE",
+      "topic_ru": "PODER · yo puedo",
+      "tested_grammar": "PODER 1p sing (o→ue)",
+      "tested_lesson": "u3_l7",
+      "npc_line_es": "¿Algo más?",
+      "npc_line_ru": "Что-то ещё?",
+      "prompt_ru": "Поставь форму PODER:",
+      "sentence_template": "¿Yo ___ ver el menú otra vez?",
+      "verb_infinitive": "poder",
+      "correct_answer": "puedo",
+      "distractors": ["puedes", "puede", "podemos"],
+      "explanation_on_fail_ru": "PODER (мочь) — глагол с изменением корня (o→ue). «Yo puedo» = я могу."
+    },
+    {
+      "round": 8,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · отрицание + еда",
+      "tested_grammar": "negación + bebida",
+      "tested_lesson": "u3_l13 + u3_l4",
+      "npc_line_es": "¿Le sirvo vino con la comida?",
+      "npc_line_ru": "Подать вино к еде?",
+      "prompt_ru": "Скажи по-испански:",
+      "prompt_text_ru": "Нет, я не пью алкоголь.",
+      "correct_answer": "No, no bebo alcohol.",
+      "acceptable_alternatives": [
+        "No bebo alcohol.",
+        "No, no bebo alcohol",
+        "No, yo no bebo alcohol."
+      ],
+      "hint_ru": "no · beber · alcohol",
+      "explanation_on_fail_ru": "Отрицание ставится перед глаголом: «No bebo». BEBER 1 л. ед. → «bebo»."
+    },
+    {
+      "round": 9,
+      "format": "CONJUGATE",
+      "topic_ru": "Регулярный -AR · tú trabajas",
+      "tested_grammar": "TRABAJAR 2p sing",
+      "tested_lesson": "u2_l0",
+      "npc_line_es": "Y usted, ¿trabaja aquí cerca?",
+      "npc_line_ru": "А вы работаете здесь рядом?",
+      "prompt_ru": "Diego на «tú»: «¿Tú ___ aquí cerca?». Какая форма?",
+      "sentence_template": "¿Tú ___ aquí cerca?",
+      "verb_infinitive": "trabajar",
+      "correct_answer": "trabajas",
+      "distractors": ["trabajo", "trabaja", "trabajan"]
+    },
+    {
+      "round": 10,
+      "format": "LISTEN",
+      "topic_ru": "Время · Son las...",
+      "tested_grammar": "decir la hora",
+      "tested_lesson": "u3_l8",
+      "npc_line_es": "Son las dos en punto. ¿Tiene tiempo?",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Diego называет время. Сколько сейчас часов?",
+      "correct_answer": "14:00 (2 часа)",
+      "distractors": ["12:00", "8:00", "10:00"],
+      "translation_after_answer_ru": "«Son las dos» = 2 часа",
+      "explanation_on_fail_ru": "«Son las dos» — 2 часа (с 2 и больше). Для одного часа: «Es la una»."
+    },
+    {
+      "round": 11,
+      "format": "CHOICE",
+      "topic_ru": "Дни недели",
+      "tested_grammar": "días de la semana",
+      "tested_lesson": "u3_l9",
+      "npc_line_es": "Hoy es viernes, ¿no?",
+      "npc_line_ru": "Сегодня пятница, да?",
+      "prompt_ru": "Что отвечаешь?",
+      "correct_answer": "Sí, hoy es viernes.",
+      "distractors": [
+        "No, hoy soy viernes.",
+        "Sí, mañana es viernes.",
+        "No, hoy estoy viernes."
+      ],
+      "explanation_on_fail_ru": "«Hoy es viernes» — день недели через SER (не TENER, не ESTAR). «Mañana» = завтра, не «сегодня»."
+    },
+    {
+      "round": 12,
+      "format": "BUILD",
+      "topic_ru": "Регулярный -AR + наречие времени",
+      "tested_grammar": "TRABAJAR 1p + dónde + cuándo",
+      "tested_lesson": "u2_l0 + u3_l11",
+      "npc_line_es": "Yo trabajo aquí todos los días. ¿Y tú?",
+      "npc_line_ru": "Я тут работаю каждый день. А ты?",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Yo trabajo en casa hoy",
+      "word_bank": ["Yo", "trabajo", "en", "casa", "hoy", "estoy", "tengo", "soy"],
+      "explanation_on_fail_ru": "«Trabajo» = я работаю (-AR, 1 л.). «En casa» = дома. «Hoy» = сегодня."
+    },
+    {
+      "round": 13,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · -IR глагол",
+      "tested_grammar": "VIVIR 2p sing",
+      "tested_lesson": "u2_l2",
+      "npc_line_es": "¿Y dónde vives?",
+      "npc_line_ru": null,
+      "prompt_ru": "Что Diego спрашивает? Переведи на русский:",
+      "prompt_text_es": "¿Y dónde vives?",
+      "correct_answer": "А где ты живёшь?",
+      "acceptable_alternatives": [
+        "А где ты живешь?",
+        "Где ты живёшь?",
+        "Где ты живешь?",
+        "А где живёшь?"
+      ],
+      "explanation_on_fail_ru": "«Vives» = ты живёшь (VIVIR, -IR глагол, 2 л.)."
+    },
+    {
+      "round": 14,
+      "format": "BUILD",
+      "topic_ru": "VIVIR + место",
+      "tested_grammar": "VIVIR 1p sing + en + lugar",
+      "tested_lesson": "u2_l2",
+      "npc_line_es": "Cuéntame, ¿dónde vives?",
+      "npc_line_ru": "Расскажи, где живёшь?",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Yo vivo en Malasaña",
+      "word_bank": ["Yo", "vivo", "en", "Malasaña", "vives", "vive", "soy"],
+      "explanation_on_fail_ru": "«Vivo» = я живу (1 л. ед. VIVIR). «En» + название района."
+    },
+    {
+      "round": 15,
+      "format": "CONJUGATE",
+      "topic_ru": "PODER · ¿Puedo ver?",
+      "tested_grammar": "PODER 1p + infinitive",
+      "tested_lesson": "u3_l7",
+      "npc_line_es": "¿Algo más, señorita?",
+      "npc_line_ru": "Что-то ещё, сеньорита?",
+      "prompt_ru": "Хочешь увидеть счёт. Поставь PODER:",
+      "sentence_template": "¿___ ver la cuenta, por favor?",
+      "verb_infinitive": "poder",
+      "correct_answer": "Puedo",
+      "distractors": ["Puedes", "Quiero", "Tengo"]
+    },
+    {
+      "round": 16,
+      "format": "LISTEN",
+      "topic_ru": "Сумма счёта · числа",
+      "tested_grammar": "números 21-100",
+      "tested_lesson": "u2_l7",
+      "npc_line_es": "Son veintidós euros con cincuenta.",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Сколько счёт?",
+      "correct_answer": "22,50 €",
+      "distractors": ["12,50 €", "22,15 €", "32,50 €"],
+      "translation_after_answer_ru": "«Veintidós con cincuenta» = 22,50"
+    },
+    {
+      "round": 17,
+      "format": "CHOICE",
+      "topic_ru": "Способ оплаты",
+      "tested_grammar": "respuesta a pregunta",
+      "tested_lesson": "u1_l6",
+      "npc_line_es": "¿En efectivo o con tarjeta?",
+      "npc_line_ru": "Наличными или картой?",
+      "prompt_ru": "Что отвечаешь?",
+      "correct_answer": "Con tarjeta, por favor.",
+      "distractors": [
+        "Sí, gracias.",
+        "Hasta luego.",
+        "Soy en efectivo."
+      ]
+    },
+    {
+      "round": 18,
+      "format": "CONJUGATE",
+      "topic_ru": "Регулярный -AR · yo pago",
+      "tested_grammar": "PAGAR 1p sing",
+      "tested_lesson": "u2_l0",
+      "npc_line_es": "Perfecto. Pase la tarjeta.",
+      "npc_line_ru": "Отлично. Прокатайте карту.",
+      "prompt_ru": "Поставь PAGAR:",
+      "sentence_template": "Yo ___ con tarjeta.",
+      "verb_infinitive": "pagar",
+      "correct_answer": "pago",
+      "distractors": ["pagas", "paga", "pagamos"]
+    },
+    {
+      "round": 19,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Благодарность за обед",
+      "tested_grammar": "fórmula gracias + comida",
+      "tested_lesson": "u1_l6 + u3_l4",
+      "prompt_ru": "Скажи по-испански:",
+      "prompt_text_ru": "Спасибо, еда очень хорошая.",
+      "correct_answer": "Gracias, la comida es muy buena.",
+      "acceptable_alternatives": [
+        "Gracias la comida es muy buena",
+        "Gracias, la comida está muy buena.",
+        "Muchas gracias, la comida es buena."
+      ],
+      "hint_ru": "gracias · comida · buena",
+      "explanation_on_fail_ru": "«La comida» = ж.р. → «buena» (ж.р.). «Es buena» — оценка качества (SER)."
+    },
+    {
+      "round": 20,
+      "format": "BUILD",
+      "topic_ru": "Прощание + приглашение прийти ещё",
+      "tested_grammar": "despedida + adverbio mañana",
+      "tested_lesson": "u1_l5 + u3_l11",
+      "npc_line_es": "Vuelva pronto. Aquí siempre tendrá una mesa.",
+      "npc_line_ru": "Возвращайтесь скорее. Тут вам всегда будет столик.",
+      "prompt_ru": "Прощаешься:",
+      "correct_answer": "Hasta mañana muchas gracias",
+      "word_bank": ["Hasta", "mañana", "muchas", "gracias", "hoy", "luego", "buenos"]
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Excelente español. Es nuestra clienta favorita.",
+      "carlos_line_ru": "Отличный испанский. Будет нашей любимой клиенткой.",
+      "scene_description_ru": "Diego приносит десерт от заведения. «La casa invita. Vuelva pronto.»"
+    },
+    "silver": {
+      "carlos_line_es": "Muy bien. Hasta la próxima.",
+      "carlos_line_ru": "Очень хорошо. До следующего раза.",
+      "scene_description_ru": "Diego улыбается, провожает до двери. «Cuídese.»"
+    },
+    "bronze": {
+      "carlos_line_es": "Adiós.",
+      "carlos_line_ru": "До свидания.",
+      "scene_description_ru": "Diego кивает, забирает чаевые. Без особых эмоций."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Hmm... la cuenta, por favor pague en la caja.",
+      "carlos_line_ru": "Хм... счёт, оплатите на кассе пожалуйста.",
+      "scene_description_ru": "Diego перенаправляет тебя к кассирше — не хочет сам разбираться с трудным клиентом.",
+      "stakes_ru": "Diego тебя не запомнит. Повтори глаголы и попробуй снова."
+    },
+    "low": {
+      "carlos_line_es": "Lo siento, no entiendo bien.",
+      "carlos_line_ru": "Мне жаль, не очень понимаю.",
+      "scene_description_ru": "Diego зовёт коллегу, чтобы помог. Заказ выходит не тот что ты хотела.",
+      "stakes_ru": "Обед был странный. Повтори блок 3 — особенно QUERER и PODER."
+    },
+    "very_low": {
+      "carlos_line_es": "Aquí tiene su comida. Adiós.",
+      "carlos_line_ru": "Вот ваша еда. До свидания.",
+      "scene_description_ru": "Diego приносит что-то наугад, торопится. Никаких рекомендаций, никаких улыбок.",
+      "stakes_ru": "Серьёзно повтори блок 3: регулярные глаголы, QUERER/PODER, hay, числа, время."
+    }
+  }
+}

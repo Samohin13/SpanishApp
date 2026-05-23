@@ -1,0 +1,401 @@
+{
+  "id": "cp4",
+  "cefr": "A1",
+  "block": 4,
+  "title_ru": "День в Мадриде",
+  "title_es": "Un día en Madrid",
+  "description_ru": "Sergio — твой друг по обмену. Он провёл день показывая тебе Мадрид: завтрак, прогулка, метро, магазин, кафе. На вечер он зовёт тебя на ужин с его семьёй. Чтобы получить приглашение — нужно пройти весь день уверенно. Это финал A1: проверяется ВСЁ от блока 1 до блока 4.",
+  "stakes_ru": "Pass — Sergio приглашает на семейный ужин и становится близким другом. Fail — Sergio вежливо прощается и больше не пишет.",
+  "scene": {
+    "name": "Madrid (улицы, метро, кафе)",
+    "type": "city_tour",
+    "city": "Madrid",
+    "background_image": "scene_cp4_madrid.jpg",
+    "ambient_sound": "city_walk.mp3"
+  },
+  "npc": {
+    "id": "sergio",
+    "name": "Sergio",
+    "role_ru": "Друг по обмену",
+    "role_es": "Amigo de intercambio",
+    "voice_id": "es-ES-Polyglot-1",
+    "portrait_image": "npc_sergio.jpg",
+    "personality": "молодой испанец, открытый, любит Мадрид и хочет передать эту любовь. На правильные ответы шутит, веселится. На ошибках — повторяет вопрос медленнее, без раздражения. Хочет видеть что Andrea реально что-то выучила за всё время."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 65,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 700,
+    "silver_xp_bonus": 200,
+    "gold_xp_bonus": 500,
+    "badge_id": "a1_master",
+    "badge_name_ru": "Мастер A1 · Hablo español",
+    "unlocks_block": 5
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Приветствие друга",
+      "tested_lesson": "u1_l4",
+      "npc_line_es": "¡Buenos días, Andrea! ¿Cómo estás?",
+      "npc_line_ru": "Доброе утро, Andrea! Как дела?",
+      "prompt_ru": "Что отвечаешь Sergio?",
+      "correct_answer": "Estoy bien, ¡gracias!",
+      "distractors": ["Soy bien gracias.", "Tengo bien.", "Hasta luego."]
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Возвратный · me levanto",
+      "tested_grammar": "LEVANTARSE 1p sing",
+      "tested_lesson": "u4_l13",
+      "npc_line_es": "Yo me levanto temprano. ¿Y tú?",
+      "npc_line_ru": "Я встаю рано. А ты?",
+      "prompt_ru": "Поставь форму:",
+      "sentence_template": "Yo ___ a las siete.",
+      "verb_infinitive": "me levantar",
+      "correct_answer": "me levanto",
+      "distractors": ["te levantas", "se levanta", "levantar"]
+    },
+    {
+      "round": 3,
+      "format": "BUILD",
+      "topic_ru": "Утренняя рутина",
+      "tested_grammar": "verbos reflexivos · rutina",
+      "tested_lesson": "u4_l12 + u4_l13",
+      "npc_line_es": "Y después, ¿qué haces?",
+      "npc_line_ru": "А потом что делаешь?",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Me ducho y desayuno café",
+      "word_bank": ["Me", "ducho", "y", "desayuno", "café", "te", "estás", "como"]
+    },
+    {
+      "round": 4,
+      "format": "CONJUGATE",
+      "topic_ru": "IR · yo voy",
+      "tested_grammar": "IR 1p sing",
+      "tested_lesson": "u4_l0",
+      "npc_line_es": "Vamos al metro. ¿Cómo vas al centro normalmente?",
+      "npc_line_ru": "Идём в метро. Как ты обычно ездишь в центр?",
+      "prompt_ru": "Поставь IR:",
+      "sentence_template": "Yo ___ en metro al centro.",
+      "verb_infinitive": "ir",
+      "correct_answer": "voy",
+      "distractors": ["vas", "va", "vamos"]
+    },
+    {
+      "round": 5,
+      "format": "BUILD",
+      "topic_ru": "IR + a + место",
+      "tested_grammar": "IR + a + lugar",
+      "tested_lesson": "u4_l1",
+      "npc_line_es": "Genial. Y ahora, ¿adónde quieres ir?",
+      "npc_line_ru": "Здорово. А сейчас куда хочешь?",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Quiero ir al parque",
+      "word_bank": ["Quiero", "ir", "al", "parque", "el", "voy", "tengo", "estoy"],
+      "explanation_on_fail_ru": "«Ir a» сжимается в «ir al» перед мужскими словами: «al parque» (не «a el parque»)."
+    },
+    {
+      "round": 6,
+      "format": "LISTEN",
+      "topic_ru": "Числа · цена билета метро",
+      "tested_grammar": "números",
+      "tested_lesson": "u2_l7",
+      "npc_line_es": "El billete de metro cuesta dos euros con cincuenta.",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Сколько стоит билет в метро?",
+      "correct_answer": "2,50 €",
+      "distractors": ["12,50 €", "2,15 €", "5,20 €"]
+    },
+    {
+      "round": 7,
+      "format": "CHOICE",
+      "topic_ru": "GUSTAR · me gusta",
+      "tested_grammar": "GUSTAR + sustantivo singular",
+      "tested_lesson": "u4_l6",
+      "npc_line_es": "¿Te gusta el café español?",
+      "npc_line_ru": "Тебе нравится испанский кофе?",
+      "prompt_ru": "Что отвечаешь?",
+      "correct_answer": "Sí, me gusta mucho.",
+      "distractors": [
+        "Sí, yo gusta café.",
+        "Sí, me gustan.",
+        "Sí, soy café."
+      ],
+      "explanation_on_fail_ru": "«Me gusta» + ед.ч., «me gustan» + мн.ч. «El café» — ед. → «me gusta». GUSTAR — обратная конструкция."
+    },
+    {
+      "round": 8,
+      "format": "CONJUGATE",
+      "topic_ru": "GUSTAR · мн. ч.",
+      "tested_grammar": "GUSTAR + sustantivo plural",
+      "tested_lesson": "u4_l7",
+      "npc_line_es": "¿Y las tapas españolas?",
+      "npc_line_ru": "А испанские тапас?",
+      "prompt_ru": "Поставь форму:",
+      "sentence_template": "Sí, me ___ las tapas.",
+      "verb_infinitive": "gustar",
+      "correct_answer": "gustan",
+      "distractors": ["gusta", "gustas", "gustamos"],
+      "explanation_on_fail_ru": "Существительное во мн.ч. («las tapas») → «gustan» (3 л. мн. GUSTAR)."
+    },
+    {
+      "round": 9,
+      "format": "BUILD",
+      "topic_ru": "GUSTAR + время",
+      "tested_grammar": "ME GUSTA + por la mañana",
+      "tested_lesson": "u4_l6 + u3_l11",
+      "npc_line_es": "Cuéntame algo sobre tu día.",
+      "npc_line_ru": "Расскажи что-нибудь о своём дне.",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Me gusta el café por la mañana",
+      "word_bank": ["Me", "gusta", "el", "café", "por", "la", "mañana", "tengo", "vivo", "soy"]
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Погода",
+      "tested_grammar": "expresiones del tiempo · HACER",
+      "tested_lesson": "u4_l11",
+      "npc_line_es": "Mira el cielo. ¿Qué tiempo hace?",
+      "npc_line_ru": "Посмотри на небо. Какая погода?",
+      "prompt_ru": "Холодно. Что говоришь?",
+      "correct_answer": "Hace frío.",
+      "distractors": [
+        "Soy frío.",
+        "Tengo frío hace.",
+        "Estoy frío hace."
+      ],
+      "explanation_on_fail_ru": "Погода — через HACER: «hace frío» / «hace calor» / «hace sol». Не путать с «tengo frío» = «мне холодно» (про себя)."
+    },
+    {
+      "round": 11,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · мне холодно",
+      "tested_grammar": "TENER + sensación",
+      "tested_lesson": "u4_l9",
+      "prompt_ru": "Скажи по-испански:",
+      "prompt_text_ru": "Мне холодно, и я хочу кофе.",
+      "correct_answer": "Tengo frío y quiero café.",
+      "acceptable_alternatives": [
+        "Tengo frío y quiero un café.",
+        "Tengo frío y quiero café",
+        "Yo tengo frío y quiero café."
+      ],
+      "hint_ru": "tener · frío · querer · café",
+      "explanation_on_fail_ru": "«Мне холодно» = «tengo frío» (буквально «имею холод»). НЕ «hace frío» (это про погоду)."
+    },
+    {
+      "round": 12,
+      "format": "CONJUGATE",
+      "topic_ru": "DOLER · me duele",
+      "tested_grammar": "DOLER + parte del cuerpo",
+      "tested_lesson": "u4_l9 + u4_l8",
+      "npc_line_es": "Ay, me ___ la cabeza. Demasiado sol.",
+      "npc_line_ru": "Ой, у меня болит голова. Слишком солнечно.",
+      "prompt_ru": "Поставь DOLER:",
+      "sentence_template": "Me ___ la cabeza.",
+      "verb_infinitive": "doler",
+      "correct_answer": "duele",
+      "distractors": ["dueles", "dolemos", "doler"],
+      "explanation_on_fail_ru": "DOLER работает как GUSTAR — обратная конструкция. «Me duele la cabeza» — у меня болит голова."
+    },
+    {
+      "round": 13,
+      "format": "CHOICE",
+      "topic_ru": "Части тела",
+      "tested_grammar": "partes del cuerpo",
+      "tested_lesson": "u4_l8",
+      "npc_line_es": "¿Qué te duele? ¿Solo la cabeza?",
+      "npc_line_ru": "Что у тебя болит? Только голова?",
+      "prompt_ru": "Andrea устала, болит спина и ноги. Что ответить?",
+      "correct_answer": "Me duelen las piernas.",
+      "distractors": [
+        "Me duele las piernas.",
+        "Tengo piernas.",
+        "Soy las piernas."
+      ],
+      "explanation_on_fail_ru": "«Las piernas» — мн.ч. → «duelen» (3 л. мн.). Если «la pierna» (ед.) → «duele»."
+    },
+    {
+      "round": 14,
+      "format": "BUILD",
+      "topic_ru": "Магазин · caro/barato",
+      "tested_lesson": "u4_l4 + u4_l5",
+      "npc_line_es": "Entremos en esta tienda. ¿Te gusta?",
+      "npc_line_ru": "Зайдём в этот магазин. Нравится?",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Es bonita pero muy cara",
+      "word_bank": ["Es", "bonita", "pero", "muy", "cara", "barato", "tengo", "soy"]
+    },
+    {
+      "round": 15,
+      "format": "LISTEN",
+      "topic_ru": "Цена в магазине · числа",
+      "tested_grammar": "números 21-100",
+      "tested_lesson": "u2_l7",
+      "npc_line_es": "Esta camisa cuesta cuarenta y cinco euros.",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Сколько стоит рубашка?",
+      "correct_answer": "45 €",
+      "distractors": ["55 €", "15 €", "75 €"]
+    },
+    {
+      "round": 16,
+      "format": "CONJUGATE",
+      "topic_ru": "Spending · regular -AR",
+      "tested_grammar": "PAGAR yo / PAGAR nosotros",
+      "tested_lesson": "u2_l0",
+      "npc_line_es": "¿Cómo vamos a pagar?",
+      "npc_line_ru": "Как будем платить?",
+      "prompt_ru": "Поставь PAGAR:",
+      "sentence_template": "Nosotros ___ con tarjeta.",
+      "verb_infinitive": "pagar",
+      "correct_answer": "pagamos",
+      "distractors": ["pago", "pagas", "pagan"]
+    },
+    {
+      "round": 17,
+      "format": "CHOICE",
+      "topic_ru": "Время · planning",
+      "tested_grammar": "preguntar/decir hora",
+      "tested_lesson": "u3_l8",
+      "npc_line_es": "¿Qué hora es? Vamos a comer.",
+      "npc_line_ru": "Который час? Идём есть.",
+      "prompt_ru": "13:30. Что отвечаешь?",
+      "correct_answer": "Es la una y media.",
+      "distractors": [
+        "Son las una y media.",
+        "Es uno y media.",
+        "Es la una y treinta."
+      ],
+      "explanation_on_fail_ru": "Для 1 часа — «es la una» (ж.р. ед.). «Y media» = и половина. Не «son las una» (несоглас)."
+    },
+    {
+      "round": 18,
+      "format": "BUILD",
+      "topic_ru": "День недели + планы",
+      "tested_grammar": "días + planes",
+      "tested_lesson": "u3_l9 + u4_l1",
+      "npc_line_es": "¿Y mañana? ¿Qué haces?",
+      "npc_line_ru": "А завтра? Что делаешь?",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Mañana voy al cine con amigos",
+      "word_bank": ["Mañana", "voy", "al", "cine", "con", "amigos", "estoy", "tengo", "casa"]
+    },
+    {
+      "round": 19,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Семья + IR + planning",
+      "tested_grammar": "POSESIVO + IR + DÍA",
+      "tested_lesson": "u2_l10 + u4_l1 + u3_l9",
+      "prompt_ru": "Скажи по-испански:",
+      "prompt_text_ru": "Мой брат идёт в кино в субботу.",
+      "correct_answer": "Mi hermano va al cine el sábado.",
+      "acceptable_alternatives": [
+        "Mi hermano va al cine el sábado",
+        "Mi hermano va al cine los sábados.",
+        "El sábado mi hermano va al cine."
+      ],
+      "hint_ru": "mi · hermano · ir · cine · sábado",
+      "explanation_on_fail_ru": "«Mi hermano va» — possesivo + IR 3 л. «Al cine» (a+el). «El sábado» — день недели с артиклем."
+    },
+    {
+      "round": 20,
+      "format": "CHOICE",
+      "topic_ru": "SER vs ESTAR · final test",
+      "tested_grammar": "SER vs ESTAR distinción",
+      "tested_lesson": "u1_l10 + u3_l0",
+      "npc_line_es": "Andrea, te veo cansada. ¿Estás bien?",
+      "npc_line_ru": "Andrea, ты устала. Всё хорошо?",
+      "prompt_ru": "Что отвечаешь?",
+      "correct_answer": "Sí, pero estoy cansada.",
+      "distractors": [
+        "Sí, pero soy cansada.",
+        "Sí, pero tengo cansada.",
+        "Sí, pero hace cansada."
+      ],
+      "explanation_on_fail_ru": "«Cansada» — временное состояние → ESTAR. «Soy cansada» — это «я скучный человек по жизни», не «устала сейчас»."
+    },
+    {
+      "round": 21,
+      "format": "LISTEN",
+      "topic_ru": "Приглашение на ужин · понимание",
+      "tested_grammar": "comprehension auditiva",
+      "tested_lesson": "u4_l1 + u3_l9",
+      "npc_line_es": "Mi familia te invita a cenar el domingo a las ocho.",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Когда Sergio приглашает на ужин?",
+      "correct_answer": "Воскресенье, 20:00",
+      "distractors": [
+        "Суббота, 8:00",
+        "Понедельник, 18:00",
+        "Воскресенье, 10:00"
+      ],
+      "translation_after_answer_ru": "«El domingo a las ocho» = в воскресенье в восемь"
+    },
+    {
+      "round": 22,
+      "format": "BUILD",
+      "topic_ru": "Финальное согласие на приглашение",
+      "tested_grammar": "respuesta completa",
+      "tested_lesson": "mix",
+      "npc_line_es": "Entonces, ¿vienes?",
+      "npc_line_ru": "Так что, придёшь?",
+      "prompt_ru": "Соберите ответ:",
+      "correct_answer": "Sí muchas gracias me gusta mucho",
+      "word_bank": ["Sí", "muchas", "gracias", "me", "gusta", "mucho", "tengo", "estoy", "soy"]
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "¡Increíble! Mi familia te va a adorar. Hablas como una madrileña.",
+      "carlos_line_ru": "Невероятно! Моя семья тебя обожает. Говоришь как настоящая мадридка.",
+      "scene_description_ru": "Sergio обнимает тебя, сразу пишет маме сообщение. «Vamos a ser amigos para siempre.» В тот вечер тебя встречает вся семья — родители, бабушка, младшая сестра. Тебя приняли."
+    },
+    "silver": {
+      "carlos_line_es": "Muy bien. ¡Te espero el domingo a las ocho!",
+      "carlos_line_ru": "Очень хорошо. Жду в воскресенье в восемь!",
+      "scene_description_ru": "Sergio тепло прощается, шлёт адрес. На ужине его семья общается медленно и помогает с языком. Тёплый вечер."
+    },
+    "bronze": {
+      "carlos_line_es": "Vale. Nos vemos el domingo.",
+      "carlos_line_ru": "Ладно. Увидимся в воскресенье.",
+      "scene_description_ru": "Sergio даёт адрес, но без особого энтузиазма. На ужине ты сидишь тихо, но семья вежлива."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Hmm... otro día tal vez. Te escribo.",
+      "carlos_line_ru": "Хм... может в другой раз. Я тебе напишу.",
+      "scene_description_ru": "Sergio вежливо прощается. Сообщения не приходят.",
+      "stakes_ru": "Sergio тебя не пригласил. Подучи блок 4 и попробуй пройти ещё раз."
+    },
+    "low": {
+      "carlos_line_es": "Bueno... ha sido un día interesante. Cuídate.",
+      "carlos_line_ru": "Ну... интересный был день. Береги себя.",
+      "scene_description_ru": "Sergio прощается у метро. Больше не предлагает встретиться.",
+      "stakes_ru": "Дружба не сложилась. Повтори блок 4: IR, GUSTAR, возвратные, рутина."
+    },
+    "very_low": {
+      "carlos_line_es": "Lo siento. Es difícil hablar contigo. Adiós.",
+      "carlos_line_ru": "Мне жаль. Сложно с тобой разговаривать. До свидания.",
+      "scene_description_ru": "Sergio быстро уходит. Контакт оборван.",
+      "stakes_ru": "Серьёзный возврат к материалу. Прежде чем брать boss — повтори все 4 блока."
+    }
+  }
+}
