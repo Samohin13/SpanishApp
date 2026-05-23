@@ -2,439 +2,706 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>CP1 · A1 · Паспортный контроль — вычитка</title>
+<title>CP1 · Паспортный контроль — мокап</title>
 <style>
 :root {
-  --bg: #0A0B0D;
-  --surface: #18191C;
-  --surface-2: #232529;
+  --bg-page: #0A0B0D;
+  --phone-bg: #18191C;
+  --surface: #1F2125;
+  --surface-2: #2A2D33;
   --primary: #FF6B1A;
+  --primary-2: #ff8533;
+  --accent: #F4B400;
   --green: #2EB872;
   --red: #E54848;
-  --accent: #F4B400;
   --text: #F5F5F7;
   --text-dim: #8E8E93;
   --border: rgba(255,255,255,0.08);
 }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   margin: 0;
-  padding: 40px 20px 80px;
-  line-height: 1.5;
+  background: var(--bg-page);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+  padding: 40px 16px 80px;
 }
-.container { max-width: 920px; margin: 0 auto; }
-h1 { font-size: 32px; letter-spacing: -0.5px; margin: 0 0 6px; font-weight: 800; }
-.lead { color: var(--text-dim); font-size: 15px; margin-bottom: 8px; }
-.stakes {
-  background: linear-gradient(135deg, rgba(229,72,72,0.12) 0%, rgba(255,107,26,0.08) 100%);
-  border-left: 4px solid var(--red);
-  padding: 14px 20px;
-  border-radius: 10px;
-  margin: 24px 0 36px;
+h1 {
+  font-size: 32px;
+  margin: 0 0 6px;
+  text-align: center;
+  letter-spacing: -0.5px;
+  font-weight: 800;
+}
+.subtitle {
   font-size: 14px;
+  text-align: center;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  letter-spacing: 0.2px;
 }
-.stakes strong { color: var(--red); display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
-.intro {
-  background: var(--surface);
-  border-left: 3px solid var(--primary);
+.stakes-banner {
+  max-width: 900px;
+  margin: 28px auto 40px;
+  background: linear-gradient(135deg, rgba(229,72,72,0.10) 0%, rgba(255,107,26,0.08) 100%);
+  border-left: 4px solid var(--red);
   padding: 16px 22px;
   border-radius: 10px;
-  margin: 0 0 32px;
   font-size: 14px;
-  color: var(--text-dim);
-  line-height: 1.6;
+  line-height: 1.5;
 }
-.intro strong { color: var(--text); }
-.vocab-note {
-  background: var(--surface);
-  border: 1px solid var(--accent);
-  border-radius: 12px;
-  padding: 14px 18px;
-  margin-bottom: 32px;
-  font-size: 13px;
-  color: var(--text);
-}
-.vocab-note h3 {
-  margin: 0 0 8px;
+.stakes-banner strong {
+  display: block;
+  color: var(--red);
   font-size: 12px;
-  color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
+  margin-bottom: 6px;
 }
 
-.meta {
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 40px;
+  max-width: 1500px;
+  margin: 0 auto;
 }
-.meta-card {
-  background: var(--surface);
-  border-radius: 12px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-}
-.meta-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-dim);
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.meta-value { font-size: 15px; font-weight: 600; }
-
-.thresholds {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin: 12px 0 32px;
-}
-.tier {
-  background: var(--surface);
-  border-radius: 12px;
-  padding: 14px;
-  text-align: center;
-  border: 1px solid var(--border);
-}
-.tier-name { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; }
-.tier-range { font-size: 12px; color: var(--text-dim); }
-.tier-bronze .tier-name { color: #CD7F32; }
-.tier-silver .tier-name { color: #C0C0C0; }
-.tier-gold .tier-name { color: #FFD700; }
-.tier-bonus { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
-
-h2 {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1.4px;
-  color: var(--primary);
-  margin: 48px 0 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-  font-weight: 700;
-}
-
-.round {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 22px 26px;
-  margin-bottom: 14px;
-}
-.round-header {
+.frame {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
 }
-.round-num {
-  background: var(--primary);
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 14px;
-}
-.round-format {
-  background: var(--surface-2);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--primary);
-}
-.round-topic {
-  flex: 1;
-  font-size: 14px;
+.frame-label {
+  font-size: 12px;
   color: var(--text-dim);
-  font-weight: 500;
-}
-.round-lesson {
-  background: rgba(244,180,0,0.12);
-  border: 1px solid rgba(244,180,0,0.3);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 10px;
-  color: var(--accent);
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.npc-line {
-  background: rgba(255,107,26,0.07);
-  border-left: 3px solid var(--primary);
-  padding: 10px 14px;
-  border-radius: 8px;
-  margin-bottom: 14px;
-}
-.npc-name {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--primary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
-}
-.npc-es {
-  font-size: 15px;
+  margin-bottom: 12px;
   font-weight: 600;
-  color: var(--text);
-}
-.npc-ru {
-  font-size: 13px;
-  color: var(--text-dim);
-  font-style: italic;
-  margin-top: 3px;
-}
-
-.prompt-row {
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 10px;
-}
-.prompt-label {
-  font-weight: 700;
-  color: var(--accent);
-  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.2px;
+}
+.frame-label .round-no {
+  color: var(--primary);
+  font-weight: 800;
   margin-right: 8px;
 }
-.prompt-text {
-  font-size: 16px;
+.phone {
+  width: 340px;
+  height: 720px;
+  background: var(--phone-bg);
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,0.7),
+    0 0 0 2px #1c1c1e,
+    0 0 0 10px #2a2a2e,
+    0 0 0 11px #3a3a3e;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.status-bar {
+  height: 40px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text);
-  font-style: italic;
-  margin-top: 6px;
+}
+.status-bar svg { width: 14px; height: 14px; }
+.status-bar .right { display: flex; gap: 4px; align-items: center; }
+.notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 26px;
+  background: #000;
+  border-radius: 0 0 16px 16px;
+  z-index: 10;
 }
 
-.options { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-.option {
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
+/* ───── SCENE ACTIVE (general for all rounds) ───── */
+.scene-top {
+  position: relative;
+  height: 150px;
+  overflow: hidden;
 }
-.option-correct {
-  background: rgba(46,184,114,0.10);
-  border-color: var(--green);
+.scene-top .bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.7);
 }
-.option-wrong { opacity: 0.6; }
-.option-mark {
-  width: 18px;
-  height: 18px;
+.scene-top .grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 30%, rgba(10,11,13,0.92) 100%);
+}
+.back-pill {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 34px;
+  height: 34px;
+  background: rgba(0,0,0,0.55);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
+  backdrop-filter: blur(8px);
+}
+.back-pill svg { width: 17px; height: 17px; }
+.sympathy {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  padding: 6px 11px;
+  border-radius: 12px;
+  color: white;
   font-size: 11px;
   font-weight: 700;
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-.option-mark.ok { background: var(--green); color: white; }
-.option-mark.no { background: var(--red); color: white; }
-.option-text { flex: 1; }
-.option-note { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.stars { color: var(--accent); letter-spacing: 1px; font-size: 10px; }
+.stars-empty { opacity: 0.3; }
+.scene-meta {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  color: white;
+}
+.scene-meta-place {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+.scene-meta-round {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+.progress-bar {
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  display: flex;
+  gap: 3px;
+  width: 100px;
+}
+.dot {
+  height: 4px;
+  flex: 1;
+  background: rgba(255,255,255,0.32);
+  border-radius: 2px;
+}
+.dot.done { background: var(--green); }
+.dot.curr { background: white; }
 
-.alternatives {
-  background: var(--surface-2);
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin-top: 8px;
+/* NPC bubble */
+.npc {
+  margin: 12px 16px 6px;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  display: flex;
+  gap: 11px;
 }
-.alternatives-title {
+.npc-portrait {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 2px solid var(--primary);
+}
+.npc-body { flex: 1; min-width: 0; }
+.npc-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.npc-name {
   font-size: 11px;
-  font-weight: 700;
   color: var(--text-dim);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
 }
-.alt-item {
-  padding: 4px 0;
+.npc-audio {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+.npc-audio svg { width: 12px; height: 12px; }
+.npc-es {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.npc-ru {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 3px;
+  font-style: italic;
+}
+.npc-hidden {
+  color: var(--text-dim);
+  font-style: italic;
   font-size: 13px;
+}
+
+.exercise {
+  flex: 1;
+  padding: 8px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.ex-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.alt-item::before {
-  content: '✓';
+.ex-label .badge {
+  background: var(--primary);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ex-label .badge svg { width: 11px; height: 11px; }
+
+.choice {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 13px;
+  padding: 11px 14px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.choice.correct {
+  background: rgba(46,184,114,0.12);
+  border-color: var(--green);
   color: var(--green);
   font-weight: 700;
 }
 
-.word-bank {
+.translate-prompt {
+  background: var(--surface);
+  border-radius: 13px;
+  padding: 14px;
+  margin-bottom: 10px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.translate-prompt-label {
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.translate-prompt-text { font-size: 16px; font-weight: 700; }
+
+.build-target {
+  background: var(--surface);
+  border: 1.5px dashed var(--border);
+  border-radius: 13px;
+  min-height: 70px;
+  padding: 10px;
+  margin-bottom: 12px;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 10px 0;
+  gap: 5px;
+  align-items: flex-start;
 }
 .word-chip {
   background: var(--surface-2);
-  padding: 6px 12px;
-  border-radius: 8px;
+  border-radius: 9px;
+  padding: 7px 11px;
   font-size: 13px;
   font-weight: 600;
   border: 1px solid var(--border);
 }
-.word-chip.correct {
-  background: rgba(46,184,114,0.15);
-  border-color: var(--green);
-  color: var(--green);
+.word-chip.placed {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
 }
-.correct-build {
-  background: rgba(46,184,114,0.10);
-  border: 1px solid var(--green);
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin: 8px 0;
-  font-size: 15px;
-  font-weight: 600;
+.build-bank {
   display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.correct-build::before {
-  content: '→';
-  color: var(--green);
-  font-weight: 800;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
-.explanation {
-  background: rgba(244,180,0,0.06);
-  border-left: 3px solid var(--accent);
-  padding: 10px 14px;
-  border-radius: 6px;
-  margin-top: 12px;
-  font-size: 13px;
-  color: var(--text-dim);
-  line-height: 1.5;
+.conjugate-sentence {
+  background: var(--surface);
+  border-radius: 13px;
+  padding: 16px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+  border: 1px solid var(--border);
 }
-.explanation strong { color: var(--text); }
-
-.reactions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 12px;
-}
-.reaction {
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 12px;
-}
-.reaction-ok {
-  background: rgba(46,184,114,0.08);
-  border-left: 2px solid var(--green);
-}
-.reaction-bad {
-  background: rgba(229,72,72,0.08);
-  border-left: 2px solid var(--red);
-}
-.reaction-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.reaction-ok .reaction-label { color: var(--green); }
-.reaction-bad .reaction-label { color: var(--red); }
-
 .conjugate-blank {
   display: inline-block;
   min-width: 80px;
-  background: rgba(255,107,26,0.15);
   border-bottom: 2px solid var(--primary);
   padding: 0 8px;
   color: var(--primary);
-  font-weight: 700;
+  font-weight: 800;
 }
-
-.audio-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--primary);
-  color: white;
-  padding: 3px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-left: 8px;
-}
-
-.outcomes {
+.conj-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-top: 20px;
+  gap: 6px;
 }
-.outcome {
+.conj-opt {
   background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 11px;
+  padding: 11px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+.conj-opt.correct {
+  background: rgba(46,184,114,0.12);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.listen-play {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+  color: white;
   border-radius: 14px;
-  padding: 16px 18px;
+  padding: 14px;
+  text-align: center;
+  margin: 6px 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.listen-play svg { width: 18px; height: 18px; }
+
+.translate-input {
+  background: var(--surface);
+  border-radius: 13px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 8px;
+  border: 1.5px solid var(--primary);
+  font-weight: 500;
+}
+
+/* ─── Section divider ─── */
+.section-divider {
+  text-align: center;
+  margin: 56px auto 28px;
+  max-width: 700px;
+}
+.section-divider .num {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 28px;
+  margin-right: 10px;
+}
+.section-divider .title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.section-divider .desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ─── Intro screen (special phone) ─── */
+.hero-img {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-img .bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.hero-img .grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.4) 50%, var(--phone-bg) 100%);
+}
+.hero-back {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.hero-back svg { width: 18px; height: 18px; }
+.intro-content {
+  padding: 16px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.intro-cefr {
+  font-size: 10px;
+  background: var(--primary);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  align-self: flex-start;
+  margin-bottom: 10px;
+}
+.intro-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+.intro-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.intro-warn {
+  background: rgba(229,72,72,0.12);
+  border-left: 3px solid var(--red);
+  padding: 9px 12px;
+  border-radius: 7px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.4;
+}
+.intro-warn strong { color: var(--red); }
+.intro-info {
+  background: var(--surface);
+  border-radius: 13px;
+  padding: 4px 14px;
+  margin-bottom: 14px;
   border: 1px solid var(--border);
 }
-.outcome-pass { border-left: 3px solid var(--green); }
-.outcome-fail { border-left: 3px solid var(--red); }
-.outcome-title {
+.intro-info-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
   font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 800;
-  margin-bottom: 12px;
-}
-.outcome-pass .outcome-title { color: var(--green); }
-.outcome-fail .outcome-title { color: var(--red); }
-.outcome-item {
-  margin-bottom: 12px;
-  padding-bottom: 10px;
+  padding: 8px 0;
   border-bottom: 1px solid var(--border);
-  font-size: 13px;
 }
-.outcome-item:last-child { border-bottom: 0; }
-.outcome-item-tier {
+.intro-info-row:last-child { border-bottom: 0; }
+.intro-info-row .icon { color: var(--primary); }
+.intro-info-row .icon svg { width: 16px; height: 16px; }
+.intro-button {
+  margin-top: auto;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: white;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(255,107,26,0.35);
+}
+.intro-button svg { width: 18px; height: 18px; }
+
+/* ─── Outcome screens ─── */
+.result-hero {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding-top: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.result-hero.pass-gold {
+  background: linear-gradient(135deg, #d97706 0%, #fbbf24 100%);
+}
+.result-hero.pass-silver {
+  background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+}
+.result-hero.pass-bronze {
+  background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
+}
+.result-hero.fail {
+  background: linear-gradient(135deg, var(--red) 0%, #8a1f1f 100%);
+}
+.result-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+.result-icon svg { width: 38px; height: 38px; color: white; }
+.result-text {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.result-subtext {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-top: 4px;
+  padding: 0 16px;
+  text-align: center;
+}
+.result-quote {
+  background: var(--surface);
+  border-left: 3px solid var(--primary);
+  margin: 16px 16px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+.result-quote-label {
   font-size: 10px;
   font-weight: 700;
-  color: var(--text-dim);
-  letter-spacing: 1px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 4px;
 }
-.outcome-item-es { font-weight: 600; color: var(--text); }
-.outcome-item-ru { color: var(--text-dim); font-style: italic; font-size: 12px; margin-top: 2px; }
-.outcome-item-scene { color: var(--text); font-size: 12px; margin-top: 6px; line-height: 1.4; }
+.result-quote-es { font-size: 14px; font-weight: 600; }
+.result-quote-ru { font-size: 11px; color: var(--text-dim); font-style: italic; margin-top: 3px; }
+
+.result-scene {
+  margin: 12px 16px 0;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.result-stats {
+  padding: 16px;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.stat-row:last-child { border-bottom: 0; }
+.stat-label { font-size: 12px; color: var(--text-dim); }
+.stat-value { font-size: 13px; font-weight: 700; }
+.result-actions {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: white;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 12px;
+  border: 1px solid var(--border);
+}
+.btn-danger {
+  background: rgba(229,72,72,0.12);
+  color: var(--red);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 12px;
+  border: 1px solid var(--red);
+}
 
 .fb-section {
+  max-width: 900px;
+  margin: 60px auto 0;
   background: linear-gradient(135deg, rgba(255,107,26,0.10) 0%, rgba(244,180,0,0.05) 100%);
   border: 2px solid var(--primary);
   border-radius: 16px;
   padding: 24px 28px;
-  margin-top: 40px;
 }
 .fb-section h2 {
   margin: 0 0 12px;
-  border: 0;
-  padding: 0;
   color: var(--primary);
+  font-size: 18px;
 }
 .fb-section ol { margin: 0; padding-left: 22px; line-height: 1.8; }
 .fb-section li { font-size: 14px; color: var(--text); margin-bottom: 6px; }
@@ -442,531 +709,896 @@ h2 {
 </head>
 <body>
 
-<div class="container">
+<!-- SVG ICONS -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-translate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7"/><path d="M9 3v2c0 4-4 7-7 7"/><path d="M5 9c0 4 4 7 7 7"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></symbol>
+    <symbol id="i-puzzle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11h-1a2 2 0 00-2 2v0a2 2 0 002 2h1v3a2 2 0 01-2 2h-3v-1a2 2 0 00-2-2v0a2 2 0 00-2 2v1H7a2 2 0 01-2-2v-3H4a2 2 0 01-2-2v0a2 2 0 012-2h1V5a2 2 0 012-2h3v1a2 2 0 002 2v0a2 2 0 002-2V3h3a2 2 0 012 2v6z"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.82a15 15 0 0120 0"/><path d="M5 12.86a10 10 0 0114 0"/><path d="M8.5 16.43a5 5 0 017 0"/><line x1="12" y1="20" x2="12" y2="20"/></symbol>
+    <symbol id="i-battery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/><rect x="3" y="8" width="13" height="8" fill="currentColor"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-tasks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></symbol>
+    <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="i-stamp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v8a2 2 0 002 2h4"/><rect x="3" y="13" width="18" height="8" rx="2"/><circle cx="7" cy="7" r="4"/></symbol>
+  </defs>
+</svg>
 
-<h1>Чекпоинт 1 · A1 · «Паспортный контроль»</h1>
-<p class="lead">Финальный экзамен блока 1 · 16 раундов · ~10 минут</p>
+<h1>Чекпоинт 1 · A1 · Паспортный контроль</h1>
+<p class="subtitle">Мокап в стиле приложения · 16 раундов + intro + 6 финалов</p>
 
-<div class="stakes">
+<div class="stakes-banner">
   <strong>Ставка</strong>
-  Если пройдёшь — штамп в паспорте, добро пожаловать в Испанию, открыт блок A2. Если не справишься — Carlos забирает паспорт, тебя ведут на дополнительную проверку. Граница пока закрыта, нужно повторить уроки 1-15 и пересдать.
+  Andrea (русская туристка) только что прилетела в Madrid-Barajas. Паспортный контроль. Carlos — серьёзный офицер, общается формально (usted). Если пройдёшь — штамп и добро пожаловать в Испанию, открыт блок A2. Если не справишься — задерживают на границе, паспорт изымают, идёт доп. проверка.
 </div>
 
-<div class="intro">
-  <strong>Сюжет:</strong> Andrea (русская туристка) только что прилетела в Madrid-Barajas. Подходит к стойке паспортного контроля. Carlos — офицер, профессиональный и формальный (общается на «usted»). На каждую ошибку реагирует мимикой: после 2-3 ошибок начинает подозревать, перепроверяет документы дважды. Финал зависит от точности.
+<!-- ============ SECTION 1: INTRO ============ -->
+<div class="section-divider">
+  <span class="num">1</span><span class="title">Стартовый экран</span>
+  <div class="desc">До начала чекпоинта юзер видит сцену, узнаёт ставку и тапает «Начать».</div>
 </div>
 
-<div class="vocab-note">
-  <h3>📚 Только материал блока 1</h3>
-  <strong>Используется:</strong> алфавит, приветствия (hola, buenos días, buenas tardes/noches, ¿cómo está usted?), прощания (adiós, hasta luego/mañana), вежливость (por favor, gracias, de nada, perdón, lo siento, disculpe), местоимения (yo, tú, usted, nosotros…), артикли (el/la/un/una), род -o/-a, глагол SER во всех 6 формах, национальности (rusa/ruso, españ-/franc-/ingl-), страны (Rusia, España, Madrid), числа 0-20.<br>
-  <strong>Cognates допустимы:</strong> pasaporte, visa, turista, número (очевидно из контекста любому новичку).
-</div>
+<div class="grid">
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">START</span>Intro · Паспортный контроль</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>09:42</span>
+        <span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span>
+      </div>
+      <div class="hero-img">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="hero-back"><svg><use href="#i-back"/></svg></div>
+      </div>
+      <div class="intro-content">
+        <div class="intro-cefr">⛳ ЧЕКПОИНТ A1</div>
+        <div class="intro-title">Паспортный контроль</div>
+        <div class="intro-subtitle">Ты только что прилетела в Madrid-Barajas. Подходишь к стойке. Carlos — офицер пограничной службы. Поддержи разговор, передай документы.</div>
 
-<div class="meta">
-  <div class="meta-card">
-    <div class="meta-label">Сцена</div>
-    <div class="meta-value">Madrid-Barajas, паспортный контроль</div>
-  </div>
-  <div class="meta-card">
-    <div class="meta-label">NPC</div>
-    <div class="meta-value">Carlos, офицер</div>
-  </div>
-  <div class="meta-card">
-    <div class="meta-label">Обращение</div>
-    <div class="meta-value">Usted (формально)</div>
-  </div>
-  <div class="meta-card">
-    <div class="meta-label">Игрок</div>
-    <div class="meta-value">Andrea (рус., ж.р.)</div>
-  </div>
-</div>
+        <div class="intro-warn">
+          <strong>Внимание:</strong> справишься — штамп в паспорте. Завалишь — задерживают на границе.
+        </div>
 
-<div class="thresholds">
-  <div class="tier tier-bronze">
-    <div class="tier-name">🥉 БРОНЗА</div>
-    <div class="tier-range">70-79%</div>
-    <div class="tier-bonus">+250 XP + бейдж</div>
-  </div>
-  <div class="tier tier-silver">
-    <div class="tier-name">🥈 СЕРЕБРО</div>
-    <div class="tier-range">80-94%</div>
-    <div class="tier-bonus">+250 + 50 XP</div>
-  </div>
-  <div class="tier tier-gold">
-    <div class="tier-name">🥇 ЗОЛОТО</div>
-    <div class="tier-range">95-100%</div>
-    <div class="tier-bonus">+250 + 150 XP</div>
-  </div>
-</div>
+        <div class="intro-info">
+          <div class="intro-info-row">
+            <div class="icon"><svg><use href="#i-tasks"/></svg></div>
+            <span>16 заданий · ~10 минут</span>
+          </div>
+          <div class="intro-info-row">
+            <div class="icon"><svg><use href="#i-user"/></svg></div>
+            <span>Carlos, офицер</span>
+          </div>
+          <div class="intro-info-row">
+            <div class="icon"><svg><use href="#i-flag"/></svg></div>
+            <span>Pass: 70%</span>
+          </div>
+        </div>
 
-<h2>16 раундов · Andrea ↔ Carlos</h2>
-
-<!-- ============ R1 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">1</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">Приветствие · ответ офицеру</div>
-    <div class="round-lesson">u1_l4</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">Buenos días.</div>
-    <div class="npc-ru">«Доброе утро.»</div>
-  </div>
-  <div class="prompt-row">
-    <span class="prompt-label">Задание</span>
-    Carlos смотрит на тебя поверх стекла. Что отвечаешь?
-  </div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Buenos días.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Buenas noches.</span><span class="option-note">= добрый вечер</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Hasta luego.</span><span class="option-note">= прощание</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">De nada.</span><span class="option-note">= ответ на «спасибо»</span></div>
-  </div>
-  <div class="reactions">
-    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos кивает.</div>
-    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos поднимает бровь.</div>
-  </div>
-</div>
-
-<!-- ============ R2 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">2</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">Формальное «как дела»</div>
-    <div class="round-lesson">u1_l4 + u1_l6</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">¿Cómo está usted?</div>
-    <div class="npc-ru">«Как у вас дела?»</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Что отвечаешь?</div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Bien, gracias.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy de Rusia.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Adiós.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Disculpe.</span></div>
-  </div>
-  <div class="reactions">
-    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos смотрит в твой паспорт.</div>
-    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos медленно повторяет: «¿Cómo está usted?»</div>
-  </div>
-</div>
-
-<!-- ============ R3 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">3</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">Вежливая передача документов</div>
-    <div class="round-lesson">u1_l6</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">Su pasaporte y su visa, por favor.</div>
-    <div class="npc-ru">«Ваш паспорт и виза, пожалуйста.»</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Передаёшь документы. Что говоришь?</div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Sí, por favor.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">De nada.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Lo siento.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Hasta mañana.</span></div>
-  </div>
-  <div class="reactions">
-    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos берёт документы.</div>
-    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos поджимает губы. Документы пока не берёт.</div>
-  </div>
-</div>
-
-<!-- ============ R4 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">4</div>
-    <div class="round-format">Аудио</div>
-    <div class="round-topic">Алфавит · имя по буквам</div>
-    <div class="round-lesson">u1_l0 + u1_l1 + u1_l2</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS<span class="audio-indicator">🔊 ТОЛЬКО ЗВУК</span></div>
-    <div class="npc-es" style="letter-spacing: 4px;">A · N · D · R · E · A</div>
-    <div class="npc-ru">текст скрыт — только слышит произношение букв</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Carlos произносит твоё имя по буквам. Какое имя?</div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Andrea</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Adriana</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Ariana</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Antonia</span></div>
-  </div>
-  <div class="explanation">
-    Тестируется знание испанского алфавита. Carlos произнёс каждую букву отдельно: A [а], N [эне], D [де], R [эре], E [э], A [а].
-  </div>
-</div>
-
-<!-- ============ R5 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">5</div>
-    <div class="round-format">Спряжение</div>
-    <div class="round-topic">SER · yo soy</div>
-    <div class="round-lesson">u1_l10</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">¿Quién es usted?</div>
-    <div class="npc-ru">«Кто вы?»</div>
-  </div>
-  <div class="prompt-row">
-    <span class="prompt-label">Поставь глагол</span>
-    <div class="prompt-text">Yo <span class="conjugate-blank">?</span> Andrea.</div>
-  </div>
-  <div class="options">
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">eres</span><span class="option-note">tú</span></div>
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">soy</span><span class="option-note">yo</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">es</span><span class="option-note">él/ella/usted</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">somos</span><span class="option-note">nosotros</span></div>
-  </div>
-</div>
-
-<!-- ============ R6 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">6</div>
-    <div class="round-format">Сборка</div>
-    <div class="round-topic">Откуда · SER + DE + страна</div>
-    <div class="round-lesson">u1_l10 + u1_l12</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">¿De dónde es usted?</div>
-    <div class="npc-ru">«Откуда вы?»</div>
-  </div>
-  <div class="word-bank">
-    <span class="word-chip correct">Soy</span>
-    <span class="word-chip correct">de</span>
-    <span class="word-chip correct">Rusia</span>
-    <span class="word-chip">es</span>
-    <span class="word-chip">España</span>
-    <span class="word-chip">yo</span>
-    <span class="word-chip">ella</span>
-  </div>
-  <div class="correct-build">Soy de Rusia</div>
-</div>
-
-<!-- ============ R7 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">7</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">Национальность · согласование рода</div>
-    <div class="round-lesson">u1_l12</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">¿Es usted rusa o española?</div>
-    <div class="npc-ru">«Вы русская или испанка?»</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Внимание</span> Andrea — женщина. Какой ответ правильный?</div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Soy rusa.</span><span class="option-note">женский род</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy ruso.</span><span class="option-note">мужской род — Andrea женщина!</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy español.</span><span class="option-note">не то и не то</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy de Inglaterra.</span><span class="option-note">не отвечает на вопрос</span></div>
-  </div>
-  <div class="reactions">
-    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos: «Bien.»</div>
-    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos сверяет фото в паспорте с твоим лицом.</div>
-  </div>
-</div>
-
-<!-- ============ R8 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">8</div>
-    <div class="round-format">Спряжение</div>
-    <div class="round-topic">SER · закрепление yo soy</div>
-    <div class="round-lesson">u1_l10 + u1_l12</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">Confirme su nacionalidad.</div>
-    <div class="npc-ru">«Подтвердите вашу национальность.»</div>
-  </div>
-  <div class="prompt-row">
-    <span class="prompt-label">Поставь глагол</span>
-    <div class="prompt-text">Yo <span class="conjugate-blank">?</span> rusa.</div>
-  </div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">soy</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">es</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">eres</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">sois</span></div>
-  </div>
-</div>
-
-<!-- ============ R9 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">9</div>
-    <div class="round-format">Аудио</div>
-    <div class="round-topic">Числа 0-20 · номер места</div>
-    <div class="round-lesson">u1_l13</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS<span class="audio-indicator">🔊 ТОЛЬКО ЗВУК</span></div>
-    <div class="npc-es">Su número de asiento es el catorce.</div>
-    <div class="npc-ru">текст скрыт — только слышит произношение числа</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Carlos называет твой номер места. Какой это номер?</div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">14</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">4</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">11</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">16</span></div>
-  </div>
-  <div class="explanation">
-    «Catorce» = 14. Не путать: «cuatro» = 4, «once» = 11, «dieciséis» = 16.
-  </div>
-</div>
-
-<!-- ============ R10 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">10</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">Артикль · el / la / un / una</div>
-    <div class="round-lesson">u1_l8 + u1_l9</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">Tengo aquí ___ pasaporte. ¿Es el suyo?</div>
-    <div class="npc-ru">«У меня здесь ___ паспорт. Это ваш?»</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Какой артикль подходит для слова «pasaporte»?</div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">un</span><span class="option-note">м.р., неопр.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">una</span><span class="option-note">ж.р.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">el</span><span class="option-note">м.р., но опр.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">la</span><span class="option-note">ж.р.</span></div>
-  </div>
-  <div class="explanation">
-    «Pasaporte» — мужского рода. Carlos говорит про «какой-то паспорт» (показывает один из стопки) → неопределённый артикль «un».
-  </div>
-</div>
-
-<!-- ============ R11 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">11</div>
-    <div class="round-format">Сборка</div>
-    <div class="round-topic">SER · nosotros somos</div>
-    <div class="round-lesson">u1_l11</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">¿Y los señores detrás de usted? ¿Son ustedes turistas juntos?</div>
-    <div class="npc-ru">«А люди за вами? Вы туристы вместе?»</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Собери ответ:</div>
-  <div class="word-bank">
-    <span class="word-chip correct">Sí</span>
-    <span class="word-chip correct">nosotros</span>
-    <span class="word-chip correct">somos</span>
-    <span class="word-chip correct">turistas</span>
-    <span class="word-chip">soy</span>
-    <span class="word-chip">son</span>
-    <span class="word-chip">sois</span>
-  </div>
-  <div class="correct-build">Sí nosotros somos turistas</div>
-  <div class="explanation">
-    «Nosotros somos» = «мы» (1 л. мн. ч. SER). Не путать с «son» (3 л. мн. — они), «sois» (2 л. мн. — вы все на «ты»).
-  </div>
-</div>
-
-<!-- ============ R12 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">12</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">Lo siento · извинение</div>
-    <div class="round-lesson">u1_l6</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">Hay un problema con su visa. ¿Sabe usted algo?</div>
-    <div class="npc-ru">«Есть проблема с вашей визой. Вы что-то знаете?»</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Вежливо ответь, что не знаешь:</div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Lo siento, no.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">De nada.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Hasta luego.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Buenas noches.</span></div>
-  </div>
-  <div class="reactions">
-    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos: «Está bien, solo bromeaba.» (смягчается, шутил)</div>
-    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos: «Hmm.» (поднимает трубку телефона)</div>
-  </div>
-</div>
-
-<!-- ============ R13 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">13</div>
-    <div class="round-format">Перевод ES → RU</div>
-    <div class="round-topic">Понимание · сложная фраза с SER</div>
-    <div class="round-lesson">u1_l10 + u1_l12</div>
-  </div>
-  <div class="prompt-row">
-    <span class="prompt-label">Переведи на русский</span>
-    <div class="prompt-text">Usted es rusa y es de Rusia.</div>
-  </div>
-  <div class="alternatives">
-    <div class="alternatives-title">Принимаются варианты:</div>
-    <div class="alt-item">Вы русская и вы из России.</div>
-    <div class="alt-item">Вы русская и из России.</div>
-    <div class="alt-item">Вы — русская, и вы из России.</div>
-    <div class="alt-item">Ты русская и ты из России.</div>
-  </div>
-  <div class="explanation">
-    «Usted es» = «Вы есть/Вы». «Rusa» = русская (ж.р.). «Y» = и. «Es de Rusia» = (Вы) из России.
-  </div>
-</div>
-
-<!-- ============ R14 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">14</div>
-    <div class="round-format">Спряжение</div>
-    <div class="round-topic">SER · usted es (3 л.)</div>
-    <div class="round-lesson">u1_l10</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">Una pregunta más. Por favor confirme:</div>
-    <div class="npc-ru">«Ещё один вопрос. Подтвердите:»</div>
-  </div>
-  <div class="prompt-row">
-    <span class="prompt-label">Поставь глагол</span>
-    <div class="prompt-text">Usted <span class="conjugate-blank">?</span> Andrea, ¿correcto?</div>
-  </div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">es</span><span class="option-note">для usted — 3 л.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">soy</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">eres</span><span class="option-note">это для «tú»</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">son</span></div>
-  </div>
-  <div class="explanation">
-    Важно: «Usted» формально = «Вы», но грамматически — 3 лицо ед. ч. → форма «es». «Eres» используется только при обращении на «ты» (tú).
-  </div>
-</div>
-
-<!-- ============ R15 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">15</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">Reaction · «Bienvenida»</div>
-    <div class="round-lesson">u1_l6</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">Todo está en orden. Bienvenida a España.</div>
-    <div class="npc-ru">«Всё в порядке. Добро пожаловать в Испанию.»</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Carlos ставит штамп. Что отвечаешь?</div>
-  <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Muchas gracias.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">De nada.</span><span class="option-note">это от Carlos, не от тебя</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Por favor.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Adiós.</span><span class="option-note">рано прощаться</span></div>
-  </div>
-</div>
-
-<!-- ============ R16 ============ -->
-<div class="round">
-  <div class="round-header">
-    <div class="round-num">16</div>
-    <div class="round-format">Сборка</div>
-    <div class="round-topic">Финальное прощание</div>
-    <div class="round-lesson">u1_l5 + u1_l6</div>
-  </div>
-  <div class="npc-line">
-    <div class="npc-name">CARLOS</div>
-    <div class="npc-es">Adelante. Que tenga buen día.</div>
-    <div class="npc-ru">«Проходите. Хорошего дня.»</div>
-  </div>
-  <div class="prompt-row"><span class="prompt-label">Задание</span> Прощаешься вежливо. Собери фразу:</div>
-  <div class="word-bank">
-    <span class="word-chip correct">Gracias</span>
-    <span class="word-chip correct">hasta</span>
-    <span class="word-chip correct">luego</span>
-    <span class="word-chip">buenos</span>
-    <span class="word-chip">mañana</span>
-    <span class="word-chip">días</span>
-    <span class="word-chip">hola</span>
-    <span class="word-chip">de</span>
-  </div>
-  <div class="correct-build">Gracias hasta luego</div>
-</div>
-
-<!-- ============ OUTCOMES ============ -->
-<h2>Что говорит Carlos на финале</h2>
-
-<div class="outcomes">
-  <!-- PASS -->
-  <div class="outcome outcome-pass">
-    <div class="outcome-title">✓ ПРОПУЩЕНА В ИСПАНИЮ</div>
-
-    <div class="outcome-item">
-      <div class="outcome-item-tier">🥇 ЗОЛОТО · 95-100%</div>
-      <div class="outcome-item-es">Excelente español. Bienvenida a España, Andrea.</div>
-      <div class="outcome-item-ru">«Отличный испанский. Добро пожаловать в Испанию.»</div>
-      <div class="outcome-item-scene">Carlos искренне улыбается, делает чёткий штамп и возвращает паспорт двумя руками. «Disfrute Madrid.»</div>
+        <div class="intro-button">Начать <svg><use href="#i-arrow-r"/></svg></div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div class="outcome-item">
-      <div class="outcome-item-tier">🥈 СЕРЕБРО · 80-94%</div>
-      <div class="outcome-item-es">Bien. Bienvenida a España.</div>
-      <div class="outcome-item-ru">«Хорошо. Добро пожаловать.»</div>
-      <div class="outcome-item-scene">Carlos кивает, ставит штамп, протягивает паспорт. «Adelante.»</div>
-    </div>
+<!-- ============ SECTION 2: ROUNDS 1-4 ============ -->
+<div class="section-divider">
+  <span class="num">2</span><span class="title">Раунды 1-4 · Знакомство и алфавит</span>
+  <div class="desc">Приветствия, формальная вежливость, передача документов, испанский алфавит.</div>
+</div>
 
-    <div class="outcome-item">
-      <div class="outcome-item-tier">🥉 БРОНЗА · 70-79%</div>
-      <div class="outcome-item-es">Está bien. Pase.</div>
-      <div class="outcome-item-ru">«Ладно. Проходите.»</div>
-      <div class="outcome-item-scene">Carlos ставит штамп без эмоций, едва смотрит на тебя. «El siguiente.»</div>
+<div class="grid">
+
+  <!-- R1 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R1</span>Выбор · Buenos días</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:42</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 1 / 16</div>
+        </div>
+        <div class="progress-bar">
+          <div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row">
+            <div class="npc-name">CARLOS · ОФИЦЕР</div>
+            <div class="npc-audio"><svg><use href="#i-play"/></svg></div>
+          </div>
+          <div class="npc-es">Buenos días.</div>
+          <div class="npc-ru">«Доброе утро.»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-list"/></svg>ВЫБОР</span> Что отвечаешь?</div>
+        <div class="choice correct">Buenos días.</div>
+        <div class="choice">Buenas noches.</div>
+        <div class="choice">Hasta luego.</div>
+        <div class="choice">De nada.</div>
+      </div>
     </div>
   </div>
 
-  <!-- FAIL -->
-  <div class="outcome outcome-fail">
-    <div class="outcome-title">✗ ЗАДЕРЖАНА НА ГРАНИЦЕ</div>
-
-    <div class="outcome-item">
-      <div class="outcome-item-tier">ПОЧТИ · 50-69%</div>
-      <div class="outcome-item-es">Hmm... casi. Pero no. Por favor, acompáñeme.</div>
-      <div class="outcome-item-ru">«Хм... почти. Но нет. Пройдёмте.»</div>
-      <div class="outcome-item-scene">Carlos качает головой, делает знак коллеге. Тебя ведут в сторону для доп. проверки. Документы остаются у Carlos.</div>
+  <!-- R2 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R2</span>Выбор · ¿Cómo está usted?</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:43</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 2 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row">
+            <div class="npc-name">CARLOS</div>
+            <div class="npc-audio"><svg><use href="#i-play"/></svg></div>
+          </div>
+          <div class="npc-es">¿Cómo está usted?</div>
+          <div class="npc-ru">«Как у вас дела?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-list"/></svg>ВЫБОР</span> Что отвечаешь?</div>
+        <div class="choice correct">Bien, gracias.</div>
+        <div class="choice">Soy de Rusia.</div>
+        <div class="choice">Adiós.</div>
+        <div class="choice">Disculpe.</div>
+      </div>
     </div>
+  </div>
 
-    <div class="outcome-item">
-      <div class="outcome-item-tier">ПЛОХО · 30-49%</div>
-      <div class="outcome-item-es">Lo siento. Acompáñeme a la sala aparte.</div>
-      <div class="outcome-item-ru">«Жаль. Пройдёмте в отдельную комнату.»</div>
-      <div class="outcome-item-scene">Подходит коллега, забирает паспорт. Тебя ведут на длинный досмотр.</div>
+  <!-- R3 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R3</span>Выбор · Передача паспорта</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:43</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 3 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row">
+            <div class="npc-name">CARLOS</div>
+            <div class="npc-audio"><svg><use href="#i-play"/></svg></div>
+          </div>
+          <div class="npc-es">Su pasaporte y su visa, por favor.</div>
+          <div class="npc-ru">«Ваш паспорт и виза, пожалуйста.»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-list"/></svg>ВЫБОР</span> Передаёшь документы:</div>
+        <div class="choice correct">Sí, por favor.</div>
+        <div class="choice">De nada.</div>
+        <div class="choice">Lo siento.</div>
+        <div class="choice">Hasta mañana.</div>
+      </div>
     </div>
+  </div>
 
-    <div class="outcome-item">
-      <div class="outcome-item-tier">ОЧЕНЬ ПЛОХО · 0-29%</div>
-      <div class="outcome-item-es">No habla español suficiente. Espere aquí.</div>
-      <div class="outcome-item-ru">«Вы не говорите по-испански. Подождите здесь.»</div>
-      <div class="outcome-item-scene">Carlos поднимает трубку. К стойке идут двое в форме.</div>
+  <!-- R4 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R4</span>Аудио · алфавит A-N-D-R-E-A</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:44</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 4 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row">
+            <div class="npc-name">CARLOS произносит по буквам</div>
+          </div>
+          <div class="npc-hidden">🔊 [только звук — текст скрыт]</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-headphones"/></svg>АУДИО</span> Какое имя?</div>
+        <div class="listen-play"><svg><use href="#i-play"/></svg> Прослушать снова</div>
+        <div class="choice correct">Andrea</div>
+        <div class="choice">Adriana</div>
+        <div class="choice">Ariana</div>
+        <div class="choice">Antonia</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 3: ROUNDS 5-8 ============ -->
+<div class="section-divider">
+  <span class="num">3</span><span class="title">Раунды 5-8 · SER и национальность</span>
+  <div class="desc">Глагол SER во всех формах + согласование рода (Andrea — женщина → rusa).</div>
+</div>
+
+<div class="grid">
+
+  <!-- R5 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R5</span>Спряжение · Yo ___ Andrea</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:44</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 5 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">¿Quién es usted?</div>
+          <div class="npc-ru">«Кто вы?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-edit"/></svg>СПРЯЖЕНИЕ</span> Поставь форму:</div>
+        <div class="conjugate-sentence">Yo <span class="conjugate-blank">?</span> Andrea.</div>
+        <div class="conj-grid">
+          <div class="conj-opt">eres</div>
+          <div class="conj-opt correct">soy</div>
+          <div class="conj-opt">es</div>
+          <div class="conj-opt">somos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R6 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R6</span>Сборка · Soy de Rusia</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:45</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 6 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">¿De dónde es usted?</div>
+          <div class="npc-ru">«Откуда вы?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-puzzle"/></svg>СБОРКА</span> Собери ответ:</div>
+        <div class="build-target">
+          <div class="word-chip placed">Soy</div>
+          <div class="word-chip placed">de</div>
+          <div class="word-chip placed">Rusia</div>
+        </div>
+        <div class="build-bank">
+          <div class="word-chip">es</div>
+          <div class="word-chip">España</div>
+          <div class="word-chip">yo</div>
+          <div class="word-chip">ella</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R7 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R7</span>Выбор · rusa vs ruso</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:45</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 7 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">¿Es usted rusa o española?</div>
+          <div class="npc-ru">«Вы русская или испанка?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-list"/></svg>ВЫБОР</span> Andrea — женщина:</div>
+        <div class="choice correct">Soy rusa.</div>
+        <div class="choice">Soy ruso.</div>
+        <div class="choice">Soy español.</div>
+        <div class="choice">Soy de Inglaterra.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R8 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R8</span>Спряжение · Yo ___ rusa</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:46</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 8 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">Confirme su nacionalidad.</div>
+          <div class="npc-ru">«Подтвердите национальность.»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-edit"/></svg>СПРЯЖЕНИЕ</span> Поставь форму:</div>
+        <div class="conjugate-sentence">Yo <span class="conjugate-blank">?</span> rusa.</div>
+        <div class="conj-grid">
+          <div class="conj-opt correct">soy</div>
+          <div class="conj-opt">es</div>
+          <div class="conj-opt">eres</div>
+          <div class="conj-opt">sois</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 4: ROUNDS 9-12 ============ -->
+<div class="section-divider">
+  <span class="num">4</span><span class="title">Раунды 9-12 · Числа, артикль, мн. ч.</span>
+</div>
+
+<div class="grid">
+
+  <!-- R9 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R9</span>Аудио · «catorce» = 14</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:46</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 9 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div></div>
+          <div class="npc-hidden">🔊 «Su número de asiento es el catorce.»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-headphones"/></svg>АУДИО</span> Какой номер места?</div>
+        <div class="listen-play"><svg><use href="#i-play"/></svg> Прослушать снова</div>
+        <div class="choice correct">14</div>
+        <div class="choice">4</div>
+        <div class="choice">11</div>
+        <div class="choice">16</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R10 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R10</span>Выбор · артикль un pasaporte</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:47</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 10 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">Tengo aquí ___ pasaporte. ¿Es el suyo?</div>
+          <div class="npc-ru">«У меня здесь ___ паспорт. Ваш?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-list"/></svg>ВЫБОР</span> Какой артикль?</div>
+        <div class="choice correct">un</div>
+        <div class="choice">una</div>
+        <div class="choice">el</div>
+        <div class="choice">la</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R11 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R11</span>Сборка · Nosotros somos turistas</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:47</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 11 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">¿Son ustedes turistas juntos?</div>
+          <div class="npc-ru">«Вы туристы вместе?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-puzzle"/></svg>СБОРКА</span> Собери ответ:</div>
+        <div class="build-target">
+          <div class="word-chip placed">Sí</div>
+          <div class="word-chip placed">nosotros</div>
+          <div class="word-chip placed">somos</div>
+          <div class="word-chip placed">turistas</div>
+        </div>
+        <div class="build-bank">
+          <div class="word-chip">soy</div>
+          <div class="word-chip">son</div>
+          <div class="word-chip">sois</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R12 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R12</span>Выбор · Lo siento</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:48</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★</span><span class="stars stars-empty">★★</span> 3/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 12 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">Hay un problema con su visa. ¿Sabe usted algo?</div>
+          <div class="npc-ru">«Есть проблема с визой. Вы что-то знаете?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-list"/></svg>ВЫБОР</span> Вежливо ответь «не знаю»:</div>
+        <div class="choice correct">Lo siento, no.</div>
+        <div class="choice">De nada.</div>
+        <div class="choice">Hasta luego.</div>
+        <div class="choice">Buenas noches.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 5: ROUNDS 13-16 ============ -->
+<div class="section-divider">
+  <span class="num">5</span><span class="title">Раунды 13-16 · Финал и прощание</span>
+</div>
+
+<div class="grid">
+
+  <!-- R13 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R13</span>Перевод ES → RU</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:48</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 13 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="exercise" style="padding-top: 16px;">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-translate"/></svg>ПЕРЕВОД ES→RU</span></div>
+        <div class="translate-prompt">
+          <div class="translate-prompt-label">Испанский</div>
+          <div class="translate-prompt-text">Usted es rusa y es de Rusia.</div>
+        </div>
+        <div class="translate-input">Вы русская и вы из России.</div>
+        <div style="font-size: 11px; color: var(--text-dim); text-align: center; font-style: italic;">Принимаются также: «Ты русская и из России», без «вы» и пр.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R14 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R14</span>Спряжение · Usted ___ Andrea</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:49</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 14 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">Por favor confirme:</div>
+          <div class="npc-ru">«Подтвердите:»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-edit"/></svg>СПРЯЖЕНИЕ</span> Внимание: для «usted» — 3 лицо!</div>
+        <div class="conjugate-sentence">Usted <span class="conjugate-blank">?</span> Andrea, ¿correcto?</div>
+        <div class="conj-grid">
+          <div class="conj-opt correct">es</div>
+          <div class="conj-opt">soy</div>
+          <div class="conj-opt">eres</div>
+          <div class="conj-opt">son</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R15 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R15</span>Выбор · «Bienvenida» → gracias</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:49</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 15 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">Todo está en orden. Bienvenida a España.</div>
+          <div class="npc-ru">«Всё в порядке. Добро пожаловать в Испанию.»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-list"/></svg>ВЫБОР</span> Carlos ставит штамп. Ответ:</div>
+        <div class="choice correct">Muchas gracias.</div>
+        <div class="choice">De nada.</div>
+        <div class="choice">Por favor.</div>
+        <div class="choice">Adiós.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R16 -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R16</span>Сборка · Прощание</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:50</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Паспортный контроль</div>
+          <div class="scene-meta-round">Раунд 16 / 16</div>
+        </div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=12');"></div>
+        <div class="npc-body">
+          <div class="npc-name-row"><div class="npc-name">CARLOS</div><div class="npc-audio"><svg><use href="#i-play"/></svg></div></div>
+          <div class="npc-es">Adelante. Que tenga buen día.</div>
+          <div class="npc-ru">«Проходите. Хорошего дня.»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge"><svg><use href="#i-puzzle"/></svg>СБОРКА</span> Прощание:</div>
+        <div class="build-target">
+          <div class="word-chip placed">Gracias</div>
+          <div class="word-chip placed">hasta</div>
+          <div class="word-chip placed">luego</div>
+        </div>
+        <div class="build-bank">
+          <div class="word-chip">buenos</div>
+          <div class="word-chip">mañana</div>
+          <div class="word-chip">días</div>
+          <div class="word-chip">hola</div>
+          <div class="word-chip">de</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 6: OUTCOMES ============ -->
+<div class="section-divider">
+  <span class="num">6</span><span class="title">Финал · 6 исходов</span>
+  <div class="desc">В зависимости от точности — 3 уровня pass (золото/серебро/бронза) или 3 уровня fail. На каждый — своя реакция Carlos и описание сцены.</div>
+</div>
+
+<div class="grid">
+
+  <!-- GOLD -->
+  <div class="frame">
+    <div class="frame-label" style="color: #fbbf24;"><span class="round-no">🥇</span>Золото · 95-100%</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:51</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="result-hero pass-gold">
+        <div class="result-icon"><svg><use href="#i-stamp"/></svg></div>
+        <div class="result-text">¡Bienvenida!</div>
+        <div class="result-subtext">Штамп поставлен · идеально</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">Carlos говорит</div>
+        <div class="result-quote-es">Excelente español. Bienvenida a España, Andrea.</div>
+        <div class="result-quote-ru">«Отличный испанский. Добро пожаловать.»</div>
+      </div>
+      <div class="result-scene">Carlos искренне улыбается, делает чёткий штамп и возвращает паспорт двумя руками. «Disfrute Madrid.»</div>
+      <div class="result-stats">
+        <div class="stat-row"><div class="stat-label">Точность</div><div class="stat-value" style="color: #fbbf24;">100% · 16/16</div></div>
+        <div class="stat-row"><div class="stat-label">Награда</div><div class="stat-value">+250 +150 XP</div></div>
+        <div class="stat-row"><div class="stat-label">Бейдж</div><div class="stat-value">🥇 Прошёл границу</div></div>
+      </div>
+      <div class="result-actions">
+        <div class="btn-primary">Открыть блок A2 →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SILVER -->
+  <div class="frame">
+    <div class="frame-label" style="color: #c0c0c0;"><span class="round-no">🥈</span>Серебро · 80-94%</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:51</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="result-hero pass-silver">
+        <div class="result-icon"><svg><use href="#i-stamp"/></svg></div>
+        <div class="result-text">Bienvenida</div>
+        <div class="result-subtext">Штамп поставлен · хорошо</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">Carlos говорит</div>
+        <div class="result-quote-es">Bien. Bienvenida a España.</div>
+        <div class="result-quote-ru">«Хорошо. Добро пожаловать.»</div>
+      </div>
+      <div class="result-scene">Carlos кивает, ставит штамп, протягивает паспорт. «Adelante.»</div>
+      <div class="result-stats">
+        <div class="stat-row"><div class="stat-label">Точность</div><div class="stat-value" style="color: #c0c0c0;">87% · 14/16</div></div>
+        <div class="stat-row"><div class="stat-label">Награда</div><div class="stat-value">+250 +50 XP</div></div>
+        <div class="stat-row"><div class="stat-label">Бейдж</div><div class="stat-value">🥈 Прошёл границу</div></div>
+      </div>
+      <div class="result-actions">
+        <div class="btn-primary">Открыть блок A2 →</div>
+        <div class="btn-secondary">Разобрать 2 ошибки</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRONZE -->
+  <div class="frame">
+    <div class="frame-label" style="color: #cd7f32;"><span class="round-no">🥉</span>Бронза · 70-79%</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:51</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="result-hero pass-bronze">
+        <div class="result-icon"><svg><use href="#i-check"/></svg></div>
+        <div class="result-text">Pase</div>
+        <div class="result-subtext">Штамп поставлен · еле-еле</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">Carlos говорит</div>
+        <div class="result-quote-es">Está bien. Pase.</div>
+        <div class="result-quote-ru">«Ладно. Проходите.»</div>
+      </div>
+      <div class="result-scene">Carlos ставит штамп без эмоций, едва смотрит на тебя. «El siguiente.» (Следующий.)</div>
+      <div class="result-stats">
+        <div class="stat-row"><div class="stat-label">Точность</div><div class="stat-value" style="color: #cd7f32;">75% · 12/16</div></div>
+        <div class="stat-row"><div class="stat-label">Награда</div><div class="stat-value">+250 XP</div></div>
+        <div class="stat-row"><div class="stat-label">Бейдж</div><div class="stat-value">🥉 Прошёл границу</div></div>
+      </div>
+      <div class="result-actions">
+        <div class="btn-primary">Открыть блок A2 →</div>
+        <div class="btn-secondary">Разобрать 4 ошибки</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAIL NEAR -->
+  <div class="frame">
+    <div class="frame-label" style="color: var(--red);"><span class="round-no">✗</span>Почти · 50-69%</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:51</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="result-hero fail">
+        <div class="result-icon"><svg><use href="#i-x"/></svg></div>
+        <div class="result-text">Acompáñeme</div>
+        <div class="result-subtext">Тебя задержали на границе</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">Carlos говорит</div>
+        <div class="result-quote-es">Hmm... casi. Pero no. Acompáñeme.</div>
+        <div class="result-quote-ru">«Хм... почти. Но нет. Пройдёмте.»</div>
+      </div>
+      <div class="result-scene">Carlos качает головой, делает знак коллеге. Тебя ведут в сторону для доп. проверки. Документы остаются у Carlos.</div>
+      <div class="result-stats">
+        <div class="stat-row"><div class="stat-label">Точность</div><div class="stat-value" style="color: var(--red);">62% · 10/16</div></div>
+        <div class="stat-row"><div class="stat-label">Слабые зоны</div><div class="stat-value">SER · Артикль</div></div>
+      </div>
+      <div class="result-actions">
+        <div class="btn-danger">Попробовать сейчас (−50 рейтинга)</div>
+        <div class="btn-secondary">Подождать 24 часа</div>
+        <div class="btn-secondary">Повторить уроки 1-15</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAIL LOW -->
+  <div class="frame">
+    <div class="frame-label" style="color: var(--red);"><span class="round-no">✗</span>Плохо · 30-49%</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:51</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="result-hero fail">
+        <div class="result-icon"><svg><use href="#i-warn"/></svg></div>
+        <div class="result-text">Sala aparte</div>
+        <div class="result-subtext">Отдельная комната для досмотра</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">Carlos говорит</div>
+        <div class="result-quote-es">Lo siento. Acompáñeme a la sala aparte.</div>
+        <div class="result-quote-ru">«Жаль. Пройдёмте в отдельную комнату.»</div>
+      </div>
+      <div class="result-scene">Подходит коллега, забирает паспорт. Тебя ведут на длинный досмотр.</div>
+      <div class="result-stats">
+        <div class="stat-row"><div class="stat-label">Точность</div><div class="stat-value" style="color: var(--red);">37% · 6/16</div></div>
+        <div class="stat-row"><div class="stat-label">Слабые зоны</div><div class="stat-value">SER · Числа · Артикль</div></div>
+      </div>
+      <div class="result-actions">
+        <div class="btn-danger">Попробовать сейчас (−50 рейтинга)</div>
+        <div class="btn-secondary">Подождать 24 часа</div>
+        <div class="btn-secondary">Повторить уроки 1-15</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAIL VERY LOW -->
+  <div class="frame">
+    <div class="frame-label" style="color: var(--red);"><span class="round-no">✗</span>Очень плохо · 0-29%</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:51</span><span class="right"><svg><use href="#i-wifi"/></svg><svg><use href="#i-battery"/></svg></span></div>
+      <div class="result-hero fail">
+        <div class="result-icon"><svg><use href="#i-warn"/></svg></div>
+        <div class="result-text">Espere aquí</div>
+        <div class="result-subtext">К стойке идут двое в форме</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">Carlos говорит</div>
+        <div class="result-quote-es">No habla español suficiente. Espere aquí.</div>
+        <div class="result-quote-ru">«Вы не говорите по-испански. Подождите здесь.»</div>
+      </div>
+      <div class="result-scene">Carlos поднимает трубку. К стойке идут двое в форме. Тебя забирают на длинную проверку.</div>
+      <div class="result-stats">
+        <div class="stat-row"><div class="stat-label">Точность</div><div class="stat-value" style="color: var(--red);">19% · 3/16</div></div>
+        <div class="stat-row"><div class="stat-label">Рекомендация</div><div class="stat-value">Учи блок 1 заново</div></div>
+      </div>
+      <div class="result-actions">
+        <div class="btn-secondary">Повторить уроки 1-15</div>
+      </div>
     </div>
   </div>
 </div>
@@ -974,19 +1606,16 @@ h2 {
 <!-- ============ FEEDBACK ============ -->
 <div class="fb-section">
   <h2>Твоя обратная связь</h2>
-  <p style="margin: 0 0 12px; color: var(--text-dim); font-size: 14px;">Прочитай и отметь:</p>
   <ol>
-    <li>Все ли реплики Carlos звучат естественно по-испански?</li>
-    <li>Карактер Carlos «строгий но не злой» — попадает, или хочется иначе?</li>
-    <li>Раунды строго в рамках блока 1 — нет ли проскочившего «слишком сложного»?</li>
-    <li>Драматизм с «задержали на границе» — норм или слишком жёстко?</li>
-    <li>Хочешь добавить пункты-сюжет или удалить какой-то?</li>
+    <li>Стиль теперь как ты хотела — мокап в стиле приложения?</li>
+    <li>Carlos — серьёзный офицер на «usted» — характер попадает?</li>
+    <li>Реплики Carlos на испанском звучат естественно?</li>
+    <li>Драматизм «задержали на границе» — норм или слишком жёстко?</li>
+    <li>Какие-то задания неудачные / лишние / надо переделать?</li>
   </ol>
   <p style="margin: 16px 0 0; color: var(--text); font-size: 14px;">
-    Если всё ок → следующий CP. Я сначала проверю, что в блоке 2 (уроки 17-30), и только потом напишу CP2 строго на этом материале.
+    Если ОК → следующий CP2. Сначала проверю что в блоке 2 (уроки 17-30), потом напишу строго на этом материале.
   </p>
-</div>
-
 </div>
 
 </body>
