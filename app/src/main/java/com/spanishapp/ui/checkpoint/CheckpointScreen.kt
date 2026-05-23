@@ -645,11 +645,11 @@ private fun ChoicePicker(round: CheckpointRound, enabled: Boolean, onPick: (Stri
         (round.distractors + round.correctAnswer).shuffled(kotlin.random.Random(round.round.toLong()))
     }
     val haptic = rememberCheckedHaptic()
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         options.forEach { opt ->
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(16.dp),
                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 border = androidx.compose.foundation.BorderStroke(1.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)),
                 onClick = {
@@ -661,9 +661,10 @@ private fun ChoicePicker(round: CheckpointRound, enabled: Boolean, onPick: (Stri
             ) {
                 Text(
                     opt,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    fontSize = 14.sp,
+                    modifier = Modifier.padding(horizontal = 18.dp, vertical = 18.dp),
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Medium,
+                    lineHeight = 22.sp,
                 )
             }
         }
@@ -686,23 +687,24 @@ private fun ConjugatePicker(round: CheckpointRound, enabled: Boolean, onPick: (S
             ) {
                 Text(
                     round.sentenceTemplate,
-                    modifier = Modifier.padding(16.dp),
-                    fontSize = 17.sp,
+                    modifier = Modifier.padding(20.dp),
+                    fontSize = 19.sp,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
+                    lineHeight = 26.sp,
                 )
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(14.dp))
         }
 
         // 2-column grid for conjugation options
         val rows = options.chunked(2)
         rows.forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 row.forEach { opt ->
                     Surface(
                         modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(14.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,
                         border = androidx.compose.foundation.BorderStroke(1.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)),
                         onClick = {
@@ -714,8 +716,8 @@ private fun ConjugatePicker(round: CheckpointRound, enabled: Boolean, onPick: (S
                     ) {
                         Text(
                             opt,
-                            modifier = Modifier.padding(14.dp),
-                            fontSize = 14.sp,
+                            modifier = Modifier.padding(18.dp),
+                            fontSize = 17.sp,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
                         )
@@ -723,7 +725,7 @@ private fun ConjugatePicker(round: CheckpointRound, enabled: Boolean, onPick: (S
                 }
                 if (row.size == 1) Spacer(Modifier.weight(1f))   // pad odd row
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(10.dp))
         }
     }
 }
@@ -752,7 +754,7 @@ private fun SentenceBuilder(round: CheckpointRound, enabled: Boolean, onSubmit: 
             ) {
                 placed.forEachIndexed { idx, word ->
                     Surface(
-                        shape = RoundedCornerShape(9.dp),
+                        shape = RoundedCornerShape(10.dp),
                         color = Color(0xFFFF6B1A),
                         onClick = {
                             if (enabled) {
@@ -765,9 +767,9 @@ private fun SentenceBuilder(round: CheckpointRound, enabled: Boolean, onSubmit: 
                     ) {
                         Text(
                             word,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                             color = Color.White,
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }
@@ -785,7 +787,7 @@ private fun SentenceBuilder(round: CheckpointRound, enabled: Boolean, onSubmit: 
             bank.forEachIndexed { idx, word ->
                 if (idx !in used) {
                     Surface(
-                        shape = RoundedCornerShape(9.dp),
+                        shape = RoundedCornerShape(10.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,
                         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)),
                         onClick = {
@@ -798,8 +800,8 @@ private fun SentenceBuilder(round: CheckpointRound, enabled: Boolean, onSubmit: 
                     ) {
                         Text(
                             word,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                            fontSize = 14.sp,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }

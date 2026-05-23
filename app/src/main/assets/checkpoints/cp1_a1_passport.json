@@ -4,15 +4,13 @@
   "block": 1,
   "title_ru": "Паспортный контроль",
   "title_es": "Control de pasaportes",
-  "title_en": "Passport Control",
   "description_ru": "Ты только что приземлилась в Мадриде. Впереди — паспортный контроль. Офицер Carlos строгий, замечает каждую ошибку в речи. Справишься — штамп и добро пожаловать в Испанию. Не справишься — заберут на дополнительную проверку.",
   "stakes_ru": "Эта проверка решает: пройдёшь ты в Испанию или тебя задержат на границе.",
   "scene": {
     "name": "Aeropuerto Madrid-Barajas",
     "type": "passport_control",
     "city": "Madrid",
-    "background_image": "scene_cp1_passport.jpg",
-    "ambient_sound": "airport_ambient.mp3"
+    "background_image": "scene_cp1_passport.jpg"
   },
   "npc": {
     "id": "carlos",
@@ -21,14 +19,13 @@
     "role_es": "Oficial de control de fronteras",
     "voice_id": "es-ES-Polyglot-1",
     "portrait_image": "npc_carlos.jpg",
-    "personality": "формальный, профессиональный, не злой но строгий. На правильные ответы кивает молча. На ошибках слегка прищуривается. После 2-3 ошибок начинает повторно сверять документы и задавать дополнительные вопросы. Использует только usted-форму."
+    "personality": "формальный, профессиональный, не злой но строгий. На правильные ответы кивает молча. На ошибках слегка прищуривается."
   },
   "user_character": {
     "default_name": "Andrea",
     "gender": "feminine",
     "nationality": "rusa",
-    "country": "Rusia",
-    "note": "Юзер играет за Andrea, русскую туристку. Использует женский род в национальности."
+    "country": "Rusia"
   },
   "thresholds": {
     "bronze_percent": 70,
@@ -43,310 +40,255 @@
     "badge_name_ru": "Прошёл границу",
     "unlocks_block": 2
   },
-  "intro_text_ru": "Ты только что вышла из самолёта. Толпа пассажиров, гул аэропорта. Впереди очередь к стойке. Carlos поднимает на тебя глаза — твой ход.",
   "rounds": [
     {
       "round": 1,
       "format": "CHOICE",
       "topic_ru": "Приветствие · ответ офицеру",
-      "tested_grammar": "saludo formal",
       "tested_lesson": "u1_l4",
       "npc_line_es": "Buenos días.",
       "npc_line_ru": "Доброе утро.",
       "prompt_ru": "Carlos смотрит на тебя поверх стекла. Что отвечаешь?",
       "correct_answer": "Buenos días.",
-      "distractors": [
-        "Buenas noches.",
-        "Hasta luego.",
-        "De nada."
-      ],
-      "explanation_on_fail_ru": "«Buenas noches» = вечернее приветствие. «Hasta luego» = прощание. «De nada» = ответ на «спасибо». Правильно: «Buenos días» — утреннее приветствие в ответ.",
-      "carlos_reaction_correct_ru": "Carlos кивает.",
-      "carlos_reaction_wrong_ru": "Carlos поднимает бровь."
+      "distractors": ["Buenas noches.", "Hasta luego.", "De nada."]
     },
     {
       "round": 2,
       "format": "CHOICE",
-      "topic_ru": "Формальное «как дела» · вежливый ответ",
-      "tested_grammar": "fórmula de cortesía",
-      "tested_lesson": "u1_l4 + u1_l6",
+      "topic_ru": "Формальное «как дела»",
+      "tested_lesson": "u1_l4",
       "npc_line_es": "¿Cómo está usted?",
       "npc_line_ru": "Как у вас дела?",
       "prompt_ru": "Что отвечаешь?",
       "correct_answer": "Bien, gracias.",
-      "distractors": [
-        "Soy de Rusia.",
-        "Adiós.",
-        "Disculpe."
-      ],
-      "explanation_on_fail_ru": "Стандартный ответ на «¿Cómo está?» — «Bien, gracias» («Хорошо, спасибо»). «Soy de Rusia» он спросит позже. «Adiós» = прощай. «Disculpe» = извините.",
-      "carlos_reaction_correct_ru": "Carlos смотрит в твой паспорт.",
-      "carlos_reaction_wrong_ru": "Carlos медленно повторяет: «¿Cómo está usted?»"
+      "distractors": ["Soy de Rusia.", "Adiós.", "Disculpe."]
     },
     {
       "round": 3,
       "format": "CHOICE",
-      "topic_ru": "Вежливая передача документов",
-      "tested_grammar": "fórmula de cortesía con respuesta",
-      "tested_lesson": "u1_l6",
-      "npc_line_es": "Su pasaporte y su visa, por favor.",
-      "npc_line_ru": "Ваш паспорт и виза, пожалуйста.",
-      "prompt_ru": "Передаёшь документы. Что говоришь?",
-      "correct_answer": "Sí, por favor.",
-      "distractors": [
-        "De nada.",
-        "Lo siento.",
-        "Hasta mañana."
-      ],
-      "explanation_on_fail_ru": "«Sí, por favor» = «Да, пожалуйста» — нейтрально и вежливо. «De nada» — ответ на «спасибо», не подходит. «Lo siento» = «мне жаль», без причины. «Hasta mañana» = прощание.",
-      "carlos_reaction_correct_ru": "Carlos берёт документы.",
-      "carlos_reaction_wrong_ru": "Carlos поджимает губы. Документы пока не берёт."
+      "topic_ru": "Личное местоимение · yo",
+      "tested_lesson": "u1_l7",
+      "npc_line_es": "¿Quién es usted?",
+      "npc_line_ru": "Кто вы?",
+      "prompt_ru": "Какое местоимение в ответе «___ soy Andrea»?",
+      "correct_answer": "Yo",
+      "distractors": ["Tú", "Él", "Nosotros"],
+      "explanation_on_fail_ru": "«Yo» = я (1 л. ед. ч.). «Tú» = ты (2 л.), «Él» = он (3 л.), «Nosotros» = мы."
     },
     {
       "round": 4,
       "format": "LISTEN",
-      "topic_ru": "Алфавит · распознавание имени по буквам",
-      "tested_grammar": "alfabeto",
+      "topic_ru": "Алфавит · буквы имени",
       "tested_lesson": "u1_l0 + u1_l1 + u1_l2",
-      "npc_line_es": "A. N. D. R. E. A.",
-      "npc_line_ru": null,
+      "npc_line_es": "Su nombre se escribe: a, ene, de, erre, e, a.",
       "audio_only": true,
       "prompt_ru": "Carlos произносит твоё имя по буквам. Какое имя?",
       "correct_answer": "Andrea",
-      "distractors": [
-        "Adriana",
-        "Ariana",
-        "Antonia"
-      ],
-      "translation_after_answer_ru": "Carlos произнёс: A-N-D-R-E-A → Andrea",
-      "explanation_on_fail_ru": "Тестируется знание алфавита. Carlos произнёс каждую букву отдельно. Запомни буквы: A [а], N [эне], D [де], R [эре], E [э], A [а].",
-      "carlos_reaction_correct_ru": "Carlos: «Correcto.»",
-      "carlos_reaction_wrong_ru": "Carlos сверяет паспорт ещё раз. Молча."
+      "distractors": ["Adriana", "Ariana", "Antonia"],
+      "translation_after_answer_ru": "a, ene, de, erre, e, a → A-N-D-R-E-A → Andrea",
+      "explanation_on_fail_ru": "Испанский алфавит: A [а], N [эне], D [де], R [эре], E [э]. Имя «Andrea» = А-Н-Д-Р-Е-А."
     },
     {
       "round": 5,
       "format": "CONJUGATE",
       "topic_ru": "SER · yo soy",
-      "tested_grammar": "SER 1p sing",
       "tested_lesson": "u1_l10",
-      "npc_line_es": "¿Quién es usted?",
-      "npc_line_ru": "Кто вы?",
-      "prompt_ru": "Поставь глагол в правильной форме:",
+      "npc_line_es": "Confirme su nombre.",
+      "npc_line_ru": "Подтвердите имя.",
+      "prompt_ru": "Поставь форму SER:",
       "sentence_template": "Yo ___ Andrea.",
       "verb_infinitive": "ser",
       "correct_answer": "soy",
-      "distractors": [
-        "eres",
-        "es",
-        "somos"
-      ],
-      "explanation_on_fail_ru": "SER в 1-м лице ед. ч. → «soy». «Eres» = ты (2 л.), «es» = он/она (3 л.), «somos» = мы.",
-      "carlos_reaction_correct_ru": "Carlos записывает что-то в систему.",
-      "carlos_reaction_wrong_ru": "Carlos: «Otra vez, por favor. ¿Quién es usted?»"
+      "distractors": ["eres", "es", "somos"]
     },
     {
       "round": 6,
       "format": "BUILD",
       "topic_ru": "Откуда · SER + DE + страна",
-      "tested_grammar": "SER + preposición DE + país",
       "tested_lesson": "u1_l10 + u1_l12",
       "npc_line_es": "¿De dónde es usted?",
       "npc_line_ru": "Откуда вы?",
       "prompt_ru": "Собери ответ из слов:",
       "correct_answer": "Soy de Rusia",
       "word_bank": ["Soy", "de", "Rusia", "es", "España", "yo", "ella"],
-      "explanation_on_fail_ru": "«Soy de Rusia» = «Я из России». Глагол SER + предлог DE + страна. Не путать с «Yo de Rusia» (без глагола — неправильно) или «Soy Rusia» (без предлога).",
-      "carlos_reaction_correct_ru": "Carlos кивает.",
-      "carlos_reaction_wrong_ru": "Carlos: «Repita, por favor.»"
+      "explanation_on_fail_ru": "«Soy de Rusia» = я из России. SER + предлог DE + страна."
     },
     {
       "round": 7,
       "format": "CHOICE",
-      "topic_ru": "Национальность · согласование по роду",
-      "tested_grammar": "adjetivo de nacionalidad · concordancia femenina",
+      "topic_ru": "Национальность · ж.р.",
       "tested_lesson": "u1_l12",
       "npc_line_es": "¿Es usted rusa o española?",
       "npc_line_ru": "Вы русская или испанка?",
-      "prompt_ru": "Andrea — русская. Какой ответ правильный?",
+      "prompt_ru": "Andrea — женщина. Какой ответ правильный?",
       "correct_answer": "Soy rusa.",
-      "distractors": [
-        "Soy ruso.",
-        "Soy español.",
-        "Soy de Inglaterra."
-      ],
-      "explanation_on_fail_ru": "Andrea — женщина → национальность в женском роде: «rusa» (не «ruso»). Запомни: «-o» для мужчин, «-a» для женщин: ruso/rusa, español/española.",
-      "carlos_reaction_correct_ru": "Carlos: «Bien.»",
-      "carlos_reaction_wrong_ru": "Carlos сверяет фото в паспорте с твоим лицом."
+      "distractors": ["Soy ruso.", "Soy español.", "Soy de Inglaterra."],
+      "explanation_on_fail_ru": "Andrea — женщина → национальность в ж.р.: «rusa». Правило: -o м.р., -a ж.р."
     },
     {
       "round": 8,
-      "format": "CONJUGATE",
-      "topic_ru": "SER + национальность · yo soy rusa",
-      "tested_grammar": "SER 1p sing + nacionalidad",
-      "tested_lesson": "u1_l10 + u1_l12",
-      "npc_line_es": "Confirme su nacionalidad.",
-      "npc_line_ru": "Подтвердите вашу национальность.",
-      "prompt_ru": "Поставь глагол:",
-      "sentence_template": "Yo ___ rusa.",
-      "verb_infinitive": "ser",
-      "correct_answer": "soy",
-      "distractors": [
-        "es",
-        "eres",
-        "sois"
-      ],
-      "explanation_on_fail_ru": "«Yo soy» — закрепляем 1-е лицо ед. ч. SER. Это та же форма, что в раунде 5.",
-      "carlos_reaction_correct_ru": "Carlos что-то печатает.",
-      "carlos_reaction_wrong_ru": "Carlos прищуривается."
+      "format": "CHOICE",
+      "topic_ru": "Род артикля · ж.р. vs м.р.",
+      "tested_lesson": "u1_l8",
+      "npc_line_es": "Mire este documento.",
+      "npc_line_ru": "Посмотрите этот документ.",
+      "prompt_ru": "Какой артикль подходит для слова «mesa» (стол, ж.р.)?",
+      "correct_answer": "la",
+      "distractors": ["el", "los", "las"],
+      "explanation_on_fail_ru": "Слова на «-a» обычно ж.р. → «la mesa». Слова на «-o» обычно м.р. → «el libro»."
     },
     {
       "round": 9,
-      "format": "LISTEN",
-      "topic_ru": "Числа 0-20 · номер места",
-      "tested_grammar": "números 0-20",
-      "tested_lesson": "u1_l13",
-      "npc_line_es": "Su número de asiento es el catorce.",
-      "npc_line_ru": null,
-      "audio_only": true,
-      "prompt_ru": "Carlos называет номер твоего места. Какой это номер?",
-      "correct_answer": "14",
-      "distractors": [
-        "4",
-        "11",
-        "16"
-      ],
-      "translation_after_answer_ru": "«Catorce» = 14",
-      "explanation_on_fail_ru": "«Catorce» = 14. Не путать: «cuatro» = 4, «once» = 11, «dieciséis» = 16.",
-      "carlos_reaction_correct_ru": "Carlos переворачивает страницу паспорта.",
-      "carlos_reaction_wrong_ru": "Carlos: «¿Está segura?»"
+      "format": "CHOICE",
+      "topic_ru": "Артикль · un (неопределённый)",
+      "tested_lesson": "u1_l9",
+      "npc_line_es": "Tengo aquí ___ pasaporte. ¿Es el suyo?",
+      "npc_line_ru": "У меня здесь ___ паспорт. Это ваш?",
+      "prompt_ru": "Какой артикль для слова «pasaporte» (один из многих)?",
+      "correct_answer": "un",
+      "distractors": ["una", "el", "la"],
+      "explanation_on_fail_ru": "«Un» = неопределённый м.р. (какой-то). «El» = определённый (именно этот). «Pasaporte» — м.р."
     },
     {
       "round": 10,
-      "format": "CHOICE",
-      "topic_ru": "Артикль · el / la / un / una",
-      "tested_grammar": "artículo masculino singular",
-      "tested_lesson": "u1_l8 + u1_l9",
-      "npc_line_es": "Tengo aquí ___ pasaporte. ¿Es el suyo?",
-      "npc_line_ru": "У меня здесь ___ паспорт. Это ваш?",
-      "prompt_ru": "Какой артикль подходит для слова «pasaporte»?",
-      "correct_answer": "un",
-      "distractors": [
-        "una",
-        "el",
-        "la"
-      ],
-      "explanation_on_fail_ru": "«Pasaporte» — мужского рода (хотя кончается на -e). Carlos говорит про «какой-то паспорт» (неопределённый) → «un». Если бы говорил «именно этот» → «el». «Una» и «la» — женский род.",
-      "carlos_reaction_correct_ru": "Carlos продолжает проверять.",
-      "carlos_reaction_wrong_ru": "Carlos снимает очки и протирает их. Молча."
+      "format": "CONJUGATE",
+      "topic_ru": "SER · usted es (3 л.)",
+      "tested_lesson": "u1_l10",
+      "npc_line_es": "Verifico:",
+      "npc_line_ru": "Проверяю:",
+      "prompt_ru": "Какая форма SER для «usted»? (важно: 3 лицо!)",
+      "sentence_template": "Usted ___ Andrea, ¿correcto?",
+      "verb_infinitive": "ser",
+      "correct_answer": "es",
+      "distractors": ["soy", "eres", "son"],
+      "explanation_on_fail_ru": "«Usted» формально = «Вы», но грамматически 3 л. ед. ч. → форма «es». «Eres» — только для «tú» (на ты)."
     },
     {
       "round": 11,
-      "format": "BUILD",
-      "topic_ru": "Множественное SER · nosotros somos",
-      "tested_grammar": "SER 1p plural",
-      "tested_lesson": "u1_l11",
-      "npc_line_es": "¿Y los señores detrás de usted? ¿Son ustedes turistas juntos?",
-      "npc_line_ru": "А люди за вами? Вы туристы вместе?",
-      "prompt_ru": "Собери ответ:",
-      "correct_answer": "Sí nosotros somos turistas",
-      "word_bank": ["Sí", "nosotros", "somos", "turistas", "soy", "son", "sois"],
-      "explanation_on_fail_ru": "«Nosotros somos» = «мы есть/мы». 1-е лицо мн. ч. от SER → «somos». Не путать с «son» (3 л. мн. ч. — они), «sois» (2 л. мн. ч. — вы).",
-      "carlos_reaction_correct_ru": "Carlos кивает группе позади.",
-      "carlos_reaction_wrong_ru": "Carlos машет следующему: «Esperen un momento.»"
+      "format": "LISTEN",
+      "topic_ru": "Числа 0-20 · номер места",
+      "tested_lesson": "u1_l13",
+      "npc_line_es": "Su número de asiento es el catorce.",
+      "audio_only": true,
+      "prompt_ru": "Carlos называет номер твоего места.",
+      "correct_answer": "14",
+      "distractors": ["4", "11", "16"],
+      "translation_after_answer_ru": "«Catorce» = 14",
+      "explanation_on_fail_ru": "«Catorce» = 14. «Cuatro» = 4, «once» = 11, «dieciséis» = 16."
     },
     {
       "round": 12,
       "format": "CHOICE",
-      "topic_ru": "Извинение · ответ на гипотетическую вину",
-      "tested_grammar": "fórmula de disculpa",
-      "tested_lesson": "u1_l6",
-      "npc_line_es": "Hay un problema con su visa. ¿Sabe usted algo?",
-      "npc_line_ru": "Есть проблема с вашей визой. Вы что-нибудь знаете?",
-      "prompt_ru": "Вежливо ответь, что не знаешь и извинись:",
-      "correct_answer": "Lo siento, no.",
-      "distractors": [
-        "De nada.",
-        "Hasta luego.",
-        "Buenas noches."
-      ],
-      "explanation_on_fail_ru": "«Lo siento» = «мне жаль, извините за ситуацию». «De nada» — ответ на «спасибо». Остальные — приветствия/прощания.",
-      "carlos_reaction_correct_ru": "Carlos: «Está bien, solo bromeaba.» (немного смягчается)",
-      "carlos_reaction_wrong_ru": "Carlos: «Hmm.» (поднимает трубку телефона)"
+      "topic_ru": "Числа · возраст ребёнка пассажира",
+      "tested_lesson": "u1_l13",
+      "npc_line_es": "¿Cuántos años? Diga el número.",
+      "npc_line_ru": "Сколько лет? Назовите число.",
+      "prompt_ru": "Carlos указывает на цифру в декларации: «18». Как это сказать?",
+      "correct_answer": "dieciocho",
+      "distractors": ["ocho", "diez", "veinte"],
+      "explanation_on_fail_ru": "«Dieciocho» = 18 (буквально «десять+восемь»). «Ocho» = 8, «diez» = 10, «veinte» = 20."
     },
     {
       "round": 13,
-      "format": "TRANSLATE_ES_RU",
-      "topic_ru": "Понимание ES → RU · полная фраза",
-      "tested_grammar": "comprehension lectora",
-      "tested_lesson": "u1_l4 + u1_l10 + u1_l12",
-      "npc_line_es": null,
-      "prompt_ru": "Carlos говорит, что нужно перевести. Что значит фраза?",
-      "prompt_text_es": "Usted es rusa y es de Rusia.",
-      "correct_answer": "Вы русская и вы из России.",
-      "acceptable_alternatives": [
-        "Вы русская и из России.",
-        "Вы — русская, и вы из России.",
-        "Ты русская и ты из России.",
-        "Ты русская и из России."
-      ],
-      "explanation_on_fail_ru": "«Usted es» = «Вы есть» (формальное обращение). «Rusa» = русская. «Y» = и. «Es de Rusia» = из России.",
-      "carlos_reaction_correct_ru": "Carlos: «Bien. Lo entiende.»",
-      "carlos_reaction_wrong_ru": "Carlos качает головой."
+      "format": "CONJUGATE",
+      "topic_ru": "Порядковые · primero",
+      "tested_lesson": "u1_l13_5",
+      "npc_line_es": "Es su ___ visita a España.",
+      "npc_line_ru": "Это ваш ___ визит в Испанию.",
+      "prompt_ru": "Какое порядковое число для «первая»?",
+      "sentence_template": "Es su ___ visita.",
+      "verb_infinitive": "primero",
+      "correct_answer": "primera",
+      "distractors": ["primero", "primer", "primeros"],
+      "explanation_on_fail_ru": "«Primera» согласуется с «visita» (ж.р.). «Primero» — м.р., «primer» — перед м.р. сущ. («primer día»)."
     },
     {
       "round": 14,
-      "format": "CONJUGATE",
-      "topic_ru": "SER · usted es",
-      "tested_grammar": "SER 3p sing (usted)",
-      "tested_lesson": "u1_l10",
-      "npc_line_es": "Una pregunta más. Por favor confirme:",
-      "npc_line_ru": "Ещё один вопрос. Подтвердите:",
-      "prompt_ru": "Какая форма SER подходит?",
-      "sentence_template": "Usted ___ Andrea, ¿correcto?",
-      "verb_infinitive": "ser",
-      "correct_answer": "es",
-      "distractors": [
-        "soy",
-        "eres",
-        "son"
-      ],
-      "explanation_on_fail_ru": "«Usted» формально = «Вы», но грамматически — 3 лицо ед. ч. → форма «es». Не «eres» (это для «tú» — на «ты»).",
-      "carlos_reaction_correct_ru": "Carlos слабо улыбается.",
-      "carlos_reaction_wrong_ru": "Carlos: «¿Es usted o no es usted?»"
+      "format": "BUILD",
+      "topic_ru": "SER мн. ч. · nosotros somos",
+      "tested_lesson": "u1_l11",
+      "npc_line_es": "¿Y los señores detrás? ¿Son turistas juntos?",
+      "npc_line_ru": "А люди за вами? Туристы вместе?",
+      "prompt_ru": "Собери ответ:",
+      "correct_answer": "Sí nosotros somos turistas",
+      "word_bank": ["Sí", "nosotros", "somos", "turistas", "soy", "son", "sois"],
+      "explanation_on_fail_ru": "«Nosotros somos» = мы. 1 л. мн. SER → «somos». Не путать с «son» (они), «sois» (вы на ты)."
     },
     {
       "round": 15,
       "format": "CHOICE",
-      "topic_ru": "Welcome · ответ на «Добро пожаловать»",
-      "tested_grammar": "fórmula de cortesía",
+      "topic_ru": "Местоимение · ellos",
+      "tested_lesson": "u1_l7 + u1_l11",
+      "npc_line_es": "¿Y ___ son sus amigos?",
+      "npc_line_ru": "А они ваши друзья?",
+      "prompt_ru": "Какое местоимение для «они» (3 л. мн.)?",
+      "correct_answer": "ellos",
+      "distractors": ["nosotros", "vosotros", "usted"],
+      "explanation_on_fail_ru": "«Ellos» = они (м.р. или смешанный род). «Ellas» — только женщины. «Nosotros» = мы, «vosotros» = вы (на ты)."
+    },
+    {
+      "round": 16,
+      "format": "CHOICE",
+      "topic_ru": "Lo siento · извинение",
+      "tested_lesson": "u1_l6",
+      "npc_line_es": "Hay un problema con su visa. ¿Sabe usted algo?",
+      "npc_line_ru": "Есть проблема с визой. Вы что-то знаете?",
+      "prompt_ru": "Вежливо ответь что не знаешь:",
+      "correct_answer": "Lo siento, no.",
+      "distractors": ["De nada.", "Hasta luego.", "Buenas noches."],
+      "explanation_on_fail_ru": "«Lo siento» = «мне жаль, извините за ситуацию». Уместно когда не знаешь причину."
+    },
+    {
+      "round": 17,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · SER + национальность",
+      "tested_lesson": "u1_l10 + u1_l12",
+      "prompt_ru": "Carlos говорит. Переведи на русский:",
+      "prompt_text_es": "Usted es rusa y es de Rusia.",
+      "correct_answer": "Вы русская и вы из России.",
+      "acceptable_alternatives": [
+        "Вы русская и из России.",
+        "Ты русская и ты из России.",
+        "Ты русская и из России.",
+        "Вы — русская, и вы из России."
+      ],
+      "explanation_on_fail_ru": "«Usted es» = «Вы есть/Вы». «Rusa» = русская (ж.р.). «Y» = и. «Es de Rusia» = (Вы) из России."
+    },
+    {
+      "round": 18,
+      "format": "CONJUGATE",
+      "topic_ru": "SER · ellos son",
+      "tested_lesson": "u1_l11",
+      "npc_line_es": "Una última pregunta:",
+      "npc_line_ru": "Последний вопрос:",
+      "prompt_ru": "Поставь форму SER:",
+      "sentence_template": "Sus amigos ___ rusos también, ¿verdad?",
+      "verb_infinitive": "ser",
+      "correct_answer": "son",
+      "distractors": ["es", "somos", "sois"],
+      "explanation_on_fail_ru": "«Sus amigos» = его/её друзья (мн.) → 3 л. мн. SER → «son»."
+    },
+    {
+      "round": 19,
+      "format": "CHOICE",
+      "topic_ru": "Reaction · Bienvenida → gracias",
       "tested_lesson": "u1_l6",
       "npc_line_es": "Todo está en orden. Bienvenida a España.",
       "npc_line_ru": "Всё в порядке. Добро пожаловать в Испанию.",
       "prompt_ru": "Carlos ставит штамп. Что отвечаешь?",
       "correct_answer": "Muchas gracias.",
-      "distractors": [
-        "De nada.",
-        "Por favor.",
-        "Adiós."
-      ],
-      "explanation_on_fail_ru": "На «bienvenida» благодаришь: «Muchas gracias» = большое спасибо. «De nada» — ответ ОТ Carlos, не от тебя. «Adiós» — рано прощаться.",
-      "carlos_reaction_correct_ru": "Carlos протягивает паспорт.",
-      "carlos_reaction_wrong_ru": "Carlos удивлён, переспрашивает."
+      "distractors": ["De nada.", "Por favor.", "Adiós."]
     },
     {
-      "round": 16,
+      "round": 20,
       "format": "BUILD",
       "topic_ru": "Финальное прощание",
-      "tested_grammar": "fórmula de despedida + cortesía",
       "tested_lesson": "u1_l5 + u1_l6",
       "npc_line_es": "Adelante. Que tenga buen día.",
       "npc_line_ru": "Проходите. Хорошего дня.",
-      "prompt_ru": "Прощаешься вежливо. Собери фразу:",
+      "prompt_ru": "Прощаешься. Соберите фразу:",
       "correct_answer": "Gracias hasta luego",
-      "word_bank": ["Gracias", "hasta", "luego", "buenos", "mañana", "días", "hola", "de"],
-      "explanation_on_fail_ru": "«Gracias hasta luego» = «Спасибо, до встречи». Стандартная формула вежливого прощания с благодарностью. «Hasta mañana» = до завтра — менее естественно тут.",
-      "carlos_reaction_correct_ru": "Carlos кивает. Штамп!",
-      "carlos_reaction_wrong_ru": "Carlos уже смотрит на следующего пассажира."
+      "word_bank": ["Gracias", "hasta", "luego", "buenos", "mañana", "días", "hola", "de"]
     }
   ],
   "pass_outcomes": {
@@ -363,7 +305,7 @@
     "bronze": {
       "carlos_line_es": "Está bien. Pase.",
       "carlos_line_ru": "Ладно. Проходите.",
-      "scene_description_ru": "Carlos ставит штамп без эмоций, едва смотрит на тебя. «El siguiente.» (Следующий.)"
+      "scene_description_ru": "Carlos ставит штамп без эмоций, едва смотрит на тебя. «El siguiente.»"
     }
   },
   "fail_outcomes": {
@@ -385,16 +327,5 @@
       "scene_description_ru": "Carlos поднимает трубку. К стойке идут двое в форме. Тебя забирают на длинную проверку.",
       "stakes_ru": "Совсем плохо. Учи блок 1 заново — потом попробуй снова."
     }
-  },
-  "after_action_buttons": {
-    "pass": [
-      { "action": "open_next_block", "label_ru": "Открыть блок A2 →" },
-      { "action": "review_mistakes", "label_ru": "Разобрать ошибки", "condition": "has_mistakes" }
-    ],
-    "fail": [
-      { "action": "retry_now", "label_ru": "Попробовать сейчас (−50 рейтинга)", "condition": "rating >= 50" },
-      { "action": "wait_24h", "label_ru": "Подождать 24 часа (бесплатно)" },
-      { "action": "review_lessons", "label_ru": "Повторить уроки 1-15" }
-    ]
   }
 }
