@@ -47,7 +47,7 @@
       "round": 1,
       "format": "CHOICE",
       "topic_ru": "Формальное приветствие · usted",
-      "tested_lesson": "u15_l0 + u1_l4",
+      "tested_lesson": "u1_l4",
       "npc_line_es": "Buenos días. Soy Ana, encantada. Tome asiento, por favor.",
       "npc_line_ru": "Доброе утро. Я Ana, очень приятно. Присаживайтесь, пожалуйста.",
       "prompt_ru": "Ana протягивает руку. Какой ответ соответствует формальному регистру?",
@@ -274,18 +274,18 @@
     {
       "round": 17,
       "format": "CHOICE",
-      "topic_ru": "Register · вежливый отказ",
-      "tested_lesson": "u15_l0 + u13_l9",
+      "topic_ru": "Si тип 2 · ответ в Condicional",
+      "tested_lesson": "u13_l2",
       "npc_line_es": "Una hipótesis: si le ofreciéramos un puesto inferior al solicitado, ¿lo aceptaría?",
       "npc_line_ru": "Гипотеза: если бы мы предложили должность ниже запрошенной, приняли бы?",
-      "prompt_ru": "Какой ответ сохраняет формальный регистр и достоинство?",
-      "correct_answer": "Agradezco la propuesta, pero preferiría mantener el nivel acordado, dado que mi experiencia lo justifica.",
+      "prompt_ru": "Какой ответ грамматически корректен (Si тип 2)?",
+      "correct_answer": "Si me ofrecieran un puesto inferior, preferiría mantener el nivel acordado.",
       "distractors": [
-        "No, qué va. Eso no me vale.",
-        "Pues vale, lo acepto sin más.",
-        "No quiero menos dinero, ¿vale?"
+        "Si me ofrecerían un puesto inferior, preferiría mantenerlo.",
+        "Si me ofrecen un puesto inferior, preferiría mantenerlo.",
+        "Si me ofrecieron un puesto inferior, preferiré mantenerlo."
       ],
-      "explanation_on_fail_ru": "Формальный отказ: благодарность + Condicional «preferiría» + причина «dado que». Разговорные «qué va», «vale» неуместны на интервью."
+      "explanation_on_fail_ru": "Si тип 2: Si + Imp.Subj. (ofrecieran) + Condicional (preferiría). Никогда «si + condicional». Indef ofrecieron — реальное прошлое, не подходит."
     },
     {
       "round": 18,
@@ -316,44 +316,44 @@
     {
       "round": 20,
       "format": "CHOICE",
-      "topic_ru": "Connector · вывод аргумента",
-      "tested_lesson": "u15_l7",
-      "npc_line_es": "Veo que tiene experiencia internacional y dominio de tres idiomas. ___, su perfil encaja con lo que necesitamos.",
-      "npc_line_ru": "Вижу, у вас международный опыт и три языка. ___, ваш профиль подходит.",
-      "prompt_ru": "Какой формальный connector следствия?",
-      "correct_answer": "Por consiguiente",
-      "distractors": ["Pero", "Sino", "Aunque"],
-      "explanation_on_fail_ru": "«Por consiguiente» = следовательно (формал.). Pero/sino — контраст. Aunque — уступка. Здесь нужно следствие."
+      "topic_ru": "Subjuntivo · antes de que",
+      "tested_lesson": "u13_l11",
+      "npc_line_es": "Antes de que ___ la decisión final, ¿quiere añadir algo a su candidatura?",
+      "npc_line_ru": "Прежде чем мы примем окончательное решение, хотите что-то добавить?",
+      "prompt_ru": "После «antes de que» — какая форма?",
+      "correct_answer": "tomemos",
+      "distractors": ["tomamos", "tomaremos", "tomábamos"],
+      "explanation_on_fail_ru": "«Antes de que» ВСЕГДА с Subjuntivo. Tomar (nosotros) Subj → tomemos. Indicativo здесь невозможен."
     },
     {
       "round": 21,
       "format": "CONJUGATE",
-      "topic_ru": "Reported speech · imperfecto",
-      "tested_lesson": "u14_l11",
-      "npc_line_es": "Para terminar: si tuviera que dejarle un mensaje al CEO sobre por qué la elegiríamos a usted, ¿qué le diría yo?",
-      "npc_line_ru": "Напоследок: если бы я сообщала CEO, почему выбрать вас, что бы я ему сказала?",
-      "prompt_ru": "Поставь Condicional от DECIR (yo):",
-      "sentence_template": "Le ___ que es la candidata más completa.",
+      "topic_ru": "Condicional Simple · гипотеза",
+      "tested_lesson": "u13_l2",
+      "npc_line_es": "Para terminar: si tuviera que defender su candidatura ante el CEO, ¿qué le ___ usted?",
+      "npc_line_ru": "Напоследок: если бы пришлось защищать свою кандидатуру перед CEO, что бы Вы ему сказали?",
+      "prompt_ru": "Поставь Condicional Simple от DECIR (usted):",
+      "sentence_template": "¿Qué le ___ usted al CEO?",
       "verb_infinitive": "decir",
       "correct_answer": "diría",
-      "distractors": ["digo", "dije", "decía"],
-      "explanation_on_fail_ru": "Косвенная речь в гипотезе → Condicional Simple. Decir → diría (irregular, как saldría, vendría)."
+      "distractors": ["dice", "dijo", "decía"],
+      "explanation_on_fail_ru": "Si тип 2: Si + Imp.Subj. (tuviera) + Condicional (diría). Decir → diría (irregular, как saldría, vendría)."
     },
     {
       "round": 22,
       "format": "TRANSLATE_RU_ES",
-      "topic_ru": "Финал · вежливая благодарность B2",
-      "tested_lesson": "u15_l0 + u15_l1",
-      "prompt_ru": "Переведи финальную фразу собеседования (формально):",
-      "prompt_text_ru": "Благодарю Вас за уделённое время. Жду Вашего решения с интересом и остаюсь в Вашем распоряжении.",
-      "correct_answer": "Le agradezco el tiempo que me ha dedicado. Espero su decisión con interés y quedo a su disposición",
+      "topic_ru": "Финал · Espero que + Subjuntivo",
+      "tested_lesson": "u13_l11",
+      "prompt_ru": "Переведи финальную фразу собеседования (Espero que + Subj):",
+      "prompt_text_ru": "Надеюсь, что Вы примете положительное решение и что мы сможем работать вместе.",
+      "correct_answer": "Espero que tomen una decisión positiva y que podamos trabajar juntos",
       "acceptable_alternatives": [
-        "Le agradezco su tiempo. Espero su decisión con interés y quedo a su disposición",
-        "Muchas gracias por su tiempo. Espero su respuesta con interés y quedo a su disposición",
-        "Le agradezco el tiempo que me ha dedicado. Quedo a la espera de su decisión y a su disposición"
+        "Espero que tomen una decisión positiva y que podamos trabajar juntas",
+        "Ojalá tomen una decisión positiva y podamos trabajar juntos",
+        "Espero que tomen una decisión favorable y que podamos trabajar juntos"
       ],
-      "hint_ru": "Формулы: Le agradezco, quedo a su disposición.",
-      "explanation_on_fail_ru": "Формальный финал: «Le agradezco» (благодарю Вас), «quedo a su disposición» (остаюсь в Вашем распоряжении) — стандартные business-формулы."
+      "hint_ru": "«Espero que» + Subj (tomen, podamos).",
+      "explanation_on_fail_ru": "«Espero que» — желание → ВСЕГДА Subjuntivo. Tomar (ellos) Subj → tomen. Poder (nosotros) Subj → podamos."
     }
   ],
   "pass_outcomes": {

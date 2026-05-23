@@ -47,7 +47,7 @@
       "round": 1,
       "format": "CHOICE",
       "topic_ru": "Деликатное приветствие · родственники",
-      "tested_lesson": "u15_l0 + u1_l4",
+      "tested_lesson": "u1_l4",
       "npc_line_es": "¡Andrea, hija! Por fin alguien que escucha. Siéntate aquí a mi lado.",
       "npc_line_ru": "Andrea, дорогая! Наконец-то кто-то слушает. Садись рядом со мной.",
       "prompt_ru": "Тётя зовёт тебя в эпицентр конфликта. Какой ответ деликатный?",
@@ -114,8 +114,8 @@
     {
       "round": 6,
       "format": "CHOICE",
-      "topic_ru": "Reconciliación · извинение",
-      "tested_lesson": "u15_l0 + u15_l1",
+      "topic_ru": "Pedir que + Imp.Subj. · просьба о прощении",
+      "tested_lesson": "u13_l1",
       "npc_line_es": "Tía, ¿qué le pediría usted a Miguel ahora mismo?",
       "npc_line_ru": "Тётя, что бы вы попросили у Miguel прямо сейчас?",
       "prompt_ru": "Какая фраза примирения деликатно вкладывается в уста тёти?",
@@ -177,14 +177,14 @@
     {
       "round": 10,
       "format": "CHOICE",
-      "topic_ru": "Connector contraste · sin embargo",
-      "tested_lesson": "u15_l4",
-      "npc_line_es": "Yo siempre estuve allí para esta familia. ___, ahora nadie está aquí para mí.",
-      "npc_line_ru": "Я всегда была здесь для семьи. ___, теперь никого нет для меня.",
-      "prompt_ru": "Какой формальный connector контраста?",
-      "correct_answer": "Sin embargo",
-      "distractors": ["Y", "Porque", "Por consiguiente"],
-      "explanation_on_fail_ru": "Sin embargo / no obstante = однако (формал. контраст). Porque — причина. Por consiguiente — следствие. Здесь — противопоставление."
+      "topic_ru": "Perífrasis · estar a punto de",
+      "tested_lesson": "u14_l7",
+      "npc_line_es": "Cuando murió tu abuelo, yo ___ romperme. Y nadie me ayudó.",
+      "npc_line_ru": "Когда умер дедушка, я была на грани срыва. И никто не помог.",
+      "prompt_ru": "Какая перифраза значит «быть на грани»?",
+      "correct_answer": "estaba a punto de",
+      "distractors": ["acababa de", "dejaba de", "volvía a"],
+      "explanation_on_fail_ru": "«Estar a punto de + inf» = быть на грани, вот-вот. «Acabar de» — только что. «Dejar de» — перестать. «Volver a» — снова."
     },
     {
       "round": 11,
@@ -215,8 +215,8 @@
     {
       "round": 13,
       "format": "CHOICE",
-      "topic_ru": "Reconciliación · vocabulario clave",
-      "tested_lesson": "u14_l0 + u15_l0",
+      "topic_ru": "Pedir que + Imp.Subj. · примирение",
+      "tested_lesson": "u13_l1",
       "npc_line_es": "¿Y si Miguel viniera ahora y te dijera «lo siento»? ¿Tú qué harías, Andrea?",
       "npc_line_ru": "А если бы Miguel сейчас подошёл и сказал «прости»? Что бы ты сделала?",
       "prompt_ru": "Какая лексика примирения уместна для тёти?",
@@ -246,8 +246,8 @@
       "round": 15,
       "format": "LISTEN",
       "topic_ru": "Понимание · кузен Miguel вмешивается",
-      "tested_lesson": "u14_l2 + u15_l4",
-      "npc_line_es": "Tía, llevas años pensando que se decidió todo a tus espaldas, pero la verdad es que sí te llamamos. No contestabas el teléfono. Sin embargo, entiendo cómo te sientes y te pido disculpas.",
+      "tested_lesson": "u14_l2 + u14_l4",
+      "npc_line_es": "Tía, llevas años pensando que se decidió todo a tus espaldas, pero la verdad es que sí te llamamos. No contestabas el teléfono. Aunque entiendo cómo te sientes, te pido disculpas y aceptes mis palabras.",
       "audio_only": true,
       "prompt_ru": "Что Miguel признаёт и что отрицает?",
       "correct_answer": "Признаёт чувства тёти, но отрицает что её не пытались позвать.",
@@ -256,8 +256,8 @@
         "Полностью отрицает всё и обвиняет тётю.",
         "Просит денег у тёти."
       ],
-      "translation_after_answer_ru": "«Se decidió a tus espaldas» (se-пассив), «sin embargo entiendo cómo te sientes» (контраст + понимание). Miguel мостит мост, признавая эмоции но защищая факты.",
-      "explanation_on_fail_ru": "Pasiva refleja «se decidió». Контраст «sin embargo». Miguel признаёт боль тёти (entiendo cómo te sientes, te pido disculpas), но отрицает версию (sí te llamamos)."
+      "translation_after_answer_ru": "«Se decidió a tus espaldas» (se-пассив), «llevas años pensando» (perífrasis llevar+gerundio), «aunque entiendo» (уступка). Miguel признаёт эмоции, но защищает факты.",
+      "explanation_on_fail_ru": "Pasiva refleja «se decidió». Perífrasis «llevas años pensando». Aunque + Indic (entiendo) — факт. Miguel признаёт боль тёти, но отрицает версию (sí te llamamos)."
     },
     {
       "round": 16,
@@ -289,20 +289,20 @@
     {
       "round": 18,
       "format": "CHOICE",
-      "topic_ru": "Connector causa · puesto que",
-      "tested_lesson": "u15_l6",
-      "npc_line_es": "Voy a hablar con Miguel ahora ___ tú me lo aconsejas y confío en ti.",
-      "npc_line_ru": "Я поговорю с Miguel сейчас, ___ ты мне советуешь и я тебе доверяю.",
-      "prompt_ru": "Какой формальный connector причины?",
-      "correct_answer": "puesto que",
-      "distractors": ["sin embargo", "aunque", "no obstante"],
-      "explanation_on_fail_ru": "Puesto que / dado que / ya que = поскольку (формал. причина). Sin embargo / no obstante — контраст. Aunque — уступка."
+      "topic_ru": "Perífrasis · llevar + participio",
+      "tested_lesson": "u14_l4",
+      "npc_line_es": "Andrea, hija, ___ cinco intentos de hablar con Miguel y siempre se escapa.",
+      "npc_line_ru": "Andrea, дочка, у меня уже пять попыток поговорить с Miguel, и он всегда сбегает.",
+      "prompt_ru": "Какая перифраза значит «накопленные результаты»?",
+      "correct_answer": "llevo hechos",
+      "distractors": ["estoy haciendo", "voy a hacer", "hago"],
+      "explanation_on_fail_ru": "Perífrasis «llevar + participio» = накопленный результат («у меня уже сделано»). Согласование: cinco intentos (мн.м.) → hechos. Llevo hechos cinco intentos."
     },
     {
       "round": 19,
       "format": "BUILD",
-      "topic_ru": "Финальное примирение · subjuntivo + reconciliación",
-      "tested_lesson": "u13_l11 + u15_l1",
+      "topic_ru": "Para que + Subj + perífrasis volver a",
+      "tested_lesson": "u13_l11 + u14_l5",
       "npc_line_es": "Andrea, ¿qué brindis propondrías ahora para terminar bien la tarde?",
       "npc_line_ru": "Andrea, какой тост ты предложишь, чтобы хорошо завершить вечер?",
       "prompt_ru": "Собери тост (10 слов):",
@@ -327,8 +327,8 @@
     {
       "round": 21,
       "format": "CHOICE",
-      "topic_ru": "Register · поэтичный комплимент",
-      "tested_lesson": "u15_l0 + u16_l4",
+      "topic_ru": "Siempre que + Subjuntivo · обещание",
+      "tested_lesson": "u13_l11",
       "npc_line_es": "Eres una luz en esta familia, Andrea. ¿Volverás el próximo domingo?",
       "npc_line_ru": "Ты свет в этой семье, Andrea. Придёшь в следующее воскресенье?",
       "prompt_ru": "Какая фраза сохраняет теплоту, но без перебора?",
@@ -343,8 +343,8 @@
     {
       "round": 22,
       "format": "TRANSLATE_RU_ES",
-      "topic_ru": "Финал · прощание с реликвией",
-      "tested_lesson": "u14_l0 + u15_l1",
+      "topic_ru": "Финал · прощание с реликвией · pasiva futuro",
+      "tested_lesson": "u14_l0",
       "prompt_ru": "Тётя дарит тебе старое кольцо бабушки. Переведи благодарность:",
       "prompt_text_ru": "Тётя, это кольцо будет храниться у меня с тем же уважением, с каким его носила бабушка.",
       "correct_answer": "Tía este anillo será guardado por mí con el mismo respeto con el que lo llevaba la abuela",
