@@ -2,45 +2,49 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>ESPEAK — Чекпоинты: мокапы</title>
+<title>ESPEAK — Чекпоинты · мокапы</title>
 <style>
 :root {
-  --bg-page: #0E0F11;
+  --bg-page: #0A0B0D;
   --phone-bg: #18191C;
-  --surface: #232529;
-  --surface-2: #2B2D32;
-  --primary: #FF7A1A;
-  --accent: #FFC107;
-  --green: #4CAF50;
-  --red: #FF4B4B;
-  --text: #F2F2F2;
-  --text-dim: #9E9E9E;
+  --surface: #1F2125;
+  --surface-2: #2A2D33;
+  --primary: #FF6B1A;
+  --primary-dark: #B84200;
+  --accent: #F4B400;
+  --green: #2EB872;
+  --red: #E54848;
+  --text: #F5F5F7;
+  --text-dim: #8E8E93;
+  --border: rgba(255,255,255,0.08);
 }
 * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 body {
   margin: 0;
   background: var(--bg-page);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text);
-  padding: 32px 16px 80px;
+  padding: 40px 16px 80px;
 }
 h1 {
-  font-size: 28px;
-  margin: 0 0 8px;
+  font-size: 32px;
+  margin: 0 0 6px;
   text-align: center;
-  color: var(--text);
+  letter-spacing: -0.5px;
+  font-weight: 800;
 }
 .subtitle {
   font-size: 14px;
   text-align: center;
   color: var(--text-dim);
   margin-bottom: 40px;
+  letter-spacing: 0.2px;
 }
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 32px;
-  max-width: 1400px;
+  gap: 40px;
+  max-width: 1500px;
   margin: 0 auto;
 }
 .frame {
@@ -49,303 +53,460 @@ h1 {
   align-items: center;
 }
 .frame-label {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-dim);
-  margin-bottom: 8px;
-  font-weight: 500;
+  margin-bottom: 12px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.2px;
 }
 .phone {
   width: 340px;
   height: 720px;
   background: var(--phone-bg);
-  border-radius: 36px;
+  border-radius: 40px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 8px #2a2a2e, 0 0 0 9px #424248;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,0.7),
+    0 0 0 2px #1c1c1e,
+    0 0 0 10px #2a2a2e,
+    0 0 0 11px #3a3a3e;
   position: relative;
   display: flex;
   flex-direction: column;
 }
 .status-bar {
-  height: 36px;
+  height: 40px;
   padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  background: var(--phone-bg);
 }
+.status-bar .icons { display: flex; align-items: center; gap: 4px; }
+.status-bar svg { width: 14px; height: 14px; }
 .notch {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 110px;
-  height: 22px;
+  width: 120px;
+  height: 26px;
   background: #000;
-  border-radius: 0 0 14px 14px;
+  border-radius: 0 0 16px 16px;
   z-index: 10;
 }
 
-/* ─────── ROADMAP ─────── */
+/* ─────────────────── ROADMAP ─────────────────── */
 .roadmap-header {
-  padding: 16px 20px 8px;
+  padding: 16px 22px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.roadmap-title { font-size: 22px; font-weight: 800; }
-.roadmap-streak { font-size: 13px; color: var(--accent); }
+.roadmap-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.roadmap-streak {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 700;
+}
 .roadmap-list {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 16px;
+  padding: 4px 16px;
 }
 .unit {
   background: var(--surface);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 14px 16px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  border: 1px solid var(--border);
 }
-.unit-icon { font-size: 22px; }
-.unit-text { flex: 1; }
-.unit-title { font-size: 14px; font-weight: 600; }
-.unit-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-.unit-stars { color: var(--accent); font-size: 12px; }
-.unit-completed .unit-title { color: var(--text-dim); text-decoration: none; }
-.unit.locked { opacity: 0.5; }
-
-.checkpoint-row {
-  background: linear-gradient(135deg, #5B2A00 0%, #8C3E00 100%);
-  border-radius: 14px;
-  padding: 16px 18px;
-  margin: 8px 0 16px;
-  border: 2px solid var(--primary);
-  position: relative;
-  cursor: pointer;
-}
-.checkpoint-row.locked {
-  background: var(--surface);
-  border-color: var(--text-dim);
-  opacity: 0.55;
-}
-.checkpoint-row.locked .cp-title { color: var(--text-dim); }
-.cp-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-.cp-icon {
-  font-size: 22px;
-  background: rgba(255,255,255,0.15);
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+.unit-status {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
-.cp-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: white;
-  flex: 1;
+.unit-status.done {
+  background: rgba(46,184,114,0.15);
+  color: var(--green);
 }
-.cp-scene {
-  font-size: 12px;
-  color: rgba(255,255,255,0.85);
+.unit-status.locked {
+  background: var(--surface-2);
+  color: var(--text-dim);
 }
-.cp-meta {
+.unit-status svg { width: 16px; height: 16px; }
+.unit-text { flex: 1; min-width: 0; }
+.unit-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.unit-meta {
   font-size: 11px;
-  color: rgba(255,255,255,0.7);
-  margin-top: 8px;
-  display: flex;
-  gap: 12px;
+  color: var(--text-dim);
 }
+.unit-stars {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.unit.completed .unit-title { color: var(--text-dim); }
+.unit.locked { opacity: 0.55; }
+.unit.locked .unit-title { color: var(--text-dim); }
 
-/* ─────── INTRO ─────── */
-.scene-bg {
-  height: 220px;
-  background: linear-gradient(135deg, #4a2c1a 0%, #8B4513 50%, #d4a373 100%);
+/* CHECKPOINT CARD on roadmap */
+.checkpoint-card {
   position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 14px 0 10px;
+  height: 130px;
+  border: 1.5px solid var(--primary);
+  box-shadow: 0 4px 20px rgba(255,107,26,0.15);
+}
+.checkpoint-card .bg-img {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');
+  background-size: cover;
+  background-position: center;
+}
+.checkpoint-card .bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(184,66,0,0.85) 0%, rgba(255,107,26,0.65) 100%);
+}
+.checkpoint-card .content {
+  position: relative;
+  height: 100%;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+}
+.cp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  background: rgba(0,0,0,0.35);
+  padding: 5px 10px;
+  border-radius: 8px;
+  align-self: flex-start;
+  backdrop-filter: blur(8px);
+}
+.cp-tag svg { width: 12px; height: 12px; }
+.cp-title-row { display: flex; flex-direction: column; gap: 4px; }
+.cp-title-main { font-size: 17px; font-weight: 800; letter-spacing: -0.2px; }
+.cp-subtitle { font-size: 12px; opacity: 0.9; }
+.cp-meta {
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  opacity: 0.85;
+  font-weight: 600;
+}
+.cp-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.cp-meta svg { width: 12px; height: 12px; }
+
+/* ─────────────────── INTRO SCREEN ─────────────────── */
+.scene-hero {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+.scene-hero .hero-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.scene-hero .hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10,11,13,0) 50%, rgba(10,11,13,1) 100%);
+}
+.scene-hero .hero-back {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 90px;
-}
-.scene-bg.cafe { background: linear-gradient(135deg, #5d3a1f 0%, #8b6534 100%); }
-.scene-bg.shop { background: linear-gradient(135deg, #4a3a8e 0%, #7158b7 100%); }
-.scene-bg.hotel { background: linear-gradient(135deg, #1e3a5f 0%, #2a5f8e 100%); }
-.scene-bg.barcelona { background: linear-gradient(135deg, #c41e1e 0%, #ffc107 100%); }
-
-.intro-back {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 24px;
   color: white;
 }
-
+.scene-hero .hero-back svg { width: 18px; height: 18px; }
 .intro-content {
-  padding: 24px 24px 16px;
+  padding: 18px 22px 16px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 .intro-cefr {
-  font-size: 11px;
+  font-size: 10px;
   background: var(--primary);
   color: white;
-  padding: 3px 10px;
+  padding: 5px 11px;
   border-radius: 8px;
-  font-weight: 700;
-  align-self: flex-start;
-  margin-bottom: 10px;
-}
-.intro-title {
-  font-size: 22px;
   font-weight: 800;
-  margin-bottom: 6px;
+  letter-spacing: 1.4px;
+  align-self: flex-start;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intro-cefr svg { width: 12px; height: 12px; }
+.intro-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: -0.4px;
 }
 .intro-subtitle {
   font-size: 13px;
   color: var(--text-dim);
   margin-bottom: 18px;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 .intro-info {
   background: var(--surface);
-  border-radius: 12px;
-  padding: 12px 14px;
-  margin-bottom: 12px;
+  border-radius: 14px;
+  padding: 6px 14px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
 }
 .intro-info-row {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   font-size: 13px;
-  padding: 5px 0;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
 }
+.intro-info-row:last-child { border-bottom: 0; }
 .intro-info-row .icon {
-  width: 24px;
-  text-align: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--primary);
 }
-.intro-formats {
-  font-size: 12px;
+.intro-info-row .icon svg { width: 18px; height: 18px; }
+.intro-info-row span { color: var(--text); font-weight: 500; }
+.intro-formats-card {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.intro-formats-title {
+  font-size: 11px;
   color: var(--text-dim);
-  line-height: 1.6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 10px;
 }
+.formats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.format-chip {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.format-chip svg { width: 18px; height: 18px; color: var(--primary); }
 .intro-button {
   margin-top: auto;
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, #ff8533 100%);
   color: white;
-  border-radius: 16px;
-  padding: 16px;
+  border-radius: 18px;
+  padding: 17px;
   text-align: center;
   font-weight: 800;
   font-size: 16px;
-}
-
-/* ─────── SCENE ACTIVE ─────── */
-.scene-illust {
-  height: 160px;
-  position: relative;
-  font-size: 100px;
+  letter-spacing: 0.3px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(255,107,26,0.35);
+}
+.intro-button svg { width: 18px; height: 18px; }
+
+/* ─────────────────── SCENE ACTIVE ─────────────────── */
+.scene-top {
+  position: relative;
+  height: 160px;
   overflow: hidden;
 }
+.scene-top .bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.scene-top .grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 30%, rgba(10,11,13,0.85) 100%);
+}
+.scene-back-pill {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(0,0,0,0.55);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  backdrop-filter: blur(8px);
+}
+.scene-back-pill svg { width: 18px; height: 18px; }
+.scene-sympathy {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  padding: 7px 12px;
+  border-radius: 14px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.scene-sympathy .stars { color: var(--accent); letter-spacing: 1px; font-size: 11px; }
 .scene-meta {
   position: absolute;
-  bottom: 10px;
+  bottom: 12px;
   left: 14px;
-  background: rgba(0,0,0,0.5);
   color: white;
-  padding: 4px 10px;
-  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.scene-meta-place {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin-bottom: 2px;
+}
+.scene-meta-round {
   font-size: 11px;
-  backdrop-filter: blur(8px);
+  opacity: 0.85;
 }
 .scene-progress {
   position: absolute;
-  top: 50px;
-  left: 16px;
-  right: 16px;
+  bottom: 12px;
+  right: 14px;
   display: flex;
-  gap: 4px;
+  gap: 3px;
+  width: 100px;
 }
 .dot {
   height: 4px;
   flex: 1;
-  background: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.35);
   border-radius: 2px;
 }
 .dot.done { background: var(--green); }
 .dot.curr { background: white; }
-.scene-back-pill {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  background: rgba(0,0,0,0.6);
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-.sympathy {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  background: rgba(0,0,0,0.6);
-  padding: 6px 10px;
-  border-radius: 12px;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 700;
-}
 
 .npc-bubble {
-  margin: 12px 16px;
+  margin: 14px 16px 4px;
   background: var(--surface);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 14px;
-  border-left: 3px solid var(--primary);
+  border: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
 }
-.npc-row {
+.npc-portrait {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 2px solid var(--primary);
+}
+.npc-bubble-body {
+  flex: 1;
+  min-width: 0;
+}
+.npc-name-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
-}
-.npc-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  background: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
+  margin-bottom: 5px;
 }
 .npc-name {
   font-size: 12px;
   color: var(--text-dim);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.3px;
 }
+.npc-audio-btn {
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+.npc-audio-btn svg { width: 14px; height: 14px; }
 .npc-text {
   font-size: 16px;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 .npc-text-ru {
   font-size: 12px;
@@ -353,77 +514,88 @@ h1 {
   margin-top: 4px;
   font-style: italic;
 }
-.npc-audio {
-  margin-left: auto;
-  background: rgba(255,255,255,0.1);
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.npc-text-hidden {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 14px;
 }
 
 .exercise-area {
   flex: 1;
-  padding: 0 16px 14px;
+  padding: 8px 16px 14px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
 .exercise-label {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.4px;
   color: var(--text-dim);
   margin-bottom: 10px;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .exercise-label .badge {
   background: var(--primary);
   color: white;
-  padding: 3px 8px;
-  border-radius: 8px;
-  letter-spacing: 0.5px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
+.exercise-label .badge svg { width: 11px; height: 11px; }
 
 /* CHOICE_4 */
 .choice {
   background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 14px;
   padding: 14px 16px;
   margin-bottom: 8px;
-  border: 1.5px solid transparent;
   font-size: 14px;
+  font-weight: 500;
 }
 .choice.correct {
-  background: rgba(76,175,80,0.15);
+  background: rgba(46,184,114,0.12);
   border-color: var(--green);
   color: var(--green);
   font-weight: 700;
 }
 .choice.wrong {
-  background: rgba(255,75,75,0.12);
+  background: rgba(229,72,72,0.12);
   border-color: var(--red);
 }
 
 /* VOICE */
+.voice-circle-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 14px 0 12px;
+}
 .voice-circle {
-  width: 110px;
-  height: 110px;
-  border-radius: 55px;
-  background: radial-gradient(circle, var(--primary) 0%, #c45a0a 100%);
-  margin: 16px auto 12px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, #ff8533 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 44px;
-  box-shadow: 0 0 0 8px rgba(255,122,26,0.15), 0 0 0 18px rgba(255,122,26,0.08);
+  color: white;
+  position: relative;
+  box-shadow:
+    0 0 0 8px rgba(255,107,26,0.15),
+    0 0 0 18px rgba(255,107,26,0.08);
   animation: pulse 2s infinite;
 }
+.voice-circle svg { width: 38px; height: 38px; }
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 8px rgba(255,122,26,0.15), 0 0 0 18px rgba(255,122,26,0.08); }
-  50% { box-shadow: 0 0 0 14px rgba(255,122,26,0.2), 0 0 0 26px rgba(255,122,26,0.1); }
+  0%, 100% { box-shadow: 0 0 0 8px rgba(255,107,26,0.15), 0 0 0 18px rgba(255,107,26,0.08); }
+  50% { box-shadow: 0 0 0 14px rgba(255,107,26,0.22), 0 0 0 26px rgba(255,107,26,0.12); }
 }
 .voice-hint {
   text-align: center;
@@ -433,37 +605,39 @@ h1 {
 }
 .voice-transcript {
   background: var(--surface);
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 14px;
   text-align: center;
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
-  border: 1px dashed var(--primary);
+  border: 1.5px dashed var(--primary);
 }
 
 /* SENTENCE_BUILD */
 .build-target {
   background: var(--surface);
-  border-radius: 12px;
-  min-height: 80px;
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  min-height: 86px;
   padding: 12px;
   margin-bottom: 14px;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: flex-start;
-  border: 2px dashed rgba(255,255,255,0.1);
 }
 .word-chip {
   background: var(--surface-2);
   border-radius: 10px;
-  padding: 8px 12px;
+  padding: 8px 14px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
+  border: 1px solid var(--border);
 }
 .word-chip.placed {
   background: var(--primary);
+  border-color: var(--primary);
   color: white;
 }
 .build-bank {
@@ -475,46 +649,62 @@ h1 {
 /* TRANSLATE */
 .translate-prompt {
   background: var(--surface);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 18px;
   margin-bottom: 12px;
   text-align: center;
+  border: 1px solid var(--border);
 }
 .translate-prompt-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
+  letter-spacing: 1.4px;
+  margin-bottom: 8px;
+  font-weight: 700;
 }
 .translate-prompt-text {
   font-size: 18px;
   font-weight: 700;
+  letter-spacing: -0.2px;
 }
 .translate-input {
   background: var(--surface);
-  border-radius: 12px;
-  padding: 14px;
-  font-size: 14px;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 15px;
   color: var(--text);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   border: 1.5px solid var(--primary);
+  font-weight: 500;
 }
+.translate-input .cursor {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: var(--primary);
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink 1s infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
 .translate-hint {
   font-size: 11px;
   color: var(--text-dim);
   text-align: center;
+  font-style: italic;
 }
 
 /* CONJUGATE */
 .conjugate-sentence {
   background: var(--surface);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 18px;
   margin-bottom: 14px;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
   text-align: center;
+  border: 1px solid var(--border);
 }
 .conjugate-blank {
   display: inline-block;
@@ -522,7 +712,7 @@ h1 {
   border-bottom: 2px solid var(--primary);
   padding: 0 8px;
   color: var(--primary);
-  font-weight: 700;
+  font-weight: 800;
 }
 .conjugate-options {
   display: grid;
@@ -531,7 +721,7 @@ h1 {
 }
 .conjugate-opt {
   background: var(--surface);
-  border: 1.5px solid var(--surface-2);
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   padding: 14px;
   text-align: center;
@@ -539,75 +729,160 @@ h1 {
   font-weight: 600;
 }
 .conjugate-opt.correct {
-  background: rgba(76,175,80,0.15);
+  background: rgba(46,184,114,0.12);
   border-color: var(--green);
   color: var(--green);
 }
 
 /* LISTEN */
-.listen-button {
-  background: var(--primary);
+.listen-play {
+  background: linear-gradient(135deg, var(--primary) 0%, #ff8533 100%);
   color: white;
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 18px;
+  padding: 18px;
   text-align: center;
-  margin: 12px 0 16px;
+  margin: 8px 0 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  font-size: 15px;
+  gap: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
-.listen-wave {
-  font-size: 22px;
-}
+.listen-play svg { width: 22px; height: 22px; }
 
 /* RESULT */
 .result-hero {
   height: 220px;
-  background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+  background: linear-gradient(135deg, var(--green) 0%, #1f7a4d 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: white;
-  padding-top: 20px;
+  padding-top: 14px;
+  position: relative;
+  overflow: hidden;
 }
 .result-hero.fail {
-  background: linear-gradient(135deg, #d32f2f 0%, #7d1414 100%);
+  background: linear-gradient(135deg, var(--red) 0%, #8a1f1f 100%);
 }
-.result-emoji { font-size: 80px; }
-.result-text { font-size: 24px; font-weight: 800; margin-top: 8px; }
+.result-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 40%),
+                    radial-gradient(circle at 70% 80%, rgba(255,255,255,0.08) 0%, transparent 40%);
+}
+.result-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+.result-icon svg { width: 44px; height: 44px; color: white; }
+.result-text {
+  font-size: 26px;
+  font-weight: 800;
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.3px;
+}
+.result-subtext {
+  font-size: 13px;
+  opacity: 0.9;
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.format-mix {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px;
+  margin: 16px 16px 12px;
+  border: 1px solid var(--border);
+}
+.format-mix-title {
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.format-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  font-size: 13px;
+}
+.format-row .fmt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+.format-row .fmt svg { width: 14px; height: 14px; color: var(--primary); }
+.format-score { color: var(--green); font-weight: 700; }
+.format-score.bad { color: var(--red); }
 
 .result-stats {
-  padding: 20px 16px;
-  flex: 1;
+  padding: 0 16px 12px;
 }
 .stat-row {
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--surface-2);
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
 }
-.stat-label { font-size: 14px; color: var(--text-dim); }
-.stat-value { font-size: 14px; font-weight: 700; }
-.stat-row.bonus { background: rgba(255,193,7,0.1); padding: 12px; border-radius: 8px; border-bottom: 0; margin-top: 8px; }
+.stat-row:last-child { border-bottom: 0; }
+.stat-label { font-size: 13px; color: var(--text-dim); font-weight: 500; }
+.stat-value { font-size: 13px; font-weight: 700; color: var(--text); }
+
+.bonus-card {
+  background: rgba(244,180,0,0.10);
+  border: 1px solid rgba(244,180,0,0.3);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 4px 0 8px;
+}
+.bonus-card .bonus-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.bonus-card .bonus-value {
+  font-size: 14px;
+  font-weight: 700;
+}
 
 .result-actions {
-  padding: 0 16px 16px;
+  padding: 8px 16px 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 .btn-primary {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, #ff8533 100%);
   color: white;
   border-radius: 16px;
-  padding: 14px;
+  padding: 16px;
   text-align: center;
   font-weight: 800;
   font-size: 15px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 6px 20px rgba(255,107,26,0.3);
 }
 .btn-secondary {
   background: var(--surface);
@@ -616,89 +891,179 @@ h1 {
   padding: 14px;
   text-align: center;
   font-weight: 600;
-  font-size: 14px;
-}
-
-.format-mix {
-  background: var(--surface);
-  border-radius: 12px;
-  padding: 12px;
-  margin: 12px 16px;
-}
-.format-mix-title {
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: var(--text-dim);
-}
-.format-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
   font-size: 13px;
+  border: 1px solid var(--border);
 }
-.format-score { color: var(--green); font-weight: 600; }
-.format-score.bad { color: var(--red); }
 
-.section-title {
+/* Section dividers */
+.section-divider {
   text-align: center;
-  font-size: 18px;
+  margin: 56px auto 28px;
+  max-width: 600px;
+}
+.section-divider .num {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 28px;
+  margin-right: 10px;
+}
+.section-divider .title {
+  font-size: 16px;
   font-weight: 700;
-  margin: 48px 0 24px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.section-divider .desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* Overview cards */
+.overview-card {
+  height: 380px !important;
+}
+.overview-card .scene-top {
+  height: 280px;
+}
+.overview-card .scene-meta {
+  bottom: 16px;
+  left: 16px;
+}
+.overview-card .scene-meta-place {
+  font-size: 18px;
+}
+.overview-info {
+  padding: 14px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.overview-cefr-tag {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
   color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  margin-bottom: 4px;
 }
+.overview-info .title {
+  font-size: 15px;
+  font-weight: 700;
+}
+.overview-info .meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+.note {
+  background: var(--surface);
+  border-left: 3px solid var(--primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  max-width: 700px;
+  margin: 24px auto 40px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.note strong { color: var(--text); }
 </style>
 </head>
 <body>
 
-<h1>ESPEAK — Чекпоинты</h1>
-<p class="subtitle">Визуальная концепция · 4 чекпоинта (CP1=A1, CP2=A2, CP3=B1, CP4=B2 boss)</p>
+<!-- ICON DEFS (SVG sprite, all icons used through <use href="#i-..."/>) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-tasks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s4 4 4 8a4 4 0 11-8 0c0-2 1-3 2-4-1 2-1 4 1 4s2-2 2-4-1-4-1-4z"/><path d="M12 22a8 8 0 008-8c0-4-4-5-4-9 0 0 0 4-3 6 0 0 0-3-3-4 1 3-2 4-2 7a8 8 0 008 8z"/></symbol>
+    <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-translate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7"/><path d="M9 3v2c0 4-4 7-7 7"/><path d="M5 9c0 4 4 7 7 7"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></symbol>
+    <symbol id="i-puzzle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11h-1a2 2 0 00-2 2v0a2 2 0 002 2h1v3a2 2 0 01-2 2h-3v-1a2 2 0 00-2-2v0a2 2 0 00-2 2v1H7a2 2 0 01-2-2v-3H4a2 2 0 01-2-2v0a2 2 0 012-2h1V5a2 2 0 012-2h3v1a2 2 0 002 2v0a2 2 0 002-2V3h3a2 2 0 012 2v6z"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.82a15 15 0 0120 0"/><path d="M5 12.86a10 10 0 0114 0"/><path d="M8.5 16.43a5 5 0 017 0"/><line x1="12" y1="20" x2="12" y2="20"/></symbol>
+    <symbol id="i-battery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/><rect x="3" y="8" width="13" height="8" fill="currentColor"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4a2 2 0 01-2-2V5h4"/><path d="M18 9h2a2 2 0 002-2V5h-4"/><path d="M6 5h12v6a6 6 0 01-12 0V5z"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/></symbol>
+  </defs>
+</svg>
 
-<div class="section-title">⛳ Карта · Чекпоинт в roadmap'е</div>
+<h1>ESPEAK · Чекпоинты</h1>
+<p class="subtitle">Визуальный мокап · 4 чекпоинта: A1 → A2 → B1 → B2 (boss)</p>
+
+<div class="note">
+  <strong>Что здесь:</strong> 12 экранов-мокапов в реальном размере iPhone (340×720), оформленные в финальном стиле приложения. Фото сцен — placeholder с Unsplash, портреты NPC — pravatar.cc. Эти изображения нужно будет заменить на сгенерированные / купленные.
+</div>
+
+<!-- ============ SECTION 1 ============ -->
+<div class="section-divider">
+  <span class="num">1</span><span class="title">Карта и стартовый экран</span>
+  <div class="desc">Чекпоинт встроен в roadmap как финальный пункт блока. До его прохождения следующий блок заблокирован.</div>
+</div>
 
 <div class="grid">
   <!-- ROADMAP -->
   <div class="frame">
-    <div class="frame-label">Карта курса — финал блока A1</div>
+    <div class="frame-label">Карта курса A1 — финал блока</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:42</span>
-        <span>📶 🔋 85%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
       <div class="roadmap-header">
         <div class="roadmap-title">Курс A1</div>
-        <div class="roadmap-streak">🔥 7 дней</div>
+        <div class="roadmap-streak"><svg width="14" height="14"><use href="#i-flame"/></svg> 7 дней</div>
       </div>
       <div class="roadmap-list">
-        <div class="unit unit-completed">
-          <div class="unit-icon">✅</div>
+        <div class="unit completed">
+          <div class="unit-status done"><svg><use href="#i-check"/></svg></div>
           <div class="unit-text">
             <div class="unit-title">Урок 13. Времена года</div>
             <div class="unit-meta">15 слов · 2 диалога</div>
           </div>
           <div class="unit-stars">★★★</div>
         </div>
-        <div class="unit unit-completed">
-          <div class="unit-icon">✅</div>
+        <div class="unit completed">
+          <div class="unit-status done"><svg><use href="#i-check"/></svg></div>
           <div class="unit-text">
             <div class="unit-title">Урок 14. Погода</div>
             <div class="unit-meta">17 слов · 3 диалога</div>
           </div>
           <div class="unit-stars">★★☆</div>
         </div>
-        <div class="unit unit-completed">
-          <div class="unit-icon">✅</div>
+        <div class="unit completed">
+          <div class="unit-status done"><svg><use href="#i-check"/></svg></div>
           <div class="unit-text">
             <div class="unit-title">Урок 15. Цвета</div>
             <div class="unit-meta">12 слов</div>
           </div>
           <div class="unit-stars">★★★</div>
         </div>
-        <div class="unit unit-completed">
-          <div class="unit-icon">✅</div>
+        <div class="unit completed">
+          <div class="unit-status done"><svg><use href="#i-check"/></svg></div>
           <div class="unit-text">
             <div class="unit-title">Урок 16. Числа 1-100</div>
             <div class="unit-meta">20 слов</div>
@@ -706,103 +1071,145 @@ h1 {
           <div class="unit-stars">★★★</div>
         </div>
 
-        <div class="checkpoint-row">
-          <div class="cp-header">
-            <div class="cp-icon">⛳</div>
-            <div class="cp-title">Чекпоинт A1</div>
-          </div>
-          <div class="cp-scene">«Первое утро в Мадриде» ☕</div>
-          <div class="cp-meta">
-            <span>📍 Кафе Casa Lola</span>
-            <span>⏱ ~8 мин</span>
-            <span>10 заданий</span>
+        <!-- CHECKPOINT — большая карта с фоном -->
+        <div class="checkpoint-card">
+          <div class="bg-img" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+          <div class="bg-overlay"></div>
+          <div class="content">
+            <div class="cp-tag"><svg><use href="#i-flag"/></svg> Чекпоинт A1</div>
+            <div class="cp-title-row">
+              <div class="cp-title-main">Утро в кафе «Casa Lola»</div>
+              <div class="cp-subtitle">Закажи кофе на испанском</div>
+            </div>
+            <div class="cp-meta">
+              <span class="cp-meta-item"><svg><use href="#i-tasks"/></svg> 10 заданий</span>
+              <span class="cp-meta-item"><svg><use href="#i-clock"/></svg> ~8 мин</span>
+            </div>
           </div>
         </div>
 
         <div class="unit locked">
-          <div class="unit-icon">🔒</div>
+          <div class="unit-status locked"><svg><use href="#i-lock"/></svg></div>
           <div class="unit-text">
             <div class="unit-title">Урок 17. Прошедшее время</div>
             <div class="unit-meta">Блок A2 — пройди чекпоинт</div>
           </div>
         </div>
+        <div class="unit locked">
+          <div class="unit-status locked"><svg><use href="#i-lock"/></svg></div>
+          <div class="unit-text">
+            <div class="unit-title">Урок 18. Биография</div>
+            <div class="unit-meta">Блок A2</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- INTRO SCREEN -->
+  <!-- INTRO -->
   <div class="frame">
-    <div class="frame-label">Стартовый экран чекпоинта</div>
+    <div class="frame-label">Стартовый экран</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:42</span>
-        <span>📶 🔋 85%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
-      <div class="scene-bg cafe">
-        <div class="intro-back">←</div>
-        ☕
+      <div class="scene-hero">
+        <div class="hero-img" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+        <div class="hero-gradient"></div>
+        <div class="hero-back"><svg><use href="#i-back"/></svg></div>
       </div>
       <div class="intro-content">
-        <div class="intro-cefr">⛳ CHECKPOINT A1</div>
-        <div class="intro-title">Первое утро в Мадриде</div>
-        <div class="intro-subtitle">Ты в кафе «Casa Lola». Барменша María заговорит с тобой — нужно поддержать беседу и заказать кофе.</div>
+        <div class="intro-cefr"><svg><use href="#i-flag"/></svg> Чекпоинт A1</div>
+        <div class="intro-title">Утро в Мадриде</div>
+        <div class="intro-subtitle">Ты заходишь в кафе «Casa Lola». Барменша María начнёт разговор — поддержи беседу и закажи кофе.</div>
 
         <div class="intro-info">
-          <div class="intro-info-row"><span class="icon">📋</span> 10 заданий · ~8 минут</div>
-          <div class="intro-info-row"><span class="icon">👩</span> NPC: María (барменша)</div>
-          <div class="intro-info-row"><span class="icon">⭐</span> Pass: 70% (7/10 правильных)</div>
-          <div class="intro-info-row"><span class="icon">🎁</span> Награда: +250 XP, бейдж</div>
+          <div class="intro-info-row">
+            <div class="icon"><svg><use href="#i-tasks"/></svg></div>
+            <span>10 заданий · ~8 минут</span>
+          </div>
+          <div class="intro-info-row">
+            <div class="icon"><svg><use href="#i-user"/></svg></div>
+            <span>María, барменша</span>
+          </div>
+          <div class="intro-info-row">
+            <div class="icon"><svg><use href="#i-star"/></svg></div>
+            <span>Pass: 70% правильных</span>
+          </div>
+          <div class="intro-info-row">
+            <div class="icon"><svg><use href="#i-gift"/></svg></div>
+            <span>+250 XP · бейдж</span>
+          </div>
         </div>
 
-        <div class="intro-formats">
-          <strong style="color:var(--text)">Форматы заданий:</strong><br>
-          🔘 Выбор ответа · 🌐 Перевод · ✍ Сборка предложения<br>
-          🎧 Аудирование · 📝 Спряжение глаголов
+        <div class="intro-formats-card">
+          <div class="intro-formats-title">Форматы заданий</div>
+          <div class="formats-grid">
+            <div class="format-chip"><svg><use href="#i-list"/></svg>Выбор</div>
+            <div class="format-chip"><svg><use href="#i-translate"/></svg>Перевод</div>
+            <div class="format-chip"><svg><use href="#i-puzzle"/></svg>Сборка</div>
+            <div class="format-chip"><svg><use href="#i-headphones"/></svg>Аудио</div>
+            <div class="format-chip"><svg><use href="#i-edit"/></svg>Спряжение</div>
+            <div class="format-chip"><svg><use href="#i-mic"/></svg>Голос</div>
+          </div>
         </div>
 
-        <div class="intro-button">Поехали →</div>
+        <div class="intro-button">Начать <svg><use href="#i-arrow-r"/></svg></div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="section-title">💬 Раунд · 6 форматов внутри сцены</div>
+<!-- ============ SECTION 2 ============ -->
+<div class="section-divider">
+  <span class="num">2</span><span class="title">Раунды · 6 форматов</span>
+  <div class="desc">Каждый раунд = реплика NPC + одно из 6 заданий. Формат варьируется, чтобы не было монотонности.</div>
+</div>
 
 <div class="grid">
-  <!-- CHOICE_4 -->
+  <!-- CHOICE -->
   <div class="frame">
-    <div class="frame-label">🔘 Выбор из 4 вариантов</div>
+    <div class="frame-label">Выбор из 4 вариантов</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:43</span>
-        <span>📶 🔋 84%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
-      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
-        <div class="scene-back-pill">←</div>
-        <div class="sympathy">⭐⭐⭐⭐⭐ 5/5</div>
-        ☕
-        <div class="scene-meta">Casa Lola · Раунд 1/10</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="scene-sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Casa Lola</div>
+          <div class="scene-meta-round">Раунд 1 из 10</div>
+        </div>
         <div class="scene-progress">
-          <div class="dot curr"></div>
-          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
           <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
         </div>
       </div>
 
       <div class="npc-bubble">
-        <div class="npc-row">
-          <div class="npc-avatar">👩</div>
-          <div class="npc-name">María</div>
-          <div class="npc-audio">🔊</div>
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=49');"></div>
+        <div class="npc-bubble-body">
+          <div class="npc-name-row">
+            <div class="npc-name">MARÍA · барменша</div>
+            <div class="npc-audio-btn"><svg><use href="#i-play"/></svg></div>
+          </div>
+          <div class="npc-text">¡Buenos días! ¿Cómo estás?</div>
+          <div class="npc-text-ru">«Доброе утро! Как дела?»</div>
         </div>
-        <div class="npc-text">¡Buenos días! ¿Cómo estás?</div>
-        <div class="npc-text-ru">«Доброе утро! Как дела?»</div>
       </div>
 
       <div class="exercise-area">
-        <div class="exercise-label"><span class="badge">🔘 ВЫБОР</span> Что ответишь?</div>
+        <div class="exercise-label">
+          <span class="badge"><svg><use href="#i-list"/></svg>ВЫБОР</span>
+          Что ответишь?
+        </div>
         <div class="choice">¡Hola! Bien, gracias.</div>
         <div class="choice">Buenas noches.</div>
         <div class="choice">Tengo veinte años.</div>
@@ -813,18 +1220,22 @@ h1 {
 
   <!-- TRANSLATE -->
   <div class="frame">
-    <div class="frame-label">🌐 Перевод RU→ES</div>
+    <div class="frame-label">Перевод RU → ES</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:44</span>
-        <span>📶 🔋 84%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
-      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
-        <div class="scene-back-pill">←</div>
-        <div class="sympathy">⭐⭐⭐⭐⭐ 5/5</div>
-        ☕
-        <div class="scene-meta">Casa Lola · Раунд 4/10</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="scene-sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Casa Lola</div>
+          <div class="scene-meta-round">Раунд 4 из 10</div>
+        </div>
         <div class="scene-progress">
           <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
           <div class="dot curr"></div>
@@ -833,41 +1244,50 @@ h1 {
       </div>
 
       <div class="npc-bubble">
-        <div class="npc-row">
-          <div class="npc-avatar">👩</div>
-          <div class="npc-name">María</div>
-          <div class="npc-audio">🔊</div>
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=49');"></div>
+        <div class="npc-bubble-body">
+          <div class="npc-name-row">
+            <div class="npc-name">MARÍA</div>
+            <div class="npc-audio-btn"><svg><use href="#i-play"/></svg></div>
+          </div>
+          <div class="npc-text">¿Qué quieres tomar?</div>
+          <div class="npc-text-ru">«Что закажешь?»</div>
         </div>
-        <div class="npc-text">¿Qué quieres tomar?</div>
-        <div class="npc-text-ru">«Что хочешь заказать?»</div>
       </div>
 
       <div class="exercise-area">
-        <div class="exercise-label"><span class="badge">🌐 ПЕРЕВОД</span> Скажи по-испански:</div>
+        <div class="exercise-label">
+          <span class="badge"><svg><use href="#i-translate"/></svg>ПЕРЕВОД</span>
+          Скажи по-испански:
+        </div>
         <div class="translate-prompt">
-          <div class="translate-prompt-label">RU</div>
+          <div class="translate-prompt-label">Русский</div>
           <div class="translate-prompt-text">«Я хочу кофе с молоком»</div>
         </div>
-        <div class="translate-input">Quiero un café con|</div>
+        <div class="translate-input">Quiero un café con<span class="cursor"></span></div>
         <div class="translate-hint">Подсказка: querer · café · leche</div>
       </div>
     </div>
   </div>
 
-  <!-- SENTENCE_BUILD -->
+  <!-- SENTENCE BUILD -->
   <div class="frame">
-    <div class="frame-label">✍ Сборка предложения</div>
+    <div class="frame-label">Сборка предложения</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:45</span>
-        <span>📶 🔋 83%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
-      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
-        <div class="scene-back-pill">←</div>
-        <div class="sympathy">⭐⭐⭐⭐⭐ 5/5</div>
-        ☕
-        <div class="scene-meta">Casa Lola · Раунд 3/10</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="scene-sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Casa Lola</div>
+          <div class="scene-meta-round">Раунд 3 из 10</div>
+        </div>
         <div class="scene-progress">
           <div class="dot done"></div><div class="dot done"></div>
           <div class="dot curr"></div>
@@ -876,17 +1296,22 @@ h1 {
       </div>
 
       <div class="npc-bubble">
-        <div class="npc-row">
-          <div class="npc-avatar">👩</div>
-          <div class="npc-name">María</div>
-          <div class="npc-audio">🔊</div>
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=49');"></div>
+        <div class="npc-bubble-body">
+          <div class="npc-name-row">
+            <div class="npc-name">MARÍA</div>
+            <div class="npc-audio-btn"><svg><use href="#i-play"/></svg></div>
+          </div>
+          <div class="npc-text">¿De dónde eres?</div>
+          <div class="npc-text-ru">«Откуда ты?»</div>
         </div>
-        <div class="npc-text">¿De dónde eres?</div>
-        <div class="npc-text-ru">«Откуда ты?»</div>
       </div>
 
       <div class="exercise-area">
-        <div class="exercise-label"><span class="badge">✍ СБОРКА</span> Собери ответ из слов:</div>
+        <div class="exercise-label">
+          <span class="badge"><svg><use href="#i-puzzle"/></svg>СБОРКА</span>
+          Собери ответ:
+        </div>
         <div class="build-target">
           <div class="word-chip placed">Soy</div>
           <div class="word-chip placed">de</div>
@@ -905,18 +1330,22 @@ h1 {
 
   <!-- LISTEN -->
   <div class="frame">
-    <div class="frame-label">🎧 Аудирование</div>
+    <div class="frame-label">Аудирование</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:46</span>
-        <span>📶 🔋 83%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
-      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
-        <div class="scene-back-pill">←</div>
-        <div class="sympathy">⭐⭐⭐⭐ 4/5</div>
-        ☕
-        <div class="scene-meta">Casa Lola · Раунд 5/10</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="scene-sympathy"><span class="stars">★★★★</span><span style="opacity:0.4">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Casa Lola</div>
+          <div class="scene-meta-round">Раунд 5 из 10</div>
+        </div>
         <div class="scene-progress">
           <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
           <div class="dot curr"></div>
@@ -925,17 +1354,22 @@ h1 {
       </div>
 
       <div class="npc-bubble">
-        <div class="npc-row">
-          <div class="npc-avatar">👩</div>
-          <div class="npc-name">María смотрит в меню</div>
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=49');"></div>
+        <div class="npc-bubble-body">
+          <div class="npc-name-row">
+            <div class="npc-name">MARÍA смотрит в меню</div>
+          </div>
+          <div class="npc-text-hidden">[аудио — текст скрыт]</div>
         </div>
-        <div class="npc-text" style="color:var(--text-dim);">[аудио — текст скрыт]</div>
       </div>
 
       <div class="exercise-area">
-        <div class="exercise-label"><span class="badge">🎧 СЛУШАЙ</span> Что María сказала?</div>
-        <div class="listen-button">
-          <span class="listen-wave">🎵</span> Прослушать ещё раз
+        <div class="exercise-label">
+          <span class="badge"><svg><use href="#i-headphones"/></svg>АУДИРОВАНИЕ</span>
+          Что María сказала?
+        </div>
+        <div class="listen-play">
+          <svg><use href="#i-play"/></svg> Прослушать снова
         </div>
         <div class="choice">Aquí tienes el menú.</div>
         <div class="choice">¿Te gusta el menú?</div>
@@ -947,18 +1381,22 @@ h1 {
 
   <!-- CONJUGATE -->
   <div class="frame">
-    <div class="frame-label">📝 Спряжение глагола</div>
+    <div class="frame-label">Спряжение глагола</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:47</span>
-        <span>📶 🔋 82%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
-      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
-        <div class="scene-back-pill">←</div>
-        <div class="sympathy">⭐⭐⭐⭐ 4/5</div>
-        ☕
-        <div class="scene-meta">Casa Lola · Раунд 8/10</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="scene-sympathy"><span class="stars">★★★★</span><span style="opacity:0.4">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Casa Lola</div>
+          <div class="scene-meta-round">Раунд 8 из 10</div>
+        </div>
         <div class="scene-progress">
           <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
           <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
@@ -968,17 +1406,22 @@ h1 {
       </div>
 
       <div class="npc-bubble">
-        <div class="npc-row">
-          <div class="npc-avatar">👩</div>
-          <div class="npc-name">María</div>
-          <div class="npc-audio">🔊</div>
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=49');"></div>
+        <div class="npc-bubble-body">
+          <div class="npc-name-row">
+            <div class="npc-name">MARÍA</div>
+            <div class="npc-audio-btn"><svg><use href="#i-play"/></svg></div>
+          </div>
+          <div class="npc-text">¿Pagas con tarjeta?</div>
+          <div class="npc-text-ru">«Платишь картой?»</div>
         </div>
-        <div class="npc-text">¿Pagas con tarjeta?</div>
-        <div class="npc-text-ru">«Платишь картой?»</div>
       </div>
 
       <div class="exercise-area">
-        <div class="exercise-label"><span class="badge">📝 СПРЯЖЕНИЕ</span> Поставь глагол в правильной форме:</div>
+        <div class="exercise-label">
+          <span class="badge"><svg><use href="#i-edit"/></svg>СПРЯЖЕНИЕ</span>
+          Глагол в правильной форме:
+        </div>
         <div class="conjugate-sentence">
           Sí, yo <span class="conjugate-blank">?</span> con tarjeta.
         </div>
@@ -992,20 +1435,24 @@ h1 {
     </div>
   </div>
 
-  <!-- VOICE (опционально) -->
+  <!-- VOICE (опц) -->
   <div class="frame">
-    <div class="frame-label">🎤 Голосовой ответ (опц.)</div>
+    <div class="frame-label">Голос (опц., обсуждается)</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:48</span>
-        <span>📶 🔋 82%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
-      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
-        <div class="scene-back-pill">←</div>
-        <div class="sympathy">⭐⭐⭐⭐ 4/5</div>
-        ☕
-        <div class="scene-meta">Casa Lola · Раунд 2/10</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-back-pill"><svg><use href="#i-back"/></svg></div>
+        <div class="scene-sympathy"><span class="stars">★★★★</span><span style="opacity:0.4">★</span> 4/5</div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Casa Lola</div>
+          <div class="scene-meta-round">Раунд 2 из 10</div>
+        </div>
         <div class="scene-progress">
           <div class="dot done"></div>
           <div class="dot curr"></div>
@@ -1014,110 +1461,151 @@ h1 {
       </div>
 
       <div class="npc-bubble">
-        <div class="npc-row">
-          <div class="npc-avatar">👩</div>
-          <div class="npc-name">María</div>
-          <div class="npc-audio">🔊</div>
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=49');"></div>
+        <div class="npc-bubble-body">
+          <div class="npc-name-row">
+            <div class="npc-name">MARÍA</div>
+            <div class="npc-audio-btn"><svg><use href="#i-play"/></svg></div>
+          </div>
+          <div class="npc-text">¿Cómo te llamas?</div>
+          <div class="npc-text-ru">«Как тебя зовут?»</div>
         </div>
-        <div class="npc-text">¿Cómo te llamas?</div>
-        <div class="npc-text-ru">«Как тебя зовут?»</div>
       </div>
 
       <div class="exercise-area">
-        <div class="exercise-label"><span class="badge">🎤 ГОЛОС</span> Назови своё имя по-испански:</div>
-        <div class="voice-circle">🎤</div>
-        <div class="voice-hint">Слушаю... Произнеси «Me llamo ...»</div>
+        <div class="exercise-label">
+          <span class="badge"><svg><use href="#i-mic"/></svg>ГОЛОС</span>
+          Произнеси своё имя:
+        </div>
+        <div class="voice-circle-wrap">
+          <div class="voice-circle"><svg><use href="#i-mic"/></svg></div>
+        </div>
+        <div class="voice-hint">Слушаю... Скажи «Me llamo ...»</div>
         <div class="voice-transcript">Me llamo Andrea</div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="section-title">🏁 Финальный экран · Pass и Fail</div>
+<!-- ============ SECTION 3 ============ -->
+<div class="section-divider">
+  <span class="num">3</span><span class="title">Финал · Pass / Fail</span>
+  <div class="desc">Разбор по форматам показывает слабые зоны. На Pass → открывается следующий блок. На Fail → можно переиграть или вернуться к слабым урокам.</div>
+</div>
 
 <div class="grid">
   <!-- RESULT PASS -->
   <div class="frame">
-    <div class="frame-label">✅ Прошёл (80%)</div>
+    <div class="frame-label">Прошёл · 80%</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:51</span>
-        <span>📶 🔋 81%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
       <div class="result-hero">
-        <div class="result-emoji">🎉</div>
-        <div class="result-text">¡Perfecto!</div>
-        <div style="font-size: 14px; opacity: 0.9; margin-top: 4px;">Чекпоинт A1 пройден</div>
+        <div class="result-icon"><svg><use href="#i-check"/></svg></div>
+        <div class="result-text">Перфекто!</div>
+        <div class="result-subtext">Чекпоинт A1 пройден</div>
       </div>
 
       <div class="format-mix">
-        <div class="format-mix-title">Разбор по форматам:</div>
-        <div class="format-row"><span>🔘 Выбор</span><span class="format-score">3/3</span></div>
-        <div class="format-row"><span>🌐 Перевод</span><span class="format-score">2/2</span></div>
-        <div class="format-row"><span>✍ Сборка</span><span class="format-score">1/2</span></div>
-        <div class="format-row"><span>🎧 Аудирование</span><span class="format-score">1/2</span></div>
-        <div class="format-row"><span>📝 Спряжение</span><span class="format-score">1/1</span></div>
+        <div class="format-mix-title">Разбор по форматам</div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-list"/></svg> Выбор</span>
+          <span class="format-score">3 / 3</span>
+        </div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-translate"/></svg> Перевод</span>
+          <span class="format-score">2 / 2</span>
+        </div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-puzzle"/></svg> Сборка</span>
+          <span class="format-score">1 / 2</span>
+        </div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-headphones"/></svg> Аудирование</span>
+          <span class="format-score">1 / 2</span>
+        </div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-edit"/></svg> Спряжение</span>
+          <span class="format-score">1 / 1</span>
+        </div>
       </div>
 
       <div class="result-stats">
         <div class="stat-row">
           <div class="stat-label">Точность</div>
-          <div class="stat-value">80% (8/10)</div>
+          <div class="stat-value">80% · 8 из 10</div>
         </div>
         <div class="stat-row">
           <div class="stat-label">Симпатия María</div>
-          <div class="stat-value">⭐⭐⭐⭐ 4/5</div>
+          <div class="stat-value" style="color:var(--accent);">★★★★ 4/5</div>
         </div>
-        <div class="stat-row bonus">
-          <div class="stat-label">🎁 Награды</div>
-          <div class="stat-value">+250 XP · 🏆 Кофе по-испански</div>
+        <div class="bonus-card">
+          <div class="bonus-title">Награды</div>
+          <div class="bonus-value">+250 XP · Бейдж «Кофе по-испански»</div>
         </div>
       </div>
 
       <div class="result-actions">
-        <div class="btn-primary">Открыть блок A2 →</div>
-        <div class="btn-secondary">Разобрать ошибки (2)</div>
+        <div class="btn-primary">Открыть блок A2 <svg><use href="#i-arrow-r"/></svg></div>
+        <div class="btn-secondary">Разобрать 2 ошибки</div>
       </div>
     </div>
   </div>
 
   <!-- RESULT FAIL -->
   <div class="frame">
-    <div class="frame-label">❌ Не прошёл (50%)</div>
+    <div class="frame-label">Не прошёл · 50%</div>
     <div class="phone">
       <div class="notch"></div>
       <div class="status-bar">
         <span>19:51</span>
-        <span>📶 🔋 81%</span>
+        <span class="icons"><svg><use href="#i-wifi"/></svg> <svg><use href="#i-battery"/></svg></span>
       </div>
       <div class="result-hero fail">
-        <div class="result-emoji">😔</div>
-        <div class="result-text">María ушла...</div>
-        <div style="font-size: 14px; opacity: 0.9; margin-top: 4px;">Слишком много ошибок</div>
+        <div class="result-icon"><svg><use href="#i-x"/></svg></div>
+        <div class="result-text">María ушла</div>
+        <div class="result-subtext">Слишком много ошибок</div>
       </div>
 
       <div class="format-mix">
-        <div class="format-mix-title">Разбор по форматам:</div>
-        <div class="format-row"><span>🔘 Выбор</span><span class="format-score">2/3</span></div>
-        <div class="format-row"><span>🌐 Перевод</span><span class="format-score bad">0/2</span></div>
-        <div class="format-row"><span>✍ Сборка</span><span class="format-score bad">1/2</span></div>
-        <div class="format-row"><span>🎧 Аудирование</span><span class="format-score bad">1/2</span></div>
-        <div class="format-row"><span>📝 Спряжение</span><span class="format-score bad">1/1</span></div>
+        <div class="format-mix-title">Разбор по форматам</div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-list"/></svg> Выбор</span>
+          <span class="format-score">2 / 3</span>
+        </div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-translate"/></svg> Перевод</span>
+          <span class="format-score bad">0 / 2</span>
+        </div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-puzzle"/></svg> Сборка</span>
+          <span class="format-score bad">1 / 2</span>
+        </div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-headphones"/></svg> Аудирование</span>
+          <span class="format-score bad">1 / 2</span>
+        </div>
+        <div class="format-row">
+          <span class="fmt"><svg><use href="#i-edit"/></svg> Спряжение</span>
+          <span class="format-score bad">1 / 1</span>
+        </div>
       </div>
 
       <div class="result-stats">
         <div class="stat-row">
           <div class="stat-label">Точность</div>
-          <div class="stat-value" style="color: var(--red);">50% (5/10)</div>
+          <div class="stat-value" style="color:var(--red);">50% · 5 из 10</div>
         </div>
         <div class="stat-row">
-          <div class="stat-label">Слабая зона</div>
+          <div class="stat-label">Слабые зоны</div>
           <div class="stat-value">Перевод · Спряжение</div>
         </div>
-        <div class="stat-row bonus" style="background: rgba(255,75,75,0.1);">
-          <div class="stat-label">⚠ Нужно</div>
-          <div class="stat-value">70% для перехода</div>
+        <div class="bonus-card" style="background:rgba(229,72,72,0.10); border-color:rgba(229,72,72,0.3);">
+          <div class="bonus-title" style="color:var(--red);">Для перехода нужно</div>
+          <div class="bonus-value">70% правильных</div>
         </div>
       </div>
 
@@ -1129,60 +1617,101 @@ h1 {
   </div>
 </div>
 
-<div class="section-title">🗺 Все 4 чекпоинта — обзор</div>
+<!-- ============ SECTION 4 ============ -->
+<div class="section-divider">
+  <span class="num">4</span><span class="title">4 чекпоинта · обзор</span>
+  <div class="desc">CP1 (A1) → CP2 (A2) → CP3 (B1) → CP4 (B2 · BOSS со смешанным контентом из всех блоков).</div>
+</div>
 
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
   <div class="frame">
-    <div class="frame-label">CP1 · A1 · «Кафе»</div>
-    <div class="phone" style="height: 360px;">
+    <div class="frame-label">CP1 · A1 · Кафе</div>
+    <div class="phone overview-card">
       <div class="notch"></div>
-      <div class="status-bar"><span></span><span></span></div>
-      <div class="scene-bg cafe" style="height: 320px; font-size: 130px;">☕</div>
-      <div style="padding: 12px 16px;">
-        <div style="font-size: 11px; color: var(--text-dim);">A1 · ~8 мин · 10 заданий</div>
-        <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">Утро в кафе «Casa Lola»</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Casa Lola</div>
+          <div class="scene-meta-round">Утро в Мадриде</div>
+        </div>
+      </div>
+      <div class="overview-info">
+        <div class="overview-cefr-tag">A1 · 10 заданий · 8 мин</div>
+        <div class="title">Заказ в кафе</div>
+        <div class="meta">Знакомство, представление, цифры, артикли</div>
       </div>
     </div>
   </div>
 
   <div class="frame">
-    <div class="frame-label">CP2 · A2 · «Магазин»</div>
-    <div class="phone" style="height: 360px;">
+    <div class="frame-label">CP2 · A2 · Магазин и такси</div>
+    <div class="phone overview-card">
       <div class="notch"></div>
-      <div class="status-bar"><span></span><span></span></div>
-      <div class="scene-bg shop" style="height: 320px; font-size: 130px;">🛍</div>
-      <div style="padding: 12px 16px;">
-        <div style="font-size: 11px; color: var(--text-dim);">A2 · ~10 мин · 14 заданий</div>
-        <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">Покупки на Gran Vía</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1559599101-f09722fb4948?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Gran Vía</div>
+          <div class="scene-meta-round">Покупки и поездка</div>
+        </div>
+      </div>
+      <div class="overview-info">
+        <div class="overview-cefr-tag">A2 · 14 заданий · 10 мин</div>
+        <div class="title">Купить и поехать</div>
+        <div class="meta">Прошедшее время, предпочтения, адреса</div>
       </div>
     </div>
   </div>
 
   <div class="frame">
-    <div class="frame-label">CP3 · B1 · «Отель»</div>
-    <div class="phone" style="height: 360px;">
+    <div class="frame-label">CP3 · B1 · Отель</div>
+    <div class="phone overview-card">
       <div class="notch"></div>
-      <div class="status-bar"><span></span><span></span></div>
-      <div class="scene-bg hotel" style="height: 320px; font-size: 130px;">🏨</div>
-      <div style="padding: 12px 16px;">
-        <div style="font-size: 11px; color: var(--text-dim);">B1 · ~14 мин · 18 заданий</div>
-        <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">Проблема в отеле</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Hotel Imperial</div>
+          <div class="scene-meta-round">Проблема в номере</div>
+        </div>
+      </div>
+      <div class="overview-info">
+        <div class="overview-cefr-tag">B1 · 18 заданий · 14 мин</div>
+        <div class="title">Решить проблему</div>
+        <div class="meta">Условные конструкции, жалобы, переговоры</div>
       </div>
     </div>
   </div>
 
   <div class="frame">
-    <div class="frame-label">CP4 · B2 · «BOSS»</div>
-    <div class="phone" style="height: 360px;">
+    <div class="frame-label">CP4 · B2 · BOSS</div>
+    <div class="phone overview-card" style="border: 2px solid var(--primary); box-shadow: 0 24px 64px rgba(255,107,26,0.3), 0 0 0 2px #1c1c1e, 0 0 0 10px #2a2a2e, 0 0 0 11px #3a3a3e;">
       <div class="notch"></div>
-      <div class="status-bar"><span></span><span></span></div>
-      <div class="scene-bg barcelona" style="height: 320px; font-size: 130px;">🏛</div>
-      <div style="padding: 12px 16px;">
-        <div style="font-size: 11px; color: var(--text-dim);">B2 · ~22 мин · 30 заданий</div>
-        <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">Собеседование в Барселоне</div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1583422409516-2895a77efded?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="scene-meta">
+          <div class="scene-meta-place">Barcelona Tech</div>
+          <div class="scene-meta-round">Собеседование на работу</div>
+        </div>
+      </div>
+      <div class="overview-info">
+        <div class="overview-cefr-tag" style="color:var(--accent);">B2 · BOSS · 30 заданий · 22 мин</div>
+        <div class="title">Собеседование</div>
+        <div class="meta">Все темы блоков 1-3 в одной длинной сцене</div>
       </div>
     </div>
   </div>
+</div>
+
+<div class="note" style="margin-top:60px">
+  <strong>Изображения — placeholder.</strong> Сейчас стоят:
+  <ul style="margin: 8px 0 0 16px; padding: 0;">
+    <li>Сцены: фото с Unsplash (cafe, Gran Vía, hotel, Barcelona)</li>
+    <li>Портреты NPC: pravatar.cc (псевдо-фото)</li>
+  </ul>
+  Когда дойдём до пункта про изображения — сгенерируем (или подберём) свой стиль для всех 4 сцен и ~6 уникальных NPC (María, Pedro, Diego, Carmen, Luis + recruiter в boss). Стиль может быть фото-реалистичный, или иллюстрация в одном ключе — обсудим.
 </div>
 
 </body>
