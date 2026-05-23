@@ -124,11 +124,23 @@ fun CourseDetailScreen(
                     },
                     onLessonClick = { lessonIndex ->
                         if (!unit.isLocked && unit.id.toIntOrNull() != null) {
-                            navController.navigate("lesson_intro/${unit.id}/$lessonIndex") {
-                                // Use substituted route — popUpTo matches concrete
-                                // back-stack entries, not template patterns.
-                                popUpTo("course_detail/$courseLevel") { inclusive = false }
-                                launchSingleTop = true
+                            // v1.22.11: чекпоинты обходят промежуточный
+                            // экран «Lesson Intro» (с ракетой и ПОЕХАЛИ) и
+                            // открываются сразу в своём собственном intro.
+                            val lesson = unit.lessons.getOrNull(lessonIndex)
+                            val cpId = checkpointIdForUnitLesson(unit.id, lessonIndex, lesson?.title.orEmpty())
+                            if (cpId != null) {
+                                navController.navigate("checkpoint/$cpId") {
+                                    popUpTo("course_detail/$courseLevel") { inclusive = false }
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                navController.navigate("lesson_intro/${unit.id}/$lessonIndex") {
+                                    // Use substituted route — popUpTo matches concrete
+                                    // back-stack entries, not template patterns.
+                                    popUpTo("course_detail/$courseLevel") { inclusive = false }
+                                    launchSingleTop = true
+                                }
                             }
                         }
                         // Для preview-юнитов A2/B1/B2 (id не int) клик игнорируется —
@@ -139,4 +151,28 @@ fun CourseDetailScreen(
             }
         }
     }
+}
+
+/**
+ * v1.22.11: определяет, является ли урок чекпоинтом, и возвращает его CP id.
+ * Маппинг:
+ *   unit "1" (block A1) + lessonIndex 15 (16-й урок) → cp1
+ *   unit "2" + lessonIndex 15 → cp2  (когда будут блоки A2)
+ *   и т.д.
+ * Также fallback по title — если есть «Чекпоинт» в названии.
+ */
+private fun checkpointIdForUnitLesson(unitId: String, lessonIndex: Int, title: String): String? {
+    // По названию (надёжно) — title содержит «Чекпоинт» (с учётом возможного
+    // префикса-эмодзи: «🏁 Чекпоинт ...», «🚩 Чекпоинт...» и пр.)
+    if (title.contains("Чекпоинт", ignoreCase = true)) {
+        // Маппинг блок → CP id
+        return when (unitId) {
+            "1" -> "cp1"
+            "2" -> "cp2"
+            "3" -> "cp3"
+            "4" -> "cp4"
+            else -> null
+        }
+    }
+    return null
 }

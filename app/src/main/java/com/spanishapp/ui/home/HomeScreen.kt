@@ -2520,7 +2520,7 @@ private fun SubLessonRow(
             if (!effectiveLocked) {
                 // v1.22.10: для чекпоинтов — единый бейдж «Экзамен» оранжевым,
                 // вместо отдельных «Теория» + «Практика».
-                val isCheckpoint = lesson.title.startsWith("Чекпоинт", ignoreCase = true) ||
+                val isCheckpoint = lesson.title.contains("Чекпоинт", ignoreCase = true) ||
                                    lesson.type.equals("checkpoint", ignoreCase = true)
                 if (isCheckpoint) {
                     Box(
