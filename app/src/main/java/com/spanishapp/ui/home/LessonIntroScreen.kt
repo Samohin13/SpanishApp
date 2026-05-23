@@ -163,7 +163,10 @@ fun LessonIntroScreen(
 
                     val route = buildActivityRoute(lesson, unit.cefrLevel, unitId, lessonIndex)
                     val lessonId = lesson.id ?: "u${unitId}_l${lessonIndex}"
-                    val isCheckpoint = com.spanishapp.data.checkpoint.CheckpointContentData.byId(lessonId) != null
+                    // v1.22.9: маппинг урока «u<N>_l14» (последний урок блока) на
+                    // новые чекпоинты cp1..cp4 — пока через хардкод. Скоро будет
+                    // в RoadmapData как явное поле.
+                    val isCheckpoint = checkpointIdForLesson(lessonId) != null
 
                     // v1.18.11 (BUG-025): для CHECKPOINT и CONTENT уроков — НЕ
                     // помечаем automark здесь. Эти типы имеют собственную
@@ -207,6 +210,20 @@ fun LessonIntroScreen(
     }
 }
 
+/**
+ * v1.22.9: маппинг lessonId → checkpointId. Последний урок каждого блока
+ * (u1_l14, u2_l14, u3_l14, u4_l14) — это финальный чекпоинт блока.
+ *
+ * TODO: вынести в RoadmapData как явное поле RoadmapLesson.checkpointId.
+ */
+private fun checkpointIdForLesson(lessonId: String): String? = when (lessonId) {
+    "u1_l14" -> "cp1"
+    "u2_l14" -> "cp2"
+    "u3_l14" -> "cp3"
+    "u4_l14" -> "cp4"
+    else -> null
+}
+
 private fun buildActivityRoute(
     lesson: RoadmapLesson,
     cefrLevel: String,
@@ -216,11 +233,8 @@ private fun buildActivityRoute(
     val cat = lesson.category
     val lessonId = lesson.id ?: "u${unitId}_l${lessonIndex}"
 
-    // Если для этого урока есть checkpoint-сценарий — отправляем туда вместо обычной сессии.
-    // Используется для всех 21 финалов блоков из xlsx (u1_l14, u4_l14, u8_l14 и т.д.).
-    if (com.spanishapp.data.checkpoint.CheckpointContentData.byId(lessonId) != null) {
-        return "checkpoint/$lessonId"
-    }
+    // v1.22.9: если это финальный урок блока — это чекпоинт (cp1..cp4).
+    checkpointIdForLesson(lessonId)?.let { return "checkpoint/$it" }
 
     val hasSession = LessonContentData.lessons[lessonId] != null
     return when (lesson.type) {
