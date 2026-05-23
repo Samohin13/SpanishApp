@@ -10,11 +10,13 @@ import com.spanishapp.domain.checkpoint.CheckpointPersonalizer
 import com.spanishapp.domain.checkpoint.CheckpointRepository
 import com.spanishapp.domain.checkpoint.CheckpointState
 import com.spanishapp.domain.checkpoint.CountryMap
+import com.spanishapp.service.CheckpointReminderWorker
 import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpanishTts
 import com.spanishapp.service.SpeechResult
 import com.spanishapp.service.XpTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +37,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class CheckpointViewModel @Inject constructor(
+    @ApplicationContext private val appContext: android.content.Context,
     private val repository: CheckpointRepository,
     private val engine: CheckpointEngine,
     private val personalizer: CheckpointPersonalizer,
@@ -44,6 +47,9 @@ class CheckpointViewModel @Inject constructor(
     private val speechRecognizer: SpanishSpeechRecognizer,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    /** Текущий cpId — нужен чтобы отменять / планировать reminder. */
+    private var currentCpId: String? = null
 
     private val _uiState = MutableStateFlow<CheckpointUiState>(CheckpointUiState.Loading)
     val uiState: StateFlow<CheckpointUiState> = _uiState.asStateFlow()
@@ -65,6 +71,11 @@ class CheckpointViewModel @Inject constructor(
     /** Грузит чекпоинт по id ("cp1"..) и показывает intro. */
     fun load(checkpointId: String) {
         viewModelScope.launch {
+            currentCpId = checkpointId
+            // v1.22.20: юзер сам вернулся в чекпоинт → отменяем 24h-напоминание
+            // (если оно было запланировано после прошлого fail). Не назойливо.
+            runCatching { CheckpointReminderWorker.cancel(appContext, checkpointId) }
+
             val rawData = repository.getById(checkpointId)
             if (rawData == null) {
                 _uiState.value = CheckpointUiState.Error("Чекпоинт $checkpointId не найден")
@@ -97,11 +108,28 @@ class CheckpointViewModel @Inject constructor(
 
         if (newState.isFinished) {
             val outcome = newState.outcome
-            if (outcome is com.spanishapp.domain.checkpoint.CheckpointOutcome.Pass) {
-                // Начисляем XP только при первом прохождении (TODO: check DB)
-                viewModelScope.launch {
-                    xpTracker.add(outcome.xpAwarded)
+            val cpId = currentCpId
+            when (outcome) {
+                is com.spanishapp.domain.checkpoint.CheckpointOutcome.Pass -> {
+                    // Начисляем XP только при первом прохождении (TODO: check DB)
+                    viewModelScope.launch {
+                        xpTracker.add(outcome.xpAwarded)
+                    }
+                    // v1.22.20: успешно сдал → отменяем любые pending reminder
+                    // (вдруг был с прошлого fail и юзер сразу пересдал)
+                    if (cpId != null) {
+                        runCatching { CheckpointReminderWorker.cancel(appContext, cpId) }
+                    }
                 }
+                is com.spanishapp.domain.checkpoint.CheckpointOutcome.Fail -> {
+                    // v1.22.20: NPC «обиделся» — пришлёт пуш через 24 часа
+                    // если юзер не вернётся сам. REPLACE policy: повторный
+                    // fail перезапишет таймер на новый 24h-период.
+                    if (cpId != null) {
+                        runCatching { CheckpointReminderWorker.scheduleIn24h(appContext, cpId) }
+                    }
+                }
+                null -> { /* should not happen — isFinished implies outcome */ }
             }
             _uiState.value = CheckpointUiState.Finished(newState)
         } else {
