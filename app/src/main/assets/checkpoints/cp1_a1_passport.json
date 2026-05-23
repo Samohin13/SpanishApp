@@ -241,18 +241,18 @@
     {
       "round": 17,
       "format": "TRANSLATE_ES_RU",
-      "topic_ru": "Понимание · SER + национальность",
-      "tested_lesson": "u1_l10 + u1_l12",
-      "prompt_ru": "Carlos говорит. Переведи на русский:",
-      "prompt_text_es": "Usted es rusa y es de Rusia.",
-      "correct_answer": "Вы русская и вы из России.",
+      "topic_ru": "Понимание · SER 1+3 л.",
+      "tested_lesson": "u1_l10 + u1_l11",
+      "prompt_ru": "Carlos указывает на коллегу. Переведи фразу:",
+      "prompt_text_es": "Yo soy Carlos. Él es mi amigo.",
+      "correct_answer": "Я Carlos. Он мой друг.",
       "acceptable_alternatives": [
-        "Вы русская и из России.",
-        "Ты русская и ты из России.",
-        "Ты русская и из России.",
-        "Вы — русская, и вы из России."
+        "Я — Carlos. Он мой друг.",
+        "Я Carlos, он мой друг.",
+        "Я Карлос. Он мой друг.",
+        "Я Карлос, он мой друг."
       ],
-      "explanation_on_fail_ru": "«Usted es» = «Вы есть/Вы». «Rusa» = русская (ж.р.). «Y» = и. «Es de Rusia» = (Вы) из России."
+      "explanation_on_fail_ru": "«Yo soy» = я (есть). «Él es» = он (есть). SER в 1 л. и 3 л. ед. ч. «Mi amigo» = мой друг (попадается слово вне блока 1, но узнаваемо)."
     },
     {
       "round": 18,

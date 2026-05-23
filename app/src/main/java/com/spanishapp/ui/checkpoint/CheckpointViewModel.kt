@@ -3,10 +3,13 @@ package com.spanishapp.ui.checkpoint
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spanishapp.data.repository.LeaderboardRepository
 import com.spanishapp.domain.checkpoint.CheckpointData
 import com.spanishapp.domain.checkpoint.CheckpointEngine
+import com.spanishapp.domain.checkpoint.CheckpointPersonalizer
 import com.spanishapp.domain.checkpoint.CheckpointRepository
 import com.spanishapp.domain.checkpoint.CheckpointState
+import com.spanishapp.domain.checkpoint.CountryMap
 import com.spanishapp.service.SpanishTts
 import com.spanishapp.service.XpTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +35,8 @@ import javax.inject.Inject
 class CheckpointViewModel @Inject constructor(
     private val repository: CheckpointRepository,
     private val engine: CheckpointEngine,
+    private val personalizer: CheckpointPersonalizer,
+    private val leaderboardRepository: LeaderboardRepository,
     private val tts: SpanishTts,
     private val xpTracker: XpTracker,
     private val savedStateHandle: SavedStateHandle,
@@ -45,12 +50,18 @@ class CheckpointViewModel @Inject constructor(
     /** Грузит чекпоинт по id ("cp1"..) и показывает intro. */
     fun load(checkpointId: String) {
         viewModelScope.launch {
-            val data = repository.getById(checkpointId)
-            if (data == null) {
+            val rawData = repository.getById(checkpointId)
+            if (rawData == null) {
                 _uiState.value = CheckpointUiState.Error("Чекпоинт $checkpointId не найден")
                 return@launch
             }
-            _uiState.value = CheckpointUiState.Intro(data)
+            // v1.22.14: персонализация по стране юзера.
+            // Юзер из Казахстана играет за «kazaja de Kazajistán», а не «rusa de Rusia».
+            // Country определяется по сим-карте / сети устройства (TelephonyManager).
+            val isoCode = runCatching { leaderboardRepository.deviceCountryCode() }.getOrNull() ?: "RU"
+            val country = CountryMap.byIsoCode(isoCode)
+            val personalizedData = personalizer.personalize(rawData, country)
+            _uiState.value = CheckpointUiState.Intro(personalizedData)
         }
     }
 
