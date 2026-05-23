@@ -42,6 +42,7 @@ class LibrosViewModel @Inject constructor(
     private val geminiTranslator: GeminiTranslator,
     private val achievementManager: com.spanishapp.service.AchievementManager,
     private val hintBank: com.spanishapp.service.HintBankManager,
+    private val xpTracker: com.spanishapp.service.XpTracker,
 ) : ViewModel() {
 
     private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
@@ -138,6 +139,19 @@ class LibrosViewModel @Inject constructor(
             val wasFirstPass = passed && (existing == null || !existing.isCompleted)
             if (wasFirstPass) {
                 hintBank.award(2, com.spanishapp.service.HintEarnReason.LIBRO_QUIZ_PASSED)
+            }
+            // v1.22.16: XP за прохождение quiz после рассказа. Раньше Libros
+            // вообще не давали XP — юзер тратил 10-15 минут впустую с точки
+            // зрения мотивации.
+            when {
+                wasFirstPass -> xpTracker.add(
+                    xp = com.spanishapp.domain.algorithm.XpSystem.LIBRO_QUIZ_PASSED,
+                    words = 0,
+                )
+                passed && existing != null && score > (existing.bestScore) -> xpTracker.add(
+                    xp = com.spanishapp.domain.algorithm.XpSystem.LIBRO_QUIZ_IMPROVE,
+                    words = 0,
+                )
             }
         }
     }

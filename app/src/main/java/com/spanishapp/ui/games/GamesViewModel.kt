@@ -92,7 +92,10 @@ class GamesViewModel @Inject constructor(
 
     private fun finishArticlesGame(score: Int) {
         _articlesState.value = _articlesState.value.copy(isGameOver = true)
-        addXp(score * 2)
+        // v1.22.16: единая формула XP за игровой уровень (раньше score*2).
+        val total = _articlesState.value.currentRound.coerceAtLeast(1)
+        val correctOut = (score.toFloat() / total).coerceIn(0f, 1f)
+        addXp(com.spanishapp.domain.algorithm.XpSystem.gameLevelXp(correctOut, total))
     }
 
     // ── Speed Game ────────────────────────────────────────────
@@ -111,7 +114,10 @@ class GamesViewModel @Inject constructor(
         
         if (state.currentRound >= 10) {
             _speedState.value = state.copy(score = newScore, isGameOver = true)
-            addXp(newScore / 2)
+            // v1.22.16: единая формула (раньше newScore/2). 10 раундов,
+            // считаем долю правильных по score.
+            val correctOut = (newScore.toFloat() / (10 * 30)).coerceIn(0f, 1f) // ~30 - средний reward
+            addXp(com.spanishapp.domain.algorithm.XpSystem.gameLevelXp(correctOut, 10))
         } else {
             _speedState.value = state.copy(score = newScore)
             nextSpeedRound()

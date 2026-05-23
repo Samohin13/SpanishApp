@@ -77,6 +77,7 @@ class HomeViewModel @Inject constructor(
     private val achievementManager: AchievementManager,
     private val authRepository: AuthRepository,
     private val radioListeningDao: com.spanishapp.radio.data.RadioListeningDao,
+    private val xpTracker: com.spanishapp.service.XpTracker,
 ) : ViewModel() {
 
     // ── UI State ──────────────────────────────────────────────
@@ -386,6 +387,10 @@ class HomeViewModel @Inject constructor(
                 streak     = newStreak,
                 lastDateMs = System.currentTimeMillis()
             )
+
+            // v1.22.16: XP за первое закрепление WoD сегодня. Раньше WoD
+            // влиял только на streak, без XP — закрепил → нет вознаграждения.
+            xpTracker.add(xp = XpSystem.WOD_FIRST_TODAY, words = 0)
 
             // Точечное повторение через 1 час — пик кривой забывания.
             com.spanishapp.service.WoDReminderWorker.scheduleInOneHour(

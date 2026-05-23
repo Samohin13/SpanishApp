@@ -73,6 +73,35 @@ object XpSystem {
     const val CONJUGATION_CORRECT = 8
     const val AI_CHAT_MESSAGE  = 3       // small reward for practicing conversation
 
+    // v1.22.16: добавлены недостающие источники XP — раньше эти активности
+    // не вознаграждались и юзер тратил время "впустую" с точки зрения мотивации
+    const val LIBRO_QUIZ_PASSED  = 30    // первое прохождение quiz после рассказа
+    const val LIBRO_QUIZ_IMPROVE = 10    // улучшение score при повторном прохождении
+    const val THEORY_FIRST_READ  = 10    // первое прочтение теория-карточки
+    const val PRONUNCIATION_GOOD = 5     // успешная попытка произношения (score >= 70%)
+    const val WOD_FIRST_TODAY    = 10    // первое закрепление слова дня за сегодня
+
+    /**
+     * Единая формула XP за уровень мини-игры. Раньше каждая игра считала
+     * по-своему (score×2, score/2, percent/10×5, etc.). Теперь один источник
+     * правды.
+     *
+     * @param correctOutOfTotal доля правильных ответов 0f..1f
+     * @param totalRounds сколько раундов было в уровне (масштабирует базу)
+     * @param mistakesCorrected сколько ошибок юзер исправил (бонус)
+     */
+    fun gameLevelXp(
+        correctOutOfTotal: Float,
+        totalRounds: Int,
+        mistakesCorrected: Int = 0,
+    ): Int {
+        val base = (totalRounds * 2).coerceIn(10, 60)       // 10-30 раундов → 20-60 база
+        val accuracy = (base * correctOutOfTotal).toInt()    // линейно от точности
+        val perfectBonus = if (correctOutOfTotal >= 0.95f) base / 2 else 0
+        val correctionBonus = mistakesCorrected * 3
+        return accuracy + perfectBonus + correctionBonus
+    }
+
     // Level thresholds (XP needed to reach each level)
     private val LEVEL_THRESHOLDS = intArrayOf(
         0, 100, 250, 450, 700, 1000,       // 1–6

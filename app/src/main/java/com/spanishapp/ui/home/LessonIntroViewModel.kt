@@ -58,7 +58,7 @@ class LessonIntroViewModel @Inject constructor(
             userProgressDao.getProgressOnce()?.let { p ->
                 userProgressDao.update(p.copy(lessonsCompleted = p.lessonsCompleted + 1))
             }
-            xpTracker.add(xp = 15, words = 0)
+            xpTracker.add(xp = com.spanishapp.domain.algorithm.XpSystem.LESSON_COMPLETE, words = 0)
             repeat(5) { ratingUpdater.applyGameAnswer(correct = true) }
             achievementManager.checkAndUnlock()
             // v1.16.0: +2 💡 за прохождение урока (Hint Bank)

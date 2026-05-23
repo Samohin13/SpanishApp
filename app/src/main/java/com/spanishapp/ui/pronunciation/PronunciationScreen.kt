@@ -85,7 +85,8 @@ data class PronunciationState(
 class PronunciationViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val tts: SpanishTts,
-    private val stt: SpanishSpeechRecognizer
+    private val stt: SpanishSpeechRecognizer,
+    private val xpTracker: com.spanishapp.service.XpTracker,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PronunciationState())
@@ -161,6 +162,14 @@ class PronunciationViewModel @Inject constructor(
                     score      = score,
                     totalPracticed = _state.value.totalPracticed + 1
                 )
+                // v1.22.16: XP за успешную попытку. Раньше произношение не
+                // давало XP вообще, при том что это ключевой моторный навык.
+                if (score >= 70) {
+                    xpTracker.add(
+                        xp = com.spanishapp.domain.algorithm.XpSystem.PRONUNCIATION_GOOD,
+                        words = 0,
+                    )
+                }
             }
             is SpeechResult.Error -> {
                 _state.value = _state.value.copy(

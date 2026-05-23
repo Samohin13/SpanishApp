@@ -26,6 +26,7 @@ class TheoryReaderViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val theoryProgressDao: TheoryProgressDao,
     private val hintBank: com.spanishapp.service.HintBankManager,
+    private val xpTracker: com.spanishapp.service.XpTracker,
 ) : ViewModel() {
 
     val lessonId: String = savedStateHandle.get<String>("lessonId") ?: ""
@@ -72,6 +73,11 @@ class TheoryReaderViewModel @Inject constructor(
             )
             if (wasFirstTime) {
                 hintBank.award(1, com.spanishapp.service.HintEarnReason.THEORY_READ)
+                // v1.22.16: XP за первое прочтение теория-карточки.
+                xpTracker.add(
+                    xp = com.spanishapp.domain.algorithm.XpSystem.THEORY_FIRST_READ,
+                    words = 0,
+                )
             }
         }
     }
