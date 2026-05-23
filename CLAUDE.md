@@ -2,7 +2,30 @@
 
 > Android-приложение для изучения испанского языка русскоязычными пользователями (CEFR A1→B2).
 > **Версия:** v1.11.7 (versionCode 65), AAB подан на закрытое тестирование Play.
-> **Последний апдейт документа:** 2026-05-17. Все цифры верифицированы grep-проверкой кода.
+> **Последний апдейт документа:** 2026-05-23. Все цифры верифицированы grep-проверкой кода.
+
+## 🆕 Stats / Insights screen (2026-05-23)
+
+Карточка «📊 ЭТА НЕДЕЛЯ» на главной (HomeScreen) и плитка «Эта неделя» в
+ProfileScreen теперь **кликабельны** → открывают новый экран
+[stats](app/src/main/java/com/spanishapp/ui/stats/StatsScreen.kt).
+
+- Сегментный переключатель: День · Неделя · Месяц · 3М · 6М · Год
+- Hero (XP за период + delta vs прошл.), 3 кольца Activity (XP/мин/дни),
+  графики (bar для недели, calendar dots для месяца, line+area для 3М/6М/года),
+  breakdown «на что ушло время», топ-5 ошибок (game_mistakes) + слабые слова
+  (SM-2 weak pool), прогресс/лига, новые ачивки, AI-подсказка.
+- Стилистика — строго по [docs/mockups/stats_screen.html](docs/mockups/stats_screen.html)
+  (тёмная тема, акценты #FF8A3D / #4EA1FF / #4ADE80 / #A78BFA).
+- Период запоминается в DataStore `stats_prefs`.
+- 2 новых DAO-запроса: `LessonProgressDao.observeCountSince`,
+  `GameLevelProgressDao.observeCountSince`, `ChatMessageDao.observeCountSince`.
+- ViewModel: [StatsViewModel.kt](app/src/main/java/com/spanishapp/ui/stats/StatsViewModel.kt) —
+  combine из 13 источников, pure `buildUi()` helper покрыт 7 unit-тестами
+  ([StatsHelpersTest.kt](app/src/test/java/com/spanishapp/StatsHelpersTest.kt)).
+- ⚠ **Локализация заморожена** — все строки экрана сейчас русские в коде
+  (по аналогии с radio модулем, ~120 литералов). Перенос в strings.xml ×4
+  языка — отдельной задачей фазы 2 (см. § 8 пункт «Локализация контента»).
 
 ---
 

@@ -526,6 +526,7 @@ fun ProfileScreen(
                     Spacer(Modifier.height(8.dp))
                     WeeklyHeatmapTile(
                         history = xpHistory,
+                        onClick = { navController.navigate("stats") },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Spacer(Modifier.height(20.dp))
@@ -1324,7 +1325,8 @@ private fun StatColumn(value: String, label: String, modifier: Modifier = Modifi
 @Composable
 private fun WeeklyHeatmapTile(
     history: List<DailyXpPoint>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null
 ) {
     val points = if (history.size == 7) history else (0..6).map { offset ->
         DailyXpPoint(
@@ -1335,7 +1337,7 @@ private fun WeeklyHeatmapTile(
     val total = points.sumOf { it.xp }
     val labels = listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс")
 
-    ProfileTile(accent = AccentBlue, modifier = modifier.fillMaxWidth(), height = 130.dp) {
+    ProfileTile(accent = AccentBlue, modifier = modifier.fillMaxWidth(), height = 130.dp, onClick = onClick) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(Modifier.weight(1f))
             Text(

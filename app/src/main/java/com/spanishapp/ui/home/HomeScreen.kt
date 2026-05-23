@@ -305,7 +305,7 @@ fun HomeScreen(
             item {
                 StaggeredEntrance(index = 6) {
                     Column {
-                        WeekHeatmap(weeklyMinutes)
+                        WeekHeatmap(weeklyMinutes, onClick = { navController.navigate("stats") })
                         Spacer(Modifier.height(12.dp))
                     }
                 }
@@ -1974,7 +1974,7 @@ private fun GoalLine(text: String, done: Boolean) {
 }
 
 @Composable
-private fun WeekHeatmap(minutes: List<Int>) {
+private fun WeekHeatmap(minutes: List<Int>, onClick: (() -> Unit)? = null) {
     // Locale-aware short weekday labels (Mon=Пн, Tue=Вт, ... resolves
     // automatically based on the active resources locale).
     val context = LocalContext.current
@@ -1997,7 +1997,10 @@ private fun WeekHeatmap(minutes: List<Int>) {
     val activeDays = minutes.count { it > 0 }
 
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 14.dp)
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         shadowElevation = 2.dp

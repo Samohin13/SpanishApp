@@ -418,6 +418,7 @@ object Navigation {
             // ── Профиль / Достижения / Настройки ─────────────
             composable("profile")      { ProfileScreen(navController) }
             composable("achievements") { AchievementsScreen(navController) }
+            composable("stats")        { com.spanishapp.ui.stats.StatsScreen(navController) }
             composable("settings")     { SettingsScreen(navController) }
             composable("settings_voice") { com.spanishapp.ui.settings.SettingsVoiceScreen(navController) }
             // OTA download route DISABLED for v1 — see comment near initialStartDest.

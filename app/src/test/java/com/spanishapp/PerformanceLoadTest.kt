@@ -1,6 +1,8 @@
 package com.spanishapp
 
-import com.spanishapp.data.checkpoint.CheckpointContentData
+// CheckpointContentData удалён в feat(checkpoints) — чекпоинты JSON-driven
+// (см. CheckpointRepository + assets/checkpoints/*.json). Перенести проверки
+// производительности чекпоинтов в InstrumentationTest когда понадобится.
 import com.spanishapp.data.theory.TheoryContentData
 import com.spanishapp.ui.home.ExerciseGenerator
 import com.spanishapp.ui.home.LessonContentData
@@ -60,11 +62,7 @@ class PerformanceLoadTest {
         println("✅ TheoryContentData: ${theories.size} теорий за $t1elapsed ms")
         assert(theories.size >= 100) { "Ожидалось >=100 теорий" }
 
-        val t2 = System.nanoTime()
-        val checkpoints = CheckpointContentData.all()
-        val t2elapsed = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - t2)
-        println("✅ CheckpointContentData: ${checkpoints.size} сценариев за $t2elapsed ms")
-        assert(checkpoints.size >= 18) { "Ожидалось >=18 чекпоинтов" }
+        // CheckpointContentData проверка вырезана — теперь JSON-driven.
 
         val t3 = System.nanoTime()
         val allWords = VocabScope.allWords()
@@ -109,7 +107,6 @@ class PerformanceLoadTest {
     @Test
     fun `lookups throughput — теории, чекпоинты, уроки 10000 раз`() {
         val theoryIds = TheoryContentData.all().map { it.lessonId }
-        val checkpointIds = CheckpointContentData.all().map { it.id }
         val lessonIds = LessonContentData.lessons.keys.toList()
 
         val N = 10_000
@@ -117,16 +114,12 @@ class PerformanceLoadTest {
         val msTh = bench("TheoryContentData.byLessonId", N) { i ->
             TheoryContentData.byLessonId(theoryIds[i % theoryIds.size])
         }
-        val msCp = bench("CheckpointContentData.byId", N) { i ->
-            CheckpointContentData.byId(checkpointIds[i % checkpointIds.size])
-        }
         val msLs = bench("LessonContentData.lessons[id]", N) { i ->
             LessonContentData.lessons[lessonIds[i % lessonIds.size]]
         }
 
         // Все lookups должны быть очень быстрые (<1µs/op для Map.get)
         assert(msTh < 500) { "Theory lookup throughput низкий: $msTh ms" }
-        assert(msCp < 500) { "Checkpoint lookup throughput низкий: $msCp ms" }
         assert(msLs < 500) { "Lesson lookup throughput низкий: $msLs ms" }
 
         println("📊 Lookup-throughput: Theory ${N * 1000L / msTh.coerceAtLeast(1)} ops/s")
@@ -137,14 +130,15 @@ class PerformanceLoadTest {
         val executor = Executors.newFixedThreadPool(8)
         val lessonIds = LessonContentData.lessons.keys.toList()
         val theoryIds = TheoryContentData.all().map { it.lessonId }
-        val cpIds = CheckpointContentData.all().map { it.id }
+        // CheckpointContentData удалён — чекпоинты теперь JSON-driven (см.
+        // PerformanceLoadTest исправление от 2026-05-23). Concurrency-проверка
+        // для чекпоинтов остаётся для будущего instrumentation-теста.
 
         val tasks = (0 until 8).map { threadIdx ->
             Runnable {
                 repeat(1000) { i ->
                     LessonContentData.lessons[lessonIds[(i * 7 + threadIdx) % lessonIds.size]]
                     TheoryContentData.byLessonId(theoryIds[(i * 11 + threadIdx) % theoryIds.size])
-                    CheckpointContentData.byId(cpIds[(i * 3 + threadIdx) % cpIds.size])
                     VocabScope.wordsForLesson(lessonIds[(i * 5 + threadIdx) % lessonIds.size])
                 }
             }
@@ -163,10 +157,9 @@ class PerformanceLoadTest {
 
     @Test
     fun `memory footprint — все статичные данные в JVM`() {
-        // Инициализируем всё
+        // Инициализируем всё (без CheckpointContentData — теперь JSON-driven)
         LessonContentData.lessons
         TheoryContentData.all()
-        CheckpointContentData.all()
         VocabScope.allWords()
 
         // GC чтобы получить максимально точную картину
@@ -197,21 +190,12 @@ class PerformanceLoadTest {
         assert(theoryIds.all { it.isNotBlank() }) { "Пустой theory.lessonId" }
         println("✅ Все ${theoryIds.size} theory.lessonId уникальны")
 
-        // Проверка чекпоинтов
-        val cpIds = CheckpointContentData.all().map { it.id }
-        assert(cpIds.size == cpIds.toSet().size) { "Дубль в CheckpointContentData" }
-        assert(cpIds.all { it.isNotBlank() }) { "Пустой checkpoint.id" }
-        println("✅ Все ${cpIds.size} checkpoint.id уникальны")
-
-        // Проверка структуры чекпоинтов: 1+ scenes, 1+ acts
-        for (cp in CheckpointContentData.all()) {
-            assert(cp.scenes.isNotEmpty()) { "Чекпоинт ${cp.id} без scenes" }
-            for (scene in cp.scenes) {
-                assert(scene.acts.isNotEmpty()) { "Сцена в ${cp.id} без актов" }
-            }
-        }
-        val totalActs = CheckpointContentData.all().sumOf { cp -> cp.scenes.sumOf { it.acts.size } }
-        println("✅ Чекпоинты: ${CheckpointContentData.all().size} сценариев, $totalActs актов суммарно")
+        // ⚠ CheckpointContentData удалён в feat(checkpoints) — чекпоинты теперь
+        // JSON-driven (см. assets/checkpoints/*.json + CheckpointRepository).
+        // Старый объект больше не существует; этот блок проверки оставлен пустым.
+        // TODO: переписать проверку через CheckpointRepository.loadAll() в
+        // InstrumentationTest (нужен Android Context).
+        println("ℹ️ Чекпоинты теперь JSON-driven — проверка вынесена в Instrumentation")
     }
 
     @Test

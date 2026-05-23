@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ESPEAK — Insights / «Эта неделя» mockup</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --bg:#0b0d12;
+  --surface:#161922;
+  --surface-2:#1f2330;
+  --surface-3:#2a2f3e;
+  --line:#2d3344;
+  --text:#f4f6fb;
+  --text-dim:#9aa3b7;
+  --text-mute:#6b7388;
+  --orange:#ff8a3d;
+  --orange-soft:rgba(255,138,61,.22);
+  --blue:#4ea1ff;
+  --green:#4ade80;
+  --red:#f87171;
+  --yellow:#facc15;
+  --purple:#a78bfa;
+  --pink:#f472b6;
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#05070b;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  color:var(--text);
+  padding:24px 12px 60px;
+  display:flex;flex-direction:column;align-items:center;gap:28px;
+}
+h1.page-title{
+  font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--text-dim);
+  text-transform:uppercase;margin-bottom:-12px;
+}
+/* Phone frame */
+.phone{
+  width:390px;background:var(--bg);border-radius:38px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 8px #1a1d26;
+  overflow:hidden;position:relative;
+}
+.phone::before{
+  content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  width:110px;height:24px;background:#000;border-radius:14px;z-index:5;
+}
+.statusbar{
+  height:44px;display:flex;justify-content:space-between;align-items:center;
+  padding:0 24px;font-size:13px;font-weight:600;color:var(--text);
+}
+.appbar{
+  display:flex;align-items:center;gap:10px;padding:8px 16px 14px;
+}
+.back{
+  width:36px;height:36px;border-radius:50%;background:var(--surface);
+  display:grid;place-items:center;font-size:18px;color:var(--text);
+}
+.title-block{flex:1}
+.title-block h1{font-size:22px;font-weight:700;line-height:1.1}
+.title-block .sub{font-size:12px;color:var(--text-dim);margin-top:2px}
+.share{
+  width:36px;height:36px;border-radius:50%;background:var(--surface);
+  display:grid;place-items:center;font-size:16px;color:var(--text-dim);
+}
+
+/* Segmented control */
+.segments{
+  display:flex;background:var(--surface);border-radius:12px;
+  margin:0 16px 16px;padding:4px;gap:2px;
+}
+.seg{
+  flex:1;text-align:center;padding:8px 0;border-radius:9px;
+  font-size:12px;font-weight:600;color:var(--text-mute);cursor:pointer;
+}
+.seg.active{background:var(--surface-3);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.4)}
+
+.screen{padding:0 16px 24px}
+
+/* Hero */
+.hero{
+  background:linear-gradient(135deg,#1f2330 0%,#2a2030 100%);
+  border-radius:var(--radius);padding:18px;margin-bottom:14px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+  background:radial-gradient(circle, rgba(255,138,61,.25), transparent 70%);
+}
+.hero .label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.hero .big{font-size:44px;font-weight:800;margin:6px 0 4px;letter-spacing:-1px}
+.hero .big small{font-size:18px;color:var(--text-dim);font-weight:600;margin-left:6px}
+.hero .delta{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--green)}
+.hero .delta.down{color:var(--red)}
+.hero .range{margin-top:10px;font-size:12px;color:var(--text-mute)}
+
+/* Activity rings */
+.rings-card{
+  background:var(--surface);border-radius:var(--radius);padding:16px;
+  display:flex;align-items:center;gap:18px;margin-bottom:14px;
+}
+.rings{position:relative;width:120px;height:120px;flex-shrink:0}
+.rings svg{transform:rotate(-90deg)}
+.rings .center{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-size:11px;font-weight:600;color:var(--text-dim);text-align:center;line-height:1.2;
+}
+.rings .center strong{display:block;font-size:14px;color:var(--text);font-weight:700}
+.legend{flex:1;display:flex;flex-direction:column;gap:10px}
+.legend .item{display:flex;align-items:center;gap:10px;font-size:13px}
+.legend .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.legend .item .v{margin-left:auto;font-weight:700;color:var(--text)}
+.legend .item .lbl{color:var(--text-dim)}
+
+/* Section */
+.section-title{
+  font-size:12px;font-weight:700;color:var(--text-dim);
+  text-transform:uppercase;letter-spacing:1px;
+  margin:18px 4px 10px;display:flex;align-items:center;gap:8px;
+}
+.card{
+  background:var(--surface);border-radius:var(--radius);padding:16px;margin-bottom:10px;
+}
+.card.compact{padding:14px}
+
+/* Bar chart (week) */
+.chart{
+  height:160px;display:flex;align-items:flex-end;justify-content:space-between;
+  gap:8px;padding:8px 4px 0;
+}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.bar-wrap{height:120px;width:100%;display:flex;align-items:flex-end;justify-content:center;position:relative}
+.bar{
+  width:100%;max-width:28px;background:linear-gradient(180deg,var(--orange),#ff5722);
+  border-radius:6px 6px 0 0;position:relative;transition:.2s;
+}
+.bar.today{background:linear-gradient(180deg,var(--blue),#1e6fd8);box-shadow:0 0 12px rgba(78,161,255,.5)}
+.bar.zero{background:var(--surface-3);height:6px !important}
+.bar .val{
+  position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+  font-size:10px;font-weight:700;color:var(--text-dim);
+}
+.bar-col .day{font-size:11px;color:var(--text-mute);font-weight:600}
+.bar-col.today .day{color:var(--blue)}
+
+/* Calendar dots (month) */
+.cal{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:4px 0;
+}
+.cal .cell{
+  aspect-ratio:1;border-radius:5px;background:var(--surface-3);
+  display:grid;place-items:center;font-size:10px;color:var(--text-mute);font-weight:600;
+}
+.cal .cell.l1{background:rgba(255,138,61,.22)}
+.cal .cell.l2{background:rgba(255,138,61,.45)}
+.cal .cell.l3{background:rgba(255,138,61,.75)}
+.cal .cell.l4{background:var(--orange);color:#fff}
+.cal .cell.today{box-shadow:0 0 0 2px var(--blue)}
+.cal-head{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:6px;
+  font-size:10px;color:var(--text-mute);text-align:center;font-weight:600;margin-bottom:6px;
+}
+
+/* Line chart (year) */
+.line-chart{width:100%;height:180px}
+
+/* Breakdown */
+.break-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.break-row:last-child{border:0}
+.break-icon{
+  width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:18px;flex-shrink:0;
+}
+.break-name{flex:1;font-size:14px;font-weight:600}
+.break-name .sub{font-size:11px;color:var(--text-dim);font-weight:500;margin-top:2px}
+.break-val{font-size:14px;font-weight:700;color:var(--text)}
+.break-val .pct{font-size:11px;color:var(--text-dim);font-weight:600;margin-left:4px}
+.bar-mini{
+  height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden;margin-top:8px;
+}
+.bar-mini > div{height:100%;border-radius:3px}
+
+/* Mistakes / Weak words */
+.word-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid var(--line);
+}
+.word-row:last-child{border:0}
+.word-es{font-weight:700;font-size:14px}
+.word-es .ru{display:block;font-size:11px;color:var(--text-dim);font-weight:500;margin-top:2px}
+.word-badge{
+  background:rgba(248,113,113,.15);color:var(--red);font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:20px;
+}
+.word-badge.weak{background:rgba(250,204,21,.15);color:var(--yellow)}
+
+/* Progress card */
+.prog{display:flex;flex-direction:column;gap:14px}
+.prog-row{display:flex;align-items:center;gap:12px}
+.prog-icon{font-size:22px;width:32px;text-align:center}
+.prog-name{flex:1;font-size:13px;color:var(--text-dim)}
+.prog-val{font-size:15px;font-weight:700}
+.prog-val .delta{font-size:11px;color:var(--green);margin-left:6px;font-weight:600}
+
+/* League pill */
+.league{
+  display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#2a1a3f,#3a2050);
+  border-radius:14px;padding:12px 14px;margin-top:8px;
+}
+.league .city{font-size:13px;font-weight:700}
+.league .city .sub{font-size:11px;color:var(--text-dim);font-weight:500;margin-top:1px}
+.league .rating{margin-left:auto;font-size:18px;font-weight:800;color:var(--purple)}
+
+/* Insight card */
+.insight{
+  background:linear-gradient(135deg,rgba(78,161,255,.12),rgba(167,139,250,.12));
+  border:1px solid rgba(78,161,255,.25);
+  border-radius:var(--radius);padding:14px;display:flex;gap:12px;align-items:flex-start;
+}
+.insight .ico{font-size:22px;flex-shrink:0}
+.insight .txt{font-size:13px;line-height:1.4;color:var(--text)}
+.insight .txt strong{color:var(--blue)}
+
+/* Achievement chips */
+.ach-list{display:flex;gap:8px;overflow-x:auto;padding:2px 0}
+.ach{
+  flex-shrink:0;background:var(--surface-2);border-radius:14px;padding:10px 12px;
+  display:flex;align-items:center;gap:8px;min-width:170px;
+}
+.ach .icn{font-size:22px}
+.ach .nm{font-size:12px;font-weight:700;line-height:1.2}
+.ach .nm .sub{display:block;font-size:10px;color:var(--text-dim);font-weight:500;margin-top:2px}
+
+/* Comparison strip */
+.versus{
+  display:flex;background:var(--surface-2);border-radius:12px;
+  padding:10px 14px;margin-top:8px;justify-content:space-between;align-items:center;
+}
+.versus .col{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.versus .col .lbl{font-size:10px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.versus .col .v{font-size:15px;font-weight:700}
+.versus .arrow{color:var(--green);font-weight:700}
+
+/* multi-phone layout */
+.row{
+  display:flex;gap:24px;flex-wrap:wrap;justify-content:center;
+}
+
+.caption{
+  font-size:12px;color:#7a8198;text-align:center;margin-top:8px;letter-spacing:.3px;
+}
+
+/* Header label above each screen */
+.screen-label{
+  text-align:center;color:#aab3c8;font-size:13px;font-weight:600;
+  margin-bottom:12px;letter-spacing:.5px;
+}
+.note{
+  max-width:840px;background:#0f1218;border:1px solid #1f2330;border-radius:14px;
+  padding:18px 22px;color:#cbd2e1;font-size:13.5px;line-height:1.55;
+}
+.note h3{color:#fff;font-size:14px;margin-bottom:8px;letter-spacing:.3px}
+.note code{background:#1f2330;padding:2px 6px;border-radius:4px;font-size:12px;color:var(--orange)}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">ESPEAK · Insights / «Эта неделя» — proposal mockup</h1>
+
+<div class="note">
+  <h3>Что мокап показывает</h3>
+  Экран открывается по тапу на текущую плитку «📊 ЭТА НЕДЕЛЯ» на главной. Сверху сегменты <code>День · Неделя · Месяц · 3М · 6М · Год</code>. Ниже — hero‑метрика, 3 кольца активности, график (адаптивный под период), breakdown «куда уходит время», слабые слова / ошибки, прогресс к майлстоунам и AI‑подсказка. Все цифры доступны из текущей БД (<code>daily_xp</code>, <code>user_progress</code>, <code>lesson_progress</code>, <code>flashcard_set_progress</code>, <code>game_mistakes</code>, <code>libro_progress</code>, <code>radio_listening_sessions</code>, <code>words</code>, <code>achievements</code>).
+</div>
+
+<div class="row">
+
+<!-- ════════════════════════════════════════
+     SCREEN 1: WEEK (default)
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">📅 Неделя (по умолчанию)</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">‹</div>
+    <div class="title-block">
+      <h1>Инсайты</h1>
+      <div class="sub">17–23 мая · vs прошл. неделя</div>
+    </div>
+    <div class="share">↗</div>
+  </div>
+
+  <div class="segments">
+    <div class="seg">День</div>
+    <div class="seg active">Неделя</div>
+    <div class="seg">Месяц</div>
+    <div class="seg">3М</div>
+    <div class="seg">6М</div>
+    <div class="seg">Год</div>
+  </div>
+
+  <div class="screen">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="label">XP за неделю</div>
+      <div class="big">1 247<small>XP</small></div>
+      <div class="delta">↑ +18% · +189 vs прошл.</div>
+      <div class="range">156 мин · 6 из 7 активных дней</div>
+    </div>
+
+    <!-- Rings -->
+    <div class="rings-card">
+      <div class="rings">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <!-- bg circles -->
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,138,61,.15)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="38" fill="none" stroke="rgba(78,161,255,.15)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="26" fill="none" stroke="rgba(74,222,128,.15)" stroke-width="10"/>
+          <!-- progress: XP 89%, Min 67%, Days 86% -->
+          <circle cx="60" cy="60" r="50" fill="none" stroke="var(--orange)" stroke-width="10" stroke-linecap="round"
+                  stroke-dasharray="314" stroke-dashoffset="35"/>
+          <circle cx="60" cy="60" r="38" fill="none" stroke="var(--blue)" stroke-width="10" stroke-linecap="round"
+                  stroke-dasharray="239" stroke-dashoffset="79"/>
+          <circle cx="60" cy="60" r="26" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round"
+                  stroke-dasharray="163" stroke-dashoffset="23"/>
+        </svg>
+        <div class="center"><div><strong>89%</strong>цель</div></div>
+      </div>
+      <div class="legend">
+        <div class="item"><span class="dot" style="background:var(--orange)"></span><span class="lbl">XP</span><span class="v">1247 / 1400</span></div>
+        <div class="item"><span class="dot" style="background:var(--blue)"></span><span class="lbl">Минуты</span><span class="v">156 / 210</span></div>
+        <div class="item"><span class="dot" style="background:var(--green)"></span><span class="lbl">Активные дни</span><span class="v">6 / 7</span></div>
+      </div>
+    </div>
+
+    <!-- Bar chart Mon..Sun -->
+    <div class="section-title">📈 Динамика</div>
+    <div class="card">
+      <div class="chart">
+        <div class="bar-col"><div class="bar-wrap"><div class="bar" style="height:60%"><span class="val">180</span></div></div><div class="day">Пн</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar" style="height:82%"><span class="val">245</span></div></div><div class="day">Вт</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar zero"><span class="val">0</span></div></div><div class="day">Ср</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar" style="height:45%"><span class="val">135</span></div></div><div class="day">Чт</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar" style="height:70%"><span class="val">210</span></div></div><div class="day">Пт</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar" style="height:92%"><span class="val">275</span></div></div><div class="day">Сб</div></div>
+        <div class="bar-col today"><div class="bar-wrap"><div class="bar today" style="height:67%"><span class="val">202</span></div></div><div class="day">Вс</div></div>
+      </div>
+      <div class="versus">
+        <div class="col"><span class="lbl">Лучший день</span><span class="v">Сб · 275 XP</span></div>
+        <div class="arrow">→</div>
+        <div class="col"><span class="lbl">Пропущено</span><span class="v">Ср</span></div>
+      </div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="section-title">🎯 На что ушло время</div>
+    <div class="card">
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(255,138,61,.15);color:var(--orange)">📚</div>
+        <div class="break-name">Уроки<div class="sub">12 завершено</div></div>
+        <div class="break-val">70 мин<span class="pct">45%</span></div>
+      </div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(78,161,255,.15);color:var(--blue)">🃏</div>
+        <div class="break-name">Флэшкарты<div class="sub">8 сетов · ⭐ ср. 87%</div></div>
+        <div class="break-val">34 мин<span class="pct">22%</span></div>
+      </div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(167,139,250,.15);color:var(--purple)">🎮</div>
+        <div class="break-name">Игры<div class="sub">Articles · Sopa · Crossword</div></div>
+        <div class="break-val">23 мин<span class="pct">15%</span></div>
+      </div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(244,114,182,.15);color:var(--pink)">📻</div>
+        <div class="break-name">Радио<div class="sub">RNE · Cadena SER</div></div>
+        <div class="break-val">15 мин<span class="pct">10%</span></div>
+      </div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(74,222,128,.15);color:var(--green)">📖</div>
+        <div class="break-name">Книги<div class="sub">«La casa del río» · гл. 3</div></div>
+        <div class="break-val">8 мин<span class="pct">5%</span></div>
+      </div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(250,204,21,.15);color:var(--yellow)">🤖</div>
+        <div class="break-name">ИИ‑чат<div class="sub">14 сообщений</div></div>
+        <div class="break-val">6 мин<span class="pct">3%</span></div>
+      </div>
+    </div>
+
+    <!-- Mistakes -->
+    <div class="section-title">⚠️ Где ошибался чаще всего</div>
+    <div class="card">
+      <div class="word-row">
+        <div class="word-es">el problema<span class="ru">проблема (м.р., искл.)</span></div>
+        <div class="word-badge">×7</div>
+      </div>
+      <div class="word-row">
+        <div class="word-es">la mano<span class="ru">рука (ж.р., искл.)</span></div>
+        <div class="word-badge">×5</div>
+      </div>
+      <div class="word-row">
+        <div class="word-es">tuviera vs tuviese<span class="ru">Subjunt. Imperfecto</span></div>
+        <div class="word-badge">×4</div>
+      </div>
+      <div class="word-row">
+        <div class="word-es">ayer / anteayer<span class="ru">слабое слово</span></div>
+        <div class="word-badge weak">SM‑2 weak</div>
+      </div>
+    </div>
+
+    <!-- Progress to milestones -->
+    <div class="section-title">🚀 Прогресс</div>
+    <div class="card prog">
+      <div class="prog-row"><div class="prog-icon">⭐</div><div class="prog-name">Общий XP</div><div class="prog-val">18 432 <span class="delta">+1247</span></div></div>
+      <div class="prog-row"><div class="prog-icon">📚</div><div class="prog-name">Уроки</div><div class="prog-val">87 / 254 <span class="delta">+12</span></div></div>
+      <div class="prog-row"><div class="prog-icon">🃏</div><div class="prog-name">Слов выучено</div><div class="prog-val">412 <span class="delta">+38</span></div></div>
+      <div class="prog-row"><div class="prog-icon">🔥</div><div class="prog-name">Streak</div><div class="prog-val">23 дня <span class="delta">рекорд 31</span></div></div>
+
+      <div class="league">
+        <div>🏛️</div>
+        <div class="city">Bilbao<div class="sub">+47 за неделю · до Zaragoza 153</div></div>
+        <div class="rating">447</div>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    <div class="section-title">🏆 Новые ачивки</div>
+    <div class="ach-list">
+      <div class="ach"><div class="icn">🥈</div><div class="nm">10 сетов<span class="sub">Флэшкарт‑мастер</span></div></div>
+      <div class="ach"><div class="icn">🥇</div><div class="nm">Streak 21<span class="sub">Три недели подряд</span></div></div>
+      <div class="ach"><div class="icn">🥉</div><div class="nm">100 слов<span class="sub">Словарный запас</span></div></div>
+    </div>
+
+    <!-- Insight -->
+    <div class="section-title">💡 Подсказка</div>
+    <div class="insight">
+      <div class="ico">🧠</div>
+      <div class="txt">Ты пропустил <strong>среду</strong>, но в выходные занимался дольше обычного. Чаще всего ошибаешься в <strong>роде существительных‑исключений</strong> — открой теорию «el problema, el día, la mano».</div>
+    </div>
+
+  </div>
+</div>
+<div class="caption">Tap на день в графике → bottom‑sheet с разбором</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN 2: MONTH
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">📅 Месяц — calendar dots</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">‹</div>
+    <div class="title-block">
+      <h1>Инсайты</h1>
+      <div class="sub">Май 2026 · vs апрель</div>
+    </div>
+    <div class="share">↗</div>
+  </div>
+
+  <div class="segments">
+    <div class="seg">День</div>
+    <div class="seg">Неделя</div>
+    <div class="seg active">Месяц</div>
+    <div class="seg">3М</div>
+    <div class="seg">6М</div>
+    <div class="seg">Год</div>
+  </div>
+
+  <div class="screen">
+    <div class="hero">
+      <div class="label">XP за май</div>
+      <div class="big">4 832<small>XP</small></div>
+      <div class="delta">↑ +12% · +518</div>
+      <div class="range">612 мин · 23 из 23 активных дней</div>
+    </div>
+
+    <div class="rings-card">
+      <div class="rings">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,138,61,.15)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="38" fill="none" stroke="rgba(78,161,255,.15)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="26" fill="none" stroke="rgba(74,222,128,.15)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="var(--orange)" stroke-width="10" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="0"/>
+          <circle cx="60" cy="60" r="38" fill="none" stroke="var(--blue)" stroke-width="10" stroke-linecap="round" stroke-dasharray="239" stroke-dashoffset="48"/>
+          <circle cx="60" cy="60" r="26" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="0"/>
+        </svg>
+        <div class="center"><div><strong>108%</strong>цель</div></div>
+      </div>
+      <div class="legend">
+        <div class="item"><span class="dot" style="background:var(--orange)"></span><span class="lbl">XP</span><span class="v">4832 / 4500</span></div>
+        <div class="item"><span class="dot" style="background:var(--blue)"></span><span class="lbl">Минуты</span><span class="v">612 / 750</span></div>
+        <div class="item"><span class="dot" style="background:var(--green)"></span><span class="lbl">Дни</span><span class="v">23 / 23</span></div>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="section-title">📅 Активность по дням</div>
+    <div class="card">
+      <div class="cal-head"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+      <div class="cal">
+        <!-- 1st row: 1-3 май (Fri Sat Sun) -->
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell l2">1</div><div class="cell l3">2</div><div class="cell l4">3</div>
+        <!-- 4-10 -->
+        <div class="cell l2">4</div><div class="cell l3">5</div><div class="cell l1">6</div><div class="cell l2">7</div>
+        <div class="cell l3">8</div><div class="cell l4">9</div><div class="cell l4">10</div>
+        <!-- 11-17 -->
+        <div class="cell l2">11</div><div class="cell l3">12</div><div class="cell l2">13</div><div class="cell l3">14</div>
+        <div class="cell l1">15</div><div class="cell l4">16</div><div class="cell l3">17</div>
+        <!-- 18-24 -->
+        <div class="cell l3">18</div><div class="cell l4">19</div><div class="cell">20</div><div class="cell l2">21</div>
+        <div class="cell l3">22</div><div class="cell l4">23</div><div class="cell today l3">24</div>
+        <!-- 25-31 -->
+        <div class="cell">25</div><div class="cell">26</div><div class="cell">27</div><div class="cell">28</div>
+        <div class="cell">29</div><div class="cell">30</div><div class="cell">31</div>
+      </div>
+      <div style="display:flex;gap:6px;justify-content:center;align-items:center;margin-top:12px;font-size:10px;color:var(--text-mute)">
+        Меньше
+        <span style="width:14px;height:14px;border-radius:3px;background:var(--surface-3)"></span>
+        <span style="width:14px;height:14px;border-radius:3px;background:rgba(255,138,61,.22)"></span>
+        <span style="width:14px;height:14px;border-radius:3px;background:rgba(255,138,61,.45)"></span>
+        <span style="width:14px;height:14px;border-radius:3px;background:rgba(255,138,61,.75)"></span>
+        <span style="width:14px;height:14px;border-radius:3px;background:var(--orange)"></span>
+        Больше
+      </div>
+    </div>
+
+    <div class="section-title">🎯 Что предпочитал в мае</div>
+    <div class="card">
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(255,138,61,.15);color:var(--orange)">📚</div>
+        <div class="break-name">Уроки A1.4 → A2.1</div>
+        <div class="break-val">52%</div>
+      </div>
+      <div class="bar-mini"><div style="width:52%;background:var(--orange)"></div></div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(78,161,255,.15);color:var(--blue)">🃏</div>
+        <div class="break-name">Флэшкарты</div>
+        <div class="break-val">21%</div>
+      </div>
+      <div class="bar-mini"><div style="width:21%;background:var(--blue)"></div></div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(244,114,182,.15);color:var(--pink)">📻</div>
+        <div class="break-name">Радио</div>
+        <div class="break-val">14%</div>
+      </div>
+      <div class="bar-mini"><div style="width:14%;background:var(--pink)"></div></div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(167,139,250,.15);color:var(--purple)">🎮</div>
+        <div class="break-name">Игры</div>
+        <div class="break-val">13%</div>
+      </div>
+      <div class="bar-mini"><div style="width:13%;background:var(--purple)"></div></div>
+    </div>
+
+    <div class="section-title">💡 Подсказка</div>
+    <div class="insight">
+      <div class="ico">📊</div>
+      <div class="txt">В мае ты впервые занимался <strong>каждый день без пропусков</strong> и пробил уровень <strong>A2.1</strong>. Уроки выросли на <strong>+18%</strong>, но радио — всего 14%. Попробуй <strong>5 минут радио в день</strong> для аудирования.</div>
+    </div>
+
+  </div>
+</div>
+<div class="caption">Tap на день → детали этого дня</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN 3: YEAR
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">📅 Год — line chart</div>
+<div class="phone">
+  <div class="statusbar"><span>9:41</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">‹</div>
+    <div class="title-block">
+      <h1>Инсайты</h1>
+      <div class="sub">Май 2025 — май 2026</div>
+    </div>
+    <div class="share">↗</div>
+  </div>
+
+  <div class="segments">
+    <div class="seg">День</div>
+    <div class="seg">Неделя</div>
+    <div class="seg">Месяц</div>
+    <div class="seg">3М</div>
+    <div class="seg">6М</div>
+    <div class="seg active">Год</div>
+  </div>
+
+  <div class="screen">
+    <div class="hero">
+      <div class="label">XP за год</div>
+      <div class="big">38 419<small>XP</small></div>
+      <div class="delta">↑ +247% · от A0 до A2</div>
+      <div class="range">4 822 мин · 287 активных дней</div>
+    </div>
+
+    <!-- Line chart -->
+    <div class="section-title">📈 Рост XP за год</div>
+    <div class="card">
+      <svg class="line-chart" viewBox="0 0 360 180">
+        <!-- grid -->
+        <line x1="0" y1="40"  x2="360" y2="40"  stroke="var(--line)" stroke-dasharray="2 4"/>
+        <line x1="0" y1="90"  x2="360" y2="90"  stroke="var(--line)" stroke-dasharray="2 4"/>
+        <line x1="0" y1="140" x2="360" y2="140" stroke="var(--line)" stroke-dasharray="2 4"/>
+        <!-- area gradient -->
+        <defs>
+          <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="var(--orange)" stop-opacity=".5"/>
+            <stop offset="100%" stop-color="var(--orange)" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,160 L30,155 L60,148 L90,140 L120,128 L150,118 L180,100 L210,85 L240,72 L270,55 L300,42 L330,30 L360,20 L360,180 L0,180 Z" fill="url(#g1)"/>
+        <path d="M0,160 L30,155 L60,148 L90,140 L120,128 L150,118 L180,100 L210,85 L240,72 L270,55 L300,42 L330,30 L360,20" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- milestones -->
+        <circle cx="60"  cy="148" r="4" fill="var(--blue)"/>
+        <circle cx="180" cy="100" r="4" fill="var(--blue)"/>
+        <circle cx="300" cy="42"  r="4" fill="var(--blue)"/>
+        <text x="60"  y="170" font-size="9" fill="var(--text-mute)" text-anchor="middle">июл</text>
+        <text x="180" y="170" font-size="9" fill="var(--text-mute)" text-anchor="middle">ноя</text>
+        <text x="300" y="170" font-size="9" fill="var(--text-mute)" text-anchor="middle">мар</text>
+      </svg>
+    </div>
+
+    <div class="section-title">📊 По месяцам</div>
+    <div class="card">
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(74,222,128,.15);color:var(--green)">🏆</div>
+        <div class="break-name">Лучший месяц<div class="sub">Март 2026</div></div>
+        <div class="break-val">5 217 XP</div>
+      </div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(248,113,113,.15);color:var(--red)">📉</div>
+        <div class="break-name">Самый слабый<div class="sub">Июль 2025 (отпуск)</div></div>
+        <div class="break-val">412 XP</div>
+      </div>
+      <div class="break-row">
+        <div class="break-icon" style="background:rgba(167,139,250,.15);color:var(--purple)">🔥</div>
+        <div class="break-name">Лучшая серия<div class="sub">15 окт – 14 ноя</div></div>
+        <div class="break-val">31 день</div>
+      </div>
+    </div>
+
+    <div class="section-title">🎯 За год выучено</div>
+    <div class="card prog">
+      <div class="prog-row"><div class="prog-icon">📚</div><div class="prog-name">Уроков</div><div class="prog-val">87 / 254</div></div>
+      <div class="prog-row"><div class="prog-icon">🃏</div><div class="prog-name">Слов</div><div class="prog-val">412 из 10 086</div></div>
+      <div class="prog-row"><div class="prog-icon">📖</div><div class="prog-name">Книг прочитано</div><div class="prog-val">14 из 100</div></div>
+      <div class="prog-row"><div class="prog-icon">🎮</div><div class="prog-name">Уровней в играх</div><div class="prog-val">142</div></div>
+      <div class="prog-row"><div class="prog-icon">📻</div><div class="prog-name">Минут радио</div><div class="prog-val">847</div></div>
+      <div class="prog-row"><div class="prog-icon">🏆</div><div class="prog-name">Ачивок</div><div class="prog-val">14 / 23</div></div>
+
+      <div class="league">
+        <div>🏛️</div>
+        <div class="city">Bilbao<div class="sub">пик: Valencia 1 142 · текущая 447</div></div>
+        <div class="rating">447</div>
+      </div>
+    </div>
+
+    <div class="section-title">💡 Итог года</div>
+    <div class="insight">
+      <div class="ico">🌟</div>
+      <div class="txt">За год ты прошёл путь <strong>A0 → A2</strong>: 87 уроков, 412 слов, 14 книг. Самым продуктивным был <strong>март</strong>. Следующая цель — <strong>B1</strong> (нужно ещё ~120 уроков и 600 слов).</div>
+    </div>
+
+  </div>
+</div>
+<div class="caption">Шаринг карточки итогов — кнопка ↗ сверху</div>
+</div>
+
+</div>
+
+<div class="note" style="max-width:840px">
+  <h3>Реализация (high‑level)</h3>
+  <ul style="padding-left:18px;line-height:1.7">
+    <li><b>Новый route</b> в <code>Navigation.kt</code> → <code>stats</code>. Открывать тапом на <code>WeekHeatmap</code> в <code>HomeScreen.kt:308</code> и на <code>WeeklyHeatmapTile</code> в <code>ProfileScreen.kt:527</code>.</li>
+    <li><b>StatsViewModel</b> — единый <code>combine()</code> Flow из <code>dailyXpDao.observeAll()</code>, <code>userProgressDao</code>, <code>lessonProgressDao</code>, <code>flashcardSetProgressDao</code>, <code>libroProgressDao</code>, <code>gameLevelProgressDao</code>, <code>gameMistakeDao</code>, <code>wordDao</code>, <code>achievementDao</code>, <code>radioListeningDao</code>. Фильтрация по выбранному <code>Period</code>.</li>
+    <li><b>Графики</b> — Compose <code>Canvas</code> (bar/line/calendar). Без новых зависимостей. <code>MPAndroidChart</code> вытащит +600KB в AAB — не нужен.</li>
+    <li><b>Period state</b> в DataStore (<code>stats_preferences</code>) — запомнить выбранный таб между сессиями.</li>
+    <li><b>Локализация</b> — все строки в <code>strings.xml</code>/<code>values-en</code>/<code>uk</code>/<code>es</code> (контент уроков заморожен, UI — нет).</li>
+    <li><b>Шаринг</b> (опционально, фаза 2) — рендер summary‑карточки в <code>Bitmap</code> через <code>captureToBitmap</code>, share intent.</li>
+    <li><b>Что нельзя посчитать сейчас</b>: пер‑ответный accuracy уроков (нужен новый <code>answer_log</code> с миграцией). Сейчас аккуратно считаем «ошибки» только по <code>game_mistakes</code>, weak SM‑2 pool и avg <code>bestPercent</code>.</li>
+  </ul>
+</div>
+
+</body>
+</html>

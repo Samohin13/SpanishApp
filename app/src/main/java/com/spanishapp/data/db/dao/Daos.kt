@@ -490,6 +490,10 @@ interface ChatMessageDao {
     @Query("SELECT DISTINCT session_id FROM chat_messages")
     suspend fun getAllSessions(): List<String>
 
+    /** Stats screen — сколько сообщений в чате с указанного момента (любой роли). */
+    @Query("SELECT COUNT(*) FROM chat_messages WHERE timestamp >= :since")
+    fun observeCountSince(since: Long): Flow<Int>
+
     @Query("DELETE FROM chat_messages")
     suspend fun deleteAll()
 }
@@ -635,6 +639,10 @@ interface LessonProgressDao {
     @Query("SELECT COUNT(*) > 0 FROM lesson_progress WHERE completed_at >= :since")
     suspend fun anyCompletedSince(since: Long): Boolean
 
+    /** Stats screen — сколько уроков завершено с указанного момента. */
+    @Query("SELECT COUNT(*) FROM lesson_progress WHERE completed_at >= :since")
+    fun observeCountSince(since: Long): Flow<Int>
+
     /** Idempotency check для markLessonComplete — был ли этот урок уже отмечен. */
     @Query("SELECT COUNT(*) > 0 FROM lesson_progress WHERE lesson_key = :key")
     suspend fun isAlreadyCompleted(key: String): Boolean
@@ -756,6 +764,10 @@ interface GameLevelProgressDao {
 
     @Query("SELECT COALESCE(SUM(stars), 0) FROM game_level_progress WHERE game_id = :gameId")
     suspend fun totalStars(gameId: String): Int
+
+    /** Stats screen — сколько уровней любых игр пройдено с указанного момента. */
+    @Query("SELECT COUNT(*) FROM game_level_progress WHERE completed_at >= :since AND stars > 0")
+    fun observeCountSince(since: Long): Flow<Int>
 
     @Query("DELETE FROM game_level_progress")
     suspend fun deleteAll()
