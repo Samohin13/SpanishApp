@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>CP1 · A1 · Casa Lola — вычитка</title>
+<title>CP1 · A1 · Паспортный контроль — вычитка</title>
 <style>
 :root {
   --bg: #0A0B0D;
@@ -28,23 +28,48 @@ body {
 .container { max-width: 920px; margin: 0 auto; }
 h1 { font-size: 32px; letter-spacing: -0.5px; margin: 0 0 6px; font-weight: 800; }
 .lead { color: var(--text-dim); font-size: 15px; margin-bottom: 8px; }
+.stakes {
+  background: linear-gradient(135deg, rgba(229,72,72,0.12) 0%, rgba(255,107,26,0.08) 100%);
+  border-left: 4px solid var(--red);
+  padding: 14px 20px;
+  border-radius: 10px;
+  margin: 24px 0 36px;
+  font-size: 14px;
+}
+.stakes strong { color: var(--red); display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
 .intro {
   background: var(--surface);
   border-left: 3px solid var(--primary);
   padding: 16px 22px;
   border-radius: 10px;
-  margin: 28px 0 36px;
+  margin: 0 0 32px;
   font-size: 14px;
   color: var(--text-dim);
   line-height: 1.6;
 }
 .intro strong { color: var(--text); }
+.vocab-note {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 32px;
+  font-size: 13px;
+  color: var(--text);
+}
+.vocab-note h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
 .meta {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 14px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 .meta-card {
   background: var(--surface);
@@ -66,7 +91,7 @@ h1 { font-size: 32px; letter-spacing: -0.5px; margin: 0 0 6px; font-weight: 800;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
-  margin: 16px 0 28px;
+  margin: 12px 0 32px;
 }
 .tier {
   background: var(--surface);
@@ -93,7 +118,6 @@ h2 {
   font-weight: 700;
 }
 
-/* Round card */
 .round {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -108,6 +132,7 @@ h2 {
   margin-bottom: 14px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 .round-num {
   background: var(--primary);
@@ -136,6 +161,16 @@ h2 {
   font-size: 14px;
   color: var(--text-dim);
   font-weight: 500;
+}
+.round-lesson {
+  background: rgba(244,180,0,0.12);
+  border: 1px solid rgba(244,180,0,0.3);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .npc-line {
@@ -169,9 +204,6 @@ h2 {
   font-size: 13px;
   color: var(--text-dim);
   margin-bottom: 10px;
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
 }
 .prompt-label {
   font-weight: 700;
@@ -179,12 +211,14 @@ h2 {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-right: 8px;
 }
 .prompt-text {
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
   font-style: italic;
+  margin-top: 6px;
 }
 
 .options { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
@@ -202,9 +236,7 @@ h2 {
   background: rgba(46,184,114,0.10);
   border-color: var(--green);
 }
-.option-wrong {
-  opacity: 0.6;
-}
+.option-wrong { opacity: 0.6; }
 .option-mark {
   width: 18px;
   height: 18px;
@@ -219,11 +251,7 @@ h2 {
 .option-mark.ok { background: var(--green); color: white; }
 .option-mark.no { background: var(--red); color: white; }
 .option-text { flex: 1; }
-.option-note {
-  font-size: 12px;
-  color: var(--text-dim);
-  font-style: italic;
-}
+.option-note { font-size: 12px; color: var(--text-dim); font-style: italic; }
 
 .alternatives {
   background: var(--surface-2);
@@ -271,7 +299,6 @@ h2 {
   border-color: var(--green);
   color: var(--green);
 }
-
 .correct-build {
   background: rgba(46,184,114,0.10);
   border: 1px solid var(--green);
@@ -302,6 +329,35 @@ h2 {
 }
 .explanation strong { color: var(--text); }
 
+.reactions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.reaction {
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.reaction-ok {
+  background: rgba(46,184,114,0.08);
+  border-left: 2px solid var(--green);
+}
+.reaction-bad {
+  background: rgba(229,72,72,0.08);
+  border-left: 2px solid var(--red);
+}
+.reaction-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.reaction-ok .reaction-label { color: var(--green); }
+.reaction-bad .reaction-label { color: var(--red); }
+
 .conjugate-blank {
   display: inline-block;
   min-width: 80px;
@@ -323,25 +379,49 @@ h2 {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
+  margin-left: 8px;
 }
 
-.section-summary {
+.outcomes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 20px;
+}
+.outcome {
   background: var(--surface);
   border-radius: 14px;
-  padding: 22px 26px;
-  margin: 32px 0 0;
+  padding: 16px 18px;
   border: 1px solid var(--border);
 }
-.section-summary h3 {
-  margin: 0 0 10px;
-  font-size: 14px;
+.outcome-pass { border-left: 3px solid var(--green); }
+.outcome-fail { border-left: 3px solid var(--red); }
+.outcome-title {
+  font-size: 12px;
   text-transform: uppercase;
-  color: var(--primary);
   letter-spacing: 1px;
+  font-weight: 800;
+  margin-bottom: 12px;
 }
-.section-summary ul { margin: 0; padding-left: 20px; line-height: 1.7; font-size: 14px; }
-.section-summary li { color: var(--text-dim); margin-bottom: 4px; }
-.section-summary li strong { color: var(--text); }
+.outcome-pass .outcome-title { color: var(--green); }
+.outcome-fail .outcome-title { color: var(--red); }
+.outcome-item {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.outcome-item:last-child { border-bottom: 0; }
+.outcome-item-tier {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.outcome-item-es { font-weight: 600; color: var(--text); }
+.outcome-item-ru { color: var(--text-dim); font-style: italic; font-size: 12px; margin-top: 2px; }
+.outcome-item-scene { color: var(--text); font-size: 12px; margin-top: 6px; line-height: 1.4; }
 
 .fb-section {
   background: linear-gradient(135deg, rgba(255,107,26,0.10) 0%, rgba(244,180,0,0.05) 100%);
@@ -364,34 +444,43 @@ h2 {
 
 <div class="container">
 
-<h1>Чекпоинт 1 · A1 · «Утро в кафе Casa Lola»</h1>
-<p class="lead">Полный контент для вычитки · 16 раундов</p>
+<h1>Чекпоинт 1 · A1 · «Паспортный контроль»</h1>
+<p class="lead">Финальный экзамен блока 1 · 16 раундов · ~10 минут</p>
 
-<div class="intro">
-  <strong>Что это:</strong> черновик 1-го чекпоинта (А1). Прочитай каждый раунд — реплику NPC на испанском, переводы и варианты ответов. Скажи где режет глаз / звучит не по-испански / задание неудачное. Если всё ок — напишу остальные 3 чекпоинта по этому шаблону.
+<div class="stakes">
+  <strong>Ставка</strong>
+  Если пройдёшь — штамп в паспорте, добро пожаловать в Испанию, открыт блок A2. Если не справишься — Carlos забирает паспорт, тебя ведут на дополнительную проверку. Граница пока закрыта, нужно повторить уроки 1-15 и пересдать.
 </div>
 
-<!-- META -->
+<div class="intro">
+  <strong>Сюжет:</strong> Andrea (русская туристка) только что прилетела в Madrid-Barajas. Подходит к стойке паспортного контроля. Carlos — офицер, профессиональный и формальный (общается на «usted»). На каждую ошибку реагирует мимикой: после 2-3 ошибок начинает подозревать, перепроверяет документы дважды. Финал зависит от точности.
+</div>
+
+<div class="vocab-note">
+  <h3>📚 Только материал блока 1</h3>
+  <strong>Используется:</strong> алфавит, приветствия (hola, buenos días, buenas tardes/noches, ¿cómo está usted?), прощания (adiós, hasta luego/mañana), вежливость (por favor, gracias, de nada, perdón, lo siento, disculpe), местоимения (yo, tú, usted, nosotros…), артикли (el/la/un/una), род -o/-a, глагол SER во всех 6 формах, национальности (rusa/ruso, españ-/franc-/ingl-), страны (Rusia, España, Madrid), числа 0-20.<br>
+  <strong>Cognates допустимы:</strong> pasaporte, visa, turista, número (очевидно из контекста любому новичку).
+</div>
+
 <div class="meta">
   <div class="meta-card">
     <div class="meta-label">Сцена</div>
-    <div class="meta-value">Casa Lola, Мадрид</div>
+    <div class="meta-value">Madrid-Barajas, паспортный контроль</div>
   </div>
   <div class="meta-card">
     <div class="meta-label">NPC</div>
-    <div class="meta-value">María, барменша</div>
+    <div class="meta-value">Carlos, офицер</div>
   </div>
   <div class="meta-card">
-    <div class="meta-label">Голос</div>
-    <div class="meta-value">Lucía (Neural2-D)</div>
+    <div class="meta-label">Обращение</div>
+    <div class="meta-value">Usted (формально)</div>
   </div>
   <div class="meta-card">
-    <div class="meta-label">Имя игрока</div>
-    <div class="meta-value">Andrea</div>
+    <div class="meta-label">Игрок</div>
+    <div class="meta-value">Andrea (рус., ж.р.)</div>
   </div>
 </div>
 
-<!-- THRESHOLDS -->
 <div class="thresholds">
   <div class="tier tier-bronze">
     <div class="tier-name">🥉 БРОНЗА</div>
@@ -401,56 +490,43 @@ h2 {
   <div class="tier tier-silver">
     <div class="tier-name">🥈 СЕРЕБРО</div>
     <div class="tier-range">80-94%</div>
-    <div class="tier-bonus">+250 + 50 XP бонус</div>
+    <div class="tier-bonus">+250 + 50 XP</div>
   </div>
   <div class="tier tier-gold">
     <div class="tier-name">🥇 ЗОЛОТО</div>
     <div class="tier-range">95-100%</div>
-    <div class="tier-bonus">+250 + 150 XP бонус</div>
+    <div class="tier-bonus">+250 + 150 XP</div>
   </div>
 </div>
 
-<h2>16 раундов · сюжетный диалог Andrea ↔ María</h2>
+<h2>16 раундов · Andrea ↔ Carlos</h2>
 
 <!-- ============ R1 ============ -->
 <div class="round">
   <div class="round-header">
     <div class="round-num">1</div>
     <div class="round-format">Выбор</div>
-    <div class="round-topic">Приветствие · ответ María</div>
+    <div class="round-topic">Приветствие · ответ офицеру</div>
+    <div class="round-lesson">u1_l4</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">¡Buenos días! ¿Cómo estás?</div>
-    <div class="npc-ru">«Доброе утро! Как дела?»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">Buenos días.</div>
+    <div class="npc-ru">«Доброе утро.»</div>
   </div>
-
   <div class="prompt-row">
-    <span class="prompt-label">Задание:</span>
-    <span>Что ответишь?</span>
+    <span class="prompt-label">Задание</span>
+    Carlos смотрит на тебя поверх стекла. Что отвечаешь?
   </div>
-
   <div class="options">
-    <div class="option option-correct">
-      <span class="option-mark ok">✓</span>
-      <span class="option-text">¡Hola! Bien, gracias.</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">Buenas noches.</span>
-      <span class="option-note">= добрый ВЕЧЕР, не утром</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">Tengo veinte años.</span>
-      <span class="option-note">= мне 20 лет, не в тему</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">Me llamo Andrea.</span>
-      <span class="option-note">не спросила имя</span>
-    </div>
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Buenos días.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Buenas noches.</span><span class="option-note">= добрый вечер</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Hasta luego.</span><span class="option-note">= прощание</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">De nada.</span><span class="option-note">= ответ на «спасибо»</span></div>
+  </div>
+  <div class="reactions">
+    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos кивает.</div>
+    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos поднимает бровь.</div>
   </div>
 </div>
 
@@ -458,34 +534,25 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">2</div>
-    <div class="round-format">Сборка</div>
-    <div class="round-topic">«Me llamo Andrea» · LLAMARSE</div>
+    <div class="round-format">Выбор</div>
+    <div class="round-topic">Формальное «как дела»</div>
+    <div class="round-lesson">u1_l4 + u1_l6</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">¿Cómo te llamas?</div>
-    <div class="npc-ru">«Как тебя зовут?»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">¿Cómo está usted?</div>
+    <div class="npc-ru">«Как у вас дела?»</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Задание:</span>
-    <span>Собери ответ из слов</span>
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Что отвечаешь?</div>
+  <div class="options">
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Bien, gracias.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy de Rusia.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Adiós.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Disculpe.</span></div>
   </div>
-
-  <div class="word-bank">
-    <span class="word-chip correct">Me</span>
-    <span class="word-chip correct">llamo</span>
-    <span class="word-chip correct">Andrea</span>
-    <span class="word-chip">Tengo</span>
-    <span class="word-chip">soy</span>
-    <span class="word-chip">eres</span>
-  </div>
-
-  <div class="correct-build">Me llamo Andrea</div>
-
-  <div class="explanation">
-    <strong>Тема:</strong> возвратный глагол LLAMARSE (буквально «себя зову»). 1 лицо ед. ч. → «me llamo».
+  <div class="reactions">
+    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos смотрит в твой паспорт.</div>
+    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos медленно повторяет: «¿Cómo está usted?»</div>
   </div>
 </div>
 
@@ -493,34 +560,25 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">3</div>
-    <div class="round-format">Сборка</div>
-    <div class="round-topic">Откуда · SER + DE + страна</div>
+    <div class="round-format">Выбор</div>
+    <div class="round-topic">Вежливая передача документов</div>
+    <div class="round-lesson">u1_l6</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">¿De dónde eres?</div>
-    <div class="npc-ru">«Откуда ты?»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">Su pasaporte y su visa, por favor.</div>
+    <div class="npc-ru">«Ваш паспорт и виза, пожалуйста.»</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Задание:</span>
-    <span>Собери ответ</span>
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Передаёшь документы. Что говоришь?</div>
+  <div class="options">
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Sí, por favor.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">De nada.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Lo siento.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Hasta mañana.</span></div>
   </div>
-
-  <div class="word-bank">
-    <span class="word-chip correct">Soy</span>
-    <span class="word-chip correct">de</span>
-    <span class="word-chip correct">Rusia</span>
-    <span class="word-chip">vivo</span>
-    <span class="word-chip">en</span>
-    <span class="word-chip">tengo</span>
-  </div>
-
-  <div class="correct-build">Soy de Rusia</div>
-
-  <div class="explanation">
-    <strong>Тема:</strong> SER 1 л. ед. ч. → «soy». «De» = «из» перед страной. Глагол SER для национальности (постоянная характеристика).
+  <div class="reactions">
+    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos берёт документы.</div>
+    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos поджимает губы. Документы пока не берёт.</div>
   </div>
 </div>
 
@@ -528,31 +586,24 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">4</div>
-    <div class="round-format">Перевод RU → ES</div>
-    <div class="round-topic">Заказ кофе · QUERER</div>
+    <div class="round-format">Аудио</div>
+    <div class="round-topic">Алфавит · имя по буквам</div>
+    <div class="round-lesson">u1_l0 + u1_l1 + u1_l2</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">Bien. ¿Y qué quieres tomar?</div>
-    <div class="npc-ru">«Хорошо. А что хочешь заказать?»</div>
+    <div class="npc-name">CARLOS<span class="audio-indicator">🔊 ТОЛЬКО ЗВУК</span></div>
+    <div class="npc-es" style="letter-spacing: 4px;">A · N · D · R · E · A</div>
+    <div class="npc-ru">текст скрыт — только слышит произношение букв</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Переведи на испанский:</span>
-    <span class="prompt-text">«Я хочу кофе с молоком.»</span>
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Carlos произносит твоё имя по буквам. Какое имя?</div>
+  <div class="options">
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Andrea</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Adriana</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Ariana</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Antonia</span></div>
   </div>
-
-  <div class="alternatives">
-    <div class="alternatives-title">Принимаются варианты:</div>
-    <div class="alt-item">Quiero un café con leche.</div>
-    <div class="alt-item">Quisiera un café con leche. <span class="option-note">(вежливее)</span></div>
-    <div class="alt-item">Un café con leche, por favor.</div>
-    <div class="alt-item">Quiero café con leche. <span class="option-note">(без артикля тоже ок)</span></div>
-  </div>
-
   <div class="explanation">
-    <strong>Подсказка юзеру:</strong> querer · café · con · leche
+    Тестируется знание испанского алфавита. Carlos произнёс каждую букву отдельно: A [а], N [эне], D [де], R [эре], E [э], A [а].
   </div>
 </div>
 
@@ -560,39 +611,24 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">5</div>
-    <div class="round-format">Аудио</div>
-    <div class="round-topic">Аудирование · короткая фраза</div>
+    <div class="round-format">Спряжение</div>
+    <div class="round-topic">SER · yo soy</div>
+    <div class="round-lesson">u1_l10</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит <span class="audio-indicator">🔊 Только звук</span></div>
-    <div class="npc-es">Aquí tienes el menú.</div>
-    <div class="npc-ru" style="color: var(--text-dim);">текст для юзера скрыт — только слышит</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">¿Quién es usted?</div>
+    <div class="npc-ru">«Кто вы?»</div>
   </div>
-
   <div class="prompt-row">
-    <span class="prompt-label">Задание:</span>
-    <span>Что María тебе сказала?</span>
+    <span class="prompt-label">Поставь глагол</span>
+    <div class="prompt-text">Yo <span class="conjugate-blank">?</span> Andrea.</div>
   </div>
-
   <div class="options">
-    <div class="option option-correct">
-      <span class="option-mark ok">✓</span>
-      <span class="option-text">Aquí tienes el menú.</span>
-      <span class="option-note">«Вот тебе меню»</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">¿Te gusta el menú?</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">Hoy el menú está cerrado.</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">El menú cuesta mucho.</span>
-    </div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">eres</span><span class="option-note">tú</span></div>
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">soy</span><span class="option-note">yo</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">es</span><span class="option-note">él/ella/usted</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">somos</span><span class="option-note">nosotros</span></div>
   </div>
 </div>
 
@@ -600,81 +636,50 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">6</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">С молоком или без · CON/SIN</div>
+    <div class="round-format">Сборка</div>
+    <div class="round-topic">Откуда · SER + DE + страна</div>
+    <div class="round-lesson">u1_l10 + u1_l12</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">¿Con leche o sin leche?</div>
-    <div class="npc-ru">«С молоком или без?»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">¿De dónde es usted?</div>
+    <div class="npc-ru">«Откуда вы?»</div>
   </div>
-
-  <div class="options">
-    <div class="option option-correct">
-      <span class="option-mark ok">✓</span>
-      <span class="option-text">Con leche, por favor.</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">No me gusta.</span>
-      <span class="option-note">грубо</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">Estoy bien.</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">Buenos días.</span>
-    </div>
+  <div class="word-bank">
+    <span class="word-chip correct">Soy</span>
+    <span class="word-chip correct">de</span>
+    <span class="word-chip correct">Rusia</span>
+    <span class="word-chip">es</span>
+    <span class="word-chip">España</span>
+    <span class="word-chip">yo</span>
+    <span class="word-chip">ella</span>
   </div>
+  <div class="correct-build">Soy de Rusia</div>
 </div>
 
 <!-- ============ R7 ============ -->
 <div class="round">
   <div class="round-header">
     <div class="round-num">7</div>
-    <div class="round-format">Спряжение</div>
-    <div class="round-topic">QUERER · yo quiero</div>
+    <div class="round-format">Выбор</div>
+    <div class="round-topic">Национальность · согласование рода</div>
+    <div class="round-lesson">u1_l12</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">Entonces, ¿qué tomas?</div>
-    <div class="npc-ru">«Так что заказываешь?»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">¿Es usted rusa o española?</div>
+    <div class="npc-ru">«Вы русская или испанка?»</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Поставь глагол:</span>
-    <span class="prompt-text">Yo <span class="conjugate-blank">?</span> un café con leche, por favor.</span>
-  </div>
-
+  <div class="prompt-row"><span class="prompt-label">Внимание</span> Andrea — женщина. Какой ответ правильный?</div>
   <div class="options">
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">querer</span>
-      <span class="option-note">инфинитив</span>
-    </div>
-    <div class="option option-correct">
-      <span class="option-mark ok">✓</span>
-      <span class="option-text">quiero</span>
-      <span class="option-note">yo</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">quieres</span>
-      <span class="option-note">tú</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">queremos</span>
-      <span class="option-note">nosotros</span>
-    </div>
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Soy rusa.</span><span class="option-note">женский род</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy ruso.</span><span class="option-note">мужской род — Andrea женщина!</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy español.</span><span class="option-note">не то и не то</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy de Inglaterra.</span><span class="option-note">не отвечает на вопрос</span></div>
   </div>
-
-  <div class="explanation">
-    <strong>Тема:</strong> QUERER — глагол с изменением корня (e → ie). 1 лицо ед. ч. → «quiero».
+  <div class="reactions">
+    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos: «Bien.»</div>
+    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos сверяет фото в паспорте с твоим лицом.</div>
   </div>
 </div>
 
@@ -682,35 +687,24 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">8</div>
-    <div class="round-format">Выбор</div>
-    <div class="round-topic">Согласие · тост с ветчиной</div>
+    <div class="round-format">Спряжение</div>
+    <div class="round-topic">SER · закрепление yo soy</div>
+    <div class="round-lesson">u1_l10 + u1_l12</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">¿Y para comer? ¿Quieres una tostada?</div>
-    <div class="npc-ru">«А поесть? Хочешь тост?»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">Confirme su nacionalidad.</div>
+    <div class="npc-ru">«Подтвердите вашу национальность.»</div>
   </div>
-
+  <div class="prompt-row">
+    <span class="prompt-label">Поставь глагол</span>
+    <div class="prompt-text">Yo <span class="conjugate-blank">?</span> rusa.</div>
+  </div>
   <div class="options">
-    <div class="option option-correct">
-      <span class="option-mark ok">✓</span>
-      <span class="option-text">Sí, una tostada con jamón.</span>
-      <span class="option-note">тост с ветчиной</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">No, ya tengo café.</span>
-      <span class="option-note">«у меня уже есть кофе» — не отказ от тоста</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">Cuesta mucho.</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">Soy de Rusia.</span>
-    </div>
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">soy</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">es</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">eres</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">sois</span></div>
   </div>
 </div>
 
@@ -718,27 +712,24 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">9</div>
-    <div class="round-format">Перевод RU → ES</div>
-    <div class="round-topic">Цена · CUÁNTO + COSTAR</div>
+    <div class="round-format">Аудио</div>
+    <div class="round-topic">Числа 0-20 · номер места</div>
+    <div class="round-lesson">u1_l13</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">Vale, ahora te lo traigo.</div>
-    <div class="npc-ru">«Хорошо, сейчас принесу.»</div>
+    <div class="npc-name">CARLOS<span class="audio-indicator">🔊 ТОЛЬКО ЗВУК</span></div>
+    <div class="npc-es">Su número de asiento es el catorce.</div>
+    <div class="npc-ru">текст скрыт — только слышит произношение числа</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Переведи:</span>
-    <span class="prompt-text">«Сколько стоит?»</span>
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Carlos называет твой номер места. Какой это номер?</div>
+  <div class="options">
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">14</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">4</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">11</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">16</span></div>
   </div>
-
-  <div class="alternatives">
-    <div class="alternatives-title">Принимаются варианты:</div>
-    <div class="alt-item">¿Cuánto cuesta?</div>
-    <div class="alt-item">¿Cuánto es?</div>
-    <div class="alt-item">¿Cuánto vale?</div>
-    <div class="alt-item">¿Cuánto cuesta todo?</div>
+  <div class="explanation">
+    «Catorce» = 14. Не путать: «cuatro» = 4, «once» = 11, «dieciséis» = 16.
   </div>
 </div>
 
@@ -746,42 +737,24 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">10</div>
-    <div class="round-format">Аудио</div>
-    <div class="round-topic">Числа · понимание цены</div>
+    <div class="round-format">Выбор</div>
+    <div class="round-topic">Артикль · el / la / un / una</div>
+    <div class="round-lesson">u1_l8 + u1_l9</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит <span class="audio-indicator">🔊 Только звук</span></div>
-    <div class="npc-es">Cuesta tres euros con cincuenta.</div>
-    <div class="npc-ru" style="color: var(--text-dim);">текст скрыт — только слышит</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">Tengo aquí ___ pasaporte. ¿Es el suyo?</div>
+    <div class="npc-ru">«У меня здесь ___ паспорт. Это ваш?»</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Задание:</span>
-    <span>Сколько стоит твой заказ?</span>
-  </div>
-
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Какой артикль подходит для слова «pasaporte»?</div>
   <div class="options">
-    <div class="option option-correct">
-      <span class="option-mark ok">✓</span>
-      <span class="option-text">3,50 €</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">3,15 €</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">5,30 €</span>
-    </div>
-    <div class="option option-wrong">
-      <span class="option-mark no">×</span>
-      <span class="option-text">13,50 €</span>
-    </div>
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">un</span><span class="option-note">м.р., неопр.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">una</span><span class="option-note">ж.р.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">el</span><span class="option-note">м.р., но опр.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">la</span><span class="option-note">ж.р.</span></div>
   </div>
-
   <div class="explanation">
-    «Tres» = 3. «Cincuenta» = 50. «Con» здесь — «и» (разделитель целой и дробной части). Итого: 3,50 €.
+    «Pasaporte» — мужского рода. Carlos говорит про «какой-то паспорт» (показывает один из стопки) → неопределённый артикль «un».
   </div>
 </div>
 
@@ -789,26 +762,28 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">11</div>
-    <div class="round-format">Спряжение</div>
-    <div class="round-topic">PAGAR · yo pago</div>
+    <div class="round-format">Сборка</div>
+    <div class="round-topic">SER · nosotros somos</div>
+    <div class="round-lesson">u1_l11</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">¿Pagas en efectivo o con tarjeta?</div>
-    <div class="npc-ru">«Платишь наличными или картой?»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">¿Y los señores detrás de usted? ¿Son ustedes turistas juntos?</div>
+    <div class="npc-ru">«А люди за вами? Вы туристы вместе?»</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Поставь глагол:</span>
-    <span class="prompt-text">Yo <span class="conjugate-blank">?</span> con tarjeta.</span>
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Собери ответ:</div>
+  <div class="word-bank">
+    <span class="word-chip correct">Sí</span>
+    <span class="word-chip correct">nosotros</span>
+    <span class="word-chip correct">somos</span>
+    <span class="word-chip correct">turistas</span>
+    <span class="word-chip">soy</span>
+    <span class="word-chip">son</span>
+    <span class="word-chip">sois</span>
   </div>
-
-  <div class="options">
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">pagar</span><span class="option-note">инфинитив</span></div>
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">pago</span><span class="option-note">yo</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">pagas</span><span class="option-note">tú</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">pagamos</span><span class="option-note">nosotros</span></div>
+  <div class="correct-build">Sí nosotros somos turistas</div>
+  <div class="explanation">
+    «Nosotros somos» = «мы» (1 л. мн. ч. SER). Не путать с «son» (3 л. мн. — они), «sois» (2 л. мн. — вы все на «ты»).
   </div>
 </div>
 
@@ -817,29 +792,24 @@ h2 {
   <div class="round-header">
     <div class="round-num">12</div>
     <div class="round-format">Выбор</div>
-    <div class="round-topic">Артикль el/la · «la mesa»</div>
+    <div class="round-topic">Lo siento · извинение</div>
+    <div class="round-lesson">u1_l6</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">Tu pan está en la mesa de allí.</div>
-    <div class="npc-ru">«Твой хлеб на том столе.»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">Hay un problema con su visa. ¿Sabe usted algo?</div>
+    <div class="npc-ru">«Есть проблема с вашей визой. Вы что-то знаете?»</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Задание:</span>
-    <span>Какой артикль для слова «mesa» (стол)?</span>
-  </div>
-
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Вежливо ответь, что не знаешь:</div>
   <div class="options">
-    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">la</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">el</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">los</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">las</span></div>
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Lo siento, no.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">De nada.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Hasta luego.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Buenas noches.</span></div>
   </div>
-
-  <div class="explanation">
-    <strong>Правило:</strong> в испанском слова на «-a» обычно женского рода: la mesa, la silla, la casa. В русском «стол» мужского, в испанском женского — другие правила.
+  <div class="reactions">
+    <div class="reaction reaction-ok"><div class="reaction-label">Правильно</div>Carlos: «Está bien, solo bromeaba.» (смягчается, шутил)</div>
+    <div class="reaction reaction-bad"><div class="reaction-label">Неправильно</div>Carlos: «Hmm.» (поднимает трубку телефона)</div>
   </div>
 </div>
 
@@ -847,30 +817,23 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">13</div>
-    <div class="round-format">Сборка</div>
-    <div class="round-topic">Возраст · TENER + años</div>
+    <div class="round-format">Перевод ES → RU</div>
+    <div class="round-topic">Понимание · сложная фраза с SER</div>
+    <div class="round-lesson">u1_l10 + u1_l12</div>
   </div>
-
-  <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">Por cierto, ¿cuántos años tienes?</div>
-    <div class="npc-ru">«Кстати, сколько тебе лет?»</div>
+  <div class="prompt-row">
+    <span class="prompt-label">Переведи на русский</span>
+    <div class="prompt-text">Usted es rusa y es de Rusia.</div>
   </div>
-
-  <div class="word-bank">
-    <span class="word-chip correct">Tengo</span>
-    <span class="word-chip correct">veinte</span>
-    <span class="word-chip correct">años</span>
-    <span class="word-chip">tres</span>
-    <span class="word-chip">Soy</span>
-    <span class="word-chip">muy</span>
-    <span class="word-chip">estás</span>
+  <div class="alternatives">
+    <div class="alternatives-title">Принимаются варианты:</div>
+    <div class="alt-item">Вы русская и вы из России.</div>
+    <div class="alt-item">Вы русская и из России.</div>
+    <div class="alt-item">Вы — русская, и вы из России.</div>
+    <div class="alt-item">Ты русская и ты из России.</div>
   </div>
-
-  <div class="correct-build">Tengo veinte años</div>
-
   <div class="explanation">
-    <strong>Внимание:</strong> в испанском возраст — через TENER (иметь), не SER. «Tengo veinte años» = буквально «имею 20 лет».
+    «Usted es» = «Вы есть/Вы». «Rusa» = русская (ж.р.). «Y» = и. «Es de Rusia» = (Вы) из России.
   </div>
 </div>
 
@@ -878,25 +841,27 @@ h2 {
 <div class="round">
   <div class="round-header">
     <div class="round-num">14</div>
-    <div class="round-format">Перевод ES → RU</div>
-    <div class="round-topic">Понимание · VIVIR</div>
+    <div class="round-format">Спряжение</div>
+    <div class="round-topic">SER · usted es (3 л.)</div>
+    <div class="round-lesson">u1_l10</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">¿Vives en Madrid o estás de vacaciones?</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">Una pregunta más. Por favor confirme:</div>
+    <div class="npc-ru">«Ещё один вопрос. Подтвердите:»</div>
   </div>
-
   <div class="prompt-row">
-    <span class="prompt-label">Переведи на русский:</span>
-    <span class="prompt-text">¿Vives en Madrid?</span>
+    <span class="prompt-label">Поставь глагол</span>
+    <div class="prompt-text">Usted <span class="conjugate-blank">?</span> Andrea, ¿correcto?</div>
   </div>
-
-  <div class="alternatives">
-    <div class="alternatives-title">Принимаются варианты:</div>
-    <div class="alt-item">Ты живёшь в Мадриде?</div>
-    <div class="alt-item">Ты живешь в Мадриде? <span class="option-note">(без ё)</span></div>
-    <div class="alt-item">Живёшь в Мадриде? <span class="option-note">(без местоимения)</span></div>
+  <div class="options">
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">es</span><span class="option-note">для usted — 3 л.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">soy</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">eres</span><span class="option-note">это для «tú»</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">son</span></div>
+  </div>
+  <div class="explanation">
+    Важно: «Usted» формально = «Вы», но грамматически — 3 лицо ед. ч. → форма «es». «Eres» используется только при обращении на «ты» (tú).
   </div>
 </div>
 
@@ -905,23 +870,20 @@ h2 {
   <div class="round-header">
     <div class="round-num">15</div>
     <div class="round-format">Выбор</div>
-    <div class="round-topic">Будущее · согласие на возврат</div>
+    <div class="round-topic">Reaction · «Bienvenida»</div>
+    <div class="round-lesson">u1_l6</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">¿Volverás mañana? Te esperaré.</div>
-    <div class="npc-ru">«Вернёшься завтра? Я тебя буду ждать.»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">Todo está en orden. Bienvenida a España.</div>
+    <div class="npc-ru">«Всё в порядке. Добро пожаловать в Испанию.»</div>
   </div>
-
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Carlos ставит штамп. Что отвечаешь?</div>
   <div class="options">
-    <div class="option option-correct">
-      <span class="option-mark ok">✓</span>
-      <span class="option-text">Sí, claro. Hasta mañana.</span>
-    </div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">No, tengo veinte años.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Buenos días, María.</span></div>
-    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Soy de Rusia.</span></div>
+    <div class="option option-correct"><span class="option-mark ok">✓</span><span class="option-text">Muchas gracias.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">De nada.</span><span class="option-note">это от Carlos, не от тебя</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Por favor.</span></div>
+    <div class="option option-wrong"><span class="option-mark no">×</span><span class="option-text">Adiós.</span><span class="option-note">рано прощаться</span></div>
   </div>
 </div>
 
@@ -930,64 +892,98 @@ h2 {
   <div class="round-header">
     <div class="round-num">16</div>
     <div class="round-format">Сборка</div>
-    <div class="round-topic">Прощание · вежливая формула</div>
+    <div class="round-topic">Финальное прощание</div>
+    <div class="round-lesson">u1_l5 + u1_l6</div>
   </div>
-
   <div class="npc-line">
-    <div class="npc-name">María говорит</div>
-    <div class="npc-es">Vale, te espero. ¡Adiós!</div>
-    <div class="npc-ru">«Хорошо, жду. Пока!»</div>
+    <div class="npc-name">CARLOS</div>
+    <div class="npc-es">Adelante. Que tenga buen día.</div>
+    <div class="npc-ru">«Проходите. Хорошего дня.»</div>
   </div>
-
-  <div class="prompt-row">
-    <span class="prompt-label">Задание:</span>
-    <span>Собери вежливое прощание</span>
-  </div>
-
+  <div class="prompt-row"><span class="prompt-label">Задание</span> Прощаешься вежливо. Собери фразу:</div>
   <div class="word-bank">
-    <span class="word-chip correct">Hasta</span>
+    <span class="word-chip correct">Gracias</span>
+    <span class="word-chip correct">hasta</span>
     <span class="word-chip correct">luego</span>
-    <span class="word-chip correct">que</span>
-    <span class="word-chip correct">tengas</span>
-    <span class="word-chip correct">buen</span>
-    <span class="word-chip correct">día</span>
-    <span class="word-chip">soy</span>
-    <span class="word-chip">muy</span>
+    <span class="word-chip">buenos</span>
+    <span class="word-chip">mañana</span>
+    <span class="word-chip">días</span>
+    <span class="word-chip">hola</span>
+    <span class="word-chip">de</span>
+  </div>
+  <div class="correct-build">Gracias hasta luego</div>
+</div>
+
+<!-- ============ OUTCOMES ============ -->
+<h2>Что говорит Carlos на финале</h2>
+
+<div class="outcomes">
+  <!-- PASS -->
+  <div class="outcome outcome-pass">
+    <div class="outcome-title">✓ ПРОПУЩЕНА В ИСПАНИЮ</div>
+
+    <div class="outcome-item">
+      <div class="outcome-item-tier">🥇 ЗОЛОТО · 95-100%</div>
+      <div class="outcome-item-es">Excelente español. Bienvenida a España, Andrea.</div>
+      <div class="outcome-item-ru">«Отличный испанский. Добро пожаловать в Испанию.»</div>
+      <div class="outcome-item-scene">Carlos искренне улыбается, делает чёткий штамп и возвращает паспорт двумя руками. «Disfrute Madrid.»</div>
+    </div>
+
+    <div class="outcome-item">
+      <div class="outcome-item-tier">🥈 СЕРЕБРО · 80-94%</div>
+      <div class="outcome-item-es">Bien. Bienvenida a España.</div>
+      <div class="outcome-item-ru">«Хорошо. Добро пожаловать.»</div>
+      <div class="outcome-item-scene">Carlos кивает, ставит штамп, протягивает паспорт. «Adelante.»</div>
+    </div>
+
+    <div class="outcome-item">
+      <div class="outcome-item-tier">🥉 БРОНЗА · 70-79%</div>
+      <div class="outcome-item-es">Está bien. Pase.</div>
+      <div class="outcome-item-ru">«Ладно. Проходите.»</div>
+      <div class="outcome-item-scene">Carlos ставит штамп без эмоций, едва смотрит на тебя. «El siguiente.»</div>
+    </div>
   </div>
 
-  <div class="correct-build">Hasta luego que tengas buen día</div>
+  <!-- FAIL -->
+  <div class="outcome outcome-fail">
+    <div class="outcome-title">✗ ЗАДЕРЖАНА НА ГРАНИЦЕ</div>
 
-  <div class="explanation">
-    <strong>Перевод:</strong> «До встречи, хорошего тебе дня». «Que tengas buen día» — стандартная формула пожелания (с использованием subjuntivo — но юзер просто узнаёт фразу, активно его не строит).
+    <div class="outcome-item">
+      <div class="outcome-item-tier">ПОЧТИ · 50-69%</div>
+      <div class="outcome-item-es">Hmm... casi. Pero no. Por favor, acompáñeme.</div>
+      <div class="outcome-item-ru">«Хм... почти. Но нет. Пройдёмте.»</div>
+      <div class="outcome-item-scene">Carlos качает головой, делает знак коллеге. Тебя ведут в сторону для доп. проверки. Документы остаются у Carlos.</div>
+    </div>
+
+    <div class="outcome-item">
+      <div class="outcome-item-tier">ПЛОХО · 30-49%</div>
+      <div class="outcome-item-es">Lo siento. Acompáñeme a la sala aparte.</div>
+      <div class="outcome-item-ru">«Жаль. Пройдёмте в отдельную комнату.»</div>
+      <div class="outcome-item-scene">Подходит коллега, забирает паспорт. Тебя ведут на длинный досмотр.</div>
+    </div>
+
+    <div class="outcome-item">
+      <div class="outcome-item-tier">ОЧЕНЬ ПЛОХО · 0-29%</div>
+      <div class="outcome-item-es">No habla español suficiente. Espere aquí.</div>
+      <div class="outcome-item-ru">«Вы не говорите по-испански. Подождите здесь.»</div>
+      <div class="outcome-item-scene">Carlos поднимает трубку. К стойке идут двое в форме.</div>
+    </div>
   </div>
 </div>
 
-<!-- ========== SUMMARY ========== -->
-<div class="section-summary">
-  <h3>Что проверяет CP1 в сумме</h3>
-  <ul>
-    <li><strong>Грамматика:</strong> ser, llamarse, querer, pagar, tener, vivir</li>
-    <li><strong>Артикли:</strong> el, la (определённые)</li>
-    <li><strong>Числа:</strong> 1-100 (особенно цены)</li>
-    <li><strong>Лексика:</strong> café, leche, tostada, jamón, mesa, pan</li>
-    <li><strong>Функции:</strong> приветствие, представление, заказ, оплата, прощание</li>
-    <li><strong>Аудирование:</strong> короткие фразы, числа</li>
-  </ul>
-</div>
-
-<!-- ========== FEEDBACK SECTION ========== -->
+<!-- ============ FEEDBACK ============ -->
 <div class="fb-section">
   <h2>Твоя обратная связь</h2>
   <p style="margin: 0 0 12px; color: var(--text-dim); font-size: 14px;">Прочитай и отметь:</p>
   <ol>
-    <li>Какие-то реплики звучат не по-испански / коряво?</li>
-    <li>Какие-то задания дублируют темы?</li>
-    <li>Слишком сложно для А1? (например, subjuntivo в раунде 16 — узнавание, не активное использование)</li>
-    <li>Слишком просто? (надо ли добавить раундов посложнее)</li>
-    <li>NPC характер ок? María как тёплая барменша — норм или хочется кого-то другого?</li>
+    <li>Все ли реплики Carlos звучат естественно по-испански?</li>
+    <li>Карактер Carlos «строгий но не злой» — попадает, или хочется иначе?</li>
+    <li>Раунды строго в рамках блока 1 — нет ли проскочившего «слишком сложного»?</li>
+    <li>Драматизм с «задержали на границе» — норм или слишком жёстко?</li>
+    <li>Хочешь добавить пункты-сюжет или удалить какой-то?</li>
   </ol>
   <p style="margin: 16px 0 0; color: var(--text); font-size: 14px;">
-    Если всё ок → пишу аналогично <strong>CP2 (Pedro+Diego, магазин+такси)</strong>, потом <strong>CP3 (Carmen+Luis, отель+банк)</strong>, потом <strong>CP4 (Ana, собеседование boss)</strong>.
+    Если всё ок → следующий CP. Я сначала проверю, что в блоке 2 (уроки 17-30), и только потом напишу CP2 строго на этом материале.
   </p>
 </div>
 
