@@ -36,7 +36,7 @@ object GrammarContent {
             id = 2, level = "A1", category = "grammar",
             title = "Ser vs Estar — быть",
             topic = "Глаголы ser и estar",
-            xpReward = 20,
+            xpReward = 15,
             contentJson = """
             {
               "theory": "Оба глагола значат 'быть', но используются в разных ситуациях. SER — постоянные качества. ESTAR — временные состояния и местоположение.",
@@ -58,7 +58,7 @@ object GrammarContent {
             id = 3, level = "A1", category = "grammar",
             title = "Presente Indicativo",
             topic = "Настоящее время",
-            xpReward = 20,
+            xpReward = 15,
             contentJson = """
             {
               "theory": "Presente Indicativo используется для действий, которые происходят сейчас, регулярно или всегда. Глаголы делятся на 3 группы: -ar, -er, -ir.",
@@ -80,7 +80,7 @@ object GrammarContent {
             id = 4, level = "A1", category = "grammar",
             title = "Числа 1–100",
             topic = "Los números",
-            xpReward = 10,
+            xpReward = 15,
             contentJson = """
             {
               "theory": "Числа в испанском — основа для всего: цены, время, возраст.",
@@ -178,7 +178,7 @@ object GrammarContent {
             id = 8, level = "B1", category = "grammar",
             title = "Subjuntivo Presente",
             topic = "Сослагательное наклонение",
-            xpReward = 35,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "Subjuntivo выражает субъективность: желания, сомнения, эмоции, рекомендации. Используется в придаточных предложениях после определённых выражений.",
@@ -201,7 +201,7 @@ object GrammarContent {
             id = 9, level = "B1", category = "grammar",
             title = "Futuro Simple",
             topic = "Будущее время",
-            xpReward = 20,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "Futuro Simple выражает действия в будущем, предположения и обещания. Образуется от инфинитива + окончания.",
@@ -247,7 +247,7 @@ object GrammarContent {
             id = 11, level = "A2", category = "grammar",
             title = "Imperativo — Повелительное наклонение",
             topic = "Команды и просьбы",
-            xpReward = 22,
+            xpReward = 20,
             contentJson = """
             {
               "theory": "Imperativo используется для команд, советов и инструкций. Утвердительная и отрицательная формы образуются по-разному.",
@@ -270,7 +270,7 @@ object GrammarContent {
             id = 12, level = "A2", category = "grammar",
             title = "Comparativo y Superlativo",
             topic = "Сравнения и превосходная степень",
-            xpReward = 18,
+            xpReward = 20,
             contentJson = """
             {
               "theory": "Сравнения в испанском строятся через más/menos + прилагательное + que. Превосходная степень — el/la más + прилагательное + de.",
@@ -293,7 +293,7 @@ object GrammarContent {
             id = 13, level = "A2", category = "grammar",
             title = "Por vs Para",
             topic = "Два предлога 'для'",
-            xpReward = 22,
+            xpReward = 20,
             contentJson = """
             {
               "theory": "Por и para — оба переводятся как 'для', но используются в разных ситуациях. Это самая частая ловушка для русскоговорящих.",
@@ -319,7 +319,7 @@ object GrammarContent {
             id = 14, level = "B1", category = "grammar",
             title = "Condicional Simple",
             topic = "Условное наклонение",
-            xpReward = 28,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "Condicional выражает гипотетические ситуации, вежливые просьбы, советы и действия в прошлом, ожидаемые в будущем. Образуется от инфинитива + окончания.",
@@ -364,7 +364,7 @@ object GrammarContent {
             id = 16, level = "B1", category = "grammar",
             title = "Subjuntivo después de conjunciones",
             topic = "Subjuntivo с союзами",
-            xpReward = 30,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "После определённых союзов почти всегда стоит Subjuntivo. Это касается выражений цели, времени (будущего), уступок, условий.",
@@ -412,7 +412,7 @@ object GrammarContent {
             id = 18, level = "B2", category = "grammar",
             title = "Voz pasiva",
             topic = "Страдательный залог",
-            xpReward = 28,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "В испанском есть два способа выражения страдательного залога: с глаголом ser (формально) и с местоимением se (более естественно).",
@@ -434,7 +434,7 @@ object GrammarContent {
             id = 19, level = "B2", category = "grammar",
             title = "Estilo indirecto",
             topic = "Косвенная речь",
-            xpReward = 32,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "При передаче чужих слов времена 'сдвигаются' назад: presente → imperfecto, indefinido → pluscuamperfecto, futuro → condicional.",
@@ -457,7 +457,7 @@ object GrammarContent {
             id = 20, level = "B2", category = "grammar",
             title = "Perífrasis verbales",
             topic = "Глагольные конструкции",
-            xpReward = 26,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Перифразы — устойчивые сочетания вспомогательного глагола + инфинитива/герундия/причастия. Они выражают оттенки модальности и аспекта.",
@@ -484,7 +484,7 @@ object GrammarContent {
             id = 21, level = "A2", category = "grammar",
             title = "Gerundio: estar + -ndo",
             topic = "Настоящее длительное время",
-            xpReward = 15,
+            xpReward = 20,
             contentJson = """
             {
               "theory": "Конструкция estar + герундий описывает действие, которое происходит прямо сейчас или в данный период жизни. Аналог английского Present Continuous.",
@@ -508,7 +508,7 @@ object GrammarContent {
             id = 22, level = "A2", category = "grammar",
             title = "Pronombres OD/OI: lo, la, le",
             topic = "Местоимения дополнения",
-            xpReward = 15,
+            xpReward = 20,
             contentJson = """
             {
               "theory": "Местоимения заменяют прямое (кого? что?) и косвенное (кому? чему?) дополнение, чтобы не повторять существительное. Ставятся перед спрягаемым глаголом.",
@@ -532,7 +532,7 @@ object GrammarContent {
             id = 23, level = "A2", category = "grammar",
             title = "Hace + tiempo + que / desde hace",
             topic = "Выражения времени",
-            xpReward = 15,
+            xpReward = 20,
             contentJson = """
             {
               "theory": "Эти конструкции отвечают на вопрос 'как давно?' и описывают действие, которое началось в прошлом и длится до сих пор.",
@@ -556,7 +556,7 @@ object GrammarContent {
             id = 24, level = "A2", category = "grammar",
             title = "Adverbios en -mente",
             topic = "Образование наречий",
-            xpReward = 15,
+            xpReward = 20,
             contentJson = """
             {
               "theory": "Многие наречия образа действия образуются от прилагательных с помощью суффикса -mente, аналогично английскому -ly или русскому -о/-но.",
@@ -580,7 +580,7 @@ object GrammarContent {
             id = 25, level = "A2", category = "grammar",
             title = "Indefinido vs Imperfecto",
             topic = "Выбор прошедшего времени",
-            xpReward = 15,
+            xpReward = 20,
             contentJson = """
             {
               "theory": "Главная сложность испанского прошедшего: какое время выбрать. Indefinido — конкретное завершённое действие. Imperfecto — фон, привычка, длящееся состояние в прошлом.",
@@ -604,7 +604,7 @@ object GrammarContent {
             id = 26, level = "B1", category = "grammar",
             title = "Si + condicional: real e irreal",
             topic = "Условные предложения",
-            xpReward = 20,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "Условные предложения с si описывают, что произойдёт при выполнении условия. Различаем реальные (возможные) и нереальные (гипотетические) ситуации настоящего.",
@@ -628,7 +628,7 @@ object GrammarContent {
             id = 27, level = "B1", category = "grammar",
             title = "Pasiva refleja: se + verbo",
             topic = "Безличный пассив с se",
-            xpReward = 20,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "В испанском вместо классической пассивной конструкции (ser + participio) гораздо чаще используется пассив с se. Особенно в объявлениях, инструкциях и обобщениях.",
@@ -652,7 +652,7 @@ object GrammarContent {
             id = 28, level = "B1", category = "grammar",
             title = "Quizás, tal vez + Subjuntivo",
             topic = "Выражения сомнения",
-            xpReward = 20,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "Выражения сомнения и предположения часто требуют subjuntivo, потому что сообщают о неуверенности говорящего, а не о факте.",
@@ -676,7 +676,7 @@ object GrammarContent {
             id = 29, level = "B1", category = "grammar",
             title = "Pronombres relativos: que, quien, cuyo",
             topic = "Относительные местоимения",
-            xpReward = 20,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "Относительные местоимения соединяют главное и придаточное предложения. Соответствуют русским 'который, кто, чей, где'.",
@@ -700,7 +700,7 @@ object GrammarContent {
             id = 30, level = "B1", category = "grammar",
             title = "Estilo indirecto en pasado",
             topic = "Косвенная речь в прошлом",
-            xpReward = 20,
+            xpReward = 25,
             contentJson = """
             {
               "theory": "Когда передаём чужие слова глаголом в прошлом (dijo, preguntó), времена в придаточном смещаются назад — как в английском backshift.",
@@ -724,7 +724,7 @@ object GrammarContent {
             id = 31, level = "B2", category = "grammar",
             title = "Subjuntivo Pluscuamperfecto",
             topic = "Сослагательное предпрошедшее",
-            xpReward = 25,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Pluscuamperfecto de subjuntivo (hubiera/hubiese hablado) выражает гипотетическое действие в прошлом — то, что могло, но не произошло. Используется в условных нереальных предложениях прошлого.",
@@ -748,7 +748,7 @@ object GrammarContent {
             id = 32, level = "B2", category = "grammar",
             title = "Concordancia de tiempos",
             topic = "Согласование времён",
-            xpReward = 25,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Когда главное предложение в прошедшем времени и требует subjuntivo, придаточное тоже сдвигается в прошлое subjuntivo. Это последовательность времён, аналогичная английскому sequence of tenses.",
@@ -772,7 +772,7 @@ object GrammarContent {
             id = 33, level = "B2", category = "grammar",
             title = "Conectores discursivos",
             topic = "Дискурсивные коннекторы",
-            xpReward = 25,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Коннекторы связывают идеи в тексте и придают речи логическую структуру. Особенно важны в письменной речи и формальных дискуссиях на B2.",
@@ -796,7 +796,7 @@ object GrammarContent {
             id = 34, level = "B2", category = "grammar",
             title = "Aunque + indicativo / subjuntivo",
             topic = "Уступительные предложения",
-            xpReward = 25,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Aunque ('хотя', 'даже если') может вводить уступительное придаточное и с indicativo, и с subjuntivo. Выбор меняет смысл: реальный факт или гипотеза.",
@@ -820,7 +820,7 @@ object GrammarContent {
             id = 35, level = "B2", category = "grammar",
             title = "Lo + adjetivo / lo que / lo cual",
             topic = "Артикль среднего рода lo",
-            xpReward = 25,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "В испанском есть 'нейтральный' артикль lo, который превращает прилагательные и причастия в абстрактные существительные, а также вводит обобщённые относительные конструкции.",
@@ -1542,7 +1542,7 @@ object GrammarContent {
             id = 65, level = "B2", category = "grammar",
             title = "Condicional Compuesto",
             topic = "Сложное условное",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Condicional Compuesto (habría hablado) выражает действие, которое могло бы быть завершено в прошлом, но не произошло. Используется в нереальных условиях прошлого и для гипотез.",
@@ -1566,7 +1566,7 @@ object GrammarContent {
             id = 66, level = "B2", category = "grammar",
             title = "Pretérito Perfecto de Subjuntivo",
             topic = "Haya hablado",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Subjuntivo Perfecto (haya hablado) описывает завершённые действия в контексте, требующем subjuntivo: эмоция, сомнение, отрицание о уже произошедшем событии.",
@@ -1590,7 +1590,7 @@ object GrammarContent {
             id = 67, level = "B2", category = "grammar",
             title = "Perífrasis con infinitivo",
             topic = "ponerse a / dejar de / volver a",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Перифразы с инфинитивом передают тонкие смысловые оттенки начала, конца, повтора и неизбежности действия. Они часто заменяют целые предложения и обогащают речь.",
@@ -1615,7 +1615,7 @@ object GrammarContent {
             id = 68, level = "B2", category = "grammar",
             title = "Perífrasis con gerundio",
             topic = "seguir / llevar / andar + gerundio",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Перифразы с герундием выражают длящиеся, повторяющиеся или продолжающиеся действия. Каждая имеет свой оттенок смысла.",
@@ -1640,7 +1640,7 @@ object GrammarContent {
             id = 69, level = "B2", category = "grammar",
             title = "Perífrasis con participio",
             topic = "tener / llevar + participio",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Перифразы с причастием подчёркивают результат накопленного действия. В отличие от 'haber + part.' (нейтральное прошедшее), эти конструкции акцентируют объём проделанного.",
@@ -1664,7 +1664,7 @@ object GrammarContent {
             id = 70, level = "B2", category = "grammar",
             title = "Construcciones impersonales",
             topic = "Безличные конструкции",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Безличные конструкции в испанском передают действия без указания субъекта. Используются для обобщений, новостей, объявлений и формальных текстов.",
@@ -1688,7 +1688,7 @@ object GrammarContent {
             id = 71, level = "B2", category = "grammar",
             title = "A pesar de / pese a",
             topic = "Уступительные обороты",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Конструкции a pesar de и pese a означают 'несмотря на'. Они могут вводить как существительное / инфинитив, так и придаточное предложение с выбором между indicativo и subjuntivo.",
@@ -1712,7 +1712,7 @@ object GrammarContent {
             id = 72, level = "B2", category = "grammar",
             title = "Ser vs Estar — продвинутые случаи",
             topic = "Идиомы и тонкости",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "С одним и тем же прилагательным ser и estar дают разный смысл. На уровне B2 это уже не правило 'постоянное/временное', а разные значения слова.",
@@ -1737,7 +1737,7 @@ object GrammarContent {
             id = 73, level = "B2", category = "grammar",
             title = "Estilo indirecto avanzado",
             topic = "Косвенная речь — нюансы",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "На B2 косвенная речь требует точного согласования всех времён, изменения местоимений, временных и пространственных маркеров, а также понимания, какие времена не сдвигаются.",
@@ -1761,7 +1761,7 @@ object GrammarContent {
             id = 74, level = "B2", category = "grammar",
             title = "Pronombres relativos avanzados",
             topic = "el cual, lo cual, cuyo",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "На B2 относительные местоимения используются точнее: el cual для уточнения, lo cual для отсылки к фразе, cuyo для принадлежности. Особенно важны после предлогов и в письменной речи.",
@@ -1785,7 +1785,7 @@ object GrammarContent {
             id = 75, level = "B2", category = "grammar",
             title = "Expresiones idiomáticas comunes",
             topic = "Частые идиомы",
-            xpReward = 30,
+            xpReward = 35,
             contentJson = """
             {
               "theory": "Идиомы — это устойчивые выражения, смысл которых не выводится из значений отдельных слов. Их знание принципиально отличает уровень B2 от B1: речь становится живой и естественной.",
