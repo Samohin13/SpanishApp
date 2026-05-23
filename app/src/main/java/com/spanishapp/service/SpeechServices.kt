@@ -164,7 +164,7 @@ class SpanishTts @Inject constructor(
      *                   между русскими и испанскими сегментами (для AI Chat).
      *                   Если false (default) — только испанские части.
      */
-    fun speak(text: String, slow: Boolean = false, fullMixed: Boolean = false) {
+    fun speak(text: String, slow: Boolean = false, fullMixed: Boolean = false, esVoiceOverride: String? = null) {
         if (!enabled) {
             Log.d(TAG_ROUTE, "speak() blocked: ttsEnabled=false")
             return
@@ -172,15 +172,16 @@ class SpanishTts @Inject constructor(
 
         // v1.18.23: ВСЕ курсы тоже идут через premium TTS (Google Cloud
         // с выбранным TutorPersonality + полом голоса).
+        // v1.22.20: esVoiceOverride — per-NPC голос для чекпоинтов.
         val remoteReady = remoteTts.isReady.value
-        Log.d(TAG_ROUTE, "speak() text='${text.take(40)}' slow=$slow mixed=$fullMixed remote=$remoteReady")
+        Log.d(TAG_ROUTE, "speak() text='${text.take(40)}' slow=$slow mixed=$fullMixed remote=$remoteReady override=$esVoiceOverride")
         if (remoteReady) {
             val speakText = if (fullMixed) sanitizeForFullSpeech(text) else inferSpeakText(text)
             if (!speakText.isNullOrBlank()) {
                 val ok = if (slow) {
-                    remoteTts.speak(speakText, speed = 0.7f)
+                    remoteTts.speak(speakText, speed = 0.7f, esVoiceOverride = esVoiceOverride)
                 } else {
-                    remoteTts.speak(speakText, speed = null)
+                    remoteTts.speak(speakText, speed = null, esVoiceOverride = esVoiceOverride)
                 }
                 Log.d(TAG_ROUTE, "→ remoteTts.speak() returned $ok")
                 if (ok) return

@@ -75,6 +75,12 @@ object PremiumVoiceCatalog {
     const val DEFAULT_RU_VOICE = "ru-RU-Wavenet-A"
     const val DEFAULT_ES_VOICE = "es-ES-Neural2-D"
 
+    // v1.22.20: алиасы для NpcVoiceMap (per-NPC override в чекпоинтах)
+    const val ES_POLYGLOT_1 = "es-ES-Polyglot-1"  // мужской премиум
+    const val ES_NEURAL2_B  = "es-ES-Neural2-B"   // мужской молодой
+    const val ES_NEURAL2_D  = "es-ES-Neural2-D"   // женский живой (= default)
+    const val ES_WAVENET_C  = "es-ES-Wavenet-C"   // женский мягкий
+
     fun ruVoiceById(id: String?): Voice =
         RU_VOICES.firstOrNull { it.id == id } ?: RU_VOICES.firstOrNull { it.id == DEFAULT_RU_VOICE }!!
 

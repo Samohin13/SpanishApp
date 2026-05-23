@@ -80,6 +80,7 @@ class RemoteTtsService @Inject constructor(
     fun speak(
         text: String,
         speed: Float? = null,
+        esVoiceOverride: String? = null,
     ): Boolean {
         if (BuildConfig.AI_PROXY_URL.isBlank()) {
             Log.d(TAG, "speak() blocked: AI_PROXY_URL blank")
@@ -87,7 +88,7 @@ class RemoteTtsService @Inject constructor(
         }
         if (text.isBlank()) return false
 
-        Log.d(TAG, "speak() text='${text.take(60)}' speed=$speed")
+        Log.d(TAG, "speak() text='${text.take(60)}' speed=$speed override=$esVoiceOverride")
 
         // Прерываем предыдущее воспроизведение
         stop()
@@ -97,9 +98,12 @@ class RemoteTtsService @Inject constructor(
             // Personality читается из DataStore при каждом speak — изменение
             // в Settings применяется без рестарта.
             // v1.18.29: прямой выбор голоса (без пресетов)
+            // v1.22.20: esVoiceOverride имеет приоритет — для NPC в
+            // чекпоинтах где разные персонажи говорят разными голосами.
             val ruVoiceId = authRepository.selectedRuVoice.firstOrNull()
                 ?: com.spanishapp.domain.voice.PremiumVoiceCatalog.DEFAULT_RU_VOICE
-            val esVoiceId = authRepository.selectedEsVoice.firstOrNull()
+            val esVoiceId = esVoiceOverride
+                ?: authRepository.selectedEsVoice.firstOrNull()
                 ?: com.spanishapp.domain.voice.PremiumVoiceCatalog.DEFAULT_ES_VOICE
             val userMult = authRepository.voiceSpeedMultiplier.firstOrNull() ?: 1.0f
             val finalSpeed = (speed ?: userMult).coerceIn(0.25f, 4.0f)

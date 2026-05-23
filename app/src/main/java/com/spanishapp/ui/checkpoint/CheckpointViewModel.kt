@@ -148,7 +148,10 @@ class CheckpointViewModel @Inject constructor(
     private fun speakCurrentNpcLine(state: CheckpointState) {
         val line = state.currentRound?.npcLineEs ?: return
         if (line.isBlank()) return
-        runCatching { tts.speak(line) }
+        // v1.22.20: голос NPC — мужские/женские персонажи звучат разно.
+        // Для LISTEN формата озвучка обязательна (это тест на аудирование).
+        val npcVoice = com.spanishapp.domain.voice.NpcVoiceMap.voiceFor(state.data.npc.id)
+        runCatching { tts.speak(line, esVoiceOverride = npcVoice) }
     }
 
     /**
