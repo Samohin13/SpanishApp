@@ -192,7 +192,13 @@ export default {
     // ── Уровень 2: Firebase ID Token ──────────────────────────
     // Опционально — если FIREBASE_PROJECT не задан в env, пропускаем
     // проверку (для постепенной миграции).
-    if (env.FIREBASE_PROJECT) {
+    // v3 (1.22.6): /tts endpoint пропускает Firebase-проверку.
+    // Премиум-голоса вызываются часто (каждое слово в флэшкартах/играх),
+    // токены живут 1 час и требуют рефреша — это усложнение без выигрыша.
+    // X-App-Secret + rate-limit + локальный кэш аудио в приложении
+    // достаточны для отсечки злоупотреблений.
+    const isTtsEndpoint = new URL(request.url).pathname === "/tts";
+    if (env.FIREBASE_PROJECT && !isTtsEndpoint) {
       const authHeader = request.headers.get("Authorization") || "";
       const token = authHeader.replace(/^Bearer\s+/i, "").trim();
       if (!token) {
