@@ -83,7 +83,12 @@ class CheckpointEngine @Inject constructor() {
         val newSympathy = if (isCorrect) state.sympathyStars
                          else (state.sympathyStars - 1).coerceAtLeast(0)
         val nextIndex = state.currentRoundIndex + 1
-        val finished = nextIndex >= state.totalRounds || newSympathy == 0
+        // v1.22.18: убран early exit на sympathy=0. Настоящий экзамен идёт
+        // до последнего раунда независимо от ошибок — это педагогически
+        // правильно (DELE / TOEFL / IELTS все так работают). Sympathy stars
+        // только визуальная индикация недовольства NPC, не game-over.
+        // Раньше юзер с 5 ошибками выкидывался после 5 раундов из 22.
+        val finished = nextIndex >= state.totalRounds
 
         return if (finished) {
             val percent = if (newAnswers.isEmpty()) 0
