@@ -328,6 +328,24 @@
     },
     {
       "round": 19,
+      "format": "LISTEN",
+      "topic_ru": "BOSS · Hans мечтает (Si тип 2 + relativo + perífrasis)",
+      "tested_lesson": "u10_l4 + u11_l4",
+      "tested_grammar": "BOSS · Si тип 2 + relativo + perífrasis llevar",
+      "npc_line_es": "Yo pensar que si yo vivir aquí como tú, llevar años aprendiendo español con la pasión que tú tener. Eres persona que cambiar manera de yo ver España.",
+      "audio_only": true,
+      "prompt_ru": "Что Hans хочет сказать (3 правила B1)?",
+      "correct_answer": "Что жил бы здесь и учил испанский годами со страстью как у тебя — ты человек, который изменил его взгляд на Испанию.",
+      "distractors": [
+        "Что в Испании жить ему не нравится и хочет уехать.",
+        "Что испанский ему сложен и не хочет учить.",
+        "Что Andrea плохо учит испанский и должна быстрее."
+      ],
+      "translation_after_answer_ru": "Hans ломаный, но 3 правила видны: Si тип 2 («si yo viviera aquí, llevaría años aprendiendo»), perífrasis llevar+ger, relativo («persona que ha cambiado»). Реконструируешь как настоящий B1.",
+      "explanation_on_fail_ru": "BOSS-уровень понимания: даже на ломаном испанском читаешь 3 правила B1 одновременно. Si тип 2 + llevar+ger + relativo de personas. Реконструкция = ядро B1 finalов."
+    },
+    {
+      "round": 20,
       "format": "CHOICE",
       "topic_ru": "En cuanto + Subj · принятие приглашения",
       "tested_lesson": "u12_l1",
@@ -344,7 +362,41 @@
       "explanation_on_fail_ru": "Тёплое-casual принятие. «En cuanto + Subj» (llegue) = «как только» (триггер будущего → Subj). «Le agradezco profundamente» — слишком формально с туристом-приятелем."
     },
     {
-      "round": 20,
+      "round": 21,
+      "format": "VOICE",
+      "topic_ru": "Произнеси · Si тип 2 вопрос-приглашение",
+      "tested_lesson": "u10_l4",
+      "tested_grammar": "BOSS · Si тип 2 hablado",
+      "npc_line_es": "Andrea, antes de que yo irme, hacerme tú una pregunta hipotética sobre mi viaje. Cualquier cosa.",
+      "npc_line_ru": "Andrea, перед моим уходом задай мне гипотетический вопрос про моё путешествие. Что угодно.",
+      "prompt_ru": "Произнеси вопрос вслух (по-испански) — гипотеза Si тип 2:",
+      "correct_answer": "Si fueras Hans qué visitarías",
+      "acceptable_alternatives": [
+        "Si fueras Hans qué visitarías mañana",
+        "Si tú fueras Hans qué visitarías",
+        "Si tú fueras Hans qué visitarías en Madrid",
+        "Si fueras él qué visitarías"
+      ],
+      "explanation_on_fail_ru": "Si тип 2 в устной речи: «Si + Imp Subj (fueras) + Cond (visitarías)». Финальная BOSS-проверка hablada — гипотеза в свободном диалоге."
+    },
+    {
+      "round": 22,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "BOSS · reported speech + relativo + perífrasis (тройной комбо)",
+      "tested_lesson": "u11_l1 + u11_l3 + u11_l8",
+      "tested_grammar": "BOSS · 3 правила u11 в одной фразе",
+      "prompt_ru": "Расскажи Hans про друга (3 правила u11):",
+      "prompt_text_ru": "Мой друг, который уже 10 лет живёт в Берлине, сказал что испанский там очень помогает в работе.",
+      "correct_answer": "Mi amigo, que lleva diez años viviendo en Berlín, dijo que el español allí ayudaba mucho en el trabajo.",
+      "acceptable_alternatives": [
+        "Mi amigo, que lleva diez años viviendo en Berlín, dijo que el español allí ayuda mucho en el trabajo.",
+        "Mi amigo, que lleva 10 años viviendo en Berlín, me dijo que el español allí ayudaba mucho en el trabajo.",
+        "Un amigo mío, que lleva diez años viviendo en Berlín, dijo que el español allí ayudaba mucho en el trabajo."
+      ],
+      "explanation_on_fail_ru": "BOSS-комбо u11: relativo «que lleva», perífrasis «lleva años viviendo», reported speech «dijo que ayudaba» (Pres→Imp). Три правила одного блока в одной фразе."
+    },
+    {
+      "round": 23,
       "format": "LISTEN",
       "topic_ru": "Финал · Hans · reported speech + relative",
       "tested_lesson": "u11_l1 + u11_l3",

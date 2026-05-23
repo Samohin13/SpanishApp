@@ -5,7 +5,7 @@
   "title_ru": "FINAL BOSS · Прощание с Madrid",
   "title_es": "FINAL BOSS · Despedida de Madrid",
   "description_ru": "Madrid-Barajas, terminal 4S, gate B12. Финальный рейс в Москву после 4 лет жизни в Испании. За 3 часа до вылета — спонтанная встреча всех ключевых людей твоего пути: Carlos (passport officer), Sra. López (caserа), Diego (camarero de La Bodega), Sergio (mejor amigo), Dra. Martínez (doctora), Lucía (compañera de piso), Pablo (jefe), Andrés (amigo coqueto). Каждый возвращается со своим стилем и финальным вопросом. ВСЕ грамматические темы курса A1+A2+B1+B2 в одной эпической сессии. Завершается коллективным прощанием — поэтической сборкой фразы прощания.",
-  "stakes_ru": "Это финальный экзамен ВСЕГО курса. Pass — выпускник «Habla español como nativa», сертификат, +2500 XP, весь курс закрыт. Fail — обычное прощание, контакты затихнут со временем. Threshold снижен до 65% (BOSS), потому что 25 раундов смешивают все 16 блоков и шансы на ошибку выше.",
+  "stakes_ru": "Это финальный экзамен ВСЕГО курса. Pass — выпускник «Habla español como nativa», сертификат, +2500 XP, весь курс закрыт. Fail — обычное прощание, контакты затихнут со временем. Threshold снижен до 65% (BOSS), потому что 28 раундов смешивают все 16 блоков и шансы на ошибку выше.",
   "intro_text_ru": "Чемодан сдан. Boarding через 2.5 часа. Ты пьёшь último cortado в кафе. Внезапно — голос: «¡Andrea! ¿Te ibas sin despedirte?» Поворачиваешься. Это Sergio. За ним Lucía. И — невероятно — Carlos из CP1, в форме, не на дежурстве. Они все пришли. ВСЕ.",
   "scene": {
     "name": "Madrid-Barajas T4S · Gate B12",
@@ -92,6 +92,24 @@
     {
       "round": 4,
       "format": "LISTEN",
+      "topic_ru": "BOSS · A1 lexis + B2 grammar combo (Carlos длинный)",
+      "tested_lesson": "u1_l4 + u13_l11",
+      "tested_grammar": "FINAL · A1 базовые приветствия + B2 формальный Subj",
+      "npc_line_es": "Andrea, buenos días, buenas tardes y buenas noches a la vez, porque hoy es despedida, y le deseo a usted que tenga un viaje sin sobresaltos y que vuelva pronto a esta tierra que aprendió a llamar suya.",
+      "audio_only": true,
+      "prompt_ru": "Какое главное послание Carlos в этом длинном тосте?",
+      "correct_answer": "Желает спокойного пути и скорого возвращения в Испанию, которую Andrea стала называть своей.",
+      "distractors": [
+        "Прощается навсегда без надежды на встречу.",
+        "Просит Andrea остаться в Испании.",
+        "Жалуется на её отъезд и обижается."
+      ],
+      "translation_after_answer_ru": "«Buenos días, buenas tardes y buenas noches» — все A1 приветствия сразу. «Le deseo que tenga... y que vuelva» — двойной Subj триггер. «A esta tierra que aprendió a llamar suya» — relativo. A1+B2 в одной длинной фразе.",
+      "explanation_on_fail_ru": "FINAL BOSS-понимание: A1 лексика (saludos) внутри B2 grammar (le deseo que + двойной Subj, relativo «que aprendió a llamar suya»). Это поэтика nativa."
+    },
+    {
+      "round": 5,
+      "format": "LISTEN",
       "topic_ru": "Sra. López · acto 2 · ворчание-благодарность",
       "tested_lesson": "u14_l4 + u13_l10",
       "npc_line_es": "Vine corriendo desde el barrio. Llevo cuatro años aguantando que dejes el grifo abierto, pero aunque te lo dijera mil veces no escucharías. ¡Cómo te voy a echar de menos, niña!",
@@ -107,7 +125,7 @@
       "explanation_on_fail_ru": "Sra. López: ворчит (llevo aguantando), гипотеза (aunque dijera), но финал — echar de menos = «буду скучать». Типичный испанский abuela-стиль."
     },
     {
-      "round": 5,
+      "round": 6,
       "format": "BUILD",
       "topic_ru": "Sra. López · acto 2 · обещание-прощание",
       "tested_lesson": "u13_l11 + u14_l0",
@@ -119,7 +137,7 @@
       "explanation_on_fail_ru": "«Prometer que» + Indicativo (volveré). «Para que» + Subjuntivo (celebremos). Двойной слой B2."
     },
     {
-      "round": 6,
+      "round": 7,
       "format": "CONJUGATE",
       "topic_ru": "Diego · acto 3 · вкус la paella",
       "tested_lesson": "u13_l1 + u14_l1",
@@ -133,7 +151,7 @@
       "explanation_on_fail_ru": "«Cuando» + будущее → ВСЕГДА Subjuntivo. Hacer (tú) → hagas. Diego в роли философа гастрономии."
     },
     {
-      "round": 7,
+      "round": 8,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Diego · acto 3 · благодарность повару",
       "tested_lesson": "u15_l0 + u13_l9",
@@ -149,7 +167,7 @@
       "explanation_on_fail_ru": "«Sin + сущ» вместо «Si тип 3» — элегантная вариация. «Habrían sido» = были бы (gold B2 syntax)."
     },
     {
-      "round": 8,
+      "round": 9,
       "format": "CHOICE",
       "topic_ru": "Sergio · acto 4 · casual super",
       "tested_lesson": "u1_l4 + u15_l0",
@@ -165,7 +183,7 @@
       "explanation_on_fail_ru": "Регистр должен совпадать с собеседником. С Sergio «tío», «en serio» — наоборот, формальные «estimado señor» звучат смешно. B2 — это умение переключаться."
     },
     {
-      "round": 9,
+      "round": 10,
       "format": "CONJUGATE",
       "topic_ru": "Sergio · acto 4 · Pluscuamp Subj дружбы",
       "tested_lesson": "u13_l6",
@@ -175,11 +193,11 @@
       "sentence_template": "Si no te ___ conocido aquel verano.",
       "verb_infinitive": "haber",
       "correct_answer": "hubiera",
-      "distractors": ["había", "hubiese ", "he"],
+      "distractors": ["había", "hubiese", "he"],
       "explanation_on_fail_ru": "Si тип 3 mixto: Pluscuamp.Subj. (hubiera conocido — прошлое) + Cond.Simple (sería — настоящее). Микс-условный для длящегося эффекта."
     },
     {
-      "round": 10,
+      "round": 11,
       "format": "BUILD",
       "topic_ru": "Sergio · acto 4 · идиома + chistes",
       "tested_lesson": "u16_l0 + u16_l4",
@@ -191,7 +209,20 @@
       "explanation_on_fail_ru": "«La amistad de verdad no entiende de fronteras» — поэтическая formula. «No entender de + сущ» = не разбираться в / не иметь границ. B2 идиома."
     },
     {
-      "round": 11,
+      "round": 12,
+      "format": "BUILD",
+      "topic_ru": "BOSS · сложный сборный farewell (несколько блоков)",
+      "tested_lesson": "u1_l6 + u13_l11 + u14_l4 + u15_l1",
+      "tested_grammar": "FINAL BOSS BUILD · 4 блока в одном выражении",
+      "npc_line_es": "Andrea, antes del siguiente NPC: dinos algo construido con todo lo que has aprendido.",
+      "npc_line_ru": "Andrea, перед следующим NPC: скажи что-то собранное из всего, чему научилась.",
+      "prompt_ru": "Собери сложное прощание (10 слов, A1+B1+B2 микс):",
+      "correct_answer": "Llevo cuatro años aquí y os quiero más que nunca",
+      "word_bank": ["Llevo", "cuatro", "años", "aquí", "y", "os", "quiero", "más", "que", "nunca", "tengo", "estoy", "soy"],
+      "explanation_on_fail_ru": "BOSS-сборка: «Llevo + año + aquí» (B2 perífrasis llevar) + «os quiero» (A1 querer + vosotros pronoun) + «más que nunca» (A1 сравнение). Несколько блоков в одной фразе — финальная B2-вершина."
+    },
+    {
+      "round": 13,
       "format": "CHOICE",
       "topic_ru": "Dra. Martínez · acto 5 · профессиональная теплота",
       "tested_lesson": "u15_l0 + u13_l11",
@@ -207,7 +238,7 @@
       "explanation_on_fail_ru": "Формальная теплота: «le agradezco enormemente» + Imperativo «cuide» (формальная просьба) + «como me cuidó» (как заботились обо мне). Sophisticated B2 register."
     },
     {
-      "round": 12,
+      "round": 14,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Dra. Martínez · acto 5 · напутствие",
       "tested_lesson": "u13_l7 + u13_l11",
@@ -222,7 +253,7 @@
       "explanation_on_fail_ru": "Si тип 2 (tuviera + llámeme imperativo). Cond.Comp. (habría cuidado — гипотетическое прошлое). Сложное B2-предложение с переключением условных."
     },
     {
-      "round": 13,
+      "round": 15,
       "format": "CONJUGATE",
       "topic_ru": "Lucía · acto 6 · подруга в слезах",
       "tested_lesson": "u13_l3",
@@ -236,7 +267,7 @@
       "explanation_on_fail_ru": "«Ojalá» о невыполнимом → Imp.Subj. Irse (tú) → te fueras. Lucía выражает невозможное желание (Andrea уже уезжает)."
     },
     {
-      "round": 14,
+      "round": 16,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Lucía · acto 6 · обещание Futuro Perfecto",
       "tested_lesson": "u13_l8",
@@ -252,7 +283,7 @@
       "explanation_on_fail_ru": "Futuro Perfecto: habré + part. «Habré visitado» = «уже навещу к тому моменту». Дистанция во времени с готовностью."
     },
     {
-      "round": 15,
+      "round": 17,
       "format": "CHOICE",
       "topic_ru": "Lucía · acto 6 · culture reference",
       "tested_lesson": "u16_l11",
@@ -268,7 +299,7 @@
       "explanation_on_fail_ru": "Cultural literacy B2: знать «Cien años de soledad» (хотя автор колумбийский). «Sin diccionario» — gesture of achievement. García Márquez ≠ испанец (колумбиец)."
     },
     {
-      "round": 16,
+      "round": 18,
       "format": "CONJUGATE",
       "topic_ru": "Pablo · acto 7 · gerundio профи",
       "tested_lesson": "u14_l8",
@@ -282,7 +313,7 @@
       "explanation_on_fail_ru": "«Habiendo + participio» = композитный gerundio («выучив», «закончив»). Книжная B2-структура для причинных оборотов."
     },
     {
-      "round": 17,
+      "round": 19,
       "format": "BUILD",
       "topic_ru": "Pablo · acto 7 · референс письма",
       "tested_lesson": "u14_l0 + u15_l1",
@@ -294,7 +325,7 @@
       "explanation_on_fail_ru": "Pasiva futuro «será atesorada» (будет храниться). «Con el mayor respeto» — формальная высокая регистровая фраза. Sophisticated B2."
     },
     {
-      "round": 18,
+      "round": 20,
       "format": "CHOICE",
       "topic_ru": "Andrés · acto 8 · flirty hasta el final",
       "tested_lesson": "u15_l0 + u13_l2",
@@ -310,7 +341,7 @@
       "explanation_on_fail_ru": "«Eso ya nunca lo sabremos» — элегантное закрытие. «Te queda el ser» — инфинитив-сущ как утешение. Дипломатия с теплотой, не отказ и не приглашение."
     },
     {
-      "round": 19,
+      "round": 21,
       "format": "CONJUGATE",
       "topic_ru": "Andrés · acto 8 · поэтика прощания",
       "tested_lesson": "u13_l4",
@@ -324,7 +355,7 @@
       "explanation_on_fail_ru": "«Como si» в прошедшем = Pluscuamp.Subj. «Te hubieras ido» (te + reflexive + hubieras + part). Поэтическое отрицание разлуки."
     },
     {
-      "round": 20,
+      "round": 22,
       "format": "LISTEN",
       "topic_ru": "Ensemble · все сразу · хор прощания",
       "tested_lesson": "u15_l4 + u13_l9",
@@ -341,7 +372,25 @@
       "explanation_on_fail_ru": "B2-конструкции одно за другим: aunque + Subj, sino (не pero!), pase lo que pase. Это вершина B2-речи в один абзац."
     },
     {
-      "round": 21,
+      "round": 23,
+      "format": "VOICE",
+      "topic_ru": "Произнеси · финальное вслух (Futuro + lexical farewell)",
+      "tested_lesson": "u1_l6 + u13_l8",
+      "tested_grammar": "FINAL · A1 gracias + B2 Futuro Simple",
+      "npc_line_es": "Andrea, todos te miramos. Mira a Carlos, mira a Sergio, mira a Lucía. Diles algo con tu voz, en español, lo que sientes ahora mismo.",
+      "npc_line_ru": "Andrea, все смотрят на тебя. Посмотри на Carlos, на Sergio, на Lucía. Скажи им что-то своим голосом, по-испански, что чувствуешь прямо сейчас.",
+      "prompt_ru": "Произнеси вслух (по-испански), глядя на всех:",
+      "correct_answer": "Gracias por todo os echaré de menos",
+      "acceptable_alternatives": [
+        "Gracias por todo os voy a echar de menos",
+        "Gracias por todo amigos os echaré de menos",
+        "Muchas gracias por todo os echaré de menos",
+        "Gracias por todo os echaré mucho de menos"
+      ],
+      "explanation_on_fail_ru": "A1 «gracias por todo» (базовая благодарность) + B2 «os echaré de menos» (Futuro Simple от echar + lexical idiom). Каждая буква курса в одной фразе."
+    },
+    {
+      "round": 24,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Andrea · ответ ensemble",
       "tested_lesson": "u15_l1 + u13_l11",
@@ -357,7 +406,7 @@
       "explanation_on_fail_ru": "Vershина B2: «no sólo... sino también», relativo «que se quedará» (futuro reflexivo), идиома «llevarse el corazón». Поэтика финала."
     },
     {
-      "round": 22,
+      "round": 25,
       "format": "CHOICE",
       "topic_ru": "Carlos · возвращается с штампом",
       "tested_lesson": "u1_l6 + u15_l0",
@@ -373,7 +422,7 @@
       "explanation_on_fail_ru": "Cond.Comp. «no habría podido pedir» (не смогла бы попросить). «Cierre bonito a la historia» — литературная B2-формула."
     },
     {
-      "round": 23,
+      "round": 26,
       "format": "CONJUGATE",
       "topic_ru": "Final · последняя реплика на испанском",
       "tested_lesson": "u13_l9",
@@ -387,7 +436,7 @@
       "explanation_on_fail_ru": "«Que» в начале фразы (=ojalá) → Subjuntivo. Seguir (мы) → sigamos. Формула пожелания на финал."
     },
     {
-      "round": 24,
+      "round": 27,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Финальная фраза Carlos",
       "tested_lesson": "u13_l2 + u16_l11",
@@ -402,7 +451,7 @@
       "explanation_on_fail_ru": "Refrán castellano с двойным «sin que + Subj» (sin que echen, sin que llamen). Эта поговорка — суть Madrid: люди уходят, чтобы вернуться. Cultural B2 reference."
     },
     {
-      "round": 25,
+      "round": 28,
       "format": "BUILD",
       "topic_ru": "ФИНАЛЬНЫЙ РАУНД · поэтическая сборка",
       "tested_lesson": "u1_l6 + u16_l11 + u13_l9",

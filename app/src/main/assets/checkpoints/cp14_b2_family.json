@@ -116,8 +116,8 @@
       "format": "CHOICE",
       "topic_ru": "Pedir que + Imp.Subj. · просьба о прощении",
       "tested_lesson": "u13_l1",
-      "npc_line_es": "Tía, ¿qué le pediría usted a Miguel ahora mismo?",
-      "npc_line_ru": "Тётя, что бы вы попросили у Miguel прямо сейчас?",
+      "npc_line_es": "Tía, ¿qué le pedirías a Miguel ahora mismo?",
+      "npc_line_ru": "Тётя, что бы ты попросила у Miguel прямо сейчас?",
       "prompt_ru": "Какая фраза примирения деликатно вкладывается в уста тёти?",
       "correct_answer": "Que reconociera lo ocurrido y me pidiera perdón sinceramente.",
       "distractors": [
@@ -220,7 +220,7 @@
       "npc_line_es": "¿Y si Miguel viniera ahora y te dijera «lo siento»? ¿Tú qué harías, Andrea?",
       "npc_line_ru": "А если бы Miguel сейчас подошёл и сказал «прости»? Что бы ты сделала?",
       "prompt_ru": "Какая лексика примирения уместна для тёти?",
-      "correct_answer": "Le pediría que se reconciliara con usted con un gesto sincero, no solo con palabras.",
+      "correct_answer": "Le pediría que se reconciliara contigo con un gesto sincero, no solo con palabras.",
       "distractors": [
         "Le diría que pase, nada más.",
         "Que se vaya, no me importa.",
@@ -261,6 +261,24 @@
     },
     {
       "round": 16,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · тётя признаётся в обиде на саму себя",
+      "tested_lesson": "u14_l4 + u13_l3",
+      "tested_grammar": "Llevar + gerundio + ojalá",
+      "npc_line_es": "Llevo años intentando entender por qué me hice tanto daño yo misma con este silencio. Ojalá hubiera hablado antes, hija. Ojalá.",
+      "audio_only": true,
+      "prompt_ru": "Что тётя признаёт о СЕБЕ?",
+      "correct_answer": "Что годами сама себе причиняла боль молчанием и жалеет, что не заговорила раньше.",
+      "distractors": [
+        "Что обвиняет только Miguel и братьев.",
+        "Что не понимает свои чувства совсем.",
+        "Что собирается уйти из дома навсегда."
+      ],
+      "translation_after_answer_ru": "«Llevo años intentando entender» (perífrasis длительности). «Ojalá hubiera hablado» (Pluscuamp Subj — невыполнимое в прошлом). Это поворотный момент: тётя признаёт ответственность.",
+      "explanation_on_fail_ru": "«Llevo años + ger» = длительность с self-reflection. «Ojalá hubiera + part» = сожаление о прошлом (Pluscuamp Subj). Эмоциональный кульминационный момент."
+    },
+    {
+      "round": 17,
       "format": "CHOICE",
       "topic_ru": "Subjuntivo · aunque гипотеза",
       "tested_lesson": "u13_l10",
@@ -272,7 +290,7 @@
       "explanation_on_fail_ru": "Aunque + Imp.Subj. (pidiera) = гипотеза «даже если бы попросил». Aunque + Indic = факт. Здесь — нереальная гипотеза."
     },
     {
-      "round": 17,
+      "round": 18,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Понимание · сложная фраза тёти",
       "tested_lesson": "u14_l0 + u13_l7",
@@ -287,7 +305,7 @@
       "explanation_on_fail_ru": "Si тип 3: hubieran tratado + habríamos llegado + se habría mantenido. Тройной condicional compuesto. «Como mi padre quería» = как хотел отец."
     },
     {
-      "round": 18,
+      "round": 19,
       "format": "CHOICE",
       "topic_ru": "Perífrasis · llevar + participio",
       "tested_lesson": "u14_l4",
@@ -299,7 +317,7 @@
       "explanation_on_fail_ru": "Perífrasis «llevar + participio» = накопленный результат («у меня уже сделано»). Согласование: cinco intentos (мн.м.) → hechos. Llevo hechos cinco intentos."
     },
     {
-      "round": 19,
+      "round": 20,
       "format": "BUILD",
       "topic_ru": "Para que + Subj + perífrasis volver a",
       "tested_lesson": "u13_l11 + u14_l5",
@@ -311,7 +329,25 @@
       "explanation_on_fail_ru": "«Para que» → ВСЕГДА Subjuntivo (vuelva). Perífrasis «volver a + inf» = снова. Tema reconciliación: estar unida."
     },
     {
-      "round": 20,
+      "round": 21,
+      "format": "VOICE",
+      "topic_ru": "Произнеси · self-reflection с llevar+ger",
+      "tested_lesson": "u14_l4",
+      "tested_grammar": "Llevar + gerundio (длительность)",
+      "npc_line_es": "Andrea, hija, dime tú: ¿cuánto tiempo llevas viendo esto en mi familia?",
+      "npc_line_ru": "Andrea, дочка, скажи: сколько времени ты видишь это в моей семье?",
+      "prompt_ru": "Произнеси вслух (по-испански) с perífrasis llevar+ger:",
+      "correct_answer": "Llevo años intentando entender la situación",
+      "acceptable_alternatives": [
+        "Llevo años intentando comprender la situación",
+        "Llevo varios años intentando entender la situación",
+        "Llevo años intentando entender esta situación",
+        "Llevo cuatro años intentando entender la situación"
+      ],
+      "explanation_on_fail_ru": "«Llevar + время + gerundio» = делать что-то X времени. «Llevo años intentando» = годами стараюсь. Финальная B2 perífrasis устно."
+    },
+    {
+      "round": 22,
       "format": "CONJUGATE",
       "topic_ru": "Estar + participio · состояние результат",
       "tested_lesson": "u14_l1",
@@ -325,23 +361,23 @@
       "explanation_on_fail_ru": "Estar + participio = состояние/результат («улажен»). Ser + participio = действие («был улажен кем-то»). Здесь — текущий результат."
     },
     {
-      "round": 21,
+      "round": 23,
       "format": "CHOICE",
       "topic_ru": "Siempre que + Subjuntivo · обещание",
       "tested_lesson": "u13_l11",
       "npc_line_es": "Eres una luz en esta familia, Andrea. ¿Volverás el próximo domingo?",
       "npc_line_ru": "Ты свет в этой семье, Andrea. Придёшь в следующее воскресенье?",
       "prompt_ru": "Какая фраза сохраняет теплоту, но без перебора?",
-      "correct_answer": "Por supuesto, tía. Cuente conmigo siempre que me necesite.",
+      "correct_answer": "Por supuesto, tía. Cuenta conmigo siempre que me necesites.",
       "distractors": [
         "Vale, si me apetece.",
         "Quizás, depende de mi marido.",
         "No sé, lo pensaré."
       ],
-      "explanation_on_fail_ru": "«Cuente conmigo» (imperativo formal) = рассчитывайте на меня. «Siempre que + Subj» (me necesite) = всегда когда понадоблюсь. Тёплый и формальный одновременно."
+      "explanation_on_fail_ru": "«Cuenta conmigo» (imperativo tú) = рассчитывай на меня. «Siempre que + Subj» (me necesites) = всегда когда понадоблюсь. Тёплый, на tú (как с тётей всегда)."
     },
     {
-      "round": 22,
+      "round": 24,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Финал · прощание с реликвией · pasiva futuro",
       "tested_lesson": "u14_l0",

@@ -18,12 +18,43 @@ class CheckpointEngine @Inject constructor() {
         val correct = normalize(round.correctAnswer)
         if (normalized == correct) return true
 
-        // Для TRANSLATE — проверяем альтернативы
+        // Свободный ввод (TRANSLATE / VOICE) — fuzzy match. Допуск Levenshtein
+        // = max(1, len/8), не более 3. Это прощает: мелкие опечатки в TRANSLATE,
+        // шумы STT в VOICE (типа «soy de Rusia» vs «sois de Rusia»).
         if (round.format == RoundFormat.TRANSLATE_RU_ES ||
-            round.format == RoundFormat.TRANSLATE_ES_RU) {
-            return round.acceptableAlternatives.any { normalize(it) == normalized }
+            round.format == RoundFormat.TRANSLATE_ES_RU ||
+            round.format == RoundFormat.VOICE
+        ) {
+            val candidates = (listOf(correct) +
+                round.acceptableAlternatives.map { normalize(it) })
+                .filter { it.isNotBlank() }
+            if (candidates.any { it == normalized }) return true
+            val tolerance = (correct.length / 8).coerceIn(1, 3)
+            return candidates.any { levenshtein(it, normalized) <= tolerance }
         }
         return false
+    }
+
+    /** Levenshtein distance — для fuzzy-сравнения в TRANSLATE / VOICE. */
+    private fun levenshtein(a: String, b: String): Int {
+        if (a == b) return 0
+        if (a.isEmpty()) return b.length
+        if (b.isEmpty()) return a.length
+        val prev = IntArray(b.length + 1) { it }
+        val curr = IntArray(b.length + 1)
+        for (i in 1..a.length) {
+            curr[0] = i
+            for (j in 1..b.length) {
+                val cost = if (a[i - 1] == b[j - 1]) 0 else 1
+                curr[j] = minOf(
+                    curr[j - 1] + 1,    // insertion
+                    prev[j] + 1,        // deletion
+                    prev[j - 1] + cost, // substitution
+                )
+            }
+            System.arraycopy(curr, 0, prev, 0, curr.size)
+        }
+        return prev[b.length]
     }
 
     /**

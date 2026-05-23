@@ -75,6 +75,24 @@
     },
     {
       "round": 3,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · вопрос Ana о компании",
+      "tested_lesson": "u13_l11",
+      "tested_grammar": "Pres Subj в относ.предложении",
+      "npc_line_es": "Antes de seguir, dígame: ¿qué sabe usted de nuestra empresa que la haya motivado a aplicar?",
+      "audio_only": true,
+      "prompt_ru": "О чём конкретно спрашивает Ana?",
+      "correct_answer": "Что именно из информации о компании мотивировало подать заявку.",
+      "distractors": [
+        "Какой у кандидата опыт в технологиях.",
+        "Сколько лет кандидат в Испании.",
+        "Какую зарплату ожидает кандидат."
+      ],
+      "translation_after_answer_ru": "«Que la haya motivado» — relativo + Perfecto Subj. Ana проверяет, изучил ли кандидат компанию (классический B2-приём интервью).",
+      "explanation_on_fail_ru": "«Que la haya motivado» — Perfecto Subj после relativo с гипотетическим (неуверенным) референтом. B2-формула отбора по мотивации."
+    },
+    {
+      "round": 4,
       "format": "CHOICE",
       "topic_ru": "Subjuntivo vs Indicativo · после «cuando»",
       "tested_lesson": "u13_l12",
@@ -86,7 +104,7 @@
       "explanation_on_fail_ru": "«Cuando» + будущее время → ВСЕГДА Subjuntivo. Empezar yo → empiece. Indicativo empiezo используется только для привычки."
     },
     {
-      "round": 4,
+      "round": 5,
       "format": "CONJUGATE",
       "topic_ru": "Imperfecto de Subjuntivo · TENER",
       "tested_lesson": "u13_l1",
@@ -100,7 +118,7 @@
       "explanation_on_fail_ru": "Si + Imp.Subj. + Condicional (тип 2). Основа от tuvieron → tuvier- + a = tuviera. Альтернатива: tuviese."
     },
     {
-      "round": 5,
+      "round": 6,
       "format": "CHOICE",
       "topic_ru": "Si тип 2 · структура полной фразы",
       "tested_lesson": "u13_l2",
@@ -116,7 +134,7 @@
       "explanation_on_fail_ru": "Si тип 2 (нереальное/маловероятное): Si + Imp.Subj. (dieran), главная часть — Condicional (empezaría). Никогда «si + condicional» в стандартном испанском."
     },
     {
-      "round": 6,
+      "round": 7,
       "format": "BUILD",
       "topic_ru": "Como si + Imp.Subj. · описание навыков",
       "tested_lesson": "u13_l4",
@@ -128,7 +146,7 @@
       "explanation_on_fail_ru": "«Como si» ВСЕГДА требует Imperfecto de Subjuntivo: fuera (ser, yo). Никогда не используется с Indicativo или Condicional."
     },
     {
-      "round": 7,
+      "round": 8,
       "format": "LISTEN",
       "topic_ru": "Понимание B2 · вопрос с Subjuntivo",
       "tested_lesson": "u13_l11",
@@ -145,7 +163,7 @@
       "explanation_on_fail_ru": "После «alguien que» (гипотетический референт) — ВСЕГДА Subjuntivo: sepa, tenga, hable."
     },
     {
-      "round": 8,
+      "round": 9,
       "format": "CONJUGATE",
       "topic_ru": "Pluscuamperfecto de Subjuntivo · сожаление",
       "tested_lesson": "u13_l6",
@@ -159,7 +177,7 @@
       "explanation_on_fail_ru": "Si тип 3 (сожаление о прошлом): Si + Pluscuamp.Subj. (hubiera + part) + Condicional Compuesto (habría + part). Альтернатива: hubiese."
     },
     {
-      "round": 9,
+      "round": 10,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Перевод · условное предложение тип 3",
       "tested_lesson": "u13_l7",
@@ -175,7 +193,7 @@
       "explanation_on_fail_ru": "Тип 3: «si hubiera sabido» (если бы знал) + «habría enviado» (отправил бы). Обе части обязательны в составной форме."
     },
     {
-      "round": 10,
+      "round": 11,
       "format": "CHOICE",
       "topic_ru": "Subjuntivo vs Indicativo · aunque",
       "tested_lesson": "u13_l10",
@@ -187,7 +205,7 @@
       "explanation_on_fail_ru": "Aunque + гипотеза/будущее → Subjuntivo (sea). Aunque + факт настоящего → Indicativo (es). Здесь Ana предполагает — значит Subj."
     },
     {
-      "round": 11,
+      "round": 12,
       "format": "CONJUGATE",
       "topic_ru": "Para que + Subjuntivo · цель",
       "tested_lesson": "u13_l11",
@@ -201,7 +219,7 @@
       "explanation_on_fail_ru": "«Para que» ВСЕГДА с Subjuntivo. Entender (usted) → entienda. Цель в придаточном — всегда сослагательное."
     },
     {
-      "round": 12,
+      "round": 13,
       "format": "BUILD",
       "topic_ru": "Subjuntivo с цели · полная фраза (8 слов)",
       "tested_lesson": "u13_l11",
@@ -213,7 +231,7 @@
       "explanation_on_fail_ru": "«Espero que» — желание → ВСЕГДА Subjuntivo (ofrezcan, не ofrecen). Subjuntivo Presente от ofrecer (ellos) = ofrezcan."
     },
     {
-      "round": 13,
+      "round": 14,
       "format": "CHOICE",
       "topic_ru": "Quizás + Subj vs A lo mejor + Indic",
       "tested_lesson": "u13_l5_5",
@@ -225,7 +243,7 @@
       "explanation_on_fail_ru": "«Quizás/tal vez» — стандарт с Subjuntivo (podamos). «A lo mejor» — особый случай: только Indicativo (podemos)."
     },
     {
-      "round": 14,
+      "round": 15,
       "format": "LISTEN",
       "topic_ru": "Понимание · условное предложение",
       "tested_lesson": "u13_l7",
@@ -242,7 +260,7 @@
       "explanation_on_fail_ru": "Si + hubiéramos hecho + habría aceptado = Si тип 3 (гипотеза о прошлом). Ana не утверждает, что сейчас примет — она именно сравнивает с прошлым."
     },
     {
-      "round": 15,
+      "round": 16,
       "format": "CONJUGATE",
       "topic_ru": "Ojalá + Imp.Subj. · невыполнимое",
       "tested_lesson": "u13_l3",
@@ -256,7 +274,7 @@
       "explanation_on_fail_ru": "«Ojalá» о невыполнимом (изменить прошлое) → Imp.Subj. Empezar yo → empezara (или empezase)."
     },
     {
-      "round": 16,
+      "round": 17,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Перевод · cueste lo que cueste",
       "tested_lesson": "u13_l9",
@@ -272,7 +290,7 @@
       "explanation_on_fail_ru": "«Cueste lo que cueste» = «чего бы это ни стоило». Обе формы costar — в Subjuntivo (cueste)."
     },
     {
-      "round": 17,
+      "round": 18,
       "format": "CHOICE",
       "topic_ru": "Si тип 2 · ответ в Condicional",
       "tested_lesson": "u13_l2",
@@ -288,7 +306,7 @@
       "explanation_on_fail_ru": "Si тип 2: Si + Imp.Subj. (ofrecieran) + Condicional (preferiría). Никогда «si + condicional». Indef ofrecieron — реальное прошлое, не подходит."
     },
     {
-      "round": 18,
+      "round": 19,
       "format": "BUILD",
       "topic_ru": "Subjuntivo perfecto · опыт",
       "tested_lesson": "u13_l6",
@@ -300,7 +318,25 @@
       "explanation_on_fail_ru": "«Que haya resuelto» — Subj.Perf. (haya + part). Конкретный опыт в прошлом отвечается через Indef (hubo, medié)."
     },
     {
-      "round": 19,
+      "round": 20,
+      "format": "VOICE",
+      "topic_ru": "Произнеси · просьба о позиции (Espero que + Subj)",
+      "tested_lesson": "u13_l11",
+      "tested_grammar": "Espero que + Subj",
+      "npc_line_es": "Para cerrar esta parte, en una frase: ¿qué espera de mí como entrevistadora?",
+      "npc_line_ru": "Чтобы закрыть эту часть, одной фразой: чего вы ждёте от меня как от интервьюера?",
+      "prompt_ru": "Произнеси вслух (по-испански) с Subj триггером:",
+      "correct_answer": "Espero que me consideren para el puesto",
+      "acceptable_alternatives": [
+        "Espero que me consideren para este puesto",
+        "Espero que me consideren seriamente para el puesto",
+        "Ojalá me consideren para el puesto",
+        "Espero que ustedes me consideren para el puesto"
+      ],
+      "explanation_on_fail_ru": "«Espero que + Subj» — Subj триггер ожидания. «Consideren» (ellos, Subj от considerar). Стандартная B2-формула финала интервью."
+    },
+    {
+      "round": 21,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Понимание · сложное предложение",
       "tested_lesson": "u13_l13 + u13_l11",
@@ -314,7 +350,7 @@
       "explanation_on_fail_ru": "«Buscamos a alguien que tenga... que sea capaz» — гипотетический референт → двойной Subjuntivo. «Sin perder eficiencia» = без потери эффективности (sin + inf)."
     },
     {
-      "round": 20,
+      "round": 22,
       "format": "CHOICE",
       "topic_ru": "Subjuntivo · antes de que",
       "tested_lesson": "u13_l11",
@@ -326,7 +362,7 @@
       "explanation_on_fail_ru": "«Antes de que» ВСЕГДА с Subjuntivo. Tomar (nosotros) Subj → tomemos. Indicativo здесь невозможен."
     },
     {
-      "round": 21,
+      "round": 23,
       "format": "CONJUGATE",
       "topic_ru": "Condicional Simple · гипотеза",
       "tested_lesson": "u13_l2",
@@ -340,7 +376,7 @@
       "explanation_on_fail_ru": "Si тип 2: Si + Imp.Subj. (tuviera) + Condicional (diría). Decir → diría (irregular, как saldría, vendría)."
     },
     {
-      "round": 22,
+      "round": 24,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Финал · Espero que + Subjuntivo",
       "tested_lesson": "u13_l11",

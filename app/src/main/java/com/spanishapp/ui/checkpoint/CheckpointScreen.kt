@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -99,6 +100,7 @@ fun CheckpointScreen(
         )
         is CheckpointUiState.Playing -> PlayingView(
             state = s.state,
+            viewModel = viewModel,
             onSubmit = { viewModel.submit(it) },
             onReplayAudio = { viewModel.replayNpcLine() },
             onBack = { navController.popBackStack() },
@@ -347,6 +349,7 @@ private fun InfoRowDivider() {
 @Composable
 private fun PlayingView(
     state: CheckpointState,
+    viewModel: CheckpointViewModel,
     onSubmit: (String) -> Unit,
     onReplayAudio: () -> Unit,
     onBack: () -> Unit,
@@ -622,12 +625,16 @@ private fun PlayingView(
                     }
                 )
 
-                RoundFormat.VOICE -> {
-                    // TODO: voice STT, пока показываем сообщение
-                    Text("Голосовой ответ — будет добавлен позже. Пропуск раунда.",
-                        color = MaterialTheme.colorScheme.error)
-                    LaunchedEffect(round.round) { onSubmit("") }
-                }
+                RoundFormat.VOICE -> VoiceInput(
+                    round = round,
+                    enabled = !answered,
+                    viewModel = viewModel,
+                    onSubmit = { recognized ->
+                        userAnswer = recognized
+                        answered = true
+                        onSubmit(recognized)
+                    },
+                )
             }
 
             Spacer(Modifier.height(20.dp))
@@ -890,6 +897,145 @@ private fun TranslateInput(round: CheckpointRound, enabled: Boolean, onSubmit: (
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6B1A)),
         ) {
             Text("Проверить", fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  VOICE INPUT — STT через SpanishSpeechRecognizer
+// ════════════════════════════════════════════════════════════════════
+@Composable
+private fun VoiceInput(
+    round: CheckpointRound,
+    enabled: Boolean,
+    viewModel: CheckpointViewModel,
+    onSubmit: (String) -> Unit,
+) {
+    val haptic = rememberCheckedHaptic()
+    val context = LocalContext.current
+    val isListening by viewModel.isListening.collectAsStateWithLifecycle()
+    val rmsDb by viewModel.sttRmsDb.collectAsStateWithLifecycle()
+    val recognizedText by viewModel.lastVoiceText.collectAsStateWithLifecycle()
+    val voiceError by viewModel.voiceError.collectAsStateWithLifecycle()
+
+    // Сбрасываем состояние при смене раунда
+    LaunchedEffect(round.round) { viewModel.clearVoiceState() }
+
+    // RECORD_AUDIO runtime permission flow — без него STT падает ERROR_INSUFFICIENT_PERMISSIONS
+    val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) viewModel.startVoiceCapture()
+    }
+    fun launchMic() {
+        val granted = androidx.core.content.ContextCompat.checkSelfPermission(
+            context, android.Manifest.permission.RECORD_AUDIO
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (granted) viewModel.startVoiceCapture()
+        else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+    }
+
+    // Когда STT вернул результат — submit и блокируем кнопку
+    LaunchedEffect(recognizedText) {
+        val txt = recognizedText
+        if (txt != null && enabled) onSubmit(txt)
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        // Промпт
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(14.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        ) {
+            Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    "ПРОИЗНЕСИ ВСЛУХ",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFFF6B1A),
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    round.correctAnswer,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                )
+                if (round.promptRu.isNotBlank()) {
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        round.promptRu,
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        // Микрофон: пульсирующий круг когда слушает
+        val micSize = if (isListening) {
+            // rmsDb колеблется ~-2..10, нормализуем в 96..132 dp
+            (96 + (rmsDb.coerceIn(0f, 10f) * 3.6f).toInt()).dp
+        } else 96.dp
+
+        Box(
+            modifier = Modifier
+                .size(micSize)
+                .clip(CircleShape)
+                .background(
+                    if (isListening) Color(0xFFFF6B1A) else Color(0xFF2A2D33)
+                )
+                .clickable(enabled = enabled && !isListening) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    launchMic()
+                },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Mic,
+                contentDescription = "Говори",
+                modifier = Modifier.size(40.dp),
+                tint = Color.White,
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = when {
+                isListening -> "Слушаю..."
+                recognizedText != null -> "Услышал: «$recognizedText»"
+                voiceError != null -> voiceError!!
+                else -> "Нажми на микрофон и произнеси фразу"
+            },
+            fontSize = 14.sp,
+            color = when {
+                voiceError != null -> Color(0xFFE54848)
+                isListening -> Color(0xFFFF6B1A)
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
+            },
+            textAlign = TextAlign.Center,
+            fontWeight = if (isListening) FontWeight.Bold else FontWeight.Normal,
+        )
+
+        if (voiceError != null && enabled) {
+            Spacer(Modifier.height(12.dp))
+            OutlinedButton(
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    launchMic()
+                },
+                shape = RoundedCornerShape(10.dp),
+            ) {
+                Text("Попробовать ещё раз")
+            }
         }
     }
 }

@@ -105,6 +105,24 @@
     },
     {
       "round": 5,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · цитата режиссёра в косвенной речи",
+      "tested_lesson": "u11_l1",
+      "tested_grammar": "Reported speech · Pres → Imp",
+      "npc_line_es": "Almodóvar dijo en una entrevista que el cine que de verdad le interesaba era el que hablaba de personas que no caben en ningún molde.",
+      "audio_only": true,
+      "prompt_ru": "Что сказал Almodóvar в интервью?",
+      "correct_answer": "Его интересует кино о людях, которые не вписываются ни в какие рамки.",
+      "distractors": [
+        "Что снимает только коммерческое кино.",
+        "Что больше не будет снимать в Мадриде.",
+        "Что готов работать только с молодыми актёрами."
+      ],
+      "translation_after_answer_ru": "«El cine que le interesaba era el que hablaba» — двойной relativo + reported (Imperfecto). «No caben en ningún molde» — не вписываются ни в одну форму.",
+      "explanation_on_fail_ru": "Reported speech: Pres «interesa» → Imp «interesaba». Двойной relativo: «el que hablaba», «personas que no caben». Чистый B1 уровень."
+    },
+    {
+      "round": 6,
       "format": "CONJUGATE",
       "topic_ru": "Llevar + gerundio (perífrasis)",
       "tested_lesson": "u11_l8",
@@ -119,7 +137,7 @@
       "explanation_on_fail_ru": "«Llevar + время + ger» — продолжающееся действие с прошлого до настоящего. Lleva años haciendo = делает уже годы (и сейчас тоже)."
     },
     {
-      "round": 6,
+      "round": 7,
       "format": "LISTEN",
       "topic_ru": "Понимание · косвенный приказ",
       "tested_lesson": "u11_l3",
@@ -137,7 +155,7 @@
       "explanation_on_fail_ru": "Косв. приказы: «pidió que + Imp Subj» (раньше), «dice que + Pres Subj» (сейчас). «Se lo» = «ей это»."
     },
     {
-      "round": 7,
+      "round": 8,
       "format": "CHOICE",
       "topic_ru": "Relativo · lo que (нейтральное)",
       "tested_lesson": "u11_l5_5",
@@ -150,7 +168,7 @@
       "explanation_on_fail_ru": "«Lo que» = «то, что» (абстрактное). «¿Sabes lo que...?» = «Знаешь что...?». «El que» — конкретный объект м.р., «que» сам по себе тут нельзя."
     },
     {
-      "round": 8,
+      "round": 9,
       "format": "BUILD",
       "topic_ru": "Volver a + inf",
       "tested_lesson": "u11_l10",
@@ -163,7 +181,7 @@
       "explanation_on_fail_ru": "«Volver a + inf» = снова сделать. «Volver a verla» — снова посмотреть её. «Contigo» = с тобой (особая форма)."
     },
     {
-      "round": 9,
+      "round": 10,
       "format": "CONJUGATE",
       "topic_ru": "Soler + inf (привычка)",
       "tested_lesson": "u11_l10",
@@ -178,7 +196,7 @@
       "explanation_on_fail_ru": "Soler — отклоняющийся o→ue: suelo / sueles / suele. «Suelo + inf» = «обычно делаю». НЕ «solgo»!"
     },
     {
-      "round": 10,
+      "round": 11,
       "format": "CHOICE",
       "topic_ru": "Reported question · preguntó si",
       "tested_lesson": "u11_l1",
@@ -195,7 +213,7 @@
       "explanation_on_fail_ru": "Вопросы да/нет → «preguntó SI» (не «que»). «Has visto» (Perfecto) → «había visto» (Pluscuamp) в косвенной."
     },
     {
-      "round": 11,
+      "round": 12,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Перевод · relativo + perífrasis",
       "tested_lesson": "u11_l4",
@@ -211,7 +229,7 @@
       "explanation_on_fail_ru": "«Que hizo» — relativo + Indefinido. «Lleva veinte años trabajando» — perífrasis llevar + время + ger. «Hacer el papel» = «играть роль»."
     },
     {
-      "round": 12,
+      "round": 13,
       "format": "CHOICE",
       "topic_ru": "Relativo · quien (для людей с предлогом)",
       "tested_lesson": "u11_l4",
@@ -224,7 +242,7 @@
       "explanation_on_fail_ru": "После предлога (con) для людей — «quien», не «que». «El chico con quien trabajé» = «парень с которым я работала»."
     },
     {
-      "round": 13,
+      "round": 14,
       "format": "CONJUGATE",
       "topic_ru": "Estar + gerundio (continuous)",
       "tested_lesson": "u11_l9",
@@ -239,7 +257,7 @@
       "explanation_on_fail_ru": "«Seguir + ger» = продолжать делать. Seguir Pres él: sigue (e→i отклонение). «Sigue sorprendiendo» = продолжает удивлять."
     },
     {
-      "round": 14,
+      "round": 15,
       "format": "LISTEN",
       "topic_ru": "Понимание · идиома + reported",
       "tested_lesson": "u11_l1",
@@ -257,7 +275,7 @@
       "explanation_on_fail_ru": "«Se había partido de risa» = Pluscuamperfecto (в косв. речи Pret Perfecto → Pluscuamp). Идиома «partirse de risa»."
     },
     {
-      "round": 15,
+      "round": 16,
       "format": "CHOICE",
       "topic_ru": "Relativo · cuyo (владение)",
       "tested_lesson": "u11_l5",
@@ -270,7 +288,7 @@
       "explanation_on_fail_ru": "«Cuyo» согласуется с тем, чем владеют. «Películas» — ж.р. мн.ч. → «cuyas películas» (чьи фильмы)."
     },
     {
-      "round": 16,
+      "round": 17,
       "format": "BUILD",
       "topic_ru": "Косвенный приказ · me dijo que viniera",
       "tested_lesson": "u11_l3",
@@ -283,7 +301,7 @@
       "explanation_on_fail_ru": "Косв. приказ в прошлом → «dijo que + Imperfecto Subj». Venir → viniera (yo). Pres Subj «venga» — только если главное в Pres."
     },
     {
-      "round": 17,
+      "round": 18,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Понимание · комбо reported + relativo",
       "tested_lesson": "u11_l2",
@@ -299,7 +317,7 @@
       "explanation_on_fail_ru": "«Escribió que era» — косв.речь Pres→Imp. «Que se le pudiera comparar» — relativo + Imp Subj (после «nada que»)."
     },
     {
-      "round": 18,
+      "round": 19,
       "format": "CONJUGATE",
       "topic_ru": "Reported · ir → iba",
       "tested_lesson": "u11_l2",
@@ -314,7 +332,25 @@
       "explanation_on_fail_ru": "Прямая «voy» (Pres) → косвенная «iba» (Imperfecto). Перифраза «ir a + inf» сохраняется, меняется только время «ir»."
     },
     {
-      "round": 19,
+      "round": 20,
+      "format": "VOICE",
+      "topic_ru": "Произнеси · восторг с perífrasis acabar de",
+      "tested_lesson": "u11_l10",
+      "tested_grammar": "Perífrasis acabar de + inf",
+      "npc_line_es": "Bueno, dime con una sola frase: ¿qué te ha pasado con esta película?",
+      "npc_line_ru": "Ладно, скажи мне одной фразой: что с тобой сделала эта картина?",
+      "prompt_ru": "Произнеси вслух (по-испански) восторженно:",
+      "correct_answer": "Acabo de ver un peliculón",
+      "acceptable_alternatives": [
+        "Acabo de ver una peliculón",
+        "Acabamos de ver un peliculón",
+        "Acabo de ver una peli buenísima",
+        "Acabo de ver una película increíble"
+      ],
+      "explanation_on_fail_ru": "«Acabar de + inf» — perífrasis «только что». «Peliculón» = разговорное «офигенный фильм» (мужской род как «peli» в augmentativo)."
+    },
+    {
+      "round": 21,
       "format": "CHOICE",
       "topic_ru": "Предложение увидеться снова",
       "tested_lesson": "u11_l9",
@@ -331,7 +367,7 @@
       "explanation_on_fail_ru": "Casual согласие + предложение продолжения. «Conozco un bar... donde hacen» — relativo «donde» (= где). Полная реакция, не односложная."
     },
     {
-      "round": 20,
+      "round": 22,
       "format": "CHOICE",
       "topic_ru": "Финал · план на будущее",
       "tested_lesson": "u11_l0",

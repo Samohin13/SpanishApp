@@ -60,6 +60,24 @@
     },
     {
       "round": 2,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · приветствие Carmen с уточнением",
+      "tested_lesson": "u9_l0",
+      "tested_grammar": "Формальные обороты ресепшена",
+      "npc_line_es": "Antes de nada, déjeme verificar su reserva. ¿A nombre de quién está la habitación?",
+      "audio_only": true,
+      "prompt_ru": "Что хочет Carmen перед началом разговора?",
+      "correct_answer": "Сначала проверить бронь и узнать на чьё имя номер.",
+      "distractors": [
+        "Сразу поменять номер без проверки.",
+        "Спросить твой паспорт для полиции.",
+        "Узнать дату выезда."
+      ],
+      "translation_after_answer_ru": "«Antes de nada» = прежде всего. «Déjeme verificar» (Imperativo + inf) = позвольте проверить. «A nombre de quién» = на чьё имя.",
+      "explanation_on_fail_ru": "Стандартный приём ресепшена: верификация брони ДО решения проблемы. «Déjeme + inf» — вежливая формула «позвольте мне»."
+    },
+    {
+      "round": 3,
       "format": "CONJUGATE",
       "topic_ru": "Subjuntivo · espero que + funcionar",
       "tested_lesson": "u9_l6",
@@ -74,7 +92,7 @@
       "explanation_on_fail_ru": "После «Espero que» — всегда Subjuntivo. Funcionar (él) → funcione. «Funciona» — Indicativo, не подходит."
     },
     {
-      "round": 3,
+      "round": 4,
       "format": "BUILD",
       "topic_ru": "Описание проблемы · no funciona",
       "tested_lesson": "u9_l0",
@@ -87,7 +105,7 @@
       "explanation_on_fail_ru": "«La ducha no funciona» — стандартное. Артикль обязателен: «la ducha»."
     },
     {
-      "round": 4,
+      "round": 5,
       "format": "LISTEN",
       "topic_ru": "Понимание · вопрос Carmen",
       "tested_lesson": "u9_l7",
@@ -105,7 +123,7 @@
       "explanation_on_fail_ru": "«Es necesario que» — безличный триггер Subjuntivo. «Revise» (Subj) от revisar. Смысл: техник должен сначала проверить."
     },
     {
-      "round": 5,
+      "round": 6,
       "format": "CHOICE",
       "topic_ru": "Жалоба на шум · ruido",
       "tested_lesson": "u9_l8",
@@ -122,7 +140,7 @@
       "explanation_on_fail_ru": "«Había ruido» (Imperfecto) для фоновой ситуации, «no pude dormir» (Indefinido) — конкретный результат."
     },
     {
-      "round": 6,
+      "round": 7,
       "format": "CONJUGATE",
       "topic_ru": "Subjuntivo irregular · sea",
       "tested_lesson": "u9_l3",
@@ -137,7 +155,7 @@
       "explanation_on_fail_ru": "Ser в Subj: sea / seas / sea / seamos / seáis / sean. После «Espero que» — Subj, поэтому «sea», не «es»."
     },
     {
-      "round": 7,
+      "round": 8,
       "format": "CHOICE",
       "topic_ru": "Вежливая просьба · me gustaría",
       "tested_lesson": "u9_l10",
@@ -154,7 +172,7 @@
       "explanation_on_fail_ru": "«Me gustaría que + Imperfecto Subjuntivo» — максимально вежливая просьба. «Si fuera posible» — гипотетическая вежливость."
     },
     {
-      "round": 8,
+      "round": 9,
       "format": "BUILD",
       "topic_ru": "Ojalá + Subjuntivo",
       "tested_lesson": "u9_l0",
@@ -167,7 +185,7 @@
       "explanation_on_fail_ru": "«Ojalá» всегда требует Subjuntivo. «Hay» → «haya» (Subj от haber, безличное)."
     },
     {
-      "round": 9,
+      "round": 10,
       "format": "CONJUGATE",
       "topic_ru": "Subjuntivo · tener (irregular)",
       "tested_lesson": "u9_l3",
@@ -182,7 +200,7 @@
       "explanation_on_fail_ru": "Tener в Subj: tenga / tengas / tenga. После «Es importante que» — Pres Subj, поэтому «tenga»."
     },
     {
-      "round": 10,
+      "round": 11,
       "format": "CHOICE",
       "topic_ru": "Сомнение · no creo que + Subj",
       "tested_lesson": "u9_l8",
@@ -199,7 +217,7 @@
       "explanation_on_fail_ru": "«No creo que» → Subj (sea). «Creo que» → Indic. Это правило отрицания мнения = сомнение."
     },
     {
-      "round": 11,
+      "round": 12,
       "format": "LISTEN",
       "topic_ru": "Решение Carmen · cambio + desayuno",
       "tested_lesson": "u9_l9",
@@ -217,7 +235,7 @@
       "explanation_on_fail_ru": "«Para que + Subj» (descanse) — цель. «Correr por cuenta de la casa» = «за счёт заведения»."
     },
     {
-      "round": 12,
+      "round": 13,
       "format": "CONJUGATE",
       "topic_ru": "Subjuntivo · poder",
       "tested_lesson": "u9_l4",
@@ -232,7 +250,7 @@
       "explanation_on_fail_ru": "Poder Subj: pueda / puedas / pueda / podamos / podáis / puedan. Отклонение o→ue сохраняется кроме nosotros/vosotros."
     },
     {
-      "round": 13,
+      "round": 14,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Перевод · вежливая благодарность",
       "tested_lesson": "u9_l7",
@@ -248,7 +266,7 @@
       "explanation_on_fail_ru": "После «es amable que» — Subj. «Haya resuelto» = Perfecto Subj (действие уже завершено)."
     },
     {
-      "round": 14,
+      "round": 15,
       "format": "CHOICE",
       "topic_ru": "Косвенная просьба · pedir que + Subj",
       "tested_lesson": "u9_l6",
@@ -265,7 +283,7 @@
       "explanation_on_fail_ru": "«Pedir que» требует Subj. «Suban» (Subj от subir, ellos = персонал). «Suben» — Indic, неправильно."
     },
     {
-      "round": 15,
+      "round": 16,
       "format": "BUILD",
       "topic_ru": "Возможность · es posible que",
       "tested_lesson": "u9_l7",
@@ -278,7 +296,7 @@
       "explanation_on_fail_ru": "«Es posible que» — Subj. Estar → esté. «Rota» (ж.р., согласуется с «ducha»)."
     },
     {
-      "round": 16,
+      "round": 17,
       "format": "CHOICE",
       "topic_ru": "Косвенная речь · reported speech",
       "tested_lesson": "u9_l6",
@@ -295,7 +313,7 @@
       "explanation_on_fail_ru": "Прямая речь «Voy» (Pres) → косвенная «iba» (Imperfecto). Времена сдвигаются назад."
     },
     {
-      "round": 17,
+      "round": 18,
       "format": "CONJUGATE",
       "topic_ru": "Subjuntivo · llegar (-ar)",
       "tested_lesson": "u9_l1",
@@ -310,7 +328,25 @@
       "explanation_on_fail_ru": "«Cuando + Subj» (для будущего действия). Llegar (usted) → llegue. Орфография: -gar → -gue (звук [g])."
     },
     {
-      "round": 18,
+      "round": 19,
+      "format": "VOICE",
+      "topic_ru": "Произнеси · вежливая просьба с Cond + Subj",
+      "tested_lesson": "u9_l10",
+      "tested_grammar": "Condicional + Subj в просьбе",
+      "npc_line_es": "Antes de subirle a la suite, ¿desea añadir algo más?",
+      "npc_line_ru": "Прежде чем отвести Вас в сюит, желаете добавить что-то ещё?",
+      "prompt_ru": "Произнеси вежливую просьбу вслух (по-испански):",
+      "correct_answer": "Tendrían una habitación con vistas",
+      "acceptable_alternatives": [
+        "¿Tendrían una habitación con vistas?",
+        "Tendrían una habitación con vista",
+        "Tendrían una habitación con buenas vistas",
+        "Tendría una habitación con vistas"
+      ],
+      "explanation_on_fail_ru": "«Tendrían» — Condicional вежливости от tener (ellos/ustedes). «Una habitación con vistas» — стандартная просьба о номере с видом."
+    },
+    {
+      "round": 20,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Понимание сложной фразы Carmen",
       "tested_lesson": "u9_l8",
@@ -326,7 +362,7 @@
       "explanation_on_fail_ru": "«Dudo que tengamos» — Subj после сомнения. «Si la hubiera» — Imperfecto Subj в гипотезе. «Incidencia» = инцидент/проблема."
     },
     {
-      "round": 19,
+      "round": 21,
       "format": "LISTEN",
       "topic_ru": "Прощание Carmen · disfrute",
       "tested_lesson": "u9_l9",
@@ -344,7 +380,7 @@
       "explanation_on_fail_ru": "«Disfrute» — повелительное наклонение для «usted» (= форма Subj «-e»). «Molestias» = неудобства."
     },
     {
-      "round": 20,
+      "round": 22,
       "format": "CHOICE",
       "topic_ru": "Финал · вежливое прощание",
       "tested_lesson": "u9_l0",

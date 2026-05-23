@@ -10,7 +10,9 @@ import com.spanishapp.domain.checkpoint.CheckpointPersonalizer
 import com.spanishapp.domain.checkpoint.CheckpointRepository
 import com.spanishapp.domain.checkpoint.CheckpointState
 import com.spanishapp.domain.checkpoint.CountryMap
+import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpanishTts
+import com.spanishapp.service.SpeechResult
 import com.spanishapp.service.XpTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,11 +41,24 @@ class CheckpointViewModel @Inject constructor(
     private val leaderboardRepository: LeaderboardRepository,
     private val tts: SpanishTts,
     private val xpTracker: XpTracker,
+    private val speechRecognizer: SpanishSpeechRecognizer,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<CheckpointUiState>(CheckpointUiState.Loading)
     val uiState: StateFlow<CheckpointUiState> = _uiState.asStateFlow()
+
+    /** STT: слушаем ли сейчас (для индикации волной/анимацией). */
+    val isListening: StateFlow<Boolean> = speechRecognizer.isListening
+    val sttRmsDb: StateFlow<Float> = speechRecognizer.rmsDb
+
+    /** Последний распознанный текст для текущего VOICE-раунда (показать юзеру). */
+    private val _lastVoiceText = MutableStateFlow<String?>(null)
+    val lastVoiceText: StateFlow<String?> = _lastVoiceText.asStateFlow()
+
+    /** Ошибка STT (нет интернета, нет разрешения) — показать ниже кнопки. */
+    private val _voiceError = MutableStateFlow<String?>(null)
+    val voiceError: StateFlow<String?> = _voiceError.asStateFlow()
 
     private var roundStartMs = 0L
 
@@ -106,6 +121,37 @@ class CheckpointViewModel @Inject constructor(
         val line = state.currentRound?.npcLineEs ?: return
         if (line.isBlank()) return
         runCatching { tts.speak(line) }
+    }
+
+    /**
+     * Запустить STT для VOICE-раунда. По итогам:
+     *  - Success → submit распознанного текста (engine применит fuzzy match)
+     *  - Error (silence/no_match) → показать ошибку, дать переспросить
+     *  - Cancelled → ничего
+     */
+    fun startVoiceCapture() {
+        _voiceError.value = null
+        _lastVoiceText.value = null
+        viewModelScope.launch {
+            when (val result = speechRecognizer.listenOnce("es-ES")) {
+                is SpeechResult.Success -> {
+                    _lastVoiceText.value = result.text
+                    submit(result.text)
+                }
+                is SpeechResult.Error -> {
+                    _voiceError.value = when {
+                        result.isSilence -> "Не слышу. Нажми и говори громче."
+                        else -> result.message
+                    }
+                }
+                is SpeechResult.Cancelled -> Unit
+            }
+        }
+    }
+
+    fun clearVoiceState() {
+        _voiceError.value = null
+        _lastVoiceText.value = null
     }
 }
 

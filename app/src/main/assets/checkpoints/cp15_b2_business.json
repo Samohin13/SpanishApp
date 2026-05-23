@@ -91,6 +91,24 @@
     },
     {
       "round": 4,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · вступление Ramón",
+      "tested_lesson": "u15_l4",
+      "tested_grammar": "Формальные коннекторы дискурса",
+      "npc_line_es": "Antes de que continúe, déjeme señalar que mi prioridad como director no es solamente la rentabilidad, sino también la sostenibilidad a largo plazo. Tenga eso en cuenta.",
+      "audio_only": true,
+      "prompt_ru": "Что приоритет Ramón помимо рентабельности?",
+      "correct_answer": "Долгосрочная устойчивость проекта.",
+      "distractors": [
+        "Только быстрая краткосрочная прибыль.",
+        "Сокращение штата сотрудников.",
+        "Покупка новых офисов в Мадриде."
+      ],
+      "translation_after_answer_ru": "«No solamente... sino también» — формальная замена «no sólo». «Sostenibilidad a largo plazo» = долгосрочная устойчивость. «Antes de que + Subj» (continúe) — стандарт.",
+      "explanation_on_fail_ru": "«Antes de que continúe» (Subj). «No solamente... sino también» — формальный вариант «no sólo». «Tenga en cuenta» — формальный imperativo."
+    },
+    {
+      "round": 5,
       "format": "CHOICE",
       "topic_ru": "Sino vs Pero · после отрицания",
       "tested_lesson": "u15_l4",
@@ -102,7 +120,7 @@
       "explanation_on_fail_ru": "После отрицания + замены (не A, а B) → SINO. «Pero» — добавляет противоречащую информацию (No es alto, pero es fuerte). «Sino» — заменяет одно другим."
     },
     {
-      "round": 5,
+      "round": 6,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Перевод · контр-предложение",
       "tested_lesson": "u15_l4 + u13_l2",
@@ -118,7 +136,7 @@
       "explanation_on_fail_ru": "Формальный контраст «sin embargo» / «no obstante». «Correr el riesgo de + inf» = рисковать. Si + Presente Indic (reducimos) → Presente Indic (corremos) — реалистичный условный тип 1."
     },
     {
-      "round": 6,
+      "round": 7,
       "format": "BUILD",
       "topic_ru": "Pasiva · обоснование процесса",
       "tested_lesson": "u14_l0",
@@ -130,7 +148,7 @@
       "explanation_on_fail_ru": "Pasiva con SER + agente con POR. «Será revisado por el comité» — будет проверен комитетом. Стандартная business-формула."
     },
     {
-      "round": 7,
+      "round": 8,
       "format": "CONJUGATE",
       "topic_ru": "Subjuntivo · necesitar que",
       "tested_lesson": "u13_l11",
@@ -144,7 +162,7 @@
       "explanation_on_fail_ru": "«Necesitar que» в Condicional → Imp.Subj. в придаточной (согласование времён). Reconsiderar (usted) → reconsiderara (или reconsiderase)."
     },
     {
-      "round": 8,
+      "round": 9,
       "format": "LISTEN",
       "topic_ru": "Понимание · возражение Ramón",
       "tested_lesson": "u15_l4 + u15_l7",
@@ -161,7 +179,7 @@
       "explanation_on_fail_ru": "Цепь коннекторов B2: no obstante → por consiguiente → de lo contrario. Imp.Subj. в условном «le sugeriría que ampliara»."
     },
     {
-      "round": 9,
+      "round": 10,
       "format": "CHOICE",
       "topic_ru": "Negotiation · contrapropuesta",
       "tested_lesson": "u15_l4 + u15_l8",
@@ -177,7 +195,7 @@
       "explanation_on_fail_ru": "«A condición de que» + Subj (se mantenga) = при условии что. Negotiation vocabulary: ceder (уступить), contraproponer. «Vale, da igual» — слабая позиция."
     },
     {
-      "round": 10,
+      "round": 11,
       "format": "CONJUGATE",
       "topic_ru": "Subjuntivo · a condición de que",
       "tested_lesson": "u13_l11",
@@ -191,7 +209,7 @@
       "explanation_on_fail_ru": "«A condición de que» / «con tal de que» / «siempre que» (условие) → ВСЕГДА Subjuntivo. Garantizar (usted) → garantice."
     },
     {
-      "round": 11,
+      "round": 12,
       "format": "BUILD",
       "topic_ru": "Reported speech · косвенная речь",
       "tested_lesson": "u14_l11",
@@ -203,7 +221,7 @@
       "explanation_on_fail_ru": "Reported speech: dijo (прошлое) → требует сдвига времён. Presente «requiere» → Imperfecto «requería». Estilo indirecto B2."
     },
     {
-      "round": 12,
+      "round": 13,
       "format": "CHOICE",
       "topic_ru": "Connector · es decir (уточнение)",
       "tested_lesson": "u15_l0 + u15_l2",
@@ -219,7 +237,7 @@
       "explanation_on_fail_ru": "«Es decir» / «o sea» = другими словами (уточнение). Стандарт деловой речи. «Pero qué más da», «vale o nada» — разговорные клише."
     },
     {
-      "round": 13,
+      "round": 14,
       "format": "CONJUGATE",
       "topic_ru": "Voz pasiva refleja с числительным",
       "tested_lesson": "u14_l2",
@@ -233,13 +251,13 @@
       "explanation_on_fail_ru": "Pasiva refleja: SE + глагол согласован с подлежащим. «Tres millones» (мн.) → se esperan. Если бы было «un millón» (ед.) → se espera."
     },
     {
-      "round": 14,
+      "round": 15,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Понимание · формальный поток",
       "tested_lesson": "u15_l4 + u15_l6",
       "prompt_ru": "Переведи реплику Ramón на русский (сохрани регистр):",
       "prompt_text_es": "Dado que el comité tendrá la última palabra, le ruego que prepare un dossier ejecutivo de no más de cinco páginas que se enviará al consejo el viernes a primera hora.",
-      "correct_answer": "Учитывая, что последнее слово будет за комитетом, прошу Вас подготовить исполнительный дossier не более 5 страниц, который будет отправлен совету в пятницу утром.",
+      "correct_answer": "Учитывая, что последнее слово будет за комитетом, прошу Вас подготовить исполнительный отчёт не более 5 страниц, который будет отправлен совету в пятницу утром.",
       "acceptable_alternatives": [
         "Поскольку последнее слово за комитетом, прошу подготовить исполнительный отчёт не более 5 страниц, который отправится совету в пятницу утром.",
         "Учитывая, что последнее слово за комитетом, я прошу подготовить исполнительное досье не более пяти страниц, которое будет отправлено совету в пятницу с утра.",
@@ -248,7 +266,7 @@
       "explanation_on_fail_ru": "«Dado que» = поскольку. «Le ruego que prepare» — Subjuntivo. «Que se enviará» — pasiva refleja в будущем. Многослойное B2-предложение с relativos и формальной просьбой."
     },
     {
-      "round": 15,
+      "round": 16,
       "format": "CONJUGATE",
       "topic_ru": "Perífrasis · deber + inf vs deber de + inf",
       "tested_lesson": "u14_l3 + u14_l6",
@@ -262,7 +280,7 @@
       "explanation_on_fail_ru": "«Deber + inf» = обязанность («должен»). «Deber de + inf» = предположение («должно быть»). Здесь — приказ, поэтому без de."
     },
     {
-      "round": 16,
+      "round": 17,
       "format": "CHOICE",
       "topic_ru": "Registro · отказ от уступки",
       "tested_lesson": "u15_l4 + u15_l8",
@@ -278,7 +296,7 @@
       "explanation_on_fail_ru": "Деловой отказ: «Lamento + inf» (сожалею что не могу) + «puesto que» (формальная причина). «Ni hablar», «bah» — разговорные/невежливые."
     },
     {
-      "round": 17,
+      "round": 18,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Перевод · обоснование на B2",
       "tested_lesson": "u15_l4 + u15_l7",
@@ -294,7 +312,7 @@
       "explanation_on_fail_ru": "Стандартная формула «no sólo... sino también» (НЕ «pero también»). «Aumentar/incrementar en + %». «Consolidar/reforzar la posición» — business idiom."
     },
     {
-      "round": 18,
+      "round": 19,
       "format": "BUILD",
       "topic_ru": "Subjuntivo · finalidad para que",
       "tested_lesson": "u13_l11",
@@ -306,7 +324,7 @@
       "explanation_on_fail_ru": "«Para que» → ВСЕГДА Subjuntivo (pueda). «Poder» (él) Subj → pueda. Цель в придаточном — сослагательное."
     },
     {
-      "round": 19,
+      "round": 20,
       "format": "CHOICE",
       "topic_ru": "Connector · por lo tanto vs así que",
       "tested_lesson": "u15_l7",
@@ -318,7 +336,7 @@
       "explanation_on_fail_ru": "«Por lo tanto» / «por consiguiente» = следовательно (формал.). «Así que» (разговорное), «pues», «bueno» — неформальные."
     },
     {
-      "round": 20,
+      "round": 21,
       "format": "LISTEN",
       "topic_ru": "Понимание · вердикт",
       "tested_lesson": "u14_l0 + u15_l4",
@@ -335,7 +353,25 @@
       "explanation_on_fail_ru": "Многослойный B2: «necesitaríamos que + Imp.Subj.», «fuera aprobado» (pasiva en Imp.Subj.), «será suyo» (pasiva futuro). Ramón даёт условное «да»."
     },
     {
-      "round": 21,
+      "round": 22,
+      "format": "VOICE",
+      "topic_ru": "Произнеси · формальное закрытие",
+      "tested_lesson": "u15_l1",
+      "tested_grammar": "Quedar a la espera · formal closer",
+      "npc_line_es": "Para cerrar, dígame en una frase su compromiso con el proyecto.",
+      "npc_line_ru": "Чтобы закрыть, скажите одной фразой ваше обязательство по проекту.",
+      "prompt_ru": "Произнеси формальное закрытие вслух (по-испански):",
+      "correct_answer": "Quedo a la espera de su respuesta",
+      "acceptable_alternatives": [
+        "Quedo a la espera de su respuesta señor",
+        "Quedo a la espera de su confirmación",
+        "Yo quedo a la espera de su respuesta",
+        "Quedamos a la espera de su respuesta"
+      ],
+      "explanation_on_fail_ru": "«Quedo a la espera de + сущ» — стандартная B2 формальная формула «жду вашего». Идеальное закрытие делового общения."
+    },
+    {
+      "round": 23,
       "format": "CONJUGATE",
       "topic_ru": "Acuerdo · llegar a un acuerdo",
       "tested_lesson": "u14_l3 + u15_l6",
@@ -349,7 +385,7 @@
       "explanation_on_fail_ru": "Pretérito Perfecto: haber + participio. Llegar → llegado. «Llegar a un acuerdo» — стандартная business-формула."
     },
     {
-      "round": 22,
+      "round": 24,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Финал · подпись соглашения",
       "tested_lesson": "u15_l0 + u15_l1",

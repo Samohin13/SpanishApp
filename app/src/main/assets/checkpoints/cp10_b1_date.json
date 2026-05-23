@@ -75,6 +75,24 @@
     },
     {
       "round": 3,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · история Andrés о Granada",
+      "tested_lesson": "u10_l8",
+      "tested_grammar": "Imperfecto + soler · детство",
+      "npc_line_es": "De pequeño solía pasar los veranos en la Alhambra con mi abuelo. Decía que aquellas tardes valían más que cualquier libro.",
+      "audio_only": true,
+      "prompt_ru": "Что рассказывает Andrés?",
+      "correct_answer": "В детстве проводил лета в Альгамбре с дедом, который ценил это больше любых книг.",
+      "distractors": [
+        "В детстве не любил Гранаду, мечтал уехать.",
+        "Дед запрещал ему ходить в Альгамбру.",
+        "Сейчас работает гидом в Альгамбре."
+      ],
+      "translation_after_answer_ru": "«Solía pasar» (perífrasis soler + inf) = обычно проводил. «Aquellas tardes valían más que cualquier libro» — те вечера стоили больше любой книги.",
+      "explanation_on_fail_ru": "«Soler + inf» в Imperfecto = привычка в прошлом. «Valer más que» = стоить больше чем. Тёплый воспоминательный регистр."
+    },
+    {
+      "round": 4,
       "format": "CHOICE",
       "topic_ru": "Заказ · вино",
       "tested_lesson": "u10_l11",
@@ -91,7 +109,7 @@
       "explanation_on_fail_ru": "«Me apetece» = «хочется» (мягче «quiero»). «Copa de vino tinto» — стандартный заказ красного вина."
     },
     {
-      "round": 4,
+      "round": 5,
       "format": "BUILD",
       "topic_ru": "Si тип 2 · гипотеза о деньгах",
       "tested_lesson": "u10_l9",
@@ -104,7 +122,7 @@
       "explanation_on_fail_ru": "Si тип 2 = Si + Imperfecto Subj (tuviera) + Condicional (viajaría). «Tengo / viajo» — реальное, не подходит для «бы»."
     },
     {
-      "round": 5,
+      "round": 6,
       "format": "CONJUGATE",
       "topic_ru": "Imperfecto Subjuntivo · ser → fuera",
       "tested_lesson": "u10_l8",
@@ -119,7 +137,7 @@
       "explanation_on_fail_ru": "Si тип 2 (гипотеза) → после Si идёт Imperfecto Subjuntivo. Ser → fuera (yo). Era — Imperfecto Indicativo, не подходит."
     },
     {
-      "round": 6,
+      "round": 7,
       "format": "CHOICE",
       "topic_ru": "Согласование двух гипотез · Si fuera tú",
       "tested_lesson": "u10_l10",
@@ -136,7 +154,7 @@
       "explanation_on_fail_ru": "«Yo que tú» (= на твоём месте) всегда + Condicional. «Intento» (Pres) и «intentaré» (Fut) — не гипотеза."
     },
     {
-      "round": 7,
+      "round": 8,
       "format": "LISTEN",
       "topic_ru": "Понимание · мечта Andrés (Cond Perfecto)",
       "tested_lesson": "u10_l4",
@@ -154,7 +172,7 @@
       "explanation_on_fail_ru": "Si тип 3 = Si + Pluscuamperfecto Subj (hubiera tenido) + Condicional Perfecto (habría viajado). Сожаление о невозможном."
     },
     {
-      "round": 8,
+      "round": 9,
       "format": "CONJUGATE",
       "topic_ru": "Pluscuamperfecto Subj · hubiera + part",
       "tested_lesson": "u10_l4",
@@ -169,7 +187,7 @@
       "explanation_on_fail_ru": "Si тип 3: после Si идёт «hubiera/hubieras + participio». Habrías — Condicional Perfecto (в главной части, не после Si)."
     },
     {
-      "round": 9,
+      "round": 10,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Перевод · вежливый отказ через Cond",
       "tested_lesson": "u10_l11",
@@ -185,7 +203,7 @@
       "explanation_on_fail_ru": "«Preferiría» (Cond от preferir) = более мягко чем «prefiero». «Me ha encantado» (Pret Perfecto) — действие сегодня."
     },
     {
-      "round": 10,
+      "round": 11,
       "format": "CHOICE",
       "topic_ru": "Aunque + Subj vs Indic",
       "tested_lesson": "u10_l12",
@@ -202,7 +220,7 @@
       "explanation_on_fail_ru": "Гипотеза «бы» → «Aunque + Imp Subj» (tuviera) + «Cond» (encontraría). Aunque + Indic = реальный факт, не подходит."
     },
     {
-      "round": 11,
+      "round": 12,
       "format": "BUILD",
       "topic_ru": "Ojalá + Imp Subj (мечта)",
       "tested_lesson": "u10_l13",
@@ -215,7 +233,7 @@
       "explanation_on_fail_ru": "«Ojalá + Imp Subj» = мечта о маловероятном. Poder → pudiéramos (nos). «Vernos» (инф+нос) = «видеться»."
     },
     {
-      "round": 12,
+      "round": 13,
       "format": "CONJUGATE",
       "topic_ru": "Condicional irregular · hacer",
       "tested_lesson": "u10_l4",
@@ -230,7 +248,7 @@
       "explanation_on_fail_ru": "Hacer Cond irregular: haría / harías / haría. НЕ «hacerías»! Основа сокращается до «har-»."
     },
     {
-      "round": 13,
+      "round": 14,
       "format": "CHOICE",
       "topic_ru": "Quizás / tal vez + Subj",
       "tested_lesson": "u10_l12",
@@ -247,7 +265,7 @@
       "explanation_on_fail_ru": "«Quizás + Subj» — стандартно для неуверенности. Poder → podamos (Pres Subj nosotros). «Podemos» (Indic) звучит слишком уверенно."
     },
     {
-      "round": 14,
+      "round": 15,
       "format": "LISTEN",
       "topic_ru": "Понимание · романтика + me encantaría que",
       "tested_lesson": "u10_l13",
@@ -265,7 +283,7 @@
       "explanation_on_fail_ru": "После «Me encantaría que» — Imp Subj (volviéramos). «Fascinar» работает как «gustar»: te fascina, me fascina."
     },
     {
-      "round": 15,
+      "round": 16,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Понимание · комбо Cond + Subj",
       "tested_lesson": "u10_l9",
@@ -281,7 +299,7 @@
       "explanation_on_fail_ru": "«Si me dieras... te llamaría» — Si тип 2. «Algo que sé que te gustaría» = относ. предложение + cond."
     },
     {
-      "round": 16,
+      "round": 17,
       "format": "BUILD",
       "topic_ru": "Вежливая просьба · ¿Te importaría?",
       "tested_lesson": "u10_l11",
@@ -294,7 +312,7 @@
       "explanation_on_fail_ru": "«¿Te importaría + inf?» — стандарт вежливой просьбы. Cond «importaría» вежливее Pres «importa»."
     },
     {
-      "round": 17,
+      "round": 18,
       "format": "CHOICE",
       "topic_ru": "Reported speech · que + Cond",
       "tested_lesson": "u10_l4",
@@ -311,7 +329,7 @@
       "explanation_on_fail_ru": "В косвенной речи Futuro (llamaré) → Condicional (llamaría). После «dijo que» — изменённое время."
     },
     {
-      "round": 18,
+      "round": 19,
       "format": "CONJUGATE",
       "topic_ru": "Imp Subj · tener",
       "tested_lesson": "u10_l8",
@@ -326,7 +344,25 @@
       "explanation_on_fail_ru": "Imp Subj от tener — от 3 pl Indef (tuvieron) → tuvier- + -a/-as/-a... → tuviera. «Tendría» — Cond."
     },
     {
-      "round": 19,
+      "round": 20,
+      "format": "VOICE",
+      "topic_ru": "Произнеси · романтическое признание (Cond)",
+      "tested_lesson": "u10_l13",
+      "tested_grammar": "Cond + flirt",
+      "npc_line_es": "Antes de irte... dime una cosa que de verdad sientas en este momento.",
+      "npc_line_ru": "Перед уходом... скажи мне что-то, что ты действительно чувствуешь сейчас.",
+      "prompt_ru": "Произнеси вслух (по-испански), глядя в глаза:",
+      "correct_answer": "Me encantaría volver a verte",
+      "acceptable_alternatives": [
+        "Me encantaría volver a verte pronto",
+        "Me encantaría verte otra vez",
+        "Me gustaría volver a verte",
+        "Me encantaría que nos viéramos otra vez"
+      ],
+      "explanation_on_fail_ru": "«Me encantaría + inf» — Cond вежливости. «Volver a + inf» = снова. Романтическая B1-формула."
+    },
+    {
+      "round": 21,
       "format": "TRANSLATE_RU_ES",
       "topic_ru": "Перевод · второе свидание",
       "tested_lesson": "u10_l13",
@@ -342,7 +378,7 @@
       "explanation_on_fail_ru": "«Me encantaría que + Imp Subj» (quedáramos). «Quedar» в Испании = «договориться о встрече». «Si estás» — реальное условие (тип 1), можно Pres."
     },
     {
-      "round": 20,
+      "round": 22,
       "format": "CHOICE",
       "topic_ru": "Финал · прощание + надежда",
       "tested_lesson": "u10_l13",
@@ -368,7 +404,7 @@
     "silver": {
       "carlos_line_es": "Me ha encantado, de verdad. ¿Quedamos el sábado?",
       "carlos_line_ru": "Очень понравилось, правда. Встретимся в субботу?",
-      "scene_description_ru": "Andrés улыбается, обмен телефонами, договариваются о субботе. Через час: «Buenas noches, ha sido un placer 😊»"
+      "scene_description_ru": "Andrés улыбается, обмен телефонами, договариваются о субботе. Через час: «Buenas noches, ha sido un placer»"
     },
     "bronze": {
       "carlos_line_es": "Pues nada, ha estado bien. Te escribo.",
