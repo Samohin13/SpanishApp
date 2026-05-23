@@ -45,24 +45,55 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 
 /**
- * v1.22.10: маппинг сцен/портретов на реальные фото (Unsplash + pravatar).
- * Используются те же URL что в HTML мокапе CP1_review.html, чтобы итоговый
- * UI выглядел один-в-один с мокапом.
+ * v1.22.17: все 16 сцен уникальны, передают суть чекпоинта. Те же URL что
+ * в HTML мокапах CPN_review.html, чтобы итоговый UI выглядел один-в-один.
  */
 private fun sceneImageUrl(cpId: String): String = when (cpId) {
-    "cp1" -> "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=80"  // самолёт + облака
-    "cp2" -> "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=900&q=80"  // квартира интерьер
-    "cp3" -> "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80"     // ресторан / тапас
-    "cp4" -> "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=900&q=80"     // Мадрид панорама
-    else  -> "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=80"
+    // Модуль 1 · A1 (паспортный контроль → квартира → ресторан → Мадрид)
+    "cp1"  -> "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=80"  // самолёт + облака
+    "cp2"  -> "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=900&q=80"  // квартира интерьер
+    "cp3"  -> "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80"     // ресторан / тапас
+    "cp4"  -> "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=900&q=80"     // Мадрид панорама
+    // Модуль 2 · A2 (врач → шопинг → выходные → работа)
+    "cp5"  -> "https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=900&q=80"  // врач / стетоскоп
+    "cp6"  -> "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900&q=80"  // одежда в магазине
+    "cp7"  -> "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=900&q=80"  // парк Retiro
+    "cp8"  -> "https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80"  // офис собеседование
+    // Модуль 3 · B1 (отель → свидание → кино → турист BOSS)
+    "cp9"  -> "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900&q=80"  // hotel lobby
+    "cp10" -> "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80"  // tapas bar вечер
+    "cp11" -> "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=900&q=80"  // cinema/marquee
+    "cp12" -> "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=900&q=80"     // Madrid Plaza Mayor
+    // Модуль 4 · B2 (собес → семья → бизнес → FINAL прощание)
+    "cp13" -> "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=900&q=80"  // деловой собеседник
+    "cp14" -> "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80"  // семейный ужин
+    "cp15" -> "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=900&q=80"  // conference room
+    "cp16" -> "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=80"  // самолёт-прощание
+    else   -> "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=80"
 }
 
 private fun npcImageUrl(npcId: String): String = when (npcId) {
-    "carlos"    -> "https://i.pravatar.cc/200?img=12"  // мужчина средних лет
-    "sra_lopez" -> "https://i.pravatar.cc/200?img=47"  // женщина старше
-    "diego"     -> "https://i.pravatar.cc/200?img=33"  // молодой испанец
-    "sergio"    -> "https://i.pravatar.cc/200?img=53"  // молодой
-    else        -> "https://i.pravatar.cc/200?img=12"
+    // Модуль 1
+    "carlos"        -> "https://i.pravatar.cc/200?img=12"  // офицер
+    "sra_lopez"     -> "https://i.pravatar.cc/200?img=47"  // хозяйка квартиры
+    "diego"         -> "https://i.pravatar.cc/200?img=33"  // официант
+    "sergio"        -> "https://i.pravatar.cc/200?img=53"  // друг
+    // Модуль 2
+    "dra_martinez"  -> "https://i.pravatar.cc/200?img=44"  // врач
+    "carmen"        -> "https://i.pravatar.cc/200?img=26"  // продавщица
+    "lucia"         -> "https://i.pravatar.cc/200?img=48"  // подруга
+    "pablo"         -> "https://i.pravatar.cc/200?img=60"  // начальник
+    // Модуль 3
+    "carmen_rec"    -> "https://i.pravatar.cc/200?img=26"  // ресепшен (та же актриса)
+    "andres"        -> "https://i.pravatar.cc/200?img=15"  // парень со свидания
+    "marta"         -> "https://i.pravatar.cc/200?img=49"  // киноманка
+    "hans"          -> "https://i.pravatar.cc/200?img=51"  // немецкий турист
+    // Модуль 4
+    "ana"           -> "https://i.pravatar.cc/200?img=29"  // HR
+    "tia_rosa"      -> "https://i.pravatar.cc/200?img=43"  // тётя
+    "director_ramon"-> "https://i.pravatar.cc/200?img=68"  // директор
+    "ensemble"      -> "https://i.pravatar.cc/200?img=12"  // финал — Carlos за всех
+    else            -> "https://i.pravatar.cc/200?img=12"
 }
 
 private val OrangePrimary = Color(0xFFFF6B1A)
@@ -485,11 +516,12 @@ private fun PlayingView(
                     .fillMaxWidth(),
                 border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)),
             ) {
-                Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
-                    // Круглый аватар NPC с orange border
+                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
+                    // v1.22.17: увеличен аватар 44dp → 64dp, текст 16sp → 20sp,
+                    // RU перевод 12sp → 14sp. NPC должен «доминировать» в раунде.
                     Box(
                         modifier = Modifier
-                            .size(44.dp)
+                            .size(64.dp)
                             .clip(CircleShape)
                             .background(OrangePrimary),
                     ) {
@@ -502,39 +534,51 @@ private fun PlayingView(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(2.dp)
+                                .padding(3.dp)
                                 .clip(CircleShape),
                         )
                     }
-                    Spacer(Modifier.width(11.dp))
+                    Spacer(Modifier.width(14.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             "${state.data.npc.name.uppercase()} · ${state.data.npc.roleRu.uppercase()}",
-                            fontSize = 10.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp,
+                            color = OrangePrimary,
                             fontWeight = FontWeight.Bold,
-                            letterSpacing = 0.4.sp,
+                            letterSpacing = 0.6.sp,
                         )
-                        Spacer(Modifier.height(5.dp))
-                        Text(round.npcLineEs, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, lineHeight = 21.sp)
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            round.npcLineEs,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 26.sp,
+                        )
                         if (round.npcLineRu != null) {
-                            Spacer(Modifier.height(3.dp))
+                            Spacer(Modifier.height(6.dp))
                             Text(
                                 round.npcLineRu,
-                                fontSize = 12.sp,
+                                fontSize = 14.sp,
+                                lineHeight = 18.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                             )
                         }
                     }
+                    Spacer(Modifier.width(8.dp))
                     Surface(
-                        modifier = Modifier.size(28.dp),
+                        modifier = Modifier.size(40.dp),
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        color = OrangePrimary.copy(alpha = 0.15f),
                         onClick = onReplayAudio,
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(Icons.Default.PlayArrow, null, tint = OrangePrimary, modifier = Modifier.size(14.dp))
+                            Icon(
+                                Icons.Default.PlayArrow,
+                                contentDescription = "Переслушать",
+                                tint = OrangePrimary,
+                                modifier = Modifier.size(22.dp),
+                            )
                         }
                     }
                 }
