@@ -167,6 +167,26 @@ private fun QuizQuestionContent(
     onNext: () -> Unit
 ) {
     val q = state.current ?: return
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    val hapticVm: com.spanishapp.ui.components.HapticPrefViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+    val hapticPercent by hapticVm.intensity.collectAsStateWithLifecycle()
+
+    // v1.22.8: haptic на ответе — лёгкий тик на тапе + сильная пульсация
+    // когда ответ зафиксирован (правильный/неправильный).
+    val onSelectWithHaptic: (Int) -> Unit = { i ->
+        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+        onSelect(i)
+    }
+    val onNextWithHaptic: () -> Unit = {
+        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+        onNext()
+    }
+    LaunchedEffect(state.selectedIndex) {
+        val idx = state.selectedIndex ?: return@LaunchedEffect
+        val isCorrect = q.correctIndex == idx
+        if (isCorrect) hapticVm.vibrator.pulse(hapticPercent)
+        else hapticVm.vibrator.tick((hapticPercent * 130 / 100).coerceAtMost(100))
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 10.dp),
@@ -233,7 +253,7 @@ private fun QuizQuestionContent(
                     answered = answered,
                     isCorrect = isCorrect,
                     isSelected = isSelected,
-                    onClick = { onSelect(i) }
+                    onClick = { onSelectWithHaptic(i) }
                 )
             }
         }
@@ -247,7 +267,7 @@ private fun QuizQuestionContent(
             exit = fadeOut() + shrinkVertically()
         ) {
             Button(
-                onClick = onNext,
+                onClick = onNextWithHaptic,
                 modifier = Modifier.fillMaxWidth().height(56.dp).padding(bottom = 0.dp),
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))

@@ -358,6 +358,7 @@ private fun SessionBody(
     onUndo: () -> Unit
 ) {
     val word = state.cards.getOrNull(state.currentIndex) ?: return
+    val cardHaptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     // Auto-play Spanish pronunciation when card flips to back.
     LaunchedEffect(state.showBack, state.currentIndex) {
@@ -484,7 +485,10 @@ private fun SessionBody(
         ) {
             // HARD — outlined, error-red
             OutlinedButton(
-                onClick = { onAnswer(ReviewButton.HARD) },
+                onClick = {
+                    cardHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                    onAnswer(ReviewButton.HARD)
+                },
                 modifier = Modifier
                     .weight(1f)
                     .height(actionHeight),
@@ -537,7 +541,10 @@ private fun SessionBody(
 
             // GOOD — filled brand-orange
             Button(
-                onClick = { onAnswer(ReviewButton.GOOD) },
+                onClick = {
+                    cardHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                    onAnswer(ReviewButton.GOOD)
+                },
                 modifier = Modifier
                     .weight(1.3f)
                     .height(actionHeight),

@@ -103,6 +103,18 @@ private fun PalabraActiveGame(
     onBack: () -> Unit
 ) {
     val q = state.questions.getOrNull(state.currentIndex) ?: return
+    // v1.22.8: haptic на тап буквы + pulse на правильно/неправильно собранном слове
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
+    val hapticVm: com.spanishapp.ui.components.HapticPrefViewModel =
+        androidx.hilt.navigation.compose.hiltViewModel()
+    val hapticPercent by hapticVm.intensity.collectAsStateWithLifecycle()
+    LaunchedEffect(q.isCorrect) {
+        when (q.isCorrect) {
+            true -> hapticVm.vibrator.pulse(hapticPercent)
+            false -> hapticVm.vibrator.tick((hapticPercent * 130 / 100).coerceAtMost(100))
+            null -> {}
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -243,7 +255,12 @@ private fun PalabraActiveGame(
                             modifier = Modifier
                                 .padding(4.dp)
                                 .size(shufSize)
-                                .clickable(enabled = !isUsed) { viewModel.onLetterClick(letter) },
+                                .clickable(enabled = !isUsed) {
+                                    haptic.performHapticFeedback(
+                                        androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress
+                                    )
+                                    viewModel.onLetterClick(letter)
+                                },
                             shape = RoundedCornerShape(12.dp),
                             color = if (isUsed) BgGray else CardSurface,
                             shadowElevation = if (isUsed) 0.dp else 2.dp,

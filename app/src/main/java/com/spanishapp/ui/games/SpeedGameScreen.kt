@@ -94,6 +94,17 @@ private fun SpeedGameContent(
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
+    // v1.22.8: pulse на правильный ответ + усиленный тик на ошибку.
+    val hapticVm: com.spanishapp.ui.components.HapticPrefViewModel =
+        androidx.hilt.navigation.compose.hiltViewModel()
+    val hapticPercent by hapticVm.intensity.collectAsStateWithLifecycle()
+    LaunchedEffect(state.lastCorrect) {
+        when (state.lastCorrect) {
+            true -> hapticVm.vibrator.pulse(hapticPercent)
+            false -> hapticVm.vibrator.tick((hapticPercent * 130 / 100).coerceAtMost(100))
+            null -> {}
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -201,6 +212,7 @@ private fun SpeedGameContent(
                             .fillMaxWidth()
                             .height(64.dp)
                             .clickable(enabled = !answered) {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 viewModel.submitAnswer(option)
                             },
                         shape = RoundedCornerShape(16.dp),

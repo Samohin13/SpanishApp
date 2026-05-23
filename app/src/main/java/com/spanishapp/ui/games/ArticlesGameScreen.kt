@@ -130,8 +130,18 @@ private fun ArticlesGameContent(
 
     // ── Конфетти: новый ключ при каждом верном ответе ─────────
     var confettiTrigger by remember { mutableIntStateOf(0) }
+    // v1.22.8: добавили пульсацию вибрации на правильный ответ
+    // + усиленный тик на ошибку (тяжелее обычного тапа).
+    val hapticVm: com.spanishapp.ui.components.HapticPrefViewModel =
+        androidx.hilt.navigation.compose.hiltViewModel()
+    val hapticPercent by hapticVm.intensity.collectAsStateWithLifecycle()
     LaunchedEffect(state.answerHistory.size) {
-        if (state.lastCorrect == true) confettiTrigger++
+        if (state.lastCorrect == true) {
+            confettiTrigger++
+            hapticVm.vibrator.pulse(hapticPercent)
+        } else if (state.lastCorrect == false) {
+            hapticVm.vibrator.tick((hapticPercent * 130 / 100).coerceAtMost(100))
+        }
     }
 
     Box(

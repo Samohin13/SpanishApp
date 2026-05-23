@@ -149,15 +149,18 @@ private fun MathGameContent(
             )
         }
     ) { padding ->
-        // Конфетти при правильном ответе + тактильный фидбэк
+        // Конфетти при правильном ответе + тактильный фидбэк (v1.22.8 — pulse/tick)
         var confettiKey by remember { mutableIntStateOf(0) }
+        val hapticVm: com.spanishapp.ui.components.HapticPrefViewModel =
+            androidx.hilt.navigation.compose.hiltViewModel()
+        val hapticPercent by hapticVm.intensity.collectAsStateWithLifecycle()
         LaunchedEffect(state.answerHistory.size) {
             when (state.lastCorrect) {
                 true  -> {
                     confettiKey++
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    hapticVm.vibrator.pulse(hapticPercent)
                 }
-                false -> haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                false -> hapticVm.vibrator.tick((hapticPercent * 130 / 100).coerceAtMost(100))
                 else  -> {}
             }
         }

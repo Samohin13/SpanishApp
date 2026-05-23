@@ -364,7 +364,7 @@ fun HomeScreen(
         val fabSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 72.dp else 60.dp
         val fabIconSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 36.dp else 30.dp
         FloatingActionButton(
-            onClick = { navController.navigate("ai_chat_sessions") },
+            onClick = com.spanishapp.ui.components.hapticAction { navController.navigate("ai_chat_sessions") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 20.dp, bottom = 20.dp)
@@ -2108,7 +2108,7 @@ private fun CoursePills(activeLevel: String, onClick: (String) -> Unit) {
             // request: "make A1 border the same as the others" (yellow felt
             // too aggressive when its border was thicker).
             Surface(
-                onClick = { onClick(lvl) },
+                onClick = com.spanishapp.ui.components.hapticAction { onClick(lvl) },
                 modifier = Modifier
                     .weight(1f)
                     .height(64.dp),

@@ -33,6 +33,24 @@ class HapticPrefViewModel @Inject constructor(
 }
 
 /**
+ * v1.22.8: оборачивает обычный onClick в haptic + действие.
+ * Использование:
+ *   Button(onClick = hapticAction { navigate(...) }) { ... }
+ *
+ * Тип haptic'а — LongPress (стандартный тап). Если нужен другой тип
+ * (long-press menu, success pulse) — используй rememberCheckedHaptic()
+ * напрямую.
+ */
+@Composable
+fun hapticAction(action: () -> Unit): () -> Unit {
+    val haptic = rememberCheckedHaptic()
+    return {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        action()
+    }
+}
+
+/**
  * Returns a [HapticFeedback] wrapper that respects the user's vibration
  * intensity setting. Level 0 = no-op. Levels 1..3 use [VibrationHelper]
  * with scaled amplitude (and fall back to the framework's [LocalHapticFeedback]

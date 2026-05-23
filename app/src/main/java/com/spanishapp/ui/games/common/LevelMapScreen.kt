@@ -67,6 +67,7 @@ fun LevelMapScreen(
     var nextLevel by remember { mutableIntStateOf(1) }
     var totalStars by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
+    val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
 
     LaunchedEffect(gameId) {
         progress = manager.getProgressMap(gameId)
@@ -109,7 +110,12 @@ fun LevelMapScreen(
                         1.dp,
                         Color(0xFFFF6B35).copy(alpha = 0.5f)
                     ),
-                    onClick = onMistakesPractice,
+                    onClick = {
+                        haptic.performHapticFeedback(
+                            androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress
+                        )
+                        onMistakesPractice()
+                    },
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
@@ -173,6 +179,9 @@ fun LevelMapScreen(
                         accent   = accent,
                         onClick  = {
                             if (unlocked) {
+                                haptic.performHapticFeedback(
+                                    androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress
+                                )
                                 scope.launch { onLevelStart(level) }
                             }
                         }
