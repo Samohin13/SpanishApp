@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>CP4 · День в Мадриде — мокап</title>
+<style>
+:root{--bg-page:#0A0B0D;--phone-bg:#18191C;--surface:#1F2125;--surface-2:#2A2D33;--primary:#FF6B1A;--primary-2:#ff8533;--accent:#F4B400;--green:#2EB872;--red:#E54848;--text:#F5F5F7;--text-dim:#8E8E93;--border:rgba(255,255,255,0.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg-page);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);padding:40px 16px 80px}
+h1{font-size:32px;margin:0 0 6px;text-align:center;letter-spacing:-0.5px;font-weight:800}
+.subtitle{font-size:14px;text-align:center;color:var(--text-dim);margin-bottom:8px}
+.boss-banner{max-width:900px;margin:28px auto 16px;background:linear-gradient(135deg,rgba(244,180,0,0.15),rgba(255,107,26,0.10));border:2px solid var(--accent);padding:16px 22px;border-radius:12px;font-size:14px;line-height:1.5;text-align:center}
+.boss-banner strong{display:block;color:var(--accent);font-size:13px;text-transform:uppercase;letter-spacing:1.4px;margin-bottom:8px}
+.stakes-banner{max-width:900px;margin:0 auto 40px;background:linear-gradient(135deg,rgba(229,72,72,0.10),rgba(255,107,26,0.08));border-left:4px solid var(--red);padding:16px 22px;border-radius:10px;font-size:14px;line-height:1.5}
+.stakes-banner strong{display:block;color:var(--red);font-size:12px;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:40px;max-width:1500px;margin:0 auto}
+.frame{display:flex;flex-direction:column;align-items:center}
+.frame-label{font-size:12px;color:var(--text-dim);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px}
+.frame-label .round-no{color:var(--primary);font-weight:800;margin-right:8px}
+.phone{width:340px;height:720px;background:var(--phone-bg);border-radius:40px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.7),0 0 0 2px #1c1c1e,0 0 0 10px #2a2a2e,0 0 0 11px #3a3a3e;position:relative;display:flex;flex-direction:column}
+.phone.boss{box-shadow:0 24px 64px rgba(244,180,0,0.25),0 0 0 2px var(--accent),0 0 0 10px #3a3a2e,0 0 0 11px #4a4a3e}
+.status-bar{height:40px;padding:0 24px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#000;border-radius:0 0 16px 16px;z-index:10}
+.scene-top{position:relative;height:150px;overflow:hidden}
+.scene-top .bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(0.7)}
+.scene-top .grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.5),rgba(0,0,0,0.1) 30%,rgba(10,11,13,0.92))}
+.back-pill{position:absolute;top:12px;left:12px;width:34px;height:34px;background:rgba(0,0,0,0.55);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;font-weight:700}
+.sympathy{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.55);padding:6px 11px;border-radius:12px;color:white;font-size:11px;font-weight:700;display:flex;gap:6px}
+.stars{color:var(--accent);letter-spacing:1px;font-size:10px}
+.stars-empty{opacity:0.3}
+.scene-meta{position:absolute;bottom:10px;left:14px;color:white}
+.scene-meta-place{font-size:14px;font-weight:700}
+.scene-meta-round{font-size:11px;opacity:0.85;margin-top:2px}
+.progress-bar{position:absolute;bottom:12px;right:14px;display:flex;gap:3px;width:100px}
+.dot{height:4px;flex:1;background:rgba(255,255,255,0.32);border-radius:2px}
+.dot.done{background:var(--green)}.dot.curr{background:white}
+.npc{margin:12px 16px 6px;background:var(--surface);border-radius:16px;padding:12px 14px;border:1px solid var(--border);display:flex;gap:11px}
+.npc-portrait{width:42px;height:42px;border-radius:50%;background-size:cover;background-position:center;flex-shrink:0;border:2px solid var(--primary)}
+.npc-body{flex:1;min-width:0}
+.npc-name{font-size:11px;color:var(--text-dim);font-weight:700;letter-spacing:0.4px;margin-bottom:4px}
+.npc-es{font-size:15px;font-weight:600;line-height:1.3}
+.npc-ru{font-size:11px;color:var(--text-dim);margin-top:3px;font-style:italic}
+.npc-hidden{color:var(--text-dim);font-style:italic;font-size:13px}
+.exercise{flex:1;padding:8px 16px 14px;display:flex;flex-direction:column}
+.ex-label{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:var(--text-dim);margin-bottom:8px;font-weight:700;display:flex;align-items:center;gap:8px}
+.badge{background:var(--primary);color:white;padding:3px 8px;border-radius:6px;letter-spacing:0.5px}
+.choice{background:var(--surface);border:1.5px solid var(--border);border-radius:13px;padding:11px 14px;margin-bottom:6px;font-size:13px;font-weight:500}
+.choice.correct{background:rgba(46,184,114,0.12);border-color:var(--green);color:var(--green);font-weight:700}
+.translate-prompt{background:var(--surface);border-radius:13px;padding:14px;margin-bottom:10px;text-align:center;border:1px solid var(--border)}
+.translate-prompt-label{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:6px;font-weight:700}
+.translate-prompt-text{font-size:16px;font-weight:700}
+.translate-input{background:var(--surface);border-radius:13px;padding:12px 14px;font-size:14px;color:var(--text);margin-bottom:8px;border:1.5px solid var(--primary)}
+.build-target{background:var(--surface);border:1.5px dashed var(--border);border-radius:13px;min-height:70px;padding:10px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start}
+.word-chip{background:var(--surface-2);border-radius:9px;padding:7px 11px;font-size:13px;font-weight:600;border:1px solid var(--border)}
+.word-chip.placed{background:var(--primary);border-color:var(--primary);color:white}
+.build-bank{display:flex;flex-wrap:wrap;gap:5px}
+.conjugate-sentence{background:var(--surface);border-radius:13px;padding:16px;margin-bottom:12px;font-size:16px;line-height:1.6;text-align:center;border:1px solid var(--border)}
+.conjugate-blank{display:inline-block;min-width:80px;border-bottom:2px solid var(--primary);padding:0 8px;color:var(--primary);font-weight:800}
+.conj-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.conj-opt{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:11px;text-align:center;font-size:13px;font-weight:600}
+.conj-opt.correct{background:rgba(46,184,114,0.12);border-color:var(--green);color:var(--green)}
+.listen-play{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:white;border-radius:14px;padding:14px;text-align:center;margin:6px 0 12px;font-size:13px;font-weight:700}
+.section-divider{text-align:center;margin:56px auto 28px;max-width:700px}
+.section-divider .num{display:inline-block;background:var(--primary);color:white;width:28px;height:28px;border-radius:50%;font-size:13px;font-weight:800;line-height:28px;margin-right:10px}
+.section-divider .title{font-size:16px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:var(--primary)}
+.section-divider .desc{font-size:13px;color:var(--text-dim);margin-top:8px}
+.hero-img{height:220px;position:relative;overflow:hidden}
+.hero-img .bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.hero-img .grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.4) 50%,var(--phone-bg))}
+.hero-back{position:absolute;top:14px;left:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;font-weight:700}
+.intro-content{padding:16px 20px;flex:1;display:flex;flex-direction:column}
+.intro-cefr{font-size:10px;background:linear-gradient(135deg,var(--accent),var(--primary));color:white;padding:5px 10px;border-radius:7px;font-weight:800;letter-spacing:1.4px;align-self:flex-start;margin-bottom:10px}
+.intro-title{font-size:22px;font-weight:800;margin-bottom:6px;letter-spacing:-0.3px}
+.intro-subtitle{font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.5}
+.intro-warn{background:rgba(229,72,72,0.12);border-left:3px solid var(--red);padding:9px 12px;border-radius:7px;margin-bottom:14px;font-size:11px;line-height:1.4}
+.intro-warn strong{color:var(--red)}
+.intro-info{background:var(--surface);border-radius:13px;padding:4px 14px;margin-bottom:14px;border:1px solid var(--border)}
+.intro-info-row{display:flex;gap:10px;align-items:center;font-size:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.intro-info-row:last-child{border-bottom:0}
+.intro-button{margin-top:auto;background:linear-gradient(135deg,var(--accent),var(--primary));color:white;border-radius:16px;padding:16px;text-align:center;font-weight:800;font-size:15px}
+.result-hero{height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;padding-top:14px}
+.result-hero.pass-gold{background:linear-gradient(135deg,#d97706,#fbbf24)}
+.result-hero.pass-silver{background:linear-gradient(135deg,#6b7280,#9ca3af)}
+.result-hero.pass-bronze{background:linear-gradient(135deg,#92400e,#b45309)}
+.result-hero.fail{background:linear-gradient(135deg,var(--red),#8a1f1f)}
+.result-icon{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;margin-bottom:10px;color:white;font-size:40px;font-weight:800}
+.result-text{font-size:22px;font-weight:800}
+.result-subtext{font-size:12px;opacity:0.9;margin-top:4px;padding:0 16px;text-align:center}
+.result-quote{background:var(--surface);border-left:3px solid var(--primary);margin:16px 16px 0;padding:12px 14px;border-radius:10px}
+.result-quote-label{font-size:10px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.result-quote-es{font-size:14px;font-weight:600}
+.result-quote-ru{font-size:11px;color:var(--text-dim);font-style:italic;margin-top:3px}
+.result-scene{margin:12px 16px 0;padding:12px 14px;background:rgba(255,255,255,0.04);border-radius:10px;font-size:12px;color:var(--text-dim);line-height:1.5}
+.nav-links{max-width:1000px;margin:0 auto 30px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.nav-link{background:var(--surface);border:1px solid var(--border);padding:8px 14px;border-radius:20px;font-size:12px;color:var(--text-dim);text-decoration:none}
+.nav-link.active{background:linear-gradient(135deg,var(--accent),var(--primary));border-color:var(--accent);color:white;font-weight:700}
+</style>
+</head>
+<body>
+
+<h1>🏆 Чекпоинт 4 · A1 BOSS · День в Мадриде</h1>
+<p class="subtitle">Module 1 · Block 4 · 22 раунда · NPC: Sergio · ФИНАЛ A1</p>
+
+<div class="nav-links">
+  <a class="nav-link" href="CP1_review.html">CP1 · Паспорт</a>
+  <a class="nav-link" href="CP2_review.html">CP2 · Квартира</a>
+  <a class="nav-link" href="CP3_review.html">CP3 · Ресторан</a>
+  <a class="nav-link active" href="CP4_review.html">CP4 · BOSS</a>
+</div>
+
+<div class="boss-banner">
+  <strong>🏆 Финальный босс A1</strong>
+  Проверяет ВСЁ что выучено в Module 1: SER + ESTAR + TENER, IR, GUSTAR, возвратные глаголы, числа, цвета, семья, время, погода, тело, рутина дня. 22 раунда — самый длинный чекпоинт. Threshold снижен до 65% bronze (потому что сложный).
+</div>
+
+<div class="stakes-banner">
+  <strong>Ставка</strong>
+  Sergio — твой друг по обмену. Провёл день показывая Мадрид: метро, парк, кофе, магазин. На вечер зовёт на семейный ужин. Pass — становится близким другом, его семья принимает тебя. Fail — Sergio вежливо прощается и больше не пишет.
+</div>
+
+<div class="section-divider"><span class="num">1</span><span class="title">Стартовый экран</span></div>
+
+<div class="grid">
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">START</span>Intro · Sergio · BOSS</div>
+    <div class="phone boss">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:30</span><span>📶 🔋</span></div>
+      <div class="hero-img">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="hero-back">←</div>
+      </div>
+      <div class="intro-content">
+        <div class="intro-cefr">🏆 BOSS A1 · ФИНАЛ КУРСА</div>
+        <div class="intro-title">День в Мадриде с Sergio</div>
+        <div class="intro-subtitle">Sergio покажет тебе город. Метро, парк, магазин, кофе. На вечер — приглашение на ужин с его семьёй.</div>
+        <div class="intro-warn"><strong>Ставка:</strong> Pass — Sergio становится близким другом, его семья принимает тебя. Fail — «hasta otro día» и контакт обрван.</div>
+        <div class="intro-info">
+          <div class="intro-info-row">📋 22 задания · ~22 минуты (BOSS)</div>
+          <div class="intro-info-row">👤 Sergio, друг по обмену</div>
+          <div class="intro-info-row">🚩 Pass: 65% (BOSS снижен)</div>
+          <div class="intro-info-row">🎁 +700 XP · Мастер A1 «Hablo español»</div>
+        </div>
+        <div class="intro-button">Начать BOSS →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><span class="num">2</span><span class="title">Раунды · ключевые</span>
+<div class="desc">Из 22 раундов показаны 5 ключевых. Полный список — в cp4_a1_madrid_day.json.</div></div>
+
+<div class="grid">
+
+  <!-- R2 reflexive -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R2</span>Возвратные · me levanto</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:31</span><span>📶 🔋</span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill">←</div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta"><div class="scene-meta-place">Madrid</div><div class="scene-meta-round">Раунд 2 / 22</div></div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=53');"></div>
+        <div class="npc-body">
+          <div class="npc-name">SERGIO · ДРУГ ПО ОБМЕНУ</div>
+          <div class="npc-es">Yo me levanto temprano. ¿Y tú?</div>
+          <div class="npc-ru">«Я встаю рано. А ты?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge">📝 СПРЯЖЕНИЕ</span> возвратный · me levanto</div>
+        <div class="conjugate-sentence">Yo <span class="conjugate-blank">?</span> a las siete.</div>
+        <div class="conj-grid">
+          <div class="conj-opt correct">me levanto</div>
+          <div class="conj-opt">te levantas</div>
+          <div class="conj-opt">se levanta</div>
+          <div class="conj-opt">levantar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R7 GUSTAR -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R7</span>Выбор · GUSTAR ед.ч.</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>09:35</span><span>📶 🔋</span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill">←</div>
+        <div class="sympathy"><span class="stars">★★★★★</span> 5/5</div>
+        <div class="scene-meta"><div class="scene-meta-place">Madrid</div><div class="scene-meta-round">Раунд 7 / 22</div></div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=53');"></div>
+        <div class="npc-body">
+          <div class="npc-name">SERGIO</div>
+          <div class="npc-es">¿Te gusta el café español?</div>
+          <div class="npc-ru">«Тебе нравится испанский кофе?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge">🔘 ВЫБОР</span> GUSTAR + sing</div>
+        <div class="choice correct">Sí, me gusta mucho.</div>
+        <div class="choice">Sí, yo gusta café.</div>
+        <div class="choice">Sí, me gustan.</div>
+        <div class="choice">Sí, soy café.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R12 DOLER -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R12</span>Спряжение · me duele</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>10:30</span><span>📶 🔋</span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill">←</div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta"><div class="scene-meta-place">Madrid · park</div><div class="scene-meta-round">Раунд 12 / 22</div></div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=53');"></div>
+        <div class="npc-body">
+          <div class="npc-name">SERGIO</div>
+          <div class="npc-es">Ay, me ___ la cabeza. Demasiado sol.</div>
+          <div class="npc-ru">«У меня болит голова. Слишком солнечно.»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge">📝 СПРЯЖЕНИЕ</span> DOLER (как GUSTAR)</div>
+        <div class="conjugate-sentence">Me <span class="conjugate-blank">?</span> la cabeza.</div>
+        <div class="conj-grid">
+          <div class="conj-opt correct">duele</div>
+          <div class="conj-opt">dueles</div>
+          <div class="conj-opt">dolemos</div>
+          <div class="conj-opt">doler</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R17 Time -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R17</span>Выбор · «Es la una y media»</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>13:32</span><span>📶 🔋</span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill">←</div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta"><div class="scene-meta-place">Madrid · café</div><div class="scene-meta-round">Раунд 17 / 22</div></div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=53');"></div>
+        <div class="npc-body">
+          <div class="npc-name">SERGIO</div>
+          <div class="npc-es">¿Qué hora es? Vamos a comer.</div>
+          <div class="npc-ru">«Который час? Идём есть.»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge">🔘 ВЫБОР</span> 13:30 → как сказать?</div>
+        <div class="choice correct">Es la una y media.</div>
+        <div class="choice">Son las una y media.</div>
+        <div class="choice">Es uno y media.</div>
+        <div class="choice">Es la una y treinta.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R20 SER vs ESTAR -->
+  <div class="frame">
+    <div class="frame-label"><span class="round-no">R20</span>SER vs ESTAR · финальный тест</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>18:45</span><span>📶 🔋</span></div>
+      <div class="scene-top">
+        <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&q=80');"></div>
+        <div class="grad"></div>
+        <div class="back-pill">←</div>
+        <div class="sympathy"><span class="stars">★★★★</span><span class="stars stars-empty">★</span> 4/5</div>
+        <div class="scene-meta"><div class="scene-meta-place">Madrid · evening</div><div class="scene-meta-round">Раунд 20 / 22</div></div>
+        <div class="progress-bar"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div></div>
+      </div>
+      <div class="npc">
+        <div class="npc-portrait" style="background-image:url('https://i.pravatar.cc/120?img=53');"></div>
+        <div class="npc-body">
+          <div class="npc-name">SERGIO</div>
+          <div class="npc-es">Andrea, te veo cansada. ¿Estás bien?</div>
+          <div class="npc-ru">«Andrea, ты устала. Всё хорошо?»</div>
+        </div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label"><span class="badge">🔘 ВЫБОР</span> SER vs ESTAR · cansada</div>
+        <div class="choice correct">Sí, pero estoy cansada.</div>
+        <div class="choice">Sí, pero soy cansada.</div>
+        <div class="choice">Sí, pero tengo cansada.</div>
+        <div class="choice">Sí, pero hace cansada.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"><span class="num">3</span><span class="title">Финал · BOSS rewards</span></div>
+
+<div class="grid">
+
+  <div class="frame">
+    <div class="frame-label" style="color:#fbbf24;"><span class="round-no">🥇</span>Золото BOSS</div>
+    <div class="phone boss">
+      <div class="notch"></div>
+      <div class="status-bar"><span>20:15</span><span>📶 🔋</span></div>
+      <div class="result-hero pass-gold">
+        <div class="result-icon">🏆</div>
+        <div class="result-text">¡Increíble!</div>
+        <div class="result-subtext">Семья принимает тебя · 100%</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">SERGIO ГОВОРИТ</div>
+        <div class="result-quote-es">Mi familia te va a adorar. Hablas como una madrileña.</div>
+        <div class="result-quote-ru">«Моя семья тебя обожает. Говоришь как настоящая мадридка.»</div>
+      </div>
+      <div class="result-scene">Sergio обнимает тебя, сразу пишет маме сообщение. «Vamos a ser amigos para siempre.» В тот вечер тебя встречает вся семья — родители, бабушка, младшая сестра. Тебя приняли.</div>
+      <div style="padding:16px">
+        <div style="background:linear-gradient(135deg,rgba(244,180,0,0.15),rgba(255,107,26,0.10));border:1px solid var(--accent);border-radius:12px;padding:14px">
+          <div style="font-size:11px;color:var(--accent);font-weight:800;letter-spacing:0.8px;margin-bottom:8px">🏆 НАГРАДА BOSS</div>
+          <div style="font-size:13px;padding:3px 0">+1200 XP (700 + 500 gold bonus)</div>
+          <div style="font-size:13px;padding:3px 0">🏆 «Hablo español» — финальный бейдж A1</div>
+          <div style="font-size:13px;padding:3px 0">🚪 Открыт Module 2 (A2)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="frame-label" style="color:#9ca3af;"><span class="round-no">🥈</span>Серебро BOSS</div>
+    <div class="phone boss">
+      <div class="notch"></div>
+      <div class="status-bar"><span>20:15</span><span>📶 🔋</span></div>
+      <div class="result-hero pass-silver">
+        <div class="result-icon">🍽</div>
+        <div class="result-text">¡Te espero!</div>
+        <div class="result-subtext">Ужин в воскресенье · 87%</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">SERGIO ГОВОРИТ</div>
+        <div class="result-quote-es">Muy bien. ¡Te espero el domingo a las ocho!</div>
+        <div class="result-quote-ru">«Очень хорошо. Жду в воскресенье в восемь!»</div>
+      </div>
+      <div class="result-scene">Sergio тепло прощается, шлёт адрес. На ужине его семья общается медленно и помогает с языком. Тёплый вечер.</div>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="frame-label" style="color:var(--red);"><span class="round-no">✗</span>Контакт обрван</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar"><span>20:15</span><span>📶 🔋</span></div>
+      <div class="result-hero fail">
+        <div class="result-icon">📵</div>
+        <div class="result-text">Hasta otro día</div>
+        <div class="result-subtext">Sergio больше не пишет · 48%</div>
+      </div>
+      <div class="result-quote">
+        <div class="result-quote-label">SERGIO ГОВОРИТ</div>
+        <div class="result-quote-es">Bueno... ha sido un día interesante. Cuídate.</div>
+        <div class="result-quote-ru">«Ну... интересный был день. Береги себя.»</div>
+      </div>
+      <div class="result-scene">Sergio прощается у метро. Больше не предлагает встретиться. Семейный ужин не состоится.</div>
+      <div style="padding:16px">
+        <div style="background:rgba(229,72,72,0.10);border:1px solid rgba(229,72,72,0.3);border-radius:12px;padding:14px">
+          <div style="font-size:11px;color:var(--red);font-weight:800;margin-bottom:8px">ПОВТОРИ ЭТИ УРОКИ</div>
+          <div style="font-size:13px;padding:3px 0">1 · IR (идти/ехать)</div>
+          <div style="font-size:13px;padding:3px 0">7 · GUSTAR (нравиться)</div>
+          <div style="font-size:13px;padding:3px 0">13 · Мой день (рутина)</div>
+          <div style="font-size:13px;padding:3px 0">14 · Возвратные глаголы</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
