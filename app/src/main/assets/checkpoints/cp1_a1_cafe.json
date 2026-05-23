@@ -1,0 +1,315 @@
+{
+  "id": "cp1",
+  "cefr": "A1",
+  "block": 1,
+  "title_ru": "Утро в кафе Casa Lola",
+  "title_es": "La mañana en Casa Lola",
+  "description_ru": "Ты в кафе «Casa Lola» в Мадриде. Барменша María заговорит с тобой — поддержи беседу, закажи кофе и расплатись.",
+  "scene": {
+    "name": "Casa Lola",
+    "type": "cafe",
+    "city": "Madrid",
+    "background_image": "scene_cp1_cafe.jpg",
+    "ambient_sound": "cafe_ambient.mp3"
+  },
+  "npc": {
+    "id": "maria",
+    "name": "María",
+    "role_ru": "Барменша",
+    "role_es": "Camarera",
+    "voice_id": "es-ES-Neural2-D",
+    "portrait_image": "npc_maria.jpg",
+    "personality": "тёплая, дружелюбная, ободряющая — реагирует тепло на правильные ответы, добродушно поправляет на ошибках"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 250,
+    "silver_xp_bonus": 50,
+    "gold_xp_bonus": 150,
+    "badge_id": "coffee_spanish",
+    "badge_name_ru": "Кофе по-испански",
+    "unlocks_block": 2
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "note": "Имя нейтральное, подходит и М и Ж. Юзер играет за Andrea — туриста в Мадриде."
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Приветствия · respond to greeting",
+      "tested_grammar": "expresiones de saludo",
+      "npc_line_es": "¡Buenos días! ¿Cómo estás?",
+      "npc_line_ru": "Доброе утро! Как дела?",
+      "prompt_ru": "Что ответишь María?",
+      "correct_answer": "¡Hola! Bien, gracias.",
+      "distractors": [
+        "Buenas noches.",
+        "Tengo veinte años.",
+        "Me llamo Andrea."
+      ],
+      "explanation_on_fail_ru": "«Buenas noches» = добрый ВЕЧЕР, не подходит утром. «Tengo veinte años» = мне 20 лет (нет вопроса про возраст). «Me llamo Andrea» = меня зовут (она не спросила имя)."
+    },
+    {
+      "round": 2,
+      "format": "BUILD",
+      "topic_ru": "Представление · me llamo",
+      "tested_grammar": "verbo LLAMARSE 1p sing",
+      "npc_line_es": "¿Cómo te llamas?",
+      "npc_line_ru": "Как тебя зовут?",
+      "prompt_ru": "Собери ответ:",
+      "correct_answer": "Me llamo Andrea",
+      "word_bank": ["Me", "llamo", "Andrea", "Tengo", "soy", "eres"],
+      "explanation_on_fail_ru": "«Me llamo» = меня зовут (буквально «себя зову»). Не путать с «Soy Andrea» (тоже верно, но не из этих слов)."
+    },
+    {
+      "round": 3,
+      "format": "BUILD",
+      "topic_ru": "Откуда ты · soy de + страна",
+      "tested_grammar": "verbo SER 1p sing + preposición DE",
+      "npc_line_es": "¿De dónde eres?",
+      "npc_line_ru": "Откуда ты?",
+      "prompt_ru": "Собери ответ:",
+      "correct_answer": "Soy de Rusia",
+      "word_bank": ["Soy", "de", "Rusia", "vivo", "en", "tengo"],
+      "explanation_on_fail_ru": "«Soy de» = «я из» (буквально «есть из»). Глагол ser используется для постоянных характеристик — национальность, происхождение."
+    },
+    {
+      "round": 4,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Заказ кофе · querer + lexica",
+      "tested_grammar": "QUERER 1p sing + objeto",
+      "npc_line_es": "Bien. ¿Y qué quieres tomar?",
+      "npc_line_ru": "Хорошо. А что хочешь заказать?",
+      "prompt_ru": "Скажи по-испански:",
+      "prompt_text_ru": "Я хочу кофе с молоком.",
+      "correct_answer": "Quiero un café con leche.",
+      "acceptable_alternatives": [
+        "Quiero un café con leche",
+        "Quisiera un café con leche",
+        "Un café con leche, por favor",
+        "Quiero café con leche"
+      ],
+      "hint_ru": "querer · café · con · leche",
+      "explanation_on_fail_ru": "«Quiero» = хочу (от querer, неправильный глагол). «Un café» с артиклем — стандартно при заказе. «Con leche» = с молоком."
+    },
+    {
+      "round": 5,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · понимание короткой фразы",
+      "tested_grammar": "comprehension auditiva",
+      "npc_line_es": "Aquí tienes el menú.",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Что María тебе сказала?",
+      "correct_answer": "Aquí tienes el menú.",
+      "distractors": [
+        "¿Te gusta el menú?",
+        "Hoy el menú está cerrado.",
+        "El menú cuesta mucho."
+      ],
+      "translation_after_answer_ru": "«Aquí tienes el menú» — «Вот тебе меню»",
+      "explanation_on_fail_ru": "«Aquí tienes» — устойчивое выражение «вот тебе», когда передают что-то в руки."
+    },
+    {
+      "round": 6,
+      "format": "CHOICE",
+      "topic_ru": "С молоком или без · con/sin",
+      "tested_grammar": "preposiciones CON · SIN",
+      "npc_line_es": "¿Con leche o sin leche?",
+      "npc_line_ru": "С молоком или без?",
+      "prompt_ru": "Что ответишь?",
+      "correct_answer": "Con leche, por favor.",
+      "distractors": [
+        "No me gusta.",
+        "Estoy bien.",
+        "Buenos días."
+      ],
+      "explanation_on_fail_ru": "«Por favor» = пожалуйста — обязательно в вежливом заказе. «Con leche» — с молоком, как уже сказал в предыдущем раунде."
+    },
+    {
+      "round": 7,
+      "format": "CONJUGATE",
+      "topic_ru": "Спряжение QUERER · yo quiero",
+      "tested_grammar": "QUERER presente indicativo 1p sing (e→ie stem-change)",
+      "npc_line_es": "Entonces, ¿qué tomas?",
+      "npc_line_ru": "Так что заказываешь?",
+      "prompt_ru": "Поставь глагол в правильной форме:",
+      "sentence_template": "Yo ___ un café con leche, por favor.",
+      "verb_infinitive": "querer",
+      "correct_answer": "quiero",
+      "distractors": [
+        "querer",
+        "quieres",
+        "queremos"
+      ],
+      "explanation_on_fail_ru": "QUERER — глагол с изменением корня (e → ie). 1 лицо ед. ч. → «quiero». «Querer» — инфинитив, «quieres» — ты хочешь, «queremos» — мы хотим."
+    },
+    {
+      "round": 8,
+      "format": "CHOICE",
+      "topic_ru": "Согласие · еда",
+      "tested_grammar": "respuesta a oferta · vocab еда",
+      "npc_line_es": "¿Y para comer? ¿Quieres una tostada?",
+      "npc_line_ru": "А поесть? Хочешь тост?",
+      "prompt_ru": "Ответь María:",
+      "correct_answer": "Sí, una tostada con jamón.",
+      "distractors": [
+        "No, ya tengo café.",
+        "Cuesta mucho.",
+        "Soy de Rusia."
+      ],
+      "explanation_on_fail_ru": "«Sí, una tostada con jamón» — Да, тост с ветчиной. María предложила тост, ты согласился и уточнил какой. «No, ya tengo café» — грамматически верно, но «у меня уже есть кофе» — это не отказ от тоста."
+    },
+    {
+      "round": 9,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Вопрос о цене",
+      "tested_grammar": "CUÁNTO · COSTAR vs SER",
+      "npc_line_es": "Vale, ahora te lo traigo.",
+      "npc_line_ru": "Хорошо, сейчас принесу.",
+      "prompt_ru": "Спроси сколько стоит:",
+      "prompt_text_ru": "Сколько стоит?",
+      "correct_answer": "¿Cuánto cuesta?",
+      "acceptable_alternatives": [
+        "¿Cuánto cuesta?",
+        "¿Cuánto es?",
+        "¿Cuánto vale?",
+        "¿Cuánto cuesta todo?"
+      ],
+      "hint_ru": "cuánto · costar",
+      "explanation_on_fail_ru": "«¿Cuánto cuesta?» — стандартный вопрос о цене. «Cuesta» — 3 лицо ед.ч. от costar. Альтернативы: «¿Cuánto es?», «¿Cuánto vale?» — тоже верны."
+    },
+    {
+      "round": 10,
+      "format": "LISTEN",
+      "topic_ru": "Числа · понимание цены",
+      "tested_grammar": "números 1-100 + decimales",
+      "npc_line_es": "Cuesta tres euros con cincuenta.",
+      "npc_line_ru": null,
+      "audio_only": true,
+      "prompt_ru": "Сколько стоит твой заказ?",
+      "correct_answer": "3,50 €",
+      "distractors": [
+        "3,15 €",
+        "5,30 €",
+        "13,50 €"
+      ],
+      "translation_after_answer_ru": "«tres euros con cincuenta» — три евро пятьдесят",
+      "explanation_on_fail_ru": "«Tres» = 3. «Cincuenta» = 50. «Con» здесь играет роль десятичной запятой. Итого 3,50 €."
+    },
+    {
+      "round": 11,
+      "format": "CONJUGATE",
+      "topic_ru": "Спряжение PAGAR · yo pago",
+      "tested_grammar": "PAGAR presente 1p sing",
+      "npc_line_es": "¿Pagas en efectivo o con tarjeta?",
+      "npc_line_ru": "Платишь наличными или картой?",
+      "prompt_ru": "Поставь глагол:",
+      "sentence_template": "Yo ___ con tarjeta.",
+      "verb_infinitive": "pagar",
+      "correct_answer": "pago",
+      "distractors": [
+        "pagar",
+        "pagas",
+        "pagamos"
+      ],
+      "explanation_on_fail_ru": "PAGAR — обычный -AR глагол. 1 лицо ед.ч. → «pago» (yo pago). «Pagas» — ты платишь, «pagamos» — мы платим."
+    },
+    {
+      "round": 12,
+      "format": "CHOICE",
+      "topic_ru": "Артикль el/la",
+      "tested_grammar": "artículo definido masc/fem",
+      "npc_line_es": "Tu pan está en la mesa de allí.",
+      "npc_line_ru": "Твой хлеб на том столе.",
+      "prompt_ru": "Какой артикль для слова «mesa» (стол)?",
+      "correct_answer": "la",
+      "distractors": [
+        "el",
+        "los",
+        "las"
+      ],
+      "explanation_on_fail_ru": "«La mesa» — стол женского рода (хотя в русском мужской, в испанском другие правила). Слова на -a обычно женского рода: la mesa, la silla, la casa."
+    },
+    {
+      "round": 13,
+      "format": "BUILD",
+      "topic_ru": "Возраст · TENER + años",
+      "tested_grammar": "TENER 1p sing + número + años",
+      "npc_line_es": "Por cierto, ¿cuántos años tienes?",
+      "npc_line_ru": "Кстати, сколько тебе лет?",
+      "prompt_ru": "Собери ответ:",
+      "correct_answer": "Tengo veinte años",
+      "word_bank": ["Tengo", "veinte", "años", "tres", "Soy", "muy", "estás"],
+      "explanation_on_fail_ru": "В испанском возраст — через TENER (иметь), не SER. «Tengo veinte años» = буквально «имею 20 лет». «Veinte» = 20."
+    },
+    {
+      "round": 14,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание ES→RU · VIVIR",
+      "tested_grammar": "VIVIR 2p sing + EN + город",
+      "npc_line_es": "¿Vives en Madrid o estás de vacaciones?",
+      "npc_line_ru": null,
+      "prompt_ru": "Переведи вопрос María на русский:",
+      "prompt_text_es": "¿Vives en Madrid?",
+      "correct_answer": "Ты живёшь в Мадриде?",
+      "acceptable_alternatives": [
+        "Ты живёшь в Мадриде?",
+        "Ты живешь в Мадриде?",
+        "Живёшь в Мадриде?",
+        "Живешь в Мадриде?"
+      ],
+      "explanation_on_fail_ru": "«Vives» — 2 лицо ед.ч. от VIVIR (жить). «En» = в (перед городом). Местоимение «tú» опущено как часто в испанском, но подразумевается."
+    },
+    {
+      "round": 15,
+      "format": "CHOICE",
+      "topic_ru": "Будущее · согласие на возврат",
+      "tested_grammar": "FUTURO simple (recognition only)",
+      "npc_line_es": "¿Volverás mañana? Te esperaré.",
+      "npc_line_ru": "Вернёшься завтра? Я тебя буду ждать.",
+      "prompt_ru": "Что ответишь?",
+      "correct_answer": "Sí, claro. Hasta mañana.",
+      "distractors": [
+        "No, tengo veinte años.",
+        "Buenos días, María.",
+        "Soy de Rusia."
+      ],
+      "explanation_on_fail_ru": "«Sí, claro» = да, конечно. «Hasta mañana» = до завтра — прощание с обещанием вернуться. Остальные варианты не соответствуют контексту."
+    },
+    {
+      "round": 16,
+      "format": "BUILD",
+      "topic_ru": "Прощание · вежливая формула",
+      "tested_grammar": "expresiones de despedida + subjuntivo (recognition)",
+      "npc_line_es": "Vale, te espero. ¡Adiós!",
+      "npc_line_ru": "Хорошо, жду. Пока!",
+      "prompt_ru": "Собери вежливое прощание:",
+      "correct_answer": "Hasta luego que tengas buen día",
+      "word_bank": ["Hasta", "luego", "que", "tengas", "buen", "día", "soy", "muy"],
+      "explanation_on_fail_ru": "«Hasta luego» = до встречи. «Que tengas buen día» = «хорошего дня тебе» (буквально «чтобы ты имел хороший день» — subjuntivo). Стандартная формула вежливости."
+    }
+  ],
+  "fail_messages": {
+    "very_low_es": "Bueno... quizás otro día estarás mejor preparado.",
+    "very_low_ru": "Ну... может быть в другой день ты будешь лучше готов.",
+    "low_es": "¡Casi! Vuelve cuando estés más preparado.",
+    "low_ru": "Почти! Возвращайся когда будешь готовее.",
+    "near_pass_es": "Estuviste muy cerca. ¡Inténtalo otra vez!",
+    "near_pass_ru": "Был очень близко. Попробуй ещё раз!"
+  },
+  "pass_messages": {
+    "bronze_es": "¡Bien hecho! Lo lograste.",
+    "bronze_ru": "Хорошо! У тебя получилось.",
+    "silver_es": "¡Muy bien! Casi perfecto.",
+    "silver_ru": "Очень хорошо! Почти идеально.",
+    "gold_es": "¡Perfecto! ¡Hablas como una madrileña!",
+    "gold_ru": "Идеально! Говоришь как настоящая мадридка!"
+  }
+}
