@@ -68,6 +68,7 @@ fun CrosswordGameScreen(
     navController: NavHostController,
     viewModel: CrosswordViewModel = hiltViewModel()
 ) {
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showRules by remember { mutableStateOf(false) }
 

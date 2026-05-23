@@ -37,6 +37,7 @@ fun SpeedGameScreen(
     navController: NavHostController,
     viewModel: SpeedViewModel = hiltViewModel()
 ) {
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()

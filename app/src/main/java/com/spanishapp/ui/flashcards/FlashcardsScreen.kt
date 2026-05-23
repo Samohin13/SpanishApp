@@ -63,6 +63,7 @@ fun FlashcardsScreen(
     weakOnly: Boolean = false,
     viewModel: FlashcardsViewModel = hiltViewModel()
 ) {
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.FLASHCARDS)
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     com.spanishapp.ui.components.TrackStudyMinutes()

@@ -50,6 +50,7 @@ fun MathGameScreen(
     navController: NavHostController,
     viewModel: MathViewModel = hiltViewModel()
 ) {
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
     // rememberSaveable переживает ротацию экрана; ключ — currentRound, чтобы
     // ввод сбрасывался при смене раунда.

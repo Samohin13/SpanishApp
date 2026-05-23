@@ -303,6 +303,7 @@ fun AiChatScreen(
     navController: NavHostController,
     vm: AiChatViewModel = hiltViewModel(),
 ) {
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.CHAT)
     // ─── State ──────────────────────────────────────────────────
     val messages       by vm.messages.collectAsStateWithLifecycle()
     val isSending      by vm.isSending.collectAsStateWithLifecycle()

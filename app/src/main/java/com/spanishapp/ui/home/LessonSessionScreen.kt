@@ -94,6 +94,7 @@ fun LessonSessionScreen(
     viewModel: LessonIntroViewModel
 ) {
     com.spanishapp.ui.components.TrackStudyMinutes()
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.LESSON)
     val unit    = remember(unitId) { RoadmapData.units.getOrNull(unitId - 1) }
     val lesson  = remember(unit, lessonIndex) { unit?.lessons?.getOrNull(lessonIndex) }
     // Поддержка _5 уроков-вставок: lesson.id override'ит позиционный ключ.

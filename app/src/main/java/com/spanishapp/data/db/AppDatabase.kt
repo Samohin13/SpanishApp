@@ -35,8 +35,10 @@ import com.spanishapp.data.db.entity.*
         com.spanishapp.radio.data.RadioListeningSessionEntity::class,
         com.spanishapp.radio.data.RadioWordCatchEntity::class,
         GameMistakeEntity::class,
+        LessonCompletionEventEntity::class,
+        ActivityTimeLogEntity::class,
     ],
-    version = 25,
+    version = 27,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -63,6 +65,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun radioCatalogDao(): com.spanishapp.radio.data.RadioCatalogDao
     abstract fun radioListeningDao(): com.spanishapp.radio.data.RadioListeningDao
     abstract fun gameMistakesDao(): GameMistakesDao
+    abstract fun lessonCompletionHistoryDao(): LessonCompletionHistoryDao
+    abstract fun activityTimeLogDao(): ActivityTimeLogDao
     // radioWordCatchDao() удалён в v1.11.7 — фича «Поймал слово!» выпилена в v1.9.0.
     // Абстрактный метод оставался без Hilt-провайдера → ЛЮБОЙ @Inject его =
     // crash на старте (Dagger graph MissingBinding). Entity RadioWordCatchEntity
@@ -341,6 +345,41 @@ abstract class AppDatabase : RoomDatabase() {
         // Phase 1 нового дизайна курса (1.2.0): теория-карточки.
         // Каждый практический урок получает справочную карточку, прогресс
         // прочтения трекается отдельно от прохождения практики.
+        // ── v27: activity_time_log — per-activity timestamps для честного
+        //   breakdown в Stats screen. Раньше минуты «на что ушло время»
+        //   считались по эмпирическим baseline (lessonsCount * 7 и т.п.),
+        //   теперь — реальные суммы из (ended_at - started_at). ──
+        val MIGRATION_26_27 = object : Migration(26, 27) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS activity_time_log (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        activity_type TEXT NOT NULL,
+                        started_at INTEGER NOT NULL,
+                        ended_at INTEGER NOT NULL
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_activity_time_log_started_at ON activity_time_log(started_at)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_activity_time_log_activity_type ON activity_time_log(activity_type)")
+            }
+        }
+
+        // ── v26: lesson_completion_history — все события прохождения уроков
+        //   (включая повторы) для Stats screen. lesson_progress остаётся
+        //   уникальным (для ачивок), эта таблица хранит каждое событие. ──
+        val MIGRATION_25_26 = object : Migration(25, 26) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS lesson_completion_history (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        lesson_key TEXT NOT NULL,
+                        completed_at INTEGER NOT NULL
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_lesson_completion_history_completed_at ON lesson_completion_history(completed_at)")
+            }
+        }
+
         // ── v25: game_mistakes — «Работа над ошибками» во всех 4 играх (1.22.0) ──
         val MIGRATION_24_25 = object : Migration(24, 25) {
             override fun migrate(db: SupportSQLiteDatabase) {

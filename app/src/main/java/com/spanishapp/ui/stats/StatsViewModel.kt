@@ -73,6 +73,8 @@ data class StatsUi(
     val lessonsTotal: Int = 254,
     val lessonsDelta: Int = 0,
     val wordsLearned: Int = 0,
+    val wordsInProgress: Int = 0,
+    val wordsUntouched: Int = 0,
     val currentStreak: Int = 0,
     val longestStreak: Int = 0,
     val skillRating: Int = 0,
@@ -135,6 +137,7 @@ class StatsViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val dailyXpDao: DailyXpDao,
     private val lessonProgressDao: LessonProgressDao,
+    private val lessonCompletionHistoryDao: LessonCompletionHistoryDao,
     private val libroProgressDao: LibroProgressDao,
     private val flashcardSetProgressDao: FlashcardSetProgressDao,
     private val gameLevelProgressDao: GameLevelProgressDao,
@@ -143,6 +146,7 @@ class StatsViewModel @Inject constructor(
     private val achievementDao: AchievementDao,
     private val radioListeningDao: RadioListeningDao,
     private val chatMessageDao: ChatMessageDao,
+    private val activityTimeLogDao: com.spanishapp.data.db.dao.ActivityTimeLogDao,
 ) : ViewModel() {
 
     private val periodFlow: StateFlow<StatsPeriod> = statsPrefs.period
@@ -166,16 +170,28 @@ class StatsViewModel @Inject constructor(
                 userProgressDao.getProgress(),
                 dailyXpDao.observeAll(),
                 lessonProgressDao.getAllCompletedKeys(),
-                lessonProgressDao.observeCountSince(periodStartMs),
+                // ⚠ Считаем повторы — каждое прохождение урока (даже повторное)
+                // имеет свою строку в lesson_completion_history. Это даёт честный
+                // breakdown.lessonsCount «за период», включая review-сессии.
+                lessonCompletionHistoryDao.observeCountSince(periodStartMs),
                 gameLevelProgressDao.observeCountSince(periodStartMs),
                 chatMessageDao.observeCountSince(periodStartMs),
                 libroProgressDao.getAll(),
                 flashcardSetProgressDao.observeAll(),
                 wordDao.learnedCount(),
+                wordDao.inProgressCount(),
+                wordDao.untouchedCount(),
                 wordDao.getWeakWords(),
                 achievementDao.getAll(),
                 radioListeningDao.observeSecondsSince(periodStartMs),
                 topMistakesFlow(periodStartMs),
+                // Реальные минуты per-activity из activity_time_log (v27).
+                // Заменили эмпирику lessonsCount*7/setsCount*5/etc. на честный SUM.
+                activityTimeLogDao.observeMinutesSince("LESSON", periodStartMs),
+                activityTimeLogDao.observeMinutesSince("FLASHCARDS", periodStartMs),
+                activityTimeLogDao.observeMinutesSince("GAME", periodStartMs),
+                activityTimeLogDao.observeMinutesSince("BOOK", periodStartMs),
+                activityTimeLogDao.observeMinutesSince("CHAT", periodStartMs),
             )
         ) { args ->
             @Suppress("UNCHECKED_CAST")
@@ -192,19 +208,27 @@ class StatsViewModel @Inject constructor(
             @Suppress("UNCHECKED_CAST")
             val flashSets        = args[7]  as List<FlashcardSetProgressEntity>
             val learnedCount     = args[8]  as Int
+            val inProgress       = args[9]  as Int
+            val untouched        = args[10] as Int
             @Suppress("UNCHECKED_CAST")
-            val weak             = args[9]  as List<WordEntity>
+            val weak             = args[11] as List<WordEntity>
             @Suppress("UNCHECKED_CAST")
-            val achievements     = args[10] as List<AchievementEntity>
-            val radioSecs        = args[11] as Long
+            val achievements     = args[12] as List<AchievementEntity>
+            val radioSecs        = args[13] as Long
             @Suppress("UNCHECKED_CAST")
-            val mistakes         = args[12] as List<MistakeRow>
+            val mistakes         = args[14] as List<MistakeRow>
+            val lessonMin        = (args[15] as Long).toInt()
+            val flashcardsMin    = (args[16] as Long).toInt()
+            val gameMin          = (args[17] as Long).toInt()
+            val bookMin          = (args[18] as Long).toInt()
+            val chatMin          = (args[19] as Long).toInt()
 
             buildUi(
                 period, today, periodStart, periodStartMs, periodLen, prevStart,
                 progress, dailyXp, lessonKeys, lessonsInPeriod, gameLevelsPeriod,
-                chatMsgsPeriod, libros, flashSets, learnedCount, weak,
-                achievements, radioSecs, mistakes,
+                chatMsgsPeriod, libros, flashSets, learnedCount, inProgress, untouched,
+                weak, achievements, radioSecs, mistakes,
+                lessonMin, flashcardsMin, gameMin, bookMin, chatMin,
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), StatsUi())
@@ -249,10 +273,19 @@ internal fun buildUi(
     libros: List<LibroProgressEntity>,
     flashSets: List<FlashcardSetProgressEntity>,
     learnedCount: Int,
+    wordsInProgress: Int,
+    wordsUntouched: Int,
     weak: List<WordEntity>,
     achievements: List<AchievementEntity>,
     radioSecs: Long,
     mistakes: List<MistakeRow>,
+    // Реальные минуты per-activity из activity_time_log (v27).
+    // Если 0 — экран был открыт меньше 5 сек (фильтр в TrackActivity).
+    lessonMin: Int = 0,
+    flashcardsMin: Int = 0,
+    gameMin: Int = 0,
+    bookMin: Int = 0,
+    chatMin: Int = 0,
 ): StatsUi {
     val byDay = dailyXp.associateBy { it.day }
     val series = (0 until periodLen).map { offset ->
@@ -290,29 +323,28 @@ internal fun buildUi(
     val xpGoal = (minutesGoal * 9).coerceAtLeast(1)
 
     // ── Breakdown (минуты по активностям) ──
+    // ⚠ Минуты per-activity берём из РЕАЛЬНЫХ таймеров activity_time_log
+    // (v27) — каждый учебный экран пишет (started_at, ended_at) при выходе.
+    // Эмпирический baseline lessonsCount*7 / setsCount*5 удалён —
+    // теперь breakdown точен до секунды.
     val setsInPeriod = flashSets.filter { it.completedAt >= periodStartMs }
     val avgPct = if (setsInPeriod.isEmpty()) 0 else setsInPeriod.sumOf { it.bestPercent } / setsInPeriod.size
     val librosInPeriod = libros.count { it.completedAt >= periodStartMs }
     val radioMin = (radioSecs / 60).toInt()
-    val approxLessons = lessonsInPeriod * 7
-    val approxSets    = setsInPeriod.size * 5
-    val approxGames   = gameLevelsPeriod * 2
-    val approxBooks   = librosInPeriod * 10
-    val approxChat    = chatMsgsPeriod / 2
 
     val breakdown = ActivityBreakdown(
-        lessonsMin = approxLessons,
-        lessonsCount = lessonsInPeriod,
-        flashcardsMin = approxSets,
-        flashcardsCount = setsInPeriod.size,
+        lessonsMin       = lessonMin,
+        lessonsCount     = lessonsInPeriod,
+        flashcardsMin    = flashcardsMin,
+        flashcardsCount  = setsInPeriod.size,
         flashcardsAvgPct = avgPct,
-        gamesMin = approxGames,
-        gamesLevels = gameLevelsPeriod,
-        radioMin = radioMin,
-        booksMin = approxBooks,
-        booksCount = librosInPeriod,
-        chatMin = approxChat,
-        chatMessages = chatMsgsPeriod,
+        gamesMin         = gameMin,
+        gamesLevels      = gameLevelsPeriod,
+        radioMin         = radioMin,
+        booksMin         = bookMin,
+        booksCount       = librosInPeriod,
+        chatMin          = chatMin,
+        chatMessages     = chatMsgsPeriod,
     )
 
     val topWeak = weak.take(5).map { WeakRow(it.spanish, it.russian) }
@@ -355,6 +387,8 @@ internal fun buildUi(
         lessonsCompleted = lessonKeys.size,
         lessonsDelta = lessonsInPeriod,
         wordsLearned = learnedCount,
+        wordsInProgress = wordsInProgress,
+        wordsUntouched = wordsUntouched,
         currentStreak = progress?.currentStreak ?: 0,
         longestStreak = progress?.longestStreak ?: 0,
         skillRating = rating,

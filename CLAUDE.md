@@ -4,6 +4,45 @@
 > **Версия:** v1.11.7 (versionCode 65), AAB подан на закрытое тестирование Play.
 > **Последний апдейт документа:** 2026-05-23. Все цифры верифицированы grep-проверкой кода.
 
+## 🆕 Stats v2 — точная интеграция данных (2026-05-23)
+
+Закрыл 3 из 4 слабостей интеграции Stats screen (одна оказалась
+ложной — `LibrosViewModel.markOpened/saveResult` уже пишут локально).
+
+**Что поправлено:**
+
+1. **Слабость 4 — разбивка `isLearned` на градацию** (вместо одной цифры
+   «слов выучено» теперь 3 метрики):
+   - `wordDao.inProgressCount()` — `repetitions>0 && !isLearned`
+   - `wordDao.untouchedCount()` — `total_reviews=0`
+   - В Stats: 3-сегментная плашка «Закреплено · В работе · Не тронуто»
+
+2. **Слабость 1 — повторы уроков** (раньше counts только первое прохождение):
+   - Новая таблица `lesson_completion_history` (миграция v25→v26)
+   - Каждое прохождение урока (включая повторы) пишет строку в history
+   - Stats считает breakdown.lessonsCount через эту таблицу, не через
+     `lesson_progress` (тот остаётся для ачивок — primary key = lesson_key)
+
+3. **Слабость 2 — реальные минуты per-activity** (самая большая работа):
+   - Новая таблица `activity_time_log` (миграция v26→v27)
+   - Composable-хук `TrackActivity(type)` в [ActivityTimeTracker.kt](app/src/main/java/com/spanishapp/service/ActivityTimeTracker.kt) —
+     `DisposableEffect.onDispose` пишет сессию через Hilt EntryPoint
+   - Фильтр: сессии <5 сек игнорируются (шум)
+   - Подключено к 11 экранам: LessonSession, Flashcards, AiChat, LibroRead,
+     7 игровых экранов (Articles, Speed, Math, Palabra, Sopa, Crossword, Verb)
+   - В StatsViewModel breakdown.lessonsMin/flashcardsMin/gamesMin/booksMin/chatMin
+     теперь читаются из реальных `activity_time_log`, не из эмпирики
+     `lessonsCount*7`. Точность — до секунды.
+
+**Миграции v26 и v27 зарегистрированы в 6 местах:** AppModule, RatingDecayWorker,
+ContentSyncWorker, RadioCatalogRefreshWorker, WordOfDayWidget, StreakFlameWidget.
+
+**Слабость 3 — false positive:** аудит ошибочно сказал что `libro_progress`
+обновляется только через cloud sync. На самом деле [LibrosViewModel.kt:89-122](app/src/main/java/com/spanishapp/ui/games/LibrosViewModel.kt:89)
+пишет `dao.upsert` локально мгновенно в `markOpened` и `saveResult`.
+
+---
+
 ## 🆕 Stats / Insights screen (2026-05-23)
 
 Карточка «📊 ЭТА НЕДЕЛЯ» на главной (HomeScreen) и плитка «Эта неделя» в

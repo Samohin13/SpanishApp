@@ -2,8 +2,10 @@ package com.spanishapp.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spanishapp.data.db.dao.LessonCompletionHistoryDao
 import com.spanishapp.data.db.dao.LessonProgressDao
 import com.spanishapp.data.db.dao.UserProgressDao
+import com.spanishapp.data.db.entity.LessonCompletionEventEntity
 import com.spanishapp.data.db.entity.LessonProgressEntity
 import com.spanishapp.domain.algorithm.RatingUpdater
 import com.spanishapp.service.XpTracker
@@ -14,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LessonIntroViewModel @Inject constructor(
     private val lessonProgressDao: LessonProgressDao,
+    private val lessonCompletionHistoryDao: LessonCompletionHistoryDao,
     private val userProgressDao: UserProgressDao,
     private val ratingUpdater: RatingUpdater,
     private val xpTracker: XpTracker,
@@ -46,6 +49,13 @@ class LessonIntroViewModel @Inject constructor(
                     unitId      = unitId,
                     lessonIndex = lessonIndex
                 )
+            )
+
+            // Stats screen — пишем КАЖДОЕ событие прохождения (включая повторы)
+            // в отдельную историю. Используется только для аналитики, на ачивки
+            // и счётчик lessonsCompleted не влияет.
+            lessonCompletionHistoryDao.record(
+                LessonCompletionEventEntity(lessonKey = key)
             )
 
             if (alreadyDone) {

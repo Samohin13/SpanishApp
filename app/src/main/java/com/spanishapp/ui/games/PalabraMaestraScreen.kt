@@ -53,6 +53,7 @@ fun PalabraMaestraScreen(
     navController: NavHostController,
     viewModel: PalabraMaestraViewModel = hiltViewModel()
 ) {
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
 

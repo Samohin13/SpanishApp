@@ -125,6 +125,14 @@ interface WordDao {
     @Query("SELECT COUNT(*) FROM words WHERE word_type = :type AND is_learned = 1")
     fun learnedCountByType(type: String): Flow<Int>
 
+    /** Stats — слова «в работе»: уже видели (repetitions>0), но ещё не закреплены SM-2. */
+    @Query("SELECT COUNT(*) FROM words WHERE repetitions > 0 AND is_learned = 0")
+    fun inProgressCount(): Flow<Int>
+
+    /** Stats — слова «не тронуты»: total_reviews=0 (юзер их ни разу не видел). */
+    @Query("SELECT COUNT(*) FROM words WHERE total_reviews = 0")
+    fun untouchedCount(): Flow<Int>
+
     @Query("SELECT DISTINCT category FROM words WHERE word_type = :type ORDER BY category")
     fun categoriesForType(type: String): Flow<List<String>>
 
@@ -648,6 +656,45 @@ interface LessonProgressDao {
     suspend fun isAlreadyCompleted(key: String): Boolean
 
     @Query("DELETE FROM lesson_progress")
+    suspend fun deleteAll()
+}
+
+/**
+ * История ВСЕХ событий завершения уроков (с повторами) — для Stats screen.
+ * Отдельно от `lesson_progress` (там только уникальные уроки для ачивок).
+ */
+@Dao
+interface LessonCompletionHistoryDao {
+    @Insert
+    suspend fun record(event: LessonCompletionEventEntity)
+
+    /** Stats — сколько уроков (включая повторы) завершено с указанного момента. */
+    @Query("SELECT COUNT(*) FROM lesson_completion_history WHERE completed_at >= :since")
+    fun observeCountSince(since: Long): Flow<Int>
+
+    @Query("DELETE FROM lesson_completion_history")
+    suspend fun deleteAll()
+}
+
+/**
+ * Per-activity time log (Stats breakdown: реальные минуты по типу).
+ * Хуки в Composable экранах (TrackActivity) пишут одну сессию на каждый
+ * заход юзера через DisposableEffect.onDispose.
+ */
+@Dao
+interface ActivityTimeLogDao {
+    @Insert
+    suspend fun insert(event: ActivityTimeLogEntity)
+
+    /** Минут по типу активности с указанного момента. NULL→0 через COALESCE. */
+    @Query("""
+        SELECT COALESCE(SUM(ended_at - started_at), 0) / 60000
+        FROM activity_time_log
+        WHERE activity_type = :type AND started_at >= :since
+    """)
+    fun observeMinutesSince(type: String, since: Long): Flow<Long>
+
+    @Query("DELETE FROM activity_time_log")
     suspend fun deleteAll()
 }
 

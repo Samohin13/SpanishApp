@@ -56,6 +56,7 @@ fun SopaGameScreen(
     navController: NavHostController,
     viewModel: SopaViewModel = hiltViewModel()
 ) {
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     when {

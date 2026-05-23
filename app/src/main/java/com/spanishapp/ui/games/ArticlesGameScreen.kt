@@ -68,6 +68,7 @@ fun ArticlesGameScreen(
     navController: NavHostController,
     viewModel: ArticlesViewModel = hiltViewModel()
 ) {
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
     when {

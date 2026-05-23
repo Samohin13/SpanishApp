@@ -649,6 +649,7 @@ fun LibroReadScreen(
     val libro = remember(libroId) { LibrosData.getById(libroId) }
     if (libro == null) { LaunchedEffect(Unit) { navController.popBackStack() }; return }
     com.spanishapp.ui.components.TrackStudyMinutes()
+    com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.BOOK)
 
     // Daily-mission fix: ранее `bookPageRead` загорался ✅ только после
     // прохождения теста (saveResult). Юзер мог прочитать главу и выйти —

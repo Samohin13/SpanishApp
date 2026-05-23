@@ -905,7 +905,12 @@ private fun ProgressCard(ui: StatsUi) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             ProgRow("⭐", "Общий XP", ui.totalXpAllTime.toString(), if (ui.totalXp > 0) "+${ui.totalXp}" else null)
             ProgRow("📚", "Уроки", "${ui.lessonsCompleted} / ${ui.lessonsTotal}", if (ui.lessonsDelta > 0) "+${ui.lessonsDelta}" else null)
-            ProgRow("🃏", "Слов выучено", ui.wordsLearned.toString(), null)
+            // Разбивка слов по SM-2 статусу: закреплено / в работе / не тронуто
+            WordsBreakdownRow(
+                learned = ui.wordsLearned,
+                inProgress = ui.wordsInProgress,
+                untouched = ui.wordsUntouched,
+            )
             ProgRow("🔥", "Streak", "${ui.currentStreak} дней", "рекорд ${ui.longestStreak}")
             Spacer(Modifier.height(4.dp))
             LeagueChip(ui)
@@ -925,6 +930,64 @@ private fun ProgRow(icon: String, name: String, value: String, delta: String?) {
                 Text(delta, color = GreenC, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
             }
         }
+    }
+}
+
+@Composable
+private fun WordsBreakdownRow(learned: Int, inProgress: Int, untouched: Int) {
+    val total = (learned + inProgress + untouched).coerceAtLeast(1)
+    Column {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("🃏", fontSize = 22.sp, modifier = Modifier.width(32.dp))
+            Text("Словарь", color = TextDim, fontSize = 13.sp, modifier = Modifier.weight(1f))
+            Text("$learned закреплено", color = GreenC, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        }
+        Spacer(Modifier.height(8.dp))
+        // 3-segment bar: green (learned) + yellow (in progress) + grey (untouched)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 32.dp)
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Surface3),
+        ) {
+            if (learned > 0) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(learned.toFloat() / total)
+                        .background(GreenC)
+                )
+            }
+            if (inProgress > 0) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(inProgress.toFloat() / total)
+                        .background(YellowC)
+                )
+            }
+            // Остаток (untouched) — серый фон Surface3 уже виден
+        }
+        Spacer(Modifier.height(6.dp))
+        Row(
+            modifier = Modifier.padding(start = 32.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            WordsLegend(GreenC, "Закреплено", learned)
+            WordsLegend(YellowC, "В работе", inProgress)
+            WordsLegend(TextMute, "Не тронуто", untouched)
+        }
+    }
+}
+
+@Composable
+private fun WordsLegend(dot: Color, label: String, value: Int) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(dot))
+        Spacer(Modifier.width(4.dp))
+        Text("$label $value", color = TextDim, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 

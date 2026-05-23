@@ -180,6 +180,50 @@ data class LessonProgressEntity(
     @ColumnInfo(name = "completed_at") val completedAt: Long = System.currentTimeMillis()
 )
 
+/**
+ * История ВСЕХ прохождений уроков (включая повторы). Добавлена в v26 для
+ * экрана Stats — там нужно считать «уроков за неделю» с учётом повторов,
+ * тогда как `lesson_progress` хранит только первое прохождение каждого
+ * уникального урока (для ачивок «N уроков завершено»).
+ *
+ *  • `lesson_progress` (PK = lesson_key) — уникальные уроки, для ачивок
+ *  • `lesson_completion_history` (PK = autoincrement id) — все события
+ */
+@Entity(
+    tableName = "lesson_completion_history",
+    indices = [androidx.room.Index(value = ["completed_at"])],
+)
+data class LessonCompletionEventEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    @ColumnInfo(name = "lesson_key")   val lessonKey: String,
+    @ColumnInfo(name = "completed_at") val completedAt: Long = System.currentTimeMillis(),
+)
+
+/**
+ * Per-activity time log (добавлен в v27 для честного breakdown в Stats).
+ *
+ * Одна сессия = один заход юзера в учебный экран. `activity_type` —
+ * одна из: LESSON / FLASHCARDS / GAME / BOOK / CHAT. Радио НЕ пишется
+ * сюда — у него отдельный источник (`radio_listening_session`).
+ *
+ * Stats screen использует `SUM((ended_at - started_at) / 60_000)` по
+ * `activity_type` с фильтром `started_at >= periodStart` чтобы дать
+ * реальную картину «на что ушло время» вместо эмпирических baseline.
+ */
+@Entity(
+    tableName = "activity_time_log",
+    indices = [
+        androidx.room.Index(value = ["started_at"]),
+        androidx.room.Index(value = ["activity_type"]),
+    ],
+)
+data class ActivityTimeLogEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    @ColumnInfo(name = "activity_type") val activityType: String,
+    @ColumnInfo(name = "started_at")    val startedAt: Long,
+    @ColumnInfo(name = "ended_at")      val endedAt: Long,
+)
+
 @Entity(tableName = "article_words")
 data class ArticleWordEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
