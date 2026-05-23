@@ -423,6 +423,17 @@ object Navigation {
             // OTA download route DISABLED for v1 — see comment near initialStartDest.
             // DownloadScreen + DownloadViewModel kept in source but unreachable.
 
+            // ── Чекпоинты A1 (v1.22.9, 4 блока × 1 CP) ───────
+            composable(
+                "checkpoint/{cpId}",
+                arguments = listOf(androidx.navigation.navArgument("cpId") {
+                    type = androidx.navigation.NavType.StringType
+                })
+            ) { entry ->
+                val cpId = entry.arguments?.getString("cpId") ?: "cp1"
+                com.spanishapp.ui.checkpoint.CheckpointScreen(navController, cpId)
+            }
+
             // ── Рейтинг / Лиги / Лидерборд ───────────────────
             composable("rating_full")  { RatingScreen(navController) }
             composable("leaderboard")  { LeaderboardScreen(navController) }
