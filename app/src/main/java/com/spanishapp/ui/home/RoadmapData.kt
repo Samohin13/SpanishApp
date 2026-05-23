@@ -57,7 +57,7 @@ object RoadmapData {
                 // 15  🆕 Вставка: после числительных — порядковые
                 RoadmapLesson("🔢 Порядковые: primero, segundo…",             "content", "general", id = "u1_l13_5"),
                 // 16  ЧЕКПОИНТ
-                RoadmapLesson("🏁 Чекпоинт: «Паспортный контроль»",           "quiz",    "all", id = "u1_l14")
+                RoadmapLesson("🏁 Чекпоинт A1.1: «Паспортный контроль»",           "quiz",    "all", id = "u1_l14")
             )
         ),
 
@@ -104,7 +104,7 @@ object RoadmapData {
                 // 30  l13
                 RoadmapLesson("📚 Множественное число: -s и -es",              "content", "general", id = "u2_l13"),
                 // 31  ЧЕКПОИНТ l14
-                RoadmapLesson("🏁 Чекпоинт: «Аренда жилья»",                   "quiz",    "all",     id = "u2_l14")
+                RoadmapLesson("🏁 Чекпоинт A1.2: «Аренда жилья»",                   "quiz",    "all",     id = "u2_l14")
             )
         ),
 
@@ -153,7 +153,7 @@ object RoadmapData {
                 // 46  l13
                 RoadmapLesson("🚫 Отрицание: No + глагол / nunca / jamás",    "content", "general", id = "u3_l13"),
                 // 47  ЧЕКПОИНТ l14
-                RoadmapLesson("🏁 Чекпоинт: «Обед в ресторане»",               "quiz",    "all",     id = "u3_l14")
+                RoadmapLesson("🏁 Чекпоинт A1.3: «Обед в ресторане»",               "quiz",    "all",     id = "u3_l14")
             )
         ),
 
@@ -198,7 +198,7 @@ object RoadmapData {
                 // 59  ✅ Потом ПРАКТИКА возвратных в контексте дня (была pos 12)
                 RoadmapLesson("🌅 Мой день: me levanto, desayuno, trabajo…",   "content", "general", id = "u4_l12"),
                 // 60  🆕 yo-формы перемещены в A1 Блок 2 (Fix #2). Здесь остаётся только финал
-                RoadmapLesson("🏆 ФИНАЛЬНЫЙ БОСС: «Один день в Мадриде»",      "quiz",    "all",     id = "u4_l14")
+                RoadmapLesson("🏁 Чекпоинт A1: «Один день в Мадриде»",      "quiz",    "all",     id = "u4_l14")
             )
         ),
 
@@ -244,7 +244,7 @@ object RoadmapData {
                 // l13
                 RoadmapLesson("🗣️ Рассказ в прошлом: связный текст",               "content", "general"),
                 // l14 чекпоинт
-                RoadmapLesson("🎯 Тест: Pretérito Indefinido полный",               "quiz",    "all")
+                RoadmapLesson("🏁 Чекпоинт A2.1: «У врача»",               "quiz",    "all")
             )
         ),
 
@@ -291,7 +291,7 @@ object RoadmapData {
                 // l13
                 RoadmapLesson("😊 Эмоции: alegría, tristeza, miedo, sorpresa",     "content",   "emociones", id = "u6_l13"),
                 // l14 чекпоинт
-                RoadmapLesson("🏁 Чекпоинт: «Расскажи о своём детстве»",           "quiz",    "all",     id = "u6_l14")
+                RoadmapLesson("🏁 Чекпоинт A2.2: «Шопинг с Carmen»",           "quiz",    "all",     id = "u6_l14")
             )
         ),
 
@@ -341,7 +341,7 @@ object RoadmapData {
                 // l13
                 RoadmapLesson("🍽️ Гастрономия: tapas, paella, tortilla española",  "content",   "comida_bebida", id = "u7_l13"),
                 // l14 чекпоинт
-                RoadmapLesson("🏁 Чекпоинт: «Мой обычный день»",                   "quiz",    "all",       id = "u7_l14")
+                RoadmapLesson("🏁 Чекпоинт A2.3: «Выходные с Lucía»",                   "quiz",    "all",       id = "u7_l14")
             )
         ),
 
@@ -371,7 +371,7 @@ object RoadmapData {
                 RoadmapLesson("📏 Cuantificadores: mucho, poco, bastante, demasiado","content","general"),
                 RoadmapLesson("📱 Технологии: app, wifi, contraseña, descargar",   "content",   "tecnologia"),
                 RoadmapLesson("💪 Спорт и здоровье: hacer ejercicio, llevar dieta","content",   "salud"),
-                RoadmapLesson("🏆 ФИНАЛЬНЫЙ БОСС A2: «Планирование путешествия»",  "quiz",    "all")
+                RoadmapLesson("🏁 Чекпоинт A2: «Собеседование» (финал A2)",  "quiz",    "all")
             )
         ),
 
@@ -418,7 +418,7 @@ object RoadmapData {
                 // 15  l13
                 RoadmapLesson("📝 Aunque: факт vs гипотеза",                         "content", "general", id = "u9_l13"),
                 // 16  ЧЕКПОИНТ l14
-                RoadmapLesson("🏁 Чекпоинт: «Совет другу»",                         "quiz",    "all",     id = "u9_l14")
+                RoadmapLesson("🏁 Чекпоинт B1.1: «Проблема в отеле»",                         "quiz",    "all",     id = "u9_l14")
             )
         ),
 
@@ -463,7 +463,7 @@ object RoadmapData {
                 // 29
                 RoadmapLesson("❤️ Me gustaría que + Subjuntivo",                     "content", "general"),
                 // 30  ЧЕКПОИНТ
-                RoadmapLesson("🏁 Чекпоинт: «Если бы я...»",                         "quiz",    "all")
+                RoadmapLesson("🏁 Чекпоинт B1.2: «Свидание с Andrés»",                         "quiz",    "all")
             )
         ),
 
@@ -510,7 +510,7 @@ object RoadmapData {
                 // 45  l13
                 RoadmapLesson("📝 Conclusión: en definitiva / en resumen / es decir", "content", "general", id = "u11_l13"),
                 // 46  ЧЕКПОИНТ l14
-                RoadmapLesson("🏁 Чекпоинт: «Интервью»",                              "quiz",    "all",     id = "u11_l14")
+                RoadmapLesson("🏁 Чекпоинт B1.3: «Кино с Marta»",                              "quiz",    "all",     id = "u11_l14")
             )
         ),
 
@@ -557,7 +557,7 @@ object RoadmapData {
                 // 60  l13
                 RoadmapLesson("🗣️ Argumentar: por un lado... por otro lado...",        "content","general", id = "u12_l13"),
                 // 61  ФИНАЛЬНЫЙ ЧЕКПОИНТ B1 l14
-                RoadmapLesson("🏆 Чекпоинт «Финал B1»",                               "quiz",   "all",      id = "u12_l14")
+                RoadmapLesson("🏁 Чекпоинт B1: «Помоги туристу» (финал B1)",                               "quiz",   "all",      id = "u12_l14")
             )
         ),
 
@@ -601,7 +601,7 @@ object RoadmapData {
                 // l13
                 RoadmapLesson("🔮 Subj. в придаточных относительных: alguien que sepa","content", "general", id = "u13_l13"),
                 // l14 чекпоинт
-                RoadmapLesson("🏆 Чекпоинт Блока 1 B2",                                "quiz",    "all",     id = "u13_l14")
+                RoadmapLesson("🏁 Чекпоинт B2.1: «Собеседование с Ana»",                                "quiz",    "all",     id = "u13_l14")
             )
         ),
 
@@ -644,7 +644,7 @@ object RoadmapData {
                 // l13
                 RoadmapLesson("💬 Nominalización: de verbo a sustantivo",              "content", "general", id = "u14_l13"),
                 // l14 чекпоинт
-                RoadmapLesson("🏆 Чекпоинт Блока 2 B2",                                "quiz",    "all",     id = "u14_l14")
+                RoadmapLesson("🏁 Чекпоинт B2.2: «Семейный спор у тёти Rosa»",                                "quiz",    "all",     id = "u14_l14")
             )
         ),
 
@@ -687,7 +687,7 @@ object RoadmapData {
                 // l13
                 RoadmapLesson("📚 Léxico académico: demostrar, evidenciar, sostener",  "content", "general", id = "u15_l13"),
                 // l14 чекпоинт
-                RoadmapLesson("🏆 Чекпоинт Блока 3 B2",                                "quiz",    "all",     id = "u15_l14")
+                RoadmapLesson("🏁 Чекпоинт B2.3: «Бизнес-встреча»",                                "quiz",    "all",     id = "u15_l14")
             )
         ),
 
@@ -730,7 +730,7 @@ object RoadmapData {
                 // l13
                 RoadmapLesson("🔤 Ortografía y puntuación avanzada",                   "content", "general", id = "u16_l13"),
                 // l14 финальный чекпоинт
-                RoadmapLesson("🏆 ФИНАЛЬНЫЙ ЧЕКПОИНТ B2",                              "quiz",    "all",     id = "u16_l14")
+                RoadmapLesson("🏁 Чекпоинт B2: FINAL «Прощание с Madrid»",                              "quiz",    "all",     id = "u16_l14")
             )
         )
     )
