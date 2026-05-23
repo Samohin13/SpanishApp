@@ -461,6 +461,40 @@
       "correct_answer": "Gracias Madrid por enseñarme que mi casa está en todas partes",
       "word_bank": ["Gracias", "Madrid", "por", "enseñarme", "que", "mi", "casa", "está", "en", "todas", "partes", "es", "tener"],
       "explanation_on_fail_ru": "Финальная поэтика: «por enseñarme que» (por + inf + que + Indic). «Mi casa está en todas partes» — кульминация курса. Это речь nativa."
+    },
+    {
+      "round": 29,
+      "format": "CONJUGATE",
+      "topic_ru": "Pluscuamp Subj · si no hubieras venido a Madrid",
+      "tested_lesson": "u16_l13",
+      "tested_grammar": "Pluscuamperfecto Subjuntivo · reflexión final",
+      "npc_line_es": "Andrés (con voz baja): Si no ___ (venir) a Madrid aquel septiembre, nunca nos habríamos conocido.",
+      "npc_line_ru": "Andrés (тихо): Если бы ты не приехала в Мадрид в тот сентябрь, мы бы никогда не встретились.",
+      "prompt_ru": "Поставь Pluscuamperfecto Subjuntivo (tú, hubieras):",
+      "sentence_template": "Si no ___ venido a Madrid aquel septiembre...",
+      "verb_infinitive": "venir",
+      "correct_answer": "hubieras",
+      "distractors": ["habrías", "habías", "vinieras"],
+      "explanation_on_fail_ru": "Si тип 3 (нереальное прошлое): Si + Pluscuamp.Subj (hubieras venido) + Cond.Comp (habríamos conocido). «Habrías» — Cond.Simple. «Habías» — Pluscuamp.Indic. «Vinieras» — Imp.Subj. (для si тип 2, не для прошлого)."
+    },
+    {
+      "round": 30,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Pluscuamp Subj · финальная рефлексия",
+      "tested_lesson": "u16_l13",
+      "tested_grammar": "Si тип 3 + Cond.Comp + double clíticos",
+      "npc_line_es": "Lucía: Antes de irte, dinos: ¿qué habría sido de ti sin nosotros?",
+      "npc_line_ru": "Lucía: Перед отъездом скажи: что бы стало с тобой без нас?",
+      "prompt_ru": "Переведи рефлексию (нереальное прошлое + клитики):",
+      "prompt_text_ru": "Если бы вы мне это не показали, я бы никогда не поняла, что значит быть мадридкой.",
+      "correct_answer": "Si vosotros no me lo hubierais mostrado yo nunca habría entendido lo que significa ser madrileña",
+      "acceptable_alternatives": [
+        "Si no me lo hubierais enseñado nunca habría entendido lo que significa ser madrileña",
+        "Si vosotros no me lo hubieseis mostrado yo nunca habría comprendido lo que significa ser madrileña",
+        "Si no me lo hubierais mostrado yo nunca habría entendido lo que es ser madrileña"
+      ],
+      "hint_ru": "Si + me lo hubierais mostrado → nunca habría entendido lo que.",
+      "explanation_on_fail_ru": "Финальная B2-конструкция: Si тип 3 + двойной клитик «me lo» (мне это) + Cond.Comp «habría entendido» + nominal relative «lo que significa». Это кульминация всего курса."
     }
   ],
   "pass_outcomes": {

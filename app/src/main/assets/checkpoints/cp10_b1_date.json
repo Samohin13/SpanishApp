@@ -393,6 +393,42 @@
         "Que sí, que sí, hasta luego."
       ],
       "explanation_on_fail_ru": "«Lo he pasado genial» = провела отлично. «Ojalá nos veamos» — Ojalá + Pres Subj (близкое будущее). Тёплое прощание открывает дверь второму свиданию."
+    },
+    {
+      "round": 23,
+      "format": "CHOICE",
+      "topic_ru": "Двойные клитики · te lo digo en serio",
+      "tested_lesson": "u10_l5",
+      "tested_grammar": "Clíticos dobles · te + lo (romántico)",
+      "npc_line_es": "Andrea, ¿de verdad piensas eso de mí?",
+      "npc_line_ru": "Andrea, правда так обо мне думаешь?",
+      "prompt_ru": "Подтверди серьёзно: «Я говорю тебе это серьёзно, Andrés.»",
+      "correct_answer": "Te lo digo en serio, Andrés.",
+      "distractors": [
+        "Le lo digo en serio, Andrés.",
+        "Lo te digo en serio, Andrés.",
+        "Se te digo en serio, Andrés."
+      ],
+      "explanation_on_fail_ru": "Порядок двойных клитиков: ID (te) перед OD (lo) перед глаголом. «Le lo» — невозможно (правило двух «l» → se lo, но здесь te lo, потому что собеседник — tú). «Lo te» — нарушение порядка."
+    },
+    {
+      "round": 24,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Двойные клитики · se lo (третье лицо)",
+      "tested_lesson": "u10_l5",
+      "tested_grammar": "Clíticos dobles · se lo (le+lo → se lo)",
+      "npc_line_es": "He pensado mucho en ti esta semana. Quiero contarte algo.",
+      "npc_line_ru": "Много думал о тебе на неделе. Хочу тебе кое-что рассказать.",
+      "prompt_ru": "Переведи реплику Andrés (про подругу): «Я уже сказал ей это, моей лучшей подруге».",
+      "prompt_text_ru": "Я уже сказал ей это, моей лучшей подруге.",
+      "correct_answer": "Ya se lo he dicho a mi mejor amiga",
+      "acceptable_alternatives": [
+        "Se lo he dicho ya a mi mejor amiga",
+        "Ya se lo dije a mi mejor amiga",
+        "Se lo dije ya a mi mejor amiga"
+      ],
+      "hint_ru": "le + lo → se lo (правило двух «l»).",
+      "explanation_on_fail_ru": "Когда ID 3 лица (le/les) встречается с OD 3 лица (lo/la/los/las), «le» превращается в «se». «Le lo» — НЕЛЬЗЯ. Правильно: «se lo he dicho»."
     }
   ],
   "pass_outcomes": {

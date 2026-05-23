@@ -369,6 +369,38 @@
         "Que tenga buen día, hasta nunca."
       ],
       "explanation_on_fail_ru": "С подругой — «un beso» (поцелуй на прощание, типично испанское). «Doctora / señora / usted» — формальные, не для подруги. «Hasta nunca» — обидное."
+    },
+    {
+      "round": 21,
+      "format": "CHOICE",
+      "topic_ru": "Клитики · te lo cuento (планы)",
+      "tested_lesson": "u7_l5",
+      "tested_grammar": "Pronombres átonos · te + lo (orden ID-OD)",
+      "npc_line_es": "Oye, ¿qué tal el plan del sábado? ¿Me lo cuentas ya?",
+      "npc_line_ru": "Слушай, как там план на субботу? Уже расскажешь?",
+      "prompt_ru": "Ответь: «Расскажу тебе его завтра». Какой вариант правильный?",
+      "correct_answer": "Te lo cuento mañana.",
+      "distractors": [
+        "Le lo cuento mañana.",
+        "Lo te cuento mañana.",
+        "Te le cuento mañana."
+      ],
+      "explanation_on_fail_ru": "Порядок клитиков: ID (te) → OD (lo) → глагол. «Le lo» НЕВОЗМОЖНО — два «l» подряд превращаются в «se lo». «Lo te» — нарушение порядка."
+    },
+    {
+      "round": 22,
+      "format": "CONJUGATE",
+      "topic_ru": "Клитики · le для косвенного дополнения",
+      "tested_lesson": "u7_l5",
+      "tested_grammar": "Pronombres átonos · le (objeto indirecto)",
+      "npc_line_es": "¿Has hablado con Pablo del plan?",
+      "npc_line_ru": "Говорила с Пабло о плане?",
+      "prompt_ru": "Заполни клитик: «No, todavía no ___ he dicho nada a Pablo.»",
+      "sentence_template": "No todavía no ___ he dicho nada a Pablo.",
+      "verb_infinitive": "decir",
+      "correct_answer": "le",
+      "distractors": ["lo", "la", "se"],
+      "explanation_on_fail_ru": "«A Pablo» = косвенное дополнение → клитик «le» (не lo!). «Lo/la» — только для прямого дополнения. «Se» — когда после идёт ещё один клитик (se lo dije)."
     }
   ],
   "pass_outcomes": {

@@ -381,6 +381,42 @@
         "Bye, hablamos."
       ],
       "explanation_on_fail_ru": "«Claro que sí» = конечно. «Allí estaré» (Futuro Simple) — обещание. Энтузиазм с подругой обязателен."
+    },
+    {
+      "round": 23,
+      "format": "CHOICE",
+      "topic_ru": "Relativo · lo que + клитик",
+      "tested_lesson": "u11_l5",
+      "tested_grammar": "Relativos · lo que (neutral) + clíticos",
+      "npc_line_es": "¿Y qué te ha parecido el giro final de la película?",
+      "npc_line_ru": "А как тебе финальный поворот фильма?",
+      "prompt_ru": "Выбери правильное (используй «lo que» + клитик):",
+      "correct_answer": "Lo que más me ha gustado es cómo Almodóvar lo resuelve sin explicarlo todo.",
+      "distractors": [
+        "El que más me ha gustado es cómo Almodóvar le resuelve sin explicarle todo.",
+        "La que más me ha gustado es cómo Almodóvar la resuelve sin explicarla todo.",
+        "Que más me ha gustado es cómo Almodóvar lo resuelve sin explicar todo."
+      ],
+      "explanation_on_fail_ru": "«Lo que» = относит. местоимение для абстрактных понятий (то, что). «El que/la que» — только с конкретным сущ. «Lo resuelve» (м.р. — el giro) + «explicarlo» (инфинитив + клитик, слитно)."
+    },
+    {
+      "round": 24,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Relativo · la que + клитик",
+      "tested_lesson": "u11_l5",
+      "tested_grammar": "Relativos · la que + lo + verbo",
+      "npc_line_es": "Hay una escena que no se me va de la cabeza.",
+      "npc_line_ru": "Есть одна сцена, которая не выходит у меня из головы.",
+      "prompt_ru": "Переведи: «Сцена, которую я тебе советую — последняя; ты её увидишь и поймёшь.»",
+      "prompt_text_ru": "Сцена, которую я тебе советую — последняя; ты её увидишь и поймёшь.",
+      "correct_answer": "La escena que te recomiendo es la última la verás y lo entenderás",
+      "acceptable_alternatives": [
+        "La escena que te recomiendo es la última la verás y la entenderás",
+        "La que te recomiendo es la última la verás y lo entenderás",
+        "La escena que te aconsejo es la última la verás y lo entenderás"
+      ],
+      "hint_ru": "Relativo «que» + клитики «te» (ID) и «la» (OD ж.р., escena).",
+      "explanation_on_fail_ru": "«La escena... la verás» — клитик «la» (ж.р., escena). «Te recomiendo» — ID. «Lo entenderás» — нейтральный «lo» (= ситуацию, идею)."
     }
   ],
   "pass_outcomes": {

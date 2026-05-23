@@ -390,6 +390,40 @@
       ],
       "hint_ru": "«Espero que» + Subj (tomen, podamos).",
       "explanation_on_fail_ru": "«Espero que» — желание → ВСЕГДА Subjuntivo. Tomar (ellos) Subj → tomen. Poder (nosotros) Subj → podamos."
+    },
+    {
+      "round": 25,
+      "format": "CONJUGATE",
+      "topic_ru": "Pluscuamp Subj · si hubiera trabajado",
+      "tested_lesson": "u13_l13",
+      "tested_grammar": "Pluscuamperfecto Subjuntivo · si тип 3",
+      "npc_line_es": "Una pregunta más. Si ___ (trabajar) en una multinacional antes, ¿habría aprendido más rápido el sector?",
+      "npc_line_ru": "Ещё вопрос. Если бы Вы работали в мультинациональной раньше, выучили бы быстрее сектор?",
+      "prompt_ru": "Поставь Pluscuamperfecto de Subjuntivo (она, hubiera/hubiese):",
+      "sentence_template": "Si yo ___ trabajado en una multinacional antes...",
+      "verb_infinitive": "trabajar",
+      "correct_answer": "hubiera",
+      "distractors": ["habría", "había", "hubiese trabajado"],
+      "explanation_on_fail_ru": "Si тип 3 (нереальное прошлое): Si + Pluscuamp.Subj (hubiera/hubiese trabajado) + Condicional Compuesto (habría aprendido). «Habría» — это Condicional, не Subj. «Había» — Pluscuamp.Indic. Вариант «hubiese» правилен, но шаблон уже ждёт одну форму перед «trabajado»."
+    },
+    {
+      "round": 26,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Si тип 3 · полное условное прошлое",
+      "tested_lesson": "u13_l13",
+      "tested_grammar": "Pluscuamperfecto Subjuntivo + Condicional Compuesto",
+      "npc_line_es": "Hipotéticamente: ¿qué habría cambiado en su carrera?",
+      "npc_line_ru": "Гипотетически: что бы изменилось в Вашей карьере?",
+      "prompt_ru": "Переведи (si тип 3, нереальное прошлое):",
+      "prompt_text_ru": "Если бы я начала работать в Мадриде десять лет назад, я бы уже стала директором.",
+      "correct_answer": "Si hubiera empezado a trabajar en Madrid hace diez años ya habría llegado a ser directora",
+      "acceptable_alternatives": [
+        "Si hubiese empezado a trabajar en Madrid hace diez años ya habría llegado a ser directora",
+        "Si hubiera empezado a trabajar en Madrid hace diez años ya me habría convertido en directora",
+        "Si hubiera comenzado a trabajar en Madrid hace diez años ya habría sido directora"
+      ],
+      "hint_ru": "Si + hubiera/hubiese + part. → habría + part.",
+      "explanation_on_fail_ru": "Si тип 3 = нереальное прошлое. Формула: Si + Pluscuamp.Subj (hubiera empezado) + Condicional Compuesto (habría llegado). Обе формы образуются через haber + participio."
     }
   ],
   "pass_outcomes": {

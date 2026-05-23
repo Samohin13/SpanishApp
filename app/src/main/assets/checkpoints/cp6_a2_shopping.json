@@ -356,6 +356,32 @@
         "Adiós, me marcho ya, doctora."
       ],
       "explanation_on_fail_ru": "Carmen на «tú», молодая продавщица — «hasta pronto» / «hasta luego» нейтрально. «Señora» (бабушка) и «usted» здесь холодно. «Doctora» — совсем не тот контекст."
+    },
+    {
+      "round": 21,
+      "format": "CHOICE",
+      "topic_ru": "Клитики · lo/la с одеждой (упаковка)",
+      "tested_lesson": "u6_l5",
+      "tested_grammar": "Pronombres átonos · lo/la (objeto directo)",
+      "npc_line_es": "Te llevas la chaqueta, ¿verdad? ¿Te ___ envuelvo para regalo?",
+      "npc_line_ru": "Берёшь куртку, да? Тебе её упаковать как подарок?",
+      "prompt_ru": "Какой клитик заменяет «la chaqueta» (ж.р.)?",
+      "correct_answer": "la",
+      "distractors": ["lo", "le", "se"],
+      "explanation_on_fail_ru": "«La chaqueta» (ж.р., прямое дополнение) → клитик «la». «Lo» — для м.р. (el jersey → lo). «Le» — для косвенного. «Se» — рефлексивный."
+    },
+    {
+      "round": 22,
+      "format": "BUILD",
+      "topic_ru": "Клитики · lo с м.р. одеждой",
+      "tested_lesson": "u6_l5",
+      "tested_grammar": "Pronombres átonos · lo + verbo",
+      "npc_line_es": "El jersey azul te queda perfecto. ¿Qué dices?",
+      "npc_line_ru": "Синий свитер тебе идеально. Что скажешь?",
+      "prompt_ru": "Собери ответ «я его беру» (5 слов):",
+      "correct_answer": "Sí me lo llevo gracias",
+      "word_bank": ["Sí", "me", "lo", "llevo", "gracias", "la", "le", "se"],
+      "explanation_on_fail_ru": "«Me lo llevo» = я его беру (себе). Порядок: ID (me) → OD (lo) → глагол. «El jersey» = м.р. → lo, не la. «Le lo» — НЕЛЬЗЯ (двух «l» не бывает, тогда se lo)."
     }
   ],
   "pass_outcomes": {

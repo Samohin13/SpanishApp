@@ -2704,5 +2704,106 @@ object TheoryContentData {
             rule = "Финальный чекпоинт: эмиграция в Испанию. Применяешь ВСЁ — от приветствий до сложного формального стиля.",
             takeaways = listOf("Завершение всего курса!", "254 урока пройдено", "🎉 ¡Felicidades!")),
 
+        // ─────────────────────────────────────────────────────────────────
+        // u16_l9_coloquial — Разговорные восклицания и междометия
+        // Bonus card: то, что слышишь на улице в Испании каждый день.
+        // ─────────────────────────────────────────────────────────────────
+        "u16_l9_coloquial" to TheoryContent(
+            lessonId = "u16_l9_coloquial",
+            title = "Разговорные восклицания: ¡joder!, ¡coño!, ¡qué fuerte!",
+            subtitle = "Что слышно от испанцев каждый день. Где можно, где нельзя.",
+            emoji = "🗣️",
+            cefr = "B2",
+            readMinutes = 4,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.WARNING,
+                    heading = "⚠ Где НЕЛЬЗЯ",
+                    body = "Эти выражения — colloquial, иногда vulgar. **Не использовать** с usted, на работе, при детях. На приёме у врача — никогда. С друзьями за пивом — нормально. Услышишь сразу, как только пройдёшь паспортный контроль в Барахасе.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "3 уровня окраски",
+                    body = "**Mild** (нейтрально-разговорное, можно почти везде): vale, tío/tía, qué fuerte, madre mía, flipar.\n**Medium** (только со своими): joder, hostia.\n**Strong** (буквально vulgar, но используется широко): coño. Запомни: чем «крепче» — тем уже круг, где это уместно.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "Топ-8 выражений",
+                    examples = listOf(
+                        TheoryExample("¡Joder, qué tarde!", "Блин, как поздно!", "medium — «блин/чёрт», самое распространённое"),
+                        TheoryExample("¡Coño, qué frío!", "Ё-моё, как холодно!", "medium-strong — буквально неприличное, но в Spain как «блин!»"),
+                        TheoryExample("¡Hostia, qué pasada!", "Вот это да!", "medium — religious origin, «чёрт!» / «вот это да!»"),
+                        TheoryExample("¡Qué fuerte!", "Нифига себе!", "mild — абсолютно нормально, даже на ТВ"),
+                        TheoryExample("¡Madre mía!", "Мама дорогая!", "mild — универсальное удивление"),
+                        TheoryExample("Vale, nos vemos.", "Окей, увидимся.", "neutral — «окей», маркер разговорной речи"),
+                        TheoryExample("¿Qué pasa, tío?", "Чё как, чувак?", "mild — обращение к ровесникам (tía к девушке)"),
+                        TheoryExample("Estoy flipando.", "Я офигеваю.", "mild — разговорный глагол, очень частый"),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Как использовать без позора",
+                    body = "1) **Слушай и копируй контекст**: если друг говорит joder — можно ответить тем же. Если коллега — не подхватывай.\n2) **Никогда не первым** с незнакомцами старше тебя.\n3) **Vale и qué fuerte** — безопасны почти везде, начинай с них.\n4) **Coño** — самое рискованное: в Spain mainstream, в Latam воспринимается жёстче.\n5) **Joder** в начале фразы = «блин», в середине = усилитель: «es la joder buena» — «это охрененно хорошо».",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Регистр решает всё — не использовать с usted",
+                "Mild (vale, qué fuerte) — везде ок",
+                "Joder / hostia — только со своими",
+                "Coño в Spain ≠ coño в Latam (там жёстче)",
+            ),
+            relatedTheory = emptyList(),
+        ),
+
+        // ─────────────────────────────────────────────────────────────────
+        // u16_l10_voseo — Voseo: аргентинский и уругвайский испанский
+        // Bonus card: половина испаноязычного мира говорит «vos», а не «tú».
+        // ─────────────────────────────────────────────────────────────────
+        "u16_l10_voseo" to TheoryContent(
+            lessonId = "u16_l10_voseo",
+            title = "Voseo: tú vs vos. Аргентинский испанский",
+            subtitle = "Почему аргентинец говорит «vos tenés» вместо «tú tienes».",
+            emoji = "🇦🇷",
+            cefr = "B2",
+            readMinutes = 4,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Что такое voseo",
+                    body = "В **Аргентине, Уругвае, Парагвае**, частях **Боливии** и Центральной Америки используется **vos** вместо tú. Это не региональный диалект, а **национальный стандарт**. По радио, в кино, в учебниках, в газетах — vos. RAE (Real Academia) официально признаёт voseo нормой.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "tú vs vos — сравнение спряжений",
+                    examples = listOf(
+                        TheoryExample("tú eres → vos sos", "ты есть (быть)", "ser"),
+                        TheoryExample("tú tienes → vos tenés", "у тебя есть (иметь)", "tener"),
+                        TheoryExample("tú puedes → vos podés", "ты можешь (мочь)", "poder"),
+                        TheoryExample("tú quieres → vos querés", "ты хочешь (хотеть)", "querer"),
+                        TheoryExample("tú vienes → vos venís", "ты приходишь (приходить)", "venir"),
+                        TheoryExample("tú trabajas → vos trabajás", "ты работаешь (работать)", "trabajar"),
+                        TheoryExample("¿Vos sabés qué hora es?", "Ты знаешь, который час?", "окончания -ás/-és/-ís + ударение на последний слог, без дифтонгизации"),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Почему испанские учебники этого не учат",
+                    body = "Потому что учебники **Spain-centric** — пишутся в Мадриде/Барселоне для европейского рынка. Но цифры говорят другое:\n• **~45 млн** носителей **vos** (Argentina 45M + Uruguay 3.4M + Paraguay 7M + части Центр.Америки)\n• **~47 млн** активно используют **tú** в Latam (Mexico, Colombia, Peru, Chile…)\n\nЭто **половина** испаноязычного мира. Если ты планируешь Latam — voseo критичен. Если только Spain — можно игнорировать.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TEXT,
+                    heading = "📍 В нашем курсе",
+                    body = "В **Madrid Spanish** (наш курс) — только **tú**. Это позиция курса: один диалект, чтобы не путать новичка. Но если поедешь в **Buenos Aires** — учитывай: «¿Vos de dónde sos?» вместо «¿Tú de dónde eres?». Аргентинцы поймут tú, но сами так не говорят.",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "vos = tú в Argentina, Uruguay, Paraguay и др.",
+                "Окончания: -ás / -és / -ís (ударение на последний слог)",
+                "~45 млн носителей — половина Latam",
+                "Наш курс = Spain Spanish, vos только для справки",
+            ),
+            relatedTheory = emptyList(),
+        ),
+
     )
 }

@@ -392,6 +392,66 @@
       ],
       "hint_ru": "Voz pasiva futuro: será guardado por mí. Relativo: con el que.",
       "explanation_on_fail_ru": "Pasiva futuro «será guardado por mí». Relativo «con el que lo llevaba» (с каким носила). Imperfecto llevaba — длительное действие в прошлом."
+    },
+    {
+      "round": 25,
+      "format": "CONJUGATE",
+      "topic_ru": "Pluscuamp Subj · si me hubieran consultado",
+      "tested_lesson": "u14_l13",
+      "tested_grammar": "Pluscuamperfecto Subjuntivo · familia (regret)",
+      "npc_line_es": "Si me ___ (consultar) antes de vender la casa de la abuela, esto no habría pasado.",
+      "npc_line_ru": "Если бы со мной посоветовались до продажи дома бабушки, этого бы не случилось.",
+      "prompt_ru": "Поставь Pluscuamperfecto Subjuntivo (ellos, hubieran):",
+      "sentence_template": "Si me ___ consultado antes de vender la casa de la abuela...",
+      "verb_infinitive": "consultar",
+      "correct_answer": "hubieran",
+      "distractors": ["habrían", "habían", "hubieron"],
+      "explanation_on_fail_ru": "Si тип 3 (упрёк о прошлом): Si + Pluscuamp.Subj (hubieran consultado) + Cond.Comp (habría pasado). «Habrían» — это Cond. «Hubieron» — Pret.Anterior (почти не используется)."
+    },
+    {
+      "round": 26,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Pluscuamp Subj · упрёк семье",
+      "tested_lesson": "u14_l13",
+      "tested_grammar": "Si тип 3 · regret familiar",
+      "npc_line_es": "Hija, tu tía Rosa nunca te perdonará lo de la herencia.",
+      "npc_line_ru": "Доча, тётя Роса никогда тебя не простит насчёт наследства.",
+      "prompt_ru": "Переведи (нереальное прошлое, упрёк):",
+      "prompt_text_ru": "Если бы ты мне сказал правду раньше, я бы не вмешалась в этот разговор.",
+      "correct_answer": "Si me hubieras dicho la verdad antes yo no me habría metido en esta conversación",
+      "acceptable_alternatives": [
+        "Si me hubieses dicho la verdad antes yo no me habría metido en esta conversación",
+        "Si tú me hubieras dicho la verdad antes no me habría metido en esta conversación",
+        "Si me hubieras contado la verdad antes yo no me habría metido en esa conversación"
+      ],
+      "hint_ru": "Si + hubieras dicho → no me habría metido.",
+      "explanation_on_fail_ru": "Si тип 3: гипотеза в прошлом, изменить нельзя. «Hubieras dicho» (Pluscuamp.Subj 2 л.) + «habría metido» (Cond.Comp). Возвратное «meterse» — клитик «me»."
+    },
+    {
+      "round": 27,
+      "format": "CHOICE",
+      "topic_ru": "Клитики · se lo dijiste (упрёк)",
+      "tested_lesson": "u14_l5",
+      "tested_grammar": "Clíticos · se lo (le+lo) + Pret.Indef.",
+      "npc_line_es": "Andrea, esto es muy serio. ¿___ a tu primo lo del testamento?",
+      "npc_line_ru": "Andrea, это серьёзно. Ты сказала кузену про завещание?",
+      "prompt_ru": "Заполни клитики (ему + это):",
+      "correct_answer": "Se lo dijiste",
+      "distractors": ["Le lo dijiste", "Lo le dijiste", "Te lo dijiste"],
+      "explanation_on_fail_ru": "«Le» (a tu primo) + «lo» (lo del testamento) → «se lo» (правило двух «l»). «Le lo» — невозможно. «Te lo» = тебе это (другое лицо)."
+    },
+    {
+      "round": 28,
+      "format": "BUILD",
+      "topic_ru": "Клитики · se lo escondiste (семейный конфликт)",
+      "tested_lesson": "u14_l5",
+      "tested_grammar": "Clíticos dobles + Pret.Imperfecto",
+      "npc_line_es": "Tu tía dice que la carta de la abuela ya no está. ¿Por qué se la escondiste?",
+      "npc_line_ru": "Тётя говорит, письма бабушки больше нет. Почему ты его от неё спрятала?",
+      "prompt_ru": "Собери оправдание (8 слов):",
+      "correct_answer": "Yo no se la escondí ella la perdió",
+      "word_bank": ["Yo", "no", "se", "la", "escondí", "ella", "perdió", "le", "lo", "se la", "le la"],
+      "explanation_on_fail_ru": "«Se la escondí» — «se» (a la tía = le → se перед la) + «la» (la carta, ж.р.). «Le la» — невозможно. «Ella la perdió» — la = la carta. Pret.Indef. для законченного действия."
     }
   ],
   "pass_outcomes": {

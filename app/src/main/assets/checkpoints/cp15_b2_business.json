@@ -398,6 +398,42 @@
       ],
       "hint_ru": "Le agradezco, quedar a la espera, quedar a su disposición.",
       "explanation_on_fail_ru": "Бизнес-формулы B2: «la confianza depositada» (оказанное доверие), «quedo a la espera de» (жду), «quedo a su disposición» (остаюсь в распоряжении)."
+    },
+    {
+      "round": 25,
+      "format": "CHOICE",
+      "topic_ru": "Формальные клитики · se lo enviaré (usted)",
+      "tested_lesson": "u15_l5",
+      "tested_grammar": "Clíticos · se lo + futuro + usted",
+      "npc_line_es": "Andrea, necesitaré el contrato firmado en mi correo antes del viernes.",
+      "npc_line_ru": "Andrea, мне нужен подписанный контракт на почте до пятницы.",
+      "prompt_ru": "Ответь формально (на usted): «Я вам его пришлю сегодня же».",
+      "correct_answer": "Se lo enviaré hoy mismo, don Ramón.",
+      "distractors": [
+        "Le lo enviaré hoy mismo, don Ramón.",
+        "Te lo enviaré hoy mismo, don Ramón.",
+        "Lo le enviaré hoy mismo, don Ramón."
+      ],
+      "explanation_on_fail_ru": "«A usted» (le) + «el contrato» (lo) → «se lo» (правило двух «l»). «Le lo» — НЕВОЗМОЖНО. «Te lo» — на tú, не подходит для босса. Порядок ID-OD-глагол сохраняется."
+    },
+    {
+      "round": 26,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Формальные клитики · presentárselo (инфинитив)",
+      "tested_lesson": "u15_l5",
+      "tested_grammar": "Clíticos pegados al infinitivo · usted",
+      "npc_line_es": "El comité quiere conocer al nuevo equipo. ¿Puede organizarlo?",
+      "npc_line_ru": "Комитет хочет познакомиться с новой командой. Можете организовать?",
+      "prompt_ru": "Переведи формально (клитики слитно с инфинитивом):",
+      "prompt_text_ru": "Конечно. Я Вам его представлю в понедельник на собрании.",
+      "correct_answer": "Por supuesto Se lo presentaré el lunes en la reunión",
+      "acceptable_alternatives": [
+        "Por supuesto Voy a presentárselo el lunes en la reunión",
+        "Claro Se lo presentaré el lunes en la reunión",
+        "Desde luego Se lo presentaré el lunes en la reunión"
+      ],
+      "hint_ru": "se lo presentaré (futuro) или presentárselo (inf con clíticos pegados).",
+      "explanation_on_fail_ru": "Два варианта B2: 1) спрягаемый глагол с клитиками впереди — «se lo presentaré»; 2) инфинитив с клитиками слитно — «presentárselo» (с тильдой над á, акцент сохраняется). Оба грамматически верны."
     }
   ],
   "pass_outcomes": {
