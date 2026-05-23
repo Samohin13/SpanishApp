@@ -17,22 +17,21 @@ h1{font-size:36px;margin:0 0 6px;text-align:center;letter-spacing:-0.5px;font-we
 .module-desc{font-size:13px;color:var(--text-dim);margin-top:2px}
 .module-status{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:6px}
 .module-status.done{background:rgba(46,184,114,0.15);color:var(--green)}
-.module-status.draft{background:rgba(244,180,0,0.15);color:var(--accent)}
-.module-status.todo{background:rgba(142,142,147,0.15);color:var(--text-dim)}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-decoration:none;color:var(--text);transition:transform 0.15s,border-color 0.15s}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-decoration:none;color:var(--text);transition:transform 0.15s,border-color 0.15s;display:block}
 .card:hover{transform:translateY(-2px);border-color:var(--primary)}
 .card.boss{background:linear-gradient(135deg,rgba(244,180,0,0.10),rgba(255,107,26,0.06));border-color:var(--accent)}
+.card.final-boss{background:linear-gradient(135deg,rgba(244,180,0,0.18),rgba(255,107,26,0.12));border:2px solid var(--accent);box-shadow:0 4px 20px rgba(244,180,0,0.15)}
 .card-num{font-size:11px;font-weight:800;color:var(--primary);letter-spacing:1.4px;margin-bottom:6px}
-.card.boss .card-num{color:var(--accent)}
+.card.boss .card-num,.card.final-boss .card-num{color:var(--accent)}
 .card-title{font-size:16px;font-weight:700;margin-bottom:4px}
 .card-scene{font-size:12px;color:var(--text-dim);margin-bottom:10px;line-height:1.4}
 .card-meta{display:flex;gap:6px;flex-wrap:wrap}
 .tag{font-size:10px;background:var(--surface-2);padding:3px 8px;border-radius:5px;color:var(--text-dim);font-weight:600}
-.card.placeholder{opacity:0.55}
-.card.placeholder .card-title{font-weight:600}
 .intro-note{background:var(--surface);border-left:3px solid var(--primary);padding:14px 18px;border-radius:8px;max-width:900px;margin:0 auto 32px;font-size:14px;line-height:1.6;color:var(--text-dim)}
 .intro-note strong{color:var(--text)}
+.progress-banner{max-width:900px;margin:24px auto 32px;background:linear-gradient(135deg,rgba(46,184,114,0.10),rgba(255,107,26,0.06));border-left:3px solid var(--green);padding:14px 18px;border-radius:8px;font-size:14px;line-height:1.5}
+.progress-banner strong{color:var(--green);display:block;font-size:12px;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -41,7 +40,12 @@ h1{font-size:36px;margin:0 0 6px;text-align:center;letter-spacing:-0.5px;font-we
 <p class="subtitle">16 уникальных финальных экзаменов · 4 модуля × 4 блока</p>
 
 <div class="intro-note">
-  <strong>Концепция:</strong> каждый блок курса завершается чекпоинтом — story-driven мини-сценой с NPC. Юзер играет роль (Andrea, или с подменой имени/страны), общается с персонажем используя ТОЛЬКО материал текущего блока. Pass — открывается следующий блок. Fail — задержка, повтор уроков. Каждые 4 чекпоинта = финал модуля (BOSS со смешанным контентом).
+  <strong>Концепция:</strong> каждый блок курса завершается чекпоинтом — story-driven мини-сценой с NPC. Юзер играет роль (Andrea, с подменой страны по геолокации), общается с персонажем используя ТОЛЬКО материал текущего блока. Pass — открывается следующий блок. Fail — задержка, повтор уроков. Каждые 4 чекпоинта = финал модуля (BOSS со смешанным контентом).
+</div>
+
+<div class="progress-banner">
+  <strong>Прогресс мокапов</strong>
+  Все 16 HTML мокапов готовы. Module 1 (A1) уже в коде Android — можно играть. Module 2-4 — мокапы как design spec, контент уроков для них будет создан после релиза A1.
 </div>
 
 <div class="container">
@@ -52,42 +56,34 @@ h1{font-size:36px;margin:0 0 6px;text-align:center;letter-spacing:-0.5px;font-we
       <div class="module-num">1</div>
       <div class="module-info">
         <h2 class="module-title">Module 1 · A1 · Основа</h2>
-        <p class="module-desc">Алфавит, SER, TENER, ESTAR, артикли, числа 0-100, семья, цвета, дом, регулярные глаголы -AR/-ER/-IR, QUERER, PODER, IR, GUSTAR, время, рутина</p>
+        <p class="module-desc">Алфавит, SER, TENER, ESTAR, артикли, числа, семья, цвета, дом, регулярные глаголы, QUERER, PODER, IR, GUSTAR, рутина</p>
       </div>
-      <div class="module-status done">✓ ГОТОВ</div>
+      <div class="module-status done">✓ ГОТОВ + В КОДЕ</div>
     </div>
     <div class="cards">
       <a class="card" href="CP1_review.html">
         <div class="card-num">CP1 · BLOCK 1</div>
         <div class="card-title">🛂 Паспортный контроль</div>
-        <div class="card-scene">Madrid-Barajas · NPC: Carlos, офицер · 20 раундов</div>
-        <div class="card-meta">
-          <span class="tag">Алфавит</span><span class="tag">SER</span><span class="tag">Числа</span><span class="tag">Местоимения</span>
-        </div>
+        <div class="card-scene">Madrid-Barajas · Carlos · 20 раундов</div>
+        <div class="card-meta"><span class="tag">Алфавит</span><span class="tag">SER</span><span class="tag">Числа</span></div>
       </a>
       <a class="card" href="CP2_review.html">
         <div class="card-num">CP2 · BLOCK 2</div>
         <div class="card-title">🏠 Аренда квартиры</div>
-        <div class="card-scene">Малазанья · NPC: Sra. López · 18 раундов</div>
-        <div class="card-meta">
-          <span class="tag">TENER</span><span class="tag">ESTAR</span><span class="tag">Семья</span><span class="tag">Цвета</span>
-        </div>
+        <div class="card-scene">Малазанья · Sra. López · 18 раундов</div>
+        <div class="card-meta"><span class="tag">TENER</span><span class="tag">Семья</span><span class="tag">Цвета</span></div>
       </a>
       <a class="card" href="CP3_review.html">
         <div class="card-num">CP3 · BLOCK 3</div>
         <div class="card-title">🍽 Обед в ресторане</div>
-        <div class="card-scene">La Tasca · NPC: Diego, официант · 20 раундов</div>
-        <div class="card-meta">
-          <span class="tag">-AR/-ER/-IR</span><span class="tag">QUERER</span><span class="tag">PODER</span><span class="tag">Время</span>
-        </div>
+        <div class="card-scene">La Tasca · Diego · 20 раундов</div>
+        <div class="card-meta"><span class="tag">QUERER</span><span class="tag">PODER</span><span class="tag">Время</span></div>
       </a>
       <a class="card boss" href="CP4_review.html">
         <div class="card-num">🏆 CP4 · BOSS</div>
         <div class="card-title">🌆 День в Мадриде</div>
         <div class="card-scene">Sergio · 22 раунда · ФИНАЛ A1</div>
-        <div class="card-meta">
-          <span class="tag">IR</span><span class="tag">GUSTAR</span><span class="tag">Возвратные</span><span class="tag">Все блоки 1-3</span>
-        </div>
+        <div class="card-meta"><span class="tag">IR</span><span class="tag">GUSTAR</span><span class="tag">Возвратные</span></div>
       </a>
     </div>
   </div>
@@ -100,41 +96,33 @@ h1{font-size:36px;margin:0 0 6px;text-align:center;letter-spacing:-0.5px;font-we
         <h2 class="module-title">Module 2 · A2 · Повседневная жизнь</h2>
         <p class="module-desc">Прошедшее время, сравнения, расширенный словарь, личные истории</p>
       </div>
-      <div class="module-status todo">В РАЗРАБОТКЕ</div>
+      <div class="module-status done">✓ МОКАПЫ ГОТОВЫ</div>
     </div>
     <div class="cards">
-      <div class="card placeholder">
+      <a class="card" href="CP5_review.html">
         <div class="card-num">CP5 · BLOCK 5</div>
         <div class="card-title">💊 У врача</div>
-        <div class="card-scene">Поликлиника · NPC: Dra. Martínez</div>
-        <div class="card-meta">
-          <span class="tag">Прошедшее время</span><span class="tag">Тело</span><span class="tag">Симптомы</span>
-        </div>
-      </div>
-      <div class="card placeholder">
+        <div class="card-scene">Поликлиника · Dra. Martínez · 18 раундов</div>
+        <div class="card-meta"><span class="tag">Прошедшее</span><span class="tag">Тело</span><span class="tag">Симптомы</span></div>
+      </a>
+      <a class="card" href="CP6_review.html">
         <div class="card-num">CP6 · BLOCK 6</div>
         <div class="card-title">👗 Шопинг одежды</div>
-        <div class="card-scene">Gran Vía · NPC: Carmen, продавщица</div>
-        <div class="card-meta">
-          <span class="tag">Размеры</span><span class="tag">Сравнения</span><span class="tag">Цены</span>
-        </div>
-      </div>
-      <div class="card placeholder">
+        <div class="card-scene">Gran Vía · Carmen · 18 раундов</div>
+        <div class="card-meta"><span class="tag">Размеры</span><span class="tag">Сравнения</span><span class="tag">Цены</span></div>
+      </a>
+      <a class="card" href="CP7_review.html">
         <div class="card-num">CP7 · BLOCK 7</div>
         <div class="card-title">🗓 Планируем выходные</div>
-        <div class="card-scene">Кафе на улице · NPC: Lucía, подруга</div>
-        <div class="card-meta">
-          <span class="tag">Future</span><span class="tag">Предпочтения</span><span class="tag">Дни</span>
-        </div>
-      </div>
-      <div class="card placeholder boss">
+        <div class="card-scene">Кафе · Lucía · 18 раундов</div>
+        <div class="card-meta"><span class="tag">Future</span><span class="tag">Предпочтения</span></div>
+      </a>
+      <a class="card boss" href="CP8_review.html">
         <div class="card-num">🏆 CP8 · BOSS</div>
         <div class="card-title">💼 Первый день на работе</div>
-        <div class="card-scene">Офис · NPC: Pablo, начальник</div>
-        <div class="card-meta">
-          <span class="tag">Профессия</span><span class="tag">Расписание</span><span class="tag">Коллеги</span>
-        </div>
-      </div>
+        <div class="card-scene">Офис · Pablo · 22 раунда</div>
+        <div class="card-meta"><span class="tag">Профессия</span><span class="tag">Indefinido</span><span class="tag">Futuro</span></div>
+      </a>
     </div>
   </div>
 
@@ -146,41 +134,33 @@ h1{font-size:36px;margin:0 0 6px;text-align:center;letter-spacing:-0.5px;font-we
         <h2 class="module-title">Module 3 · B1 · Самостоятельное общение</h2>
         <p class="module-desc">Subjuntivo, condicional, мнения, аргументация, культурные различия</p>
       </div>
-      <div class="module-status todo">В РАЗРАБОТКЕ</div>
+      <div class="module-status done">✓ МОКАПЫ ГОТОВЫ</div>
     </div>
     <div class="cards">
-      <div class="card placeholder">
+      <a class="card" href="CP9_review.html">
         <div class="card-num">CP9 · BLOCK 9</div>
         <div class="card-title">🏨 Проблема в отеле</div>
-        <div class="card-scene">Hotel Imperial · NPC: Carmen, ресепшен</div>
-        <div class="card-meta">
-          <span class="tag">Subjuntivo</span><span class="tag">Condicional</span><span class="tag">Жалобы</span>
-        </div>
-      </div>
-      <div class="card placeholder">
+        <div class="card-scene">Hotel Imperial · Carmen · 20 раундов</div>
+        <div class="card-meta"><span class="tag">Subjuntivo</span><span class="tag">Condicional</span></div>
+      </a>
+      <a class="card" href="CP10_review.html">
         <div class="card-num">CP10 · BLOCK 10</div>
         <div class="card-title">💕 Первое свидание</div>
-        <div class="card-scene">Тапас-бар · NPC: Andrés</div>
-        <div class="card-meta">
-          <span class="tag">Чувства</span><span class="tag">Рассказ о себе</span><span class="tag">Эмоции</span>
-        </div>
-      </div>
-      <div class="card placeholder">
+        <div class="card-scene">Тапас-бар · Andrés · 20 раундов</div>
+        <div class="card-meta"><span class="tag">Imperfecto</span><span class="tag">Чувства</span><span class="tag">Ojalá</span></div>
+      </a>
+      <a class="card" href="CP11_review.html">
         <div class="card-num">CP11 · BLOCK 11</div>
         <div class="card-title">🎬 После кино</div>
-        <div class="card-scene">На улице · NPC: Marta, подруга</div>
-        <div class="card-meta">
-          <span class="tag">Мнения</span><span class="tag">Рекомендации</span><span class="tag">Обсуждение</span>
-        </div>
-      </div>
-      <div class="card placeholder boss">
+        <div class="card-scene">На улице · Marta · 20 раундов</div>
+        <div class="card-meta"><span class="tag">Perfecto compuesto</span><span class="tag">Мнения</span></div>
+      </a>
+      <a class="card boss" href="CP12_review.html">
         <div class="card-num">🏆 CP12 · BOSS</div>
         <div class="card-title">🗺 Помогаю туристу</div>
-        <div class="card-scene">Plaza Mayor · NPC: турист из Германии</div>
-        <div class="card-meta">
-          <span class="tag">Указания</span><span class="tag">Объяснения</span><span class="tag">Культура</span>
-        </div>
-      </div>
+        <div class="card-scene">Plaza Mayor · Hans · 22 раунда</div>
+        <div class="card-meta"><span class="tag">Указания</span><span class="tag">Si + imp</span><span class="tag">Объяснения</span></div>
+      </a>
     </div>
   </div>
 
@@ -192,41 +172,33 @@ h1{font-size:36px;margin:0 0 6px;text-align:center;letter-spacing:-0.5px;font-we
         <h2 class="module-title">Module 4 · B2 · Уверенный уровень</h2>
         <p class="module-desc">Сложные времена, деловой испанский, дебаты, культурный контекст</p>
       </div>
-      <div class="module-status todo">В РАЗРАБОТКЕ</div>
+      <div class="module-status done">✓ МОКАПЫ ГОТОВЫ</div>
     </div>
     <div class="cards">
-      <div class="card placeholder">
+      <a class="card" href="CP13_review.html">
         <div class="card-num">CP13 · BLOCK 13</div>
         <div class="card-title">👔 Собеседование</div>
-        <div class="card-scene">Barcelona Tech · NPC: Ana, HR</div>
-        <div class="card-meta">
-          <span class="tag">Карьера</span><span class="tag">Formal</span><span class="tag">Опыт</span>
-        </div>
-      </div>
-      <div class="card placeholder">
+        <div class="card-scene">Barcelona Tech · Ana HR · 22 раунда</div>
+        <div class="card-meta"><span class="tag">Cond. perfecto</span><span class="tag">Карьера</span></div>
+      </a>
+      <a class="card" href="CP14_review.html">
         <div class="card-num">CP14 · BLOCK 14</div>
         <div class="card-title">🍷 Семейный спор</div>
-        <div class="card-scene">За ужином · NPC: Tía Rosa</div>
-        <div class="card-meta">
-          <span class="tag">Эмоции</span><span class="tag">Аргументация</span><span class="tag">Conditional perfecto</span>
-        </div>
-      </div>
-      <div class="card placeholder">
+        <div class="card-scene">За ужином · Tía Rosa · 22 раунда</div>
+        <div class="card-meta"><span class="tag">Subj. imperf.</span><span class="tag">Дипломатия</span></div>
+      </a>
+      <a class="card" href="CP15_review.html">
         <div class="card-num">CP15 · BLOCK 15</div>
         <div class="card-title">💼 Бизнес-встреча</div>
-        <div class="card-scene">Конференц-зал · NPC: Director Ramón</div>
-        <div class="card-meta">
-          <span class="tag">Деловой</span><span class="tag">Презентация</span><span class="tag">Переговоры</span>
-        </div>
-      </div>
-      <div class="card placeholder boss">
+        <div class="card-scene">Конференц-зал · Ramón · 22 раунда</div>
+        <div class="card-meta"><span class="tag">Reported speech</span><span class="tag">Conectores</span></div>
+      </a>
+      <a class="card final-boss" href="CP16_review.html">
         <div class="card-num">🏆🏆 CP16 · FINAL BOSS</div>
         <div class="card-title">✈ Прощание с Madrid</div>
-        <div class="card-scene">Barajas · Ensemble (все NPC) · ВЕСЬ курс</div>
-        <div class="card-meta">
-          <span class="tag">Всё A1+A2+B1+B2</span><span class="tag">Эмоциональный финал</span>
-        </div>
-      </div>
+        <div class="card-scene">Barajas · Ensemble (все NPC) · 25 раундов</div>
+        <div class="card-meta"><span class="tag">ВЕСЬ КУРС</span><span class="tag">Subj. perf.</span><span class="tag">Futuro perf.</span></div>
+      </a>
     </div>
   </div>
 
