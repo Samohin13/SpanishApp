@@ -1,0 +1,431 @@
+{
+  "id": "cp8",
+  "cefr": "A2",
+  "block": 8,
+  "title_ru": "Первый день на работе (BOSS A2)",
+  "title_es": "Primer día en el trabajo",
+  "description_ru": "BOSS-чекпоинт Module 2. Tu primer día в испанской компании. Pablo — директор отдела маркетинга, 50 лет, формальный, на usted. Расскажи про опыт, объясни планы на будущее, ответь на гипотетические вопросы «что бы сделала если...». Микс всех тем A2. Справишься — Pablo доволен, ты в команде, открывается Module 3 (B1).",
+  "stakes_ru": "BOSS-чекпоинт: 22 раунда, все темы A2. Pass — добро пожаловать в команду. Fail — HR-отдел вышлет ресурсы по испанскому и перенесёт стартовую дату.",
+  "scene": {
+    "name": "Oficina · Empresa de marketing",
+    "type": "office_interview",
+    "city": "Madrid",
+    "background_image": "scene_cp8_work.jpg"
+  },
+  "npc": {
+    "id": "pablo",
+    "name": "Pablo Ruiz",
+    "role_ru": "Директор отдела маркетинга",
+    "role_es": "Director de Marketing",
+    "voice_id": "es-ES-Alvaro",
+    "portrait_image": "npc_pablo.jpg",
+    "personality": "формальный, businesslike, обращается на usted. 50 лет, опытный, спокойный, аналитический. На правильные ответы коротко кивает «correcto», на ошибках мягко переспрашивает «¿perdone, podría repetir?»."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 65,
+    "silver_percent": 78,
+    "gold_percent": 92
+  },
+  "rewards": {
+    "bronze_xp": 800,
+    "silver_xp_bonus": 150,
+    "gold_xp_bonus": 500,
+    "badge_id": "profesional",
+    "badge_name_ru": "Профессионал A2",
+    "unlocks_block": 9
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Formal saludo · primer encuentro",
+      "tested_lesson": "u1_l4 + u1_l10",
+      "tested_grammar": "Saludo profesional",
+      "npc_line_es": "Buenos días, Andrea. Soy Pablo Ruiz, director de marketing. Encantado de conocerla.",
+      "npc_line_ru": "Доброе утро, Андреа. Я Пабло Руис, директор по маркетингу. Очень приятно.",
+      "prompt_ru": "Ответь формально:",
+      "correct_answer": "Encantada, señor Ruiz. Gracias por recibirme.",
+      "distractors": [
+        "Hola Pablo, ¿qué pasa, tío?",
+        "Encantado, señor Ruiz. Gracias.",
+        "Hola usted, encantada de ti."
+      ],
+      "explanation_on_fail_ru": "Andrea — женщина → «encantada» (ж.р.). «Encantado» — м.р. С директором — formal usted, «señor + фамилия». «Tío» (разг.) недопустимо."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "TRABAJAR · Indefinido · yo",
+      "tested_lesson": "u5_l1",
+      "tested_grammar": "Indefinido regular -AR",
+      "npc_line_es": "Cuénteme un poco sobre su experiencia. ¿Dónde trabajó antes?",
+      "npc_line_ru": "Расскажите немного об опыте. Где работали раньше?",
+      "prompt_ru": "Спряги TRABAJAR в Indefinido (yo):",
+      "sentence_template": "Antes ___ en una agencia de publicidad en Moscú.",
+      "verb_infinitive": "trabajar",
+      "correct_answer": "trabajé",
+      "distractors": ["trabajaba", "trabajo", "trabajaré"],
+      "explanation_on_fail_ru": "Конкретный закрытый опыт в прошлом → Indefinido: trabajé. «Trabajaba» (Imperfecto) — для регулярной привычки, не одного места работы. «Trabajaré» — будущее."
+    },
+    {
+      "round": 3,
+      "format": "CHOICE",
+      "topic_ru": "Indefinido vs Imperfecto · контекст работы",
+      "tested_lesson": "u6_l2",
+      "tested_grammar": "Contraste Indef/Imperf",
+      "npc_line_es": "¿Y cómo era el ambiente allí?",
+      "npc_line_ru": "А какая там была атмосфера?",
+      "prompt_ru": "Атмосфера была дружеская, но интенсивная. Грамматически верный ответ?",
+      "correct_answer": "El ambiente era amistoso pero muy intenso.",
+      "distractors": [
+        "El ambiente fue amistoso pero muy intenso.",
+        "El ambiente es amistoso pero muy intenso.",
+        "El ambiente había sido amistoso pero intenso."
+      ],
+      "explanation_on_fail_ru": "Описание характеристики/состояния в прошлом → Imperfecto: era. «Fue» (Indef) — для законченного факта (например: «el día fue largo»). Атмосфера — длящееся описание."
+    },
+    {
+      "round": 4,
+      "format": "BUILD",
+      "topic_ru": "Pretérito Perfecto · опыт жизни",
+      "tested_lesson": "u7_l0 + u7_l3",
+      "tested_grammar": "Pretérito Perfecto · experiencia",
+      "npc_line_es": "¿Ha trabajado alguna vez con clientes internacionales?",
+      "npc_line_ru": "Работали когда-нибудь с международными клиентами?",
+      "prompt_ru": "Собери: «Да, я работала с клиентами из Европы»",
+      "correct_answer": "Sí he trabajado con clientes de Europa",
+      "word_bank": ["Sí", "he", "trabajado", "con", "clientes", "de", "Europa", "trabajé", "trabajaba", "soy"],
+      "explanation_on_fail_ru": "Опыт жизни без конкретной даты («alguna vez» в вопросе) → Pretérito Perfecto: he trabajado. «Trabajé» работает тоже, но Perfecto подчёркивает «у меня есть этот опыт»."
+    },
+    {
+      "round": 5,
+      "format": "CONJUGATE",
+      "topic_ru": "HACER · Futuro Simple · yo",
+      "tested_lesson": "u8_l1",
+      "tested_grammar": "Futuro irregular · har-",
+      "npc_line_es": "En este puesto, ¿qué hará usted en una semana típica?",
+      "npc_line_ru": "На этой должности что вы будете делать в обычную неделю?",
+      "prompt_ru": "Спряги HACER в Futuro (yo):",
+      "sentence_template": "Pues ___ análisis de mercado y reportes para el equipo.",
+      "verb_infinitive": "hacer",
+      "correct_answer": "haré",
+      "distractors": ["haceré", "hago", "hice"],
+      "explanation_on_fail_ru": "HACER в Futuro нерегулярный: основа «har-» + окончание → haré. «Haceré» (как от регулярного hacer-é) — типичная ошибка. «Hago» — настоящее."
+    },
+    {
+      "round": 6,
+      "format": "CHOICE",
+      "topic_ru": "Futuro Simple regular · trabajaré",
+      "tested_lesson": "u8_l0",
+      "tested_grammar": "Futuro regular",
+      "npc_line_es": "¿Y cuándo podría empezar?",
+      "npc_line_ru": "А когда могли бы начать?",
+      "prompt_ru": "Готова начать с понедельника. Какой вариант верный?",
+      "correct_answer": "Podré empezar el lunes que viene.",
+      "distractors": [
+        "Pude empezar el lunes que viene.",
+        "Podría empezar el lunes que viene.",
+        "Puedo empezar el lunes que viene."
+      ],
+      "explanation_on_fail_ru": "Чёткое будущее обещание → Futuro Simple: podré. «Podría» (Condicional) звучит неуверенно («может смогу»). «Pude» — Indefinido (смогла в прошлом)."
+    },
+    {
+      "round": 7,
+      "format": "CONJUGATE",
+      "topic_ru": "TENER · Futuro irregular · yo",
+      "tested_lesson": "u8_l1",
+      "tested_grammar": "Futuro irregular · tendr-",
+      "npc_line_es": "Y para el primer mes, ¿qué objetivos tendrá?",
+      "npc_line_ru": "На первый месяц какие цели поставите?",
+      "prompt_ru": "Спряги TENER в Futuro (yo):",
+      "sentence_template": "___ que aprender el sistema y conocer al equipo.",
+      "verb_infinitive": "tener",
+      "correct_answer": "Tendré",
+      "distractors": ["Tendría", "Tendrá", "Teneré"],
+      "explanation_on_fail_ru": "TENER Futuro нерегулярный: основа «tendr-» → tendré. Те же irregular корни в Futuro и Condicional: hacer→har-, decir→dir-, venir→vendr-, salir→saldr-."
+    },
+    {
+      "round": 8,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · условия работы",
+      "tested_lesson": "u7_l6 + u8_l*",
+      "tested_grammar": "Comprensión · condiciones laborales",
+      "audio_only": true,
+      "npc_line_es": "El contrato es indefinido, el sueldo bruto será de treinta y dos mil euros al año, más dos pagas extra.",
+      "prompt_ru": "Какие основные условия?",
+      "correct_answer": "бессрочный контракт, 32 000€/год + 2 премии",
+      "distractors": [
+        "временный контракт, 23 000€/год + 1 премия",
+        "испытательный, 32 000€/год без премий",
+        "бессрочный, 22 000€/год + 4 премии"
+      ],
+      "translation_after_answer_ru": "«Contrato indefinido» = бессрочный. «Sueldo bruto» = зарплата до налогов. «Treinta y dos mil» = 32 000. «Pagas extra» = премиальные выплаты (типично в Испании 2 раза в год).",
+      "explanation_on_fail_ru": "«Indefinido» в контексте работы = бессрочный, постоянный. «Bruto» = до налогов (брутто). «Paga extra» — стандартная испанская доплата (verano + Navidad)."
+    },
+    {
+      "round": 9,
+      "format": "CHOICE",
+      "topic_ru": "Сравнение работ · más responsabilidad que",
+      "tested_lesson": "u6_l4",
+      "tested_grammar": "Comparativo de superioridad",
+      "npc_line_es": "Esta posición tiene más responsabilidad que la anterior, ¿lo entiende?",
+      "npc_line_ru": "Эта позиция предполагает больше ответственности чем предыдущая, понимаете?",
+      "prompt_ru": "Принимаешь вызов. Какой ответ?",
+      "correct_answer": "Sí, lo entiendo y es exactamente lo que busco.",
+      "distractors": [
+        "Sí, lo entiendo y es exactamente lo que buscaba.",
+        "Sí, la entiendo y es exactamente lo que busco.",
+        "Sí, lo entendí y es exactamente lo que busco."
+      ],
+      "explanation_on_fail_ru": "«Lo» (OD ср.р., средний абстрактный) — заменяет всю мысль «то что вы сказали». «La» работает с ж.р. существительным. «Buscaba» (Imperfecto) — звучит будто уже не ищу."
+    },
+    {
+      "round": 10,
+      "format": "CONJUGATE",
+      "topic_ru": "GUSTAR Condicional · me gustaría",
+      "tested_lesson": "u8_l5",
+      "tested_grammar": "Condicional · vežlivo желание",
+      "npc_line_es": "¿Hay algo que le gustaría preguntarme sobre la empresa?",
+      "npc_line_ru": "Что-то хотели бы спросить о компании?",
+      "prompt_ru": "Спряги GUSTAR в Condicional (3 л. ед., безличная конструкция):",
+      "sentence_template": "Sí, me ___ saber sobre la cultura del equipo.",
+      "verb_infinitive": "gustar",
+      "correct_answer": "gustaría",
+      "distractors": ["gusta", "gustaba", "gustó"],
+      "explanation_on_fail_ru": "«Me gustaría + инф» = «хотела бы» (вежливое желание). GUSTAR в Condicional = gustaría (с одним r, но с ía). Не путать с «querría» (от querer, с двумя r)."
+    },
+    {
+      "round": 11,
+      "format": "CHOICE",
+      "topic_ru": "Pluscuamperfecto · había trabajado",
+      "tested_lesson": "u5_l8_5",
+      "tested_grammar": "Pluscuamperfecto",
+      "npc_line_es": "Antes de mudarse a España, ¿había vivido fuera de Rusia?",
+      "npc_line_ru": "До переезда в Испанию жили за пределами России?",
+      "prompt_ru": "До переезда уже была год в Германии. Какой ответ?",
+      "correct_answer": "Sí, había vivido un año en Alemania por estudios.",
+      "distractors": [
+        "Sí, he vivido un año en Alemania por estudios.",
+        "Sí, viví un año en Alemania por estudios.",
+        "Sí, vivía un año en Alemania por estudios."
+      ],
+      "explanation_on_fail_ru": "Действие ДО другого прошлого момента («antes de mudarse») → Pluscuamperfecto: había vivido. «He vivido» — Perfecto (связь с настоящим). «Viví» — Indefinido, но не выражает «до того события»."
+    },
+    {
+      "round": 12,
+      "format": "BUILD",
+      "topic_ru": "Imperativo formal · usted",
+      "tested_lesson": "u7_l7 + u7_l8",
+      "tested_grammar": "Imperativo usted",
+      "npc_line_es": "Una pregunta práctica: ¿cómo se organiza con muchas tareas a la vez?",
+      "npc_line_ru": "Практичный вопрос: как организуете много задач одновременно?",
+      "prompt_ru": "Объясняешь свой метод: «всегда делайте список приоритетов» (совет на usted). Собери:",
+      "correct_answer": "Siempre haga una lista de prioridades",
+      "word_bank": ["Siempre", "haga", "una", "lista", "de", "prioridades", "haz", "hace", "hago", "no"],
+      "explanation_on_fail_ru": "Imperativo usted: hacer → haga (с -a от Subjuntivo). «Haz» — это tú (на ты). «Hace» — настоящее. С Pablo всегда usted → haga."
+    },
+    {
+      "round": 13,
+      "format": "CONJUGATE",
+      "topic_ru": "PODER · Condicional · usted",
+      "tested_lesson": "u8_l3",
+      "tested_grammar": "Condicional irregular · podr-",
+      "npc_line_es": "¿Podría hacer una pregunta personal?",
+      "npc_line_ru": "Могли бы задать личный вопрос?",
+      "prompt_ru": "Спряги PODER в Condicional (yo, вежливое позволение):",
+      "sentence_template": "Por supuesto, ___ preguntarme lo que quiera.",
+      "verb_infinitive": "poder",
+      "correct_answer": "podría",
+      "distractors": ["puedo", "puede", "pude"],
+      "explanation_on_fail_ru": "Стоп — здесь usted (¿podría usted preguntarme?). Но «por supuesto, podría preguntarme» — yo возвращает разрешение в Condicional как вежливая форма (можно бы). Внимание к лицу!"
+    },
+    {
+      "round": 14,
+      "format": "CHOICE",
+      "topic_ru": "Si + Presente + Futuro · 1 тип",
+      "tested_lesson": "u8_l4",
+      "tested_grammar": "Condicional tipo 1",
+      "npc_line_es": "Si surge un proyecto urgente, ¿cómo reaccionará?",
+      "npc_line_ru": "Если возникнет срочный проект, как отреагируете?",
+      "prompt_ru": "Реагируешь быстро и анализируешь. Какой вариант грамматически верный?",
+      "correct_answer": "Si surge algo urgente, lo analizaré y haré un plan rápido.",
+      "distractors": [
+        "Si surgiera algo urgente, lo analizaré y haré un plan rápido.",
+        "Si surge algo urgente, lo analizaría y haría un plan rápido.",
+        "Si surgirá algo urgente, lo analizaré y haré un plan rápido."
+      ],
+      "explanation_on_fail_ru": "Реальное условие (тип 1): SI + Presente Indicativo + Futuro. «Si surge» (Presente) + «haré, analizaré» (Futuro). После «si» НЕ Futuro и НЕ Subjuntivo (это другие типы)."
+    },
+    {
+      "round": 15,
+      "format": "CONJUGATE",
+      "topic_ru": "Si + Imperfecto + Condicional · 2 тип",
+      "tested_lesson": "u8_l3 + u8_l4",
+      "tested_grammar": "Condicional tipo 2 · hipotético",
+      "npc_line_es": "Imagine algo: si tuviera presupuesto ilimitado, ¿qué haría en su primer mes?",
+      "npc_line_ru": "Представьте: если бы был неограниченный бюджет, что бы сделали в первый месяц?",
+      "prompt_ru": "Спряги HACER в Condicional (yo, гипотетический ответ):",
+      "sentence_template": "Pues ___ un estudio profundo del mercado español.",
+      "verb_infinitive": "hacer",
+      "correct_answer": "haría",
+      "distractors": ["hago", "hice", "haré"],
+      "explanation_on_fail_ru": "Гипотеза (тип 2): «si tuviera» (Imperfecto Subjuntivo) + Condicional. yo + hacer Cond = haría. Та же irregular основа har- что в Futuro, но с окончаниями Imperfecto -ía."
+    },
+    {
+      "round": 16,
+      "format": "BUILD",
+      "topic_ru": "OI + Futuro · te enviaré",
+      "tested_lesson": "u6_l9 + u8_l0",
+      "tested_grammar": "Clítico + Futuro",
+      "npc_line_es": "Le voy a pedir un documento más por correo.",
+      "npc_line_ru": "Попрошу ещё один документ по почте.",
+      "prompt_ru": "Собери: «Я Вам его пришлю сегодня же» (lo + a usted)",
+      "correct_answer": "Se lo enviaré hoy mismo",
+      "word_bank": ["Se", "lo", "enviaré", "hoy", "mismo", "Le", "envío", "envíe", "te"],
+      "explanation_on_fail_ru": "«Vam ego» = OI «le» (Вам) + OD «lo» (его, документ). le+lo → se lo. «Te» — на ты, неуместно. «Envíe» — Imperativo usted (приказ)."
+    },
+    {
+      "round": 17,
+      "format": "CHOICE",
+      "topic_ru": "Pretérito Perfecto · esta semana",
+      "tested_lesson": "u7_l0 + u7_l2",
+      "tested_grammar": "Perfecto · marcador esta semana",
+      "npc_line_es": "Por cierto, ¿ha leído el informe que le mandamos esta semana?",
+      "npc_line_ru": "Кстати, прочитали отчёт что мы прислали на этой неделе?",
+      "prompt_ru": "Да, прочитала и пометила. Какой вариант верный?",
+      "correct_answer": "Sí, lo he leído y he anotado mis comentarios.",
+      "distractors": [
+        "Sí, lo leí y anoté mis comentarios.",
+        "Sí, lo leía y anotaba mis comentarios.",
+        "Sí, lo había leído y había anotado mis comentarios."
+      ],
+      "explanation_on_fail_ru": "«Esta semana» — маркер ещё незакрытого периода → Pretérito Perfecto: he leído. «Leí» (Indef) — для закрытого периода (la semana pasada). Pluscuamperf — не подходит без второго прошлого."
+    },
+    {
+      "round": 18,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · структура отдела",
+      "tested_lesson": "u7_l6 + u8_l*",
+      "tested_grammar": "Comprensión · jerarquía equipo",
+      "audio_only": true,
+      "npc_line_es": "En el equipo somos doce personas: yo como director, tres jefes de proyecto y ocho especialistas. Usted reportaría directamente a María, la jefa del área digital.",
+      "prompt_ru": "Кому подчиняется новая позиция?",
+      "correct_answer": "María, начальнику digital-направления",
+      "distractors": [
+        "Pablo, директору отдела",
+        "трём руководителям проектов",
+        "восьми специалистам"
+      ],
+      "translation_after_answer_ru": "«Reportaría» (Cond) = подчинялась бы. «Jefa del área digital» = руководительница цифрового направления. «Directamente» = напрямую.",
+      "explanation_on_fail_ru": "«Reportar a» = подчиняться кому-то по работе. «Jefe/jefa de + área» = руководитель направления. Иерархия: director → jefes → especialistas."
+    },
+    {
+      "round": 19,
+      "format": "CHOICE",
+      "topic_ru": "Futuro · planificación · estaré",
+      "tested_lesson": "u8_l0",
+      "tested_grammar": "Futuro · ESTAR",
+      "npc_line_es": "¿Dónde se ve usted dentro de cinco años?",
+      "npc_line_ru": "Где вы видите себя через 5 лет?",
+      "prompt_ru": "Видишь себя руководителем команды. Какой вариант?",
+      "correct_answer": "Espero que en cinco años estaré liderando un equipo aquí en Madrid.",
+      "distractors": [
+        "Espero que en cinco años estoy liderando un equipo aquí en Madrid.",
+        "Espero que en cinco años estuve liderando un equipo aquí en Madrid.",
+        "Espero que en cinco años estaba liderando un equipo aquí en Madrid."
+      ],
+      "explanation_on_fail_ru": "Будущее предположение → Futuro: estaré. «Estar + gerundio» сохраняется и в Futuro: estaré liderando = буду руководить. «Estoy» — настоящее, «estuve/estaba» — прошедшие."
+    },
+    {
+      "round": 20,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Условное предложение тип 2",
+      "tested_lesson": "u8_l3",
+      "tested_grammar": "Si + Imperfecto + Condicional",
+      "npc_line_es": "Última pregunta hipotética: si pudiera elegir cualquier proyecto, ¿cuál sería?",
+      "npc_line_ru": "Последний гипотетический вопрос: если бы могли выбрать любой проект, какой?",
+      "prompt_ru": "Переведи: «Если бы у меня был выбор, я бы запустила международную кампанию.»",
+      "prompt_text_ru": "Если бы у меня был выбор, я бы запустила международную кампанию.",
+      "correct_answer": "Si tuviera la opción, lanzaría una campaña internacional.",
+      "acceptable_alternatives": [
+        "Si pudiera elegir, lanzaría una campaña internacional.",
+        "Si tuviera la oportunidad, lanzaría una campaña internacional.",
+        "Si yo tuviera elección, lanzaría una campaña internacional."
+      ],
+      "explanation_on_fail_ru": "Условие тип 2 (гипотеза): si + Imperfecto Subjuntivo (tuviera) + Condicional (lanzaría). lanzar → lanzaría (yo Cond). Никогда не «si tendría»!"
+    },
+    {
+      "round": 21,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · финальное предложение работы",
+      "tested_lesson": "u7_l6 + u8_l0",
+      "tested_grammar": "Comprensión · oferta + Futuro",
+      "prompt_ru": "Pablo делает финальное предложение. Переведи:",
+      "prompt_text_es": "Andrea, me ha impresionado mucho. Le ofrezco el puesto. Empezará el lunes con un contrato indefinido y, si todo va bien en seis meses, hablaremos de una promoción.",
+      "correct_answer": "Андреа, вы меня очень впечатлили. Я предлагаю вам должность. Начнёте в понедельник с бессрочным контрактом, и если всё пойдёт хорошо за полгода, поговорим о повышении.",
+      "acceptable_alternatives": [
+        "Андреа, вы произвели на меня впечатление. Предлагаю позицию. Начнёте в понедельник с постоянным контрактом, и если за 6 месяцев всё будет хорошо, обсудим повышение.",
+        "Андреа, вы меня впечатлили. Беру вас на позицию. С понедельника бессрочный контракт, и если за полгода всё ок, поговорим про повышение.",
+        "Андреа, я очень впечатлён. Предлагаю должность. Начало в понедельник, бессрочный контракт, и если за 6 месяцев всё пройдёт нормально, обсудим продвижение."
+      ],
+      "explanation_on_fail_ru": "«Me ha impresionado» — Perfecto (только что впечатлили). «Le ofrezco» — OI «le» (Вам) + ofrecer. «Si todo va bien... hablaremos» — условие тип 1: Presente + Futuro. «Promoción» в работе = повышение."
+    },
+    {
+      "round": 22,
+      "format": "BUILD",
+      "topic_ru": "Финал · принятие предложения",
+      "tested_lesson": "u8_l5 + u1_l6",
+      "tested_grammar": "Aceptación profesional",
+      "npc_line_es": "¿Acepta usted?",
+      "npc_line_ru": "Принимаете?",
+      "prompt_ru": "BOSS финал: принимаешь предложение, благодаришь за доверие. Собери:",
+      "correct_answer": "Sí acepto muchas gracias por la confianza",
+      "word_bank": ["Sí", "acepto", "muchas", "gracias", "por", "la", "confianza", "no", "rechazo", "señor", "vale"],
+      "explanation_on_fail_ru": "«Aceptar» = принимать. «Por la confianza» = за доверие — классическая профессиональная формула. «Vale» (разговорное «ок») — слишком casual для подписания контракта."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Excelente, Andrea. Bienvenida al equipo. Será un placer trabajar con usted. Mañana le presentaré a todos.",
+      "carlos_line_ru": "Отлично, Андреа. Добро пожаловать в команду. Будет приятно работать вместе. Завтра представлю всем.",
+      "scene_description_ru": "Pablo жмёт руку, представляет ассистенту, та сразу даёт пропуск и ноутбук. «Su sitio está al lado de María.» В чате компании появляется: «Damos la bienvenida a Andrea, nueva especialista de marketing internacional.» Module 3 (B1) разблокирован.",
+      "stakes_ru": "BOSS gold: контракт подписан, ты в команде, Module 3 открыт, бонус XP."
+    },
+    "silver": {
+      "carlos_line_es": "Bien, Andrea. La esperamos el lunes. María le explicará todo el primer día.",
+      "carlos_line_ru": "Хорошо, Андреа. Ждём в понедельник. Мария всё объяснит в первый день.",
+      "scene_description_ru": "Pablo прощается тепло, но кратко. Контракт уйдёт по почте. В команде тебя примут хорошо, хотя без особого внимания директора первое время."
+    },
+    "bronze": {
+      "carlos_line_es": "Está bien, Andrea. Le confirmaremos por email los detalles.",
+      "carlos_line_ru": "Ладно, Андреа. Подтвердим детали письмом.",
+      "scene_description_ru": "Pablo сдержан. Контракт пришлют — но с испытательным сроком на 3 месяца, не сразу indefinido. Старт в понедельник, но с осторожностью."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Andrea, valoramos su perfil pero necesitamos reflexionar. Le llamaremos en unos días.",
+      "carlos_line_ru": "Андреа, мы ценим ваш профиль, но нужно подумать. Позвоним через несколько дней.",
+      "scene_description_ru": "Pablo вежливо провожает. Через неделю — email от HR: «hemos decidido continuar con otro candidato». Без объяснений.",
+      "stakes_ru": "Близко, но не приняли. Повтори Futuro / Condicional и пересдай."
+    },
+    "low": {
+      "carlos_line_es": "Andrea, sinceramente, el nivel de español es justo para este puesto. Le sugiero practicar y volver a postular en seis meses.",
+      "carlos_line_ru": "Андреа, честно, уровень испанского впритык для этой позиции. Советую попрактиковаться и подать заявку через полгода.",
+      "scene_description_ru": "Pablo даёт честный фидбек. Контакт HR-отдела — для младшей позиции через 6 месяцев. Сегодняшний оффер закрыт.",
+      "stakes_ru": "Отказ. Повтори весь Module 2 прежде чем пересдавать."
+    },
+    "very_low": {
+      "carlos_line_es": "Disculpe, pero apenas hemos podido conversar. Le recomendaría un curso intensivo antes de aplicar a este nivel de puesto.",
+      "carlos_line_ru": "Извините, но мы едва смогли поговорить. Советую интенсивный курс прежде чем подаваться на такие позиции.",
+      "scene_description_ru": "Pablo звонит HR. Тебя провожают к выходу с буклетом «Cursos de español para profesionales». Полный отказ.",
+      "stakes_ru": "Совсем плохо. Учи весь A2 заново — Module 2 целиком."
+    }
+  }
+}

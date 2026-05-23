@@ -1,0 +1,409 @@
+{
+  "id": "cp7",
+  "cefr": "A2",
+  "block": 7,
+  "title_ru": "Планируем выходные",
+  "title_es": "Planeando el fin de semana",
+  "description_ru": "Lucía — твоя новая мадридская подруга. Сидите в Café Comercial возле Bilbao, она хочет узнать тебя получше и распланировать совместные выходные. Расскажи что сегодня уже сделала, что обычно делаешь сейчас, прими план на субботу. Справишься — настоящая дружба и групповой чат. Завалишь — Lucía вежливо «занята».",
+  "stakes_ru": "Расскажешь о сегодняшнем дне на Pretérito Perfecto, согласуешь план на императиве — Lucía добавит в свою компанию. Запутаешься в временах — «hablamos en otra ocasión».",
+  "scene": {
+    "name": "Café Comercial",
+    "type": "cafe",
+    "city": "Madrid",
+    "background_image": "scene_cp7_weekend.jpg"
+  },
+  "npc": {
+    "id": "lucia",
+    "name": "Lucía",
+    "role_ru": "Подруга",
+    "role_es": "Amiga",
+    "voice_id": "es-ES-Elvira",
+    "portrait_image": "npc_lucia.jpg",
+    "personality": "очень casual, обращается на «tú», использует разговорное «tía», «vale», «qué guay». Эмпатичная, любопытная, легко смеётся. На ошибках мягко поправляет «o sea...» и продолжает."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 400,
+    "silver_xp_bonus": 80,
+    "gold_xp_bonus": 200,
+    "badge_id": "amistad",
+    "badge_name_ru": "Дружба",
+    "unlocks_block": 8
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Casual saludo · ¿qué tal?",
+      "tested_lesson": "u1_l4",
+      "tested_grammar": "Saludo casual",
+      "npc_line_es": "¡Hola, Andrea! ¿Qué tal? ¿Cómo estás?",
+      "npc_line_ru": "Привет, Андреа! Как ты?",
+      "prompt_ru": "Ответь casual:",
+      "correct_answer": "¡Hola, Lucía! Muy bien, ¿y tú?",
+      "distractors": [
+        "Buenos días, señora. Estoy bien.",
+        "Hola usted. ¿Cómo está?",
+        "Sí, gracias, adiós."
+      ],
+      "explanation_on_fail_ru": "С подругой — casual «tú». «¿Y tú?» — обязательное возвращение вопроса. «Señora» и «usted» с подругой звучат отчуждённо."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Pretérito Perfecto · he + part",
+      "tested_lesson": "u7_l0",
+      "tested_grammar": "Pretérito Perfecto · 1L sg · HABER",
+      "npc_line_es": "Cuéntame, ¿qué has hecho hoy?",
+      "npc_line_ru": "Расскажи, что сегодня делала?",
+      "prompt_ru": "Спряги HABER в Perfecto (yo):",
+      "sentence_template": "Pues ___ ido al trabajo y luego al gimnasio.",
+      "verb_infinitive": "haber",
+      "correct_answer": "he",
+      "distractors": ["has", "ha", "hemos"],
+      "explanation_on_fail_ru": "Pretérito Perfecto = haber (Pres) + participio. yo → he. «Has» — tú, «ha» — él, «hemos» — nosotros."
+    },
+    {
+      "round": 3,
+      "format": "CHOICE",
+      "topic_ru": "Participio irregular · visto",
+      "tested_lesson": "u7_l1",
+      "tested_grammar": "Participios irregulares",
+      "npc_line_es": "¿Has visto esa peli nueva? La que sale en Netflix.",
+      "npc_line_ru": "Видела этот новый фильм? Тот что на Нетфликсе.",
+      "prompt_ru": "Видела вчера. Какой ответ?",
+      "correct_answer": "Sí, la he visto ayer mismo.",
+      "distractors": [
+        "Sí, la he vido ayer mismo.",
+        "Sí, la he veído ayer mismo.",
+        "Sí, la he ver ayer mismo."
+      ],
+      "explanation_on_fail_ru": "VER → participio irregular «visto», не «vido» или «veído». Также: hacer→hecho, decir→dicho, escribir→escrito, abrir→abierto, poner→puesto, volver→vuelto."
+    },
+    {
+      "round": 4,
+      "format": "CHOICE",
+      "topic_ru": "Perfecto vs Indefinido · marcadores",
+      "tested_lesson": "u7_l2",
+      "tested_grammar": "Contraste Perfecto / Indefinido",
+      "npc_line_es": "¿Y la semana pasada? ¿Qué hiciste el viernes?",
+      "npc_line_ru": "А на прошлой неделе? Что делала в пятницу?",
+      "prompt_ru": "В пятницу ходила в музей. Грамматически верный вариант?",
+      "correct_answer": "El viernes fui al Museo del Prado.",
+      "distractors": [
+        "El viernes he ido al Museo del Prado.",
+        "El viernes voy al Museo del Prado.",
+        "El viernes iba al Museo del Prado."
+      ],
+      "explanation_on_fail_ru": "«La semana pasada / el viernes» — маркеры законченного прошлого → Pretérito Indefinido (fui). Perfecto — для «hoy, esta semana, este mes»."
+    },
+    {
+      "round": 5,
+      "format": "BUILD",
+      "topic_ru": "Estar + gerundio · сейчас",
+      "tested_lesson": "u7_l4",
+      "tested_grammar": "Estar + gerundio · presente continuo",
+      "npc_line_es": "¿Y qué piensas de Madrid? ¿Te adaptas bien?",
+      "npc_line_ru": "Что думаешь о Мадриде? Адаптируешься нормально?",
+      "prompt_ru": "Собери: «Я сейчас учу испанский каждый день»",
+      "correct_answer": "Estoy aprendiendo español todos los días",
+      "word_bank": ["Estoy", "aprendiendo", "español", "todos", "los", "días", "soy", "aprendo", "aprendido"],
+      "explanation_on_fail_ru": "«Estar + gerundio» = действие В МОМЕНТ. Для -AR: aprend-AR → aprendiendo (-ando для AR). После estar НЕ инфинитив (aprender), а герундий."
+    },
+    {
+      "round": 6,
+      "format": "CONJUGATE",
+      "topic_ru": "LLEVAR + tiempo + gerundio",
+      "tested_lesson": "u7_l5",
+      "tested_grammar": "LLEVAR + tiempo + gerundio",
+      "npc_line_es": "¡Qué guay! ¿Cuánto tiempo llevas en Madrid?",
+      "npc_line_ru": "Как круто! Сколько уже в Мадриде?",
+      "prompt_ru": "Спряги LLEVAR в Presente (yo):",
+      "sentence_template": "___ seis meses viviendo aquí.",
+      "verb_infinitive": "llevar",
+      "correct_answer": "Llevo",
+      "distractors": ["Llevé", "Llevaba", "Llevaré"],
+      "explanation_on_fail_ru": "«Llevar + время + gerundio» = «делаю уже X времени». В Presente: llevo. «Llevé» — Indefinido (несовместимо с продолжающимся действием)."
+    },
+    {
+      "round": 7,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · план на субботу",
+      "tested_lesson": "u7_l* + u5_l4",
+      "tested_grammar": "Comprensión · hora + actividad",
+      "audio_only": true,
+      "npc_line_es": "Mira, el sábado podemos quedar a las once en la Puerta del Sol y luego ir al Retiro.",
+      "prompt_ru": "Что предлагает Lucía?",
+      "correct_answer": "встретиться в 11 на Sol и пойти в Retiro",
+      "distractors": [
+        "встретиться в 11 на Retiro и пойти на Sol",
+        "встретиться в 1 на Sol и пойти в кино",
+        "встретиться в 2 на Retiro и пойти в Аточа"
+      ],
+      "translation_after_answer_ru": "«Quedar» = договариваться о встрече. «A las once» = в 11. «Puerta del Sol» — площадь в центре. «Retiro» — главный парк.",
+      "explanation_on_fail_ru": "«Quedar» — ключевое разговорное слово (договариваться). «A las once» = в 11 часов. «Luego» = затем."
+    },
+    {
+      "round": 8,
+      "format": "CHOICE",
+      "topic_ru": "Imperativo afirmativo regular · ven",
+      "tested_lesson": "u7_l5_5 + u7_l7",
+      "tested_grammar": "Imperativo · tú irregular",
+      "npc_line_es": "Y oye, una cosa, mañana tienes que venir a la fiesta de mi hermana.",
+      "npc_line_ru": "Слушай, ещё одно — завтра должна прийти на праздник к моей сестре.",
+      "prompt_ru": "Lucía активно зовёт тебя. Какая фраза в Imperativo (tú, дружески)?",
+      "correct_answer": "¡Ven! Va a estar genial.",
+      "distractors": [
+        "¡Vienes! Va a estar genial.",
+        "¡Venir! Va a estar genial.",
+        "¡Viene! Va a estar genial."
+      ],
+      "explanation_on_fail_ru": "VENIR Imperativo tú = «ven» (нерегулярный). Также: hacer→haz, decir→di, poner→pon, salir→sal, tener→ten, ir→ve, ser→sé."
+    },
+    {
+      "round": 9,
+      "format": "CONJUGATE",
+      "topic_ru": "Imperativo regular · habla",
+      "tested_lesson": "u7_l7",
+      "tested_grammar": "Imperativo regular · tú",
+      "npc_line_es": "Por cierto, en la fiesta vas a conocer a Pablo. ¡Habla con él!",
+      "npc_line_ru": "Кстати, на празднике познакомишься с Пабло. Поговори с ним!",
+      "prompt_ru": "Поставь HABLAR в Imperativo (tú):",
+      "sentence_template": "¡___ con él, te va a caer bien!",
+      "verb_infinitive": "hablar",
+      "correct_answer": "Habla",
+      "distractors": ["Hablas", "Hablar", "Hable"],
+      "explanation_on_fail_ru": "Imperativo regular tú = 3 л. ед. Presente Indicativo: habla (от hablar). «Hablas» — это tú Presente. «Hable» — это usted Imperativo (формально)."
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Imperativo negativo · no hagas",
+      "tested_lesson": "u7_l8",
+      "tested_grammar": "Imperativo negativo · subjuntivo",
+      "npc_line_es": "Pero no le digas que te conté lo de su ex, ¿eh?",
+      "npc_line_ru": "Но не говори ему что я рассказала про его бывшую, ладно?",
+      "prompt_ru": "Lucía предупреждает. Какой вариант Imperativo negativo?",
+      "correct_answer": "Vale, no le digo nada, prometido.",
+      "distractors": [
+        "Vale, no le digas nada, prometido.",
+        "Vale, no le decir nada, prometido.",
+        "Vale, no le dijiste nada, prometido."
+      ],
+      "explanation_on_fail_ru": "Внимание: в ответе говорю про СЕБЯ (yo), а не приказываю → Presente Indicativo «no le digo». Imperativo negativo «no digas» — это к собеседнику. Контекст важен!"
+    },
+    {
+      "round": 11,
+      "format": "CHOICE",
+      "topic_ru": "ya / todavía + Perfecto",
+      "tested_lesson": "u7_l3",
+      "tested_grammar": "Marcadores Perfecto · ya/todavía",
+      "npc_line_es": "Oye, ¿has probado ya el chocolate con churros de aquí?",
+      "npc_line_ru": "Слушай, ты уже пробовала чуррос с шоколадом здесь?",
+      "prompt_ru": "Ещё нет. Какой ответ верный?",
+      "correct_answer": "No, todavía no los he probado.",
+      "distractors": [
+        "No, ya no los he probado.",
+        "No, todavía no los probé.",
+        "No, todavía no los probo."
+      ],
+      "explanation_on_fail_ru": "«Todavía no» + Pretérito Perfecto = «ещё не». «Ya» = уже. «Los» (OD мн.) заменяет «los churros»."
+    },
+    {
+      "round": 12,
+      "format": "CONJUGATE",
+      "topic_ru": "Participio · hacer→hecho",
+      "tested_lesson": "u7_l1",
+      "tested_grammar": "Participio irregular · hacer",
+      "npc_line_es": "Por cierto, ¿qué planes has hecho para el verano?",
+      "npc_line_ru": "Кстати, какие планы строила на лето?",
+      "prompt_ru": "Поставь HACER в participio:",
+      "sentence_template": "He ___ pocos planes, la verdad.",
+      "verb_infinitive": "hacer",
+      "correct_answer": "hecho",
+      "distractors": ["hacido", "hacho", "hizo"],
+      "explanation_on_fail_ru": "HACER → participio irregular «hecho». «Hacido» не существует. «Hizo» — это Indefinido 3 л. ед. (он сделал), не participio."
+    },
+    {
+      "round": 13,
+      "format": "BUILD",
+      "topic_ru": "Imperativo + pronombre · dímelo",
+      "tested_lesson": "u7_l5_5 + u7_l10",
+      "tested_grammar": "Imperativo + clíticos",
+      "npc_line_es": "Cuando decidas el plan, avísame.",
+      "npc_line_ru": "Когда решишь план, дай знать.",
+      "prompt_ru": "Собери просьбу: «Скажи мне это потом» (decir + me + lo)",
+      "correct_answer": "Dímelo luego",
+      "word_bank": ["Dímelo", "luego", "Me", "lo", "dices", "no", "dime", "lo"],
+      "explanation_on_fail_ru": "В Imperativo afirmativo местоимения приклеиваются СЗАДИ: di + me + lo = dímelo (с ударением на «di»). В отрицательном — спереди: «no me lo digas»."
+    },
+    {
+      "round": 14,
+      "format": "CHOICE",
+      "topic_ru": "Seguir + gerundio · продолжение",
+      "tested_lesson": "u7_l5",
+      "tested_grammar": "Seguir + gerundio",
+      "npc_line_es": "¿Y sigues estudiando español por tu cuenta o vas a clase?",
+      "npc_line_ru": "Продолжаешь учить испанский сама или ходишь на курсы?",
+      "prompt_ru": "Продолжаешь учить через приложение. Какой вариант?",
+      "correct_answer": "Sigo estudiando con la aplicación.",
+      "distractors": [
+        "Sigo estudiar con la aplicación.",
+        "Sigo estudio con la aplicación.",
+        "Sigo a estudiar con la aplicación."
+      ],
+      "explanation_on_fail_ru": "«Seguir + gerundio» = продолжать делать. После seguir всегда герундий (estudiando), никогда инфинитив или Presente."
+    },
+    {
+      "round": 15,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · Perfecto + двойной OD/OI",
+      "tested_lesson": "u7_l0 + u7_l10",
+      "tested_grammar": "Perfecto + clíticos",
+      "npc_line_es": "Ay, casi olvido — Pablo me preguntó por ti.",
+      "npc_line_ru": "Ой, чуть не забыла — Пабло про тебя спрашивал.",
+      "prompt_ru": "Переведи: «Я ему уже сказала.»",
+      "prompt_text_ru": "Я ему уже сказала.",
+      "correct_answer": "Ya se lo he dicho.",
+      "acceptable_alternatives": [
+        "Ya se lo dije.",
+        "Se lo he dicho ya.",
+        "Ya se lo conté."
+      ],
+      "explanation_on_fail_ru": "«Я ему это сказала» = se (← le) + lo + he dicho. Le перед lo всегда становится se. Маркер «ya» работает и с Perfecto, и с Indefinido."
+    },
+    {
+      "round": 16,
+      "format": "CONJUGATE",
+      "topic_ru": "VOLVER · participio irregular",
+      "tested_lesson": "u7_l1",
+      "tested_grammar": "Participio irregular · volver",
+      "npc_line_es": "¿Y a tu novio? ¿Ha venido a verte ya?",
+      "npc_line_ru": "А твой парень? Уже приезжал тебя навестить?",
+      "prompt_ru": "Спряги VOLVER в participio:",
+      "sentence_template": "Sí, ha ___ dos veces este año.",
+      "verb_infinitive": "volver",
+      "correct_answer": "vuelto",
+      "distractors": ["volvido", "vuelvido", "volvió"],
+      "explanation_on_fail_ru": "VOLVER → participio irregular «vuelto», аналогично devolver→devuelto, revolver→revuelto. «Volvió» — Indefinido."
+    },
+    {
+      "round": 17,
+      "format": "CHOICE",
+      "topic_ru": "Pretérito Perfecto + nunca",
+      "tested_lesson": "u7_l3",
+      "tested_grammar": "Marcador NUNCA + Perfecto",
+      "npc_line_es": "Oye, ¿has estado alguna vez en Granada?",
+      "npc_line_ru": "Слушай, ты была когда-нибудь в Гранаде?",
+      "prompt_ru": "Никогда не была. Какой ответ?",
+      "correct_answer": "No, nunca he estado allí.",
+      "distractors": [
+        "No, nunca fui allí.",
+        "No, no nunca he estado allí.",
+        "No, nunca estoy allí."
+      ],
+      "explanation_on_fail_ru": "«Alguna vez / nunca» (опыт жизни) + Pretérito Perfecto. Двойное отрицание «no nunca» — ошибка: nunca уже отрицательное в начале предложения."
+    },
+    {
+      "round": 18,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · согласование плана",
+      "tested_lesson": "u7_l* + u5_l*",
+      "tested_grammar": "Comprensión · plan completo",
+      "audio_only": true,
+      "npc_line_es": "Entonces quedamos el sábado a las once en Sol, vamos al Retiro a desayunar y luego al Reina Sofía.",
+      "prompt_ru": "Какой финальный план Lucía?",
+      "correct_answer": "сб 11:00 Sol → завтрак в Retiro → музей Reina Sofía",
+      "distractors": [
+        "сб 11:00 Retiro → завтрак в Sol → музей Prado",
+        "вс 11:00 Sol → музей Reina Sofía → парк",
+        "сб 1:00 Sol → Retiro → ресторан"
+      ],
+      "translation_after_answer_ru": "«Quedamos» = договариваемся (от quedar). «A desayunar» = позавтракать (a + инф цели). «Reina Sofía» — известный музей современного искусства.",
+      "explanation_on_fail_ru": "«Quedar» в значении «договариваться» — суперчастое в испанском. Маркеры «luego» (затем), «a + инф» (чтобы + инф)."
+    },
+    {
+      "round": 19,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · итог встречи · Perfecto",
+      "tested_lesson": "u7_l0 + u7_l5",
+      "tested_grammar": "Comprensión · Perfecto + gerundio",
+      "prompt_ru": "Lucía подводит итог встречи. Переведи:",
+      "prompt_text_es": "Me ha encantado conocerte mejor. Llevamos dos horas hablando y ni cuenta me he dado.",
+      "correct_answer": "Мне очень понравилось узнать тебя получше. Мы уже два часа разговариваем, и я даже не заметила.",
+      "acceptable_alternatives": [
+        "Мне было очень приятно лучше тебя узнать. Мы болтаем уже 2 часа, я даже не заметила.",
+        "Мне правда понравилось познакомиться поближе. Сидим разговариваем 2 часа, я и не обратила внимания.",
+        "Мне страшно понравилось узнать тебя ближе. Мы два часа болтаем, а я и не заметила."
+      ],
+      "explanation_on_fail_ru": "«Me ha encantado» = мне очень понравилось (Perfecto). «Llevamos + tiempo + gerundio» = мы делаем X времени. «Ni cuenta me he dado» = я даже не заметила (идиома)."
+    },
+    {
+      "round": 20,
+      "format": "CHOICE",
+      "topic_ru": "Прощание дружеское · besos",
+      "tested_lesson": "u1_l6",
+      "tested_grammar": "Despedida amistosa",
+      "npc_line_es": "Bueno, tía, me tengo que ir. ¡Nos vemos el sábado!",
+      "npc_line_ru": "Ну, тётя, мне надо идти. Увидимся в субботу!",
+      "prompt_ru": "Прощаешься тепло:",
+      "correct_answer": "¡Hasta el sábado! Un beso, Lucía.",
+      "distractors": [
+        "Hasta luego, doctora. Buenos días.",
+        "Adiós usted, señora Lucía.",
+        "Que tenga buen día, hasta nunca."
+      ],
+      "explanation_on_fail_ru": "С подругой — «un beso» (поцелуй на прощание, типично испанское). «Doctora / señora / usted» — формальные, не для подруги. «Hasta nunca» — обидное."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "¡Eres una tía genial, en serio! Te agrego al grupo de WhatsApp, somos siete y todas guays.",
+      "carlos_line_ru": "Ты реально классная! Добавляю тебя в наш WhatsApp, нас семеро, все классные.",
+      "scene_description_ru": "Lucía обнимает на прощание, добавляет в групповой чат «Las del Comercial». Через 5 минут приходят сообщения от других девочек: «¡Bienvenida, Andrea!». На субботу — план зафиксирован.",
+      "stakes_ru": "Близкая подруга, групповой чат, регулярные встречи. Социальная жизнь в Мадриде запущена."
+    },
+    "silver": {
+      "carlos_line_es": "Vale, nos vemos el sábado. Un beso, ¡cuídate!",
+      "carlos_line_ru": "Окей, увидимся в субботу. Целую, береги себя!",
+      "scene_description_ru": "Lucía тепло прощается, обещает написать про субботу. План есть, дружба строится постепенно.",
+      "stakes_ru": "Хорошее начало. Lucía напишет."
+    },
+    "bronze": {
+      "carlos_line_es": "Bueno, ya te escribiré por el plan del sábado. Hasta luego.",
+      "carlos_line_ru": "Ну, я напишу тебе про план на субботу. Пока.",
+      "scene_description_ru": "Lucía вежливо прощается. План на субботу под вопросом — обещает написать, но без гарантии.",
+      "stakes_ru": "Прохладно, но контакт есть. Lucía может написать."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Oye, creo que el sábado al final tengo cena familiar. Te aviso otro día, ¿vale?",
+      "carlos_line_ru": "Слушай, кажется в субботу у меня семейный ужин. Напишу в другой день, ладно?",
+      "scene_description_ru": "Lucía вежливо отменяет план. Через неделю — ни сообщения. Ты понимаешь намёк.",
+      "stakes_ru": "Lucía «занята». Повтори Perfecto и Imperativo."
+    },
+    "low": {
+      "carlos_line_es": "Lo siento, Andrea, voy con prisa. Hablamos en otra ocasión.",
+      "carlos_line_ru": "Прости, Андреа, тороплюсь. Поговорим в другой раз.",
+      "scene_description_ru": "Lucía срочно расплачивается и уходит. Никаких сообщений после. Дружба не сложилась.",
+      "stakes_ru": "Дружбы не вышло. Повтори блок 7."
+    },
+    "very_low": {
+      "carlos_line_es": "Perdona, es que no entiendo casi nada. Mejor cuando hables un poco más, ¿sí?",
+      "carlos_line_ru": "Извини, я почти ничего не понимаю. Лучше когда подучишь, ок?",
+      "scene_description_ru": "Lucía сочувственно смотрит, оплачивает свой кофе и уходит первой. Контакт обрывается.",
+      "stakes_ru": "Совсем плохо. Учи блок 7 заново."
+    }
+  }
+}

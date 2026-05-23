@@ -1,0 +1,456 @@
+{
+  "id": "cp16",
+  "cefr": "B2",
+  "block": 4,
+  "title_ru": "FINAL BOSS · Прощание с Madrid",
+  "title_es": "FINAL BOSS · Despedida de Madrid",
+  "description_ru": "Madrid-Barajas, terminal 4S, gate B12. Финальный рейс в Москву после 4 лет жизни в Испании. За 3 часа до вылета — спонтанная встреча всех ключевых людей твоего пути: Carlos (passport officer), Sra. López (caserа), Diego (camarero de La Bodega), Sergio (mejor amigo), Dra. Martínez (doctora), Lucía (compañera de piso), Pablo (jefe), Andrés (amigo coqueto). Каждый возвращается со своим стилем и финальным вопросом. ВСЕ грамматические темы курса A1+A2+B1+B2 в одной эпической сессии. Завершается коллективным прощанием — поэтической сборкой фразы прощания.",
+  "stakes_ru": "Это финальный экзамен ВСЕГО курса. Pass — выпускник «Habla español como nativa», сертификат, +2500 XP, весь курс закрыт. Fail — обычное прощание, контакты затихнут со временем. Threshold снижен до 65% (BOSS), потому что 25 раундов смешивают все 16 блоков и шансы на ошибку выше.",
+  "intro_text_ru": "Чемодан сдан. Boarding через 2.5 часа. Ты пьёшь último cortado в кафе. Внезапно — голос: «¡Andrea! ¿Te ibas sin despedirte?» Поворачиваешься. Это Sergio. За ним Lucía. И — невероятно — Carlos из CP1, в форме, не на дежурстве. Они все пришли. ВСЕ.",
+  "scene": {
+    "name": "Madrid-Barajas T4S · Gate B12",
+    "type": "airport_farewell",
+    "city": "Madrid",
+    "background_image": "scene_cp16_airport.jpg"
+  },
+  "npc": {
+    "id": "ensemble",
+    "name": "Ensemble · todos los NPC",
+    "role_ru": "Все NPC курса · финальное прощание",
+    "role_es": "Todos los NPC del curso · despedida final",
+    "voice_id": "es-ES-Polyglot-1",
+    "portrait_image": "npc_ensemble.jpg",
+    "personality": "Каждый NPC сохраняет свой голос: Carlos формал-усталый-улыбающийся, Sra. López ворчит но любит, Diego гордый camarero, Sergio super-casual «tía», Dra. Martínez профессионально-тёплая, Lucía эмоциональная подруга, Pablo деловой но human, Andrés flirty до конца. Они говорят по очереди, каждый — 2-4 раунда."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia",
+    "note": "Выпускник полного курса ESPEAK. 4 года в Мадриде. Возвращается в Москву на новую работу."
+  },
+  "thresholds": {
+    "bronze_percent": 65,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 1500,
+    "silver_xp_bonus": 500,
+    "gold_xp_bonus": 1000,
+    "badge_id": "habla_como_nativa",
+    "badge_name_ru": "Habla español como nativa",
+    "unlocks_block": 99
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Carlos · acto 1 · приветствие старого друга",
+      "tested_lesson": "u1_l4 + u15_l0",
+      "npc_line_es": "Andrea, ¿se acuerda de mí? Carlos, del control de pasaportes de hace cuatro años.",
+      "npc_line_ru": "Andrea, помните меня? Carlos, паспортный контроль, 4 года назад.",
+      "prompt_ru": "Carlos помнит тебя со дня прилёта. Какой ответ тёплый, но сохраняет формальность?",
+      "correct_answer": "Por supuesto, Carlos. ¿Cómo iba a olvidarme del primer rostro español que vi?",
+      "distractors": [
+        "Hola, qué tal.",
+        "Quién es usted.",
+        "Bien gracias."
+      ],
+      "explanation_on_fail_ru": "«¿Cómo iba a olvidarme?» — риторика B2 (Imperfecto + ir a + inf). «Primer rostro español» = первое испанское лицо. Тёплый респонс с памятью."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Carlos · acto 1 · Pretérito Perfecto reflexión",
+      "tested_lesson": "u13_l0",
+      "npc_line_es": "Dígame: en estos cuatro años, ¿cómo ___ cambiado usted?",
+      "npc_line_ru": "Скажите: за эти 4 года как Вы изменились?",
+      "prompt_ru": "Поставь форму HABER (3 л. ед.):",
+      "sentence_template": "¿Cómo ___ cambiado usted?",
+      "verb_infinitive": "haber",
+      "correct_answer": "ha",
+      "distractors": ["he", "había", "hubiera"],
+      "explanation_on_fail_ru": "Perfecto: 3 л. usted → ha + participio. Cambio с актуальностью для настоящего."
+    },
+    {
+      "round": 3,
+      "format": "CHOICE",
+      "topic_ru": "Carlos · acto 1 · рефлексия 4 лет",
+      "tested_lesson": "u13_l6 + u13_l9",
+      "npc_line_es": "¿Y qué se lleva de España, si pudiera resumirlo en una frase?",
+      "npc_line_ru": "Что забираете из Испании, если бы пришлось одной фразой?",
+      "prompt_ru": "Какой ответ использует B2-конструкцию рефлексии?",
+      "correct_answer": "Me llevo el haber aprendido que la vida se vive a otro ritmo, pase lo que pase.",
+      "distractors": [
+        "Me llevo cosas buenas.",
+        "Llevo bien.",
+        "Tengo recuerdos."
+      ],
+      "explanation_on_fail_ru": "«El haber aprendido» (инфинитив-сущ + Perfecto). «Pase lo que pase» — устойчивая Subj-формула. Это речь nativa B2."
+    },
+    {
+      "round": 4,
+      "format": "LISTEN",
+      "topic_ru": "Sra. López · acto 2 · ворчание-благодарность",
+      "tested_lesson": "u14_l4 + u13_l10",
+      "npc_line_es": "Vine corriendo desde el barrio. Llevo cuatro años aguantando que dejes el grifo abierto, pero aunque te lo dijera mil veces no escucharías. ¡Cómo te voy a echar de menos, niña!",
+      "audio_only": true,
+      "prompt_ru": "Что Sra. López говорит на самом деле?",
+      "correct_answer": "Жалуется на привычки Andrea, но признаётся что будет скучать.",
+      "distractors": [
+        "Полностью довольна и хвалит Andrea.",
+        "Сердится и не хочет прощаться.",
+        "Жалуется на других жильцов, не Andrea."
+      ],
+      "translation_after_answer_ru": "«Llevo aguantando» (perífrasis длительности) + «aunque te lo dijera mil veces» (aunque + Imp.Subj. гипотеза) + «cómo te voy a echar de menos» (риторика будущего). Это любовь через ворчание.",
+      "explanation_on_fail_ru": "Sra. López: ворчит (llevo aguantando), гипотеза (aunque dijera), но финал — echar de menos = «буду скучать». Типичный испанский abuela-стиль."
+    },
+    {
+      "round": 5,
+      "format": "BUILD",
+      "topic_ru": "Sra. López · acto 2 · обещание-прощание",
+      "tested_lesson": "u13_l11 + u14_l0",
+      "npc_line_es": "Prométeme que volverás, aunque sea de visita.",
+      "npc_line_ru": "Обещай что вернёшься, хоть в гости.",
+      "prompt_ru": "Собери обещание (9 слов):",
+      "correct_answer": "Le prometo que volveré para que celebremos su cumpleaños",
+      "word_bank": ["Le", "prometo", "que", "volveré", "para", "que", "celebremos", "su", "cumpleaños", "celebramos", "celebro"],
+      "explanation_on_fail_ru": "«Prometer que» + Indicativo (volveré). «Para que» + Subjuntivo (celebremos). Двойной слой B2."
+    },
+    {
+      "round": 6,
+      "format": "CONJUGATE",
+      "topic_ru": "Diego · acto 3 · вкус la paella",
+      "tested_lesson": "u13_l1 + u14_l1",
+      "npc_line_es": "Te he traído una caja de azafrán. Para que cuando ___ paella en Moscú, te acuerdes de mí.",
+      "npc_line_ru": "Принёс коробку шафрана. Чтобы когда будешь готовить паэлью в Москве — вспоминала меня.",
+      "prompt_ru": "После «cuando» о будущем — какая форма HACER (tú)?",
+      "sentence_template": "Cuando ___ paella en Moscú.",
+      "verb_infinitive": "hacer",
+      "correct_answer": "hagas",
+      "distractors": ["haces", "harás", "hiciste"],
+      "explanation_on_fail_ru": "«Cuando» + будущее → ВСЕГДА Subjuntivo. Hacer (tú) → hagas. Diego в роли философа гастрономии."
+    },
+    {
+      "round": 7,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Diego · acto 3 · благодарность повару",
+      "tested_lesson": "u15_l0 + u13_l9",
+      "prompt_ru": "Поблагодари Diego на B2:",
+      "prompt_text_ru": "Спасибо за всё, Diego. Без твоей паэльи мои 4 года не были бы такими вкусными.",
+      "correct_answer": "Gracias por todo Diego Sin tu paella mis cuatro años no habrían sido tan sabrosos",
+      "acceptable_alternatives": [
+        "Gracias por todo Diego Sin tu paella mis cuatro años no hubieran sido tan sabrosos",
+        "Gracias por todo Diego Sin tu paella mis cuatro años no habrían sido tan ricos",
+        "Gracias por todo Diego Sin tu paella estos cuatro años no habrían sido tan sabrosos"
+      ],
+      "hint_ru": "Sin + сущ + Cond.Compuesto (habrían sido).",
+      "explanation_on_fail_ru": "«Sin + сущ» вместо «Si тип 3» — элегантная вариация. «Habrían sido» = были бы (gold B2 syntax)."
+    },
+    {
+      "round": 8,
+      "format": "CHOICE",
+      "topic_ru": "Sergio · acto 4 · casual super",
+      "tested_lesson": "u1_l4 + u15_l0",
+      "npc_line_es": "¡Tía, qué fuerte que te vayas! ¿En serio te piras a Moscú?",
+      "npc_line_ru": "Чуваак, нереально что уезжаешь! Реально едешь в Москву?",
+      "prompt_ru": "Sergio говорит супер-casual. Какой ответ В ЕГО регистре?",
+      "correct_answer": "Tío, en serio. Mañana a estas horas estoy aterrizando.",
+      "distractors": [
+        "Estimado señor, así es.",
+        "Le agradezco la pregunta.",
+        "Confirmo formalmente mi partida."
+      ],
+      "explanation_on_fail_ru": "Регистр должен совпадать с собеседником. С Sergio «tío», «en serio» — наоборот, формальные «estimado señor» звучат смешно. B2 — это умение переключаться."
+    },
+    {
+      "round": 9,
+      "format": "CONJUGATE",
+      "topic_ru": "Sergio · acto 4 · Pluscuamp Subj дружбы",
+      "tested_lesson": "u13_l6",
+      "npc_line_es": "Si no te ___ conocido aquel verano en el parque, mi vida sería otra.",
+      "npc_line_ru": "Если бы не встретил тебя тем летом в парке, моя жизнь была бы другой.",
+      "prompt_ru": "Поставь Pluscuamp.Subj. от HABER (yo):",
+      "sentence_template": "Si no te ___ conocido aquel verano.",
+      "verb_infinitive": "haber",
+      "correct_answer": "hubiera",
+      "distractors": ["había", "hubiese ", "he"],
+      "explanation_on_fail_ru": "Si тип 3 mixto: Pluscuamp.Subj. (hubiera conocido — прошлое) + Cond.Simple (sería — настоящее). Микс-условный для длящегося эффекта."
+    },
+    {
+      "round": 10,
+      "format": "BUILD",
+      "topic_ru": "Sergio · acto 4 · идиома + chistes",
+      "tested_lesson": "u16_l0 + u16_l4",
+      "npc_line_es": "Te voy a echar un montón de menos, tía. ¿Qué te digo?",
+      "npc_line_ru": "Буду жутко скучать, чуваак. Что сказать тебе?",
+      "prompt_ru": "Собери поэтичную реплику (8 слов):",
+      "correct_answer": "Que la amistad de verdad no entiende de fronteras",
+      "word_bank": ["Que", "la", "amistad", "de", "verdad", "no", "entiende", "de", "fronteras", "entendía", "entiendan"],
+      "explanation_on_fail_ru": "«La amistad de verdad no entiende de fronteras» — поэтическая formula. «No entender de + сущ» = не разбираться в / не иметь границ. B2 идиома."
+    },
+    {
+      "round": 11,
+      "format": "CHOICE",
+      "topic_ru": "Dra. Martínez · acto 5 · профессиональная теплота",
+      "tested_lesson": "u15_l0 + u13_l11",
+      "npc_line_es": "Andrea, vine porque no quería que se fuera sin que le diera mi tarjeta personal.",
+      "npc_line_ru": "Andrea, пришла потому что не хотела, чтобы Вы уехали, не дав Вам свою личную карточку.",
+      "prompt_ru": "Какой ответ Dra. Martínez уместен?",
+      "correct_answer": "Doctora, le agradezco enormemente. Cuide mucho a sus pacientes, como me cuidó a mí.",
+      "distractors": [
+        "Vale, gracias tía.",
+        "No la necesito.",
+        "Adiós, ya me voy."
+      ],
+      "explanation_on_fail_ru": "Формальная теплота: «le agradezco enormemente» + Imperativo «cuide» (формальная просьба) + «como me cuidó» (как заботились обо мне). Sophisticated B2 register."
+    },
+    {
+      "round": 12,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Dra. Martínez · acto 5 · напутствие",
+      "tested_lesson": "u13_l7 + u13_l11",
+      "prompt_ru": "Переведи напутствие доктора:",
+      "prompt_text_es": "Si alguna vez tuviera una emergencia médica en español, llámeme sin pensarlo dos veces. Y prométame que se cuidará tanto como yo la habría cuidado aquí.",
+      "correct_answer": "Если когда-нибудь у Вас будет медицинская экстренная ситуация на испанском, звоните мне без раздумий. И обещайте мне, что будете заботиться о себе так, как я заботилась бы о Вас здесь.",
+      "acceptable_alternatives": [
+        "Если когда-нибудь будет медицинская срочная ситуация на испанском, звоните мне не раздумывая. И обещайте мне, что Вы будете заботиться о себе так же, как я заботилась бы о Вас здесь.",
+        "Если когда-либо столкнётесь с медицинской срочностью на испанском, звоните мне без долгих раздумий. И обещайте, что будете заботиться о себе так, как я бы позаботилась здесь.",
+        "Если когда-нибудь у Вас будет медицинская экстренная ситуация на испанском, позвоните мне сразу. И обещайте, что будете заботиться о себе так же, как я бы заботилась о Вас здесь."
+      ],
+      "explanation_on_fail_ru": "Si тип 2 (tuviera + llámeme imperativo). Cond.Comp. (habría cuidado — гипотетическое прошлое). Сложное B2-предложение с переключением условных."
+    },
+    {
+      "round": 13,
+      "format": "CONJUGATE",
+      "topic_ru": "Lucía · acto 6 · подруга в слезах",
+      "tested_lesson": "u13_l3",
+      "npc_line_es": "Ojalá no te ___ . Mañana voy a llorar todo el día.",
+      "npc_line_ru": "Лучше бы ты не уезжала. Завтра буду плакать весь день.",
+      "prompt_ru": "Поставь Imp.Subj. от IRSE (tú, невыполнимое):",
+      "sentence_template": "Ojalá no te ___.",
+      "verb_infinitive": "irse",
+      "correct_answer": "fueras",
+      "distractors": ["vas", "irías", "irás"],
+      "explanation_on_fail_ru": "«Ojalá» о невыполнимом → Imp.Subj. Irse (tú) → te fueras. Lucía выражает невозможное желание (Andrea уже уезжает)."
+    },
+    {
+      "round": 14,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Lucía · acto 6 · обещание Futuro Perfecto",
+      "tested_lesson": "u13_l8",
+      "prompt_ru": "Утеши Lucía обещанием (Futuro Perfecto):",
+      "prompt_text_ru": "Через год я уже буду тебя навещать. Обещаю.",
+      "correct_answer": "Dentro de un año ya te habré visitado Te lo prometo",
+      "acceptable_alternatives": [
+        "Dentro de un año ya te habré visitado Lo prometo",
+        "En un año ya te habré visitado Te lo prometo",
+        "Dentro de un año ya habré venido a visitarte Te lo prometo"
+      ],
+      "hint_ru": "Futuro Perfecto: habré + participio.",
+      "explanation_on_fail_ru": "Futuro Perfecto: habré + part. «Habré visitado» = «уже навещу к тому моменту». Дистанция во времени с готовностью."
+    },
+    {
+      "round": 15,
+      "format": "CHOICE",
+      "topic_ru": "Lucía · acto 6 · culture reference",
+      "tested_lesson": "u16_l11",
+      "npc_line_es": "Te he traído un libro de García Márquez para el avión. ¿Lo conoces?",
+      "npc_line_ru": "Принесла книгу Маркеса в самолёт. Знаешь?",
+      "prompt_ru": "Какой ответ показывает cultural literacy B2?",
+      "correct_answer": "Por supuesto. «Cien años de soledad» fue lo primero que leí en español sin diccionario.",
+      "distractors": [
+        "No, no lo conozco.",
+        "García quién.",
+        "Sí, es de España."
+      ],
+      "explanation_on_fail_ru": "Cultural literacy B2: знать «Cien años de soledad» (хотя автор колумбийский). «Sin diccionario» — gesture of achievement. García Márquez ≠ испанец (колумбиец)."
+    },
+    {
+      "round": 16,
+      "format": "CONJUGATE",
+      "topic_ru": "Pablo · acto 7 · gerundio профи",
+      "tested_lesson": "u14_l8",
+      "npc_line_es": "___ aprendido el español aquí, te abrirá puertas en cualquier multinacional rusa.",
+      "npc_line_ru": "Выучив испанский здесь, он откроет двери в любой российской многонациональной.",
+      "prompt_ru": "Какой композитный gerundio?",
+      "sentence_template": "___ aprendido el español aquí, te abrirá puertas.",
+      "verb_infinitive": "haber",
+      "correct_answer": "Habiendo",
+      "distractors": ["Habiendo de", "Habrá", "Hubo"],
+      "explanation_on_fail_ru": "«Habiendo + participio» = композитный gerundio («выучив», «закончив»). Книжная B2-структура для причинных оборотов."
+    },
+    {
+      "round": 17,
+      "format": "BUILD",
+      "topic_ru": "Pablo · acto 7 · референс письма",
+      "tested_lesson": "u14_l0 + u15_l1",
+      "npc_line_es": "Acepta esta carta de recomendación. La he firmado yo personalmente.",
+      "npc_line_ru": "Прими это рекомендательное письмо. Подписал лично.",
+      "prompt_ru": "Поблагодари boss формально (8 слов):",
+      "correct_answer": "Esta carta será atesorada con el mayor respeto siempre",
+      "word_bank": ["Esta", "carta", "será", "atesorada", "con", "el", "mayor", "respeto", "siempre", "es", "estoy"],
+      "explanation_on_fail_ru": "Pasiva futuro «será atesorada» (будет храниться). «Con el mayor respeto» — формальная высокая регистровая фраза. Sophisticated B2."
+    },
+    {
+      "round": 18,
+      "format": "CHOICE",
+      "topic_ru": "Andrés · acto 8 · flirty hasta el final",
+      "tested_lesson": "u15_l0 + u13_l2",
+      "npc_line_es": "Andrea, si yo hubiera tenido el valor de pedirte salir hace dos años... ¿qué habrías dicho?",
+      "npc_line_ru": "Andrea, если бы у меня хватило смелости пригласить тебя 2 года назад... что бы ты ответила?",
+      "prompt_ru": "Какой ответ дипломатично и тепло закрывает flirt?",
+      "correct_answer": "Andrés, eso ya nunca lo sabremos. Pero te queda el ser uno de mis mejores recuerdos de Madrid.",
+      "distractors": [
+        "Te habría dicho que sí.",
+        "Qué pesado eres.",
+        "Habría dicho que no."
+      ],
+      "explanation_on_fail_ru": "«Eso ya nunca lo sabremos» — элегантное закрытие. «Te queda el ser» — инфинитив-сущ как утешение. Дипломатия с теплотой, не отказ и не приглашение."
+    },
+    {
+      "round": 19,
+      "format": "CONJUGATE",
+      "topic_ru": "Andrés · acto 8 · поэтика прощания",
+      "tested_lesson": "u13_l4",
+      "npc_line_es": "Te juro que te recordaré como si nunca te ___ del todo.",
+      "npc_line_ru": "Клянусь, буду помнить, будто ты совсем не уехала.",
+      "prompt_ru": "Поставь Pluscuamp.Subj. от IRSE (tú, нереальное):",
+      "sentence_template": "Como si nunca te ___ del todo.",
+      "verb_infinitive": "irse",
+      "correct_answer": "hubieras ido",
+      "distractors": ["fueras", "vas", "irás"],
+      "explanation_on_fail_ru": "«Como si» в прошедшем = Pluscuamp.Subj. «Te hubieras ido» (te + reflexive + hubieras + part). Поэтическое отрицание разлуки."
+    },
+    {
+      "round": 20,
+      "format": "LISTEN",
+      "topic_ru": "Ensemble · все сразу · хор прощания",
+      "tested_lesson": "u15_l4 + u13_l9",
+      "npc_line_es": "Andrea, te queremos. Aunque vivas a miles de kilómetros, formarás parte de nuestra familia. No es una despedida, sino un hasta luego. Vuelve cuando quieras. Pase lo que pase.",
+      "audio_only": true,
+      "prompt_ru": "Какое главное послание ensemble?",
+      "correct_answer": "Это не прощание, а до встречи — независимо от обстоятельств.",
+      "distractors": [
+        "Это окончательное прощание навсегда.",
+        "Они хотят, чтобы Andrea осталась.",
+        "Они недовольны её отъездом."
+      ],
+      "translation_after_answer_ru": "«No es una despedida, sino un hasta luego» (sino — замена). «Aunque vivas» (Subj гипотеза). «Pase lo que pase» (устойчивая Subj-формула). Это формула любви.",
+      "explanation_on_fail_ru": "B2-конструкции одно за другим: aunque + Subj, sino (не pero!), pase lo que pase. Это вершина B2-речи в один абзац."
+    },
+    {
+      "round": 21,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Andrea · ответ ensemble",
+      "tested_lesson": "u15_l1 + u13_l11",
+      "prompt_ru": "Andrea отвечает (формально-тепло):",
+      "prompt_text_ru": "Спасибо всем. Я уношу с собой не только язык, но и часть моего сердца, которая останется здесь навсегда.",
+      "correct_answer": "Gracias a todos Me llevo conmigo no sólo el idioma sino también una parte de mi corazón que se quedará aquí para siempre",
+      "acceptable_alternatives": [
+        "Gracias a todos Me llevo no sólo el idioma sino también una parte de mi corazón que se quedará aquí para siempre",
+        "Gracias a todos Me llevo conmigo no solamente el idioma sino también una parte de mi corazón que se quedará aquí para siempre",
+        "Gracias a todos Me llevo conmigo no sólo el idioma sino también un pedazo de mi corazón que se quedará aquí para siempre"
+      ],
+      "hint_ru": "«No sólo... sino también», relativo «que se quedará».",
+      "explanation_on_fail_ru": "Vershина B2: «no sólo... sino también», relativo «que se quedará» (futuro reflexivo), идиома «llevarse el corazón». Поэтика финала."
+    },
+    {
+      "round": 22,
+      "format": "CHOICE",
+      "topic_ru": "Carlos · возвращается с штампом",
+      "tested_lesson": "u1_l6 + u15_l0",
+      "npc_line_es": "Para terminar como empezamos: déjeme sellarle el pasaporte una última vez. Pero esta vez con esto: «Honorary madrileña».",
+      "npc_line_ru": "Чтобы закончить как начали: дайте мне поставить штамп ещё раз. Но в этот раз: «Почётная мадридка».",
+      "prompt_ru": "Самый поэтичный ответ?",
+      "correct_answer": "Carlos, no habría podido pedir un cierre más bonito a esta historia.",
+      "distractors": [
+        "Vale, ponme el sello.",
+        "No quiero el sello.",
+        "Está bien."
+      ],
+      "explanation_on_fail_ru": "Cond.Comp. «no habría podido pedir» (не смогла бы попросить). «Cierre bonito a la historia» — литературная B2-формула."
+    },
+    {
+      "round": 23,
+      "format": "CONJUGATE",
+      "topic_ru": "Final · последняя реплика на испанском",
+      "tested_lesson": "u13_l9",
+      "npc_line_es": "Y para el último brindis: que pase lo que pase, ___ siempre amigos.",
+      "npc_line_ru": "И последний тост: что бы ни случилось, останемся всегда друзьями.",
+      "prompt_ru": "Поставь Subj.Pres. от SEGUIR (мы):",
+      "sentence_template": "Que pase lo que pase, ___ siempre amigos.",
+      "verb_infinitive": "seguir",
+      "correct_answer": "sigamos",
+      "distractors": ["seguimos", "seguiremos", "seguiríamos"],
+      "explanation_on_fail_ru": "«Que» в начале фразы (=ojalá) → Subjuntivo. Seguir (мы) → sigamos. Формула пожелания на финал."
+    },
+    {
+      "round": 24,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Финальная фраза Carlos",
+      "tested_lesson": "u13_l2 + u16_l11",
+      "prompt_ru": "Переведи прощальную мысль Carlos:",
+      "prompt_text_es": "Como dicen los castellanos: el que se va sin que lo echen vuelve sin que lo llamen. Le espero a la vuelta, Andrea.",
+      "correct_answer": "Как говорят кастильцы: кто уходит без того чтобы его прогоняли — возвращается без того чтобы его звали. Жду Вашего возвращения, Andrea.",
+      "acceptable_alternatives": [
+        "Как говорят кастильцы: кто уходит сам — возвращается сам. Жду Вашего возвращения, Andrea.",
+        "Как говорят кастильцы: кто уходит, чтобы его не прогоняли, возвращается, чтобы его не звали. Жду Вашего возвращения, Andrea.",
+        "Как говорят кастильцы: кто уходит, не будучи изгнан, возвращается, не будучи зван. Жду Вашего возвращения, Andrea."
+      ],
+      "explanation_on_fail_ru": "Refrán castellano с двойным «sin que + Subj» (sin que echen, sin que llamen). Эта поговорка — суть Madrid: люди уходят, чтобы вернуться. Cultural B2 reference."
+    },
+    {
+      "round": 25,
+      "format": "BUILD",
+      "topic_ru": "ФИНАЛЬНЫЙ РАУНД · поэтическая сборка",
+      "tested_lesson": "u1_l6 + u16_l11 + u13_l9",
+      "npc_line_es": "Ensemble: Andrea, dinos algo. Lo último que diga la rusa más española.",
+      "npc_line_ru": "Ensemble: Andrea, скажи что-нибудь. Последнее от самой испанской русской.",
+      "prompt_ru": "Собери ФИНАЛЬНОЕ прощание (10 слов):",
+      "correct_answer": "Gracias Madrid por enseñarme que mi casa está en todas partes",
+      "word_bank": ["Gracias", "Madrid", "por", "enseñarme", "que", "mi", "casa", "está", "en", "todas", "partes", "es", "tener"],
+      "explanation_on_fail_ru": "Финальная поэтика: «por enseñarme que» (por + inf + que + Indic). «Mi casa está en todas partes» — кульминация курса. Это речь nativa."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Andrea, no hay más que decir. Habla español como una madrileña. Vuelva pronto. La esperamos siempre.",
+      "carlos_line_ru": "Andrea, больше нечего сказать. Говорит как мадридка. Возвращайся скорее. Ждём всегда.",
+      "scene_description_ru": "Все 8 NPC обнимают тебя по очереди. Carlos ставит штамп «Honorary madrileña». Sergio дарит шарф Real Madrid. Lucía плачет. Andrés не плачет, но почти. Сертификат «Habla español como nativa» сохраняется в профиль навсегда. Boarding-vouchers на испанский тебе подарили в подарок.",
+      "stakes_ru": "Curso completo. Сертификат для шеринга. +2500 XP. WhatsApp-группа «Familia Madrid» добавляет тебя пожизненно."
+    },
+    "silver": {
+      "carlos_line_es": "Bien hecho, Andrea. Has crecido muchísimo en estos años. Te queremos.",
+      "carlos_line_ru": "Молодец, Andrea. Очень выросла за эти годы. Любим тебя.",
+      "scene_description_ru": "Все обнимают тепло. Sergio и Lucía обещают приехать в Москву на Новый год. Pablo пишет рекомендацию. Контакты сохранятся.",
+      "stakes_ru": "Hablas español muy bien — на ступень ниже nativa, но впечатляюще. Курс закрыт."
+    },
+    "bronze": {
+      "carlos_line_es": "Andrea, has logrado lo que pocos: salir de aquí con español sólido. Buen viaje.",
+      "carlos_line_ru": "Andrea, добилась того что мало кто: уезжаешь с твёрдым испанским. Доброго пути.",
+      "scene_description_ru": "Прощание тёплое, но без слёз. WhatsApp-чаты живут активно первые полгода, потом редеют, но не исчезают."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Adiós, Andrea. Te deseamos lo mejor en Rusia.",
+      "carlos_line_ru": "Прощай, Andrea. Желаем тебе всего лучшего в России.",
+      "scene_description_ru": "Прощание корректное, но не близкое. Объятия короткие. На прощание не «hasta luego», а «adiós». WhatsApp-чаты затихают за 2 месяца.",
+      "stakes_ru": "Курс не зачтён. Можно пересдать после 24ч, повторив слабые блоки."
+    },
+    "low": {
+      "carlos_line_es": "Buen viaje, Andrea.",
+      "carlos_line_ru": "Доброго пути, Andrea.",
+      "scene_description_ru": "Несколько NPC не приходят — отвечают «no puedo». Те, кто пришёл, прощаются вежливо но сдержанно. Без слёз, без шарфов, без штампа.",
+      "stakes_ru": "Не выпускник. Перепройди B2.1-B2.4 и попробуй финал заново."
+    },
+    "very_low": {
+      "carlos_line_es": "Adiós.",
+      "carlos_line_ru": "Прощай.",
+      "scene_description_ru": "Только Carlos и Sra. López пришли, но коротко. Andrea летит одна, осознавая что не успела попрощаться с большинством. Контакты теряются за 3 месяца.",
+      "stakes_ru": "Курс не завершён. Полное повторение блока B2 + retest через неделю."
+    }
+  }
+}

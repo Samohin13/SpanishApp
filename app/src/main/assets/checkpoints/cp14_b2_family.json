@@ -1,0 +1,399 @@
+{
+  "id": "cp14",
+  "cefr": "B2",
+  "block": 4,
+  "title_ru": "Семейный спор · юбилей тёти Rosa",
+  "title_es": "Disputa familiar · cumpleaños de tía Rosa",
+  "description_ru": "Воскресный обед в доме тёти Rosa в Toledo. 60-летие. За столом 12 человек. Тётя Rosa — patriarca семьи, гордая, с обидами на родственников. Внезапно вспыхивает старый конфликт о наследстве деда. Тебя втягивают: ты — нейтральный голос со стороны. Цель — высказать мнение по-испански, помирить стороны, не обидеть тётю, использовать пассивный залог и перифразы для деликатных формулировок.",
+  "stakes_ru": "Тётя Rosa плачет. Если разрулишь — станешь любимой племянницей семьи. Если завалишь — тётя обидится навсегда, и ты больше не получишь приглашение на семейные праздники в Toledo.",
+  "intro_text_ru": "В столовой звенят бокалы. Внезапно тётя Rosa бросает вилку: «¡Llevo veinte años aguantando esto, y nadie dice nada!» Все замолкают. Кузен Miguel смотрит в тарелку. Тётя поворачивается к тебе: «Tú, que eres de fuera, dime: ¿quién tiene razón?»",
+  "scene": {
+    "name": "Casa familiar · comedor",
+    "type": "family_dispute",
+    "city": "Toledo",
+    "background_image": "scene_cp14_family.jpg"
+  },
+  "npc": {
+    "id": "tia_rosa",
+    "name": "Tía Rosa",
+    "role_ru": "Тётя · глава семьи",
+    "role_es": "Tía · matriarca de la familia",
+    "voice_id": "es-ES-Conchita",
+    "portrait_image": "npc_tia_rosa.jpg",
+    "personality": "обращается на tú (родственники), эмоциональная, гордая. Перебивает, повышает голос, но потом извиняется. Использует пассивный залог («fui ignorada»), перифразы («llevo años sufriendo»), и драматичные «como si...» обороты. На правильные ответы — теплеет, на неуклюжих — поджимает губы."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia",
+    "note": "Жена дальнего родственника, 4 года в семье. Уважают за нейтралитет."
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 600,
+    "silver_xp_bonus": 100,
+    "gold_xp_bonus": 300,
+    "badge_id": "mediadora_b2",
+    "badge_name_ru": "Mediadora de familias",
+    "unlocks_block": 5
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Деликатное приветствие · родственники",
+      "tested_lesson": "u15_l0 + u1_l4",
+      "npc_line_es": "¡Andrea, hija! Por fin alguien que escucha. Siéntate aquí a mi lado.",
+      "npc_line_ru": "Andrea, дорогая! Наконец-то кто-то слушает. Садись рядом со мной.",
+      "prompt_ru": "Тётя зовёт тебя в эпицентр конфликта. Какой ответ деликатный?",
+      "correct_answer": "Tía, claro que estoy aquí. Pero antes de opinar prefiero escuchar a todos.",
+      "distractors": [
+        "Vale, paso de todo esto.",
+        "No quiero meterme, tía.",
+        "Decid lo que queráis."
+      ],
+      "explanation_on_fail_ru": "Деликатно: подтверждение поддержки + предложение сначала выслушать (escuchar a todos). «Paso», «no quiero meterme» — холодное отстранение, обидит."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Voz pasiva con SER · обвинение",
+      "tested_lesson": "u14_l0",
+      "npc_line_es": "Cuando murió tu abuelo, las decisiones ___ tomadas sin mí. Sin consultarme.",
+      "npc_line_ru": "Когда умер дедушка, решения были приняты без меня. Без согласования.",
+      "prompt_ru": "Поставь форму SER для пассива (decisiones — ж.мн.ч., прошлое):",
+      "sentence_template": "Las decisiones ___ tomadas sin mí.",
+      "verb_infinitive": "ser",
+      "correct_answer": "fueron",
+      "distractors": ["fue", "eran", "están"],
+      "explanation_on_fail_ru": "Voz pasiva acción: SER + participio + (por agente). Decisiones (ж.мн.) → fueron tomadas. Estar tomadas = состояние, здесь нужно действие в прошлом."
+    },
+    {
+      "round": 3,
+      "format": "CHOICE",
+      "topic_ru": "Pasiva refleja · обобщение",
+      "tested_lesson": "u14_l2",
+      "npc_line_es": "En esta familia ___ siempre las cosas a espaldas mías.",
+      "npc_line_ru": "В этой семье всегда всё решается за моей спиной.",
+      "prompt_ru": "Какая форма pasiva refleja подходит?",
+      "correct_answer": "se hacen",
+      "distractors": ["se hace", "son hechas", "hacen"],
+      "explanation_on_fail_ru": "Pasiva refleja: SE + глагол согласован с подлежащим (las cosas — мн. → se hacen). Структура для безличных обвинений."
+    },
+    {
+      "round": 4,
+      "format": "BUILD",
+      "topic_ru": "Perífrasis · llevar + gerundio (длительность)",
+      "tested_lesson": "u14_l4",
+      "npc_line_es": "¡Y nadie reconoce lo que he sufrido!",
+      "npc_line_ru": "И никто не признаёт, как я страдала!",
+      "prompt_ru": "Собери жалобу тёти (8 слов):",
+      "correct_answer": "Llevo veinte años aguantando esta situación en silencio",
+      "word_bank": ["Llevo", "veinte", "años", "aguantando", "esta", "situación", "en", "silencio", "aguantar", "aguanté"],
+      "explanation_on_fail_ru": "Перифраза llevar + gerundio = «делаю уже X лет». Llevo 20 años aguantando = я уже 20 лет терплю. После llevar — ВСЕГДА gerundio."
+    },
+    {
+      "round": 5,
+      "format": "CONJUGATE",
+      "topic_ru": "Imperfecto Subjuntivo · упрёк",
+      "tested_lesson": "u13_l4",
+      "npc_line_es": "Tu primo Miguel actúa como si nada ___ pasado entre nosotros.",
+      "npc_line_ru": "Кузен Miguel ведёт себя, будто между нами ничего не произошло.",
+      "prompt_ru": "Поставь Pluscuamp.Subj. от HABER (3 л.):",
+      "sentence_template": "Como si nada ___ pasado.",
+      "verb_infinitive": "haber",
+      "correct_answer": "hubiera",
+      "distractors": ["ha", "había", "haya"],
+      "explanation_on_fail_ru": "«Como si» ВСЕГДА с Imp.Subj. или Pluscuamp.Subj. Прошедшее «не произошло» → hubiera pasado. Альтернатива: hubiese."
+    },
+    {
+      "round": 6,
+      "format": "CHOICE",
+      "topic_ru": "Reconciliación · извинение",
+      "tested_lesson": "u15_l0 + u15_l1",
+      "npc_line_es": "Tía, ¿qué le pediría usted a Miguel ahora mismo?",
+      "npc_line_ru": "Тётя, что бы вы попросили у Miguel прямо сейчас?",
+      "prompt_ru": "Какая фраза примирения деликатно вкладывается в уста тёти?",
+      "correct_answer": "Que reconociera lo ocurrido y me pidiera perdón sinceramente.",
+      "distractors": [
+        "Que se vaya y no vuelva.",
+        "Que me dé el dinero ya.",
+        "Que diga lo mismo de siempre."
+      ],
+      "explanation_on_fail_ru": "После «pedir que» — Imp.Subj. (reconociera, pidiera). Лексика примирения: reconocer, pedir perdón sinceramente. Деструктивные «se vaya» обостряют конфликт."
+    },
+    {
+      "round": 7,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · сложная семейная история",
+      "tested_lesson": "u14_l0 + u13_l6",
+      "npc_line_es": "Mira, cuando murió tu abuelo, la casa de Toledo fue vendida sin avisarme. El dinero fue repartido entre los hermanos y a mí me llegaron las migajas. Si me hubieran consultado antes, habríamos llegado a un acuerdo justo. Pero no, todo se decidió en mi ausencia.",
+      "audio_only": true,
+      "prompt_ru": "Какое утверждение СООТВЕТСТВУЕТ рассказу тёти?",
+      "correct_answer": "Дом продали без её ведома, и большая часть денег ушла братьям.",
+      "distractors": [
+        "Тётя продала дом сама и поделила деньги поровну.",
+        "Тётя получила больше всех, но недовольна.",
+        "Дом до сих пор не продан, идут переговоры."
+      ],
+      "translation_after_answer_ru": "«Fue vendida sin avisarme» — продали без уведомления. «Me llegaron las migajas» — мне достались крохи. «Si me hubieran consultado, habríamos llegado» = Si тип 3.",
+      "explanation_on_fail_ru": "Voz pasiva (fue vendida, fue repartido) + Si тип 3 (hubieran consultado, habríamos llegado). Тётя — пострадавшая сторона."
+    },
+    {
+      "round": 8,
+      "format": "CONJUGATE",
+      "topic_ru": "Perífrasis · dejar de + inf",
+      "tested_lesson": "u14_l6",
+      "npc_line_es": "Andrea, dile a Miguel que ___ de evitarme. Llevo años esperando una conversación honesta.",
+      "npc_line_ru": "Andrea, скажи Miguel чтобы перестал меня избегать. Жду честного разговора годами.",
+      "prompt_ru": "Поставь Subjuntivo Presente от DEJAR (él):",
+      "sentence_template": "Que ___ de evitarme.",
+      "verb_infinitive": "dejar",
+      "correct_answer": "deje",
+      "distractors": ["deja", "dejó", "dejaba"],
+      "explanation_on_fail_ru": "«Decir que» в значении приказа → Subj. Dejar de + inf = перестать делать. Dejar (él) Subj → deje."
+    },
+    {
+      "round": 9,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · пассив + перифраза",
+      "tested_lesson": "u14_l0 + u14_l4",
+      "prompt_ru": "Переведи свою деликатную реплику:",
+      "prompt_text_ru": "Тётя, мне кажется, эта ситуация может быть решена, если вы оба перестанете обвинять друг друга.",
+      "correct_answer": "Tía me parece que esta situación puede ser resuelta si los dos dejáis de acusaros mutuamente",
+      "acceptable_alternatives": [
+        "Tía creo que esta situación puede ser resuelta si los dos dejáis de acusaros mutuamente",
+        "Tía me parece que esta situación se puede resolver si los dos dejáis de acusaros mutuamente",
+        "Tía me parece que esta situación puede solucionarse si los dos dejáis de acusaros"
+      ],
+      "hint_ru": "Пассив SER + participio (ser resuelta), перифраза dejar de + inf, возвратный acusarse.",
+      "explanation_on_fail_ru": "Pasiva «puede ser resuelta» (может быть решена). Perífrasis «dejar de acusar» (перестать обвинять). Возвратное «acusaros» = обвинять друг друга."
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Connector contraste · sin embargo",
+      "tested_lesson": "u15_l4",
+      "npc_line_es": "Yo siempre estuve allí para esta familia. ___, ahora nadie está aquí para mí.",
+      "npc_line_ru": "Я всегда была здесь для семьи. ___, теперь никого нет для меня.",
+      "prompt_ru": "Какой формальный connector контраста?",
+      "correct_answer": "Sin embargo",
+      "distractors": ["Y", "Porque", "Por consiguiente"],
+      "explanation_on_fail_ru": "Sin embargo / no obstante = однако (формал. контраст). Porque — причина. Por consiguiente — следствие. Здесь — противопоставление."
+    },
+    {
+      "round": 11,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · ojalá о невозможном",
+      "tested_lesson": "u13_l3",
+      "npc_line_es": "Ojalá tu abuelo ___ vivo todavía. Él sí me defendería.",
+      "npc_line_ru": "Вот бы дедушка был ещё жив. Он бы меня защитил.",
+      "prompt_ru": "Поставь Imp.Subj. от ESTAR (él, невыполнимое):",
+      "sentence_template": "Ojalá ___ vivo todavía.",
+      "verb_infinitive": "estar",
+      "correct_answer": "estuviera",
+      "distractors": ["está", "estaba", "estará"],
+      "explanation_on_fail_ru": "«Ojalá» о невыполнимом → Imp.Subj. Estar (él) → estuviera (или estuviese). Дедушка умер — это нереальное желание."
+    },
+    {
+      "round": 12,
+      "format": "BUILD",
+      "topic_ru": "Подсказка миру · условное тип 2",
+      "tested_lesson": "u13_l2",
+      "npc_line_es": "Andrea, ¿qué harías tú en mi lugar?",
+      "npc_line_ru": "Andrea, что бы ты сделала на моём месте?",
+      "prompt_ru": "Собери совет (9 слов):",
+      "correct_answer": "Si yo fuera tú hablaría con él en privado",
+      "word_bank": ["Si", "yo", "fuera", "tú", "hablaría", "con", "él", "en", "privado", "soy", "hablo"],
+      "explanation_on_fail_ru": "Si тип 2: Si + Imp.Subj. (fuera) + Condicional (hablaría). Стандартная формула «si yo fuera tú» = «на твоём месте»."
+    },
+    {
+      "round": 13,
+      "format": "CHOICE",
+      "topic_ru": "Reconciliación · vocabulario clave",
+      "tested_lesson": "u14_l0 + u15_l0",
+      "npc_line_es": "¿Y si Miguel viniera ahora y te dijera «lo siento»? ¿Tú qué harías, Andrea?",
+      "npc_line_ru": "А если бы Miguel сейчас подошёл и сказал «прости»? Что бы ты сделала?",
+      "prompt_ru": "Какая лексика примирения уместна для тёти?",
+      "correct_answer": "Le pediría que se reconciliara con usted con un gesto sincero, no solo con palabras.",
+      "distractors": [
+        "Le diría que pase, nada más.",
+        "Que se vaya, no me importa.",
+        "Le contestaría con un grito."
+      ],
+      "explanation_on_fail_ru": "Лексика примирения: reconciliarse, gesto sincero, disculparse. «Pedir que + Imp.Subj.» (se reconciliara). Деструктивные ответы исключены."
+    },
+    {
+      "round": 14,
+      "format": "CONJUGATE",
+      "topic_ru": "Pretérito Pluscuamperfecto Indicativo",
+      "tested_lesson": "u13_l8",
+      "npc_line_es": "Cuando llegué al funeral, mis hermanos ya ___ acordado el reparto.",
+      "npc_line_ru": "Когда я приехала на похороны, братья уже договорились о разделе.",
+      "prompt_ru": "Поставь Pluscuamp.Indic. от HABER (ellos):",
+      "sentence_template": "Mis hermanos ya ___ acordado el reparto.",
+      "verb_infinitive": "haber",
+      "correct_answer": "habían",
+      "distractors": ["habrían", "hubieron", "han"],
+      "explanation_on_fail_ru": "Pluscuamp.Indic. = había + part. Действие в прошлом ДО другого прошлого («когда приехала — уже договорились»). Ellos → habían."
+    },
+    {
+      "round": 15,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · кузен Miguel вмешивается",
+      "tested_lesson": "u14_l2 + u15_l4",
+      "npc_line_es": "Tía, llevas años pensando que se decidió todo a tus espaldas, pero la verdad es que sí te llamamos. No contestabas el teléfono. Sin embargo, entiendo cómo te sientes y te pido disculpas.",
+      "audio_only": true,
+      "prompt_ru": "Что Miguel признаёт и что отрицает?",
+      "correct_answer": "Признаёт чувства тёти, но отрицает что её не пытались позвать.",
+      "distractors": [
+        "Полностью соглашается с тётей.",
+        "Полностью отрицает всё и обвиняет тётю.",
+        "Просит денег у тёти."
+      ],
+      "translation_after_answer_ru": "«Se decidió a tus espaldas» (se-пассив), «sin embargo entiendo cómo te sientes» (контраст + понимание). Miguel мостит мост, признавая эмоции но защищая факты.",
+      "explanation_on_fail_ru": "Pasiva refleja «se decidió». Контраст «sin embargo». Miguel признаёт боль тёти (entiendo cómo te sientes, te pido disculpas), но отрицает версию (sí te llamamos)."
+    },
+    {
+      "round": 16,
+      "format": "CHOICE",
+      "topic_ru": "Subjuntivo · aunque гипотеза",
+      "tested_lesson": "u13_l10",
+      "npc_line_es": "Aunque Miguel ___ mil veces perdón, ¿lo aceptaría?",
+      "npc_line_ru": "Даже если Miguel сто раз попросит прощения, примет ли тётя?",
+      "prompt_ru": "Aunque + гипотеза → какая форма?",
+      "correct_answer": "pidiera",
+      "distractors": ["pide", "pidió", "pediría"],
+      "explanation_on_fail_ru": "Aunque + Imp.Subj. (pidiera) = гипотеза «даже если бы попросил». Aunque + Indic = факт. Здесь — нереальная гипотеза."
+    },
+    {
+      "round": 17,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · сложная фраза тёти",
+      "tested_lesson": "u14_l0 + u13_l7",
+      "prompt_ru": "Переведи последнюю эмоциональную фразу тёти:",
+      "prompt_text_es": "Si me hubieran tratado con respeto desde el principio, no habríamos llegado a este punto, y la familia se habría mantenido unida como mi padre quería.",
+      "correct_answer": "Если бы со мной обращались с уважением с самого начала, мы бы не дошли до этого, и семья осталась бы вместе, как хотел мой отец.",
+      "acceptable_alternatives": [
+        "Если бы меня уважали с самого начала, мы бы не пришли к этому, и семья сохранилась бы единой, как хотел отец.",
+        "Если бы они относились ко мне с уважением с самого начала, мы бы не дошли до такого, и семья осталась бы единой, как хотел мой отец.",
+        "Если бы со мной обращались с уважением сначала, мы бы не оказались здесь, и семья была бы вместе, как хотел отец."
+      ],
+      "explanation_on_fail_ru": "Si тип 3: hubieran tratado + habríamos llegado + se habría mantenido. Тройной condicional compuesto. «Como mi padre quería» = как хотел отец."
+    },
+    {
+      "round": 18,
+      "format": "CHOICE",
+      "topic_ru": "Connector causa · puesto que",
+      "tested_lesson": "u15_l6",
+      "npc_line_es": "Voy a hablar con Miguel ahora ___ tú me lo aconsejas y confío en ti.",
+      "npc_line_ru": "Я поговорю с Miguel сейчас, ___ ты мне советуешь и я тебе доверяю.",
+      "prompt_ru": "Какой формальный connector причины?",
+      "correct_answer": "puesto que",
+      "distractors": ["sin embargo", "aunque", "no obstante"],
+      "explanation_on_fail_ru": "Puesto que / dado que / ya que = поскольку (формал. причина). Sin embargo / no obstante — контраст. Aunque — уступка."
+    },
+    {
+      "round": 19,
+      "format": "BUILD",
+      "topic_ru": "Финальное примирение · subjuntivo + reconciliación",
+      "tested_lesson": "u13_l11 + u15_l1",
+      "npc_line_es": "Andrea, ¿qué brindis propondrías ahora para terminar bien la tarde?",
+      "npc_line_ru": "Andrea, какой тост ты предложишь, чтобы хорошо завершить вечер?",
+      "prompt_ru": "Собери тост (10 слов):",
+      "correct_answer": "Brindo para que esta familia vuelva a estar unida siempre",
+      "word_bank": ["Brindo", "para", "que", "esta", "familia", "vuelva", "a", "estar", "unida", "siempre", "vuelve", "esté"],
+      "explanation_on_fail_ru": "«Para que» → ВСЕГДА Subjuntivo (vuelva). Perífrasis «volver a + inf» = снова. Tema reconciliación: estar unida."
+    },
+    {
+      "round": 20,
+      "format": "CONJUGATE",
+      "topic_ru": "Estar + participio · состояние результат",
+      "tested_lesson": "u14_l1",
+      "npc_line_es": "Después de tu intervención, todo el conflicto ___ resuelto. Gracias, hija.",
+      "npc_line_ru": "После твоего вмешательства весь конфликт улажен. Спасибо, дочь.",
+      "prompt_ru": "Состояние-результат — какой глагол?",
+      "sentence_template": "Todo el conflicto ___ resuelto.",
+      "verb_infinitive": "estar",
+      "correct_answer": "está",
+      "distractors": ["fue", "es", "ser"],
+      "explanation_on_fail_ru": "Estar + participio = состояние/результат («улажен»). Ser + participio = действие («был улажен кем-то»). Здесь — текущий результат."
+    },
+    {
+      "round": 21,
+      "format": "CHOICE",
+      "topic_ru": "Register · поэтичный комплимент",
+      "tested_lesson": "u15_l0 + u16_l4",
+      "npc_line_es": "Eres una luz en esta familia, Andrea. ¿Volverás el próximo domingo?",
+      "npc_line_ru": "Ты свет в этой семье, Andrea. Придёшь в следующее воскресенье?",
+      "prompt_ru": "Какая фраза сохраняет теплоту, но без перебора?",
+      "correct_answer": "Por supuesto, tía. Cuente conmigo siempre que me necesite.",
+      "distractors": [
+        "Vale, si me apetece.",
+        "Quizás, depende de mi marido.",
+        "No sé, lo pensaré."
+      ],
+      "explanation_on_fail_ru": "«Cuente conmigo» (imperativo formal) = рассчитывайте на меня. «Siempre que + Subj» (me necesite) = всегда когда понадоблюсь. Тёплый и формальный одновременно."
+    },
+    {
+      "round": 22,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Финал · прощание с реликвией",
+      "tested_lesson": "u14_l0 + u15_l1",
+      "prompt_ru": "Тётя дарит тебе старое кольцо бабушки. Переведи благодарность:",
+      "prompt_text_ru": "Тётя, это кольцо будет храниться у меня с тем же уважением, с каким его носила бабушка.",
+      "correct_answer": "Tía este anillo será guardado por mí con el mismo respeto con el que lo llevaba la abuela",
+      "acceptable_alternatives": [
+        "Tía este anillo lo guardaré con el mismo respeto con el que lo llevaba la abuela",
+        "Tía este anillo será conservado por mí con el mismo respeto con el que lo llevaba la abuela",
+        "Tía guardaré este anillo con el mismo respeto con el que lo llevaba la abuela"
+      ],
+      "hint_ru": "Voz pasiva futuro: será guardado por mí. Relativo: con el que.",
+      "explanation_on_fail_ru": "Pasiva futuro «será guardado por mí». Relativo «con el que lo llevaba» (с каким носила). Imperfecto llevaba — длительное действие в прошлом."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Andrea, hija, has sabido encontrar las palabras exactas. Has salvado esta tarde y, quizás, esta familia. Eres una de los nuestros para siempre.",
+      "carlos_line_ru": "Andrea, дочь, ты нашла точные слова. Спасла этот вечер и, возможно, эту семью. Ты наша навсегда.",
+      "scene_description_ru": "Тётя Rosa встаёт, обнимает тебя на 30 секунд. Miguel жмёт руку. Тёти и кузены приносят десерт. Тебя зовут на каждый праздник в Toledo.",
+      "stakes_ru": "Семейная реликвия в твоих руках. Группа WhatsApp «Familia Toledo» добавляет тебя как «¡La favorita!»."
+    },
+    "silver": {
+      "carlos_line_es": "Bien hecho, Andrea. La tarde ha terminado en paz, aunque queda mucho que hablar.",
+      "carlos_line_ru": "Молодец, Andrea. Вечер закончился мирно, хотя есть ещё что обсудить.",
+      "scene_description_ru": "Все встают из-за стола без напряжения. Тётя целует тебя в обе щеки. Miguel благодарит наедине.",
+      "stakes_ru": "Тебя по-прежнему приглашают. Тётя звонит раз в месяц, чтобы поговорить."
+    },
+    "bronze": {
+      "carlos_line_es": "Gracias por intentarlo, querida. Algunos temas siguen abiertos, pero al menos no hemos roto la cena.",
+      "carlos_line_ru": "Спасибо что пыталась, дорогая. Темы открыты, но ужин не разрушили.",
+      "scene_description_ru": "Тётя сдержанно кивает. Десерт едят молча. На прощание тётя обнимает, но коротко."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Hija, creo que esta vez te has metido donde no te llamaban. Quizás otro día hablemos mejor.",
+      "carlos_line_ru": "Дочь, кажется, ты вмешалась куда не звали. Возможно, в другой раз поговорим лучше.",
+      "scene_description_ru": "Тётя резко встаёт и идёт на кухню. Кузены делают вид, что не заметили. Прощание холодное.",
+      "stakes_ru": "Тётя не звонит. Группа WhatsApp молчит."
+    },
+    "low": {
+      "carlos_line_es": "Andrea, lo siento, pero has dicho cosas que no se dicen en una familia. Mejor que no vuelvas hasta que se enfríe todo.",
+      "carlos_line_ru": "Andrea, сожалею, ты сказала вещи, которые в семье не говорят. Лучше не приходи, пока всё не остынет.",
+      "scene_description_ru": "Тётя плачет за столом. Тебя провожают молча. У двери никто не говорит «hasta luego».",
+      "stakes_ru": "Полгода без приглашений. Свекровь звонит и просит «не лезть»."
+    },
+    "very_low": {
+      "carlos_line_es": "Has roto algo que llevábamos cuidando años. Necesito tiempo.",
+      "carlos_line_ru": "Ты сломала то, что мы хранили годами. Мне нужно время.",
+      "scene_description_ru": "Тётя уходит из комнаты, не прощаясь. Miguel выходит вслед за тобой. «Lo siento, Andrea, mejor te vas ya.»",
+      "stakes_ru": "Семья закрылась. Перепройди B2.2 (pasiva, perífrasis) и попробуй через 24ч."
+    }
+  }
+}

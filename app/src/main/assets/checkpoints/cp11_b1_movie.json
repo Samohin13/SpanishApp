@@ -1,0 +1,388 @@
+{
+  "id": "cp11",
+  "cefr": "B1",
+  "block": 11,
+  "title_ru": "После кино с подругой",
+  "title_es": "Después del cine con una amiga",
+  "description_ru": "Cinema Doré, Лавапиес. Только что посмотрели последний фильм Almodóvar с Marta — твоя мадридская подруга, очень разговорчивая, на «tú», использует много perífrasis, цитирует героев фильма в косвенной речи, говорит о relativos («el que», «lo que»). От тебя ждут: пересказ эпизодов в estilo indirecto, относительные предложения для описания персонажей, perífrasis (acabar de, volver a, soler, llevar+ger).",
+  "stakes_ru": "Хороший разговор — Marta зовёт на премьеру следующего месяца + знакомит со своим кругом. Завалишь — будет общаться на английском с тобой как с туристкой.",
+  "scene": {
+    "name": "Cinema Doré · Lavapiés",
+    "type": "cinema_lobby",
+    "city": "Madrid",
+    "background_image": "scene_cp11_cinema.jpg"
+  },
+  "npc": {
+    "id": "marta",
+    "name": "Marta",
+    "role_ru": "Подруга-киноманка",
+    "role_es": "Amiga cinéfila",
+    "voice_id": "es-ES-AbrilNeural",
+    "portrait_image": "npc_marta.jpg",
+    "personality": "энергичная, на «tú», говорит быстро, любит культурные споры. Употребляет «me partí de risa», «la peli», «un peliculón». Не любит когда отвечают «sí» / «no» без развития."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 600,
+    "silver_xp_bonus": 100,
+    "gold_xp_bonus": 200,
+    "badge_id": "cinefila",
+    "badge_name_ru": "Cinéfila",
+    "unlocks_block": 12
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Реакция на фильм · разговорно",
+      "tested_lesson": "u11_l0",
+      "tested_grammar": "Casual reactions",
+      "npc_line_es": "¡Qué peliculón, tía! ¿A ti qué te ha parecido?",
+      "npc_line_ru": "Какой фильмище, подруга! Как тебе?",
+      "prompt_ru": "Marta в восторге. Ответь живо:",
+      "correct_answer": "A mí también me ha encantado, sobre todo el final.",
+      "distractors": [
+        "Me ha gustado más o menos.",
+        "No sé, era normal.",
+        "Disculpe, no he entendido."
+      ],
+      "explanation_on_fail_ru": "С подругой — живая реакция: «me ha encantado» (Pret Perfecto — действие только что), «sobre todo» = особенно. «Disculpe» — формально, не подружески."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Acabar de + inf",
+      "tested_lesson": "u11_l10",
+      "tested_grammar": "Perífrasis · acabar de + inf",
+      "npc_line_es": "Pero la escena del final, cuando ella se va... ¿qué dijo exactamente? Es que ___ de oírlo y ya no me acuerdo.",
+      "npc_line_ru": "Но финальная сцена когда она уходит... что именно сказала? Только что услышала и уже не помню.",
+      "prompt_ru": "Поставь ACABAR в Presente (yo):",
+      "sentence_template": "___ de oírlo y ya no me acuerdo.",
+      "verb_infinitive": "acabar",
+      "correct_answer": "Acabo",
+      "distractors": ["Acabé", "Acababa", "Voy"],
+      "explanation_on_fail_ru": "«Acabar de + inf» (Pres) = «только что сделал». Acabo de oír = только что услышала. Indef (acabé) — уже законченное прошлое."
+    },
+    {
+      "round": 3,
+      "format": "CHOICE",
+      "topic_ru": "Reported speech · que + Imperfecto",
+      "tested_lesson": "u11_l1",
+      "tested_grammar": "Estilo indirecto · Pres → Imp",
+      "npc_line_es": "La protagonista dijo en la última escena: «No te quiero ver más.» ¿Cómo lo dirías tú en estilo indirecto?",
+      "npc_line_ru": "Героиня в последней сцене сказала: «Не хочу тебя больше видеть.» Как бы передала в косвенной речи?",
+      "prompt_ru": "Выберите правильную косвенную речь:",
+      "correct_answer": "Dijo que no lo quería ver más.",
+      "distractors": [
+        "Dijo que no lo quiero ver más.",
+        "Dijo si no lo quería ver más.",
+        "Dijo que no lo querrá ver más."
+      ],
+      "explanation_on_fail_ru": "Прямая «quiero» (Pres) → косвенная «quería» (Imperfecto). После «dijo que» — всегда сдвиг времён назад."
+    },
+    {
+      "round": 4,
+      "format": "BUILD",
+      "topic_ru": "Relativo · que",
+      "tested_lesson": "u11_l4",
+      "tested_grammar": "Relativo · que для вещей",
+      "npc_line_es": "Y la banda sonora, ¡guau! ¿Cuál fue tu canción favorita?",
+      "npc_line_ru": "А саундтрек, вау! Какая твоя любимая песня?",
+      "prompt_ru": "Собери: «Песня которую поют в финале великолепна»:",
+      "correct_answer": "La canción que cantan al final es preciosa",
+      "word_bank": ["La", "canción", "que", "cantan", "al", "final", "es", "preciosa", "quien", "donde"],
+      "explanation_on_fail_ru": "«Que» — для вещей. «Quien» — только для людей. «La canción que cantan» = песня которую поют."
+    },
+    {
+      "round": 5,
+      "format": "CONJUGATE",
+      "topic_ru": "Llevar + gerundio (perífrasis)",
+      "tested_lesson": "u11_l8",
+      "tested_grammar": "Llevar + время + gerundio",
+      "npc_line_es": "Almodóvar ___ años haciendo este tipo de cine, ¿no? Por eso es tan reconocible.",
+      "npc_line_ru": "Almodóvar уже годы снимает такое кино, да? Поэтому так узнаваемо.",
+      "prompt_ru": "Поставь LLEVAR в Presente (él):",
+      "sentence_template": "Almodóvar ___ años haciendo este cine.",
+      "verb_infinitive": "llevar",
+      "correct_answer": "lleva",
+      "distractors": ["llevó", "llevaba", "llevará"],
+      "explanation_on_fail_ru": "«Llevar + время + ger» — продолжающееся действие с прошлого до настоящего. Lleva años haciendo = делает уже годы (и сейчас тоже)."
+    },
+    {
+      "round": 6,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · косвенный приказ",
+      "tested_lesson": "u11_l3",
+      "tested_grammar": "Pidió que + Imp Subj",
+      "npc_line_es": "Mi madre, que vio la peli ayer, me pidió que no le contara el final. Pero ahora me dice que tú se lo cuentes.",
+      "audio_only": true,
+      "prompt_ru": "Что хочет мама Marta сейчас?",
+      "correct_answer": "Чтобы ты ей рассказала финал фильма.",
+      "distractors": [
+        "Чтобы Marta не смотрела фильм.",
+        "Чтобы никто не говорил о фильме.",
+        "Чтобы ты пошла с ней в кино."
+      ],
+      "translation_after_answer_ru": "«Me pidió que no le contara» (Imp Subj — раньше). «Me dice que tú se lo cuentes» (Pres Subj — сейчас). Передумала: теперь хочет узнать.",
+      "explanation_on_fail_ru": "Косв. приказы: «pidió que + Imp Subj» (раньше), «dice que + Pres Subj» (сейчас). «Se lo» = «ей это»."
+    },
+    {
+      "round": 7,
+      "format": "CHOICE",
+      "topic_ru": "Relativo · lo que (нейтральное)",
+      "tested_lesson": "u11_l5_5",
+      "tested_grammar": "Lo que = «то что»",
+      "npc_line_es": "¿Sabes ___ no me gustó de la peli? Que el padre del protagonista era muy plano.",
+      "npc_line_ru": "Знаешь что мне не понравилось в фильме? Отец главного был очень плоский.",
+      "prompt_ru": "Выберите правильный relativo:",
+      "correct_answer": "lo que",
+      "distractors": ["el que", "que", "lo cual"],
+      "explanation_on_fail_ru": "«Lo que» = «то, что» (абстрактное). «¿Sabes lo que...?» = «Знаешь что...?». «El que» — конкретный объект м.р., «que» сам по себе тут нельзя."
+    },
+    {
+      "round": 8,
+      "format": "BUILD",
+      "topic_ru": "Volver a + inf",
+      "tested_lesson": "u11_l10",
+      "tested_grammar": "Volver a + inf · «снова»",
+      "npc_line_es": "Yo quiero verla otra vez en el cine. ¿Y tú?",
+      "npc_line_ru": "Я хочу её снова в кино. А ты?",
+      "prompt_ru": "Собери: «Не возражаю снова посмотреть с тобой»:",
+      "correct_answer": "No me importa volver a verla contigo",
+      "word_bank": ["No", "me", "importa", "volver", "a", "verla", "contigo", "ver", "otra", "vez"],
+      "explanation_on_fail_ru": "«Volver a + inf» = снова сделать. «Volver a verla» — снова посмотреть её. «Contigo» = с тобой (особая форма)."
+    },
+    {
+      "round": 9,
+      "format": "CONJUGATE",
+      "topic_ru": "Soler + inf (привычка)",
+      "tested_lesson": "u11_l10",
+      "tested_grammar": "Soler + inf · привычка",
+      "npc_line_es": "Yo ___ ver una peli a la semana en versión original. ¿Y tú?",
+      "npc_line_ru": "Я обычно смотрю фильм в неделю в оригинале. А ты?",
+      "prompt_ru": "Поставь SOLER в Presente (yo, e→ue):",
+      "sentence_template": "Yo ___ ver una peli a la semana.",
+      "verb_infinitive": "soler",
+      "correct_answer": "suelo",
+      "distractors": ["solgo", "solo", "solía"],
+      "explanation_on_fail_ru": "Soler — отклоняющийся o→ue: suelo / sueles / suele. «Suelo + inf» = «обычно делаю». НЕ «solgo»!"
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Reported question · preguntó si",
+      "tested_lesson": "u11_l1",
+      "tested_grammar": "Preguntó si + Imperfecto",
+      "npc_line_es": "Mi hermano me preguntó: «¿Ya has visto la nueva de Almodóvar?» Le contesté que sí.",
+      "npc_line_ru": "Мой брат спросил: «Ты уже видела новую Альмодóвар?» Я ответила что да.",
+      "prompt_ru": "Перескажи вопрос брата в косвенной форме:",
+      "correct_answer": "Su hermano le preguntó si ya había visto la nueva.",
+      "distractors": [
+        "Su hermano le preguntó que ya has visto la nueva.",
+        "Su hermano dijo si ya había visto la nueva.",
+        "Su hermano preguntó que vio la nueva."
+      ],
+      "explanation_on_fail_ru": "Вопросы да/нет → «preguntó SI» (не «que»). «Has visto» (Perfecto) → «había visto» (Pluscuamp) в косвенной."
+    },
+    {
+      "round": 11,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · relativo + perífrasis",
+      "tested_lesson": "u11_l4",
+      "tested_grammar": "Что + relativo + llevar",
+      "prompt_ru": "Опиши актёра, который сыграл героя:",
+      "prompt_text_ru": "Актёр который сыграл главную роль работает с Альмодóвар уже 20 лет.",
+      "correct_answer": "El actor que hizo el papel principal lleva veinte años trabajando con Almodóvar.",
+      "acceptable_alternatives": [
+        "El actor que interpretó el papel principal lleva veinte años trabajando con Almodóvar.",
+        "El actor que hizo el papel principal lleva 20 años trabajando con Almodóvar.",
+        "El actor que hizo el protagonista lleva veinte años trabajando con Almodóvar."
+      ],
+      "explanation_on_fail_ru": "«Que hizo» — relativo + Indefinido. «Lleva veinte años trabajando» — perífrasis llevar + время + ger. «Hacer el papel» = «играть роль»."
+    },
+    {
+      "round": 12,
+      "format": "CHOICE",
+      "topic_ru": "Relativo · quien (для людей с предлогом)",
+      "tested_lesson": "u11_l4",
+      "tested_grammar": "Con quien / a quien",
+      "npc_line_es": "¿Sabes que el director de fotografía es justamente el chico ___ trabajé hace dos años en aquel corto?",
+      "npc_line_ru": "Знаешь, оператор — именно тот парень с которым я работала 2 года назад на короткометражке?",
+      "prompt_ru": "Какое слово в пропуске?",
+      "correct_answer": "con quien",
+      "distractors": ["que", "donde", "cuyo"],
+      "explanation_on_fail_ru": "После предлога (con) для людей — «quien», не «que». «El chico con quien trabajé» = «парень с которым я работала»."
+    },
+    {
+      "round": 13,
+      "format": "CONJUGATE",
+      "topic_ru": "Estar + gerundio (continuous)",
+      "tested_lesson": "u11_l9",
+      "tested_grammar": "Seguir + gerundio · продолжать",
+      "npc_line_es": "Almodóvar ___ sorprendiéndonos a sus 75 años. ¡Qué grande!",
+      "npc_line_ru": "Альмодóвар всё продолжает нас удивлять в свои 75. Какой великий!",
+      "prompt_ru": "Поставь SEGUIR в Presente (él):",
+      "sentence_template": "Almodóvar ___ sorprendiéndonos.",
+      "verb_infinitive": "seguir",
+      "correct_answer": "sigue",
+      "distractors": ["seguía", "siguió", "seguirá"],
+      "explanation_on_fail_ru": "«Seguir + ger» = продолжать делать. Seguir Pres él: sigue (e→i отклонение). «Sigue sorprendiendo» = продолжает удивлять."
+    },
+    {
+      "round": 14,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · идиома + reported",
+      "tested_lesson": "u11_l1",
+      "tested_grammar": "Reported речь + me partí",
+      "npc_line_es": "Mi amiga Lucía, que estaba conmigo el viernes, me dijo que se había partido de risa con esa misma escena del coche.",
+      "audio_only": true,
+      "prompt_ru": "Что сказала Lucía?",
+      "correct_answer": "Что очень смеялась в сцене с машиной.",
+      "distractors": [
+        "Что не поняла сцену с машиной.",
+        "Что плакала всю сцену.",
+        "Что вышла из зала."
+      ],
+      "translation_after_answer_ru": "«Me dijo que se había partido de risa» = сказала что лопалась от смеха (Pluscuamp в косв.речи). «Partirse de risa» — идиома «умереть от смеха».",
+      "explanation_on_fail_ru": "«Se había partido de risa» = Pluscuamperfecto (в косв. речи Pret Perfecto → Pluscuamp). Идиома «partirse de risa»."
+    },
+    {
+      "round": 15,
+      "format": "CHOICE",
+      "topic_ru": "Relativo · cuyo (владение)",
+      "tested_lesson": "u11_l5",
+      "tested_grammar": "Cuyo + сущ владения",
+      "npc_line_es": "Es ese director ___ películas siempre tienen colores brillantes.",
+      "npc_line_ru": "Это тот режиссёр, чьи фильмы всегда с яркими цветами.",
+      "prompt_ru": "Какое слово?",
+      "correct_answer": "cuyas",
+      "distractors": ["que", "cuyo", "quien"],
+      "explanation_on_fail_ru": "«Cuyo» согласуется с тем, чем владеют. «Películas» — ж.р. мн.ч. → «cuyas películas» (чьи фильмы)."
+    },
+    {
+      "round": 16,
+      "format": "BUILD",
+      "topic_ru": "Косвенный приказ · me dijo que viniera",
+      "tested_lesson": "u11_l3",
+      "tested_grammar": "Pidió/dijo que + Imp Subj",
+      "npc_line_es": "Anoche pasó algo curioso: mi padre me llamó tarde y...",
+      "npc_line_ru": "Вчера ночью странное было: папа позвонил поздно и...",
+      "prompt_ru": "Собери: «...сказал чтобы я пришла домой пораньше»:",
+      "correct_answer": "me dijo que viniera a casa más temprano",
+      "word_bank": ["me", "dijo", "que", "viniera", "a", "casa", "más", "temprano", "venga", "vine", "vengo"],
+      "explanation_on_fail_ru": "Косв. приказ в прошлом → «dijo que + Imperfecto Subj». Venir → viniera (yo). Pres Subj «venga» — только если главное в Pres."
+    },
+    {
+      "round": 17,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · комбо reported + relativo",
+      "tested_lesson": "u11_l2",
+      "tested_grammar": "Косв. речь + lo que + dijo",
+      "prompt_ru": "Marta пересказывает критика. Переведи:",
+      "prompt_text_es": "El crítico del periódico escribió que era una de las mejores películas de la década y que no había nada que se le pudiera comparar.",
+      "correct_answer": "Критик из газеты написал, что это один из лучших фильмов десятилетия и что нет ничего, с чем его можно было бы сравнить.",
+      "acceptable_alternatives": [
+        "Критик газеты написал что это один из лучших фильмов десятилетия и что не было ничего что с ним можно было сравнить.",
+        "Критик из газеты написал, что это одна из лучших картин десятилетия и что нет ничего, с чем её можно было бы сравнить.",
+        "Газетный критик написал что это один из лучших фильмов десятилетия и что ничего не могло с ним сравниться."
+      ],
+      "explanation_on_fail_ru": "«Escribió que era» — косв.речь Pres→Imp. «Que se le pudiera comparar» — relativo + Imp Subj (после «nada que»)."
+    },
+    {
+      "round": 18,
+      "format": "CONJUGATE",
+      "topic_ru": "Reported · ir → iba",
+      "tested_lesson": "u11_l2",
+      "tested_grammar": "Косв. речь · Pres → Imp",
+      "npc_line_es": "El actor en una entrevista dijo: «Voy a retirarme pronto.» Es decir, dijo que ___ a retirarse.",
+      "npc_line_ru": "Актёр в интервью сказал: «Скоро уйду на пенсию.» То есть, сказал что собирается на пенсию.",
+      "prompt_ru": "Поставь IR в Imperfecto (él) для косв. речи:",
+      "sentence_template": "Dijo que ___ a retirarse.",
+      "verb_infinitive": "ir",
+      "correct_answer": "iba",
+      "distractors": ["va", "fue", "iría"],
+      "explanation_on_fail_ru": "Прямая «voy» (Pres) → косвенная «iba» (Imperfecto). Перифраза «ir a + inf» сохраняется, меняется только время «ir»."
+    },
+    {
+      "round": 19,
+      "format": "CHOICE",
+      "topic_ru": "Предложение увидеться снова",
+      "tested_lesson": "u11_l9",
+      "tested_grammar": "Casual + seguir hablando",
+      "npc_line_es": "Oye, ¿y si nos tomamos una cañita y seguimos hablando?",
+      "npc_line_ru": "Слушай, может пиво возьмём и продолжим болтать?",
+      "prompt_ru": "Согласись с энтузиазмом, B1 уровень:",
+      "correct_answer": "¡Vale, perfecto! Conozco un bar aquí al lado donde hacen una tortilla buenísima.",
+      "distractors": [
+        "No, no quiero. Adiós.",
+        "Tal vez. No sé. Mañana.",
+        "Sí. Es bueno. Hasta luego."
+      ],
+      "explanation_on_fail_ru": "Casual согласие + предложение продолжения. «Conozco un bar... donde hacen» — relativo «donde» (= где). Полная реакция, не односложная."
+    },
+    {
+      "round": 20,
+      "format": "CHOICE",
+      "topic_ru": "Финал · план на будущее",
+      "tested_lesson": "u11_l0",
+      "tested_grammar": "Reported promise + invitation",
+      "npc_line_es": "Por cierto, en febrero hay un estreno en el Princesa, ¿te apuntas?",
+      "npc_line_ru": "Кстати, в феврале премьера в Princesa, идёшь?",
+      "prompt_ru": "Прими приглашение, обещай прийти:",
+      "correct_answer": "¡Claro que sí! Dime cuándo es y allí estaré.",
+      "distractors": [
+        "No sé. Tal vez.",
+        "Quizás voy a ir.",
+        "Bye, hablamos."
+      ],
+      "explanation_on_fail_ru": "«Claro que sí» = конечно. «Allí estaré» (Futuro Simple) — обещание. Энтузиазм с подругой обязателен."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "¡Qué gusto hablar de cine contigo! La próxima vez te llevo al cine-fórum de mi grupo. Te van a encantar.",
+      "carlos_line_ru": "Какое удовольствие говорить о кино с тобой! В следующий раз отведу тебя на кино-форум моей группы. Они тебе понравятся.",
+      "scene_description_ru": "Marta даёт тебе закрытое приглашение на ВИП-премьеру в феврале + знакомит со своим кинокружком в WhatsApp группе «Cinéfilos Madrid». В течение недели приходит 5 приглашений на разные мероприятия."
+    },
+    "silver": {
+      "carlos_line_es": "Pues nada, te apunto al estreno. Te aviso cuando se acerque.",
+      "carlos_line_ru": "Записываю тебя на премьеру. Скажу когда будет ближе.",
+      "scene_description_ru": "Marta добавляет тебя в небольшую группу. На премьеру тебя зовут, но во внутренний круг — ещё нет."
+    },
+    "bronze": {
+      "carlos_line_es": "Mola, te aviso si quedamos. ¡Hasta otra!",
+      "carlos_line_ru": "Круто, скажу если соберёмся. До другого раза!",
+      "scene_description_ru": "Marta вежливо прощается. Может быть напишет через месяц, может быть нет."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Bueno, gracias por venir. Te escribo si organizo algo.",
+      "carlos_line_ru": "Ну, спасибо что пришла. Напишу если что-то организую.",
+      "scene_description_ru": "Marta прощается, но улыбка натянутая. Понятно — переключается на испанский с русским акцентом утомляет.",
+      "stakes_ru": "Almost. Перифрасис + reported speech ещё хромают. Подучи блок 11."
+    },
+    "low": {
+      "carlos_line_es": "Vale, vale... Bueno, vamos tirando que es tarde.",
+      "carlos_line_ru": "Ладно, ладно... Ну пошли уже, поздно.",
+      "scene_description_ru": "Marta достаёт телефон, проверяет сообщения, уходит первой. WhatsApp — тишина.",
+      "stakes_ru": "B1 разговорная требует свободу с reported speech и relativos. Повтори блок 11."
+    },
+    "very_low": {
+      "carlos_line_es": "OK, no worries... Maybe we can speak English next time?",
+      "carlos_line_ru": "OK, не парься... Может в следующий раз на английском?",
+      "scene_description_ru": "Marta переходит на ломаный английский. Прощается холодно. Тебя записывают в категорию «иностранка которая не дотягивает», знакомств не будет.",
+      "stakes_ru": "Когда испанец предлагает английский — это конец. Повтори блок 11 серьёзно."
+    }
+  }
+}

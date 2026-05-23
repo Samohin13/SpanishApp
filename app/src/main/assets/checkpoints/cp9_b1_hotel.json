@@ -1,0 +1,401 @@
+{
+  "id": "cp9",
+  "cefr": "B1",
+  "block": 9,
+  "title_ru": "Проблема в отеле",
+  "title_es": "Un problema en el hotel",
+  "description_ru": "Hotel Imperial, 4 звезды, центр Мадрида. Утром ты обнаружила: душ не работает, а ночью соседи орали до 4 утра. Идёшь на ресепшен. Carmen — менеджер смены, профессиональная, на «usted», ждёт от тебя вежливости и испанского B1 уровня. Subjuntivo (espero que, es importante que, ojalá) и condicional нужны.",
+  "stakes_ru": "Если объяснишь чётко и вежливо — апгрейд номера + завтрак за счёт отеля. Если запутаешься — переселят молча, без компенсации.",
+  "scene": {
+    "name": "Hotel Imperial · Recepción",
+    "type": "hotel_reception",
+    "city": "Madrid",
+    "background_image": "scene_cp9_hotel.jpg"
+  },
+  "npc": {
+    "id": "carmen",
+    "name": "Carmen",
+    "role_ru": "Менеджер ресепшена",
+    "role_es": "Recepcionista de hotel",
+    "voice_id": "es-ES-ElviraNeural",
+    "portrait_image": "npc_carmen.jpg",
+    "personality": "профессиональная, на «usted», тёплая но сдержанная. Любит идеальный сервис, ценит вежливость. На правильную грамматику тонко улыбается."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 600,
+    "silver_xp_bonus": 100,
+    "gold_xp_bonus": 200,
+    "badge_id": "hotel_negotiator",
+    "badge_name_ru": "Negociador del hotel",
+    "unlocks_block": 10
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Формальное приветствие · usted",
+      "tested_lesson": "u9_l0",
+      "tested_grammar": "Регистр · usted",
+      "npc_line_es": "Buenos días, ¿en qué le puedo ayudar?",
+      "npc_line_ru": "Доброе утро, чем могу помочь?",
+      "prompt_ru": "Carmen за стойкой. Как формально начать жалобу?",
+      "correct_answer": "Buenos días, tengo un problema con mi habitación.",
+      "distractors": [
+        "Hola tía, tu hotel es un desastre.",
+        "Yo quiero otra habitación ahora.",
+        "Buenas, mi cuarto está chungo."
+      ],
+      "explanation_on_fail_ru": "С ресепшеном — формальный регистр: «Buenos días», полное предложение, без сленга («tía», «chungo» — разговорное)."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · espero que + funcionar",
+      "tested_lesson": "u9_l6",
+      "tested_grammar": "Subjuntivo Presente · триггер esperar que",
+      "npc_line_es": "Cuénteme, por favor.",
+      "npc_line_ru": "Расскажите, пожалуйста.",
+      "prompt_ru": "Поставь форму FUNCIONAR в Subjuntivo (el):",
+      "sentence_template": "Espero que la ducha ___ pronto.",
+      "verb_infinitive": "funcionar",
+      "correct_answer": "funcione",
+      "distractors": ["funciona", "funcionará", "funcionaba"],
+      "explanation_on_fail_ru": "После «Espero que» — всегда Subjuntivo. Funcionar (él) → funcione. «Funciona» — Indicativo, не подходит."
+    },
+    {
+      "round": 3,
+      "format": "BUILD",
+      "topic_ru": "Описание проблемы · no funciona",
+      "tested_lesson": "u9_l0",
+      "tested_grammar": "Простое предложение · presente",
+      "npc_line_es": "¿Cuál es el problema exactamente?",
+      "npc_line_ru": "В чём именно проблема?",
+      "prompt_ru": "Собери: «В моей комнате не работает душ»:",
+      "correct_answer": "En mi habitación no funciona la ducha",
+      "word_bank": ["En", "mi", "habitación", "no", "funciona", "la", "ducha", "es", "tengo"],
+      "explanation_on_fail_ru": "«La ducha no funciona» — стандартное. Артикль обязателен: «la ducha»."
+    },
+    {
+      "round": 4,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · вопрос Carmen",
+      "tested_lesson": "u9_l7",
+      "tested_grammar": "Безличное · es necesario que",
+      "npc_line_es": "Es necesario que el técnico revise la habitación antes de cambiarla.",
+      "audio_only": true,
+      "prompt_ru": "Что говорит Carmen?",
+      "correct_answer": "Техник должен осмотреть комнату до замены.",
+      "distractors": [
+        "Сейчас переселим без проверки.",
+        "Техник сегодня не работает.",
+        "Замена комнаты невозможна."
+      ],
+      "translation_after_answer_ru": "«Es necesario que el técnico revise...» = Необходимо чтобы техник осмотрел...",
+      "explanation_on_fail_ru": "«Es necesario que» — безличный триггер Subjuntivo. «Revise» (Subj) от revisar. Смысл: техник должен сначала проверить."
+    },
+    {
+      "round": 5,
+      "format": "CHOICE",
+      "topic_ru": "Жалоба на шум · ruido",
+      "tested_lesson": "u9_l8",
+      "tested_grammar": "Лексика проблем + tampoco",
+      "npc_line_es": "¿Algo más?",
+      "npc_line_ru": "Что-то ещё?",
+      "prompt_ru": "Сообщи о шуме всю ночь:",
+      "correct_answer": "Sí, había mucho ruido toda la noche. No pude dormir.",
+      "distractors": [
+        "Sí, hay música muy bonita.",
+        "No, todo está perfecto.",
+        "Quiero un café, por favor."
+      ],
+      "explanation_on_fail_ru": "«Había ruido» (Imperfecto) для фоновой ситуации, «no pude dormir» (Indefinido) — конкретный результат."
+    },
+    {
+      "round": 6,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo irregular · sea",
+      "tested_lesson": "u9_l3",
+      "tested_grammar": "Ser → sea (Subj irregular)",
+      "npc_line_es": "Lo siento mucho. Espero que la próxima noche ___ tranquila.",
+      "npc_line_ru": "Мне очень жаль. Надеюсь, следующая ночь будет тихой.",
+      "prompt_ru": "Поставь SER в Subjuntivo (ella · «noche»):",
+      "sentence_template": "Espero que la próxima noche ___ tranquila.",
+      "verb_infinitive": "ser",
+      "correct_answer": "sea",
+      "distractors": ["es", "sería", "fuera"],
+      "explanation_on_fail_ru": "Ser в Subj: sea / seas / sea / seamos / seáis / sean. После «Espero que» — Subj, поэтому «sea», не «es»."
+    },
+    {
+      "round": 7,
+      "format": "CHOICE",
+      "topic_ru": "Вежливая просьба · me gustaría",
+      "tested_lesson": "u9_l10",
+      "tested_grammar": "Condicional вежливости + Subj",
+      "npc_line_es": "¿Qué solución le parece bien?",
+      "npc_line_ru": "Какое решение Вас устроит?",
+      "prompt_ru": "Попроси замену комнаты вежливо:",
+      "correct_answer": "Me gustaría que me cambiaran de habitación, si fuera posible.",
+      "distractors": [
+        "Cambiame ya, tía.",
+        "Quiero cambiar la habitación ahora mismo.",
+        "Yo cambio mi habitación sola."
+      ],
+      "explanation_on_fail_ru": "«Me gustaría que + Imperfecto Subjuntivo» — максимально вежливая просьба. «Si fuera posible» — гипотетическая вежливость."
+    },
+    {
+      "round": 8,
+      "format": "BUILD",
+      "topic_ru": "Ojalá + Subjuntivo",
+      "tested_lesson": "u9_l0",
+      "tested_grammar": "Ojalá + Pres Subj",
+      "npc_line_es": "Voy a ver qué tenemos disponible.",
+      "npc_line_ru": "Сейчас посмотрю что есть.",
+      "prompt_ru": "Собери: «Дай Бог чтобы была свободная комната»:",
+      "correct_answer": "Ojalá haya una habitación libre",
+      "word_bank": ["Ojalá", "haya", "una", "habitación", "libre", "hay", "es", "tiene"],
+      "explanation_on_fail_ru": "«Ojalá» всегда требует Subjuntivo. «Hay» → «haya» (Subj от haber, безличное)."
+    },
+    {
+      "round": 9,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · tener (irregular)",
+      "tested_lesson": "u9_l3",
+      "tested_grammar": "Tener → tenga (Subj irregular)",
+      "npc_line_es": "Es importante que el cliente ___ todo lo necesario.",
+      "npc_line_ru": "Важно, чтобы у клиента было всё необходимое.",
+      "prompt_ru": "Поставь TENER в Subjuntivo (el cliente):",
+      "sentence_template": "Es importante que el cliente ___ todo lo necesario.",
+      "verb_infinitive": "tener",
+      "correct_answer": "tenga",
+      "distractors": ["tiene", "tendría", "tuviera"],
+      "explanation_on_fail_ru": "Tener в Subj: tenga / tengas / tenga. После «Es importante que» — Pres Subj, поэтому «tenga»."
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Сомнение · no creo que + Subj",
+      "tested_lesson": "u9_l8",
+      "tested_grammar": "No creer que → Subj",
+      "npc_line_es": "¿Cree usted que el ruido seguirá esta noche?",
+      "npc_line_ru": "Думаете, шум будет и сегодня?",
+      "prompt_ru": "Выберите грамматически правильное сомнение:",
+      "correct_answer": "No creo que sea grave, pero quiero estar tranquila.",
+      "distractors": [
+        "No creo que es grave.",
+        "No pienso que está bien.",
+        "Creo que sea normal."
+      ],
+      "explanation_on_fail_ru": "«No creo que» → Subj (sea). «Creo que» → Indic. Это правило отрицания мнения = сомнение."
+    },
+    {
+      "round": 11,
+      "format": "LISTEN",
+      "topic_ru": "Решение Carmen · cambio + desayuno",
+      "tested_lesson": "u9_l9",
+      "tested_grammar": "Subj в придаточном цели · para que",
+      "npc_line_es": "Le cambio a una suite del piso 8, para que descanse bien. El desayuno mañana corre por cuenta de la casa.",
+      "audio_only": true,
+      "prompt_ru": "Что предлагает Carmen?",
+      "correct_answer": "Сюит на 8 этаже + завтрак за счёт отеля.",
+      "distractors": [
+        "Та же комната + завтрак.",
+        "Сюит, но без завтрака.",
+        "Возврат денег и выезд."
+      ],
+      "translation_after_answer_ru": "«Le cambio a una suite... para que descanse... El desayuno corre por cuenta de la casa» = Меняю на сюит, чтобы вы отдохнули. Завтрак за счёт отеля.",
+      "explanation_on_fail_ru": "«Para que + Subj» (descanse) — цель. «Correr por cuenta de la casa» = «за счёт заведения»."
+    },
+    {
+      "round": 12,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · poder",
+      "tested_lesson": "u9_l4",
+      "tested_grammar": "Poder → pueda (Subj e→ue)",
+      "npc_line_es": "Es bueno que usted ___ descansar mejor en la suite.",
+      "npc_line_ru": "Хорошо, что Вы сможете лучше отдохнуть в сюите.",
+      "prompt_ru": "Поставь PODER в Subjuntivo (usted):",
+      "sentence_template": "Es bueno que usted ___ descansar mejor.",
+      "verb_infinitive": "poder",
+      "correct_answer": "pueda",
+      "distractors": ["puede", "podía", "podría"],
+      "explanation_on_fail_ru": "Poder Subj: pueda / puedas / pueda / podamos / podáis / puedan. Отклонение o→ue сохраняется кроме nosotros/vosotros."
+    },
+    {
+      "round": 13,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · вежливая благодарность",
+      "tested_lesson": "u9_l7",
+      "tested_grammar": "Subj + gratitude",
+      "prompt_ru": "Поблагодари на уровне B1:",
+      "prompt_text_ru": "Большое спасибо, очень мило что вы решили проблему так быстро.",
+      "correct_answer": "Muchas gracias, es muy amable que haya resuelto el problema tan rápido.",
+      "acceptable_alternatives": [
+        "Muchas gracias, qué amable que haya resuelto el problema tan rápido.",
+        "Muchas gracias, es muy amable que haya resuelto el problema tan deprisa.",
+        "Muchísimas gracias, es muy amable que haya resuelto el problema tan rápido."
+      ],
+      "explanation_on_fail_ru": "После «es amable que» — Subj. «Haya resuelto» = Perfecto Subj (действие уже завершено)."
+    },
+    {
+      "round": 14,
+      "format": "CHOICE",
+      "topic_ru": "Косвенная просьба · pedir que + Subj",
+      "tested_lesson": "u9_l6",
+      "tested_grammar": "Pedir que + Subj",
+      "npc_line_es": "¿Necesita algo más?",
+      "npc_line_ru": "Нужно что-то ещё?",
+      "prompt_ru": "Попроси через косвенную конструкцию: «Можно я попрошу чтобы подняли чемодан?»",
+      "correct_answer": "¿Le puedo pedir que suban mi maleta a la habitación?",
+      "distractors": [
+        "¿Le puedo pedir que suben mi maleta?",
+        "¿Yo pido subir mi maleta?",
+        "¿Puede subir mi maleta usted?"
+      ],
+      "explanation_on_fail_ru": "«Pedir que» требует Subj. «Suban» (Subj от subir, ellos = персонал). «Suben» — Indic, неправильно."
+    },
+    {
+      "round": 15,
+      "format": "BUILD",
+      "topic_ru": "Возможность · es posible que",
+      "tested_lesson": "u9_l7",
+      "tested_grammar": "Es posible que + Subj",
+      "npc_line_es": "El técnico subirá a su antigua habitación.",
+      "npc_line_ru": "Техник поднимется в вашу старую комнату.",
+      "prompt_ru": "Собери: «Возможно, душ сломан с прошлой недели»:",
+      "correct_answer": "Es posible que la ducha esté rota desde la semana pasada",
+      "word_bank": ["Es", "posible", "que", "la", "ducha", "esté", "rota", "desde", "la", "semana", "pasada", "está", "es"],
+      "explanation_on_fail_ru": "«Es posible que» — Subj. Estar → esté. «Rota» (ж.р., согласуется с «ducha»)."
+    },
+    {
+      "round": 16,
+      "format": "CHOICE",
+      "topic_ru": "Косвенная речь · reported speech",
+      "tested_lesson": "u9_l6",
+      "tested_grammar": "Reported speech базовый",
+      "npc_line_es": "El técnico ha dicho: «Voy a subir en cinco minutos.»",
+      "npc_line_ru": "Техник сказал: «Поднимусь через 5 минут.»",
+      "prompt_ru": "Перескажи Carmen что сказал техник (косвенно):",
+      "correct_answer": "Dijo que iba a subir en cinco minutos.",
+      "distractors": [
+        "Dijo que voy a subir en cinco minutos.",
+        "Dijo si subiría en cinco minutos.",
+        "Pregunté que subía en cinco."
+      ],
+      "explanation_on_fail_ru": "Прямая речь «Voy» (Pres) → косвенная «iba» (Imperfecto). Времена сдвигаются назад."
+    },
+    {
+      "round": 17,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · llegar (-ar)",
+      "tested_lesson": "u9_l1",
+      "tested_grammar": "Pres Subj -ar регулярный",
+      "npc_line_es": "Cuando ___ a la suite, dígame si todo está bien.",
+      "npc_line_ru": "Когда дойдёте до сюита, скажите если всё ок.",
+      "prompt_ru": "Поставь LLEGAR в Subjuntivo (usted):",
+      "sentence_template": "Cuando ___ a la suite, dígame.",
+      "verb_infinitive": "llegar",
+      "correct_answer": "llegue",
+      "distractors": ["llega", "llegará", "llegó"],
+      "explanation_on_fail_ru": "«Cuando + Subj» (для будущего действия). Llegar (usted) → llegue. Орфография: -gar → -gue (звук [g])."
+    },
+    {
+      "round": 18,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание сложной фразы Carmen",
+      "tested_lesson": "u9_l8",
+      "tested_grammar": "Dudar que + Subj + relativo",
+      "prompt_ru": "Carmen объясняет политику отеля. Переведи:",
+      "prompt_text_es": "Dudo que tengamos otra incidencia, pero si la hubiera, llámeme directamente al móvil.",
+      "correct_answer": "Сомневаюсь что будет другая проблема, но если будет — звоните мне напрямую на мобильный.",
+      "acceptable_alternatives": [
+        "Сомневаюсь, что у нас будет другая проблема, но если будет, звоните мне напрямую на мобильный.",
+        "Не думаю что будет другая проблема, но если будет — звоните мне на мобильный напрямую.",
+        "Сомневаюсь что будет ещё инцидент, но если будет — звоните мне напрямую на мобильный."
+      ],
+      "explanation_on_fail_ru": "«Dudo que tengamos» — Subj после сомнения. «Si la hubiera» — Imperfecto Subj в гипотезе. «Incidencia» = инцидент/проблема."
+    },
+    {
+      "round": 19,
+      "format": "LISTEN",
+      "topic_ru": "Прощание Carmen · disfrute",
+      "tested_lesson": "u9_l9",
+      "tested_grammar": "Imperativo formal + Subj",
+      "npc_line_es": "Disfrute de su estancia. Ojalá no tenga más molestias.",
+      "audio_only": true,
+      "prompt_ru": "Что желает Carmen?",
+      "correct_answer": "Приятного пребывания, надеюсь больше не будет неудобств.",
+      "distractors": [
+        "Уезжайте побыстрее, у нас много гостей.",
+        "Будут ещё проблемы — без проблем оплатите.",
+        "Приходите в следующий раз, цены вырастут."
+      ],
+      "translation_after_answer_ru": "«Disfrute» (Imper formal от disfrutar) + «Ojalá no tenga» (Subj). Стандартное вежливое прощание.",
+      "explanation_on_fail_ru": "«Disfrute» — повелительное наклонение для «usted» (= форма Subj «-e»). «Molestias» = неудобства."
+    },
+    {
+      "round": 20,
+      "format": "CHOICE",
+      "topic_ru": "Финал · вежливое прощание",
+      "tested_lesson": "u9_l0",
+      "tested_grammar": "Регистр · усложнённый",
+      "npc_line_es": "Que tenga un buen día.",
+      "npc_line_ru": "Хорошего дня.",
+      "prompt_ru": "Завершите разговор на B1 уровне:",
+      "correct_answer": "Muchas gracias por su ayuda, ha sido muy amable. Igualmente.",
+      "distractors": [
+        "Chao, tía. Adiós.",
+        "Vale, bye.",
+        "Hola, gracias."
+      ],
+      "explanation_on_fail_ru": "B1 регистр: длинная вежливая благодарность, «Igualmente» (вам тоже). «Chao tía» — слишком разговорное."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "¡Qué español tan elegante! La suite es suya, el desayuno también, y le mando una botella de cava de regalo.",
+      "carlos_line_ru": "Какой элегантный испанский! Сюит ваш, завтрак тоже, и пришлю бутылку каваса в подарок.",
+      "scene_description_ru": "Carmen лично провожает тебя до лифта, даёт прямой номер своего мобильного. На столе в сюите ждёт бутылка Codorníu и записка «Disfrute, Andrea. — Carmen»."
+    },
+    "silver": {
+      "carlos_line_es": "Perfecto, le hago el cambio y el desayuno incluido. Que disfrute.",
+      "carlos_line_ru": "Идеально, делаю замену и завтрак включён. Приятного отдыха.",
+      "scene_description_ru": "Carmen профессионально оформляет апгрейд, даёт новый ключ-карту. «Cualquier cosa, llámeme.»"
+    },
+    "bronze": {
+      "carlos_line_es": "Bueno, le cambio la habitación. Desayuno no, pero la habitación sí.",
+      "carlos_line_ru": "Хорошо, поменяю комнату. Завтрак нет, но комнату — да.",
+      "scene_description_ru": "Carmen кивает, оформляет замену. Без улыбки, но и без раздражения. «El siguiente, por favor.»"
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Le entiendo, pero su explicación no fue del todo clara. Le cambio la habitación sin más.",
+      "carlos_line_ru": "Я вас понимаю, но объяснение было не очень чётким. Просто поменяю комнату, без компенсаций.",
+      "scene_description_ru": "Carmen быстро оформляет замену комнаты, забирает старый ключ. Никаких подарков, прощается сухо: «Que vaya bien.»",
+      "stakes_ru": "Комнату поменяли, но никакого апгрейда. Подучи Subjuntivo и пересдавай."
+    },
+    "low": {
+      "carlos_line_es": "Perdone, pero no le entiendo bien. ¿Puede explicármelo en inglés?",
+      "carlos_line_ru": "Извините, я вас не очень понимаю. Можете объяснить на английском?",
+      "scene_description_ru": "Carmen зовёт коллегу-англоговорящего. Тебя пересаживают в первую свободную комнату. Конверсация на испанском провалена.",
+      "stakes_ru": "B1 ещё не освоен. Повтори блок 9 — Subjuntivo основа всего разговорного испанского."
+    },
+    "very_low": {
+      "carlos_line_es": "Lo siento, voy a llamar al gerente. Espere un momento, por favor.",
+      "carlos_line_ru": "Мне жаль, позову менеджера. Подождите минутку, пожалуйста.",
+      "scene_description_ru": "Carmen звонит начальству. Через 15 минут приходит менеджер, разговор идёт на ломаном английском. Ты получаешь номер в подвале — единственный свободный.",
+      "stakes_ru": "Блок 9 надо учить заново. Subjuntivo — это всё для уровня B1."
+    }
+  }
+}

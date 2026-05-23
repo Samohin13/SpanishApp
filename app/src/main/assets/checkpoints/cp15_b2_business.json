@@ -1,0 +1,407 @@
+{
+  "id": "cp15",
+  "cefr": "B2",
+  "block": 4,
+  "title_ru": "Бизнес-встреча · презентация Director Ramón",
+  "title_es": "Reunión de negocios · presentación al Director Ramón",
+  "description_ru": "Конференц-зал Barcelona Tech, 16 этаж, вид на Sagrada Familia. Director Ramón и комитет из 6 человек. Ты презентуешь проект на 6 месяцев работы и €240,000 бюджета. Ramón известен жёсткими вопросами: проверяет финансы, риски, ROI. Это твой шанс возглавить проект — pass и ты руководитель. Fail — Ramón скажет «vamos a reconsiderarlo» (= вежливое «нет»). Формальный регистр, профессиональная лексика, идеальные коннекторы, чистое сослагательное наклонение.",
+  "stakes_ru": "Утверждение проекта = твоя следующая ступень карьеры. Отказ = вернёшься на текущую роль, без повышения, без бюджета. Ramón не даёт второго шанса в этом квартале.",
+  "intro_text_ru": "Ramón входит в зал последним, в идеальном tres piezas. Молча кивает, садится во главу стола. «Tiene veinte minutos para presentarme la propuesta. Después, preguntas. Adelante.»",
+  "scene": {
+    "name": "Barcelona Tech · Sala de juntas",
+    "type": "business_meeting",
+    "city": "Barcelona",
+    "background_image": "scene_cp15_business.jpg"
+  },
+  "npc": {
+    "id": "director_ramon",
+    "name": "Director Ramón",
+    "role_ru": "Генеральный директор",
+    "role_es": "Director General",
+    "voice_id": "es-ES-Alvaro",
+    "portrait_image": "npc_ramon.jpg",
+    "personality": "ультра-формальный, только usted. Говорит экономно, выдержанные паузы, любит риторические вопросы. Использует subjuntivo как тест («necesitaríamos que reconsiderara»). На правильные ответы кивает едва заметно. На слабых — переспрашивает, заставляя уточнить."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia",
+    "note": "Project Manager, ведёт презентацию инициативы по миграции инфраструктуры в облако."
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 600,
+    "silver_xp_bonus": 100,
+    "gold_xp_bonus": 300,
+    "badge_id": "lider_proyecto",
+    "badge_name_ru": "Líder de proyecto",
+    "unlocks_block": 5
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Apertura formal · presentación",
+      "tested_lesson": "u15_l0 + u15_l1",
+      "npc_line_es": "Buenos días. Tiene la palabra.",
+      "npc_line_ru": "Доброе утро. У вас слово.",
+      "prompt_ru": "Какое открытие соответствует деловому регистру?",
+      "correct_answer": "Buenos días, señor Ramón. Antes de empezar, agradezco su tiempo. Hoy les presento una propuesta de migración cloud.",
+      "distractors": [
+        "Hola, voy a hablar de un proyecto guay.",
+        "Buenas, mirad esto que tengo.",
+        "Bueno, pues empiezo ya."
+      ],
+      "explanation_on_fail_ru": "Формальное открытие: обращение по имени с титулом + благодарность + краткий тезис. «Hola/buenas/guay» — категорически разговорные."
+    },
+    {
+      "round": 2,
+      "format": "CHOICE",
+      "topic_ru": "Connector · no sólo... sino también",
+      "tested_lesson": "u15_l4 + u16_l12",
+      "npc_line_es": "¿Qué ventajas concretas tendría su propuesta?",
+      "npc_line_ru": "Какие конкретные преимущества будет иметь ваше предложение?",
+      "prompt_ru": "Какой connector контраста уместен в формальном выступлении?",
+      "correct_answer": "No sólo reduciría costes en un 30%, sino también mejoraría la escalabilidad.",
+      "distractors": [
+        "No sólo reduciría costes, pero también mejoraría.",
+        "No reduciría costes pero mejoraría.",
+        "Reduciría costes, sino mejoraría."
+      ],
+      "explanation_on_fail_ru": "«No sólo... sino también» — стандарт. «Pero» после «no sólo» — грубая ошибка. «Sino» используется ТОЛЬКО после отрицания и заменяет, не противопоставляет."
+    },
+    {
+      "round": 3,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · creo que vs no creo que",
+      "tested_lesson": "u13_l11",
+      "npc_line_es": "No creo que el equipo actual ___ capacitado para esta migración. ¿Qué opina?",
+      "npc_line_ru": "Не думаю, что текущая команда обладает квалификацией. Что скажете?",
+      "prompt_ru": "Поставь Subjuntivo Presente от ESTAR (él):",
+      "sentence_template": "No creo que el equipo ___ capacitado.",
+      "verb_infinitive": "estar",
+      "correct_answer": "esté",
+      "distractors": ["está", "estará", "estaría"],
+      "explanation_on_fail_ru": "«No creer que» (отрицание уверенности) → ВСЕГДА Subjuntivo. Estar (él) → esté. «Creer que» (утверждение) → Indicativo."
+    },
+    {
+      "round": 4,
+      "format": "CHOICE",
+      "topic_ru": "Sino vs Pero · после отрицания",
+      "tested_lesson": "u16_l12",
+      "npc_line_es": "El presupuesto que solicita no es razonable, ___ excesivo.",
+      "npc_line_ru": "Бюджет, что вы запрашиваете, не разумный, ___ чрезмерный.",
+      "prompt_ru": "Какое слово соединяет противопоставление после отрицания?",
+      "correct_answer": "sino",
+      "distractors": ["pero", "sin embargo", "aunque"],
+      "explanation_on_fail_ru": "После отрицания + замены (не A, а B) → SINO. «Pero» — добавляет противоречащую информацию (No es alto, pero es fuerte). «Sino» — заменяет одно другим."
+    },
+    {
+      "round": 5,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · контр-предложение",
+      "tested_lesson": "u15_l4 + u13_l2",
+      "prompt_ru": "Переведи ответ Director Ramón (отстаивай позицию):",
+      "prompt_text_ru": "Понимаю Вашу обеспокоенность. Однако, если мы сократим бюджет, рискуем не достичь требуемого качества.",
+      "correct_answer": "Comprendo su preocupación sin embargo si reducimos el presupuesto corremos el riesgo de no alcanzar la calidad requerida",
+      "acceptable_alternatives": [
+        "Entiendo su preocupación sin embargo si reducimos el presupuesto corremos el riesgo de no alcanzar la calidad requerida",
+        "Comprendo su preocupación no obstante si reducimos el presupuesto corremos el riesgo de no alcanzar la calidad requerida",
+        "Comprendo su preocupación sin embargo si reducimos el presupuesto arriesgamos no alcanzar la calidad requerida"
+      ],
+      "hint_ru": "Sin embargo / no obstante = однако. Корремос el riesgo de + inf.",
+      "explanation_on_fail_ru": "Формальный контраст «sin embargo» / «no obstante». «Correr el riesgo de + inf» = рисковать. Si + Presente Indic (reducimos) → Presente Indic (corremos) — реалистичный условный тип 1."
+    },
+    {
+      "round": 6,
+      "format": "BUILD",
+      "topic_ru": "Pasiva · обоснование процесса",
+      "tested_lesson": "u14_l0",
+      "npc_line_es": "¿Cómo garantiza que el proyecto se ejecute sin retrasos?",
+      "npc_line_ru": "Как гарантируете, что проект будет выполнен без задержек?",
+      "prompt_ru": "Собери предложение в пассиве (10 слов):",
+      "correct_answer": "Cada hito será revisado por el comité antes de su aprobación",
+      "word_bank": ["Cada", "hito", "será", "revisado", "por", "el", "comité", "antes", "de", "su", "aprobación", "es", "será"],
+      "explanation_on_fail_ru": "Pasiva con SER + agente con POR. «Será revisado por el comité» — будет проверен комитетом. Стандартная business-формула."
+    },
+    {
+      "round": 7,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · necesitar que",
+      "tested_lesson": "u13_l11",
+      "npc_line_es": "Necesitaríamos que ___ la propuesta para integrar el feedback del CFO.",
+      "npc_line_ru": "Нам нужно, чтобы вы пересмотрели предложение с учётом feedback CFO.",
+      "prompt_ru": "Поставь Imp.Subj. от RECONSIDERAR (usted):",
+      "sentence_template": "Necesitaríamos que ___ la propuesta.",
+      "verb_infinitive": "reconsiderar",
+      "correct_answer": "reconsiderara",
+      "distractors": ["reconsidera", "reconsideraría", "reconsiderará"],
+      "explanation_on_fail_ru": "«Necesitar que» в Condicional → Imp.Subj. в придаточной (согласование времён). Reconsiderar (usted) → reconsiderara (или reconsiderase)."
+    },
+    {
+      "round": 8,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · возражение Ramón",
+      "tested_lesson": "u15_l4 + u15_l7",
+      "npc_line_es": "Su propuesta es interesante; no obstante, los plazos que plantea son demasiado optimistas. Por consiguiente, le sugeriría que ampliara el calendario en al menos dos meses. De lo contrario, no podríamos aprobar el proyecto en su forma actual.",
+      "audio_only": true,
+      "prompt_ru": "Что Ramón предлагает изменить, и каково условие?",
+      "correct_answer": "Расширить календарь на 2 месяца — иначе проект не утвердят.",
+      "distractors": [
+        "Сократить бюджет на 2 месяца работы.",
+        "Сменить команду на более опытную.",
+        "Утвердить проект без изменений."
+      ],
+      "translation_after_answer_ru": "«No obstante» (контраст) + «por consiguiente» (следствие) + «de lo contrario» (иначе). Ramón ставит условие: расширить календарь на 2 месяца.",
+      "explanation_on_fail_ru": "Цепь коннекторов B2: no obstante → por consiguiente → de lo contrario. Imp.Subj. в условном «le sugeriría que ampliara»."
+    },
+    {
+      "round": 9,
+      "format": "CHOICE",
+      "topic_ru": "Negotiation · contrapropuesta",
+      "tested_lesson": "u15_l4 + u15_l8",
+      "npc_line_es": "¿Cedería usted en el calendario?",
+      "npc_line_ru": "Уступите ли в календаре?",
+      "prompt_ru": "Какая контр-предложение сохраняет позицию, но открывает переговоры?",
+      "correct_answer": "Podríamos ampliar el calendario en un mes, a condición de que se mantenga el presupuesto íntegro.",
+      "distractors": [
+        "Sí, hago lo que ustedes digan.",
+        "No, ni hablar. Lo dejo como está.",
+        "Vale, lo que sea, da igual."
+      ],
+      "explanation_on_fail_ru": "«A condición de que» + Subj (se mantenga) = при условии что. Negotiation vocabulary: ceder (уступить), contraproponer. «Vale, da igual» — слабая позиция."
+    },
+    {
+      "round": 10,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · a condición de que",
+      "tested_lesson": "u13_l11",
+      "npc_line_es": "Acepto la ampliación a condición de que ___ los entregables intermedios.",
+      "npc_line_ru": "Принимаю расширение при условии, что вы гарантируете промежуточные результаты.",
+      "prompt_ru": "Поставь Subj.Pres. от GARANTIZAR (usted):",
+      "sentence_template": "A condición de que ___ los entregables.",
+      "verb_infinitive": "garantizar",
+      "correct_answer": "garantice",
+      "distractors": ["garantiza", "garantizará", "garantizaba"],
+      "explanation_on_fail_ru": "«A condición de que» / «con tal de que» / «siempre que» (условие) → ВСЕГДА Subjuntivo. Garantizar (usted) → garantice."
+    },
+    {
+      "round": 11,
+      "format": "BUILD",
+      "topic_ru": "Reported speech · косвенная речь",
+      "tested_lesson": "u14_l11",
+      "npc_line_es": "Recuérdeme, ¿qué dijo el CFO cuando vio el primer borrador?",
+      "npc_line_ru": "Напомните, что сказал CFO, когда увидел первый драфт?",
+      "prompt_ru": "Собери reported speech (10 слов):",
+      "correct_answer": "El CFO dijo que la propuesta requería más detalle financiero",
+      "word_bank": ["El", "CFO", "dijo", "que", "la", "propuesta", "requería", "más", "detalle", "financiero", "requiere", "requerirá"],
+      "explanation_on_fail_ru": "Reported speech: dijo (прошлое) → требует сдвига времён. Presente «requiere» → Imperfecto «requería». Estilo indirecto B2."
+    },
+    {
+      "round": 12,
+      "format": "CHOICE",
+      "topic_ru": "Connector · es decir (уточнение)",
+      "tested_lesson": "u15_l0 + u15_l2",
+      "npc_line_es": "Hablemos del ROI. ¿Cuándo recuperaríamos la inversión?",
+      "npc_line_ru": "Поговорим о ROI. Когда вернём инвестицию?",
+      "prompt_ru": "Какой discourse marker уточнения уместен?",
+      "correct_answer": "En 14 meses, es decir, tres meses antes que la media del sector.",
+      "distractors": [
+        "En 14 meses, pero qué más da.",
+        "En 14 meses, vale o nada.",
+        "En 14 meses, sino antes."
+      ],
+      "explanation_on_fail_ru": "«Es decir» / «o sea» = другими словами (уточнение). Стандарт деловой речи. «Pero qué más da», «vale o nada» — разговорные клише."
+    },
+    {
+      "round": 13,
+      "format": "CONJUGATE",
+      "topic_ru": "Voz pasiva refleja с числительным",
+      "tested_lesson": "u14_l2",
+      "npc_line_es": "En el primer trimestre ___ tres millones de euros en ingresos adicionales.",
+      "npc_line_ru": "В первом квартале ожидается 3 млн евро доп. дохода.",
+      "prompt_ru": "Поставь pasiva refleja от ESPERAR (3 л. мн., согласование с millones):",
+      "sentence_template": "Se ___ tres millones de euros en ingresos.",
+      "verb_infinitive": "esperar",
+      "correct_answer": "esperan",
+      "distractors": ["espera", "esperaron", "esperarán"],
+      "explanation_on_fail_ru": "Pasiva refleja: SE + глагол согласован с подлежащим. «Tres millones» (мн.) → se esperan. Если бы было «un millón» (ед.) → se espera."
+    },
+    {
+      "round": 14,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · формальный поток",
+      "tested_lesson": "u15_l4 + u15_l6",
+      "prompt_ru": "Переведи реплику Ramón на русский (сохрани регистр):",
+      "prompt_text_es": "Dado que el comité tendrá la última palabra, le ruego que prepare un dossier ejecutivo de no más de cinco páginas que se enviará al consejo el viernes a primera hora.",
+      "correct_answer": "Учитывая, что последнее слово будет за комитетом, прошу Вас подготовить исполнительный дossier не более 5 страниц, который будет отправлен совету в пятницу утром.",
+      "acceptable_alternatives": [
+        "Поскольку последнее слово за комитетом, прошу подготовить исполнительный отчёт не более 5 страниц, который отправится совету в пятницу утром.",
+        "Учитывая, что последнее слово за комитетом, я прошу подготовить исполнительное досье не более пяти страниц, которое будет отправлено совету в пятницу с утра.",
+        "Так как последнее слово будет за комитетом, прошу Вас подготовить исполнительный отчёт не более 5 страниц, который отправят совету в пятницу утром."
+      ],
+      "explanation_on_fail_ru": "«Dado que» = поскольку. «Le ruego que prepare» — Subjuntivo. «Que se enviará» — pasiva refleja в будущем. Многослойное B2-предложение с relativos и формальной просьбой."
+    },
+    {
+      "round": 15,
+      "format": "CONJUGATE",
+      "topic_ru": "Perífrasis · deber + inf vs deber de + inf",
+      "tested_lesson": "u14_l3 + u14_l6",
+      "npc_line_es": "El proyecto ___ entregarse antes de junio. No es opcional.",
+      "npc_line_ru": "Проект должен быть сдан до июня. Не опционально.",
+      "prompt_ru": "Какая форма deber выражает ОБЯЗАТЕЛЬСТВО?",
+      "sentence_template": "El proyecto ___ entregarse antes de junio.",
+      "verb_infinitive": "deber",
+      "correct_answer": "debe",
+      "distractors": ["debe de", "puede", "podría"],
+      "explanation_on_fail_ru": "«Deber + inf» = обязанность («должен»). «Deber de + inf» = предположение («должно быть»). Здесь — приказ, поэтому без de."
+    },
+    {
+      "round": 16,
+      "format": "CHOICE",
+      "topic_ru": "Registro · отказ от уступки",
+      "tested_lesson": "u15_l4 + u15_l8",
+      "npc_line_es": "¿Reduciría usted el presupuesto un 20%?",
+      "npc_line_ru": "Уменьшили бы бюджет на 20%?",
+      "prompt_ru": "Какой формальный отказ сохраняет позицию?",
+      "correct_answer": "Lamento no poder ceder en este punto, puesto que afectaría a la calidad del entregable final.",
+      "distractors": [
+        "Ni hablar, no voy a reducir nada.",
+        "Bah, no creo que sea buena idea.",
+        "Vale, pues lo reduzco."
+      ],
+      "explanation_on_fail_ru": "Деловой отказ: «Lamento + inf» (сожалею что не могу) + «puesto que» (формальная причина). «Ni hablar», «bah» — разговорные/невежливые."
+    },
+    {
+      "round": 17,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · обоснование на B2",
+      "tested_lesson": "u15_l4 + u15_l7",
+      "prompt_ru": "Переведи финальное обоснование (формально):",
+      "prompt_text_ru": "Этот проект позволит нам не только увеличить доход на 30%, но также укрепить наше положение на рынке.",
+      "correct_answer": "Este proyecto nos permitirá no sólo aumentar los ingresos en un 30% sino también consolidar nuestra posición en el mercado",
+      "acceptable_alternatives": [
+        "Este proyecto nos permitirá no solamente aumentar los ingresos en un 30% sino también consolidar nuestra posición en el mercado",
+        "Este proyecto nos permitirá no sólo incrementar los ingresos en un 30% sino también consolidar nuestra posición en el mercado",
+        "Este proyecto nos permitirá no sólo aumentar los ingresos un 30% sino también reforzar nuestra posición en el mercado"
+      ],
+      "hint_ru": "Permitir + inf. «No sólo... sino también» (точное место «también»).",
+      "explanation_on_fail_ru": "Стандартная формула «no sólo... sino también» (НЕ «pero también»). «Aumentar/incrementar en + %». «Consolidar/reforzar la posición» — business idiom."
+    },
+    {
+      "round": 18,
+      "format": "BUILD",
+      "topic_ru": "Subjuntivo · finalidad para que",
+      "tested_lesson": "u13_l11",
+      "npc_line_es": "¿Qué necesita del comité ahora mismo?",
+      "npc_line_ru": "Что нужно от комитета прямо сейчас?",
+      "prompt_ru": "Собери просьбу (9 слов):",
+      "correct_answer": "Necesito su firma para que el proyecto pueda comenzar oficialmente",
+      "word_bank": ["Necesito", "su", "firma", "para", "que", "el", "proyecto", "pueda", "comenzar", "oficialmente", "puede", "comienza"],
+      "explanation_on_fail_ru": "«Para que» → ВСЕГДА Subjuntivo (pueda). «Poder» (él) Subj → pueda. Цель в придаточном — сослагательное."
+    },
+    {
+      "round": 19,
+      "format": "CHOICE",
+      "topic_ru": "Connector · por lo tanto vs así que",
+      "tested_lesson": "u15_l7",
+      "npc_line_es": "Hemos visto el ROI, los riesgos y los plazos. ___, ¿podemos aprobar?",
+      "npc_line_ru": "Видели ROI, риски, сроки. ___, можем утвердить?",
+      "prompt_ru": "Какой connector следствия формальнее в business-meeting?",
+      "correct_answer": "Por lo tanto",
+      "distractors": ["Así que", "Pues", "Bueno"],
+      "explanation_on_fail_ru": "«Por lo tanto» / «por consiguiente» = следовательно (формал.). «Así que» (разговорное), «pues», «bueno» — неформальные."
+    },
+    {
+      "round": 20,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · вердикт",
+      "tested_lesson": "u14_l0 + u15_l4",
+      "npc_line_es": "Después de escucharla atentamente, considero que su propuesta está bien fundamentada. Sin embargo, antes de dar el visto bueno definitivo, necesitaríamos que el dossier final fuera aprobado por el departamento financiero. Si todo se confirma en las próximas 48 horas, el proyecto será suyo.",
+      "audio_only": true,
+      "prompt_ru": "Что говорит Ramón в итоге?",
+      "correct_answer": "Условное одобрение: ждёт визу финдепартамента в 48 часов.",
+      "distractors": [
+        "Полный отказ от проекта.",
+        "Безусловное одобрение прямо сейчас.",
+        "Переносит решение на следующий квартал."
+      ],
+      "translation_after_answer_ru": "«Necesitaríamos que fuera aprobado» (Cond + Imp.Subj.) + «será suyo» (pasiva en futuro). Условное одобрение через 48 часов.",
+      "explanation_on_fail_ru": "Многослойный B2: «necesitaríamos que + Imp.Subj.», «fuera aprobado» (pasiva en Imp.Subj.), «será suyo» (pasiva futuro). Ramón даёт условное «да»."
+    },
+    {
+      "round": 21,
+      "format": "CONJUGATE",
+      "topic_ru": "Acuerdo · llegar a un acuerdo",
+      "tested_lesson": "u14_l3 + u15_l6",
+      "npc_line_es": "Entonces ___ a un acuerdo. La felicito.",
+      "npc_line_ru": "Значит, мы пришли к соглашению. Поздравляю.",
+      "prompt_ru": "Поставь Pret.Perf. от LLEGAR (мы):",
+      "sentence_template": "Hemos ___ a un acuerdo.",
+      "verb_infinitive": "llegar",
+      "correct_answer": "llegado",
+      "distractors": ["llegando", "llegaron", "llegamos"],
+      "explanation_on_fail_ru": "Pretérito Perfecto: haber + participio. Llegar → llegado. «Llegar a un acuerdo» — стандартная business-формула."
+    },
+    {
+      "round": 22,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Финал · подпись соглашения",
+      "tested_lesson": "u15_l0 + u15_l1",
+      "prompt_ru": "Переведи финальную фразу (очень формально):",
+      "prompt_text_ru": "Благодарю Вас и комитет за оказанное доверие. Жду подписания контракта, остаюсь в Вашем распоряжении.",
+      "correct_answer": "Les agradezco a usted y al comité la confianza depositada Quedo a la espera de la firma del contrato y a su disposición",
+      "acceptable_alternatives": [
+        "Le agradezco a usted y al comité la confianza depositada Quedo a la espera de la firma del contrato y a su disposición",
+        "Les agradezco a usted y al comité la confianza Quedo a la espera de la firma del contrato y a su disposición",
+        "Les agradezco a usted y al comité su confianza Quedo a la espera de la firma del contrato y quedo a su disposición"
+      ],
+      "hint_ru": "Le agradezco, quedar a la espera, quedar a su disposición.",
+      "explanation_on_fail_ru": "Бизнес-формулы B2: «la confianza depositada» (оказанное доверие), «quedo a la espera de» (жду), «quedo a su disposición» (остаюсь в распоряжении)."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Andrea, ha sido la mejor presentación del año. Aprobamos el proyecto íntegro y le nombro responsable.",
+      "carlos_line_ru": "Andrea, лучшая презентация года. Утверждаем проект полностью и назначаем Вас руководителем.",
+      "scene_description_ru": "Ramón встаёт, протягивает руку через стол. Комитет аплодирует. Секретарь приносит контракт на подпись прямо сейчас.",
+      "stakes_ru": "Полный бюджет €240K, команда из 8 человек, +25% к зарплате, bonus 15%."
+    },
+    "silver": {
+      "carlos_line_es": "Aprobado, con un ajuste menor de presupuesto. Buena defensa.",
+      "carlos_line_ru": "Утверждено, с небольшой корректировкой бюджета. Хорошая защита.",
+      "scene_description_ru": "Ramón кивает, делает заметку. «Mañana firmaremos. La esperamos a las 9.» Комитет жмёт руку.",
+      "stakes_ru": "Бюджет €200K (-17%), но проект твой. Повышение тоже."
+    },
+    "bronze": {
+      "carlos_line_es": "Aprobado en versión piloto. Empezaremos con un alcance reducido.",
+      "carlos_line_ru": "Утверждено как пилот. Начнём с ограниченным масштабом.",
+      "scene_description_ru": "Ramón даёт частичное согласие. «Tres meses de piloto y luego decidimos el resto.»"
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Interesante propuesta. Vamos a reconsiderarlo en la próxima reunión.",
+      "carlos_line_ru": "Интересное предложение. Рассмотрим на следующей встрече.",
+      "scene_description_ru": "Ramón закрывает блокнот. «Reconsiderarlo» — деловой синоним «нет». Комитет встаёт, не задавая больше вопросов.",
+      "stakes_ru": "Проект в подвешенном состоянии. Следующий слот — через 3 месяца, без гарантии."
+    },
+    "low": {
+      "carlos_line_es": "Vamos a evaluar otras opciones más maduras. Le agradezco la presentación.",
+      "carlos_line_ru": "Рассмотрим другие, более зрелые опции. Спасибо за презентацию.",
+      "scene_description_ru": "Ramón корректен, но смотрит мимо. На прощание не пожимает руку. Секретарь провожает молча.",
+      "stakes_ru": "Проект не утверждён. Возвращение к текущей роли. Reputation hit на год."
+    },
+    "very_low": {
+      "carlos_line_es": "Recomiendo que prepare la propuesta con un especialista interno antes de presentarla.",
+      "carlos_line_ru": "Рекомендую готовить предложение со специалистом перед презентацией.",
+      "scene_description_ru": "Ramón очень дипломатично, но ясно: уровень не соответствует. На двери — взгляд от других директоров.",
+      "stakes_ru": "Перепройди весь блок B2.3 (формальный регистр, коннекторы). 24ч cooldown."
+    }
+  }
+}

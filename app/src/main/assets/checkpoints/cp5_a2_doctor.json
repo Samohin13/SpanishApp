@@ -1,0 +1,400 @@
+{
+  "id": "cp5",
+  "cefr": "A2",
+  "block": 5,
+  "title_ru": "У врача",
+  "title_es": "En el médico",
+  "description_ru": "Ты заболела — голова, кашель, плохо спала несколько дней. Записалась в поликлинику. Dra. Martínez — врач опытный и формальный, обращается на usted. Расскажи что случилось вчера, когда началось, что уже принимала. Справишься — получишь правильный рецепт.",
+  "stakes_ru": "Точно опишешь симптомы и хронологию — врач выпишет рецепт. Запутаешься в прошедшем времени — получишь общее обезболивающее и «vuelva con un intérprete».",
+  "scene": {
+    "name": "Centro de Salud Príncipe de Vergara",
+    "type": "doctor_office",
+    "city": "Madrid",
+    "background_image": "scene_cp5_doctor.jpg"
+  },
+  "npc": {
+    "id": "martinez",
+    "name": "Dra. Martínez",
+    "role_ru": "Семейный врач",
+    "role_es": "Médica de familia",
+    "voice_id": "es-ES-Elvira",
+    "portrait_image": "npc_martinez.jpg",
+    "personality": "формальная, эмпатичная, спокойная. Обращается на usted. Внимательно слушает, переспрашивает если что-то непонятно. На ошибках мягко переспрашивает «¿perdone?»."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 400,
+    "silver_xp_bonus": 80,
+    "gold_xp_bonus": 200,
+    "badge_id": "salud",
+    "badge_name_ru": "Здоровье",
+    "unlocks_block": 6
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Формальное приветствие · usted",
+      "tested_lesson": "u1_l4 + u1_l10",
+      "tested_grammar": "Saludo formal",
+      "npc_line_es": "Buenos días. Pase, por favor. Soy la doctora Martínez. ¿Cómo se llama usted?",
+      "npc_line_ru": "Доброе утро. Проходите, пожалуйста. Я доктор Мартинес. Как вас зовут?",
+      "prompt_ru": "Ответь формально на usted:",
+      "correct_answer": "Me llamo Andrea. Encantada.",
+      "distractors": [
+        "Soy Andrea, ¿y tú?",
+        "Hola tía, soy Andrea.",
+        "Yo es Andrea."
+      ],
+      "explanation_on_fail_ru": "У врача — formal usted. «Encantada» (ж.р.) — стандартный вежливый ответ на знакомство."
+    },
+    {
+      "round": 2,
+      "format": "CHOICE",
+      "topic_ru": "TENER · симптом · presente",
+      "tested_lesson": "u2_l0 + u5_l*",
+      "tested_grammar": "TENER + síntoma",
+      "npc_line_es": "Cuénteme, ¿qué le pasa?",
+      "npc_line_ru": "Расскажите, что с вами?",
+      "prompt_ru": "У тебя температура и болит голова. Что сказать?",
+      "correct_answer": "Tengo fiebre y me duele la cabeza.",
+      "distractors": [
+        "Soy fiebre y soy cabeza.",
+        "Tengo fiebre y duele cabeza.",
+        "Estoy fiebre y mi cabeza."
+      ],
+      "explanation_on_fail_ru": "«Tener fiebre» = иметь температуру. «Me duele + la + часть тела» — стандартная конструкция как «gustar»."
+    },
+    {
+      "round": 3,
+      "format": "CONJUGATE",
+      "topic_ru": "EMPEZAR · Indefinido · yo (орфография)",
+      "tested_lesson": "u5_l1",
+      "tested_grammar": "Pretérito Indefinido · 1L sg · -zar→-cé",
+      "npc_line_es": "¿Cuándo empezó el malestar?",
+      "npc_line_ru": "Когда началось недомогание?",
+      "prompt_ru": "Поставь EMPEZAR в Indefinido (yo):",
+      "sentence_template": "Yo ___ a sentirme mal el lunes.",
+      "verb_infinitive": "empezar",
+      "correct_answer": "empecé",
+      "distractors": ["empezé", "empezó", "empiezo"],
+      "explanation_on_fail_ru": "Глаголы на -zar в yo Indefinido меняют z→c перед é: empezar→empecé. «Empezó» — это él, не yo."
+    },
+    {
+      "round": 4,
+      "format": "CHOICE",
+      "topic_ru": "Маркер времени · ayer",
+      "tested_lesson": "u5_l0",
+      "tested_grammar": "Marcadores temporales · Indefinido",
+      "npc_line_es": "¿Y ayer cómo se encontraba?",
+      "npc_line_ru": "А вчера как вы себя чувствовали?",
+      "prompt_ru": "Вчера у тебя поднялась температура. Что выбрать?",
+      "correct_answer": "Ayer tuve fiebre por la tarde.",
+      "distractors": [
+        "Ayer tengo fiebre por la tarde.",
+        "Ayer tendré fiebre por la tarde.",
+        "Mañana tuve fiebre por la tarde."
+      ],
+      "explanation_on_fail_ru": "Маркер «ayer» однозначно требует Pretérito Indefinido: tuve (от tener). «Tengo» — настоящее, «tendré» — будущее."
+    },
+    {
+      "round": 5,
+      "format": "CONJUGATE",
+      "topic_ru": "TENER · Indefinido irregular · yo",
+      "tested_lesson": "u5_l7",
+      "tested_grammar": "Indefinido irregular · tuv-",
+      "npc_line_es": "¿Tuvo fiebre alta?",
+      "npc_line_ru": "Температура была высокая?",
+      "prompt_ru": "Спряги TENER в Indefinido для yo:",
+      "sentence_template": "Sí, yo ___ treinta y nueve grados.",
+      "verb_infinitive": "tener",
+      "correct_answer": "tuve",
+      "distractors": ["tení", "tenía", "tuvo"],
+      "explanation_on_fail_ru": "TENER в Indefinido нерегулярный: основа tuv- + окончания -e/-iste/-o. «Tení» не существует, «tenía» — Imperfecto, «tuvo» — это él/usted."
+    },
+    {
+      "round": 6,
+      "format": "BUILD",
+      "topic_ru": "ESTAR Indefinido · ESTUVE en cama",
+      "tested_lesson": "u5_l3 + u5_l7",
+      "tested_grammar": "ESTAR Indefinido · 1L sg",
+      "npc_line_es": "¿Pudo trabajar?",
+      "npc_line_ru": "Смогли работать?",
+      "prompt_ru": "Собери: «Нет, вчера я была в постели весь день»",
+      "correct_answer": "No ayer estuve en cama todo el día",
+      "word_bank": ["No", "ayer", "estuve", "en", "cama", "todo", "el", "día", "fui", "soy", "estoy"],
+      "explanation_on_fail_ru": "Местоположение в прошлом → ESTAR Indefinido: estuve. «Fui» от ser/ir не подходит для «находилась». «Estoy» — настоящее."
+    },
+    {
+      "round": 7,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · симптомы",
+      "tested_lesson": "u5_l* + u3_l*",
+      "tested_grammar": "Comprensión oral · síntomas",
+      "audio_only": true,
+      "npc_line_es": "Veo en el historial: gripe en enero. ¿Recuerda?",
+      "prompt_ru": "Что сказала Dra. Martínez (главный симптом)?",
+      "correct_answer": "грипп",
+      "distractors": ["простуда", "аллергия", "ангина"],
+      "translation_after_answer_ru": "«gripe» = грипп. «en enero» = в январе.",
+      "explanation_on_fail_ru": "«Gripe» (произносится «грипе») = грипп. Очень частое слово при разговоре с врачом."
+    },
+    {
+      "round": 8,
+      "format": "CHOICE",
+      "topic_ru": "Por + período del día",
+      "tested_lesson": "u5_l9",
+      "tested_grammar": "POR + parte del día",
+      "npc_line_es": "¿Cuándo tose más, por la mañana o por la noche?",
+      "npc_line_ru": "Когда кашляете больше, утром или ночью?",
+      "prompt_ru": "Кашляешь ночью. Как сказать?",
+      "correct_answer": "Toso más por la noche.",
+      "distractors": [
+        "Toso más para la noche.",
+        "Toso más en la noche.",
+        "Toso más de la noche."
+      ],
+      "explanation_on_fail_ru": "Период дня всегда с «por»: por la mañana / por la tarde / por la noche. «Para» означает цель, не время."
+    },
+    {
+      "round": 9,
+      "format": "CONJUGATE",
+      "topic_ru": "TOMAR · -AR Indefinido · yo",
+      "tested_lesson": "u5_l1",
+      "tested_grammar": "Indefinido regular -AR",
+      "npc_line_es": "¿Tomó algún medicamento?",
+      "npc_line_ru": "Принимали какое-нибудь лекарство?",
+      "prompt_ru": "Спряги TOMAR в Indefinido (yo):",
+      "sentence_template": "Sí, yo ___ paracetamol anteayer.",
+      "verb_infinitive": "tomar",
+      "correct_answer": "tomé",
+      "distractors": ["tomó", "tomaba", "tomaste"],
+      "explanation_on_fail_ru": "TOMAR — регулярный -AR. yo Indefinido: -é → tomé. «Tomó» — él/usted, «tomaba» — Imperfecto, «tomaste» — tú."
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Hace + tiempo + Indefinido",
+      "tested_lesson": "u5_l0",
+      "tested_grammar": "Marcador HACE",
+      "npc_line_es": "¿Y cuándo tomó la última pastilla?",
+      "npc_line_ru": "А когда приняли последнюю таблетку?",
+      "prompt_ru": "Приняла 3 часа назад. Как сказать?",
+      "correct_answer": "La tomé hace tres horas.",
+      "distractors": [
+        "La tomo hace tres horas.",
+        "La tomaré hace tres horas.",
+        "La tomaba hace tres horas."
+      ],
+      "explanation_on_fail_ru": "«Hace + X tiempo» = «X времени назад» — это всегда Indefinido. «La» (OD ж.р.) заменяет «la pastilla»."
+    },
+    {
+      "round": 11,
+      "format": "CONJUGATE",
+      "topic_ru": "DORMIR · Indefinido · yo",
+      "tested_lesson": "u5_l2",
+      "tested_grammar": "Indefinido -IR (cambio o→u 3L)",
+      "npc_line_es": "¿Y durmió anoche?",
+      "npc_line_ru": "А прошлой ночью спали?",
+      "prompt_ru": "Спряги DORMIR в Indefinido (yo):",
+      "sentence_template": "Anoche yo ___ muy mal.",
+      "verb_infinitive": "dormir",
+      "correct_answer": "dormí",
+      "distractors": ["durmí", "durmió", "duermo"],
+      "explanation_on_fail_ru": "В yo и tú основа НЕ меняется: dormí, dormiste. А в él/ellos — o→u: durmió, durmieron. «Duermo» — настоящее."
+    },
+    {
+      "round": 12,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · число (температура)",
+      "tested_lesson": "u1_l13 + u2_l*",
+      "tested_grammar": "Comprensión · números",
+      "audio_only": true,
+      "npc_line_es": "Su temperatura ahora es treinta y ocho y medio.",
+      "prompt_ru": "Какая температура сейчас?",
+      "correct_answer": "38,5",
+      "distractors": ["28,5", "38,8", "39,5"],
+      "translation_after_answer_ru": "«treinta y ocho y medio» = 38 и половина = 38,5°C.",
+      "explanation_on_fail_ru": "«Treinta y ocho» = 38, «y medio» = и половина. У испанцев десятичная — запятая, не точка."
+    },
+    {
+      "round": 13,
+      "format": "CHOICE",
+      "topic_ru": "Pluscuamperfecto · había + participio",
+      "tested_lesson": "u5_l8_5",
+      "tested_grammar": "Pluscuamperfecto · 1L sg",
+      "npc_line_es": "Antes de venir aquí, ¿había tomado algo más?",
+      "npc_line_ru": "До прихода сюда что-то ещё принимали?",
+      "prompt_ru": "До прихода уже выпила чай с лимоном. Как сказать?",
+      "correct_answer": "Sí, ya había tomado un té con limón.",
+      "distractors": [
+        "Sí, ya he tomado un té con limón.",
+        "Sí, ya tomé un té con limón.",
+        "Sí, ya tomaba un té con limón."
+      ],
+      "explanation_on_fail_ru": "Pluscuamperfecto = действие ДО другого прошлого. Структура: había + participio (tomado). Маркер «ya» = «уже» (до того момента)."
+    },
+    {
+      "round": 14,
+      "format": "BUILD",
+      "topic_ru": "IR Indefinido · fui al médico",
+      "tested_lesson": "u5_l6",
+      "tested_grammar": "IR Indefinido · 1L sg",
+      "npc_line_es": "¿Ha ido a otro médico esta semana?",
+      "npc_line_ru": "На этой неделе к другому врачу обращались?",
+      "prompt_ru": "Собери: «Да, в понедельник я ходила в аптеку»",
+      "correct_answer": "Sí el lunes fui a la farmacia",
+      "word_bank": ["Sí", "el", "lunes", "fui", "a", "la", "farmacia", "voy", "iba", "iré"],
+      "explanation_on_fail_ru": "IR в Indefinido полностью нерегулярный и совпадает с SER: fui/fuiste/fue. «El lunes» (с артиклем) = в понедельник (конкретный)."
+    },
+    {
+      "round": 15,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · диагноз и рецепт",
+      "tested_lesson": "u5_l* + u2_l*",
+      "tested_grammar": "Comprensión + Indefinido + Futuro próximo",
+      "prompt_ru": "Dra. Martínez объясняет диагноз. Переведи:",
+      "prompt_text_es": "Tiene una gripe fuerte. Le voy a recetar un antibiótico. Tómelo tres veces al día.",
+      "correct_answer": "У вас сильный грипп. Я выпишу вам антибиотик. Принимайте его три раза в день.",
+      "acceptable_alternatives": [
+        "У вас тяжёлый грипп. Я выпишу антибиотик. Принимай его три раза в день.",
+        "У вас сильный грипп. Выпишу вам антибиотик. Пейте его три раза в день.",
+        "У вас сильный грипп. Я пропишу вам антибиотик. Принимайте три раза в день."
+      ],
+      "explanation_on_fail_ru": "«ir a + инфинитив» = собираюсь сделать (будущее ближайшее). «Tómelo» = повелит. формы usted + OD «lo». «Tres veces al día» = три раза в день."
+    },
+    {
+      "round": 16,
+      "format": "CHOICE",
+      "topic_ru": "Indefinido vs Pluscuamperfecto · контраст",
+      "tested_lesson": "u5_l8_5",
+      "tested_grammar": "Contraste pretéritos",
+      "npc_line_es": "Antes de hoy, ¿alguna vez había tenido esta tos?",
+      "npc_line_ru": "До сегодняшнего дня хоть раз был такой кашель?",
+      "prompt_ru": "Зимой уже было то же самое. Какой вариант грамматически верный?",
+      "correct_answer": "Sí, en invierno ya había tenido la misma tos.",
+      "distractors": [
+        "Sí, en invierno ya he tenido la misma tos.",
+        "Sí, en invierno ya tendría la misma tos.",
+        "Sí, en invierno ya tendré la misma tos."
+      ],
+      "explanation_on_fail_ru": "Действие ДО другого прошлого («antes de hoy») → Pluscuamperfecto: había tenido. «He tenido» — Perfecto (связь с сейчас), не подходит."
+    },
+    {
+      "round": 17,
+      "format": "CONJUGATE",
+      "topic_ru": "HACER · Indefinido irregular · yo",
+      "tested_lesson": "u5_l8",
+      "tested_grammar": "Indefinido irregular · hic-",
+      "npc_line_es": "¿Hizo deporte esta semana?",
+      "npc_line_ru": "Спортом занимались на этой неделе?",
+      "prompt_ru": "Спряги HACER в Indefinido (yo):",
+      "sentence_template": "No, no ___ ejercicio porque me sentía mal.",
+      "verb_infinitive": "hacer",
+      "correct_answer": "hice",
+      "distractors": ["hací", "hizo", "hago"],
+      "explanation_on_fail_ru": "HACER Indefinido нерегулярный: hice/hiciste/hizo (внимание: él hizo с буквой Z!). «Hací» не существует."
+    },
+    {
+      "round": 18,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Боль · me duele + 3 дня назад",
+      "tested_lesson": "u5_l0 + u5_l1",
+      "tested_grammar": "DOLER + HACE + Indefinido",
+      "npc_line_es": "Una última pregunta. ¿Hace cuánto le duele la garganta?",
+      "npc_line_ru": "Последний вопрос. Сколько уже болит горло?",
+      "prompt_ru": "Переведи: «Горло начало болеть три дня назад.»",
+      "prompt_text_ru": "Горло начало болеть три дня назад.",
+      "correct_answer": "La garganta empezó a doler hace tres días.",
+      "acceptable_alternatives": [
+        "Me empezó a doler la garganta hace tres días.",
+        "Hace tres días empezó a dolerme la garganta.",
+        "Hace tres días la garganta empezó a doler."
+      ],
+      "explanation_on_fail_ru": "«Hace tres días» = три дня назад (всегда с Indefinido). «Empezó a + инф» = начало делать. Глагол DOLER работает как GUSTAR."
+    },
+    {
+      "round": 19,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · инструкция к лечению",
+      "tested_lesson": "u5_l* + u3_l*",
+      "tested_grammar": "Comprensión · imperativo usted",
+      "audio_only": true,
+      "npc_line_es": "Tome una pastilla cada ocho horas y descanse en casa hasta el viernes.",
+      "prompt_ru": "Что сказала врач (главное действие)?",
+      "correct_answer": "пить таблетку каждые 8 часов и отдыхать дома",
+      "distractors": [
+        "пить таблетку каждые 8 дней и работать дома",
+        "пить две таблетки в день и не выходить вообще",
+        "пить таблетку один раз и сразу к специалисту"
+      ],
+      "translation_after_answer_ru": "«Tome una pastilla cada ocho horas» = принимайте таблетку каждые 8 часов. «Descanse en casa» = отдыхайте дома.",
+      "explanation_on_fail_ru": "«Cada ocho horas» = каждые 8 часов. «Descanse» — повелит. форма usted от descansar (отдыхать). «Hasta el viernes» = до пятницы."
+    },
+    {
+      "round": 20,
+      "format": "CHOICE",
+      "topic_ru": "Финал · прощание формальное + благодарность",
+      "tested_lesson": "u1_l6 + u5_l13",
+      "tested_grammar": "Despedida formal",
+      "npc_line_es": "Aquí tiene la receta. Cuídese mucho. Que se mejore pronto.",
+      "npc_line_ru": "Вот рецепт. Берегите себя. Скорейшего выздоровления.",
+      "prompt_ru": "Прощаешься формально. Что лучше всего?",
+      "correct_answer": "Muchas gracias, doctora. Hasta luego.",
+      "distractors": [
+        "Vale tía, nos vemos.",
+        "De nada, hasta nunca.",
+        "Adiós, te llamo luego."
+      ],
+      "explanation_on_fail_ru": "С врачом — formal usted. «Doctora» (с обращением), «hasta luego» — нейтрально-вежливое прощание. «Tía» (разговорное «подруга») и «te» (на ты) тут неуместны."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Perfecto. Con esto se recuperará en una semana. Cuídese mucho, Andrea.",
+      "carlos_line_ru": "Идеально. С этим выздоровеете за неделю. Берегите себя, Andrea.",
+      "scene_description_ru": "Dra. Martínez распечатывает рецепт, объясняет дозировку, рисует график приёма. «Vuelva el viernes si la fiebre no baja.» Регистратор записывает контрольный приём.",
+      "stakes_ru": "Точный диагноз, правильное лечение, контрольный приём через неделю."
+    },
+    "silver": {
+      "carlos_line_es": "Bien. Le doy un tratamiento general. Si no mejora en tres días, vuelva.",
+      "carlos_line_ru": "Хорошо. Даю общее лечение. Если не станет лучше за 3 дня, возвращайтесь.",
+      "scene_description_ru": "Dra. Martínez выписывает базовое лечение. Рецепт есть, но дозировку придётся уточнить в аптеке. «Beba mucha agua y descanse.»"
+    },
+    "bronze": {
+      "carlos_line_es": "Está bien. Tome paracetamol y vuelva si empeora.",
+      "carlos_line_ru": "Ладно. Принимайте парацетамол и возвращайтесь если ухудшится.",
+      "scene_description_ru": "Dra. Martínez ставит общий диагноз «proceso vírico». Минимальный рецепт. Без контрольного приёма."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Hmm... no entiendo bien algunos detalles. Pediré una segunda opinión.",
+      "carlos_line_ru": "Хмм... не очень понимаю некоторые детали. Запрошу второе мнение.",
+      "scene_description_ru": "Dra. Martínez откладывает рецепт, звонит коллеге. «Necesito que la vea otro médico, no estoy segura del diagnóstico.» Тебя сажают ждать в коридоре ещё час.",
+      "stakes_ru": "Без точного диагноза. Повтори Indefinido и Pluscuamperfecto, пересдай."
+    },
+    "low": {
+      "carlos_line_es": "Lo siento, no he entendido la mayoría. Por favor, vuelva con un intérprete.",
+      "carlos_line_ru": "Извините, я не поняла большую часть. Пожалуйста, возвращайтесь с переводчиком.",
+      "scene_description_ru": "Dra. Martínez даёт только парацетамол. «Sin diagnóstico claro no puedo recetar antibióticos.» Запись на повторный приём через две недели.",
+      "stakes_ru": "Лечение неполное. Учи прошедшие времена и возвращайся."
+    },
+    "very_low": {
+      "carlos_line_es": "Disculpe, pero apenas la entiendo. ¿Puede traer a alguien que hable español?",
+      "carlos_line_ru": "Простите, но я едва вас понимаю. Можете привести кого-то кто говорит по-испански?",
+      "scene_description_ru": "Dra. Martínez делает пометку «requiere acompañante» в карточке. Никакого рецепта. Тебя выводят к стойке регистрации перенести приём.",
+      "stakes_ru": "Совсем плохо. Повтори блок 5 полностью прежде чем пересдавать."
+    }
+  }
+}

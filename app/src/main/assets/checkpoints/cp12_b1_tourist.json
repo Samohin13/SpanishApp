@@ -1,0 +1,402 @@
+{
+  "id": "cp12",
+  "cefr": "B1",
+  "block": 12,
+  "title_ru": "Помощь туристу (BOSS B1)",
+  "title_es": "Ayudando a un turista (JEFE B1)",
+  "description_ru": "Plaza Mayor, 11:30 утра. К тебе подходит Hans — немец, турист, в Мадриде впервые. Говорит на ломаном испанском (A1 уровень), ты единственная вокруг кто может помочь. Финальный BOSS уровня B1: переключаешь регистр между «tú» (с Hans — мягко, упрощая) и «usted» (когда вместе идёте в кассу музея или к официанту). Микс всей грамматики B1: Subjuntivo + Condicional + косвенная речь + relativos + perífrasis + идиомы + формальный/неформальный регистр.",
+  "stakes_ru": "Поможешь чётко — Hans приглашает на ужин и обещает контакт в Берлине (важно для будущей поездки). Завалишься — он уйдёт искать туристический инфо-центр, поняв что русская подруга его не вытянула.",
+  "scene": {
+    "name": "Plaza Mayor",
+    "type": "tourist_square",
+    "city": "Madrid",
+    "background_image": "scene_cp12_plaza.jpg"
+  },
+  "npc": {
+    "id": "hans",
+    "name": "Hans",
+    "role_ru": "Немецкий турист (A1 испанского)",
+    "role_es": "Turista alemán (español A1)",
+    "voice_id": "es-ES-AlvaroNeural",
+    "portrait_image": "npc_hans.jpg",
+    "personality": "вежливый немец, говорит медленно и простыми фразами («Yo necesitar... yo ir... ¿dónde está?»). Иногда вставляет немецкие слова. Очень благодарный, любит когда ему объясняют дважды — формально (для понимания норм) и просто."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 700,
+    "silver_xp_bonus": 150,
+    "gold_xp_bonus": 250,
+    "badge_id": "puente_culturas",
+    "badge_name_ru": "Puente de culturas (B1 завершён)",
+    "unlocks_block": 13
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Tú с Hans · упрощённый испанский",
+      "tested_lesson": "u12_l10",
+      "tested_grammar": "Регистр · tú casual + упрощение",
+      "npc_line_es": "Perdona... ¿tú hablar español? Yo necesitar ayuda, por favor.",
+      "npc_line_ru": "Извини... ты говорить испанский? Мне нужно помощь, пожалуйста.",
+      "prompt_ru": "Hans с акцентом, упрощает. Ответь дружелюбно и понятно:",
+      "correct_answer": "Sí, claro, hablo español. ¿En qué te puedo ayudar?",
+      "distractors": [
+        "No obstante, considere que es necesario que se exprese con mayor precisión.",
+        "Yo no entender bien, hablar más despacio.",
+        "Le ruego que se dirija a la oficina de turismo."
+      ],
+      "explanation_on_fail_ru": "С туристом A1 — простой испанский, но грамматически правильный. «Te puedo ayudar» (tú, дружелюбно). Не нужно копировать ломаный — это путает; не нужно «usted» — слишком формально для туриста."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Subjuntivo · querer + что туристу нужно",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Querer que + Subj",
+      "npc_line_es": "Yo querer ver museo del Prado. Pero no saber dónde.",
+      "npc_line_ru": "Я хотеть видеть музей Прадо. Но не знать где.",
+      "prompt_ru": "Поставь IR в Subjuntivo (tú):",
+      "sentence_template": "Quieres que yo te explique cómo ___ al Prado, ¿no?",
+      "verb_infinitive": "ir",
+      "correct_answer": "vayas",
+      "distractors": ["vas", "irías", "fueras"],
+      "explanation_on_fail_ru": "После «cómo» в косвенном вопросе + неопределённое будущее — Subjuntivo. Ir → vayas (tú). «Cómo vas» (Indic) подразумевало бы регулярное действие."
+    },
+    {
+      "round": 3,
+      "format": "BUILD",
+      "topic_ru": "Объяснение маршрута · imperativo",
+      "tested_lesson": "u12_l10",
+      "tested_grammar": "Imperativo tú + perífrasis",
+      "npc_line_es": "Por favor, decir cómo ir. Yo no entender mapa.",
+      "npc_line_ru": "Пожалуйста, сказать как идти. Я не понимать карту.",
+      "prompt_ru": "Собери простое объяснение: «Иди прямо и поверни направо»:",
+      "correct_answer": "Sigue todo recto y gira a la derecha",
+      "word_bank": ["Sigue", "todo", "recto", "y", "gira", "a", "la", "derecha", "izquierda", "vas", "voy"],
+      "explanation_on_fail_ru": "Imperativo tú: «sigue» (от seguir), «gira» (от girar). Для туриста A1 — короткое чёткое предложение."
+    },
+    {
+      "round": 4,
+      "format": "CHOICE",
+      "topic_ru": "Switch на usted · кассирша музея",
+      "tested_lesson": "u12_l1",
+      "tested_grammar": "Регистр · usted formal",
+      "npc_line_es": "[Подходите к кассе Прадо. Кассирша смотрит на вас.] Buenos días, ¿en qué les puedo ayudar?",
+      "npc_line_ru": "[Подходите к кассе Прадо. Кассирша смотрит на вас.] Доброе утро, чем могу помочь?",
+      "prompt_ru": "Теперь говоришь от Hans (он не знает испанского) с КАССИРШЕЙ. Какой регистр?",
+      "correct_answer": "Buenos días. Quisiéramos dos entradas para la exposición permanente, por favor.",
+      "distractors": [
+        "Hola tía, dos entradas.",
+        "Eh, dos para entrar.",
+        "Yo querer dos entradas como mi amigo."
+      ],
+      "explanation_on_fail_ru": "С кассиршей — «usted» формально. «Quisiéramos» (Imp Subj от querer) — самая вежливая форма «хотели бы». «Tía» — сленг с подругой, не с кассиршей."
+    },
+    {
+      "round": 5,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "BOSS · Subj + relativo (комбо)",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "BOSS · Subj в относ.предл (no hay ... que)",
+      "prompt_ru": "Объясни Hans про Прадо (микс грамматики):",
+      "prompt_text_ru": "В Прадо нет картины, которая не стоила бы того, чтобы её увидеть.",
+      "correct_answer": "En el Prado no hay un cuadro que no merezca la pena verse.",
+      "acceptable_alternatives": [
+        "En el Prado no hay un cuadro que no merezca la pena ver.",
+        "En el Prado no hay ningún cuadro que no merezca la pena verse.",
+        "En el Prado no hay un cuadro que no valga la pena verse."
+      ],
+      "explanation_on_fail_ru": "Комбо: «no hay ... que + Subj» (несуществующее → Subj). Merecer → merezca. «Merecer/valer la pena» = «стоить того». Это и есть B1 BOSS — два правила в одном предложении."
+    },
+    {
+      "round": 6,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · кассирша + Subj",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Cassier formal + cuando + Subj",
+      "npc_line_es": "Cuando terminen con las entradas, pasen por seguridad. Es importante que no lleven mochilas grandes al interior.",
+      "audio_only": true,
+      "prompt_ru": "Что говорит кассирша?",
+      "correct_answer": "После покупки — через охрану. Большие рюкзаки внутрь нельзя.",
+      "distractors": [
+        "Рюкзаки оставьте дома, охрана не работает.",
+        "Покупайте билет в охране, рюкзаки разрешены.",
+        "Через час откроется охрана."
+      ],
+      "translation_after_answer_ru": "«Cuando terminen» (Subj — будущее в обороте). «Es importante que no lleven» (Subj после безличного триггера). Стандартная формула музея.",
+      "explanation_on_fail_ru": "«Cuando + Subj» = будущее. «Es importante que + Subj» = безличный триггер. Оба требуют Subj — типичный B1 микс."
+    },
+    {
+      "round": 7,
+      "format": "CHOICE",
+      "topic_ru": "Перевод для Hans · упрощение",
+      "tested_lesson": "u12_l10",
+      "tested_grammar": "Перевод формального → casual",
+      "npc_line_es": "[Hans] ¿Qué decir señora? Yo no entender bien.",
+      "npc_line_ru": "[Hans] Что сказала сеньора? Я плохо понимаю.",
+      "prompt_ru": "Объясни Hans простыми словами что сказала кассирша:",
+      "correct_answer": "Que primero terminamos con las entradas, después pasamos por seguridad. Y dice que las mochilas grandes no pueden entrar.",
+      "distractors": [
+        "Es imperativo que cumplamos las directrices de seguridad pertinentes.",
+        "Nada, vamos.",
+        "Una mochila no, dos sí."
+      ],
+      "explanation_on_fail_ru": "С Hans — короткие предложения, Pres Indic (никакого Subj), «mochilas grandes no pueden entrar» (просто). Не дублируй формальные обороты, переводи в casual."
+    },
+    {
+      "round": 8,
+      "format": "CONJUGATE",
+      "topic_ru": "Cond + просьба к кассирше",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Cond вежливости",
+      "npc_line_es": "Una última cosa: ¿___ usted hacernos una foto delante del museo después?",
+      "npc_line_ru": "И последнее: не могли бы вы потом сфотографировать нас перед музеем?",
+      "prompt_ru": "Поставь PODER в Condicional (usted):",
+      "sentence_template": "¿___ usted hacernos una foto?",
+      "verb_infinitive": "poder",
+      "correct_answer": "Podría",
+      "distractors": ["Puede", "Podía", "Pudo"],
+      "explanation_on_fail_ru": "Cond вежливости: «¿Podría?» вместо «¿Puede?». С незнакомцем + просьба — обязательно Cond."
+    },
+    {
+      "round": 9,
+      "format": "BUILD",
+      "topic_ru": "Reported speech · что сказал Hans",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Косв. речь · Pres → Imp",
+      "npc_line_es": "[Hans к тебе] Yo querer comer paella después del museo.",
+      "npc_line_ru": "[Hans к тебе] Я хотеть поесть паэлью после музея.",
+      "prompt_ru": "Расскажи кассирше что хочет Hans (косвенно):",
+      "correct_answer": "Dice que quiere comer paella después del museo",
+      "word_bank": ["Dice", "que", "quiere", "comer", "paella", "después", "del", "museo", "quiero", "decía"],
+      "explanation_on_fail_ru": "В Pres главного (dice) — Pres придаточного (quiere). Если бы было «dijo» (Indef) — было бы «quería» (Imp). Согласование времён."
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Идиома · llevar bien (B1 разговорный)",
+      "tested_lesson": "u12_l9",
+      "tested_grammar": "Llevarse bien con + relativo",
+      "npc_line_es": "[Кассирша рассказывает про экскурсию] La guía de hoy es Laura, una chica con la que todos nuestros visitantes se llevan muy bien.",
+      "npc_line_ru": "[Кассирша] Сегодня гид Laura, девушка с которой все наши посетители прекрасно ладят.",
+      "prompt_ru": "Что сказала кассирша?",
+      "correct_answer": "Гид Laura — с ней все посетители ладят отлично.",
+      "distractors": [
+        "Гид Laura не любит посетителей.",
+        "Laura уволится сегодня.",
+        "Посетители не ладят с Laura."
+      ],
+      "explanation_on_fail_ru": "«Llevarse bien con» = «ладить с». «Con la que» — relativo для девушки. Это идиома + relativo (типичный B1 микс)."
+    },
+    {
+      "round": 11,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · кассирша Subj + Cond",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Si тип 2 + Subj в придат",
+      "prompt_ru": "Кассирша уточняет. Переведи:",
+      "prompt_text_es": "Si quisieran que la guía les hablara en inglés o alemán, dígannoslo antes de empezar.",
+      "correct_answer": "Если хотите чтобы гид говорил с вами по-английски или по-немецки, скажите нам до начала.",
+      "acceptable_alternatives": [
+        "Если бы вы хотели чтобы гид говорил с вами на английском или немецком, скажите нам до начала.",
+        "Если хотели бы чтобы гид говорил на английском или немецком, скажите нам до старта.",
+        "Если хотите, чтобы гид с вами говорил на английском или немецком, скажите нам до начала."
+      ],
+      "explanation_on_fail_ru": "«Si quisieran» (Imp Subj, Si тип 2 вежливое) + «que les hablara» (Imp Subj в подчинённом). «Dígannoslo» — Imper formal pl + двойное местоимение."
+    },
+    {
+      "round": 12,
+      "format": "CONJUGATE",
+      "topic_ru": "Reported · что сказала кассирша Hans",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Косв. речь · Subj → Imp Subj",
+      "npc_line_es": "[Hans к тебе позже] ¿Qué decir mujer del museo sobre la mochila?",
+      "npc_line_ru": "[Hans] Что сказала женщина в музее про рюкзак?",
+      "prompt_ru": "Поставь LLEVAR в Imperfecto Subjuntivo (yo, в косв.) от «no llevemos»:",
+      "sentence_template": "La cajera nos pidió que no ___ mochilas grandes.",
+      "verb_infinitive": "llevar",
+      "correct_answer": "lleváramos",
+      "distractors": ["llevemos", "llevamos", "llevábamos"],
+      "explanation_on_fail_ru": "Прямая «no lleven» (Pres Subj) → косвенная «no lleváramos» (Imp Subj) после «pidió» (Indef). Согласование Pres Subj → Imp Subj когда главное в прошлом."
+    },
+    {
+      "round": 13,
+      "format": "CHOICE",
+      "topic_ru": "Switch на tú · в кафе с Hans",
+      "tested_lesson": "u12_l10",
+      "tested_grammar": "Регистр · официант (usted) vs Hans (tú)",
+      "npc_line_es": "[Официант] Buenas tardes, ¿qué les pongo?",
+      "npc_line_ru": "[Официант] Добрый день, что подать?",
+      "prompt_ru": "Сделай заказ ОФИЦИАНТУ (usted) для тебя и Hans:",
+      "correct_answer": "Buenas, una paella mixta para él y para mí una ensalada, por favor.",
+      "distractors": [
+        "Oye tío, paella y ensalada.",
+        "Para él paella, para mí ensalada. Vale.",
+        "Quiero comer paella ahora."
+      ],
+      "explanation_on_fail_ru": "С официантом — «por favor», вежливо, без сленга. С Hans — «tú». Это переключение регистра в одной сцене — ключ к B1 BOSS."
+    },
+    {
+      "round": 14,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · Hans + reported speech",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Reported речь Hans",
+      "npc_line_es": "Mi mujer en Berlín, antes de yo venir, decirme que yo no comer mucho jamón porque colesterol alto. Pero hoy yo querer probar.",
+      "audio_only": true,
+      "prompt_ru": "Что говорит Hans о своей жене?",
+      "correct_answer": "Жена сказала не есть много хамона из-за холестерина, но сегодня хочет попробовать.",
+      "distractors": [
+        "Жена хочет хамон в Берлине.",
+        "У жены нет проблем с холестерином.",
+        "Hans не любит хамон вообще."
+      ],
+      "translation_after_answer_ru": "Hans говорит на ломаном (infinitivo вместо спряжения): «decirme... yo no comer». Смысл понимается из контекста.",
+      "explanation_on_fail_ru": "Hans использует инфинитивы вместо спряжения — типично для A1. Понимать таких людей — навык B1 в реальной жизни Мадрида."
+    },
+    {
+      "round": 15,
+      "format": "BUILD",
+      "topic_ru": "Совет Hans · yo que tú + Cond",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Совет с Yo que tú + Cond",
+      "npc_line_es": "Yo no saber qué pedir de postre. ¿Tú qué pensar?",
+      "npc_line_ru": "Я не знать что заказать на десерт. Ты что думать?",
+      "prompt_ru": "Посоветуй ему как другу: «На твоём месте я бы попробовала flan»:",
+      "correct_answer": "Yo que tú probaría el flan",
+      "word_bank": ["Yo", "que", "tú", "probaría", "el", "flan", "pruebo", "probaras", "probó"],
+      "explanation_on_fail_ru": "«Yo que tú + Cond» = совет «на твоём месте бы...». Probar → probaría (Cond yo). «Pruebo» (Pres) — рассказ о себе, не совет."
+    },
+    {
+      "round": 16,
+      "format": "CHOICE",
+      "topic_ru": "Идиома + comparativa · me da igual",
+      "tested_lesson": "u12_l6",
+      "tested_grammar": "Идиома dar igual + B1 лексика",
+      "npc_line_es": "[Hans, после еды] Yo invitar a cena esta noche en restaurante bueno. ¿Tú decidir qué tipo de comida?",
+      "npc_line_ru": "[Hans] Я приглашать на ужин сегодня в хороший ресторан. Ты решать какая еда?",
+      "prompt_ru": "Ответь идиоматично, дружелюбно:",
+      "correct_answer": "Hombre, gracias por invitar. Me da igual, mientras sea algo típico de aquí.",
+      "distractors": [
+        "Me es igual la comida.",
+        "Yo doy igual.",
+        "Lo siento mucho señor, no acepto."
+      ],
+      "explanation_on_fail_ru": "«Me da igual» (НЕ «Me es igual» — это ошибка). «Mientras + Subj» (sea) = «при условии что». Тёплое casual принятие приглашения."
+    },
+    {
+      "round": 17,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · obtener контакт",
+      "tested_lesson": "u12_l1",
+      "tested_grammar": "Cond + Subj + formal request",
+      "prompt_ru": "Hans хочет дать контакт. Спроси формально:",
+      "prompt_text_ru": "Не возражаете дать ваш email, чтобы я могла написать вам, когда буду в Берлине?",
+      "correct_answer": "¿Le importaría darme su email, para que pueda escribirle cuando esté en Berlín?",
+      "acceptable_alternatives": [
+        "¿Le importaría darme su correo, para que pueda escribirle cuando esté en Berlín?",
+        "¿Le importaría darme su email para que le pueda escribir cuando esté en Berlín?",
+        "¿Le importa darme su email, para que pueda escribirle cuando esté en Berlín?"
+      ],
+      "explanation_on_fail_ru": "BOSS-комбо: «¿Le importaría?» (Cond вежливости) + «para que pueda» (para que + Subj — цель) + «cuando esté» (cuando + Subj — будущее). Три правила в одной фразе."
+    },
+    {
+      "round": 18,
+      "format": "CONJUGATE",
+      "topic_ru": "Si тип 2 · приезд в Берлин",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "Si + Imp Subj + Cond",
+      "npc_line_es": "Si tú ___ a Berlín el año que viene, yo enseñarte mi ciudad. Tú ser bienvenida.",
+      "npc_line_ru": "Если ты приехать в Берлин в следующем году, я показать тебе мой город. Ты быть желанной.",
+      "prompt_ru": "Поставь VENIR в Imperfecto Subjuntivo (tú):",
+      "sentence_template": "Si tú ___ a Berlín...",
+      "verb_infinitive": "venir",
+      "correct_answer": "vinieras",
+      "distractors": ["vienes", "vendrías", "venías"],
+      "explanation_on_fail_ru": "Si тип 2 (гипотеза о возможной поездке) → Si + Imp Subj. Venir → vinieras (tú, основа от vinieron)."
+    },
+    {
+      "round": 19,
+      "format": "CHOICE",
+      "topic_ru": "Formal ужин-приглашение Hans",
+      "tested_lesson": "u12_l1",
+      "tested_grammar": "Принятие приглашения формально+тепло",
+      "npc_line_es": "Entonces, esta noche restaurante. Yo invitar. Tú dar dirección. ¿De acuerdo?",
+      "npc_line_ru": "Тогда, сегодня ресторан. Я приглашать. Ты дать адрес. Договорились?",
+      "prompt_ru": "Прими приглашение и обещай прислать адрес:",
+      "correct_answer": "De acuerdo, muchas gracias. Te mando la dirección por WhatsApp en cuanto llegue a casa.",
+      "distractors": [
+        "Vale, te lo mando un día.",
+        "Sí. WhatsApp. Adiós.",
+        "Le agradezco profundamente su invitación, accederé puntualmente."
+      ],
+      "explanation_on_fail_ru": "Тёплое-casual принятие с конкретным обещанием. «En cuanto + Subj» (llegue) = «как только». «Le agradezco profundamente» — слишком формально с туристом-приятелем."
+    },
+    {
+      "round": 20,
+      "format": "LISTEN",
+      "topic_ru": "Финал · Hans · комплимент + reported",
+      "tested_lesson": "u12_l14",
+      "tested_grammar": "BOSS · Hans косв. речь + комплимент",
+      "npc_line_es": "Andrea, mi guía en Berlín cuando yo aprender español decirme una cosa: en Madrid hay personas que cambiar tu viaje. Hoy yo entender qué él querer decir.",
+      "audio_only": true,
+      "prompt_ru": "Что в итоге говорит Hans о тебе?",
+      "correct_answer": "Что в Мадриде есть люди, которые меняют твоё путешествие — и сегодня он понял что имел в виду его учитель.",
+      "distractors": [
+        "Что Берлин лучше Мадрида.",
+        "Что Andrea его подруга детства.",
+        "Что туристический центр был полезнее."
+      ],
+      "translation_after_answer_ru": "Hans на ломаном, но смысл ясен: «hay personas que cambiar tu viaje» = «есть люди, которые меняют твоё путешествие». Он говорит что ты — такой человек.",
+      "explanation_on_fail_ru": "Финал B1: понимаешь Hans даже с его инфинитивами, читаешь между строк (комплимент-благодарность). Это и есть свободное B1."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Andrea, eres una persona increíble. Toma mi tarjeta, cuando vengas a Berlín te alojas en mi casa. Mi mujer y yo te enseñaremos todo. Has hecho que un alemán perdido se sintiera como en casa.",
+      "carlos_line_ru": "Andrea, ты невероятный человек. Возьми визитку, когда приедешь в Берлин — живёшь у меня. Жена и я покажем тебе всё. Ты сделала так, что потерянный немец почувствовал себя как дома.",
+      "scene_description_ru": "Hans даёт визитку компании, добавляет в WhatsApp, отправляет фото вас двоих перед Прадо его жене с подписью «Mi nueva amiga rusa de Madrid». Через 3 месяца — приглашение в Берлин с проживанием и экскурсиями. B1 завершён в стиле."
+    },
+    "silver": {
+      "carlos_line_es": "Muchas gracias por toda tu ayuda. Te paso mi email, escríbeme cuando estés en Berlín.",
+      "carlos_line_ru": "Большое спасибо за помощь. Дам email, напиши когда будешь в Берлине.",
+      "scene_description_ru": "Hans даёт email, тёплое прощание после ужина. Через год — ответное приглашение в Берлин, но без проживания."
+    },
+    "bronze": {
+      "carlos_line_es": "Gracias, has ayudar mucho. Yo escribir email a ti.",
+      "carlos_line_ru": "Спасибо, ты помочь много. Я писать email тебе.",
+      "scene_description_ru": "Hans благодарит, идёт на ужин один. Контакт обменян, но звучит формально."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Vale, gracias por el rato. Yo seguir solo ahora.",
+      "carlos_line_ru": "Ладно, спасибо за время. Я продолжать один теперь.",
+      "scene_description_ru": "Hans вежливо благодарит и идёт искать туристический инфо-центр. Понятно — твоего B1 не хватило для свободного гида.",
+      "stakes_ru": "Almost. Переключение регистра ещё неустойчиво. Повтори блок 12."
+    },
+    "low": {
+      "carlos_line_es": "Eh... gracias. Yo ir a oficina turismo. Hasta luego.",
+      "carlos_line_ru": "Эээ... спасибо. Я идти в туристический офис. Пока.",
+      "scene_description_ru": "Hans уходит. Понятно: B1 ещё не освоен для уровня живого помощника. Контакта нет.",
+      "stakes_ru": "B1 BOSS — это весь уровень в одной сцене. Повтори блоки 9-12 целиком перед пересдачей."
+    },
+    "very_low": {
+      "carlos_line_es": "Sorry, do you speak English? Maybe better English for both.",
+      "carlos_line_ru": "Извини, ты говоришь по-английски? Может на английском лучше нам обоим.",
+      "scene_description_ru": "Hans переходит на английский. Прощается холодно, уходит к туристическому центру. B1 уровень не достигнут — реальная коммуникация невозможна.",
+      "stakes_ru": "Когда даже немецкий турист предлагает английский — B1 далеко. Учи блоки 9-12 серьёзно перед пересдачей."
+    }
+  }
+}

@@ -1,0 +1,399 @@
+{
+  "id": "cp6",
+  "cefr": "A2",
+  "block": 6,
+  "title_ru": "Шопинг на Gran Vía",
+  "title_es": "De compras en Gran Vía",
+  "description_ru": "Gran Vía — главная торговая улица Мадрида. Тебе нужен осенний образ: куртка, джинсы, ботинки. Carmen — продавщица с 20-летним стажем, обращается на ты, ловит каждое колебание клиента. Расскажи что искала раньше, сравни модели, договорись о размере. Справишься — Carmen даст скидку постоянного клиента.",
+  "stakes_ru": "Уверенно сравнишь модели, расскажешь о прошлых покупках, объяснишь предпочтения — получишь идеальный наряд и 20% скидку. Завалишь — Carmen потеряет терпение и уйдёт к другому клиенту.",
+  "scene": {
+    "name": "Tienda en Gran Vía",
+    "type": "clothing_store",
+    "city": "Madrid",
+    "background_image": "scene_cp6_shopping.jpg"
+  },
+  "npc": {
+    "id": "carmen",
+    "name": "Carmen",
+    "role_ru": "Продавщица",
+    "role_es": "Dependienta",
+    "voice_id": "es-ES-Elvira",
+    "portrait_image": "npc_carmen.jpg",
+    "personality": "casual, дружелюбная, обращается на «tú». Энергичная, любит советовать. На правильные ответы хвалит «¡qué bien!», на ошибках смеётся и подсказывает."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 400,
+    "silver_xp_bonus": 80,
+    "gold_xp_bonus": 200,
+    "badge_id": "estilo",
+    "badge_name_ru": "Стиль",
+    "unlocks_block": 7
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Приветствие в магазине · tú",
+      "tested_lesson": "u1_l4 + u6_l11",
+      "tested_grammar": "Saludo informal en tienda",
+      "npc_line_es": "¡Hola, guapa! ¿En qué te puedo ayudar?",
+      "npc_line_ru": "Привет, красотка! Чем могу помочь?",
+      "prompt_ru": "Ответь дружелюбно на ты:",
+      "correct_answer": "Hola, busco una chaqueta de otoño.",
+      "distractors": [
+        "Hola, usted busca una chaqueta.",
+        "Hola, soy chaqueta de otoño.",
+        "Hola, tengo chaqueta otoño."
+      ],
+      "explanation_on_fail_ru": "Carmen на «tú» — отвечаем тоже на ты. «Buscar» = искать. «Chaqueta de otoño» = осенняя куртка (de + сущ для назначения)."
+    },
+    {
+      "round": 2,
+      "format": "CHOICE",
+      "topic_ru": "Talla · размер",
+      "tested_lesson": "u6_l11",
+      "tested_grammar": "Vocabulario tienda · talla",
+      "npc_line_es": "¿Qué talla usas, la 38 o la 40?",
+      "npc_line_ru": "Какой размер носишь, 38 или 40?",
+      "prompt_ru": "Носишь размер M (38). Как ответить?",
+      "correct_answer": "Uso la talla treinta y ocho.",
+      "distractors": [
+        "Soy la talla treinta y ocho.",
+        "Tengo treinta y ocho años.",
+        "La treinta y ocho es."
+      ],
+      "explanation_on_fail_ru": "«Usar la talla X» — стандартная фраза. «Soy la talla» — буквально «я размер», по-испански не говорят. Не путать с возрастом (tener años)."
+    },
+    {
+      "round": 3,
+      "format": "CONJUGATE",
+      "topic_ru": "Возвратный PROBARSE · presente",
+      "tested_lesson": "u6_l11",
+      "tested_grammar": "Verbo reflexivo · 1L sg",
+      "npc_line_es": "Aquí tienes la chaqueta. ¿Te la pruebas?",
+      "npc_line_ru": "Вот куртка. Примеришь?",
+      "prompt_ru": "Спряги PROBARSE (yo, presente с возвратной частицей):",
+      "sentence_template": "Sí, yo ___ la chaqueta ahora mismo.",
+      "verb_infinitive": "probarse",
+      "correct_answer": "me pruebo",
+      "distractors": ["te pruebas", "se prueba", "me probé"],
+      "explanation_on_fail_ru": "Возвратный probarse: me pruebo / te pruebas / se prueba. Глагол меняет o→ue в основе (pruebo, не probo). «Me probé» — это Indefinido."
+    },
+    {
+      "round": 4,
+      "format": "CHOICE",
+      "topic_ru": "Imperfecto · описание прошлого",
+      "tested_lesson": "u6_l1 + u6_l3",
+      "tested_grammar": "Imperfecto · descripción",
+      "npc_line_es": "¿Y antes, qué tipo de ropa llevabas?",
+      "npc_line_ru": "А раньше какую одежду носила?",
+      "prompt_ru": "Раньше носила в основном чёрное. Какой вариант верный?",
+      "correct_answer": "Antes llevaba ropa negra todos los días.",
+      "distractors": [
+        "Antes llevé ropa negra todos los días.",
+        "Antes llevo ropa negra todos los días.",
+        "Antes llevaré ropa negra todos los días."
+      ],
+      "explanation_on_fail_ru": "Описание привычки в прошлом → Imperfecto: llevaba (от llevar). «Llevé» — Indefinido (однократно). Маркер «todos los días» = регулярность → Imperfecto."
+    },
+    {
+      "round": 5,
+      "format": "CONJUGATE",
+      "topic_ru": "SER Imperfecto · era",
+      "tested_lesson": "u6_l1",
+      "tested_grammar": "Imperfecto irregular · SER",
+      "npc_line_es": "Cuéntame, ¿cómo eras en la universidad?",
+      "npc_line_ru": "Расскажи, какой ты была в университете?",
+      "prompt_ru": "Спряги SER в Imperfecto (yo):",
+      "sentence_template": "Yo ___ más deportista que ahora.",
+      "verb_infinitive": "ser",
+      "correct_answer": "era",
+      "distractors": ["fui", "soy", "eras"],
+      "explanation_on_fail_ru": "SER в Imperfecto нерегулярный: era/eras/era/éramos/erais/eran. «Fui» — Indefinido (был однократно), «soy» — настоящее, «eras» — это tú."
+    },
+    {
+      "round": 6,
+      "format": "BUILD",
+      "topic_ru": "Сравнение más + adj + que",
+      "tested_lesson": "u6_l4",
+      "tested_grammar": "Comparativo de superioridad",
+      "npc_line_es": "Mira estas dos chaquetas. ¿Cuál te gusta más?",
+      "npc_line_ru": "Смотри эти две куртки. Какая больше нравится?",
+      "prompt_ru": "Собери: «Эта куртка дороже чем другая»",
+      "correct_answer": "Esta chaqueta es más cara que la otra",
+      "word_bank": ["Esta", "chaqueta", "es", "más", "cara", "que", "la", "otra", "tan", "como", "menos"],
+      "explanation_on_fail_ru": "Структура «больше X чем Y»: más + прилагательное + que. После сравнения только «que», никогда не «de»."
+    },
+    {
+      "round": 7,
+      "format": "CHOICE",
+      "topic_ru": "Сравнение равенства · tan ... como",
+      "tested_lesson": "u6_l5",
+      "tested_grammar": "Comparativo de igualdad",
+      "npc_line_es": "¿Y la calidad? ¿Te parece igual?",
+      "npc_line_ru": "А качество? Кажется одинаковым?",
+      "prompt_ru": "Качество такое же. Какой вариант правильный?",
+      "correct_answer": "Esta es tan buena como aquella.",
+      "distractors": [
+        "Esta es tanto buena como aquella.",
+        "Esta es más buena como aquella.",
+        "Esta es tan buena que aquella."
+      ],
+      "explanation_on_fail_ru": "С прилагательным — tan + adj + como (не tanto!). «Tanto» используется с существительными: tanto dinero, tanta agua."
+    },
+    {
+      "round": 8,
+      "format": "CONJUGATE",
+      "topic_ru": "COMPRAR · Indefinido · yo",
+      "tested_lesson": "u5_l1 + u6_l*",
+      "tested_grammar": "Indefinido regular -AR",
+      "npc_line_es": "¿Cuándo fue la última vez que te compraste algo aquí?",
+      "npc_line_ru": "Когда ты последний раз что-то здесь покупала?",
+      "prompt_ru": "Купила прошлой зимой. Спряги COMPRAR (yo):",
+      "sentence_template": "El invierno pasado yo ___ un abrigo aquí.",
+      "verb_infinitive": "comprar",
+      "correct_answer": "compré",
+      "distractors": ["compraba", "compro", "compraste"],
+      "explanation_on_fail_ru": "«El invierno pasado» = маркер Indefinido (закончилось в прошлом). yo + -AR Indef = -é → compré. «Compraba» (Imperfecto) — для привычки, не однократного действия."
+    },
+    {
+      "round": 9,
+      "format": "CHOICE",
+      "topic_ru": "OD pronombre · lo/la",
+      "tested_lesson": "u6_l8",
+      "tested_grammar": "Pronombre OD · la",
+      "npc_line_es": "¿Te gusta esta chaqueta?",
+      "npc_line_ru": "Тебе нравится эта куртка?",
+      "prompt_ru": "Заменим «la chaqueta» на местоимение. Какой ответ?",
+      "correct_answer": "Sí, me gusta mucho. La quiero probar.",
+      "distractors": [
+        "Sí, me gusta mucho. Lo quiero probar.",
+        "Sí, me gusta mucho. Le quiero probar.",
+        "Sí, me gusta mucho. Quiero probar la."
+      ],
+      "explanation_on_fail_ru": "«La chaqueta» — ж.р. ед.ч. → OD = la. «Lo» только для м.р. «Le» — это OI (косвенное). После «quiero» местоимение можно ставить перед: «la quiero probar» или сзади: «quiero probarla»."
+    },
+    {
+      "round": 10,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · цена в евро",
+      "tested_lesson": "u1_l13 + u6_l*",
+      "tested_grammar": "Comprensión · números + euro",
+      "audio_only": true,
+      "npc_line_es": "La chaqueta cuesta setenta y nueve euros con cincuenta.",
+      "prompt_ru": "Сколько стоит куртка?",
+      "correct_answer": "79,50 €",
+      "distractors": ["69,50 €", "79,15 €", "89,50 €"],
+      "translation_after_answer_ru": "«setenta y nueve euros con cincuenta» = 79 евро с 50 (центов) = 79,50€.",
+      "explanation_on_fail_ru": "«Setenta y nueve» = 79, «con cincuenta» — с 50 центов. В Испании цены пишут с запятой: 79,50€."
+    },
+    {
+      "round": 11,
+      "format": "CONJUGATE",
+      "topic_ru": "GUSTAR Imperfecto · me gustaba",
+      "tested_lesson": "u6_l1 + u6_l3",
+      "tested_grammar": "Imperfecto · GUSTAR construcción",
+      "npc_line_es": "De pequeña, ¿qué colores te gustaban?",
+      "npc_line_ru": "В детстве какие цвета тебе нравились?",
+      "prompt_ru": "Поставь GUSTAR в Imperfecto (3 л. мн. — «нравились»):",
+      "sentence_template": "Cuando era niña, me ___ los colores claros.",
+      "verb_infinitive": "gustar",
+      "correct_answer": "gustaban",
+      "distractors": ["gustaba", "gustaron", "gustan"],
+      "explanation_on_fail_ru": "GUSTAR согласуется с тем, что нравится: «los colores» (мн.) → gustaban. «Gustaba» — единственное, «gustaron» — Indefinido."
+    },
+    {
+      "round": 12,
+      "format": "BUILD",
+      "topic_ru": "Превосходная степень · el más",
+      "tested_lesson": "u6_l6",
+      "tested_grammar": "Superlativo · el más + adj + de",
+      "npc_line_es": "Este modelo es muy popular este año.",
+      "npc_line_ru": "Эта модель очень популярна в этом году.",
+      "prompt_ru": "Собери: «Это самая красивая куртка магазина»",
+      "correct_answer": "Es la chaqueta más bonita de la tienda",
+      "word_bank": ["Es", "la", "chaqueta", "más", "bonita", "de", "la", "tienda", "que", "mejor", "tan"],
+      "explanation_on_fail_ru": "Превосходная степень: el/la + сущ + más + adj + de + место. После превосходной — «de», не «que»."
+    },
+    {
+      "round": 13,
+      "format": "CHOICE",
+      "topic_ru": "Двойные местоимения · se lo (le→se)",
+      "tested_lesson": "u6_l9_5",
+      "tested_grammar": "Pronombres OI+OD · le→se",
+      "npc_line_es": "¿Y el regalo de cumpleaños para tu hermana? ¿Ya le diste algo?",
+      "npc_line_ru": "А подарок на день рождения сестре? Уже что-то ей подарила?",
+      "prompt_ru": "Подарила его (подарок) ей. Какое местоимение?",
+      "correct_answer": "Sí, ya se lo di la semana pasada.",
+      "distractors": [
+        "Sí, ya le lo di la semana pasada.",
+        "Sí, ya la lo di la semana pasada.",
+        "Sí, ya lo le di la semana pasada."
+      ],
+      "explanation_on_fail_ru": "«Le» (ей) + «lo» (его) фонетически невозможно — становится «se lo». Это железное правило: le/les перед lo/la/los/las → se."
+    },
+    {
+      "round": 14,
+      "format": "CONJUGATE",
+      "topic_ru": "TENER · Imperfecto · yo",
+      "tested_lesson": "u6_l1 + u6_l3",
+      "tested_grammar": "Imperfecto -ER · 1L sg",
+      "npc_line_es": "Antes de venir aquí, ¿tenías ya una idea de qué querías?",
+      "npc_line_ru": "До прихода сюда у тебя была идея чего хотела?",
+      "prompt_ru": "Спряги TENER в Imperfecto (yo):",
+      "sentence_template": "Sí, ya ___ una idea, pero no exacta.",
+      "verb_infinitive": "tener",
+      "correct_answer": "tenía",
+      "distractors": ["tuve", "tengo", "tendría"],
+      "explanation_on_fail_ru": "TENER в Imperfecto регулярный: tenía/tenías/tenía. «Tuve» — Indefinido (однократно), «tendría» — Condicional."
+    },
+    {
+      "round": 15,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · queda bien + сравнение",
+      "tested_lesson": "u6_l4 + u6_l11",
+      "tested_grammar": "Quedar + comparativo",
+      "npc_line_es": "¿Qué tal te queda esta talla?",
+      "npc_line_ru": "Как тебе этот размер?",
+      "prompt_ru": "Переведи: «Сидит лучше чем предыдущая.»",
+      "prompt_text_ru": "Сидит лучше чем предыдущая.",
+      "correct_answer": "Me queda mejor que la anterior.",
+      "acceptable_alternatives": [
+        "Me queda mejor que la otra.",
+        "Esta me queda mejor que la anterior.",
+        "Me sienta mejor que la anterior."
+      ],
+      "explanation_on_fail_ru": "«Quedar bien» = подходить, сидеть. Сравнение «лучше» = mejor (особая форма, не «más bueno»). После сравнения — «que»."
+    },
+    {
+      "round": 16,
+      "format": "CHOICE",
+      "topic_ru": "Imperfecto vs Indefinido · контраст",
+      "tested_lesson": "u6_l2",
+      "tested_grammar": "Contraste Indefinido / Imperfecto",
+      "npc_line_es": "Y ayer, ¿qué hiciste? ¿Saliste con amigas?",
+      "npc_line_ru": "А вчера что делала? Ходила с подругами?",
+      "prompt_ru": "Вчера встретилась с Марией. Какой вариант правильный?",
+      "correct_answer": "Ayer me encontré con María y tomamos un café.",
+      "distractors": [
+        "Ayer me encontraba con María y tomábamos un café.",
+        "Ayer me encuentro con María y tomamos un café.",
+        "Ayer me encontraré con María y tomaremos un café."
+      ],
+      "explanation_on_fail_ru": "«Ayer» + конкретные события (встретилась, выпили) → Indefinido: me encontré, tomamos. Imperfecto был бы для описания фона: «hacía sol» (был солнечный день)."
+    },
+    {
+      "round": 17,
+      "format": "LISTEN",
+      "topic_ru": "Аудирование · совет продавщицы",
+      "tested_lesson": "u6_l11 + u6_l13",
+      "tested_grammar": "Comprensión · sugerencia",
+      "audio_only": true,
+      "npc_line_es": "Mira, yo te recomiendo la roja. Es más original y te queda mejor con los vaqueros.",
+      "prompt_ru": "Какую куртку советует Carmen?",
+      "correct_answer": "красную (с джинсами)",
+      "distractors": [
+        "чёрную (с юбкой)",
+        "синюю (с пальто)",
+        "белую (с платьем)"
+      ],
+      "translation_after_answer_ru": "«La roja» = красную. «Con los vaqueros» = с джинсами. «Te queda mejor» = тебе лучше идёт.",
+      "explanation_on_fail_ru": "«Recomendar» = советовать. «La roja» — субстантивированное прилагательное (= «красная (куртка)»). «Vaqueros» = джинсы (по-испански именно так)."
+    },
+    {
+      "round": 18,
+      "format": "BUILD",
+      "topic_ru": "OI me + verbo + finance",
+      "tested_lesson": "u6_l9",
+      "tested_grammar": "Pronombre OI · me",
+      "npc_line_es": "Vale, te hago un veinte por ciento de descuento.",
+      "npc_line_ru": "Ладно, сделаю тебе скидку 20%.",
+      "prompt_ru": "Собери: «Спасибо, ты мне очень помогла»",
+      "correct_answer": "Gracias me has ayudado mucho",
+      "word_bank": ["Gracias", "me", "has", "ayudado", "mucho", "te", "le", "yo"],
+      "explanation_on_fail_ru": "«Мне помогла» — me (OI 1 л.) ставится ПЕРЕД спряжённым haber: me has ayudado. Pretérito Perfecto уже знаком из u7, но конструкция «has + part» появляется и в обычной речи."
+    },
+    {
+      "round": 19,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · итог покупки",
+      "tested_lesson": "u6_l4 + u6_l11",
+      "tested_grammar": "Comprensión · transacción",
+      "prompt_ru": "Carmen подводит итог покупки. Переведи:",
+      "prompt_text_es": "Entonces te llevas la chaqueta roja y los vaqueros. Son ciento veinte euros con el descuento.",
+      "correct_answer": "Тогда ты берёшь красную куртку и джинсы. Со скидкой 120 евро.",
+      "acceptable_alternatives": [
+        "Значит, берёшь красную куртку и джинсы. Со скидкой выходит 120 евро.",
+        "Итак, ты покупаешь красную куртку и джинсы. С учётом скидки — 120 евро.",
+        "Тогда забираешь красную куртку и джинсы. 120 евро со скидкой."
+      ],
+      "explanation_on_fail_ru": "«Llevarse» (возвратный) = брать/уносить с собой (покупка). «Con el descuento» = со скидкой. «Ciento veinte» = 120."
+    },
+    {
+      "round": 20,
+      "format": "CHOICE",
+      "topic_ru": "Прощание дружеское · tú",
+      "tested_lesson": "u1_l6",
+      "tested_grammar": "Despedida informal",
+      "npc_line_es": "Aquí tienes la bolsa. Vuelve cuando quieras, ¿vale?",
+      "npc_line_ru": "Вот пакет. Возвращайся когда хочешь, ладно?",
+      "prompt_ru": "Прощаешься дружелюбно на ты:",
+      "correct_answer": "Muchas gracias, Carmen. Hasta pronto.",
+      "distractors": [
+        "Muchas gracias, señora. Hasta nunca.",
+        "Gracias, le veo luego, usted.",
+        "Adiós, me marcho ya, doctora."
+      ],
+      "explanation_on_fail_ru": "Carmen на «tú», молодая продавщица — «hasta pronto» / «hasta luego» нейтрально. «Señora» (бабушка) и «usted» здесь холодно. «Doctora» — совсем не тот контекст."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "¡Te queda increíble! Te hago un veinte por ciento más como cliente especial. Vuelve la próxima semana, llega la colección nueva.",
+      "carlos_line_ru": "Тебе невероятно идёт! Делаю ещё 20% как особому клиенту. Возвращайся на следующей неделе — приходит новая коллекция.",
+      "scene_description_ru": "Carmen упаковывает покупку с лентой, даёт визитку магазина и WhatsApp. «Te aviso cuando llegue lo nuevo.» На прощание — bonus подарок: маленький шарф.",
+      "stakes_ru": "VIP-клиент, скидка, личный контакт продавщицы."
+    },
+    "silver": {
+      "carlos_line_es": "Genial. Te queda muy bien. Aquí tienes el ticket.",
+      "carlos_line_ru": "Класс. Очень тебе идёт. Вот чек.",
+      "scene_description_ru": "Carmen профессионально упаковывает покупку. «Espero que disfrutes la chaqueta.» Уходишь с тем что хотела, без скидки."
+    },
+    "bronze": {
+      "carlos_line_es": "Vale, te lo cobro. Aquí tienes el ticket.",
+      "carlos_line_ru": "Ладно, пробиваю. Вот чек.",
+      "scene_description_ru": "Carmen быстро упаковывает покупку без эмоций. «Que tengas buen día.» Сделка совершена, но Carmen уже смотрит мимо тебя на следующего клиента."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Mira, mejor lo piensas un poco más. Estaré aquí si necesitas algo.",
+      "carlos_line_ru": "Слушай, лучше подумай ещё немного. Буду здесь если что-то понадобится.",
+      "scene_description_ru": "Carmen вежливо отходит к другой клиентке. Тебя оставляют наедине с зеркалом. Уходишь без покупки, чувствуя себя неловко.",
+      "stakes_ru": "Без покупки. Повтори Imperfecto и сравнения."
+    },
+    "low": {
+      "carlos_line_es": "Disculpa, ahora tengo otros clientes. Mira tú sola, ¿vale?",
+      "carlos_line_ru": "Извини, у меня сейчас другие клиенты. Посмотри сама, ладно?",
+      "scene_description_ru": "Carmen уходит, не возвращается. Бродишь по магазину одна. Уходишь без покупки.",
+      "stakes_ru": "Шопинг не удался. Повтори блок 6."
+    },
+    "very_low": {
+      "carlos_line_es": "Perdona, pero no entiendo bien. ¿Vienes otro día con alguien?",
+      "carlos_line_ru": "Извини, но я не очень понимаю. Может приди в другой день с кем-то?",
+      "scene_description_ru": "Carmen зовёт менеджера. Тебя вежливо провожают к выходу. На входе ставят флажок «требует помощи переводчика».",
+      "stakes_ru": "Полный провал. Учи блок 6 заново."
+    }
+  }
+}

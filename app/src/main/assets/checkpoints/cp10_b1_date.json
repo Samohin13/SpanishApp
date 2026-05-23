@@ -1,0 +1,399 @@
+{
+  "id": "cp10",
+  "cefr": "B1",
+  "block": 10,
+  "title_ru": "Первое свидание",
+  "title_es": "Primera cita",
+  "description_ru": "Tapas-bar в Ла Латина, 20:00. Через приложение ты познакомилась с Andrés — из Гранады, инженер, увлекается путешествиями. Он на «tú», флиртует, использует Condicional для своих мечт. От тебя ждут: уметь говорить о гипотезах («если бы...»), советовать, мечтать, вежливо отказывать или соглашаться. Si тип 2, Condicional, Imperfecto Subjuntivo, mixed conditionals.",
+  "stakes_ru": "Хороший разговор — второе свидание + обмен телефонами. Завалишь — «encantado de conocerte» и тишина в WhatsApp.",
+  "scene": {
+    "name": "La Latina · tapas-bar",
+    "type": "tapas_bar",
+    "city": "Madrid",
+    "background_image": "scene_cp10_tapas.jpg"
+  },
+  "npc": {
+    "id": "andres",
+    "name": "Andrés",
+    "role_ru": "Свидание · инженер из Гранады",
+    "role_es": "Cita · ingeniero de Granada",
+    "voice_id": "es-ES-AlvaroNeural",
+    "portrait_image": "npc_andres.jpg",
+    "personality": "тёплый, на «tú», флиртует через Condicional («Me encantaría que...»). Любит когда собеседница тоже мечтает на гипотезе. Не любит односложные ответы."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia"
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 600,
+    "silver_xp_bonus": 100,
+    "gold_xp_bonus": 200,
+    "badge_id": "conexion",
+    "badge_name_ru": "Conexión",
+    "unlocks_block": 11
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Приветствие на свидании · tú",
+      "tested_lesson": "u10_l0",
+      "tested_grammar": "Регистр · tú casual",
+      "npc_line_es": "¡Hola! Tú eres Andrea, ¿verdad? Encantado.",
+      "npc_line_ru": "Привет! Ты Andrea, да? Очень приятно.",
+      "prompt_ru": "Andrés улыбается, протягивает руку. Ответь на свидании:",
+      "correct_answer": "¡Hola, Andrés! Encantada, gracias por venir.",
+      "distractors": [
+        "Buenos días señor, mucho gusto.",
+        "Sí. Andrea. Hola.",
+        "Disculpe, ¿quién es usted?"
+      ],
+      "explanation_on_fail_ru": "На свидании — «tú», тёплый тон. «Encantada» (ж.р., ты женщина). Слишком формально («usted, señor») — холодно для свидания."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Condicional · gustar",
+      "tested_lesson": "u10_l11",
+      "tested_grammar": "Condicional вежливости",
+      "npc_line_es": "¿Qué ___ tomar?",
+      "npc_line_ru": "Что бы ты хотела выпить?",
+      "prompt_ru": "Поставь GUSTAR в Condicional (te):",
+      "sentence_template": "¿Qué te ___ tomar?",
+      "verb_infinitive": "gustar",
+      "correct_answer": "gustaría",
+      "distractors": ["gusta", "gustó", "gustara"],
+      "explanation_on_fail_ru": "«Te gustaría» — вежливая форма вместо «te gusta». Condicional yo/él/ella = -ía."
+    },
+    {
+      "round": 3,
+      "format": "CHOICE",
+      "topic_ru": "Заказ · вино",
+      "tested_lesson": "u10_l11",
+      "tested_grammar": "Lexicón comida + me apetece",
+      "npc_line_es": "Yo voy a por una caña. ¿Y tú?",
+      "npc_line_ru": "Я возьму бокал пива. А ты?",
+      "prompt_ru": "Закажи вино, элегантно:",
+      "correct_answer": "Me apetece una copa de vino tinto, gracias.",
+      "distractors": [
+        "Yo no bebo nada.",
+        "Quiero agua, eso es todo.",
+        "Cerveza grande, doble por favor."
+      ],
+      "explanation_on_fail_ru": "«Me apetece» = «хочется» (мягче «quiero»). «Copa de vino tinto» — стандартный заказ красного вина."
+    },
+    {
+      "round": 4,
+      "format": "BUILD",
+      "topic_ru": "Si тип 2 · гипотеза о деньгах",
+      "tested_lesson": "u10_l9",
+      "tested_grammar": "Si + Imp Subj + Condicional",
+      "npc_line_es": "Imagina que ganas la lotería. ¿Qué harías?",
+      "npc_line_ru": "Представь, выиграла лотерею. Что бы сделала?",
+      "prompt_ru": "Собери ответ-гипотезу:",
+      "correct_answer": "Si tuviera mucho dinero viajaría por todo el mundo",
+      "word_bank": ["Si", "tuviera", "mucho", "dinero", "viajaría", "por", "todo", "el", "mundo", "tengo", "viajo"],
+      "explanation_on_fail_ru": "Si тип 2 = Si + Imperfecto Subj (tuviera) + Condicional (viajaría). «Tengo / viajo» — реальное, не подходит для «бы»."
+    },
+    {
+      "round": 5,
+      "format": "CONJUGATE",
+      "topic_ru": "Imperfecto Subjuntivo · ser → fuera",
+      "tested_lesson": "u10_l8",
+      "tested_grammar": "Imp Subj irregular",
+      "npc_line_es": "Si yo ___ tú, dejaría el trabajo y me iría a estudiar a Granada.",
+      "npc_line_ru": "Если бы я был тобой, бросил бы работу и поехал учиться в Гранаду.",
+      "prompt_ru": "Поставь SER в Imperfecto Subjuntivo (yo):",
+      "sentence_template": "Si yo ___ tú...",
+      "verb_infinitive": "ser",
+      "correct_answer": "fuera",
+      "distractors": ["era", "soy", "sería"],
+      "explanation_on_fail_ru": "Si тип 2 (гипотеза) → после Si идёт Imperfecto Subjuntivo. Ser → fuera (yo). Era — Imperfecto Indicativo, не подходит."
+    },
+    {
+      "round": 6,
+      "format": "CHOICE",
+      "topic_ru": "Согласование двух гипотез · Si fuera tú",
+      "tested_lesson": "u10_l10",
+      "tested_grammar": "Совет с Yo que tú + Cond",
+      "npc_line_es": "Me da miedo cambiar de país. ¿Tú qué crees?",
+      "npc_line_ru": "Боюсь менять страну. Что думаешь?",
+      "prompt_ru": "Дай совет используя «на твоём месте» + Cond:",
+      "correct_answer": "Yo que tú lo intentaría. Al final, ¿qué tienes que perder?",
+      "distractors": [
+        "Yo que tú lo intento. ¿Qué pierdes?",
+        "Yo que tú lo intentaré.",
+        "Si fuera tú, no lo hago."
+      ],
+      "explanation_on_fail_ru": "«Yo que tú» (= на твоём месте) всегда + Condicional. «Intento» (Pres) и «intentaré» (Fut) — не гипотеза."
+    },
+    {
+      "round": 7,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · мечта Andrés (Cond Perfecto)",
+      "tested_lesson": "u10_l4",
+      "tested_grammar": "Condicional Perfecto · habría + part",
+      "npc_line_es": "Si hubiera tenido más dinero a los veinte, habría viajado por Asia. Pero bueno, todavía hay tiempo.",
+      "audio_only": true,
+      "prompt_ru": "Что говорит Andrés?",
+      "correct_answer": "Если бы было больше денег в 20 — путешествовал бы по Азии.",
+      "distractors": [
+        "Сейчас путешествует по Азии с деньгами.",
+        "Никогда не хотел путешествовать.",
+        "В 20 лет был в Азии без денег."
+      ],
+      "translation_after_answer_ru": "«Si hubiera tenido... habría viajado» = тип 3 (нереальное в прошлом). «Если бы имел в прошлом... путешествовал бы (но не сделал)».",
+      "explanation_on_fail_ru": "Si тип 3 = Si + Pluscuamperfecto Subj (hubiera tenido) + Condicional Perfecto (habría viajado). Сожаление о невозможном."
+    },
+    {
+      "round": 8,
+      "format": "CONJUGATE",
+      "topic_ru": "Pluscuamperfecto Subj · hubiera + part",
+      "tested_lesson": "u10_l4",
+      "tested_grammar": "Si тип 3 — нереальное прошлое",
+      "npc_line_es": "Si tú ___ sabido que era yo, ¿habrías venido al bar?",
+      "npc_line_ru": "Если бы ты знала, что это я, пришла бы в бар?",
+      "prompt_ru": "Поставь SABER в Pluscuamperfecto Subjuntivo (tú):",
+      "sentence_template": "Si tú ___ sabido...",
+      "verb_infinitive": "haber",
+      "correct_answer": "hubieras",
+      "distractors": ["habrías", "habías", "has"],
+      "explanation_on_fail_ru": "Si тип 3: после Si идёт «hubiera/hubieras + participio». Habrías — Condicional Perfecto (в главной части, не после Si)."
+    },
+    {
+      "round": 9,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · вежливый отказ через Cond",
+      "tested_lesson": "u10_l11",
+      "tested_grammar": "Cond вежливости + отказ",
+      "prompt_ru": "Andrés предложил поехать к нему домой. Откажись вежливо:",
+      "prompt_text_ru": "Сегодня я бы предпочла поехать домой одна, но мне очень понравился вечер.",
+      "correct_answer": "Hoy preferiría irme a casa sola, pero me ha encantado la noche.",
+      "acceptable_alternatives": [
+        "Hoy preferiría volver a casa sola, pero me ha encantado la noche.",
+        "Hoy preferiría irme a casa sola, pero me ha gustado mucho la noche.",
+        "Esta noche preferiría irme a casa sola, pero me ha encantado la velada."
+      ],
+      "explanation_on_fail_ru": "«Preferiría» (Cond от preferir) = более мягко чем «prefiero». «Me ha encantado» (Pret Perfecto) — действие сегодня."
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Aunque + Subj vs Indic",
+      "tested_lesson": "u10_l12",
+      "tested_grammar": "Aunque + Indic/Subj",
+      "npc_line_es": "Cuéntame... ¿y si tu trabajo no te diera vacaciones, vendrías a Granada a verme?",
+      "npc_line_ru": "Расскажи... а если бы работа не давала отпуск, приехала бы ко мне в Гранаду?",
+      "prompt_ru": "Выберите версию с правильным aunque:",
+      "correct_answer": "Aunque no tuviera vacaciones, encontraría la manera de ir a verte.",
+      "distractors": [
+        "Aunque no tengo vacaciones, encontraría la manera.",
+        "Aunque no tendría vacaciones, voy.",
+        "Aunque tengo vacaciones, no iría."
+      ],
+      "explanation_on_fail_ru": "Гипотеза «бы» → «Aunque + Imp Subj» (tuviera) + «Cond» (encontraría). Aunque + Indic = реальный факт, не подходит."
+    },
+    {
+      "round": 11,
+      "format": "BUILD",
+      "topic_ru": "Ojalá + Imp Subj (мечта)",
+      "tested_lesson": "u10_l13",
+      "tested_grammar": "Ojalá + Imp Subj",
+      "npc_line_es": "Ojalá pudiera quedarme aquí más tiempo, pero mañana trabajo.",
+      "npc_line_ru": "Дай Бог чтобы я мог тут задержаться, но завтра работа.",
+      "prompt_ru": "Ответь мечтательно: «Дай Бог чтобы мы могли видеться чаще»:",
+      "correct_answer": "Ojalá pudiéramos vernos más a menudo",
+      "word_bank": ["Ojalá", "pudiéramos", "vernos", "más", "a", "menudo", "podemos", "vemos", "que"],
+      "explanation_on_fail_ru": "«Ojalá + Imp Subj» = мечта о маловероятном. Poder → pudiéramos (nos). «Vernos» (инф+нос) = «видеться»."
+    },
+    {
+      "round": 12,
+      "format": "CONJUGATE",
+      "topic_ru": "Condicional irregular · hacer",
+      "tested_lesson": "u10_l4",
+      "tested_grammar": "Cond irregular (haría)",
+      "npc_line_es": "Si tuvieras un día libre mañana, ¿qué ___ ?",
+      "npc_line_ru": "Если бы завтра был выходной, что бы делала?",
+      "prompt_ru": "Поставь HACER в Condicional (tú):",
+      "sentence_template": "¿Qué ___ tú?",
+      "verb_infinitive": "hacer",
+      "correct_answer": "harías",
+      "distractors": ["hacerías", "hacías", "hiciste"],
+      "explanation_on_fail_ru": "Hacer Cond irregular: haría / harías / haría. НЕ «hacerías»! Основа сокращается до «har-»."
+    },
+    {
+      "round": 13,
+      "format": "CHOICE",
+      "topic_ru": "Quizás / tal vez + Subj",
+      "tested_lesson": "u10_l12",
+      "tested_grammar": "Quizás + Pres Subj",
+      "npc_line_es": "Y si quedamos otra vez, ¿qué te apetecería hacer?",
+      "npc_line_ru": "А если встретимся ещё раз, что бы хотелось сделать?",
+      "prompt_ru": "Ответь с осторожным предложением:",
+      "correct_answer": "Quizás podamos ir a un museo y luego cenar juntos.",
+      "distractors": [
+        "Quizás podemos ir y cenar.",
+        "Quizás podríamos vamos.",
+        "Tal vez puedo cenar tú."
+      ],
+      "explanation_on_fail_ru": "«Quizás + Subj» — стандартно для неуверенности. Poder → podamos (Pres Subj nosotros). «Podemos» (Indic) звучит слишком уверенно."
+    },
+    {
+      "round": 14,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · романтика + me encantaría que",
+      "tested_lesson": "u10_l13",
+      "tested_grammar": "Me encantaría que + Imp Subj",
+      "npc_line_es": "Me encantaría que volviéramos a vernos pronto. Tienes una manera de hablar que me fascina.",
+      "audio_only": true,
+      "prompt_ru": "Что говорит Andrés?",
+      "correct_answer": "Хочет встретиться снова скоро, очарован твоей манерой говорить.",
+      "distractors": [
+        "Хочет попрощаться навсегда.",
+        "Не понял ничего из сказанного.",
+        "Считает что говоришь скучно."
+      ],
+      "translation_after_answer_ru": "«Me encantaría que volviéramos» — Cond + Imp Subj (согласование времён). «Manera de hablar que me fascina» = манера говорить, которая меня очаровывает.",
+      "explanation_on_fail_ru": "После «Me encantaría que» — Imp Subj (volviéramos). «Fascinar» работает как «gustar»: te fascina, me fascina."
+    },
+    {
+      "round": 15,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · комбо Cond + Subj",
+      "tested_lesson": "u10_l9",
+      "tested_grammar": "Si тип 2 + relativo",
+      "prompt_ru": "Andrés говорит серьёзно. Переведи:",
+      "prompt_text_es": "Si me dieras tu número, te llamaría mañana para proponerte algo que sé que te gustaría.",
+      "correct_answer": "Если бы ты дала свой номер, я бы позвонил завтра предложить кое-что, что, я знаю, тебе бы понравилось.",
+      "acceptable_alternatives": [
+        "Если бы ты дала мне номер, я бы позвонил завтра предложить кое-что что тебе бы понравилось.",
+        "Если бы ты дала мне свой номер, я бы позвонил тебе завтра, чтобы предложить кое-что, что тебе понравится.",
+        "Если бы дала мне свой номер, я бы позвонил завтра предложить кое-что, что, как я знаю, тебе бы понравилось."
+      ],
+      "explanation_on_fail_ru": "«Si me dieras... te llamaría» — Si тип 2. «Algo que sé que te gustaría» = относ. предложение + cond."
+    },
+    {
+      "round": 16,
+      "format": "BUILD",
+      "topic_ru": "Вежливая просьба · ¿Te importaría?",
+      "tested_lesson": "u10_l11",
+      "tested_grammar": "¿Te importaría + inf?",
+      "npc_line_es": "Claro, dámelo cuando quieras.",
+      "npc_line_ru": "Конечно, дашь когда захочешь.",
+      "prompt_ru": "Собери просьбу: «Не возражаешь записать его в WhatsApp?»",
+      "correct_answer": "¿Te importaría apuntarlo en WhatsApp?",
+      "word_bank": ["¿Te", "importaría", "apuntarlo", "en", "WhatsApp?", "importa", "apunta", "tú"],
+      "explanation_on_fail_ru": "«¿Te importaría + inf?» — стандарт вежливой просьбы. Cond «importaría» вежливее Pres «importa»."
+    },
+    {
+      "round": 17,
+      "format": "CHOICE",
+      "topic_ru": "Reported speech · que + Cond",
+      "tested_lesson": "u10_l4",
+      "tested_grammar": "Cond в косв.речи (Fut → Cond)",
+      "npc_line_es": "Mi amiga Lucía me dijo: «Te llamaré el viernes.» Pero no me llamó.",
+      "npc_line_ru": "Моя подруга Lucía сказала: «Позвоню в пятницу.» Но не позвонила.",
+      "prompt_ru": "Перескажи в косвенной речи (Andrés цитирует Lucía):",
+      "correct_answer": "Lucía dijo que me llamaría el viernes.",
+      "distractors": [
+        "Lucía dijo que me llamará el viernes.",
+        "Lucía dijo si me llamaba el viernes.",
+        "Lucía pregunta que me llama el viernes."
+      ],
+      "explanation_on_fail_ru": "В косвенной речи Futuro (llamaré) → Condicional (llamaría). После «dijo que» — изменённое время."
+    },
+    {
+      "round": 18,
+      "format": "CONJUGATE",
+      "topic_ru": "Imp Subj · tener",
+      "tested_lesson": "u10_l8",
+      "tested_grammar": "Imp Subj irregular от 3 pl Indef",
+      "npc_line_es": "Si yo ___ que elegir entre Granada y Madrid, elegiría las dos.",
+      "npc_line_ru": "Если бы пришлось выбирать между Гранадой и Мадридом, выбрал бы обе.",
+      "prompt_ru": "Поставь TENER в Imperfecto Subjuntivo (yo):",
+      "sentence_template": "Si yo ___ que elegir...",
+      "verb_infinitive": "tener",
+      "correct_answer": "tuviera",
+      "distractors": ["tenía", "tendría", "tengo"],
+      "explanation_on_fail_ru": "Imp Subj от tener — от 3 pl Indef (tuvieron) → tuvier- + -a/-as/-a... → tuviera. «Tendría» — Cond."
+    },
+    {
+      "round": 19,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · второе свидание",
+      "tested_lesson": "u10_l13",
+      "tested_grammar": "Me encantaría + Imp Subj",
+      "prompt_ru": "Закрываешь свидание. Переведи:",
+      "prompt_text_ru": "Мне бы очень хотелось чтобы мы встретились в эту субботу, если ты свободен.",
+      "correct_answer": "Me encantaría que quedáramos este sábado, si estás libre.",
+      "acceptable_alternatives": [
+        "Me encantaría que nos viéramos este sábado, si estás libre.",
+        "Me encantaría que quedáramos este sábado si estás libre.",
+        "Me gustaría mucho que quedáramos este sábado, si estás libre."
+      ],
+      "explanation_on_fail_ru": "«Me encantaría que + Imp Subj» (quedáramos). «Quedar» в Испании = «договориться о встрече». «Si estás» — реальное условие (тип 1), можно Pres."
+    },
+    {
+      "round": 20,
+      "format": "CHOICE",
+      "topic_ru": "Финал · прощание + надежда",
+      "tested_lesson": "u10_l13",
+      "tested_grammar": "Ojalá + Subj + besos",
+      "npc_line_es": "Andrea, ha sido una noche increíble. Te escribo mañana, ¿vale?",
+      "npc_line_ru": "Andrea, был невероятный вечер. Напишу завтра, ок?",
+      "prompt_ru": "Попрощайся тепло, B1 уровень:",
+      "correct_answer": "Yo también lo he pasado genial. Ojalá nos veamos pronto. Buenas noches, Andrés.",
+      "distractors": [
+        "Bye bye, hablamos.",
+        "Adiós, no me escribas.",
+        "Que sí, que sí, hasta luego."
+      ],
+      "explanation_on_fail_ru": "«Lo he pasado genial» = провела отлично. «Ojalá nos veamos» — Ojalá + Pres Subj (близкое будущее). Тёплое прощание открывает дверь второму свиданию."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Andrea, en serio: hablar contigo es como leer un libro que no quieres cerrar. Te escribo en cuanto llegue a casa.",
+      "carlos_line_ru": "Andrea, серьёзно: разговор с тобой как книга, которую не хочется закрыть. Напишу как только доберусь.",
+      "scene_description_ru": "Andrés обнимает крепко, целует в щёку. Через 12 минут — сообщение в WhatsApp: «¿Ya en casa? Buenas noches, preciosa. Estoy contando los días.» На следующий день — приглашение на пикник в Casa de Campo в субботу."
+    },
+    "silver": {
+      "carlos_line_es": "Me ha encantado, de verdad. ¿Quedamos el sábado?",
+      "carlos_line_ru": "Очень понравилось, правда. Встретимся в субботу?",
+      "scene_description_ru": "Andrés улыбается, обмен телефонами, договариваются о субботе. Через час: «Buenas noches, ha sido un placer 😊»"
+    },
+    "bronze": {
+      "carlos_line_es": "Pues nada, ha estado bien. Te escribo.",
+      "carlos_line_ru": "Ну ладно, было неплохо. Напишу.",
+      "scene_description_ru": "Andrés вежливо прощается. Через 3 дня сообщение «Hola Andrea, ¿qué tal? Andamos liados estos días pero a ver si nos vemos.» Тёплая дружба возможна, не больше."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Bueno... gracias por la noche. Encantado de conocerte.",
+      "carlos_line_ru": "Ну... спасибо за вечер. Приятно было познакомиться.",
+      "scene_description_ru": "Andrés улыбается вежливо, но без огня. Лёгкое прикосновение к плечу вместо поцелуя в щёку. Сообщений не приходит.",
+      "stakes_ru": "Almost. Если бы был Subjuntivo + Cond чище — было бы второе свидание. Подучи блок 10."
+    },
+    "low": {
+      "carlos_line_es": "Vale, vale... pues hasta luego.",
+      "carlos_line_ru": "Ладно, ладно... ну пока.",
+      "scene_description_ru": "Andrés проверяет телефон, говорит что завтра рано вставать. Уходит первым, не дожидаясь счёта. WhatsApp молчит.",
+      "stakes_ru": "B1 на свидании требует Si тип 2 + Cond + вежливые формулы. Повтори блок 10."
+    },
+    "very_low": {
+      "carlos_line_es": "Eh... bueno, encantado. Que te vaya bien.",
+      "carlos_line_ru": "Эээ... ну, приятно. Всего доброго.",
+      "scene_description_ru": "Andrés незаметно посматривает на часы каждые 5 минут. Платит за свою каньу, прощается рукопожатием, не поцелуем. Через 2 недели увидишь его в Instagram с другой.",
+      "stakes_ru": "Грамматики мечт и гипотез не было — для свидания на испанском это смерть. Учи блок 10 целиком."
+    }
+  }
+}

@@ -1,0 +1,398 @@
+{
+  "id": "cp13",
+  "cefr": "B2",
+  "block": 4,
+  "title_ru": "Собеседование в Barcelona Tech",
+  "title_es": "Entrevista en Barcelona Tech",
+  "description_ru": "Barcelona Tech, штаб-квартира на Diagonal. Финальный круг собеседования. Ana, директор по персоналу, проводит интервью в формальном тоне. Цель — оценить твой испанский на уровне B2: умение говорить о прошлом, выдвигать гипотезы, выражать сожаления, использовать сослагательное наклонение в сложных конструкциях. Pass — получишь оффер на следующий день. Fail — вежливое «vamos a contactar a otros candidatos».",
+  "stakes_ru": "От этого собеседования зависит, получишь ли ты постоянный контракт в Испании. Усложнение: Ana постоянно использует условные и сослагательные конструкции, проверяя твою реакцию.",
+  "intro_text_ru": "Ты заходишь в стеклянный конференц-зал на 14 этаже. Ana встаёт, протягивает руку, указывает на кресло. На столе — твоё CV, ручка Mont Blanc, стакан воды. «Adelante, póngase cómoda. Vamos a empezar.»",
+  "scene": {
+    "name": "Barcelona Tech HQ · Sala de entrevistas",
+    "type": "office_interview",
+    "city": "Barcelona",
+    "background_image": "scene_cp13_interview.jpg"
+  },
+  "npc": {
+    "id": "ana_rrhh",
+    "name": "Ana",
+    "role_ru": "Директор по персоналу",
+    "role_es": "Directora de Recursos Humanos",
+    "voice_id": "es-ES-Elvira",
+    "portrait_image": "npc_ana_rrhh.jpg",
+    "personality": "формальная, использует только usted. Оценивающий взгляд, делает заметки в блокноте. На правильные ответы — лёгкий кивок. На ошибках — пауза и переформулирование вопроса. Любит проверять кандидатов гипотетическими ситуациями («¿Qué haría si...?»)."
+  },
+  "user_character": {
+    "default_name": "Andrea",
+    "gender": "feminine",
+    "nationality": "rusa",
+    "country": "Rusia",
+    "note": "Кандидат на позицию Senior Project Manager, 4 года в Испании, B2-уровень испанского."
+  },
+  "thresholds": {
+    "bronze_percent": 70,
+    "silver_percent": 80,
+    "gold_percent": 95
+  },
+  "rewards": {
+    "bronze_xp": 600,
+    "silver_xp_bonus": 100,
+    "gold_xp_bonus": 300,
+    "badge_id": "profesional_b2",
+    "badge_name_ru": "Profesional B2",
+    "unlocks_block": 5
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "format": "CHOICE",
+      "topic_ru": "Формальное приветствие · usted",
+      "tested_lesson": "u15_l0 + u1_l4",
+      "npc_line_es": "Buenos días. Soy Ana, encantada. Tome asiento, por favor.",
+      "npc_line_ru": "Доброе утро. Я Ana, очень приятно. Присаживайтесь, пожалуйста.",
+      "prompt_ru": "Ana протягивает руку. Какой ответ соответствует формальному регистру?",
+      "correct_answer": "Encantada, Ana. Muchas gracias por recibirme.",
+      "distractors": [
+        "Hola tía, qué pasa.",
+        "Vale, gracias.",
+        "Bien, bien."
+      ],
+      "explanation_on_fail_ru": "В формальной обстановке: «Encantada» (рада, ж.р.) + благодарность за приём. Разговорные «vale» и «tía» исключены."
+    },
+    {
+      "round": 2,
+      "format": "CONJUGATE",
+      "topic_ru": "Pretérito Perfecto · опыт работы",
+      "tested_lesson": "u13_l0",
+      "npc_line_es": "Cuénteme: ¿qué experiencia ha tenido hasta ahora?",
+      "npc_line_ru": "Расскажите, какой опыт у вас был до сих пор?",
+      "prompt_ru": "Поставь форму HABER (perfecto):",
+      "sentence_template": "___ trabajado en tres empresas internacionales.",
+      "verb_infinitive": "haber",
+      "correct_answer": "He",
+      "distractors": ["Ha", "Había", "Hube"],
+      "explanation_on_fail_ru": "Perfecto: yo he + participio. «He trabajado» = «я работал(а)» с актуальностью для настоящего."
+    },
+    {
+      "round": 3,
+      "format": "CHOICE",
+      "topic_ru": "Subjuntivo vs Indicativo · после «cuando»",
+      "tested_lesson": "u13_l12",
+      "npc_line_es": "Cuando ___ a trabajar con nosotros, ¿qué espera aportar?",
+      "npc_line_ru": "Когда вы начнёте работать с нами, что планируете привнести?",
+      "prompt_ru": "Какая форма правильна после «cuando» о будущем?",
+      "correct_answer": "empiece",
+      "distractors": ["empiezo", "empezaré", "empezaba"],
+      "explanation_on_fail_ru": "«Cuando» + будущее время → ВСЕГДА Subjuntivo. Empezar yo → empiece. Indicativo empiezo используется только для привычки."
+    },
+    {
+      "round": 4,
+      "format": "CONJUGATE",
+      "topic_ru": "Imperfecto de Subjuntivo · TENER",
+      "tested_lesson": "u13_l1",
+      "npc_line_es": "Imagínese una situación: si ___ que despedir a un miembro del equipo, ¿cómo lo haría?",
+      "npc_line_ru": "Представьте ситуацию: если бы вам пришлось уволить члена команды, как бы вы это сделали?",
+      "prompt_ru": "Поставь Imperfecto de Subjuntivo от TENER (yo):",
+      "sentence_template": "Si yo ___ que despedir a alguien, lo haría con respeto.",
+      "verb_infinitive": "tener",
+      "correct_answer": "tuviera",
+      "distractors": ["tengo", "tendría", "tuve"],
+      "explanation_on_fail_ru": "Si + Imp.Subj. + Condicional (тип 2). Основа от tuvieron → tuvier- + a = tuviera. Альтернатива: tuviese."
+    },
+    {
+      "round": 5,
+      "format": "CHOICE",
+      "topic_ru": "Si тип 2 · структура полной фразы",
+      "tested_lesson": "u13_l2",
+      "npc_line_es": "Si le ofreciéramos el puesto, ¿cuándo podría incorporarse?",
+      "npc_line_ru": "Если бы мы предложили вам должность, когда могли бы приступить?",
+      "prompt_ru": "Какой ответ грамматически корректен (Si тип 2)?",
+      "correct_answer": "Si me dieran la oportunidad, empezaría el mes próximo.",
+      "distractors": [
+        "Si me darían la oportunidad, empezaba.",
+        "Si me dan la oportunidad, empezaría.",
+        "Si me dieron la oportunidad, empezaré."
+      ],
+      "explanation_on_fail_ru": "Si тип 2 (нереальное/маловероятное): Si + Imp.Subj. (dieran), главная часть — Condicional (empezaría). Никогда «si + condicional» в стандартном испанском."
+    },
+    {
+      "round": 6,
+      "format": "BUILD",
+      "topic_ru": "Como si + Imp.Subj. · описание навыков",
+      "tested_lesson": "u13_l4",
+      "npc_line_es": "He visto que en su CV menciona el liderazgo. ¿Cómo lo demuestra?",
+      "npc_line_ru": "Я видела, в вашем CV упоминается лидерство. Как вы его демонстрируете?",
+      "prompt_ru": "Собери фразу (7 слов):",
+      "correct_answer": "Lidero el equipo como si fuera mío",
+      "word_bank": ["Lidero", "el", "equipo", "como", "si", "fuera", "mío", "sería", "es"],
+      "explanation_on_fail_ru": "«Como si» ВСЕГДА требует Imperfecto de Subjuntivo: fuera (ser, yo). Никогда не используется с Indicativo или Condicional."
+    },
+    {
+      "round": 7,
+      "format": "LISTEN",
+      "topic_ru": "Понимание B2 · вопрос с Subjuntivo",
+      "tested_lesson": "u13_l11",
+      "npc_line_es": "Necesitamos a alguien que sepa gestionar la presión, que tenga visión estratégica y que hable inglés con fluidez. ¿Cumple usted con estos requisitos?",
+      "audio_only": true,
+      "prompt_ru": "Какое из требований Ana НЕ упомянула?",
+      "correct_answer": "experiencia internacional",
+      "distractors": [
+        "управление стрессом",
+        "стратегическое видение",
+        "беглый английский"
+      ],
+      "translation_after_answer_ru": "Ana упомянула: gestionar la presión (стресс), visión estratégica, hablar inglés. Опыт международной работы НЕ был назван.",
+      "explanation_on_fail_ru": "После «alguien que» (гипотетический референт) — ВСЕГДА Subjuntivo: sepa, tenga, hable."
+    },
+    {
+      "round": 8,
+      "format": "CONJUGATE",
+      "topic_ru": "Pluscuamperfecto de Subjuntivo · сожаление",
+      "tested_lesson": "u13_l6",
+      "npc_line_es": "Mire su CV: dejó su anterior empleo hace seis meses. ¿Se arrepiente?",
+      "npc_line_ru": "Я вижу в вашем CV: вы ушли с предыдущей работы 6 месяцев назад. Сожалеете?",
+      "prompt_ru": "Поставь Pluscuamp.Subj. от HABER (yo):",
+      "sentence_template": "A veces pienso que si ___ esperado un poco más, habría tenido mejor finiquito.",
+      "verb_infinitive": "haber",
+      "correct_answer": "hubiera",
+      "distractors": ["había", "habría", "he"],
+      "explanation_on_fail_ru": "Si тип 3 (сожаление о прошлом): Si + Pluscuamp.Subj. (hubiera + part) + Condicional Compuesto (habría + part). Альтернатива: hubiese."
+    },
+    {
+      "round": 9,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · условное предложение тип 3",
+      "tested_lesson": "u13_l7",
+      "prompt_ru": "Переведи ответ на испанский (формально, Si тип 3):",
+      "prompt_text_ru": "Если бы я знал об этой возможности раньше, я бы подал заявку немедленно.",
+      "correct_answer": "Si hubiera sabido de esta oportunidad antes habría enviado mi solicitud inmediatamente",
+      "acceptable_alternatives": [
+        "Si hubiese sabido de esta oportunidad antes habría enviado mi solicitud inmediatamente",
+        "Si hubiera sabido de esta oportunidad antes habría mandado mi solicitud inmediatamente",
+        "Si hubiera conocido esta oportunidad antes habría enviado mi solicitud inmediatamente"
+      ],
+      "hint_ru": "Si + hubiera/hubiese + participio, главная часть — habría + participio.",
+      "explanation_on_fail_ru": "Тип 3: «si hubiera sabido» (если бы знал) + «habría enviado» (отправил бы). Обе части обязательны в составной форме."
+    },
+    {
+      "round": 10,
+      "format": "CHOICE",
+      "topic_ru": "Subjuntivo vs Indicativo · aunque",
+      "tested_lesson": "u13_l10",
+      "npc_line_es": "Aunque ___ muy difícil al principio, ¿estaría dispuesta a viajar a Singapur el primer mes?",
+      "npc_line_ru": "Даже если будет очень сложно вначале, готовы ли вы поехать в Сингапур в первый месяц?",
+      "prompt_ru": "Гипотетическая ситуация в будущем — какая форма?",
+      "correct_answer": "sea",
+      "distractors": ["es", "era", "sería"],
+      "explanation_on_fail_ru": "Aunque + гипотеза/будущее → Subjuntivo (sea). Aunque + факт настоящего → Indicativo (es). Здесь Ana предполагает — значит Subj."
+    },
+    {
+      "round": 11,
+      "format": "CONJUGATE",
+      "topic_ru": "Para que + Subjuntivo · цель",
+      "tested_lesson": "u13_l11",
+      "npc_line_es": "Le hago esta pregunta para que ___ qué buscamos exactamente.",
+      "npc_line_ru": "Я задаю этот вопрос, чтобы вы поняли, что мы ищем.",
+      "prompt_ru": "Поставь Subjuntivo от ENTENDER (usted):",
+      "sentence_template": "Para que ___ qué buscamos.",
+      "verb_infinitive": "entender",
+      "correct_answer": "entienda",
+      "distractors": ["entiende", "entendería", "entendió"],
+      "explanation_on_fail_ru": "«Para que» ВСЕГДА с Subjuntivo. Entender (usted) → entienda. Цель в придаточном — всегда сослагательное."
+    },
+    {
+      "round": 12,
+      "format": "BUILD",
+      "topic_ru": "Subjuntivo с цели · полная фраза (8 слов)",
+      "tested_lesson": "u13_l11",
+      "npc_line_es": "¿Y usted, qué espera de nosotros como empresa?",
+      "npc_line_ru": "А вы, чего ожидаете от нас как от компании?",
+      "prompt_ru": "Собери ответ (8 слов):",
+      "correct_answer": "Espero que me ofrezcan formación continua y crecimiento",
+      "word_bank": ["Espero", "que", "me", "ofrezcan", "formación", "continua", "y", "crecimiento", "ofrecen", "ofreceréis"],
+      "explanation_on_fail_ru": "«Espero que» — желание → ВСЕГДА Subjuntivo (ofrezcan, не ofrecen). Subjuntivo Presente от ofrecer (ellos) = ofrezcan."
+    },
+    {
+      "round": 13,
+      "format": "CHOICE",
+      "topic_ru": "Quizás + Subj vs A lo mejor + Indic",
+      "tested_lesson": "u13_l5_5",
+      "npc_line_es": "Sobre el salario: nuestro rango está entre 45 y 60 mil. Quizás ___ negociar dentro de ese margen.",
+      "npc_line_ru": "О зарплате: наш диапазон — 45-60 тыс. Возможно, можно договариваться в этих рамках.",
+      "prompt_ru": "После «quizás» какая форма стандартна?",
+      "correct_answer": "podamos",
+      "distractors": ["podemos", "podríamos", "pudimos"],
+      "explanation_on_fail_ru": "«Quizás/tal vez» — стандарт с Subjuntivo (podamos). «A lo mejor» — особый случай: только Indicativo (podemos)."
+    },
+    {
+      "round": 14,
+      "format": "LISTEN",
+      "topic_ru": "Понимание · условное предложение",
+      "tested_lesson": "u13_l7",
+      "npc_line_es": "Si le hubiéramos hecho esta oferta el año pasado, habría aceptado antes de pensarlo dos veces, ¿verdad? Pero las circunstancias han cambiado, y ahora me parece que usted tiene otras prioridades.",
+      "audio_only": true,
+      "prompt_ru": "Какое утверждение Ana ТОЧНО соответствует её словам?",
+      "correct_answer": "В прошлом году кандидат принял бы быстро, но сейчас приоритеты изменились.",
+      "distractors": [
+        "Ana уверена, что кандидат и сейчас примет немедленно.",
+        "Ana предлагает кандидату подумать неделю.",
+        "Ana отказывает кандидату из-за смены приоритетов."
+      ],
+      "translation_after_answer_ru": "«Si le hubiéramos hecho esta oferta el año pasado, habría aceptado» — гипотеза тип 3 о прошлом. «Las circunstancias han cambiado» — но обстоятельства поменялись.",
+      "explanation_on_fail_ru": "Si + hubiéramos hecho + habría aceptado = Si тип 3 (гипотеза о прошлом). Ana не утверждает, что сейчас примет — она именно сравнивает с прошлым."
+    },
+    {
+      "round": 15,
+      "format": "CONJUGATE",
+      "topic_ru": "Ojalá + Imp.Subj. · невыполнимое",
+      "tested_lesson": "u13_l3",
+      "npc_line_es": "Una pregunta personal: si pudiera cambiar algo de su carrera anterior, ¿qué cambiaría?",
+      "npc_line_ru": "Личный вопрос: если бы могли изменить что-то в карьере, что бы изменили?",
+      "prompt_ru": "Поставь Imp.Subj. от EMPEZAR (yo):",
+      "sentence_template": "Ojalá ___ a aprender español hace diez años, no hace cuatro.",
+      "verb_infinitive": "empezar",
+      "correct_answer": "empezara",
+      "distractors": ["empiezo", "empezaba", "empezaré"],
+      "explanation_on_fail_ru": "«Ojalá» о невыполнимом (изменить прошлое) → Imp.Subj. Empezar yo → empezara (или empezase)."
+    },
+    {
+      "round": 16,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Перевод · cueste lo que cueste",
+      "tested_lesson": "u13_l9",
+      "prompt_ru": "Переведи с устойчивым выражением:",
+      "prompt_text_ru": "Я возьмусь за этот проект, чего бы это ни стоило.",
+      "correct_answer": "Asumiré este proyecto cueste lo que cueste",
+      "acceptable_alternatives": [
+        "Me haré cargo de este proyecto cueste lo que cueste",
+        "Tomaré este proyecto cueste lo que cueste",
+        "Aceptaré este proyecto cueste lo que cueste"
+      ],
+      "hint_ru": "«Cueste lo que cueste» — устойчивая формула с двойным Subjuntivo.",
+      "explanation_on_fail_ru": "«Cueste lo que cueste» = «чего бы это ни стоило». Обе формы costar — в Subjuntivo (cueste)."
+    },
+    {
+      "round": 17,
+      "format": "CHOICE",
+      "topic_ru": "Register · вежливый отказ",
+      "tested_lesson": "u15_l0 + u13_l9",
+      "npc_line_es": "Una hipótesis: si le ofreciéramos un puesto inferior al solicitado, ¿lo aceptaría?",
+      "npc_line_ru": "Гипотеза: если бы мы предложили должность ниже запрошенной, приняли бы?",
+      "prompt_ru": "Какой ответ сохраняет формальный регистр и достоинство?",
+      "correct_answer": "Agradezco la propuesta, pero preferiría mantener el nivel acordado, dado que mi experiencia lo justifica.",
+      "distractors": [
+        "No, qué va. Eso no me vale.",
+        "Pues vale, lo acepto sin más.",
+        "No quiero menos dinero, ¿vale?"
+      ],
+      "explanation_on_fail_ru": "Формальный отказ: благодарность + Condicional «preferiría» + причина «dado que». Разговорные «qué va», «vale» неуместны на интервью."
+    },
+    {
+      "round": 18,
+      "format": "BUILD",
+      "topic_ru": "Subjuntivo perfecto · опыт",
+      "tested_lesson": "u13_l6",
+      "npc_line_es": "Cuénteme una situación difícil que haya resuelto.",
+      "npc_line_ru": "Расскажите о трудной ситуации, которую вы разрешили.",
+      "prompt_ru": "Собери ответ (9 слов):",
+      "correct_answer": "Cuando hubo un conflicto en el equipo lo medié yo",
+      "word_bank": ["Cuando", "hubo", "un", "conflicto", "en", "el", "equipo", "lo", "medié", "yo", "media", "mediaré"],
+      "explanation_on_fail_ru": "«Que haya resuelto» — Subj.Perf. (haya + part). Конкретный опыт в прошлом отвечается через Indef (hubo, medié)."
+    },
+    {
+      "round": 19,
+      "format": "TRANSLATE_ES_RU",
+      "topic_ru": "Понимание · сложное предложение",
+      "tested_lesson": "u13_l13 + u13_l11",
+      "prompt_ru": "Переведи реплику Ana на русский:",
+      "prompt_text_es": "Buscamos a alguien que tenga experiencia liderando equipos remotos y que sea capaz de adaptarse a un entorno multicultural sin perder eficiencia.",
+      "correct_answer": "Мы ищем кого-то, кто имеет опыт руководства удалёнными командами и кто способен адаптироваться к мультикультурной среде, не теряя эффективности.",
+      "acceptable_alternatives": [
+        "Ищем человека с опытом руководства удалёнными командами, способного адаптироваться к мультикультурной среде без потери эффективности.",
+        "Мы ищем кого-то, у кого есть опыт ведения удалённых команд и кто умеет адаптироваться в мультикультурной среде, не теряя эффективности."
+      ],
+      "explanation_on_fail_ru": "«Buscamos a alguien que tenga... que sea capaz» — гипотетический референт → двойной Subjuntivo. «Sin perder eficiencia» = без потери эффективности (sin + inf)."
+    },
+    {
+      "round": 20,
+      "format": "CHOICE",
+      "topic_ru": "Connector · вывод аргумента",
+      "tested_lesson": "u15_l7",
+      "npc_line_es": "Veo que tiene experiencia internacional y dominio de tres idiomas. ___, su perfil encaja con lo que necesitamos.",
+      "npc_line_ru": "Вижу, у вас международный опыт и три языка. ___, ваш профиль подходит.",
+      "prompt_ru": "Какой формальный connector следствия?",
+      "correct_answer": "Por consiguiente",
+      "distractors": ["Pero", "Sino", "Aunque"],
+      "explanation_on_fail_ru": "«Por consiguiente» = следовательно (формал.). Pero/sino — контраст. Aunque — уступка. Здесь нужно следствие."
+    },
+    {
+      "round": 21,
+      "format": "CONJUGATE",
+      "topic_ru": "Reported speech · imperfecto",
+      "tested_lesson": "u14_l11",
+      "npc_line_es": "Para terminar: si tuviera que dejarle un mensaje al CEO sobre por qué la elegiríamos a usted, ¿qué le diría yo?",
+      "npc_line_ru": "Напоследок: если бы я сообщала CEO, почему выбрать вас, что бы я ему сказала?",
+      "prompt_ru": "Поставь Condicional от DECIR (yo):",
+      "sentence_template": "Le ___ que es la candidata más completa.",
+      "verb_infinitive": "decir",
+      "correct_answer": "diría",
+      "distractors": ["digo", "dije", "decía"],
+      "explanation_on_fail_ru": "Косвенная речь в гипотезе → Condicional Simple. Decir → diría (irregular, как saldría, vendría)."
+    },
+    {
+      "round": 22,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Финал · вежливая благодарность B2",
+      "tested_lesson": "u15_l0 + u15_l1",
+      "prompt_ru": "Переведи финальную фразу собеседования (формально):",
+      "prompt_text_ru": "Благодарю Вас за уделённое время. Жду Вашего решения с интересом и остаюсь в Вашем распоряжении.",
+      "correct_answer": "Le agradezco el tiempo que me ha dedicado. Espero su decisión con interés y quedo a su disposición",
+      "acceptable_alternatives": [
+        "Le agradezco su tiempo. Espero su decisión con interés y quedo a su disposición",
+        "Muchas gracias por su tiempo. Espero su respuesta con interés y quedo a su disposición",
+        "Le agradezco el tiempo que me ha dedicado. Quedo a la espera de su decisión y a su disposición"
+      ],
+      "hint_ru": "Формулы: Le agradezco, quedo a su disposición.",
+      "explanation_on_fail_ru": "Формальный финал: «Le agradezco» (благодарю Вас), «quedo a su disposición» (остаюсь в Вашем распоряжении) — стандартные business-формулы."
+    }
+  ],
+  "pass_outcomes": {
+    "gold": {
+      "carlos_line_es": "Andrea, ha sido la mejor entrevista de la semana. Su nivel de español es excelente. Mañana le enviaré el contrato.",
+      "carlos_line_ru": "Andrea, это лучшее собеседование недели. Ваш уровень испанского великолепен. Завтра пришлю контракт.",
+      "scene_description_ru": "Ana встаёт, искренне жмёт руку двумя руками. «Bienvenida al equipo, Andrea.» На выходе секретарь уже знает твоё имя.",
+      "stakes_ru": "Полный оффер с максимальной зарплатой и опционом — на следующий день."
+    },
+    "silver": {
+      "carlos_line_es": "Muy buen perfil. Quedo a la espera de cerrar los últimos detalles con dirección.",
+      "carlos_line_ru": "Очень хороший профиль. Жду закрытия деталей с дирекцией.",
+      "scene_description_ru": "Ana кивает, делает заметку. «La llamaré el viernes con la respuesta definitiva.» Финальный кофе с командой.",
+      "stakes_ru": "Оффер на следующей неделе, на средней позиции диапазона."
+    },
+    "bronze": {
+      "carlos_line_es": "Tiene buen potencial. Vamos a evaluarlo.",
+      "carlos_line_ru": "Хороший потенциал. Будем рассматривать.",
+      "scene_description_ru": "Ana вежливо провожает до лифта. «Le escribiremos en breve.» Слабая улыбка."
+    }
+  },
+  "fail_outcomes": {
+    "near_pass": {
+      "carlos_line_es": "Gracias por venir. Vamos a contactar al resto de candidatos antes de tomar una decisión.",
+      "carlos_line_ru": "Спасибо, что пришли. Свяжемся с другими кандидатами перед решением.",
+      "scene_description_ru": "Ana закрывает блокнот раньше обычного. На выходе HR-coordinator не предлагает кофе.",
+      "stakes_ru": "Письмо «hemos optado por otro perfil» придёт через 3 дня."
+    },
+    "low": {
+      "carlos_line_es": "Gracias. Lamentablemente buscamos un nivel de español más avanzado para este puesto.",
+      "carlos_line_ru": "Спасибо. К сожалению, для этой позиции нам нужен более продвинутый испанский.",
+      "scene_description_ru": "Ana вежлива, но конец интервью на 10 минут раньше графика. «Le deseamos mucha suerte.»",
+      "stakes_ru": "Не пройдёшь дальше. Поработай над B2 и попробуй ещё через месяц."
+    },
+    "very_low": {
+      "carlos_line_es": "Lo siento, pero su nivel actual no se ajusta al perfil que solicitamos.",
+      "carlos_line_ru": "Сожалею, ваш текущий уровень не соответствует требуемому профилю.",
+      "scene_description_ru": "Ana дипломатично заканчивает: «Le recomiendo prepararse más antes de aplicar a posiciones senior.»",
+      "stakes_ru": "Перепройди весь блок B2.1. Subjuntivo и условные — основа B2."
+    }
+  }
+}
