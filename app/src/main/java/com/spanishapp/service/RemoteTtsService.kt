@@ -58,6 +58,15 @@ class RemoteTtsService @Inject constructor(
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
 
+    /**
+     * v1.22.7: «загружается с сервера» — для мгновенного индикатора в UI.
+     * Включается на тапе ▶ ДО того как mp3 скачался → пользователь видит,
+     * что приложение реагирует. Выключается когда mp3 готов и плеер
+     * начал играть (тогда уже isPlaying=true даёт обратную связь).
+     */
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     private val _isReady = MutableStateFlow(BuildConfig.AI_PROXY_URL.isNotBlank())
     val isReady: StateFlow<Boolean> = _isReady.asStateFlow()
 
@@ -131,11 +140,32 @@ class RemoteTtsService @Inject constructor(
     fun previewVoice(text: String, voice: String, speed: Float = 1.0f) {
         if (BuildConfig.AI_PROXY_URL.isBlank()) return
         stop()
+        _isLoading.value = true
         playJob = scope.launch {
             val mp3 = runCatching { fetchMp3(text.take(200), voice, speed) }
-                .getOrNull() ?: return@launch
+                .getOrNull() ?: run {
+                _isLoading.value = false
+                return@launch
+            }
+            _isLoading.value = false
             _isPlaying.value = true
             try { playFileAndWait(mp3) } finally { _isPlaying.value = false }
+        }
+    }
+
+    /**
+     * v1.22.7: тихо прогревает локальный кэш для пары (text, voice).
+     * Используется при открытии экрана с превью голосов — все 8 семплов
+     * качаются в фоне, пока юзер ещё ничего не нажал. На тапе ▶ файл
+     * уже на диске → плеер стартует за ~100-200ms вместо 2-3 секунд.
+     *
+     * Никогда не воспроизводит, не мешает текущему playback, тихо падает
+     * на ошибках.
+     */
+    fun prefetchPreview(text: String, voice: String, speed: Float = 1.0f) {
+        if (BuildConfig.AI_PROXY_URL.isBlank()) return
+        scope.launch {
+            runCatching { fetchMp3(text.take(200), voice, speed) }
         }
     }
 
@@ -147,6 +177,7 @@ class RemoteTtsService @Inject constructor(
         runCatching { mediaPlayer?.release() }
         mediaPlayer = null
         _isPlaying.value = false
+        _isLoading.value = false
     }
 
     private suspend fun playFileAndWait(file: File) = withContext(Dispatchers.Main) {

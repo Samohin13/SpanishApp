@@ -17,6 +17,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,8 @@ fun SettingsVoiceScreen(
     val voiceSpeedMultiplier by viewModel.voiceSpeedMultiplier.collectAsStateWithLifecycle()
     val premiumReady by viewModel.isPremiumTtsReady.collectAsStateWithLifecycle()
     val previewPlaying by viewModel.isPreviewPlaying.collectAsStateWithLifecycle()
+    val previewLoading by viewModel.isPreviewLoading.collectAsStateWithLifecycle()
+    val haptic = LocalHapticFeedback.current
 
     var playingVoiceId by remember { mutableStateOf<String?>(null) }
 
@@ -95,9 +99,11 @@ fun SettingsVoiceScreen(
                     voice = voice,
                     isSelected = selectedRuVoice == voice.id,
                     isPlaying = previewPlaying && playingVoiceId == voice.id,
+                    isLoading = previewLoading && playingVoiceId == voice.id,
                     enabled = premiumReady,
                     onSelect = { viewModel.selectRuVoice(voice.id) },
                     onPreview = {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         if (previewPlaying && playingVoiceId == voice.id) {
                             viewModel.stopPreview()
                             playingVoiceId = null
@@ -119,9 +125,11 @@ fun SettingsVoiceScreen(
                     voice = voice,
                     isSelected = selectedEsVoice == voice.id,
                     isPlaying = previewPlaying && playingVoiceId == voice.id,
+                    isLoading = previewLoading && playingVoiceId == voice.id,
                     enabled = premiumReady,
                     onSelect = { viewModel.selectEsVoice(voice.id) },
                     onPreview = {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         if (previewPlaying && playingVoiceId == voice.id) {
                             viewModel.stopPreview()
                             playingVoiceId = null
@@ -163,6 +171,7 @@ private fun VoiceCard(
     voice: PremiumVoiceCatalog.Voice,
     isSelected: Boolean,
     isPlaying: Boolean,
+    isLoading: Boolean = false,
     enabled: Boolean,
     onSelect: () -> Unit,
     onPreview: () -> Unit,
@@ -218,15 +227,28 @@ private fun VoiceCard(
             }
             IconButton(
                 onClick = onPreview,
-                enabled = enabled,
+                enabled = enabled && !isLoading,
                 modifier = Modifier.size(40.dp)
             ) {
-                Icon(
-                    if (isPlaying) Icons.Default.Stop else Icons.Default.PlayArrow,
-                    contentDescription = "Прослушать",
-                    tint = BrandOrange,
-                    modifier = Modifier.size(24.dp)
-                )
+                when {
+                    isLoading -> CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = BrandOrange,
+                    )
+                    isPlaying -> Icon(
+                        Icons.Default.Stop,
+                        contentDescription = "Стоп",
+                        tint = BrandOrange,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    else -> Icon(
+                        Icons.Default.PlayArrow,
+                        contentDescription = "Прослушать",
+                        tint = BrandOrange,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }

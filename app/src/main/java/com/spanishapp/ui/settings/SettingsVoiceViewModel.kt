@@ -44,6 +44,25 @@ class SettingsVoiceViewModel @Inject constructor(
 
     val isPremiumTtsReady: StateFlow<Boolean> = remoteTts.isReady
     val isPreviewPlaying: StateFlow<Boolean> = remoteTts.isPlaying
+    val isPreviewLoading: StateFlow<Boolean> = remoteTts.isLoading
+
+    init {
+        // v1.22.7: прогреваем превью всех 8 голосов как только экран открыт.
+        // Файлы качаются в фоне → к моменту первого тапа ▶ они уже на диске,
+        // плеер стартует за ~100-200ms вместо 2-3 секунд.
+        if (remoteTts.isReady.value) {
+            viewModelScope.launch {
+                val ruSample = "Привет, давай учить испанский вместе."
+                val esSample = "Hola, vamos a aprender español juntos."
+                PremiumVoiceCatalog.RU_VOICES.forEach { v ->
+                    remoteTts.prefetchPreview(ruSample, v.id)
+                }
+                PremiumVoiceCatalog.ES_VOICES.forEach { v ->
+                    remoteTts.prefetchPreview(esSample, v.id)
+                }
+            }
+        }
+    }
 
     fun selectRuVoice(voiceId: String) = viewModelScope.launch {
         authRepository.setSelectedRuVoice(voiceId)

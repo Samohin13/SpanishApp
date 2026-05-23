@@ -333,6 +333,26 @@ async function handleTts(request, env) {
   const speed = clamp(Number(payload.speed) || 1.0, 0.25, 4.0);
   const pitch = clamp(Number(payload.pitch) || 0, -20.0, 20.0);
 
+  // ── Edge cache (v3.2, 1.22.7) ──────────────────────────────────
+  // Cloudflare держит mp3 на ближайшем к юзеру edge-сервере 7 дней.
+  // Если юзер А синтезировал «hola» в Lucía → юзер Б получает кэш
+  // за ~30ms вместо ~1500ms (без обращения к Google TTS).
+  // Ключ кэша = синтетический GET-URL с детерминированным хэшем
+  // (parameters не помещаются в query-string без длины, поэтому
+  // используем sha256-хэш payload как path).
+  const cacheKey = await buildCacheKey(text, voiceName, speed, pitch);
+  const cache = caches.default;
+  const cachedResp = await cache.match(cacheKey);
+  if (cachedResp) {
+    // Hit — отдаём из edge cache. Добавляем заголовок чтобы видно было в логах.
+    const h = new Headers(cachedResp.headers);
+    h.set("X-ESPEAK-Cache", "HIT");
+    return new Response(cachedResp.body, {
+      status: cachedResp.status,
+      headers: h,
+    });
+  }
+
   const ttsBody = {
     input: { text: text.slice(0, 5000) }, // hard cap чтобы не сжечь квоту на одном запросе
     voice: { languageCode, name: voiceName },
@@ -378,13 +398,36 @@ async function handleTts(request, env) {
   const bytes = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
 
-  return new Response(bytes, {
+  const resp = new Response(bytes, {
     status: 200,
     headers: {
       "Content-Type": "audio/mpeg",
-      "Cache-Control": "public, max-age=86400",
+      // 7 дней кэша + immutable (содержимое не меняется для того же hash)
+      "Cache-Control": "public, max-age=604800, immutable",
       "Access-Control-Allow-Origin": "*",
+      "X-ESPEAK-Cache": "MISS",
     },
+  });
+
+  // Кладём копию в edge cache. caches.default.put требует Response,
+  // мы кладём клон чтобы юзер получил оригинал без потребления body.
+  await cache.put(cacheKey, resp.clone());
+  return resp;
+}
+
+/**
+ * Строит синтетический Request с детерминированным URL для caches.default.
+ * Cloudflare кэширует только по URL (не по body), поэтому хэшируем
+ * payload и используем как path.
+ */
+async function buildCacheKey(text, voice, speed, pitch) {
+  const raw = `${voice}|${speed}|${pitch}|${text}`;
+  const hashBuf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw));
+  const hashArr = Array.from(new Uint8Array(hashBuf));
+  const hashHex = hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
+  // URL-host не важен — caches.default нормализует по URL целиком.
+  return new Request(`https://espeak-tts-cache.local/v1/${hashHex}`, {
+    method: "GET",
   });
 }
 
