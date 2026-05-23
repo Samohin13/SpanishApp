@@ -166,13 +166,14 @@
       "topic_ru": "Регулярный -AR · tú trabajas",
       "tested_grammar": "TRABAJAR 2p sing",
       "tested_lesson": "u2_l0",
-      "npc_line_es": "Y usted, ¿trabaja aquí cerca?",
-      "npc_line_ru": "А вы работаете здесь рядом?",
-      "prompt_ru": "Diego на «tú»: «¿Tú ___ aquí cerca?». Какая форма?",
+      "npc_line_es": "Oye, si quieres podemos tutearnos, ¿vale? Y tú, ¿trabajas aquí cerca?",
+      "npc_line_ru": "Слушай, если хочешь — давай на «ты», ладно? И ты работаешь здесь рядом?",
+      "prompt_ru": "Diego предложил перейти на «tú». Какая форма TRABAJAR?",
       "sentence_template": "¿Tú ___ aquí cerca?",
       "verb_infinitive": "trabajar",
       "correct_answer": "trabajas",
-      "distractors": ["trabajo", "trabaja", "trabajan"]
+      "distractors": ["trabajo", "trabaja", "trabajan"],
+      "explanation_on_fail_ru": "Diego теперь на «tú» (молодёжный регистр в Мадриде после первого контакта — нормально). TRABAJAR 2 л. ед. ч. → «trabajas»."
     },
     {
       "round": 10,
@@ -254,16 +255,17 @@
     {
       "round": 15,
       "format": "CONJUGATE",
-      "topic_ru": "PODER · ¿Puedo ver?",
-      "tested_grammar": "PODER 1p + infinitive",
+      "topic_ru": "PODER · ¿Puedes traer?",
+      "tested_grammar": "PODER 2p sing (o→ue) · просьба на tú",
       "tested_lesson": "u3_l7",
-      "npc_line_es": "¿Algo más, señorita?",
-      "npc_line_ru": "Что-то ещё, сеньорита?",
-      "prompt_ru": "Хочешь увидеть счёт. Поставь PODER:",
-      "sentence_template": "¿___ ver la cuenta, por favor?",
+      "npc_line_es": "Diego ya te tutea. Pídele algo.",
+      "npc_line_ru": "Diego уже на «ты». Попроси его.",
+      "prompt_ru": "Попроси Diego принести счёт (PODER, tú):",
+      "sentence_template": "¿___ traer la cuenta, por favor?",
       "verb_infinitive": "poder",
-      "correct_answer": "Puedo",
-      "distractors": ["Puedes", "Quiero", "Tengo"]
+      "correct_answer": "Puedes",
+      "distractors": ["Puedo", "Puede", "Podemos"],
+      "explanation_on_fail_ru": "Diego на «tú» → PODER 2 л. ед. с изменением корня (o→ue): «puedes». «Puedo» — это yo (я могу), не подходит для просьбы к собеседнику."
     },
     {
       "round": 16,

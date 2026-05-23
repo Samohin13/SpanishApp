@@ -244,15 +244,15 @@
       "topic_ru": "Понимание · SER 1+3 л.",
       "tested_lesson": "u1_l10 + u1_l11",
       "prompt_ru": "Carlos указывает на коллегу. Переведи фразу:",
-      "prompt_text_es": "Yo soy Carlos. Él es mi amigo.",
-      "correct_answer": "Я Carlos. Он мой друг.",
+      "prompt_text_es": "Yo soy Carlos. Él es Diego. Él es español.",
+      "correct_answer": "Я Carlos. Он Diego. Он испанец.",
       "acceptable_alternatives": [
-        "Я — Carlos. Он мой друг.",
-        "Я Carlos, он мой друг.",
-        "Я Карлос. Он мой друг.",
-        "Я Карлос, он мой друг."
+        "Я — Carlos. Он — Diego. Он испанец.",
+        "Я Carlos, он Diego, он испанец.",
+        "Я Карлос. Он Диего. Он испанец.",
+        "Я Карлос, он Диего, он испанец."
       ],
-      "explanation_on_fail_ru": "«Yo soy» = я (есть). «Él es» = он (есть). SER в 1 л. и 3 л. ед. ч. «Mi amigo» = мой друг (попадается слово вне блока 1, но узнаваемо)."
+      "explanation_on_fail_ru": "«Yo soy» = я (есть). «Él es» = он (есть). SER в 1 л. и 3 л. ед. ч. «Español» = испанец (национальность м.р., u1_l12)."
     },
     {
       "round": 18,

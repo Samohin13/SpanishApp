@@ -320,9 +320,9 @@
       "npc_line_es": "Vale, te hago un veinte por ciento de descuento.",
       "npc_line_ru": "Ладно, сделаю тебе скидку 20%.",
       "prompt_ru": "Собери: «Спасибо, ты мне очень помогла»",
-      "correct_answer": "Gracias me has ayudado mucho",
-      "word_bank": ["Gracias", "me", "has", "ayudado", "mucho", "te", "le", "yo"],
-      "explanation_on_fail_ru": "«Мне помогла» — me (OI 1 л.) ставится ПЕРЕД спряжённым haber: me has ayudado. Pretérito Perfecto уже знаком из u7, но конструкция «has + part» появляется и в обычной речи."
+      "correct_answer": "Gracias me ayudaste mucho",
+      "word_bank": ["Gracias", "me", "ayudaste", "mucho", "te", "le", "yo", "ayudó"],
+      "explanation_on_fail_ru": "«Мне помогла» — OI «me» ставится ПЕРЕД спряжённым глаголом: «me ayudaste». Pretérito Indefinido (ayudaste) — для законченного действия в магазине, которое сейчас завершается."
     },
     {
       "round": 19,

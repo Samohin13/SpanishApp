@@ -63,7 +63,7 @@
       "npc_line_ru": "Я встаю рано. А ты?",
       "prompt_ru": "Поставь форму:",
       "sentence_template": "Yo ___ a las siete.",
-      "verb_infinitive": "me levantar",
+      "verb_infinitive": "levantarse",
       "correct_answer": "me levanto",
       "distractors": ["te levantas", "se levanta", "levantar"]
     },
@@ -76,8 +76,8 @@
       "npc_line_es": "Y después, ¿qué haces?",
       "npc_line_ru": "А потом что делаешь?",
       "prompt_ru": "Соберите ответ:",
-      "correct_answer": "Me ducho y desayuno café",
-      "word_bank": ["Me", "ducho", "y", "desayuno", "café", "te", "estás", "como"]
+      "correct_answer": "Me ducho y tomo café",
+      "word_bank": ["Me", "ducho", "y", "tomo", "café", "te", "estás", "como"]
     },
     {
       "round": 4,
@@ -328,7 +328,7 @@
         "Sí, pero tengo cansada.",
         "Sí, pero hace cansada."
       ],
-      "explanation_on_fail_ru": "«Cansada» — временное состояние → ESTAR. «Soy cansada» — это «я скучный человек по жизни», не «устала сейчас»."
+      "explanation_on_fail_ru": "«Cansada» — временное состояние → ESTAR: «estoy cansada» = «я устала (сейчас)». «Soy cansada» = «я утомительная (по характеру, утомляю других)» — почти не используется. Если хотел сказать «мне скучно» — это «estoy aburrida» (cansado ≠ aburrido)."
     },
     {
       "round": 21,

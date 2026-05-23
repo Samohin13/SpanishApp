@@ -158,7 +158,7 @@
       "round": 8,
       "format": "CHOICE",
       "topic_ru": "Relativo · lo que (нейтральное)",
-      "tested_lesson": "u11_l5_5",
+      "tested_lesson": "u11_l5",
       "tested_grammar": "Lo que = «то что»",
       "npc_line_es": "¿Sabes ___ no me gustó de la peli? Que el padre del protagonista era muy plano.",
       "npc_line_ru": "Знаешь что мне не понравилось в фильме? Отец главного был очень плоский.",
@@ -244,7 +244,7 @@
     {
       "round": 14,
       "format": "CONJUGATE",
-      "topic_ru": "Estar + gerundio (continuous)",
+      "topic_ru": "Seguir + gerundio · продолжать",
       "tested_lesson": "u11_l9",
       "tested_grammar": "Seguir + gerundio · продолжать",
       "npc_line_es": "Almodóvar ___ sorprendiéndonos a sus 75 años. ¡Qué grande!",
@@ -342,7 +342,6 @@
       "prompt_ru": "Произнеси вслух (по-испански) восторженно:",
       "correct_answer": "Acabo de ver un peliculón",
       "acceptable_alternatives": [
-        "Acabo de ver una peliculón",
         "Acabamos de ver un peliculón",
         "Acabo de ver una peli buenísima",
         "Acabo de ver una película increíble"

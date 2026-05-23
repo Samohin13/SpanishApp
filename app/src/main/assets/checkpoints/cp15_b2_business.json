@@ -372,17 +372,16 @@
     },
     {
       "round": 23,
-      "format": "CONJUGATE",
-      "topic_ru": "Acuerdo · llegar a un acuerdo",
+      "format": "BUILD",
+      "topic_ru": "BOSS · Pret.Perfecto + idiom + adj",
       "tested_lesson": "u14_l3 + u15_l6",
-      "npc_line_es": "Entonces ___ a un acuerdo. La felicito.",
-      "npc_line_ru": "Значит, мы пришли к соглашению. Поздравляю.",
-      "prompt_ru": "Поставь Pret.Perf. от LLEGAR (мы):",
-      "sentence_template": "Hemos ___ a un acuerdo.",
-      "verb_infinitive": "llegar",
-      "correct_answer": "llegado",
-      "distractors": ["llegando", "llegaron", "llegamos"],
-      "explanation_on_fail_ru": "Pretérito Perfecto: haber + participio. Llegar → llegado. «Llegar a un acuerdo» — стандартная business-формула."
+      "tested_grammar": "Pret.Perf. (hemos llegado) + llegar a un acuerdo + adj. definitivo",
+      "npc_line_es": "Entonces, después de tantas reuniones, ¿podemos confirmarlo formalmente?",
+      "npc_line_ru": "Итак, после стольких встреч — можем зафиксировать формально?",
+      "prompt_ru": "Собери формальное B2-заявление (9 слов):",
+      "correct_answer": "Hemos llegado a un acuerdo definitivo y mutuamente beneficioso",
+      "word_bank": ["Hemos", "llegado", "a", "un", "acuerdo", "definitivo", "y", "mutuamente", "beneficioso", "llegamos", "llegaron", "llegando", "llegar"],
+      "explanation_on_fail_ru": "BOSS-сборка: Pret.Perfecto «hemos llegado» (haber+part) + идиома «llegar a un acuerdo» + двойное согласование прилагательных «definitivo» (м.р. ед. как acuerdo) и наречия «mutuamente beneficioso». Стандартная B2-формула закрытия переговоров."
     },
     {
       "round": 24,

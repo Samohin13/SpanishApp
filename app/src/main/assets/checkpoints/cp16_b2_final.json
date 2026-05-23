@@ -301,16 +301,16 @@
     {
       "round": 18,
       "format": "CONJUGATE",
-      "topic_ru": "Pablo · acto 7 · gerundio профи",
+      "topic_ru": "Pablo · acto 7 · инфинитив-сущ. с HABER",
       "tested_lesson": "u14_l8",
-      "npc_line_es": "___ aprendido el español aquí, te abrirá puertas en cualquier multinacional rusa.",
-      "npc_line_ru": "Выучив испанский здесь, он откроет двери в любой российской многонациональной.",
-      "prompt_ru": "Какой композитный gerundio?",
-      "sentence_template": "___ aprendido el español aquí, te abrirá puertas.",
+      "npc_line_es": "El ___ aprendido el español aquí te abrirá puertas en cualquier multinacional rusa.",
+      "npc_line_ru": "То, что ты выучила испанский здесь, откроет тебе двери в любой международной компании в России.",
+      "prompt_ru": "Какая форма HABER в инфинитиве (составной)?",
+      "sentence_template": "El ___ aprendido el español aquí te abrirá puertas.",
       "verb_infinitive": "haber",
-      "correct_answer": "Habiendo",
-      "distractors": ["Habiendo de", "Habrá", "Hubo"],
-      "explanation_on_fail_ru": "«Habiendo + participio» = композитный gerundio («выучив», «закончив»). Книжная B2-структура для причинных оборотов."
+      "correct_answer": "haber",
+      "distractors": ["habiendo", "habrá", "hubo"],
+      "explanation_on_fail_ru": "«El haber + participio» — номинализованный инфинитив сложного времени («сам факт того что выучила»). Используется когда подлежащее главного предложения отличается от субъекта действия. Это книжная B2-структура для причинных и резюмирующих оборотов."
     },
     {
       "round": 19,

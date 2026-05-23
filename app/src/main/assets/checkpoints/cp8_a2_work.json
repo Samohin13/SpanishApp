@@ -195,7 +195,7 @@
       "prompt_ru": "Собери: «Я Вам его пришлю сегодня же» (lo + a usted)",
       "correct_answer": "Se lo enviaré hoy mismo",
       "word_bank": ["Se", "lo", "enviaré", "hoy", "mismo", "Le", "envío", "envíe", "te"],
-      "explanation_on_fail_ru": "«Vam ego» = OI «le» (Вам) + OD «lo» (его, документ). le+lo → se lo (правило: le/les перед lo/la/los/las → se). «Te» — на ты, неуместно."
+      "explanation_on_fail_ru": "«Вам его» = OI «le» (Вам) + OD «lo» (его, документ). le+lo → se lo (правило: le/les перед lo/la/los/las → se). «Te» — на ты, неуместно."
     },
     {
       "round": 11,

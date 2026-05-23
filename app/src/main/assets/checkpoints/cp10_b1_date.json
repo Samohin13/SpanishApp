@@ -179,7 +179,7 @@
       "tested_grammar": "Si тип 3 — нереальное прошлое",
       "npc_line_es": "Si tú ___ sabido que era yo, ¿habrías venido al bar?",
       "npc_line_ru": "Если бы ты знала, что это я, пришла бы в бар?",
-      "prompt_ru": "Поставь SABER в Pluscuamperfecto Subjuntivo (tú):",
+      "prompt_ru": "Поставь HABER в Pluscuamperfecto Subjuntivo (tú):",
       "sentence_template": "Si tú ___ sabido...",
       "verb_infinitive": "haber",
       "correct_answer": "hubieras",

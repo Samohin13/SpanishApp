@@ -76,19 +76,24 @@
     {
       "round": 3,
       "format": "CHOICE",
-      "topic_ru": "Participio irregular · visto",
-      "tested_lesson": "u7_l1",
-      "tested_grammar": "Participios irregulares",
+      "topic_ru": "Indefinido + ayer · participio visto",
+      "tested_lesson": "u7_l1 + u7_l2",
+      "tested_grammar": "Indefinido + marcador AYER · participio irregular",
       "npc_line_es": "¿Has visto esa peli nueva? La que sale en Netflix.",
       "npc_line_ru": "Видела этот новый фильм? Тот что на Нетфликсе.",
       "prompt_ru": "Видела вчера. Какой ответ?",
-      "correct_answer": "Sí, la he visto ayer mismo.",
-      "distractors": [
-        "Sí, la he vido ayer mismo.",
-        "Sí, la he veído ayer mismo.",
-        "Sí, la he ver ayer mismo."
+      "correct_answer": "Sí, la vi ayer mismo.",
+      "acceptable_alternatives": [
+        "Sí, la vi ayer.",
+        "La vi ayer mismo.",
+        "Sí, ayer mismo la vi."
       ],
-      "explanation_on_fail_ru": "VER → participio irregular «visto», не «vido» или «veído». Также: hacer→hecho, decir→dicho, escribir→escrito, abrir→abierto, poner→puesto, volver→vuelto."
+      "distractors": [
+        "Sí, la he visto ayer mismo.",
+        "Sí, la vido ayer mismo.",
+        "Sí, la ve ayer mismo."
+      ],
+      "explanation_on_fail_ru": "«Ayer» — маркер законченного прошлого → Pretérito Indefinido (vi), НЕ Perfecto. Правило: «hoy / esta semana / este año» → Perfecto (he visto), «ayer / la semana pasada / en 2023» → Indefinido (vi). VER → Indefinido: vi/viste/vio. Participio «visto» используется только в Perfecto («he visto hoy»)."
     },
     {
       "round": 4,

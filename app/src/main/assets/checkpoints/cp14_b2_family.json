@@ -100,8 +100,9 @@
     {
       "round": 5,
       "format": "CONJUGATE",
-      "topic_ru": "Imperfecto Subjuntivo · упрёк",
+      "topic_ru": "Pluscuamperfecto Subjuntivo · упрёк",
       "tested_lesson": "u13_l4",
+      "tested_grammar": "Pluscuamperfecto de Subjuntivo · como si + prosadie",
       "npc_line_es": "Tu primo Miguel actúa como si nada ___ pasado entre nosotros.",
       "npc_line_ru": "Кузен Miguel ведёт себя, будто между нами ничего не произошло.",
       "prompt_ru": "Поставь Pluscuamp.Subj. от HABER (3 л.):",

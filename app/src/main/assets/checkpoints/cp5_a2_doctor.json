@@ -315,11 +315,11 @@
       "npc_line_ru": "Последний вопрос. Сколько уже болит горло?",
       "prompt_ru": "Переведи: «Горло начало болеть три дня назад.»",
       "prompt_text_ru": "Горло начало болеть три дня назад.",
-      "correct_answer": "La garganta empezó a doler hace tres días.",
+      "correct_answer": "Me empezó a doler la garganta hace tres días.",
       "acceptable_alternatives": [
-        "Me empezó a doler la garganta hace tres días.",
         "Hace tres días empezó a dolerme la garganta.",
-        "Hace tres días la garganta empezó a doler."
+        "Hace tres días me empezó a doler la garganta.",
+        "La garganta empezó a dolerme hace tres días."
       ],
       "explanation_on_fail_ru": "«Hace tres días» = три дня назад (всегда с Indefinido). «Empezó a + инф» = начало делать. Глагол DOLER работает как GUSTAR."
     },
