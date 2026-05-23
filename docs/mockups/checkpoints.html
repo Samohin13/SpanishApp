@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>ESPEAK — Чекпоинты: мокапы</title>
+<style>
+:root {
+  --bg-page: #0E0F11;
+  --phone-bg: #18191C;
+  --surface: #232529;
+  --surface-2: #2B2D32;
+  --primary: #FF7A1A;
+  --accent: #FFC107;
+  --green: #4CAF50;
+  --red: #FF4B4B;
+  --text: #F2F2F2;
+  --text-dim: #9E9E9E;
+}
+* { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+body {
+  margin: 0;
+  background: var(--bg-page);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+  padding: 32px 16px 80px;
+}
+h1 {
+  font-size: 28px;
+  margin: 0 0 8px;
+  text-align: center;
+  color: var(--text);
+}
+.subtitle {
+  font-size: 14px;
+  text-align: center;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.frame-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.phone {
+  width: 340px;
+  height: 720px;
+  background: var(--phone-bg);
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 8px #2a2a2e, 0 0 0 9px #424248;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.status-bar {
+  height: 36px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--phone-bg);
+}
+.notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 22px;
+  background: #000;
+  border-radius: 0 0 14px 14px;
+  z-index: 10;
+}
+
+/* ─────── ROADMAP ─────── */
+.roadmap-header {
+  padding: 16px 20px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.roadmap-title { font-size: 22px; font-weight: 800; }
+.roadmap-streak { font-size: 13px; color: var(--accent); }
+.roadmap-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 16px;
+}
+.unit {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.unit-icon { font-size: 22px; }
+.unit-text { flex: 1; }
+.unit-title { font-size: 14px; font-weight: 600; }
+.unit-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.unit-stars { color: var(--accent); font-size: 12px; }
+.unit-completed .unit-title { color: var(--text-dim); text-decoration: none; }
+.unit.locked { opacity: 0.5; }
+
+.checkpoint-row {
+  background: linear-gradient(135deg, #5B2A00 0%, #8C3E00 100%);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 8px 0 16px;
+  border: 2px solid var(--primary);
+  position: relative;
+  cursor: pointer;
+}
+.checkpoint-row.locked {
+  background: var(--surface);
+  border-color: var(--text-dim);
+  opacity: 0.55;
+}
+.checkpoint-row.locked .cp-title { color: var(--text-dim); }
+.cp-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.cp-icon {
+  font-size: 22px;
+  background: rgba(255,255,255,0.15);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cp-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: white;
+  flex: 1;
+}
+.cp-scene {
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+}
+.cp-meta {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 8px;
+  display: flex;
+  gap: 12px;
+}
+
+/* ─────── INTRO ─────── */
+.scene-bg {
+  height: 220px;
+  background: linear-gradient(135deg, #4a2c1a 0%, #8B4513 50%, #d4a373 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 90px;
+}
+.scene-bg.cafe { background: linear-gradient(135deg, #5d3a1f 0%, #8b6534 100%); }
+.scene-bg.shop { background: linear-gradient(135deg, #4a3a8e 0%, #7158b7 100%); }
+.scene-bg.hotel { background: linear-gradient(135deg, #1e3a5f 0%, #2a5f8e 100%); }
+.scene-bg.barcelona { background: linear-gradient(135deg, #c41e1e 0%, #ffc107 100%); }
+
+.intro-back {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 24px;
+  color: white;
+}
+
+.intro-content {
+  padding: 24px 24px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.intro-cefr {
+  font-size: 11px;
+  background: var(--primary);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  align-self: flex-start;
+  margin-bottom: 10px;
+}
+.intro-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.intro-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+.intro-info {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.intro-info-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  padding: 5px 0;
+}
+.intro-info-row .icon {
+  width: 24px;
+  text-align: center;
+}
+.intro-formats {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.intro-button {
+  margin-top: auto;
+  background: var(--primary);
+  color: white;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+/* ─────── SCENE ACTIVE ─────── */
+.scene-illust {
+  height: 160px;
+  position: relative;
+  font-size: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.scene-meta {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  backdrop-filter: blur(8px);
+}
+.scene-progress {
+  position: absolute;
+  top: 50px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  gap: 4px;
+}
+.dot {
+  height: 4px;
+  flex: 1;
+  background: rgba(255,255,255,0.3);
+  border-radius: 2px;
+}
+.dot.done { background: var(--green); }
+.dot.curr { background: white; }
+.scene-back-pill {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  background: rgba(0,0,0,0.6);
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.sympathy {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(0,0,0,0.6);
+  padding: 6px 10px;
+  border-radius: 12px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.npc-bubble {
+  margin: 12px 16px;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 14px;
+  border-left: 3px solid var(--primary);
+}
+.npc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.npc-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.npc-name {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.npc-text {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.npc-text-ru {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  font-style: italic;
+}
+.npc-audio {
+  margin-left: auto;
+  background: rgba(255,255,255,0.1);
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exercise-area {
+  flex: 1;
+  padding: 0 16px 14px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.exercise-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.exercise-label .badge {
+  background: var(--primary);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* CHOICE_4 */
+.choice {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border: 1.5px solid transparent;
+  font-size: 14px;
+}
+.choice.correct {
+  background: rgba(76,175,80,0.15);
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: 700;
+}
+.choice.wrong {
+  background: rgba(255,75,75,0.12);
+  border-color: var(--red);
+}
+
+/* VOICE */
+.voice-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 55px;
+  background: radial-gradient(circle, var(--primary) 0%, #c45a0a 100%);
+  margin: 16px auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  box-shadow: 0 0 0 8px rgba(255,122,26,0.15), 0 0 0 18px rgba(255,122,26,0.08);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 8px rgba(255,122,26,0.15), 0 0 0 18px rgba(255,122,26,0.08); }
+  50% { box-shadow: 0 0 0 14px rgba(255,122,26,0.2), 0 0 0 26px rgba(255,122,26,0.1); }
+}
+.voice-hint {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.voice-transcript {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px dashed var(--primary);
+}
+
+/* SENTENCE_BUILD */
+.build-target {
+  background: var(--surface);
+  border-radius: 12px;
+  min-height: 80px;
+  padding: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: flex-start;
+  border: 2px dashed rgba(255,255,255,0.1);
+}
+.word-chip {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.word-chip.placed {
+  background: var(--primary);
+  color: white;
+}
+.build-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* TRANSLATE */
+.translate-prompt {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.translate-prompt-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.translate-prompt-text {
+  font-size: 18px;
+  font-weight: 700;
+}
+.translate-input {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 8px;
+  border: 1.5px solid var(--primary);
+}
+.translate-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* CONJUGATE */
+.conjugate-sentence {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+}
+.conjugate-blank {
+  display: inline-block;
+  min-width: 90px;
+  border-bottom: 2px solid var(--primary);
+  padding: 0 8px;
+  color: var(--primary);
+  font-weight: 700;
+}
+.conjugate-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.conjugate-opt {
+  background: var(--surface);
+  border: 1.5px solid var(--surface-2);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+.conjugate-opt.correct {
+  background: rgba(76,175,80,0.15);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* LISTEN */
+.listen-button {
+  background: var(--primary);
+  color: white;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin: 12px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.listen-wave {
+  font-size: 22px;
+}
+
+/* RESULT */
+.result-hero {
+  height: 220px;
+  background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding-top: 20px;
+}
+.result-hero.fail {
+  background: linear-gradient(135deg, #d32f2f 0%, #7d1414 100%);
+}
+.result-emoji { font-size: 80px; }
+.result-text { font-size: 24px; font-weight: 800; margin-top: 8px; }
+
+.result-stats {
+  padding: 20px 16px;
+  flex: 1;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--surface-2);
+}
+.stat-label { font-size: 14px; color: var(--text-dim); }
+.stat-value { font-size: 14px; font-weight: 700; }
+.stat-row.bonus { background: rgba(255,193,7,0.1); padding: 12px; border-radius: 8px; border-bottom: 0; margin-top: 8px; }
+
+.result-actions {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 15px;
+}
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.format-mix {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 16px;
+}
+.format-mix-title {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-dim);
+}
+.format-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 13px;
+}
+.format-score { color: var(--green); font-weight: 600; }
+.format-score.bad { color: var(--red); }
+
+.section-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 48px 0 24px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<h1>ESPEAK — Чекпоинты</h1>
+<p class="subtitle">Визуальная концепция · 4 чекпоинта (CP1=A1, CP2=A2, CP3=B1, CP4=B2 boss)</p>
+
+<div class="section-title">⛳ Карта · Чекпоинт в roadmap'е</div>
+
+<div class="grid">
+  <!-- ROADMAP -->
+  <div class="frame">
+    <div class="frame-label">Карта курса — финал блока A1</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:42</span>
+        <span>📶 🔋 85%</span>
+      </div>
+      <div class="roadmap-header">
+        <div class="roadmap-title">Курс A1</div>
+        <div class="roadmap-streak">🔥 7 дней</div>
+      </div>
+      <div class="roadmap-list">
+        <div class="unit unit-completed">
+          <div class="unit-icon">✅</div>
+          <div class="unit-text">
+            <div class="unit-title">Урок 13. Времена года</div>
+            <div class="unit-meta">15 слов · 2 диалога</div>
+          </div>
+          <div class="unit-stars">★★★</div>
+        </div>
+        <div class="unit unit-completed">
+          <div class="unit-icon">✅</div>
+          <div class="unit-text">
+            <div class="unit-title">Урок 14. Погода</div>
+            <div class="unit-meta">17 слов · 3 диалога</div>
+          </div>
+          <div class="unit-stars">★★☆</div>
+        </div>
+        <div class="unit unit-completed">
+          <div class="unit-icon">✅</div>
+          <div class="unit-text">
+            <div class="unit-title">Урок 15. Цвета</div>
+            <div class="unit-meta">12 слов</div>
+          </div>
+          <div class="unit-stars">★★★</div>
+        </div>
+        <div class="unit unit-completed">
+          <div class="unit-icon">✅</div>
+          <div class="unit-text">
+            <div class="unit-title">Урок 16. Числа 1-100</div>
+            <div class="unit-meta">20 слов</div>
+          </div>
+          <div class="unit-stars">★★★</div>
+        </div>
+
+        <div class="checkpoint-row">
+          <div class="cp-header">
+            <div class="cp-icon">⛳</div>
+            <div class="cp-title">Чекпоинт A1</div>
+          </div>
+          <div class="cp-scene">«Первое утро в Мадриде» ☕</div>
+          <div class="cp-meta">
+            <span>📍 Кафе Casa Lola</span>
+            <span>⏱ ~8 мин</span>
+            <span>10 заданий</span>
+          </div>
+        </div>
+
+        <div class="unit locked">
+          <div class="unit-icon">🔒</div>
+          <div class="unit-text">
+            <div class="unit-title">Урок 17. Прошедшее время</div>
+            <div class="unit-meta">Блок A2 — пройди чекпоинт</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTRO SCREEN -->
+  <div class="frame">
+    <div class="frame-label">Стартовый экран чекпоинта</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:42</span>
+        <span>📶 🔋 85%</span>
+      </div>
+      <div class="scene-bg cafe">
+        <div class="intro-back">←</div>
+        ☕
+      </div>
+      <div class="intro-content">
+        <div class="intro-cefr">⛳ CHECKPOINT A1</div>
+        <div class="intro-title">Первое утро в Мадриде</div>
+        <div class="intro-subtitle">Ты в кафе «Casa Lola». Барменша María заговорит с тобой — нужно поддержать беседу и заказать кофе.</div>
+
+        <div class="intro-info">
+          <div class="intro-info-row"><span class="icon">📋</span> 10 заданий · ~8 минут</div>
+          <div class="intro-info-row"><span class="icon">👩</span> NPC: María (барменша)</div>
+          <div class="intro-info-row"><span class="icon">⭐</span> Pass: 70% (7/10 правильных)</div>
+          <div class="intro-info-row"><span class="icon">🎁</span> Награда: +250 XP, бейдж</div>
+        </div>
+
+        <div class="intro-formats">
+          <strong style="color:var(--text)">Форматы заданий:</strong><br>
+          🔘 Выбор ответа · 🌐 Перевод · ✍ Сборка предложения<br>
+          🎧 Аудирование · 📝 Спряжение глаголов
+        </div>
+
+        <div class="intro-button">Поехали →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">💬 Раунд · 6 форматов внутри сцены</div>
+
+<div class="grid">
+  <!-- CHOICE_4 -->
+  <div class="frame">
+    <div class="frame-label">🔘 Выбор из 4 вариантов</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:43</span>
+        <span>📶 🔋 84%</span>
+      </div>
+      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
+        <div class="scene-back-pill">←</div>
+        <div class="sympathy">⭐⭐⭐⭐⭐ 5/5</div>
+        ☕
+        <div class="scene-meta">Casa Lola · Раунд 1/10</div>
+        <div class="scene-progress">
+          <div class="dot curr"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+
+      <div class="npc-bubble">
+        <div class="npc-row">
+          <div class="npc-avatar">👩</div>
+          <div class="npc-name">María</div>
+          <div class="npc-audio">🔊</div>
+        </div>
+        <div class="npc-text">¡Buenos días! ¿Cómo estás?</div>
+        <div class="npc-text-ru">«Доброе утро! Как дела?»</div>
+      </div>
+
+      <div class="exercise-area">
+        <div class="exercise-label"><span class="badge">🔘 ВЫБОР</span> Что ответишь?</div>
+        <div class="choice">¡Hola! Bien, gracias.</div>
+        <div class="choice">Buenas noches.</div>
+        <div class="choice">Tengo veinte años.</div>
+        <div class="choice">Me llamo Andrea.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSLATE -->
+  <div class="frame">
+    <div class="frame-label">🌐 Перевод RU→ES</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:44</span>
+        <span>📶 🔋 84%</span>
+      </div>
+      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
+        <div class="scene-back-pill">←</div>
+        <div class="sympathy">⭐⭐⭐⭐⭐ 5/5</div>
+        ☕
+        <div class="scene-meta">Casa Lola · Раунд 4/10</div>
+        <div class="scene-progress">
+          <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+          <div class="dot curr"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+
+      <div class="npc-bubble">
+        <div class="npc-row">
+          <div class="npc-avatar">👩</div>
+          <div class="npc-name">María</div>
+          <div class="npc-audio">🔊</div>
+        </div>
+        <div class="npc-text">¿Qué quieres tomar?</div>
+        <div class="npc-text-ru">«Что хочешь заказать?»</div>
+      </div>
+
+      <div class="exercise-area">
+        <div class="exercise-label"><span class="badge">🌐 ПЕРЕВОД</span> Скажи по-испански:</div>
+        <div class="translate-prompt">
+          <div class="translate-prompt-label">RU</div>
+          <div class="translate-prompt-text">«Я хочу кофе с молоком»</div>
+        </div>
+        <div class="translate-input">Quiero un café con|</div>
+        <div class="translate-hint">Подсказка: querer · café · leche</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SENTENCE_BUILD -->
+  <div class="frame">
+    <div class="frame-label">✍ Сборка предложения</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:45</span>
+        <span>📶 🔋 83%</span>
+      </div>
+      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
+        <div class="scene-back-pill">←</div>
+        <div class="sympathy">⭐⭐⭐⭐⭐ 5/5</div>
+        ☕
+        <div class="scene-meta">Casa Lola · Раунд 3/10</div>
+        <div class="scene-progress">
+          <div class="dot done"></div><div class="dot done"></div>
+          <div class="dot curr"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+
+      <div class="npc-bubble">
+        <div class="npc-row">
+          <div class="npc-avatar">👩</div>
+          <div class="npc-name">María</div>
+          <div class="npc-audio">🔊</div>
+        </div>
+        <div class="npc-text">¿De dónde eres?</div>
+        <div class="npc-text-ru">«Откуда ты?»</div>
+      </div>
+
+      <div class="exercise-area">
+        <div class="exercise-label"><span class="badge">✍ СБОРКА</span> Собери ответ из слов:</div>
+        <div class="build-target">
+          <div class="word-chip placed">Soy</div>
+          <div class="word-chip placed">de</div>
+          <div class="word-chip placed">Rusia</div>
+        </div>
+        <div class="build-bank">
+          <div class="word-chip">vivo</div>
+          <div class="word-chip">en</div>
+          <div class="word-chip">la</div>
+          <div class="word-chip">Moscú</div>
+          <div class="word-chip">tengo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div class="frame">
+    <div class="frame-label">🎧 Аудирование</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:46</span>
+        <span>📶 🔋 83%</span>
+      </div>
+      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
+        <div class="scene-back-pill">←</div>
+        <div class="sympathy">⭐⭐⭐⭐ 4/5</div>
+        ☕
+        <div class="scene-meta">Casa Lola · Раунд 5/10</div>
+        <div class="scene-progress">
+          <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+          <div class="dot curr"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+
+      <div class="npc-bubble">
+        <div class="npc-row">
+          <div class="npc-avatar">👩</div>
+          <div class="npc-name">María смотрит в меню</div>
+        </div>
+        <div class="npc-text" style="color:var(--text-dim);">[аудио — текст скрыт]</div>
+      </div>
+
+      <div class="exercise-area">
+        <div class="exercise-label"><span class="badge">🎧 СЛУШАЙ</span> Что María сказала?</div>
+        <div class="listen-button">
+          <span class="listen-wave">🎵</span> Прослушать ещё раз
+        </div>
+        <div class="choice">Aquí tienes el menú.</div>
+        <div class="choice">¿Te gusta el menú?</div>
+        <div class="choice">Hoy el menú está cerrado.</div>
+        <div class="choice">El menú cuesta mucho.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONJUGATE -->
+  <div class="frame">
+    <div class="frame-label">📝 Спряжение глагола</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:47</span>
+        <span>📶 🔋 82%</span>
+      </div>
+      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
+        <div class="scene-back-pill">←</div>
+        <div class="sympathy">⭐⭐⭐⭐ 4/5</div>
+        ☕
+        <div class="scene-meta">Casa Lola · Раунд 8/10</div>
+        <div class="scene-progress">
+          <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+          <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+          <div class="dot curr"></div>
+          <div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+
+      <div class="npc-bubble">
+        <div class="npc-row">
+          <div class="npc-avatar">👩</div>
+          <div class="npc-name">María</div>
+          <div class="npc-audio">🔊</div>
+        </div>
+        <div class="npc-text">¿Pagas con tarjeta?</div>
+        <div class="npc-text-ru">«Платишь картой?»</div>
+      </div>
+
+      <div class="exercise-area">
+        <div class="exercise-label"><span class="badge">📝 СПРЯЖЕНИЕ</span> Поставь глагол в правильной форме:</div>
+        <div class="conjugate-sentence">
+          Sí, yo <span class="conjugate-blank">?</span> con tarjeta.
+        </div>
+        <div class="conjugate-options">
+          <div class="conjugate-opt">pagar</div>
+          <div class="conjugate-opt correct">pago</div>
+          <div class="conjugate-opt">pagas</div>
+          <div class="conjugate-opt">pagamos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOICE (опционально) -->
+  <div class="frame">
+    <div class="frame-label">🎤 Голосовой ответ (опц.)</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:48</span>
+        <span>📶 🔋 82%</span>
+      </div>
+      <div class="scene-illust" style="background: linear-gradient(135deg, #5d3a1f, #8b6534);">
+        <div class="scene-back-pill">←</div>
+        <div class="sympathy">⭐⭐⭐⭐ 4/5</div>
+        ☕
+        <div class="scene-meta">Casa Lola · Раунд 2/10</div>
+        <div class="scene-progress">
+          <div class="dot done"></div>
+          <div class="dot curr"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+
+      <div class="npc-bubble">
+        <div class="npc-row">
+          <div class="npc-avatar">👩</div>
+          <div class="npc-name">María</div>
+          <div class="npc-audio">🔊</div>
+        </div>
+        <div class="npc-text">¿Cómo te llamas?</div>
+        <div class="npc-text-ru">«Как тебя зовут?»</div>
+      </div>
+
+      <div class="exercise-area">
+        <div class="exercise-label"><span class="badge">🎤 ГОЛОС</span> Назови своё имя по-испански:</div>
+        <div class="voice-circle">🎤</div>
+        <div class="voice-hint">Слушаю... Произнеси «Me llamo ...»</div>
+        <div class="voice-transcript">Me llamo Andrea</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">🏁 Финальный экран · Pass и Fail</div>
+
+<div class="grid">
+  <!-- RESULT PASS -->
+  <div class="frame">
+    <div class="frame-label">✅ Прошёл (80%)</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:51</span>
+        <span>📶 🔋 81%</span>
+      </div>
+      <div class="result-hero">
+        <div class="result-emoji">🎉</div>
+        <div class="result-text">¡Perfecto!</div>
+        <div style="font-size: 14px; opacity: 0.9; margin-top: 4px;">Чекпоинт A1 пройден</div>
+      </div>
+
+      <div class="format-mix">
+        <div class="format-mix-title">Разбор по форматам:</div>
+        <div class="format-row"><span>🔘 Выбор</span><span class="format-score">3/3</span></div>
+        <div class="format-row"><span>🌐 Перевод</span><span class="format-score">2/2</span></div>
+        <div class="format-row"><span>✍ Сборка</span><span class="format-score">1/2</span></div>
+        <div class="format-row"><span>🎧 Аудирование</span><span class="format-score">1/2</span></div>
+        <div class="format-row"><span>📝 Спряжение</span><span class="format-score">1/1</span></div>
+      </div>
+
+      <div class="result-stats">
+        <div class="stat-row">
+          <div class="stat-label">Точность</div>
+          <div class="stat-value">80% (8/10)</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Симпатия María</div>
+          <div class="stat-value">⭐⭐⭐⭐ 4/5</div>
+        </div>
+        <div class="stat-row bonus">
+          <div class="stat-label">🎁 Награды</div>
+          <div class="stat-value">+250 XP · 🏆 Кофе по-испански</div>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <div class="btn-primary">Открыть блок A2 →</div>
+        <div class="btn-secondary">Разобрать ошибки (2)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT FAIL -->
+  <div class="frame">
+    <div class="frame-label">❌ Не прошёл (50%)</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>19:51</span>
+        <span>📶 🔋 81%</span>
+      </div>
+      <div class="result-hero fail">
+        <div class="result-emoji">😔</div>
+        <div class="result-text">María ушла...</div>
+        <div style="font-size: 14px; opacity: 0.9; margin-top: 4px;">Слишком много ошибок</div>
+      </div>
+
+      <div class="format-mix">
+        <div class="format-mix-title">Разбор по форматам:</div>
+        <div class="format-row"><span>🔘 Выбор</span><span class="format-score">2/3</span></div>
+        <div class="format-row"><span>🌐 Перевод</span><span class="format-score bad">0/2</span></div>
+        <div class="format-row"><span>✍ Сборка</span><span class="format-score bad">1/2</span></div>
+        <div class="format-row"><span>🎧 Аудирование</span><span class="format-score bad">1/2</span></div>
+        <div class="format-row"><span>📝 Спряжение</span><span class="format-score bad">1/1</span></div>
+      </div>
+
+      <div class="result-stats">
+        <div class="stat-row">
+          <div class="stat-label">Точность</div>
+          <div class="stat-value" style="color: var(--red);">50% (5/10)</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label">Слабая зона</div>
+          <div class="stat-value">Перевод · Спряжение</div>
+        </div>
+        <div class="stat-row bonus" style="background: rgba(255,75,75,0.1);">
+          <div class="stat-label">⚠ Нужно</div>
+          <div class="stat-value">70% для перехода</div>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <div class="btn-primary">Попробовать снова</div>
+        <div class="btn-secondary">Повторить уроки 13-16</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">🗺 Все 4 чекпоинта — обзор</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+  <div class="frame">
+    <div class="frame-label">CP1 · A1 · «Кафе»</div>
+    <div class="phone" style="height: 360px;">
+      <div class="notch"></div>
+      <div class="status-bar"><span></span><span></span></div>
+      <div class="scene-bg cafe" style="height: 320px; font-size: 130px;">☕</div>
+      <div style="padding: 12px 16px;">
+        <div style="font-size: 11px; color: var(--text-dim);">A1 · ~8 мин · 10 заданий</div>
+        <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">Утро в кафе «Casa Lola»</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="frame-label">CP2 · A2 · «Магазин»</div>
+    <div class="phone" style="height: 360px;">
+      <div class="notch"></div>
+      <div class="status-bar"><span></span><span></span></div>
+      <div class="scene-bg shop" style="height: 320px; font-size: 130px;">🛍</div>
+      <div style="padding: 12px 16px;">
+        <div style="font-size: 11px; color: var(--text-dim);">A2 · ~10 мин · 14 заданий</div>
+        <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">Покупки на Gran Vía</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="frame-label">CP3 · B1 · «Отель»</div>
+    <div class="phone" style="height: 360px;">
+      <div class="notch"></div>
+      <div class="status-bar"><span></span><span></span></div>
+      <div class="scene-bg hotel" style="height: 320px; font-size: 130px;">🏨</div>
+      <div style="padding: 12px 16px;">
+        <div style="font-size: 11px; color: var(--text-dim);">B1 · ~14 мин · 18 заданий</div>
+        <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">Проблема в отеле</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame">
+    <div class="frame-label">CP4 · B2 · «BOSS»</div>
+    <div class="phone" style="height: 360px;">
+      <div class="notch"></div>
+      <div class="status-bar"><span></span><span></span></div>
+      <div class="scene-bg barcelona" style="height: 320px; font-size: 130px;">🏛</div>
+      <div style="padding: 12px 16px;">
+        <div style="font-size: 11px; color: var(--text-dim);">B2 · ~22 мин · 30 заданий</div>
+        <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">Собеседование в Барселоне</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
