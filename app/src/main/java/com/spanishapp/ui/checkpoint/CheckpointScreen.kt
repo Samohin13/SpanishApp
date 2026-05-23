@@ -914,22 +914,34 @@ private fun ResultView(
     }
 
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        // Hero
+        // ── Hero (увеличенные размеры) ────────────────────────
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(220.dp)
+                .height(260.dp)
                 .background(Brush.linearGradient(heroGradient)),
             contentAlignment = Alignment.Center,
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    if (isPass) "✓" else "✗",
-                    fontSize = 56.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Black,
-                )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
+            ) {
                 Spacer(Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .size(84.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.18f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        if (isPass) "✓" else "✗",
+                        fontSize = 48.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.Black,
+                    )
+                }
+                Spacer(Modifier.height(14.dp))
                 Text(
                     when (outcome.tier) {
                         "gold" -> "¡Bienvenida!"
@@ -940,14 +952,16 @@ private fun ResultView(
                         else -> "Espere aquí"
                     },
                     color = Color.White,
-                    fontSize = 24.sp,
+                    fontSize = 30.sp,
                     fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = (-0.4).sp,
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(6.dp))
                 Text(
-                    "${outcome.percent}% правильных",
-                    color = Color.White.copy(alpha = 0.9f),
-                    fontSize = 13.sp,
+                    "${outcome.percent}% правильных · ${state.correctCount}/${state.totalRounds}",
+                    color = Color.White.copy(alpha = 0.92f),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
         }
@@ -956,89 +970,182 @@ private fun ResultView(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(20.dp)
+                .padding(horizontal = 20.dp, vertical = 18.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            // NPC quote
+            // ── NPC quote (крупнее) ────────────────────────
             Surface(
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 modifier = Modifier.fillMaxWidth(),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)),
             ) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         "${state.data.npc.name.uppercase()} ГОВОРИТ",
-                        fontSize = 10.sp,
-                        color = Color(0xFFFF6B1A),
+                        fontSize = 12.sp,
+                        color = OrangePrimary,
                         fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.6.sp,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        outcome.outcomeData.npcLineEs,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        lineHeight = 24.sp,
                     )
                     Spacer(Modifier.height(6.dp))
-                    Text(outcome.outcomeData.npcLineEs, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                    Spacer(Modifier.height(4.dp))
                     Text(
                         outcome.outcomeData.npcLineRu,
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                        lineHeight = 19.sp,
                     )
                     if (outcome.outcomeData.sceneDescriptionRu.isNotBlank()) {
-                        Spacer(Modifier.height(10.dp))
+                        Spacer(Modifier.height(14.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)),
+                        )
+                        Spacer(Modifier.height(14.dp))
                         Text(
                             outcome.outcomeData.sceneDescriptionRu,
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            lineHeight = 18.sp,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
+                            lineHeight = 21.sp,
                         )
                     }
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(18.dp))
 
-            // Stats
+            // ── Stats card ──────────────────────────────────
             Surface(
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 modifier = Modifier.fillMaxWidth(),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)),
             ) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
                     StatRow("Точность", "${outcome.percent}% · ${state.correctCount}/${state.totalRounds}")
                     if (outcome is CheckpointOutcome.Pass) {
+                        StatRowDivider()
                         StatRow("Награда XP", "+${outcome.xpAwarded}")
+                        StatRowDivider()
                         StatRow("Бейдж", state.data.rewards.badgeNameRu)
-                    } else if (outcome is CheckpointOutcome.Fail && outcome.weakLessons.isNotEmpty()) {
-                        StatRow("Слабые уроки", outcome.weakLessons.take(3).joinToString(", "))
                     }
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
-
-            // Actions
-            Button(
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onExit()
-                },
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6B1A)),
-            ) {
-                Text(
-                    if (isPass) "Продолжить →" else "Закрыть",
-                    fontWeight = FontWeight.ExtraBold,
-                )
-            }
-            if (!isPass) {
-                Spacer(Modifier.height(8.dp))
-                OutlinedButton(
-                    onClick = onRetry,
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text("Попробовать снова")
+            // ── Слабые уроки (читаемый формат) ─────────────
+            if (outcome is CheckpointOutcome.Fail && outcome.weakLessons.isNotEmpty()) {
+                Spacer(Modifier.height(18.dp))
+                val lessons = remember(outcome.weakLessons) {
+                    CheckpointLessonNames.parseAndDescribe(outcome.weakLessons)
+                }
+                if (lessons.isNotEmpty()) {
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = Color(0xFFE54848).copy(alpha = 0.08f),
+                        modifier = Modifier.fillMaxWidth(),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, RedDanger.copy(alpha = 0.3f)),
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                "ПОВТОРИ ЭТИ УРОКИ",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = RedDanger,
+                                letterSpacing = 0.8.sp,
+                            )
+                            Spacer(Modifier.height(10.dp))
+                            lessons.forEach { l ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clip(CircleShape)
+                                            .background(RedDanger.copy(alpha = 0.18f)),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Text(
+                                            l.number.toString(),
+                                            color = RedDanger,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = 13.sp,
+                                        )
+                                    }
+                                    Spacer(Modifier.width(10.dp))
+                                    Text(
+                                        l.title,
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+            Spacer(Modifier.height(24.dp))
+
+            // ── Actions (крупнее) ───────────────────────────
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onExit()
+                    },
+                color = Color.Transparent,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Brush.linearGradient(listOf(OrangePrimary, OrangePrimary2))),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        if (isPass) "Продолжить →" else "Закрыть",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 0.4.sp,
+                    )
+                }
+            }
+            if (!isPass) {
+                Spacer(Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onRetry()
+                    },
+                    modifier = Modifier.fillMaxWidth().height(54.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.5.dp, OrangePrimary),
+                ) {
+                    Text(
+                        "Попробовать снова",
+                        color = OrangePrimary,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -1046,10 +1153,20 @@ private fun ResultView(
 @Composable
 private fun StatRow(label: String, value: String) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        Text(label, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
+}
+
+@Composable
+private fun StatRowDivider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)),
+    )
 }
