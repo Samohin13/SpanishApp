@@ -2518,32 +2518,52 @@ private fun SubLessonRow(
             Spacer(Modifier.width(10.dp))
 
             if (!effectiveLocked) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                // v1.22.10: для чекпоинтов — единый бейдж «Экзамен» оранжевым,
+                // вместо отдельных «Теория» + «Практика».
+                val isCheckpoint = lesson.title.startsWith("Чекпоинт", ignoreCase = true) ||
+                                   lesson.type.equals("checkpoint", ignoreCase = true)
+                if (isCheckpoint) {
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(typeBg)
-                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                            .background(Color(0xFFFF6B1A))
+                            .padding(horizontal = 10.dp, vertical = 5.dp)
                     ) {
                         Text(
-                            "📖 Теория",
+                            "🏁 Экзамен",
                             fontSize  = 11.sp,
-                            fontWeight = FontWeight.Medium,
-                            color     = typeTextColor
+                            fontWeight = FontWeight.ExtraBold,
+                            color     = Color.White
                         )
                     }
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0xFFFFF3E0))
-                            .padding(horizontal = 8.dp, vertical = 3.dp)
-                    ) {
-                        Text(
-                            "✏️ Практика",
-                            fontSize  = 11.sp,
-                            fontWeight = FontWeight.Medium,
-                            color     = Color(0xFFE65100)
-                        )
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(typeBg)
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                "📖 Теория",
+                                fontSize  = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color     = typeTextColor
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFFFFF3E0))
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                "✏️ Практика",
+                                fontSize  = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color     = Color(0xFFE65100)
+                            )
+                        }
                     }
                 }
             }

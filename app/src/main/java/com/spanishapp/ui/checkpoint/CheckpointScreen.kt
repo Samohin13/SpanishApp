@@ -33,6 +33,42 @@ import androidx.navigation.NavHostController
 import com.spanishapp.domain.checkpoint.*
 import com.spanishapp.ui.components.rememberCheckedHaptic
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
+
+/**
+ * v1.22.10: маппинг сцен/портретов на реальные фото (Unsplash + pravatar).
+ * Используются те же URL что в HTML мокапе CP1_review.html, чтобы итоговый
+ * UI выглядел один-в-один с мокапом.
+ */
+private fun sceneImageUrl(cpId: String): String = when (cpId) {
+    "cp1" -> "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=80"  // самолёт + облака
+    "cp2" -> "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=900&q=80"  // квартира интерьер
+    "cp3" -> "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80"     // ресторан / тапас
+    "cp4" -> "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=900&q=80"     // Мадрид панорама
+    else  -> "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=900&q=80"
+}
+
+private fun npcImageUrl(npcId: String): String = when (npcId) {
+    "carlos"    -> "https://i.pravatar.cc/200?img=12"  // мужчина средних лет
+    "sra_lopez" -> "https://i.pravatar.cc/200?img=47"  // женщина старше
+    "diego"     -> "https://i.pravatar.cc/200?img=33"  // молодой испанец
+    "sergio"    -> "https://i.pravatar.cc/200?img=53"  // молодой
+    else        -> "https://i.pravatar.cc/200?img=12"
+}
+
+private val OrangePrimary = Color(0xFFFF6B1A)
+private val OrangePrimary2 = Color(0xFFFF8533)
+private val RedDanger = Color(0xFFE54848)
+private val GreenSuccess = Color(0xFF2EB872)
+private val AccentYellow = Color(0xFFF4B400)
 
 /**
  * Главный экран чекпоинта. Маршрутизирует по uiState:
@@ -105,128 +141,207 @@ private fun IntroView(
 ) {
     val scroll = rememberScrollState()
     val haptic = rememberCheckedHaptic()
+    val ctx = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(
             modifier = Modifier.fillMaxSize().verticalScroll(scroll)
         ) {
-            // Hero (gradient placeholder вместо реального фото пока)
+            // ── Hero image (фото сцены + gradient overlay) ─────
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
-                    .background(
-                        Brush.linearGradient(
-                            colors = listOf(Color(0xFF8B4513), Color(0xFFD4A373))
-                        )
-                    )
+                    .height(240.dp),
             ) {
-                IconButton(
-                    onClick = onBack,
-                    modifier = Modifier.padding(12.dp)
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White)
-                }
+                AsyncImage(
+                    model = ImageRequest.Builder(ctx)
+                        .data(sceneImageUrl(data.id))
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                // Тёмный градиент снизу для читаемости
                 Box(
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.85f),
+                                ),
+                                startY = 0f,
+                                endY = Float.POSITIVE_INFINITY,
+                            )
+                        ),
+                )
+                // Back button круглый с блюр-фоном
+                Surface(
+                    modifier = Modifier
+                        .padding(top = 14.dp, start = 14.dp)
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                        .size(40.dp),
+                    shape = CircleShape,
+                    color = Color.Black.copy(alpha = 0.55f),
+                    onClick = onBack,
                 ) {
-                    Text(
-                        "⛳",
-                        fontSize = 80.sp,
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    }
                 }
             }
 
             Column(modifier = Modifier.padding(20.dp)) {
+                // Бейдж «ЧЕКПОИНТ A1»
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = Color(0xFFFF6B1A),
-                    modifier = Modifier.padding(bottom = 10.dp),
+                    color = OrangePrimary,
+                    modifier = Modifier.padding(bottom = 12.dp),
                 ) {
                     Text(
-                        "ЧЕКПОИНТ ${data.cefr}",
+                        "🏁 ЧЕКПОИНТ ${data.cefr}",
                         color = Color.White,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         fontSize = 11.sp,
                         fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 1.4.sp,
                     )
                 }
 
+                // Title
                 Text(
                     data.titleRu,
-                    fontSize = 24.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = (-0.3).sp,
+                    lineHeight = 32.sp,
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(10.dp))
+
+                // Description
                 Text(
                     data.descriptionRu,
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    lineHeight = 20.sp,
+                    lineHeight = 21.sp,
                 )
 
+                // Stakes (красная плашка) — точно как в HTML
                 if (data.stakesRu.isNotBlank()) {
                     Spacer(Modifier.height(16.dp))
-                    Surface(
-                        color = Color(0xFFE54848).copy(alpha = 0.12f),
-                        shape = RoundedCornerShape(10.dp),
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(RedDanger.copy(alpha = 0.12f))
+                            .padding(start = 0.dp),
                     ) {
+                        // Border-left визуализация
+                        Box(
+                            modifier = Modifier
+                                .width(3.dp)
+                                .fillMaxHeight()
+                                .background(RedDanger),
+                        )
                         Column(modifier = Modifier.padding(14.dp)) {
                             Text(
-                                "СТАВКА",
+                                "ВНИМАНИЕ",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.ExtraBold,
-                                color = Color(0xFFE54848),
+                                color = RedDanger,
+                                letterSpacing = 1.2.sp,
                             )
-                            Spacer(Modifier.height(4.dp))
-                            Text(data.stakesRu, fontSize = 13.sp, lineHeight = 18.sp)
+                            Spacer(Modifier.height(5.dp))
+                            Text(data.stakesRu, fontSize = 13.sp, lineHeight = 19.sp)
                         }
                     }
                 }
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(18.dp))
 
-                // Info card
+                // Info card (как в HTML)
                 Surface(
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     modifier = Modifier.fillMaxWidth(),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)),
                 ) {
-                    Column(modifier = Modifier.padding(14.dp)) {
-                        Text("📋 ${data.rounds.size} заданий", fontSize = 13.sp)
-                        Spacer(Modifier.height(6.dp))
-                        Text("👤 ${data.npc.name} · ${data.npc.roleRu}", fontSize = 13.sp)
-                        Spacer(Modifier.height(6.dp))
-                        Text(
-                            "⭐ Pass: ${data.thresholds.bronzePercent}% правильных",
-                            fontSize = 13.sp,
-                        )
-                        Spacer(Modifier.height(6.dp))
-                        Text(
-                            "🎁 Награда: +${data.rewards.bronzeXp} XP + бейдж",
-                            fontSize = 13.sp,
-                        )
+                    Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 4.dp)) {
+                        InfoRow(icon = "📋", text = "${data.rounds.size} заданий · ~${data.rounds.size * 35 / 60} минут")
+                        InfoRowDivider()
+                        InfoRow(icon = "👤", text = "${data.npc.name}, ${data.npc.roleRu.lowercase()}")
+                        InfoRowDivider()
+                        InfoRow(icon = "🚩", text = "Pass: ${data.thresholds.bronzePercent}%")
+                        InfoRowDivider()
+                        InfoRow(icon = "🎁", text = "+${data.rewards.bronzeXp} XP · ${data.rewards.badgeNameRu}")
                     }
                 }
 
                 Spacer(Modifier.height(24.dp))
 
-                Button(
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onStart()
-                    },
-                    modifier = Modifier.fillMaxWidth().height(54.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6B1A)),
+                // Кнопка «Начать →» оранжевая gradient
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(18.dp))
+                        .clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onStart()
+                        },
+                    color = Color.Transparent,
                 ) {
-                    Text("Начать", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.linearGradient(listOf(OrangePrimary, OrangePrimary2))
+                            ),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                "Начать",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                letterSpacing = 0.4.sp,
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text("→", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
+                        }
+                    }
                 }
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(28.dp))
             }
         }
     }
+}
+
+@Composable
+private fun InfoRow(icon: String, text: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(icon, fontSize = 18.sp, modifier = Modifier.width(28.dp))
+        Spacer(Modifier.width(8.dp))
+        Text(text, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+    }
+}
+
+@Composable
+private fun InfoRowDivider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)),
+    )
 }
 
 @Composable
@@ -238,55 +353,100 @@ private fun PlayingView(
 ) {
     val round = state.currentRound ?: return
     val haptic = rememberCheckedHaptic()
+    val ctx = LocalContext.current
     var answered by remember(state.currentRoundIndex) { mutableStateOf(false) }
     var userAnswer by remember(state.currentRoundIndex) { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
 
-        // Scene top
+        // ── Scene top (фото + overlay) ───────────────────
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(140.dp)
-                .background(
-                    Brush.linearGradient(listOf(Color(0xFF1A1B1F), Color(0xFF3A3B3F)))
-                )
+                .height(160.dp),
         ) {
-            IconButton(onClick = onBack, modifier = Modifier.padding(8.dp)) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White)
-            }
-            // Sympathy stars
-            Row(
-                modifier = Modifier.align(Alignment.TopEnd).padding(12.dp)
+            AsyncImage(
+                model = ImageRequest.Builder(ctx)
+                    .data(sceneImageUrl(state.data.id))
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+            )
+            // Затемнение
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.45f),
+                                Color.Black.copy(alpha = 0.15f),
+                                Color.Black.copy(alpha = 0.85f),
+                            )
+                        )
+                    ),
+            )
+            // Back button — круглый blur (с padding под статус-бар)
+            Surface(
+                modifier = Modifier
+                    .padding(top = 12.dp, start = 12.dp)
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .size(36.dp),
+                shape = CircleShape,
+                color = Color.Black.copy(alpha = 0.55f),
+                onClick = onBack,
             ) {
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color.Black.copy(alpha = 0.55f),
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                }
+            }
+            // Sympathy stars (top-right)
+            Surface(
+                modifier = Modifier
+                    .padding(top = 12.dp, end = 12.dp)
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .align(Alignment.TopEnd),
+                shape = RoundedCornerShape(14.dp),
+                color = Color.Black.copy(alpha = 0.55f),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         "★".repeat(state.sympathyStars) + "☆".repeat(5 - state.sympathyStars),
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        color = Color(0xFFF4B400),
-                        fontSize = 12.sp,
+                        color = AccentYellow,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        "${state.sympathyStars}/5",
+                        color = Color.White,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                     )
                 }
             }
-            // Place + round
+            // Place + round (bottom-left)
             Column(modifier = Modifier.align(Alignment.BottomStart).padding(14.dp)) {
                 Text(
                     state.data.scene.name,
                     color = Color.White,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
+                    letterSpacing = (-0.2).sp,
                 )
                 Text(
                     "Раунд ${state.currentRoundIndex + 1} / ${state.totalRounds}",
-                    color = Color.White.copy(alpha = 0.7f),
+                    color = Color.White.copy(alpha = 0.85f),
                     fontSize = 11.sp,
                 )
             }
-            // Progress dots
+            // Progress dots (bottom-right)
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -302,9 +462,9 @@ private fun PlayingView(
                             .clip(RoundedCornerShape(2.dp))
                             .background(
                                 when {
-                                    i < state.currentRoundIndex -> Color(0xFF2EB872)
+                                    i < state.currentRoundIndex -> GreenSuccess
                                     i == state.currentRoundIndex -> Color.White
-                                    else -> Color.White.copy(alpha = 0.3f)
+                                    else -> Color.White.copy(alpha = 0.32f)
                                 }
                             )
                     )
@@ -312,7 +472,7 @@ private fun PlayingView(
             }
         }
 
-        // NPC bubble (если не audio_only с скрытым текстом)
+        // NPC bubble — с круглым аватаром и orange border
         if (round.npcLineEs != null && !round.audioOnly) {
             Surface(
                 shape = RoundedCornerShape(16.dp),
@@ -320,38 +480,59 @@ private fun PlayingView(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 12.dp)
                     .fillMaxWidth(),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)),
             ) {
-                Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.Top) {
+                Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
+                    // Круглый аватар NPC с orange border
                     Box(
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(44.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFFFF6B1A)),
-                        contentAlignment = Alignment.Center,
+                            .background(OrangePrimary),
                     ) {
-                        Text(state.data.npc.name.first().toString(), color = Color.White, fontWeight = FontWeight.Bold)
+                        AsyncImage(
+                            model = ImageRequest.Builder(ctx)
+                                .data(npcImageUrl(state.data.npc.id))
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(2.dp)
+                                .clip(CircleShape),
+                        )
                     }
-                    Spacer(Modifier.width(12.dp))
+                    Spacer(Modifier.width(11.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             "${state.data.npc.name.uppercase()} · ${state.data.npc.roleRu.uppercase()}",
                             fontSize = 10.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.4.sp,
                         )
-                        Spacer(Modifier.height(4.dp))
-                        Text(round.npcLineEs, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.height(5.dp))
+                        Text(round.npcLineEs, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, lineHeight = 21.sp)
                         if (round.npcLineRu != null) {
-                            Spacer(Modifier.height(2.dp))
+                            Spacer(Modifier.height(3.dp))
                             Text(
                                 round.npcLineRu,
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                             )
                         }
                     }
-                    IconButton(onClick = onReplayAudio) {
-                        Icon(Icons.Default.PlayArrow, null, tint = Color(0xFFFF6B1A))
+                    Surface(
+                        modifier = Modifier.size(28.dp),
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        onClick = onReplayAudio,
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(Icons.Default.PlayArrow, null, tint = OrangePrimary, modifier = Modifier.size(14.dp))
+                        }
                     }
                 }
             }
