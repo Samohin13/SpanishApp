@@ -165,12 +165,24 @@ private fun checkpointIdForUnitLesson(unitId: String, lessonIndex: Int, title: S
     // По названию (надёжно) — title содержит «Чекпоинт» (с учётом возможного
     // префикса-эмодзи: «🏁 Чекпоинт ...», «🚩 Чекпоинт...» и пр.)
     if (title.contains("Чекпоинт", ignoreCase = true)) {
-        // Маппинг блок → CP id
+        // Маппинг блок → CP id (все 16 блоков курса A1→B2)
         return when (unitId) {
-            "1" -> "cp1"
-            "2" -> "cp2"
-            "3" -> "cp3"
-            "4" -> "cp4"
+            "1"  -> "cp1"
+            "2"  -> "cp2"
+            "3"  -> "cp3"
+            "4"  -> "cp4"
+            "5"  -> "cp5"
+            "6"  -> "cp6"
+            "7"  -> "cp7"
+            "8"  -> "cp8"
+            "9"  -> "cp9"
+            "10" -> "cp10"
+            "11" -> "cp11"
+            "12" -> "cp12"
+            "13" -> "cp13"
+            "14" -> "cp14"
+            "15" -> "cp15"
+            "16" -> "cp16"
             else -> null
         }
     }

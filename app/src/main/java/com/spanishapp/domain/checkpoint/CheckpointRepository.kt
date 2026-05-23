@@ -27,14 +27,22 @@ class CheckpointRepository @Inject constructor(
     @Volatile private var cache: Map<String, CheckpointData>? = null
 
     /**
-     * Список чекпоинтов в порядке прохождения (cp1 → cp4).
+     * Список чекпоинтов в порядке прохождения (cp1 → cp16).
      * Для UI карты чекпоинтов на главном экране.
      */
     suspend fun listAll(): List<CheckpointData> = loadAll().values
-        .sortedBy { it.block }
+        .sortedWith(compareBy({ cefrOrder(it.cefr) }, { it.block }))
 
-    /** Загрузить один чекпоинт по id ("cp1".."cp4"). null если не найден. */
+    /** Загрузить один чекпоинт по id ("cp1".."cp16"). null если не найден. */
     suspend fun getById(id: String): CheckpointData? = loadAll()[id]
+
+    private fun cefrOrder(cefr: String): Int = when (cefr.uppercase()) {
+        "A1" -> 1
+        "A2" -> 2
+        "B1" -> 3
+        "B2" -> 4
+        else -> 99
+    }
 
     /** Какой CP открывается после прохождения N-го блока (cp1 после блока 1, etc). */
     suspend fun getByBlock(block: Int): CheckpointData? = loadAll().values
@@ -49,6 +57,18 @@ class CheckpointRepository @Inject constructor(
                 "checkpoints/cp2_a1_apartment.json",
                 "checkpoints/cp3_a1_restaurant.json",
                 "checkpoints/cp4_a1_madrid_day.json",
+                "checkpoints/cp5_a2_doctor.json",
+                "checkpoints/cp6_a2_shopping.json",
+                "checkpoints/cp7_a2_weekend.json",
+                "checkpoints/cp8_a2_work.json",
+                "checkpoints/cp9_b1_hotel.json",
+                "checkpoints/cp10_b1_date.json",
+                "checkpoints/cp11_b1_movie.json",
+                "checkpoints/cp12_b1_tourist.json",
+                "checkpoints/cp13_b2_interview.json",
+                "checkpoints/cp14_b2_family.json",
+                "checkpoints/cp15_b2_business.json",
+                "checkpoints/cp16_b2_final.json",
             )
             val loaded = mutableMapOf<String, CheckpointData>()
             for (path in fileNames) {
