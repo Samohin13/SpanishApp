@@ -44,6 +44,8 @@ import com.spanishapp.service.AppLockManager
 import com.spanishapp.ui.Navigation
 import com.spanishapp.ui.components.SpanishBackground
 import com.spanishapp.ui.components.SpanishBottomBar
+import com.spanishapp.ui.onboarding.OnboardingPrefs
+import com.spanishapp.ui.onboarding.OnboardingScreen
 import com.spanishapp.ui.theme.SpanishAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -53,6 +55,7 @@ class MainActivity : FragmentActivity() {
 
     @Inject lateinit var appLockManager: AppLockManager
     @Inject lateinit var appPreferences: AppPreferences
+    @Inject lateinit var onboardingPrefs: OnboardingPrefs
 
     /**
      * Применяем выбранный пользователем язык UI ДО создания UI.
@@ -156,7 +159,26 @@ class MainActivity : FragmentActivity() {
                             if (seedReady) splashHoldOpen = false
                         }
                         if (seedReady) {
-                            SpanishAppRoot(widgetTarget = widgetTarget)
+                            // First-launch onboarding gate.
+                            // Collect from DataStore; while null (loading)
+                            // we show the same first-launch overlay to avoid
+                            // a flicker into home before the flag arrives.
+                            val onboardingDone by onboardingPrefs.isCompleted
+                                .collectAsStateWithLifecycle(initialValue = null)
+                            // Adaptive deep-link target after onboarding —
+                            // funneled into the same widgetTarget channel
+                            // SpanishAppRoot already consumes.
+                            when (onboardingDone) {
+                                null -> FirstLaunchLoadingOverlay()
+                                false -> OnboardingScreen(
+                                    onFinished = { adaptiveRoute ->
+                                        if (adaptiveRoute != null) {
+                                            widgetTarget.value = adaptiveRoute
+                                        }
+                                    },
+                                )
+                                true -> SpanishAppRoot(widgetTarget = widgetTarget)
+                            }
                         } else {
                             FirstLaunchLoadingOverlay()
                         }

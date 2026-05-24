@@ -78,7 +78,17 @@ class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val radioListeningDao: com.spanishapp.radio.data.RadioListeningDao,
     private val xpTracker: com.spanishapp.service.XpTracker,
+    private val miniTestPreferences: com.spanishapp.data.prefs.MiniTestPreferences,
 ) : ViewModel() {
+
+    /** Snapshot of mini-test ids the user has passed. Drives ✅ badges in
+     * the lesson list (CourseDetailScreen). */
+    val passedMiniTestIds: StateFlow<Set<String>> =
+        miniTestPreferences.passedIds.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = emptySet(),
+        )
 
     // ── UI State ──────────────────────────────────────────────
     val uiState: StateFlow<HomeUiState> = combine(

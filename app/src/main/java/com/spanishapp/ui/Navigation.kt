@@ -424,6 +424,19 @@ object Navigation {
             // OTA download route DISABLED for v1 — see comment near initialStartDest.
             // DownloadScreen + DownloadViewModel kept in source but unreachable.
 
+            // ── Мини-тесты (между уроками, каждый 5-й шаг) ───
+            composable(
+                "minitest/{unitId}/{position}",
+                arguments = listOf(
+                    navArgument("unitId") { type = NavType.StringType },
+                    navArgument("position") { type = NavType.IntType },
+                )
+            ) { entry ->
+                val unitId = entry.arguments?.getString("unitId") ?: "1"
+                val position = entry.arguments?.getInt("position") ?: 5
+                com.spanishapp.ui.minitest.MiniTestScreen(navController, unitId, position)
+            }
+
             // ── Чекпоинты A1 (v1.22.9, 4 блока × 1 CP) ───────
             composable(
                 "checkpoint/{cpId}",

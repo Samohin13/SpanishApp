@@ -2197,7 +2197,15 @@ internal fun TopicCard(
     isExpanded: Boolean,
     onToggle: () -> Unit,
     onLessonClick: (Int) -> Unit,
-    onPremiumClick: () -> Unit = {}
+    onPremiumClick: () -> Unit = {},
+    /**
+     * Mini-test integration (optional). When set, mini-test rows are inserted
+     * after every 5th lesson in the expanded panel. Tapping invokes the
+     * callback with the position (5, 10 or 15). `completedMiniTestIds` is
+     * a snapshot of passed mini-test ids — used to render a ✅ badge.
+     */
+    onMiniTestClick: ((Int) -> Unit)? = null,
+    completedMiniTestIds: Set<String> = emptySet(),
 ) {
     val accentColor   = if (unit.isLocked) LockGray else unit.color
     val completedCount = unit.lessons.count { it.isCompleted }
@@ -2410,6 +2418,25 @@ internal fun TopicCard(
                                 onClick      = { onLessonClick(idx) },
                                 onPremiumClick = onPremiumClick
                             )
+                            // Insert a mini-test marker after every 5th lesson
+                            // (positions 5, 10, 15) — only when the host screen
+                            // provided a click handler and the unit has a numeric
+                            // block id (real blocks, not A2-preview placeholders).
+                            val oneBased = idx + 1
+                            if (onMiniTestClick != null &&
+                                unit.id.toIntOrNull() != null &&
+                                oneBased in com.spanishapp.domain.minitest.MiniTestGenerator.POSITIONS &&
+                                oneBased < unit.lessons.size  // не показываем после последнего урока (чекпоинта)
+                            ) {
+                                MiniTestRow(
+                                    position = oneBased,
+                                    unitId = unit.id,
+                                    isLocked = unit.isLocked,
+                                    unitColor = accentColor,
+                                    completedMiniTestIds = completedMiniTestIds,
+                                    onClick = { onMiniTestClick(oneBased) },
+                                )
+                            }
                         }
                     }
                 }
@@ -2578,6 +2605,89 @@ private fun SubLessonRow(
                 isLocked           -> Icon(Icons.Default.Lock, null, tint = LockGray, modifier = Modifier.size(15.dp))
                 lesson.isCompleted -> {}
                 else               -> Icon(Icons.Default.ChevronRight, null, tint = unitColor, modifier = Modifier.size(18.dp))
+            }
+        }
+    }
+}
+
+/**
+ * Mini-test row inserted between regular lessons (after positions 5, 10, 15).
+ * Stylistically distinct from SubLessonRow — orange accent + 🎯 emoji.
+ *
+ * Tap → navigates to `minitest/{unitId}/{position}`. Shows ✅ if the user
+ * has already passed this mini-test.
+ */
+@Composable
+private fun MiniTestRow(
+    position: Int,
+    unitId: String,
+    isLocked: Boolean,
+    unitColor: Color,
+    completedMiniTestIds: Set<String>,
+    onClick: () -> Unit,
+) {
+    val miniTestId = "u${unitId}_mt${position}"
+    val isCompleted = miniTestId in completedMiniTestIds
+    val orange = Color(0xFFFF8A3D)
+
+    Surface(
+        onClick = if (isLocked) ({}) else onClick,
+        modifier = Modifier.fillMaxWidth(),
+        color = if (isLocked) MaterialTheme.colorScheme.surfaceVariant else orange.copy(alpha = 0.10f),
+        shape = RoundedCornerShape(14.dp),
+        shadowElevation = if (isLocked) 0.dp else 1.dp,
+        border = BorderStroke(1.dp, orange.copy(alpha = if (isLocked) 0.15f else 0.35f)),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (isCompleted) orange
+                        else if (isLocked) MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        else orange.copy(alpha = 0.18f)
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (isCompleted) {
+                    Icon(Icons.Default.Check, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                } else {
+                    Text("🎯", fontSize = 18.sp)
+                }
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Мини-тест ${position}/15",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (isLocked) TextGray.copy(.55f) else MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    if (isCompleted) "Пройдено" else "5 заданий · +20 XP",
+                    fontSize = 11.sp,
+                    color = if (isLocked) TextGray.copy(.45f) else orange,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
+            if (!isLocked) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(orange)
+                        .padding(horizontal = 10.dp, vertical = 5.dp)
+                ) {
+                    Text(
+                        "🎯 Тест",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.White,
+                    )
+                }
             }
         }
     }

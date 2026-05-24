@@ -80,6 +80,7 @@ object XpSystem {
     const val THEORY_FIRST_READ  = 10    // первое прочтение теория-карточки
     const val PRONUNCIATION_GOOD = 5     // успешная попытка произношения (score >= 70%)
     const val WOD_FIRST_TODAY    = 10    // первое закрепление слова дня за сегодня
+    const val MINI_TEST_PASSED   = 20    // мини-тест между уроками пройден (≥60%)
 
     /**
      * Единая формула XP за уровень мини-игры. Раньше каждая игра считала

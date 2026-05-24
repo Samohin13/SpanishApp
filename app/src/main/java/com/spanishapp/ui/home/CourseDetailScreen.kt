@@ -41,6 +41,10 @@ fun CourseDetailScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var expandedUnitId by remember { mutableStateOf<String?>(null) }
 
+    // Mini-test completion snapshot (read-only). Used to render ✅ badges
+    // on already-passed mini-tests in the expanded panel.
+    val miniTestPassed by viewModel.passedMiniTestIds.collectAsStateWithLifecycle()
+
     val unitsForCourse = remember(state.roadmapUnits, courseLevel) {
         state.roadmapUnits.filter { it.cefrLevel == courseLevel }
     }
@@ -146,7 +150,16 @@ fun CourseDetailScreen(
                         // Для preview-юнитов A2/B1/B2 (id не int) клик игнорируется —
                         // контент ещё в разработке.
                     },
-                    onPremiumClick = { /* premium убран — все курсы открыты */ }
+                    onPremiumClick = { /* premium убран — все курсы открыты */ },
+                    onMiniTestClick = { position ->
+                        if (!unit.isLocked && unit.id.toIntOrNull() != null) {
+                            navController.navigate("minitest/${unit.id}/$position") {
+                                popUpTo("course_detail/$courseLevel") { inclusive = false }
+                                launchSingleTop = true
+                            }
+                        }
+                    },
+                    completedMiniTestIds = miniTestPassed,
                 )
             }
         }
