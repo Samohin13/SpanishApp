@@ -454,6 +454,8 @@ object RoadmapData {
                 RoadmapLesson("📚 Imperfecto Subj. irregulares: fuera, tuviera",     "content", "general"),
                 // 25
                 RoadmapLesson("🔀 Si + Imp.Subj. + Condicional (тип 2: гипотеза)",   "content", "general"),
+                // 25.5
+                RoadmapLesson("🆕 Si тип 3 + Cond Compuesto (прошлое-небывшее)",      "content", "general", id = "u10_l9_5"),
                 // 26
                 RoadmapLesson("💡 Советы: Yo en tu lugar... / Yo que tú...",          "content", "phrases"),
                 // 27
@@ -666,6 +668,8 @@ object RoadmapData {
                 RoadmapLesson("✍️ Artículo de opinión: структура",                    "content", "general"),
                 // l4
                 RoadmapLesson("🔗 Коннекторы контраста: sin embargo, no obstante",    "content", "general"),
+                // 🆕 l4_5 — sino vs sino que vs no sólo... sino también
+                RoadmapLesson("↔️ Sino, sino que, no sólo… sino también",              "content", "general", id = "u15_l4_5"),
                 // l5
                 RoadmapLesson("🎯 Мини-тест: Conectores y Registro",                   "quiz",    "all"),
                 // l6
