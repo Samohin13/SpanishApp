@@ -3,6 +3,7 @@ package com.spanishapp.domain.minitest
 import com.spanishapp.ui.home.Exercise
 import com.spanishapp.ui.home.ExerciseType
 import com.spanishapp.ui.home.LessonContentData
+import com.spanishapp.ui.home.RoadmapData
 import kotlin.random.Random
 
 /**
@@ -81,22 +82,38 @@ object MiniTestGenerator {
 
     /**
      * Generate one mini-test by sampling 5 exercises from the previous
-     * 5 lessons (`[position-5, position-1]`). Sampling is deterministic
-     * per (unitId, position) so the same test is shown to all users —
-     * this matches lesson content semantics and keeps QA reproducible.
+     * 5 lessons (`[position-5, position-1]` by ROADMAP ORDER, which
+     * includes `_5` bridge lessons like `u1_l13_5`, `u4_l13_5` etc).
+     *
+     * Lesson IDs are resolved through [RoadmapData] so a single source
+     * of truth controls both navigation and mini-test coverage —
+     * `_5` bridge lessons that sit between numerically-named lessons
+     * DO count toward the 5/10/15 trigger and ARE sampled into the pool.
+     *
+     * Sampling is deterministic per (unitId, position) so the same test
+     * is shown to all users — this matches lesson content semantics and
+     * keeps QA reproducible.
      *
      * Returns null if no supported exercises exist in that range.
      */
     fun generate(unitId: String, position: Int): MiniTest? {
         if (position !in POSITIONS) return null
 
-        val firstLessonIdx = position - 5     // inclusive
-        val lastLessonIdx  = position - 1     // inclusive
-        val coverage = (firstLessonIdx..lastLessonIdx).map { idx ->
-            "u${unitId}_l${idx}"
-        }
+        // Resolve lesson IDs via the canonical roadmap order
+        // (preserves `_5` bridge lessons in sequential position).
+        val unit = RoadmapData.units.firstOrNull { it.id == unitId } ?: return null
+        val firstIdx = position - 5             // inclusive
+        val lastIdx  = position - 1             // inclusive
+        if (firstIdx < 0 || firstIdx >= unit.lessons.size) return null
 
-        // Pool exercises from the 5 source lessons.
+        val coverage: List<String> = (firstIdx..lastIdx)
+            .mapNotNull { idx ->
+                unit.lessons.getOrNull(idx)?.let { lesson ->
+                    lesson.id ?: "u${unitId}_l${idx}"
+                }
+            }
+
+        // Pool exercises from the 5 source lessons (merged V1+V2 map).
         val pool: List<Exercise> = coverage
             .flatMap { key -> LessonContentData.lessons[key]?.exercises.orEmpty() }
             .filter { it.type in SUPPORTED_TYPES }

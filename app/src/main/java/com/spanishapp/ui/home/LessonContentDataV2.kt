@@ -1374,7 +1374,7 @@ object LessonContentDataV2 {
                     LessonItem("Приветствия", "Hola, Buenos días", ""),
                     LessonItem("SER (быть)", "soy, eres, es", "представление"),
                     LessonItem("Национальности", "ruso/rusa, español/española", "согласование рода"),
-                    LessonItem("Числа 0–20", "возраст, паспорт", ""),
+                    LessonItem("Числа 0–10", "cero, uno, dos…", ""),
                     LessonItem("Артикли + род", "el / la, un / una", ""),
                     LessonItem("Тильда и ударение", "café, música", ""),
                 )),
@@ -1410,10 +1410,10 @@ object LessonContentDataV2 {
                 ),
                 Exercise(
                     type = ExerciseType.BUILD_SENTENCE,
-                    instruction = "Собери ответ: «Мне 20 лет»",
-                    words = listOf("Tengo", "veinte", "años"),
-                    correctAnswer = "Tengo veinte años",
-                    explanation = "Возраст в испанском через TENER: tengo + число + años.",
+                    instruction = "Собери ответ: «Меня зовут Андреа»",
+                    words = listOf("Me", "llamo", "Andrea"),
+                    correctAnswer = "Me llamo Andrea",
+                    explanation = "llamarse — возвратный: yo me llamo / tú te llamas / él se llama.",
                 ),
                 Exercise(
                     type = ExerciseType.DIALOGUE_FILL,
@@ -1422,7 +1422,7 @@ object LessonContentDataV2 {
                         "👮 Oficial" to "¿Turista o trabajo?",
                         "👨 Tú" to "___ turista.",
                     ),
-                    options = listOf("Soy", "Tengo", "Estoy"),
+                    options = listOf("Soy", "Es", "Eres"),
                     correctAnswer = "Soy",
                     explanation = "SER для постоянной идентичности / роли: Soy turista.",
                 ),
@@ -1433,11 +1433,11 @@ object LessonContentDataV2 {
                     errorVariants = listOf(
                         "Me llamo Ana",
                         "Soy de Rusia",
-                        "Yo tiene veinte años",
-                        "Soy turista",
+                        "Yo es turista",
+                        "Soy español",
                     ),
-                    correctAnswer = "Yo tiene veinte años",
-                    explanation = "yo требует tengo, не tiene. Правильно: Yo tengo veinte años.",
+                    correctAnswer = "Yo es turista",
+                    explanation = "yo требует soy, не es. Правильно: Yo soy turista.",
                 ),
                 Exercise(
                     type = ExerciseType.MATCH_PAIRS,
@@ -3157,51 +3157,52 @@ object LessonContentDataV2 {
             ),
         ),
 
-        // u4_l13_5 — НОВЫЙ: 4 правила YO формы
+        // u4_l13_5 — НОВЫЙ: yo-форма TENER как превью «нерегулярных yo»
+        //
+        // SCOPE: к этому моменту у юзера в активе ТОЛЬКО TENER (u2_l4).
+        // Остальные нерегулярные yo-формы (salgo, hago, pongo, digo,
+        // conozco, sé, veo и др.) НЕ введены — глаголы появятся в блоке 7.
+        // Этот урок — точечный preview: показать что «tengo» — это не
+        // случайность, а целая семья глаголов, и подготовить к u7.
         "u4_l13_5" to LessonContent(
-            intro = "4 группы нерегулярных yo-форм: -go (tengo, salgo), -zco (conozco), -y (estoy, voy), полностью неправильные (sé, sé от saber).",
+            intro = "🎯 Превью нерегулярных yo-форм. Ты уже знаешь tengo (yo + tener). Это не одиночный случай — есть целая группа глаголов, у которых форма yo заканчивается на -go. Полный разбор всех неправильных yo будет в блоке 7. Сейчас закрепляем TENER.",
             sections = listOf(
-                LessonSection("Группа 1: -go", listOf(
-                    LessonItem("tener → tengo", "иметь → у меня есть", ""),
-                    LessonItem("salir → salgo", "выходить → выхожу", ""),
-                    LessonItem("hacer → hago", "делать → делаю", ""),
-                    LessonItem("poner → pongo", "класть → кладу", ""),
-                    LessonItem("decir → digo", "говорить → говорю", ""),
+                LessonSection("yo + TENER", listOf(
+                    LessonItem("yo tengo", "у меня есть", "не «teno»!"),
+                    LessonItem("tú tienes", "у тебя есть", "регулярно"),
+                    LessonItem("él/ella tiene", "у него/неё есть", "регулярно"),
                 )),
-                LessonSection("Группа 2: -zco (на -CER/-CIR)", listOf(
-                    LessonItem("conocer → conozco", "знать (быть знакомым)", ""),
-                    LessonItem("conducir → conduzco", "водить", ""),
+                LessonSection("Почему «tengo» а не «teno»", listOf(
+                    LessonItem("Вставка -g-", "ten- + -go → tengo", "историческая особенность"),
+                    LessonItem("Только в yo", "остальные лица — обычные", "tienes, tiene"),
                 )),
-                LessonSection("Группа 3: -y", listOf(
-                    LessonItem("estar → estoy", "находиться", ""),
-                    LessonItem("ser → soy", "быть", ""),
-                    LessonItem("ir → voy", "идти", ""),
-                    LessonItem("dar → doy", "давать", ""),
-                )),
-                LessonSection("Группа 4: полностью неправильные", listOf(
-                    LessonItem("saber → sé", "знать (факт)", ""),
-                    LessonItem("ver → veo", "видеть", ""),
-                    LessonItem("caber → quepo", "помещаться", ""),
+                LessonSection("💡 Что будет в блоке 7", listOf(
+                    LessonItem("salir → salgo", "выходить", "появится позже"),
+                    LessonItem("hacer → hago", "делать", "появится позже"),
+                    LessonItem("poner → pongo", "класть", "появится позже"),
+                    LessonItem("Зачем знать сейчас", "tengo — первая ласточка", "паттерн -go"),
                 )),
             ),
             exercises = listOf(
-                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь yo-форму", question = "Yo ___ a las ocho. (выходить)",
-                    options = listOf("salgo", "salo", "salio"), correctAnswer = "salgo",
-                    explanation = "salir → salgo (-go группа)."),
-                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «Я знаю Мадрид»",
-                    words = listOf("Conozco", "Madrid"), correctAnswer = "Conozco Madrid",
-                    explanation = "conocer → conozco (-zco группа)."),
-                Exercise(ExerciseType.MULTIPLE_CHOICE, "yo + saber?", question = "Yo ___ la respuesta.",
-                    options = listOf("sé", "sabo", "sabe", "sabes"), correctAnswer = "sé",
-                    explanation = "saber → sé (полностью неправильная)."),
+                Exercise(ExerciseType.TAP_MISSING_WORD, "Вставь yo-форму TENER",
+                    question = "Yo ___ un hermano.",
+                    options = listOf("tengo", "teno", "tienes"), correctAnswer = "tengo",
+                    explanation = "yo + tener = tengo (вставка -g-)."),
+                Exercise(ExerciseType.BUILD_SENTENCE, "Собери: «У меня есть друг»",
+                    words = listOf("Tengo", "un", "amigo"), correctAnswer = "Tengo un amigo",
+                    explanation = "tengo + un + amigo. Местоимение yo обычно опускают."),
+                Exercise(ExerciseType.MULTIPLE_CHOICE, "Какая форма правильная?",
+                    question = "Yo ___ una hermana.",
+                    options = listOf("tengo", "teno", "tienes", "tiene"), correctAnswer = "tengo",
+                    explanation = "Только tengo — yo-форма TENER."),
                 Exercise(ExerciseType.SPOT_THE_ERROR, "Найди ошибку", question = "",
-                    errorVariants = listOf("Yo tengo", "Yo conozco", "Yo sabo", "Yo veo"),
-                    correctAnswer = "Yo sabo",
-                    explanation = "saber → sé. Правильно: Yo sé."),
-                Exercise(ExerciseType.TRANSLATE, "Переведи: «Я делаю кофе»",
-                    correctAnswer = "Hago café", explanation = "hacer → hago."),
+                    errorVariants = listOf("Yo tengo", "Tú tienes", "Yo teno", "Él tiene"),
+                    correctAnswer = "Yo teno",
+                    explanation = "TENER в yo = tengo, не «teno». Это базовая нерегулярность."),
+                Exercise(ExerciseType.TRANSLATE, "Переведи: «У меня есть кот»",
+                    correctAnswer = "Tengo un gato", explanation = "Tengo + артикль + предмет."),
                 Exercise(ExerciseType.LISTEN_TYPE, "Послушай", audioText = "tengo",
-                    correctAnswer = "tengo", explanation = "tener → tengo."),
+                    correctAnswer = "tengo", explanation = "yo + tener = tengo."),
             ),
         ),
 
