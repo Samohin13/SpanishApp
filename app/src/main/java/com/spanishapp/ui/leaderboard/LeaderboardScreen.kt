@@ -1,14 +1,17 @@
 package com.spanishapp.ui.leaderboard
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
@@ -17,7 +20,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,14 +31,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.spanishapp.R
+import com.spanishapp.data.repository.CountryAggregate
 import com.spanishapp.data.repository.LeaderboardData
 import com.spanishapp.data.repository.LeaderboardEntry
-import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.domain.rating.CountryNames
-import com.spanishapp.ui.components.LeagueBadge
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private enum class Tab { WEEK, LOCAL, WORLD }
+private enum class WorldSegment { COUNTRIES, PLAYERS }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,32 +48,29 @@ fun LeaderboardScreen(
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
     var tab by remember { mutableStateOf(Tab.LOCAL) }
+    var worldSegment by remember { mutableStateOf(WorldSegment.COUNTRIES) }
 
     Scaffold(
-        containerColor = Color.Transparent,
+        containerColor = LbBg,
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
                 title = {
-                    Text(stringResource(R.string.lb_leaders), fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                    Text(stringResource(R.string.lb_leaders), fontWeight = FontWeight.SemiBold, fontSize = 18.sp, color = LbText)
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = LbText)
                     }
                 },
                 actions = {
                     IconButton(onClick = { vm.refresh() }) {
-                        Icon(Icons.Default.Refresh, null)
+                        Icon(Icons.Default.Refresh, null, tint = LbText)
                     }
                 }
             )
         }
     ) { padding ->
-        // ── Модалка обязательного ввода имени ─────────────────────
-        // Открывается когда юзер жмёт opt-in а displayName = "Estudiante".
-        // Без неё в Firestore попадёт дефолтное имя и юзер появится в
-        // топе как анонимный «Estudiante» (источник проблемы 2).
         if (state.needsNamePrompt) {
             NamePromptDialog(
                 initialName = state.displayName,
@@ -76,7 +78,6 @@ fun LeaderboardScreen(
                 onDismiss = { vm.dismissNamePrompt() }
             )
         }
-        // ── Picker страны ─────────────────────────────────────────
         if (state.showCountryPicker) {
             CountryPickerDialog(
                 currentIso = state.deviceCountry,
@@ -84,7 +85,7 @@ fun LeaderboardScreen(
                 onDismiss = { vm.dismissCountryPicker() }
             )
         }
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Column(modifier = Modifier.fillMaxSize().background(LbBg).padding(padding)) {
             if (!state.optedIn) {
                 OptInBlock(
                     displayName = state.displayName,
@@ -94,20 +95,28 @@ fun LeaderboardScreen(
                 return@Column
             }
 
-            // Табы
+            // ── Tabs ──
             val selectedIndex = when (tab) { Tab.WEEK -> 0; Tab.LOCAL -> 1; Tab.WORLD -> 2 }
-            TabRow(selectedTabIndex = selectedIndex, containerColor = Color.Transparent) {
+            TabRow(
+                selectedTabIndex = selectedIndex,
+                containerColor = LbBg,
+                contentColor = LbPrimary,
+            ) {
                 Tab(
                     selected = tab == Tab.WEEK,
                     onClick = {
                         tab = Tab.WEEK
                         navController.navigate("weekly_league")
                     },
-                    text = { Text(stringResource(com.spanishapp.R.string.leaderboard_tab_week), fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
+                    selectedContentColor = LbPrimary,
+                    unselectedContentColor = LbTextDim,
+                    text = { Text(stringResource(R.string.leaderboard_tab_week) + " 🏆", fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
                 )
                 Tab(
                     selected = tab == Tab.LOCAL,
                     onClick = { tab = Tab.LOCAL },
+                    selectedContentColor = LbPrimary,
+                    unselectedContentColor = LbTextDim,
                     text = {
                         Text(
                             CountryNames.displayWithFlag(state.deviceCountry),
@@ -120,13 +129,15 @@ fun LeaderboardScreen(
                 Tab(
                     selected = tab == Tab.WORLD,
                     onClick = { tab = Tab.WORLD },
-                    text = { Text(stringResource(R.string.lb_world_tab), fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
+                    selectedContentColor = LbPrimary,
+                    unselectedContentColor = LbTextDim,
+                    text = { Text(stringResource(R.string.lb_world_tab) + " 🌍", fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
                 )
             }
 
             if (state.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = LbPrimary)
                 }
                 return@Column
             }
@@ -135,121 +146,509 @@ fun LeaderboardScreen(
             if (data == null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(state.error ?: stringResource(R.string.lb_no_data), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(state.error ?: stringResource(R.string.lb_no_data), color = LbTextDim)
                         Spacer(Modifier.height(8.dp))
-                        Button(onClick = { vm.refresh() }) { Text(stringResource(R.string.lb_refresh)) }
+                        Button(
+                            onClick = { vm.refresh() },
+                            colors = ButtonDefaults.buttonColors(containerColor = LbPrimary),
+                        ) { Text(stringResource(R.string.lb_refresh), color = Color.White) }
                     }
                 }
                 return@Column
             }
 
-            // WEEK tab is just a navigation jump — fall through to LOCAL view if user lands here
-            var effectiveTab = if (tab == Tab.WEEK) Tab.LOCAL else tab
-
-            // Auto-fallback на «Мир» если в твоей стране меньше 5 юзеров.
-            // Иначе юзер видит вкладку «Россия / Казахстан» с одной строкой
-            // (только собой) — выглядит мёртво, нет конкуренции.
+            // Auto-fallback на WORLD если в стране меньше 5 юзеров
             val MIN_LOCAL_USERS = 5
-            val countryEmpty = data.countryTotal < MIN_LOCAL_USERS
-            if (effectiveTab == Tab.LOCAL && countryEmpty) {
-                effectiveTab = Tab.WORLD
+            val effectiveTab = if (tab == Tab.LOCAL && data.countryTotal < MIN_LOCAL_USERS) Tab.WORLD else tab
+
+            when (effectiveTab) {
+                Tab.LOCAL -> LocalView(data = data, state = state, onCountryPicker = { vm.showCountryPicker() }, onOptOut = { vm.optOut() })
+                Tab.WORLD -> WorldView(
+                    data = data,
+                    segment = worldSegment,
+                    onSegmentChange = { worldSegment = it },
+                    onOptOut = { vm.optOut() },
+                )
+                else -> Unit
             }
+        }
+    }
+}
 
-            val rows = if (effectiveTab == Tab.LOCAL) data.countryRows else data.worldRows
-            val myRank = if (effectiveTab == Tab.LOCAL) data.myCountryRank else data.myWorldRank
-            val total = if (effectiveTab == Tab.LOCAL) data.countryTotal else data.worldTotal
-            val tabName = if (effectiveTab == Tab.LOCAL) CountryNames.nameOf(state.deviceCountry) else stringResource(R.string.lb_world)
+// ═══════════════════════════════════════════════════════════
+//  LOCAL VIEW — Казахстан hero + пьедестал + список
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun LocalView(
+    data: LeaderboardData,
+    state: LeaderboardUiState,
+    onCountryPicker: () -> Unit,
+    onOptOut: () -> Unit,
+) {
+    val rows = data.countryRows
+    val gold = rows.getOrNull(0)?.toPodium()
+    val silver = rows.getOrNull(1)?.toPodium()
+    val bronze = rows.getOrNull(2)?.toPodium()
+    val rest = rows.drop(3)
 
-            // Подсказка пользователю что мы временно показываем мировой топ
-            if (tab == Tab.LOCAL && countryEmpty) {
-                Surface(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-                    shape = RoundedCornerShape(10.dp),
-                    color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.5f)
-                ) {
-                    Text(
-                        "В твоей стране пока мало игроков (${data.countryTotal}). " +
-                        "Показываем мировой рейтинг — присоединяйся к топу!",
-                        modifier = Modifier.padding(10.dp),
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                        lineHeight = 16.sp,
+    LazyColumn(
+        contentPadding = PaddingValues(bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        // ── Country hero ──
+        item {
+            LocalCountryHero(
+                iso = state.deviceCountry,
+                playerCount = data.countryTotal,
+                worldRank = data.myCountryWorldRank,
+                worldCountriesTotal = data.worldCountriesCount,
+                onChangeCountry = onCountryPicker,
+            )
+        }
+
+        // ── Подиум 3D ──
+        if (gold != null) {
+            item {
+                Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp)) {
+                    PodiumStage(
+                        gold = gold,
+                        silver = silver,
+                        bronze = bronze,
+                        myUid = data.myUid,
                     )
                 }
             }
+        }
 
-            // Кнопка смены страны — если auto-detect определил неверно,
-            // юзер может выбрать вручную из списка ~70 стран.
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
-                    .clickable { vm.showCountryPicker() },
-                shape = RoundedCornerShape(10.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        CountryNames.flagOf(state.deviceCountry),
-                        fontSize = 18.sp
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        "Твоя страна: ${CountryNames.nameOf(state.deviceCountry)}",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.weight(1f),
-                    )
-                    Icon(
-                        Icons.Default.Edit,
-                        contentDescription = "Изменить страну",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp),
+        // ── My rank pill ──
+        val myRank = data.myCountryRank
+        if (myRank != null) {
+            item { MyRankPill(rank = myRank, total = data.countryTotal, where = CountryNames.nameOf(state.deviceCountry)) }
+        }
+
+        // ── Остальной список ──
+        if (rest.isNotEmpty()) {
+            item {
+                Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    ZoneDivider(text = "Топ ${rest.size + 3}", color = LbTextMute)
+                }
+            }
+            itemsIndexed(rest, key = { _, it -> it.uid }) { idx, entry ->
+                Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                    MemberRowNew(
+                        rank = idx + 4,
+                        name = entry.nickname,
+                        rightValue = entry.skillRating.toString(),
+                        isMe = entry.uid == data.myUid,
+                        flag = CountryNames.flagOf(entry.country),
                     )
                 }
             }
+        }
 
-            // Шапка с моим рангом
-            if (myRank != null) {
-                Surface(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
-                ) {
-                    Text(
-                        stringResource(R.string.lb_my_rank, myRank, total, tabName),
-                        modifier = Modifier.padding(12.dp),
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+        item { Spacer(Modifier.height(20.dp)) }
+        item {
+            TextButton(onClick = onOptOut, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.lb_opt_out), color = LbRed)
             }
+        }
+    }
+}
 
-            if (rows.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.lb_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
+@Composable
+private fun LocalCountryHero(
+    iso: String,
+    playerCount: Int,
+    worldRank: Int?,
+    worldCountriesTotal: Int,
+    onChangeCountry: () -> Unit,
+) {
+    // Зелёно-жёлтый градиент как фон + большой флаг + трофей справа
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF00AF8F).copy(alpha = 0.30f),
+                        Color(0xFF00AF8F).copy(alpha = 0.05f),
+                        Color.Transparent,
+                    )
+                )
+            )
+            .padding(18.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(
+                CountryNames.flagOf(iso),
+                fontSize = 56.sp,
+                modifier = Modifier.alpha(0.95f),
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    CountryNames.nameOf(iso),
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Black,
+                )
+                Spacer(Modifier.height(2.dp))
+                val rankText = if (worldRank != null && worldCountriesTotal > 1)
+                    "$playerCount игроков · #$worldRank из $worldCountriesTotal по рейтингу"
+                else
+                    "$playerCount игроков"
+                Text(
+                    rankText,
+                    color = Color.White.copy(alpha = 0.85f),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+            // Трофей справа — если страна в топ-3
+            if (worldRank != null && worldRank <= 3) {
+                val (medal, label) = when (worldRank) {
+                    1 -> "🥇" to "ЛИДЕР"
+                    2 -> "🥈" to "СЕРЕБРО"
+                    else -> "🥉" to "БРОНЗА"
                 }
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Brush.linearGradient(listOf(LbGold, LbGoldDark)))
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    // Подиум
-                    item { Podium(rows = rows.take(3), myUid = data.myUid) }
-                    item { Spacer(Modifier.height(8.dp)) }
-                    items(rows.drop(3), key = { it.uid }) { entry ->
-                        val rank = rows.indexOf(entry) + 1
-                        LeaderRow(rank = rank, entry = entry, isSelf = entry.uid == data.myUid)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(medal, fontSize = 16.sp)
+                        Text(
+                            label,
+                            color = Color(0xFF1A1300),
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Black,
+                            letterSpacing = 1.sp,
+                        )
                     }
-                    item { Spacer(Modifier.height(24.dp)) }
-                    item {
-                        TextButton(onClick = { vm.optOut() }, modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(R.string.lb_opt_out), color = MaterialTheme.colorScheme.error)
+                }
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+        // Pill для смены страны
+        CountryChangePill(iso = iso, onClick = onChangeCountry)
+    }
+}
+
+@Composable
+private fun CountryChangePill(iso: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(LbGreen.copy(alpha = 0.10f))
+            .border(1.dp, LbGreen.copy(alpha = 0.25f), RoundedCornerShape(10.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(CountryNames.flagOf(iso), fontSize = 18.sp)
+        Text(
+            "Твоя страна: ${CountryNames.nameOf(iso)}",
+            color = LbTextDim,
+            fontSize = 12.sp,
+            modifier = Modifier.weight(1f),
+        )
+        Icon(Icons.Default.Edit, contentDescription = null, tint = LbGreen, modifier = Modifier.size(16.dp))
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  WORLD VIEW — globe hero + live ribbon + segment + board
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun WorldView(
+    data: LeaderboardData,
+    segment: WorldSegment,
+    onSegmentChange: (WorldSegment) -> Unit,
+    onOptOut: () -> Unit,
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        item { WorldGlobeHero(playerTotal = data.worldTotal, countriesTotal = data.worldCountriesCount) }
+
+        item {
+            // Live ribbon
+            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
+                LiveRibbon(text = "ИГРАЕТ В ИСПАНСКИЙ ПРЯМО СЕЙЧАС", modifier = Modifier.fillMaxWidth())
+            }
+        }
+
+        item { WorldSegmentSwitch(segment = segment, onChange = onSegmentChange) }
+
+        when (segment) {
+            WorldSegment.COUNTRIES -> {
+                if (data.countriesAggregate.isEmpty()) {
+                    item { EmptyState("Пока недостаточно данных для рейтинга стран") }
+                } else {
+                    itemsIndexed(data.countriesAggregate, key = { _, c -> c.iso }) { idx, country ->
+                        Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 3.dp)) {
+                            CountryAggregateRow(
+                                rank = idx + 1,
+                                country = country,
+                                isMyCountry = country.iso == data.country,
+                            )
                         }
                     }
+                }
+            }
+            WorldSegment.PLAYERS -> {
+                val rows = data.worldRows
+                val rest = rows.drop(3)
+                val gold = rows.getOrNull(0)?.toPodium()
+                val silver = rows.getOrNull(1)?.toPodium()
+                val bronze = rows.getOrNull(2)?.toPodium()
+
+                if (gold != null) {
+                    item {
+                        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp)) {
+                            PodiumStage(gold = gold, silver = silver, bronze = bronze, myUid = data.myUid)
+                        }
+                    }
+                }
+                val myRank = data.myWorldRank
+                if (myRank != null) {
+                    item { MyRankPill(rank = myRank, total = data.worldTotal, where = "мире") }
+                }
+                if (rest.isNotEmpty()) {
+                    item {
+                        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                            ZoneDivider(text = "Топ ${rest.size + 3}", color = LbTextMute)
+                        }
+                    }
+                    itemsIndexed(rest, key = { _, it -> it.uid }) { idx, entry ->
+                        Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+                            MemberRowNew(
+                                rank = idx + 4,
+                                name = entry.nickname,
+                                rightValue = entry.skillRating.toString(),
+                                isMe = entry.uid == data.myUid,
+                                flag = CountryNames.flagOf(entry.country),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        item { Spacer(Modifier.height(20.dp)) }
+        item {
+            TextButton(onClick = onOptOut, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.lb_opt_out), color = LbRed)
+            }
+        }
+    }
+}
+
+@Composable
+private fun WorldGlobeHero(playerTotal: Int, countriesTotal: Int) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.radialGradient(
+                    colors = listOf(
+                        LbBlue.copy(alpha = 0.25f),
+                        LbBlue.copy(alpha = 0.05f),
+                        Color.Transparent,
+                    ),
+                    radius = 700f,
+                )
+            )
+            .padding(top = 14.dp, bottom = 16.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        // Watermark globe
+        Text(
+            "🌍",
+            fontSize = 240.sp,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-30).dp)
+                .alpha(0.06f),
+        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    playerTotal.toString(),
+                    color = Color.White,
+                    fontSize = 46.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = (-1).sp,
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    "игроков",
+                    color = LbTextDim,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 6.dp),
+                )
+            }
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "В $countriesTotal ${pluralCountries(countriesTotal)}".uppercase(),
+                color = LbTextDim,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.5.sp,
+            )
+        }
+    }
+}
+
+@Composable
+private fun WorldSegmentSwitch(segment: WorldSegment, onChange: (WorldSegment) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(LbSurface2)
+            .padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        SegmentItem(
+            label = "🏆 Страны",
+            selected = segment == WorldSegment.COUNTRIES,
+            onClick = { onChange(WorldSegment.COUNTRIES) },
+            modifier = Modifier.weight(1f),
+        )
+        SegmentItem(
+            label = "👤 Игроки",
+            selected = segment == WorldSegment.PLAYERS,
+            onClick = { onChange(WorldSegment.PLAYERS) },
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+@Composable
+private fun SegmentItem(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(6.dp))
+            .background(if (selected) LbSurface3 else Color.Transparent)
+            .clickable(onClick = onClick)
+            .padding(vertical = 7.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            label,
+            color = if (selected) LbText else LbTextMute,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@Composable
+private fun CountryAggregateRow(
+    rank: Int,
+    country: CountryAggregate,
+    isMyCountry: Boolean,
+) {
+    val isTop3 = rank <= 3
+    val totalXpFormatted = formatCompact(country.totalXp)
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = if (isMyCountry) Color.Transparent else LbSurface,
+    ) {
+        Row(
+            modifier = Modifier
+                .then(
+                    if (isMyCountry) Modifier
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(LbPrimary.copy(alpha = 0.18f), LbPrimary.copy(alpha = 0.04f))
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                        )
+                        .border(1.5.dp, LbPrimary, RoundedCornerShape(12.dp))
+                    else Modifier
+                )
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                "#$rank",
+                color = if (isTop3) LbGold else LbTextDim,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.width(28.dp),
+            )
+            Text(CountryNames.flagOf(country.iso), fontSize = 22.sp)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    if (isMyCountry) "${CountryNames.nameOf(country.iso)} (ты тут)"
+                    else CountryNames.nameOf(country.iso),
+                    color = LbText,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "${country.playerCount} ${pluralPlayers(country.playerCount)} · ср. ${country.avgXp} XP",
+                    color = LbTextMute,
+                    fontSize = 10.sp,
+                )
+            }
+            Text(
+                totalXpFormatted,
+                color = LbPrimary,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.ExtraBold,
+            )
+        }
+    }
+}
+
+@Composable
+private fun MyRankPill(rank: Int, total: Int, where: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+    ) {
+        Surface(
+            shape = RoundedCornerShape(14.dp),
+            color = LbPrimary.copy(alpha = 0.12f),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Text("⭐", fontSize = 18.sp)
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Ты #$rank из $total",
+                        color = LbPrimary,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        "в $where",
+                        color = LbTextDim,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                    )
                 }
             }
         }
@@ -257,12 +656,25 @@ fun LeaderboardScreen(
 }
 
 @Composable
+private fun EmptyState(text: String) {
+    Box(
+        modifier = Modifier.fillMaxWidth().padding(32.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(text, color = LbTextDim, fontSize = 13.sp)
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  OPT-IN (вход в лидерборд)
+// ═══════════════════════════════════════════════════════════
+@Composable
 private fun OptInBlock(
     displayName: String,
     onJoin: () -> Unit,
     onChangeName: (String) -> Unit
 ) {
-    var name by remember { mutableStateOf(displayName) }
+    var name by remember { mutableStateOf(if (displayName == "Estudiante") "" else displayName) }
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.Center,
@@ -273,13 +685,14 @@ private fun OptInBlock(
         Text(
             stringResource(R.string.lb_join_title),
             fontSize = 20.sp,
-            fontWeight = FontWeight.ExtraBold
+            fontWeight = FontWeight.ExtraBold,
+            color = LbText,
         )
         Spacer(Modifier.height(12.dp))
         Text(
             stringResource(R.string.lb_join_explain),
             fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = LbTextDim,
         )
         Spacer(Modifier.height(20.dp))
         OutlinedTextField(
@@ -287,7 +700,15 @@ private fun OptInBlock(
             onValueChange = { name = it.take(20) },
             label = { Text(stringResource(R.string.lb_nickname)) },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = LbText,
+                unfocusedTextColor = LbText,
+                focusedBorderColor = LbPrimary,
+                unfocusedBorderColor = LbLine,
+                focusedLabelColor = LbPrimary,
+                unfocusedLabelColor = LbTextDim,
+            ),
         )
         Spacer(Modifier.height(20.dp))
         Button(
@@ -297,112 +718,17 @@ private fun OptInBlock(
             },
             modifier = Modifier.fillMaxWidth().height(50.dp),
             shape = RoundedCornerShape(16.dp),
-            enabled = name.isNotBlank()
+            enabled = name.isNotBlank(),
+            colors = ButtonDefaults.buttonColors(containerColor = LbPrimary),
         ) {
-            Text(stringResource(R.string.lb_join_button), fontWeight = FontWeight.Bold)
-        }
-    }
-}
-
-@Composable
-private fun Podium(rows: List<LeaderboardEntry>, myUid: String?) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 2.dp
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            rows.getOrNull(1)?.let { PodiumSlot("🥈", it, isSelf = it.uid == myUid, modifier = Modifier.weight(1f)) }
-            rows.getOrNull(0)?.let { PodiumSlot("🥇", it, isSelf = it.uid == myUid, modifier = Modifier.weight(1.1f), big = true) }
-            rows.getOrNull(2)?.let { PodiumSlot("🥉", it, isSelf = it.uid == myUid, modifier = Modifier.weight(1f)) }
-        }
-    }
-}
-
-@Composable
-private fun PodiumSlot(medal: String, entry: LeaderboardEntry, isSelf: Boolean, modifier: Modifier = Modifier, big: Boolean = false) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(14.dp))
-            .background(
-                if (isSelf) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
-            )
-            .padding(vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Text(medal, fontSize = if (big) 36.sp else 28.sp)
-        Text(
-            entry.nickname,
-            fontSize = if (big) 14.sp else 12.sp,
-            fontWeight = FontWeight.Bold,
-            maxLines = 1
-        )
-        Text(
-            "${entry.skillRating}",
-            fontSize = if (big) 16.sp else 13.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Text(CountryNames.flagOf(entry.country), fontSize = 14.sp)
-    }
-}
-
-@Composable
-private fun LeaderRow(rank: Int, entry: LeaderboardEntry, isSelf: Boolean) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        color = if (isSelf) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                else MaterialTheme.colorScheme.surface,
-        tonalElevation = 1.dp
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                "#$rank",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.width(40.dp)
-            )
-            Text(CountryNames.flagOf(entry.country), fontSize = 18.sp)
-            Spacer(Modifier.width(10.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    entry.nickname,
-                    fontSize = 14.sp,
-                    fontWeight = if (isSelf) FontWeight.ExtraBold else FontWeight.SemiBold,
-                    maxLines = 1
-                )
-                LeagueBadge(league = LeagueResolver.fromTier(entry.league), compact = true)
-            }
-            Text(
-                "${entry.skillRating}",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Text(stringResource(R.string.lb_join_button), fontWeight = FontWeight.Bold, color = Color.White)
         }
     }
 }
 
 // ═══════════════════════════════════════════════════════════
-//  ДИАЛОГИ: обязательное имя + picker страны
+//  DIALOGS (name prompt + country picker)
 // ═══════════════════════════════════════════════════════════
-
-/**
- * Обязательный диалог ввода имени когда юзер пытается opt-in с дефолтным
- * именем "Estudiante". Без него в Firestore попадёт анонимная запись и
- * юзер появится в топе без идентичности (источник проблемы 2).
- */
 @Composable
 private fun NamePromptDialog(
     initialName: String,
@@ -421,7 +747,7 @@ private fun NamePromptDialog(
                     "Выбери уникальный никнейм — другие игроки увидят его в топе. " +
                     "Можно изменить позже в настройках профиля.",
                     fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = LbTextDim,
                 )
                 Spacer(Modifier.height(12.dp))
                 OutlinedTextField(
@@ -438,23 +764,17 @@ private fun NamePromptDialog(
             Button(
                 onClick = { if (name.trim().isNotBlank()) onConfirm(name.trim()) },
                 enabled = name.trim().isNotBlank() && name.trim() != "Estudiante",
+                colors = ButtonDefaults.buttonColors(containerColor = LbPrimary),
             ) {
-                Text("Присоединиться")
+                Text("Присоединиться", color = Color.White)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Отмена")
-            }
+            TextButton(onClick = onDismiss) { Text("Отмена") }
         }
     )
 }
 
-/**
- * Picker всех известных стран — юзер вручную переопределяет страну если
- * auto-detect (Telephony + IP-API + Locale) ошибся. Выбор сохраняется в
- * CountryPreferences и используется во всех будущих sync.
- */
 @Composable
 private fun CountryPickerDialog(
     currentIso: String,
@@ -467,9 +787,7 @@ private fun CountryPickerDialog(
         title = { Text("Выбери страну") },
         text = {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 400.dp),
+                modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp),
             ) {
                 itemsIndexed(countries) { _, country ->
                     val isSelected = country.iso == currentIso
@@ -486,21 +804,42 @@ private fun CountryPickerDialog(
                             country.name,
                             fontSize = 15.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.onSurface,
+                            color = if (isSelected) LbPrimary else LbText,
                             modifier = Modifier.weight(1f),
                         )
-                        if (isSelected) {
-                            Text("✓", fontSize = 18.sp, color = MaterialTheme.colorScheme.primary)
-                        }
+                        if (isSelected) Text("✓", fontSize = 18.sp, color = LbPrimary)
                     }
                 }
             }
         },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Закрыть")
-            }
-        }
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Закрыть") } }
     )
+}
+
+// ═══════════════════════════════════════════════════════════
+//  Helpers
+// ═══════════════════════════════════════════════════════════
+private fun LeaderboardEntry.toPodium(): PodiumEntry = PodiumEntry(
+    name = nickname,
+    rating = skillRating,
+    uid = uid,
+    flag = CountryNames.flagOf(country),
+)
+
+private fun formatCompact(n: Long): String = when {
+    n >= 1_000_000_000 -> "${n / 1_000_000_000}B"
+    n >= 1_000_000 -> "${n / 1_000_000}M"
+    n >= 1_000 -> "${n / 1_000}K"
+    else -> n.toString()
+}
+
+private fun pluralPlayers(n: Int): String = when {
+    n % 10 == 1 && n % 100 != 11 -> "игрок"
+    n % 10 in 2..4 && (n % 100 < 10 || n % 100 >= 20) -> "игрока"
+    else -> "игроков"
+}
+
+private fun pluralCountries(n: Int): String = when {
+    n % 10 == 1 && n % 100 != 11 -> "стране"
+    else -> "странах"
 }

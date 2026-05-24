@@ -45,7 +45,21 @@ data class LeaderboardData(
     val myWorldRank: Int?,
     val myUid: String?,
     val countryTotal: Int,
-    val worldTotal: Int
+    val worldTotal: Int,
+    val countriesAggregate: List<CountryAggregate> = emptyList(),
+    val worldCountriesCount: Int = 0,
+    val myCountryWorldRank: Int? = null,   // позиция моей страны в countries leaderboard
+)
+
+/**
+ * Агрегат рейтинга по стране — для «соревнования стран» на табе Мир.
+ * Считается клиентски из worldRows (топ-100 юзеров).
+ */
+data class CountryAggregate(
+    val iso: String,
+    val playerCount: Int,
+    val totalXp: Long,     // сумма skillRating
+    val avgXp: Int,        // средний skillRating
 )
 
 @Serializable
@@ -257,6 +271,25 @@ class LeaderboardRepository @Inject constructor(
             collection.count().get(AggregateSource.SERVER).await().count.toInt()
         } catch (_: Exception) { worldRows.size }
 
+        // ── Countries aggregate (для таба «Мир — соревнование стран») ──
+        // Клиентский group-by по worldRows (топ-100). При росте сообщества
+        // переедет в Cloud Function с предрасчётом, сейчас достаточно.
+        val countriesAggregate = worldRows
+            .groupBy { it.country.ifBlank { "XX" } }
+            .map { (iso, rows) ->
+                val totalXp = rows.sumOf { it.skillRating.toLong() }
+                val avg = if (rows.isEmpty()) 0 else (totalXp / rows.size).toInt()
+                CountryAggregate(
+                    iso = iso,
+                    playerCount = rows.size,
+                    totalXp = totalXp,
+                    avgXp = avg,
+                )
+            }
+            .sortedByDescending { it.totalXp }
+        val myCountryWorldRank = countriesAggregate.indexOfFirst { it.iso == country }.takeIf { it >= 0 }?.plus(1)
+        val worldCountriesCount = countriesAggregate.size
+
         return LeaderboardData(
             country = country,
             countryRows = countryRows,
@@ -265,7 +298,10 @@ class LeaderboardRepository @Inject constructor(
             myWorldRank = myWorldRank,
             myUid = myUid,
             countryTotal = countryTotal,
-            worldTotal = worldTotal
+            worldTotal = worldTotal,
+            countriesAggregate = countriesAggregate,
+            worldCountriesCount = worldCountriesCount,
+            myCountryWorldRank = myCountryWorldRank,
         )
     }
 

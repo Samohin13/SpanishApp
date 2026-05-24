@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ESPEAK — Лидеры (редизайн)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --bg:#0b0d12;
+  --surface:#161922;
+  --surface-2:#1f2330;
+  --surface-3:#2a2f3e;
+  --line:#2d3344;
+  --text:#f4f6fb;
+  --text-dim:#9aa3b7;
+  --text-mute:#6b7388;
+  --primary:#ff6b35;
+  --gold:#fbbf24;
+  --silver:#d1d5db;
+  --bronze:#cd7f32;
+  --green:#4ade80;
+  --red:#f87171;
+  --blue:#4ea1ff;
+  --purple:#a78bfa;
+  --pink:#f472b6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#05070b;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  color:var(--text);padding:24px 12px 60px;
+  display:flex;flex-direction:column;align-items:center;gap:28px;
+}
+.page-title{
+  font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--text-dim);
+  text-transform:uppercase;
+}
+.phone{
+  width:390px;background:var(--bg);border-radius:38px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 8px #1a1d26;
+  overflow:hidden;position:relative;
+}
+.phone::before{
+  content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  width:110px;height:24px;background:#000;border-radius:14px;z-index:5;
+}
+.statusbar{
+  height:44px;display:flex;justify-content:space-between;align-items:center;
+  padding:0 24px;font-size:13px;font-weight:600;color:var(--text);
+}
+.appbar{
+  display:flex;align-items:center;gap:10px;padding:8px 16px 8px;
+  position:relative;z-index:2;
+}
+.back, .refresh{
+  width:36px;height:36px;display:grid;place-items:center;
+  color:var(--text);font-size:18px;
+}
+.title-block{flex:1;text-align:center}
+.title-block h1{font-size:16px;font-weight:600}
+
+/* ─── TAB BAR (одинаковый везде) ─── */
+.tabs{
+  display:flex;border-bottom:1px solid rgba(255,255,255,.08);
+  position:relative;z-index:2;background:rgba(11,13,18,.85);backdrop-filter:blur(10px);
+}
+.tab{
+  flex:1;padding:12px 8px;text-align:center;
+  font-size:13px;font-weight:600;color:var(--text-dim);
+  border-bottom:2px solid transparent;
+}
+.tab.active{
+  color:var(--primary);border-bottom-color:var(--primary);
+}
+
+/* ════════════════════════════════════════
+   ВАРИАНТ A: WEEK — Лига Bilbao
+   ════════════════════════════════════════ */
+.week-hero{
+  position:relative;padding:24px 16px 20px;text-align:center;
+  background:radial-gradient(ellipse at center top,
+    rgba(78,161,255,.30) 0%,
+    rgba(78,161,255,.10) 35%,
+    transparent 70%);
+  overflow:hidden;
+}
+.week-hero::before{
+  content:"🏛️";position:absolute;font-size:280px;opacity:.04;
+  top:-40px;left:50%;transform:translateX(-50%);
+  filter:blur(2px);
+}
+.week-hero .crown-line{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:11px;letter-spacing:2px;color:var(--blue);
+  font-weight:700;text-transform:uppercase;margin-bottom:8px;
+  position:relative;z-index:2;
+}
+.week-hero .crown-line::before, .week-hero .crown-line::after{
+  content:"";width:24px;height:1px;background:var(--blue);opacity:.5;
+}
+.week-hero .league-emoji{font-size:72px;margin:4px 0;position:relative;z-index:2;
+  filter:drop-shadow(0 4px 12px rgba(78,161,255,.5))}
+.week-hero h2{font-size:28px;font-weight:900;letter-spacing:-.5px;color:var(--blue);position:relative;z-index:2}
+.week-hero .city-sub{font-size:12px;color:var(--text-dim);margin-top:2px;letter-spacing:2px;font-weight:600;text-transform:uppercase;position:relative;z-index:2}
+.week-hero .countdown{
+  margin-top:14px;display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,0,0,.4);border:1px solid rgba(78,161,255,.3);
+  padding:8px 16px;border-radius:20px;font-size:12px;font-weight:600;
+  color:var(--blue);position:relative;z-index:2;
+}
+.week-hero .countdown .pulse{
+  width:6px;height:6px;border-radius:50%;background:var(--blue);
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Week zones (новое) */
+.zone-strip{
+  display:flex;margin:14px 16px;gap:6px;
+}
+.zone-pill{
+  flex:1;padding:10px 8px;border-radius:12px;text-align:center;
+  background:var(--surface);border:1px solid var(--line);
+}
+.zone-pill.up{border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.08)}
+.zone-pill.hold{}
+.zone-pill.down{border-color:rgba(248,113,113,.25);background:rgba(248,113,113,.06)}
+.zone-pill .ic{font-size:18px}
+.zone-pill .label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+.zone-pill.up .label{color:var(--green)}
+.zone-pill.down .label{color:var(--red)}
+.zone-pill .count{font-size:13px;font-weight:800;color:var(--text);margin-top:2px}
+
+/* Member rows для week */
+.week-list{padding:8px 16px;display:flex;flex-direction:column;gap:5px}
+.zone-divider{
+  display:flex;align-items:center;gap:8px;margin:10px 0 6px;
+  font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+}
+.zone-divider .line{flex:1;height:1px}
+.zone-divider.up{color:var(--green)}
+.zone-divider.up .line{background:linear-gradient(90deg,var(--green),transparent)}
+.zone-divider.down{color:var(--red)}
+.zone-divider.down .line{background:linear-gradient(90deg,var(--red),transparent)}
+
+.member{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:var(--surface);border-radius:12px;
+}
+.member.me{background:linear-gradient(90deg,rgba(255,107,53,.20),rgba(255,107,53,.05));
+  border:1.5px solid var(--primary);box-shadow:0 4px 12px rgba(255,107,53,.25)}
+.member .rank{width:28px;font-size:13px;font-weight:800;color:var(--text-dim);text-align:right}
+.member .medal{font-size:18px;width:24px;text-align:center}
+.member .avatar{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;font-size:14px;font-weight:800;
+}
+.member .nick{flex:1;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.member .xp{font-size:14px;font-weight:800;color:var(--primary)}
+.member.me .xp{color:var(--primary)}
+
+/* ════════════════════════════════════════
+   ВАРИАНТ B: КАЗАХСТАН (LOCAL) — country fanfare
+   ════════════════════════════════════════ */
+.local-hero{
+  position:relative;padding:18px 16px;
+  background:
+    linear-gradient(180deg,rgba(0,175,143,.30) 0%,rgba(0,175,143,.05) 60%,transparent 100%),
+    radial-gradient(ellipse at top right,rgba(255,217,0,.25) 0%,transparent 50%);
+  overflow:hidden;
+}
+.local-hero .country-info{
+  display:flex;align-items:center;gap:14px;
+}
+.local-hero .country-flag{
+  font-size:56px;flex-shrink:0;
+  filter:drop-shadow(0 4px 16px rgba(0,0,0,.4));
+}
+.local-hero .country-text{flex:1}
+.local-hero .country-text h2{font-size:22px;font-weight:900;color:#fff}
+.local-hero .country-text .num{font-size:12px;color:#fff;opacity:.85;font-weight:600;margin-top:2px}
+.local-hero .trophy{
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  padding:8px 12px;border-radius:14px;text-align:center;
+  box-shadow:0 4px 12px rgba(251,191,36,.4);
+}
+.local-hero .trophy .pos{font-size:16px;font-weight:900;color:#1a1300}
+.local-hero .trophy .lab{font-size:9px;font-weight:700;color:#1a1300;letter-spacing:1px}
+
+/* Подиум для LOCAL — пьедестал на фоне */
+.podium-section{padding:14px 16px 8px;position:relative}
+.podium-stage{
+  display:flex;align-items:flex-end;justify-content:center;gap:8px;
+  height:200px;position:relative;
+}
+.podium-col{
+  flex:1;max-width:104px;border-radius:14px 14px 0 0;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:10px 6px 8px;position:relative;
+}
+.podium-col.gold{
+  height:200px;
+  background:linear-gradient(180deg,rgba(251,191,36,.30),rgba(251,191,36,.12));
+  border:1px solid rgba(251,191,36,.4);border-bottom:none;
+  box-shadow:0 0 24px rgba(251,191,36,.2);
+}
+.podium-col.silver{
+  height:155px;
+  background:linear-gradient(180deg,rgba(209,213,219,.20),rgba(209,213,219,.08));
+  border:1px solid rgba(209,213,219,.3);border-bottom:none;
+}
+.podium-col.bronze{
+  height:130px;
+  background:linear-gradient(180deg,rgba(205,127,50,.20),rgba(205,127,50,.08));
+  border:1px solid rgba(205,127,50,.3);border-bottom:none;
+}
+.podium-col .ava{
+  width:48px;height:48px;border-radius:50%;
+  display:grid;place-items:center;font-size:22px;font-weight:900;color:#fff;
+  margin-bottom:6px;
+}
+.podium-col.gold .ava{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 4px 16px rgba(251,191,36,.5)}
+.podium-col.silver .ava{background:linear-gradient(135deg,#d1d5db,#9ca3af)}
+.podium-col.bronze .ava{background:linear-gradient(135deg,#cd7f32,#92400e)}
+.podium-col .crown{
+  position:absolute;top:-18px;font-size:24px;
+  filter:drop-shadow(0 2px 6px rgba(251,191,36,.6));
+}
+.podium-col .nm{font-size:12px;font-weight:800;text-align:center;color:#fff}
+.podium-col .pts{font-size:14px;font-weight:900;color:var(--gold);margin-top:2px}
+.podium-col.silver .pts{color:var(--silver)}
+.podium-col.bronze .pts{color:var(--bronze)}
+.podium-col .num{
+  position:absolute;bottom:-18px;width:30px;height:30px;border-radius:50%;
+  background:var(--bg);border:2px solid;
+  display:grid;place-items:center;font-size:12px;font-weight:900;
+}
+.podium-col.gold .num{border-color:var(--gold);color:var(--gold)}
+.podium-col.silver .num{border-color:var(--silver);color:var(--silver)}
+.podium-col.bronze .num{border-color:var(--bronze);color:var(--bronze)}
+
+/* Top countries strip */
+.top-countries{
+  margin:18px 16px 6px;padding:12px;background:var(--surface);
+  border-radius:14px;
+}
+.top-countries .h{font-size:10px;font-weight:800;letter-spacing:1px;
+  text-transform:uppercase;color:var(--text-mute);margin-bottom:8px}
+.top-countries .row{display:flex;align-items:center;gap:8px;padding:6px 0}
+.top-countries .row .fl{font-size:20px}
+.top-countries .row .name{flex:1;font-size:12px}
+.top-countries .row .v{font-size:12px;color:var(--primary);font-weight:800}
+.top-countries .row .bar{
+  position:absolute;left:0;right:0;height:2px;background:var(--surface-3);
+  border-radius:1px;overflow:hidden;
+}
+
+/* ════════════════════════════════════════
+   ВАРИАНТ C: МИР — глобальные карты + страны
+   ════════════════════════════════════════ */
+.world-hero{
+  position:relative;padding:18px 16px 16px;text-align:center;
+  background:
+    radial-gradient(ellipse at top,rgba(78,161,255,.25),transparent 60%),
+    linear-gradient(180deg,rgba(11,13,18,0),rgba(11,13,18,.4));
+  overflow:hidden;
+}
+.world-hero::before{
+  content:"🌍";position:absolute;font-size:240px;opacity:.06;
+  top:-30px;left:50%;transform:translateX(-50%);
+}
+.world-hero .stat-line{
+  display:flex;justify-content:center;align-items:baseline;gap:6px;
+  position:relative;z-index:2;
+}
+.world-hero .big{font-size:46px;font-weight:900;color:#fff;letter-spacing:-1px}
+.world-hero .stat-line .unit{font-size:14px;color:var(--text-dim);font-weight:700}
+.world-hero .sub{font-size:11px;color:var(--text-dim);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;position:relative;z-index:2}
+
+/* World ribbon — игроки сейчас онлайн */
+.live-ribbon{
+  margin:12px 16px;display:flex;align-items:center;justify-content:center;
+  gap:8px;padding:8px 14px;border-radius:20px;
+  background:rgba(74,222,128,.10);border:1px solid rgba(74,222,128,.3);
+  font-size:11px;font-weight:700;color:var(--green);
+}
+.live-ribbon .live-dot{
+  width:8px;height:8px;background:var(--green);border-radius:50%;
+  box-shadow:0 0 8px var(--green);animation:pulse 1.5s infinite;
+}
+
+/* Countries leaderboard (новое) */
+.country-board{padding:8px 16px}
+.country-row{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--surface);border-radius:12px;margin-bottom:5px;
+  position:relative;overflow:hidden;
+}
+.country-row.me{background:linear-gradient(90deg,rgba(255,107,53,.18),rgba(255,107,53,.04));border:1.5px solid var(--primary)}
+.country-row::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;
+  background:linear-gradient(90deg,rgba(78,161,255,.10),transparent);
+}
+.country-row .pos{width:24px;font-size:13px;font-weight:800;color:var(--text-dim);text-align:right;z-index:2}
+.country-row.top3 .pos{color:var(--gold)}
+.country-row .fl{font-size:22px;z-index:2}
+.country-row .body{flex:1;z-index:2}
+.country-row .nm{font-size:13px;font-weight:700}
+.country-row .ld{font-size:10px;color:var(--text-mute);margin-top:2px}
+.country-row .v{font-size:14px;font-weight:800;color:var(--primary);z-index:2}
+
+/* Layout */
+.row3{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+.screen-label{
+  text-align:center;color:#aab3c8;font-size:13px;font-weight:600;
+  margin-bottom:12px;letter-spacing:.5px;
+}
+.caption{text-align:center;color:#7a8198;font-size:12px;margin-top:8px;max-width:390px}
+.note{
+  max-width:900px;background:#0f1218;border:1px solid #1f2330;
+  border-radius:14px;padding:18px 22px;color:#cbd2e1;
+  font-size:13.5px;line-height:1.55;
+}
+.note h3{color:#fff;font-size:14px;margin-bottom:8px}
+.note code{background:#1f2330;padding:2px 6px;border-radius:4px;font-size:12px;color:var(--primary)}
+</style>
+</head>
+<body>
+
+<div class="page-title">ESPEAK · Лидеры — редизайн (3 таба)</div>
+
+<div class="note">
+  <h3>Зачем редизайн</h3>
+  <p>Сейчас все 3 таба — серый MaterialTheme + список карточек одинакового стиля. Это не передаёт «соревнование». Предлагаю каждому табу свою атмосферу:</p>
+  <ul style="padding-left:20px;margin-top:6px;line-height:1.7">
+    <li><b>Неделя</b> — иконка лиги (Bilbao 🏛️) на фоне в полупрозрачности, таймер обратного отсчёта, цветные зоны PROMO/HOLD/DEMO с reward-эмблемами</li>
+    <li><b>Казахстан</b> — флаг страны крупно + место страны в мире, ПЬЕДЕСТАЛ (а не три равные карточки) с золотой короной над #1, breakdown «топ-5 городов»</li>
+    <li><b>Мир</b> — крупная статистика «всего игроков», live-ribbon «12 онлайн прямо сейчас», ВМЕСТО списка отдельных юзеров — ЛИДЕРБОРД СТРАН (Россия 145 800 XP, Казахстан 89 200, Испания 62 100…)</li>
+  </ul>
+</div>
+
+<div class="row3">
+
+<!-- ════════════════════════════════════════
+     A. WEEK (Неделя — Лига Bilbao)
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">A. Неделя — Лига Bilbao</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+  <div class="tabs">
+    <div class="tab active">Неделя 🏆</div>
+    <div class="tab">🇰🇿 Казахстан</div>
+    <div class="tab">🌍 Мир</div>
+  </div>
+
+  <div class="week-hero">
+    <div class="crown-line">Лига 3 из 8</div>
+    <div class="league-emoji">🏛️</div>
+    <h2>Bilbao</h2>
+    <div class="city-sub">600 – 999 XP</div>
+    <div class="countdown"><span class="pulse"></span>До конца недели · 3 дня 14 часов</div>
+  </div>
+
+  <div class="zone-strip">
+    <div class="zone-pill up"><div class="ic">↑</div><div class="label">В Zaragoza</div><div class="count">Топ 5</div></div>
+    <div class="zone-pill hold"><div class="ic">═</div><div class="label">Удержание</div><div class="count">6–25</div></div>
+    <div class="zone-pill down"><div class="ic">↓</div><div class="label">Вниз в Santiago</div><div class="count">Снизу 5</div></div>
+  </div>
+
+  <div class="week-list">
+    <div class="zone-divider up"><div class="line"></div>В повышение · Топ 5<div class="line"></div></div>
+
+    <div class="member">
+      <div class="rank">1</div><div class="medal">👑</div>
+      <div class="avatar" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">M</div>
+      <div class="nick">Marina</div><div class="xp">3 240 XP</div>
+    </div>
+    <div class="member">
+      <div class="rank">2</div><div class="medal">🥈</div>
+      <div class="avatar" style="background:linear-gradient(135deg,#d1d5db,#9ca3af)">A</div>
+      <div class="nick">Alibek</div><div class="xp">2 980 XP</div>
+    </div>
+    <div class="member">
+      <div class="rank">3</div><div class="medal">🥉</div>
+      <div class="avatar" style="background:linear-gradient(135deg,#cd7f32,#92400e)">D</div>
+      <div class="nick">Dilnaz</div><div class="xp">2 510 XP</div>
+    </div>
+    <div class="member">
+      <div class="rank">4</div><div class="medal"></div>
+      <div class="avatar" style="background:#4ea1ff">К</div>
+      <div class="nick">Камиля</div><div class="xp">2 180 XP</div>
+    </div>
+    <div class="member me">
+      <div class="rank">5</div><div class="medal">⭐</div>
+      <div class="avatar" style="background:linear-gradient(135deg,#ff8a3d,#ff4b00)">T</div>
+      <div class="nick">Тимур (ты)</div><div class="xp">2 050 XP</div>
+    </div>
+
+    <div class="zone-divider"><div class="line" style="background:linear-gradient(90deg,var(--text-mute),transparent)"></div>Зона удержания<div class="line" style="background:linear-gradient(90deg,var(--text-mute),transparent)"></div></div>
+    <div class="member">
+      <div class="rank">6</div><div class="medal"></div>
+      <div class="avatar" style="background:#a78bfa">B</div>
+      <div class="nick">Бекзат</div><div class="xp">1 920 XP</div>
+    </div>
+    <div class="member">
+      <div class="rank">7</div><div class="medal"></div>
+      <div class="avatar" style="background:#f472b6">A</div>
+      <div class="nick">Айгерим</div><div class="xp">1 740 XP</div>
+    </div>
+  </div>
+</div>
+<div class="caption">Лига даёт смысл: ты борешься за повышение в Zaragoza</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     B. KZ (LOCAL — country fanfare + pyramid podium)
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">B. Казахстан — настоящий пьедестал</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Неделя 🏆</div>
+    <div class="tab active">🇰🇿 Казахстан</div>
+    <div class="tab">🌍 Мир</div>
+  </div>
+
+  <div class="local-hero">
+    <div class="country-info">
+      <div class="country-flag">🇰🇿</div>
+      <div class="country-text">
+        <h2>Казахстан</h2>
+        <div class="num">1 247 игроков · <b>#3 в мире</b> по среднему рейтингу</div>
+      </div>
+      <div class="trophy">
+        <div class="pos">🥉</div>
+        <div class="lab">МИРОВОЕ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="podium-section">
+    <div class="podium-stage">
+      <div class="podium-col silver">
+        <div class="ava">A</div>
+        <div class="nm">Alibek</div>
+        <div class="pts">2 840</div>
+        <div class="num">2</div>
+      </div>
+      <div class="podium-col gold">
+        <div class="crown">👑</div>
+        <div class="ava">M</div>
+        <div class="nm">Marina</div>
+        <div class="pts">3 100</div>
+        <div class="num">1</div>
+      </div>
+      <div class="podium-col bronze">
+        <div class="ava">D</div>
+        <div class="nm">Dilnaz</div>
+        <div class="pts">2 710</div>
+        <div class="num">3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="top-countries">
+    <div class="h">📍 Топ городов в Казахстане</div>
+    <div class="row"><span class="fl">🏙️</span><span class="name">Алматы</span><span class="v">312 игроков</span></div>
+    <div class="row"><span class="fl">🏛️</span><span class="name">Астана</span><span class="v">287 игроков</span></div>
+    <div class="row"><span class="fl">🏗️</span><span class="name">Шымкент</span><span class="v">156 игроков</span></div>
+  </div>
+</div>
+<div class="caption">Пьедестал с короной + позиция страны в мире — настоящий fanfare</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     C. WORLD — countries leaderboard
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">C. Мир — соревнование стран</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Неделя 🏆</div>
+    <div class="tab">🇰🇿 Казахстан</div>
+    <div class="tab active">🌍 Мир</div>
+  </div>
+
+  <div class="world-hero">
+    <div class="stat-line">
+      <span class="big">24 318</span>
+      <span class="unit">игроков</span>
+    </div>
+    <div class="sub">в 47 странах · средний рейтинг 824</div>
+  </div>
+
+  <div class="live-ribbon">
+    <span class="live-dot"></span>247 ИГРОКОВ ОНЛАЙН ПРЯМО СЕЙЧАС
+  </div>
+
+  <!-- Сегмент: страны / игроки -->
+  <div style="display:flex;gap:4px;margin:8px 16px 12px;background:var(--surface-2);
+              padding:3px;border-radius:8px;">
+    <div style="flex:1;padding:7px;text-align:center;font-size:11px;font-weight:700;color:#fff;
+                background:var(--surface-3);border-radius:6px">🏆 Страны</div>
+    <div style="flex:1;padding:7px;text-align:center;font-size:11px;font-weight:700;color:var(--text-mute)">👤 Игроки</div>
+  </div>
+
+  <div class="country-board">
+    <div class="country-row top3">
+      <div class="pos">#1</div>
+      <div class="fl">🇷🇺</div>
+      <div class="body">
+        <div class="nm">Россия</div>
+        <div class="ld">5 412 игроков · ср. 1 240 XP</div>
+      </div>
+      <div class="v">671M</div>
+    </div>
+    <div class="country-row top3">
+      <div class="pos">#2</div>
+      <div class="fl">🇪🇸</div>
+      <div class="body">
+        <div class="nm">España</div>
+        <div class="ld">3 870 игроков · ср. 2 105 XP</div>
+      </div>
+      <div class="v">814M</div>
+    </div>
+    <div class="country-row top3 me">
+      <div class="pos">#3</div>
+      <div class="fl">🇰🇿</div>
+      <div class="body">
+        <div class="nm">Казахстан (ты тут)</div>
+        <div class="ld">1 247 игроков · ср. 894 XP</div>
+      </div>
+      <div class="v">111M</div>
+    </div>
+    <div class="country-row">
+      <div class="pos">#4</div>
+      <div class="fl">🇧🇾</div>
+      <div class="body">
+        <div class="nm">Беларусь</div>
+        <div class="ld">682 игроков · ср. 712 XP</div>
+      </div>
+      <div class="v">48M</div>
+    </div>
+    <div class="country-row">
+      <div class="pos">#5</div>
+      <div class="fl">🇺🇦</div>
+      <div class="body">
+        <div class="nm">Украина</div>
+        <div class="ld">540 игроков · ср. 658 XP</div>
+      </div>
+      <div class="v">35M</div>
+    </div>
+    <div class="country-row">
+      <div class="pos">#6</div>
+      <div class="fl">🇲🇽</div>
+      <div class="body">
+        <div class="nm">México</div>
+        <div class="ld">425 игроков · ср. 580 XP</div>
+      </div>
+      <div class="v">24M</div>
+    </div>
+    <div class="country-row">
+      <div class="pos">#7</div>
+      <div class="fl">🇦🇷</div>
+      <div class="body">
+        <div class="nm">Argentina</div>
+        <div class="ld">312 игроков · ср. 510 XP</div>
+      </div>
+      <div class="v">15M</div>
+    </div>
+  </div>
+</div>
+<div class="caption">Тап на сегмент «👤 Игроки» → обычный лидерборд людей. Default — соревнование СТРАН (живее)</div>
+</div>
+
+</div>
+
+<div class="note" style="max-width:900px">
+  <h3>3 ключевые идеи редизайна</h3>
+  <ol style="padding-left:20px;line-height:1.8">
+    <li><b>Атмосфера на табе.</b> Каждый таб — своё «настроение»:
+      <ul style="padding-left:18px;margin-top:4px">
+        <li>Неделя — синий фон лиги Bilbao + 🏛️ watermark + countdown</li>
+        <li>Казахстан — зелёно-жёлтый градиент флага + крупный пьедестал с короной</li>
+        <li>Мир — глобус-watermark + live-ribbon + lederboard стран</li>
+      </ul>
+    </li>
+    <li><b>Пьедестал вместо трёх ровных карточек.</b> Сейчас 🥇🥈🥉 — одинаковые рядом. Делаем настоящий 3D-эффект: золото выше всех, корона, цветные градиенты. Сразу видно кто первый.</li>
+    <li><b>Мир — соревнование стран по умолчанию.</b> Сейчас «Мир» = тот же список людей что Казахстан. Скучно. Делаем по умолчанию рейтинг СТРАН (Россия 671M XP, Испания 814M…), а индивидуальный список — через переключатель «👤 Игроки». Это даёт смысл: «моя страна #3 в мире — давай-ка вытащим её на #2».</li>
+  </ol>
+  <p style="margin-top:10px"><b>Технически</b>: ~250 строк Compose (3 hero-секции + новый PodiumStage + countries aggregator). Для countries-листа нужен Firestore aggregation — можно сделать через периодический Cloud Function или клиентский group-by из leaderboard collection (для начала достаточно).</p>
+</div>
+
+</body>
+</html>

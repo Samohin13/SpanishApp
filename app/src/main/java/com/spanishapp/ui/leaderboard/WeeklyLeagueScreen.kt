@@ -1,30 +1,29 @@
 package com.spanishapp.ui.leaderboard
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.TrendingDown
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.spanishapp.R
+import com.spanishapp.domain.algorithm.League
 import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.service.WeeklyLeagueService
 import com.spanishapp.service.WeeklyMember
@@ -40,27 +39,27 @@ fun WeeklyLeagueScreen(
     var showInfo by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = Color.Transparent,
+        containerColor = LbBg,
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                title = { Text(stringResource(com.spanishapp.R.string.weekly_league_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
+                title = { Text(stringResource(R.string.weekly_league_title), fontWeight = FontWeight.SemiBold, fontSize = 18.sp, color = LbText) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = LbText)
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showInfo = true }) { Icon(Icons.Default.Info, null) }
-                    IconButton(onClick = { vm.refresh() }) { Icon(Icons.Default.Refresh, null) }
+                    IconButton(onClick = { showInfo = true }) { Icon(Icons.Default.Info, null, tint = LbText) }
+                    IconButton(onClick = { vm.refresh() }) { Icon(Icons.Default.Refresh, null, tint = LbText) }
                 }
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Box(modifier = Modifier.fillMaxSize().padding(padding).background(LbBg)) {
             when {
                 ui.isLoading && ui.members.isEmpty() ->
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = LbPrimary) }
                 !ui.optedIn -> OptInBlock(onJoin = { vm.optIn() })
                 else -> CohortList(ui = ui, onLeave = { vm.optOut() })
             }
@@ -70,6 +69,9 @@ fun WeeklyLeagueScreen(
     if (showInfo) RulesSheet(onDismiss = { showInfo = false })
 }
 
+// ═══════════════════════════════════════════════════════════
+//  OPT-IN
+// ═══════════════════════════════════════════════════════════
 @Composable
 private fun OptInBlock(onJoin: () -> Unit) {
     Column(
@@ -80,67 +82,58 @@ private fun OptInBlock(onJoin: () -> Unit) {
         Text("🏆", fontSize = 64.sp)
         Spacer(Modifier.height(12.dp))
         Text(
-            stringResource(com.spanishapp.R.string.weekly_league_heading),
+            stringResource(R.string.weekly_league_heading),
             fontSize = 22.sp,
-            fontWeight = FontWeight.ExtraBold
+            fontWeight = FontWeight.ExtraBold,
+            color = LbText,
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            stringResource(com.spanishapp.R.string.weekly_league_subtitle),
+            stringResource(R.string.weekly_league_subtitle),
             fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = LbTextDim,
         )
         Spacer(Modifier.height(28.dp))
         Button(
             onClick = onJoin,
             modifier = Modifier.fillMaxWidth().height(54.dp),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = LbPrimary),
         ) {
-            Text(stringResource(com.spanishapp.R.string.weekly_league_join), fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.weekly_league_join), fontWeight = FontWeight.Bold, color = Color.White)
         }
     }
 }
 
+// ═══════════════════════════════════════════════════════════
+//  COHORT LIST — главный экран с hero + zone-pills + members
+// ═══════════════════════════════════════════════════════════
 @Composable
 private fun CohortList(ui: WeeklyLeagueUiState, onLeave: () -> Unit) {
     val tier = ui.state?.currentTier ?: 1
     val league = LeagueResolver.fromTier(tier)
     val members = ui.members
-    val total = members.size.coerceAtLeast(WeeklyLeagueService.COHORT_SIZE)
+
     val promoCutoff = WeeklyLeagueService.PROMOTE_COUNT
-    val demoCutoff = total - WeeklyLeagueService.DEMOTE_COUNT
+    val total = members.size
+    val demoCutoff = (total - WeeklyLeagueService.DEMOTE_COUNT).coerceAtLeast(promoCutoff)
 
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+        contentPadding = PaddingValues(bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
+        // ── HERO с цветным градиентом лиги ──
+        item { WeekHero(league = league, daysRemaining = ui.daysRemaining, totalTiers = WeeklyLeagueService.MAX_TIER) }
+
+        // ── Zone-pills strip (3 плашки) ──
         item {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                color = Color(league.accentColorHex).copy(alpha = 0.14f)
-            ) {
-                Column(
-                    Modifier.padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(league.emoji, fontSize = 44.sp)
-                    Text(
-                        league.city,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color(league.accentColorHex)
-                    )
-                    Text(
-                        stringResource(
-                            com.spanishapp.R.string.weekly_league_ends_in_template,
-                            "${ui.daysRemaining} ${pluralDays(ui.daysRemaining)}"
-                        ),
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            ZonePillBar(
+                promoteCount = WeeklyLeagueService.PROMOTE_COUNT,
+                demoteCount = WeeklyLeagueService.DEMOTE_COUNT,
+                cohortSize = WeeklyLeagueService.COHORT_SIZE,
+                nextLeague = LeagueResolver.next(league),
+                prevLeague = LeagueResolver.LEAGUES.firstOrNull { it.tier == league.tier - 1 },
+            )
         }
 
         if (members.isEmpty()) {
@@ -148,114 +141,223 @@ private fun CohortList(ui: WeeklyLeagueUiState, onLeave: () -> Unit) {
                 Spacer(Modifier.height(40.dp))
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Text(
-                        stringResource(com.spanishapp.R.string.weekly_league_waiting_cohort),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        stringResource(R.string.weekly_league_waiting_cohort),
+                        color = LbTextDim,
                     )
                 }
             }
         } else {
-            // Sticky-ish header for promo zone
-            item { ZoneHeader(stringResource(com.spanishapp.R.string.weekly_league_zone_promote_template, WeeklyLeagueService.PROMOTE_COUNT), Color(0xFF2E7D32), Icons.AutoMirrored.Filled.TrendingUp) }
-            items(members.take(promoCutoff), key = { it.uid }) { m ->
-                MemberRow(rank = members.indexOf(m) + 1, member = m, zone = Zone.PROMO)
-            }
-            val mid = members.drop(promoCutoff).take((demoCutoff - promoCutoff).coerceAtLeast(0))
-            if (mid.isNotEmpty()) {
-                item { ZoneHeader(stringResource(com.spanishapp.R.string.weekly_league_zone_hold), MaterialTheme.colorScheme.onSurfaceVariant, null) }
-                items(mid, key = { it.uid }) { m ->
-                    MemberRow(rank = members.indexOf(m) + 1, member = m, zone = Zone.HOLD)
+            // ── PROMO zone (вверх в Zaragoza) ──
+            item {
+                Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    ZoneDivider(
+                        text = "В повышение · Топ ${WeeklyLeagueService.PROMOTE_COUNT}",
+                        color = LbGreen,
+                    )
                 }
             }
-            val bottom = members.drop(demoCutoff.coerceAtLeast(0))
+            items(members.take(promoCutoff), key = { it.uid }) { m ->
+                val rank = members.indexOf(m) + 1
+                MemberRowFromWeekly(rank = rank, member = m)
+            }
+
+            // ── HOLD zone (середина) ──
+            val mid = members.drop(promoCutoff).take((demoCutoff - promoCutoff).coerceAtLeast(0))
+            if (mid.isNotEmpty()) {
+                item {
+                    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                        ZoneDivider(text = "Зона удержания", color = LbTextDim)
+                    }
+                }
+                items(mid, key = { it.uid }) { m ->
+                    val rank = members.indexOf(m) + 1
+                    MemberRowFromWeekly(rank = rank, member = m)
+                }
+            }
+
+            // ── DEMO zone (вниз в Santiago) ──
+            val bottom = members.drop(demoCutoff)
             if (bottom.isNotEmpty()) {
-                item { ZoneHeader(stringResource(com.spanishapp.R.string.weekly_league_zone_demote), Color(0xFFC62828), Icons.AutoMirrored.Filled.TrendingDown) }
+                item {
+                    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                        ZoneDivider(text = "Вылет вниз", color = LbRed)
+                    }
+                }
                 items(bottom, key = { it.uid }) { m ->
-                    MemberRow(rank = members.indexOf(m) + 1, member = m, zone = Zone.DEMO)
+                    val rank = members.indexOf(m) + 1
+                    MemberRowFromWeekly(rank = rank, member = m)
                 }
             }
         }
 
         item { Spacer(Modifier.height(24.dp)) }
         item {
-            TextButton(onClick = onLeave, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(com.spanishapp.R.string.weekly_league_leave), color = MaterialTheme.colorScheme.error)
+            TextButton(
+                onClick = onLeave,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.weekly_league_leave), color = LbRed)
             }
         }
     }
 }
 
-private enum class Zone { PROMO, HOLD, DEMO }
-
 @Composable
-private fun ZoneHeader(label: String, color: Color, icon: androidx.compose.ui.graphics.vector.ImageVector?) {
-    Row(
-        Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        if (icon != null) Icon(icon, null, tint = color, modifier = Modifier.size(16.dp))
-        Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = color)
+private fun MemberRowFromWeekly(rank: Int, member: WeeklyMember) {
+    val medal = when (rank) {
+        1 -> "👑"
+        2 -> "🥈"
+        3 -> "🥉"
+        else -> null
+    }
+    Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)) {
+        MemberRowNew(
+            rank = rank,
+            name = member.nickname,
+            rightValue = "${member.weekXp} XP",
+            isMe = member.isMe,
+            medal = medal,
+        )
     }
 }
 
+// ═══════════════════════════════════════════════════════════
+//  WEEK HERO — цветной hero лиги с countdown
+// ═══════════════════════════════════════════════════════════
 @Composable
-private fun MemberRow(rank: Int, member: WeeklyMember, zone: Zone) {
-    val zoneTint = when (zone) {
-        Zone.PROMO -> Color(0xFF2E7D32).copy(alpha = 0.06f)
-        Zone.DEMO  -> Color(0xFFC62828).copy(alpha = 0.06f)
-        Zone.HOLD  -> Color.Transparent
-    }
-    val bg = if (member.isMe) MaterialTheme.colorScheme.primary.copy(alpha = 0.16f) else zoneTint
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        color = bg,
-        tonalElevation = if (member.isMe) 2.dp else 0.dp,
-        border = if (member.isMe) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
+private fun WeekHero(league: League, daysRemaining: Int, totalTiers: Int) {
+    val accent = Color(league.accentColorHex)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.radialGradient(
+                    colors = listOf(
+                        accent.copy(alpha = 0.30f),
+                        accent.copy(alpha = 0.10f),
+                        Color.Transparent,
+                    ),
+                    radius = 800f,
+                )
+            )
+            .padding(top = 8.dp, bottom = 20.dp),
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+        // Watermark — большая полупрозрачная иконка лиги на фоне
+        Text(
+            league.emoji,
+            fontSize = 280.sp,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-40).dp)
+                .alpha(0.04f),
+        )
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val medal = when (rank) { 1 -> "👑"; 2 -> "🥈"; 3 -> "🥉"; else -> "" }
+            // «Лига 3 из 8»
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.width(24.dp).height(1.dp).background(accent.copy(alpha = 0.5f)))
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    "Лига ${league.tier} из $totalTiers".uppercase(),
+                    color = accent,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 2.sp,
+                )
+                Spacer(Modifier.width(8.dp))
+                Box(modifier = Modifier.width(24.dp).height(1.dp).background(accent.copy(alpha = 0.5f)))
+            }
+            Spacer(Modifier.height(6.dp))
+            // Большой emoji города
+            Text(league.emoji, fontSize = 72.sp)
+            Spacer(Modifier.height(4.dp))
+            // Название города
             Text(
-                "#$rank ${if (medal.isNotEmpty()) medal else ""}".trim(),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.width(60.dp)
+                league.city,
+                color = accent,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Black,
+                letterSpacing = (-0.5).sp,
             )
-            Spacer(Modifier.width(6.dp))
+            Spacer(Modifier.height(2.dp))
+            // Диапазон рейтинга
             Text(
-                if (member.isMe) "TY (${member.nickname})" else member.nickname,
-                fontSize = 14.sp,
-                fontWeight = if (member.isMe) FontWeight.ExtraBold else FontWeight.SemiBold,
-                modifier = Modifier.weight(1f),
-                maxLines = 1
+                "${league.ratingFrom} – ${league.ratingTo} XP".uppercase(),
+                color = LbTextDim,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 2.sp,
             )
-            Text(
-                "${member.weekXp} XP",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
+            Spacer(Modifier.height(14.dp))
+            // Countdown
+            CountdownPill(
+                text = "До конца недели · ${daysRemaining} ${pluralDays(daysRemaining)}",
+                accent = accent,
             )
         }
     }
 }
 
+// ═══════════════════════════════════════════════════════════
+//  ZONE-PILL BAR — 3 плашки сверху списка
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun ZonePillBar(
+    promoteCount: Int,
+    demoteCount: Int,
+    cohortSize: Int,
+    nextLeague: League?,
+    prevLeague: League?,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        ZonePill(
+            kind = ZoneKind.UP,
+            label = if (nextLeague != null) "В ${nextLeague.city}" else "Топ",
+            count = "Топ $promoteCount",
+            modifier = Modifier.weight(1f),
+        )
+        ZonePill(
+            kind = ZoneKind.HOLD,
+            label = "Удержание",
+            count = "${promoteCount + 1}–${cohortSize - demoteCount}",
+            modifier = Modifier.weight(1f),
+        )
+        ZonePill(
+            kind = ZoneKind.DOWN,
+            label = if (prevLeague != null) "Вниз в ${prevLeague.city}" else "Низ",
+            count = "Снизу $demoteCount",
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RULES SHEET
+// ═══════════════════════════════════════════════════════════
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RulesSheet(onDismiss: () -> Unit) {
-    ModalBottomSheet(onDismissRequest = onDismiss) {
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = LbSurface) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(stringResource(com.spanishapp.R.string.weekly_league_how_works), fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_1), fontSize = 14.sp)
-            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_2), fontSize = 14.sp)
-            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_3), fontSize = 14.sp)
-            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_4), fontSize = 14.sp)
-            Text(stringResource(com.spanishapp.R.string.weekly_league_rule_5), fontSize = 14.sp)
+            Text(stringResource(R.string.weekly_league_how_works), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = LbText)
+            Text(stringResource(R.string.weekly_league_rule_1), fontSize = 14.sp, color = LbTextDim)
+            Text(stringResource(R.string.weekly_league_rule_2), fontSize = 14.sp, color = LbTextDim)
+            Text(stringResource(R.string.weekly_league_rule_3), fontSize = 14.sp, color = LbTextDim)
+            Text(stringResource(R.string.weekly_league_rule_4), fontSize = 14.sp, color = LbTextDim)
+            Text(stringResource(R.string.weekly_league_rule_5), fontSize = 14.sp, color = LbTextDim)
             Spacer(Modifier.height(8.dp))
-            Button(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text(stringResource(com.spanishapp.R.string.weekly_league_understood)) }
+            Button(
+                onClick = onDismiss,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = LbPrimary),
+            ) {
+                Text(stringResource(R.string.weekly_league_understood), color = Color.White)
+            }
         }
     }
 }
