@@ -12,10 +12,18 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.spanishapp.data.db.dao.UserProgressDao
+import com.spanishapp.data.prefs.CountryPreferences
 import com.spanishapp.domain.algorithm.LeagueResolver
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,9 +48,13 @@ data class LeaderboardData(
     val worldTotal: Int
 )
 
+@Serializable
+private data class CountryIsResponse(val country: String? = null)
+
 @Singleton
 class LeaderboardRepository @Inject constructor(
     private val userProgressDao: UserProgressDao,
+    private val countryPrefs: CountryPreferences,
     @ApplicationContext private val context: Context
 ) {
 
@@ -51,12 +63,20 @@ class LeaderboardRepository @Inject constructor(
 
     private val collection get() = db.collection("leaderboard")
 
+    /** Отдельный клиент для IP-API — 4 сек на всё (быстрый fallback, не блокируем UX). */
+    private val ipClient by lazy {
+        OkHttpClient.Builder()
+            .connectTimeout(4, TimeUnit.SECONDS)
+            .readTimeout(4, TimeUnit.SECONDS)
+            .callTimeout(4, TimeUnit.SECONDS)
+            .build()
+    }
+    private val json = Json { ignoreUnknownKeys = true }
+
     /**
-     * Реальный ISO-код страны устройства. Приоритет:
-     * 1) Network-страна (где физически зарегистрирован в сети — самое точное:
-     *    KZ-житель с RU-симкой в роуминге получит "kz")
-     * 2) SIM-страна (где выпущена SIM — fallback при отсутствии сети)
-     * 3) Locale (язык системы — последняя надежда, может врать)
+     * Sync-версия определения страны для legacy-вызовов (не дёргает сеть).
+     * Использует только TelephonyManager + Locale + cached pref + override.
+     * Для первого запроса предпочтительнее `deviceCountryCodeAsync()`.
      */
     fun deviceCountryCode(): String {
         val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
@@ -65,6 +85,71 @@ class LeaderboardRepository @Inject constructor(
         val sim = tm?.simCountryIso?.uppercase().orEmpty()
         if (sim.length == 2) return sim
         return Locale.getDefault().country.uppercase().ifBlank { "XX" }
+    }
+
+    /**
+     * Async-версия с полной цепочкой fallback'ов:
+     *
+     *  1) **Override** — если юзер выбрал страну вручную через picker (DataStore)
+     *  2) **Network ISO** — TelephonyManager.networkCountryIso (страна оператора)
+     *  3) **SIM ISO** — TelephonyManager.simCountryIso (страна SIM)
+     *  4) **IP-API** — https://api.country.is (HTTP fallback, 4 сек)
+     *  5) **Locale** — Locale.getDefault().country (язык системы)
+     *  6) **Cached** — последний успешный detect из DataStore
+     *  7) **"XX"** — unknown
+     *
+     * При успехе IP-API результат кэшируется в DataStore для быстрых
+     * последующих запросов в offline.
+     */
+    suspend fun deviceCountryCodeAsync(): String {
+        // 1) User override — высший приоритет
+        val override = countryPrefs.overrideIso.first()
+        if (override.length == 2) return override
+
+        // 2-3) Telephony
+        val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+        val net = tm?.networkCountryIso?.uppercase().orEmpty()
+        if (net.length == 2) {
+            countryPrefs.setCached(net)
+            return net
+        }
+        val sim = tm?.simCountryIso?.uppercase().orEmpty()
+        if (sim.length == 2) {
+            countryPrefs.setCached(sim)
+            return sim
+        }
+
+        // 4) IP-API — спасает WiFi-only устройства без SIM (популярный кейс
+        //    в Юго-Восточной Азии где юзер сидит на WiFi). Завернули в
+        //    withTimeoutOrNull чтобы коллизия с UI thread не съела ANR.
+        val ip = withTimeoutOrNull(4_500L) {
+            runCatching {
+                val req = Request.Builder().url("https://api.country.is").build()
+                ipClient.newCall(req).execute().use { resp ->
+                    if (!resp.isSuccessful) return@runCatching null
+                    val body = resp.body?.string() ?: return@runCatching null
+                    json.decodeFromString<CountryIsResponse>(body).country?.uppercase()
+                }
+            }.getOrNull()
+        }
+        if (ip != null && ip.length == 2) {
+            countryPrefs.setCached(ip)
+            return ip
+        }
+
+        // 5) Locale (язык системы — последняя автоматическая надежда)
+        val loc = Locale.getDefault().country.uppercase()
+        if (loc.length == 2) {
+            countryPrefs.setCached(loc)
+            return loc
+        }
+
+        // 6) Cached — последний раз когда что-то работало
+        val cached = countryPrefs.cachedIso.first()
+        if (cached.length == 2) return cached
+
+        // 7) Совсем ничего не нашли
+        return "XX"
     }
 
     /** Возвращает uid анонимного пользователя — авторизует если нужно. */
@@ -88,18 +173,13 @@ class LeaderboardRepository @Inject constructor(
         val progress = userProgressDao.getProgressOnce() ?: return false
         if (!progress.leaderboardOptIn) return false
 
-        // v1.21.1: убрана totalXp==0 фильтрация.
-        // Старая логика удаляла запись юзера если он opt-in но ещё не играл,
-        // что ломало закрытое тестирование (тестеры не появлялись в таблице).
-        // С v1.1.0 skillRating стартует с 0, а не с 1000 → опасность «фейкового
-        // топ-игрока с дефолтным рейтингом» снята автоматически. Любой
-        // opt-in юзер появляется в таблице снизу (rating=0) и поднимается
-        // по мере игры.
-
         val uid = ensureAuth()
+        // ⚠ Используем АСИНХРОННУЮ версию detect — это даёт IP-API fallback
+        // для WiFi-only устройств. Если упадёт сеть — вернётся "XX", но
+        // в Firestore запишется хотя бы хоть что-то осмысленное.
         val data = mapOf(
             "nickname" to progress.displayName.ifBlank { "Estudiante" },
-            "country" to deviceCountryCode(),
+            "country" to deviceCountryCodeAsync(),
             "skillRating" to progress.skillRating,
             "peakRating" to progress.peakSkillRating,
             "league" to progress.currentLeague,
@@ -120,9 +200,15 @@ class LeaderboardRepository @Inject constructor(
 
     /** Загрузить топы и свои ранги. */
     suspend fun fetch(limit: Int = 100): LeaderboardData {
-        val country = deviceCountryCode()
+        val country = deviceCountryCodeAsync()
         val myUid = auth.currentUser?.uid
 
+        // Firestore возвращает данные отсортированными по skillRating DESC.
+        // При одинаковом skillRating порядок недетерминирован — поэтому
+        // делаем вторичную сортировку в Kotlin (см. comparator ниже).
+        // ⚠ Композитный orderBy(skillRating, updatedAt) в Firestore требует
+        // создания composite index вручную в Console — мы избегаем этого
+        // дополнительного шага для юзера и сортируем клиентски.
         val world = collection
             .orderBy("skillRating", Query.Direction.DESCENDING)
             .limit(limit.toLong())
@@ -134,29 +220,32 @@ class LeaderboardRepository @Inject constructor(
             .limit(limit.toLong())
             .get().await()
 
-        val worldRows = world.documents.mapNotNull { it.toEntry() }
-        val countryRows = countryQuery.documents.mapNotNull { it.toEntry() }
+        // Тай-брейкер: при равном skillRating — тот, кто РАНЬШЕ зарегистрировался,
+        // выше. Это даёт детерминированный визуальный порядок, согласованный
+        // с подсчётом myRank ниже.
+        val tieBreakComparator = compareByDescending<LeaderboardEntry> { it.skillRating }
+            .thenBy { it.updatedAt }
 
-        // Свои ранги через aggregate count, если пользователь зарегистрирован
+        val worldRows = world.documents.mapNotNull { it.toEntry() }.sortedWith(tieBreakComparator)
+        val countryRows = countryQuery.documents.mapNotNull { it.toEntry() }.sortedWith(tieBreakComparator)
+
+        // ── My ranks ──
+        // Считаем согласованно с визуальным порядком: rank = индекс в
+        // отсортированном массиве + 1. Так гарантируем что «Ты #1» и медаль
+        // 🥇 у одного и того же юзера.
         val myProgress = userProgressDao.getProgressOnce()
-        val myRating = myProgress?.skillRating ?: 0
+        val optedIn = myProgress?.leaderboardOptIn == true
 
-        val myCountryRank = if (myUid != null && myProgress?.leaderboardOptIn == true) {
-            try {
-                val q = collection
-                    .whereEqualTo("country", country)
-                    .whereGreaterThan("skillRating", myRating)
-                val agg = q.count().get(AggregateSource.SERVER).await()
-                (agg.count.toInt() + 1)
-            } catch (_: Exception) { null }
+        val myCountryRank = if (myUid != null && optedIn) {
+            val idx = countryRows.indexOfFirst { it.uid == myUid }
+            if (idx >= 0) idx + 1
+            else fallbackRankCountry(country, myProgress?.skillRating ?: 0)
         } else null
 
-        val myWorldRank = if (myUid != null && myProgress?.leaderboardOptIn == true) {
-            try {
-                val q = collection.whereGreaterThan("skillRating", myRating)
-                val agg = q.count().get(AggregateSource.SERVER).await()
-                (agg.count.toInt() + 1)
-            } catch (_: Exception) { null }
+        val myWorldRank = if (myUid != null && optedIn) {
+            val idx = worldRows.indexOfFirst { it.uid == myUid }
+            if (idx >= 0) idx + 1
+            else fallbackRankWorld(myProgress?.skillRating ?: 0)
         } else null
 
         // Общее число (приблизительно)
@@ -179,6 +268,24 @@ class LeaderboardRepository @Inject constructor(
             worldTotal = worldTotal
         )
     }
+
+    /** Fallback подсчёт когда юзер не в первых N (>100). Считаем сколько
+     *  юзеров с большим рейтингом + 1. Тай-брейкера тут нет — но это
+     *  приближение для случая когда юзер далеко за топ-100. */
+    private suspend fun fallbackRankCountry(country: String, myRating: Int): Int? = try {
+        val agg = collection
+            .whereEqualTo("country", country)
+            .whereGreaterThan("skillRating", myRating)
+            .count().get(AggregateSource.SERVER).await()
+        agg.count.toInt() + 1
+    } catch (_: Exception) { null }
+
+    private suspend fun fallbackRankWorld(myRating: Int): Int? = try {
+        val agg = collection
+            .whereGreaterThan("skillRating", myRating)
+            .count().get(AggregateSource.SERVER).await()
+        agg.count.toInt() + 1
+    } catch (_: Exception) { null }
 
     private fun com.google.firebase.firestore.DocumentSnapshot.toEntry(): LeaderboardEntry? {
         val rating = getLong("skillRating")?.toInt() ?: return null

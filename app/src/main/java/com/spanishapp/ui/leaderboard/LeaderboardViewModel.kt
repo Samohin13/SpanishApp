@@ -3,6 +3,7 @@ package com.spanishapp.ui.leaderboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spanishapp.data.db.dao.UserProgressDao
+import com.spanishapp.data.prefs.CountryPreferences
 import com.spanishapp.data.repository.LeaderboardData
 import com.spanishapp.data.repository.LeaderboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,20 +22,20 @@ data class LeaderboardUiState(
     val error: String? = null,
     val optedIn: Boolean = false,
     val deviceCountry: String = "XX",
-    val displayName: String = "Estudiante"
+    val displayName: String = "Estudiante",
+    /** Открыта ли модалка обязательного ввода имени (когда оно дефолтное). */
+    val needsNamePrompt: Boolean = false,
+    /** Открыт ли picker для смены страны. */
+    val showCountryPicker: Boolean = false,
 )
 
 @HiltViewModel
 class LeaderboardViewModel @Inject constructor(
     private val repo: LeaderboardRepository,
-    private val userProgressDao: UserProgressDao
+    private val userProgressDao: UserProgressDao,
+    private val countryPrefs: CountryPreferences,
 ) : ViewModel() {
 
-    // v1.22.3: НЕ вызываем deviceCountryCode() в инициализаторе StateFlow —
-    // это срабатывает на main thread в момент создания ViewModel. На некоторых
-    // девайсах (особенно с двойной SIM / без сети / с roaming) TelephonyManager
-    // блокирует поток на ~3-7 секунд → ANR. Теперь стартовое значение "XX",
-    // а реальная страна подгружается асинхронно в loadInitial().
     private val _state = MutableStateFlow(LeaderboardUiState(deviceCountry = "XX"))
     val state: StateFlow<LeaderboardUiState> = _state.asStateFlow()
 
@@ -45,22 +46,42 @@ class LeaderboardViewModel @Inject constructor(
     private fun loadInitial() {
         viewModelScope.launch {
             val progress = userProgressDao.getProgressOnce()
-            // deviceCountryCode дёргает TelephonyManager — оборачиваем в IO,
-            // чтобы main thread не ждал. На большинстве устройств это быстро,
-            // но защита нужна на edge-кейсах (плохая SIM, roaming, отсутствие сети).
-            val country = withContext(Dispatchers.IO) {
+            // Сначала показываем sync-результат мгновенно — потом обновляем
+            // через async detect (IP-API fallback может занять до 4 сек).
+            val syncCountry = withContext(Dispatchers.IO) {
                 runCatching { repo.deviceCountryCode() }.getOrDefault("XX")
             }
             _state.value = _state.value.copy(
                 optedIn = progress?.leaderboardOptIn == true,
                 displayName = progress?.displayName.orEmpty().ifBlank { "Estudiante" },
-                deviceCountry = country
+                deviceCountry = syncCountry
             )
+            // Async refine — может вернуть VN/TH/ID и другие где SIM пустой,
+            // но IP-API определяет уверенно
+            val asyncCountry = withContext(Dispatchers.IO) {
+                runCatching { repo.deviceCountryCodeAsync() }.getOrDefault(syncCountry)
+            }
+            if (asyncCountry != syncCountry) {
+                _state.value = _state.value.copy(deviceCountry = asyncCountry)
+            }
             if (progress?.leaderboardOptIn == true) refresh()
         }
     }
 
+    /**
+     * Opt-in с защитой от race condition имени:
+     *  • Если displayName пустое или дефолтное "Estudiante" — открываем
+     *    модалку, не делаем opt-in пока юзер не введёт имя
+     *  • Если имя нормальное — выполняем DAO update СЕКВЕНЦИАЛЬНО (через
+     *    .join() suspend-вызовов), потом syncSelf
+     */
     fun optIn() {
+        val current = _state.value
+        val name = current.displayName.trim()
+        if (name.isBlank() || name == "Estudiante") {
+            _state.value = current.copy(needsNamePrompt = true)
+            return
+        }
         viewModelScope.launch {
             userProgressDao.setLeaderboardOptIn(true)
             _state.value = _state.value.copy(optedIn = true)
@@ -84,10 +105,6 @@ class LeaderboardViewModel @Inject constructor(
     fun refresh() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, error = null)
-            // v1.22.3: общий таймаут 15 секунд. Раньше при плохом интернете
-            // Firestore await мог висеть «вечно» — индикатор крутился, юзер
-            // тыкал refresh ещё раз, накапливались coroutine'ы → главный поток
-            // в итоге блокировался Firebase internals → ANR.
             val data = withTimeoutOrNull(15_000L) {
                 runCatching {
                     if (_state.value.optedIn) repo.syncSelf()
@@ -105,14 +122,58 @@ class LeaderboardViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Гарантированно-секвенциальное обновление имени:
+     *  1) DAO update — suspend, ждём завершения
+     *  2) state.copy() — обновляем UI
+     *  3) Если в opt-in — syncSelf(force=true), ждём
+     *  4) refresh()
+     *
+     * Раньше п.3 шёл параллельно с п.1 → race condition.
+     */
     fun updateDisplayName(name: String) {
         viewModelScope.launch {
-            userProgressDao.updateDisplayName(name)
-            _state.value = _state.value.copy(displayName = name)
+            val trimmed = name.trim()
+            if (trimmed.isBlank()) return@launch
+            // 1) Гарантируем что DAO успеет записать ДО syncSelf
+            userProgressDao.updateDisplayName(trimmed)
+            // 2) Обновляем UI + закрываем модалку имени
+            _state.value = _state.value.copy(displayName = trimmed, needsNamePrompt = false)
+            // 3) Если opt-in — syncSelf. Если ещё нет — это была prompt-модалка,
+            //    значит сразу делаем opt-in (юзер же нажал «Сохранить и присоединиться»)
+            if (_state.value.optedIn) {
+                runCatching { repo.syncSelf(force = true) }
+                refresh()
+            } else {
+                userProgressDao.setLeaderboardOptIn(true)
+                _state.value = _state.value.copy(optedIn = true)
+                runCatching { repo.syncSelf(force = true) }
+                refresh()
+            }
+        }
+    }
+
+    /** Юзер выбрал страну вручную через picker → сохраняем override + refresh. */
+    fun setCountryOverride(iso: String) {
+        viewModelScope.launch {
+            countryPrefs.setOverride(iso)
+            _state.value = _state.value.copy(deviceCountry = iso, showCountryPicker = false)
             if (_state.value.optedIn) {
                 runCatching { repo.syncSelf(force = true) }
                 refresh()
             }
         }
+    }
+
+    fun showCountryPicker() {
+        _state.value = _state.value.copy(showCountryPicker = true)
+    }
+
+    fun dismissCountryPicker() {
+        _state.value = _state.value.copy(showCountryPicker = false)
+    }
+
+    fun dismissNamePrompt() {
+        _state.value = _state.value.copy(needsNamePrompt = false)
     }
 }

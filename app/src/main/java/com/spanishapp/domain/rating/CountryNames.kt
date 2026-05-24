@@ -55,7 +55,53 @@ object CountryNames {
         "AU" to ("Австралия"     to "🇦🇺"),
         "NZ" to ("Новая Зеландия" to "🇳🇿"),
         "IL" to ("Израиль"       to "🇮🇱"),
-        "AE" to ("ОАЭ"           to "🇦🇪")
+        "AE" to ("ОАЭ"           to "🇦🇪"),
+        // ── Юго-Восточная Азия / South Asia ─────────────────────
+        "VN" to ("Вьетнам"       to "🇻🇳"),
+        "TH" to ("Таиланд"       to "🇹🇭"),
+        "ID" to ("Индонезия"     to "🇮🇩"),
+        "MY" to ("Малайзия"      to "🇲🇾"),
+        "SG" to ("Сингапур"      to "🇸🇬"),
+        "PH" to ("Филиппины"     to "🇵🇭"),
+        "PK" to ("Пакистан"      to "🇵🇰"),
+        "BD" to ("Бангладеш"     to "🇧🇩"),
+        "LK" to ("Шри-Ланка"     to "🇱🇰"),
+        // ── Ближний Восток / Африка ─────────────────────────────
+        "EG" to ("Египет"        to "🇪🇬"),
+        "MA" to ("Марокко"       to "🇲🇦"),
+        "IR" to ("Иран"          to "🇮🇷"),
+        "SA" to ("Саудовская Аравия" to "🇸🇦"),
+        "QA" to ("Катар"         to "🇶🇦"),
+        "ZA" to ("ЮАР"           to "🇿🇦"),
+        // ── Европа (расширение) ─────────────────────────────────
+        "IE" to ("Ирландия"      to "🇮🇪"),
+        "IS" to ("Исландия"      to "🇮🇸"),
+        "EE" to ("Эстония"       to "🇪🇪"),
+        "LV" to ("Латвия"        to "🇱🇻"),
+        "LT" to ("Литва"         to "🇱🇹"),
+        "HU" to ("Венгрия"       to "🇭🇺"),
+        "RO" to ("Румыния"       to "🇷🇴"),
+        "BG" to ("Болгария"      to "🇧🇬"),
+        "RS" to ("Сербия"        to "🇷🇸"),
+        "HR" to ("Хорватия"      to "🇭🇷"),
+        "SK" to ("Словакия"      to "🇸🇰"),
+        "SI" to ("Словения"      to "🇸🇮"),
+        "LU" to ("Люксембург"    to "🇱🇺"),
+        "CY" to ("Кипр"          to "🇨🇾"),
+        "MT" to ("Мальта"        to "🇲🇹"),
+        // ── Латинская Америка (расширение) ──────────────────────
+        "UY" to ("Уругвай"       to "🇺🇾"),
+        "PY" to ("Парагвай"      to "🇵🇾"),
+        "BO" to ("Боливия"       to "🇧🇴"),
+        "CR" to ("Коста-Рика"    to "🇨🇷"),
+        "PA" to ("Панама"        to "🇵🇦"),
+        "DO" to ("Доминикана"    to "🇩🇴"),
+        "CU" to ("Куба"          to "🇨🇺"),
+        "GT" to ("Гватемала"     to "🇬🇹"),
+        "HN" to ("Гондурас"      to "🇭🇳"),
+        "NI" to ("Никарагуа"     to "🇳🇮"),
+        "SV" to ("Сальвадор"     to "🇸🇻"),
+        "PR" to ("Пуэрто-Рико"   to "🇵🇷"),
     )
 
     fun nameOf(iso: String): String =
@@ -66,4 +112,15 @@ object CountryNames {
 
     fun displayWithFlag(iso: String): String =
         "${flagOf(iso)} ${nameOf(iso)}"
+
+    /** Все страны для picker'а в лидерборде — отсортированы по русскому названию. */
+    data class CountryOption(val iso: String, val name: String, val flag: String)
+
+    fun allCountries(): List<CountryOption> =
+        DATA.entries
+            .map { (iso, pair) -> CountryOption(iso, pair.first, pair.second) }
+            .sortedBy { it.name.lowercase() }
+
+    /** Проверить, есть ли код в нашей таблице — для логики «известная страна?» */
+    fun isKnown(iso: String): Boolean = DATA.containsKey(iso.uppercase())
 }

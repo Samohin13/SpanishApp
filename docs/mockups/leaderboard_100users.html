@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ESPEAK — Лидеры (100 юзеров)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --bg:#0b0d12;
+  --surface:#161922;
+  --surface-2:#1f2330;
+  --surface-3:#2a2f3e;
+  --line:#2d3344;
+  --text:#f4f6fb;
+  --text-dim:#9aa3b7;
+  --text-mute:#6b7388;
+  --orange:#ff8a3d;
+  --blue:#4ea1ff;
+  --green:#4ade80;
+  --red:#f87171;
+  --yellow:#facc15;
+  --purple:#a78bfa;
+  --primary:#ff6b35;
+  --primary-soft:rgba(255,107,53,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#05070b;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  color:var(--text);
+  padding:24px 12px 60px;
+  display:flex;flex-direction:column;align-items:center;gap:28px;
+}
+h1.page{
+  font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--text-dim);
+  text-transform:uppercase;margin-bottom:-12px;
+}
+.phone{
+  width:390px;background:var(--bg);border-radius:38px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 8px #1a1d26;
+  overflow:hidden;position:relative;
+}
+.phone::before{
+  content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  width:110px;height:24px;background:#000;border-radius:14px;z-index:5;
+}
+.statusbar{
+  height:44px;display:flex;justify-content:space-between;align-items:center;
+  padding:0 24px;font-size:13px;font-weight:600;color:var(--text);
+}
+.appbar{
+  display:flex;align-items:center;gap:10px;padding:8px 16px 14px;
+}
+.back, .refresh{
+  width:36px;height:36px;display:grid;place-items:center;
+  color:var(--text);font-size:18px;
+}
+.title-block{flex:1;text-align:center}
+.title-block h1{font-size:16px;font-weight:600}
+
+/* Tabs */
+.tabs{
+  display:flex;border-bottom:1px solid var(--line);
+}
+.tab{
+  flex:1;padding:12px 8px;text-align:center;
+  font-size:13px;font-weight:600;color:var(--text-dim);
+  border-bottom:2px solid transparent;
+}
+.tab.active{
+  color:var(--primary);border-bottom-color:var(--primary);
+}
+
+/* Sticky my-rank pill (улучшение) */
+.sticky-pill{
+  position:sticky;top:0;z-index:5;
+  background:linear-gradient(180deg,var(--bg) 70%,transparent);
+  padding:8px 16px 6px;
+}
+.my-rank{
+  background:linear-gradient(135deg,rgba(255,107,53,.18),rgba(255,107,53,.06));
+  border:1px solid rgba(255,107,53,.35);
+  border-radius:14px;padding:10px 14px;
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;
+}
+.my-rank .ic{font-size:18px}
+.my-rank .me{font-weight:700;color:var(--primary)}
+.my-rank .me small{color:var(--text-dim);font-weight:500;display:block;font-size:10px;margin-top:1px}
+.my-rank .jump{margin-left:auto;font-size:11px;color:var(--primary);font-weight:600;
+  padding:6px 10px;border:1px solid var(--primary);border-radius:8px}
+
+/* Country override pill */
+.country-pill{
+  margin:4px 16px 8px;background:rgba(74,222,128,.10);
+  border:1px solid rgba(74,222,128,.25);border-radius:10px;
+  padding:8px 12px;display:flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--text-dim);
+}
+.country-pill .flag{font-size:18px}
+.country-pill .name{flex:1}
+.country-pill .edit{font-size:14px;color:var(--green);font-weight:600}
+
+/* Podium */
+.podium-wrap{
+  margin:6px 16px 10px;background:linear-gradient(180deg,#1d2230,#161922);
+  border-radius:20px;padding:14px;
+  border:1px solid rgba(255,255,255,.04);
+}
+.podium-title{
+  font-size:10px;letter-spacing:1px;font-weight:700;color:var(--text-mute);
+  text-transform:uppercase;text-align:center;margin-bottom:10px;
+}
+.podium{display:flex;gap:8px;align-items:flex-end}
+.slot{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:12px 6px;border-radius:14px;
+  background:rgba(255,255,255,.04);
+}
+.slot.big{flex:1.15;padding:16px 6px;background:rgba(250,204,21,.08);
+  outline:1px solid rgba(250,204,21,.25)}
+.slot.silver{background:rgba(180,180,180,.08)}
+.slot.bronze{background:rgba(205,127,50,.08)}
+.slot .medal{font-size:30px;margin-bottom:2px}
+.slot.big .medal{font-size:36px}
+.slot .name{font-size:11px;font-weight:700;margin-top:2px;text-align:center;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slot.big .name{font-size:12px}
+.slot .rating{font-size:13px;font-weight:800;color:var(--primary);margin-top:2px}
+.slot.big .rating{font-size:15px}
+.slot .flag{font-size:14px;margin-top:2px}
+
+/* Leader rows */
+.list{padding:0 16px}
+.row{
+  display:flex;align-items:center;gap:10px;margin-bottom:4px;
+  background:var(--surface);border-radius:10px;
+  padding:8px 12px;
+}
+.row.self{background:var(--primary-soft);outline:1px solid rgba(255,107,53,.35)}
+.row .rank{width:32px;font-size:13px;color:var(--text-dim);font-weight:700;text-align:right}
+.row.top10 .rank{color:var(--yellow);font-weight:800}
+.row .flag{font-size:16px}
+.row .nick{flex:1;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .league{font-size:9px;color:var(--text-mute);font-weight:600;letter-spacing:.5px}
+.row .score{font-size:14px;font-weight:800;color:var(--primary)}
+.row.self .score{color:var(--orange)}
+
+/* Section header in list */
+.section-h{
+  font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text-mute);
+  text-transform:uppercase;margin:14px 0 6px;padding:0 4px;
+}
+
+/* "Around me" разделитель */
+.gap{
+  display:flex;align-items:center;gap:8px;margin:10px 0;
+  color:var(--text-mute);font-size:11px;
+}
+.gap::before, .gap::after{
+  content:"";flex:1;height:1px;background:var(--line);
+}
+
+/* Layout */
+.row3{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+.caption{
+  text-align:center;color:#7a8198;font-size:12px;margin-top:8px;max-width:390px;
+}
+.note{
+  max-width:880px;background:#0f1218;border:1px solid #1f2330;
+  border-radius:14px;padding:18px 22px;color:#cbd2e1;
+  font-size:13.5px;line-height:1.55;
+}
+.note h3{color:#fff;font-size:14px;margin-bottom:8px}
+.note code{background:#1f2330;padding:2px 6px;border-radius:4px;font-size:12px;color:var(--orange)}
+.screen-label{
+  text-align:center;color:#aab3c8;font-size:13px;font-weight:600;
+  margin-bottom:12px;letter-spacing:.5px;
+}
+.scroll-area{
+  max-height:620px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:#2a2f3e transparent;
+}
+.scroll-area::-webkit-scrollbar{width:4px}
+.scroll-area::-webkit-scrollbar-thumb{background:#2a2f3e;border-radius:2px}
+</style>
+</head>
+<body>
+
+<h1 class="page">ESPEAK · Лидеры — 100 юзеров</h1>
+
+<div class="note">
+  <h3>Что показано</h3>
+  <p>3 phone'а: <b>сейчас (как есть)</b>, <b>«Around me» (улучшение #1)</b> и <b>«Sticky my-rank» (улучшение #2)</b>. Когда юзеров реально много, дефолтный длинный список становится неудобным — приходится скроллить чтобы найти себя. Предлагаю выбрать какие улучшения внедрить.</p>
+</div>
+
+<div class="row3">
+
+<!-- ════════════════════════════════════════
+     ВАРИАНТ A: КАК СЕЙЧАС (просто 100 строк)
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">A. Как сейчас — длинный скролл</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Неделя 🏆</div>
+    <div class="tab active">🇰🇿 Казахстан</div>
+    <div class="tab">🌍 Мир</div>
+  </div>
+
+  <div class="my-rank" style="margin:8px 16px">
+    <span class="ic">⭐</span>
+    <span class="me">Ты #43 из 100<small>в Казахстане</small></span>
+  </div>
+
+  <div class="country-pill">
+    <span class="flag">🇰🇿</span>
+    <span class="name">Твоя страна: Казахстан</span>
+    <span class="edit">✎</span>
+  </div>
+
+  <div class="podium-wrap">
+    <div class="podium">
+      <div class="slot silver"><div class="medal">🥈</div><div class="name">Alibek</div><div class="rating">2840</div><div class="flag">🇰🇿</div></div>
+      <div class="slot big"><div class="medal">🥇</div><div class="name">Marina</div><div class="rating">3100</div><div class="flag">🇰🇿</div></div>
+      <div class="slot bronze"><div class="medal">🥉</div><div class="name">Dilnaz</div><div class="rating">2710</div><div class="flag">🇰🇿</div></div>
+    </div>
+  </div>
+
+  <div class="list scroll-area" id="list-a"></div>
+</div>
+<div class="caption">⚠ Чтобы увидеть свою позицию #43 — надо проскроллить ~40 карточек вниз</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     ВАРИАНТ B: AROUND ME (рекомендуемое)
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">B. «Around me» — показываем топ + соседей</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Неделя 🏆</div>
+    <div class="tab active">🇰🇿 Казахстан</div>
+    <div class="tab">🌍 Мир</div>
+  </div>
+
+  <div class="my-rank" style="margin:8px 16px">
+    <span class="ic">⭐</span>
+    <span class="me">Ты #43 из 100<small>в Казахстане</small></span>
+    <span class="jump">К себе ↓</span>
+  </div>
+
+  <div class="podium-wrap">
+    <div class="podium">
+      <div class="slot silver"><div class="medal">🥈</div><div class="name">Alibek</div><div class="rating">2840</div><div class="flag">🇰🇿</div></div>
+      <div class="slot big"><div class="medal">🥇</div><div class="name">Marina</div><div class="rating">3100</div><div class="flag">🇰🇿</div></div>
+      <div class="slot bronze"><div class="medal">🥉</div><div class="name">Dilnaz</div><div class="rating">2710</div><div class="flag">🇰🇿</div></div>
+    </div>
+  </div>
+
+  <div class="list scroll-area" id="list-b"></div>
+</div>
+<div class="caption">Топ-10 + разделитель + ты ± 3 соседа. Кнопка «К себе ↓» прыгает к твоей строке</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     ВАРИАНТ C: STICKY PILL + SEGMENT
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">C. Sticky pill + сегмент</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+  <div class="tabs">
+    <div class="tab">Неделя 🏆</div>
+    <div class="tab active">🇰🇿 Казахстан</div>
+    <div class="tab">🌍 Мир</div>
+  </div>
+
+  <!-- Sub-segment: Top 10 / Top 100 / Around me -->
+  <div style="display:flex;gap:4px;margin:8px 16px;background:var(--surface-2);
+              padding:3px;border-radius:8px;">
+    <div style="flex:1;padding:6px;text-align:center;font-size:11px;font-weight:600;color:var(--text-mute)">Топ 10</div>
+    <div style="flex:1;padding:6px;text-align:center;font-size:11px;font-weight:600;color:var(--text);
+                background:var(--surface-3);border-radius:6px">Топ 100</div>
+    <div style="flex:1;padding:6px;text-align:center;font-size:11px;font-weight:600;color:var(--text-mute)">Вокруг меня</div>
+  </div>
+
+  <div class="my-rank" style="margin:6px 16px">
+    <span class="ic">⭐</span>
+    <span class="me">Ты #43 из 100<small>в Казахстане</small></span>
+    <span class="jump">К себе</span>
+  </div>
+
+  <div class="country-pill">
+    <span class="flag">🇰🇿</span>
+    <span class="name">Твоя страна: Казахстан</span>
+    <span class="edit">✎</span>
+  </div>
+
+  <div class="list scroll-area" id="list-c"></div>
+</div>
+<div class="caption">Подиум опционален при выборе сегмента «Топ 100» (экономит место)</div>
+</div>
+
+</div>
+
+<div class="note" style="max-width:880px">
+  <h3>Что предлагаю реализовать</h3>
+  <ol style="padding-left:20px;line-height:1.7;margin-top:4px">
+    <li><b>Sticky my-rank pill</b> — плашка «Ты #43» прилипает к верху при скролле. Юзер всегда видит свою позицию. (~30 строк кода)</li>
+    <li><b>«Around me» секция</b> — после топ-10 разделитель «···», потом ты ± 3 соседа. Если юзер в топ-13, секция не нужна. (~50 строк)</li>
+    <li><b>Кнопка «К себе ↓»</b> в pill — `LazyColumn.scrollToItem(myIdx)`. (~10 строк)</li>
+    <li><b>Сегмент «Топ 10 / Топ 100 / Вокруг меня»</b> — для юзеров в середине списка показывать только релевантный кусок. (~40 строк)</li>
+    <li><b>Альтернативно: всю UX-простоту оставить как есть</b> — при росте сообщества сделать pagination (loadMore по 25 строк). Тяжелее технически, но даёт правильный UX когда юзеров уже 1000+.</li>
+  </ol>
+  <p style="margin-top:10px"><b>Моя рекомендация:</b> делать <b>1+2+3 одним коммитом</b> (sticky pill + around me + jump-to-self). Сегмент-переключатель и pagination — потом, когда юзеров реально станет много.</p>
+</div>
+
+<script>
+// Generate 100 rows for each variant
+const names = ["Marina","Alibek","Dilnaz","Aigerim","Erlan","Saule","Bekzat","Aida","Nurzhan",
+  "Madina","Aslan","Karina","Daniyar","Aizada","Talgat","Аружан","Sanzhar","Лиза","Тимур",
+  "Гульнара","Ержан","Камила","Бахытжан","Алина","Олжас","Гульмира","Серик","Зарина","Нурлан",
+  "Гульжан","Бахыт","Айдана","Канат","Айгерим","Самат","Жанна","Берик","Зухра","Айдар",
+  "Гульшат","Рустам","Айжан","Бауыржан","Тимур","Алмагуль","Дамир","Камиля","Аян","Гульдана",
+  "Айбек","Назым","Рауан","Жанар","Кайрат","Алия","Бакыт","Жулдыз","Айнур","Дауир","Аружан"];
+const flags = ["🇰🇿","🇰🇿","🇰🇿","🇰🇿","🇰🇿","🇰🇿","🇰🇰🇿","🇰🇿","🇰🇿","🇰🇿"];
+const leagues = ["MADRID","BARCELONA","SEVILLA","VALENCIA","ZARAGOZA","BILBAO","SANTIAGO","ALDEA"];
+
+function score(rank) {
+  // Top 1 — 3100, дальше убывает
+  return Math.max(0, 3100 - rank*30 - Math.floor(Math.random()*15));
+}
+function leagueOf(s){
+  if (s>=2800) return leagues[0];
+  if (s>=2100) return leagues[1];
+  if (s>=1500) return leagues[2];
+  if (s>=1000) return leagues[3];
+  if (s>=600) return leagues[4];
+  if (s>=300) return leagues[5];
+  if (s>=100) return leagues[6];
+  return leagues[7];
+}
+function rowHtml(rank, name, isSelf=false, top=false){
+  const s = isSelf ? 540 : score(rank);
+  const l = leagueOf(s);
+  const cls = (isSelf?'self ':'') + (top?'top10 ':'');
+  return `<div class="row ${cls}">
+    <div class="rank">#${rank}</div>
+    <div class="flag">🇰🇿</div>
+    <div>
+      <div class="nick">${name}</div>
+      <div class="league">${l}</div>
+    </div>
+    <div style="flex:1"></div>
+    <div class="score">${s}</div>
+  </div>`;
+}
+
+// Вариант A — все 97 строк подряд (после top 3)
+function renderA(){
+  const el = document.getElementById('list-a');
+  let html = '';
+  for (let i=4; i<=100; i++) {
+    const isSelf = i===43;
+    const name = isSelf ? 'Тимур (ты)' : names[(i-4)%names.length] + ' ' + (i*17%99);
+    html += rowHtml(i, name, isSelf);
+  }
+  el.innerHTML = html;
+}
+
+// Вариант B — top 10 + gap + around me
+function renderB(){
+  const el = document.getElementById('list-b');
+  let html = '<div class="section-h">Топ 10</div>';
+  for (let i=4; i<=10; i++) {
+    html += rowHtml(i, names[(i-4)%names.length] + ' ' + (i*17%99), false, true);
+  }
+  html += '<div class="gap">··· 30 игроков пропущено ···</div>';
+  for (let i=40; i<=46; i++) {
+    const isSelf = i===43;
+    const name = isSelf ? 'Тимур (ты)' : names[(i-4)%names.length] + ' ' + (i*17%99);
+    html += rowHtml(i, name, isSelf);
+  }
+  html += '<div class="gap">··· 54 игрока ниже ···</div>';
+  el.innerHTML = html;
+}
+
+// Вариант C — все 97 строк но с sticky pill (то же что A, демонстрация sticky)
+function renderC(){
+  const el = document.getElementById('list-c');
+  let html = '';
+  for (let i=1; i<=100; i++) {
+    if (i<=3) continue;
+    const isSelf = i===43;
+    const name = isSelf ? 'Тимур (ты)' : names[(i-4)%names.length] + ' ' + (i*17%99);
+    html += rowHtml(i, name, isSelf, i<=10);
+  }
+  el.innerHTML = html;
+}
+
+renderA(); renderB(); renderC();
+</script>
+
+</body>
+</html>

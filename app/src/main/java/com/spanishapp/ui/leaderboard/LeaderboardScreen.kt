@@ -1,13 +1,17 @@
 package com.spanishapp.ui.leaderboard
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -61,6 +65,25 @@ fun LeaderboardScreen(
             )
         }
     ) { padding ->
+        // ── Модалка обязательного ввода имени ─────────────────────
+        // Открывается когда юзер жмёт opt-in а displayName = "Estudiante".
+        // Без неё в Firestore попадёт дефолтное имя и юзер появится в
+        // топе как анонимный «Estudiante» (источник проблемы 2).
+        if (state.needsNamePrompt) {
+            NamePromptDialog(
+                initialName = state.displayName,
+                onConfirm = { vm.updateDisplayName(it) },
+                onDismiss = { vm.dismissNamePrompt() }
+            )
+        }
+        // ── Picker страны ─────────────────────────────────────────
+        if (state.showCountryPicker) {
+            CountryPickerDialog(
+                currentIso = state.deviceCountry,
+                onSelect = { vm.setCountryOverride(it) },
+                onDismiss = { vm.dismissCountryPicker() }
+            )
+        }
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             if (!state.optedIn) {
                 OptInBlock(
@@ -151,6 +174,40 @@ fun LeaderboardScreen(
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onTertiaryContainer,
                         lineHeight = 16.sp,
+                    )
+                }
+            }
+
+            // Кнопка смены страны — если auto-detect определил неверно,
+            // юзер может выбрать вручную из списка ~70 стран.
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                    .clickable { vm.showCountryPicker() },
+                shape = RoundedCornerShape(10.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        CountryNames.flagOf(state.deviceCountry),
+                        fontSize = 18.sp
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        "Твоя страна: ${CountryNames.nameOf(state.deviceCountry)}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = "Изменить страну",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp),
                     )
                 }
             }
@@ -335,4 +392,115 @@ private fun LeaderRow(rank: Int, entry: LeaderboardEntry, isSelf: Boolean) {
             )
         }
     }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ДИАЛОГИ: обязательное имя + picker страны
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Обязательный диалог ввода имени когда юзер пытается opt-in с дефолтным
+ * именем "Estudiante". Без него в Firestore попадёт анонимная запись и
+ * юзер появится в топе без идентичности (источник проблемы 2).
+ */
+@Composable
+private fun NamePromptDialog(
+    initialName: String,
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var name by remember(initialName) {
+        mutableStateOf(if (initialName == "Estudiante") "" else initialName)
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Как тебя называть в рейтинге?") },
+        text = {
+            Column {
+                Text(
+                    "Выбери уникальный никнейм — другие игроки увидят его в топе. " +
+                    "Можно изменить позже в настройках профиля.",
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(12.dp))
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it.take(20) },
+                    label = { Text("Никнейм") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (name.trim().isNotBlank()) onConfirm(name.trim()) },
+                enabled = name.trim().isNotBlank() && name.trim() != "Estudiante",
+            ) {
+                Text("Присоединиться")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Отмена")
+            }
+        }
+    )
+}
+
+/**
+ * Picker всех известных стран — юзер вручную переопределяет страну если
+ * auto-detect (Telephony + IP-API + Locale) ошибся. Выбор сохраняется в
+ * CountryPreferences и используется во всех будущих sync.
+ */
+@Composable
+private fun CountryPickerDialog(
+    currentIso: String,
+    onSelect: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val countries = remember { CountryNames.allCountries() }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Выбери страну") },
+        text = {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp),
+            ) {
+                itemsIndexed(countries) { _, country ->
+                    val isSelected = country.iso == currentIso
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSelect(country.iso) }
+                            .padding(vertical = 10.dp, horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(country.flag, fontSize = 22.sp)
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            country.name,
+                            fontSize = 15.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f),
+                        )
+                        if (isSelected) {
+                            Text("✓", fontSize = 18.sp, color = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Закрыть")
+            }
+        }
+    )
 }

@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ESPEAK — Лидеры (после фиксов)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --bg:#0b0d12;
+  --surface:#161922;
+  --surface-2:#1f2330;
+  --surface-3:#2a2f3e;
+  --line:#2d3344;
+  --text:#f4f6fb;
+  --text-dim:#9aa3b7;
+  --text-mute:#6b7388;
+  --orange:#ff8a3d;
+  --blue:#4ea1ff;
+  --green:#4ade80;
+  --red:#f87171;
+  --yellow:#facc15;
+  --purple:#a78bfa;
+  --pink:#f472b6;
+  --primary:#ff6b35;
+  --primary-soft:rgba(255,107,53,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#05070b;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  color:var(--text);
+  padding:24px 12px 60px;
+  display:flex;flex-direction:column;align-items:center;gap:28px;
+}
+h1.page{
+  font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--text-dim);
+  text-transform:uppercase;margin-bottom:-12px;
+}
+/* Phone frame */
+.phone{
+  width:390px;background:var(--bg);border-radius:38px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 8px #1a1d26;
+  overflow:hidden;position:relative;
+}
+.phone::before{
+  content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  width:110px;height:24px;background:#000;border-radius:14px;z-index:5;
+}
+.statusbar{
+  height:44px;display:flex;justify-content:space-between;align-items:center;
+  padding:0 24px;font-size:13px;font-weight:600;color:var(--text);
+}
+.appbar{
+  display:flex;align-items:center;gap:10px;padding:8px 16px 14px;
+}
+.back, .refresh{
+  width:36px;height:36px;display:grid;place-items:center;
+  color:var(--text);font-size:18px;
+}
+.title-block{flex:1;text-align:center}
+.title-block h1{font-size:16px;font-weight:600}
+
+/* Tabs */
+.tabs{
+  display:flex;border-bottom:1px solid var(--line);
+}
+.tab{
+  flex:1;padding:12px 8px;text-align:center;
+  font-size:13px;font-weight:600;color:var(--text-dim);
+  border-bottom:2px solid transparent;
+}
+.tab.active{
+  color:var(--primary);border-bottom-color:var(--primary);
+}
+
+/* Hint banner */
+.hint{
+  margin:10px 16px;background:rgba(250,204,21,.08);border-radius:10px;
+  padding:10px 12px;color:#e7d28a;font-size:12px;line-height:1.45;
+}
+
+/* My rank pill */
+.my-rank{
+  margin:8px 16px;background:rgba(255,107,53,.10);border-radius:16px;
+  padding:12px;font-weight:600;color:var(--primary);font-size:13px;
+}
+
+/* Country override pill (новое) */
+.country-pill{
+  margin:4px 16px 8px;background:rgba(74,222,128,.10);
+  border:1px solid rgba(74,222,128,.25);border-radius:10px;
+  padding:8px 12px;display:flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--text-dim);
+}
+.country-pill .flag{font-size:18px}
+.country-pill .name{flex:1}
+.country-pill .edit{font-size:14px;color:var(--green);font-weight:600}
+
+/* Podium */
+.podium-wrap{
+  margin:10px 16px;background:var(--surface);border-radius:20px;padding:16px;
+}
+.podium{display:flex;gap:8px;align-items:flex-end}
+.slot{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:14px 6px;border-radius:14px;
+  background:rgba(255,255,255,.04);
+}
+.slot.big{flex:1.15;padding:18px 6px}
+.slot.self{background:var(--primary-soft);outline:2px solid rgba(255,107,53,.35)}
+.slot .medal{font-size:32px;margin-bottom:2px}
+.slot.big .medal{font-size:38px}
+.slot .name{font-size:12px;font-weight:700;margin-top:2px;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slot.big .name{font-size:13px}
+.slot .rating{font-size:14px;font-weight:800;color:var(--primary);margin-top:2px}
+.slot.big .rating{font-size:16px}
+.slot .flag{font-size:16px;margin-top:2px}
+
+/* Leader row */
+.row{
+  display:flex;align-items:center;gap:10px;margin:6px 16px;
+  background:var(--surface);border-radius:14px;
+  padding:10px 12px;
+}
+.row.self{background:var(--primary-soft)}
+.row .rank{width:32px;font-size:13px;color:var(--text-dim);font-weight:700}
+.row .flag{font-size:18px}
+.row .body{flex:1}
+.row .nick{font-size:14px;font-weight:600}
+.row .league-badge{display:inline-block;font-size:9px;background:var(--surface-3);
+  padding:2px 6px;border-radius:8px;color:var(--text-dim);margin-top:3px;
+  font-weight:600;letter-spacing:.5px}
+.row .score{font-size:15px;font-weight:800;color:var(--primary)}
+
+/* Opt-out button */
+.opt-out{
+  margin:20px 16px 0;text-align:center;color:var(--red);
+  font-size:13px;font-weight:600;padding:10px;
+}
+
+/* Modal overlays */
+.modal-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;z-index:10;
+}
+.modal{
+  background:#1c2030;border-radius:20px;padding:18px;
+  width:100%;max-width:340px;
+}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:10px}
+.modal p{font-size:13px;color:var(--text-dim);line-height:1.5;margin-bottom:14px}
+.modal input{
+  width:100%;background:#0e1119;color:var(--text);
+  border:1px solid var(--line);border-radius:10px;
+  padding:12px;font-size:14px;outline:none;
+}
+.modal input:focus{border-color:var(--primary)}
+.modal-actions{
+  display:flex;justify-content:flex-end;gap:8px;margin-top:14px;
+}
+.modal-btn{
+  padding:10px 16px;border-radius:8px;border:none;
+  font-size:13px;font-weight:600;cursor:pointer;
+}
+.modal-btn.text{background:transparent;color:var(--text-dim)}
+.modal-btn.primary{background:var(--primary);color:#fff}
+.modal-btn.primary:disabled{opacity:.4}
+
+/* Country picker list */
+.country-list{
+  max-height:340px;overflow-y:auto;
+  margin:0 -4px;
+}
+.country-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 8px;border-radius:8px;cursor:pointer;
+}
+.country-item:hover{background:rgba(255,255,255,.03)}
+.country-item.selected{background:var(--primary-soft)}
+.country-item .flag{font-size:22px}
+.country-item .name{flex:1;font-size:15px}
+.country-item.selected .name{color:var(--primary);font-weight:700}
+.country-item .check{font-size:18px;color:var(--primary)}
+
+/* Layout */
+.row3{
+  display:flex;gap:24px;flex-wrap:wrap;justify-content:center;
+}
+.caption{
+  text-align:center;color:#7a8198;font-size:12px;margin-top:8px;
+}
+.note{
+  max-width:840px;background:#0f1218;border:1px solid #1f2330;
+  border-radius:14px;padding:18px 22px;color:#cbd2e1;
+  font-size:13.5px;line-height:1.55;
+}
+.note h3{color:#fff;font-size:14px;margin-bottom:8px}
+.note code{background:#1f2330;padding:2px 6px;border-radius:4px;font-size:12px;color:var(--orange)}
+.before-after{
+  background:linear-gradient(90deg,rgba(248,113,113,.08),rgba(74,222,128,.08));
+  border-radius:10px;padding:12px;margin-top:12px;
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+  font-size:12px;
+}
+.before-after .col{padding-left:8px}
+.before-after .col-h{font-weight:700;font-size:11px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.before-after .before{border-left:3px solid var(--red)}
+.before-after .before .col-h{color:var(--red)}
+.before-after .after{border-left:3px solid var(--green)}
+.before-after .after .col-h{color:var(--green)}
+
+.screen-label{
+  text-align:center;color:#aab3c8;font-size:13px;font-weight:600;
+  margin-bottom:12px;letter-spacing:.5px;
+}
+</style>
+</head>
+<body>
+
+<h1 class="page">ESPEAK · Лидеры — фиксы (3 проблемы)</h1>
+
+<div class="note">
+  <h3>Что изменилось vs твой скриншот</h3>
+  <div class="before-after">
+    <div class="col before">
+      <div class="col-h">Было</div>
+      🥇 Estudiante 0 🏳️ (Вьетнам без флага)<br>
+      🥈 Estudiante 0 🇰🇿 (это ты)<br>
+      Текст: «Ты #1 из 2 в мире» — а золото не у тебя
+    </div>
+    <div class="col after">
+      <div class="col-h">Стало</div>
+      🥇 Bao 0 🇻🇳 (Вьетнам определился через IP-API)<br>
+      🥈 Тимур 0 🇰🇿 (имя из NamePromptDialog)<br>
+      Текст: «Ты #2 из 2 в мире» — согласовано с медалями
+    </div>
+  </div>
+</div>
+
+<div class="row3">
+
+<!-- ════════════════════════════════════════
+     SCREEN 1: Main leaderboard (после фиксов)
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">📋 Основной экран (после фиксов)</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab">Неделя 🏆</div>
+    <div class="tab active">🇰🇿 Казахстан</div>
+    <div class="tab">🌍 Мир</div>
+  </div>
+
+  <div class="hint">
+    В твоей стране пока мало игроков (1). Показываем мировой рейтинг — присоединяйся к топу!
+  </div>
+
+  <!-- НОВОЕ: pill с возможностью сменить страну -->
+  <div class="country-pill">
+    <span class="flag">🇰🇿</span>
+    <span class="name">Твоя страна: Казахстан</span>
+    <span class="edit">✎ Изменить</span>
+  </div>
+
+  <!-- Корректный ранг -->
+  <div class="my-rank">
+    Ты #2 из 2 в мире
+  </div>
+
+  <!-- Podium: ЗОЛОТО → реальный #1 (Вьетнам), серебро → юзер (Казахстан) -->
+  <div class="podium-wrap">
+    <div class="podium">
+      <div class="slot self">
+        <div class="medal">🥈</div>
+        <div class="name">Тимур</div>
+        <div class="rating">0</div>
+        <div class="flag">🇰🇿</div>
+      </div>
+      <div class="slot big">
+        <div class="medal">🥇</div>
+        <div class="name">Bao</div>
+        <div class="rating">0</div>
+        <div class="flag">🇻🇳</div>
+      </div>
+      <div class="slot" style="visibility:hidden">
+        <div class="medal">🥉</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="opt-out">Выйти из лидерборда</div>
+</div>
+<div class="caption">Tap на pill «Твоя страна» → picker</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN 2: Country Picker dialog
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">🌐 Picker страны (новое)</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+
+  <!-- Dim background of main screen -->
+  <div style="opacity:.3">
+    <div class="tabs">
+      <div class="tab">Неделя 🏆</div>
+      <div class="tab active">🇰🇿 Казахстан</div>
+      <div class="tab">🌍 Мир</div>
+    </div>
+    <div class="country-pill">
+      <span class="flag">🇰🇿</span>
+      <span class="name">Твоя страна: Казахстан</span>
+      <span class="edit">✎</span>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay">
+    <div class="modal">
+      <h3>Выбери страну</h3>
+      <div class="country-list">
+        <div class="country-item"><span class="flag">🇦🇲</span><span class="name">Армения</span></div>
+        <div class="country-item"><span class="flag">🇦🇿</span><span class="name">Азербайджан</span></div>
+        <div class="country-item"><span class="flag">🇧🇾</span><span class="name">Беларусь</span></div>
+        <div class="country-item"><span class="flag">🇧🇬</span><span class="name">Болгария</span></div>
+        <div class="country-item"><span class="flag">🇻🇳</span><span class="name">Вьетнам</span></div>
+        <div class="country-item"><span class="flag">🇬🇪</span><span class="name">Грузия</span></div>
+        <div class="country-item selected"><span class="flag">🇰🇿</span><span class="name">Казахстан</span><span class="check">✓</span></div>
+        <div class="country-item"><span class="flag">🇰🇬</span><span class="name">Кыргызстан</span></div>
+        <div class="country-item"><span class="flag">🇱🇻</span><span class="name">Латвия</span></div>
+        <div class="country-item"><span class="flag">🇱🇹</span><span class="name">Литва</span></div>
+        <div class="country-item"><span class="flag">🇲🇩</span><span class="name">Молдова</span></div>
+        <div class="country-item"><span class="flag">🇷🇺</span><span class="name">Россия</span></div>
+        <div class="country-item"><span class="flag">🇹🇯</span><span class="name">Таджикистан</span></div>
+        <div class="country-item"><span class="flag">🇹🇭</span><span class="name">Таиланд</span></div>
+        <div class="country-item"><span class="flag">🇹🇲</span><span class="name">Туркменистан</span></div>
+        <div class="country-item"><span class="flag">🇹🇷</span><span class="name">Турция</span></div>
+        <div class="country-item"><span class="flag">🇺🇦</span><span class="name">Украина</span></div>
+        <div class="country-item"><span class="flag">🇺🇿</span><span class="name">Узбекистан</span></div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn text">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="caption">70+ стран отсортированы по алфавиту</div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN 3: Name prompt dialog
+     ════════════════════════════════════════ -->
+<div>
+<div class="screen-label">✍️ Обязательное имя при opt-in</div>
+<div class="phone">
+  <div class="statusbar"><span>9:35</span><span>📶 🔋</span></div>
+  <div class="appbar">
+    <div class="back">←</div>
+    <div class="title-block"><h1>Лидеры</h1></div>
+    <div class="refresh">⟳</div>
+  </div>
+
+  <!-- Dim of opt-in screen -->
+  <div style="opacity:.3;padding:50px 32px;text-align:center">
+    <div style="font-size:64px;margin-bottom:16px">🌍</div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:10px">Присоединиться к рейтингу?</div>
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.5">
+      Соревнуйся с другими игроками со всего мира за место в топе.
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay">
+    <div class="modal">
+      <h3>Как тебя называть в рейтинге?</h3>
+      <p>
+        Выбери уникальный никнейм — другие игроки увидят его в топе.
+        Можно изменить позже в настройках профиля.
+      </p>
+      <input placeholder="Никнейм" value="" autofocus>
+      <div class="modal-actions">
+        <button class="modal-btn text">Отмена</button>
+        <button class="modal-btn primary" disabled>Присоединиться</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="caption">Кнопка disabled пока имя пустое или = «Estudiante»</div>
+</div>
+
+</div>
+
+<div class="note" style="max-width:840px">
+  <h3>Как это решает 3 проблемы</h3>
+  <ul style="padding-left:18px;line-height:1.7">
+    <li><b>Проблема 1 (Вьетнам без флага)</b> →
+      <code>deviceCountryCodeAsync()</code> теперь имеет 6-уровневый fallback: <b>Override → Network ISO → SIM ISO → IP-API (country.is) → Locale → Cached</b>. WiFi-only вьетнамец без SIM теперь корректно определится через IP. Плюс юзер может вручную выбрать через picker.
+    </li>
+    <li><b>Проблема 2 (оба Estudiante)</b> →
+      <code>optIn()</code> теперь проверяет имя ДО синхронизации. Если <code>displayName == "Estudiante"</code>, открывается обязательный диалог. В Firestore попадёт только реальное имя. Race condition устранён через <code>suspend fun updateDisplayName().join()</code> перед <code>syncSelf()</code>.
+    </li>
+    <li><b>Проблема 3 (противоречие ранга)</b> →
+      В <code>LeaderboardRepository.fetch()</code> добавлена вторичная сортировка <code>compareByDescending { skillRating }.thenBy { updatedAt }</code> в Kotlin (без composite Firestore index — экономим миграцию схемы). <code>myRank = indexOfFirst { uid } + 1</code> — гарантированно согласован с визуальным порядком.
+    </li>
+  </ul>
+</div>
+
+</body>
+</html>
