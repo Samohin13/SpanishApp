@@ -401,6 +401,19 @@
       "correct_answer": "le",
       "distractors": ["lo", "la", "se"],
       "explanation_on_fail_ru": "«A Pablo» = косвенное дополнение → клитик «le» (не lo!). «Lo/la» — только для прямого дополнения. «Se» — когда после идёт ещё один клитик (se lo dije)."
+    },
+    {
+      "round": 23,
+      "format": "CHOICE",
+      "topic_ru": "Aún/todavía/ya nuance",
+      "tested_lesson": "u7_l2",
+      "tested_grammar": "Маркеры Perfecto · aún vs ya",
+      "npc_line_es": "¿Has terminado el libro de Almodóvar?",
+      "npc_line_ru": "Дочитала книгу про Альмодовара?",
+      "prompt_ru": "Нет, до сих пор не дочитала. Какой ответ корректен?",
+      "correct_answer": "No, todavía no lo he terminado.",
+      "distractors": ["No, ya no lo he terminado.", "No, ya lo he terminado.", "No, aún he terminado."],
+      "explanation_on_fail_ru": "`Todavía/aún no` = всё ещё нет. `Ya no` = больше нет. `Ya` = уже сделано (утвердительно)."
     }
   ],
   "pass_outcomes": {

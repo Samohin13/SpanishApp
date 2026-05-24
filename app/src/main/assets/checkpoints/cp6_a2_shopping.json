@@ -382,6 +382,19 @@
       "correct_answer": "Sí me lo llevo gracias",
       "word_bank": ["Sí", "me", "lo", "llevo", "gracias", "la", "le", "se"],
       "explanation_on_fail_ru": "«Me lo llevo» = я его беру (себе). Порядок: ID (me) → OD (lo) → глагол. «El jersey» = м.р. → lo, не la. «Le lo» — НЕЛЬЗЯ (двух «l» не бывает, тогда se lo)."
+    },
+    {
+      "round": 23,
+      "format": "CHOICE",
+      "topic_ru": "Leísmo Spain vs DELE",
+      "tested_lesson": "u6_l9",
+      "tested_grammar": "Leísmo · le/lo для людей",
+      "npc_line_es": "Ayer vi a Pedro en la tienda. ¿Y tú?",
+      "npc_line_ru": "Вчера я видела Педро в магазине. А ты?",
+      "prompt_ru": "Какой ответ принимает DELE (LatAm стандарт)?",
+      "correct_answer": "Yo también lo vi.",
+      "distractors": ["Yo también le vi.", "Yo también la vi.", "Yo también les vi."],
+      "explanation_on_fail_ru": "`Lo vi` = LatAm/DELE стандарт. `Le vi` = leísmo Spain (тоже принимается в Spain). DELE строже — используй `lo`."
     }
   ],
   "pass_outcomes": {

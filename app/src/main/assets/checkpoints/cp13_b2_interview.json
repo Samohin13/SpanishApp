@@ -424,6 +424,19 @@
       ],
       "hint_ru": "Si + hubiera/hubiese + part. → habría + part.",
       "explanation_on_fail_ru": "Si тип 3 = нереальное прошлое. Формула: Si + Pluscuamp.Subj (hubiera empezado) + Condicional Compuesto (habría llegado). Обе формы образуются через haber + participio."
+    },
+    {
+      "round": 27,
+      "format": "CHOICE",
+      "topic_ru": "Aunque · hypothetical vs factual",
+      "tested_lesson": "u13_l10",
+      "tested_grammar": "Subj vs Ind · aunque/a pesar de que",
+      "npc_line_es": "¿Está dispuesta a viajar frecuentemente?",
+      "npc_line_ru": "Готовы много путешествовать?",
+      "prompt_ru": "Скажи: «Даже если будет тяжело — я готова»",
+      "correct_answer": "Aunque sea difícil, estoy dispuesta.",
+      "distractors": ["Aunque es difícil, estoy dispuesta.", "Aunque fuera difícil, estaría.", "A pesar de que es difícil, estaré."],
+      "explanation_on_fail_ru": "`Aunque sea` (Subj) — гипотетика «даже если». `Aunque es` (Indic) — констатация факта. Здесь юзер выражает готовность к гипотетической трудности → Subj."
     }
   ],
   "pass_outcomes": {

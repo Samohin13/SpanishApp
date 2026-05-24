@@ -412,6 +412,18 @@
       ],
       "translation_after_answer_ru": "Hans на ломаном (инфинитивы), но видны два правила B1: косв. речь («mi guía me dijo que...») + relativo («personas que cambian tu viaje»). Комплимент через косвенную речь — типичный B1 финал.",
       "explanation_on_fail_ru": "Финал B1: понимаешь Hans с инфинитивами, реконструируешь два правила (u11 косв. речь + relativo). Читаешь между строк комплимент-благодарность. Это и есть свободное B1."
+    },
+    {
+      "round": 24,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Косв. вопрос туриста",
+      "tested_lesson": "u11_l5_6",
+      "tested_grammar": "Косв. вопросы + Imp",
+      "prompt_ru": "Переведи фразу про косв. вопрос Hans:",
+      "prompt_text_ru": "Hans спросил, где находится Прадо.",
+      "correct_answer": "Hans preguntó dónde estaba el Prado.",
+      "acceptable_alternatives": ["Hans preguntó dónde se encontraba el Prado.", "Hans me preguntó dónde estaba el Prado."],
+      "explanation_on_fail_ru": "¿Dónde está? (Pres) → preguntó dónde estaba (Imp). Без `que` перед вопросительным словом."
     }
   ],
   "pass_outcomes": {

@@ -434,6 +434,32 @@
       ],
       "hint_ru": "se lo presentaré (futuro) или presentárselo (inf con clíticos pegados).",
       "explanation_on_fail_ru": "Два варианта B2: 1) спрягаемый глагол с клитиками впереди — «se lo presentaré»; 2) инфинитив с клитиками слитно — «presentárselo» (с тильдой над á, акцент сохраняется). Оба грамматически верны."
+    },
+    {
+      "round": 27,
+      "format": "CHOICE",
+      "topic_ru": "Sino que · формально",
+      "tested_lesson": "u15_l4_5",
+      "tested_grammar": "Sino que между clauses",
+      "npc_line_es": "¿Aceptan nuestras condiciones?",
+      "npc_line_ru": "Принимают наши условия?",
+      "prompt_ru": "Нет, и они предлагают встречное. Корректная формулировка:",
+      "correct_answer": "No aceptan, sino que proponen una contrapropuesta.",
+      "distractors": ["No aceptan sino proponen una contrapropuesta.", "No aceptan pero proponen una contrapropuesta.", "No aceptan, así que proponen."],
+      "explanation_on_fail_ru": "Между двумя спрягаемыми глаголами (aceptan / proponen) — `sino que`. `Pero` не подходит после отрицания с конкретным выбором."
+    },
+    {
+      "round": 28,
+      "format": "BUILD",
+      "topic_ru": "No sólo... sino también",
+      "tested_lesson": "u15_l4_5",
+      "tested_grammar": "Coordinación con sino también",
+      "npc_line_es": "¿Qué incluye su propuesta?",
+      "npc_line_ru": "Что включает Ваше предложение?",
+      "prompt_ru": "Собери: «Наша программа не только сокращает расходы, но и увеличивает доходы»",
+      "correct_answer": "Nuestro programa no sólo reduce gastos sino que también aumenta ingresos",
+      "word_bank": ["Nuestro", "programa", "no", "sólo", "reduce", "gastos", "sino", "que", "también", "aumenta", "ingresos", "pero"],
+      "explanation_on_fail_ru": "`No sólo... sino que también` — стандартная coordinación. Между двумя спрягаемыми глаголами обязательно `sino que`."
     }
   ],
   "pass_outcomes": {

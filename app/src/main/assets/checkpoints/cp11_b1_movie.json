@@ -417,6 +417,32 @@
       ],
       "hint_ru": "Relativo «que» + клитики «te» (ID) и «la» (OD ж.р., escena).",
       "explanation_on_fail_ru": "«La escena... la verás» — клитик «la» (ж.р., escena). «Te recomiendo» — ID. «Lo entenderás» — нейтральный «lo» (= ситуацию, идею)."
+    },
+    {
+      "round": 25,
+      "format": "CHOICE",
+      "topic_ru": "Косв. вопросы · сдвиг времени",
+      "tested_lesson": "u11_l5_6",
+      "tested_grammar": "Косв. вопросы · si + Imp",
+      "npc_line_es": "Ayer me llamó Pedro y me dijo algo raro.",
+      "npc_line_ru": "Вчера Педро мне позвонил и сказал странное.",
+      "prompt_ru": "Marta пересказывает: Pedro спросил `¿Vienes mañana?` Как в косв. речи?",
+      "correct_answer": "Me preguntó si iba al día siguiente.",
+      "distractors": ["Me preguntó que si voy mañana.", "Me preguntó si vendría mañana.", "Me preguntó que viniera."],
+      "explanation_on_fail_ru": "¿Vienes? (Pres) → косв. si iba (Imp). Без `que`. `Mañana` → `al día siguiente` в косв. речи."
+    },
+    {
+      "round": 26,
+      "format": "BUILD",
+      "topic_ru": "Relativos · en el que / con quien",
+      "tested_lesson": "u11_l4",
+      "tested_grammar": "Relativos после предлога",
+      "npc_line_es": "Y el cine donde la vimos…",
+      "npc_line_ru": "А кинотеатр где смотрели…",
+      "prompt_ru": "Собери: «Кинотеатр, в котором мы смотрели фильм, был чудесным»",
+      "correct_answer": "El cine en el que vimos la película era maravilloso",
+      "word_bank": ["El", "cine", "en", "el", "que", "vimos", "la", "película", "era", "maravilloso", "donde"],
+      "explanation_on_fail_ru": "`en el que` или `donde` для места — оба ОК. После предлога `que` требует артикль: en EL que, con EL que, del que."
     }
   ],
   "pass_outcomes": {

@@ -495,6 +495,45 @@
       ],
       "hint_ru": "Si + me lo hubierais mostrado → nunca habría entendido lo que.",
       "explanation_on_fail_ru": "Финальная B2-конструкция: Si тип 3 + двойной клитик «me lo» (мне это) + Cond.Comp «habría entendido» + nominal relative «lo que significa». Это кульминация всего курса."
+    },
+    {
+      "round": 31,
+      "format": "VOICE",
+      "topic_ru": "Voseo Argentina · imperativo",
+      "tested_lesson": "u16_l6_5",
+      "tested_grammar": "Voseo · imperativo + клитик",
+      "npc_line_es": "Andrea, antes de que te vayas, ¡decime una cosa!",
+      "npc_line_ru": "Андреа, прежде чем уедешь, скажи мне одну вещь!",
+      "prompt_ru": "Andrés представляется по-аргентински. Произнеси: «Скажи мне правду» (voseo)",
+      "correct_answer": "Decime la verdad",
+      "acceptable_alternatives": ["Decime la verdad.", "Dime la verdad.", "Decíme la verdad"],
+      "explanation_on_fail_ru": "Voseo imperativo: dec-í (без d) + me (клитик) = «decime». Spain эквивалент: «dime». Cuban + Argentina + Uruguay — voseo стандарт."
+    },
+    {
+      "round": 32,
+      "format": "CHOICE",
+      "topic_ru": "Sobremesa · испаноязычная культура",
+      "tested_lesson": "u16_l11_5",
+      "tested_grammar": "Cultura · sobremesa",
+      "npc_line_es": "Después de comer, nadie tenía prisa. La sobremesa duró dos horas.",
+      "npc_line_ru": "После еды никто не торопился. Sobremesa длился 2 часа.",
+      "prompt_ru": "Что такое sobremesa?",
+      "correct_answer": "Послеобеденная беседа за столом, иногда час и больше",
+      "distractors": ["Скатерть для стола", "Тапас перед едой", "Сладкое после обеда"],
+      "explanation_on_fail_ru": "Sobremesa = время после еды когда не уходят сразу, а сидят и беседуют. Часть культуры всей испаноязычной семьи."
+    },
+    {
+      "round": 33,
+      "format": "CHOICE",
+      "topic_ru": "Региональные различия · Perfecto vs Indef",
+      "tested_lesson": "u16_l11_5",
+      "tested_grammar": "Spain Perfecto vs LatAm Indefinido",
+      "npc_line_es": "¿Y vos qué hiciste hoy?",
+      "npc_line_ru": "А ты что сегодня делала?",
+      "prompt_ru": "Найди фразу которая неестественна в Аргентине:",
+      "correct_answer": "Hoy he comido en un restaurante muy bueno.",
+      "distractors": ["Hoy comí en un restaurante muy bueno.", "Ayer cené con la familia.", "Antes hicimos el viaje."],
+      "explanation_on_fail_ru": "В Латин.Америке `hoy` обычно с Indefinido (`comí`). В Spain `hoy` с Perfecto (`he comido`). Andrés из Argentina — сказал бы `comí`."
     }
   ],
   "pass_outcomes": {

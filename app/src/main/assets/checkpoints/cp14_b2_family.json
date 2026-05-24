@@ -452,6 +452,31 @@
       "correct_answer": "Yo no se la escondí ella la perdió",
       "word_bank": ["Yo", "no", "se", "la", "escondí", "ella", "perdió", "le", "lo", "se la", "le la"],
       "explanation_on_fail_ru": "«Se la escondí» — «se» (a la tía = le → se перед la) + «la» (la carta, ж.р.). «Le la» — невозможно. «Ella la perdió» — la = la carta. Pret.Indef. для законченного действия."
+    },
+    {
+      "round": 29,
+      "format": "CHOICE",
+      "topic_ru": "Deber + inf · упрёк",
+      "tested_lesson": "u14_l6_5",
+      "tested_grammar": "Deber + inf обязательство",
+      "npc_line_es": "¡Tú deberías haber actuado antes!",
+      "npc_line_ru": "Ты должна была действовать раньше!",
+      "prompt_ru": "Tía Rosa упрекает. Какой ответ деликатен?",
+      "correct_answer": "Tienes razón, tía. Debía haber hablado contigo antes.",
+      "distractors": ["Tienes razón, debía de haber hablado.", "Tienes razón, debo de hablar contigo.", "Sí, debo de haber hablado."],
+      "explanation_on_fail_ru": "Упрёк/обязательство = `debía` (без de). `Debía de` = «должно быть...» — здесь не подходит."
+    },
+    {
+      "round": 30,
+      "format": "TRANSLATE_RU_ES",
+      "topic_ru": "Deber de · догадка",
+      "tested_lesson": "u14_l6_5",
+      "tested_grammar": "Deber de + inf вероятность",
+      "prompt_ru": "Переведи догадку про Miguel:",
+      "prompt_text_ru": "Кузен Miguel не пришёл. Должно быть, он зол на нас.",
+      "correct_answer": "Miguel no ha venido. Debe de estar enfadado con nosotros.",
+      "acceptable_alternatives": ["Miguel no vino. Debe de estar enfadado con nosotros.", "El primo Miguel no ha venido. Debe de estar enfadado."],
+      "explanation_on_fail_ru": "Догадка = `debe de` + inf. Здесь Tía Rosa предполагает причину → de обязательно."
     }
   ],
   "pass_outcomes": {

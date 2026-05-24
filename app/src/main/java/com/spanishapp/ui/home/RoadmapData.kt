@@ -495,6 +495,8 @@ object RoadmapData {
                 RoadmapLesson("🔗 Cuyo / el cual / lo cual",                          "content", "general"),
                 // 37  🆕 l5_5 вставка после Cuyo / el cual
                 RoadmapLesson("💡 Lo + прилагательное (lo bueno)",                    "content", "general", id = "u11_l5_5"),
+                // 37b 🆕 l5_6 Косвенные вопросы
+                RoadmapLesson("🆕 Косвенные вопросы: «Me preguntó si...»",            "content", "general", id = "u11_l5_6"),
                 // 38  l6
                 RoadmapLesson("🎭 Voz pasiva: ser + participio",                      "content", "general", id = "u11_l6"),
                 // 39  l7
@@ -629,6 +631,8 @@ object RoadmapData {
                 RoadmapLesson("🎯 Мини-тест: Pasiva y Perífrasis",                     "quiz",    "all"),
                 // l6
                 RoadmapLesson("⚙️ Perífrasis: seguir / dejar de / ponerse a",          "content", "general"),
+                // 🆕 l6_5 вставка после Perífrasis seguir/dejar/ponerse
+                RoadmapLesson("🆕 Deber во временах: debe / debe de / debería",        "content", "general", id = "u14_l6_5"),
                 // l7
                 RoadmapLesson("⚙️ Participio como adjetivo: una puerta cerrada",       "content", "general"),
                 // l8
@@ -719,6 +723,8 @@ object RoadmapData {
                 RoadmapLesson("🎯 Мини-тест: Modismos y Refranes",                     "quiz",    "all",     id = "u16_l5"),
                 // l6
                 RoadmapLesson("🌍 Español latinoamericano: основные различия",         "content", "general", id = "u16_l6"),
+                // 🆕 l6_5 вставка после Latam основные различия
+                RoadmapLesson("🆕 Voseo Subj + Imperativo: ¡vení! que tengás",          "content", "general", id = "u16_l6_5"),
                 // l7
                 RoadmapLesson("🌍 Falsos amigos: embarazada, sensible, actual",        "content", "general", id = "u16_l7"),
                 // l8
@@ -729,6 +735,8 @@ object RoadmapData {
                 RoadmapLesson("💼 Léxico profesional: negocios, derecho, medicina",    "content", "general", id = "u16_l10"),
                 // l11
                 RoadmapLesson("🎨 Cultura hispana: literatura, arte, historia",        "content", "general", id = "u16_l11"),
+                // 🆕 l11_5 вставка после Cultura hispana
+                RoadmapLesson("🆕 Культура Latam: sobremesa, tertulia, ustedeo",        "content", "general", id = "u16_l11_5"),
                 // l12
                 RoadmapLesson("🔤 Tricky cases: sino/pero, también/tampoco, por/para", "content", "general", id = "u16_l12"),
                 // l13
