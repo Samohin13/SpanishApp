@@ -52,6 +52,19 @@
             android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Theme.App.ImageCropper" />
 
+        <!-- FileProvider для share-картинок прогресса (ui/share). Через него
+             system share-chooser (WhatsApp/Telegram/…) получает read-доступ к
+             temporary PNG в cacheDir/shares/. Authority = applicationId + ".fileprovider". -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- Радио: MediaSessionService для фонового воспроизведения -->
         <service
             android:name="com.spanishapp.radio.player.RadioPlayerService"

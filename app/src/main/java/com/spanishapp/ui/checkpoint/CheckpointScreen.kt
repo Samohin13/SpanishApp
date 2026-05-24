@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -134,6 +135,14 @@ fun CheckpointScreen(
             state = s.state,
             onExit = { navController.popBackStack() },
             onRetry = { viewModel.load(checkpointId) },
+            onShare = { args ->
+                // ui/share/ShareProgressScreen — превью + share intent.
+                // Передаём всё, что нужно картинке, через query-string чтобы
+                // не зависеть от in-memory state CheckpointViewModel.
+                navController.navigate(
+                    "share/${args.cpId}/${args.tier}/${args.percent}/${args.xp}/${args.totalRounds}/${args.timeMinutes}"
+                )
+            },
         )
     }
 }
@@ -1087,6 +1096,7 @@ private fun ResultView(
     state: CheckpointState,
     onExit: () -> Unit,
     onRetry: () -> Unit,
+    onShare: (com.spanishapp.ui.share.ShareArgs) -> Unit = {},
 ) {
     val outcome = state.outcome ?: return
     val haptic = rememberCheckedHaptic()
@@ -1284,6 +1294,49 @@ private fun ResultView(
             }
 
             Spacer(Modifier.height(24.dp))
+
+            // ── «Поделиться достижением» (только при Pass) ────────────
+            // Открывает ui/share/ShareProgressScreen — milestone-картинка
+            // 1080×1920 для Stories/WhatsApp/Telegram. НЕ сертификат — просто
+            // share-карта прогресса (см. ProgressShareData юр-комментарий).
+            if (outcome is CheckpointOutcome.Pass) {
+                val timeMinutes = remember(state.answers) {
+                    val totalMs = state.answers.sumOf { it.timeMs }
+                    (totalMs / 60_000L).toInt().coerceAtLeast(1)
+                }
+                OutlinedButton(
+                    onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onShare(
+                            com.spanishapp.ui.share.ShareArgs(
+                                cpId = state.data.id,
+                                tier = outcome.tier,
+                                percent = outcome.percent,
+                                xp = outcome.xpAwarded,
+                                totalRounds = state.totalRounds,
+                                timeMinutes = timeMinutes,
+                            )
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth().height(54.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.5.dp, OrangePrimary),
+                ) {
+                    Icon(
+                        Icons.Default.Share,
+                        contentDescription = null,
+                        tint = OrangePrimary,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        "Поделиться достижением",
+                        color = OrangePrimary,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Spacer(Modifier.height(10.dp))
+            }
 
             // ── Actions (крупнее) ───────────────────────────
             Surface(

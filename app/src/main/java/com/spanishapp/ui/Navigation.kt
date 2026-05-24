@@ -448,6 +448,32 @@ object Navigation {
                 com.spanishapp.ui.checkpoint.CheckpointScreen(navController, cpId)
             }
 
+            // ── Share milestone progress (Spotify-Wrapped-style) ─────
+            // Открывается из ResultView чекпоинта при passing (gold/silver/
+            // bronze). 6 query-аргументов нужны потому что CheckpointState
+            // живёт только in-memory в CheckpointViewModel.
+            composable(
+                "share/{cpId}/{tier}/{percent}/{xp}/{rounds}/{minutes}",
+                arguments = listOf(
+                    navArgument("cpId")    { type = NavType.StringType },
+                    navArgument("tier")    { type = NavType.StringType },
+                    navArgument("percent") { type = NavType.IntType },
+                    navArgument("xp")      { type = NavType.IntType },
+                    navArgument("rounds")  { type = NavType.IntType },
+                    navArgument("minutes") { type = NavType.IntType },
+                )
+            ) { entry ->
+                val args = com.spanishapp.ui.share.ShareArgs(
+                    cpId = entry.arguments?.getString("cpId").orEmpty(),
+                    tier = entry.arguments?.getString("tier").orEmpty(),
+                    percent = entry.arguments?.getInt("percent") ?: 0,
+                    xp = entry.arguments?.getInt("xp") ?: 0,
+                    totalRounds = entry.arguments?.getInt("rounds") ?: 0,
+                    timeMinutes = entry.arguments?.getInt("minutes") ?: 1,
+                )
+                com.spanishapp.ui.share.ShareProgressScreen(navController, args)
+            }
+
             // ── Рейтинг / Лиги / Лидерборд ───────────────────
             composable("rating_full")  { RatingScreen(navController) }
             composable("leaderboard")  { LeaderboardScreen(navController) }

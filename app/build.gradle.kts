@@ -232,6 +232,11 @@ dependencies {
     implementation(libs.media3.exoplayer.hls)
     implementation(libs.media3.session)
 
+    // ZXing core — генерация QR-кода для share-картинки прогресса
+    // (Play Store URL внутри изображения, чтобы можно было сосканировать
+    // с другого устройства). Pure Java, без UI-зависимостей, ~500KB.
+    implementation(libs.zxing.core)
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)

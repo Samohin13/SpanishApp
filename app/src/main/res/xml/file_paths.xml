@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Пути для FileProvider — нужны чтобы share-картинки прохождения чекпоинтов
+    (espeak_progress_*.png) можно было передать через Intent.ACTION_SEND
+    другим приложениям (WhatsApp, Telegram, Instagram).
+
+    Используется в com.espeak.app.fileprovider, см. AndroidManifest.xml.
+    Папка: cacheDir/shares/ (старые файлы можно безопасно чистить — это кэш).
+-->
+<paths>
+    <cache-path name="shares" path="shares/" />
+</paths>
