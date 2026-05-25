@@ -188,19 +188,25 @@
   .urgency-row .timer { background: #000; padding: 2px 7px; border-radius: 5px;
     font-family: 'SF Mono', monospace; font-weight: 800; color: var(--gold); margin-left: auto; }
 
-  .price-row { display: flex; align-items: flex-end; justify-content: space-between;
-    padding: 0 4px; margin-bottom: 12px; }
-  .price-left { display: flex; flex-direction: column; }
-  .old-price { font-size: 13px; color: #5A5A5A; text-decoration: line-through;
-    text-decoration-color: var(--primary); }
-  .new-price { font-size: 38px; font-weight: 900; letter-spacing: -1.5px; line-height: 1; }
-  .new-price b {
+  /* Plan selector — 2 cards side by side, tap-to-switch */
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .plan { position: relative; background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 12px 10px; cursor: pointer; transition: all 0.2s; }
+  .plan.active { border-color: var(--primary); background: rgba(255,138,61,0.08);
+    box-shadow: 0 0 0 3px rgba(255,138,61,0.15); }
+  .plan-badge { position: absolute; top: -8px; right: 8px; background: var(--primary); color: #fff;
+    font-size: 8px; font-weight: 800; padding: 2px 7px; border-radius: 99px; letter-spacing: 0.5px; }
+  .plan-name { font-size: 11px; font-weight: 700; color: var(--text-dim); letter-spacing: 0.5px;
+    text-transform: uppercase; }
+  .plan-price { font-size: 22px; font-weight: 900; letter-spacing: -1px; margin-top: 4px;
+    color: var(--text); }
+  .plan.active .plan-price {
     background: linear-gradient(135deg, var(--primary), var(--gold));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .price-right { text-align: right; font-size: 11px; color: var(--text-dim); padding-bottom: 4px; }
-  .price-right b { color: var(--text); }
-  .save-pill { display: inline-block; padding: 3px 8px; background: var(--primary); color: #fff;
-    font-size: 9px; font-weight: 800; border-radius: 99px; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .plan-per { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .plan-note { font-size: 9px; color: var(--text-dim); margin-top: 4px; line-height: 1.3; }
+  .plan-note b { color: var(--good); }
+  .plan-old { font-size: 10px; color: #5A5A5A; text-decoration: line-through; margin-right: 4px; }
 
   .cta { width: 100%; padding: 18px; border: none; border-radius: 16px; cursor: pointer;
     font-size: 15px; font-weight: 800; letter-spacing: 0.3px;
@@ -460,20 +466,24 @@
           <span class="timer">02д 14ч 38м</span>
         </div>
 
-        <div class="price-row">
-          <div class="price-left">
-            <div class="save-pill">−42%</div>
-            <div class="old-price">€59.88 / год</div>
-            <div class="new-price"><b>€34.99</b></div>
+        <div class="plans">
+          <div class="plan" id="planMonth" onclick="selectPlan('month')">
+            <div class="plan-name">Месяц</div>
+            <div class="plan-price">$4.99</div>
+            <div class="plan-per">в месяц</div>
+            <div class="plan-note">гибко · без обязательств</div>
           </div>
-          <div class="price-right">
-            <div><b>€2.92</b> / месяц</div>
-            <div>списание 1 раз в год</div>
+          <div class="plan active" id="planYear" onclick="selectPlan('year')">
+            <div class="plan-badge">−42%</div>
+            <div class="plan-name">Год</div>
+            <div class="plan-price">$34.99</div>
+            <div class="plan-per"><span class="plan-old">$59.88</span>$2.92/мес</div>
+            <div class="plan-note"><b>выгода $24.89</b> · популярный</div>
           </div>
         </div>
 
-        <button class="cta">Начать 7 дней бесплатно</button>
-        <div class="cta-sub">далее €34.99/год · отмена в Google Play</div>
+        <button class="cta" id="ctaBtn">Начать 7 дней бесплатно</button>
+        <div class="cta-sub" id="ctaSub">далее $34.99/год · отмена в Google Play</div>
 
         <div class="trust">
           <span><span class="ck">✓</span> Отмена 1 кликом</span>
@@ -519,6 +529,26 @@
   function nav(dir) {
     const next = Math.max(0, Math.min(TOTAL - 1, current + dir));
     pages.scrollTo({ left: next * pages.clientWidth, behavior: 'smooth' });
+  }
+
+  // === Plan selector — переключение Месяц / Год ===
+  function selectPlan(plan) {
+    const month = document.getElementById('planMonth');
+    const year = document.getElementById('planYear');
+    const cta = document.getElementById('ctaBtn');
+    const sub = document.getElementById('ctaSub');
+
+    if (plan === 'month') {
+      month.classList.add('active');
+      year.classList.remove('active');
+      cta.textContent = 'Начать за $4.99/мес';
+      sub.textContent = 'списание ежемесячно · отмена в Google Play';
+    } else {
+      year.classList.add('active');
+      month.classList.remove('active');
+      cta.textContent = 'Начать 7 дней бесплатно';
+      sub.textContent = 'далее $34.99/год · отмена в Google Play';
+    }
   }
 
   document.addEventListener('keydown', (e) => {
