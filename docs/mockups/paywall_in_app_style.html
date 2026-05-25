@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="UTF-8"><title>ESPEAK PRO — paywall в стиле приложения</title>
+<style>
+  /* === ESPEAK design tokens (из реального приложения) === */
+  :root {
+    --bg: #0E0E12;
+    --surface: #1A1A20;
+    --surface-2: #22222A;
+    --border: #2C2C36;
+    --text: #ECECEC;
+    --text-dim: #8E8E93;
+    --primary: #FF8A3D;   /* основной оранжевый */
+    --primary-2: #FF6A1A;
+    --a1: #FFC371;        /* жёлто-оранжевый для A1 */
+    --a2: #4EA1FF;        /* синий A2 */
+    --b1: #4ADE80;        /* зелёный B1 */
+    --b2: #F472B6;        /* розовый B2 */
+    --gold: #FFD27A;      /* мягкий золотистый акцент PRO */
+    --good: #4ADE80;
+    --warn: #FBBF24;
+  }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body { margin: 0; padding: 40px 20px 80px;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    background: #050507; color: #fff; }
+  .page-title { text-align: center; font-size: 28px; font-weight: 900; margin-bottom: 6px; }
+  .page-title span { color: var(--primary); }
+  .page-sub { text-align: center; color: #777; margin-bottom: 50px; font-size: 13px; }
+
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 50px;
+    max-width: 1000px; margin: 0 auto; justify-items: center; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  .variant { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--primary);
+    font-weight: 800; }
+  .variant-name { font-size: 20px; font-weight: 800; }
+  .variant-desc { font-size: 12px; color: #888; text-align: center; max-width: 350px; line-height: 1.5; }
+
+  /* iPhone frame */
+  .phone { width: 380px; height: 820px; background: #000; border-radius: 48px; padding: 12px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05); position: relative; }
+  .notch { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); width: 120px;
+    height: 28px; background: #000; border-radius: 0 0 20px 20px; z-index: 10; }
+  .screen { width: 100%; height: 100%; border-radius: 38px; overflow: hidden; overflow-y: auto;
+    background: var(--bg); position: relative; padding: 50px 16px 16px; }
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* === Общие компоненты в стиле ESPEAK === */
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .top-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .top-close { color: var(--text-dim); font-size: 22px; }
+
+  /* Bento card — точная копия из приложения */
+  .card { background: var(--surface); border-radius: 22px; padding: 16px;
+    margin-bottom: 12px; position: relative; overflow: hidden; }
+  .card.with-stripe::before { content: ''; position: absolute; left: 0; top: 16px; bottom: 16px;
+    width: 4px; border-radius: 2px; background: var(--primary); }
+  .card-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--primary); margin-bottom: 8px; }
+  .card-label.gold { color: var(--gold); }
+
+  /* CEFR chips */
+  .chip { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 10px;
+    font-weight: 800; letter-spacing: 0.5px; }
+  .chip.a1 { background: rgba(255,195,113,0.18); color: var(--a1); border: 1px solid rgba(255,195,113,0.3); }
+  .chip.a2 { background: rgba(78,161,255,0.18); color: var(--a2); border: 1px solid rgba(78,161,255,0.3); }
+  .chip.b1 { background: rgba(74,222,128,0.18); color: var(--b1); border: 1px solid rgba(74,222,128,0.3); }
+  .chip.b2 { background: rgba(244,114,182,0.18); color: var(--b2); border: 1px solid rgba(244,114,182,0.3); }
+  .chip.pro { background: rgba(255,138,61,0.18); color: var(--primary); border: 1px solid rgba(255,138,61,0.4); }
+
+  .cta { width: 100%; padding: 18px; border: none; border-radius: 16px; cursor: pointer;
+    font-size: 15px; font-weight: 800; letter-spacing: 0.3px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: #fff; box-shadow: 0 8px 24px rgba(255,138,61,0.35); }
+  .cta-sub { text-align: center; font-size: 11px; color: var(--text-dim); margin-top: 8px; }
+
+  /* === V-A: CLEAN BENTO (как V3, но в стиле приложения) === */
+  .va .hero { padding: 22px 18px 18px; background: linear-gradient(160deg, #1F1A28 0%, #1A1A22 100%);
+    border-radius: 24px; margin-bottom: 14px; position: relative; overflow: hidden;
+    border: 1px solid rgba(255,210,122,0.15); }
+  .va .hero::before { content: ''; position: absolute; top: -40px; right: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,138,61,0.25) 0%, transparent 70%); }
+  .va .pro-badge { display: inline-block; padding: 4px 10px; background: rgba(255,210,122,0.15);
+    border: 1px solid rgba(255,210,122,0.4); border-radius: 99px; font-size: 10px; font-weight: 800;
+    color: var(--gold); letter-spacing: 2px; }
+  .va h1 { font-size: 28px; font-weight: 900; line-height: 1.1; letter-spacing: -0.8px;
+    margin: 10px 0 4px; position: relative; z-index: 2; }
+  .va h1 .accent { color: var(--primary); }
+  .va .hero-sub { font-size: 13px; color: var(--text-dim); line-height: 1.5; position: relative; z-index: 2; }
+
+  .va .social-row { display: flex; align-items: center; gap: 10px; }
+  .va .avs { display: flex; }
+  .va .av { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--surface);
+    margin-left: -8px; }
+  .va .av:nth-child(1) { background: var(--primary); margin-left: 0; }
+  .va .av:nth-child(2) { background: var(--a2); }
+  .va .av:nth-child(3) { background: #A78BFA; }
+  .va .av:nth-child(4) { background: var(--b1); }
+  .va .social-txt { font-size: 12px; line-height: 1.4; }
+  .va .social-txt b { font-weight: 800; }
+  .va .stars { color: var(--gold); font-size: 11px; }
+
+  .va .feat-list { display: flex; flex-direction: column; gap: 10px; }
+  .va .feat { display: flex; gap: 12px; align-items: center; font-size: 13px; }
+  .va .feat-ico { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,138,61,0.12);
+    display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .va .feat-txt { flex: 1; line-height: 1.3; }
+  .va .feat-txt b { font-weight: 700; }
+  .va .feat-txt .dim { color: var(--text-dim); font-size: 11px; display: block; margin-top: 2px; }
+  .va .feat-chips { display: flex; gap: 4px; }
+
+  .va .ba { padding: 14px; }
+  .va .ba-title { font-size: 11px; font-weight: 700; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .va .ba-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; }
+  .va .ba-row:last-child { margin-bottom: 0; }
+  .va .ba-lbl { width: 44px; color: var(--text-dim); font-size: 11px; }
+  .va .ba-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .va .ba-fill { height: 100%; border-radius: 3px; }
+  .va .ba-fill.free { width: 20%; background: #5A5A5A; }
+  .va .ba-fill.pro { width: 100%; background: linear-gradient(90deg, var(--primary), var(--gold)); }
+  .va .ba-val { font-size: 11px; font-weight: 800; width: 30px; text-align: right; color: var(--text); }
+
+  .va .urgency-row { display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+    background: rgba(255,138,61,0.10); border: 1px solid rgba(255,138,61,0.25);
+    border-radius: 14px; margin-bottom: 12px; font-size: 11px; color: var(--primary); font-weight: 700; }
+  .va .urgency-row .timer { background: #000; padding: 2px 7px; border-radius: 5px;
+    font-family: 'SF Mono', monospace; font-weight: 800; color: var(--gold); margin-left: auto; }
+
+  .va .price-card { text-align: center; padding: 18px 16px 16px;
+    background: linear-gradient(160deg, rgba(255,138,61,0.08), rgba(255,210,122,0.04));
+    border: 1px solid rgba(255,138,61,0.2); border-radius: 22px; margin-bottom: 12px; position: relative; }
+  .va .price-card .save { position: absolute; top: -10px; right: 18px; padding: 4px 10px;
+    background: var(--primary); color: #fff; border-radius: 99px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; }
+  .va .old-price { font-size: 14px; color: #5A5A5A; text-decoration: line-through; }
+  .va .new-price { font-size: 52px; font-weight: 900; letter-spacing: -2px; line-height: 1;
+    background: linear-gradient(135deg, var(--primary), var(--gold)); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; margin: 2px 0; }
+  .va .per { font-size: 13px; color: var(--text-dim); font-weight: 600; }
+
+  .va .trust-list { padding: 14px; }
+  .va .trust-item { display: flex; align-items: center; gap: 10px; padding: 4px 0;
+    font-size: 12px; color: var(--text-dim); }
+  .va .trust-item .ck { color: var(--good); font-weight: 800; }
+
+  /* === V-B: ATMOSPHERIC (как V1, но без золота — в стиле app) === */
+  .vb .hero { padding: 26px 18px 20px; border-radius: 24px; margin-bottom: 14px; text-align: center;
+    background:
+      radial-gradient(ellipse at top, rgba(255,138,61,0.25) 0%, transparent 50%),
+      linear-gradient(180deg, #1A1A22 0%, #14141A 100%);
+    border: 1px solid var(--border); position: relative; overflow: hidden; }
+  .vb .hero::after { content: '✦'; position: absolute; top: 50px; right: 30px; color: var(--gold);
+    font-size: 12px; opacity: 0.5; }
+  .vb .pro-tag { display: inline-block; padding: 5px 14px; border: 1px solid var(--primary);
+    border-radius: 99px; font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 2.5px; }
+  .vb .gem { font-size: 48px; margin: 12px 0 4px;
+    filter: drop-shadow(0 0 20px rgba(255,138,61,0.5)); }
+  .vb h1 { font-size: 30px; font-weight: 200; line-height: 1.1; letter-spacing: -0.8px; margin: 6px 0; }
+  .vb h1 b { font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .vb .tag { font-size: 13px; color: var(--text-dim); margin-top: 6px; font-style: italic; }
+
+  .vb .social-row { display: flex; align-items: center; gap: 10px; }
+  .vb .avs { display: flex; }
+  .vb .av { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--surface); margin-left: -8px; }
+  .vb .av:nth-child(1) { background: var(--primary); margin-left: 0; }
+  .vb .av:nth-child(2) { background: var(--a2); }
+  .vb .av:nth-child(3) { background: #A78BFA; }
+  .vb .av:nth-child(4) { background: var(--b1); }
+  .vb .social-txt { font-size: 12px; line-height: 1.4; }
+  .vb .social-txt b { color: var(--gold); }
+  .vb .stars { color: var(--gold); font-size: 11px; }
+
+  .vb .unlock { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .vb .unl-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 12px 10px; text-align: center; }
+  .vb .unl-num { font-size: 22px; font-weight: 900; color: var(--primary); letter-spacing: -0.5px; line-height: 1; }
+  .vb .unl-lbl { font-size: 10px; color: var(--text-dim); margin-top: 4px; line-height: 1.3; }
+
+  .vb .feat-line { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .vb .feat-line:last-child { border-bottom: none; }
+  .vb .feat-line .ck { color: var(--primary); font-weight: 800; }
+  .vb .feat-line .dim { color: var(--text-dim); font-size: 10px; margin-left: auto; }
+
+  .vb .price-card { text-align: center; padding: 20px 16px 14px;
+    background: linear-gradient(160deg, #2A1F18 0%, #1A1A22 100%);
+    border: 1px solid rgba(255,138,61,0.3); border-radius: 22px; margin-bottom: 12px; }
+  .vb .urgency-line { font-size: 10px; color: var(--primary); letter-spacing: 1.5px;
+    font-weight: 800; margin-bottom: 10px; }
+  .vb .urgency-line .timer { background: #000; padding: 2px 7px; border-radius: 5px;
+    font-family: 'SF Mono', monospace; color: var(--gold); margin-left: 4px; }
+  .vb .old-price { font-size: 16px; color: #5A5A5A; text-decoration: line-through; }
+  .vb .new-price { font-size: 56px; font-weight: 200; letter-spacing: -2.5px; line-height: 1; }
+  .vb .new-price b { font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .vb .per { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+
+  .vb .trust { display: flex; justify-content: space-between; margin-top: 12px; font-size: 10px;
+    color: var(--text-dim); }
+  .vb .trust span { display: flex; align-items: center; gap: 4px; }
+</style>
+</head>
+<body>
+
+<div class="page-title">💎 ESPEAK <span>PRO</span> — в стиле приложения</div>
+<div class="page-sub">Тёмный bento · оранжевый #FF8A3D · цветные CEFR-чипы · никакого золотого фона</div>
+
+<div class="grid">
+
+  <!-- =============== VARIANT A: CLEAN BENTO =============== -->
+  <div class="variant">
+    <div class="label">Вариант A</div>
+    <div class="variant-name">Clean Bento</div>
+    <div class="variant-desc">Чистая bento-композиция как на главной. Каждый блок — отдельная карточка. Огромная цена, цветные CEFR-чипы.</div>
+    <div class="phone"><div class="notch"></div><div class="screen va">
+
+      <!-- Top bar -->
+      <div class="top-bar">
+        <div class="top-title">Премиум</div>
+        <div class="top-close">✕</div>
+      </div>
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="pro-badge">✦ ESPEAK PRO</div>
+        <h1>Весь испанский.<br><span class="accent">Один план.</span></h1>
+        <div class="hero-sub">A1 → B2 · 180 уроков · 1327 глаголов · безлимит AI</div>
+      </div>
+
+      <!-- Social proof -->
+      <div class="card">
+        <div class="social-row">
+          <div class="avs"><div class="av"></div><div class="av"></div><div class="av"></div><div class="av"></div></div>
+          <div class="social-txt">
+            <div><b>12 847</b> учеников уже PRO</div>
+            <div class="stars">★★★★★ 4.8 · Google Play</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- What unlocks -->
+      <div class="card">
+        <div class="card-label">Что откроется</div>
+        <div class="feat-list">
+          <div class="feat"><div class="feat-ico">🎓</div><div class="feat-txt"><b>180 уроков</b> <span class="chip a2">A2</span> <span class="chip b1">B1</span> <span class="chip b2">B2</span><span class="dim">грамматика + диалоги всех уровней</span></div></div>
+          <div class="feat"><div class="feat-ico">📚</div><div class="feat-txt"><b>75 рассказов</b> <span class="chip a2">A2</span> <span class="chip b1">B1</span> <span class="chip b2">B2</span><span class="dim">free = только 25 рассказов A1</span></div></div>
+          <div class="feat"><div class="feat-ico">🔥</div><div class="feat-txt"><b>1327 глаголов</b><span class="dim">159 с полными таблицами 6 времён</span></div></div>
+          <div class="feat"><div class="feat-ico">🎯</div><div class="feat-txt"><b>Все 100 уровней игр</b><span class="dim">free = только первые 10 каждой</span></div></div>
+          <div class="feat"><div class="feat-ico">🃏</div><div class="feat-txt"><b>SM-2 карточки A2/B1/B2</b><span class="dim">все ~10 000 слов в spaced repetition</span></div></div>
+          <div class="feat"><div class="feat-ico">🤖</div><div class="feat-txt"><b>AI-репетитор безлимит</b><span class="dim">free = 50 запросов в день</span></div></div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="card ba">
+        <div class="ba-title">Куда ты дойдёшь</div>
+        <div class="ba-row"><div class="ba-lbl">FREE</div><div class="ba-bar"><div class="ba-fill free"></div></div><div class="ba-val">A1</div></div>
+        <div class="ba-row"><div class="ba-lbl">PRO</div><div class="ba-bar"><div class="ba-fill pro"></div></div><div class="ba-val">B2</div></div>
+      </div>
+
+      <!-- Urgency -->
+      <div class="urgency-row">🔥 EARLY BIRD −40%<span class="timer">02д 14ч 38м</span></div>
+
+      <!-- Price -->
+      <div class="price-card">
+        <div class="save">−42%</div>
+        <div class="old-price">€59.88 / год</div>
+        <div class="new-price">€34.99</div>
+        <div class="per">в год · €2.92 / месяц</div>
+      </div>
+
+      <button class="cta">Начать 7 дней бесплатно</button>
+      <div class="cta-sub">далее €34.99/год · отмена в Google Play</div>
+
+      <!-- Trust -->
+      <div class="card trust-list" style="margin-top: 12px;">
+        <div class="trust-item"><span class="ck">✓</span> Отмена в один клик</div>
+        <div class="trust-item"><span class="ck">✓</span> Возврат денег 7 дней</div>
+        <div class="trust-item"><span class="ck">✓</span> Без авто-сюрпризов</div>
+      </div>
+
+    </div></div>
+  </div>
+
+
+  <!-- =============== VARIANT B: ATMOSPHERIC =============== -->
+  <div class="variant">
+    <div class="label">Вариант B</div>
+    <div class="variant-name">Atmospheric</div>
+    <div class="variant-desc">Атмосферный, тонкая типографика, лёгкое свечение #FF8A3D. Цифры главного контента крупно. Тот же тёмный bento.</div>
+    <div class="phone"><div class="notch"></div><div class="screen vb">
+
+      <!-- Top bar -->
+      <div class="top-bar">
+        <div class="top-title">Премиум</div>
+        <div class="top-close">✕</div>
+      </div>
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="pro-tag">✦ ESPEAK · PREMIUM ✦</div>
+        <div class="gem">💎</div>
+        <h1>Открой <b>весь</b><br>испанский</h1>
+        <div class="tag">«Путь от A1 до B2 в одной подписке»</div>
+      </div>
+
+      <!-- Social proof -->
+      <div class="card">
+        <div class="social-row">
+          <div class="avs"><div class="av"></div><div class="av"></div><div class="av"></div><div class="av"></div></div>
+          <div class="social-txt">
+            <div><b>12 847</b> учеников уже PRO</div>
+            <div class="stars">★★★★★ 4.8 · Google Play</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats grid (numbers focus) -->
+      <div class="card">
+        <div class="card-label gold">Что откроется</div>
+        <div class="unlock">
+          <div class="unl-item"><div class="unl-num">180</div><div class="unl-lbl">уроков<br>A2 · B1 · B2</div></div>
+          <div class="unl-item"><div class="unl-num">75</div><div class="unl-lbl">рассказов<br>A2 · B1 · B2</div></div>
+          <div class="unl-item"><div class="unl-num">1327</div><div class="unl-lbl">глаголов<br>с таблицами</div></div>
+          <div class="unl-item"><div class="unl-num">100</div><div class="unl-lbl">уровней<br>каждой игры</div></div>
+        </div>
+      </div>
+
+      <!-- Feature list (checks) -->
+      <div class="card">
+        <div class="card-label gold">Все фичи без ограничений</div>
+        <div class="feat-line"><span class="ck">✦</span> Грамматика A2 / B1 / B2 <span class="dim">60 уроков</span></div>
+        <div class="feat-line"><span class="ck">✦</span> Диалоги A2 / B1 / B2 <span class="dim">все темы</span></div>
+        <div class="feat-line"><span class="ck">✦</span> SM-2 карточки <span class="dim">~10 000 слов</span></div>
+        <div class="feat-line"><span class="ck">✦</span> AI-репетитор <span class="dim">безлимит вместо 50/день</span></div>
+        <div class="feat-line"><span class="ck">✦</span> Полное спряжение <span class="dim">все 6 времён</span></div>
+      </div>
+
+      <!-- Price -->
+      <div class="price-card">
+        <div class="urgency-line">🔥 EARLY BIRD −40% · ОСТАЛОСЬ<span class="timer">02д 14ч</span></div>
+        <div class="old-price">€59.88</div>
+        <div class="new-price"><b>€34</b>.99</div>
+        <div class="per">в год · €2.92 / мес</div>
+      </div>
+
+      <button class="cta">7 дней бесплатно · потом €34.99</button>
+      <div class="cta-sub">далее €34.99/год · отмена в Google Play</div>
+
+      <div class="trust">
+        <span>✓ Отмена 1 кликом</span>
+        <span>✓ Возврат 7 дней</span>
+        <span>✓ Без сюрпризов</span>
+      </div>
+
+    </div></div>
+  </div>
+
+</div>
+
+<div style="text-align: center; margin-top: 60px; color: #555; font-size: 12px; max-width: 600px; margin: 60px auto 0;">
+  Цвета и компоненты взяты из реального ESPEAK (тёмный <code>#0E0E12</code>, оранжевый
+  <code>#FF8A3D</code>, цветные CEFR-чипы A1/A2/B1/B2, bento с rounded 22dp).<br><br>
+  Скажи <b>«делай A»</b> или <b>«делай B»</b> → реализую в Android. Или гибрид:
+  «фишки из A + hero из B» — сделаю.
+</div>
+
+</body></html>
