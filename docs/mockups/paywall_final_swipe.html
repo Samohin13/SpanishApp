@@ -119,7 +119,35 @@
   .feat-txt .dim { color: var(--text-dim); font-size: 11px; display: block; margin-top: 2px; }
   .feat-chips { display: inline-flex; gap: 3px; margin-left: 4px; vertical-align: middle; }
 
-  /* === PAGE 4: PROGRESS + URGENCY === */
+  /* === PAGE 4: COMPARE FREE vs PRO === */
+  .compare { background: var(--surface); border-radius: 18px; overflow: hidden;
+    border: 1px solid var(--border); }
+  .comp-head { display: grid; grid-template-columns: 1.4fr 1fr 1fr; align-items: center;
+    padding: 12px 10px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+  .comp-head .h-cat { font-size: 10px; font-weight: 800; color: var(--text-dim);
+    letter-spacing: 1px; text-transform: uppercase; }
+  .comp-head .h-free { text-align: center; font-size: 11px; font-weight: 800; color: var(--text-dim);
+    letter-spacing: 1px; }
+  .comp-head .h-pro { text-align: center; font-size: 11px; font-weight: 900;
+    color: var(--primary); letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--primary), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .comp-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; align-items: center;
+    padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+  .comp-row:last-child { border-bottom: none; }
+  .comp-row .cat { display: flex; align-items: center; gap: 6px; color: var(--text); font-weight: 600; }
+  .comp-row .cat .icon { font-size: 13px; }
+  .comp-row .free { text-align: center; color: var(--text-dim); font-size: 11px; }
+  .comp-row .pro { text-align: center; color: var(--primary); font-weight: 800; font-size: 11px;
+    background: rgba(255,138,61,0.08); padding: 4px 0; border-radius: 6px; }
+  .comp-row .free .x { color: #555; font-size: 14px; }
+  .comp-row .pro .ck { color: var(--good); }
+  .comp-note { padding: 10px 12px; background: rgba(255,138,61,0.06);
+    border-top: 1px solid var(--border); font-size: 10px; color: var(--text-dim);
+    text-align: center; line-height: 1.4; }
+  .comp-note b { color: var(--primary); }
+
+  /* === PAGE 5: PROGRESS + URGENCY === */
   .ba-card { padding: 18px 16px; }
   .ba-title { font-size: 11px; font-weight: 800; color: var(--gold);
     text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
@@ -220,6 +248,7 @@
           <div class="dot"></div>
           <div class="dot"></div>
           <div class="dot"></div>
+          <div class="dot"></div>
         </div>
       </div>
 
@@ -306,7 +335,87 @@
           </div>
         </div>
 
-        <!-- === PAGE 4: PROGRESS + TESTIMONIAL === -->
+        <!-- === PAGE 4: COMPARE FREE vs PRO === -->
+        <div class="page">
+          <div class="page-inner">
+            <div class="stats-title">⚖️ Free vs PRO</div>
+            <div class="stats-sub">Что именно меняется при подписке</div>
+
+            <div class="compare">
+              <div class="comp-head">
+                <div class="h-cat">Контент</div>
+                <div class="h-free">FREE</div>
+                <div class="h-pro">PRO 💎</div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">🎓</span>Уроки</div>
+                <div class="free">60 <span style="font-size:9px">(A1)</span></div>
+                <div class="pro">240 <span style="font-size:9px">(A1→B2)</span></div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">🧠</span>Грамматика</div>
+                <div class="free">15 <span style="font-size:9px">(A1)</span></div>
+                <div class="pro">75 <span style="font-size:9px">(все)</span></div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">💬</span>Диалоги</div>
+                <div class="free">A1</div>
+                <div class="pro">все уровни</div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">📚</span>Книги</div>
+                <div class="free">25 <span style="font-size:9px">(A1)</span></div>
+                <div class="pro">100 <span style="font-size:9px">(все)</span></div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">🔥</span>Спряжение</div>
+                <div class="free">базовое</div>
+                <div class="pro">1327 глаг.</div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">🎯</span>Игры</div>
+                <div class="free">10 уровней</div>
+                <div class="pro">100 уровней</div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">🃏</span>SM-2 карточки</div>
+                <div class="free">A1 слова</div>
+                <div class="pro">все ~10K</div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">🤖</span>AI-репетитор</div>
+                <div class="free">50/день</div>
+                <div class="pro">∞ безлимит</div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">📖</span>Словарь</div>
+                <div class="free"><span class="ck" style="color:var(--good)">✓</span></div>
+                <div class="pro"><span class="ck">✓</span></div>
+              </div>
+
+              <div class="comp-row">
+                <div class="cat"><span class="icon">📻</span>Радио</div>
+                <div class="free"><span class="ck" style="color:var(--good)">✓</span></div>
+                <div class="pro"><span class="ck">✓</span></div>
+              </div>
+
+              <div class="comp-note">
+                Словарь, радио, произношение, ачивки, виджет <b>бесплатны навсегда</b>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- === PAGE 5: PROGRESS + TESTIMONIAL === -->
         <div class="page">
           <div class="page-inner">
             <div class="card ba-card">
@@ -379,11 +488,12 @@
 
 <div style="text-align: center; margin-top: 60px; color: #555; font-size: 12px; max-width: 600px;
   margin: 60px auto 0; line-height: 1.6;">
-  4 страницы свайпом · фиксированный CTA внизу (купить можно с любой)<br><br>
+  5 страниц свайпом · фиксированный CTA внизу (купить можно с любой)<br><br>
   <b>Page 1:</b> Hero + 💎 + social proof (12 847 PRO · ★ 4.8)<br>
   <b>Page 2:</b> 6 крупных цифр (180/75/1327/100/∞/10K)<br>
   <b>Page 3:</b> 6 features с иконками-плитками<br>
-  <b>Page 4:</b> Visual progress (FREE→A1, PRO→B2) + testimonial<br><br>
+  <b>Page 4:</b> Free vs PRO — сравнительная таблица 10 категорий<br>
+  <b>Page 5:</b> Visual progress (FREE→A1, PRO→B2) + testimonial<br><br>
   В Android это будет HorizontalPager + фиксированная Column с ценой и CTA внизу.<br>
   Скажи <b>«делай»</b> → начну реализацию.
 </div>
@@ -391,7 +501,7 @@
 <script>
   const pages = document.getElementById('pages');
   const dots = document.querySelectorAll('.dot');
-  const TOTAL = 4;
+  const TOTAL = 5;
   let current = 0;
 
   function updateDots(idx) {
