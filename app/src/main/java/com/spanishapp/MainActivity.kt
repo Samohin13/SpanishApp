@@ -159,26 +159,13 @@ class MainActivity : FragmentActivity() {
                             if (seedReady) splashHoldOpen = false
                         }
                         if (seedReady) {
-                            // First-launch onboarding gate.
-                            // Collect from DataStore; while null (loading)
-                            // we show the same first-launch overlay to avoid
-                            // a flicker into home before the flag arrives.
-                            val onboardingDone by onboardingPrefs.isCompleted
-                                .collectAsStateWithLifecycle(initialValue = null)
-                            // Adaptive deep-link target after onboarding —
-                            // funneled into the same widgetTarget channel
-                            // SpanishAppRoot already consumes.
-                            when (onboardingDone) {
-                                null -> FirstLaunchLoadingOverlay()
-                                false -> OnboardingScreen(
-                                    onFinished = { adaptiveRoute ->
-                                        if (adaptiveRoute != null) {
-                                            widgetTarget.value = adaptiveRoute
-                                        }
-                                    },
-                                )
-                                true -> SpanishAppRoot(widgetTarget = widgetTarget)
-                            }
+                            // v1.22.27: онбординг ОТКЛЮЧЁН по решению владельца.
+                            // OnboardingScreen + OnboardingViewModel + OnboardingPrefs
+                            // остаются в коде на случай если потребуется вернуть
+                            // (например, для adaptive entry point продвинутых юзеров).
+                            // Сейчас юзер сразу попадает на главный экран, как было
+                            // до v1.22.25.
+                            SpanishAppRoot(widgetTarget = widgetTarget)
                         } else {
                             FirstLaunchLoadingOverlay()
                         }
