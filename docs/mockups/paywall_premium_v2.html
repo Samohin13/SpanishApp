@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="UTF-8"><title>ESPEAK PRO — 4 варианта paywall</title>
+<style>
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+    background: #0a0a0f; color: #fff; padding: 40px 20px 80px; }
+  .page-title { text-align: center; font-size: 30px; font-weight: 900; margin-bottom: 8px;
+    background: linear-gradient(135deg, #FF8A3D, #FFC371); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .page-sub { text-align: center; color: #888; margin-bottom: 50px; font-size: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; max-width: 1800px; margin: 0 auto;
+    justify-items: center; }
+  @media (max-width: 1400px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+
+  .variant { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #FF8A3D;
+    font-weight: 800; }
+  .variant-name { font-size: 19px; font-weight: 800; color: #fff; text-align: center; }
+  .variant-desc { font-size: 12px; color: #888; text-align: center; max-width: 320px; line-height: 1.5; }
+
+  /* iPhone frame */
+  .phone { width: 380px; height: 800px; background: #000; border-radius: 48px; padding: 12px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    position: relative; }
+  .notch { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); width: 120px;
+    height: 28px; background: #000; border-radius: 0 0 20px 20px; z-index: 10; }
+  .screen { width: 100%; height: 100%; border-radius: 38px; overflow: hidden; overflow-y: auto;
+    position: relative; }
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* === V1: LUXE GOLD (Calm/Headspace) === */
+  .v1 { background: linear-gradient(180deg, #0a0e1a 0%, #1a1430 50%, #0f0a1c 100%); color: #f4e6c4;
+    padding: 60px 24px 30px; position: relative; }
+  .v1::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 400px;
+    background: radial-gradient(ellipse at top, rgba(212,175,55,0.15) 0%, transparent 60%); pointer-events: none; }
+  .v1 .badge-top { display: inline-block; padding: 6px 14px; border: 1px solid #d4af37;
+    border-radius: 99px; font-size: 10px; letter-spacing: 2.5px; color: #d4af37; font-weight: 700;
+    text-transform: uppercase; }
+  .v1 .gem { font-size: 56px; margin: 16px 0 8px; text-align: center;
+    filter: drop-shadow(0 0 30px rgba(212,175,55,0.5)); }
+  .v1 h1 { font-size: 32px; font-weight: 200; margin: 6px 0; text-align: center;
+    font-family: 'Playfair Display', Georgia, serif; letter-spacing: -0.5px; }
+  .v1 h1 b { font-weight: 700; background: linear-gradient(135deg, #d4af37, #f4e6c4);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .v1 .tagline { text-align: center; color: #a89876; font-size: 13px; letter-spacing: 0.5px;
+    margin-bottom: 24px; font-style: italic; }
+
+  .v1 .social { display: flex; align-items: center; gap: 8px; justify-content: center;
+    margin-bottom: 22px; padding: 12px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; }
+  .v1 .avs { display: flex; }
+  .v1 .av { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #1a1430;
+    margin-left: -8px; background-size: cover; }
+  .v1 .av:nth-child(1) { background: linear-gradient(135deg,#ff8a3d,#ffb877); margin-left: 0; }
+  .v1 .av:nth-child(2) { background: linear-gradient(135deg,#4ea1ff,#7bc4ff); }
+  .v1 .av:nth-child(3) { background: linear-gradient(135deg,#a78bfa,#c4b5fd); }
+  .v1 .av:nth-child(4) { background: linear-gradient(135deg,#4ade80,#86efac); }
+  .v1 .social-text { font-size: 11px; color: #d4af37; }
+  .v1 .social-text b { color: #f4e6c4; }
+  .v1 .stars { color: #d4af37; font-size: 11px; }
+
+  .v1 .before-after { background: rgba(0,0,0,0.3); border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 16px; padding: 14px; margin-bottom: 20px; }
+  .v1 .ba-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 11px; }
+  .v1 .ba-row:last-child { margin-bottom: 0; }
+  .v1 .ba-lbl { width: 60px; color: #a89876; }
+  .v1 .ba-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+  .v1 .ba-fill { height: 100%; border-radius: 3px; }
+  .v1 .ba-fill.free { width: 20%; background: linear-gradient(90deg, #6b5b3a, #a89876); }
+  .v1 .ba-fill.pro { width: 100%; background: linear-gradient(90deg, #d4af37, #f4e6c4); }
+  .v1 .ba-val { width: 36px; color: #f4e6c4; font-weight: 700; text-align: right; }
+
+  .v1 .price-block { text-align: center; padding: 22px 16px; background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(212,175,55,0.3); border-radius: 18px; margin-bottom: 14px; }
+  .v1 .urgency { font-size: 10px; color: #ff8a3d; letter-spacing: 1.5px; font-weight: 800;
+    margin-bottom: 10px; }
+  .v1 .urgency b { color: #ffb877; }
+  .v1 .old-price { font-size: 18px; color: #6b5b3a; text-decoration: line-through;
+    text-decoration-color: #d4af37; }
+  .v1 .new-price { font-size: 48px; font-weight: 200; letter-spacing: -2px;
+    background: linear-gradient(135deg, #d4af37, #f4e6c4); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; }
+  .v1 .new-price b { font-weight: 700; }
+  .v1 .per { font-size: 13px; color: #a89876; margin-top: -4px; }
+  .v1 .cta { width: 100%; padding: 16px; background: linear-gradient(135deg, #d4af37, #b8941e);
+    color: #1a1430; font-weight: 800; font-size: 14px; border: none; border-radius: 14px;
+    letter-spacing: 0.5px; box-shadow: 0 8px 24px rgba(212,175,55,0.3); cursor: pointer; }
+  .v1 .trust { display: flex; justify-content: space-between; margin-top: 12px;
+    font-size: 9px; color: #a89876; }
+  .v1 .trust span { display: flex; align-items: center; gap: 4px; }
+
+  /* === V2: BOLD PREMIUM (Duolingo Super) === */
+  .v2 { background: linear-gradient(160deg, #6d28d9 0%, #c026d3 50%, #ec4899 100%);
+    padding: 56px 22px 24px; position: relative; overflow: hidden; }
+  .v2::before { content: ''; position: absolute; top: -50px; left: -50px; right: -50px; height: 200px;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none; }
+  .v2 .urgency-pill { display: inline-block; padding: 6px 14px; background: #facc15; color: #581c87;
+    border-radius: 99px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  .v2 .gem { font-size: 80px; text-align: center; margin: 18px 0 6px; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.4)); }
+  .v2 h1 { font-size: 38px; font-weight: 900; text-align: center; margin: 0; line-height: 1.05;
+    letter-spacing: -1.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  .v2 h1 .yellow { color: #facc15; }
+  .v2 .tag { text-align: center; font-size: 14px; opacity: 0.95; margin: 10px 0 20px;
+    font-weight: 600; }
+
+  .v2 .social { background: rgba(255,255,255,0.18); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 16px; padding: 12px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .v2 .avs { display: flex; }
+  .v2 .av { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #ec4899;
+    margin-left: -10px; }
+  .v2 .av:nth-child(1) { background: #fbbf24; margin-left: 0; }
+  .v2 .av:nth-child(2) { background: #34d399; }
+  .v2 .av:nth-child(3) { background: #60a5fa; }
+  .v2 .av:nth-child(4) { background: #f472b6; }
+  .v2 .social b { font-weight: 900; }
+  .v2 .social-txt { font-size: 12px; line-height: 1.4; }
+
+  .v2 .before-after { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 16px;
+    margin-bottom: 16px; }
+  .v2 .ba-title { font-size: 12px; opacity: 0.85; font-weight: 700; margin-bottom: 10px; }
+  .v2 .ba-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; font-size: 11px; }
+  .v2 .ba-tag { padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; letter-spacing: 0.5px; }
+  .v2 .ba-tag.free { background: rgba(255,255,255,0.2); }
+  .v2 .ba-tag.pro { background: #facc15; color: #581c87; }
+  .v2 .ba-bar { flex: 1; height: 8px; background: rgba(0,0,0,0.25); border-radius: 4px; overflow: hidden; }
+  .v2 .ba-fill.free { height: 100%; width: 20%; background: rgba(255,255,255,0.5); border-radius: 4px; }
+  .v2 .ba-fill.pro { height: 100%; width: 100%; background: linear-gradient(90deg, #facc15, #fde047); border-radius: 4px; }
+
+  .v2 .price-block { background: linear-gradient(135deg, #facc15, #fde047); color: #581c87;
+    border-radius: 22px; padding: 20px 16px; text-align: center;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25); margin-bottom: 12px; position: relative; }
+  .v2 .save-badge { position: absolute; top: -10px; right: 14px; background: #581c87; color: white;
+    font-size: 10px; padding: 4px 10px; border-radius: 99px; font-weight: 900; letter-spacing: 0.5px; }
+  .v2 .old-price { font-size: 16px; text-decoration: line-through; opacity: 0.6; }
+  .v2 .new-price { font-size: 52px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+  .v2 .per { font-size: 12px; font-weight: 700; opacity: 0.8; }
+  .v2 .cta { width: 100%; padding: 18px; background: #fff; color: #6d28d9; font-weight: 900;
+    font-size: 16px; border: none; border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+    cursor: pointer; letter-spacing: 0.5px; }
+  .v2 .trust { display: flex; justify-content: space-between; margin-top: 12px;
+    font-size: 10px; opacity: 0.9; }
+
+  /* === V3: APPLE MINIMALISM === */
+  .v3 { background: #f5f5f7; color: #1d1d1f; padding: 60px 24px 24px; }
+  .v3 .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .v3 .pro-tag { font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    color: #FF8A3D; text-transform: uppercase; }
+  .v3 .x-btn { font-size: 18px; color: #86868b; }
+  .v3 h1 { font-size: 44px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.05;
+    margin: 16px 0 8px; }
+  .v3 h1 .accent { color: #FF8A3D; }
+  .v3 .sub { font-size: 17px; color: #6e6e73; line-height: 1.4; margin-bottom: 28px; }
+
+  .v3 .social { display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+    background: #fff; border-radius: 14px; margin-bottom: 14px; }
+  .v3 .avs { display: flex; }
+  .v3 .av { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff;
+    margin-left: -8px; }
+  .v3 .av:nth-child(1) { background: #FF8A3D; margin-left: 0; }
+  .v3 .av:nth-child(2) { background: #4EA1FF; }
+  .v3 .av:nth-child(3) { background: #A78BFA; }
+  .v3 .av:nth-child(4) { background: #4ADE80; }
+  .v3 .social-txt { font-size: 13px; color: #1d1d1f; }
+  .v3 .social-txt b { font-weight: 700; }
+  .v3 .stars { color: #FF8A3D; font-size: 11px; margin-top: 1px; }
+
+  .v3 .ba { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .v3 .ba-title { font-size: 12px; font-weight: 700; color: #6e6e73; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 12px; }
+  .v3 .ba-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; font-size: 13px; }
+  .v3 .ba-row:last-child { margin-bottom: 0; }
+  .v3 .ba-lbl { width: 50px; color: #86868b; font-size: 12px; }
+  .v3 .ba-bar { flex: 1; height: 6px; background: #e8e8ed; border-radius: 3px; overflow: hidden; }
+  .v3 .ba-fill { height: 100%; border-radius: 3px; }
+  .v3 .ba-fill.free { width: 20%; background: #86868b; }
+  .v3 .ba-fill.pro { width: 100%; background: linear-gradient(90deg, #FF8A3D, #FFB877); }
+  .v3 .ba-val { font-size: 11px; font-weight: 700; width: 40px; text-align: right; }
+
+  .v3 .urg { background: #fff5e6; border: 1px solid #FFD9B5; border-radius: 10px;
+    padding: 10px 14px; font-size: 12px; color: #cc6a1f; margin-bottom: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px; }
+  .v3 .urg b { color: #FF8A3D; }
+
+  .v3 .price-block { padding: 24px 0; text-align: center; }
+  .v3 .old-price { font-size: 18px; color: #86868b; text-decoration: line-through; }
+  .v3 .new-price { font-size: 64px; font-weight: 700; letter-spacing: -3px;
+    line-height: 1; margin: 4px 0; color: #1d1d1f; }
+  .v3 .per { font-size: 15px; color: #6e6e73; }
+  .v3 .cta { width: 100%; padding: 18px; background: #1d1d1f; color: #fff; font-weight: 600;
+    font-size: 17px; border: none; border-radius: 14px; cursor: pointer; }
+  .v3 .trust-list { margin-top: 18px; }
+  .v3 .trust-item { display: flex; align-items: center; gap: 10px; padding: 6px 0;
+    font-size: 13px; color: #6e6e73; }
+  .v3 .trust-item .ck { color: #4ADE80; font-weight: 700; }
+
+  /* === V4: CINEMATIC === */
+  .v4 { background: linear-gradient(180deg,
+    #ff6b35 0%,
+    #f9844a 18%,
+    #ee964b 30%,
+    #a06cd5 50%,
+    #5e60ce 70%,
+    #2d3047 90%,
+    #1a1a2e 100%);
+    padding: 56px 22px 24px; color: white; position: relative; overflow: hidden; }
+  .v4::before { content: ''; position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+    width: 90px; height: 90px; background: radial-gradient(circle, #fde047 0%, #fbbf24 40%, transparent 70%);
+    border-radius: 50%; filter: blur(4px); pointer-events: none; }
+  /* Madrid skyline silhouette (pure CSS) */
+  .v4 .skyline { position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background:
+      linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.5) 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 80' preserveAspectRatio='none'><path fill='%23000' d='M0,80 L0,60 L20,60 L25,40 L30,60 L50,60 L52,30 L54,60 L70,60 L80,45 L90,60 L110,60 L115,25 L120,60 L140,60 L145,35 L155,35 L160,60 L180,60 L185,50 L195,50 L200,15 L205,50 L215,50 L220,60 L240,60 L250,40 L260,60 L280,60 L285,30 L290,30 L295,60 L315,60 L320,45 L335,45 L340,60 L360,60 L380,55 L380,80 Z'/></svg>") center bottom / cover no-repeat;
+    pointer-events: none; }
+  .v4-content { position: relative; z-index: 2; }
+  .v4 .top-pill { display: inline-block; padding: 6px 14px; background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3); border-radius: 99px;
+    font-size: 10px; letter-spacing: 2px; font-weight: 700; }
+  .v4 h1 { font-size: 38px; font-weight: 800; line-height: 1.05; letter-spacing: -1px;
+    margin: 14px 0 6px; text-shadow: 0 2px 16px rgba(0,0,0,0.5); }
+  .v4 h1 i { font-style: italic; font-weight: 300; color: #fde047; }
+  .v4 .tag { font-size: 14px; opacity: 0.92; margin-bottom: 18px; font-weight: 500;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
+
+  .v4 .glass { background: rgba(255,255,255,0.12); backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 18px; padding: 14px;
+    margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+  .v4 .social { display: flex; align-items: center; gap: 10px; }
+  .v4 .avs { display: flex; }
+  .v4 .av { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4);
+    margin-left: -8px; }
+  .v4 .av:nth-child(1) { background: #fbbf24; margin-left: 0; }
+  .v4 .av:nth-child(2) { background: #34d399; }
+  .v4 .av:nth-child(3) { background: #60a5fa; }
+  .v4 .av:nth-child(4) { background: #f472b6; }
+  .v4 .social-txt { font-size: 12px; line-height: 1.4; }
+  .v4 .social-txt b { font-weight: 800; }
+  .v4 .stars { color: #fde047; font-size: 11px; }
+
+  .v4 .ba-title { font-size: 11px; opacity: 0.85; font-weight: 700; margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 1px; }
+  .v4 .ba-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; font-size: 11px; }
+  .v4 .ba-row:last-child { margin-bottom: 0; }
+  .v4 .ba-tag { padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 800;
+    letter-spacing: 0.5px; }
+  .v4 .ba-tag.free { background: rgba(255,255,255,0.2); }
+  .v4 .ba-tag.pro { background: #fde047; color: #1a1a2e; }
+  .v4 .ba-bar { flex: 1; height: 6px; background: rgba(0,0,0,0.3); border-radius: 3px; overflow: hidden; }
+  .v4 .ba-fill { height: 100%; border-radius: 3px; }
+  .v4 .ba-fill.free { width: 20%; background: rgba(255,255,255,0.5); }
+  .v4 .ba-fill.pro { width: 100%; background: linear-gradient(90deg, #fde047, #fbbf24); }
+
+  .v4 .urg { background: rgba(253, 224, 71, 0.2); border: 1px solid #fde047;
+    border-radius: 12px; padding: 10px 14px; font-size: 11px; color: #fde047;
+    margin-bottom: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .v4 .timer { background: #1a1a2e; padding: 2px 8px; border-radius: 5px; font-family: monospace; }
+
+  .v4 .price-block { text-align: center; padding: 6px 0 14px; }
+  .v4 .old-price { font-size: 17px; opacity: 0.7; text-decoration: line-through;
+    text-decoration-color: #fde047; }
+  .v4 .new-price { font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1;
+    text-shadow: 0 3px 20px rgba(0,0,0,0.4); }
+  .v4 .new-price .cur { color: #fde047; }
+  .v4 .per { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+  .v4 .cta { width: 100%; padding: 17px; background: white; color: #1a1a2e; font-weight: 800;
+    font-size: 15px; border: none; border-radius: 14px; cursor: pointer; letter-spacing: 0.3px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.35); }
+  .v4 .trust { display: flex; justify-content: space-between; margin-top: 12px;
+    font-size: 9.5px; opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<div class="page-title">💎 ESPEAK PRO — 4 варианта paywall</div>
+<div class="page-sub">Все 4 приёма убеждения встроены в каждый: social proof · loss aversion · urgency · trust signals</div>
+
+<div class="grid">
+
+  <!-- ============ V1: LUXE GOLD ============ -->
+  <div class="variant">
+    <div class="label">Вариант 1</div>
+    <div class="variant-name">Luxe Gold</div>
+    <div class="variant-desc">Calm/Headspace style. Тёмный фон, золото, лёгкая типографика. Ощущение спокойного люкса.</div>
+    <div class="phone"><div class="notch"></div><div class="screen v1">
+      <div class="badge-top" style="display:block; text-align:center; margin: 0 auto;">ESPEAK · PREMIUM</div>
+      <div class="gem">💎</div>
+      <h1>Открой <b>весь</b><br>испанский</h1>
+      <div class="tagline">«Путь от A1 до B2 в одной подписке»</div>
+
+      <div class="social">
+        <div class="avs"><div class="av"></div><div class="av"></div><div class="av"></div><div class="av"></div></div>
+        <div>
+          <div class="social-text"><b>12 847</b> учеников уже PRO</div>
+          <div class="stars">★★★★★ 4.8 · App Store</div>
+        </div>
+      </div>
+
+      <div class="before-after">
+        <div class="ba-row"><div class="ba-lbl">FREE</div><div class="ba-bar"><div class="ba-fill free"></div></div><div class="ba-val">A1</div></div>
+        <div class="ba-row"><div class="ba-lbl">PRO</div><div class="ba-bar"><div class="ba-fill pro"></div></div><div class="ba-val">B2</div></div>
+      </div>
+
+      <div class="price-block">
+        <div class="urgency">🔥 Early bird · <b>−40% до 31 мая</b></div>
+        <div class="old-price">€59.88</div>
+        <div class="new-price"><b>€34</b>.99</div>
+        <div class="per">в год · €2.92 / мес</div>
+      </div>
+
+      <button class="cta">7 дней бесплатно · потом €34.99</button>
+
+      <div class="trust">
+        <span>✓ Отмена 1 кликом</span>
+        <span>✓ Возврат 7 дней</span>
+        <span>✓ Без сюрпризов</span>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ============ V2: BOLD PREMIUM ============ -->
+  <div class="variant">
+    <div class="label">Вариант 2</div>
+    <div class="variant-name">Bold Premium</div>
+    <div class="variant-desc">Duolingo Super style. Яркий фиолет→розовый градиент, крупная типографика, эмоция и восторг.</div>
+    <div class="phone"><div class="notch"></div><div class="screen v2">
+      <div class="urgency-pill">🔥 СКИДКА 40% · ОСТАЛОСЬ 2 ДНЯ</div>
+      <div class="gem">💎</div>
+      <h1>Стань <span class="yellow">PRO</span><br>и говори свободно</h1>
+      <div class="tag">240 уроков · 1327 глаголов · безлимит AI</div>
+
+      <div class="social">
+        <div class="avs"><div class="av"></div><div class="av"></div><div class="av"></div><div class="av"></div></div>
+        <div class="social-txt">
+          <div><b>12 847 учеников</b> уже PRO</div>
+          <div>★★★★★ <b>4.8</b> на Google Play</div>
+        </div>
+      </div>
+
+      <div class="before-after">
+        <div class="ba-title">📊 Куда ты дойдёшь</div>
+        <div class="ba-row"><div class="ba-tag free">FREE</div><div class="ba-bar"><div class="ba-fill free"></div></div><div>A1</div></div>
+        <div class="ba-row"><div class="ba-tag pro">PRO</div><div class="ba-bar"><div class="ba-fill pro"></div></div><div><b>B2</b></div></div>
+      </div>
+
+      <div class="price-block">
+        <div class="save-badge">−42%</div>
+        <div class="old-price">€59.88</div>
+        <div class="new-price">€34.99</div>
+        <div class="per">в год · €2.92 / месяц</div>
+      </div>
+
+      <button class="cta">🚀 НАЧАТЬ 7 ДНЕЙ БЕСПЛАТНО</button>
+
+      <div class="trust">
+        <span>✓ Отмена 1 кликом</span>
+        <span>✓ Возврат 7 дней</span>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ============ V3: APPLE MINIMALISM ============ -->
+  <div class="variant">
+    <div class="label">Вариант 3</div>
+    <div class="variant-name">Apple Minimalism</div>
+    <div class="variant-desc">App Store style. Много воздуха, тонкие линии, единый оранжевый акцент, огромные числа цены.</div>
+    <div class="phone"><div class="notch"></div><div class="screen v3">
+      <div class="top-row">
+        <div class="pro-tag">ESPEAK PRO</div>
+        <div class="x-btn">✕</div>
+      </div>
+      <h1>Весь<br>испанский.<br><span class="accent">Один план.</span></h1>
+      <div class="sub">A1 → B2 · все 240 уроков, 1327 глаголов, безлимит ИИ-репетитор.</div>
+
+      <div class="social">
+        <div class="avs"><div class="av"></div><div class="av"></div><div class="av"></div><div class="av"></div></div>
+        <div class="social-txt">
+          <div><b>12 847</b> учеников уже PRO</div>
+          <div class="stars">★★★★★ 4.8 на Google Play</div>
+        </div>
+      </div>
+
+      <div class="ba">
+        <div class="ba-title">Прогресс с PRO</div>
+        <div class="ba-row"><div class="ba-lbl">FREE</div><div class="ba-bar"><div class="ba-fill free"></div></div><div class="ba-val">A1</div></div>
+        <div class="ba-row"><div class="ba-lbl">PRO</div><div class="ba-bar"><div class="ba-fill pro"></div></div><div class="ba-val">B2</div></div>
+      </div>
+
+      <div class="urg">⏱ <b>Early bird −40%</b> · до 31 мая</div>
+
+      <div class="price-block">
+        <div class="old-price">€59.88 / год</div>
+        <div class="new-price">€34.99</div>
+        <div class="per">в год · €2.92 / месяц</div>
+      </div>
+      <button class="cta">7 дней бесплатно · далее €34.99</button>
+
+      <div class="trust-list">
+        <div class="trust-item"><span class="ck">✓</span> Отмена в один клик</div>
+        <div class="trust-item"><span class="ck">✓</span> Возврат денег 7 дней</div>
+        <div class="trust-item"><span class="ck">✓</span> Без авто-сюрпризов</div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ============ V4: CINEMATIC ============ -->
+  <div class="variant">
+    <div class="label">Вариант 4</div>
+    <div class="variant-name">Cinematic</div>
+    <div class="variant-desc">Netflix-like. Закат над Мадридом (skyline), glassmorphism карточки, эмоция и аспирация.</div>
+    <div class="phone"><div class="notch"></div><div class="screen v4">
+      <div class="skyline"></div>
+      <div class="v4-content">
+        <div class="top-pill">✦ ESPEAK · PREMIUM ✦</div>
+        <h1>Однажды ты<br>заговоришь по-<i>испански</i></h1>
+        <div class="tag">240 уроков, 1327 глаголов, безлимит AI</div>
+
+        <div class="glass social">
+          <div class="avs"><div class="av"></div><div class="av"></div><div class="av"></div><div class="av"></div></div>
+          <div class="social-txt">
+            <div><b>12 847</b> учеников уже PRO</div>
+            <div class="stars">★★★★★ 4.8 · Google Play</div>
+          </div>
+        </div>
+
+        <div class="glass">
+          <div class="ba-title">📈 Куда ты дойдёшь</div>
+          <div class="ba-row"><div class="ba-tag free">FREE</div><div class="ba-bar"><div class="ba-fill free"></div></div><div>A1</div></div>
+          <div class="ba-row"><div class="ba-tag pro">PRO</div><div class="ba-bar"><div class="ba-fill pro"></div></div><div><b>B2</b></div></div>
+        </div>
+
+        <div class="urg">🔥 Early bird −40% · осталось <span class="timer">02д 14ч 38м</span></div>
+
+        <div class="price-block">
+          <div class="old-price">€59.88 / год</div>
+          <div class="new-price"><span class="cur">€</span>34.99</div>
+          <div class="per">в год · €2.92 / мес</div>
+        </div>
+
+        <button class="cta">Начать 7 дней бесплатно</button>
+
+        <div class="trust">
+          <span>✓ Отмена 1 кликом</span>
+          <span>✓ Возврат 7 дней</span>
+          <span>✓ Без сюрпризов</span>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<div style="text-align: center; margin-top: 60px; color: #555; font-size: 12px;">
+  Выбери вариант 1 / 2 / 3 / 4 — реализую в Android именно его.<br>
+  Можно комбинировать: «фон из V4 + цена из V3 + анимация V2» — скажи как.
+</div>
+
+</body></html>
