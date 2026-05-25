@@ -3,7 +3,10 @@ package com.spanishapp.ui.checkpoint
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spanishapp.data.db.dao.UserProgressDao
+import com.spanishapp.data.prefs.CheckpointCooldownPrefs
 import com.spanishapp.data.repository.LeaderboardRepository
+import com.spanishapp.domain.algorithm.LeagueResolver
 import com.spanishapp.domain.checkpoint.CheckpointData
 import com.spanishapp.domain.checkpoint.CheckpointEngine
 import com.spanishapp.domain.checkpoint.CheckpointPersonalizer
@@ -18,8 +21,11 @@ import com.spanishapp.service.XpTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,11 +51,28 @@ class CheckpointViewModel @Inject constructor(
     private val tts: SpanishTts,
     private val xpTracker: XpTracker,
     private val speechRecognizer: SpanishSpeechRecognizer,
+    private val cooldownPrefs: CheckpointCooldownPrefs,
+    private val userProgressDao: UserProgressDao,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     /** Текущий cpId — нужен чтобы отменять / планировать reminder. */
     private var currentCpId: String? = null
+
+    /**
+     * Cooldown (epoch ms когда можно снова попробовать) для текущего
+     * чекпоинта. 0L = нет cooldown. Обновляется реактивно из DataStore.
+     */
+    private val _cooldownUntilMs = MutableStateFlow(0L)
+    val cooldownUntilMs: StateFlow<Long> = _cooldownUntilMs.asStateFlow()
+
+    /**
+     * Текущий skill rating юзера — нужен чтобы решить, доступна ли кнопка
+     * «Сейчас за -50 рейтинга» (требуется rating ≥ 50).
+     */
+    val currentRating: StateFlow<Int> = userProgressDao.getProgress()
+        .map { it?.skillRating ?: 0 }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     private val _uiState = MutableStateFlow<CheckpointUiState>(CheckpointUiState.Loading)
     val uiState: StateFlow<CheckpointUiState> = _uiState.asStateFlow()
@@ -75,6 +98,9 @@ class CheckpointViewModel @Inject constructor(
             // v1.22.20: юзер сам вернулся в чекпоинт → отменяем 24h-напоминание
             // (если оно было запланировано после прошлого fail). Не назойливо.
             runCatching { CheckpointReminderWorker.cancel(appContext, checkpointId) }
+            // Подписываемся на cooldown DataStore — если ещё активен после
+            // прошлого fail, UI покажет timer вместо «Попробовать снова».
+            observeCooldown(checkpointId)
 
             val rawData = repository.getById(checkpointId)
             if (rawData == null) {
@@ -119,6 +145,10 @@ class CheckpointViewModel @Inject constructor(
                     // (вдруг был с прошлого fail и юзер сразу пересдал)
                     if (cpId != null) {
                         runCatching { CheckpointReminderWorker.cancel(appContext, cpId) }
+                        // Pass снимает cooldown — следующий retry свободен.
+                        viewModelScope.launch {
+                            runCatching { cooldownPrefs.clearCooldown(cpId) }
+                        }
                     }
                 }
                 is com.spanishapp.domain.checkpoint.CheckpointOutcome.Fail -> {
@@ -127,6 +157,12 @@ class CheckpointViewModel @Inject constructor(
                     // fail перезапишет таймер на новый 24h-период.
                     if (cpId != null) {
                         runCatching { CheckpointReminderWorker.scheduleIn24h(appContext, cpId) }
+                        // 24h cooldown в DataStore — UI блокирует retry-кнопку.
+                        viewModelScope.launch {
+                            runCatching {
+                                cooldownPrefs.setCooldown(cpId, outcome.cooldownUntilMs)
+                            }
+                        }
                     }
                 }
                 null -> { /* should not happen — isFinished implies outcome */ }
@@ -183,6 +219,56 @@ class CheckpointViewModel @Inject constructor(
     fun clearVoiceState() {
         _voiceError.value = null
         _lastVoiceText.value = null
+    }
+
+    /**
+     * Подписка на per-checkpoint cooldown DataStore. Каждый emit
+     * обновляет `_cooldownUntilMs`. Запускается один раз при load() —
+     * последующие изменения (например, после fail) приходят автоматом.
+     *
+     * Один job на ViewModel — если юзер загружает другой cpId, мы просто
+     * перезаписываем `currentCpId` и StateFlow начнёт ловить значения
+     * другого ключа после следующего setCooldown / clearCooldown.
+     */
+    private var cooldownJob: kotlinx.coroutines.Job? = null
+    private fun observeCooldown(cpId: String) {
+        cooldownJob?.cancel()
+        cooldownJob = viewModelScope.launch {
+            cooldownPrefs.cooldownFor(cpId).collect { until ->
+                _cooldownUntilMs.value = until
+            }
+        }
+    }
+
+    /**
+     * Заплатить -50 рейтинга чтобы пропустить cooldown. Возвращает true
+     * если оплата прошла (rating ≥ 50). UI после успеха должен вызвать
+     * `load(cpId)` чтобы перезапустить чекпоинт.
+     *
+     * Используем прямое чтение/запись через DAO (не RatingUpdater) —
+     * это не «ответ» в обучении, а штрафная транзакция. Не трогаем
+     * daily cap / per-word cooldown / weekly leagues.
+     */
+    suspend fun payRatingCostForRetry(): Boolean {
+        val cpId = currentCpId ?: return false
+        val progress = userProgressDao.getProgressOnce() ?: return false
+        if (progress.skillRating < RETRY_RATING_COST) return false
+
+        val newRating = (progress.skillRating - RETRY_RATING_COST).coerceAtLeast(0)
+        val newLeague = LeagueResolver.fromRating(newRating)
+        userProgressDao.updateSkillRating(
+            rating = newRating,
+            league = newLeague.tier,
+            ts = System.currentTimeMillis(),
+        )
+        cooldownPrefs.clearCooldown(cpId)
+        runCatching { CheckpointReminderWorker.cancel(appContext, cpId) }
+        return true
+    }
+
+    companion object {
+        /** Цена пропуска cooldown в очках skill rating. */
+        const val RETRY_RATING_COST = 50
     }
 }
 

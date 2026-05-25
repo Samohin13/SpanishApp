@@ -281,13 +281,15 @@ private fun MiniExerciseCard(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 12.dp),
     ) {
+        // v1.22.29: увеличены размеры шрифтов по фидбеку юзера —
+        // мини-тесты читались слишком мелко.
         Text(
             exercise.instruction.ifBlank { "Выбери правильный ответ" },
-            fontSize = 14.sp,
+            fontSize = 17.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontWeight = FontWeight.Medium,
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(14.dp))
 
         val bigText = if (exercise.question.isNotBlank()) exercise.question else exercise.instruction
         Surface(
@@ -295,20 +297,21 @@ private fun MiniExerciseCard(
             color = Accent.copy(alpha = 0.08f),
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Box(Modifier.padding(20.dp)) {
+            Box(Modifier.padding(24.dp)) {
                 Text(
                     text = bigText,
                     modifier = Modifier.fillMaxWidth(),
-                    fontSize = 20.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 32.sp,
                     textAlign = TextAlign.Center,
                 )
             }
         }
 
         if (exercise.hint.isNotBlank() && exercise.type != ExerciseType.SPOT_THE_ERROR) {
-            Spacer(Modifier.height(8.dp))
-            Text("💡 ${exercise.hint}", fontSize = 14.sp,
+            Spacer(Modifier.height(10.dp))
+            Text("💡 ${exercise.hint}", fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
@@ -366,7 +369,7 @@ private fun MiniExerciseCard(
                         ) {
                             Text(
                                 opt,
-                                fontSize = 16.sp,
+                                fontSize = 19.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                 textAlign = TextAlign.Center,
                             )

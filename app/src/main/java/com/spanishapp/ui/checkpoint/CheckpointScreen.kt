@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
 import com.spanishapp.R
 import com.spanishapp.domain.checkpoint.*
 import com.spanishapp.ui.components.rememberCheckedHaptic
@@ -133,6 +134,7 @@ fun CheckpointScreen(
         )
         is CheckpointUiState.Finished -> ResultView(
             state = s.state,
+            viewModel = viewModel,
             onExit = { navController.popBackStack() },
             onRetry = { viewModel.load(checkpointId) },
             onShare = { args ->
@@ -1094,6 +1096,7 @@ private fun VoiceInput(
 @Composable
 private fun ResultView(
     state: CheckpointState,
+    viewModel: CheckpointViewModel,
     onExit: () -> Unit,
     onRetry: () -> Unit,
     onShare: (com.spanishapp.ui.share.ShareArgs) -> Unit = {},
@@ -1101,6 +1104,28 @@ private fun ResultView(
     val outcome = state.outcome ?: return
     val haptic = rememberCheckedHaptic()
     val isPass = outcome is CheckpointOutcome.Pass
+
+    // ── Retry-restriction state (только для Fail) ─────────────
+    // cooldownUntilMs: epoch ms когда retry разрешён без штрафа.
+    // currentRating: текущий skillRating для решения «доступна ли -50 кнопка».
+    // nowMs: tick раз в минуту чтобы countdown обновлялся.
+    val cooldownUntil by viewModel.cooldownUntilMs.collectAsStateWithLifecycle()
+    val currentRating by viewModel.currentRating.collectAsStateWithLifecycle()
+    var nowMs by remember { mutableStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(cooldownUntil) {
+        // Тик минуты для перерисовки таймера. Делаем только если cooldown
+        // активен — иначе бесполезный wake-up каждые 60s.
+        while (cooldownUntil > System.currentTimeMillis()) {
+            nowMs = System.currentTimeMillis()
+            kotlinx.coroutines.delay(60_000L)
+        }
+        nowMs = System.currentTimeMillis()
+    }
+    val remainingMs = (cooldownUntil - nowMs).coerceAtLeast(0L)
+    val isCooldownActive = !isPass && remainingMs > 0L
+    val canPayRetryCost = !isPass && currentRating >= CheckpointViewModel.RETRY_RATING_COST
+
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
 
     val heroGradient = when {
         outcome is CheckpointOutcome.Pass && outcome.tier == "gold" -> listOf(Color(0xFFD97706), Color(0xFFFBBF24))
@@ -1338,50 +1363,174 @@ private fun ResultView(
                 Spacer(Modifier.height(10.dp))
             }
 
-            // ── Actions (крупнее) ───────────────────────────
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(58.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .clickable {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onExit()
-                    },
-                color = Color.Transparent,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Brush.linearGradient(listOf(OrangePrimary, OrangePrimary2))),
-                    contentAlignment = Alignment.Center,
+            // ── Cooldown info (только при Fail с активным cooldown) ─────
+            if (isCooldownActive) {
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = AccentYellow.copy(alpha = 0.10f),
+                    modifier = Modifier.fillMaxWidth(),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, AccentYellow.copy(alpha = 0.4f)),
                 ) {
-                    Text(
-                        if (isPass) "Продолжить →" else "Закрыть",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 0.4.sp,
-                    )
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            "⏱ ДО ПОВТОРА",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = AccentYellow,
+                            letterSpacing = 0.8.sp,
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            formatRemaining(remainingMs),
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                        )
+                    }
                 }
+                Spacer(Modifier.height(14.dp))
             }
-            if (!isPass) {
+
+            // ── Retry buttons (Fail с cooldown — 2 варианта; иначе обычно) ──
+            if (!isPass && isCooldownActive) {
+                // Кнопка 1: «Подождать Xч Yмин (бесплатно)» — disabled, только инфо
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp)
+                        .clip(RoundedCornerShape(16.dp)),
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            "⏳ Подождать ${formatRemainingShort(remainingMs)}",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            "(бесплатно)",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
                 Spacer(Modifier.height(10.dp))
+
+                // Кнопка 2: «Сейчас за -50 рейтинга» — активна если rating ≥ 50
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable(enabled = canPayRetryCost) {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            coroutineScope.launch {
+                                if (viewModel.payRatingCostForRetry()) {
+                                    onRetry()
+                                }
+                            }
+                        },
+                    color = if (canPayRetryCost) Color.Transparent
+                            else MaterialTheme.colorScheme.surfaceContainerHighest,
+                    border = if (canPayRetryCost) null
+                             else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .then(
+                                if (canPayRetryCost) Modifier.background(
+                                    Brush.linearGradient(listOf(OrangePrimary, OrangePrimary2))
+                                ) else Modifier
+                            ),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                "⚡ Сейчас за -${CheckpointViewModel.RETRY_RATING_COST} рейтинга",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = if (canPayRetryCost) Color.White
+                                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            if (!canPayRetryCost) {
+                                Text(
+                                    "Нужно ≥ ${CheckpointViewModel.RETRY_RATING_COST} (у тебя $currentRating)",
+                                    fontSize = 11.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+
+                // Кнопка 3: «Закрыть» — outlined, серый
                 OutlinedButton(
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onRetry()
+                        onExit()
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(16.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, OrangePrimary),
                 ) {
                     Text(
-                        "Попробовать снова",
-                        color = OrangePrimary,
+                        "Закрыть",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
                     )
+                }
+            } else {
+                // Обычный flow: Pass или Fail после истечения cooldown.
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onExit()
+                        },
+                    color = Color.Transparent,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Brush.linearGradient(listOf(OrangePrimary, OrangePrimary2))),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            if (isPass) "Продолжить →" else "Закрыть",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 0.4.sp,
+                        )
+                    }
+                }
+                if (!isPass) {
+                    Spacer(Modifier.height(10.dp))
+                    OutlinedButton(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onRetry()
+                        },
+                        modifier = Modifier.fillMaxWidth().height(54.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.5.dp, OrangePrimary),
+                    ) {
+                        Text(
+                            "Попробовать снова",
+                            color = OrangePrimary,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
             }
             Spacer(Modifier.height(16.dp))
@@ -1408,4 +1557,57 @@ private fun StatRowDivider() {
             .height(1.dp)
             .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)),
     )
+}
+
+/**
+ * Полный формат: "21 час 47 минут" / "5 минут" / "<1 минуты".
+ * Используется в крупной плашке «ДО ПОВТОРА».
+ */
+private fun formatRemaining(remainingMs: Long): String {
+    if (remainingMs <= 0L) return "<1 минуты"
+    val totalMin = remainingMs / 60_000L
+    if (totalMin < 1L) return "<1 минуты"
+    val hours = totalMin / 60L
+    val mins = totalMin % 60L
+    return when {
+        hours == 0L -> "$mins ${pluralMinutes(mins)}"
+        mins == 0L  -> "$hours ${pluralHours(hours)}"
+        else        -> "$hours ${pluralHours(hours)} $mins ${pluralMinutes(mins)}"
+    }
+}
+
+/** Короткий формат для кнопки: "21ч 47мин" / "5мин" / "<1мин". */
+private fun formatRemainingShort(remainingMs: Long): String {
+    if (remainingMs <= 0L) return "<1мин"
+    val totalMin = remainingMs / 60_000L
+    if (totalMin < 1L) return "<1мин"
+    val hours = totalMin / 60L
+    val mins = totalMin % 60L
+    return when {
+        hours == 0L -> "${mins}мин"
+        mins == 0L  -> "${hours}ч"
+        else        -> "${hours}ч ${mins}мин"
+    }
+}
+
+private fun pluralHours(n: Long): String {
+    val mod10 = n % 10L
+    val mod100 = n % 100L
+    return when {
+        mod100 in 11L..14L -> "часов"
+        mod10 == 1L -> "час"
+        mod10 in 2L..4L -> "часа"
+        else -> "часов"
+    }
+}
+
+private fun pluralMinutes(n: Long): String {
+    val mod10 = n % 10L
+    val mod100 = n % 100L
+    return when {
+        mod100 in 11L..14L -> "минут"
+        mod10 == 1L -> "минута"
+        mod10 in 2L..4L -> "минуты"
+        else -> "минут"
+    }
 }

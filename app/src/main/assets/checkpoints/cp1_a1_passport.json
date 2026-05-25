@@ -50,7 +50,11 @@
       "npc_line_ru": "Доброе утро.",
       "prompt_ru": "Carlos смотрит на тебя поверх стекла. Что отвечаешь?",
       "correct_answer": "Buenos días.",
-      "distractors": ["Buenas noches.", "Hasta luego.", "De nada."]
+      "distractors": [
+        "Buenas noches.",
+        "Hasta luego.",
+        "De nada."
+      ]
     },
     {
       "round": 2,
@@ -61,7 +65,11 @@
       "npc_line_ru": "Как у вас дела?",
       "prompt_ru": "Что отвечаешь?",
       "correct_answer": "Bien, gracias.",
-      "distractors": ["Soy de Rusia.", "Adiós.", "Disculpe."]
+      "distractors": [
+        "Soy de Rusia.",
+        "Adiós.",
+        "Disculpe."
+      ]
     },
     {
       "round": 3,
@@ -72,7 +80,11 @@
       "npc_line_ru": "Кто вы?",
       "prompt_ru": "Какое местоимение в ответе «___ soy Andrea»?",
       "correct_answer": "Yo",
-      "distractors": ["Tú", "Él", "Nosotros"],
+      "distractors": [
+        "Tú",
+        "Él",
+        "Nosotros"
+      ],
       "explanation_on_fail_ru": "«Yo» = я (1 л. ед. ч.). «Tú» = ты (2 л.), «Él» = он (3 л.), «Nosotros» = мы."
     },
     {
@@ -84,7 +96,11 @@
       "audio_only": true,
       "prompt_ru": "Carlos произносит твоё имя по буквам. Какое имя?",
       "correct_answer": "Andrea",
-      "distractors": ["Adriana", "Ariana", "Antonia"],
+      "distractors": [
+        "Adriana",
+        "Ariana",
+        "Antonia"
+      ],
       "translation_after_answer_ru": "a, ene, de, erre, e, a → A-N-D-R-E-A → Andrea",
       "explanation_on_fail_ru": "Испанский алфавит: A [а], N [эне], D [де], R [эре], E [э]. Имя «Andrea» = А-Н-Д-Р-Е-А."
     },
@@ -99,7 +115,11 @@
       "sentence_template": "Yo ___ Andrea.",
       "verb_infinitive": "ser",
       "correct_answer": "soy",
-      "distractors": ["eres", "es", "somos"]
+      "distractors": [
+        "eres",
+        "es",
+        "somos"
+      ]
     },
     {
       "round": 6,
@@ -110,7 +130,15 @@
       "npc_line_ru": "Откуда вы?",
       "prompt_ru": "Собери ответ из слов:",
       "correct_answer": "Soy de Rusia",
-      "word_bank": ["Soy", "de", "Rusia", "es", "España", "yo", "ella"],
+      "word_bank": [
+        "Soy",
+        "de",
+        "Rusia",
+        "es",
+        "España",
+        "yo",
+        "ella"
+      ],
       "explanation_on_fail_ru": "«Soy de Rusia» = я из России. SER + предлог DE + страна."
     },
     {
@@ -122,7 +150,11 @@
       "npc_line_ru": "Вы русская или испанка?",
       "prompt_ru": "Andrea — женщина. Какой ответ правильный?",
       "correct_answer": "Soy rusa.",
-      "distractors": ["Soy ruso.", "Soy español.", "Soy de Inglaterra."],
+      "distractors": [
+        "Soy ruso.",
+        "Soy español.",
+        "Soy de Inglaterra."
+      ],
       "explanation_on_fail_ru": "Andrea — женщина → национальность в ж.р.: «rusa». Правило: -o м.р., -a ж.р."
     },
     {
@@ -134,7 +166,11 @@
       "npc_line_ru": "Посмотрите этот документ.",
       "prompt_ru": "Какой артикль подходит для слова «mesa» (стол, ж.р.)?",
       "correct_answer": "la",
-      "distractors": ["el", "los", "las"],
+      "distractors": [
+        "el",
+        "los",
+        "las"
+      ],
       "explanation_on_fail_ru": "Слова на «-a» обычно ж.р. → «la mesa». Слова на «-o» обычно м.р. → «el libro»."
     },
     {
@@ -146,7 +182,11 @@
       "npc_line_ru": "У меня здесь ___ паспорт. Это ваш?",
       "prompt_ru": "Какой артикль для слова «pasaporte» (один из многих)?",
       "correct_answer": "un",
-      "distractors": ["una", "el", "la"],
+      "distractors": [
+        "una",
+        "el",
+        "la"
+      ],
       "explanation_on_fail_ru": "«Un» = неопределённый м.р. (какой-то). «El» = определённый (именно этот). «Pasaporte» — м.р."
     },
     {
@@ -160,7 +200,11 @@
       "sentence_template": "Usted ___ Andrea, ¿correcto?",
       "verb_infinitive": "ser",
       "correct_answer": "es",
-      "distractors": ["soy", "eres", "son"],
+      "distractors": [
+        "soy",
+        "eres",
+        "son"
+      ],
       "explanation_on_fail_ru": "«Usted» формально = «Вы», но грамматически 3 л. ед. ч. → форма «es». «Eres» — только для «tú» (на ты)."
     },
     {
@@ -172,7 +216,11 @@
       "audio_only": true,
       "prompt_ru": "Carlos называет номер твоего места.",
       "correct_answer": "14",
-      "distractors": ["4", "11", "16"],
+      "distractors": [
+        "4",
+        "11",
+        "16"
+      ],
       "translation_after_answer_ru": "«Catorce» = 14",
       "explanation_on_fail_ru": "«Catorce» = 14. «Cuatro» = 4, «once» = 11, «dieciséis» = 16."
     },
@@ -185,7 +233,11 @@
       "npc_line_ru": "Сколько лет? Назовите число.",
       "prompt_ru": "Carlos указывает на цифру в декларации: «18». Как это сказать?",
       "correct_answer": "dieciocho",
-      "distractors": ["ocho", "diez", "veinte"],
+      "distractors": [
+        "ocho",
+        "diez",
+        "veinte"
+      ],
       "explanation_on_fail_ru": "«Dieciocho» = 18 (буквально «десять+восемь»). «Ocho» = 8, «diez» = 10, «veinte» = 20."
     },
     {
@@ -199,7 +251,11 @@
       "sentence_template": "Es su ___ visita.",
       "verb_infinitive": "primero",
       "correct_answer": "primera",
-      "distractors": ["primero", "primer", "primeros"],
+      "distractors": [
+        "primero",
+        "primer",
+        "primeros"
+      ],
       "explanation_on_fail_ru": "«Primera» согласуется с «visita» (ж.р.). «Primero» — м.р., «primer» — перед м.р. сущ. («primer día»)."
     },
     {
@@ -211,7 +267,15 @@
       "npc_line_ru": "А люди за вами? Туристы вместе?",
       "prompt_ru": "Собери ответ:",
       "correct_answer": "Sí nosotros somos turistas",
-      "word_bank": ["Sí", "nosotros", "somos", "turistas", "soy", "son", "sois"],
+      "word_bank": [
+        "Sí",
+        "nosotros",
+        "somos",
+        "turistas",
+        "soy",
+        "son",
+        "sois"
+      ],
       "explanation_on_fail_ru": "«Nosotros somos» = мы. 1 л. мн. SER → «somos». Не путать с «son» (они), «sois» (вы на ты)."
     },
     {
@@ -223,7 +287,11 @@
       "npc_line_ru": "А они ваши друзья?",
       "prompt_ru": "Какое местоимение для «они» (3 л. мн.)?",
       "correct_answer": "ellos",
-      "distractors": ["nosotros", "vosotros", "usted"],
+      "distractors": [
+        "nosotros",
+        "vosotros",
+        "usted"
+      ],
       "explanation_on_fail_ru": "«Ellos» = они (м.р. или смешанный род). «Ellas» — только женщины. «Nosotros» = мы, «vosotros» = вы (на ты)."
     },
     {
@@ -235,24 +303,28 @@
       "npc_line_ru": "Есть проблема с визой. Вы что-то знаете?",
       "prompt_ru": "Вежливо ответь что не знаешь:",
       "correct_answer": "Lo siento, no.",
-      "distractors": ["De nada.", "Hasta luego.", "Buenas noches."],
+      "distractors": [
+        "De nada.",
+        "Hasta luego.",
+        "Buenas noches."
+      ],
       "explanation_on_fail_ru": "«Lo siento» = «мне жаль, извините за ситуацию». Уместно когда не знаешь причину."
     },
     {
       "round": 17,
       "format": "TRANSLATE_ES_RU",
       "topic_ru": "Понимание · SER 1+3 л.",
-      "tested_lesson": "u1_l10 + u1_l11",
-      "prompt_ru": "Carlos указывает на коллегу. Переведи фразу:",
-      "prompt_text_es": "Yo soy Carlos. Él es Diego. Él es español.",
-      "correct_answer": "Я Carlos. Он Diego. Он испанец.",
+      "tested_lesson": "u1_l10 + u1_l11 + u1_l12",
+      "prompt_ru": "Carlos представляется. Переведи фразу:",
+      "prompt_text_es": "Yo soy Carlos, soy español. Mi país es España.",
+      "correct_answer": "Я Carlos, я испанец. Моя страна — Испания.",
       "acceptable_alternatives": [
-        "Я — Carlos. Он — Diego. Он испанец.",
-        "Я Carlos, он Diego, он испанец.",
-        "Я Карлос. Он Диего. Он испанец.",
-        "Я Карлос, он Диего, он испанец."
+        "Я — Carlos, я испанец. Моя страна — Испания.",
+        "Я Карлос, я испанец. Моя страна — Испания.",
+        "Я Карлос, я испанец. Моя страна Испания.",
+        "Я Carlos, я испанец. Моя страна Испания."
       ],
-      "explanation_on_fail_ru": "«Yo soy» = я (есть). «Él es» = он (есть). SER в 1 л. и 3 л. ед. ч. «Español» = испанец (национальность м.р., u1_l12)."
+      "explanation_on_fail_ru": "«Yo soy» = я (есть). «Mi país es» = моя страна (есть). Carlos — испанец, представляется. España = Испания (u1_l12)."
     },
     {
       "round": 18,
@@ -265,7 +337,11 @@
       "sentence_template": "Sus amigos ___ rusos también, ¿verdad?",
       "verb_infinitive": "ser",
       "correct_answer": "son",
-      "distractors": ["es", "somos", "sois"],
+      "distractors": [
+        "es",
+        "somos",
+        "sois"
+      ],
       "explanation_on_fail_ru": "«Sus amigos» = его/её друзья (мн.) → 3 л. мн. SER → «son»."
     },
     {
@@ -277,7 +353,11 @@
       "npc_line_ru": "Всё в порядке. Добро пожаловать в Испанию.",
       "prompt_ru": "Carlos ставит штамп. Что отвечаешь?",
       "correct_answer": "Muchas gracias.",
-      "distractors": ["De nada.", "Por favor.", "Adiós."]
+      "distractors": [
+        "De nada.",
+        "Por favor.",
+        "Adiós."
+      ]
     },
     {
       "round": 20,
@@ -288,7 +368,16 @@
       "npc_line_ru": "Проходите. Хорошего дня.",
       "prompt_ru": "Прощаешься. Соберите фразу:",
       "correct_answer": "Gracias hasta luego",
-      "word_bank": ["Gracias", "hasta", "luego", "buenos", "mañana", "días", "hola", "de"]
+      "word_bank": [
+        "Gracias",
+        "hasta",
+        "luego",
+        "buenos",
+        "mañana",
+        "días",
+        "hola",
+        "de"
+      ]
     }
   ],
   "pass_outcomes": {
