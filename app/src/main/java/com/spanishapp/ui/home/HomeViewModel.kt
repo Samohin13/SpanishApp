@@ -79,6 +79,7 @@ class HomeViewModel @Inject constructor(
     private val radioListeningDao: com.spanishapp.radio.data.RadioListeningDao,
     private val xpTracker: com.spanishapp.service.XpTracker,
     private val miniTestPreferences: com.spanishapp.data.prefs.MiniTestPreferences,
+    private val uiSound: com.spanishapp.service.UiSoundPlayer,
 ) : ViewModel() {
 
     /** Snapshot of mini-test ids the user has passed. Drives ✅ badges in
@@ -455,6 +456,13 @@ class HomeViewModel @Inject constructor(
                     totalXp       = p.totalXp + bonus
                 )
             )
+
+            // SFX: streak вырос (+1 день) — короткий «огонь». Бьём один
+            // раз в день при первом входе в сессию. Не бьём при потере
+            // (newStreak==1 & old>1) — это grief, не reward.
+            if (newStreak > p.currentStreak) {
+                uiSound.play(com.spanishapp.service.UiSoundPlayer.Sound.STREAK)
+            }
 
             achievementManager.checkAndUnlock()
         }

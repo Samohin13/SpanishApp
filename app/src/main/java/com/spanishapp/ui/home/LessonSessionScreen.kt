@@ -79,6 +79,12 @@ private interface RatingEntryPoint {
     fun ratingUpdater(): com.spanishapp.domain.algorithm.RatingUpdater
 }
 
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+private interface UiSoundEntryPoint {
+    fun uiSoundPlayer(): com.spanishapp.service.UiSoundPlayer
+}
+
 // ─── Шаги сессии ───────────────────────────────────────────────────────────
 private sealed class SessionStep {
     data class Theory(val sectionIndex: Int, val total: Int) : SessionStep()
@@ -238,12 +244,21 @@ fun LessonSessionScreen(
                                 RatingEntryPoint::class.java
                             ).ratingUpdater()
                         }
+                        // SFX: общий UiSoundPlayer для CORRECT/WRONG звуков
+                        // на каждом упражнении урока.
+                        val uiSound = remember {
+                            EntryPointAccessors.fromApplication(
+                                ctxForRating,
+                                UiSoundEntryPoint::class.java
+                            ).uiSoundPlayer()
+                        }
                         ExerciseCard(
                             exercise    = exercises[step.index],
                             accentColor = accentColor,
                             comboCount  = comboCount,
                             tts         = tts,
                             onCorrect   = {
+                                uiSound.play(com.spanishapp.service.UiSoundPlayer.Sound.CORRECT)
                                 correctCount++
                                 xpEarned += 10
                                 comboCount++
@@ -254,6 +269,7 @@ fun LessonSessionScreen(
                                 stepIndex++
                             },
                             onWrong     = {
+                                uiSound.play(com.spanishapp.service.UiSoundPlayer.Sound.WRONG)
                                 comboCount = 0
                                 // Подсветить иконку 📖 — намёк «загляни в теорию»
                                 if (theoryContent != null) theoryPulsing = true

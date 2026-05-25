@@ -27,6 +27,7 @@ class TheoryReaderViewModel @Inject constructor(
     private val theoryProgressDao: TheoryProgressDao,
     private val hintBank: com.spanishapp.service.HintBankManager,
     private val xpTracker: com.spanishapp.service.XpTracker,
+    private val uiSound: com.spanishapp.service.UiSoundPlayer,
 ) : ViewModel() {
 
     val lessonId: String = savedStateHandle.get<String>("lessonId") ?: ""
@@ -78,6 +79,9 @@ class TheoryReaderViewModel @Inject constructor(
                     xp = com.spanishapp.domain.algorithm.XpSystem.THEORY_FIRST_READ,
                     words = 0,
                 )
+                // SFX: page-flip звук при первом «понял» — даёт юзеру
+                // тактильную обратную связь что страница «закрыта».
+                uiSound.play(com.spanishapp.service.UiSoundPlayer.Sound.PAGE)
             }
         }
     }

@@ -29,6 +29,11 @@ class SpanishApp : Application() {
      *  TextToSpeech.speakSpanish() мог автоматически роутить в premium. */
     @Inject lateinit var remoteTtsService: com.spanishapp.service.RemoteTtsService
 
+    /** v1.22.31: Mixkit UI sounds — инжектится здесь чтобы SoundPool
+     *  предзагрузил все 15 MP3 при старте приложения (~900KB resident),
+     *  а не на первом play() в середине урока (lag). */
+    @Inject lateinit var uiSoundPlayer: com.spanishapp.service.UiSoundPlayer
+
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**

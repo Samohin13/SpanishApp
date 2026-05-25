@@ -17,6 +17,7 @@ import com.spanishapp.service.CheckpointReminderWorker
 import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpanishTts
 import com.spanishapp.service.SpeechResult
+import com.spanishapp.service.UiSoundPlayer
 import com.spanishapp.service.XpTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -53,6 +54,7 @@ class CheckpointViewModel @Inject constructor(
     private val speechRecognizer: SpanishSpeechRecognizer,
     private val cooldownPrefs: CheckpointCooldownPrefs,
     private val userProgressDao: UserProgressDao,
+    private val uiSound: UiSoundPlayer,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -139,6 +141,12 @@ class CheckpointViewModel @Inject constructor(
     fun submit(userAnswer: String) {
         val playing = _uiState.value as? CheckpointUiState.Playing ?: return
         val timeMs = System.currentTimeMillis() - roundStartMs
+        // v1.22.31: SFX за правильный/неправильный ответ. Считаем по answer
+        // *до* engine.submit чтобы успеть подложить звук одновременно с UI
+        // feedback (Green/Red border).
+        val wasCorrect = playing.state.currentRound?.let { engine.checkAnswer(it, userAnswer) } ?: false
+        uiSound.play(if (wasCorrect) UiSoundPlayer.Sound.CORRECT else UiSoundPlayer.Sound.WRONG)
+
         val newState = engine.submitAnswer(playing.state, userAnswer, timeMs)
 
         if (newState.isFinished) {
@@ -146,6 +154,18 @@ class CheckpointViewModel @Inject constructor(
             val cpId = currentCpId
             when (outcome) {
                 is com.spanishapp.domain.checkpoint.CheckpointOutcome.Pass -> {
+                    // SFX: tier-зависимый победный аккорд. Чуть отстаём от
+                    // CORRECT-звука последнего ответа.
+                    viewModelScope.launch {
+                        kotlinx.coroutines.delay(600)
+                        val tierSound = when (outcome.tier) {
+                            "gold"   -> UiSoundPlayer.Sound.GOLD
+                            "silver" -> UiSoundPlayer.Sound.SILVER
+                            "bronze" -> UiSoundPlayer.Sound.BRONZE
+                            else     -> UiSoundPlayer.Sound.BRONZE
+                        }
+                        uiSound.play(tierSound)
+                    }
                     // Начисляем XP только при первом прохождении (TODO: check DB)
                     viewModelScope.launch {
                         xpTracker.add(outcome.xpAwarded)
@@ -161,6 +181,12 @@ class CheckpointViewModel @Inject constructor(
                     }
                 }
                 is com.spanishapp.domain.checkpoint.CheckpointOutcome.Fail -> {
+                    // SFX: грустный «не сдал». Задержка чтобы не наложиться
+                    // на WRONG-звук последнего ответа.
+                    viewModelScope.launch {
+                        kotlinx.coroutines.delay(600)
+                        uiSound.play(UiSoundPlayer.Sound.FAIL)
+                    }
                     // v1.22.20: NPC «обиделся» — пришлёт пуш через 24 часа
                     // если юзер не вернётся сам. REPLACE policy: повторный
                     // fail перезапишет таймер на новый 24h-период.
@@ -180,6 +206,12 @@ class CheckpointViewModel @Inject constructor(
         } else {
             roundStartMs = System.currentTimeMillis()
             _uiState.value = CheckpointUiState.Playing(newState)
+            // SFX: маленькая «свеппя» между раундами. Задержка чтобы не
+            // налипнуть на CORRECT/WRONG звук предыдущего ответа.
+            viewModelScope.launch {
+                kotlinx.coroutines.delay(450)
+                uiSound.play(UiSoundPlayer.Sound.TRANSITION, volume = 0.6f)
+            }
             speakCurrentNpcLine(newState)
         }
     }
@@ -191,12 +223,24 @@ class CheckpointViewModel @Inject constructor(
     }
 
     private fun speakCurrentNpcLine(state: CheckpointState) {
-        val line = state.currentRound?.npcLineEs ?: return
+        val round = state.currentRound ?: return
+        val line = round.npcLineEs ?: return
         if (line.isBlank()) return
         // v1.22.20: голос NPC — мужские/женские персонажи звучат разно.
         // Для LISTEN формата озвучка обязательна (это тест на аудирование).
         val npcVoice = com.spanishapp.domain.voice.NpcVoiceMap.voiceFor(state.data.npc.id)
-        runCatching { tts.speak(line, esVoiceOverride = npcVoice) }
+        // SFX: для LISTEN раундов проигрываем короткий «ear» cue за 300мс
+        // ДО озвучки реплики — привлекаем внимание юзера, что сейчас
+        // важно слушать (контент в этом раунде только аудио).
+        if (round.format == com.spanishapp.domain.checkpoint.RoundFormat.LISTEN) {
+            viewModelScope.launch {
+                uiSound.play(UiSoundPlayer.Sound.LISTEN)
+                kotlinx.coroutines.delay(300)
+                runCatching { tts.speak(line, esVoiceOverride = npcVoice) }
+            }
+        } else {
+            runCatching { tts.speak(line, esVoiceOverride = npcVoice) }
+        }
     }
 
     /**
@@ -208,13 +252,18 @@ class CheckpointViewModel @Inject constructor(
     fun startVoiceCapture() {
         _voiceError.value = null
         _lastVoiceText.value = null
+        // SFX: тап → start recording. Юзер слышит звук одновременно с
+        // началом анимации микрофона.
+        uiSound.play(UiSoundPlayer.Sound.REC_START)
         viewModelScope.launch {
             when (val result = speechRecognizer.listenOnce("es-ES")) {
                 is SpeechResult.Success -> {
+                    uiSound.play(UiSoundPlayer.Sound.REC_STOP)
                     _lastVoiceText.value = result.text
                     submit(result.text)
                 }
                 is SpeechResult.Error -> {
+                    uiSound.play(UiSoundPlayer.Sound.REC_STOP)
                     _voiceError.value = when {
                         result.isSilence -> "Не слышу. Нажми и говори громче."
                         else -> result.message

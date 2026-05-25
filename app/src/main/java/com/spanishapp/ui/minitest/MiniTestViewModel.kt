@@ -6,6 +6,7 @@ import com.spanishapp.data.prefs.MiniTestPreferences
 import com.spanishapp.domain.algorithm.XpSystem
 import com.spanishapp.domain.minitest.MiniTest
 import com.spanishapp.domain.minitest.MiniTestGenerator
+import com.spanishapp.service.UiSoundPlayer
 import com.spanishapp.service.XpTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +43,7 @@ data class MiniTestUiState(
 class MiniTestViewModel @Inject constructor(
     private val xpTracker: XpTracker,
     private val miniTestPreferences: MiniTestPreferences,
+    private val uiSound: UiSoundPlayer,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MiniTestUiState())
@@ -68,6 +70,9 @@ class MiniTestViewModel @Inject constructor(
         val current = _state.value
         val mt = current.miniTest ?: return
         if (current.phase != MiniTestPhase.PLAYING) return
+
+        // SFX: правильный/неправильный звук одновременно с UI feedback.
+        uiSound.play(if (correct) UiSoundPlayer.Sound.CORRECT else UiSoundPlayer.Sound.WRONG)
 
         val nextAnswers = current.answers + correct
         val nextIndex = current.currentIndex + 1
@@ -96,12 +101,18 @@ class MiniTestViewModel @Inject constructor(
         if (s.resultPersisted) return
         val mt = s.miniTest ?: return
         if (!s.passed) {
+            // Тихий fail — без громкого FAIL звука (mini-test это не
+            // экзамен). Просто помечаем persisted.
             _state.update { it.copy(resultPersisted = true) }
             return
         }
         viewModelScope.launch {
             xpTracker.add(xp = XpSystem.MINI_TEST_PASSED, words = 0)
             miniTestPreferences.markPassed(mt.id)
+            // SFX: mini-test pass — победный аккорд (≥60% правильных).
+            // Задержка чтобы не наложиться на последний CORRECT.
+            kotlinx.coroutines.delay(500)
+            uiSound.play(UiSoundPlayer.Sound.LEVEL_UP)
             _state.update { it.copy(resultPersisted = true) }
         }
     }
