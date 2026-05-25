@@ -67,6 +67,15 @@ class CheckpointViewModel @Inject constructor(
     val cooldownUntilMs: StateFlow<Long> = _cooldownUntilMs.asStateFlow()
 
     /**
+     * Использовал ли юзер бесплатную пересдачу для текущего CP.
+     * v1.22.30: каждый CP даёт 1 бесплатную пересдачу — UI показывает
+     * «Бесплатная пересдача» вместо «-50 рейтинга» / «24h ожидания»
+     * пока этот флаг false.
+     */
+    private val _freeRetryUsed = MutableStateFlow(false)
+    val freeRetryUsed: StateFlow<Boolean> = _freeRetryUsed.asStateFlow()
+
+    /**
      * Текущий skill rating юзера — нужен чтобы решить, доступна ли кнопка
      * «Сейчас за -50 рейтинга» (требуется rating ≥ 50).
      */
@@ -231,6 +240,7 @@ class CheckpointViewModel @Inject constructor(
      * другого ключа после следующего setCooldown / clearCooldown.
      */
     private var cooldownJob: kotlinx.coroutines.Job? = null
+    private var freeRetryJob: kotlinx.coroutines.Job? = null
     private fun observeCooldown(cpId: String) {
         cooldownJob?.cancel()
         cooldownJob = viewModelScope.launch {
@@ -238,6 +248,25 @@ class CheckpointViewModel @Inject constructor(
                 _cooldownUntilMs.value = until
             }
         }
+        freeRetryJob?.cancel()
+        freeRetryJob = viewModelScope.launch {
+            cooldownPrefs.freeRetryUsed(cpId).collect { used ->
+                _freeRetryUsed.value = used
+            }
+        }
+    }
+
+    /**
+     * Использовать бесплатную пересдачу (доступна 1 раз на каждый CP).
+     * Снимает cooldown + помечает что bonus использован → следующий fail
+     * приведёт к стандартному 24h cooldown / -50 рейтинга.
+     */
+    suspend fun useFreeRetry(): Boolean {
+        val cpId = currentCpId ?: return false
+        cooldownPrefs.markFreeRetryUsed(cpId)
+        cooldownPrefs.clearCooldown(cpId)
+        runCatching { CheckpointReminderWorker.cancel(appContext, cpId) }
+        return true
     }
 
     /**

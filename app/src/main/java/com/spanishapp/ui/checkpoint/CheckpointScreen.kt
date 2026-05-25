@@ -1111,6 +1111,7 @@ private fun ResultView(
     // nowMs: tick раз в минуту чтобы countdown обновлялся.
     val cooldownUntil by viewModel.cooldownUntilMs.collectAsStateWithLifecycle()
     val currentRating by viewModel.currentRating.collectAsStateWithLifecycle()
+    val freeRetryUsed by viewModel.freeRetryUsed.collectAsStateWithLifecycle()
     var nowMs by remember { mutableStateOf(System.currentTimeMillis()) }
     LaunchedEffect(cooldownUntil) {
         // Тик минуты для перерисовки таймера. Делаем только если cooldown
@@ -1124,6 +1125,9 @@ private fun ResultView(
     val remainingMs = (cooldownUntil - nowMs).coerceAtLeast(0L)
     val isCooldownActive = !isPass && remainingMs > 0L
     val canPayRetryCost = !isPass && currentRating >= CheckpointViewModel.RETRY_RATING_COST
+    // v1.22.30: бесплатная пересдача доступна если юзер ещё ни разу не
+    // использовал её для этого CP. После использования — только -50 или 24h.
+    val canUseFreeRetry = !isPass && isCooldownActive && !freeRetryUsed
 
     val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
 
@@ -1390,8 +1394,53 @@ private fun ResultView(
                 Spacer(Modifier.height(14.dp))
             }
 
-            // ── Retry buttons (Fail с cooldown — 2 варианта; иначе обычно) ──
+            // ── Retry buttons (Fail с cooldown — 3 варианта; иначе обычно) ──
             if (!isPass && isCooldownActive) {
+                // v1.22.30: Кнопка 0 — БЕСПЛАТНАЯ пересдача (1 раз на CP)
+                // Показывается ТОЛЬКО если юзер ещё ни разу не использовал
+                // bonus для этого CP. После использования — этот блок скрыт,
+                // остаются только обычные «Подождать» / «-50 рейтинга».
+                if (canUseFreeRetry) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(64.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .clickable {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                coroutineScope.launch {
+                                    if (viewModel.useFreeRetry()) {
+                                        onRetry()
+                                    }
+                                }
+                            },
+                        color = Color.Transparent,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.linearGradient(listOf(GreenSuccess, Color(0xFF34D399)))
+                                ),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    "🎁 Бесплатная пересдача",
+                                    fontSize = 17.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = Color.White,
+                                )
+                                Text(
+                                    "1 раз для каждого экзамена",
+                                    fontSize = 11.sp,
+                                    color = Color.White.copy(alpha = 0.9f),
+                                )
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
+                }
                 // Кнопка 1: «Подождать Xч Yмин (бесплатно)» — disabled, только инфо
                 Surface(
                     modifier = Modifier
