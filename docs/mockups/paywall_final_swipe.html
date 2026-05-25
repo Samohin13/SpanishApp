@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="UTF-8"><title>ESPEAK PRO — финальный paywall (swipe)</title>
+<style>
+  :root {
+    --bg: #0E0E12;
+    --surface: #1A1A20;
+    --surface-2: #22222A;
+    --border: #2C2C36;
+    --text: #ECECEC;
+    --text-dim: #8E8E93;
+    --primary: #FF8A3D;
+    --primary-2: #FF6A1A;
+    --a1: #FFC371;
+    --a2: #4EA1FF;
+    --b1: #4ADE80;
+    --b2: #F472B6;
+    --gold: #FFD27A;
+    --good: #4ADE80;
+  }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body { margin: 0; padding: 40px 20px 80px; font-family: -apple-system, BlinkMacSystemFont,
+    'SF Pro Display', 'Segoe UI', Roboto, sans-serif; background: #050507; color: #fff; }
+
+  .page-title { text-align: center; font-size: 30px; font-weight: 900; margin-bottom: 8px; }
+  .page-title span { color: var(--primary); }
+  .page-sub { text-align: center; color: #777; margin-bottom: 36px; font-size: 13px; max-width: 540px;
+    margin-left: auto; margin-right: auto; line-height: 1.5; }
+  .hint { text-align: center; color: var(--gold); font-size: 12px; margin-bottom: 40px;
+    font-weight: 600; }
+
+  .phone-wrap { display: flex; justify-content: center; }
+  .phone { width: 380px; height: 820px; background: #000; border-radius: 48px; padding: 12px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05); position: relative; }
+  .notch { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); width: 120px;
+    height: 28px; background: #000; border-radius: 0 0 20px 20px; z-index: 10; }
+  .screen { width: 100%; height: 100%; border-radius: 38px; overflow: hidden; background: var(--bg);
+    position: relative; display: flex; flex-direction: column; }
+
+  /* === FIXED TOP === */
+  .top { padding: 50px 18px 8px; flex-shrink: 0; }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .top-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .top-close { color: var(--text-dim); font-size: 22px; cursor: pointer; }
+
+  .dots { display: flex; gap: 6px; justify-content: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.15);
+    transition: all 0.3s; }
+  .dot.active { background: var(--primary); width: 22px; border-radius: 3px; }
+
+  /* === SWIPE AREA === */
+  .pages { flex: 1; display: flex; overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth; }
+  .pages::-webkit-scrollbar { display: none; }
+  .page { min-width: 100%; padding: 14px 18px 8px; scroll-snap-align: center;
+    display: flex; flex-direction: column; }
+  .page-inner { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+  /* === PAGE 1: HERO + SOCIAL === */
+  .hero { padding: 24px 20px 22px; border-radius: 24px; text-align: center;
+    background:
+      radial-gradient(ellipse at top, rgba(255,138,61,0.3) 0%, transparent 55%),
+      linear-gradient(180deg, #1F1A28 0%, #14141A 100%);
+    border: 1px solid rgba(255,138,61,0.2); position: relative; overflow: hidden; }
+  .hero::after { content: '✦'; position: absolute; top: 50px; right: 36px; color: var(--gold);
+    font-size: 10px; opacity: 0.5; }
+  .pro-tag { display: inline-block; padding: 5px 14px; border: 1px solid var(--primary);
+    border-radius: 99px; font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 2.5px; }
+  .gem { font-size: 64px; margin: 14px 0 4px; filter: drop-shadow(0 0 24px rgba(255,138,61,0.6)); }
+  .hero h1 { font-size: 30px; font-weight: 200; line-height: 1.1; letter-spacing: -0.8px; margin: 4px 0; }
+  .hero h1 b { font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .tag { font-size: 13px; color: var(--text-dim); margin-top: 6px; font-style: italic; }
+
+  .card { background: var(--surface); border-radius: 20px; padding: 14px; }
+  .card-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px; }
+
+  .social-row { display: flex; align-items: center; gap: 10px; }
+  .avs { display: flex; }
+  .av { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--surface); margin-left: -8px; }
+  .av:nth-child(1) { background: var(--primary); margin-left: 0; }
+  .av:nth-child(2) { background: var(--a2); }
+  .av:nth-child(3) { background: #A78BFA; }
+  .av:nth-child(4) { background: var(--b1); }
+  .social-txt { font-size: 13px; line-height: 1.4; }
+  .social-txt b { color: var(--text); font-weight: 800; }
+  .stars { color: var(--gold); font-size: 11px; }
+
+  /* === PAGE 2: NUMBERS === */
+  .stats-title { text-align: center; font-size: 20px; font-weight: 800; letter-spacing: -0.3px;
+    margin-bottom: 4px; }
+  .stats-sub { text-align: center; font-size: 12px; color: var(--text-dim); margin-bottom: 14px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-item { background: linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--border); border-radius: 18px; padding: 16px 12px; text-align: center;
+    position: relative; overflow: hidden; }
+  .stat-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--gold)); }
+  .stat-num { font-size: 32px; font-weight: 900; color: var(--primary); letter-spacing: -1px; line-height: 1; }
+  .stat-lbl { font-size: 10px; color: var(--text); margin-top: 6px; font-weight: 700; line-height: 1.3; }
+  .stat-sub { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+
+  .chip { display: inline-block; padding: 2px 6px; border-radius: 5px; font-size: 9px; font-weight: 800;
+    letter-spacing: 0.5px; }
+  .chip.a2 { background: rgba(78,161,255,0.18); color: var(--a2); }
+  .chip.b1 { background: rgba(74,222,128,0.18); color: var(--b1); }
+  .chip.b2 { background: rgba(244,114,182,0.18); color: var(--b2); }
+
+  /* === PAGE 3: FEATURES === */
+  .feat-list { display: flex; flex-direction: column; gap: 10px; }
+  .feat { display: flex; gap: 12px; align-items: center; font-size: 13px;
+    background: var(--surface); border-radius: 16px; padding: 12px; }
+  .feat-ico { width: 36px; height: 36px; border-radius: 11px;
+    background: rgba(255,138,61,0.12); display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0; }
+  .feat-txt { flex: 1; line-height: 1.3; }
+  .feat-txt b { font-weight: 700; }
+  .feat-txt .dim { color: var(--text-dim); font-size: 11px; display: block; margin-top: 2px; }
+  .feat-chips { display: inline-flex; gap: 3px; margin-left: 4px; vertical-align: middle; }
+
+  /* === PAGE 4: PROGRESS + URGENCY === */
+  .ba-card { padding: 18px 16px; }
+  .ba-title { font-size: 11px; font-weight: 800; color: var(--gold);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .ba-sub { font-size: 13px; color: var(--text); margin-bottom: 16px; line-height: 1.4; }
+  .ba-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 12px; }
+  .ba-lbl { width: 56px; font-weight: 700; }
+  .ba-lbl.free { color: var(--text-dim); }
+  .ba-lbl.pro { color: var(--primary); }
+  .ba-bar { flex: 1; height: 10px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
+  .ba-fill { height: 100%; border-radius: 5px; position: relative; }
+  .ba-fill.free { width: 20%; background: #5A5A5A; }
+  .ba-fill.pro { width: 100%; background: linear-gradient(90deg, var(--primary), var(--gold));
+    box-shadow: 0 0 12px rgba(255,138,61,0.5); }
+  .ba-val { font-size: 13px; font-weight: 800; width: 28px; text-align: right; color: var(--text); }
+
+  .ba-levels { display: flex; justify-content: space-between; margin-top: 6px; padding: 0 4px;
+    font-size: 9px; color: var(--text-dim); font-weight: 700; }
+
+  .testimonial { background: linear-gradient(160deg, rgba(255,138,61,0.08), rgba(255,210,122,0.04));
+    border: 1px solid rgba(255,138,61,0.2); border-radius: 18px; padding: 16px; }
+  .t-quote { font-size: 13px; line-height: 1.5; font-style: italic; color: var(--text);
+    margin-bottom: 10px; }
+  .t-quote::before { content: '"'; color: var(--primary); font-size: 28px;
+    font-weight: 900; margin-right: 4px; line-height: 0; vertical-align: -8px; }
+  .t-author { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+  .t-author .av { width: 24px; height: 24px; background: var(--a2); }
+  .t-author b { color: var(--text); }
+  .t-author .dim { color: var(--text-dim); }
+
+  /* === FIXED BOTTOM (price + CTA) === */
+  .bottom { padding: 8px 18px 18px; flex-shrink: 0;
+    background: linear-gradient(180deg, transparent 0%, var(--bg) 30%); }
+
+  .urgency-row { display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    background: rgba(255,138,61,0.10); border: 1px solid rgba(255,138,61,0.25);
+    border-radius: 12px; margin-bottom: 10px; font-size: 10px; color: var(--primary); font-weight: 800;
+    letter-spacing: 0.5px; }
+  .urgency-row .timer { background: #000; padding: 2px 7px; border-radius: 5px;
+    font-family: 'SF Mono', monospace; font-weight: 800; color: var(--gold); margin-left: auto; }
+
+  .price-row { display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 4px; margin-bottom: 12px; }
+  .price-left { display: flex; flex-direction: column; }
+  .old-price { font-size: 13px; color: #5A5A5A; text-decoration: line-through;
+    text-decoration-color: var(--primary); }
+  .new-price { font-size: 38px; font-weight: 900; letter-spacing: -1.5px; line-height: 1; }
+  .new-price b {
+    background: linear-gradient(135deg, var(--primary), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .price-right { text-align: right; font-size: 11px; color: var(--text-dim); padding-bottom: 4px; }
+  .price-right b { color: var(--text); }
+  .save-pill { display: inline-block; padding: 3px 8px; background: var(--primary); color: #fff;
+    font-size: 9px; font-weight: 800; border-radius: 99px; letter-spacing: 0.5px; margin-bottom: 4px; }
+
+  .cta { width: 100%; padding: 18px; border: none; border-radius: 16px; cursor: pointer;
+    font-size: 15px; font-weight: 800; letter-spacing: 0.3px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: #fff; box-shadow: 0 8px 24px rgba(255,138,61,0.4); }
+  .cta-sub { text-align: center; font-size: 10px; color: var(--text-dim); margin-top: 8px; }
+
+  .trust { display: flex; justify-content: space-between; margin-top: 10px;
+    font-size: 9px; color: var(--text-dim); }
+  .trust span { display: flex; align-items: center; gap: 3px; }
+  .trust .ck { color: var(--good); }
+
+  /* arrows */
+  .nav-btn { position: absolute; top: 50%; transform: translateY(-50%);
+    width: 38px; height: 38px; border-radius: 50%; background: rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.15); color: white; font-size: 18px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 20;
+    backdrop-filter: blur(10px); }
+  .nav-btn:hover { background: rgba(255,138,61,0.4); border-color: var(--primary); }
+  .nav-btn.left { left: -50px; }
+  .nav-btn.right { right: -50px; }
+</style>
+</head>
+<body>
+
+<div class="page-title">💎 ESPEAK <span>PRO</span> — финальный paywall</div>
+<div class="page-sub">A + B объединены. 4 страницы свайпом. Фиксированный CTA внизу — юзер может купить с любой страницы. Точки прогресса сверху.</div>
+<div class="hint">👉 Свайпай страницы или используй стрелки ← →</div>
+
+<div class="phone-wrap">
+  <div style="position: relative;">
+    <button class="nav-btn left" onclick="nav(-1)">←</button>
+    <button class="nav-btn right" onclick="nav(1)">→</button>
+
+    <div class="phone"><div class="notch"></div><div class="screen">
+
+      <!-- FIXED TOP -->
+      <div class="top">
+        <div class="top-bar">
+          <div class="top-title">Премиум</div>
+          <div class="top-close">✕</div>
+        </div>
+        <div class="dots" id="dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- SWIPEABLE PAGES -->
+      <div class="pages" id="pages">
+
+        <!-- === PAGE 1: HERO + SOCIAL === -->
+        <div class="page">
+          <div class="page-inner">
+            <div class="hero">
+              <div class="pro-tag">✦ ESPEAK · PREMIUM ✦</div>
+              <div class="gem">💎</div>
+              <h1>Открой <b>весь</b><br>испанский</h1>
+              <div class="tag">«Путь от A1 до B2 в одной подписке»</div>
+            </div>
+
+            <div class="card">
+              <div class="social-row">
+                <div class="avs"><div class="av"></div><div class="av"></div><div class="av"></div><div class="av"></div></div>
+                <div class="social-txt">
+                  <div><b>12 847</b> учеников уже PRO</div>
+                  <div class="stars">★★★★★ 4.8 · Google Play</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- === PAGE 2: NUMBERS === -->
+        <div class="page">
+          <div class="page-inner">
+            <div class="stats-title">📊 Сколько контента откроется</div>
+            <div class="stats-sub">Free = 60 уроков A1. PRO — всё остальное.</div>
+
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-num">180</div>
+                <div class="stat-lbl">уроков</div>
+                <div class="stat-sub">A2 · B1 · B2</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">75</div>
+                <div class="stat-lbl">рассказов</div>
+                <div class="stat-sub">A2 · B1 · B2</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">1327</div>
+                <div class="stat-lbl">глаголов</div>
+                <div class="stat-sub">+ 6 времён</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">100</div>
+                <div class="stat-lbl">уровней игр</div>
+                <div class="stat-sub">все 8 игр</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">∞</div>
+                <div class="stat-lbl">AI-репетитор</div>
+                <div class="stat-sub">free = 50/день</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">~10K</div>
+                <div class="stat-lbl">SM-2 слов</div>
+                <div class="stat-sub">A2 · B1 · B2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- === PAGE 3: FEATURES === -->
+        <div class="page">
+          <div class="page-inner">
+            <div class="stats-title">✨ Что входит</div>
+            <div class="stats-sub">Все 8 категорий контента без ограничений</div>
+
+            <div class="feat-list">
+              <div class="feat"><div class="feat-ico">🎓</div><div class="feat-txt"><b>180 уроков A2/B1/B2</b><span class="dim">+ грамматика + диалоги всех уровней</span></div></div>
+              <div class="feat"><div class="feat-ico">📚</div><div class="feat-txt"><b>75 рассказов</b><span class="dim">free = только 25 книг A1</span></div></div>
+              <div class="feat"><div class="feat-ico">🔥</div><div class="feat-txt"><b>1327 глаголов</b><span class="dim">159 с полными таблицами 6 времён</span></div></div>
+              <div class="feat"><div class="feat-ico">🎯</div><div class="feat-txt"><b>Все 100 уровней игр</b><span class="dim">free = первые 10 каждой</span></div></div>
+              <div class="feat"><div class="feat-ico">🃏</div><div class="feat-txt"><b>SM-2 карточки A2/B1/B2</b><span class="dim">~10 000 слов в spaced repetition</span></div></div>
+              <div class="feat"><div class="feat-ico">🤖</div><div class="feat-txt"><b>AI-репетитор безлимит</b><span class="dim">free = 50 запросов в день</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- === PAGE 4: PROGRESS + TESTIMONIAL === -->
+        <div class="page">
+          <div class="page-inner">
+            <div class="card ba-card">
+              <div class="ba-title">📈 Куда ты дойдёшь</div>
+              <div class="ba-sub">Free застрянет на A1. С PRO дойдёшь до уверенного B2.</div>
+              <div class="ba-row">
+                <div class="ba-lbl free">FREE</div>
+                <div class="ba-bar"><div class="ba-fill free"></div></div>
+                <div class="ba-val">A1</div>
+              </div>
+              <div class="ba-row">
+                <div class="ba-lbl pro">PRO</div>
+                <div class="ba-bar"><div class="ba-fill pro"></div></div>
+                <div class="ba-val">B2</div>
+              </div>
+              <div class="ba-levels">
+                <span>A1</span><span>A2</span><span>B1</span><span>B2</span>
+              </div>
+            </div>
+
+            <div class="testimonial">
+              <div class="t-quote">За 4 месяца с PRO дошла до B1 и впервые свободно говорила с испанцем в Барселоне. AI-чат — лучшая фича.</div>
+              <div class="t-author">
+                <div class="av"></div>
+                <div><b>Мария К.</b> <span class="dim">· PRO с января</span></div>
+              </div>
+            </div>
+
+            <div style="text-align: center; color: var(--gold); font-size: 11px; font-weight: 700;
+              padding: 8px; margin-top: 4px;">
+              👇 Жми «Начать» внизу — 7 дней бесплатно
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FIXED BOTTOM -->
+      <div class="bottom">
+        <div class="urgency-row">
+          🔥 EARLY BIRD −40%
+          <span class="timer">02д 14ч 38м</span>
+        </div>
+
+        <div class="price-row">
+          <div class="price-left">
+            <div class="save-pill">−42%</div>
+            <div class="old-price">€59.88 / год</div>
+            <div class="new-price"><b>€34.99</b></div>
+          </div>
+          <div class="price-right">
+            <div><b>€2.92</b> / месяц</div>
+            <div>списание 1 раз в год</div>
+          </div>
+        </div>
+
+        <button class="cta">Начать 7 дней бесплатно</button>
+        <div class="cta-sub">далее €34.99/год · отмена в Google Play</div>
+
+        <div class="trust">
+          <span><span class="ck">✓</span> Отмена 1 кликом</span>
+          <span><span class="ck">✓</span> Возврат 7 дней</span>
+          <span><span class="ck">✓</span> Без сюрпризов</span>
+        </div>
+      </div>
+
+    </div></div>
+  </div>
+</div>
+
+<div style="text-align: center; margin-top: 60px; color: #555; font-size: 12px; max-width: 600px;
+  margin: 60px auto 0; line-height: 1.6;">
+  4 страницы свайпом · фиксированный CTA внизу (купить можно с любой)<br><br>
+  <b>Page 1:</b> Hero + 💎 + social proof (12 847 PRO · ★ 4.8)<br>
+  <b>Page 2:</b> 6 крупных цифр (180/75/1327/100/∞/10K)<br>
+  <b>Page 3:</b> 6 features с иконками-плитками<br>
+  <b>Page 4:</b> Visual progress (FREE→A1, PRO→B2) + testimonial<br><br>
+  В Android это будет HorizontalPager + фиксированная Column с ценой и CTA внизу.<br>
+  Скажи <b>«делай»</b> → начну реализацию.
+</div>
+
+<script>
+  const pages = document.getElementById('pages');
+  const dots = document.querySelectorAll('.dot');
+  const TOTAL = 4;
+  let current = 0;
+
+  function updateDots(idx) {
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+
+  pages.addEventListener('scroll', () => {
+    const idx = Math.round(pages.scrollLeft / pages.clientWidth);
+    if (idx !== current) {
+      current = idx;
+      updateDots(idx);
+    }
+  });
+
+  function nav(dir) {
+    const next = Math.max(0, Math.min(TOTAL - 1, current + dir));
+    pages.scrollTo({ left: next * pages.clientWidth, behavior: 'smooth' });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') nav(1);
+    if (e.key === 'ArrowLeft') nav(-1);
+  });
+</script>
+
+</body></html>
