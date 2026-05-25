@@ -63,28 +63,40 @@ class UiSoundPlayer @Inject constructor(
     private val audioManager: AudioManager? =
         context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
 
-    private val pool: SoundPool = SoundPool.Builder()
-        .setMaxStreams(4) // 4 overlapping sounds is plenty for UI cues
-        .setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-        )
-        .build()
+    /** SoundPool создаётся лениво в фоне — не блокирует main thread на старте.
+     *  v1.22.32: было `private val pool = SoundPool.Builder()...build()` —
+     *  eager создание + 15× pool.load() в init выполнялось на main thread
+     *  во время SpanishApp.onCreate() (Hilt eager singleton). На медленных
+     *  устройствах это вызывало ANR. Теперь всё в IO-scope. */
+    @Volatile private var pool: SoundPool? = null
 
-    /** Map<Sound, soundPoolId>. Filled at construction; entries
-     *  appear after SoundPool.load(...) returns and onLoadComplete fires. */
-    private val soundIds: MutableMap<Sound, Int> = mutableMapOf()
+    /** Map<Sound, soundPoolId>. Filled in background after pool is created.
+     *  play() безопасно no-op'ает если звук ещё не загружен. */
+    private val soundIds: MutableMap<Sound, Int> = java.util.concurrent.ConcurrentHashMap()
 
     init {
-        // Preload all 15 sounds immediately. SoundPool.load() returns a
-        // soundId before decoding finishes; play() before onLoadComplete
-        // will silently no-op (acceptable — UI cues are not critical).
-        for (s in Sound.values()) {
+        // Всё инициализируется в фоне — main thread не блокируется.
+        // На первом play() сразу после старта приложения SoundPool может
+        // быть ещё не готов — это OK, звук просто не сыграет (UI-cues
+        // не критичны, в первые ~100ms после старта юзер не успевает тапнуть).
+        scope.launch {
             runCatching {
-                val id = pool.load(context, s.rawRes, 1)
-                soundIds[s] = id
+                val newPool = SoundPool.Builder()
+                    .setMaxStreams(4) // 4 overlapping sounds is plenty for UI cues
+                    .setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_GAME)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .build()
+                    )
+                    .build()
+                for (s in Sound.values()) {
+                    runCatching {
+                        val id = newPool.load(context, s.rawRes, 1)
+                        soundIds[s] = id
+                    }
+                }
+                pool = newPool
             }
         }
 
@@ -107,16 +119,18 @@ class UiSoundPlayer @Inject constructor(
     fun play(sound: Sound, volume: Float = 1f) {
         if (!enabled) return
         if (audioManager?.ringerMode == AudioManager.RINGER_MODE_SILENT) return
+        val p = pool ?: return // pool ещё не готов — no-op
         val id = soundIds[sound] ?: return
         val v = volume.coerceIn(0f, 1f)
         runCatching {
-            pool.play(id, v, v, /*priority=*/1, /*loop=*/0, /*rate=*/1f)
+            p.play(id, v, v, /*priority=*/1, /*loop=*/0, /*rate=*/1f)
         }
     }
 
     /** Release SoundPool. Called rarely — singleton lives for app lifetime. */
     fun release() {
-        runCatching { pool.release() }
+        runCatching { pool?.release() }
+        pool = null
         soundIds.clear()
     }
 }

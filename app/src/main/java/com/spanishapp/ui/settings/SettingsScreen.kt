@@ -1063,7 +1063,22 @@ fun SettingsSwitchItem(icon: ImageVector, title: String, checked: Boolean, onChe
         Icon(icon, null, modifier = Modifier.size(24.dp), tint = MaterialTheme.colorScheme.primary)
         Spacer(Modifier.width(16.dp))
         Text(title, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-        Switch(checked = checked, onCheckedChange = wrappedChange)
+        // v1.22.32: явные цвета OFF-состояния. Дефолтная M3 палитра
+        // в dark theme делает unchecked Switch почти невидимым (track
+        // сливается с surfaceVariant). Видимый светло-серый track +
+        // ярко-белый thumb даёт явное визуальное отличие OFF/ON.
+        Switch(
+            checked = checked,
+            onCheckedChange = wrappedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = androidx.compose.ui.graphics.Color.White,
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                checkedBorderColor = MaterialTheme.colorScheme.primary,
+                uncheckedThumbColor = androidx.compose.ui.graphics.Color(0xFFE0E0E0),
+                uncheckedTrackColor = androidx.compose.ui.graphics.Color(0xFF5A5A5A),
+                uncheckedBorderColor = androidx.compose.ui.graphics.Color(0xFF7A7A7A),
+            )
+        )
     }
 }
 
