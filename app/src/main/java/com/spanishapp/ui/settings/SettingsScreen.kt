@@ -528,8 +528,20 @@ fun SettingsScreen(
 
             // ── Секции настроек ──
 
-            // Поддержка автора — первая строка настроек, обычным пунктом,
-            // без выделения цветом. Открывает Boosty в браузере.
+            // Премиум подписка — самый верх. Ссылка на paywall либо
+            // «управление подпиской» если уже PRO.
+            SettingsSection("Премиум") {
+                SettingsItem(
+                    icon = Icons.Default.Star,
+                    title = "💎 ESPEAK PRO",
+                    summary = "Открой A2 + B1 + B2, безлимит AI, 1327 глаголов",
+                ) {
+                    navController.navigate("paywall") { launchSingleTop = true }
+                }
+            }
+
+            // Поддержка автора — обычным пунктом, без выделения цветом.
+            // Открывает Boosty в браузере.
             SettingsSection(stringResource(R.string.settings_section_support)) {
                 val boostyUrl = "https://boosty.to/espeak"
                 SettingsItem(

@@ -421,6 +421,8 @@ object Navigation {
             composable("stats")        { com.spanishapp.ui.stats.StatsScreen(navController) }
             composable("settings")     { SettingsScreen(navController) }
             composable("settings_voice") { com.spanishapp.ui.settings.SettingsVoiceScreen(navController) }
+            // ── Paywall PRO ─────────────────────────────────
+            composable("paywall")      { com.spanishapp.ui.paywall.PaywallScreen(navController) }
             // OTA download route DISABLED for v1 — see comment near initialStartDest.
             // DownloadScreen + DownloadViewModel kept in source but unreachable.
 
