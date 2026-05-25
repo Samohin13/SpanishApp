@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>ESPEAK — Sound Design Preview</title>
+<style>
+:root {
+  --bg: #0A0B0D;
+  --surface: #1F2125;
+  --surface-2: #2A2D33;
+  --primary: #FF6B1A;
+  --green: #2EB872;
+  --red: #E54848;
+  --gold: #F4B400;
+  --purple: #A78BFA;
+  --text: #F5F5F7;
+  --text-dim: #8E8E93;
+  --border: rgba(255,255,255,0.08);
+}
+* { box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--bg); color: var(--text); padding: 40px 20px 80px; }
+h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
+.subtitle { text-align: center; color: var(--text-dim); font-size: 15px; margin-bottom: 40px; }
+
+.warn {
+  max-width: 800px; margin: 0 auto 40px;
+  padding: 14px 18px; background: rgba(244,180,0,0.1);
+  border-left: 4px solid var(--gold); border-radius: 8px;
+  font-size: 13px; color: var(--text);
+}
+
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px; max-width: 1200px; margin: 0 auto;
+}
+.card {
+  background: var(--surface); border-radius: 16px; padding: 20px;
+  border: 1px solid var(--border);
+  transition: transform 0.2s, border-color 0.2s;
+}
+.card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.card-icon { font-size: 32px; }
+.card-title { font-size: 18px; font-weight: 700; margin: 8px 0 4px; }
+.card-when { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+.card-tech { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 6px; margin-bottom: 14px; }
+.play-btn {
+  width: 100%; padding: 14px; border-radius: 12px; border: none;
+  background: linear-gradient(135deg, var(--primary), #ff8533);
+  color: white; font-weight: 800; font-size: 15px; cursor: pointer;
+  transition: transform 0.1s;
+  box-shadow: 0 4px 14px rgba(255,107,26,0.3);
+}
+.play-btn:active { transform: scale(0.95); }
+.play-btn::before { content: '▶ '; }
+
+.card.gold .card-icon { color: var(--gold); }
+.card.gold { border-color: rgba(244,180,0,0.3); }
+.card.gold .play-btn { background: linear-gradient(135deg, var(--gold), #fbbf24); box-shadow: 0 4px 14px rgba(244,180,0,0.3); }
+
+.card.green .card-icon { color: var(--green); }
+.card.green .play-btn { background: linear-gradient(135deg, var(--green), #34d399); box-shadow: 0 4px 14px rgba(46,184,114,0.3); }
+
+.card.red .card-icon { color: var(--red); }
+.card.red .play-btn { background: linear-gradient(135deg, var(--red), #f87171); box-shadow: 0 4px 14px rgba(229,72,72,0.3); }
+
+.card.purple .card-icon { color: var(--purple); }
+.card.purple .play-btn { background: linear-gradient(135deg, var(--purple), #c4b5fd); box-shadow: 0 4px 14px rgba(167,139,250,0.3); }
+
+.controls {
+  max-width: 1200px; margin: 40px auto 0;
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+.btn-secondary {
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text); padding: 10px 20px; border-radius: 10px;
+  font-size: 13px; cursor: pointer; font-weight: 600;
+}
+.btn-secondary:hover { border-color: var(--primary); }
+
+.section-title { max-width: 1200px; margin: 40px auto 16px; font-size: 14px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>🔊 ESPEAK Sound Design</h1>
+<p class="subtitle">Нажми на кнопку чтобы услышать каждый звук</p>
+
+<div class="warn">
+  <strong>💡 Как работает:</strong> Звуки синтезируются прямо в браузере через Web Audio API.
+  Это очень близкая имитация того что будет в приложении (в реале будут профессиональные WAV-семплы).
+  <br>Включи звук на устройстве. Может потребоваться один клик на странице перед первым воспроизведением (требование браузера).
+</div>
+
+<div class="section-title">🎮 ИГРОВЫЕ ОТВЕТЫ</div>
+
+<div class="grid">
+
+<div class="card green">
+  <div class="card-icon">✓</div>
+  <div class="card-title">Правильный ответ</div>
+  <div class="card-when">Когда юзер отвечает верно в любом упражнении</div>
+  <div class="card-tech">2-тон chord: G5 + C6, sine, 200ms decay</div>
+  <button class="play-btn" onclick="playCorrect()">Прослушать</button>
+</div>
+
+<div class="card red">
+  <div class="card-icon">✗</div>
+  <div class="card-title">Неправильный ответ</div>
+  <div class="card-when">Мягкий «бум» при ошибке (не громкий, не давит)</div>
+  <div class="card-tech">A2 sine + low-pass filter, 250ms</div>
+  <button class="play-btn" onclick="playWrong()">Прослушать</button>
+</div>
+
+<div class="card">
+  <div class="card-icon">💰</div>
+  <div class="card-title">Получил XP</div>
+  <div class="card-when">+5/+10/+25 XP — звон монет</div>
+  <div class="card-tech">3 коротких pings C5→E5→G5, sawtooth</div>
+  <button class="play-btn" onclick="playXp()">Прослушать</button>
+</div>
+
+</div>
+
+<div class="section-title">⏭ ПЕРЕХОДЫ И НАВИГАЦИЯ</div>
+
+<div class="grid">
+
+<div class="card">
+  <div class="card-icon">⏭</div>
+  <div class="card-title">Переход к раунду</div>
+  <div class="card-when">Когда новый раунд появляется на экране</div>
+  <div class="card-tech">Frequency sweep 400→800Hz, sine, 200ms</div>
+  <button class="play-btn" onclick="playTransition()">Прослушать</button>
+</div>
+
+<div class="card">
+  <div class="card-icon">👆</div>
+  <div class="card-title">Тап по кнопке</div>
+  <div class="card-when">Лёгкий click на каждое нажатие primary-кнопок</div>
+  <div class="card-tech">Single 1200Hz tick, sine, 50ms</div>
+  <button class="play-btn" onclick="playTap()">Прослушать</button>
+</div>
+
+<div class="card">
+  <div class="card-icon">📖</div>
+  <div class="card-title">Открытие theory card</div>
+  <div class="card-when">Когда юзер открывает «Прочитать теорию»</div>
+  <div class="card-tech">«Page flip» 600→200Hz, soft</div>
+  <button class="play-btn" onclick="playPage()">Прослушать</button>
+</div>
+
+</div>
+
+<div class="section-title">🏆 ДОСТИЖЕНИЯ И МИЛЕСТОНЫ</div>
+
+<div class="grid">
+
+<div class="card gold">
+  <div class="card-icon">🥇</div>
+  <div class="card-title">GOLD чекпоинта</div>
+  <div class="card-when">Прохождение на 95%+ — праздничная мелодия</div>
+  <div class="card-tech">Fanfare C-E-G-C major, 1.8 sec</div>
+  <button class="play-btn" onclick="playFanfare()">Прослушать</button>
+</div>
+
+<div class="card">
+  <div class="card-icon">🥈</div>
+  <div class="card-title">SILVER чекпоинта</div>
+  <div class="card-when">Прохождение на 80-94% — короткий восторг</div>
+  <div class="card-tech">C-E-G arpeggio, sine, 800ms</div>
+  <button class="play-btn" onclick="playSilver()">Прослушать</button>
+</div>
+
+<div class="card">
+  <div class="card-icon">🥉</div>
+  <div class="card-title">BRONZE чекпоинта</div>
+  <div class="card-when">Прошёл на 70-79% — спокойный аккорд</div>
+  <div class="card-tech">C major chord, 600ms decay</div>
+  <button class="play-btn" onclick="playBronze()">Прослушать</button>
+</div>
+
+<div class="card red">
+  <div class="card-icon">❌</div>
+  <div class="card-title">FAIL чекпоинта</div>
+  <div class="card-when">Не сдал — низкий грустный тон</div>
+  <div class="card-tech">A2 → A1 descend, 1.2 sec</div>
+  <button class="play-btn" onclick="playFail()">Прослушать</button>
+</div>
+
+<div class="card purple">
+  <div class="card-icon">🔥</div>
+  <div class="card-title">Streak +1 день</div>
+  <div class="card-when">Когда юзер увеличил streak (огонёк)</div>
+  <div class="card-tech">Rising 600→1400Hz, sine, 700ms</div>
+  <button class="play-btn" onclick="playStreak()">Прослушать</button>
+</div>
+
+<div class="card purple">
+  <div class="card-icon">⭐</div>
+  <div class="card-title">Level up (юзер)</div>
+  <div class="card-when">Когда юзер набрал XP для нового уровня</div>
+  <div class="card-tech">C-E-G-C ascending, brighter, 1.2 sec</div>
+  <button class="play-btn" onclick="playLevelUp()">Прослушать</button>
+</div>
+
+</div>
+
+<div class="section-title">🎙 ГОЛОСОВЫЕ И LISTEN</div>
+
+<div class="grid">
+
+<div class="card">
+  <div class="card-icon">🎤</div>
+  <div class="card-title">Старт записи (VOICE)</div>
+  <div class="card-when">Когда юзер нажал микрофон в VOICE-раунде</div>
+  <div class="card-tech">Rising blip, 200→400Hz, 150ms</div>
+  <button class="play-btn" onclick="playRecStart()">Прослушать</button>
+</div>
+
+<div class="card">
+  <div class="card-icon">⏹</div>
+  <div class="card-title">Конец записи</div>
+  <div class="card-when">Когда STT завершил распознавание</div>
+  <div class="card-tech">Falling blip, 400→200Hz, 150ms</div>
+  <button class="play-btn" onclick="playRecStop()">Прослушать</button>
+</div>
+
+<div class="card">
+  <div class="card-icon">🔊</div>
+  <div class="card-title">Listen раунд — звонок</div>
+  <div class="card-when">Перед воспроизведением аудио в LISTEN</div>
+  <div class="card-tech">Single 800Hz beep, 300ms</div>
+  <button class="play-btn" onclick="playListenCue()">Прослушать</button>
+</div>
+
+</div>
+
+<div class="controls">
+  <button class="btn-secondary" onclick="playAll()">▶ Прослушать всё подряд</button>
+  <button class="btn-secondary" onclick="setVolume(0.3)">🔉 Тише</button>
+  <button class="btn-secondary" onclick="setVolume(0.7)">🔊 Обычная громкость</button>
+</div>
+
+<div style="max-width: 800px; margin: 50px auto 0; padding: 20px; background: var(--surface); border-radius: 12px; font-size: 13px; color: var(--text-dim); line-height: 1.6;">
+  <strong style="color: var(--text);">💡 Что произойдёт в реальном приложении:</strong>
+  <ul>
+    <li>Эти звуки будут <strong>профессиональные WAV-семплы</strong> (не синтез)</li>
+    <li>Все можно отключить в Settings одним переключателем</li>
+    <li>Звук + <strong>haptic vibration</strong> синхронизированы (для tactile feedback)</li>
+    <li>В режиме «без звука» (Silent Mode) — приложение тоже молчит, как и должно</li>
+    <li>Громкость подстраивается под media volume устройства</li>
+  </ul>
+</div>
+
+<script>
+let ctx = null;
+let volume = 0.5;
+
+function getCtx() {
+  if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+  return ctx;
+}
+function setVolume(v) { volume = v; }
+
+function tone(freq, duration, type='sine', when=0, gain=1) {
+  const c = getCtx();
+  const osc = c.createOscillator();
+  const g = c.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  osc.connect(g);
+  g.connect(c.destination);
+  const t = c.currentTime + when;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(volume * gain, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, t + duration);
+  osc.start(t);
+  osc.stop(t + duration + 0.1);
+}
+
+function sweep(fromHz, toHz, duration, type='sine', gain=1) {
+  const c = getCtx();
+  const osc = c.createOscillator();
+  const g = c.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(fromHz, c.currentTime);
+  osc.frequency.linearRampToValueAtTime(toHz, c.currentTime + duration);
+  osc.connect(g);
+  g.connect(c.destination);
+  g.gain.setValueAtTime(0, c.currentTime);
+  g.gain.linearRampToValueAtTime(volume * gain, c.currentTime + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+  osc.start();
+  osc.stop(c.currentTime + duration + 0.1);
+}
+
+function playCorrect() {
+  tone(784, 0.15, 'sine', 0, 0.8);   // G5
+  tone(1047, 0.25, 'sine', 0.05, 0.6); // C6
+}
+
+function playWrong() {
+  const c = getCtx();
+  const osc = c.createOscillator();
+  const filter = c.createBiquadFilter();
+  const g = c.createGain();
+  filter.type = 'lowpass';
+  filter.frequency.value = 400;
+  osc.type = 'sine';
+  osc.frequency.value = 110;
+  osc.connect(filter);
+  filter.connect(g);
+  g.connect(c.destination);
+  g.gain.setValueAtTime(0, c.currentTime);
+  g.gain.linearRampToValueAtTime(volume * 0.8, c.currentTime + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.25);
+  osc.start();
+  osc.stop(c.currentTime + 0.35);
+}
+
+function playXp() {
+  tone(523, 0.1, 'sawtooth', 0, 0.4);    // C5
+  tone(659, 0.1, 'sawtooth', 0.08, 0.4); // E5
+  tone(784, 0.15, 'sawtooth', 0.16, 0.4); // G5
+}
+
+function playTransition() {
+  sweep(400, 800, 0.2, 'sine', 0.5);
+}
+
+function playTap() {
+  tone(1200, 0.05, 'sine', 0, 0.4);
+}
+
+function playPage() {
+  sweep(600, 200, 0.3, 'triangle', 0.4);
+}
+
+function playFanfare() {
+  // C-E-G-C major fanfare (kid-friendly, не пафосная)
+  tone(523, 0.15, 'triangle', 0, 0.6);     // C5
+  tone(659, 0.15, 'triangle', 0.15, 0.6);  // E5
+  tone(784, 0.15, 'triangle', 0.30, 0.6);  // G5
+  tone(1047, 0.6, 'triangle', 0.45, 0.7);  // C6 longer
+  // overlay G+C for chord at end
+  tone(784, 0.6, 'triangle', 0.45, 0.4);
+}
+
+function playSilver() {
+  tone(523, 0.12, 'sine', 0, 0.5);
+  tone(659, 0.12, 'sine', 0.1, 0.5);
+  tone(784, 0.4, 'sine', 0.2, 0.5);
+}
+
+function playBronze() {
+  tone(523, 0.6, 'sine', 0, 0.5);
+  tone(659, 0.6, 'sine', 0, 0.3);
+  tone(784, 0.6, 'sine', 0, 0.2);
+}
+
+function playFail() {
+  sweep(220, 110, 1.0, 'sine', 0.6);
+}
+
+function playStreak() {
+  sweep(600, 1400, 0.7, 'sine', 0.6);
+}
+
+function playLevelUp() {
+  tone(523, 0.12, 'sine', 0, 0.6);
+  tone(659, 0.12, 'sine', 0.12, 0.6);
+  tone(784, 0.12, 'sine', 0.24, 0.6);
+  tone(1047, 0.6, 'sine', 0.36, 0.7);
+  // Sparkle on top
+  tone(2093, 0.3, 'sine', 0.4, 0.3);
+}
+
+function playRecStart() {
+  sweep(200, 400, 0.15, 'sine', 0.5);
+}
+
+function playRecStop() {
+  sweep(400, 200, 0.15, 'sine', 0.5);
+}
+
+function playListenCue() {
+  tone(800, 0.3, 'sine', 0, 0.6);
+}
+
+async function playAll() {
+  const sequence = [
+    ['Тап', playTap, 300],
+    ['Переход', playTransition, 500],
+    ['Правильный', playCorrect, 600],
+    ['XP', playXp, 700],
+    ['Неправильный', playWrong, 800],
+    ['Streak', playStreak, 1200],
+    ['Level up', playLevelUp, 1800],
+    ['Bronze', playBronze, 1500],
+    ['Silver', playSilver, 1500],
+    ['Gold', playFanfare, 2500],
+    ['Fail', playFail, 1500],
+    ['Запись', playRecStart, 400],
+    ['Стоп', playRecStop, 400],
+  ];
+  for (const [name, fn, gap] of sequence) {
+    fn();
+    await new Promise(r => setTimeout(r, gap));
+  }
+}
+</script>
+
+</body></html>
