@@ -94,6 +94,8 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version = "21.3.0" }
+google-play-app-update = { group = "com.google.android.play", name = "app-update", version = "2.1.0" }
+google-play-app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version = "2.1.0" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric-ktx", version.ref = "biometric" }
 
 [plugins]

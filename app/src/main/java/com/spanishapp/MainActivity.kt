@@ -56,6 +56,7 @@ class MainActivity : FragmentActivity() {
     @Inject lateinit var appLockManager: AppLockManager
     @Inject lateinit var appPreferences: AppPreferences
     @Inject lateinit var onboardingPrefs: OnboardingPrefs
+    @Inject lateinit var appUpdateChecker: com.spanishapp.service.AppUpdateChecker
 
     /**
      * Применяем выбранный пользователем язык UI ДО создания UI.
@@ -166,6 +167,24 @@ class MainActivity : FragmentActivity() {
                             // Сейчас юзер сразу попадает на главный экран, как было
                             // до v1.22.25.
                             SpanishAppRoot(widgetTarget = widgetTarget)
+
+                            // v1.22.30: плашка «доступно обновление» (минимальная).
+                            // Запрос в Play Store делается в onResume() — здесь
+                            // только показываем диалог если результат пришёл.
+                            val updateState by appUpdateChecker.updateInfo
+                                .collectAsStateWithLifecycle()
+                            val available =
+                                updateState as? com.spanishapp.service.AppUpdateChecker.UpdateState.Available
+                            if (available != null) {
+                                com.spanishapp.ui.components.UpdatePromptDialog(
+                                    availableVersion = available.availableVersion,
+                                    onLater = { appUpdateChecker.dismissForSession() },
+                                    onUpdate = {
+                                        appUpdateChecker.startFlexibleUpdate(this@MainActivity, available.info)
+                                        appUpdateChecker.dismissForSession()
+                                    },
+                                )
+                            }
                         } else {
                             FirstLaunchLoadingOverlay()
                         }
@@ -185,6 +204,17 @@ class MainActivity : FragmentActivity() {
         if (!isChangingConfigurations) {
             appLockManager.lock()
         }
+    }
+
+    /**
+     * v1.22.30: проверка Play Store на наличие обновления.
+     * Триггерим в onResume, потому что юзер мог вернуться после
+     * долгого отсутствия — версия в Play могла обновиться. Идемпотентно.
+     * В debug-сборке возвращает NoUpdate без сетевого запроса.
+     */
+    override fun onResume() {
+        super.onResume()
+        runCatching { appUpdateChecker.checkForUpdate() }
     }
 }
 

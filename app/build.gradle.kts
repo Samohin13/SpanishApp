@@ -244,6 +244,10 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
     implementation(libs.google.play.services.auth)
+    // v1.22.30: in-app update prompt — лёгкая плашка «обновить до версии X»
+    // на старте приложения когда в Play Store есть новая версия.
+    implementation(libs.google.play.app.update)
+    implementation(libs.google.play.app.update.ktx)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
