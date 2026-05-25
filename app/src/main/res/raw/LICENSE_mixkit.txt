@@ -1,0 +1,28 @@
+Sound effects in this folder (snd_*.mp3) sourced from Mixkit
+(https://mixkit.co/free-sound-effects/).
+
+License: Mixkit Sound Effects Free License
+(https://mixkit.co/license/#sfxFree)
+
+Summary:
+- Free for commercial and non-commercial projects
+- No attribution required
+- Cannot be redistributed standalone or resold
+- Embedded in compiled app = OK
+
+Selected sounds (mixkit ID → semantic name):
+2870 → snd_correct      Correct answer tone
+946  → snd_wrong        Wrong answer fail notification
+952  → snd_xp           Correct answer reward
+166  → snd_transition   Fast small sweep transition
+2573 → snd_tap          Interface option select
+1107 → snd_page         Page forward single chime
+2015 → snd_gold         Winning chimes
+951  → snd_silver       Positive notification
+3109 → snd_bronze       Relaxing bell chime
+2024 → snd_fail         Losing piano
+938  → snd_streak       Uplifting bells notification
+600  → snd_levelup      Achievement bell
+2867 → snd_rec_start    Confirmation tone
+911  → snd_rec_stop     Interface hint notification
+3108 → snd_listen       Crystal chime
