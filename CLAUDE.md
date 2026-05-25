@@ -158,16 +158,16 @@ ProfileScreen теперь **кликабельны** → открывают н�
 - Грамматический трекинг (GrammarScreen)
 
 ### Игры
-- **8 экранов** в `ui/games/`:
+- **6 мини-игр** в `ui/games/` (хаб: GamesScreen):
   1. ArticlesGameScreen — артикли el/la/un/una (100 уровней через `GameLevelManager`)
   2. SpeedGameScreen — на скорость
   3. SopaGameScreen — поиск слов
   4. PalabraMaestraScreen — палач
   5. MathGameScreen — испанские числа
   6. CrosswordGameScreen — кроссворд (100 уровней + zoom/pan)
-  7. VerbTrainingScreen — тренажёр глаголов
-  8. LibrosScreen / LibroReadScreen — книги
-- Хаб: GamesScreen
+- Отдельные модули (не «игры» по UX, хотя живут в `ui/games/`):
+  - VerbTrainingScreen — тренажёр спряжения (1327 глаголов)
+  - LibrosScreen / LibroReadScreen — 100 рассказов (книги/чтение)
 
 ### Theory cards
 - **16** теория-карточек в `TheoryContentData.kt` (не 10 как раньше писали)
