@@ -144,7 +144,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">📖</div>
   <div class="card-title">Открытие theory card</div>
   <div class="card-when">Когда юзер открывает «Прочитать теорию»</div>
-  <div class="card-tech">Mixkit 1107 «Page forward single chime» (1с, 56K)</div>
+  <div class="card-tech">Mixkit 586 «Attention bell ding» (1с, 52K)</div>
   <button class="play-btn" onclick="playPage()">Прослушать</button>
 </div>
 
@@ -220,7 +220,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">⏹</div>
   <div class="card-title">Конец записи</div>
   <div class="card-when">Когда STT завершил распознавание</div>
-  <div class="card-tech">Mixkit 911 «Interface hint» (1с, 52K)</div>
+  <div class="card-tech">Mixkit 2575 «Software interface back» (1с, 44K)</div>
   <button class="play-btn" onclick="playRecStop()">Прослушать</button>
 </div>
 
@@ -288,6 +288,7 @@ function playStreak()     { playFile('streak'); }
 function playLevelUp()    { playFile('levelup'); }
 function playRecStart()   { playFile('rec_start'); }
 function playRecStop()    { playFile('rec_stop'); }
+function playListenCue()  { playFile('listen'); }
 
 async function playAll() {
   const sequence = [
