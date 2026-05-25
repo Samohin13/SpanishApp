@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>Polish + Billing PRO — мокапы</title>
+<style>
+:root {
+  --bg: #0A0B0D;
+  --phone: #18191C;
+  --surface: #1F2125;
+  --surface-2: #2A2D33;
+  --primary: #FF6B1A;
+  --primary-2: #ff8533;
+  --gold: #F4B400;
+  --silver: #C0C0C0;
+  --green: #2EB872;
+  --red: #E54848;
+  --purple: #A78BFA;
+  --text: #F5F5F7;
+  --text-dim: #8E8E93;
+  --border: rgba(255,255,255,0.08);
+}
+* { box-sizing: border-box; -webkit-font-smoothing: antialiased; font-family: 'Inter', -apple-system, sans-serif; }
+body { margin: 0; background: var(--bg); color: var(--text); padding: 40px 16px 80px; }
+h1 { font-size: 32px; text-align: center; margin: 0 0 8px; font-weight: 800; }
+.subtitle { text-align: center; color: var(--text-dim); font-size: 14px; margin-bottom: 50px; }
+h2 { font-size: 24px; margin: 60px 0 30px; padding: 12px 20px; border-left: 4px solid var(--primary); background: linear-gradient(90deg, rgba(255,107,26,0.1) 0%, transparent 100%); }
+h3 { font-size: 16px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.2px; margin: 0 0 14px; font-weight: 700; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 40px;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+.frame { display: flex; flex-direction: column; align-items: center; }
+.label { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.phone {
+  width: 340px; height: 720px; background: var(--phone); border-radius: 40px; overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 2px #1c1c1e, 0 0 0 10px #2a2a2e, 0 0 0 11px #3a3a3e;
+  position: relative; display: flex; flex-direction: column;
+}
+.notch { width: 110px; height: 26px; background: #000; border-radius: 0 0 14px 14px; margin: 0 auto; }
+.status { display: flex; justify-content: space-between; padding: 8px 18px; font-size: 12px; color: var(--text); font-weight: 600; }
+
+/* === POLISH animations === */
+.btn-press {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  padding: 16px 32px; border-radius: 14px;
+  color: white; font-weight: 800; font-size: 15px;
+  display: inline-block;
+  box-shadow: 0 8px 20px rgba(255,107,26,0.4);
+  transform: scale(0.95);
+  position: relative;
+}
+.btn-press::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0; border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transform: translate(-50%, -50%);
+  animation: ripple 0.6s ease-out;
+}
+@keyframes ripple { to { width: 300px; height: 300px; opacity: 0; } }
+
+.correct-bubble {
+  background: linear-gradient(135deg, #2EB872, #34D399);
+  padding: 20px; border-radius: 18px; color: white;
+  font-weight: 800; font-size: 16px; text-align: center;
+  position: relative; box-shadow: 0 10px 28px rgba(46,184,114,0.4);
+}
+.correct-bubble::before {
+  content: '✓'; position: absolute; left: 16px; top: 50%;
+  transform: translateY(-50%) scale(0);
+  display: inline-block; width: 30px; height: 30px;
+  background: white; color: #2EB872; border-radius: 50%;
+  font-size: 20px; line-height: 30px;
+  animation: pop-in 0.4s 0.1s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes pop-in { to { transform: translateY(-50%) scale(1); } }
+.wave-eq {
+  display: flex; gap: 4px; align-items: end; height: 30px; justify-content: center;
+}
+.wave-eq span {
+  width: 4px; background: var(--primary); border-radius: 2px;
+  animation: wave 1.2s ease-in-out infinite;
+}
+.wave-eq span:nth-child(1) { height: 30%; animation-delay: 0s; }
+.wave-eq span:nth-child(2) { height: 70%; animation-delay: .1s; }
+.wave-eq span:nth-child(3) { height: 100%; animation-delay: .2s; }
+.wave-eq span:nth-child(4) { height: 70%; animation-delay: .3s; }
+.wave-eq span:nth-child(5) { height: 30%; animation-delay: .4s; }
+@keyframes wave { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(0.4); } }
+
+.confetti { position: relative; height: 60px; }
+.confetti i {
+  position: absolute; width: 10px; height: 14px;
+  animation: fall 2s linear infinite;
+}
+.confetti i:nth-child(1) { left: 10%; background: var(--gold); animation-delay: 0s; transform: rotate(15deg); }
+.confetti i:nth-child(2) { left: 30%; background: var(--red); animation-delay: 0.3s; transform: rotate(-25deg); }
+.confetti i:nth-child(3) { left: 50%; background: var(--primary); animation-delay: 0.1s; transform: rotate(45deg); }
+.confetti i:nth-child(4) { left: 70%; background: var(--green); animation-delay: 0.5s; transform: rotate(-15deg); }
+.confetti i:nth-child(5) { left: 90%; background: var(--purple); animation-delay: 0.2s; transform: rotate(30deg); }
+@keyframes fall { to { transform: translateY(60px) rotate(360deg); opacity: 0; } }
+
+.sound-icon { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--surface); border-radius: 22px; font-size: 13px; }
+.sound-icon::before { content: '🔊'; font-size: 18px; }
+
+/* === BILLING === */
+.paywall-card {
+  background: linear-gradient(180deg, #1c1d22 0%, #18191c 100%);
+  border: 2px solid var(--primary);
+  border-radius: 20px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.paywall-card::before {
+  content: 'PRO'; position: absolute; top: 12px; right: 14px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: white; padding: 4px 12px; border-radius: 8px;
+  font-size: 11px; font-weight: 800; letter-spacing: 1px;
+}
+.price-big { font-size: 36px; font-weight: 900; color: var(--primary); margin: 6px 0; }
+.price-period { font-size: 12px; color: var(--text-dim); }
+.feature-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px; }
+.feature-row::before { content: '✓'; color: var(--green); font-weight: 800; }
+.feature-row.locked::before { content: '🔒'; color: var(--text-dim); }
+.feature-row.locked { color: var(--text-dim); text-decoration: line-through; }
+
+.compare-table { width: 100%; font-size: 12px; }
+.compare-table th { font-size: 10px; color: var(--text-dim); text-transform: uppercase; padding: 6px 4px; text-align: left; }
+.compare-table td { padding: 8px 4px; border-bottom: 1px solid var(--border); }
+.compare-table .yes { color: var(--green); font-weight: 700; }
+.compare-table .no { color: var(--text-dim); }
+.compare-table .pro-col { background: rgba(255,107,26,0.06); }
+
+.lock-overlay {
+  position: relative;
+  filter: blur(2px);
+  opacity: 0.6;
+}
+.lock-overlay::after {
+  content: '🔒'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 48px; background: rgba(0,0,0,0.4); border-radius: inherit;
+  filter: none;
+}
+
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+.btn-cta {
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: white; font-weight: 800; font-size: 15px;
+  padding: 14px; border-radius: 14px; text-align: center; cursor: pointer;
+}
+.btn-cta-secondary {
+  background: transparent; color: var(--text); border: 1px solid var(--border);
+  padding: 12px; border-radius: 12px; text-align: center; font-size: 13px;
+}
+
+.scene-content { flex: 1; padding: 16px; overflow-y: auto; }
+</style>
+</head>
+<body>
+
+<h1>🎨 Polish + 💎 Billing PRO</h1>
+<p class="subtitle">Как это будет выглядеть в приложении</p>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     POLISH — Анимации и звуки UI
+     ═══════════════════════════════════════════════════════════════ -->
+
+<h2>🎨 Polish — Анимации и звуки (1-2 дня)</h2>
+
+<div class="grid">
+
+<!-- Слайд 1: Press-scale + ripple -->
+<div class="frame">
+  <div class="label">1. Press-scale + ripple на кнопках</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>20:42</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="display: flex; flex-direction: column; gap: 24px; padding-top: 80px;">
+      <h3 style="text-align: center;">Реакция на нажатие</h3>
+      <div style="text-align: center; padding: 30px 20px; background: var(--surface); border-radius: 16px;">
+        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">Сейчас:</div>
+        <div style="background: var(--primary); padding: 16px 32px; border-radius: 14px; color: white; font-weight: 800; font-size: 15px;">КНОПКА</div>
+        <div style="font-size: 11px; color: var(--text-dim); margin-top: 10px;">статичная, без отзыва</div>
+      </div>
+      <div style="text-align: center; padding: 30px 20px; background: var(--surface); border-radius: 16px; position: relative;">
+        <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">После polish:</div>
+        <div class="btn-press">КНОПКА</div>
+        <div style="font-size: 11px; color: var(--text-dim); margin-top: 10px;">scale 0.95 + ripple + haptic</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Слайд 2: Correct answer animation -->
+<div class="frame">
+  <div class="label">2. Зелёный «✓» pop-in на правильный ответ</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>20:43</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="display: flex; flex-direction: column; gap: 18px; padding-top: 60px;">
+      <h3 style="text-align: center;">Правильный ответ</h3>
+      <div style="font-size: 13px; color: var(--text-dim); text-align: center;">Вопрос: «¿Cómo te llamas?»</div>
+      <div style="background: rgba(255,107,26,0.08); border: 1.5px solid var(--primary); padding: 14px 16px; border-radius: 12px;">Me llamo Andrea</div>
+      <div class="correct-bubble" style="padding-left: 56px;">Правильно! +5 XP</div>
+      <div style="text-align: center; font-size: 11px; color: var(--text-dim);">
+        <strong>+ звук:</strong> мягкий «дзынь» (соль мажор)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Слайд 3: Wave EQ для микрофона -->
+<div class="frame">
+  <div class="label">3. Wave-equalizer на VOICE-раунде</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>20:44</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="display: flex; flex-direction: column; gap: 18px; padding-top: 60px;">
+      <h3 style="text-align: center;">Слушаю...</h3>
+      <div style="font-size: 13px; color: var(--text-dim); text-align: center;">Произнеси: «Decime la verdad»</div>
+      <div style="text-align: center; padding: 40px 20px; background: var(--surface); border-radius: 16px;">
+        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), var(--primary-2)); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 8px 24px rgba(255,107,26,0.4);">🎤</div>
+        <div class="wave-eq">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div style="text-align: center; font-size: 11px; color: var(--text-dim);">
+        Палочки реагируют на громкость голоса
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Слайд 4: Confetti на gold -->
+<div class="frame">
+  <div class="label">4. Конфетти на 🥇 GOLD tier чекпоинта</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>20:45</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="display: flex; flex-direction: column; gap: 18px; padding-top: 30px; position: relative; overflow: hidden;">
+      <div class="confetti"><i></i><i></i><i></i><i></i><i></i></div>
+      <div style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, rgba(244,180,0,0.15), rgba(255,107,26,0.1)); border-radius: 20px; border: 1px solid var(--gold);">
+        <div style="font-size: 64px;">🥇</div>
+        <div style="font-size: 28px; font-weight: 900; color: var(--gold); margin: 8px 0;">GOLD!</div>
+        <div style="font-size: 13px; color: var(--text-dim);">«Один день в Мадриде»</div>
+        <div style="font-size: 14px; margin-top: 12px; color: var(--text);">100% · +400 XP</div>
+      </div>
+      <div class="confetti"><i></i><i></i><i></i><i></i><i></i></div>
+      <div style="text-align: center; font-size: 11px; color: var(--text-dim);">
+        <strong>+ звук:</strong> fanfare 2 сек (восходящая мелодия)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Слайд 5: Звуки UI -->
+<div class="frame">
+  <div class="label">5. Карта звуков (sound design)</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>20:46</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="padding: 60px 20px 20px;">
+      <h3 style="text-align: left;">Sound design</h3>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface); border-radius: 10px;">
+          <span style="font-size: 13px;">✓ Правильный</span>
+          <div class="sound-icon">«дзынь» мажор</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface); border-radius: 10px;">
+          <span style="font-size: 13px;">✗ Неправильный</span>
+          <div class="sound-icon" style="background: rgba(229,72,72,0.1);">мягкий «бум»</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface); border-radius: 10px;">
+          <span style="font-size: 13px;">🎉 +XP</span>
+          <div class="sound-icon">«звон монет»</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface); border-radius: 10px;">
+          <span style="font-size: 13px;">⏭ Переход</span>
+          <div class="sound-icon">«свист» 0.2с</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface); border-radius: 10px;">
+          <span style="font-size: 13px;">🥇 Gold</span>
+          <div class="sound-icon">«fanfare» 2с</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface); border-radius: 10px;">
+          <span style="font-size: 13px;">🔔 Streak</span>
+          <div class="sound-icon">«огонёк» 1с</div>
+        </div>
+      </div>
+      <div style="font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 20px;">
+        Все звуки можно выключить в Settings
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Слайд 6: Card transitions -->
+<div class="frame">
+  <div class="label">6. Slide-переходы между раундами</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>20:47</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="padding: 60px 20px 20px;">
+      <h3 style="text-align: left;">Раунд 4 → 5</h3>
+      <div style="position: relative; height: 280px; margin-top: 20px;">
+        <div style="position: absolute; left: -30px; top: 20px; right: 30px; padding: 20px; background: var(--surface); border-radius: 16px; opacity: 0.4; transform: scale(0.92);">
+          <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 8px;">РАУНД 4</div>
+          <div style="font-size: 14px;">¿Cómo te llamas?</div>
+        </div>
+        <div style="position: absolute; left: 0; top: 0; right: 0; padding: 24px; background: linear-gradient(135deg, var(--surface), var(--surface-2)); border-radius: 16px; border: 1.5px solid var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+          <div style="font-size: 11px; color: var(--primary); margin-bottom: 8px;">РАУНД 5</div>
+          <div style="font-size: 16px; font-weight: 700;">¿De dónde eres?</div>
+          <div style="font-size: 12px; color: var(--text-dim); margin-top: 12px;">Откуда ты?</div>
+        </div>
+      </div>
+      <div style="text-align: center; font-size: 11px; color: var(--text-dim); margin-top: 20px;">
+        Старая карточка уходит влево + fade<br>Новая въезжает справа + scale up
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BILLING PRO
+     ═══════════════════════════════════════════════════════════════ -->
+
+<h2>💎 Google Play Billing — PRO подписка (1.5 недели)</h2>
+
+<div class="grid">
+
+<!-- Билинг 1: Paywall с триалом -->
+<div class="frame">
+  <div class="label">1. Paywall — главный экран продажи</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>21:00</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="padding: 50px 16px 16px;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="font-size: 48px;">💎</div>
+        <div style="font-size: 22px; font-weight: 900; color: var(--primary); margin: 4px 0;">ESPEAK PRO</div>
+        <div style="font-size: 12px; color: var(--text-dim);">Полный курс до B2 без ограничений</div>
+      </div>
+
+      <div class="paywall-card">
+        <div style="font-size: 12px; color: var(--text-dim);">Лучшее предложение</div>
+        <div style="display: flex; align-items: baseline; gap: 8px;">
+          <div class="price-big">€34.99</div>
+          <div class="price-period">/ год</div>
+        </div>
+        <div style="font-size: 12px; color: var(--text-dim); text-decoration: line-through;">€59.88 (отдельно по месяцам)</div>
+        <div style="font-size: 11px; color: var(--green); font-weight: 700; margin-top: 4px;">−42% economy</div>
+        <div class="divider"></div>
+        <div class="feature-row">A2 + B1 + B2 (180 уроков)</div>
+        <div class="feature-row">Чекпоинты CP5-CP16</div>
+        <div class="feature-row">AI Chat безлимит</div>
+        <div class="feature-row">Все 100 уровней игр</div>
+        <div class="feature-row">75 рассказов B-уровня</div>
+      </div>
+
+      <div style="margin-top: 14px; padding: 12px; background: var(--surface); border-radius: 10px;">
+        <div style="font-size: 13px; font-weight: 700;">€4.99 / месяц</div>
+        <div style="font-size: 11px; color: var(--text-dim);">или вариант с гибкостью</div>
+      </div>
+
+      <div style="margin-top: 18px;" class="btn-cta">7 дней бесплатно, затем €34.99/год</div>
+      <div style="font-size: 10px; color: var(--text-dim); text-align: center; margin-top: 10px;">Отменить можно в Google Play в любой момент</div>
+    </div>
+  </div>
+</div>
+
+<!-- Билинг 2: Free vs PRO сравнение -->
+<div class="frame">
+  <div class="label">2. Сравнение Free vs PRO</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>21:01</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="padding: 50px 16px 16px;">
+      <h3 style="text-align: center;">Что входит</h3>
+      <table class="compare-table" style="margin-top: 14px;">
+        <thead>
+          <tr><th></th><th>FREE</th><th class="pro-col">PRO 💎</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A1 уроки (60шт)</td><td class="yes">✓</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>A2/B1/B2 (180шт)</td><td class="no">×</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>Чекпоинты A1 (1-4)</td><td class="yes">✓</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>Чекпоинты A2+ (5-16)</td><td class="no">×</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>AI Chat</td><td>50/день</td><td class="yes pro-col">∞</td></tr>
+          <tr><td>Игры (10 уровней)</td><td class="yes">✓</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>Игры (100 уровней)</td><td class="no">×</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>Радио</td><td class="yes">✓</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>Словарь 10K слов</td><td class="yes">✓</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>Произношение (STT)</td><td class="yes">✓</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>Mini-tests</td><td>Только A1</td><td class="yes pro-col">Все</td></tr>
+          <tr><td>Push от NPC</td><td class="yes">✓</td><td class="yes pro-col">✓</td></tr>
+          <tr><td>Без рекламы</td><td class="yes">✓</td><td class="yes pro-col">✓</td></tr>
+        </tbody>
+      </table>
+      <div class="btn-cta" style="margin-top: 16px;">Купить PRO</div>
+    </div>
+  </div>
+</div>
+
+<!-- Билинг 3: Lock на чекпоинте A2+ -->
+<div class="frame">
+  <div class="label">3. Блок на платном чекпоинте</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>21:02</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="position: relative; padding: 0;">
+      <div style="height: 200px; background: linear-gradient(180deg, rgba(255,107,26,0.2), transparent), url('https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600') center/cover; position: relative;">
+        <div style="position: absolute; bottom: 16px; left: 16px;">
+          <div style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; display: inline-block;">A2 PRO</div>
+          <div style="font-size: 22px; font-weight: 800; color: white; margin-top: 6px;">У врача</div>
+        </div>
+      </div>
+      <div style="padding: 20px 16px;">
+        <div style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, rgba(255,107,26,0.1), rgba(244,180,0,0.05)); border: 1.5px solid var(--primary); border-radius: 16px;">
+          <div style="font-size: 48px;">🔒</div>
+          <div style="font-size: 16px; font-weight: 800; color: var(--primary); margin: 8px 0;">Контент уровня A2</div>
+          <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">Открой PRO чтобы продолжить путь до B2</div>
+          <div class="btn-cta" style="margin-bottom: 8px;">7 дней бесплатно — Попробовать</div>
+          <div class="btn-cta-secondary">Вернуться к A1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Билинг 4: Trial countdown -->
+<div class="frame">
+  <div class="label">4. Trial — обратный отсчёт</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>21:03</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="padding: 50px 16px 16px;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800;">⏱ Trial PRO активен</div>
+        <div style="font-size: 36px; font-weight: 900; margin: 8px 0;">5 дней</div>
+        <div style="font-size: 13px; color: var(--text-dim);">до конца бесплатного доступа</div>
+      </div>
+
+      <div style="background: var(--surface); border-radius: 14px; padding: 18px; margin-bottom: 16px;">
+        <div style="font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Что ты использовал в trial</div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px;">
+          <span>Уроки A2/B1</span><span style="color: var(--primary); font-weight: 700;">8 шт</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px;">
+          <span>AI Chat сообщения</span><span style="color: var(--primary); font-weight: 700;">87</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px;">
+          <span>Чекпоинт CP5</span><span style="color: var(--green); font-weight: 700;">✓ сдан</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px;">
+          <span>Уровни B1 в играх</span><span style="color: var(--primary); font-weight: 700;">17</span>
+        </div>
+      </div>
+
+      <div class="btn-cta" style="margin-bottom: 10px;">Продолжить PRO за €34.99/год</div>
+      <div class="btn-cta-secondary">Отменить и вернуться на FREE</div>
+      <div style="font-size: 10px; color: var(--text-dim); text-align: center; margin-top: 12px;">Через 5 дней деньги спишутся автоматически</div>
+    </div>
+  </div>
+</div>
+
+<!-- Билинг 5: Restore purchases -->
+<div class="frame">
+  <div class="label">5. Восстановить покупки + Manage</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>21:04</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="padding: 50px 16px 16px;">
+      <h3 style="text-align: left;">Подписка</h3>
+
+      <div style="background: linear-gradient(135deg, var(--primary), var(--primary-2)); padding: 20px; border-radius: 16px; margin-top: 14px; color: white;">
+        <div style="font-size: 12px; opacity: 0.9;">Текущий план</div>
+        <div style="font-size: 22px; font-weight: 900;">PRO Annual</div>
+        <div style="font-size: 12px; opacity: 0.9; margin-top: 4px;">€34.99/год · до 12 ноября 2026</div>
+      </div>
+
+      <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 8px;">
+        <div class="btn-cta-secondary" style="text-align: left; padding: 14px;">
+          🔄 Восстановить покупки
+        </div>
+        <div class="btn-cta-secondary" style="text-align: left; padding: 14px;">
+          ⚙ Управление подпиской (Google Play)
+        </div>
+        <div class="btn-cta-secondary" style="text-align: left; padding: 14px;">
+          📊 История покупок
+        </div>
+        <div class="btn-cta-secondary" style="text-align: left; padding: 14px; color: var(--red);">
+          ✗ Отменить подписку
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; padding: 12px; background: var(--surface); border-radius: 10px; font-size: 11px; color: var(--text-dim);">
+        Все платежи проходят через Google Play. ESPEAK не хранит данные карт.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Билинг 6: Success после покупки -->
+<div class="frame">
+  <div class="label">6. Welcome PRO!</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status"><span>21:05</span><span>📶 🔋</span></div>
+    <div class="scene-content" style="padding: 80px 16px 16px; text-align: center;">
+      <div style="font-size: 72px; margin-bottom: 14px;">💎</div>
+      <div style="font-size: 24px; font-weight: 900; color: var(--primary);">Welcome to PRO!</div>
+      <div style="font-size: 13px; color: var(--text-dim); margin: 10px 0 30px;">Весь курс до B2 теперь открыт</div>
+
+      <div style="background: var(--surface); border-radius: 14px; padding: 18px; text-align: left; margin-bottom: 14px;">
+        <div style="font-size: 11px; color: var(--gold); text-transform: uppercase; font-weight: 800; margin-bottom: 10px;">Открылось 169 уроков</div>
+        <div class="feature-row">A2 модуль · 60 новых уроков</div>
+        <div class="feature-row">B1 модуль · 64 урока + Subjuntivo</div>
+        <div class="feature-row">B2 модуль · 70 уроков + Imp.Subj</div>
+        <div class="feature-row">15 чекпоинтов</div>
+      </div>
+
+      <div style="background: var(--surface); border-radius: 14px; padding: 18px; text-align: left;">
+        <div style="font-size: 11px; color: var(--gold); text-transform: uppercase; font-weight: 800; margin-bottom: 10px;">Дополнительно</div>
+        <div class="feature-row">AI Chat безлимит (был 50/день)</div>
+        <div class="feature-row">Все 100 уровней игр</div>
+        <div class="feature-row">75 рассказов</div>
+      </div>
+
+      <div class="btn-cta" style="margin-top: 18px;">Продолжить курс с A2.1 →</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div style="max-width: 900px; margin: 60px auto 0; padding: 24px; background: var(--surface); border-radius: 16px; border-left: 4px solid var(--primary);">
+  <h3 style="margin-bottom: 12px; color: var(--text);">⚖ Что обязательно по правилам Google Play</h3>
+  <ul style="font-size: 13px; color: var(--text-dim); line-height: 1.7;">
+    <li><strong>Trial period</strong> — 7 дней бесплатно (стандарт)</li>
+    <li><strong>Restore purchases</strong> кнопка (Google требует)</li>
+    <li><strong>Manage subscription</strong> ведёт в Google Play (не в свою систему)</li>
+    <li><strong>Privacy Policy</strong> + ссылка на Google Play Terms</li>
+    <li><strong>Возврат денег</strong> в первые 48 часов автоматический через Google</li>
+    <li><strong>Цены</strong> локальные — Google автоматически конвертирует (€4.99 → ₽450 → 2200₸ → 4.99€)</li>
+  </ul>
+</div>
+
+</body></html>
