@@ -47,6 +47,7 @@ fun LeaderboardScreen(
     vm: LeaderboardViewModel = hiltViewModel()
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+    val isMePro by vm.isMePro.collectAsStateWithLifecycle()
     var tab by remember { mutableStateOf(Tab.LOCAL) }
     var worldSegment by remember { mutableStateOf(WorldSegment.COUNTRIES) }
 
@@ -162,10 +163,11 @@ fun LeaderboardScreen(
             val effectiveTab = if (tab == Tab.LOCAL && data.countryTotal < MIN_LOCAL_USERS) Tab.WORLD else tab
 
             when (effectiveTab) {
-                Tab.LOCAL -> LocalView(data = data, state = state, onCountryPicker = { vm.showCountryPicker() }, onOptOut = { vm.optOut() })
+                Tab.LOCAL -> LocalView(data = data, state = state, isMePro = isMePro, onCountryPicker = { vm.showCountryPicker() }, onOptOut = { vm.optOut() })
                 Tab.WORLD -> WorldView(
                     data = data,
                     segment = worldSegment,
+                    isMePro = isMePro,
                     onSegmentChange = { worldSegment = it },
                     onOptOut = { vm.optOut() },
                 )
@@ -182,6 +184,7 @@ fun LeaderboardScreen(
 private fun LocalView(
     data: LeaderboardData,
     state: LeaderboardUiState,
+    isMePro: Boolean,
     onCountryPicker: () -> Unit,
     onOptOut: () -> Unit,
 ) {
@@ -241,6 +244,7 @@ private fun LocalView(
                         rightValue = entry.skillRating.toString(),
                         isMe = entry.uid == data.myUid,
                         flag = CountryNames.flagOf(entry.country),
+                        isPro = entry.uid == data.myUid && isMePro,
                     )
                 }
             }
@@ -370,6 +374,7 @@ private fun CountryChangePill(iso: String, onClick: () -> Unit) {
 private fun WorldView(
     data: LeaderboardData,
     segment: WorldSegment,
+    isMePro: Boolean,
     onSegmentChange: (WorldSegment) -> Unit,
     onOptOut: () -> Unit,
 ) {
@@ -436,6 +441,7 @@ private fun WorldView(
                                 rightValue = entry.skillRating.toString(),
                                 isMe = entry.uid == data.myUid,
                                 flag = CountryNames.flagOf(entry.country),
+                                isPro = entry.uid == data.myUid && isMePro,
                             )
                         }
                     }

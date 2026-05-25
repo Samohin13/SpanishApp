@@ -425,6 +425,10 @@ internal fun MemberRowNew(
     isMe: Boolean,
     medal: String? = null,
     flag: String? = null,
+    /** v1.23.0: корона 👑 справа от ника PRO-юзеров. Сейчас (Фаза 2) показывается
+     *  только для собственного ника. Для других юзеров появится в Фазе 5 после
+     *  интеграции Billing + Firestore sync поля isPro. */
+    isPro: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -463,14 +467,22 @@ internal fun MemberRowNew(
                 Text(medal, fontSize = 18.sp, modifier = Modifier.width(24.dp))
             }
             AvatarCircle(name = name, size = 30, fontSize = 14)
-            Text(
-                if (isMe) "$name (ты)" else name,
-                color = LbText,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
+            Row(
                 modifier = Modifier.weight(1f),
-                maxLines = 1,
-            )
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    if (isMe) "$name (ты)" else name,
+                    color = LbText,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                )
+                if (isPro) {
+                    Text("👑", fontSize = 11.sp)
+                }
+            }
             if (flag != null) {
                 Text(flag, fontSize = 14.sp)
             }

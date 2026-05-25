@@ -87,7 +87,14 @@ class ProfileViewModel @Inject constructor(
     private val dailyXpDao: com.spanishapp.data.db.dao.DailyXpDao,
     private val wodHistoryDao: com.spanishapp.data.db.dao.WodHistoryDao,
     private val radioListeningDao: com.spanishapp.radio.data.RadioListeningDao,
+    private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
 ) : ViewModel() {
+
+    /** v1.23.0: PRO state — для короны на аватаре, PRO-pill и promo-баннера. */
+    val subscription: StateFlow<com.spanishapp.service.SubscriptionState> =
+        subscriptionManager.state
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000),
+                com.spanishapp.service.SubscriptionState())
 
     /** Минуты прослушано радио (всё время). */
     val radioMinutes: StateFlow<Long> =
@@ -300,6 +307,7 @@ fun ProfileScreen(
     val recentWodWords by vm.recentWodWords.collectAsStateWithLifecycle()
     val wodTotalCount by vm.wodTotalCount.collectAsStateWithLifecycle()
     val radioMinutes by vm.radioMinutes.collectAsStateWithLifecycle()
+    val subscription by vm.subscription.collectAsStateWithLifecycle()
     val p = state.progress
     val context = LocalContext.current
 
@@ -392,13 +400,25 @@ fun ProfileScreen(
                         photoUrl = effectivePhotoUrl,
                         isPhotoUploading = isPhotoUploading,
                         league = league,
+                        isPro = subscription.isPro,
+                        proPlanLabel = subscription.planLabel,
+                        proExpiresAt = subscription.expiresAt,
                         onAvatarClick = {
                             photoPickerLauncher.launch(
                                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                             )
                         }
                     )
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(16.dp))
+                    // v1.23.0: promo-баннер только для free-юзеров (точка friction).
+                    if (!subscription.isPro) {
+                        ProfilePromoBanner(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            onClick = { navController.navigate("paywall") { launchSingleTop = true } }
+                        )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                    Spacer(Modifier.height(8.dp))
                 }
             }
 
@@ -620,6 +640,9 @@ private fun HeroBlock(
     photoUrl: String?,
     isPhotoUploading: Boolean,
     league: League,
+    isPro: Boolean = false,
+    proPlanLabel: String = "",
+    proExpiresAt: Long = 0L,
     onAvatarClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -690,12 +713,34 @@ private fun HeroBlock(
             }
         }
         Spacer(Modifier.height(14.dp))
-        Text(
-            name,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                name,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            // v1.23.0: PRO-pill справа от имени (только для PRO-юзеров).
+            if (isPro) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(99.dp))
+                        .background(
+                            Brush.linearGradient(listOf(Color(0xFFFF8A3D), Color(0xFFFFD27A)))
+                        )
+                        .padding(horizontal = 7.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        "👑 PRO",
+                        color = Color(0xFF1A1A22),
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 0.5.sp
+                    )
+                }
+            }
+        }
         Spacer(Modifier.height(8.dp))
         Surface(
             shape = RoundedCornerShape(20.dp),
@@ -708,6 +753,71 @@ private fun HeroBlock(
                 Text(league.emoji, fontSize = 14.sp)
                 Spacer(Modifier.width(6.dp))
                 Text(league.city, color = accent, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            }
+        }
+        // v1.23.0: под-плашка с датой окончания PRO.
+        if (isPro && proExpiresAt > 0L) {
+            Spacer(Modifier.height(6.dp))
+            val dateStr = remember(proExpiresAt) {
+                java.text.SimpleDateFormat("d MMMM yyyy",
+                    java.util.Locale("ru")).format(java.util.Date(proExpiresAt))
+            }
+            Text(
+                "✦ $proPlanLabel · до $dateStr",
+                color = Color(0xFFFFD27A),
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+}
+
+// v1.23.0: promo-баннер «Получи PRO» для free-юзеров.
+// Дизайн из docs/mockups/pro_indicators.html — экран 2 (Profile Free).
+@Composable
+private fun ProfilePromoBanner(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val primary = Color(0xFFFF8A3D)
+    val primary2 = Color(0xFFFF6A1A)
+    val gold = Color(0xFFFFD27A)
+    val textDim = Color(0xFF8E8E93)
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                Brush.linearGradient(listOf(Color(0xFF2D1F3E), Color(0xFF1F1626)))
+            )
+            .border(1.dp, primary.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 16.dp)
+    ) {
+        Column {
+            Text("✦ ESPEAK PRO", color = gold, fontSize = 9.sp,
+                fontWeight = FontWeight.ExtraBold, letterSpacing = 1.5.sp)
+            Spacer(Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Открой ", color = Color.White, fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold)
+                Text("весь", color = primary, fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold)
+                Text(" испанский", color = Color.White, fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold)
+            }
+            Spacer(Modifier.height(2.dp))
+            Text("A2 + B1 + B2 · 1327 глаголов · безлимит AI",
+                color = textDim, fontSize = 11.sp)
+            Spacer(Modifier.height(10.dp))
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(99.dp))
+                    .background(Brush.linearGradient(listOf(primary, primary2)))
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text("7 дней бесплатно →", color = Color.White,
+                    fontSize = 12.sp, fontWeight = FontWeight.ExtraBold)
             }
         }
     }

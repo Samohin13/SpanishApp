@@ -9,8 +9,10 @@ import com.spanishapp.data.repository.LeaderboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
@@ -34,10 +36,16 @@ class LeaderboardViewModel @Inject constructor(
     private val repo: LeaderboardRepository,
     private val userProgressDao: UserProgressDao,
     private val countryPrefs: CountryPreferences,
+    private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LeaderboardUiState(deviceCountry = "XX"))
     val state: StateFlow<LeaderboardUiState> = _state.asStateFlow()
+
+    /** v1.23.0: PRO-статус собственного юзера для короны 👑 в лидерборде.
+     *  Для других юзеров будет добавлен в Фазе 5 через Firestore. */
+    val isMePro: StateFlow<Boolean> = subscriptionManager.isProActive
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
         loadInitial()
