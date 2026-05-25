@@ -83,9 +83,10 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
 <p class="subtitle">Нажми на кнопку чтобы услышать каждый звук</p>
 
 <div class="warn">
-  <strong>💡 v2 — Премиум sound design:</strong> Многослойные колокольчики с гармониками,
-  pseudo-reverb tail, тёплые низкие фундаментальные. Стиль — Headspace / Linear / Apple iOS.
-  <br>Включи звук на устройстве. Может потребоваться один клик на странице перед первым воспроизведением (требование браузера).
+  <strong>💡 v3 — НАСТОЯЩИЕ CC0 семплы:</strong> Реальные WAV-файлы из библиотеки Kenney
+  Interface Sounds (creator: Kenney.nl, license: CC0, free for commercial use).
+  Это <em>финальные</em> звуки, которые будут в приложении (не синтез).
+  <br>Включи звук на устройстве.
 </div>
 
 <div class="section-title">🎮 ИГРОВЫЕ ОТВЕТЫ</div>
@@ -96,7 +97,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">✓</div>
   <div class="card-title">Правильный ответ</div>
   <div class="card-when">Когда юзер отвечает верно в любом упражнении</div>
-  <div class="card-tech">Vibraphone bell C5+E5+sub, reverb tail 1.2s</div>
+  <div class="card-tech">Kenney confirmation_001.wav (28KB)</div>
   <button class="play-btn" onclick="playCorrect()">Прослушать</button>
 </div>
 
@@ -104,7 +105,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">✗</div>
   <div class="card-title">Неправильный ответ</div>
   <div class="card-when">Мягкий «бум» при ошибке (не громкий, не давит)</div>
-  <div class="card-tech">Soft saw pad 220→165Hz descent, lowpass</div>
+  <div class="card-tech">Kenney error_004.wav (20KB)</div>
   <button class="play-btn" onclick="playWrong()">Прослушать</button>
 </div>
 
@@ -112,7 +113,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">💰</div>
   <div class="card-title">Получил XP</div>
   <div class="card-when">+5/+10/+25 XP — звон монет</div>
-  <div class="card-tech">4 bell cascade C-E-G-C, pentatonic sparkle</div>
+  <div class="card-tech">Kenney pluck_001.wav (20KB)</div>
   <button class="play-btn" onclick="playXp()">Прослушать</button>
 </div>
 
@@ -126,7 +127,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">⏭</div>
   <div class="card-title">Переход к раунду</div>
   <div class="card-when">Когда новый раунд появляется на экране</div>
-  <div class="card-tech">Filtered noise swoosh + soft bell 330Hz</div>
+  <div class="card-tech">Kenney switch_001.wav (108KB)</div>
   <button class="play-btn" onclick="playTransition()">Прослушать</button>
 </div>
 
@@ -134,7 +135,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">👆</div>
   <div class="card-title">Тап по кнопке</div>
   <div class="card-when">Лёгкий click на каждое нажатие primary-кнопок</div>
-  <div class="card-tech">Subtle bell 880Hz + sub thump 80Hz</div>
+  <div class="card-tech">Kenney click_001.wav (12KB)</div>
   <button class="play-btn" onclick="playTap()">Прослушать</button>
 </div>
 
@@ -142,7 +143,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">📖</div>
   <div class="card-title">Открытие theory card</div>
   <div class="card-when">Когда юзер открывает «Прочитать теорию»</div>
-  <div class="card-tech">Paper rustle + bell C5, warm</div>
+  <div class="card-tech">Kenney scratch_002.wav (16KB)</div>
   <button class="play-btn" onclick="playPage()">Прослушать</button>
 </div>
 
@@ -156,7 +157,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">🥇</div>
   <div class="card-title">GOLD чекпоинта</div>
   <div class="card-when">Прохождение на 95%+ — праздничная мелодия</div>
-  <div class="card-tech">Jazz progression Dm7→G7→Cmaj7 + sparkle 2.5s</div>
+  <div class="card-tech">Kenney bong_001.wav (12KB)</div>
   <button class="play-btn" onclick="playFanfare()">Прослушать</button>
 </div>
 
@@ -164,7 +165,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">🥈</div>
   <div class="card-title">SILVER чекпоинта</div>
   <div class="card-when">Прохождение на 80-94% — короткий восторг</div>
-  <div class="card-tech">Soft C-E-G arpeggio + sub, vibraphone</div>
+  <div class="card-tech">Kenney confirmation_002.wav (52KB)</div>
   <button class="play-btn" onclick="playSilver()">Прослушать</button>
 </div>
 
@@ -172,7 +173,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">🥉</div>
   <div class="card-title">BRONZE чекпоинта</div>
   <div class="card-when">Прошёл на 70-79% — спокойный аккорд</div>
-  <div class="card-tech">Warm C major (C4-E4-G4) sustained, reverb</div>
+  <div class="card-tech">Kenney confirmation_003.wav (28KB)</div>
   <button class="play-btn" onclick="playBronze()">Прослушать</button>
 </div>
 
@@ -180,7 +181,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">❌</div>
   <div class="card-title">FAIL чекпоинта</div>
   <div class="card-when">Не сдал — низкий грустный тон</div>
-  <div class="card-tech">C minor pad descend (C-Eb-G ↘), airy sad</div>
+  <div class="card-tech">Kenney glitch_004.wav (8KB)</div>
   <button class="play-btn" onclick="playFail()">Прослушать</button>
 </div>
 
@@ -188,7 +189,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">🔥</div>
   <div class="card-title">Streak +1 день</div>
   <div class="card-when">Когда юзер увеличил streak (огонёк)</div>
-  <div class="card-tech">Bell ladder G4-C5-G5-C6 + sparkle C7</div>
+  <div class="card-tech">Kenney glass_002.wav (12KB)</div>
   <button class="play-btn" onclick="playStreak()">Прослушать</button>
 </div>
 
@@ -196,7 +197,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">⭐</div>
   <div class="card-title">Level up (юзер)</div>
   <div class="card-when">Когда юзер набрал XP для нового уровня</div>
-  <div class="card-tech">Cmaj7 chord stack + melody + sparkle layer</div>
+  <div class="card-tech">Kenney maximize_001.wav (24KB)</div>
   <button class="play-btn" onclick="playLevelUp()">Прослушать</button>
 </div>
 
@@ -210,7 +211,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">🎤</div>
   <div class="card-title">Старт записи (VOICE)</div>
   <div class="card-when">Когда юзер нажал микрофон в VOICE-раунде</div>
-  <div class="card-tech">Soft bell E4 + sub thump</div>
+  <div class="card-tech">Kenney tick_002.wav (4KB)</div>
   <button class="play-btn" onclick="playRecStart()">Прослушать</button>
 </div>
 
@@ -218,7 +219,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">⏹</div>
   <div class="card-title">Конец записи</div>
   <div class="card-when">Когда STT завершил распознавание</div>
-  <div class="card-tech">Soft bell C4 + sub thump</div>
+  <div class="card-tech">Kenney tick_004.wav (8KB)</div>
   <button class="play-btn" onclick="playRecStop()">Прослушать</button>
 </div>
 
@@ -226,7 +227,7 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
   <div class="card-icon">🔊</div>
   <div class="card-title">Listen раунд — звонок</div>
   <div class="card-when">Перед воспроизведением аудио в LISTEN</div>
-  <div class="card-tech">Gentle bell C5+G5, warmth 0.4</div>
+  <div class="card-tech">Kenney scratch_002.wav (16KB)</div>
   <button class="play-btn" onclick="playListenCue()">Прослушать</button>
 </div>
 
@@ -251,329 +252,55 @@ h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 8px; }
 
 <script>
 /* ═════════════════════════════════════════════════════════════════
-   v2: PREMIUM SOUND DESIGN (Headspace / Linear / Apple iOS style)
+   v3: РЕАЛЬНЫЕ CC0 WAV-СЕМПЛЫ из Kenney Interface Sounds.
+   Лицензия: CC0 (Creative Commons Zero) — свободно для коммерции.
+   Source: https://kenney.nl/assets/interface-sounds
 
-   Принципы:
-   - Колокольчики с гармониками (3 oscillator: fundamental + 2nd + 3rd partial)
-   - Soft exp-attack (ramp 30-80ms, не резкий)
-   - Длинный exp-decay (reverb tail 800-2000ms)
-   - Низкие фундаментальные (300-700Hz, не 1200+ beeps)
-   - Lowpass filter для smooth tone (срезает harsh harmonics)
-   - Pseudo-reverb через DelayNode + feedback
+   Файлы лежат в app/src/main/res/raw/ — те же что Android будет
+   воспроизводить через MediaPlayer. То что ты слышишь здесь = то
+   что будет в приложении.
    ═════════════════════════════════════════════════════════════════ */
 
-let ctx = null;
-let volume = 0.5;
-let masterReverb = null;
-
-function getCtx() {
-  if (!ctx) {
-    ctx = new (window.AudioContext || window.webkitAudioContext)();
-    // Build master reverb bus (delay-based pseudo-reverb).
-    masterReverb = buildReverbBus(ctx);
-  }
-  return ctx;
-}
+let volume = 0.7;
 function setVolume(v) { volume = v; }
 
-/** Pseudo-reverb: parallel delays with feedback + lowpass tail. */
-function buildReverbBus(c) {
-  const input = c.createGain();
-  const output = c.createGain();
-  output.connect(c.destination);
+const RAW = '../../app/src/main/res/raw/';
 
-  // 3 параллельных delay-line с разным временем
-  [0.07, 0.13, 0.23].forEach(time => {
-    const delay = c.createDelay();
-    delay.delayTime.value = time;
-    const fb = c.createGain();
-    fb.gain.value = 0.55;
-    const lp = c.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.value = 2400;
-    input.connect(delay);
-    delay.connect(lp);
-    lp.connect(fb);
-    fb.connect(delay); // feedback loop
-    lp.connect(output);
-  });
-  return { input, output };
+function playFile(name) {
+  const audio = new Audio(RAW + 'snd_' + name + '.wav');
+  audio.volume = volume;
+  audio.play().catch(e => console.warn('Audio play failed:', e.message));
+  return audio;
 }
 
-/**
- * Premium bell — fundamental + 2nd + 3rd partial + lowpass + reverb send.
- * @param freq fundamental Hz
- * @param dur duration in seconds (attack+decay)
- * @param when offset in seconds
- * @param gain 0..1
- * @param warmth 0..1 (how much lowpass — 0=bright, 1=warm)
- */
-function bell(freq, dur, when=0, gain=0.7, warmth=0.5) {
-  const c = getCtx();
-  const t = c.currentTime + when;
-  const g = c.createGain();
-  const lp = c.createBiquadFilter();
-  lp.type = 'lowpass';
-  lp.frequency.value = 1200 + (1 - warmth) * 4800;
-  lp.Q.value = 1.2;
-
-  // 3 partial oscillators (fundamental + 2x + 3x, slightly detuned для warmth)
-  [1, 2.01, 3.02].forEach((mult, i) => {
-    const osc = c.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.value = freq * mult;
-    const partialG = c.createGain();
-    partialG.gain.value = [1.0, 0.45, 0.18][i];
-    osc.connect(partialG);
-    partialG.connect(lp);
-    osc.start(t);
-    osc.stop(t + dur + 0.5);
-  });
-
-  lp.connect(g);
-  g.connect(c.destination);
-  // Send to reverb bus
-  const send = c.createGain();
-  send.gain.value = 0.35;
-  g.connect(send);
-  send.connect(masterReverb.input);
-
-  // Soft ADSR — attack 30ms, exp decay long tail
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(volume * gain, t + 0.03);
-  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-}
-
-/** Filtered noise burst — для swoosh/transition. */
-function noiseSwoosh(dur=0.25, when=0, gain=0.5, freqStart=4000, freqEnd=800) {
-  const c = getCtx();
-  const t = c.currentTime + when;
-  const bufSize = Math.floor(c.sampleRate * dur);
-  const buf = c.createBuffer(1, bufSize, c.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < bufSize; i++) data[i] = (Math.random() - 0.5) * 0.8;
-  const src = c.createBufferSource();
-  src.buffer = buf;
-  const filter = c.createBiquadFilter();
-  filter.type = 'bandpass';
-  filter.Q.value = 4;
-  filter.frequency.setValueAtTime(freqStart, t);
-  filter.frequency.exponentialRampToValueAtTime(freqEnd, t + dur);
-  const g = c.createGain();
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(volume * gain, t + 0.02);
-  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-  src.connect(filter);
-  filter.connect(g);
-  g.connect(c.destination);
-  g.connect(masterReverb.input);
-  src.start(t);
-}
-
-/** Sub bump — низкая мягкая нота для "оснований" премиум-звуков. */
-function sub(freq, dur, when=0, gain=0.4) {
-  const c = getCtx();
-  const t = c.currentTime + when;
-  const osc = c.createOscillator();
-  osc.type = 'sine';
-  osc.frequency.value = freq;
-  const g = c.createGain();
-  osc.connect(g);
-  g.connect(c.destination);
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(volume * gain, t + 0.05);
-  g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-  osc.start(t);
-  osc.stop(t + dur + 0.1);
-}
-
-/* ── Воспроизведение каждого звука ────────────────────────── */
-
-function playCorrect() {
-  // Soft vibraphone-like chord: C5+E5 with sub bump
-  bell(523, 1.2, 0, 0.7, 0.4);    // C5
-  bell(659, 1.0, 0.04, 0.5, 0.4); // E5
-  sub(131, 0.4, 0, 0.3);          // C3 sub thump
-}
-
-function playWrong() {
-  // Soft pad descend, no "bonk" — like a gentle "оh well"
-  const c = getCtx();
-  const t = c.currentTime;
-  // Two slightly detuned saws с heavy lowpass для airy pad
-  [1, 0.998].forEach(detune => {
-    const osc = c.createOscillator();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(220 * detune, t);
-    osc.frequency.exponentialRampToValueAtTime(165 * detune, t + 0.6);
-    const lp = c.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.value = 600;
-    lp.Q.value = 2;
-    const g = c.createGain();
-    osc.connect(lp); lp.connect(g); g.connect(c.destination); g.connect(masterReverb.input);
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(volume * 0.25, t + 0.08);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
-    osc.start(t); osc.stop(t + 0.9);
-  });
-}
-
-function playXp() {
-  // Sparkly chime cascade — 4 notes pentatonic с реверб
-  [523, 659, 784, 1047].forEach((f, i) => {
-    bell(f, 1.0, i * 0.08, 0.55 - i * 0.05, 0.3);
-  });
-}
-
-function playTransition() {
-  // Soft whoosh — filtered noise + low rise
-  noiseSwoosh(0.3, 0, 0.35, 3000, 600);
-  bell(330, 0.5, 0.05, 0.3, 0.7);
-}
-
-function playTap() {
-  // Subtle "klick" + tiny sub thump
-  bell(880, 0.18, 0, 0.5, 0.2);
-  sub(80, 0.06, 0, 0.3);
-}
-
-function playPage() {
-  // Paper rustle + soft bell at end
-  noiseSwoosh(0.35, 0, 0.3, 6000, 1200);
-  bell(523, 0.5, 0.15, 0.35, 0.6);
-}
-
-function playFanfare() {
-  // GOLD: full premium chord progression — Dm-G-C (jazz feel)
-  // First chord: Dm7 (D-F-A-C)
-  bell(294, 1.4, 0,    0.4, 0.4);  // D4
-  bell(349, 1.4, 0,    0.4, 0.4);  // F4
-  bell(440, 1.4, 0,    0.4, 0.4);  // A4
-  bell(523, 1.4, 0,    0.4, 0.4);  // C5
-  sub(73, 1.4, 0, 0.3);            // D2 sub
-
-  // Second chord: G7 (G-B-D-F)
-  bell(392, 1.6, 0.45, 0.45, 0.4);
-  bell(494, 1.6, 0.45, 0.45, 0.4);
-  bell(587, 1.6, 0.45, 0.45, 0.4);
-  bell(698, 1.6, 0.45, 0.45, 0.4);
-  sub(98, 1.6, 0.45, 0.3);
-
-  // Resolution C major (C-E-G-C) с sparkle
-  bell(523, 2.5, 0.95, 0.55, 0.3);
-  bell(659, 2.5, 0.95, 0.55, 0.3);
-  bell(784, 2.5, 0.95, 0.55, 0.3);
-  bell(1047, 2.5, 0.95, 0.55, 0.3);
-  sub(65, 2.5, 0.95, 0.35);
-  // Sparkle on top
-  bell(2093, 1.5, 1.1, 0.3, 0.1);
-  bell(2637, 1.5, 1.2, 0.25, 0.1);
-}
-
-function playSilver() {
-  // Soft arpeggio C-E-G with light reverb
-  bell(523, 1.0, 0,    0.5, 0.45);
-  bell(659, 1.0, 0.1,  0.5, 0.45);
-  bell(784, 1.4, 0.2,  0.55, 0.4);
-  sub(131, 1.4, 0, 0.25);
-}
-
-function playBronze() {
-  // Warm C major chord, sustained
-  bell(262, 1.6, 0, 0.4, 0.6);     // C4
-  bell(330, 1.6, 0, 0.4, 0.6);     // E4
-  bell(392, 1.8, 0, 0.4, 0.6);     // G4
-  sub(65, 1.5, 0, 0.3);
-}
-
-function playFail() {
-  // Sad pad descend C minor → none
-  const c = getCtx();
-  const t = c.currentTime;
-  [262, 311, 392].forEach((f, i) => { // C-Eb-G minor
-    [1, 1.005].forEach(detune => {
-      const osc = c.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(f * detune, t);
-      osc.frequency.exponentialRampToValueAtTime(f * detune * 0.85, t + 1.4);
-      const lp = c.createBiquadFilter();
-      lp.type = 'lowpass';
-      lp.frequency.value = 1000;
-      const g = c.createGain();
-      osc.connect(lp); lp.connect(g); g.connect(c.destination); g.connect(masterReverb.input);
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(volume * 0.2, t + 0.15);
-      g.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
-      osc.start(t); osc.stop(t + 1.8);
-    });
-  });
-  sub(65, 1.4, 0, 0.4);
-}
-
-function playStreak() {
-  // Warm rising bell с shimmer — типа "огонёк ожил"
-  bell(392, 1.5, 0, 0.5, 0.4);     // G4
-  bell(523, 1.5, 0.15, 0.5, 0.4);  // C5
-  bell(784, 1.5, 0.3, 0.5, 0.3);   // G5
-  bell(1047, 1.5, 0.45, 0.4, 0.2); // C6
-  // Sparkles
-  bell(1568, 1.0, 0.6, 0.3, 0.1);  // G6
-  bell(2093, 0.8, 0.7, 0.25, 0.1); // C7
-  sub(98, 1.5, 0, 0.25);
-}
-
-function playLevelUp() {
-  // Premium "achievement" — full chord stack with sparkle
-  // C major 7th (C-E-G-B) с layered sparkle
-  bell(262, 2.0, 0,    0.5, 0.5);
-  bell(330, 2.0, 0,    0.5, 0.5);
-  bell(392, 2.0, 0,    0.5, 0.5);
-  bell(494, 2.0, 0,    0.5, 0.5);
-  sub(65, 2.0, 0, 0.35);
-
-  // Melody on top — G→C→E
-  bell(784, 1.5, 0.25, 0.55, 0.3);
-  bell(1047, 1.5, 0.5, 0.55, 0.3);
-  bell(1319, 1.8, 0.75, 0.55, 0.3);
-
-  // Sparkles
-  [2093, 2637, 3136].forEach((f, i) => {
-    bell(f, 1.0, 0.6 + i*0.1, 0.3, 0.1);
-  });
-}
-
-function playRecStart() {
-  // Soft pulse — два слоя
-  bell(330, 0.4, 0, 0.5, 0.4);
-  sub(82, 0.2, 0, 0.3);
-}
-
-function playRecStop() {
-  // Pulse down
-  bell(262, 0.4, 0, 0.5, 0.4);
-  sub(65, 0.2, 0, 0.3);
-}
-
-function playListenCue() {
-  // Gentle bell с warmth
-  bell(523, 0.8, 0, 0.6, 0.4);
-  bell(784, 0.6, 0.06, 0.4, 0.4);
-}
+function playCorrect()    { playFile('correct'); }
+function playWrong()      { playFile('wrong'); }
+function playXp()         { playFile('xp'); }
+function playTransition() { playFile('transition'); }
+function playTap()        { playFile('tap'); }
+function playPage()       { playFile('page'); }
+function playFanfare()    { playFile('gold'); }
+function playSilver()     { playFile('silver'); }
+function playBronze()     { playFile('bronze'); }
+function playFail()       { playFile('fail'); }
+function playStreak()     { playFile('streak'); }
+function playLevelUp()    { playFile('levelup'); }
+function playRecStart()   { playFile('rec_start'); }
+function playRecStop()    { playFile('rec_stop'); }
 
 async function playAll() {
   const sequence = [
     ['Тап', playTap, 300],
-    ['Переход', playTransition, 500],
-    ['Правильный', playCorrect, 600],
+    ['Переход', playTransition, 600],
+    ['Правильный', playCorrect, 800],
     ['XP', playXp, 700],
     ['Неправильный', playWrong, 800],
-    ['Streak', playStreak, 1200],
-    ['Level up', playLevelUp, 1800],
-    ['Bronze', playBronze, 1500],
-    ['Silver', playSilver, 1500],
-    ['Gold', playFanfare, 2500],
-    ['Fail', playFail, 1500],
+    ['Streak', playStreak, 1000],
+    ['Level up', playLevelUp, 1200],
+    ['Bronze', playBronze, 1000],
+    ['Silver', playSilver, 1000],
+    ['Gold', playFanfare, 1500],
+    ['Fail', playFail, 1200],
     ['Запись', playRecStart, 400],
     ['Стоп', playRecStop, 400],
   ];
