@@ -80,7 +80,12 @@ class HomeViewModel @Inject constructor(
     private val xpTracker: com.spanishapp.service.XpTracker,
     private val miniTestPreferences: com.spanishapp.data.prefs.MiniTestPreferences,
     private val uiSound: com.spanishapp.service.UiSoundPlayer,
+    private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
 ) : ViewModel() {
+
+    /** v1.23.0: PRO state — для показа/скрытия pro-bento promo-карточки. */
+    val isPro: StateFlow<Boolean> = subscriptionManager.isProActive
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     /** Snapshot of mini-test ids the user has passed. Drives ✅ badges in
      * the lesson list (CourseDetailScreen). */

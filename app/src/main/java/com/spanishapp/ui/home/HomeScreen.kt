@@ -139,6 +139,7 @@ fun HomeScreen(
     val recentWords   by viewModel.recentWords.collectAsStateWithLifecycle()
     val weeklyMinutes by viewModel.weeklyMinutes.collectAsStateWithLifecycle()
     val dailyGoals    by viewModel.dailyGoals.collectAsStateWithLifecycle()
+    val isPro         by viewModel.isPro.collectAsStateWithLifecycle()
     val tts = rememberSpanishTts()
     val scope = rememberCoroutineScope()
 
@@ -300,6 +301,24 @@ fun HomeScreen(
             // Карточка-приглашение «Радио на испанском» убрана в v1.11.0 —
             // радио доступно через 5-ю иконку в BottomBar, отдельная featured
             // карточка дублировала навигацию и шумела главный экран.
+
+            // ── PRO promo bento (только для FREE-юзеров) ──────────────
+            // По docs/mockups/pro_indicators.html — экран 4. Не показываем
+            // PRO-юзерам (нет смысла), не показываем над hero (не агрессивно).
+            // Размещаем между BentoRow и StreakHeatmap — естественная точка
+            // когда юзер уже видел свой прогресс.
+            if (!isPro) {
+                item {
+                    StaggeredEntrance(index = 5) {
+                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                            HomeProBento(onClick = {
+                                navController.navigate("paywall") { launchSingleTop = true }
+                            })
+                            Spacer(Modifier.height(12.dp))
+                        }
+                    }
+                }
+            }
 
             // ── Streak heatmap ─────────────────────────────────
             item {
@@ -2690,5 +2709,107 @@ private fun MiniTestRow(
                 }
             }
         }
+    }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  v1.23.0: PRO promo bento card.
+//  Дизайн из docs/mockups/pro_indicators.html — экран 4.
+//  Тёмный фон с radial-gradient orange-glow в углу, оранжевая
+//  рамка, заголовок «Открой 180 уроков A2 · B1 · B2», под ним
+//  прогресс-бар «A1: 25%» и стрелка → в углу.
+// ════════════════════════════════════════════════════════════
+@Composable
+private fun HomeProBento(onClick: () -> Unit) {
+    val primary = androidx.compose.ui.graphics.Color(0xFFFF8A3D)
+    val gold = androidx.compose.ui.graphics.Color(0xFFFFD27A)
+    val textDim = androidx.compose.ui.graphics.Color(0xFF8E8E93)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
+            .background(
+                androidx.compose.ui.graphics.Brush.linearGradient(
+                    listOf(
+                        androidx.compose.ui.graphics.Color(0xFF1F1A28),
+                        androidx.compose.ui.graphics.Color(0xFF14141A),
+                    )
+                )
+            )
+            .border(
+                width = 1.dp,
+                color = primary.copy(alpha = 0.3f),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+            )
+            .clickable(onClick = onClick)
+            .padding(16.dp)
+    ) {
+        Column {
+            Text(
+                "✦ ESPEAK PRO",
+                color = gold,
+                fontSize = 9.sp,
+                fontWeight = FontWeight.ExtraBold,
+                letterSpacing = 1.5.sp,
+            )
+            Spacer(Modifier.height(6.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Открой ", color = androidx.compose.ui.graphics.Color.White,
+                    fontSize = 17.sp, fontWeight = FontWeight.Black)
+                Text("180 уроков", color = primary,
+                    fontSize = 17.sp, fontWeight = FontWeight.Black)
+            }
+            Text(
+                "A2 · B1 · B2",
+                color = androidx.compose.ui.graphics.Color.White,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Black,
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                "+ грамматика, 1327 глаголов, безлимит AI",
+                color = textDim,
+                fontSize = 11.sp,
+                modifier = Modifier.padding(end = 22.dp),
+            )
+            Spacer(Modifier.height(10.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text("A1", color = textDim, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(4.dp)
+                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(2.dp))
+                        .background(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.08f))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.25f)
+                            .fillMaxHeight()
+                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(2.dp))
+                            .background(
+                                androidx.compose.ui.graphics.Brush.horizontalGradient(
+                                    listOf(primary, gold)
+                                )
+                            )
+                    )
+                }
+                Text("B2", color = textDim, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+        // Стрелка → в правом нижнем углу
+        Text(
+            "→",
+            color = primary,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Black,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(4.dp),
+        )
     }
 }

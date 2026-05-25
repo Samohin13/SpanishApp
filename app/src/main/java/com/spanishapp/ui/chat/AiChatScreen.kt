@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
@@ -95,6 +96,7 @@ class AiChatViewModel @Inject constructor(
     private val limiter: com.spanishapp.service.AiChatLimiter,
     private val remoteTts: com.spanishapp.service.RemoteTtsService,
     private val authRepository: com.spanishapp.data.repository.AuthRepository,
+    private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
     @ApplicationContext private val appContext: Context,
     savedStateHandle: androidx.lifecycle.SavedStateHandle
 ) : ViewModel() {
@@ -102,6 +104,10 @@ class AiChatViewModel @Inject constructor(
     /** Сколько сообщений осталось до дневного лимита (50/день). */
     val remainingMessages: StateFlow<Int> = limiter.remainingToday
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.spanishapp.service.AiChatLimiter.DAILY_LIMIT)
+
+    /** v1.23.0: PRO → безлимит AI Chat. Для free показываем upsell когда 0/50. */
+    val isPro: StateFlow<Boolean> = subscriptionManager.isProActive
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     /** v1.18.38: выбранный фон чата (ChatWallpapers.id). */
     val wallpaperId: StateFlow<String> = authRepository.chatWallpaper
@@ -142,7 +148,8 @@ class AiChatViewModel @Inject constructor(
             // Дневной лимит — 50 сообщений / день. Защита и для юзера
             // (от случайного перерасхода) и для общего ключа Gemini
             // (от выжирания дневной квоты одним юзером).
-            if (limiter.isExhausted()) {
+            // v1.23.0: PRO-юзеры обходят лимит (безлимит AI — часть подписки).
+            if (!isPro.value && limiter.isExhausted()) {
                 _error.value = "Достигнут дневной лимит ${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT} сообщений. " +
                         "Лимит обновится завтра."
                 _isSending.value = false
@@ -313,6 +320,7 @@ fun AiChatScreen(
     val wallpaperId    by vm.wallpaperId.collectAsStateWithLifecycle()
     val voiceAmplitude by vm.voiceAmplitude.collectAsStateWithLifecycle()
     val remaining      by vm.remainingMessages.collectAsStateWithLifecycle()
+    val isPro          by vm.isPro.collectAsStateWithLifecycle()
     val wallpaper = com.spanishapp.domain.chat.ChatWallpapers.byId(wallpaperId)
 
     var input by remember { mutableStateOf("") }
@@ -389,12 +397,14 @@ fun AiChatScreen(
                                 fontWeight = FontWeight.Bold,
                             )
                             val limitColor = when {
+                                isPro          -> Color(0xFFFF8A3D)
                                 remaining > 20 -> MaterialTheme.colorScheme.primary
                                 remaining > 5  -> Color(0xFFFFA000)
                                 else           -> Color(0xFFE53935)
                             }
                             Text(
-                                "Осталось $remaining/${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT} сообщений сегодня",
+                                if (isPro) "∞ безлимит · PRO"
+                                else "Осталось $remaining/${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT} сообщений сегодня",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = limitColor,
                                 fontWeight = FontWeight.SemiBold,
@@ -436,22 +446,30 @@ fun AiChatScreen(
             )
         },
         bottomBar = {
-            ChatInputBar(
-                input = input,
-                onInputChange = { input = it },
-                onSend = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    vm.send(input)
-                    input = ""
-                },
-                onMicClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    launchVoiceInput()
-                },
-                isSending = isSending,
-                isListening = isListening,
-                voiceAmplitude = voiceAmplitude,
-            )
+            // v1.23.0: если free-юзер исчерпал 50/день — вместо input
+            // показываем upsell-карточку (paywall_indicators.html экран 6).
+            if (!isPro && remaining <= 0) {
+                AiChatUpsellCard(onClick = {
+                    navController.navigate("paywall") { launchSingleTop = true }
+                })
+            } else {
+                ChatInputBar(
+                    input = input,
+                    onInputChange = { input = it },
+                    onSend = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        vm.send(input)
+                        input = ""
+                    },
+                    onMicClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        launchVoiceInput()
+                    },
+                    isSending = isSending,
+                    isListening = isListening,
+                    voiceAmplitude = voiceAmplitude,
+                )
+            }
         },
     ) { padding ->
         ChatWallpaperBackground(
@@ -1184,3 +1202,81 @@ private fun VoiceWaveform(
     }
 }
 
+
+// ════════════════════════════════════════════════════════════
+//  v1.23.0: AI Chat Upsell — заменяет input при 0/50.
+//  Дизайн из docs/mockups/pro_indicators.html — экран 6.
+// ════════════════════════════════════════════════════════════
+@Composable
+private fun AiChatUpsellCard(onClick: () -> Unit) {
+    val primary = Color(0xFFFF8A3D)
+    val primary2 = Color(0xFFFF6A1A)
+    val gold = Color(0xFFFFD27A)
+    val textDim = Color(0xFF8E8E93)
+    androidx.compose.material3.Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .imePadding(),
+        color = Color(0xFF0E0E12),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
+                .background(
+                    androidx.compose.ui.graphics.Brush.verticalGradient(
+                        listOf(Color(0xFF1F1A28), Color(0xFF14141A))
+                    )
+                )
+                .border(
+                    width = 1.dp,
+                    color = primary.copy(alpha = 0.3f),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+                )
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 18.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("🤖✨", fontSize = 32.sp)
+                Spacer(Modifier.height(6.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Получи ", color = Color.White,
+                        fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                    Text("безлимит", color = primary,
+                        fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                    Text(" AI-репетитора", color = Color.White,
+                        fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)
+                }
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "С PRO — задавай сколько хочешь, без сбросов и таймеров.",
+                    color = textDim,
+                    fontSize = 11.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
+                Spacer(Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(99.dp))
+                        .background(
+                            androidx.compose.ui.graphics.Brush.linearGradient(
+                                listOf(primary, primary2)
+                            )
+                        )
+                        .padding(horizontal = 24.dp, vertical = 12.dp),
+                ) {
+                    Text("7 дней бесплатно →", color = Color.White,
+                        fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
+                }
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "потом \$34.99/год · отмена в Google Play",
+                    color = textDim,
+                    fontSize = 10.sp,
+                )
+            }
+        }
+    }
+}
