@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="UTF-8"><title>ESPEAK PRO — индикаторы и реклама на экранах</title>
+<style>
+  :root {
+    --bg: #0E0E12;
+    --surface: #1A1A20;
+    --surface-2: #22222A;
+    --border: #2C2C36;
+    --text: #ECECEC;
+    --text-dim: #8E8E93;
+    --primary: #FF8A3D;
+    --primary-2: #FF6A1A;
+    --a1: #FFC371;
+    --a2: #4EA1FF;
+    --b1: #4ADE80;
+    --b2: #F472B6;
+    --gold: #FFD27A;
+    --good: #4ADE80;
+    --danger: #EF4444;
+  }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body { margin: 0; padding: 40px 20px 80px; font-family: -apple-system, BlinkMacSystemFont,
+    'SF Pro Display', 'Segoe UI', Roboto, sans-serif; background: #050507; color: #fff; }
+
+  .page-title { text-align: center; font-size: 30px; font-weight: 900; margin-bottom: 6px; }
+  .page-title span { color: var(--primary); }
+  .page-sub { text-align: center; color: #777; margin-bottom: 50px; font-size: 13px; max-width: 700px;
+    margin-left: auto; margin-right: auto; line-height: 1.5; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 50px 30px;
+    max-width: 1400px; margin: 0 auto; justify-items: center; }
+  @media (max-width: 1300px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
+
+  .variant { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--primary);
+    font-weight: 800; }
+  .variant-name { font-size: 17px; font-weight: 800; }
+  .variant-desc { font-size: 11px; color: #888; text-align: center; max-width: 350px; line-height: 1.5; }
+
+  .phone { width: 360px; height: 760px; background: #000; border-radius: 44px; padding: 11px;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05); position: relative; }
+  .notch { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 110px;
+    height: 26px; background: #000; border-radius: 0 0 18px 18px; z-index: 10; }
+  .screen { width: 100%; height: 100%; border-radius: 35px; overflow: hidden; overflow-y: auto;
+    background: var(--bg); padding: 48px 14px 14px; }
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* === Общий "PRO crown" — единая стилистика === */
+  .pro-crown { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px;
+    background: linear-gradient(135deg, var(--primary), var(--gold)); color: #1A1A22;
+    border-radius: 99px; font-size: 9px; font-weight: 900; letter-spacing: 0.5px;
+    box-shadow: 0 0 8px rgba(255,138,61,0.4); }
+  .pro-crown-outline { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px;
+    border: 1px solid var(--primary); color: var(--primary); border-radius: 99px;
+    font-size: 9px; font-weight: 800; letter-spacing: 0.5px; }
+
+  /* === COMMON компоненты === */
+  .card { background: var(--surface); border-radius: 18px; padding: 14px; margin-bottom: 10px; }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .top-title { font-size: 16px; font-weight: 800; }
+
+  /* === SCREEN 1: PROFILE PRO (свой) === */
+  .prof-hero { background: linear-gradient(160deg, rgba(255,138,61,0.18), rgba(255,210,122,0.06)),
+    var(--surface); border-radius: 22px; padding: 18px 16px; margin-bottom: 12px;
+    border: 1px solid rgba(255,138,61,0.25); position: relative; overflow: hidden; }
+  .prof-hero::after { content: '✦'; position: absolute; top: 16px; right: 20px;
+    color: var(--gold); opacity: 0.4; font-size: 11px; }
+  .prof-row { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #C026D3);
+    display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900;
+    color: #fff; flex-shrink: 0; position: relative; }
+  .avatar.pro::before { content: '👑'; position: absolute; top: -10px; right: -8px;
+    background: var(--gold); border-radius: 50%; padding: 3px 4px; font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  .prof-name { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+  .prof-level { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+  .prof-sub-pro { font-size: 11px; color: var(--gold); margin-top: 4px; }
+  .prof-sub-pro b { font-weight: 800; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+  .stat-mini { background: var(--surface); border-radius: 14px; padding: 10px; text-align: center; }
+  .stat-mini-num { font-size: 18px; font-weight: 900; color: var(--primary); }
+  .stat-mini-lbl { font-size: 9px; color: var(--text-dim); margin-top: 2px; text-transform: uppercase; }
+
+  .section-h { font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase;
+    letter-spacing: 1px; margin: 14px 4px 8px; }
+
+  .sub-info { display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(160deg, rgba(255,138,61,0.10), rgba(255,210,122,0.03));
+    border: 1px solid rgba(255,138,61,0.2); border-radius: 14px; padding: 12px 14px; font-size: 12px; }
+  .sub-info b { color: var(--text); font-weight: 800; }
+  .sub-info .dim { color: var(--text-dim); font-size: 11px; }
+
+  /* === SCREEN 2: PROFILE FREE с promo === */
+  .promo-banner { background: linear-gradient(135deg, #2D1F3E 0%, #1F1626 100%);
+    border: 1px solid rgba(255,138,61,0.3); border-radius: 20px; padding: 16px 14px;
+    position: relative; overflow: hidden; cursor: pointer; }
+  .promo-banner::before { content: ''; position: absolute; top: -20px; right: -20px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,138,61,0.3), transparent 70%); }
+  .promo-tag { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; color: var(--gold);
+    text-transform: uppercase; }
+  .promo-title { font-size: 16px; font-weight: 800; margin: 4px 0 2px; }
+  .promo-title b { color: var(--primary); }
+  .promo-sub { font-size: 11px; color: var(--text-dim); }
+  .promo-cta { margin-top: 10px; display: inline-block; padding: 8px 16px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: #fff; border-radius: 99px; font-size: 12px; font-weight: 800;
+    box-shadow: 0 4px 12px rgba(255,138,61,0.3); }
+
+  /* === SCREEN 3: LEADERBOARD === */
+  .lead-tabs { display: flex; gap: 4px; background: var(--surface); border-radius: 12px;
+    padding: 3px; margin-bottom: 12px; }
+  .lead-tab { flex: 1; text-align: center; padding: 8px; font-size: 11px; font-weight: 700;
+    color: var(--text-dim); border-radius: 9px; }
+  .lead-tab.active { background: var(--primary); color: #fff; }
+
+  .lead-league { background: linear-gradient(135deg, #2D2A1F 0%, var(--surface) 100%);
+    border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px;
+    margin-bottom: 10px; text-align: center; }
+  .lead-league-name { font-size: 13px; font-weight: 800; }
+  .lead-league-sub { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .lead-league-sub b { color: var(--gold); }
+
+  .lead-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    background: var(--surface); border-radius: 12px; margin-bottom: 6px; font-size: 13px; }
+  .lead-row.me { background: linear-gradient(135deg, rgba(255,138,61,0.18), rgba(255,138,61,0.06));
+    border: 1px solid rgba(255,138,61,0.4); }
+  .lead-rank { width: 22px; font-weight: 900; text-align: center; color: var(--text-dim); font-size: 12px; }
+  .lead-rank.top1 { color: var(--gold); }
+  .lead-rank.top2 { color: #C0C0C0; }
+  .lead-rank.top3 { color: #CD7F32; }
+  .lead-av { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--a2), #7C3AED); }
+  .lead-name { flex: 1; display: flex; align-items: center; gap: 6px; font-weight: 700; }
+  .lead-pts { font-size: 12px; font-weight: 800; color: var(--primary); }
+  .lead-crown { font-size: 11px; }
+
+  /* === SCREEN 4: HOME with PRO promo bento === */
+  .home-hello { padding: 0 4px; margin-bottom: 14px; }
+  .home-hello-title { font-size: 16px; font-weight: 800; }
+  .home-hello-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+  .pro-bento { background:
+    radial-gradient(ellipse at top left, rgba(255,138,61,0.3), transparent 60%),
+    linear-gradient(135deg, #1F1A28 0%, #14141A 100%);
+    border: 1px solid rgba(255,138,61,0.3); border-radius: 20px; padding: 16px;
+    position: relative; overflow: hidden; cursor: pointer; }
+  .pro-bento::after { content: '→'; position: absolute; bottom: 14px; right: 16px;
+    color: var(--primary); font-size: 18px; font-weight: 900; }
+  .pro-bento-tag { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; color: var(--gold);
+    text-transform: uppercase; }
+  .pro-bento-title { font-size: 17px; font-weight: 900; margin: 6px 0 2px; line-height: 1.15; }
+  .pro-bento-title b { color: var(--primary); }
+  .pro-bento-sub { font-size: 11px; color: var(--text-dim); padding-right: 22px; }
+  .pro-bento-progress { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 10px;
+    color: var(--text-dim); }
+  .pro-bento-bar { flex: 1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .pro-bento-bar div { height: 100%; width: 25%; background: linear-gradient(90deg, var(--primary), var(--gold));
+    border-radius: 2px; }
+
+  .home-regular-card { background: var(--surface); border-radius: 18px; padding: 12px;
+    margin-top: 10px; display: flex; align-items: center; gap: 10px; }
+  .home-card-ico { width: 36px; height: 36px; border-radius: 10px; background: rgba(78,161,255,0.18);
+    display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .home-card-txt { flex: 1; }
+  .home-card-title { font-size: 13px; font-weight: 700; }
+  .home-card-sub { font-size: 10px; color: var(--text-dim); margin-top: 1px; }
+
+  /* === SCREEN 5: ROADMAP with locked lessons === */
+  .road-lvl-h { display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px; padding: 0 4px; }
+  .road-lvl-name { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+  .road-lvl-status { font-size: 10px; color: var(--good); }
+
+  .road-lesson { display: flex; align-items: center; gap: 12px; padding: 12px;
+    background: var(--surface); border-radius: 14px; margin-bottom: 6px; }
+  .road-lesson.locked { opacity: 0.65; position: relative; }
+  .road-lesson.locked::before { content: '🔒'; position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%); font-size: 14px; }
+  .road-lesson.locked .road-l-icon { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+  .road-num { width: 28px; height: 28px; border-radius: 8px; background: var(--good);
+    color: #000; font-weight: 900; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+  .road-lesson.locked .road-num { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+  .road-l-text { flex: 1; font-size: 13px; }
+  .road-l-text .dim { font-size: 10px; color: var(--text-dim); display: block; }
+
+  .road-locked-banner { background: linear-gradient(160deg, rgba(255,138,61,0.15), rgba(255,210,122,0.05));
+    border: 1.5px solid var(--primary); border-radius: 16px; padding: 14px; margin: 10px 0;
+    text-align: center; }
+  .road-banner-icon { font-size: 28px; }
+  .road-banner-title { font-size: 14px; font-weight: 800; margin: 4px 0 2px; }
+  .road-banner-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
+  .road-banner-cta { display: inline-block; padding: 10px 20px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #fff;
+    border-radius: 99px; font-size: 12px; font-weight: 800;
+    box-shadow: 0 4px 12px rgba(255,138,61,0.3); }
+
+  /* === SCREEN 6: AI CHAT limit === */
+  .chat-bubble { background: var(--surface); border-radius: 16px 16px 16px 4px;
+    padding: 12px 14px; max-width: 80%; font-size: 13px; margin-bottom: 10px;
+    line-height: 1.4; }
+  .chat-bubble.me { background: var(--primary); border-radius: 16px 16px 4px 16px;
+    align-self: flex-end; margin-left: auto; color: #fff; }
+  .chat-counter { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 12px; padding: 8px 12px; font-size: 11px; color: #FCA5A5; text-align: center;
+    font-weight: 700; margin-bottom: 12px; }
+  .chat-counter b { color: var(--danger); }
+
+  .chat-upsell { background:
+    radial-gradient(ellipse at top, rgba(255,138,61,0.2), transparent 60%),
+    linear-gradient(180deg, #1F1A28 0%, #14141A 100%);
+    border: 1px solid rgba(255,138,61,0.3); border-radius: 20px; padding: 18px 16px;
+    text-align: center; margin-top: 8px; }
+  .chat-upsell-ico { font-size: 36px; filter: drop-shadow(0 0 12px rgba(255,138,61,0.5)); }
+  .chat-upsell-title { font-size: 16px; font-weight: 800; margin: 8px 0 4px; }
+  .chat-upsell-title b { color: var(--primary); }
+  .chat-upsell-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.4; }
+  .chat-upsell-cta { display: inline-block; padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #fff;
+    border-radius: 99px; font-size: 13px; font-weight: 800;
+    box-shadow: 0 6px 16px rgba(255,138,61,0.35); }
+  .chat-upsell-small { font-size: 10px; color: var(--text-dim); margin-top: 8px; }
+
+  .chat-input { display: flex; gap: 6px; align-items: center; background: var(--surface);
+    border-radius: 99px; padding: 8px 12px; margin-top: 12px; opacity: 0.5; pointer-events: none; }
+  .chat-input input { flex: 1; background: transparent; border: none; color: var(--text-dim);
+    font-size: 13px; outline: none; }
+</style>
+</head>
+<body>
+
+<div class="page-title">👑 ESPEAK <span>PRO</span> — индикаторы и реклама по экранам</div>
+<div class="page-sub">
+  Где и как показываем PRO: значок 👑 на профиле и в лидерборде · ненавязчивые промо-карточки
+  на главной · locked-баннер в дорожной карте уроков · upsell когда юзер уперся в лимит AI-чата.<br>
+  <b>Единая стилистика:</b> градиент primary→gold для PRO-элементов, корона 👑 для пометок.
+</div>
+
+<div class="grid">
+
+  <!-- ============== 1. PROFILE PRO (свой) ============== -->
+  <div class="variant">
+    <div class="label">Экран 1</div>
+    <div class="variant-name">Profile · PRO активен</div>
+    <div class="variant-desc">Свой профиль с подпиской. Корона 👑 на аватаре, имя + PRO-pill, дата окончания, ссылка управления подпиской.</div>
+    <div class="phone"><div class="notch"></div><div class="screen">
+
+      <div class="top-bar">
+        <div class="top-title">Профиль</div>
+        <div style="color: var(--text-dim); font-size: 20px;">⚙</div>
+      </div>
+
+      <div class="prof-hero">
+        <div class="prof-row">
+          <div class="avatar pro">С</div>
+          <div>
+            <div class="prof-name">Сергей <span class="pro-crown">👑 PRO</span></div>
+            <div class="prof-level">Уровень 8 · Барселона лига</div>
+            <div class="prof-sub-pro">✦ <b>PRO Annual</b> · до 12 ноября 2026</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-mini"><div class="stat-mini-num">1247</div><div class="stat-mini-lbl">XP</div></div>
+        <div class="stat-mini"><div class="stat-mini-num">12</div><div class="stat-mini-lbl">Стрик</div></div>
+        <div class="stat-mini"><div class="stat-mini-num">2 184</div><div class="stat-mini-lbl">Рейтинг</div></div>
+      </div>
+
+      <div class="section-h">Подписка</div>
+      <div class="sub-info">
+        <div>
+          <div><b>PRO Annual</b></div>
+          <div class="dim">$34.99/год · до 12.11.2026</div>
+        </div>
+        <div style="color: var(--primary); font-size: 18px;">›</div>
+      </div>
+
+      <div class="section-h">Активность</div>
+      <div class="card" style="font-size: 12px; color: var(--text-dim);">
+        Эта неделя: 8 уроков, 142 минуты, 67 XP
+      </div>
+
+    </div></div>
+  </div>
+
+
+  <!-- ============== 2. PROFILE FREE с promo ============== -->
+  <div class="variant">
+    <div class="label">Экран 2</div>
+    <div class="variant-name">Profile · Free + promo</div>
+    <div class="variant-desc">Профиль без подписки. Вместо короны — promo-баннер «Получи PRO» под аватаром. Ненавязчивый, не лезет в лицо.</div>
+    <div class="phone"><div class="notch"></div><div class="screen">
+
+      <div class="top-bar">
+        <div class="top-title">Профиль</div>
+        <div style="color: var(--text-dim); font-size: 20px;">⚙</div>
+      </div>
+
+      <div class="card">
+        <div class="prof-row">
+          <div class="avatar">С</div>
+          <div>
+            <div class="prof-name">Сергей</div>
+            <div class="prof-level">Уровень 4 · Bilbao лига</div>
+            <div class="prof-sub-pro" style="color: var(--text-dim);">Free аккаунт</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-mini"><div class="stat-mini-num">387</div><div class="stat-mini-lbl">XP</div></div>
+        <div class="stat-mini"><div class="stat-mini-num">5</div><div class="stat-mini-lbl">Стрик</div></div>
+        <div class="stat-mini"><div class="stat-mini-num">624</div><div class="stat-mini-lbl">Рейтинг</div></div>
+      </div>
+
+      <div class="section-h">Премиум</div>
+      <div class="promo-banner">
+        <div class="promo-tag">✦ ESPEAK PRO</div>
+        <div class="promo-title">Открой <b>весь</b> испанский</div>
+        <div class="promo-sub">A2 + B1 + B2 · 1327 глаголов · безлимит AI</div>
+        <div class="promo-cta">7 дней бесплатно →</div>
+      </div>
+
+      <div class="section-h">Активность</div>
+      <div class="card" style="font-size: 12px; color: var(--text-dim);">
+        Эта неделя: 4 урока, 38 минут, 18 XP
+      </div>
+
+    </div></div>
+  </div>
+
+
+  <!-- ============== 3. LEADERBOARD ============== -->
+  <div class="variant">
+    <div class="label">Экран 3</div>
+    <div class="variant-name">Лидерборд · 👑 у PRO</div>
+    <div class="variant-desc">Корона 👑 справа от имени PRO-юзеров. Маленькая, не отвлекает. У free — пусто, без негативного «нет короны».</div>
+    <div class="phone"><div class="notch"></div><div class="screen">
+
+      <div class="top-bar">
+        <div class="top-title">🏆 Лидерборд</div>
+        <div style="color: var(--text-dim); font-size: 16px;">🔍</div>
+      </div>
+
+      <div class="lead-tabs">
+        <div class="lead-tab">Глобально</div>
+        <div class="lead-tab active">Лига</div>
+        <div class="lead-tab">Неделя</div>
+      </div>
+
+      <div class="lead-league">
+        <div class="lead-league-name">🥇 Барселона</div>
+        <div class="lead-league-sub">2100—2799 · твой ранг #5 · <b>топ 18%</b></div>
+      </div>
+
+      <div class="lead-row">
+        <div class="lead-rank top1">1</div>
+        <div class="lead-av" style="background: linear-gradient(135deg,#FBB,#F88);"></div>
+        <div class="lead-name">Анна П. <span class="lead-crown">👑</span></div>
+        <div class="lead-pts">2 791</div>
+      </div>
+      <div class="lead-row">
+        <div class="lead-rank top2">2</div>
+        <div class="lead-av" style="background: linear-gradient(135deg,#BBF,#88F);"></div>
+        <div class="lead-name">Дмитрий К. <span class="lead-crown">👑</span></div>
+        <div class="lead-pts">2 645</div>
+      </div>
+      <div class="lead-row">
+        <div class="lead-rank top3">3</div>
+        <div class="lead-av" style="background: linear-gradient(135deg,#BFB,#8F8);"></div>
+        <div class="lead-name">Olga R.</div>
+        <div class="lead-pts">2 412</div>
+      </div>
+      <div class="lead-row">
+        <div class="lead-rank">4</div>
+        <div class="lead-av" style="background: linear-gradient(135deg,#FFB,#FA8);"></div>
+        <div class="lead-name">Maria L. <span class="lead-crown">👑</span></div>
+        <div class="lead-pts">2 297</div>
+      </div>
+      <div class="lead-row me">
+        <div class="lead-rank">5</div>
+        <div class="lead-av"></div>
+        <div class="lead-name">Сергей <span style="font-size:9px; color: var(--text-dim);">(ты)</span></div>
+        <div class="lead-pts">2 184</div>
+      </div>
+      <div class="lead-row">
+        <div class="lead-rank">6</div>
+        <div class="lead-av" style="background: linear-gradient(135deg,#F8B,#F88);"></div>
+        <div class="lead-name">Андрей В.</div>
+        <div class="lead-pts">2 098</div>
+      </div>
+      <div class="lead-row">
+        <div class="lead-rank">7</div>
+        <div class="lead-av" style="background: linear-gradient(135deg,#8BF,#88F);"></div>
+        <div class="lead-name">Карина М. <span class="lead-crown">👑</span></div>
+        <div class="lead-pts">2 015</div>
+      </div>
+
+      <div style="text-align: center; font-size: 9px; color: var(--text-dim); margin-top: 12px;">
+        👑 — обладатель PRO
+      </div>
+
+    </div></div>
+  </div>
+
+
+  <!-- ============== 4. HOME с PRO bento ============== -->
+  <div class="variant">
+    <div class="label">Экран 4</div>
+    <div class="variant-name">Home · PRO bento</div>
+    <div class="variant-desc">На главной — одна bento-карточка с PRO между обычными. Показывает прогресс «25% курса пройдено» и тизер «открой остальное».</div>
+    <div class="phone"><div class="notch"></div><div class="screen">
+
+      <div class="home-hello">
+        <div class="home-hello-title">Добрый вечер, Сергей</div>
+        <div class="home-hello-sub">5 мин в день · 5 уроков до A1+</div>
+      </div>
+
+      <div class="home-regular-card">
+        <div class="home-card-ico">📖</div>
+        <div class="home-card-txt">
+          <div class="home-card-title">Урок: el camión</div>
+          <div class="home-card-sub">Блок 1 · продолжить →</div>
+        </div>
+      </div>
+
+      <div class="home-regular-card" style="margin-top: 8px;">
+        <div class="home-card-ico" style="background: rgba(255,138,61,0.15);">🃏</div>
+        <div class="home-card-txt">
+          <div class="home-card-title">Слово дня</div>
+          <div class="home-card-sub">camión · грузовик</div>
+        </div>
+      </div>
+
+      <div class="pro-bento" style="margin-top: 14px;">
+        <div class="pro-bento-tag">✦ ESPEAK PRO</div>
+        <div class="pro-bento-title">Открой <b>180 уроков</b><br>A2 · B1 · B2</div>
+        <div class="pro-bento-sub">Ты прошёл 15 из 60 уроков A1. Готов идти дальше?</div>
+        <div class="pro-bento-progress">
+          <div>A1: 25%</div>
+          <div class="pro-bento-bar"><div></div></div>
+          <div>B2</div>
+        </div>
+      </div>
+
+      <div class="home-regular-card" style="margin-top: 14px;">
+        <div class="home-card-ico" style="background: rgba(74,222,128,0.15);">🎯</div>
+        <div class="home-card-txt">
+          <div class="home-card-title">Цель дня</div>
+          <div class="home-card-sub">2/5 заданий выполнено</div>
+        </div>
+      </div>
+
+    </div></div>
+  </div>
+
+
+  <!-- ============== 5. ROADMAP locked ============== -->
+  <div class="variant">
+    <div class="label">Экран 5</div>
+    <div class="variant-name">Roadmap · locked A2</div>
+    <div class="variant-desc">Дорожная карта уроков. A1 пройдены/доступны, A2 заблокированы с замочком. После последнего A1 — баннер «открой A2 с PRO».</div>
+    <div class="phone"><div class="notch"></div><div class="screen">
+
+      <div class="top-bar">
+        <div class="top-title">🗺 Дорожная карта</div>
+        <div style="color: var(--text-dim); font-size: 14px;">A1 · 47/60</div>
+      </div>
+
+      <div class="road-lvl-h">
+        <div class="road-lvl-name">🌱 Блок 4 — Семья и дом <span style="font-size:9px; color:var(--good);">A1</span></div>
+        <div class="road-lvl-status">3/4 пройдено</div>
+      </div>
+
+      <div class="road-lesson">
+        <div class="road-num">47</div>
+        <div class="road-l-text">Mi familia<span class="dim">прошёл · 32 XP</span></div>
+        <div style="color: var(--good); font-size: 14px;">✓</div>
+      </div>
+      <div class="road-lesson">
+        <div class="road-num">48</div>
+        <div class="road-l-text">La casa<span class="dim">текущий</span></div>
+        <div style="color: var(--primary); font-size: 14px;">▶</div>
+      </div>
+
+      <!-- LOCKED BANNER between A1 and A2 -->
+      <div class="road-locked-banner">
+        <div class="road-banner-icon">💎</div>
+        <div class="road-banner-title">Дальше — <span style="color:var(--primary)">PRO</span></div>
+        <div class="road-banner-sub">180 уроков A2 + B1 + B2 за $34.99/год</div>
+        <div class="road-banner-cta">7 дней бесплатно →</div>
+      </div>
+
+      <div class="road-lvl-h">
+        <div class="road-lvl-name">📘 Блок 5 — Прошедшее <span class="pro-crown-outline">PRO</span></div>
+        <div class="road-lvl-status" style="color: var(--text-dim);">0/15 — A2</div>
+      </div>
+
+      <div class="road-lesson locked">
+        <div class="road-num">61</div>
+        <div class="road-l-text">Ayer y hoy<span class="dim">A2 · PRO</span></div>
+      </div>
+      <div class="road-lesson locked">
+        <div class="road-num">62</div>
+        <div class="road-l-text">Pretérito perfecto<span class="dim">A2 · PRO</span></div>
+      </div>
+      <div class="road-lesson locked">
+        <div class="road-num">63</div>
+        <div class="road-l-text">Уже сделал<span class="dim">A2 · PRO</span></div>
+      </div>
+
+    </div></div>
+  </div>
+
+
+  <!-- ============== 6. AI CHAT exhausted ============== -->
+  <div class="variant">
+    <div class="label">Экран 6</div>
+    <div class="variant-name">AI Chat · лимит 50/день</div>
+    <div class="variant-desc">Юзер исчерпал 50 запросов. Поле ввода disabled, под ним upsell-карточка «получи безлимит». Самый мощный момент для конверсии.</div>
+    <div class="phone"><div class="notch"></div><div class="screen">
+
+      <div class="top-bar">
+        <div class="top-title">🤖 AI-репетитор</div>
+        <div style="color: var(--text-dim); font-size: 14px;">Очистить</div>
+      </div>
+
+      <div class="chat-bubble me">¿Cómo se dice «грузовик»?</div>
+      <div class="chat-bubble"><b>«El camión»</b> — masculino. Pl. «los camiones». Например: <i>«Ese camión es muy grande»</i></div>
+      <div class="chat-bubble me">Спасибо!</div>
+      <div class="chat-bubble">¡De nada! Если что-то ещё нужно — спрашивай 🚛</div>
+
+      <div class="chat-counter">⚠ Использовано <b>50/50</b> запросов · сброс через 6 ч 12 мин</div>
+
+      <div class="chat-upsell">
+        <div class="chat-upsell-ico">🤖✨</div>
+        <div class="chat-upsell-title">Получи <b>безлимит</b> AI-репетитора</div>
+        <div class="chat-upsell-sub">С PRO — задавай сколько хочешь, без сбросов и таймеров.</div>
+        <div class="chat-upsell-cta">7 дней бесплатно →</div>
+        <div class="chat-upsell-small">потом $34.99/год · отмена в Google Play</div>
+      </div>
+
+      <div class="chat-input">
+        <input placeholder="Сегодня лимит исчерпан..." disabled>
+        <span style="color: var(--text-dim);">→</span>
+      </div>
+
+    </div></div>
+  </div>
+
+</div>
+
+
+<!-- ============== ЛЕГЕНДА ============== -->
+<div style="max-width: 900px; margin: 70px auto 0; padding: 24px; background: #0E0E12;
+  border-radius: 20px; border: 1px solid #2C2C36; color: #ECECEC; font-size: 13px; line-height: 1.7;">
+  <h2 style="margin: 0 0 16px; color: var(--primary); font-size: 18px;">📐 Дизайн-система PRO-индикаторов</h2>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div>
+      <h3 style="font-size: 14px; margin: 0 0 8px;">👑 Корона PRO</h3>
+      <p style="color: var(--text-dim); font-size: 12px; margin: 0 0 12px;">
+        Эмодзи 👑 в gold-pill <span class="pro-crown">👑 PRO</span> на свой профиль.<br>
+        Маленькая <span class="lead-crown">👑</span> справа от ника в лидерборде.
+      </p>
+
+      <h3 style="font-size: 14px; margin: 12px 0 8px;">🎨 Градиент</h3>
+      <p style="color: var(--text-dim); font-size: 12px; margin: 0;">
+        Везде PRO-элементы: <code>linear-gradient(135deg, #FF8A3D → #FFD27A)</code><br>
+        primary→gold даёт «премиум» вайб без банального золотого фона.
+      </p>
+    </div>
+    <div>
+      <h3 style="font-size: 14px; margin: 0 0 8px;">📍 Где НЕ рекламируем PRO</h3>
+      <p style="color: var(--text-dim); font-size: 12px; margin: 0 0 12px;">
+        Никаких pop-up на старте, на победном экране урока, в момент streak.<br>
+        Только в точках естественного friction (лимит AI, locked-урок, конец A1).
+      </p>
+
+      <h3 style="font-size: 14px; margin: 12px 0 8px;">🎯 Триггеры показа upsell</h3>
+      <p style="color: var(--text-dim); font-size: 12px; margin: 0;">
+        ① Конец A1 курса → road-banner<br>
+        ② Лимит AI 50/50 → chat-upsell<br>
+        ③ Открытие locked-урока → paywall<br>
+        ④ Профиль (Free) → promo-banner<br>
+        ⑤ Главная → один pro-bento в середине ленты
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #2C2C36;
+    color: var(--text-dim); font-size: 11px;">
+    Всё в стиле реального ESPEAK: тёмный #0E0E12, оранжевый #FF8A3D, bento 18-22dp,
+    цветные CEFR-чипы. Никакого визуального шума или агрессии.
+  </div>
+</div>
+
+</body></html>
