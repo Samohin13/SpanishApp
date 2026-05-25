@@ -44,6 +44,7 @@ fun SpeedGameScreen(
 
     when {
         state.showLevelMap -> {
+            val isPro by com.spanishapp.ui.games.common.rememberIsProState()
             LevelMapScreen(
                 gameId  = GameId.SPEED,
                 title   = stringResource(R.string.speed_levels_title),
@@ -53,6 +54,8 @@ fun SpeedGameScreen(
                 onLevelStart = { lvl -> viewModel.startLevel(lvl) },
                 mistakesCount = mistakesCount,
                 onMistakesPractice = { viewModel.startMistakesPractice() },
+                isPro     = isPro,
+                onPaywall = { navController.navigate("paywall") { launchSingleTop = true } },
             )
         }
         state.isGameOver -> {

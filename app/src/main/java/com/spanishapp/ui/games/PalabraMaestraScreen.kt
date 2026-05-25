@@ -59,6 +59,7 @@ fun PalabraMaestraScreen(
 
     when {
         state.showLevelMap -> {
+            val isPro by com.spanishapp.ui.games.common.rememberIsProState()
             LevelMapScreen(
                 gameId  = GameId.PALABRA,
                 title   = stringResource(R.string.palabra_levels_title),
@@ -68,6 +69,8 @@ fun PalabraMaestraScreen(
                 onLevelStart = { lvl -> viewModel.startLevel(lvl) },
                 mistakesCount = mistakesCount,
                 onMistakesPractice = { viewModel.startMistakesPractice() },
+                isPro     = isPro,
+                onPaywall = { navController.navigate("paywall") { launchSingleTop = true } },
             )
         }
         state.isGameOver -> {

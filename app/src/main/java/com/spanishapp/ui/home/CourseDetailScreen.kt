@@ -127,7 +127,10 @@ fun CourseDetailScreen(
                         expandedUnitId = if (expandedUnitId == unit.id) null else unit.id
                     },
                     onLessonClick = { lessonIndex ->
-                        if (!unit.isLocked && unit.id.toIntOrNull() != null) {
+                        // v1.23.0: locked unit (A2+ для free-юзера) → paywall.
+                        if (unit.isLocked) {
+                            navController.navigate("paywall") { launchSingleTop = true }
+                        } else if (unit.id.toIntOrNull() != null) {
                             // v1.22.11: чекпоинты обходят промежуточный
                             // экран «Lesson Intro» (с ракетой и ПОЕХАЛИ) и
                             // открываются сразу в своём собственном intro.
@@ -150,9 +153,14 @@ fun CourseDetailScreen(
                         // Для preview-юнитов A2/B1/B2 (id не int) клик игнорируется —
                         // контент ещё в разработке.
                     },
-                    onPremiumClick = { /* premium убран — все курсы открыты */ },
+                    onPremiumClick = {
+                        // v1.23.0: тап на «PRO» бейдж locked-юнита → paywall.
+                        navController.navigate("paywall") { launchSingleTop = true }
+                    },
                     onMiniTestClick = { position ->
-                        if (!unit.isLocked && unit.id.toIntOrNull() != null) {
+                        if (unit.isLocked) {
+                            navController.navigate("paywall") { launchSingleTop = true }
+                        } else if (unit.id.toIntOrNull() != null) {
                             navController.navigate("minitest/${unit.id}/$position") {
                                 popUpTo("course_detail/$courseLevel") { inclusive = false }
                                 launchSingleTop = true

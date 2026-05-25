@@ -72,16 +72,21 @@ fun ArticlesGameScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
     when {
-        state.showLevelMap -> LevelMapScreen(
-            gameId       = GameId.ARTICLES,
-            title        = stringResource(R.string.art_levels_title),
-            accent       = ACCENT,
-            manager      = viewModel.levelManager,
-            onBack       = { navController.popBackStack() },
-            onLevelStart = { lvl -> viewModel.startLevel(lvl) },
-            mistakesCount = mistakesCount,
-            onMistakesPractice = { viewModel.startMistakesPractice() },
-        )
+        state.showLevelMap -> {
+            val isPro by com.spanishapp.ui.games.common.rememberIsProState()
+            LevelMapScreen(
+                gameId       = GameId.ARTICLES,
+                title        = stringResource(R.string.art_levels_title),
+                accent       = ACCENT,
+                manager      = viewModel.levelManager,
+                onBack       = { navController.popBackStack() },
+                onLevelStart = { lvl -> viewModel.startLevel(lvl) },
+                mistakesCount = mistakesCount,
+                onMistakesPractice = { viewModel.startMistakesPractice() },
+                isPro        = isPro,
+                onPaywall    = { navController.navigate("paywall") { launchSingleTop = true } },
+            )
+        }
         state.isGameOver -> {
             ArticlesGameContent(state, viewModel, onBack = { viewModel.openLevelMap() })
             LevelCompleteSheet(

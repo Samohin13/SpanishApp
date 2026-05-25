@@ -60,6 +60,7 @@ fun MathGameScreen(
 
     when {
         state.showLevelMap -> {
+            val isPro by com.spanishapp.ui.games.common.rememberIsProState()
             LevelMapScreen(
                 gameId  = GameId.MATH,
                 title   = stringResource(R.string.math_levels_title),
@@ -70,6 +71,8 @@ fun MathGameScreen(
                 mistakesCount = mistakesCount,
                 onMistakesPractice = { viewModel.startMistakesPractice() },
                 mistakesUnit = com.spanishapp.ui.games.common.MistakesUnit.TASKS,
+                isPro     = isPro,
+                onPaywall = { navController.navigate("paywall") { launchSingleTop = true } },
             )
         }
         state.isGameOver -> {

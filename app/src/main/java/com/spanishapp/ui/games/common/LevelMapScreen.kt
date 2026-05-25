@@ -62,6 +62,12 @@ fun LevelMapScreen(
      * TASKS для Calculo (математика).
      */
     mistakesUnit: MistakesUnit = MistakesUnit.WORDS,
+    /**
+     * v1.23.0: для free-юзеров доступны только первые 10 уровней.
+     * Уровни 11+ показываются как заблокированные с 🔒, тап ведёт на paywall.
+     */
+    isPro: Boolean = false,
+    onPaywall: () -> Unit = {},
 ) {
     var progress by remember { mutableStateOf<Map<Int, GameLevelProgressEntity>>(emptyMap()) }
     var nextLevel by remember { mutableIntStateOf(1) }
@@ -168,7 +174,10 @@ fun LevelMapScreen(
             ) {
                 items((1..100).toList()) { level ->
                 val entry = progress[level]
-                val unlocked = level <= nextLevel
+                val unlockedByProgress = level <= nextLevel
+                // v1.23.0: free → max 10 уровней. PRO → все 100.
+                val unlockedByPro = isPro || level <= 10
+                val unlocked = unlockedByProgress && unlockedByPro
                 val isNext = level == nextLevel
 
                     GameLevelCell(
@@ -178,11 +187,14 @@ fun LevelMapScreen(
                         isNext   = isNext,
                         accent   = accent,
                         onClick  = {
-                            if (unlocked) {
-                                haptic.performHapticFeedback(
-                                    androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress
-                                )
-                                scope.launch { onLevelStart(level) }
+                            haptic.performHapticFeedback(
+                                androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress
+                            )
+                            when {
+                                // Тап на PRO-locked (юзер прошёл бы по прогрессу, но free) → paywall
+                                unlockedByProgress && !unlockedByPro -> onPaywall()
+                                unlocked -> scope.launch { onLevelStart(level) }
+                                else -> { /* progression locked — нет действия */ }
                             }
                         }
                     )
@@ -294,4 +306,28 @@ private fun LevelMode.label(): String = when (this) {
     LevelMode.HARD     -> "HARD"
     LevelMode.EXPERT   -> "EXP"
     LevelMode.MASTER   -> "★"
+}
+
+// ════════════════════════════════════════════════════════════
+//  v1.23.0: ProGate — Hilt EntryPoint для доступа к
+//  SubscriptionManager из Composable без необходимости менять
+//  каждый VM отдельной игры. Возвращает текущее значение isPro
+//  как Compose State.
+// ════════════════════════════════════════════════════════════
+
+@dagger.hilt.EntryPoint
+@dagger.hilt.InstallIn(dagger.hilt.components.SingletonComponent::class)
+interface ProGateEntryPoint {
+    fun subscriptionManager(): com.spanishapp.service.SubscriptionManager
+}
+
+@Composable
+fun rememberIsProState(): State<Boolean> {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val sm = remember {
+        dagger.hilt.android.EntryPointAccessors
+            .fromApplication(context.applicationContext, ProGateEntryPoint::class.java)
+            .subscriptionManager()
+    }
+    return sm.isProActive.collectAsState(initial = false)
 }

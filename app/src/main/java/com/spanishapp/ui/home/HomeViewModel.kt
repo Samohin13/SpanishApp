@@ -104,7 +104,8 @@ class HomeViewModel @Inject constructor(
         lessonDao.getNextLessons(),
         lessonProgressDao.getAllCompletedKeys(),
         authRepository.userPhotoUrl,
-        dailyXpDao.observeSince(LocalDate.now().toString())
+        dailyXpDao.observeSince(LocalDate.now().toString()),
+        subscriptionManager.isProActive,
     ) { args ->
         val progress = args[0] as? UserProgressEntity
         val dueWords = args[1] as List<WordEntity>
@@ -114,6 +115,7 @@ class HomeViewModel @Inject constructor(
         val photoUrl = args[5] as? String
         @Suppress("UNCHECKED_CAST")
         val todayXpRows = args[6] as List<com.spanishapp.data.db.entity.DailyXpEntity>
+        val proActive = args[7] as Boolean
 
         val completedKeys = completedKeysList.toSet()
         val p = progress ?: UserProgressEntity()
@@ -133,7 +135,7 @@ class HomeViewModel @Inject constructor(
             currentLevel     = p.currentLevel
         )
 
-        val roadmapUnits = buildRoadmapUnits(completedKeys)
+        val roadmapUnits = buildRoadmapUnits(completedKeys, proActive)
 
         HomeUiState(
             displayName      = p.displayName,
@@ -266,23 +268,26 @@ class HomeViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DailyGoals())
     }
 
-    private fun buildRoadmapUnits(completedKeys: Set<String>): List<RoadmapUnit> {
+    private fun buildRoadmapUnits(completedKeys: Set<String>, proActive: Boolean): List<RoadmapUnit> {
+        // v1.23.0: gate A2+ контента по PRO. Для free A2/B1/B2 блоки
+        // показываются с замочком, тап на них ведёт в paywall.
         return RoadmapData.units.map { unit ->
             val unitId = unit.id.toIntOrNull()
+            val isProGated = unit.cefrLevel != "A1" && !proActive
 
             // Non-numeric IDs = A2/B1/B2 preview blocks (content not ready yet).
             // Show them as visually unlocked so the user can browse lesson titles,
             // but don't track real progress yet.
             if (unitId == null) {
                 return@map unit.copy(
-                    isLocked = false,
+                    isLocked = isProGated,
                     progress = 0f,
                     lessons  = unit.lessons.map { it.copy(isCompleted = false) }
                 )
             }
 
-            // Все юниты разблокированы — premium-логика убрана.
-            val unlocked = true
+            // A1 — всегда разблокировано. A2/B1/B2 — только если PRO.
+            val unlocked = !isProGated
 
             val lessonsWithProgress = unit.lessons.mapIndexed { idx, lesson ->
                 val key = lesson.id ?: "u${unitId}_l${idx}"

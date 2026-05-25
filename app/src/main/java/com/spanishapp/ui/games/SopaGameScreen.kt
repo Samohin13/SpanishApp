@@ -61,13 +61,16 @@ fun SopaGameScreen(
 
     when {
         state.showLevelMap -> {
+            val isPro by com.spanishapp.ui.games.common.rememberIsProState()
             LevelMapScreen(
                 gameId  = GameId.SOPA,
                 title   = stringResource(R.string.sopa_levels_title),
                 accent  = ACCENT,
                 manager = viewModel.levelManager,
                 onBack  = { navController.popBackStack() },
-                onLevelStart = { lvl -> viewModel.startLevel(lvl) }
+                onLevelStart = { lvl -> viewModel.startLevel(lvl) },
+                isPro     = isPro,
+                onPaywall = { navController.navigate("paywall") { launchSingleTop = true } },
             )
         }
         state.isGameOver -> {

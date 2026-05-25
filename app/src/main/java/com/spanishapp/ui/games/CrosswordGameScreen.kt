@@ -124,7 +124,10 @@ fun CrosswordGameScreen(
                     .adaptiveContentWidth(),
             ) {
                 when {
-                    state.showSetup  -> CrosswordLevelSelection(state, viewModel)
+                    state.showSetup  -> CrosswordLevelSelection(
+                        state, viewModel,
+                        onPaywall = { navController.navigate("paywall") { launchSingleTop = true } },
+                    )
                     state.isGameOver -> CrosswordVictory(state, viewModel) { viewModel.resetToMenu() }
                     else             -> CrosswordActiveContent(state, viewModel)
                 }
@@ -183,11 +186,17 @@ private fun RuleItem(icon: ImageVector, title: String, body: String) {
 // ── Level selection ───────────────────────────────────────────────────────────
 
 @Composable
-fun CrosswordLevelSelection(state: CrosswordGameState, viewModel: CrosswordViewModel) {
+fun CrosswordLevelSelection(
+    state: CrosswordGameState,
+    viewModel: CrosswordViewModel,
+    onPaywall: () -> Unit = {},
+) {
     // Use the same 5-column layout + GameLevelCell as the rest of the games
     // (Articulos / Math / Speed / Sopa / Palabra / Verbos) for visual consistency.
     val maxCleared = state.levelStars.size  // crossword tracks levelStars: Map<Int, Int>
     val nextLevel = (maxCleared + 1).coerceAtMost(100)
+    // v1.23.0: free = max 10 уровней, PRO = все 100.
+    val isPro by com.spanishapp.ui.games.common.rememberIsProState()
 
     androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
         columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(5),
@@ -199,7 +208,9 @@ fun CrosswordLevelSelection(state: CrosswordGameState, viewModel: CrosswordViewM
         items(100) { index ->
             val level = index + 1
             val stars = state.levelStars[level] ?: 0
-            val unlocked = level <= nextLevel
+            val unlockedByProgress = level <= nextLevel
+            val unlockedByPro = isPro || level <= 10
+            val unlocked = unlockedByProgress && unlockedByPro
             val isNext = level == nextLevel
 
             com.spanishapp.ui.games.common.GameLevelCell(
@@ -208,7 +219,12 @@ fun CrosswordLevelSelection(state: CrosswordGameState, viewModel: CrosswordViewM
                 unlocked = unlocked,
                 isNext   = isNext,
                 accent   = Purple,
-                onClick  = { if (unlocked) viewModel.startLevel(level) }
+                onClick  = {
+                    when {
+                        unlockedByProgress && !unlockedByPro -> onPaywall()
+                        unlocked -> viewModel.startLevel(level)
+                    }
+                },
             )
         }
     }
