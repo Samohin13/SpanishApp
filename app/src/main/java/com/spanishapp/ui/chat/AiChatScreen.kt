@@ -655,21 +655,27 @@ private fun ChatInputBar(
         label = "mic_pulse_anim",
     )
 
-    // ВАЖНО: Surface БЕЗ .imePadding() — Scaffold's bottomBar slot уже
-    // сам поднимается над клавой через WindowInsets.ime в Material3 1.3+
-    // (см. AiChatUpsellCard ниже, тот же комментарий из audit Bug 12).
-    // Manual imePadding здесь = double offset → огромный void между pill и клавой.
+    // v1.23.34: ПРАВИЛЬНАЯ диагностика после неудачных v1.23.32/33:
+    // Surface ОБЯЗАТЕЛЬНО с .imePadding() — иначе клава реально обрезает
+    // нижний край pill+FAB (видно на скрине юзера, обрезаны border curves).
+    //
+    // Старая моя гипотеза "Scaffold bottomBar сам учитывает ime" — НЕВЕРНА
+    // в текущей конфигурации. Без imePadding Surface рисуется ПОД клавой.
+    //
+    // Прошлый "void" между welcome-картами и pill (v1.23.31) — это не баг,
+    // а нормальная пустая wallpaper-область когда контент короткий и
+    // прижат к topBar'у. pill при этом стоял корректно над клавой.
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .imePadding(),
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp,
     ) {
-        // v1.23.33: vertical padding 10dp → 18dp снизу — pill поднят выше
-        // от клавиатуры с дыхательным зазором (юзер: "опусти клаву ниже").
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 12.dp, end = 12.dp, top = 10.dp, bottom = 18.dp),
+                .padding(horizontal = 12.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
