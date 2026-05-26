@@ -469,28 +469,37 @@ class RadioPlayerController(private val context: Context) {
      * Используется при заходе на /radio чтобы UI знал «текущую» станцию,
      * но не начал играть автоматически. Юзер сам нажмёт ▶.
      *
-     * v1.15.3: ВАЖНО — `controller.playWhenReady = false` ДО prepare().
-     * ExoPlayer по умолчанию имеет playWhenReady=true: prepare() сразу
-     * запускает воспроизведение когда станция загружена. Юзер жаловался
-     * «радио включается само при переходе на экран» — это и было причиной.
+     * v1.23.10 (ROOT CAUSE для всех ANR последних дней!):
+     *
+     * Раньше эта функция вызывала `ensureConnectedAndRun` + `controller.prepare()`.
+     * Это создавало MediaController → bind к RadioPlayerService →
+     * MediaSessionService → Android помечает сервис как foreground-требуемый.
+     *
+     * НО: `playWhenReady = false` означает что MediaSession не «активен» в
+     * media-смысле → MediaSessionService НЕ постит notification → НЕ зовёт
+     * Service.startForeground() в 5-секундное окно → Android выкидывает ANR:
+     *
+     *   Subject: Context.startForegroundService() did not then call
+     *   Service.startForeground(): ServiceRecord{...RadioPlayerService}
+     *
+     * 8 ANR за последние сутки — все имели именно эту причину
+     * (verified через dropbox dump). ANR возникал НЕ только на RadioScreen
+     * но и спустя минуты на ЛЮБОМ другом экране — service ловил таймаут
+     * асинхронно.
+     *
+     * Фикс: prepareOnly теперь ЧИСТО UI — устанавливает _currentStation
+     * для отображения карточки, БЕЗ создания MediaController. Сервис
+     * стартует только когда юзер реально жмёт ▶ через play().
+     *
+     * Trade-off: первый play() занимает ~200-500ms больше (нужно сначала
+     * установить media items). Это в разы лучше чем ANR.
      */
     fun prepareOnly(station: Station) {
         _hasError.value = false
         _currentStation.value = station
         _nowPlaying.value = null
-        // НЕ сбрасываем reconnect — это «pre-load», а не активная сессия.
-        val context = _stationContext.value
-        val playStation = station
-        val (items, startIndex) = if (context.size <= 1 || !context.any { it.id == playStation.id }) {
-            listOf(playStation.toMediaItem()) to 0
-        } else {
-            context.map { it.toMediaItem() } to context.indexOfFirst { it.id == playStation.id }
-        }
-        ensureConnectedAndRun { controller ->
-            controller.playWhenReady = false  // КРИТИЧНО — не играть auto после prepare
-            controller.setMediaItems(items, startIndex.coerceAtLeast(0), 0L)
-            controller.prepare()
-        }
+        // НЕ зовём ensureConnectedAndRun — никакого bind к сервису.
+        // Когда юзер нажмёт ▶ → play() сам всё сделает.
     }
 
     /** Station → MediaItem с stable mediaId (для onMediaItemTransition matching). */
