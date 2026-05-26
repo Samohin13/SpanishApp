@@ -724,16 +724,20 @@ private fun ChatInputBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 12.dp),
+                // v1.23.28: vertical padding 12dp → 20dp — pill подняли выше
+                // от Samsung emoji toolbar, больше воздуха сверху/снизу.
+                .padding(horizontal = 14.dp, vertical = 20.dp),
             verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             // ── Pill: текстовое поле или waveform во время записи ─────
+            // v1.23.28: крупнее — min height 44dp → 56dp, шрифт 15sp → 17sp,
+            // внутренний padding 11dp → 14dp для большего воздуха внутри.
             Surface(
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(min = 44.dp),
-                shape = RoundedCornerShape(18.dp),
+                    .heightIn(min = 56.dp),
+                shape = RoundedCornerShape(22.dp),
                 color = convBone,
                 border = androidx.compose.foundation.BorderStroke(1.5.dp, convInk),
             ) {
@@ -742,20 +746,20 @@ private fun ChatInputBar(
                         amplitude = voiceAmplitude,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(44.dp),
+                            .height(56.dp),
                     )
                 } else {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 11.dp),
+                            .padding(horizontal = 18.dp, vertical = 16.dp),
                         contentAlignment = Alignment.CenterStart,
                     ) {
                         if (input.isEmpty()) {
                             Text(
                                 text = stringResource(com.spanishapp.R.string.chat_message_placeholder),
                                 color = convInkSoft,
-                                fontSize = 15.sp,
+                                fontSize = 17.sp,
                                 fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                             )
                         }
@@ -765,7 +769,7 @@ private fun ChatInputBar(
                             enabled = !isSending,
                             textStyle = androidx.compose.ui.text.TextStyle(
                                 color = convInk,
-                                fontSize = 15.sp,
+                                fontSize = 17.sp,
                             ),
                             cursorBrush = androidx.compose.ui.graphics.SolidColor(convTerracotta),
                             maxLines = 5,
