@@ -677,30 +677,35 @@ private fun ChatInputBar(
         label = "mic_pulse_anim",
     )
 
-    // v1.23.20: ОКОНЧАТЕЛЬНО. На MOEM устройстве Samsung S928B (Android 16/API 36):
-    //  - Compose 1.7 Material3 Scaffold САМ автоматически поднимает bottomBar
-    //    slot над ime (verified через adb screencap)
-    //  - .imePadding() ВНУТРИ Surface → double-pad → pill в mid-screen
-    //  - Без .imePadding() → pill корректно над клавой
+    // v1.23.21: ВОССТАНОВЛЕНИЕ оригинального паттерна v1.0.7 (982e73b,
+    // май 2026, релизный AAB в Play Store как 1.0.7). Юзер указал:
+    // "посмотри как было в ранних версиях, найди где пошло не так".
     //
-    // History (для будущей справки):
-    //  - bf0e7bd (1.18.55) — оригинальный перепис WITH .imePadding(). Работал
-    //    тогда на старой версии Compose
-    //  - На Compose 1.7.x (BOM 2024.12.01) поведение Scaffold изменилось —
-    //    теперь bottomBar slot сам учитывает ime.
+    // Старый рабочий код:
+    //   Surface(shadowElevation=8.dp, color=surfaceContainerHighest) {
+    //     Row(.padding(12).imePadding().navigationBarsPadding(), vertAlign=Bottom)
+    //   }
+    //
+    // Ключевые отличия от моих недавних попыток:
+    //  • .imePadding() на ROW (не на Surface) — это работает на любой
+    //    версии Compose, не зависит от Scaffold bottomBar quirks
+    //  • shadowElevation, НЕ tonalElevation — старый комментарий явно
+    //    говорил: "tonalElevation overlays primary tint in M3 dark = brown.
+    //    Use shadowElevation only" — БРАУНИХА была давно известным багом
+    //  • color = surfaceContainerHighest (более нейтральный grey)
+    //  • verticalAlignment = Bottom (для тонкой компоновки pill+mic)
+    //  • navigationBarsPadding убран — MainActivity consumeWindowInsets
+    //    уже консьюмит navBar inset
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.background,
-        tonalElevation = 0.dp,
+        shadowElevation = 8.dp,
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                // v1.23.18: bottom 28dp — юзер просил "поднять pill выше",
-                // увеличиваю воздух под pill для явно видимого расстояния
-                // от Samsung emoji toolbar клавы. 28dp ≈ ~85px на 3x density.
-                .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 28.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // ── Pill: текстовое поле или waveform во время записи ─────
