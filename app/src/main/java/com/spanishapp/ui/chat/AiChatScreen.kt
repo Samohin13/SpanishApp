@@ -677,10 +677,17 @@ private fun ChatInputBar(
         label = "mic_pulse_anim",
     )
 
-    // v1.23.16: УБРАН .imePadding() полностью с Surface. В Compose 1.7+
-    // bottomBar slot Material3 Scaffold САМ позиционируется над ime —
-    // двойной imePadding (внутри Surface + Scaffold) давал input pill
-    // mid-screen с огромным void'ом ниже до клавиатуры.
+    // v1.23.20: ОКОНЧАТЕЛЬНО. На MOEM устройстве Samsung S928B (Android 16/API 36):
+    //  - Compose 1.7 Material3 Scaffold САМ автоматически поднимает bottomBar
+    //    slot над ime (verified через adb screencap)
+    //  - .imePadding() ВНУТРИ Surface → double-pad → pill в mid-screen
+    //  - Без .imePadding() → pill корректно над клавой
+    //
+    // History (для будущей справки):
+    //  - bf0e7bd (1.18.55) — оригинальный перепис WITH .imePadding(). Работал
+    //    тогда на старой версии Compose
+    //  - На Compose 1.7.x (BOM 2024.12.01) поведение Scaffold изменилось —
+    //    теперь bottomBar slot сам учитывает ime.
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.background,
