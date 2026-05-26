@@ -77,7 +77,11 @@ fun AiChatScreen(
     var showSetup by remember(tutor.configured) { mutableStateOf(!tutor.configured) }
     var showEdit by remember { mutableStateOf(false) }
 
-    var input by remember { mutableStateOf("") }
+    // v1.24.6: TextFieldValue для полноценной поддержки курсора/выделения.
+    // BasicTextField(readOnly=true) НЕ вызывает системную клаву, но позволяет
+    // tap-to-position cursor и selection-by-long-press — как в S26 Ultra.
+    var inputValue by remember { mutableStateOf(androidx.compose.ui.text.input.TextFieldValue("")) }
+    val input = inputValue.text
     val listState = rememberLazyListState()
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
@@ -123,31 +127,46 @@ fun AiChatScreen(
                     vm.send(suggestion)
                 })
                 ChatComposer(
-                    input = input,
+                    inputValue = inputValue,
+                    onValueChange = { inputValue = it },
                     onSend = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         vm.send(input)
-                        input = ""
+                        inputValue = androidx.compose.ui.text.input.TextFieldValue("")
                     },
                     onMic = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        vm.startVoice { recognized -> input = recognized }
+                        vm.startVoice { recognized ->
+                            inputValue = androidx.compose.ui.text.input.TextFieldValue(
+                                text = recognized,
+                                selection = androidx.compose.ui.text.TextRange(recognized.length),
+                            )
+                        }
                     },
                     isListening = isListening,
                     voiceAmplitude = voiceAmplitude,
                 )
-                // v1.24.3: встроенная клавиатура — всегда видна, никакой системной
+                // v1.24.6: pro-уровень клавиатура с курсором, swipe-space, suggestions
+                val suggestions = remember(input) { WordSuggester.suggest(input) }
                 SpanishKeyboard(
-                    onKey = { ch -> input += ch },
-                    onBackspace = { if (input.isNotEmpty()) input = input.dropLast(1) },
+                    value = inputValue,
+                    onValueChange = { inputValue = it },
                     onSend = {
                         if (input.isNotBlank()) {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             vm.send(input)
-                            input = ""
+                            inputValue = androidx.compose.ui.text.input.TextFieldValue("")
                         }
                     },
                     canSend = input.isNotBlank() && !isSending,
+                    suggestions = suggestions,
+                    onPickSuggestion = { sug ->
+                        val newText = WordSuggester.replaceLastWord(input, sug)
+                        inputValue = androidx.compose.ui.text.input.TextFieldValue(
+                            text = newText,
+                            selection = androidx.compose.ui.text.TextRange(newText.length),
+                        )
+                    },
                 )
             }
         },
@@ -810,13 +829,14 @@ private fun QuickChipsRow(onChip: (String) -> Unit) {
    ============================================================ */
 @Composable
 private fun ChatComposer(
-    input: String,
+    inputValue: androidx.compose.ui.text.input.TextFieldValue,
+    onValueChange: (androidx.compose.ui.text.input.TextFieldValue) -> Unit,
     onSend: () -> Unit,
     onMic: () -> Unit,
     isListening: Boolean,
     voiceAmplitude: Float,
 ) {
-    val sendActive = input.isNotBlank()
+    val sendActive = inputValue.text.isNotBlank()
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -830,7 +850,9 @@ private fun ChatComposer(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            // Поле ввода
+            // Поле ввода — readOnly BasicTextField:
+            // системная клава НЕ вызывается (readOnly), но курсор,
+            // tap-to-position и long-press selection РАБОТАЮТ нативно.
             Surface(
                 shape = RoundedCornerShape(22.dp),
                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -844,29 +866,31 @@ private fun ChatComposer(
                         modifier = Modifier.fillMaxWidth().height(42.dp),
                     )
                 } else {
-                    // v1.24.3: read-only Text-дисплей вместо BasicTextField —
-                    // системная клавиатура НЕ вызывается. Ввод идёт ТОЛЬКО
-                    // через нашу SpanishKeyboard внизу экрана.
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 11.dp),
                         contentAlignment = Alignment.CenterStart,
                     ) {
-                        if (input.isEmpty()) {
+                        if (inputValue.text.isEmpty()) {
                             Text(
                                 "Escribe a tu profesor(a)…",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 15.5.sp,
                             )
-                        } else {
-                            Text(
-                                input,
+                        }
+                        BasicTextField(
+                            value = inputValue,
+                            onValueChange = onValueChange,
+                            readOnly = true,           // ← блокирует системную клаву!
+                            textStyle = androidx.compose.ui.text.TextStyle(
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 15.5.sp,
-                                maxLines = 5,
-                            )
-                        }
+                            ),
+                            cursorBrush = androidx.compose.ui.graphics.SolidColor(EspeakChat.primary),
+                            maxLines = 5,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                     }
                 }
             }
