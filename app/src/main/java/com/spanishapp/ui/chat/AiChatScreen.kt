@@ -664,10 +664,12 @@ private fun ChatInputBar(
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp,
     ) {
+        // v1.23.33: vertical padding 10dp → 18dp снизу — pill поднят выше
+        // от клавиатуры с дыхательным зазором (юзер: "опусти клаву ниже").
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+                .padding(start = 12.dp, end = 12.dp, top = 10.dp, bottom = 18.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
