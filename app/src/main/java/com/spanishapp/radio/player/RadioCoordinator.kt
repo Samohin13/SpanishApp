@@ -27,4 +27,17 @@ object RadioCoordinator {
             p.pause()
         }
     }
+
+    /**
+     * v1.23.7: Вызывается при заходе в AI Chat. Радио буферизация
+     * (особенно у нестабильных live-станций с частым FLUSHING/RESUMING)
+     * блокирует main thread спамом MediaCodec событий + Notification
+     * rebuilds → ANR в AI Chat. Юзер потом сам ▶ возобновляет если хочет.
+     */
+    fun pauseForChat() {
+        val p = player ?: return
+        if (p.isPlaying.value) {
+            p.pause()
+        }
+    }
 }

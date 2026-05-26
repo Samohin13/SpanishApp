@@ -331,14 +331,15 @@ class RadioPlayerController(private val context: Context) {
              *     для radio (он рассчитан больше на VOD контент)
              */
             override fun onMetadata(metadata: Metadata) {
-                Log.d(TAG_ICY, "onMetadata: ${metadata.length()} entries")
+                // v1.23.7: убраны verbose Log.d в горячем пути — onMetadata
+                // вызывается несколько раз в секунду для live-radio с ICY,
+                // каждый Log.d делал I/O в logcat + аллокацию строки.
+                // Логирование переехало в handleIncomingTitle (срабатывает
+                // только когда title реально меняется — см. dedup в нём).
                 for (i in 0 until metadata.length()) {
                     val entry = metadata.get(i)
-                    val className = entry::class.simpleName ?: "?"
-                    Log.d(TAG_ICY, "  [$i] $className: $entry")
                     val title = extractTitleFromMetadataEntry(entry)
                     if (title != null) {
-                        Log.d(TAG_ICY, "  extracted title: '$title'")
                         handleIncomingTitle(title)
                     }
                 }
@@ -364,8 +365,20 @@ class RadioPlayerController(private val context: Context) {
     /**
      * Применяем title из ICY/ID3 — но только если это похоже на трек,
      * а не на name самой станции (наш initial value из MediaItem).
+     *
+     * v1.23.7 (ANR fix): dedup на raw-уровне. Раньше каждый ICY frame
+     * (часто несколько раз в секунду на live-радио) проходил через всю
+     * sanitize-цепочку + Log.d + StateFlow update даже если title не
+     * менялся. На пр. Cadena SER ICY эмитит "Cadena SER España" каждые
+     * ~500ms — это давало constant CPU spike в main thread.
      */
+    @Volatile private var lastIncomingTitleRaw: String? = "__UNINIT__"
     private fun handleIncomingTitle(raw: String?) {
+        // Если raw тот же что и в прошлый раз — ничего не делаем.
+        // Это не мешает первичной обработке: __UNINIT__ ≠ null != "..."
+        if (raw == lastIncomingTitleRaw) return
+        lastIncomingTitleRaw = raw
+
         val cleaned = sanitizeNowPlaying(raw)
         val stationName = _currentStation.value?.name
         val isStationNameEcho = cleaned != null && stationName != null &&

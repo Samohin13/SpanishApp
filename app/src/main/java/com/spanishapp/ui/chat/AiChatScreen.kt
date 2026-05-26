@@ -311,6 +311,14 @@ fun AiChatScreen(
     vm: AiChatViewModel = hiltViewModel(),
 ) {
     com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.CHAT)
+
+    // v1.23.7: радио на паузу при заходе в AI Chat — у нестабильных
+    // live-станций (Cadena SER и др.) частый FLUSHING/RESUMING +
+    // notification rebuild спам в фоне → ANR в чате (логи показали).
+    // Юзер может возобновить ▶ из mini-player'а если нужно.
+    LaunchedEffect(Unit) {
+        com.spanishapp.radio.player.RadioCoordinator.pauseForChat()
+    }
     // ─── State ──────────────────────────────────────────────────
     val messages       by vm.messages.collectAsStateWithLifecycle()
     val isSending      by vm.isSending.collectAsStateWithLifecycle()
