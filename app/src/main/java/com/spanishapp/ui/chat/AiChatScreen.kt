@@ -392,6 +392,10 @@ fun AiChatScreen(
     //  navigationBarsPadding (иначе double-count).
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        // v1.23.9: contentWindowInsets явно включает ime — Scaffold САМ
+        // поднимает bottomBar (ChatInputBar) над клавиатурой, без необходимости
+        // .imePadding() внутри Surface (что давало двойное смещение).
+        contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.ime),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -640,13 +644,17 @@ fun AiChatScreen(
 
 // ─── Input bar (Jetchat pattern) ──────────────────────────────────
 //
-// Surface с .imePadding() = bottomBar slot из Scaffold. Когда клавиатура
-// открывается, intrinsic высота Surface'а растёт на ime, Scaffold
-// перемеряет и поднимает bottomBar над клавой. Контент чата сдвигается
-// вверх через paddingValues автоматически.
+// v1.23.9 (БЫЛ ЖИРНЫЙ БАГ): убрана .imePadding() с Surface.
 //
+// Раньше Surface имел `.imePadding()` чтобы поднимать input над клавиатурой.
+// Но в Compose 1.7 / Material3 1.3+ Scaffold САМ автоматически пушит
+// bottomBar slot над клавиатурой через WindowInsets ime внутреннего consume.
+// Двойное применение → input уезжал на 2× высоты клавы вверх, оставляя
+// огромный чёрный gap между input и клавиатурой на скриншоте юзера.
+//
+// Теперь Surface БЕЗ imePadding — Scaffold сам всё делает корректно.
 // navigationBarsPadding НЕ нужен: outer NavHost в MainActivity уже
-// консьюмит navBar inset (v1.18.54). При попытке добавить тут — double-count.
+// консьюмит navBar inset (v1.18.54).
 @Composable
 private fun ChatInputBar(
     input: String,
@@ -669,9 +677,9 @@ private fun ChatInputBar(
     )
 
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .imePadding(),
+        // v1.23.9: убран .imePadding() — Scaffold сам подкладывает ime
+        // insets к bottomBar slot. См. комментарий выше.
+        modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 2.dp,
     ) {
