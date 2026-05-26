@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -195,10 +194,17 @@ fun SpanishAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color.Transparent.toArgb()
-            window.navigationBarColor = Color.Transparent.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
+            // v1.23.4: убраны deprecated `window.statusBarColor` и
+            // `window.navigationBarColor` — Play Console flagged их как
+            // unsupported на Android 15 (SDK 35). Прозрачность системных
+            // баров теперь задаётся через MainActivity.enableEdgeToEdge()
+            // (Activity.kt:123) — это стандартный modern way.
+            //
+            // Здесь оставляем только переключение светлый/тёмный
+            // appearance иконок системных баров — это НЕ deprecated.
+            val controller = WindowCompat.getInsetsController(window, view)
+            controller.isAppearanceLightStatusBars = !darkTheme
+            controller.isAppearanceLightNavigationBars = !darkTheme
         }
     }
 
