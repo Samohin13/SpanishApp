@@ -92,8 +92,16 @@ fun RadioMiniPlayer(
     val context_stations by player.stationContext.collectAsStateWithLifecycle()
     val canSkip = context_stations.size > 1
     val hiddenBySwipe by player.miniPlayerHidden.collectAsStateWithLifecycle()
-
-    val visible = station != null && !isOnRadioScreen && !hiddenBySwipe
+    // v1.23.8: sessionStarted = юзер реально нажал ▶ хотя бы раз.
+    // Раньше mini-player показывался когда `station != null`, но
+    // prepareOnly() (preview на RadioScreen) тоже устанавливает
+    // currentStation без play. Юзер заходил на радио, выходил →
+    // mini-player висел на всех экранах. Теперь mini-player виден
+    // ТОЛЬКО при активной сессии (после play). Стандартное поведение
+    // media-app: после pause mini-player остаётся для quick resume,
+    // после stop() — исчезает (sessionStarted=false).
+    val sessionStarted by player.sessionStarted.collectAsStateWithLifecycle()
+    val visible = station != null && sessionStarted && !isOnRadioScreen && !hiddenBySwipe
 
     // Swipe-to-dismiss state. Threshold 30% ширины контейнера → закрыть радио.
     // Иначе snap-back к исходной позиции (легкий случайный жест не закрывает).

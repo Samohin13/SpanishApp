@@ -90,6 +90,24 @@ class RadioPlayerController(private val context: Context) {
     fun hideMiniPlayer() { _miniPlayerHidden.value = true }
     fun showMiniPlayer() { _miniPlayerHidden.value = false }
 
+    /**
+     * v1.23.8: Флаг «юзер реально нажал ▶ хотя бы раз в текущей сессии».
+     *
+     * Раньше mini-player показывался когда `currentStation != null` — но
+     * `prepareOnly()` (preview на RadioScreen) тоже устанавливает currentStation
+     * без play. Юзер заходил на радио, ничего не нажимал, выходил → mini-player
+     * висел внизу на всех экранах. Баг.
+     *
+     * Теперь:
+     *  - `play()` → sessionStarted = true → mini-player ВИДЕН (включая после
+     *    последующего pause — это стандартный media-app паттерн, юзер может
+     *    быстро ▶ возобновить).
+     *  - `prepareOnly()` НЕ трогает флаг (остаётся false если не было play).
+     *  - `stop()` / `release()` → sessionStarted = false.
+     */
+    private val _sessionStarted = MutableStateFlow(false)
+    val sessionStarted: StateFlow<Boolean> = _sessionStarted.asStateFlow()
+
     // ────────────────────── Sleep Timer (v1.18.0) ──────────────────────
     /**
      * Sleep Timer — авто-стоп радио через заданное время.
@@ -423,6 +441,7 @@ class RadioPlayerController(private val context: Context) {
         _hasError.value = false
         _currentStation.value = station
         _nowPlaying.value = null  // новый трек придёт из ICY
+        _sessionStarted.value = true  // v1.23.8: юзер реально нажал play
         // Если play() вызван НЕ из reconnect-loop (новая станция, тап юзера) —
         // сбрасываем счётчик попыток
         val isReconnecting = reconnectJob?.isActive == true
@@ -598,6 +617,7 @@ class RadioPlayerController(private val context: Context) {
         _nowPlaying.value = null
         _playbackState.value = RadioPlaybackState.IDLE
         _currentStation.value = null
+        _sessionStarted.value = false  // v1.23.8: сброс — новая сессия начнётся при play()
 
         // Stop foreground service → notification исчезает
         runCatching {
