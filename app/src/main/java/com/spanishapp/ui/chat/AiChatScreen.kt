@@ -677,28 +677,21 @@ private fun ChatInputBar(
         label = "mic_pulse_anim",
     )
 
-    // v1.23.14: стандартный chat-input паттерн —
-    //   Column(.imePadding()) — поднимается над клавой
-    //   ├─ HorizontalDivider — видимая граница
-    //   └─ Row(.padding(bottom=24)) — input pill + mic с воздухом
-    //
-    // imePadding() ВНЕШНИЙ — двигает весь блок вверх когда клава открыта.
-    // Bottom padding 24dp ВНУТРИ Row — стабильный воздух между pill
-    // и клавой, не съедается Scaffold'ом.
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFF1A1A20))
-            .imePadding(),
+    // v1.23.16: УБРАН .imePadding() полностью с Surface. В Compose 1.7+
+    // bottomBar slot Material3 Scaffold САМ позиционируется над ime —
+    // двойной imePadding (внутри Surface + Scaffold) давал input pill
+    // mid-screen с огромным void'ом ниже до клавиатуры.
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.background,
+        tonalElevation = 0.dp,
     ) {
-        HorizontalDivider(
-            color = Color(0xFF2C2C36),
-            thickness = 1.dp,
-        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 24.dp),
+                // v1.23.16: bottom 12dp для маленького дыхания между
+                // pill и Samsung emoji toolbar клавы. Без двойного imePadding!
+                .padding(start = 8.dp, end = 8.dp, top = 6.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
