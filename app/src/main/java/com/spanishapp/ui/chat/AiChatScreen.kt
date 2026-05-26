@@ -679,14 +679,20 @@ private fun ChatInputBar(
     Surface(
         // v1.23.9: убран .imePadding() — Scaffold сам подкладывает ime
         // insets к bottomBar slot. См. комментарий выше.
+        // v1.23.10: цвет = background (true dark), убран tonalElevation.
+        // Material3 в dark theme tonalElevation смешивает primary (оранжевый)
+        // с surface → получался коричневый оттенок. Юзер пожаловался,
+        // теперь нейтральный тёмный.
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 2.dp,
+        color = MaterialTheme.colorScheme.background,
+        tonalElevation = 0.dp,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 6.dp),
+                // v1.23.10: bottom padding 12dp чтобы input не впритык к клавиатуре.
+                // Юзер видел emoji toolbar клавы прямо на input field. Дышит.
+                .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
