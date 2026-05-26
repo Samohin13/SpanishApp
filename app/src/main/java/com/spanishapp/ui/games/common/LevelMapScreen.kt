@@ -70,17 +70,22 @@ fun LevelMapScreen(
     isPro: Boolean = false,
     onPaywall: () -> Unit = {},
 ) {
-    var progress by remember { mutableStateOf<Map<Int, GameLevelProgressEntity>>(emptyMap()) }
-    var nextLevel by remember { mutableIntStateOf(1) }
-    var totalStars by remember { mutableIntStateOf(0) }
+    // v1.23.2 (audit Bug 11): единый Flow вместо 3 sequential DB calls.
+    // Раньше начальный рендер показывал пустой progress=emptyMap +
+    // nextLevel=1 + totalStars=0 → 100 ячеек рисовались, потом приходили
+    // данные → re-layout всех 100 (flicker). Теперь реактивно из Room
+    // observeForGame — нет flicker'а + автообновление после level complete.
+    val overviewFlow = remember(gameId) { manager.observeOverview(gameId) }
+    val overview by overviewFlow.collectAsStateWithLifecycle(
+        initialValue = com.spanishapp.domain.games.GameLevelOverview(
+            progress = emptyMap(), nextLevel = 1, totalStars = 0
+        )
+    )
+    val progress = overview.progress
+    val nextLevel = overview.nextLevel
+    val totalStars = overview.totalStars
     val scope = rememberCoroutineScope()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
-
-    LaunchedEffect(gameId) {
-        progress = manager.getProgressMap(gameId)
-        nextLevel = manager.nextLevel(gameId)
-        totalStars = manager.totalStars(gameId)
-    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,

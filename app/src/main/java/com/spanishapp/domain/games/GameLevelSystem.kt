@@ -2,8 +2,19 @@ package com.spanishapp.domain.games
 
 import com.spanishapp.data.db.dao.GameLevelProgressDao
 import com.spanishapp.data.db.entity.GameLevelProgressEntity
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+
+/**
+ * v1.23.2: снимок состояния всех уровней игры — для LevelMapScreen.
+ * Получается из одного DB query (observeForGame), все 3 поля derived.
+ */
+data class GameLevelOverview(
+    val progress: Map<Int, GameLevelProgressEntity>,
+    val nextLevel: Int,
+    val totalStars: Int,
+)
 
 /**
  * Идентификаторы игр (используются как `game_id` в game_level_progress).
@@ -88,6 +99,29 @@ class GameLevelManager @Inject constructor(
 
     /** Суммарное число звёзд по игре (0..300). */
     suspend fun totalStars(gameId: String): Int = dao.totalStars(gameId)
+
+    /**
+     * v1.23.2 (audit Bug 11): единый Flow всех трёх значений из одного DB
+     * query. Заменяет 3 sequential `getProgressMap()` + `nextLevel()` +
+     * `totalStars()` которые на LevelMapScreen вызывали UX flicker (грид
+     * сначала рисовался пустым, потом перерисовывался).
+     *
+     * Бонус: реактивный — когда юзер прошёл уровень в LevelSession, Room
+     * эмитит новый список → грид обновляется автоматически без необходимости
+     * pop'а и LaunchedEffect refresh.
+     */
+    fun observeOverview(gameId: String): kotlinx.coroutines.flow.Flow<GameLevelOverview> =
+        dao.observeForGame(gameId).map { entries ->
+            val map = entries.associateBy { it.levelNum }
+            val maxCleared = entries
+                .filter { it.stars > 0 }
+                .maxOfOrNull { it.levelNum } ?: 0
+            GameLevelOverview(
+                progress = map,
+                nextLevel = (maxCleared + 1).coerceAtMost(100),
+                totalStars = entries.sumOf { it.stars },
+            )
+        }
 
     /**
      * Сохранить результат прохождения уровня. Возвращает заработанные звёзды.

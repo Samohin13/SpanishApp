@@ -134,6 +134,11 @@ fun PaywallScreen(navController: NavHostController) {
             // === SWIPEABLE PAGES ===
             HorizontalPager(
                 state = pagerState,
+                // v1.23.2 (audit Bug 17): keep 1 page on each side composed
+                // → плавный свайп без задержки на композицию соседней страницы
+                // (главное где это заметно: переход 1→2, тяжёлый PageNumbers
+                // с 6 stat-карточками успевает скомпоноваться заранее).
+                beyondViewportPageCount = 1,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
@@ -474,33 +479,38 @@ private fun PageCompare() {
             ) {
                 Text("КОНТЕНТ", color = TextDim, fontSize = 11.sp,
                     fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp,
-                    modifier = Modifier.weight(1.4f))
+                    modifier = Modifier.weight(1f))
                 Text("FREE", color = TextDim, fontSize = 12.sp,
                     fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f))
+                    modifier = Modifier.width(80.dp))
                 Text("PRO 💎", color = PrimaryOrange, fontSize = 12.sp,
                     fontWeight = FontWeight.Black, letterSpacing = 1.sp,
-                    textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
+                    textAlign = TextAlign.Center, modifier = Modifier.width(80.dp))
             }
+            // v1.23.2 (audit Bug 13): фиксированная ширина для FREE/PRO
+            // колонок вместо weight nesting. Раньше 10 строк × 3 weighted
+            // children + nested Row(weight=1.4f) → каждый row дважды
+            // measured (unconstrained + constrained). Теперь категория
+            // (icon+text) занимает weight(1f), free и pro — фиксированные
+            // 80dp каждая. Один measure pass per row.
             PAYWALL_COMPARE_ROWS.forEachIndexed { i, r ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    Row(modifier = Modifier.weight(1.4f),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Text(r.icon, fontSize = 16.sp)
-                        Text(r.cat, color = TextColor, fontSize = 13.sp,
-                            fontWeight = FontWeight.SemiBold)
-                    }
+                    Text(r.icon, fontSize = 16.sp)
+                    Text(r.cat, color = TextColor, fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.weight(1f))
                     Text(r.free, color = TextDim, fontSize = 12.sp,
-                        textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(80.dp))
                     Box(
                         modifier = Modifier
-                            .weight(1f)
+                            .width(80.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .background(PrimaryOrange.copy(alpha = 0.1f))
                             .padding(vertical = 6.dp),
