@@ -5,7 +5,6 @@
     <string name="widget_dictionary_search_desc">Быстрый поиск слов словаря</string>
     <string name="widget_mission_desc">Прогресс ежедневных целей</string>
     <string name="widget_streak_desc">Streak дней подряд (🔥)</string>
-    <string name="widget_ai_chat_desc">ИИ-репетитор испанского</string>
     <string name="widget_radio_desc">Испанское радио — слушай и учись</string>
 
     <!-- v1.16.0: Hint Bank earn reasons -->
@@ -64,7 +63,6 @@
     <string name="title_grammar">Грамматика</string>
     <string name="title_conjugation">Спряжения</string>
     <string name="title_pronunciation">Произношение</string>
-    <string name="title_ai_chat">AI-репетитор</string>
     <string name="title_leaderboard">Лидерборд</string>
     <string name="title_libros">Рассказы</string>
     <string name="title_flashcards">Карточки</string>
@@ -167,15 +165,6 @@
     <string name="course_start_learning">Начать обучение →</string>
 
     <!-- ── AI Chat ──────────────────────────────────────────── -->
-    <string name="chat_assistant_name">ИИ-помощник</string>
-    <string name="chat_status_online">онлайн</string>
-    <string name="chat_message_placeholder">Сообщение…</string>
-    <string name="chat_correction_label">Исправление</string>
-    <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
-    <string name="chat_welcome_subtitle">Я помогу тебе практиковать испанский язык. О чём хочешь поговорить?</string>
-    <string name="chat_error_network">Нет интернета</string>
-    <string name="chat_error_rate_limit">Слишком быстро — ИИ просит 30 секунд паузы 🙏</string>
-    <string name="chat_error_generic">Ошибка: %1$s</string>
 
     <!-- ── Pronunciation ────────────────────────────────────── -->
     <string name="pron_listen">Слушать</string>
@@ -788,32 +777,10 @@
     <string name="voice_install_later">Позже</string>
     <string name="speaker_button_cd">Произнести</string>
     <string name="league_region">Регион: %1$s</string>
-    <string name="chat_error_invalid_key">Неверный API ключ Anthropic</string>
-    <string name="chat_close_cd">Закрыть</string>
 
     <!-- Chat welcome screen — capability cards -->
-    <string name="chat_cap_answer_title">Отвечает на испанском</string>
-    <string name="chat_cap_answer_desc">Сложные слова переводит в [скобках]. Если пишешь по-русски — объясняет на двух языках.</string>
-    <string name="chat_cap_correct_title">Исправляет ошибки</string>
-    <string name="chat_cap_correct_desc">Покажет правильный вариант с пометкой ✏️ и объяснит ошибку по-русски.</string>
-    <string name="chat_cap_speak_title">Озвучивает ответы</string>
-    <string name="chat_cap_speak_desc">Тапни 🔊 под сообщением — услышишь как звучит фраза.</string>
-    <string name="chat_cap_adapt_title">Адаптируется к уровню</string>
-    <string name="chat_cap_adapt_desc">A1/A2 — простые фразы. B1+ — идиомы и сложные времена.</string>
-    <string name="chat_cap_stream_title">Печатает в реальном времени</string>
-    <string name="chat_cap_stream_desc">Текст появляется по словам, не нужно ждать весь ответ.</string>
-    <string name="chat_try_label">Попробуй спросить:</string>
 
     <!-- Chat: clear / quick replies / voice input -->
-    <string name="chat_clear_title">Очистить чат?</string>
-    <string name="chat_clear_text">История сообщений будет удалена. Это действие нельзя отменить.</string>
-    <string name="chat_clear_confirm">Очистить</string>
-    <string name="chat_quick_simpler">Объясни проще</string>
-    <string name="chat_quick_example">Дай пример</string>
-    <string name="chat_quick_check">Проверь грамматику</string>
-    <string name="chat_quick_practice">Давай попрактикуем</string>
-    <string name="chat_voice_input_cd">Голосовой ввод</string>
-    <string name="chat_send_cd">Отправить</string>
 
     <!-- ═══════════════════════════════════════════════════════
          Auth / Onboarding screens — вынесены из хардкода в Kotlin.

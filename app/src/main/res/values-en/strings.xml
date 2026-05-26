@@ -4,7 +4,6 @@
     <string name="widget_dictionary_search_desc">Quick dictionary word lookup</string>
     <string name="widget_mission_desc">Daily goals progress</string>
     <string name="widget_streak_desc">Day-streak counter (🔥)</string>
-    <string name="widget_ai_chat_desc">AI Spanish tutor</string>
     <string name="widget_radio_desc">Spanish radio — listen and learn</string>
 
     <!-- v1.16.0: Hint Bank earn reasons -->
@@ -21,8 +20,6 @@
     <string name="hint_bank_label">Hints</string>
     <string name="hint_consume_one">Hint</string>
     <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
-    <string name="chat_send_cd">Send</string>
-    <string name="chat_error_rate_limit">Slow down — AI needs 30 seconds to catch up 🙏</string>
 
     <!-- ── Bottom navigation ── -->
     <string name="nav_home">Home</string>
@@ -53,7 +50,6 @@
     <string name="title_grammar">Grammar</string>
     <string name="title_conjugation">Conjugation</string>
     <string name="title_pronunciation">Pronunciation</string>
-    <string name="title_ai_chat">AI tutor</string>
     <string name="title_leaderboard">Leaderboard</string>
     <string name="title_libros">Stories</string>
     <string name="title_flashcards">Flashcards</string>
@@ -156,14 +152,6 @@
     <string name="course_start_learning">Start learning →</string>
 
     <!-- ── AI Chat ── -->
-    <string name="chat_assistant_name">AI tutor</string>
-    <string name="chat_status_online">online</string>
-    <string name="chat_message_placeholder">Message…</string>
-    <string name="chat_correction_label">Correction</string>
-    <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
-    <string name="chat_welcome_subtitle">I\'ll help you practice Spanish. What would you like to talk about?</string>
-    <string name="chat_error_network">No internet connection</string>
-    <string name="chat_error_generic">Error: %1$s</string>
 
     <!-- ── Pronunciation ── -->
     <string name="pron_listen">Listen</string>
@@ -749,8 +737,6 @@
     <string name="voice_install_later">Later</string>
     <string name="speaker_button_cd">Speak</string>
     <string name="league_region">Region: %1$s</string>
-    <string name="chat_error_invalid_key">Invalid Anthropic API key</string>
-    <string name="chat_close_cd">Close</string>
 
     <string name="set_about_section">About</string>
     <string name="set_about_version">Version</string>
@@ -759,27 +745,8 @@
     <string name="set_about_made_with_love">Made with ❤️ for learning Spanish</string>
 
     <!-- Chat welcome screen — capability cards -->
-    <string name="chat_cap_answer_title">Replies in Spanish</string>
-    <string name="chat_cap_answer_desc">Hard words come with translation in [brackets]. If you write in English, it explains both ways.</string>
-    <string name="chat_cap_correct_title">Corrects mistakes</string>
-    <string name="chat_cap_correct_desc">Shows the right version with ✏️ and explains the error.</string>
-    <string name="chat_cap_speak_title">Speaks responses</string>
-    <string name="chat_cap_speak_desc">Tap 🔊 under any message to hear it pronounced.</string>
-    <string name="chat_cap_adapt_title">Adapts to your level</string>
-    <string name="chat_cap_adapt_desc">A1/A2 — simple phrases. B1+ — idioms and complex tenses.</string>
-    <string name="chat_cap_stream_title">Streams in real time</string>
-    <string name="chat_cap_stream_desc">Text appears word by word — no waiting for the full reply.</string>
-    <string name="chat_try_label">Try asking:</string>
 
     <!-- Chat: clear / quick replies / voice input -->
-    <string name="chat_clear_title">Clear chat?</string>
-    <string name="chat_clear_text">All messages will be deleted. This can\'t be undone.</string>
-    <string name="chat_clear_confirm">Clear</string>
-    <string name="chat_quick_simpler">Explain simpler</string>
-    <string name="chat_quick_example">Give an example</string>
-    <string name="chat_quick_check">Check grammar</string>
-    <string name="chat_quick_practice">Let\'s practice</string>
-    <string name="chat_voice_input_cd">Voice input</string>
 
     <!-- Auth / Onboarding (Wave 1) -->
     <string name="auth_back">Back</string>

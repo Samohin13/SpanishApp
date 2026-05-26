@@ -74,7 +74,6 @@ private val PAYWALL_STATS = listOf(
     StatItem("75", "историй", "A2 · B1 · B2"),
     StatItem("1327", "глаголов", "все времена"),
     StatItem("100", "уровней игр", "все 6 игр"),
-    StatItem("∞", "AI-репетитор", "сейчас 50/день"),
     StatItem("10К", "слов в карточках", "по всем уровням"),
 )
 
@@ -85,7 +84,6 @@ private val PAYWALL_FEATS = listOf(
     FeatItem("🔥", "1327 глаголов", "Все формы прошедшего, будущего, сослагательного"),
     FeatItem("🎯", "Все 100 уровней игр", "Сейчас открыты только первые 10 каждой"),
     FeatItem("🃏", "Умные карточки слов", "Все 10 000 слов с интервальным повторением"),
-    FeatItem("🤖", "ИИ-репетитор без лимита", "Сейчас 50 сообщений в день — будет ∞"),
 )
 
 private data class CompareRow(val icon: String, val cat: String, val free: String, val pro: String)
@@ -97,7 +95,6 @@ private val PAYWALL_COMPARE_ROWS = listOf(
     CompareRow("🔥", "Спряжение", "базовое", "1327 глаг."),
     CompareRow("🎯", "Игры", "10 уровней", "100 уровней"),
     CompareRow("🃏", "SM-2 карт.", "A1 слова", "все ~10K"),
-    CompareRow("🤖", "AI Chat", "50/день", "∞ безлимит"),
     CompareRow("📖", "Словарь", "✓", "✓"),
     CompareRow("📻", "Радио", "✓", "✓"),
 )
@@ -599,7 +596,7 @@ private fun PageProgress() {
         ) {
             Column {
                 Text(
-                    "«За 4 месяца с PRO дошла до B1 и впервые свободно говорила с испанцем в Барселоне. AI-чат — лучшая фича.»",
+                    "«За 4 месяца с PRO дошла до B1 и впервые свободно говорила с испанцем в Барселоне. Курс просто огонь.»",
                     color = TextColor, fontSize = 13.sp,
                     fontStyle = FontStyle.Italic, lineHeight = 19.sp
                 )

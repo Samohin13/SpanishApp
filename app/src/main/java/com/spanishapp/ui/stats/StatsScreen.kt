@@ -771,7 +771,6 @@ private fun BreakdownCard(b: ActivityBreakdown) {
                 BreakRowData("🎮", PurpleC, "Игры", "${b.gamesLevels} уровней", b.gamesMin, b.pct(b.gamesMin)),
                 BreakRowData("📻", PinkC,   "Радио", if (b.radioMin > 0) "${b.radioMin} мин эфира" else "—", b.radioMin, b.pct(b.radioMin)),
                 BreakRowData("📖", GreenC,  "Книги", if (b.booksCount > 0) "${b.booksCount} прочитано" else "—", b.booksMin, b.pct(b.booksMin)),
-                BreakRowData("🤖", YellowC, "ИИ-чат", if (b.chatMessages > 0) "${b.chatMessages} сообщений" else "—", b.chatMin, b.pct(b.chatMin)),
             )
             rows.forEachIndexed { i, r ->
                 BreakRow(r, isLast = i == rows.lastIndex)

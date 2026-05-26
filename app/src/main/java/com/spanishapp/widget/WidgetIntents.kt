@@ -13,7 +13,6 @@ import com.spanishapp.MainActivity
  * Целевые маршруты совпадают с NavHost route'ами в Navigation.kt:
  * - "home"
  * - "dictionary"
- * - "ai_chat_sessions"
  * - "radio"
  *
  * Использование из Glance:
@@ -28,7 +27,6 @@ object WidgetIntents {
 
     const val TARGET_HOME = "home"
     const val TARGET_DICTIONARY = "dictionary"
-    const val TARGET_AI_CHAT = "ai_chat_sessions"
     const val TARGET_RADIO = "radio"
 
     fun intentFor(context: Context, target: String): Intent =

@@ -85,7 +85,6 @@ class SettingsViewModel @Inject constructor(
     private val libroProgressDao: com.spanishapp.data.db.dao.LibroProgressDao,
     private val flashcardSetProgressDao: com.spanishapp.data.db.dao.FlashcardSetProgressDao,
     private val lessonProgressDao: com.spanishapp.data.db.dao.LessonProgressDao,
-    private val chatMessageDao: com.spanishapp.data.db.dao.ChatMessageDao,
     private val dailyXpDao: com.spanishapp.data.db.dao.DailyXpDao,
     private val gameLevelProgressDao: com.spanishapp.data.db.dao.GameLevelProgressDao,
     private val articleGameDao: com.spanishapp.data.db.dao.ArticleGameDao,
@@ -115,7 +114,6 @@ class SettingsViewModel @Inject constructor(
         libroProgressDao.deleteAll()
         flashcardSetProgressDao.deleteAll()
         lessonProgressDao.deleteAll()
-        chatMessageDao.deleteAll()
         dailyXpDao.deleteAll()
         gameLevelProgressDao.deleteAll()
         articleGameDao.deleteAllProgress()

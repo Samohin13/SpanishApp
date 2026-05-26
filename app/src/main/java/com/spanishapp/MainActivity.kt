@@ -104,7 +104,7 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    // v1.14.0: target от виджета (Dictionary / AiChat / Radio).
+    // v1.14.0: target от виджета (Dictionary / Radio).
     // Используем mutableStateOf чтобы SpanishAppRoot реагировал на
     // onNewIntent (юзер тапнул виджет когда app уже открыто).
     private val widgetTarget = androidx.compose.runtime.mutableStateOf<String?>(null)
@@ -286,7 +286,7 @@ fun SpanishAppRoot(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: "home"
 
-    // v1.14.0: реагируем на widget deep link (Dictionary / AiChat / Radio).
+    // v1.14.0: реагируем на widget deep link (Dictionary / Radio).
     // Когда widgetTarget меняется — навигируем и сбрасываем (чтобы повторное
     // открытие виджета снова сработало).
     LaunchedEffect(widgetTarget.value) {
@@ -359,9 +359,8 @@ fun SpanishAppRoot(
         },
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
-            // v1.18.54: padding + consume — позволяет дочерним экранам корректно
-            // считать ime/safeDrawing inset'ы. Без consume чат не мог отличить
-            // «navBar уже учтён в outer» от «navBar надо ещё применить» → double-count.
+            // v1.18.54: padding + consume — дочерние экраны корректно
+            // считают ime/safeDrawing inset'ы.
             Navigation.SpanishNavHost(
                 navController = navController,
                 modifier = Modifier

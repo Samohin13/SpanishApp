@@ -359,60 +359,6 @@ fun HomeScreen(
             }
         }
 
-        // ── AI-Chat FAB ─────────────────────────────────────────
-        val entranceScale = remember { Animatable(0f) }
-        LaunchedEffect(Unit) {
-            kotlinx.coroutines.delay(400)
-            entranceScale.animateTo(
-                targetValue = 1f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
-            )
-        }
-        val pulse by rememberInfiniteTransition(label = "fab_pulse").animateFloat(
-            initialValue = 1f,
-            targetValue = 1.06f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(durationMillis = 2000, easing = FastOutSlowInEasing),
-                repeatMode = RepeatMode.Reverse
-            ),
-            label = "fab_pulse_scale"
-        )
-        val combinedScale = entranceScale.value * pulse
-        val shadowDp = 8.dp + ((pulse - 1f) * 80f).dp
-
-        // v1.13.0: adaptive FAB size — на планшете крупнее, чтобы не
-        // выглядел маленьким (60dp на 1280dp экране = крошка).
-        val fabSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 72.dp else 60.dp
-        val fabIconSize = if (com.spanishapp.ui.adaptive.isWideScreen()) 36.dp else 30.dp
-        FloatingActionButton(
-            onClick = com.spanishapp.ui.components.hapticAction { navController.navigate("ai_chat_sessions") },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 20.dp, bottom = 20.dp)
-                .graphicsLayer {
-                    scaleX = combinedScale
-                    scaleY = combinedScale
-                }
-                .shadow(
-                    elevation = shadowDp,
-                    shape = CircleShape,
-                    spotColor = Orange,
-                    ambientColor = Orange
-                )
-                .size(fabSize),
-            containerColor = Orange,
-            contentColor = Color.White,
-            shape = CircleShape
-        ) {
-            Icon(
-                painter = androidx.compose.ui.res.painterResource(R.drawable.ic_bull),
-                contentDescription = stringResource(R.string.title_ai_chat),
-                modifier = Modifier.size(fabIconSize)
-            )
-        }
     }
 
     // Bottom sheets for random / dictionary chip lookups.

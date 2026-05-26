@@ -24,7 +24,6 @@ import com.spanishapp.ui.flashcards.FlashcardDirection
 import com.spanishapp.ui.flashcards.FlashcardsScreen
 import com.spanishapp.ui.flashcards.FlashcardsSetupScreen
 import com.spanishapp.ui.flashcards.PracticeScreen
-import com.spanishapp.ui.chat.AiChatScreen
 import com.spanishapp.ui.conjugation.ConjugationScreen
 import com.spanishapp.ui.games.*
 import com.spanishapp.ui.dictionary.DictionaryScreen
@@ -394,19 +393,7 @@ object Navigation {
             // Detail-экран не нужен: GrammarScreen раскрывает урок inline.
             composable("grammar") { GrammarScreen(navController) }
 
-            // ── ИИ-чат ───────────────────────────────────────
-            // Theme picker (replaces direct entry into AI chat).
-            composable("ai_chat_sessions") {
-                com.spanishapp.ui.chat.ChatSessionsScreen(navController)
-            }
-            composable(
-                "ai_chat?sessionId={sessionId}",
-                arguments = listOf(navArgument("sessionId") { defaultValue = "default" })
-            ) { AiChatScreen(navController) }
-            // Backward-compat: legacy "ai_chat" without args still opens default session.
-            composable("ai_chat") { AiChatScreen(navController) }
-
-            // ── Произношение ──────────────────────────────────
+// ── Произношение ──────────────────────────────────
             composable("pronunciation") { PronunciationScreen(navController) }
 
             // ── Тест ─────────────────────────────────────────

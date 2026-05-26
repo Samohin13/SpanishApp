@@ -41,8 +41,6 @@ class AuthRepository @Inject constructor(
     // v1.18.29: прямой выбор голоса (без пресетов) — VoiceCatalog id
     private val SELECTED_RU_VOICE = stringPreferencesKey("selected_ru_voice")
     private val SELECTED_ES_VOICE = stringPreferencesKey("selected_es_voice")
-    // v1.18.38: фон AI чата (ChatWallpapers.id)
-    private val CHAT_WALLPAPER = stringPreferencesKey("chat_wallpaper")
     private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
@@ -108,13 +106,7 @@ class AuthRepository @Inject constructor(
         context.dataStore.edit { it[SELECTED_ES_VOICE] = voiceId }
     }
 
-    // v1.18.38: фон чата
-    val chatWallpaper: Flow<String?> = context.dataStore.data.map { it[CHAT_WALLPAPER] }
-    suspend fun setChatWallpaper(id: String) {
-        context.dataStore.edit { it[CHAT_WALLPAPER] = id }
-    }
-
-    val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARDING_COMPLETED] ?: false }
+val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARDING_COMPLETED] ?: false }
 
     val userPhotoUrl: Flow<String?> = context.dataStore.data.map { it[USER_PHOTO] }
 

@@ -102,10 +102,8 @@ data class ActivityBreakdown(
     val radioMin: Int = 0,
     val booksMin: Int = 0,
     val booksCount: Int = 0,
-    val chatMin: Int = 0,
-    val chatMessages: Int = 0,
 ) {
-    val totalMin: Int get() = lessonsMin + flashcardsMin + gamesMin + radioMin + booksMin + chatMin
+    val totalMin: Int get() = lessonsMin + flashcardsMin + gamesMin + radioMin + booksMin
     fun pct(value: Int): Int = if (totalMin <= 0) 0 else (value * 100 / totalMin)
 }
 
@@ -145,7 +143,6 @@ class StatsViewModel @Inject constructor(
     private val wordDao: WordDao,
     private val achievementDao: AchievementDao,
     private val radioListeningDao: RadioListeningDao,
-    private val chatMessageDao: ChatMessageDao,
     private val activityTimeLogDao: com.spanishapp.data.db.dao.ActivityTimeLogDao,
 ) : ViewModel() {
 
@@ -175,7 +172,6 @@ class StatsViewModel @Inject constructor(
                 // breakdown.lessonsCount «за период», включая review-сессии.
                 lessonCompletionHistoryDao.observeCountSince(periodStartMs),
                 gameLevelProgressDao.observeCountSince(periodStartMs),
-                chatMessageDao.observeCountSince(periodStartMs),
                 libroProgressDao.getAll(),
                 flashcardSetProgressDao.observeAll(),
                 wordDao.learnedCount(),
@@ -191,7 +187,6 @@ class StatsViewModel @Inject constructor(
                 activityTimeLogDao.observeMinutesSince("FLASHCARDS", periodStartMs),
                 activityTimeLogDao.observeMinutesSince("GAME", periodStartMs),
                 activityTimeLogDao.observeMinutesSince("BOOK", periodStartMs),
-                activityTimeLogDao.observeMinutesSince("CHAT", periodStartMs),
             )
         ) { args ->
             @Suppress("UNCHECKED_CAST")
@@ -202,33 +197,31 @@ class StatsViewModel @Inject constructor(
             val lessonKeys       = args[2]  as List<String>
             val lessonsInPeriod  = args[3]  as Int
             val gameLevelsPeriod = args[4]  as Int
-            val chatMsgsPeriod   = args[5]  as Int
             @Suppress("UNCHECKED_CAST")
-            val libros           = args[6]  as List<LibroProgressEntity>
+            val libros           = args[5]  as List<LibroProgressEntity>
             @Suppress("UNCHECKED_CAST")
-            val flashSets        = args[7]  as List<FlashcardSetProgressEntity>
-            val learnedCount     = args[8]  as Int
-            val inProgress       = args[9]  as Int
-            val untouched        = args[10] as Int
+            val flashSets        = args[6]  as List<FlashcardSetProgressEntity>
+            val learnedCount     = args[7]  as Int
+            val inProgress       = args[8]  as Int
+            val untouched        = args[9] as Int
             @Suppress("UNCHECKED_CAST")
-            val weak             = args[11] as List<WordEntity>
+            val weak             = args[10] as List<WordEntity>
             @Suppress("UNCHECKED_CAST")
-            val achievements     = args[12] as List<AchievementEntity>
-            val radioSecs        = args[13] as Long
+            val achievements     = args[11] as List<AchievementEntity>
+            val radioSecs        = args[12] as Long
             @Suppress("UNCHECKED_CAST")
-            val mistakes         = args[14] as List<MistakeRow>
-            val lessonMin        = (args[15] as Long).toInt()
-            val flashcardsMin    = (args[16] as Long).toInt()
-            val gameMin          = (args[17] as Long).toInt()
-            val bookMin          = (args[18] as Long).toInt()
-            val chatMin          = (args[19] as Long).toInt()
+            val mistakes         = args[13] as List<MistakeRow>
+            val lessonMin        = (args[14] as Long).toInt()
+            val flashcardsMin    = (args[15] as Long).toInt()
+            val gameMin          = (args[16] as Long).toInt()
+            val bookMin          = (args[17] as Long).toInt()
 
             buildUi(
                 period, today, periodStart, periodStartMs, periodLen, prevStart,
                 progress, dailyXp, lessonKeys, lessonsInPeriod, gameLevelsPeriod,
-                chatMsgsPeriod, libros, flashSets, learnedCount, inProgress, untouched,
+                libros, flashSets, learnedCount, inProgress, untouched,
                 weak, achievements, radioSecs, mistakes,
-                lessonMin, flashcardsMin, gameMin, bookMin, chatMin,
+                lessonMin, flashcardsMin, gameMin, bookMin,
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), StatsUi())
@@ -269,7 +262,6 @@ internal fun buildUi(
     lessonKeys: List<String>,
     lessonsInPeriod: Int,
     gameLevelsPeriod: Int,
-    chatMsgsPeriod: Int,
     libros: List<LibroProgressEntity>,
     flashSets: List<FlashcardSetProgressEntity>,
     learnedCount: Int,
@@ -285,7 +277,6 @@ internal fun buildUi(
     flashcardsMin: Int = 0,
     gameMin: Int = 0,
     bookMin: Int = 0,
-    chatMin: Int = 0,
 ): StatsUi {
     val byDay = dailyXp.associateBy { it.day }
     val series = (0 until periodLen).map { offset ->
@@ -343,8 +334,6 @@ internal fun buildUi(
         radioMin         = radioMin,
         booksMin         = bookMin,
         booksCount       = librosInPeriod,
-        chatMin          = chatMin,
-        chatMessages     = chatMsgsPeriod,
     )
 
     val topWeak = weak.take(5).map { WeakRow(it.spanish, it.russian) }

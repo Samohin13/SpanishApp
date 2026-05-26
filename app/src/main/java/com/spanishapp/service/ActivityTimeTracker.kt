@@ -25,7 +25,6 @@ enum class ActivityType {
     FLASHCARDS,  // FlashcardsScreen, PracticeScreen
     GAME,        // 6 экранов игр (Articles, Speed, Math, Sopa, Palabra, Crossword, Verb, Libros-game)
     BOOK,        // LibroReadScreen
-    CHAT,        // AiChatScreen
 }
 
 /**

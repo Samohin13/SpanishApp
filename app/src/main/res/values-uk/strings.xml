@@ -5,7 +5,6 @@
     <string name="widget_dictionary_search_desc">Швидкий пошук слів у словнику</string>
     <string name="widget_mission_desc">Прогрес щоденних цілей</string>
     <string name="widget_streak_desc">Серія днів поспіль (🔥)</string>
-    <string name="widget_ai_chat_desc">ШІ-репетитор іспанської</string>
     <string name="widget_radio_desc">Іспанське радіо — слухай і вчись</string>
 
     <!-- v1.16.0: Hint Bank — причини отримання -->
@@ -22,8 +21,6 @@
     <string name="hint_bank_label">Підказки</string>
     <string name="hint_consume_one">Підказка</string>
     <string name="hint_earn_toast">+%1$d 💡 %2$s</string>
-    <string name="chat_send_cd">Надіслати</string>
-    <string name="chat_error_rate_limit">Занадто швидко — ШІ просить 30 секунд паузи 🙏</string>
     <string name="widget_description">Слово дня іспанською</string>
 
     <!-- Google Sign-In Web Client ID -->
@@ -62,7 +59,6 @@
     <string name="title_grammar">Граматика</string>
     <string name="title_conjugation">Відмінювання</string>
     <string name="title_pronunciation">Вимова</string>
-    <string name="title_ai_chat">AI-репетитор</string>
     <string name="title_leaderboard">Лідерборд</string>
     <string name="title_libros">Оповідання</string>
     <string name="title_flashcards">Картки</string>
@@ -165,14 +161,6 @@
     <string name="course_start_learning">Почати навчання →</string>
 
     <!-- ── AI Chat ── -->
-    <string name="chat_assistant_name">AI-помічник</string>
-    <string name="chat_status_online">онлайн</string>
-    <string name="chat_message_placeholder">Повідомлення…</string>
-    <string name="chat_correction_label">Виправлення</string>
-    <string name="chat_welcome_title">¡Hola! Soy tu tutor personal.</string>
-    <string name="chat_welcome_subtitle">Я допоможу тобі практикувати іспанську. Про що хочеш поговорити?</string>
-    <string name="chat_error_network">Немає інтернету</string>
-    <string name="chat_error_generic">Помилка: %1$s</string>
 
     <!-- ── Pronunciation ── -->
     <string name="pron_listen">Слухати</string>
@@ -763,31 +751,10 @@
     <string name="voice_install_later">Пізніше</string>
     <string name="speaker_button_cd">Вимовити</string>
     <string name="league_region">Регіон: %1$s</string>
-    <string name="chat_error_invalid_key">Невірний API ключ Anthropic</string>
-    <string name="chat_close_cd">Закрити</string>
 
     <!-- Chat welcome screen — capability cards -->
-    <string name="chat_cap_answer_title">Відповідає іспанською</string>
-    <string name="chat_cap_answer_desc">Складні слова перекладає в [дужках]. Якщо пишеш українською — пояснює двома мовами.</string>
-    <string name="chat_cap_correct_title">Виправляє помилки</string>
-    <string name="chat_cap_correct_desc">Покаже правильний варіант з позначкою ✏️ і пояснить помилку.</string>
-    <string name="chat_cap_speak_title">Озвучує відповіді</string>
-    <string name="chat_cap_speak_desc">Натисни 🔊 під повідомленням — почуєш як звучить фраза.</string>
-    <string name="chat_cap_adapt_title">Адаптується до рівня</string>
-    <string name="chat_cap_adapt_desc">A1/A2 — прості фрази. B1+ — ідіоми та складні часи.</string>
-    <string name="chat_cap_stream_title">Друкує в реальному часі</string>
-    <string name="chat_cap_stream_desc">Текст зʼявляється по словах, не потрібно чекати всю відповідь.</string>
-    <string name="chat_try_label">Спробуй запитати:</string>
 
     <!-- Chat: clear / quick replies / voice input -->
-    <string name="chat_clear_title">Очистити чат?</string>
-    <string name="chat_clear_text">Історію повідомлень буде видалено. Цю дію не можна скасувати.</string>
-    <string name="chat_clear_confirm">Очистити</string>
-    <string name="chat_quick_simpler">Поясни простіше</string>
-    <string name="chat_quick_example">Дай приклад</string>
-    <string name="chat_quick_check">Перевір граматику</string>
-    <string name="chat_quick_practice">Давай попрактикуємо</string>
-    <string name="chat_voice_input_cd">Голосове введення</string>
 
     <!-- Auth / Onboarding (Wave 1) -->
     <string name="auth_back">Назад</string>
