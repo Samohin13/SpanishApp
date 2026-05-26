@@ -392,10 +392,11 @@ fun AiChatScreen(
     //  navigationBarsPadding (иначе double-count).
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        // v1.23.9: contentWindowInsets явно включает ime — Scaffold САМ
-        // поднимает bottomBar (ChatInputBar) над клавиатурой, без необходимости
-        // .imePadding() внутри Surface (что давало двойное смещение).
-        contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.ime),
+        // v1.23.14: вернул default contentWindowInsets. Подход через
+        // contentWindowInsets+ime срабатывал частично — Scaffold "ел"
+        // часть padding'а внутри ChatInputBar. Теперь imePadding() на
+        // outer Column ChatInputBar — стандартный и предсказуемый
+        // паттерн Material3 для chat-input.
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -676,23 +677,28 @@ private fun ChatInputBar(
         label = "mic_pulse_anim",
     )
 
-    Surface(
-        // v1.23.9: убран .imePadding() — Scaffold сам подкладывает ime
-        // insets к bottomBar slot. См. комментарий выше.
-        // v1.23.10: цвет = background (true dark), убран tonalElevation.
-        // Material3 в dark theme tonalElevation смешивает primary (оранжевый)
-        // с surface → получался коричневый оттенок. Юзер пожаловался,
-        // теперь нейтральный тёмный.
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.background,
-        tonalElevation = 0.dp,
+    // v1.23.14: стандартный chat-input паттерн —
+    //   Column(.imePadding()) — поднимается над клавой
+    //   ├─ HorizontalDivider — видимая граница
+    //   └─ Row(.padding(bottom=24)) — input pill + mic с воздухом
+    //
+    // imePadding() ВНЕШНИЙ — двигает весь блок вверх когда клава открыта.
+    // Bottom padding 24dp ВНУТРИ Row — стабильный воздух между pill
+    // и клавой, не съедается Scaffold'ом.
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFF1A1A20))
+            .imePadding(),
     ) {
+        HorizontalDivider(
+            color = Color(0xFF2C2C36),
+            thickness = 1.dp,
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                // v1.23.10: bottom padding 12dp чтобы input не впритык к клавиатуре.
-                // Юзер видел emoji toolbar клавы прямо на input field. Дышит.
-                .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 12.dp),
+                .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
