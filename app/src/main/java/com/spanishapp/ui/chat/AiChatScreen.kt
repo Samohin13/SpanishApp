@@ -469,9 +469,96 @@ fun AiChatScreen(
                 },
             )
         },
-        // v1.23.25: bottomBar возвращён — юзер хочет общаться с ИИ.
-        // При исчерпании 50/день показываем PRO upsell, иначе — input bar.
-        bottomBar = {
+        // v1.23.26: Telegram/WhatsApp pattern — Column с .imePadding() оборачивает
+        // ВЕСЬ контент. bottomBar Scaffold'а НЕ используем. Это стандартный
+        // JetChat-sample подход: input всегда внизу Column, при открытии клавы
+        // вся Column поднимается через imePadding — никаких double-pad.
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+        ) {
+            // ── Контент чата (welcome или messages) ───────────────────
+            Box(modifier = Modifier.weight(1f)) {
+                ChatWallpaperBackground(
+                    wallpaper = wallpaper,
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    if (messages.isEmpty()) {
+                        WelcomeHint(onSuggestion = {
+                            vm.send(it)
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        })
+                    } else {
+                        LazyColumn(
+                            state = listState,
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .adaptiveContentWidth(),
+                        ) {
+                            items(messages, key = { it.id }) { msg ->
+                                ChatBubble(
+                                    message = msg,
+                                    onSpeak = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        vm.speak(msg.content)
+                                    },
+                                    onSpeakWord = { word ->
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        vm.speak(word)
+                                    },
+                                    modifier = Modifier.animateItem(
+                                        fadeInSpec = tween(280),
+                                        placementSpec = spring(
+                                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                                            stiffness = Spring.StiffnessMediumLow,
+                                        ),
+                                        fadeOutSpec = tween(180),
+                                    ),
+                                )
+                            }
+                            if (streamingText.isNotEmpty()) {
+                                item(key = "streaming") {
+                                    ChatBubble(
+                                        message = ChatMessageEntity(
+                                            id = -1,
+                                            role = "assistant",
+                                            content = streamingText,
+                                            sessionId = "default",
+                                            correctionJson = "",
+                                        ),
+                                        onSpeak = { /* no-op while streaming */ },
+                                        onSpeakWord = { word ->
+                                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                            vm.speak(word)
+                                        },
+                                        modifier = Modifier,
+                                    )
+                                }
+                            } else if (isSending) {
+                                item("typing") { TypingIndicator() }
+                            }
+
+                            val lastIsAssistant = messages.lastOrNull()?.role == "assistant"
+                            if (lastIsAssistant && !isSending && streamingText.isEmpty()) {
+                                item("quick_replies") {
+                                    QuickReplies(
+                                        onPick = { preset ->
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            vm.send(preset)
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ── Input bar внизу Column — поднимается с клавой через imePadding ──
             if (!isPro && remaining <= 0) {
                 AiChatUpsellCard(onClick = {
                     navController.navigate("paywall") { launchSingleTop = true }
@@ -493,84 +580,6 @@ fun AiChatScreen(
                     isListening = isListening,
                     voiceAmplitude = voiceAmplitude,
                 )
-            }
-        },
-    ) { padding ->
-        ChatWallpaperBackground(
-            wallpaper = wallpaper,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-        ) {
-            if (messages.isEmpty()) {
-                WelcomeHint(onSuggestion = {
-                    vm.send(it)
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                })
-            } else {
-                LazyColumn(
-                    state = listState,
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .adaptiveContentWidth(),
-                ) {
-                    items(messages, key = { it.id }) { msg ->
-                        ChatBubble(
-                            message = msg,
-                            onSpeak = {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                vm.speak(msg.content)
-                            },
-                            onSpeakWord = { word ->
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                vm.speak(word)
-                            },
-                            modifier = Modifier.animateItem(
-                                fadeInSpec = tween(280),
-                                placementSpec = spring(
-                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                    stiffness = Spring.StiffnessMediumLow,
-                                ),
-                                fadeOutSpec = tween(180),
-                            ),
-                        )
-                    }
-                    if (streamingText.isNotEmpty()) {
-                        item(key = "streaming") {
-                            ChatBubble(
-                                message = ChatMessageEntity(
-                                    id = -1,
-                                    role = "assistant",
-                                    content = streamingText,
-                                    sessionId = "default",
-                                    correctionJson = "",
-                                ),
-                                onSpeak = { /* no-op while streaming */ },
-                                onSpeakWord = { word ->
-                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                    vm.speak(word)
-                                },
-                                modifier = Modifier,
-                            )
-                        }
-                    } else if (isSending) {
-                        item("typing") { TypingIndicator() }
-                    }
-
-                    val lastIsAssistant = messages.lastOrNull()?.role == "assistant"
-                    if (lastIsAssistant && !isSending && streamingText.isEmpty()) {
-                        item("quick_replies") {
-                            QuickReplies(
-                                onPick = { preset ->
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    vm.send(preset)
-                                }
-                            )
-                        }
-                    }
-                }
             }
         }
     }
