@@ -40,8 +40,10 @@ import com.spanishapp.data.db.dao.WordDao
 import com.spanishapp.data.db.entity.WordEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -71,7 +73,9 @@ data class SetRowUi(
     val tier: TrophyTier,
     val isCompleted: Boolean,  // true if user finished at least one session
     val unlocked: Boolean,
-    val isNext: Boolean
+    val isNext: Boolean,
+    /** v1.23.5: true если набор недоступен без PRO (A2/B1/B2 для free-юзеров). */
+    val isProLocked: Boolean = false,
 )
 
 // ── ViewModel ──────────────────────────────────────────────────
@@ -79,7 +83,8 @@ data class SetRowUi(
 @HiltViewModel
 class FlashcardsSetupViewModel @Inject constructor(
     private val wordDao: WordDao,
-    private val setDao: FlashcardSetProgressDao
+    private val setDao: FlashcardSetProgressDao,
+    private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
 ) : ViewModel() {
 
     private val _selectedLevel = MutableStateFlow("A1")
@@ -91,6 +96,11 @@ class FlashcardsSetupViewModel @Inject constructor(
     /** Number of weak words across the whole vocabulary (drives Practice tile). */
     private val _weakCount = MutableStateFlow(0)
     val weakCount: StateFlow<Int> = _weakCount.asStateFlow()
+
+    /** v1.23.5: PRO state — для gate'инга A2/B1/B2 наборов. Eagerly,
+     *  чтобы значение было готово к моменту loadSetsFor.value чтения. */
+    val isPro: StateFlow<Boolean> = subscriptionManager.isProActive
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     /**
      * Tracks the in-flight loadSetsFor coroutine so we can cancel it when the
@@ -109,6 +119,14 @@ class FlashcardsSetupViewModel @Inject constructor(
                 _weakCount.value = wordDao.countPracticePool()
             }
         }
+        // v1.23.5: реагируем на изменение PRO-статуса — после покупки
+        // сразу разблокируются A2/B1/B2 наборы (или после отмены —
+        // блокируются снова).
+        viewModelScope.launch {
+            subscriptionManager.isProActive.collect {
+                loadSetsFor(_selectedLevel.value)
+            }
+        }
     }
 
     fun selectLevel(level: String) {
@@ -120,6 +138,14 @@ class FlashcardsSetupViewModel @Inject constructor(
         loadJob?.cancel()           // cancel any in-flight query for another level
         loadJob = viewModelScope.launch {
             val sets = FlashcardSetData.byLevel(level)
+            // v1.23.5 (audit ANR fix): для A2/B1/B2 сетов у free-юзеров
+            // не делаем дорогие wordDao.findBySpanishMany — они locked,
+            // нам не нужно знать seenCount/total. Раньше 4 сета × 18+
+            // word lookups = ~72 DB query при каждом переключении уровня
+            // (включая first init) → ANR на медленных устройствах.
+            val proActive = isPro.value
+            val isLevelProGated = !proActive && level != "A1"
+
             val progressMap = setDao.getAll().associateBy { it.setId }
 
             // Unlock = previous set was completed at least once (any session).
@@ -127,34 +153,49 @@ class FlashcardsSetupViewModel @Inject constructor(
             // anytime via Practice mode without being blocked from progressing.
             var prevCompleted = true   // first set always unlocked
             val rows = sets.map { set ->
-                val words = wordDao.findBySpanishMany(
-                    set.wordsSpanish.map { it.lowercase().trim() }
-                )
-                val total = words.size
-                val seenCount = words.count { it.correctReviews > 0 }
-                val progress = progressMap[set.id]
-                val bestPercent = progress?.bestPercent ?: 0
-                val isCompleted = (progress?.completedAt ?: 0L) > 0L
-                val tier = when {
-                    bestPercent >= 90 -> TrophyTier.GOLD
-                    bestPercent >= 70 -> TrophyTier.SILVER
-                    bestPercent >= 50 -> TrophyTier.BRONZE
-                    else              -> TrophyTier.NONE
+                if (isLevelProGated) {
+                    // PRO-locked — skip словарный lookup, минимальная row.
+                    SetRowUi(
+                        set = set,
+                        total = set.wordsSpanish.size,
+                        seenCount = 0,
+                        bestPercent = 0,
+                        tier = TrophyTier.NONE,
+                        isCompleted = false,
+                        unlocked = false,
+                        isNext = false,
+                        isProLocked = true,
+                    )
+                } else {
+                    val words = wordDao.findBySpanishMany(
+                        set.wordsSpanish.map { it.lowercase().trim() }
+                    )
+                    val total = words.size
+                    val seenCount = words.count { it.correctReviews > 0 }
+                    val progress = progressMap[set.id]
+                    val bestPercent = progress?.bestPercent ?: 0
+                    val isCompleted = (progress?.completedAt ?: 0L) > 0L
+                    val tier = when {
+                        bestPercent >= 90 -> TrophyTier.GOLD
+                        bestPercent >= 70 -> TrophyTier.SILVER
+                        bestPercent >= 50 -> TrophyTier.BRONZE
+                        else              -> TrophyTier.NONE
+                    }
+                    val unlocked = prevCompleted
+                    val isNext = unlocked && !isCompleted
+                    val row = SetRowUi(
+                        set = set,
+                        total = total,
+                        seenCount = seenCount,
+                        bestPercent = bestPercent,
+                        tier = tier,
+                        isCompleted = isCompleted,
+                        unlocked = unlocked,
+                        isNext = isNext,
+                    )
+                    prevCompleted = isCompleted
+                    row
                 }
-                val unlocked = prevCompleted
-                val isNext = unlocked && !isCompleted
-                val row = SetRowUi(
-                    set = set,
-                    total = total,
-                    seenCount = seenCount,
-                    bestPercent = bestPercent,
-                    tier = tier,
-                    isCompleted = isCompleted,
-                    unlocked = unlocked,
-                    isNext = isNext
-                )
-                prevCompleted = isCompleted
-                row
             }
             _setsForLevel.value = rows
         }
@@ -275,8 +316,12 @@ fun FlashcardsSetupScreen(
                 SetRow(
                     row = row,
                     onClick = {
-                        if (row.unlocked) {
-                            navController.navigate(
+                        when {
+                            // v1.23.5: PRO-locked → paywall (приоритет над unlocked).
+                            row.isProLocked -> navController.navigate("paywall") {
+                                launchSingleTop = true
+                            }
+                            row.unlocked -> navController.navigate(
                                 "flashcards_session?level=${row.set.level}" +
                                     "&category=set&direction=ES_TO_RU&setId=${row.set.id}"
                             )
@@ -333,13 +378,15 @@ private fun SetRow(
     val isWide = com.spanishapp.ui.adaptive.isWideScreen()
     val cardMinHeight = if (isWide) 68.dp else 72.dp
 
+    // v1.23.5: PRO-locked сеты — кликабельны (→ paywall), но визуально
+    // отличаются от прогресс-locked'ов (замочком 💎 PRO, оранжевая рамка).
     com.spanishapp.ui.components.PressableCard(
         onClick = onClick,
         modifier = modifier.fillMaxWidth().heightIn(min = cardMinHeight),
         shape = RoundedCornerShape(14.dp),
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-        shadowElevation = if (row.unlocked) 3.dp else 0.dp,
-        enabled = row.unlocked
+        shadowElevation = if (row.unlocked || row.isProLocked) 3.dp else 0.dp,
+        enabled = row.unlocked || row.isProLocked,
     ) {
         Box(
             Modifier
@@ -375,43 +422,69 @@ private fun SetRow(
                 val lockSize = if (isWide) 18.dp else 18.dp
                 val titleFont = if (isWide) 14.sp else 14.sp
                 val metaFont = if (isWide) 11.sp else 11.sp
+                // v1.23.5: для PRO-locked — оранжевый круг с 💎 вместо стандартного замка.
+                val proPrimary = Color(0xFFFF8A3D)
                 Box(
                     modifier = Modifier
                         .size(emojiSize)
                         .clip(CircleShape)
                         .background(
                             when {
-                                !row.unlocked -> MaterialTheme.colorScheme.surfaceVariant
-                                row.isNext   -> accent
-                                else         -> accent.copy(alpha = 0.15f)
+                                row.isProLocked -> proPrimary.copy(alpha = 0.18f)
+                                !row.unlocked   -> MaterialTheme.colorScheme.surfaceVariant
+                                row.isNext      -> accent
+                                else            -> accent.copy(alpha = 0.15f)
                             }
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (!row.unlocked) {
-                        Icon(
+                    when {
+                        row.isProLocked -> Text("💎", fontSize = emojiFont)
+                        !row.unlocked -> Icon(
                             Icons.Default.Lock, null,
                             tint     = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                             modifier = Modifier.size(lockSize)
                         )
-                    } else {
-                        Text(row.set.emoji, fontSize = emojiFont)
+                        else -> Text(row.set.emoji, fontSize = emojiFont)
                     }
                 }
 
                 Spacer(Modifier.width(10.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        stringResource(com.spanishapp.R.string.flashcards_set_row_title_template, row.set.order, row.set.title),
-                        fontSize   = titleFont,
-                        fontWeight = FontWeight.SemiBold,
-                        color      = if (row.unlocked) MaterialTheme.colorScheme.onSurface
-                                     else MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            stringResource(com.spanishapp.R.string.flashcards_set_row_title_template, row.set.order, row.set.title),
+                            fontSize   = titleFont,
+                            fontWeight = FontWeight.SemiBold,
+                            color      = if (row.unlocked || row.isProLocked) MaterialTheme.colorScheme.onSurface
+                                         else MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            modifier = Modifier.weight(1f, fill = false),
+                        )
+                        // v1.23.5: PRO pill справа от названия locked-сета.
+                        if (row.isProLocked) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(99.dp))
+                                    .background(proPrimary)
+                                    .padding(horizontal = 7.dp, vertical = 1.dp)
+                            ) {
+                                Text("PRO", color = Color.White, fontSize = 9.sp,
+                                    fontWeight = FontWeight.Black)
+                            }
+                        }
+                    }
                     Spacer(Modifier.height(2.dp))
-                    if (row.unlocked) {
+                    if (row.isProLocked) {
+                        Text(
+                            "Открой с PRO →",
+                            fontSize = metaFont,
+                            color = proPrimary,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    } else if (row.unlocked) {
                         val wordOne = stringResource(com.spanishapp.R.string.word_count_one)
                         val wordFew = stringResource(com.spanishapp.R.string.word_count_few)
                         val wordMany = stringResource(com.spanishapp.R.string.word_count_many)

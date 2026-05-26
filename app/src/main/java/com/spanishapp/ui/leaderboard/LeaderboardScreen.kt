@@ -111,7 +111,9 @@ fun LeaderboardScreen(
                     },
                     selectedContentColor = LbPrimary,
                     unselectedContentColor = LbTextDim,
-                    text = { Text(stringResource(R.string.leaderboard_tab_week) + " 🏆", fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
+                    // v1.23.5 (audit fix): эмодзи 🏆 уже в strings.xml
+                    // ("Неделя 🏆") — раньше код добавлял ещё одну → дубликат.
+                    text = { Text(stringResource(R.string.leaderboard_tab_week), fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
                 )
                 Tab(
                     selected = tab == Tab.LOCAL,
@@ -132,7 +134,9 @@ fun LeaderboardScreen(
                     onClick = { tab = Tab.WORLD },
                     selectedContentColor = LbPrimary,
                     unselectedContentColor = LbTextDim,
-                    text = { Text(stringResource(R.string.lb_world_tab) + " 🌍", fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
+                    // v1.23.5 (audit fix): эмодзи 🌍 уже в strings.xml
+                    // ("🌍 Мир") — раньше код добавлял ещё одну → две планеты.
+                    text = { Text(stringResource(R.string.lb_world_tab), fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
                 )
             }
 

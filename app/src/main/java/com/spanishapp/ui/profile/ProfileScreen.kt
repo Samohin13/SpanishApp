@@ -773,7 +773,9 @@ private fun HeroBlock(
 }
 
 // v1.23.0: promo-баннер «Получи PRO» для free-юзеров.
-// Дизайн из docs/mockups/pro_indicators.html — экран 2 (Profile Free).
+// v1.23.5: переписан — раньше тёмно-фиолетовый gradient (2D1F3E→1F1626)
+// «терялся» на тёмном фоне профиля по словам юзера. Теперь яркий
+// оранжевый gradient как на HomeProBannerTop — заметен с первого взгляда.
 @Composable
 private fun ProfilePromoBanner(
     modifier: Modifier = Modifier,
@@ -781,44 +783,57 @@ private fun ProfilePromoBanner(
 ) {
     val primary = Color(0xFFFF8A3D)
     val primary2 = Color(0xFFFF6A1A)
-    val gold = Color(0xFFFFD27A)
-    val textDim = Color(0xFF8E8E93)
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
             .background(
-                Brush.linearGradient(listOf(Color(0xFF2D1F3E), Color(0xFF1F1626)))
+                Brush.linearGradient(listOf(primary, primary2))
             )
-            .border(1.dp, primary.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
             .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
-        Column {
-            Text("✦ ESPEAK PRO", color = gold, fontSize = 9.sp,
-                fontWeight = FontWeight.ExtraBold, letterSpacing = 1.5.sp)
-            Spacer(Modifier.height(4.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Открой ", color = Color.White, fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraBold)
-                Text("весь", color = primary, fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraBold)
-                Text(" испанский", color = Color.White, fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraBold)
-            }
-            Spacer(Modifier.height(2.dp))
-            Text("A2 + B1 + B2 · 1327 глаголов · безлимит AI",
-                color = textDim, fontSize = 11.sp)
-            Spacer(Modifier.height(10.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            // 💎 крупный, в круге слева
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(99.dp))
-                    .background(Brush.linearGradient(listOf(primary, primary2)))
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .size(52.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center,
             ) {
-                Text("7 дней бесплатно →", color = Color.White,
-                    fontSize = 12.sp, fontWeight = FontWeight.ExtraBold)
+                Text("💎", fontSize = 28.sp)
             }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Открой весь курс с PRO",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "A2 · B1 · B2 · 1327 глаголов · ∞ ИИ",
+                    color = Color.White.copy(alpha = 0.9f),
+                    fontSize = 12.sp,
+                )
+                Spacer(Modifier.height(6.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(99.dp))
+                        .background(Color.White)
+                        .padding(horizontal = 10.dp, vertical = 3.dp)
+                ) {
+                    Text("🔥 7 дней бесплатно",
+                        color = primary2, fontSize = 11.sp,
+                        fontWeight = FontWeight.ExtraBold)
+                }
+            }
+            Text("→", color = Color.White,
+                fontSize = 26.sp, fontWeight = FontWeight.Black)
         }
     }
 }
