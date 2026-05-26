@@ -496,29 +496,17 @@ fun AiChatScreen(
             }
         },
     ) { padding ->
-        // v1.23.17: ime visibility — скрываем WelcomeHint когда клава открыта.
-        // Раньше WelcomeHint показывался ВСЕГДА (если messages empty), и при
-        // открытии клавы между его контентом и input pill оставалась пустота.
-        // Юзер 5+ раз жаловался на эту "пустоту/void", не помогали никакие
-        // padding-фиксы. Теперь — когда юзер начал печатать, welcome исчезает,
-        // остаётся только чистый чат + input pill + клава.
-        @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
-        val imeVisible = androidx.compose.foundation.layout.WindowInsets.isImeVisible
         ChatWallpaperBackground(
             wallpaper = wallpaper,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
         ) {
-            if (messages.isEmpty() && !imeVisible) {
+            if (messages.isEmpty()) {
                 WelcomeHint(onSuggestion = {
                     vm.send(it)
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 })
-            } else if (messages.isEmpty() && imeVisible) {
-                // Клавиатура открыта, сообщений нет — пустой контент area.
-                // Юзеру виден только input pill над клавой. Чисто.
-                Box(modifier = Modifier.fillMaxSize())
             } else {
                 LazyColumn(
                     state = listState,
