@@ -689,9 +689,10 @@ private fun ChatInputBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                // v1.23.16: bottom 12dp для маленького дыхания между
-                // pill и Samsung emoji toolbar клавы. Без двойного imePadding!
-                .padding(start = 8.dp, end = 8.dp, top = 6.dp, bottom = 12.dp),
+                // v1.23.18: bottom 28dp — юзер просил "поднять pill выше",
+                // увеличиваю воздух под pill для явно видимого расстояния
+                // от Samsung emoji toolbar клавы. 28dp ≈ ~85px на 3x density.
+                .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 28.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
