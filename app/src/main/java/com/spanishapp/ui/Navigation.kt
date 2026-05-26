@@ -34,6 +34,7 @@ import com.spanishapp.ui.home.LessonContentScreen
 import com.spanishapp.ui.home.LessonIntroScreen
 import com.spanishapp.ui.home.LessonIntroViewModel
 import com.spanishapp.ui.home.LessonSessionScreen
+import com.spanishapp.ui.chat.AiChatScreen
 import com.spanishapp.ui.grammar.GrammarScreen
 import com.spanishapp.ui.quiz.QuizScreen
 import com.spanishapp.ui.profile.AchievementsScreen
@@ -392,6 +393,9 @@ object Navigation {
             // ── Грамматика ────────────────────────────────────
             // Detail-экран не нужен: GrammarScreen раскрывает урок inline.
             composable("grammar") { GrammarScreen(navController) }
+
+            // ── ИИ-чат (v1.24.0 — clean reimplementation) ────────
+            composable("ai_chat") { AiChatScreen(navController = navController) }
 
 // ── Произношение ──────────────────────────────────
             composable("pronunciation") { PronunciationScreen(navController) }
