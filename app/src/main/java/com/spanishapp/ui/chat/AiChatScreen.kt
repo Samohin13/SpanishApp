@@ -469,11 +469,32 @@ fun AiChatScreen(
                 },
             )
         },
-        // v1.23.22: bottomBar полностью удалён по запросу юзера.
-        // Input pill, ChatInputBar и AiChatUpsellCard БОЛЬШЕ НЕ
-        // отображаются в Scaffold. Чат показывает только welcome cards
-        // / сообщения. Если потребуется снова — добавить через
-        // отдельный экран отправки.
+        // v1.23.25: bottomBar возвращён — юзер хочет общаться с ИИ.
+        // При исчерпании 50/день показываем PRO upsell, иначе — input bar.
+        bottomBar = {
+            if (!isPro && remaining <= 0) {
+                AiChatUpsellCard(onClick = {
+                    navController.navigate("paywall") { launchSingleTop = true }
+                })
+            } else {
+                ChatInputBar(
+                    input = input,
+                    onInputChange = { input = it },
+                    onSend = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        vm.send(input)
+                        input = ""
+                    },
+                    onMicClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        launchVoiceInput()
+                    },
+                    isSending = isSending,
+                    isListening = isListening,
+                    voiceAmplitude = voiceAmplitude,
+                )
+            }
+        },
     ) { padding ->
         ChatWallpaperBackground(
             wallpaper = wallpaper,
