@@ -323,6 +323,17 @@ fun AiChatScreen(
     val isPro          by vm.isPro.collectAsStateWithLifecycle()
     val wallpaper = com.spanishapp.domain.chat.ChatWallpapers.byId(wallpaperId)
 
+    // v1.23.6: тематические чаты доступны только PRO. Если free-юзер
+    // зашёл на не-default тему — редирект на paywall.
+    LaunchedEffect(isPro, vm.theme.id) {
+        if (!isPro && vm.theme.id != "default") {
+            navController.navigate("paywall") {
+                popUpTo("chat_sessions") { inclusive = false }
+                launchSingleTop = true
+            }
+        }
+    }
+
     var input by remember { mutableStateOf("") }
     var showClearDialog by remember { mutableStateOf(false) }
     var showWallpaperPicker by remember { mutableStateOf(false) }

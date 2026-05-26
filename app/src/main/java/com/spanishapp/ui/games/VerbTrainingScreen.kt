@@ -79,6 +79,20 @@ fun VerbTrainingScreen(
     com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    // v1.23.6: VerbTraining целиком PRO-feature (по продуктовому решению).
+    // 1327 глаголов + 159 с таблицами 6 времён — это не A1-контент.
+    // Free-юзер при попытке зайти сразу редиректится на paywall.
+    val isPro by com.spanishapp.ui.games.common.rememberIsProState()
+    LaunchedEffect(isPro) {
+        if (!isPro) {
+            navController.navigate("paywall") {
+                popUpTo("games") { inclusive = false }
+                launchSingleTop = true
+            }
+        }
+    }
+    if (!isPro) return  // не рендерим контент пока редиректим
+
     Scaffold(
         topBar = {
             TopAppBar(

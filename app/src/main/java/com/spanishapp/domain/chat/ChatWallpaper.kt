@@ -237,12 +237,30 @@ object ChatWallpapers {
         }
     )
 
+    // v1.23.6: «Стандартный» обой — чисто Material-фон без градиента
+    // и паттерна. Юзеру по умолчанию хотел этот — потом сам сменит на
+    // декоративный через wallpaper picker.
+    val STANDARD = ChatWallpaper(
+        id = "standard",
+        displayName = "Стандартный",
+        description = "Без декора",
+        gradient = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF0E0E12),  // bg
+                Color(0xFF0E0E12),
+            ),
+        ),
+        drawTile = { /* пустой — без паттерна */ },
+    )
+
     val ALL = listOf(
-        ATARDECER, AZULEJOS, CORAZON, MEDITERRANEO,
+        STANDARD, ATARDECER, AZULEJOS, CORAZON, MEDITERRANEO,
         ALHAMBRA, FIESTA, COSTA, SEVILLA,
     )
 
-    const val DEFAULT_ID = "atardecer"
+    // v1.23.6: дефолт сменён с «atardecer» (закат с облаками — юзер
+    // жаловался на нечитаемость диалогов на цветном фоне) на «standard».
+    const val DEFAULT_ID = "standard"
 
     fun byId(id: String?): ChatWallpaper =
         ALL.firstOrNull { it.id == id } ?: ALL.first()

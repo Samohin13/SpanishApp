@@ -92,7 +92,17 @@ class SettingsViewModel @Inject constructor(
     private val wordListDao: com.spanishapp.data.db.dao.WordListDao,
     private val recentSearchDao: com.spanishapp.data.db.dao.RecentSearchDao,
     private val weeklyLeagueDao: com.spanishapp.data.db.dao.WeeklyLeagueDao,
+    private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
 ) : ViewModel() {
+
+    /** v1.23.6: для debug-toggle и отображения текущего статуса. */
+    val isPro: kotlinx.coroutines.flow.StateFlow<Boolean> = subscriptionManager.isProActive
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    /** v1.23.6: debug-toggle для тестирования PRO-gating. */
+    fun debugSetPro(enabled: Boolean) = viewModelScope.launch {
+        subscriptionManager.debugSetPro(enabled)
+    }
 
     /**
      * Wipes every piece of user-generated state in Room. Seed tables (words,
@@ -537,6 +547,18 @@ fun SettingsScreen(
                     summary = "Открой A2 + B1 + B2, безлимит AI, 1327 глаголов",
                 ) {
                     navController.navigate("paywall") { launchSingleTop = true }
+                }
+                // v1.23.6: Debug-toggle для тестирования PRO-gating до
+                // интеграции Google Play Billing (Фаза 5). Только в debug-
+                // сборках — в release будет скрыт.
+                if (com.spanishapp.BuildConfig.DEBUG) {
+                    val isProDebug by vm.isPro.collectAsStateWithLifecycle()
+                    SettingsSwitchItem(
+                        icon = Icons.Default.BugReport,
+                        title = "🐛 DEBUG: PRO активен",
+                        checked = isProDebug,
+                        onCheckedChange = { vm.debugSetPro(it) },
+                    )
                 }
             }
 

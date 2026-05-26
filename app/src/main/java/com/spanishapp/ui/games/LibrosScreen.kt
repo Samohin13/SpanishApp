@@ -132,9 +132,14 @@ fun LibrosScreen(
                     LibroCard(
                         item = item,
                         onClick = {
-                            // 1.1.1 fix: дублируем markOpened **до** навигации.
-                            vm.markOpened(item.libro.id)
-                            navController.navigate("libro/${item.libro.id}")
+                            // v1.23.6: A2/B1/B2 книги для free → paywall.
+                            if (item.isProLocked) {
+                                navController.navigate("paywall") { launchSingleTop = true }
+                            } else {
+                                // 1.1.1 fix: дублируем markOpened **до** навигации.
+                                vm.markOpened(item.libro.id)
+                                navController.navigate("libro/${item.libro.id}")
+                            }
                         }
                     )
                 }
@@ -234,19 +239,36 @@ private fun LibroCard(item: LibroUiItem, onClick: () -> Unit) {
                 }
             }
 
-            // Кнопка
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(if (item.isCompleted) Color(0xFFE8F5E9) else levelColor)
-                    .padding(horizontal = 10.dp, vertical = 6.dp)
-            ) {
-                Text(
-                    if (item.isCompleted) stringResource(R.string.libros_repeat) else stringResource(R.string.libros_read),
-                    color = if (item.isCompleted) Color(0xFF2E7D32) else Color.White,
-                    fontSize = buttonFont,
-                    fontWeight = FontWeight.SemiBold
-                )
+            // Кнопка — для PRO-locked показываем 💎 PRO вместо «Читать»
+            val proPrimary = Color(0xFFFF8A3D)
+            if (item.isProLocked) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(proPrimary)
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        "💎 PRO",
+                        color = Color.White,
+                        fontSize = buttonFont,
+                        fontWeight = FontWeight.ExtraBold,
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(if (item.isCompleted) Color(0xFFE8F5E9) else levelColor)
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        if (item.isCompleted) stringResource(R.string.libros_repeat) else stringResource(R.string.libros_read),
+                        color = if (item.isCompleted) Color(0xFF2E7D32) else Color.White,
+                        fontSize = buttonFont,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     }

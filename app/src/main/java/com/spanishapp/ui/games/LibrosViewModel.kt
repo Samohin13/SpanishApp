@@ -19,7 +19,9 @@ import javax.inject.Inject
 data class LibroUiItem(
     val libro: Libro,
     val isCompleted: Boolean,
-    val bestScore: Int   // 0–100 %
+    val bestScore: Int,   // 0–100 %
+    /** v1.23.6: true для A2/B1/B2 книг у free-юзера. Тап → paywall. */
+    val isProLocked: Boolean = false,
 )
 
 data class TranslationState(
@@ -43,7 +45,12 @@ class LibrosViewModel @Inject constructor(
     private val achievementManager: com.spanishapp.service.AchievementManager,
     private val hintBank: com.spanishapp.service.HintBankManager,
     private val xpTracker: com.spanishapp.service.XpTracker,
+    private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
 ) : ViewModel() {
+
+    /** v1.23.6: PRO state — для gate'инга A2/B1/B2 книг. */
+    val isPro: StateFlow<Boolean> = subscriptionManager.isProActive
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
     val leaguePromotions: SharedFlow<LeaguePromotion> = _leaguePromotions.asSharedFlow()
@@ -56,12 +63,15 @@ class LibrosViewModel @Inject constructor(
     private val _filterLevel = MutableStateFlow("all")
     val filterLevel: StateFlow<String> = _filterLevel
 
-    val items: StateFlow<List<LibroUiItem>> = dao.getAll()
-        .map { progressList ->
+    val items: StateFlow<List<LibroUiItem>> =
+        combine(dao.getAll(), subscriptionManager.isProActive) { progressList, proActive ->
             val progressMap = progressList.associateBy { it.libroId }
             LibrosData.all.map { libro ->
                 val p = progressMap[libro.id]
-                LibroUiItem(libro, p?.isCompleted ?: false, p?.bestScore ?: 0)
+                // v1.23.6: A1 — free, A2/B1/B2 — PRO.
+                val proLocked = !proActive && libro.level != "A1"
+                LibroUiItem(libro, p?.isCompleted ?: false, p?.bestScore ?: 0,
+                    isProLocked = proLocked)
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
