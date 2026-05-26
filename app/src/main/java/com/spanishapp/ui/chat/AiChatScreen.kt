@@ -102,7 +102,6 @@ fun AiChatScreen(
                 level = "B1",
                 limit = "47/50",
                 onBack = { navController.popBackStack() },
-                onWallpaper = { /* TODO: picker */ },
                 onNewChat = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     vm.clearCurrentSession()
@@ -112,11 +111,11 @@ fun AiChatScreen(
         bottomBar = {
             Column {
                 QuickChipsRow(onChip = { suggestion ->
-                    input = suggestion
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    vm.send(suggestion)
                 })
                 ChatComposer(
                     input = input,
-                    onInputChange = { input = it },
                     onSend = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         vm.send(input)
@@ -128,7 +127,19 @@ fun AiChatScreen(
                     },
                     isListening = isListening,
                     voiceAmplitude = voiceAmplitude,
-                    enabled = !isSending,
+                )
+                // v1.24.3: встроенная клавиатура — всегда видна, никакой системной
+                SpanishKeyboard(
+                    onKey = { ch -> input += ch },
+                    onBackspace = { if (input.isNotEmpty()) input = input.dropLast(1) },
+                    onSend = {
+                        if (input.isNotBlank()) {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            vm.send(input)
+                            input = ""
+                        }
+                    },
+                    canSend = input.isNotBlank() && !isSending,
                 )
             }
         },
@@ -183,7 +194,6 @@ private fun ChatHeader(
     level: String,
     limit: String,
     onBack: () -> Unit,
-    onWallpaper: () -> Unit,
     onNewChat: () -> Unit,
 ) {
     Surface(
@@ -253,13 +263,6 @@ private fun ChatHeader(
                 }
             }
 
-            IconButton(onClick = onWallpaper) {
-                Icon(
-                    Icons.Default.Wallpaper,
-                    contentDescription = "Фон",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
             IconButton(onClick = onNewChat) {
                 Icon(
                     Icons.Default.Add,
@@ -754,12 +757,10 @@ private fun QuickChipsRow(onChip: (String) -> Unit) {
 @Composable
 private fun ChatComposer(
     input: String,
-    onInputChange: (String) -> Unit,
     onSend: () -> Unit,
     onMic: () -> Unit,
     isListening: Boolean,
     voiceAmplitude: Float,
-    enabled: Boolean,
 ) {
     val sendActive = input.isNotBlank()
 
@@ -789,42 +790,27 @@ private fun ChatComposer(
                         modifier = Modifier.fillMaxWidth().height(42.dp),
                     )
                 } else {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 16.dp, top = 9.dp, bottom = 9.dp),
-                            contentAlignment = Alignment.CenterStart,
-                        ) {
-                            if (input.isEmpty()) {
-                                Text(
-                                    "Escribe a Lucía…",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 15.5.sp,
-                                )
-                            }
-                            BasicTextField(
-                                value = input,
-                                onValueChange = onInputChange,
-                                enabled = enabled,
-                                textStyle = TextStyle(
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = 15.5.sp,
-                                ),
-                                cursorBrush = SolidColor(EspeakChat.primary),
-                                maxLines = 5,
-                                modifier = Modifier.fillMaxWidth(),
+                    // v1.24.3: read-only Text-дисплей вместо BasicTextField —
+                    // системная клавиатура НЕ вызывается. Ввод идёт ТОЛЬКО
+                    // через нашу SpanishKeyboard внизу экрана.
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 11.dp),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        if (input.isEmpty()) {
+                            Text(
+                                "Escribe a Lucía…",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 15.5.sp,
                             )
-                        }
-                        IconButton(
-                            onClick = { /* attach hook */ },
-                            modifier = Modifier.size(34.dp),
-                        ) {
-                            Icon(
-                                Icons.Default.AttachFile,
-                                contentDescription = "Прикрепить",
-                                modifier = Modifier.size(18.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        } else {
+                            Text(
+                                input,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 15.5.sp,
+                                maxLines = 5,
                             )
                         }
                     }
