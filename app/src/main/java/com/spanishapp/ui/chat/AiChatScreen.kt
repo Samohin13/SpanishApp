@@ -469,32 +469,11 @@ fun AiChatScreen(
                 },
             )
         },
-        bottomBar = {
-            // v1.23.0: если free-юзер исчерпал 50/день — вместо input
-            // показываем upsell-карточку (paywall_indicators.html экран 6).
-            if (!isPro && remaining <= 0) {
-                AiChatUpsellCard(onClick = {
-                    navController.navigate("paywall") { launchSingleTop = true }
-                })
-            } else {
-                ChatInputBar(
-                    input = input,
-                    onInputChange = { input = it },
-                    onSend = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        vm.send(input)
-                        input = ""
-                    },
-                    onMicClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        launchVoiceInput()
-                    },
-                    isSending = isSending,
-                    isListening = isListening,
-                    voiceAmplitude = voiceAmplitude,
-                )
-            }
-        },
+        // v1.23.22: bottomBar полностью удалён по запросу юзера.
+        // Input pill, ChatInputBar и AiChatUpsellCard БОЛЬШЕ НЕ
+        // отображаются в Scaffold. Чат показывает только welcome cards
+        // / сообщения. Если потребуется снова — добавить через
+        // отдельный экран отправки.
     ) { padding ->
         ChatWallpaperBackground(
             wallpaper = wallpaper,
