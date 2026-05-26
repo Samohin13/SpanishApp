@@ -63,12 +63,61 @@ private val B2Pink = Color(0xFFF472B6)
 private val GoldColor = Color(0xFFFFD27A)
 private val GoodGreen = Color(0xFF4ADE80)
 
+// === v1.23.1 (audit fix Bug 2): hoist статичные списки на file-level
+// чтобы не аллоцировать на каждый recomposition. HorizontalPager
+// держит 2-3 соседних страницы скомпонованными — без hoist'а
+// списки пересоздавались 100+ раз в секунду при свайпе. ===
+
+private data class StatItem(val num: String, val lbl: String, val sub: String)
+private val PAYWALL_STATS = listOf(
+    StatItem("180", "уроков", "A2 · B1 · B2"),
+    StatItem("75", "историй", "A2 · B1 · B2"),
+    StatItem("1327", "глаголов", "все времена"),
+    StatItem("100", "уровней игр", "все 6 игр"),
+    StatItem("∞", "AI-репетитор", "сейчас 50/день"),
+    StatItem("10К", "слов в карточках", "по всем уровням"),
+)
+
+private data class FeatItem(val icon: String, val title: String, val dim: String)
+private val PAYWALL_FEATS = listOf(
+    FeatItem("🎓", "Все уроки до B2", "180 новых уроков · грамматика · диалоги"),
+    FeatItem("📚", "Все 100 историй", "Художественное чтение всех уровней"),
+    FeatItem("🔥", "1327 глаголов", "Все формы прошедшего, будущего, сослагательного"),
+    FeatItem("🎯", "Все 100 уровней игр", "Сейчас открыты только первые 10 каждой"),
+    FeatItem("🃏", "Умные карточки слов", "Все 10 000 слов с интервальным повторением"),
+    FeatItem("🤖", "ИИ-репетитор без лимита", "Сейчас 50 сообщений в день — будет ∞"),
+)
+
+private data class CompareRow(val icon: String, val cat: String, val free: String, val pro: String)
+private val PAYWALL_COMPARE_ROWS = listOf(
+    CompareRow("🎓", "Уроки", "60 (A1)", "240 (A1→B2)"),
+    CompareRow("🧠", "Грамматика", "15 (A1)", "75 (все)"),
+    CompareRow("💬", "Диалоги", "A1", "все уровни"),
+    CompareRow("📚", "Книги", "25 (A1)", "100 (все)"),
+    CompareRow("🔥", "Спряжение", "базовое", "1327 глаг."),
+    CompareRow("🎯", "Игры", "10 уровней", "100 уровней"),
+    CompareRow("🃏", "SM-2 карт.", "A1 слова", "все ~10K"),
+    CompareRow("🤖", "AI Chat", "50/день", "∞ безлимит"),
+    CompareRow("📖", "Словарь", "✓", "✓"),
+    CompareRow("📻", "Радио", "✓", "✓"),
+)
+
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun PaywallScreen(navController: NavHostController) {
     val vm: PaywallViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(initialPage = 0) { 5 }
+
+    // v1.23.1 (audit Bug 10): слушаем purchased event через LaunchedEffect —
+    // навигация только в alive lifecycle, никаких race conditions.
+    LaunchedEffect(Unit) {
+        vm.events.collect { event ->
+            when (event) {
+                is PurchaseEvent.Purchased -> navController.popBackStack()
+            }
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -103,11 +152,7 @@ fun PaywallScreen(navController: NavHostController) {
                 selectedPlan = state.selectedPlan,
                 isLoading = state.isLoading,
                 onSelectPlan = vm::selectPlan,
-                onPurchase = {
-                    vm.startPurchase {
-                        navController.popBackStack()
-                    }
-                }
+                onPurchase = { vm.startPurchase() }
             )
         }
     }
@@ -152,15 +197,18 @@ private fun PaywallTopBar(currentPage: Int, onClose: () -> Unit) {
 }
 
 // ============== PAGE 1: HERO + SOCIAL ==============
+// v1.23.1 (audit Bug 7/16): единая стратегия с verticalScroll вместо
+// weight-Spacer'ов (фрагильный layout, может клипать контент).
 @Composable
 private fun PageHero() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 18.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Spacer(Modifier.weight(0.5f))
+        Spacer(Modifier.height(20.dp))
         // Hero block — большой, центрированный
         Box(
             modifier = Modifier
@@ -248,7 +296,7 @@ private fun PageHero() {
                 }
             }
         }
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(8.dp))
     }
 }
 
@@ -270,47 +318,42 @@ private fun AvatarStack() {
 }
 
 // ============== PAGE 2: NUMBERS ==============
+// v1.23.1 (audit Bug 7): единая layout-стратегия — verticalScroll
+// на всех страницах вместо weight-Spacer'ов (mixed подход вызывал
+// multiple measure passes).
 @Composable
 private fun PageNumbers() {
-    val stats = listOf(
-        Triple("180", "уроков", "A2 · B1 · B2"),
-        Triple("75", "историй", "A2 · B1 · B2"),
-        Triple("1327", "глаголов", "все времена"),
-        Triple("100", "уровней игр", "все 6 игр"),
-        Triple("∞", "AI-репетитор", "сейчас 50/день"),
-        Triple("10К", "слов в карточках", "по всем уровням"),
-    )
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 18.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Spacer(Modifier.weight(0.3f))
+        Spacer(Modifier.height(8.dp))
         Text(
             "📊 Что ты получишь",
             color = TextColor, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(2.dp))
         Text(
             "Сейчас доступны только 60 уроков уровня A1.\nС PRO открывается всё остальное:",
             color = TextDim, fontSize = 14.sp, lineHeight = 20.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(8.dp))
-        // Grid 2 cols × 3 rows
-        stats.chunked(2).forEach { row ->
+        // Grid 2 cols × 3 rows — обычный for вместо chunked+forEach
+        // (chunked() аллоцирует List на каждый recompose).
+        for (rowIndex in 0 until 3) {
+            val left = PAYWALL_STATS[rowIndex * 2]
+            val right = PAYWALL_STATS[rowIndex * 2 + 1]
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                row.forEach { (num, lbl, sub) ->
-                    StatCard(num, lbl, sub, modifier = Modifier.weight(1f))
-                }
+                StatCard(left.num, left.lbl, left.sub, modifier = Modifier.weight(1f))
+                StatCard(right.num, right.lbl, right.sub, modifier = Modifier.weight(1f))
             }
         }
-        Spacer(Modifier.weight(1f))
     }
 }
 
@@ -351,31 +394,23 @@ private fun StatCard(num: String, lbl: String, sub: String, modifier: Modifier =
 // ============== PAGE 3: FEATURES ==============
 @Composable
 private fun PageFeatures() {
-    data class Feat(val icon: String, val title: String, val dim: String)
-    val feats = listOf(
-        Feat("🎓", "Все уроки до B2", "180 новых уроков · грамматика · диалоги"),
-        Feat("📚", "Все 100 историй", "Художественное чтение всех уровней"),
-        Feat("🔥", "1327 глаголов", "Все формы прошедшего, будущего, сослагательного"),
-        Feat("🎯", "Все 100 уровней игр", "Сейчас открыты только первые 10 каждой"),
-        Feat("🃏", "Умные карточки слов", "Все 10 000 слов с интервальным повторением"),
-        Feat("🤖", "ИИ-репетитор без лимита", "Сейчас 50 сообщений в день — будет ∞"),
-    )
+    // v1.23.1 (audit Bug 2/7): использовать file-level PAYWALL_FEATS +
+    // verticalScroll вместо weight-Spacer'ов.
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 18.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Spacer(Modifier.weight(0.2f))
+        Spacer(Modifier.height(8.dp))
         Text("✨ Что входит", color = TextColor, fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth())
-        Spacer(Modifier.height(2.dp))
         Text("Все шесть направлений без ограничений",
             color = TextDim, fontSize = 14.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-        Spacer(Modifier.height(6.dp))
-        feats.forEach { f ->
+        for (f in PAYWALL_FEATS) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -399,26 +434,14 @@ private fun PageFeatures() {
                 }
             }
         }
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(8.dp))
     }
 }
 
 // ============== PAGE 4: COMPARE FREE vs PRO ==============
+// v1.23.1 (audit Bug 2): использует file-level PAYWALL_COMPARE_ROWS.
 @Composable
 private fun PageCompare() {
-    data class Row3(val icon: String, val cat: String, val free: String, val pro: String)
-    val rows = listOf(
-        Row3("🎓", "Уроки", "60 (A1)", "240 (A1→B2)"),
-        Row3("🧠", "Грамматика", "15 (A1)", "75 (все)"),
-        Row3("💬", "Диалоги", "A1", "все уровни"),
-        Row3("📚", "Книги", "25 (A1)", "100 (все)"),
-        Row3("🔥", "Спряжение", "базовое", "1327 глаг."),
-        Row3("🎯", "Игры", "10 уровней", "100 уровней"),
-        Row3("🃏", "SM-2 карт.", "A1 слова", "все ~10K"),
-        Row3("🤖", "AI Chat", "50/день", "∞ безлимит"),
-        Row3("📖", "Словарь", "✓", "✓"),
-        Row3("📻", "Радио", "✓", "✓"),
-    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -459,7 +482,7 @@ private fun PageCompare() {
                     fontWeight = FontWeight.Black, letterSpacing = 1.sp,
                     textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
             }
-            rows.forEachIndexed { i, r ->
+            PAYWALL_COMPARE_ROWS.forEachIndexed { i, r ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -488,7 +511,7 @@ private fun PageCompare() {
                             textAlign = TextAlign.Center)
                     }
                 }
-                if (i < rows.size - 1) {
+                if (i < PAYWALL_COMPARE_ROWS.size - 1) {
                     HorizontalDivider(color = Color.White.copy(alpha = 0.04f))
                 }
             }
@@ -643,7 +666,11 @@ private fun PaywallBottomBar(
             .background(BgColor)
             .padding(horizontal = 18.dp, vertical = 8.dp)
     ) {
-        // Urgency row
+        // v1.23.1 (audit Bug 6): убран фейковый «02д 14ч 38м» countdown —
+        // Google Play Policy 4.4 запрещает deceptive urgency timers без
+        // реального источника. Если решим вернуть скидку — нужен реальный
+        // timestamp в SubscriptionPreferences (offerExpiresAt) с настоящим
+        // обратным отсчётом. Сейчас оставлен только статичный badge.
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -653,18 +680,11 @@ private fun PaywallBottomBar(
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("🔥 EARLY BIRD −40%", color = PrimaryOrange, fontSize = 10.sp,
-                fontWeight = FontWeight.ExtraBold, letterSpacing = 0.5.sp,
-                modifier = Modifier.weight(1f))
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(Color.Black)
-                    .padding(horizontal = 7.dp, vertical = 2.dp)
-            ) {
-                Text("02д 14ч 38м", color = GoldColor, fontSize = 10.sp,
-                    fontWeight = FontWeight.ExtraBold)
-            }
+            Text("💎 7 дней бесплатно · затем выгода 42% за год",
+                color = PrimaryOrange, fontSize = 11.sp,
+                fontWeight = FontWeight.ExtraBold, letterSpacing = 0.3.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth())
         }
         Spacer(Modifier.height(10.dp))
 

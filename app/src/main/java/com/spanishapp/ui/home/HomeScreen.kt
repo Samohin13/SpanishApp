@@ -207,8 +207,10 @@ fun HomeScreen(
 
             // ── v1.23.0: PRO promo баннер ВВЕРХУ (только для free) ─────
             // Заметный, прямо под статистикой — юзер не сможет пропустить.
+            // v1.23.1 (audit Bug 14): stable key для item — при покупке
+            // PRO исчезает плавно, не вызывая re-layout всего LazyColumn.
             if (!isPro) {
-                item {
+                item(key = "pro_banner_top") {
                     StaggeredEntrance(index = 2) {
                         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                             HomeProBannerTop(onClick = {
@@ -317,23 +319,11 @@ fun HomeScreen(
             // радио доступно через 5-ю иконку в BottomBar, отдельная featured
             // карточка дублировала навигацию и шумела главный экран.
 
-            // ── PRO promo bento (только для FREE-юзеров) ──────────────
-            // По docs/mockups/pro_indicators.html — экран 4. Не показываем
-            // PRO-юзерам (нет смысла), не показываем над hero (не агрессивно).
-            // Размещаем между BentoRow и StreakHeatmap — естественная точка
-            // когда юзер уже видел свой прогресс.
-            if (!isPro) {
-                item {
-                    StaggeredEntrance(index = 5) {
-                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                            HomeProBento(onClick = {
-                                navController.navigate("paywall") { launchSingleTop = true }
-                            })
-                            Spacer(Modifier.height(12.dp))
-                        }
-                    }
-                }
-            }
+            // v1.23.1 (audit Bug 15): убран дублирующий HomeProBento.
+            // Раньше было 2 PRO promo — вверху (HomeProBannerTop, после
+            // StatsBar) и здесь между BentoRow и StreakHeatmap. Юзер
+            // ощущал «спам» + при покупке PRO оба исчезали одновременно
+            // → re-layout всего LazyColumn. Оставлен только верхний.
 
             // ── Streak heatmap ─────────────────────────────────
             item {
@@ -2729,17 +2719,25 @@ private fun MiniTestRow(
 
 
 // ════════════════════════════════════════════════════════════
-//  v1.23.0: PRO promo bento card.
-//  Дизайн из docs/mockups/pro_indicators.html — экран 4.
-//  Тёмный фон с radial-gradient orange-glow в углу, оранжевая
-//  рамка, заголовок «Открой 180 уроков A2 · B1 · B2», под ним
-//  прогресс-бар «A1: 25%» и стрелка → в углу.
+//  v1.23.0/v1.23.1: PRO promo цвета — file-level чтобы не аллоцировать
+//  на каждый recomposition (audit Bug 8). HomeViewModel эмитит uiState
+//  часто (каждый XP gain, минута урока) → recomposition этих banner'ов
+//  частый, и без file-level constants Color() / Brush() пересоздавались
+//  десятки раз в секунду = GC pressure.
 // ════════════════════════════════════════════════════════════
+private val ProBannerPrimary = androidx.compose.ui.graphics.Color(0xFFFF8A3D)
+private val ProBannerPrimary2 = androidx.compose.ui.graphics.Color(0xFFFF6A1A)
+private val ProBannerGold = androidx.compose.ui.graphics.Color(0xFFFFD27A)
+private val ProBannerTextDim = androidx.compose.ui.graphics.Color(0xFF8E8E93)
+
+// HomeProBento больше не используется (Bug 15 — убран дублирующий
+// promo). Composable оставлен для исторической ссылки и будущего
+// возможного использования, но НЕ вызывается из HomeScreen.
 @Composable
 private fun HomeProBento(onClick: () -> Unit) {
-    val primary = androidx.compose.ui.graphics.Color(0xFFFF8A3D)
-    val gold = androidx.compose.ui.graphics.Color(0xFFFFD27A)
-    val textDim = androidx.compose.ui.graphics.Color(0xFF8E8E93)
+    val primary = ProBannerPrimary
+    val gold = ProBannerGold
+    val textDim = ProBannerTextDim
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -2837,9 +2835,9 @@ private fun HomeProBento(onClick: () -> Unit) {
 // ════════════════════════════════════════════════════════════
 @Composable
 private fun HomeProBannerTop(onClick: () -> Unit) {
-    val primary = androidx.compose.ui.graphics.Color(0xFFFF8A3D)
-    val primary2 = androidx.compose.ui.graphics.Color(0xFFFF6A1A)
-    val gold = androidx.compose.ui.graphics.Color(0xFFFFD27A)
+    val primary = ProBannerPrimary
+    val primary2 = ProBannerPrimary2
+    val gold = ProBannerGold
     Box(
         modifier = Modifier
             .fillMaxWidth()

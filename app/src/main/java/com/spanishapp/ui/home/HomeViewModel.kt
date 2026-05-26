@@ -105,7 +105,10 @@ class HomeViewModel @Inject constructor(
         lessonProgressDao.getAllCompletedKeys(),
         authRepository.userPhotoUrl,
         dailyXpDao.observeSince(LocalDate.now().toString()),
-        subscriptionManager.isProActive,
+        // v1.23.0: onStart{emit(false)} критично — без него combine
+        // блокирует первое emission'а uiState до завершения disk-read'а
+        // DataStore. Это вызывало ANR на холодном старте (Bug 1 audit).
+        subscriptionManager.isProActive.onStart { emit(false) },
     ) { args ->
         val progress = args[0] as? UserProgressEntity
         val dueWords = args[1] as List<WordEntity>

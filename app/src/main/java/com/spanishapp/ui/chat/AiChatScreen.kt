@@ -1213,10 +1213,11 @@ private fun AiChatUpsellCard(onClick: () -> Unit) {
     val primary2 = Color(0xFFFF6A1A)
     val gold = Color(0xFFFFD27A)
     val textDim = Color(0xFF8E8E93)
+    // v1.23.1 (audit Bug 12): убран .imePadding() — нет input field'а
+    // в upsell-карточке, а двойной imePadding (Scaffold уже его применяет
+    // к bottomBar slot'у) ломал layout при accessibility-клавиатуре.
     androidx.compose.material3.Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .imePadding(),
+        modifier = Modifier.fillMaxWidth(),
         color = Color(0xFF0E0E12),
     ) {
         Box(

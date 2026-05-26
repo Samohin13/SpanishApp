@@ -29,10 +29,14 @@ class SpanishApp : Application() {
      *  TextToSpeech.speakSpanish() мог автоматически роутить в premium. */
     @Inject lateinit var remoteTtsService: com.spanishapp.service.RemoteTtsService
 
-    /** v1.22.31: Mixkit UI sounds — инжектится здесь чтобы SoundPool
-     *  предзагрузил все 15 MP3 при старте приложения (~900KB resident),
-     *  а не на первом play() в середине урока (lag). */
-    @Inject lateinit var uiSoundPlayer: com.spanishapp.service.UiSoundPlayer
+    /** v1.22.31: Mixkit UI sounds.
+     *  v1.23.1 (audit Bug 5): теперь через dagger.Lazy чтобы Hilt НЕ
+     *  создавал UiSoundPlayer eager на main thread в Application.onCreate.
+     *  Прежнее eager-инжектирование вызывало вклад в ANR при холодном
+     *  старте (SoundPool.Builder().build() — нативная инициализация
+     *  AudioTrack/MediaPlayer пул потоков). Теперь .get() вызывается
+     *  в фоне внутри appScope.launch ниже. */
+    @Inject lateinit var uiSoundPlayerLazy: dagger.Lazy<com.spanishapp.service.UiSoundPlayer>
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -114,6 +118,17 @@ class SpanishApp : Application() {
                 .onFailure { e ->
                     com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
                         .recordException(RuntimeException("[SpanishApp] bootstrapLanguageCache FAILED", e))
+                }
+        }
+
+        // v1.23.1 (audit Bug 5): triggerим инициализацию UiSoundPlayer
+        // в фоне — НЕ блокирует Application.onCreate на main thread.
+        // SoundPool сам внутри грузится через Dispatchers.IO.
+        appScope.launch {
+            runCatching { uiSoundPlayerLazy.get() }
+                .onFailure { e ->
+                    com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                        .recordException(RuntimeException("[SpanishApp] UiSoundPlayer init FAILED", e))
                 }
         }
     }

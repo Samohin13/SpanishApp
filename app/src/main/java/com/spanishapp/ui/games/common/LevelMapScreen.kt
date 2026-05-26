@@ -2,6 +2,7 @@ package com.spanishapp.ui.games.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -172,7 +173,10 @@ fun LevelMapScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items((1..100).toList()) { level ->
+                // v1.23.1 (audit Bug 3): items(count, key) — без аллокации
+                // 100-элементного List на каждый recomposition, стабильные keys.
+                items(count = 100, key = { it }) { idx ->
+                    val level = idx + 1
                 val entry = progress[level]
                 val unlockedByProgress = level <= nextLevel
                 // v1.23.0: free → max 10 уровней. PRO → все 100.
@@ -329,5 +333,8 @@ fun rememberIsProState(): State<Boolean> {
             .fromApplication(context.applicationContext, ProGateEntryPoint::class.java)
             .subscriptionManager()
     }
-    return sm.isProActive.collectAsState(initial = false)
+    // v1.23.1 (audit Bug 4): collectAsStateWithLifecycle вместо
+    // collectAsState — лайфсайкл-aware, не лекит коллектор после
+    // destroy. Раньше каждый game screen оставлял висящий collector.
+    return sm.isProActive.collectAsStateWithLifecycle(initialValue = false)
 }

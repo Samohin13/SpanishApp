@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,9 +18,14 @@ private val Context.subscriptionDataStore by preferencesDataStore(name = "subscr
 /**
  * v1.23.0: PRO subscription state.
  *
+ * v1.23.1 (audit Bug 18): рефакторинг — все 5 полей читаются из одного
+ * `all` Flow, а per-field flows derive через .map { it.X }.distinctUntilChanged().
+ * Раньше каждое поле подписывалось отдельно на DataStore.data → 5 параллельных
+ * collector'ов, каждое обновление трогало все 5. Теперь DataStore читается
+ * один раз, distinct'ed-фильтрация per-field в памяти.
+ *
  * Local cache of subscription status. Реальные платежи через
- * Google Play Billing Library (Фаза 5) будут обновлять эти поля
- * в SubscriptionManager.refreshFromPlayStore().
+ * Google Play Billing Library (Фаза 5) будут обновлять эти поля.
  *
  * До интеграции Billing — поля управляются только debug toggle для
  * QA-тестирования gate-логики.
@@ -37,29 +43,39 @@ class SubscriptionPreferences @Inject constructor(
         val TRIAL_ENDS_AT = longPreferencesKey("trial_ends_at") // ms
     }
 
-    /** Активна ли подписка прямо сейчас. */
-    val isPro: Flow<Boolean> = context.subscriptionDataStore.data.map {
-        it[Keys.IS_PRO] ?: false
+    /** Снапшот всех полей одним объектом. Источник для остальных Flow. */
+    data class Snapshot(
+        val isPro: Boolean = false,
+        val plan: String = "",
+        val expiresAt: Long = 0L,
+        val inTrial: Boolean = false,
+        val trialEndsAt: Long = 0L,
+    )
+
+    /** Единый Flow на всё состояние подписки. Один collector на DataStore. */
+    val all: Flow<Snapshot> = context.subscriptionDataStore.data.map { p ->
+        Snapshot(
+            isPro = p[Keys.IS_PRO] ?: false,
+            plan = p[Keys.PLAN] ?: "",
+            expiresAt = p[Keys.EXPIRES_AT] ?: 0L,
+            inTrial = p[Keys.IN_TRIAL] ?: false,
+            trialEndsAt = p[Keys.TRIAL_ENDS_AT] ?: 0L,
+        )
     }
+
+    /** Активна ли подписка прямо сейчас. */
+    val isPro: Flow<Boolean> = all.map { it.isPro }.distinctUntilChanged()
 
     /** "MONTH" / "YEAR" / "" */
-    val plan: Flow<String> = context.subscriptionDataStore.data.map {
-        it[Keys.PLAN] ?: ""
-    }
+    val plan: Flow<String> = all.map { it.plan }.distinctUntilChanged()
 
     /** ms timestamp когда подписка истекает. 0 если не активна. */
-    val expiresAt: Flow<Long> = context.subscriptionDataStore.data.map {
-        it[Keys.EXPIRES_AT] ?: 0L
-    }
+    val expiresAt: Flow<Long> = all.map { it.expiresAt }.distinctUntilChanged()
 
     /** Сейчас в trial-периоде (первые 7 дней YEAR-плана). */
-    val inTrial: Flow<Boolean> = context.subscriptionDataStore.data.map {
-        it[Keys.IN_TRIAL] ?: false
-    }
+    val inTrial: Flow<Boolean> = all.map { it.inTrial }.distinctUntilChanged()
 
-    val trialEndsAt: Flow<Long> = context.subscriptionDataStore.data.map {
-        it[Keys.TRIAL_ENDS_AT] ?: 0L
-    }
+    val trialEndsAt: Flow<Long> = all.map { it.trialEndsAt }.distinctUntilChanged()
 
     /** Установить полный набор полей после успешной покупки. */
     suspend fun activate(
