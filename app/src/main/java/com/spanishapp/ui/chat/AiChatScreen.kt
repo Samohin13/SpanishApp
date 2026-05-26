@@ -655,10 +655,12 @@ private fun ChatInputBar(
         label = "mic_pulse_anim",
     )
 
+    // ВАЖНО: Surface БЕЗ .imePadding() — Scaffold's bottomBar slot уже
+    // сам поднимается над клавой через WindowInsets.ime в Material3 1.3+
+    // (см. AiChatUpsellCard ниже, тот же комментарий из audit Bug 12).
+    // Manual imePadding здесь = double offset → огромный void между pill и клавой.
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .imePadding(),
+        modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp,
     ) {
