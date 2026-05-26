@@ -2,6 +2,8 @@ package com.spanishapp.ui.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spanishapp.data.prefs.TutorProfile
+import com.spanishapp.data.prefs.TutorProfilePreferences
 import com.spanishapp.data.repository.AiChatRepository
 import com.spanishapp.data.repository.ChatCorrection
 import com.spanishapp.data.repository.parseCorrections
@@ -26,7 +28,16 @@ class AiChatViewModel @Inject constructor(
     private val repo: AiChatRepository,
     private val tts: SpanishTts,
     private val stt: SpanishSpeechRecognizer,
+    private val tutorPrefs: TutorProfilePreferences,
 ) : ViewModel() {
+
+    // ── Профиль наставника (имя/аватарка) ──────────────────────
+    val tutorProfile: StateFlow<TutorProfile> = tutorPrefs.profile
+        .stateIn(viewModelScope, SharingStarted.Eagerly, TutorProfile())
+
+    fun saveTutorProfile(name: String, avatar: String) {
+        viewModelScope.launch { tutorPrefs.save(name, avatar) }
+    }
 
     // ── Выбранный сценарий ─────────────────────────────────────
     private val _scenario = MutableStateFlow(ChatScenarios.DEFAULT)
@@ -61,7 +72,7 @@ class AiChatViewModel @Inject constructor(
             _isSending.value = true
             _error.value = null
 
-            repo.sendMessage(trimmed, _scenario.value, level)
+            repo.sendMessage(trimmed, _scenario.value, level, tutorProfile.value.name)
                 .onFailure { _error.value = "Не удалось получить ответ. Проверь интернет." }
 
             _isSending.value = false

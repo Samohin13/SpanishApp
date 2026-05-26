@@ -66,6 +66,7 @@ class AiChatRepository @Inject constructor(
         userText: String,
         scenario: ChatScenario,
         level: String = "B1",
+        tutorName: String = "Tutor",
     ): Result<ChatTurn> = withContext(Dispatchers.IO) {
         try {
             // 1. Сохранить сообщение пользователя
@@ -79,7 +80,7 @@ class AiChatRepository @Inject constructor(
 
             // 2. Собрать историю для Gemini
             val history = dao.getSessionOnce(scenario.id)
-            val systemPrompt = buildSystemPrompt(scenario, level)
+            val systemPrompt = buildSystemPrompt(scenario, level, tutorName)
 
             // 3. Вызвать модель
             val rawReply = callGemini(systemPrompt, history)
@@ -105,8 +106,8 @@ class AiChatRepository @Inject constructor(
         }
     }
 
-    private fun buildSystemPrompt(scenario: ChatScenario, level: String): String = buildString {
-        appendLine("Ты — Lucía, дружелюбный преподаватель испанского из Мадрида.")
+    private fun buildSystemPrompt(scenario: ChatScenario, level: String, tutorName: String): String = buildString {
+        appendLine("Ты — $tutorName, дружелюбный преподаватель испанского из Мадрида.")
         appendLine("Ученик — русскоговорящий, уровень CEFR: $level.")
         appendLine()
         appendLine("ПРАВИЛА ОТВЕТА:")

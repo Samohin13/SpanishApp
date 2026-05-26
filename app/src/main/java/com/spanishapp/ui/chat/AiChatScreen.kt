@@ -71,6 +71,11 @@ fun AiChatScreen(
     val isListening    by vm.isListening.collectAsStateWithLifecycle()
     val voiceAmplitude by vm.voiceAmplitude.collectAsStateWithLifecycle()
     val error          by vm.error.collectAsStateWithLifecycle()
+    val tutor          by vm.tutorProfile.collectAsStateWithLifecycle()
+
+    // v1.24.5: при первом заходе показать setup, если профиль не настроен.
+    var showSetup by remember(tutor.configured) { mutableStateOf(!tutor.configured) }
+    var showEdit by remember { mutableStateOf(false) }
 
     var input by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
@@ -97,11 +102,14 @@ fun AiChatScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             ChatHeader(
+                tutorName = tutor.name,
+                tutorAvatar = tutor.avatar,
                 scenarioEmoji = scenario.emoji,
                 scenarioTitle = scenario.title,
                 level = "B1",
                 limit = "47/50",
                 onBack = { navController.popBackStack() },
+                onEditTutor = { showEdit = true },
                 onNewChat = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     vm.clearCurrentSession()
@@ -164,36 +172,74 @@ fun AiChatScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (messages.isEmpty()) {
-                    item { WelcomeBubble(onSpeak = { vm.speak(it) }) }
+                    item { WelcomeBubble(tutorName = tutor.name, tutorAvatar = tutor.avatar, onSpeak = { vm.speak(it) }) }
                 } else {
                     items(messages, key = { it.id }) { msg ->
                         ChatMessageItem(
                             role = msg.role,
                             content = msg.content,
                             correctionJson = msg.correctionJson,
+                            tutorAvatar = tutor.avatar,
                             onSpeak = { vm.speak(it) },
                             onCorrectionParse = { vm.corrections(it) },
                         )
                     }
                 }
                 if (isSending) {
-                    item { TypingIndicator() }
+                    item { TypingIndicator(tutorAvatar = tutor.avatar) }
                 }
             }
         }
     }
+
+    // v1.24.5: первичная настройка наставника при первом заходе
+    if (showSetup) {
+        TutorSetupDialog(
+            initialName = tutor.name.takeIf { it != "Tutor" } ?: "",
+            initialAvatar = tutor.avatar,
+            isFirstTime = true,
+            onDismiss = {
+                // При первом запуске пропустить — сохраняем дефолты "Tutor"/🤖
+                vm.saveTutorProfile("Tutor", "🤖")
+                showSetup = false
+            },
+            onSave = { name, avatar ->
+                vm.saveTutorProfile(name, avatar)
+                showSetup = false
+            },
+        )
+    }
+
+    // Редактирование профиля (по тапу на имя/аватар в header)
+    if (showEdit) {
+        TutorSetupDialog(
+            initialName = tutor.name,
+            initialAvatar = tutor.avatar,
+            isFirstTime = false,
+            onDismiss = { showEdit = false },
+            onSave = { name, avatar ->
+                vm.saveTutorProfile(name, avatar)
+                showEdit = false
+            },
+        )
+    }
 }
 
 /* ============================================================
-   HEADER — glass-стиль с аватаром Lucía, статусом, действиями
+   HEADER — чистый Material3-стиль в фирменных цветах ESPEAK
+   v1.24.5: аватарка emoji из TutorProfile, имя кастомизируется,
+   стиль приведён к общему M3 без розовых градиентов.
    ============================================================ */
 @Composable
 private fun ChatHeader(
+    tutorName: String,
+    tutorAvatar: String,
     scenarioEmoji: String,
     scenarioTitle: String,
     level: String,
     limit: String,
     onBack: () -> Unit,
+    onEditTutor: () -> Unit,
     onNewChat: () -> Unit,
 ) {
     Surface(
@@ -213,7 +259,7 @@ private fun ChatHeader(
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Назад",
-                    tint = EspeakChat.primary,
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -221,16 +267,16 @@ private fun ChatHeader(
                 modifier = Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(10.dp))
-                    .clickable { /* tutor info */ }
+                    .clickable(onClick = onEditTutor)
                     .padding(2.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                TutorAvatar(size = 40.dp, showOnline = true)
+                TutorAvatarEmoji(emoji = tutorAvatar, size = 40.dp)
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            "Lucía",
+                            tutorName,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.5.sp,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -275,33 +321,39 @@ private fun ChatHeader(
 }
 
 @Composable
-private fun TutorAvatar(size: androidx.compose.ui.unit.Dp, showOnline: Boolean) {
+private fun TutorAvatarEmoji(emoji: String, size: androidx.compose.ui.unit.Dp) {
+    // v1.24.5: emoji-аватар из TutorProfile. Без розового градиента —
+    // используем фирменный оранжевый-в-сурface стиль (общий с приложением).
     Box(modifier = Modifier.size(size)) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(CircleShape)
-                .background(Brush.linearGradient(listOf(EspeakChat.primary, EspeakChat.pink))),
+                .background(EspeakChat.primary.copy(alpha = 0.18f))
+                .border(
+                    width = 1.5.dp,
+                    color = EspeakChat.primary,
+                    shape = CircleShape,
+                ),
             contentAlignment = Alignment.Center,
         ) {
-            Text("🐂", fontSize = (size.value * 0.52f).sp)
+            Text(emoji, fontSize = (size.value * 0.55f).sp)
         }
-        if (showOnline) {
+        // Маленькая зелёная точка "online"
+        Box(
+            modifier = Modifier
+                .size(11.dp)
+                .align(Alignment.BottomEnd)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surface),
+            contentAlignment = Alignment.Center,
+        ) {
             Box(
-                modifier = Modifier
-                    .size(11.dp)
-                    .align(Alignment.BottomEnd)
+                Modifier
+                    .size(8.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
-                contentAlignment = Alignment.Center,
-            ) {
-                Box(
-                    Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(EspeakChat.success)
-                )
-            }
+                    .background(EspeakChat.success)
+            )
         }
     }
 }
@@ -394,6 +446,7 @@ private fun ChatMessageItem(
     role: String,
     content: String,
     correctionJson: String,
+    tutorAvatar: String = "🤖",
     onSpeak: (String) -> Unit,
     onCorrectionParse: (String) -> List<com.spanishapp.data.repository.ChatCorrection>,
 ) {
@@ -406,7 +459,7 @@ private fun ChatMessageItem(
         verticalAlignment = Alignment.Bottom,
     ) {
         if (!isUser) {
-            TutorAvatar(size = 28.dp, showOnline = false)
+            TutorAvatarSmall(emoji = tutorAvatar, size = 28.dp)
             Spacer(Modifier.width(6.dp))
         }
 
@@ -651,9 +704,9 @@ private fun SmallIconAction(
    TYPING INDICATOR — три пляшущих точки в AI-bubble
    ============================================================ */
 @Composable
-private fun TypingIndicator() {
+private fun TypingIndicator(tutorAvatar: String = "🤖") {
     Row(verticalAlignment = Alignment.Bottom) {
-        TutorAvatar(size = 28.dp, showOnline = false)
+        TutorAvatarSmall(emoji = tutorAvatar, size = 28.dp)
         Spacer(Modifier.width(6.dp))
         Surface(
             shape = RoundedCornerShape(
@@ -696,12 +749,13 @@ private fun TypingIndicator() {
    WELCOME BUBBLE — первое сообщение при пустом чате
    ============================================================ */
 @Composable
-private fun WelcomeBubble(onSpeak: (String) -> Unit) {
-    val text = "¡Hola! Soy **Lucía**, tu profesora de español. ¿De qué quieres hablar hoy?"
+private fun WelcomeBubble(tutorName: String, tutorAvatar: String, onSpeak: (String) -> Unit) {
+    val text = "¡Hola! Soy **$tutorName**, tu profesor(a) de español. ¿De qué quieres hablar hoy?"
     ChatMessageItem(
         role = "assistant",
-        content = "$text ⟦RU⟧ Привет! Я Lucía, твоя преподавательница испанского. О чём хочешь сегодня поговорить?",
+        content = "$text ⟦RU⟧ Привет! Я $tutorName, твой преподаватель испанского. О чём хочешь сегодня поговорить?",
         correctionJson = "",
+        tutorAvatar = tutorAvatar,
         onSpeak = onSpeak,
         onCorrectionParse = { emptyList() },
     )
@@ -801,7 +855,7 @@ private fun ChatComposer(
                     ) {
                         if (input.isEmpty()) {
                             Text(
-                                "Escribe a Lucía…",
+                                "Escribe a tu profesor(a)…",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 15.5.sp,
                             )
@@ -895,4 +949,138 @@ private fun VoiceWaveform(amplitude: Float, modifier: Modifier = Modifier) {
             )
         }
     }
+}
+
+/* ============================================================
+   TUTOR SMALL AVATAR — emoji-аватарка в M3-стиле для bubble
+   ============================================================ */
+@Composable
+private fun TutorAvatarSmall(emoji: String, size: androidx.compose.ui.unit.Dp) {
+    Box(
+        modifier = Modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(EspeakChat.primary.copy(alpha = 0.18f))
+            .border(1.dp, EspeakChat.primary.copy(alpha = 0.6f), CircleShape),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(emoji, fontSize = (size.value * 0.55f).sp)
+    }
+}
+
+/* ============================================================
+   TUTOR SETUP DIALOG — выбор имени и аватарки наставника
+   ============================================================ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun TutorSetupDialog(
+    initialName: String,
+    initialAvatar: String,
+    isFirstTime: Boolean,
+    onDismiss: () -> Unit,
+    onSave: (name: String, avatar: String) -> Unit,
+) {
+    var name by remember { mutableStateOf(initialName) }
+    var avatar by remember { mutableStateOf(initialAvatar) }
+
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                if (isFirstTime) "Познакомься с наставником"
+                else "Настрой наставника",
+                fontWeight = FontWeight.Bold,
+            )
+        },
+        text = {
+            Column {
+                Text(
+                    if (isFirstTime)
+                        "Выбери имя и аватар. Наставник запомнит и встретит тебя при следующем заходе."
+                    else "Изменить имя или аватар.",
+                    fontSize = 13.5.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(16.dp))
+
+                // Текущая аватарка крупно по центру
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(72.dp)
+                            .clip(CircleShape)
+                            .background(EspeakChat.primary.copy(alpha = 0.18f))
+                            .border(2.dp, EspeakChat.primary, CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(avatar, fontSize = 40.sp)
+                    }
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                // Поле имени (используем системную клаву только в setup —
+                // это разовая операция, не основной чат)
+                androidx.compose.material3.OutlinedTextField(
+                    value = name,
+                    onValueChange = { if (it.length <= 20) name = it },
+                    label = { Text("Имя наставника") },
+                    placeholder = { Text("Tutor, Lucía, Maestro, …") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(Modifier.height(14.dp))
+
+                Text(
+                    "Аватар",
+                    fontSize = 12.5.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(8.dp))
+                androidx.compose.foundation.layout.FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    com.spanishapp.data.prefs.TutorProfilePreferences.AVATARS.forEach { emo ->
+                        val selected = emo == avatar
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    if (selected) EspeakChat.primary.copy(alpha = 0.25f)
+                                    else MaterialTheme.colorScheme.surfaceContainerHighest
+                                )
+                                .border(
+                                    width = if (selected) 2.dp else 1.dp,
+                                    color = if (selected) EspeakChat.primary
+                                    else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                                    shape = CircleShape,
+                                )
+                                .clickable { avatar = emo },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(emo, fontSize = 22.sp)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            androidx.compose.material3.TextButton(
+                onClick = { onSave(name.ifBlank { "Tutor" }, avatar) }
+            ) {
+                Text(if (isFirstTime) "Готово" else "Сохранить", fontWeight = FontWeight.SemiBold)
+            }
+        },
+        dismissButton = if (!isFirstTime) {
+            { androidx.compose.material3.TextButton(onClick = onDismiss) { Text("Отмена") } }
+        } else null,
+    )
 }

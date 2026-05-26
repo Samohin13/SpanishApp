@@ -205,24 +205,7 @@ fun HomeScreen(
                 }
             }
 
-            // ── AI-репетитор виджет-карточка (v1.24.0) ────────
-            item {
-                StaggeredEntrance(index = 2) {
-                    Column {
-                        AiTutorWidgetCard(
-                            navController = navController,
-                            chatCount = 48,
-                            level = state.spanishLevel,
-                            remaining = 47,
-                            dailyLimit = 50,
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                        )
-                        Spacer(Modifier.height(16.dp))
-                    }
-                }
-            }
-
-            // ── v1.23.0: PRO promo баннер ВВЕРХУ (только для free) ─────
+// ── v1.23.0: PRO promo баннер ВВЕРХУ (только для free) ─────
             // Заметный, прямо под статистикой — юзер не сможет пропустить.
             // v1.23.1 (audit Bug 14): stable key для item — при покупке
             // PRO исчезает плавно, не вызывая re-layout всего LazyColumn.
