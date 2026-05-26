@@ -474,15 +474,14 @@ fun AiChatScreen(
         // JetChat-sample подход: input всегда внизу Column, при открытии клавы
         // вся Column поднимается через imePadding — никаких double-pad.
     ) { padding ->
-        // v1.23.29: ОПЫТНО проверено на Samsung S928B — Scaffold padding в этой
-        // конфигурации (outer consumeWindowInsets в MainActivity ест navbar)
-        // НЕ содержит ime inset. Без явного .imePadding() Samsung emoji-toolbar
-        // наезжает на нижний край ChatInputBar. Возвращаем imePadding на Column.
+        // v1.23.30: Scaffold padding УЖЕ содержит ime (M3 1.3+) — двойной
+        // .imePadding() даёт огромный void. Возвращаем чистый .padding(padding).
+        // Зазор между pill и клавой обеспечивается через vertical padding
+        // внутри ChatInputBar Row (24dp снизу).
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .imePadding(),
+                .padding(padding),
         ) {
             // ── Контент чата (welcome или messages) ───────────────────
             Box(modifier = Modifier.weight(1f)) {
@@ -586,6 +585,9 @@ fun AiChatScreen(
                     voiceAmplitude = voiceAmplitude,
                 )
             }
+            // v1.23.30: 6dp визуальный зазор между cream pill и клавой —
+            // чтобы Samsung emoji-toolbar не выглядел "впритык" к Surface.
+            Spacer(Modifier.height(6.dp))
         }
     }
 
