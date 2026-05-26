@@ -303,6 +303,27 @@ class AiChatViewModel @Inject constructor(
 }
 
 // ── Screen ────────────────────────────────────────────────────
+//
+// v1.23.31: ПОЛНЫЙ ПЕРЕПИС с нуля по запросу юзера. Все предыдущие
+// попытки fix'а позиции input bar (v1.18.49..v1.23.30) ходили по кругу
+// между "клава наезжает" / "огромный void". Возвращаюсь к каноническому
+// Jetchat sample паттерну bf0e7bd (май 2026, рабочая версия 1.18.55):
+//
+//   Scaffold(
+//     topBar    = TopAppBar,
+//     bottomBar = ChatInputBar(Surface(.imePadding()))   ← КЛЮЧ
+//   ) { padding ->
+//     content.padding(padding)
+//   }
+//
+// ChatInputBar — Surface c .imePadding() как ЕДИНСТВЕННЫЙ inset modifier.
+// Material3 Scaffold перемеряет bottomBar (intrinsic height растёт на ime)
+// и автоматически сдвигает content вверх. paddingValues для content уже
+// содержит высоту bottomBar'а.
+//
+// MainActivity через consumeWindowInsets потребляет navBar inset на уровне
+// NavHost'а (v1.18.54), поэтому здесь применяется ТОЛЬКО imePadding —
+// никакого navigationBarsPadding.
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -312,14 +333,12 @@ fun AiChatScreen(
 ) {
     com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.CHAT)
 
-    // v1.23.7: радио на паузу при заходе в AI Chat — у нестабильных
-    // live-станций (Cadena SER и др.) частый FLUSHING/RESUMING +
-    // notification rebuild спам в фоне → ANR в чате (логи показали).
-    // Юзер может возобновить ▶ из mini-player'а если нужно.
+    // Радио на паузу при заходе в чат — иначе у нестабильных live-станций
+    // notification rebuild спам в фоне может вызвать ANR в чате.
     LaunchedEffect(Unit) {
         com.spanishapp.radio.player.RadioCoordinator.pauseForChat()
     }
-    // ─── State ──────────────────────────────────────────────────
+
     val messages       by vm.messages.collectAsStateWithLifecycle()
     val isSending      by vm.isSending.collectAsStateWithLifecycle()
     val streamingText  by vm.streamingText.collectAsStateWithLifecycle()
@@ -331,8 +350,7 @@ fun AiChatScreen(
     val isPro          by vm.isPro.collectAsStateWithLifecycle()
     val wallpaper = com.spanishapp.domain.chat.ChatWallpapers.byId(wallpaperId)
 
-    // v1.23.6: тематические чаты доступны только PRO. Если free-юзер
-    // зашёл на не-default тему — редирект на paywall.
+    // Тематические чаты доступны только PRO. Free-юзер на не-default теме → paywall.
     LaunchedEffect(isPro, vm.theme.id) {
         if (!isPro && vm.theme.id != "default") {
             navController.navigate("paywall") {
@@ -350,7 +368,6 @@ fun AiChatScreen(
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     val listState = rememberLazyListState()
 
-    // ─── Voice/mic permission ───────────────────────────────────
     val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -364,7 +381,6 @@ fun AiChatScreen(
         else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
     }
 
-    // ─── Auto-scroll к нижним сообщениям ────────────────────────
     LaunchedEffect(messages.size, streamingText.length) {
         val target = if (streamingText.isNotEmpty()) messages.size
                      else (messages.size - 1).coerceAtLeast(0)
@@ -373,30 +389,8 @@ fun AiChatScreen(
         }
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    //  Layout (WhatsApp/Telegram pattern, v1.18.55 rewrite from scratch)
-    // ═══════════════════════════════════════════════════════════════
-    //
-    //  Scaffold = root.
-    //    • topBar    = TopAppBar (back, title, остаток квоты, фон, новый чат).
-    //    • bottomBar = ChatInputBar (Surface c .imePadding() — стандартный
-    //                  Jetchat sample pattern). При открытии клавы Scaffold
-    //                  ПЕРЕМЕРЯЕТ bottomBar (его intrinsic высота включает
-    //                  imePadding) и сдвигает контент вверх — никаких ручных
-    //                  расчётов inset'ов.
-    //    • content   = ChatWallpaperBackground с messages/welcome поверх.
-    //                  paddingValues автоматически содержит height bottomBar'а.
-    //
-    //  consumeWindowInsets в MainActivity (v1.18.54) делает navBar=0 внутри
-    //  NavHost'а, поэтому ChatInputBar добавляет ТОЛЬКО imePadding — без
-    //  navigationBarsPadding (иначе double-count).
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        // v1.23.14: вернул default contentWindowInsets. Подход через
-        // contentWindowInsets+ime срабатывал частично — Scaffold "ел"
-        // часть padding'а внутри ChatInputBar. Теперь imePadding() на
-        // outer Column ChatInputBar — стандартный и предсказуемый
-        // паттерн Material3 для chat-input.
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -442,24 +436,20 @@ fun AiChatScreen(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            showWallpaperPicker = true
-                        }
-                    ) {
+                    IconButton(onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        showWallpaperPicker = true
+                    }) {
                         Icon(
                             Icons.Default.Wallpaper,
                             contentDescription = "Сменить фон",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    IconButton(
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            if (messages.isEmpty()) vm.newChat() else showClearDialog = true
-                        }
-                    ) {
+                    IconButton(onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        if (messages.isEmpty()) vm.newChat() else showClearDialog = true
+                    }) {
                         Icon(
                             Icons.Default.AddComment,
                             null,
@@ -469,100 +459,7 @@ fun AiChatScreen(
                 },
             )
         },
-        // v1.23.26: Telegram/WhatsApp pattern — Column с .imePadding() оборачивает
-        // ВЕСЬ контент. bottomBar Scaffold'а НЕ используем. Это стандартный
-        // JetChat-sample подход: input всегда внизу Column, при открытии клавы
-        // вся Column поднимается через imePadding — никаких double-pad.
-    ) { padding ->
-        // v1.23.30: Scaffold padding УЖЕ содержит ime (M3 1.3+) — двойной
-        // .imePadding() даёт огромный void. Возвращаем чистый .padding(padding).
-        // Зазор между pill и клавой обеспечивается через vertical padding
-        // внутри ChatInputBar Row (24dp снизу).
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-        ) {
-            // ── Контент чата (welcome или messages) ───────────────────
-            Box(modifier = Modifier.weight(1f)) {
-                ChatWallpaperBackground(
-                    wallpaper = wallpaper,
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    if (messages.isEmpty()) {
-                        WelcomeHint(onSuggestion = {
-                            vm.send(it)
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        })
-                    } else {
-                        LazyColumn(
-                            state = listState,
-                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .adaptiveContentWidth(),
-                        ) {
-                            items(messages, key = { it.id }) { msg ->
-                                ChatBubble(
-                                    message = msg,
-                                    onSpeak = {
-                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                        vm.speak(msg.content)
-                                    },
-                                    onSpeakWord = { word ->
-                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                        vm.speak(word)
-                                    },
-                                    modifier = Modifier.animateItem(
-                                        fadeInSpec = tween(280),
-                                        placementSpec = spring(
-                                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                                            stiffness = Spring.StiffnessMediumLow,
-                                        ),
-                                        fadeOutSpec = tween(180),
-                                    ),
-                                )
-                            }
-                            if (streamingText.isNotEmpty()) {
-                                item(key = "streaming") {
-                                    ChatBubble(
-                                        message = ChatMessageEntity(
-                                            id = -1,
-                                            role = "assistant",
-                                            content = streamingText,
-                                            sessionId = "default",
-                                            correctionJson = "",
-                                        ),
-                                        onSpeak = { /* no-op while streaming */ },
-                                        onSpeakWord = { word ->
-                                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                            vm.speak(word)
-                                        },
-                                        modifier = Modifier,
-                                    )
-                                }
-                            } else if (isSending) {
-                                item("typing") { TypingIndicator() }
-                            }
-
-                            val lastIsAssistant = messages.lastOrNull()?.role == "assistant"
-                            if (lastIsAssistant && !isSending && streamingText.isEmpty()) {
-                                item("quick_replies") {
-                                    QuickReplies(
-                                        onPick = { preset ->
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            vm.send(preset)
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // ── Input bar внизу Column — поднимается с клавой через imePadding ──
+        bottomBar = {
             if (!isPro && remaining <= 0) {
                 AiChatUpsellCard(onClick = {
                     navController.navigate("paywall") { launchSingleTop = true }
@@ -585,13 +482,85 @@ fun AiChatScreen(
                     voiceAmplitude = voiceAmplitude,
                 )
             }
-            // v1.23.30: 6dp визуальный зазор между cream pill и клавой —
-            // чтобы Samsung emoji-toolbar не выглядел "впритык" к Surface.
-            Spacer(Modifier.height(6.dp))
+        },
+    ) { padding ->
+        ChatWallpaperBackground(
+            wallpaper = wallpaper,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+        ) {
+            if (messages.isEmpty()) {
+                WelcomeHint(onSuggestion = {
+                    vm.send(it)
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                })
+            } else {
+                LazyColumn(
+                    state = listState,
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .adaptiveContentWidth(),
+                ) {
+                    items(messages, key = { it.id }) { msg ->
+                        ChatBubble(
+                            message = msg,
+                            onSpeak = {
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                vm.speak(msg.content)
+                            },
+                            onSpeakWord = { word ->
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                vm.speak(word)
+                            },
+                            modifier = Modifier.animateItem(
+                                fadeInSpec = tween(280),
+                                placementSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessMediumLow,
+                                ),
+                                fadeOutSpec = tween(180),
+                            ),
+                        )
+                    }
+                    if (streamingText.isNotEmpty()) {
+                        item(key = "streaming") {
+                            ChatBubble(
+                                message = ChatMessageEntity(
+                                    id = -1,
+                                    role = "assistant",
+                                    content = streamingText,
+                                    sessionId = "default",
+                                    correctionJson = "",
+                                ),
+                                onSpeak = { },
+                                onSpeakWord = { word ->
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    vm.speak(word)
+                                },
+                                modifier = Modifier,
+                            )
+                        }
+                    } else if (isSending) {
+                        item("typing") { TypingIndicator() }
+                    }
+
+                    val lastIsAssistant = messages.lastOrNull()?.role == "assistant"
+                    if (lastIsAssistant && !isSending && streamingText.isEmpty()) {
+                        item("quick_replies") {
+                            QuickReplies(onPick = { preset ->
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                vm.send(preset)
+                            })
+                        }
+                    }
+                }
+            }
         }
     }
 
-    // Error snackbar-style banner (modal overlay поверх Scaffold).
     if (error != null) {
         Box(
             modifier = Modifier
@@ -659,19 +628,12 @@ fun AiChatScreen(
     }
 }
 
-// ─── Input bar (Jetchat pattern) ──────────────────────────────────
+// ─── Input bar (Jetchat sample pattern) ─────────────────────────
 //
-// v1.23.9 (БЫЛ ЖИРНЫЙ БАГ): убрана .imePadding() с Surface.
-//
-// Раньше Surface имел `.imePadding()` чтобы поднимать input над клавиатурой.
-// Но в Compose 1.7 / Material3 1.3+ Scaffold САМ автоматически пушит
-// bottomBar slot над клавиатурой через WindowInsets ime внутреннего consume.
-// Двойное применение → input уезжал на 2× высоты клавы вверх, оставляя
-// огромный чёрный gap между input и клавиатурой на скриншоте юзера.
-//
-// Теперь Surface БЕЗ imePadding — Scaffold сам всё делает корректно.
-// navigationBarsPadding НЕ нужен: outer NavHost в MainActivity уже
-// консьюмит navBar inset (v1.18.54).
+// Surface(.fillMaxWidth().imePadding()) — единственный inset modifier.
+// Когда клава открывается, intrinsic height Surface'а растёт на ime,
+// Scaffold перемеряет bottomBar slot и сдвигает контент через padding.
+// Никаких ручных Spacer'ов, navigationBarsPadding или Column wrapper'ов.
 @Composable
 private fun ChatInputBar(
     input: String,
@@ -693,81 +655,46 @@ private fun ChatInputBar(
         label = "mic_pulse_anim",
     )
 
-    // v1.23.21: ВОССТАНОВЛЕНИЕ оригинального паттерна v1.0.7 (982e73b,
-    // май 2026, релизный AAB в Play Store как 1.0.7). Юзер указал:
-    // "посмотри как было в ранних версиях, найди где пошло не так".
-    //
-    // Старый рабочий код:
-    //   Surface(shadowElevation=8.dp, color=surfaceContainerHighest) {
-    //     Row(.padding(12).imePadding().navigationBarsPadding(), vertAlign=Bottom)
-    //   }
-    //
-    // Ключевые отличия от моих недавних попыток:
-    //  • .imePadding() на ROW (не на Surface) — это работает на любой
-    //    версии Compose, не зависит от Scaffold bottomBar quirks
-    //  • shadowElevation, НЕ tonalElevation — старый комментарий явно
-    //    говорил: "tonalElevation overlays primary tint in M3 dark = brown.
-    //    Use shadowElevation only" — БРАУНИХА была давно известным багом
-    //  • color = surfaceContainerHighest (более нейтральный grey)
-    //  • verticalAlignment = Bottom (для тонкой компоновки pill+mic)
-    //  • navigationBarsPadding убран — MainActivity consumeWindowInsets
-    //    уже консьюмит navBar inset
-    // v1.23.27: Conversa дизайн — input bar в paper-эстетике.
-    // Surface = paper-color с ink border + двойная тень.
-    // Pill = bone (cream) с ink border.
-    val convInk = Color(0xFF2B1E14)
-    val convInkSoft = Color(0xFF5A4632)
-    val convPaper = Color(0xFFFAF3E0)
-    val convBone = Color(0xFFFFFAF0)
-    val convCream = Color(0xFFF4EAD5)
-    val convTerracotta = Color(0xFFC1572D)
-
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .imePadding(),
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp,
-        color = convPaper,
-        border = androidx.compose.foundation.BorderStroke(1.5.dp, convInk),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                // v1.23.28: vertical padding 12dp → 20dp — pill подняли выше
-                // от Samsung emoji toolbar, больше воздуха сверху/снизу.
-                .padding(horizontal = 14.dp, vertical = 20.dp),
-            verticalAlignment = Alignment.Bottom,
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            // ── Pill: текстовое поле или waveform во время записи ─────
-            // v1.23.28: крупнее — min height 44dp → 56dp, шрифт 15sp → 17sp,
-            // внутренний padding 11dp → 14dp для большего воздуха внутри.
             Surface(
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(min = 56.dp),
-                shape = RoundedCornerShape(22.dp),
-                color = convBone,
-                border = androidx.compose.foundation.BorderStroke(1.5.dp, convInk),
+                    .heightIn(min = 48.dp),
+                shape = RoundedCornerShape(24.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
             ) {
                 if (isListening) {
                     VoiceWaveform(
                         amplitude = voiceAmplitude,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp),
+                            .height(48.dp),
                     )
                 } else {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 18.dp, vertical = 16.dp),
+                            .padding(horizontal = 18.dp, vertical = 14.dp),
                         contentAlignment = Alignment.CenterStart,
                     ) {
                         if (input.isEmpty()) {
                             Text(
                                 text = stringResource(com.spanishapp.R.string.chat_message_placeholder),
-                                color = convInkSoft,
-                                fontSize = 17.sp,
-                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 16.sp,
                             )
                         }
                         androidx.compose.foundation.text.BasicTextField(
@@ -775,10 +702,12 @@ private fun ChatInputBar(
                             onValueChange = onInputChange,
                             enabled = !isSending,
                             textStyle = androidx.compose.ui.text.TextStyle(
-                                color = convInk,
-                                fontSize = 17.sp,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 16.sp,
                             ),
-                            cursorBrush = androidx.compose.ui.graphics.SolidColor(convTerracotta),
+                            cursorBrush = androidx.compose.ui.graphics.SolidColor(
+                                MaterialTheme.colorScheme.primary
+                            ),
                             maxLines = 5,
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -786,7 +715,6 @@ private fun ChatInputBar(
                 }
             }
 
-            // ── FAB: микрофон когда пусто, send когда есть текст ───
             val (action, icon, cd) = when {
                 sendActive -> Triple(
                     onSend,
@@ -799,30 +727,30 @@ private fun ChatInputBar(
                     stringResource(com.spanishapp.R.string.chat_voice_input_cd),
                 )
             }
-            // v1.23.27: Conversa-стиль FAB — ink цвет когда пусто, terracotta когда send.
             FloatingActionButton(
                 onClick = { if (!isSending && (sendActive || !isListening)) action() },
-                containerColor = if (sendActive) convTerracotta else convInk,
-                contentColor = convBone,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(48.dp)
                     .scale(if (isListening && !sendActive) micPulse else 1f),
-                shape = RoundedCornerShape(14.dp),
+                shape = CircleShape,
                 elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
             ) {
                 if (isSending) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(20.dp),
                         strokeWidth = 2.dp,
-                        color = convBone,
+                        color = MaterialTheme.colorScheme.onPrimary,
                     )
                 } else {
-                    Icon(icon, contentDescription = cd, modifier = Modifier.size(20.dp))
+                    Icon(icon, contentDescription = cd, modifier = Modifier.size(22.dp))
                 }
             }
         }
     }
 }
+
 
 
 /**
