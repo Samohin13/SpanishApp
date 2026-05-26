@@ -1010,13 +1010,13 @@ private fun TypingIndicator() {
 @Composable
 private fun WelcomeHint(onSuggestion: (String) -> Unit) {
     val scrollState = androidx.compose.foundation.rememberScrollState()
-    // v1.23.23: тёмный полупрозрачный scrim поверх wallpaper'а — текст и chips
-    // теперь читаемы на ЛЮБОМ фоне (раньше на atardecer/corazon/mediterraneo
-    // pink-on-pink и blue-on-blue были невидимы).
+    // v1.23.24: тёмный scrim поверх wallpaper'а — alpha 0.75 для более
+    // явного отделения контента от цветного фона. Wallpaper остаётся
+    // видимым как декор, но контент явно поверх.
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.55f))
+            .background(Color.Black.copy(alpha = 0.75f))
     ) {
     Column(
         modifier = Modifier
@@ -1051,7 +1051,8 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
         Text(
             androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_welcome_subtitle),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            // v1.23.24: белый с alpha для контраста на любом wallpaper'е
+            color = Color.White.copy(alpha = 0.85f),
             textAlign = TextAlign.Center
         )
 
@@ -1104,10 +1105,12 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
         Spacer(Modifier.height(20.dp))
 
         // ── Try-it suggestions ──────────────────────────────────
+        // v1.23.24: явный белый цвет + bold для контраста на любом wallpaper
         Text(
             stringResource(com.spanishapp.R.string.chat_try_label),
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = Color.White,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Start
         )
@@ -1119,6 +1122,9 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
             "Объясни разницу между ser и estar",
             "Practiquemos el pretérito"
         )
+        // v1.23.24: chips с СОЛИДНЫМ тёмным фоном + белой обводкой + белыми буквами.
+        // Раньше SuggestionChip имел прозрачный фон → на цветных wallpaper'ах
+        // буквы сливались. Теперь как полноценные кнопки с явной видимостью.
         androidx.compose.foundation.layout.FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -1126,9 +1132,25 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
             prompts.forEach { prompt ->
                 SuggestionChip(
                     onClick = { onSuggestion(prompt) },
-                    label = { Text(prompt, fontSize = 13.sp) },
+                    label = {
+                        Text(
+                            prompt,
+                            fontSize = 13.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    },
                     modifier = Modifier.padding(vertical = 4.dp),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(20.dp),
+                    colors = SuggestionChipDefaults.suggestionChipColors(
+                        containerColor = Color(0xFF1A1A20),
+                        labelColor = Color.White,
+                    ),
+                    border = SuggestionChipDefaults.suggestionChipBorder(
+                        enabled = true,
+                        borderColor = Color(0xFF3A3A40),
+                        borderWidth = 1.dp,
+                    ),
                 )
             }
         }
