@@ -187,6 +187,7 @@ private fun ChatHeader(
     onNewChat: () -> Unit,
 ) {
     Surface(
+        modifier = Modifier.statusBarsPadding(),
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 0.dp,
         shadowElevation = 0.5.dp,
