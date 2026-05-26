@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material3.Icon
@@ -68,6 +69,7 @@ fun SpanishKeyboard(
 ) {
     var layout by remember { mutableStateOf(KbLayout.ES) }
     var shifted by remember { mutableStateOf(false) }
+    var collapsed by remember { mutableStateOf(false) }
 
     val keyBg = MaterialTheme.colorScheme.surfaceContainerHighest
     val specialKeyBg = MaterialTheme.colorScheme.surfaceContainerHigh
@@ -95,9 +97,34 @@ fun SpanishKeyboard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 6.dp),
+                .padding(horizontal = 4.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
+            // v1.24.4: handle для свёртывания клавиатуры. Тап = свернуть / развернуть.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(22.dp)
+                    .clickable {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        collapsed = !collapsed
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    if (collapsed) Icons.Default.KeyboardArrowUp
+                    else Icons.Default.KeyboardArrowDown,
+                    contentDescription = if (collapsed) "Развернуть клавиатуру" else "Свернуть клавиатуру",
+                    tint = textColor.copy(alpha = 0.5f),
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+
+            if (collapsed) {
+                Spacer(Modifier.height(4.dp))
+                return@Column
+            }
+
             // Буквенные / цифровые ряды (первые 2)
             rows.take(2).forEach { row ->
                 Row(
@@ -281,7 +308,7 @@ private fun KeyButton(
 
     Box(
         modifier = modifier
-            .height(42.dp)
+            .height(50.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(bg)
             .combinedClickable(
@@ -298,12 +325,30 @@ private fun KeyButton(
         Text(
             displayLabel,
             color = textColor,
-            fontSize = 17.sp,
+            fontSize = 19.sp,
             fontWeight = FontWeight.Medium,
         )
 
         if (showAccents && key.accents.isNotEmpty()) {
+            // v1.24.4: popup появляется СВЕРХУ над клавишей (по центру),
+            // не сбоку, как было раньше. Custom position provider.
+            val aboveProvider = remember {
+                object : androidx.compose.ui.window.PopupPositionProvider {
+                    override fun calculatePosition(
+                        anchorBounds: androidx.compose.ui.unit.IntRect,
+                        windowSize: androidx.compose.ui.unit.IntSize,
+                        layoutDirection: androidx.compose.ui.unit.LayoutDirection,
+                        popupContentSize: androidx.compose.ui.unit.IntSize,
+                    ): androidx.compose.ui.unit.IntOffset {
+                        val x = (anchorBounds.left + (anchorBounds.width - popupContentSize.width) / 2)
+                            .coerceIn(8, (windowSize.width - popupContentSize.width - 8).coerceAtLeast(8))
+                        val y = (anchorBounds.top - popupContentSize.height - 12).coerceAtLeast(8)
+                        return androidx.compose.ui.unit.IntOffset(x, y)
+                    }
+                }
+            }
             Popup(
+                popupPositionProvider = aboveProvider,
                 onDismissRequest = { showAccents = false },
                 properties = PopupProperties(focusable = true),
             ) {
@@ -324,7 +369,7 @@ private fun KeyButton(
                             val out = if (shifted) variant.uppercase() else variant
                             Box(
                                 modifier = Modifier
-                                    .size(width = 38.dp, height = 42.dp)
+                                    .size(width = 44.dp, height = 50.dp)
                                     .clip(RoundedCornerShape(6.dp))
                                     .background(MaterialTheme.colorScheme.surface)
                                     .border(
@@ -364,7 +409,7 @@ private fun SpecialKey(
 ) {
     Box(
         modifier = modifier
-            .height(42.dp)
+            .height(50.dp)
             .clip(RoundedCornerShape(6.dp))
             .background(bg)
             .clickable(onClick = onClick),
