@@ -237,6 +237,30 @@ object ChatWallpapers {
         }
     )
 
+    // v1.23.27: Conversa — теплый paper-фон в стиле Conversa mockup.
+    // Cream базовый, мягкие радиальные подсветки terracotta+ochre.
+    // Дефолт для редизайна "как в Telegram но в paper-стиле".
+    val CONVERSA = ChatWallpaper(
+        id = "conversa",
+        displayName = "Conversa",
+        description = "Тёплая paper-бумага",
+        gradient = Brush.linearGradient(
+            colors = listOf(
+                Color(0xFFF4EAD5),  // cream
+                Color(0xFFEDE0C4),  // cream-soft
+            ),
+        ),
+        drawTile = { s ->
+            // Мягкие точки-зёрнышки (paper texture)
+            val grain = Color(0xFF2B1E14).copy(alpha = 0.025f)
+            for (i in 0..15) {
+                val x = (i * 11 % 130).toFloat() * s
+                val y = (i * 17 % 130).toFloat() * s
+                drawCircle(grain, 0.8f * s, Offset(x, y))
+            }
+        }
+    )
+
     // v1.23.6: «Стандартный» обой — чисто Material-фон без градиента
     // и паттерна. Юзеру по умолчанию хотел этот — потом сам сменит на
     // декоративный через wallpaper picker.
@@ -254,13 +278,12 @@ object ChatWallpapers {
     )
 
     val ALL = listOf(
-        STANDARD, ATARDECER, AZULEJOS, CORAZON, MEDITERRANEO,
+        CONVERSA, STANDARD, ATARDECER, AZULEJOS, CORAZON, MEDITERRANEO,
         ALHAMBRA, FIESTA, COSTA, SEVILLA,
     )
 
-    // v1.23.6: дефолт сменён с «atardecer» (закат с облаками — юзер
-    // жаловался на нечитаемость диалогов на цветном фоне) на «standard».
-    const val DEFAULT_ID = "standard"
+    // v1.23.27: дефолт = Conversa (paper-эстетика, как просил юзер).
+    const val DEFAULT_ID = "conversa"
 
     fun byId(id: String?): ChatWallpaper =
         ALL.firstOrNull { it.id == id } ?: ALL.first()

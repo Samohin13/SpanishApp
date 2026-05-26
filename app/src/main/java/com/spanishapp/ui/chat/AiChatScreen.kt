@@ -705,10 +705,21 @@ private fun ChatInputBar(
     //  • verticalAlignment = Bottom (для тонкой компоновки pill+mic)
     //  • navigationBarsPadding убран — MainActivity consumeWindowInsets
     //    уже консьюмит navBar inset
+    // v1.23.27: Conversa дизайн — input bar в paper-эстетике.
+    // Surface = paper-color с ink border + двойная тень.
+    // Pill = bone (cream) с ink border.
+    val convInk = Color(0xFF2B1E14)
+    val convInkSoft = Color(0xFF5A4632)
+    val convPaper = Color(0xFFFAF3E0)
+    val convBone = Color(0xFFFFFAF0)
+    val convCream = Color(0xFFF4EAD5)
+    val convTerracotta = Color(0xFFC1572D)
+
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shadowElevation = 8.dp,
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        color = convPaper,
+        border = androidx.compose.foundation.BorderStroke(1.5.dp, convInk),
     ) {
         Row(
             modifier = Modifier
@@ -722,8 +733,9 @@ private fun ChatInputBar(
                 modifier = Modifier
                     .weight(1f)
                     .heightIn(min = 44.dp),
-                shape = RoundedCornerShape(22.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                shape = RoundedCornerShape(18.dp),
+                color = convBone,
+                border = androidx.compose.foundation.BorderStroke(1.5.dp, convInk),
             ) {
                 if (isListening) {
                     VoiceWaveform(
@@ -742,8 +754,9 @@ private fun ChatInputBar(
                         if (input.isEmpty()) {
                             Text(
                                 text = stringResource(com.spanishapp.R.string.chat_message_placeholder),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = convInkSoft,
                                 fontSize = 15.sp,
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                             )
                         }
                         androidx.compose.foundation.text.BasicTextField(
@@ -751,12 +764,10 @@ private fun ChatInputBar(
                             onValueChange = onInputChange,
                             enabled = !isSending,
                             textStyle = androidx.compose.ui.text.TextStyle(
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = convInk,
                                 fontSize = 15.sp,
                             ),
-                            cursorBrush = androidx.compose.ui.graphics.SolidColor(
-                                MaterialTheme.colorScheme.primary
-                            ),
+                            cursorBrush = androidx.compose.ui.graphics.SolidColor(convTerracotta),
                             maxLines = 5,
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -777,21 +788,22 @@ private fun ChatInputBar(
                     stringResource(com.spanishapp.R.string.chat_voice_input_cd),
                 )
             }
+            // v1.23.27: Conversa-стиль FAB — ink цвет когда пусто, terracotta когда send.
             FloatingActionButton(
                 onClick = { if (!isSending && (sendActive || !isListening)) action() },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = if (sendActive) convTerracotta else convInk,
+                contentColor = convBone,
                 modifier = Modifier
                     .size(44.dp)
                     .scale(if (isListening && !sendActive) micPulse else 1f),
-                shape = CircleShape,
+                shape = RoundedCornerShape(14.dp),
                 elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
             ) {
                 if (isSending) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(18.dp),
                         strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = convBone,
                     )
                 } else {
                     Icon(icon, contentDescription = cd, modifier = Modifier.size(20.dp))
@@ -890,14 +902,26 @@ private fun ChatBubble(
                 Spacer(Modifier.width(10.dp))
             }
 
+            // v1.23.27: Conversa дизайн — paper-стиль для AI (cream-paper
+            // + ink border), terracotta для user. Borders + soft shadow.
+            val conversaInk = Color(0xFF2B1E14)
+            val conversaPaper = Color(0xFFFAF3E0)
+            val conversaTerracotta = Color(0xFFC1572D)
+            val conversaTerracottaDeep = Color(0xFF9A3E1C)
+            val conversaBone = Color(0xFFFFFAF0)
+
             Surface(
                 shape = RoundedCornerShape(
-                    topStart = 22.dp, topEnd = 22.dp,
-                    bottomStart = if (isUser) 22.dp else 6.dp,
-                    bottomEnd = if (isUser) 6.dp else 22.dp
+                    topStart = 18.dp, topEnd = 18.dp,
+                    bottomStart = if (isUser) 18.dp else 4.dp,
+                    bottomEnd = if (isUser) 4.dp else 18.dp
                 ),
-                color = if (isUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest,
-                shadowElevation = if (isUser) 0.dp else 2.dp,
+                color = if (isUser) conversaTerracotta else conversaPaper,
+                border = androidx.compose.foundation.BorderStroke(
+                    width = 1.5.dp,
+                    color = if (isUser) conversaTerracottaDeep else conversaInk
+                ),
+                shadowElevation = if (isUser) 4.dp else 2.dp,
                 modifier = Modifier.weight(1f, fill = false)
             ) {
                 Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
@@ -908,12 +932,12 @@ private fun ChatBubble(
                             text = message.content,
                             fontSize = 16.sp,
                             lineHeight = 22.sp,
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = conversaBone,
                         )
                     } else {
                         // AI message — bold Spanish words are tappable for TTS.
-                        val accent = MaterialTheme.colorScheme.primary
-                        val onSurfaceMuted = MaterialTheme.colorScheme.onSurfaceVariant
+                        val accent = conversaTerracotta
+                        val onSurfaceMuted = Color(0xFF5A4632)  // ink-soft
                         val annotated = remember(message.content, accent, onSurfaceMuted) {
                             renderChatMarkdown(message.content, accent, onSurfaceMuted)
                         }
@@ -922,7 +946,7 @@ private fun ChatBubble(
                             style = androidx.compose.ui.text.TextStyle(
                                 fontSize = 16.sp,
                                 lineHeight = 22.sp,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = conversaInk,
                             ),
                             onClick = { offset ->
                                 annotated.getStringAnnotations(SPEAK_TAG, offset, offset)
@@ -1040,14 +1064,15 @@ private fun TypingIndicator() {
 @Composable
 private fun WelcomeHint(onSuggestion: (String) -> Unit) {
     val scrollState = androidx.compose.foundation.rememberScrollState()
-    // v1.23.24: тёмный scrim поверх wallpaper'а — alpha 0.75 для более
-    // явного отделения контента от цветного фона. Wallpaper остаётся
-    // видимым как декор, но контент явно поверх.
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.75f))
-    ) {
+    // v1.23.27: Conversa дизайн — paper-стиль, без тёмного scrim'а.
+    // Текст напрямую на cream wallpaper (хорошо читается), cards с ink border.
+    val convInk = Color(0xFF2B1E14)
+    val convInkSoft = Color(0xFF5A4632)
+    val convPaper = Color(0xFFFAF3E0)
+    val convCreamSoft = Color(0xFFEDE0C4)
+    val convTerracotta = Color(0xFFC1572D)
+    val convOchre = Color(0xFFD99A2B)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -1060,13 +1085,16 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape)
-                .background(Color(0xFFFF6B35)),  // brand orange
+                .background(convTerracotta)
+                .then(
+                    Modifier.border(1.5.dp, convInk, CircleShape)
+                ),
             contentAlignment = Alignment.Center
         ) {
             androidx.compose.material3.Icon(
                 painter = androidx.compose.ui.res.painterResource(com.spanishapp.R.drawable.ic_bull),
                 contentDescription = null,
-                tint = Color.White,
+                tint = Color(0xFFFFFAF0),  // bone
                 modifier = Modifier.size(44.dp)
             )
         }
@@ -1075,20 +1103,21 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
             "¡Hola! Soy tu tutor personal.",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
+            color = convInk,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(6.dp))
         Text(
             androidx.compose.ui.res.stringResource(com.spanishapp.R.string.chat_welcome_subtitle),
             style = MaterialTheme.typography.bodyMedium,
-            // v1.23.24: белый с alpha для контраста на любом wallpaper'е
-            color = Color.White.copy(alpha = 0.85f),
+            color = convInkSoft,
+            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
             textAlign = TextAlign.Center
         )
 
         Spacer(Modifier.height(24.dp))
 
-        // ── Capability cards ────────────────────────────────────
+        // ── Capability cards — paper стиль с ink border ────────
         val capabilities = listOf(
             Triple("💬", stringResource(com.spanishapp.R.string.chat_cap_answer_title),
                        stringResource(com.spanishapp.R.string.chat_cap_answer_desc)),
@@ -1107,8 +1136,9 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
                 shape = RoundedCornerShape(14.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                shadowElevation = 1.dp
+                color = convPaper,
+                border = androidx.compose.foundation.BorderStroke(1.5.dp, convInk),
+                shadowElevation = 2.dp
             ) {
                 Row(
                     modifier = Modifier.padding(14.dp),
@@ -1120,12 +1150,13 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
                         Text(
                             title,
                             style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = convInk
                         )
                         Text(
                             desc,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = convInkSoft
                         )
                     }
                 }
@@ -1135,11 +1166,12 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
         Spacer(Modifier.height(20.dp))
 
         // ── Try-it suggestions ──────────────────────────────────
-        // v1.23.24: явный белый цвет + bold для контраста на любом wallpaper
+        // v1.23.27: Conversa-стиль — italic ink, чипы paper + ink border + arrow.
         Text(
             stringResource(com.spanishapp.R.string.chat_try_label),
             style = MaterialTheme.typography.labelMedium,
-            color = Color.White,
+            color = convInkSoft,
+            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Start
@@ -1148,13 +1180,10 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
         val prompts = listOf(
             "Hola, soy nuevo en español",
             "¿Cómo se dice 'погода'?",
-            "Tengo 25 anos y vivo en Moscu",
+            "Tengo 25 años y vivo en Moscú",
             "Объясни разницу между ser и estar",
             "Practiquemos el pretérito"
         )
-        // v1.23.24: chips с СОЛИДНЫМ тёмным фоном + белой обводкой + белыми буквами.
-        // Раньше SuggestionChip имел прозрачный фон → на цветных wallpaper'ах
-        // буквы сливались. Теперь как полноценные кнопки с явной видимостью.
         androidx.compose.foundation.layout.FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -1163,23 +1192,29 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
                 SuggestionChip(
                     onClick = { onSuggestion(prompt) },
                     label = {
-                        Text(
-                            prompt,
-                            fontSize = 13.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Medium,
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text("▸", fontSize = 11.sp, color = convTerracotta)
+                            Text(
+                                prompt,
+                                fontSize = 13.sp,
+                                color = convInk,
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                            )
+                        }
                     },
                     modifier = Modifier.padding(vertical = 4.dp),
                     shape = RoundedCornerShape(20.dp),
                     colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color(0xFF1A1A20),
-                        labelColor = Color.White,
+                        containerColor = Color(0xFFFFFAF0),  // bone
+                        labelColor = convInk,
                     ),
                     border = SuggestionChipDefaults.suggestionChipBorder(
                         enabled = true,
-                        borderColor = Color(0xFF3A3A40),
-                        borderWidth = 1.dp,
+                        borderColor = convInk,
+                        borderWidth = 1.5.dp,
                     ),
                 )
             }
@@ -1187,7 +1222,6 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
 
         Spacer(Modifier.height(16.dp))
     }
-    }  // close Box (scrim)
 }
 
 /**
